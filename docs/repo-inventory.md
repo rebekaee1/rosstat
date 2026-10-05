@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1461  ·  **Строк:** 1 047 275  ·  **Токенов (≈):** 9 872 839
+**Файлов:** 1461  ·  **Строк:** 1 047 277  ·  **Токенов (≈):** 9 872 894
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 415 | 52 392 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 678 | 248 640 | 2 735 359 |
+| `backend` | 678 | 248 641 | 2 735 386 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 115 | 673 539 | 5 753 988 |
+| `docs` | 115 | 673 540 | 5 754 016 |
 | `frontend` | 540 | 101 065 | 1 075 957 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 98 | 20 295 | 240 639 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `docs/mechanism-inventory.md` | 2 575 | 114 534 |
-| `docs/backlog.md` | 2 475 | 76 392 |
+| `docs/backlog.md` | 2 476 | 76 420 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/seed_data.py` | 5 661 | 58 541 |
@@ -67,7 +67,7 @@
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `backend/app/services/seo_world.py` | 2 081 | 19 248 |
 | `backend/app/data/i18n/indicator_copy_en.py` | 1 061 | 17 960 |
-| `backend/app/data/i18n/seo_en.py` | 1 569 | 17 518 |
+| `backend/app/data/i18n/seo_en.py` | 1 570 | 17 535 |
 | `backend/app/services/analytics_marts.py` | 1 607 | 17 268 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/main.py` | 1 656 | 16 776 |
@@ -146,7 +146,7 @@
 | `backend/app/services/world_subnational_ingest.py` | 779 | 7 476 |
 | `frontend/src/pages/WorldCountry.jsx` | 681 | 7 389 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
-| `backend/app/services/seo_content.py` | 612 | 7 265 |
+| `backend/app/services/seo_content.py` | 612 | 7 275 |
 | `frontend/src/styles/indicator-russia.css` | 760 | 7 194 |
 | `docs/design/local-acceptance/inventory.json` | 1 430 | 7 192 |
 | `backend/app/services/world_forecast_pipeline.py` | 827 | 7 169 |

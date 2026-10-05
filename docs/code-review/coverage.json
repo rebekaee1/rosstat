@@ -1817,9 +1817,9 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9",
-      "bytes": 70477,
-      "lines": 1569,
+      "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
+      "bytes": 70540,
+      "lines": 1570,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4196,8 +4196,8 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "8e9c3b178c2f9531be94ff13682e3cc4dae70c39e87c156359f7af7e2799d413",
-      "bytes": 42770,
+      "sha256": "f4a6aa698f00c2fd678adc8d1bb6df3b7b03ab86483ca88916461933d6033f8d",
+      "bytes": 42853,
       "lines": 612,
       "code": true,
       "status": "reviewed",
@@ -10098,9 +10098,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "08d9258bccd8a616478ae297d836db7edf29ea11b5719dcb6418b7c9cd3a96f2",
-      "bytes": 451849,
-      "lines": 2475,
+      "sha256": "dc32e16c91be88b56bf15ccb24f8420d8df355e4ec80a1cb7f4ab020eee83b96",
+      "bytes": 452062,
+      "lines": 2476,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10670,7 +10670,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "a7b027890d2e2b0792273aab348240adedadd13632f6a541bfda06ea0e3ef13f",
+      "sha256": "a00e225aadf4e13abae1236f32acfca7dd87a4b3de7798607f99f9a98349ca4a",
       "bytes": 2661062,
       "lines": 95848,
       "code": false,
@@ -10722,7 +10722,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "90303b8bc036184753681040f179c6a71b188781ae148c0d08e9b79ce7ca3f86",
+      "sha256": "67929b5e41f2a48690d86e6a8e61037b9d24a38983095bec032520be64fd89dd",
       "bytes": 9370716,
       "lines": 279796,
       "code": false,
@@ -10735,7 +10735,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "d5abf2523ee8b3b8f01a71a1be1d3dc39f5df66d20c1c924d02df73592773e71",
+      "sha256": "d60a7d7ba3da74ed9b534a82a7795807448c0b4df6d0cde4a9c164fc7b0bd2a6",
       "bytes": 462896,
       "lines": 2575,
       "code": false,
@@ -20797,11 +20797,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4ec8c4d738cb346729aab3366decec9163647c9b9c702da1bb383227f98276ba",
+  "ledger_sha256": "0fd7c496ab390c22b40a9797333fb06c409cf070a7ffee560ba70417e49e7a88",
   "javascript_inventory_sha256": "e0f94eddbe66c39474b5c1b07812c81c3341139aa3d196c1b537ff4602fa77ef",
-  "baseline_commit": "a9e6a7c0b8273a4968104f043733fa5dd5201098",
+  "baseline_commit": "75df32051905ad529e3cfbc44c948511e8bff4be",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "scripts/test-server/deploy.sh"
+    "backend/app/data/i18n/seo_en.py",
+    "backend/app/services/seo_content.py",
+    "docs/backlog.md",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

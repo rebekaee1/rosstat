@@ -445,8 +445,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "61535a4989522955eaf504ccf86a18c0c73598b2761605d7dbb1ce82abe878b9",
-      "lines": 1569
+      "sha256": "4f7628da546d3c20a089ef1e9903382e03019e6ed4dacfe1bc7d05b66c5b0391",
+      "lines": 1570
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -1325,7 +1325,7 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "8e9c3b178c2f9531be94ff13682e3cc4dae70c39e87c156359f7af7e2799d413",
+      "sha256": "f4a6aa698f00c2fd678adc8d1bb6df3b7b03ab86483ca88916461933d6033f8d",
       "lines": 612
     },
     {
@@ -59083,7 +59083,7 @@
     {
       "path": "backend/app/data/i18n/seo_en.py",
       "line": 268,
-      "end_line": 679,
+      "end_line": 680,
       "owner": "<module>",
       "conditions": [],
       "name": "PAGE_META_EN",
@@ -59124,8 +59124,8 @@
           "key": "'methodology'",
           "expression": "PageSeo(slug='methodology', path='/methodology', title='Forecast methodology for economic indicators — Forecast Economy', description='How forecasts of economic indicators are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.', h1='Forecast me",
           "expression_truncated": true,
-          "expression_chars": 3986,
-          "ast_sha256": "f2efba40765eb92130e03ed6fe3e2110d705fc4ea9ec9b08038c59280918efca"
+          "expression_chars": 4032,
+          "ast_sha256": "92fdf3dabf5d7a0aaa3ccb7f6a126d971bac1528286b43581601111b8966f316"
         },
         {
           "key": "'privacy'",
@@ -59207,14 +59207,14 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — official macroeconomic indicators by country', description='Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.', h1='Country economies in one place', intro='Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.', keywords='country macroeconomic indicators, country statistics, GDP, inflation, unemployment, interest rates, Eurostat, IMF, Bureau of Labor Statistics, Federal Reserve, official statistics, economic forecasts', links=((paths.country('united-states'), 'United States'), (paths.indicator('united-states', 'us-cpi-all'), 'Consumer Price Index'), (paths.indicator('united-states', 'us-unemployment-rate'), 'Unemployment rate'), ('/world/rating/gdp-usd', 'Country rankings'), ('/compare', 'Compare indicators'), ('/about', 'About')), blocks=(SeoBlock('About the platform', 'The platform provides country indicators from official national and international sources. Cards show history, view modes, tables, and comparable series; forecasts appear only where the model has passed a quality check.'), SeoBlock('Data sources', 'Official primary sources only: Eurostat, the IMF, the U.S. Bureau of Labor Statistics, the Bureau of Economic Analysis, the Federal Reserve, and national statistical offices and central banks.'))), 'about': PageSeo(slug='about', path='/about', title='About Forecast Economy', description='Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts from national statistical offices, central banks, Eurostat, and the IMF.', h1='About Forecast Economy', intro='Forecast Economy is an analytics project for",
       "expression_truncated": true,
-      "expression_chars": 13866,
-      "ast_sha256": "627b9cfaf6cd847aa91b01bbf26781374ef831eb59f1c5a4e564255d6b9e947c",
+      "expression_chars": 13912,
+      "ast_sha256": "642152baff244d5939169e430313c02a814b1245c00d7fcb1826b4ba34fe96c5",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 687,
-      "end_line": 694,
+      "line": 688,
+      "end_line": 695,
       "owner": "<module>",
       "conditions": [],
       "name": "HOME_TEMPLATES_EN",
@@ -59280,8 +59280,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 701,
-      "end_line": 705,
+      "line": 702,
+      "end_line": 706,
       "owner": "<module>",
       "conditions": [],
       "name": "PAGE_TEMPLATES_EN",
@@ -59323,8 +59323,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 715,
-      "end_line": 885,
+      "line": 716,
+      "end_line": 886,
       "owner": "<module>",
       "conditions": [],
       "name": "WORLD_TEMPLATES_EN",
@@ -60022,8 +60022,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 902,
-      "end_line": 943,
+      "line": 903,
+      "end_line": 944,
       "owner": "<module>",
       "conditions": [],
       "name": "TODAY_SPECS_EN",
@@ -60121,8 +60121,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 945,
-      "end_line": 1031,
+      "line": 946,
+      "end_line": 1032,
       "owner": "<module>",
       "conditions": [],
       "name": "TODAY_TEMPLATES_EN",
@@ -60516,8 +60516,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1037,
-      "end_line": 1092,
+      "line": 1038,
+      "end_line": 1093,
       "owner": "<module>",
       "conditions": [],
       "name": "CALENDAR_TEMPLATES_EN",
@@ -60735,8 +60735,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1099,
-      "end_line": 1393,
+      "line": 1100,
+      "end_line": 1394,
       "owner": "<module>",
       "conditions": [],
       "name": "REGIONAL_TEMPLATES_EN",
@@ -61978,8 +61978,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1399,
-      "end_line": 1490,
+      "line": 1400,
+      "end_line": 1491,
       "owner": "<module>",
       "conditions": [],
       "name": "YEAR_TEMPLATES_EN",
@@ -62549,8 +62549,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1496,
-      "end_line": 1569,
+      "line": 1497,
+      "end_line": 1570,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_TEMPLATES_EN",
@@ -84849,8 +84849,8 @@
           "key": "'methodology'",
           "expression": "PageSeo(slug='methodology', path='/methodology', title='Методология прогнозирования экономических показателей — Forecast Economy', description='Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, интервалы, обнов",
           "expression_truncated": true,
-          "expression_chars": 4116,
-          "ast_sha256": "c7e8f70d619bbdd8c38f566c915ed57685c1248e8858a03d180c2520fcb8ae01"
+          "expression_chars": 4156,
+          "ast_sha256": "ee323f94f5f6c163413027f4e603af7996180d68165759836aa81245adf5fc68"
         },
         {
           "key": "'privacy'",
@@ -84932,8 +84932,8 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — макроэкономические индикаторы стран и России', description='Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.', h1='Экономика стран — в одном месте', intro='Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.', keywords='макроэкономические показатели стран, статистика по странам, экономика России, макроэкономика России, ВВП России, инфляция в России, ИПЦ, ключевая ставка ЦБ, курс доллара, курс евро, курсы валют ЦБ, Росстат данные, Банк России, Евростат, прогноз инфляции, экономические данные России, статистика России, статистика стран', links=((paths.today(), 'Экономика сегодня: курсы, ставка, инфляция'), (paths.russia_indicator('cpi'), 'Индекс потребительских цен'), (paths.region_hub(), 'Регионы России'), (paths.world_rating('gdp-usd'), 'Рейтинг стран'), (paths.demographics(), 'Возрастная структура населения'), ('/calculator', 'Калькулятор инфляции'), ('/compare', 'Сравнение индикаторов'), (paths.calendar(), 'Календарь публикаций')), blocks=(SeoBlock('О платформе', 'Официальные показатели по странам мира, по России и её регионам, а также по штатам США. К каждому показателю — график, таблица и вся история; прогноз показываем только там, где ему можно доверять.'), SeoBlock('Источники данных', 'Только официальные первоисточники: Евростат, МВФ, национальные статистические ведомства подключённых стран, Бюро экономического анализа США, Бюро трудовой статистики США, Росстат, Банк России и Минфин России.'))), 'about': PageSeo(slug='about', path='/about', title='О пр",
       "expression_truncated": true,
-      "expression_chars": 14631,
-      "ast_sha256": "63e993a6a9ba829f443cbbb4827a2bd28bf9c5d3b83b7215e2ddfe24a5ac6a7e",
+      "expression_chars": 14671,
+      "ast_sha256": "e8c7f2a11d6b1efeba631c7da6d56b89df11a0e7dba6656c0ee0ec20bf52d49b",
       "runtime_expansion": false
     },
     {

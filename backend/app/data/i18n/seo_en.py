@@ -378,10 +378,11 @@ PAGE_META_EN: dict[str, PageSeo] = {
             SeoBlock(
                 "Calculation steps",
                 "The series is checked against the source and aligned to its frequency. "
-                "We then assess trend, seasonality, and stationarity (augmented Dickey–Fuller), "
-                "choose a stable transform — levels, differences, or log differences — "
-                "and fit a statistical model: regression on lagged values with several "
-                "training windows; for seasonal series, ARIMA and SARIMA-family models. "
+                "We then assess trend and seasonality and check whether the series drifts in one "
+                "direction over time, choose a stable transform — levels, differences, or log "
+                "differences — and fit a statistical model: regression on past values with "
+                "several training windows; for series with a yearly cycle, models that account "
+                "for repeating seasonality. "
                 "Window estimates are combined with weights inverse to their dispersion, "
                 "the forecast is mapped back to original units, and a confidence interval "
                 "is built around it.",
