@@ -738,11 +738,11 @@
       "role": "domain glossary and dated invariants",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1076da25a9432be9a245a68dd51baa6660225ff206db2bc3a13b7cb5673e9ce0",
-        "bytes": 207072
+        "sha256": "e0ed4d872cb7346ae9f07bdc8bcd79881d4f7b2d1fd76ee7724e99d9d93e44dc",
+        "bytes": 212281
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -756,7 +756,7 @@
           "delta": "Domain invariants separate native source/output frequencies, observation/baseyear and title/unit valuation evidence; exact string-member totals remain finite."
         },
         "status_in_review": "reviewed",
-        "sha256": "1076da25a9432be9a245a68dd51baa6660225ff206db2bc3a13b7cb5673e9ce0"
+        "sha256": "e0ed4d872cb7346ae9f07bdc8bcd79881d4f7b2d1fd76ee7724e99d9d93e44dc"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
@@ -1225,6 +1225,18 @@
             "status_in_review": "reviewed",
             "sha256": "938e4518093e6e01209898e4762402969bc00db028626ff37c3b8d77515c67c5"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "1076da25a9432be9a245a68dd51baa6660225ff206db2bc3a13b7cb5673e9ce0",
+            "bytes": 207072
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -2911,11 +2923,11 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682",
-        "bytes": 28476
+        "sha256": "f8fc88dbd27343f0c1973bc971a33e15d36499c15d9c360f09fb3a934f3ec18d",
+        "bytes": 30500
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -2923,7 +2935,7 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": null,
         "status_in_review": "reviewed",
-        "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682"
+        "sha256": "f8fc88dbd27343f0c1973bc971a33e15d36499c15d9c360f09fb3a934f3ec18d"
       },
       "canonical_source": "docs/adr/0007-identity-user-accounts.md",
       "linked_mechanisms": null,
@@ -2946,6 +2958,18 @@
             "status": "reviewed",
             "limitation": "Ledger content is prior review evidence; not a new full content read by this agent."
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "8f60df542b612f0c420b7ed8d62abb9828472111272cbf53ebc3ae105e9be682",
+            "bytes": 28476
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -4247,11 +4271,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d",
-        "bytes": 25120
+        "sha256": "f55939d59581e44f240220badec398dc9f4caefd0d982b9377a206f0d7c39bd6",
+        "bytes": 27048
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -4259,7 +4283,7 @@
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": null,
         "status_in_review": "reviewed",
-        "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d"
+        "sha256": "f55939d59581e44f240220badec398dc9f4caefd0d982b9377a206f0d7c39bd6"
       },
       "canonical_source": "docs/analytics_api_inventory/frontend_instrumentation.md",
       "linked_mechanisms": null,
@@ -4358,6 +4382,18 @@
             ],
             "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2246ffc76ca7537169b7e9db9d0dd91b29a52882cac3f1cf01b0bd1e2310565d",
+            "bytes": 25120
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -5044,11 +5080,11 @@
       "role": "system topology/scenarios",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "2bd1fe8509e5f1953390281870f0189690e0ff15951b1eb1147e3910e2cf7aa1",
-        "bytes": 71846
+        "sha256": "4ff801613b2fd25e481fa2ea932c384f7c20a33650b060a25a40df1c7a6393aa",
+        "bytes": 74238
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -5062,7 +5098,7 @@
           "delta": "Search producer/consumer and canonical flow distinguishes native pre-LIMIT predicates from subsequent world destination checks; bounded retrieval is not full catalogue eligibility."
         },
         "status_in_review": "reviewed",
-        "sha256": "2bd1fe8509e5f1953390281870f0189690e0ff15951b1eb1147e3910e2cf7aa1"
+        "sha256": "4ff801613b2fd25e481fa2ea932c384f7c20a33650b060a25a40df1c7a6393aa"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
@@ -5442,6 +5478,18 @@
             ],
             "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "2bd1fe8509e5f1953390281870f0189690e0ff15951b1eb1147e3910e2cf7aa1",
+            "bytes": 71846
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -5454,11 +5502,11 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "fc0e0c255acad411c80c680dd4cd760ede1163f1fa7af04fef673c6d1a1a155d",
-        "bytes": 452480
+        "sha256": "5c328484018455566ef319910dbe5fcf994622c653eacfea871359beae484b18",
+        "bytes": 457100
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -5472,7 +5520,7 @@
           "delta": "Dated V5 sealed regressions, V6 validation state, stale route-mock repair and independently diagnosed downstream unit/cache defect retained as separate open scope."
         },
         "status_in_review": "reviewed",
-        "sha256": "fc0e0c255acad411c80c680dd4cd760ede1163f1fa7af04fef673c6d1a1a155d"
+        "sha256": "5c328484018455566ef319910dbe5fcf994622c653eacfea871359beae484b18"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -6243,6 +6291,18 @@
             "status_in_review": "reviewed",
             "sha256": "dc32e16c91be88b56bf15ccb24f8420d8df355e4ec80a1cb7f4ab020eee83b96"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "fc0e0c255acad411c80c680dd4cd760ede1163f1fa7af04fef673c6d1a1a155d",
+            "bytes": 452480
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -6264,11 +6324,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "63c33e4164af9914ec4d3847b3ef684e25dc90bc57d75a30db98414f21d3b18c",
-        "bytes": 3940288
+        "sha256": "15f294b0fd68dfd655215159b1ebf74326e5efa4a55646e6cfb4cd4d68a32b46",
+        "bytes": 5221038
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -6356,6 +6416,18 @@
             "sha256": "a4f50d4d0c3fc8fe9129ca5cced51c5fe175a1acd4bcc487ba89251e512075a2",
             "canonical_source": "docs/client-mechanism-inventory.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "63c33e4164af9914ec4d3847b3ef684e25dc90bc57d75a30db98414f21d3b18c",
+            "bytes": 3940288
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -6377,11 +6449,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "fee5b9416d9a41121e936937661a9c5a1fbb8f8a87038f88e717328d23b93b83",
-        "bytes": 10896
+        "sha256": "ec55e33950f8227e7989e2dca4bc90eec2719f6842485c5fd7edbdff9f79acfb",
+        "bytes": 12503
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -6452,6 +6524,18 @@
             "sha256": "6de6e346d1b38b1132780c8bdef5e097e1f70f605d61a9ac69af4f9cf6efcbdf",
             "canonical_source": "docs/client-mechanism-inventory.md"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "fee5b9416d9a41121e936937661a9c5a1fbb8f8a87038f88e717328d23b93b83",
+            "bytes": 10896
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -7831,17 +7915,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "946ac4df818b5c0d49310ddc75813ab31bb34339141a650df2178bd990473ff1",
-        "bytes": 609558
+        "sha256": "e74ac0c269926de92010328b948f21bbfdd460bd1761d9ab9898bf19f0c595ba",
+        "bytes": 980361
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "946ac4df818b5c0d49310ddc75813ab31bb34339141a650df2178bd990473ff1",
+        "sha256": "e74ac0c269926de92010328b948f21bbfdd460bd1761d9ab9898bf19f0c595ba",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -8398,6 +8482,30 @@
             "sha256": "035d4396c402eb534e64696e63f57c080867d04ae924d41c6023790f46fe29f4",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "946ac4df818b5c0d49310ddc75813ab31bb34339141a650df2178bd990473ff1",
+            "bytes": 609558
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "807bd51b222d998fa7ce40e7f72430b499a8232104e99f5496462920c60c10aa",
+            "bytes": 980361
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -8647,16 +8755,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "6b41238f563a5d7b86ca74441257a240a9fcea0f505c44a85db1787099be57f0",
+        "sha256": "794fcd48593e6c96503e7e453e7755409206babcac510e577ac01c048fb9c5eb",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "6b41238f563a5d7b86ca74441257a240a9fcea0f505c44a85db1787099be57f0",
-        "bytes": 5841973
+        "sha256": "794fcd48593e6c96503e7e453e7755409206babcac510e577ac01c048fb9c5eb",
+        "bytes": 6137881
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -9188,6 +9296,30 @@
             "sha256": "227edce1f88760f8193e2adc5ad4a8b167156a0c3e99d13f4bd96efaf1653e35",
             "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "6b41238f563a5d7b86ca74441257a240a9fcea0f505c44a85db1787099be57f0",
+            "bytes": 5841973
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "a63633a696a4046b430ba8199360f89c54b02a67971fb9d4521bc08c7dfdcf11",
+            "bytes": 6137881
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -9383,17 +9515,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
-        "bytes": 732079
+        "sha256": "db49e974ee014e6b9d2a1daac82c0a6bd248d69d32a600092594a41ba8690c25",
+        "bytes": 949498
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
+        "sha256": "db49e974ee014e6b9d2a1daac82c0a6bd248d69d32a600092594a41ba8690c25",
         "canonical_source": "scripts/code-review-symbols.mjs"
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
@@ -9563,6 +9695,18 @@
             "sha256": "e0f94eddbe66c39474b5c1b07812c81c3341139aa3d196c1b537ff4602fa77ef",
             "canonical_source": "scripts/code-review-symbols.mjs"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
+            "bytes": 732079
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -10456,17 +10600,17 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
-        "bytes": 12543928
+        "sha256": "490a95ce7fef813b1d80ec418290814f549b7c509cae6af0f203d406470bf3a9",
+        "bytes": 13105824
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
+        "sha256": "490a95ce7fef813b1d80ec418290814f549b7c509cae6af0f203d406470bf3a9",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -11034,6 +11178,30 @@
             "sha256": "afcf86d8e20ebccd6403df3b25966e67d211918754503c42e189974ad3719d8b",
             "canonical_source": "docs/code-review/reviews.jsonl"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e7c113751fd8c4a0434ac4f4dcfb728a3ab92c049db1a9509bdcb172c0f1b910",
+            "bytes": 12543928
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
+        },
+        {
+          "source_version": {
+            "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "1e8d5c72b293cf240620ad7c5c87c4fd0719d89c57a0601e093988cfbe34f01a",
+            "bytes": 13105808
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -11310,11 +11478,11 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "c4c888fc4417fde76a39eb7eaa8597a93287f9d51b00bb962c2bb9e9ec5938e2",
-        "bytes": 83138
+        "sha256": "e7d9e2247d03c9f75d977ef70867d4dceda76efccedfc0bff03fbb511ef0ad13",
+        "bytes": 95737
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -11328,7 +11496,7 @@
           "delta": "Current native/typed search contract distinguishes pre-LIMIT fact-date/frequency predicates from world destination eligibility after budget/batch; no exhaustive recall claim."
         },
         "status_in_review": "reviewed",
-        "sha256": "c4c888fc4417fde76a39eb7eaa8597a93287f9d51b00bb962c2bb9e9ec5938e2"
+        "sha256": "e7d9e2247d03c9f75d977ef70867d4dceda76efccedfc0bff03fbb511ef0ad13"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -11722,6 +11890,18 @@
             ],
             "limits": "Recorded source/delta evidence only; helper did not read all bodies, execute these tests or establish production acceptance"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "c4c888fc4417fde76a39eb7eaa8597a93287f9d51b00bb962c2bb9e9ec5938e2",
+            "bytes": 83138
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -13784,11 +13964,11 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
-        "bytes": 2664678
+        "sha256": "200190040ad55e8b2caa9c574b21b30aaf0edaf3d0443477ec06c4fec2c3cfcf",
+        "bytes": 2751133
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -21317,6 +21497,18 @@
             "sha256": "0408aca0f869270d3b894298a27d024c4f42e745605f7f5b985d33d9464ad63f",
             "canonical_source": "scripts/build-indicator-index.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
+            "bytes": 2664678
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -21515,15 +21707,15 @@
           ]
         },
         "status_in_review": "reviewed",
-        "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553"
+        "sha256": "4cb3bef1bc1e49aa9d80c385efb39f2befcf92beb42b8f7c965eec49246c7990"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553",
-        "bytes": 16020
+        "sha256": "4cb3bef1bc1e49aa9d80c385efb39f2befcf92beb42b8f7c965eec49246c7990",
+        "bytes": 20594
       },
       "current_delta_reviewed_in_this_pass": true,
       "prior_version_evidence": [
@@ -21758,6 +21950,18 @@
             "status_in_review": "reviewed",
             "sha256": "1bece69a5cf72671f9d0e72e23ae095ee983a10f1fa1444858bd9ef5b4bcc3ac"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553",
+            "bytes": 16020
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -21952,11 +22156,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "b640ada5049370704a23b8819776095823c1e27e40dfd36c102d4bc7d7d64453",
-        "bytes": 9371023
+        "sha256": "327f66a98cc9d04c3d05671090c65d4c21e67438c5d29f041aa1cf27432fb582",
+        "bytes": 9576925
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -22163,6 +22367,18 @@
             "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
             "canonical_source": "docs/mechanism-inventory.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "b640ada5049370704a23b8819776095823c1e27e40dfd36c102d4bc7d7d64453",
+            "bytes": 9371023
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -22184,11 +22400,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "ab7d0dc3efd947b3d345beace6473f245aab2bef8cf21b4bea0df43c29b93be5",
-        "bytes": 462896
+        "sha256": "84f5061bd55c8a2cb86b174f147a95717a24fbc1948155cbb7c01763036b1974",
+        "bytes": 475023
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -22344,6 +22560,18 @@
             "sha256": "d60a7d7ba3da74ed9b534a82a7795807448c0b4df6d0cde4a9c164fc7b0bd2a6",
             "canonical_source": "docs/mechanism-inventory.md"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "ab7d0dc3efd947b3d345beace6473f245aab2bef8cf21b4bea0df43c29b93be5",
+            "bytes": 462896
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -26923,11 +27151,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35",
-        "bytes": 10788
+        "sha256": "3f5f86de81c5b09f4d918fe5c534f82ef53f6f96d8520da9abb5a33955f6acea",
+        "bytes": 16078
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -26949,7 +27177,7 @@
           "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
         },
         "status_in_review": "reviewed",
-        "sha256": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35"
+        "sha256": "3f5f86de81c5b09f4d918fe5c534f82ef53f6f96d8520da9abb5a33955f6acea"
       },
       "canonical_source": "frontend/index.html",
       "linked_mechanisms": "Static SPA shell and pre-hydration navigation now link the separate currencies hub; canonical routing is delegated to sitePaths and nginx.",
@@ -26969,7 +27197,21 @@
           ]
         ],
         "method": "Actual source/diff read; named definitions rechecked against current symbols. Prior exact-byte review retained for unchanged body; current dependent contracts reviewed. Tests are read evidence, not executed in this pass."
-      }
+      },
+      "prior_version_evidence": [
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "1f400ae86b24179fc34587c820a885061b176a0ebd2b4922aee989ba61b83e35",
+            "bytes": 10788
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
+        }
+      ]
     },
     {
       "id": "frontend/package.json",
@@ -29805,11 +30047,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "c9de02357e6ef94ae047dfe5c0f82e716c433a8975c88e11a5c9b6624224deef",
-        "bytes": 143678
+        "sha256": "8e831d02517f91e5bd9e30ecef0d115a9e6a1dbcc2846c67a1fe011e6a768674",
+        "bytes": 181869
       },
       "review_status": "prior_full_body_plus_authored_delta",
       "body_reviewed_in_this_pass": false,
@@ -29838,7 +30080,7 @@
           "semantic_limit": "Unseen blind80 remains 22/80 strict hit@5 (natural 1/40, precise 3/20, rare 18/20), HTTP errors=0 and all target facts present. Wiring/copy/cache tests do not establish general free-language understanding; no learned-model or production acceptance claim."
         },
         "status_in_review": "reviewed",
-        "sha256": "c9de02357e6ef94ae047dfe5c0f82e716c433a8975c88e11a5c9b6624224deef"
+        "sha256": "8e831d02517f91e5bd9e30ecef0d115a9e6a1dbcc2846c67a1fe011e6a768674"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -30168,6 +30410,18 @@
             "status_in_review": "reviewed",
             "sha256": "e70d49d68f90d9c4bb4938c7e68b19ab2a273957b308a53a73204bf84960f58a"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "c9de02357e6ef94ae047dfe5c0f82e716c433a8975c88e11a5c9b6624224deef",
+            "bytes": 143678
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
@@ -30273,11 +30527,11 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+        "main": "650357884b86b691e2b56e01bf8168aa9abde20e",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e6f599601ec611f15c116bf2d8202532d95f419928eccfb69268eb9947c134a9",
-        "bytes": 209023
+        "sha256": "8977aa2be6480482e80ca0a7dde3a852327cc67dd0f6d07ca2a5089f5ee4a303",
+        "bytes": 260766
       },
       "review_status": "prior_full_body_plus_authored_delta",
       "body_reviewed_in_this_pass": false,
@@ -30306,7 +30560,7 @@
           "semantic_limit": "Unseen blind80 remains 22/80 strict hit@5 (natural 1/40, precise 3/20, rare 18/20), HTTP errors=0 and all target facts present. Wiring/copy/cache tests do not establish general free-language understanding; no learned-model or production acceptance claim."
         },
         "status_in_review": "reviewed",
-        "sha256": "e6f599601ec611f15c116bf2d8202532d95f419928eccfb69268eb9947c134a9"
+        "sha256": "8977aa2be6480482e80ca0a7dde3a852327cc67dd0f6d07ca2a5089f5ee4a303"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",
@@ -30711,6 +30965,18 @@
             "status_in_review": "reviewed",
             "sha256": "79c5be9b172ad2ee5263b915dd37da57025c27a5e86c0e1665b1498e04d8c2d0"
           }
+        },
+        {
+          "source_version": {
+            "main": "ee23056826619fe3ec7929c19f4a0690784045bd",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "e6f599601ec611f15c116bf2d8202532d95f419928eccfb69268eb9947c134a9",
+            "bytes": 209023
+          },
+          "review_status": "superseded; предыдущая версия материала до обновления знаний 2026-10-05 (PWA/push/опрос API)",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false
         }
       ]
     },
