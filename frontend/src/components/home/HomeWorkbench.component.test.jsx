@@ -113,7 +113,9 @@ describe('HomeWorkbench', () => {
     const controls = document.querySelector('[data-block="home-map-controls"]');
     const workbench = document.querySelector('[data-block="home-workbench"]');
     expect(scope && controls && workbench).toBeTruthy();
-    expect(scope.compareDocumentPosition(controls) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    // Планета на первом экране: рабочая панель идёт сразу за поиском, числа платформы — после неё.
+    expect(workbench.compareDocumentPosition(scope) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.querySelector('.fe-hero-planet').contains(workbench)).toBe(true);
     expect(workbench.contains(controls)).toBe(true);
 
     expect((await planetProps()).unit).toBe('%');

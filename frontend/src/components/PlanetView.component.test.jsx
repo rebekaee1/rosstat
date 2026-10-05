@@ -44,6 +44,7 @@ function selectListCountry(name) {
 }
 
 beforeEach(() => {
+  window.localStorage.clear();
   scene.fail = false;
   scene.props = null;
   scene.mapProps = null;
@@ -414,18 +415,22 @@ describe('PlanetView interaction contract', () => {
     expect(lastCountry.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('starts the coarse-pointer scene with interaction disabled, enables Rotate and disables it on Done', async () => {
+  it('starts the coarse-pointer scene with horizontal spin only; «Free rotation» is a labelled toggle on the globe', async () => {
     vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
       matches: query === '(pointer: coarse)', media: query,
       addEventListener: vi.fn(), removeEventListener: vi.fn(),
     }));
-    render(<PlanetView countries={countries} />);
+    const { container } = render(<PlanetView countries={countries} />);
     await screen.findByTestId('planet-scene');
     expect(scene.props.touchNavigation).toBe(true);
     expect(scene.props.interactive).toBe(false);
-    fireEvent.click(screen.getByRole('button', { name: 'planet.rotate' }));
+    const toggle = screen.getByRole('button', { name: 'planet.rotate' });
+    expect(container.querySelector('.planet-stage').contains(toggle)).toBe(true);
+    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    fireEvent.click(toggle);
     expect(scene.props.interactive).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'planet.doneRotating' }));
+    expect(screen.getByRole('button', { name: 'planet.rotate' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.rotate' }));
     expect(scene.props.interactive).toBe(false);
   });
 
@@ -513,31 +518,46 @@ describe('PlanetView interaction contract', () => {
     delete Element.prototype.scrollIntoView;
   });
 
-  it('after a tap on the planet, a phone scrolls just enough to show the country card under it, never past the planet top', async () => {
-    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
-      matches: query.includes('max-width: 700px'), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
-    }));
+  it('lays the country card on the globe itself: a tap never scrolls or moves the page', async () => {
     window.scrollBy = vi.fn();
-    Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
-    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
-    vi.spyOn(container.querySelector('.planet-stage'), 'getBoundingClientRect').mockReturnValue({ top: 300, bottom: 740 });
-    vi.spyOn(container.querySelector('.planet-country-card'), 'getBoundingClientRect').mockReturnValue({ top: 520, bottom: 1000 });
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" conceptSlug="unemployment-rate" />);
+    const sheet = container.querySelector('.planet-country-card');
+    expect(container.querySelector('.planet-stage').contains(sheet)).toBe(true);
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
-    expect(window.scrollBy).toHaveBeenCalledWith({ top: 214, behavior: 'smooth' });
-    // The planet top may not slide under the sticky header: room = 300 - 76 = 224, so a taller card is capped.
-    window.scrollBy.mockClear();
-    container.querySelector('.planet-country-card').getBoundingClientRect.mockReturnValue({ top: 520, bottom: 1300 });
-    fireEvent.click(screen.getByRole('button', { name: 'planet.clearSelection' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Pick Germany' }));
-    expect(window.scrollBy).toHaveBeenCalledWith({ top: 224, behavior: 'smooth' });
+    expect(sheet.classList.contains('is-selected')).toBe(true);
+    expect(container.querySelector('.planet-stage').classList.contains('has-card')).toBe(true);
+    expect(window.scrollBy).not.toHaveBeenCalled();
+    // Two buttons: details and compare.
+    expect(within(sheet).getAllByRole('button').map((button) => button.textContent).filter(Boolean)).toEqual(expect.arrayContaining(['planet.openCountry', 'planet.addComparison']));
     delete window.scrollBy;
   });
 
-  it('explains the colour order when the rating direction is known, and can hide the phone list', async () => {
-    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="data" colorDirection="asc" hideListOnPhone />);
+  it('one metaphor, gold is better: «worse» on the left and «better» on the right with their numbers, for either direction', async () => {
+    const props = { countries, valuesByCode: { DE: 3.2, MT: 1.7 }, metricName: 'Безработица', unit: '%', initialMode: 'data' };
+    const { container, rerender } = render(<PlanetView {...props} colorDirection="asc" hideListOnPhone />);
     await screen.findByTestId('planet-scene');
-    expect(container.querySelector('.planet-key-order').textContent).toBe('x1.planet.keyLowerFirst');
+    expect(container.querySelector('.planet-key-order').textContent).toBe('w6c.key.rule');
+    const ends = [...container.querySelectorAll('.planet-key-ends span')].map((node) => node.textContent);
+    // Lower is better: the best (right, gold) end is the smallest number.
+    expect(ends[0]).toContain('w6c.key.worse');
+    expect(ends[0]).toContain('3,20');
+    expect(ends[1]).toContain('w6c.key.better');
+    expect(ends[1]).toContain('1,70');
     expect(container.querySelector('.planet-view--no-phone-list')).toBeTruthy();
+    rerender(<PlanetView {...props} colorDirection="desc" />);
+    const desc = [...container.querySelectorAll('.planet-key-ends span')].map((node) => node.textContent);
+    expect(desc[0]).toContain('1,70');
+    expect(desc[1]).toContain('3,20');
+    // Without a known order the plain «lower / higher» wording stays honest.
+    rerender(<PlanetView {...props} />);
+    expect(container.querySelector('.planet-key-order').textContent).toBe('w6c.key.ruleValue');
+    expect(container.querySelector('.planet-key-ends span small').textContent).toBe('w2.planet.keyLow');
+  });
+
+  it('says how many countries have official data next to the patterned «no data» swatch', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-key-note').textContent).toBe('w6c.key.noData: 2');
   });
 
   it('keeps every country name off the globe until one is selected or hovered', async () => {
@@ -552,5 +572,152 @@ describe('PlanetView interaction contract', () => {
     expect(screen.queryByRole('button', { name: 'planet.earth' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'planet.data' })).toBeNull();
     expect(container.querySelector('.planet-stage').dataset.planetMode).toBe('data');
+  });
+
+  it('shows one gesture hint over the globe until the first touch, then never again', async () => {
+    const { container, unmount } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    await waitFor(() => expect(container.querySelector('.planet-stage .planet-gesture-hint')).toBeTruthy());
+    expect(container.querySelector('.planet-stage .planet-gesture-hint').textContent).toBe('w6c.hint.mouse');
+    // The old service hints under and over the globe are gone.
+    expect(container.querySelector('.planet-select-hint, .planet-stage-caption, .planet-controls-hint')).toBeNull();
+    expect(scene.props.autoRotate).toBe(true);
+    act(() => scene.props.onInteract());
+    expect(container.querySelector('.planet-gesture-hint')).toBeNull();
+    expect(scene.props.autoRotate).toBe(false);
+    unmount();
+    const again = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(again.container.querySelector('.planet-gesture-hint')).toBeNull();
+  });
+
+  it('puts +, - and home on the globe, with labels, and any camera command ends the self-rotation', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    const stack = container.querySelector('.planet-stage .planet-camera-controls');
+    expect(stack).toBeTruthy();
+    expect([...stack.querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual(['planet.zoomIn', 'planet.zoomOut', 'planet.reset']);
+    expect([...stack.querySelectorAll('button')].every((button) => button.getAttribute('data-tip'))).toBe(true);
+    await waitFor(() => expect(scene.props.autoRotate).toBe(true));
+    fireEvent.click(screen.getByRole('button', { name: 'planet.zoomIn' }));
+    expect(scene.props.cameraCommand.type).toBe('zoomIn');
+    expect(scene.props.autoRotate).toBe(false);
+  });
+
+  it('offers a way back when only water is in view, and takes it away when countries return', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(screen.queryByRole('button', { name: 'w6c.backToCountries' })).toBeNull();
+    act(() => scene.props.onOcean(true));
+    fireEvent.click(screen.getByRole('button', { name: 'w6c.backToCountries' }));
+    expect(scene.props.cameraCommand.type).toBe('reset');
+    act(() => scene.props.onOcean(false));
+    expect(screen.queryByRole('button', { name: 'w6c.backToCountries' })).toBeNull();
+  });
+
+  it('answers a tap on grey land with «no data yet», «soon» and a way to ask, instead of staying silent', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    act(() => scene.props.onSelect(null, { name: 'Чад', code: 'TD' }));
+    const card = container.querySelector('.planet-place-card');
+    expect(card.textContent).toContain('Чад');
+    expect(card.textContent).toContain('w6c.place.noData');
+    expect(card.textContent).toContain('w6c.place.soon');
+    expect(card.querySelector('a').getAttribute('href')).toMatch(/^mailto:/);
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'TD' });
+    // Water closes it.
+    act(() => scene.props.onSelect(null, null));
+    expect(container.querySelector('.planet-place-card')).toBeNull();
+  });
+
+  it('switches the indicator from chips on the globe', async () => {
+    const onConceptChange = vi.fn();
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" conceptSlug="unemployment-rate"
+      quickConcepts={[{ slug: 'gdp-usd', label: 'ВВП' }, { slug: 'unemployment-rate', label: 'Безработица' }, { slug: 'inflation', label: 'Инфляция' }]} onConceptChange={onConceptChange} />);
+    await screen.findByTestId('planet-scene');
+    const group = container.querySelector('.planet-stage .planet-quick');
+    expect(within(group).getByRole('button', { name: 'Безработица' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(within(group).getByRole('button', { name: 'Инфляция' }));
+    expect(onConceptChange).toHaveBeenCalledWith('inflation');
+    fireEvent.click(within(group).getByRole('button', { name: 'Безработица' }));
+    expect(onConceptChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('plays the years up to the last finished one and stops when a person picks a year', async () => {
+    vi.useFakeTimers();
+    try {
+      const onYearChange = vi.fn();
+      const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027];
+      const props = { countries, valuesByCode: { DE: 3.2 }, metricName: 'ВВП', unit: '%', years, onYearChange, conceptSlug: 'gdp-usd' };
+      const { rerender } = render(<PlanetView {...props} year={2025} />);
+      await act(async () => { await vi.advanceTimersByTimeAsync(0); });
+      fireEvent.click(screen.getByRole('button', { name: /w6c.play.start/ }));
+      expect(onYearChange).toHaveBeenLastCalledWith(2018);
+      rerender(<PlanetView {...props} year={2018} />);
+      await act(async () => { await vi.advanceTimersByTimeAsync(1000); });
+      expect(onYearChange).toHaveBeenLastCalledWith(2019);
+      // A year chosen by hand ends the playback.
+      rerender(<PlanetView {...props} year={2022} />);
+      await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+      expect(onYearChange).toHaveBeenCalledTimes(2);
+      expect(screen.getByRole('button', { name: /w6c.play.start/ })).toBeTruthy();
+    } finally { vi.useRealTimers(); }
+  });
+
+  it('marks years that are not facts yet: forecast for a coming year, estimate for the running annual one', async () => {
+    const now = new Date();
+    const annual = (year) => ({ DE: { ...germanyDetail, date: `${year}-01-01` } });
+    const view = (year) => (
+      <PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} detailsByCode={annual(year)} metricName="ВВП" unit="%" years={[2023, 2024]} year={year} onYearChange={() => {}} periodLabel={String(year)} />
+    );
+    const { container, rerender } = render(view(now.getFullYear() + 1));
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-key-title .planet-tag').textContent).toBe('w6c.tag.forecast');
+    rerender(view(now.getFullYear()));
+    expect(container.querySelector('.planet-key-title .planet-tag').textContent).toBe('w6c.tag.estimate');
+    rerender(view(now.getFullYear() - 2));
+    expect(container.querySelector('.planet-key-title .planet-tag')).toBeNull();
+  });
+
+  it('switches to the coverage layer: colour shows how many indicators a country has', async () => {
+    const withCounts = [
+      { code: 'DE', slug: 'germany', name: 'Германия', indicators_count: 400 },
+      { code: 'MT', slug: 'malta', name: 'Мальта', indicators_count: 30 },
+      { code: 'FR', slug: 'france', name: 'Франция', indicators_count: 380 },
+      { code: 'ES', slug: 'spain', name: 'Испания', indicators_count: 210 },
+    ];
+    const { container } = render(<PlanetView countries={withCounts} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    fireEvent.click(screen.getByRole('button', { name: 'w6c.coverage.toggle' }));
+    expect(scene.props.valuesByCode.get('DE')).toBe(400);
+    expect(scene.props.valuesByCode.get('MT')).toBe(30);
+    expect(container.querySelector('.planet-key-title strong').textContent).toBe('w6c.coverage.title');
+    expect(container.querySelector('.planet-key-order').textContent).toBe('w6c.key.ruleCoverage');
+    fireEvent.click(screen.getByRole('button', { name: 'w6c.coverage.toggle' }));
+    expect(scene.props.valuesByCode.get('MT')).toBeUndefined();
+  });
+
+  it('shows the minimap only while the view is zoomed in', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-minimap')).toBeNull();
+    act(() => scene.props.onView({ lon: 10, lat: 50, distance: 2 }));
+    expect(container.querySelector('.planet-stage .planet-minimap')).toBeTruthy();
+    expect(container.querySelector('.planet-minimap-frame').getAttribute('width')).not.toBe('0');
+    act(() => scene.props.onView({ lon: 10, lat: 50, distance: 3.4 }));
+    expect(container.querySelector('.planet-minimap')).toBeNull();
+  });
+
+  it('selects the country from a shared link once the catalogue is here', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" initialCountry="de" />);
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'DE', instant: true });
+  });
+
+  it('keeps the value in the card as one final number, never a counting-up intermediate', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3855 }} detailsByCode={{ DE: germanyDetail }} metricName="ВВП" unit="млрд $" />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
+    expect(screen.getByLabelText('planet.value').textContent).toMatch(/^3\s?855$/);
   });
 });

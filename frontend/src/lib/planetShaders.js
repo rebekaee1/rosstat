@@ -19,6 +19,7 @@ export const PLANET_FRAGMENT = `
   uniform sampler2D highlightMap;
   uniform float surfaceTexel;
   uniform float dataWash;
+  uniform float highlightTexel;
   varying vec2 vUv;
   varying vec3 vWorldNormal;
 
@@ -34,6 +35,25 @@ export const PLANET_FRAGMENT = `
   // Approximate distance, in screen pixels, from the 0.5 crossing of a coverage mask.
   float edgeDistance(float m) {
     return abs(m - 0.5) / max(fwidth(m), 0.0005);
+  }
+
+  // The atlas is stored with premultiplied alpha (filtering stays correct and thin lines never turn black),
+  // in sRGB values. Straighten, then decode to linear light.
+  vec3 atlasToLinear(vec4 atlas) {
+    vec3 c = atlas.rgb / max(atlas.a, 0.004);
+    c = clamp(c, 0.0, 1.0);
+    return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(0.04045, c));
+  }
+
+  // A light five-tap blur of the selection masks turns the staircase of a magnified texture into a smooth edge.
+  vec3 softMask(vec2 uv) {
+    vec2 d = vec2(highlightTexel, highlightTexel * 2.0) * 0.8;
+    vec3 c = texture2D(highlightMap, uv).rgb * 0.4;
+    c += texture2D(highlightMap, uv + vec2(d.x, 0.0)).rgb * 0.15;
+    c += texture2D(highlightMap, uv - vec2(d.x, 0.0)).rgb * 0.15;
+    c += texture2D(highlightMap, uv + vec2(0.0, d.y)).rgb * 0.15;
+    c += texture2D(highlightMap, uv - vec2(0.0, d.y)).rgb * 0.15;
+    return c;
   }
 
   void main() {
@@ -57,14 +77,19 @@ export const PLANET_FRAGMENT = `
     // The source composite is flat; a little saturation makes land and forest readable against the sea.
     land = mix(vec3(dot(land, vec3(0.2126, 0.7152, 0.0722))), land, 1.16);
     land = pow(land, vec3(0.74)) * vec3(1.04, 1.015, 0.97);
-    // A calm porcelain sea replaces the archive's near-black navy. Depth survives
-    // as a small tonal variation.
-    vec3 sea = mix(vec3(0.43, 0.61, 0.73), vec3(0.60, 0.75, 0.84), smoothstep(0.0, 0.06, luminance));
+    // A calm sea with depth: open water is a deeper blue, the shelf near the coast is pale turquoise.
+    vec3 deepSea = vec3(0.30, 0.50, 0.68);
+    vec3 midSea = mix(vec3(0.43, 0.61, 0.73), vec3(0.60, 0.75, 0.84), smoothstep(0.0, 0.06, luminance));
     // Shallow water: a soft pale-turquoise band hugging every coast, so shores glow gently.
     vec2 reach = vec2(4.0 / 2048.0, 4.0 / 1024.0);
     float around = 0.25 * (waterOf(vUv + vec2(reach.x, 0.0)) + waterOf(vUv - vec2(reach.x, 0.0))
                          + waterOf(vUv + vec2(0.0, reach.y)) + waterOf(vUv - vec2(0.0, reach.y)));
     float shallow = clamp((1.0 - around) * 1.5, 0.0, 1.0) * water;
+    // A wider ring of the same probe: how far the nearest coast is, for the gradient into open ocean.
+    vec2 wide = vec2(22.0 / 2048.0, 22.0 / 1024.0);
+    float farWater = 0.25 * (waterOf(vUv + vec2(wide.x, 0.0)) + waterOf(vUv - vec2(wide.x, 0.0))
+                      + waterOf(vUv + vec2(0.0, wide.y)) + waterOf(vUv - vec2(0.0, wide.y)));
+    vec3 sea = mix(midSea, deepSea, smoothstep(0.55, 1.0, farWater) * 0.9);
     sea = mix(sea, vec3(0.74, 0.88, 0.89), shallow * 0.62);
     vec3 surface = mix(land, sea, water);
     surface *= 0.9 + max(sunlight, 0.0) * 0.16;
@@ -73,6 +98,10 @@ export const PLANET_FRAGMENT = `
     float gray = dot(surface, vec3(0.2126, 0.7152, 0.0722));
     vec3 pale = vec3(0.86, 0.885, 0.91) + (gray - 0.5) * 0.14;
     surface = mix(surface, mix(pale, sea, water), dataWash * 0.82);
+    // A soft glint of the light on open water gives the ocean a surface.
+    vec3 toCamera = normalize(cameraPosition - normal);
+    float glint = pow(max(dot(reflect(-sunDirection, normal), toCamera), 0.0), 26.0);
+    surface += vec3(0.62, 0.72, 0.80) * glint * 0.30 * water;
     // Limb: a little shade for volume, then a thin veil of pale-blue air along the edge.
     float facing = max(dot(normal, normalize(cameraPosition)), 0.0);
     surface *= mix(0.84, 1.0, smoothstep(0.0, 0.5, facing));
@@ -80,10 +109,10 @@ export const PLANET_FRAGMENT = `
     surface = mix(surface, vec3(0.66, 0.80, 0.93), rim * 0.34 * (1.0 - dataWash * 0.45));
     vec3 color = surface;
     vec4 atlas = texture2D(atlasMap, vUv);
-    color = mix(color, atlas.rgb, atlas.a);
+    color = color * (1.0 - atlas.a) + atlasToLinear(atlas) * atlas.a;
 
     // Interaction: a faint gold tint inside the country and a thin gold line on its border.
-    vec3 hl = texture2D(highlightMap, vUv).rgb;
+    vec3 hl = softMask(vUv);
     float insideSelected = smoothstep(0.35, 0.65, hl.r);
     float insideHovered = smoothstep(0.35, 0.65, hl.g) * (1.0 - insideSelected);
     vec3 goldSelected = vec3(0.40, 0.22, 0.025);
