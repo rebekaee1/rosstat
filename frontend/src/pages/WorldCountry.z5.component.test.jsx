@@ -77,7 +77,7 @@ describe('Главное: крупные цифры', () => {
     await screen.findByRole('heading', { name: 'Главное' });
     await waitFor(() => {
       const ago = document.querySelector('.z5-key__ago');
-      expect(ago.textContent.replace(/\u00a0/g, ' ')).toBe('↗год назад: 800,0 млрд €');
+      expect(ago.textContent.replace(/\u00a0/g, ' ')).toBe('▲год назад: 800,0 млрд €');
     });
   });
 
