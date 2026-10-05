@@ -5,14 +5,17 @@ import {
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
 import Button from './Button';
+import '../styles/z4-indicator.css';
 
 /**
- * Одна кнопка «Скачать» над графиком на всех страницах показателей (Россия и мир).
+ * Две кнопки над графиком на всех страницах показателей (Россия и мир): «Скачать» (таблица CSV, Excel, картинка)
+ * и отдельная заметная «Сохранить картинкой»: график с названием, источником и адресом сайта в фирменной рамке.
  * Раньше у России было три кнопки или «Войдите, чтобы скачать», у мира меню: страницы одного типа выглядели по-разному.
  * Гостю вход предлагает сам экспорт (замок в пункте и подсказка), поэтому подпись одна и та же у всех.
+ * `showSaveButton={false}` убирает отдельную кнопку (остаётся пункт меню).
  */
 export default function ChartDownloadMenu({
-  onCsv, onExcel, onPng, dataBlocked, imageBlocked, hint,
+  onCsv, onExcel, onPng, dataBlocked, imageBlocked, hint, showSaveButton = true,
 }) {
   const t = useT();
   const [open, setOpen] = useState(false);
@@ -34,37 +37,63 @@ export default function ChartDownloadMenu({
     { id: 'png', label: t('w2.dl.png'), Icon: ImageIcon, run: onPng, blocked: imageBlocked, hint: imageBlocked ? t('download.chartBlocked') : t('download.chartPng') },
   ];
   return (
-    <div ref={rootRef} className="relative" data-no-export="true" title={hint || undefined}>
-      <Button
-        variant="secondary"
-        size="sm"
-        aria-expanded={open}
-        aria-haspopup="menu"
-        onClick={() => setOpen((value) => !value)}
-        className="gap-1.5"
-      >
-        <Download size={14} aria-hidden="true" />
-        {t('w2.dl.title')}
-        <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
-      </Button>
-      {open && (
-        <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
-          {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
-            <button
-              key={id}
-              type="button"
-              role="menuitem"
-              title={itemHint}
-              onClick={() => { setOpen(false); run?.(); }}
-              className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-obsidian-light"
-            >
-              <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
-              <span className="min-w-0 flex-1">{label}</span>
-              {blocked && <Lock size={14} className="shrink-0 text-text-tertiary" aria-label={itemHint} />}
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="z4-dl" data-no-export="true">
+      <div ref={rootRef} className="relative" data-no-export="true" title={hint || undefined}>
+        <Button
+          variant="secondary"
+          size="sm"
+          aria-expanded={open}
+          aria-haspopup="menu"
+          onClick={() => setOpen((value) => !value)}
+          className="gap-1.5"
+        >
+          <Download size={14} aria-hidden="true" />
+          {t('w2.dl.title')}
+          <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
+        </Button>
+        {open && (
+          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
+            {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
+              <button
+                key={id}
+                type="button"
+                role="menuitem"
+                title={itemHint}
+                onClick={() => { setOpen(false); run?.(); }}
+                className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-obsidian-light"
+              >
+                <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
+                <span className="min-w-0 flex-1">{label}</span>
+                {blocked && <Lock size={14} className="shrink-0 text-text-tertiary" aria-label={itemHint} />}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      {showSaveButton && onPng ? <ChartSaveButton onPng={onPng} imageBlocked={imageBlocked} /> : null}
     </div>
+  );
+}
+
+/**
+ * Отдельная заметная кнопка «Сохранить картинкой». Нужна не только в меню «Скачать»: на страницах без таблиц
+ * (например «Сегодня») она стоит одна. Гостю вместо файла открывается окно входа (замок рядом с подписью).
+ */
+export function ChartSaveButton({ onPng, imageBlocked = false, className }) {
+  const t = useT();
+  return (
+    <Button
+      variant="secondary"
+      size="sm"
+      className={cn('z4-png-btn gap-1.5', className)}
+      aria-label={t('z4.png.aria')}
+      title={imageBlocked ? t('download.chartBlocked') : t('z4.png.title')}
+      data-no-export="true"
+      onClick={() => onPng?.()}
+    >
+      <ImageIcon size={14} aria-hidden="true" />
+      <span className="z4-png-btn__text">{t('z4.png.save')}</span>
+      {imageBlocked ? <Lock size={12} className="shrink-0 opacity-70" aria-hidden="true" /> : null}
+    </Button>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -17,6 +17,10 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import IndicatorChart from '../components/IndicatorChart';
+import { ChartSaveButton } from '../components/ChartDownloadMenu';
+import { useDownloadAccess } from '../lib/useDownloadAccess';
+import { exportNodeToPng } from '../lib/chartImage';
+import { track, events } from '../lib/track';
 import { SkeletonBox } from '../components/Skeleton';
 import { todayIndicatorTrail } from '../lib/breadcrumbs';
 import {
@@ -49,6 +53,8 @@ export default function TodayIndicatorPage() {
   const { code } = useParams();
   const spec = getTodaySpec(code);
   const seriesCode = todaySeriesCode(code);
+  const chartRef = useRef(null);
+  const { isAuthed: imageAuthed } = useDownloadAccess();
 
   const { data: indicator, isLoading: loadingMeta, isError: metaError, refetch: refetchMeta, isFetching: fetchingMeta } = useIndicator(seriesCode);
   const { data: rowsResp, isLoading: loadingData, isError: dataError, refetch: refetchData, isFetching: fetchingData } = useIndicatorData(seriesCode, { limit: 60 });
@@ -99,6 +105,28 @@ export default function TodayIndicatorPage() {
   } : null);
 
   if (!spec) return <Navigate to={todayPath()} replace />;
+
+  // Картинка графика в фирменной рамке; гостю вместо файла окно входа (как на остальных страницах показателей).
+  const pageTitle = t('today.page.dynamics', {
+    query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query,
+  });
+  const saveImage = async () => {
+    if (!imageAuthed) {
+      track(events.CHART_IMAGE_BLOCKED, { indicator: seriesCode, indicatorCategory: indicator?.category });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    const ok = await exportNodeToPng(chartRef.current, {
+      filename: `${seriesCode}.png`,
+      watermark: false,
+      frame: {
+        title: pageTitle,
+        subtitle: '',
+        source: indicator?.source ? t('z4.png.source', { source: indicator.source }) : '',
+      },
+    }).catch(() => false);
+    if (ok) track(events.CHART_IMAGE_DOWNLOAD, { indicator: seriesCode, indicatorCategory: indicator?.category });
+  };
 
   const isError = metaError || dataError;
   const isLoading = loadingMeta || loadingData;
@@ -192,6 +220,10 @@ export default function TodayIndicatorPage() {
           </div>
 
           <div className="fe-today-chart">
+            <div className="mb-3 flex justify-end" data-no-export="true">
+              <ChartSaveButton onPng={saveImage} imageBlocked={!imageAuthed} />
+            </div>
+            <div ref={chartRef}>
             <IndicatorChart
               mode="cpi"
               cpiData={chartPoints}
@@ -202,10 +234,9 @@ export default function TodayIndicatorPage() {
               indicatorCode={seriesCode}
               indicatorCategory={indicator.category}
               defaultChartType="area"
-              cpiChartTitle={t('today.page.dynamics', {
-                query: locale === 'en' ? (t(`today.spec.${code}`) || spec.query) : spec.query,
-              })}
+              cpiChartTitle={pageTitle}
             />
+            </div>
             <p className="mt-2 text-sm text-text-secondary">
               {t('today.page.source', { source: '' }).replace(/\s*$/, '')}{' '}
               <SourceLink

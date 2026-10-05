@@ -1,0 +1,527 @@
+/*
+ * Раунд 2, зона Z4: страница показателя и график (2026-10-05).
+ *
+ * Задача: график виден на первом экране. Для этого шапка сжата до ~170 px (название слева, главное число
+ * справа), три плиты выбора собраны в одну стеклянную полосу, действия, сравнение стран и плитки значений
+ * переехали в правую колонку рядом с графиком (от 1100 px). На телефоне график идёт сразу под шапкой.
+ *
+ * Токены Z1 берутся только как var(--fe-…, запасное значение). Свои псевдонимы --z4-* заведены здесь,
+ * чтобы не повторять запасные значения в каждом правиле. Правила с `:root` в начале нужны там, где порядок
+ * подключения CSS-файлов может перебить специфичность (см. x2-indicator.css).
+ */
+
+:root {
+  --z4-gold: var(--fe-gold, #ad8a48);
+  --z4-gold-soft: var(--fe-gold-soft, #c9a24d);
+  --z4-gold-ink: var(--fe-gold-ink, #80642f);
+  --z4-card-shadow: var(--fe-card-shadow, 0 14px 40px -28px rgba(32, 42, 60, 0.38));
+  --z4-hairline: rgba(32, 42, 60, 0.09);
+  --z4-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.58));
+  --z4-reveal: var(--fe-reveal-dur, 0.32s);
+  --z4-side-w: clamp(280px, 24vw, 360px);
+}
+:root[data-theme='dark'] {
+  --z4-hairline: rgba(188, 208, 235, 0.16);
+  --z4-glass: var(--fe-glass-soft, linear-gradient(130deg, rgba(41, 56, 75, 0.9), rgba(32, 45, 64, 0.7)));
+}
+
+/* ── Контейнер страницы: по токену Z1, запасное значение — как было ────────────────────── */
+:root .z4-page { max-width: var(--fe-container-data, 80rem); }
+@media (min-width: 1700px) {
+  :root .z4-page { max-width: var(--fe-container-data, 100rem); }
+}
+
+/* ── Шапка: название слева, главное число справа ───────────────────────────────────────── */
+:root .fe-data-header.z4-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: 14px;
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 150% at 100% 0%, rgba(201, 162, 77, 0.16), rgba(201, 162, 77, 0) 58%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.56) 66%, rgba(202, 216, 229, 0.3));
+  box-shadow: inset 0 1px 0 #fff, var(--z4-card-shadow);
+}
+:root[data-theme='dark'] .fe-data-header.z4-hero {
+  background:
+    radial-gradient(90% 150% at 100% 0%, rgba(208, 180, 125, 0.16), rgba(208, 180, 125, 0) 58%),
+    var(--fe-glass, linear-gradient(130deg, #29384bed, #202d40cc));
+}
+.z4-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--z4-gold-soft) 28%, var(--z4-gold) 62%, transparent);
+  opacity: 0.75;
+  pointer-events: none;
+}
+.z4-hero__main { min-width: 0; }
+.z4-hero .fe-ind-meta { margin-bottom: 8px; }
+.z4-hero nav { margin-bottom: 10px; }
+:root .z4-hero__title {
+  margin: 0 0 4px;
+  font-size: clamp(1.45rem, 0.95rem + 1.7vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.z4-hero__line { margin-top: 2px; }
+.z4-hero__line .fe-hero-line { margin-bottom: 0; }
+.z4-hero__aside { display: none; min-width: 0; }
+
+@media (min-width: 768px) {
+  :root .fe-data-header.z4-hero { padding: 20px 26px 18px; margin-bottom: 16px; }
+}
+@media (min-width: 1024px) {
+  :root .fe-data-header.z4-hero[data-has-value='true'] {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    column-gap: 32px;
+    align-items: center;
+    padding: 20px 28px 20px 32px;
+  }
+  .z4-hero[data-has-value='true'] .z4-hero__line { display: none; }
+  .z4-hero[data-has-value='true'] .z4-hero__aside {
+    display: block;
+    padding-left: 32px;
+    border-left: 1px solid var(--z4-hairline);
+  }
+}
+
+/* Главное число: золотой градиент, мини-график справа, изменение плашкой. */
+.z4-hv { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+.z4-hv__label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.z4-hv__when { color: var(--color-text-tertiary); font-weight: 500; }
+.z4-hv__row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 4px 16px; min-width: 0; }
+.z4-hv__value {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(2.6rem, 1.9rem + 1.5vw, 3.75rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  color: var(--z4-gold-ink);
+}
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .z4-hv__value {
+    background: linear-gradient(135deg, #7a5f2c 0%, #b08a3e 42%, #c9a24d 68%, #8e6e32 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  :root[data-theme='dark'] .z4-hv__value {
+    background-image: linear-gradient(135deg, #e4c994 0%, #d0b47d 50%, #f0dcae 100%);
+  }
+}
+.z4-hv__value--long { font-size: clamp(2rem, 1.5rem + 1.1vw, 2.9rem); }
+.z4-hv__unit {
+  margin-left: 0.3em;
+  color: var(--color-text-secondary);
+  -webkit-text-fill-color: var(--color-text-secondary);
+  font-size: 0.34em;
+  font-weight: 600;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.z4-hv__spark { flex: 0 1 140px; min-width: 96px; align-self: flex-end; padding-bottom: 2px; }
+.z4-hv__delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+.z4-hv__delta .fe-delta-badge { padding: 3px 11px; border-radius: 9999px; background: rgba(32, 42, 60, 0.06); font-size: 14px; }
+.z4-hv__delta .fe-tone--good { background: rgba(21, 128, 61, 0.1); }
+.z4-hv__delta .fe-tone--bad { background: rgba(185, 28, 28, 0.09); }
+.z4-hv__since { color: var(--color-text-tertiary); }
+.z4-hv--loading { min-height: 118px; }
+.z4-hv__skel-label { width: 5.5rem; height: 14px; border-radius: 6px; }
+.z4-hv__skel-value { width: 11rem; height: 56px; border-radius: 12px; }
+.z4-hv__skel-delta { width: 8rem; height: 24px; border-radius: 9999px; }
+@media (forced-colors: active) {
+  .z4-hv__value { background: none; -webkit-text-fill-color: CanvasText; color: CanvasText; }
+}
+
+/* ── Полоса выбора: «Что показать» и «Показать как» в одной стеклянной плите ──────────────── */
+
+/* Телефон: свёрнута в строку «что выбрано» + шестерёнка «Изменить вид». */
+.z4-desk .fe-vm-toggle {
+  min-height: 48px;
+  margin-bottom: 10px;
+  padding: 6px 8px 6px 14px;
+  border-radius: 16px;
+  background: var(--z4-glass);
+  box-shadow: inset 0 1px 0 #fff, var(--z4-card-shadow);
+}
+.z4-desk .fe-vm-toggle__act { gap: 8px; }
+.z4-desk .fe-vm-toggle__chev {
+  box-sizing: content-box;
+  padding: 8px;
+  border-radius: 9999px;
+  background: rgba(173, 138, 72, 0.16);
+  color: var(--z4-gold-ink);
+  transition: transform 0.25s ease, background-color 0.2s ease;
+}
+.z4-desk .fe-vm-toggle[aria-expanded='true'] .fe-vm-toggle__chev {
+  background: var(--z4-gold);
+  color: #fff;
+  transform: rotate(60deg);
+}
+@media (max-width: 399.98px) {
+  .z4-desk .fe-vm-toggle__act-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .z4-desk .fe-vm-toggle__chev { transition: none; }
+}
+
+@media (min-width: 768px) {
+  .z4-desk { margin-bottom: 14px; }
+  :root .z4-desk .fe-vm-body {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--fe-glass-border, rgba(255, 255, 255, 0.9));
+    border-radius: 20px;
+    background: var(--z4-glass);
+    box-shadow: inset 0 1px 0 #fff, var(--z4-card-shadow);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+  }
+  .z4-desk .fe-vm-body:empty { display: none; }
+  .z4-desk .fe-vm-body::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--z4-gold-soft) 25%, var(--z4-gold) 60%, transparent);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  /* Каждый переключатель — строка: подпись слева, чипы справа. */
+  :root .z4-desk .fe-vm-body .fe-pick-card {
+    display: grid;
+    grid-template-columns: 7.75rem minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 6px;
+    margin: 0;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+  }
+  .z4-desk .fe-pick-card ~ .fe-pick-card { border-top: 1px solid var(--z4-hairline); }
+  :root .z4-desk .fe-vm-body .fe-pick-label { margin: 0; font-size: 13px; line-height: 1.3; }
+  :root .z4-desk .fe-vm-body .fe-pick-hint { grid-column: 2; margin: 0; color: var(--color-text-tertiary); font-size: 13px; }
+  :root .z4-desk .fe-vm-body .fe-pick-sub {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: 7.75rem minmax(0, 1fr);
+    align-items: center;
+    column-gap: 14px;
+    margin: 2px 0 0;
+    padding: 8px 0 0;
+    border-top: 1px dashed var(--z4-hairline);
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-sub .fe-pick-hint { grid-column: 2; }
+  .z4-desk .fe-pick-card--variant > div { display: contents; }
+
+  /* Чипы «Что показать»: короткие названия в одну строку, длинные переносятся на вторую, а не обрезаются. */
+  :root .z4-desk .fe-vm-body .fe-pick-card--variant .fe-chip-row.fe-chip-row--grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--variant .fe-chip-row.fe-chip-row--grid > .fe-chip {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    max-width: min(100%, 18rem);
+    min-height: 36px;
+    padding: 5px 15px;
+    border: 1px solid rgba(68, 87, 115, 0.16);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--color-text-primary);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+    white-space: normal;
+    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--variant .fe-chip-row.fe-chip-row--grid > .fe-chip:hover:not(.is-active) {
+    border-color: rgba(173, 138, 72, 0.5);
+    background: #fff;
+    transform: translateY(-1px);
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--variant .fe-chip-row.fe-chip-row--grid > .fe-chip.fe-chip--more {
+    border: 1px dashed rgba(173, 138, 72, 0.6);
+    background: transparent;
+    color: var(--z4-gold-ink);
+  }
+  :root .z4-desk .fe-vm-body .fe-chip-row .fe-chip.is-active {
+    border-color: rgba(173, 138, 72, 0.6);
+    background: linear-gradient(180deg, rgba(201, 162, 77, 0.28), rgba(173, 138, 72, 0.14));
+    color: var(--z4-gold-ink);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 14px -10px rgba(128, 100, 47, 0.7);
+  }
+
+  /* «Показать как»: склеенный сегмент, подсказка справа от него. */
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode { grid-template-columns: 7.75rem auto minmax(0, 1fr); }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode > .fe-chip-row { grid-column: 2; }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode > .fe-pick-hint { grid-column: 2 / -1; grid-row: 2; }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 3px;
+    border: 1px solid rgba(32, 42, 60, 0.07);
+    border-radius: 14px;
+    background: rgba(32, 42, 60, 0.055);
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid > .fe-chip {
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    min-height: 34px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+    transition: background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid > .fe-chip:hover:not(.is-active) {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.55);
+  }
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode .fe-chip-row.fe-chip-row--grid > .fe-chip.is-active {
+    border: 0;
+    background: #fff;
+    color: var(--z4-gold-ink);
+    box-shadow: 0 1px 3px rgba(32, 42, 60, 0.18), 0 0 0 1px rgba(173, 138, 72, 0.42);
+  }
+
+  /* Детализация: мелкие чипы-таблетки. */
+  :root .z4-desk .fe-vm-body .fe-pick-sub .fe-chip-row.fe-chip-row--dense > .fe-chip {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 4px 13px;
+    border-radius: 9999px;
+    font-size: 13px;
+  }
+}
+@media (min-width: 1100px) {
+  :root .z4-desk .fe-vm-body .fe-pick-card--mode > .fe-pick-hint { grid-column: 3; grid-row: 1; }
+}
+/* От 768 до 1023 px вместо чипов «Что показать» стоит выпадающий список: ряд складывается в столбец. */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  :root .z4-desk .fe-vm-body .fe-pick-card--variant { display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .z4-desk .fe-vm-body .fe-chip { transition: none; }
+  :root .z4-desk .fe-vm-body .fe-chip-row .fe-chip:hover { transform: none; }
+}
+
+/* ── Сцена: график, а рядом действия, сравнение стран и плитки значений ────────────────── */
+.z4-stage { display: block; margin-bottom: 28px; }
+.z4-stage--solo { display: block; }
+
+/* Телефон и планшет: график первым, под ним действия, затем сравнение стран. */
+.z4-chart-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 0; }
+.z4-chart-section > .z4-chart-wrap { order: 1; min-width: 0; }
+.z4-chart-section > .z4-chart-head { order: 2; margin-bottom: 0; }
+.z4-chart-section > .z4-compare { order: 3; }
+.z4-chart-head .fe-chart-head__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.z4-chart-head .fe-chart-hint { flex: 1 1 100%; margin: 0; }
+.z4-compare:empty { display: none; }
+.z4-compare .fe-compare-panel { margin-bottom: 0; border-radius: 20px; box-shadow: var(--z4-card-shadow); }
+.z4-chart-head { justify-content: flex-start; }
+.z4-chart-wrap .fe-chart-card { border-radius: 22px; padding: clamp(14px, 1.7vw, 22px); }
+.z4-chart-wrap .fe-chart-toolbar { margin-bottom: 8px; }
+.z4-chart-wrap .fe-chart-after { margin-top: 14px; }
+.z4-tiles { margin-top: 16px; min-width: 0; }
+.z4-tiles .fe-tele-section, .z4-tiles .fe-tele-section:last-child { margin-bottom: 0; }
+
+/* Плот: на телефоне 260 px, выше от высоты окна, чтобы график помещался в первый экран. Скелетон берёт тот же класс. */
+.z4-plot { height: 260px; }
+@media (min-width: 768px) {
+  .z4-plot { height: 360px; }
+}
+@supports (height: 1svh) {
+  @media (min-width: 768px) {
+    .z4-plot { height: clamp(300px, calc(100svh - 560px), 440px); }
+  }
+}
+.z4-skel-brush { height: 44px; }
+.z4-skel-desk { height: 92px; margin-bottom: 14px; border-radius: 20px; }
+@media (max-width: 767.98px) {
+  .z4-skel-desk { height: 52px; margin-bottom: 10px; border-radius: 16px; }
+}
+
+/* Действия над графиком: стеклянная плитка, кнопки в ряд. */
+.z4-chart-head .fe-chart-actions { gap: 8px; }
+.z4-dl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 479.98px) {
+  .z4-png-btn__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .z4-png-btn { min-width: 44px; justify-content: center; }
+}
+
+@media (min-width: 1100px) {
+  .z4-stage:not(.z4-stage--solo) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--z4-side-w);
+    grid-template-rows: auto auto 1fr;
+    column-gap: 24px;
+    align-items: start;
+  }
+  .z4-stage:not(.z4-stage--solo) > .z4-chart-section { display: contents; }
+  .z4-stage:not(.z4-stage--solo) .z4-chart-wrap { grid-column: 1; grid-row: 1 / span 3; }
+  .z4-stage:not(.z4-stage--solo) .z4-chart-head {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    border: 1px solid var(--fe-glass-border, rgba(255, 255, 255, 0.9));
+    border-radius: 18px;
+    background: var(--z4-glass);
+    box-shadow: inset 0 1px 0 #fff, var(--z4-card-shadow);
+  }
+  .z4-stage:not(.z4-stage--solo) .z4-compare { grid-column: 2; grid-row: 2; margin-bottom: 14px; }
+  .z4-stage:not(.z4-stage--solo) .z4-tiles { grid-column: 2; grid-row: 3; margin-top: 0; }
+
+  /* Правая колонка: плитки стопкой; «Сейчас» уже в шапке, поэтому первая плитка скрыта. */
+  :root .z4-tiles .fe-substat-grid,
+  :root .z4-tiles .fe-substat-grid[data-count],
+  :root .z4-tiles .fe-tele-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .z4-tiles .fe-substat-grid > .w2-stat:first-child,
+  .z4-tiles .fe-tele-grid > .fe-tele:first-child,
+  .z4-tiles .fe-tele-grid > .fe-tele-skeleton:first-child { display: none; }
+  .z4-tiles .w2-stat, .z4-tiles .fe-tele { padding: 14px 18px; border-radius: 18px; }
+  .z4-tiles .w2-stat-value { font-size: 26px; }
+  .z4-tiles .fe-tele__num { font-size: 26px; }
+}
+
+/* Рисование линии слева направо за 700 мс; без анимации при prefers-reduced-motion. */
+.z4-plot.fe-chart-draw { animation-duration: 0.7s; animation-delay: 0.06s; }
+@media (prefers-reduced-motion: reduce) {
+  .z4-plot.fe-chart-draw { animation: none; }
+}
+.z4-lastpoint { animation: z4-pop 0.35s ease-out 0.7s backwards; transform-box: fill-box; }
+@keyframes z4-pop { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .z4-lastpoint { animation: none; } }
+
+/* ── Нет прогноза: маленькая «i» с пояснением ──────────────────────────────────────────── */
+.z4-info { position: relative; display: inline-flex; margin: 0; }
+.z4-info__btn {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+}
+@media (pointer: coarse) { .z4-info__btn { width: 44px; height: 44px; } }
+.z4-info__btn:hover, .z4-info.is-open .z4-info__btn {
+  border-color: var(--color-border-champagne);
+  background: rgba(173, 138, 72, 0.12);
+  color: var(--z4-gold-ink);
+}
+.z4-info__pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  width: min(18rem, calc(100vw - 48px));
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 14px;
+  background: var(--color-surface);
+  box-shadow: 0 18px 40px -20px rgba(32, 42, 60, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+}
+.z4-info:hover .z4-info__pop,
+.z4-info:focus-within .z4-info__pop,
+.z4-info.is-open .z4-info__pop { opacity: 1; visibility: visible; transform: none; }
+.z4-info__title { margin: 0 0 4px; color: var(--color-text-primary); font-size: 14px; font-weight: 650; line-height: 1.35; }
+.z4-info__text { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.45; }
+.z4-info__links { display: flex; flex-direction: column; gap: 4px; }
+.z4-info__link { color: var(--z4-gold-ink); font-size: 13px; font-weight: 600; text-decoration: none; }
+.z4-info__link:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .z4-info__pop, .z4-info__btn { transition: none; } }
+
+/* ── Ниже графика: таблица истории рядом с методологией и блоком «О показателе» ─────────── */
+.z4-lower { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-bottom: 40px; }
+.z4-lower__aside { display: flex; min-width: 0; flex-direction: column; gap: 16px; order: -1; }
+.z4-lower__table { min-width: 0; }
+.z4-lower__side { display: flex; min-width: 0; flex-direction: column; gap: 16px; }
+.z4-lower__aside .fe-info-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 0; }
+.z4-lower__aside .w2-details--card { margin: 0; }
+@media (min-width: 1024px) {
+  .z4-lower { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 24px; }
+  .z4-lower__aside { order: 0; }
+}
+:root .z4-lower .fe-histtable { max-width: none; min-width: 0; }
+.z4-lower .fe-histtable__valhead { white-space: nowrap; }
+.z4-lower .fe-datatable { border-radius: 22px; box-shadow: var(--z4-card-shadow); }
+.z4-about { box-shadow: var(--z4-card-shadow); }
+
+/* Таблица на других страницах (Россия): тоже на всю свою колонку, без пустой правой половины. */
+:root .fe-histtable__valhead { white-space: nowrap; }

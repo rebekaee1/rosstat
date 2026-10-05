@@ -3184,4 +3184,18 @@ export default {
   'z8.search.topic.output': 'Производство',
   'z8.search.topic.state': 'Бюджет и долг',
   'z8.search.topic.chart': 'Другое',
+  // ===== Z4 =====
+  'z4.mode.index': 'Рост к началу периода',
+  'z4.range.1y': 'за год',
+  'z4.range.5y': 'за 5 лет',
+  'z4.range.10y': 'за 10 лет',
+  'z4.range.25y': 'за 25 лет',
+  'z4.range.all': 'за всё время',
+  'z4.png.save': 'Сохранить картинкой',
+  'z4.png.aria': 'Сохранить график как картинку',
+  'z4.png.title': 'Картинка с названием, источником и адресом сайта',
+  'z4.png.source': 'Источник: {source}',
+  'z4.forecast.how': 'Как мы считаем прогнозы',
+  'z4.variants.more': 'Ещё показатели',
+  'z4.tiles.aria': 'Ключевые значения',
 };

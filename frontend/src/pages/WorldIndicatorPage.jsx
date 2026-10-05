@@ -34,7 +34,10 @@ import { buildIndicatorSummary, rankAmongCountries } from '../lib/indicatorSumma
 import { deriveWorldMode } from '../lib/worldDerive';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
+import { prepareVariantGroup } from '../lib/viewModeShortLabels';
 import WorldViewModePicker from '../components/WorldViewModePicker';
+import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import ChartSectionSkeleton from '../components/ChartSectionSkeleton';
 import { ViewModesPanel } from '../components/ViewModesPanel';
 import WorldChartSection from '../components/WorldChartSection';
 import VariantGroupPicker from '../components/VariantGroupPicker';
@@ -62,6 +65,7 @@ import {
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import '../styles/w6e-indicator.css';
+import '../styles/z4-indicator.css';
 
 const EMPTY_POINTS = [];
 
@@ -262,10 +266,14 @@ export default function WorldIndicatorPage() {
     ? pickEnDisplay(indicator?.category, indicator?.category_en)
     : (indicator?.category || '');
 
+  // Чипы «Что показать»: короткие человеческие имена, полное имя в подсказке, сначала самое важное (ВВП, население, инфляция).
   const variantGroup = useMemo(
-    () => worldVariantsToPickerGroup(
-      metaQ.data?.variants,
-      t('world.indicator.slice'),
+    () => prepareVariantGroup(
+      worldVariantsToPickerGroup(
+        metaQ.data?.variants,
+        t('world.indicator.slice'),
+        { locale },
+      ),
       { locale },
     ),
     [metaQ.data?.variants, t, locale],
@@ -479,7 +487,7 @@ export default function WorldIndicatorPage() {
   }, [indicator, displayName, activeFreq]);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
+    <div className="fe-data-page z4-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
       <Breadcrumbs
         items={worldIndicatorTrail(
           countryName || country?.name || '',
@@ -517,51 +525,72 @@ export default function WorldIndicatorPage() {
       )}
 
       {(metaQ.isLoading || redirecting) && (
-        <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
           <LoadingNote onRefresh={() => metaQ.refetch()} className="mb-4" />
-          <SkeletonBox className="h-6 w-28 rounded-full" />
-          <SkeletonBox className="h-8 w-3/4 max-w-full sm:h-10 md:h-14 lg:h-[4.5rem]" />
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
-            {[0, 1, 2, 3].map((i) => (
-              <SkeletonBox key={i} className="h-28 rounded-2xl md:h-48 md:rounded-[2rem]" />
-            ))}
+          <div className="fe-data-header z4-hero" data-has-value="true" aria-hidden="true">
+            <div className="z4-hero__main">
+              <SkeletonBox className="mb-3 h-6 w-28 rounded-full" />
+              <SkeletonBox className="mb-2 h-9 w-3/4 max-w-full md:h-11" />
+              <SkeletonBox className="h-9 w-1/2 max-w-full md:h-11" />
+            </div>
+            <div className="z4-hero__aside"><IndicatorHeroValue summary={null} loading /></div>
           </div>
+          <SkeletonBox className="z4-skel-desk" />
+          <div className="z4-stage z4-stage--solo"><ChartSectionSkeleton /></div>
         </div>
       )}
 
       {metaQ.data && indicator && (
         <>
-          <header className="fe-data-header">
-            <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-4">
-              <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-[13px] font-medium text-text-secondary">
-                <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
-                {freqLabel}
-              </span>
-              {countryName && (
-                <Link
-                  to={countryPath(slug)}
-                  className="hidden text-sm text-text-secondary transition-colors hover:text-champagne-ink sm:inline"
-                >
-                  {countryName}
-                </Link>
-              )}
-              {categoryLabel && (
-                <span className="hidden text-sm text-text-secondary sm:inline">
-                  {categoryLabel}
+          <header
+            className="fe-data-header z4-hero"
+            data-has-value={summary || (dataLoading && !dataError) ? 'true' : 'false'}
+          >
+            <div className="z4-hero__main">
+              <div className="z4-hero__meta mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-3">
+                <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-[13px] font-medium text-text-secondary">
+                  <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
+                  {freqLabel}
                 </span>
+                {countryName && (
+                  <Link
+                    to={countryPath(slug)}
+                    className="hidden text-sm text-text-secondary transition-colors hover:text-champagne-ink sm:inline"
+                  >
+                    {countryName}
+                  </Link>
+                )}
+                {categoryLabel && (
+                  <span className="hidden text-sm text-text-secondary sm:inline">
+                    {categoryLabel}
+                  </span>
+                )}
+              </div>
+              <h1 className="z4-hero__title text-pretty font-display font-bold tracking-tight text-text-primary">
+                {displayName}
+              </h1>
+              <div className="z4-hero__line">
+                {summary ? (
+                  <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} />
+                ) : (dataLoading && !dataError ? <SkeletonBox className="fe-hero-line-skeleton" /> : null)}
+              </div>
+              {metaQ.data._fromMock && (
+                <p className="mt-2 text-xs text-text-secondary">
+                  {t('world.mockData')}
+                </p>
               )}
             </div>
-            <h1 className="mb-1.5 text-pretty font-display text-[1.3rem] font-bold leading-[1.28] tracking-tight text-text-primary sm:text-3xl md:mb-4 md:text-5xl md:leading-tight lg:text-6xl">
-              {displayName}
-            </h1>
-            {summary ? (
-              <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} />
-            ) : (dataLoading && !dataError ? <SkeletonBox className="fe-hero-line-skeleton" /> : null)}
-            {metaQ.data._fromMock && (
-              <p className="mt-2 text-xs text-text-secondary">
-                {t('world.mockData')}
-              </p>
-            )}
+            <div className="z4-hero__aside">
+              <IndicatorHeroValue
+                summary={summary}
+                points={points}
+                dateFormat={dateFormat}
+                polarity={polarity}
+                frequency={activeFreq}
+                deltaSuffix={deltaSuffix}
+                loading={dataLoading && !dataError}
+              />
+            </div>
           </header>
 
           <ViewModesPanel>
@@ -570,6 +599,7 @@ export default function WorldIndicatorPage() {
                 group={variantGroup}
                 currentCode={code}
                 basePath={`${countryPath(slug)}/indicator`}
+                pageTitle={displayName}
               />
             )}
 
@@ -589,167 +619,174 @@ export default function WorldIndicatorPage() {
             </ApiRetryBanner>
           )}
 
-          {!dataError && (
-            <WorldChartSection
-              code={code}
-              indicator={chartIndicator}
-              modeMeta={modeMeta}
-              dataPoints={points}
-              forecastData={forecastPoints}
-              forecastEnabled={forecastAvailable && !derived}
-              forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
-              forecastGateStatus={
-                dataQ.data?.forecast?.quality?.gate_status
-                || metaQ.data?.forecast_gate_status
-                || (forecastAvailable ? 'passed' : null)
-              }
-              showForecast={showForecast}
-              onToggleForecast={() => setShowForecast((current) => !current)}
-              chartLoading={dataLoading}
-              emptyHint={empty ? t('world.indicator.emptyMode') : undefined}
-              onFullData={setFullChartData}
-              onDownloadCsv={handleDownloadCSV}
-              onDownloadExcel={handleDownloadExcel}
-              frequency={activeFreq}
-              aggregated={aggregated}
-              aggregation={dataQ.data?.aggregation || modeMeta?.aggregation || null}
-              unit={displayUnit}
-              country={country}
-              conceptSlug={indicator.concept_slug}
-              comparisonPeers={metaQ.data.peers || []}
-            />
-          )}
-
-          <section className="mb-6 md:mb-10">
-            {dataLoading && !summary ? (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-                {[0, 1, 2, 3].map((i) => (
-                  <SkeletonBox key={i} className="h-32 rounded-3xl" />
-                ))}
-              </div>
-            ) : isPopulation ? (
-              <PopulationStats points={points} unit={rawUnit} countrySlug={slug} />
-            ) : (
-              <WorldStatTiles
-                summary={summary}
-                dateFormat={dateFormat}
+          <div className={dataError ? 'z4-stage z4-stage--solo' : 'z4-stage'}>
+            {!dataError && (
+              <WorldChartSection
+                code={code}
+                indicator={chartIndicator}
+                modeMeta={modeMeta}
+                dataPoints={points}
+                forecastData={forecastPoints}
+                forecastEnabled={forecastAvailable && !derived}
+                forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
+                forecastGateStatus={
+                  dataQ.data?.forecast?.quality?.gate_status
+                  || metaQ.data?.forecast_gate_status
+                  || (forecastAvailable ? 'passed' : null)
+                }
+                showForecast={showForecast}
+                onToggleForecast={() => setShowForecast((current) => !current)}
+                chartLoading={dataLoading}
+                emptyHint={empty ? t('world.indicator.emptyMode') : undefined}
+                onFullData={setFullChartData}
+                onDownloadCsv={handleDownloadCSV}
+                onDownloadExcel={handleDownloadExcel}
                 frequency={activeFreq}
-                previousLabel={previousLabel}
-                deltaSuffix={deltaSuffix}
-                polarity={polarity}
-                rank={rank}
+                aggregated={aggregated}
+                aggregation={dataQ.data?.aggregation || modeMeta?.aggregation || null}
+                unit={displayUnit}
+                country={country}
+                conceptSlug={indicator.concept_slug}
+                comparisonPeers={metaQ.data.peers || []}
               />
             )}
-          </section>
 
-          {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
-            <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
-              <summary>{locale === 'en' ? 'How our forecast is checked' : 'Как мы проверяем наш прогноз'}</summary>
-              <p>
-                {locale === 'en'
-                  ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower.'
-                  : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира.'}
-              </p>
-              <p className="mt-2 text-sm">
-                {dataQ.data.forecast.model_name}
-                {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
-              </p>
-            </details>
-          )}
+            <section className="z4-tiles" aria-label={t('z4.tiles.aria')}>
+              {dataLoading && !summary ? (
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
+                  {[0, 1, 2, 3].map((i) => (
+                    <SkeletonBox key={i} className="h-32 rounded-3xl" />
+                  ))}
+                </div>
+              ) : isPopulation ? (
+                <PopulationStats points={points} unit={rawUnit} countrySlug={slug} />
+              ) : (
+                <WorldStatTiles
+                  summary={summary}
+                  dateFormat={dateFormat}
+                  frequency={activeFreq}
+                  previousLabel={previousLabel}
+                  deltaSuffix={deltaSuffix}
+                  polarity={polarity}
+                  rank={rank}
+                />
+              )}
+            </section>
 
-          <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <IndicatorMethodologyPanel
-              indicator={methodologyIndicator}
-              content={methodologyContent}
-              sourcePath={indicator.source_url || indicatorPath(slug, code)}
-            />
-            <div className="rounded-3xl border border-border-subtle bg-obsidian-light p-5 sm:p-8 lg:col-span-2">
-              <h3 className="mb-4 text-base font-semibold text-text-primary">
-                {t('world.indicator.aboutSeries')}
-              </h3>
-              <dl className="grid gap-4 text-sm sm:grid-cols-2">
-                <div>
-                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.freq')}</dt>
-                  <dd className="text-text-primary">
-                    {freqLabel}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.unit')}</dt>
-                  <dd className="text-text-primary">{displayUnit || '—'}</dd>
-                </div>
-                <div>
-                  <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.history')}</dt>
-                  <dd className="text-text-primary">
-                    {indicator.history_start && indicator.history_end
-                      ? `${formatDate(indicator.history_start, 'annual', locale)}–${formatDate(indicator.history_end, 'annual', locale)}`
-                      : '—'}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="mb-1 text-xs text-text-secondary">{t('common.source')}</dt>
-                  <dd className="text-[15px] leading-5 text-text-secondary">
-                    <SourceLink
-                      href={indicator.source_url}
-                      className="text-champagne-ink underline-offset-2 hover:underline"
-                      textClassName=""
-                    >
-                      {sourceLabel}
-                    </SourceLink>
-                  </dd>
-                </div>
-              </dl>
-              <details className="w2-details">
-                <summary>{t('w2.ind.more')}</summary>
-                <dl className="mt-2 grid gap-4 text-sm sm:grid-cols-2">
-                  <div>
-                    <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.points')}</dt>
-                    <dd className="text-text-primary">
-                      {dataQ.data?.count ?? indicator.points_count ?? '—'}
-                    </dd>
-                  </div>
-                  {showOriginalTitle && (
-                    <div className="sm:col-span-2">
-                      <dt className="mb-1 text-xs text-text-secondary">
-                        {t('world.indicator.field.sourceName')}
-                      </dt>
-                      <dd className="leading-5 text-text-secondary">
-                        {originalTitle}
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              </details>
-              <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
-                <Link
-                  to={countryPath(slug)}
-                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
-                >
-                  {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </Link>
-                <Link
-                  to="/#countries"
-                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
-                >
-                  {t('world.indicator.allCountries')}
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
           </div>
 
-          <section>
-            <DataTable
-              key={`${code}-${activeMode}`}
-              data={points}
-              title={t('table.historical', { name: displayName })}
-              dateFormat={dateFormat}
-              unit={displayUnit}
-              valueDigits={chartValueDigits(displayUnit)}
-              showUnitInValues={false}
-            />
-          </section>
+          <div className="z4-lower">
+            <section className="z4-lower__table">
+              <DataTable
+                key={`${code}-${activeMode}`}
+                data={points}
+                title={t('table.historical', { name: displayName })}
+                dateFormat={dateFormat}
+                unit={displayUnit}
+                valueDigits={chartValueDigits(displayUnit)}
+                showUnitInValues={false}
+              />
+            </section>
+            <div className="z4-lower__aside">
+              {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
+                <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
+                  <summary>{locale === 'en' ? 'How our forecast is checked' : 'Как мы проверяем наш прогноз'}</summary>
+                  <p>
+                    {locale === 'en'
+                      ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower.'
+                      : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира.'}
+                  </p>
+                  <p className="mt-2 text-sm">
+                    {dataQ.data.forecast.model_name}
+                    {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
+                  </p>
+                </details>
+              )}
+
+              <div className="z4-lower__side">
+                <IndicatorMethodologyPanel
+                  indicator={methodologyIndicator}
+                  content={methodologyContent}
+                  sourcePath={indicator.source_url || indicatorPath(slug, code)}
+                />
+                <div className="z4-about rounded-3xl border border-border-subtle bg-obsidian-light p-5 sm:p-6">
+                  <h3 className="mb-4 text-base font-semibold text-text-primary">
+                    {t('world.indicator.aboutSeries')}
+                  </h3>
+                  <dl className="grid gap-4 text-sm sm:grid-cols-2">
+                    <div>
+                      <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.freq')}</dt>
+                      <dd className="text-text-primary">
+                        {freqLabel}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.unit')}</dt>
+                      <dd className="text-text-primary">{displayUnit || '—'}</dd>
+                    </div>
+                    <div>
+                      <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.history')}</dt>
+                      <dd className="text-text-primary">
+                        {indicator.history_start && indicator.history_end
+                          ? `${formatDate(indicator.history_start, 'annual', locale)}–${formatDate(indicator.history_end, 'annual', locale)}`
+                          : '—'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="mb-1 text-xs text-text-secondary">{t('common.source')}</dt>
+                      <dd className="text-[15px] leading-5 text-text-secondary">
+                        <SourceLink
+                          href={indicator.source_url}
+                          className="text-champagne-ink underline-offset-2 hover:underline"
+                          textClassName=""
+                        >
+                          {sourceLabel}
+                        </SourceLink>
+                      </dd>
+                    </div>
+                  </dl>
+                  <details className="w2-details">
+                    <summary>{t('w2.ind.more')}</summary>
+                    <dl className="mt-2 grid gap-4 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="mb-1 text-xs text-text-secondary">{t('world.indicator.field.points')}</dt>
+                        <dd className="text-text-primary">
+                          {dataQ.data?.count ?? indicator.points_count ?? '—'}
+                        </dd>
+                      </div>
+                      {showOriginalTitle && (
+                        <div className="sm:col-span-2">
+                          <dt className="mb-1 text-xs text-text-secondary">
+                            {t('world.indicator.field.sourceName')}
+                          </dt>
+                          <dd className="leading-5 text-text-secondary">
+                            {originalTitle}
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+                  </details>
+                  <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
+                    <Link
+                      to={countryPath(slug)}
+                      className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                    >
+                      {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
+                      <ArrowUpRight size={12} aria-hidden="true" />
+                    </Link>
+                    <Link
+                      to="/#countries"
+                      className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                    >
+                      {t('world.indicator.allCountries')}
+                      <ArrowUpRight size={12} aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </>
       )}
     </div>

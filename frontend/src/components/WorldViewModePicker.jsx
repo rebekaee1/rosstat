@@ -48,7 +48,7 @@ export default function WorldViewModePicker({
       label: g.label === 'Уровень'
         ? t('w6e.mode.values')
         : g.label === 'Индекс'
-          ? t('w6e.mode.index')
+          ? t('z4.mode.index')
           : pickerLabel(g.label, locale),
       modes: g.modes?.map((m) => ({
         ...m,
@@ -113,6 +113,7 @@ export default function WorldViewModePicker({
   useViewModeSummary(
     'mode', 20,
     nothingToPick ? '' : modeSummaryText(activeGroup?.label, currentSub?.label),
+    nothingToPick ? '' : (activeGroup?.label || ''),
   );
 
   if (nothingToPick) return null;
@@ -164,5 +165,5 @@ export default function WorldViewModePicker({
     return <div className="fe-pick-embedded">{body}</div>;
   }
 
-  return <PickerCard className="min-w-0">{body}</PickerCard>;
+  return <PickerCard className="min-w-0 fe-pick-card--mode">{body}</PickerCard>;
 }

@@ -21,6 +21,9 @@ import { downloadExcel, downloadCSV } from '../lib/excel';
 import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
 import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
+import IndicatorHeroValue from './IndicatorHeroValue';
+import { indicatorPolarity } from '../lib/deltaTone';
+import '../styles/z4-indicator.css';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
@@ -131,6 +134,13 @@ export default function GenericIndicatorView({
     locale,
   }), [dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
   const heroDateFormat = resolveDateFormat({ chartMode: 'cpi', frequency: effectiveIndicator?.frequency, safeViewMode: safeMode });
+  const heroFreq = effectiveIndicator?.frequency;
+  const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+    : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
+      : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
+        : heroFreq === 'monthly' ? t('w3.tele.delta.prevMonth')
+          : t('w3.tele.delta.prevValue');
+  const heroPolarity = indicatorPolarity(indicator?.name, indicator?.name_en, indicator?.code);
 
   // Выгрузка — всегда полный ряд (вся история), а не видимое окно графика.
   const handleDownloadExcel = useCallback(async () => {
@@ -167,6 +177,17 @@ export default function GenericIndicatorView({
         loading={loadingInd}
         headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
+        aside={(heroSummary || loadingInd || isLoading) ? (
+          <IndicatorHeroValue
+            summary={loadingInd ? null : heroSummary}
+            points={dataPoints}
+            dateFormat={heroDateFormat}
+            polarity={heroPolarity}
+            frequency={heroFreq}
+            deltaSuffix={heroDeltaSuffix}
+            loading={loadingInd || isLoading}
+          />
+        ) : null}
       >
         {!loadingInd && heroSummary ? (
           <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} />
@@ -192,6 +213,7 @@ export default function GenericIndicatorView({
         </ApiRetryBanner>
       )}
 
+      <div className="z4-stage">
       <IndicatorChartSection
         code={code}
         indicator={effectiveIndicator}
@@ -212,6 +234,7 @@ export default function GenericIndicatorView({
         onNeedCompatibleMode={setViewMode}
       />
 
+        <div className="z4-tiles">
       {isCurrency ? (
         <CurrencyTelemetry
           code={code}
@@ -247,7 +270,20 @@ export default function GenericIndicatorView({
           loading={loadingInd || isLoading}
         />
       )}
+        </div>
+      </div>
 
+      <div className="z4-lower">
+        <div className="z4-lower__table">
+      <IndicatorDataTableSection
+        indicator={effectiveIndicator}
+        chartMode="cpi"
+        safeViewMode={safeMode}
+        {...FLAGS}
+        dataPoints={dataPoints}
+      />
+        </div>
+        <div className="z4-lower__aside">
       <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecast ? 'on' : 'off'}>
         <IndicatorMethodologyPanel
           indicator={effectiveIndicator}
@@ -264,14 +300,8 @@ export default function GenericIndicatorView({
           hasForecastData={hasForecast}
         />
       </div>
-
-      <IndicatorDataTableSection
-        indicator={effectiveIndicator}
-        chartMode="cpi"
-        safeViewMode={safeMode}
-        {...FLAGS}
-        dataPoints={dataPoints}
-      />
+        </div>
+      </div>
 
       {isCurrency && <CurrencyNext code={code} />}
 

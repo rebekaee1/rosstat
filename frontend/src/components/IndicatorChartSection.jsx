@@ -21,6 +21,8 @@ import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import '../styles/y2-indicator.css';
 import '../styles/w6e-indicator.css';
+import '../styles/z4-indicator.css';
+import { localizeSource } from '../i18n/viewModeLabels';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -138,6 +140,14 @@ export default function IndicatorChartSection({
     const ok = await exportNodeToPng(chartRef.current, {
       filename: `${code}_${safeViewMode || chartMode || 'chart'}.png`,
       watermark: false,
+      // Фирменная рамка: знак, название, источник и адрес сайта вокруг снимка графика.
+      frame: {
+        title: indicator?.name || '',
+        subtitle: '',
+        source: indicator?.source
+          ? t('z4.png.source', { source: localizeSource(indicator.source, locale) })
+          : '',
+      },
     }).catch(() => false);
     if (ok) {
       track(events.CHART_IMAGE_DOWNLOAD, {
@@ -233,8 +243,8 @@ export default function IndicatorChartSection({
   };
 
   return (
-    <section id="chart" data-block="chart" className="fe-chart-section" aria-busy={chartLoading ? true : undefined}>
-      <div className="fe-chart-head">
+    <section id="chart" data-block="chart" className="fe-chart-section z4-chart-section" aria-busy={chartLoading ? true : undefined}>
+      <div className="fe-chart-head z4-chart-head">
         <h2 className="fe-chart-head__title">{t('indicator.chartDynamicsLabel')}</h2>
 
         <div className="fe-chart-actions">
@@ -263,13 +273,12 @@ export default function IndicatorChartSection({
             <span>{t('x2.chart.methodLink')}</span>
           </Link>
         </div>
+        {guestHistoryHint && !downloadBlocked && (
+          <p className="fe-chart-hint">{guestHistoryHint}</p>
+        )}
       </div>
 
-      {guestHistoryHint && !downloadBlocked && (
-        <p className="fe-chart-hint">{guestHistoryHint}</p>
-      )}
-
-      <div id="compare" className="scroll-mt-24">
+      <div id="compare" className="z4-compare scroll-mt-24">
         <CountryComparePanel
           pickerOptions={comparison.pickerOptions}
           activeComparisonIds={comparison.activeComparisonIds}
@@ -288,6 +297,7 @@ export default function IndicatorChartSection({
           baseLabel={t('nav.russia')}
         />
       </div>
+      <div className="z4-chart-wrap">
       <ScaleNudge
         show={compareCompatible && comparison.scaleMismatch && comparison.comparisonScale === 'values'}
         onScale={comparison.setComparisonScale}
@@ -337,6 +347,7 @@ export default function IndicatorChartSection({
           />
         </div>
       )}
+      </div>
 
     </section>
   );

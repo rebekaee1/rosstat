@@ -22,9 +22,10 @@ export default function ViewModePicker({
   const { locale } = useLocale();
   const sectionTitle = title || t('w3.picker.showAs');
   const currentItem = modes.find((item) => item.mode === currentMode);
-  useViewModeSummary('mode', 20, currentItem ? pickerLabel(currentItem.label, locale) : '');
+  const currentText = currentItem ? pickerLabel(currentItem.label, locale) : '';
+  useViewModeSummary('mode', 20, currentText);
   return (
-    <PickerCard>
+    <PickerCard className="fe-pick-card--mode">
       <PickerLabel>{pickerLabel(sectionTitle, locale) || sectionTitle}</PickerLabel>
       <OverflowChipGroup
         label={pickerLabel(sectionTitle, locale) || sectionTitle}

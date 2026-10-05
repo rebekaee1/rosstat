@@ -19,15 +19,19 @@ import { chartCaption } from '../lib/chartCaption';
 import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import { countryPath, worldRatingPath } from '../lib/sitePaths';
+import { buildChartTitle } from '../lib/z4ChartTitle';
+import { localizeSource } from '../i18n/viewModeLabels';
 import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
+import '../styles/z4-indicator.css';
 
 /**
  * Секция графика мировой карточки.
  * Переиспользует IndicatorChart; прогноз — только после проверки на
  * исторических данных и по явному переключателю пользователя.
  *
- * Порядок как у российской карточки: заголовок секции и действия, сравнение стран (одним нажатием, над графиком),
- * график. Название показателя в заголовке страницы одно; над графиком только то, что именно показано.
+ * Порядок в разметке: действия (прогноз, скачать, картинка), сравнение стран, график. На компьютере секция раскладывается
+ * по сетке страницы (`.z4-stage`): график слева, действия, сравнение и плитки справа; на телефоне график идёт первым.
+ * Название показателя в заголовке страницы одно; над графиком только то, что именно показано: «ВВП, США: за 10 лет, млрд $».
  */
 
 /** Самое последнее конечное значение ряда по модулю или null. */
@@ -142,6 +146,14 @@ export default function WorldChartSection({
     const ok = await exportNodeToPng(chartRef.current, {
       filename: `${code}_${modeMeta?.id || 'level'}.png`,
       watermark: false,
+      // Фирменная рамка: знак, название, источник и адрес сайта вокруг снимка графика.
+      frame: {
+        title: imageTitle || caption,
+        subtitle: '',
+        source: indicator?.source
+          ? t('z4.png.source', { source: localizeSource(indicator.source, locale) })
+          : '',
+      },
     }).catch(() => false);
     if (ok) {
       track(events.CHART_IMAGE_DOWNLOAD, {
@@ -156,10 +168,31 @@ export default function WorldChartSection({
   const caption = windowRebase
     ? t('w6e.compare.captionIndex')
     : chartCaption(modeMeta, shownUnit, t);
+  // Название над графиком по-человечески; при сравнении стран остаётся прежняя подпись «что показано».
+  const placeName = (locale === 'en' && country?.name_en) ? country.name_en : (country?.name || '');
+  const modeWord = modeMeta?.type === 'yoy' || modeMeta?.type === 'yoyabs' ? t('w2.mode.yoy')
+    : modeMeta?.type === 'step' ? t('w2.mode.step')
+      : modeMeta?.type === 'index' ? t('z4.mode.index') : '';
+  const humanTitle = !windowRebase && loadedComparisonSeries.length === 0;
+  const titleBuilder = humanTitle
+    ? (rangeText) => buildChartTitle({
+      name: nameForAria, place: placeName, modeLabel: modeWord, rangeText, unit: shownUnit, locale,
+    })
+    : null;
+  const imageTitle = humanTitle
+    ? buildChartTitle({
+      name: nameForAria, place: placeName, modeLabel: modeWord, unit: shownUnit, locale,
+    })
+    : null;
 
   return (
-    <section id="chart" data-block="chart" className="fe-chart-section" aria-busy={chartLoading ? true : undefined}>
-      <div className="fe-chart-head">
+    <section
+      id="chart"
+      data-block="chart"
+      className="fe-chart-section z4-chart-section"
+      aria-busy={chartLoading ? true : undefined}
+    >
+      <div className="fe-chart-head z4-chart-head">
         <h2 className="fe-chart-head__title">{t('indicator.chartDynamicsLabel')}</h2>
 
         <div className="fe-chart-actions" data-no-export="true">
@@ -192,7 +225,7 @@ export default function WorldChartSection({
         </div>
       </div>
 
-      <div id="compare" className="scroll-mt-24">
+      <div id="compare" className="z4-compare scroll-mt-24">
         <CountryComparePanel
           pickerOptions={pickerOptions}
           activeComparisonIds={activeComparisonIds}
@@ -211,45 +244,49 @@ export default function WorldChartSection({
           suggestPercent={suggestPercent && !showScaleNudge}
         />
       </div>
-      <ScaleNudge
-        show={showScaleNudge}
-        auto={autoPercentActive}
-        onScale={setComparisonScale}
-        reserve={activeComparisonIds.length > 0 && comparisonQueries.some((query) => query.isLoading)}
-      />
 
-      {chartLoading ? (
-        <ChartSectionSkeleton />
-      ) : (
-        <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
-          <IndicatorChart
-            key={`${code}-${modeMeta?.id}-${activeFreq}`}
-            mode="cpi"
-            cpiData={dataPoints || []}
-            forecastData={chartForecastPayload}
-            showForecast={effectiveShowForecast}
-            onFullData={onFullData}
-            cpiChartTitle={caption}
-            ariaTitle={`${nameForAria}. ${caption}`}
-            levelTooltipLabel={modeMeta?.label || modeMeta?.group || t('chart.tooltip.value')}
-            forecastTooltipLabel={t('common.forecast')}
-            emptyHint={emptyHint}
-            dateFormat={resolveDateFormat({ frequency: activeFreq, chartMode: 'cpi' })}
-            unit={shownUnit}
-            rangePreset={worldRangePreset(activeFreq)}
-            chartMode={modeMeta?.id || 'level'}
-            indicatorCode={code}
-            indicatorCategory={indicator?.category}
-            referenceLineY={!windowRebase && (unit === '%' || unit === 'п.п.') ? 0 : null}
-            numericTooltipOnly
-            actualSeriesLabel={country?.name}
-            comparisonSeries={loadedComparisonSeries}
-            rebaseVisible={windowRebase}
-          />
-        </div>
-      )}
+      <div className="z4-chart-wrap">
+        <ScaleNudge
+          show={showScaleNudge}
+          auto={autoPercentActive}
+          onScale={setComparisonScale}
+          reserve={activeComparisonIds.length > 0 && comparisonQueries.some((query) => query.isLoading)}
+        />
 
-      <div className="fe-chart-after">
+        {chartLoading ? (
+          <ChartSectionSkeleton />
+        ) : (
+          <div ref={chartRef} className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.5rem]">
+            <IndicatorChart
+              key={`${code}-${modeMeta?.id}-${activeFreq}`}
+              mode="cpi"
+              cpiData={dataPoints || []}
+              forecastData={chartForecastPayload}
+              showForecast={effectiveShowForecast}
+              onFullData={onFullData}
+              cpiChartTitle={caption}
+              chartTitleBuilder={titleBuilder}
+              ariaTitle={`${nameForAria}. ${caption}`}
+              levelTooltipLabel={modeMeta?.label || modeMeta?.group || t('chart.tooltip.value')}
+              forecastTooltipLabel={t('common.forecast')}
+              emptyHint={emptyHint}
+              dateFormat={resolveDateFormat({ frequency: activeFreq, chartMode: 'cpi' })}
+              unit={shownUnit}
+              rangePreset={worldRangePreset(activeFreq)}
+              chartMode={modeMeta?.id || 'level'}
+              indicatorCode={code}
+              indicatorCategory={indicator?.category}
+              referenceLineY={!windowRebase && (unit === '%' || unit === 'п.п.') ? 0 : null}
+              numericTooltipOnly
+              actualSeriesLabel={country?.name}
+              comparisonSeries={loadedComparisonSeries}
+              rebaseVisible={windowRebase}
+            />
+          </div>
+        )}
+
+        <div className="fe-chart-after">
+
         {priceIndexLevel && activeComparisonIds.length === 0 && (
           <p className="mb-4 text-xs text-text-tertiary">
             {t('world.chart.priceIndexBaseHint')}{' '}
@@ -327,6 +364,7 @@ export default function WorldChartSection({
             )}
           </nav>
         )}
+        </div>
       </div>
     </section>
   );

@@ -16,6 +16,7 @@ import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
 import { russiaCategoryPath } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
+import '../styles/z4-indicator.css';
 
 const FREQ_MAP = {
   monthly: 'Помесячно',
@@ -48,7 +49,7 @@ const revealStyle = (i) => ({ '--i': i, '--fe-duration': '0.4s', '--fe-rise': '1
 
 /**
  * Хедер страницы карточки индикатора:
- *   хлебные крошки + бейдж периодичности + название + английское название.
+ *   хлебные крошки + бейдж периодичности + название; справа (`aside`) главное число с мини-графиком (на компьютере).
  */
 export default function IndicatorDetailHeader({
   indicator,
@@ -56,6 +57,7 @@ export default function IndicatorDetailHeader({
   loading,
   displayFrequency,
   children = null,
+  aside = null,
 }) {
   const { locale } = useLocale();
   const { year } = useParams();
@@ -102,46 +104,48 @@ export default function IndicatorDetailHeader({
   );
 
   return (
-    <div className="fe-data-header fe-indicator-header">
-      <div className={REVEAL} style={revealStyle(0)}>
-        <Breadcrumbs items={crumbs} variant="mono" />
-      </div>
-
-      {loading ? (
-        <div className="space-y-4">
-          <SkeletonBox className="h-4 w-24" />
-          <SkeletonBox className="h-14 w-3/4" />
-          <SkeletonBox className="h-6 w-1/2" />
+    <div className="fe-data-header fe-indicator-header z4-hero" data-has-value={aside ? 'true' : 'false'}>
+      <div className="z4-hero__main">
+        <div className={REVEAL} style={revealStyle(0)}>
+          <Breadcrumbs items={crumbs} variant="mono" />
         </div>
-      ) : (
-        <>
-          <div className={`${REVEAL} fe-ind-meta`} style={revealStyle(1)}>
-            {freqLabel ? (
-              <span className="fe-ind-badge">
-                <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
-                {freqLabel}
-              </span>
-            ) : null}
-            {category ? (
-              <Link to={russiaCategoryPath(category.slug)} className="fe-ind-cat">
-                {categoryLinkName}
-              </Link>
-            ) : indicator?.category ? (
-              <span className="fe-ind-cat">{indicator.category}</span>
-            ) : null}
+
+        {loading ? (
+          <div className="space-y-4">
+            <SkeletonBox className="h-4 w-24" />
+            <SkeletonBox className="h-14 w-3/4" />
+            <SkeletonBox className="h-6 w-1/2" />
           </div>
+        ) : (
+          <>
+            <div className={`${REVEAL} fe-ind-meta`} style={revealStyle(1)}>
+              {freqLabel ? (
+                <span className="fe-ind-badge">
+                  <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
+                  {freqLabel}
+                </span>
+              ) : null}
+              {category ? (
+                <Link to={russiaCategoryPath(category.slug)} className="fe-ind-cat">
+                  {categoryLinkName}
+                </Link>
+              ) : indicator?.category ? (
+                <span className="fe-ind-cat">{indicator.category}</span>
+              ) : null}
+            </div>
 
-          <h1
-            style={revealStyle(2)}
-            className="fe-reveal fe-reveal--free fe-reveal--stagger text-[1.7rem] leading-[1.2] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
-          >
-            <MobileTitle title={title || code} />
-            <span className="hidden md:inline">{title || code}</span>
-          </h1>
-          {children}
-
-        </>
-      )}
+            <h1
+              style={revealStyle(2)}
+              className="fe-reveal fe-reveal--free fe-reveal--stagger z4-hero__title text-pretty font-display font-bold tracking-tight"
+            >
+              <MobileTitle title={title || code} />
+              <span className="hidden md:inline">{title || code}</span>
+            </h1>
+            {children ? <div className="z4-hero__line">{children}</div> : null}
+          </>
+        )}
+      </div>
+      {aside ? <div className="z4-hero__aside">{aside}</div> : null}
     </div>
   );
 }
