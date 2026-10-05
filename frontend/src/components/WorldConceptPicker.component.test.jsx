@@ -158,4 +158,36 @@ describe('WorldConceptPicker', () => {
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
     expect(screen.getByRole('listbox')).toBeTruthy();
   });
+
+  it('лента на телефоне: затухание не накрывает выбранную пилюлю, а у невыбранных остаётся', () => {
+    const offsets = { left: 0 };
+    const spies = [
+      vi.spyOn(HTMLElement.prototype, 'offsetLeft', 'get').mockImplementation(function () {
+        return this.getAttribute('aria-pressed') === 'true' ? offsets.left : 0;
+      }),
+      vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100),
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(360),
+    ];
+    try {
+      offsets.left = 4;
+      const { unmount } = renderPicker(
+        <WorldConceptPicker concepts={CONCEPTS} value="unemployment-rate" onChange={vi.fn()} searchable={false} mobileScroll />,
+      );
+      const row = document.querySelector('.fe-chip-row--mscroll');
+      // Выбранная пилюля у самого края: левое затухание выключено, правое остаётся.
+      expect(row.style.getPropertyValue('--fe-mask-l')).toBe('0px');
+      expect(row.style.getPropertyValue('--fe-mask-r')).toBe('28px');
+      unmount();
+
+      offsets.left = 120;
+      renderPicker(
+        <WorldConceptPicker concepts={CONCEPTS} value="unemployment-rate" onChange={vi.fn()} searchable={false} mobileScroll />,
+      );
+      const rowMid = document.querySelector('.fe-chip-row--mscroll');
+      expect(rowMid.style.getPropertyValue('--fe-mask-l')).toBe('14px');
+      expect(rowMid.style.getPropertyValue('--fe-mask-r')).toBe('28px');
+    } finally {
+      spies.forEach((spy) => spy.mockRestore());
+    }
+  });
 });

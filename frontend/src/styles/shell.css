@@ -301,10 +301,11 @@
 /* ── Бегущая строка уходит при прокрутке вниз, шапка занимает её место ─────── */
 .fe-ticker { transition: transform 0.25s var(--fe-ease-out); }
 html[data-fe-ticker='hidden'] .fe-ticker { transform: translateY(-100%); }
+/* Шапка поднимается на место строки через `translate` (композитор), а не через `top`: раскладка не двигается, нет рывка. */
 html .fe-navbar {
-  transition-property: transform, opacity, background-color, box-shadow, border-color, top;
+  transition-property: transform, opacity, background-color, box-shadow, border-color, translate;
 }
-html[data-fe-ticker='hidden'] .fe-navbar { top: 0.5rem; }
+html[data-fe-ticker='hidden'] .fe-navbar:not(.-translate-y-24) { translate: 0 -1.75rem; }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Волна 3 (X3): единый вертикальный ритм, каталог стран, меню, cookie, шапка, тикер.

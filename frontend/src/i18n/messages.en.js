@@ -115,7 +115,7 @@ export default {
   'nav.calc.compound': 'Compound interest',
 
   'footer.tagline':
-    'Official macroeconomic indicators and country statistics: charts, rankings, and comparisons. Data comes from national statistical offices, central banks, Eurostat, and the IMF.',
+    'Official macroeconomic indicators and country statistics: charts, rankings, and comparisons. Data comes from national statistical offices and central banks.',
   'footer.categories': 'Categories',
   'footer.sources': 'Sources',
   'footer.tools': 'Tools',
@@ -2059,7 +2059,7 @@ export default {
   'pgui.embed.previewLoading': 'Preparing the preview…',
   'pgui.embed.previewTitle': 'Widget preview',
   'pgui.embed.copyFailed': 'Could not copy. Select the code manually.',
-  'pgui.notFound.searchPlaceholder': 'Search an indicator, country or region',
+  'pgui.notFound.searchPlaceholder': 'Indicator, country or region',
   'pgui.regions.ratingError': 'Could not load the regional ranking.',
   'pgui.regions.profileError': 'Could not load the region page.',
   'pgui.regions.profileEmpty': 'There are no indicators for this region yet.',
@@ -2522,4 +2522,11 @@ export default {
   'y1.compare.pickIndicator': 'Now choose an indicator',
   'y1.compare.allAdded': 'All matching indicators for this country are already on the chart.',
   'y1.compare.noMatch': 'This country has no indicator that can be compared with the selected ones. Choose another country.',
+  // ── Z3: рейтинг, поиск, нажимаемость (волна 5) ──
+  'z3.rating.pickTitle': 'Choose an indicator for the new column',
+  'z3.rating.guestPickTitle': 'Add one more indicator to the table',
+  'z3.rating.guestPickHint': 'Pick one below. To compare up to five, create a free account.',
+  'z3.rating.guestLimitTitle': 'Extra indicator added',
+  'z3.rating.guestLimitHint': 'To add more, create a free account or sign in.',
+  'z3.rating.addNamed': 'Add column: {name}',
 };

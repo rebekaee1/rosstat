@@ -203,15 +203,32 @@ async function fetchLiveTicker(lane) {
 function useHideOnScroll() {
   useEffect(() => {
     const root = document.documentElement;
-    let lastY = window.scrollY;
+    // Гистерезис: состояние меняется только после заметного пути в одну сторону от «якоря»
+    // (низшая точка при показе, высшая при скрытии). Дрожь пальца и инерция не переключают строку туда-сюда.
+    const HIDE_AFTER = 36;
+    const SHOW_AFTER = 28;
+    let hidden = false;
+    let anchor = window.scrollY;
     let frame = 0;
+    const set = (next) => {
+      hidden = next;
+      root.dataset.feTicker = next ? 'hidden' : 'shown';
+    };
     const apply = () => {
       frame = 0;
       const y = window.scrollY;
-      const delta = y - lastY;
-      if (y < 48 || delta < -6) root.dataset.feTicker = 'shown';
-      else if (delta > 6 && y > 96) root.dataset.feTicker = 'hidden';
-      if (Math.abs(delta) > 6) lastY = y;
+      if (y < 48) {
+        if (hidden || root.dataset.feTicker !== 'shown') set(false);
+        anchor = y;
+        return;
+      }
+      if (!hidden) {
+        anchor = Math.min(anchor, y);
+        if (y > 96 && y - anchor > HIDE_AFTER) { set(true); anchor = y; }
+      } else {
+        anchor = Math.max(anchor, y);
+        if (anchor - y > SHOW_AFTER) { set(false); anchor = y; }
+      }
     };
     const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(apply); };
     window.addEventListener('scroll', onScroll, { passive: true });

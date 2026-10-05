@@ -81,9 +81,10 @@ async function withMockFallback(request, mockFactory) {
  * durable Redis usually avoid the hit, but keep headroom when both miss. */
 const WORLD_COUNTRIES_TIMEOUT_MS = 45000;
 
-export function useWorldCountries() {
+export function useWorldCountries({ enabled = true } = {}) {
   const lk = useLocaleKey();
   return useQuery({
+    enabled,
     queryKey: worldCountriesQueryKey(lk),
     queryFn: ({ signal }) =>
       withMockFallback(

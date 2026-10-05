@@ -11,6 +11,7 @@
  */
 
 import { publicPageUrl } from '../lib/siteOrigin';
+import { rememberScrollForLanguageSwitch } from './langScroll';
 
 export const LOCALE_HEADER = 'X-FE-Locale';
 export const PREVIEW_QUERY = 'preview_locale';
@@ -260,5 +261,9 @@ export function switchLanguage(locale, opts) {
   if (typeof window === 'undefined') return;
   setLocalePreference(locale);
   const next = buildLanguageSwitchUrl(locale, opts);
-  if (next) window.location.assign(next);
+  if (next) {
+    // Место на странице переживает перезагрузку: новая страница вернёт прокрутку (см. langScroll.js).
+    rememberScrollForLanguageSwitch();
+    window.location.assign(next);
+  }
 }

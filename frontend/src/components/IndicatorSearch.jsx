@@ -7,9 +7,11 @@ import { FOCUS_RING } from '../lib/uiTokens';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
+import { useWorldCountries } from '../lib/worldApi';
 import { dedupeSearchRows, describeSearchResult, searchExamples } from '../lib/searchExamples';
 import { friendlySearchName, splitSearchRows } from '../lib/searchGroups';
 import Chip from './Chip';
+import CountryFlag from './CountryFlag';
 import '../styles/shell.css';
 
 // The palette discovers every public data plane through /search. Empty-query
@@ -70,6 +72,15 @@ export default function IndicatorSearch({
   const isSearchError = Boolean(qTrim) && !globalSearch.isDebouncing && globalSearch.isError;
   const isLoading = isSearchPending;
   const popular = useMemo(() => searchExamples(t), [t]);
+  // Флаги в выдаче: код страны берём из общего (кэшированного) каталога стран, он грузится только при открытом поиске.
+  const countriesQ = useWorldCountries({ enabled: shouldLoad && open });
+  const flagBySlug = useMemo(() => {
+    const map = new Map([['russia', 'RU']]);
+    for (const country of countriesQ.data?.countries || []) {
+      if (country?.slug && country?.code) map.set(country.slug, country.code);
+    }
+    return map;
+  }, [countriesQ.data]);
 
   // «Долго»: отметка ставится таймером для конкретной фразы и гаснет сама, когда фраза или состояние меняются.
   const [slowFor, setSlowFor] = useState('');
@@ -498,6 +509,7 @@ export default function IndicatorSearch({
                       active={i === highlighted}
                       name={friendlySearchName(item, nameOf(item), t)}
                       detail={detailOf(item)}
+                      flagCode={flagBySlug.get(item.country_slug) || ''}
                       onHover={setHi}
                       onPick={go}
                     />
@@ -534,9 +546,12 @@ export default function IndicatorSearch({
 }
 
 /** Одна строка выдачи: значок вида, название, подпись «где и как часто», крупная цель нажатия. */
-function SearchRow({ item, index, id, active, name, detail, onHover, onPick }) {
+function SearchRow({ item, index, id, active, name, detail, flagCode = '', onHover, onPick }) {
   const isSuggestion = item.kind === 'suggestion';
   const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TrendingUp;
+  // Страна — её флаг вместо значка; у региона и показателя значок вида, а флаг страны — маленьким бейджем в углу.
+  const flagAsIcon = item.kind === 'country' && Boolean(flagCode);
+  const flagBadge = !isSuggestion && !flagAsIcon && Boolean(flagCode);
   return (
     <button
       style={isSuggestion ? { '--fe-delay': `${Math.min(index, 5) * 0.03}s`, '--fe-duration': '0.2s', '--fe-rise': '6px' } : undefined}
@@ -554,8 +569,9 @@ function SearchRow({ item, index, id, active, name, detail, onHover, onPick }) {
       tabIndex={-1}
       aria-selected={active}
     >
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
-        <Icon size={18} />
+      <span className="fe-search-row__tile relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
+        {flagAsIcon ? <CountryFlag code={flagCode} className="fe-search-row__flag" /> : <Icon size={18} />}
+        {flagBadge ? <CountryFlag code={flagCode} className="fe-search-row__badge" /> : null}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-medium leading-snug text-text-primary whitespace-normal break-words">{name}</span>

@@ -1,0 +1,131 @@
+/* Волна 5 (Z3): рейтинг стран, нажимаемость, флаги, шов планеты, медали. Всё через токены темы.
+   Правила привязаны к своим классам (`.z3-*`, `.w2-rank-*`) или усилены родителем, чтобы не зависеть от порядка загрузки чанков. */
+
+/* ── Рейтинг: блок «Добавить показатель» ─────────────────────────────────── */
+.z3-add-panel {
+  margin: 0 0 12px;
+  max-width: 34rem;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--color-champagne) 6%, var(--color-surface));
+}
+.z3-add-panel__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; line-height: 1.3; }
+.z3-add-panel__text { margin: 4px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; }
+.z3-add-panel__chips { margin-top: 12px; }
+.z3-add-panel__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+/* Чип «+ показатель» читается кнопкой: золотая рамка и плюс, а не серая плашка-сирота. */
+.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled) {
+  gap: 6px;
+  border-color: var(--color-border-champagne);
+  background: var(--color-surface);
+  color: var(--color-champagne-ink);
+  font-weight: 600;
+}
+.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled):hover {
+  border-color: var(--color-champagne);
+  background: color-mix(in srgb, var(--color-champagne) 12%, var(--color-surface));
+}
+
+/* ── Рейтинг: строки-карточки на телефоне нажимаются (шеврон, подсветка, медали) ───── */
+.w2-rank-row { grid-template-columns: 26px 24px minmax(0, 1fr) auto 16px; }
+.w2-rank-chev { color: var(--color-text-tertiary); opacity: 0.75; }
+.w2-rank-row:active { background: color-mix(in srgb, var(--color-champagne) 12%, transparent); }
+@media (hover: hover) {
+  .w2-rank-row:hover { background: color-mix(in srgb, var(--color-champagne) 7%, transparent); }
+}
+@media (hover: hover) and (min-width: 640px) {
+  .w2-rank-row:hover .w2-rank-chev { color: var(--color-champagne-ink); }
+}
+
+/* Медали первой тройки: спокойные металлические кружки, без движения. */
+.w2-rank-pos[data-medal] {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  color: #202a3c;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(32, 42, 60, 0.14), 0 1px 2px rgba(32, 42, 60, 0.12);
+}
+.w2-rank-pos[data-medal='1'] { background: linear-gradient(135deg, #f1dfa6, #c9a24f); }
+.w2-rank-pos[data-medal='2'] { background: linear-gradient(135deg, #f4f6f9, #b4bdc9); }
+.w2-rank-pos[data-medal='3'] { background: linear-gradient(135deg, #efcaa6, #c08556); }
+
+/* ── Флаги-эмодзи: тонкий контур, чтобы белые флаги (Кипр, Финляндия) не сливались с белой карточкой ──── */
+.fe-flag { filter: drop-shadow(0 0 0.5px rgba(32, 42, 60, 0.55)); }
+
+/* ── Планета: легенда «данных нет» — круглая плоская метка, а не пустой чекбокс ──── */
+.planet-view .planet-key-note i,
+.planet-view .planet-legend > small i {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: #dcdfe1;
+  box-shadow: inset 0 0 0 1px rgba(32, 42, 60, 0.12);
+}
+
+/* ── Планета на телефоне: фон сцены плавно уходит в белый, без резкой нижней кромки ──── */
+@media (max-width: 700px) {
+  .planet-view .planet-stage {
+    background:
+      linear-gradient(180deg, transparent 70%, var(--planet-paper) 100%),
+      radial-gradient(circle at 50% 50%, var(--planet-paper) 0%, var(--planet-paper) 34%, var(--fe-button-bg, #F6F3EC) 100%);
+  }
+  .planet-view .planet-country-card {
+    border-top-color: transparent;
+    background: var(--planet-paper);
+  }
+}
+
+/* ── Выбор показателя: выбранная пилюля одинаково тёмная на главной и в рейтинге ──── */
+.fe-concept-picker .fe-chip.is-active {
+  border-color: var(--color-text-primary);
+  background: var(--color-text-primary);
+  color: var(--color-surface);
+}
+
+/* ── Плашка регистрации: крестик с видимой рамкой, зона нажатия 44 px ───── */
+.fe-nudge-m__close {
+  position: relative;
+  isolation: isolate;
+}
+.fe-nudge-m__close::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  z-index: -1;
+  border: 1px solid var(--color-border-champagne);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+}
+
+/* ── Текстовые ссылки и «Подробнее»: зона нажатия не меньше 44 px на телефоне, вид не меняется ──── */
+@media (pointer: coarse), (max-width: 700px) {
+  .fe-data-page .w2-details > summary,
+  .fe-data-page .w2-details--tight > summary { min-height: 44px; }
+  .planet-view .planet-all-indicators,
+  .planet-view .planet-list-footer a,
+  .planet-view .planet-scale summary { min-height: 44px; }
+}
+
+/* ── Поиск: флаг страны вместо значка, мини-флаг у региона и показателя ───── */
+.fe-search-row__tile .fe-search-row__flag {
+  width: auto;
+  height: auto;
+  font-size: 24px;
+}
+.fe-search-row__tile .fe-search-row__badge {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  font-size: 12px;
+  box-shadow: 0 0 0 1px var(--color-border-subtle);
+}

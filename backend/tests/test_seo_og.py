@@ -847,6 +847,10 @@ def test_spa_ssr_gets_platform_deep_links(monkeypatch):
     assert "html.fe-js #root > .seo-page" in spa
     assert 'type="module"' in spa
     assert 'class="fe-js"' not in spa
+    # До первого кадра React: бренд-шапка снаружи #root (иначе попадёт в снимок SSR) и поля у блока хабов.
+    assert spa.index('class="seo-boot-bar"') < spa.index('<div id="root">')
+    assert "html.fe-js .seo-boot-bar{display:none!important}" in spa
+    assert ".seo-section.seo-platform-nav{max-width:56rem;margin:1.5rem auto 0;padding:0 1rem 2rem}" in spa
 
     token = set_locale("en")
     try:
@@ -876,6 +880,7 @@ def test_spa_ssr_gets_platform_deep_links(monkeypatch):
     assert 'class="seo-topnav"' in pure
     # chrome уже даёт хабы — platform-nav не дублируем в body
     assert 'class="seo-section seo-platform-nav"' not in pure
+    assert 'class="seo-boot-bar"' not in pure
     # Pure-SSR без React-app: SEO видим, нет fe-js hide, нет SPA-скриптов и
     # modulepreload'ов. Стилевой main-*.css остаётся (chrome стилизован им).
     assert 'classList.add("fe-js")' not in pure

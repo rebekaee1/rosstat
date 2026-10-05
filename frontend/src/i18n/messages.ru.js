@@ -2067,7 +2067,7 @@ export default {
   'pgui.embed.previewLoading': 'Готовим превью…',
   'pgui.embed.previewTitle': 'Превью виджета',
   'pgui.embed.copyFailed': 'Не удалось скопировать. Выделите код вручную.',
-  'pgui.notFound.searchPlaceholder': 'Найти показатель, страну или регион',
+  'pgui.notFound.searchPlaceholder': 'Показатель, страна или регион',
   'pgui.regions.ratingError': 'Не удалось загрузить рейтинг регионов.',
   'pgui.regions.profileError': 'Не удалось загрузить страницу региона.',
   'pgui.regions.profileEmpty': 'Для этого региона пока нет показателей.',
@@ -2530,4 +2530,11 @@ export default {
   'y1.compare.pickIndicator': 'Теперь выберите показатель',
   'y1.compare.allAdded': 'Все подходящие показатели этой страны уже на графике.',
   'y1.compare.noMatch': 'Для этой страны нет показателя, который можно сравнить с выбранными. Выберите другую страну.',
+  // ── Z3: рейтинг, поиск, нажимаемость (волна 5) ──
+  'z3.rating.pickTitle': 'Выберите показатель для новой колонки',
+  'z3.rating.guestPickTitle': 'Добавьте один показатель в таблицу',
+  'z3.rating.guestPickHint': 'Выберите ниже. Чтобы сравнивать до пяти показателей, создайте бесплатный аккаунт.',
+  'z3.rating.guestLimitTitle': 'Дополнительный показатель добавлен',
+  'z3.rating.guestLimitHint': 'Чтобы добавить ещё, создайте бесплатный аккаунт или войдите.',
+  'z3.rating.addNamed': 'Добавить колонку: {name}',
 };

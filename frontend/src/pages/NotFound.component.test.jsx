@@ -16,7 +16,7 @@ describe('NotFound', () => {
 
     expect(await screen.findByRole('heading', { level: 1, name: 'Такой страницы нет' })).toBeTruthy();
     // Поиск: кнопка-триггер с подсказкой в тексте.
-    expect(screen.getByText('Найти показатель, страну или регион')).toBeTruthy();
+    expect(screen.getByText('Показатель, страна или регион')).toBeTruthy();
     for (const name of ['Рейтинг стран', 'Сравнение', 'Регионы России', 'Сегодня', 'Календарь', 'Калькуляторы']) {
       expect(screen.getByRole('link', { name: new RegExp(`^${name}`) }).getAttribute('href')).toBeTruthy();
     }

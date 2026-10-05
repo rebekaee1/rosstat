@@ -22,8 +22,9 @@
     scroll-snap-type: x proximity;
     margin-inline: -14px;
     padding: 2px 14px 4px;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 28px), transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 28px), transparent 100%);
+    /* Ширину затухания слева/справа задаёт WorldConceptPicker: у выбранной пилюли край не гасится. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fe-mask-l, 14px), #000 calc(100% - var(--fe-mask-r, 28px)), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 var(--fe-mask-l, 14px), #000 calc(100% - var(--fe-mask-r, 28px)), transparent 100%);
   }
   .fe-chip-row--mscroll::-webkit-scrollbar { display: none; }
   .fe-chip-row--mscroll > .fe-chip,
