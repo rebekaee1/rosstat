@@ -522,7 +522,7 @@ export default function WorldMap({
               </div>
             )}
             {hoverPeriod && (
-              <div className="mt-1.5 pt-1.5 font-mono text-xs text-text-secondary">
+              <div className="mt-1.5 pt-1.5 font-mono text-xs text-text-secondary fe-divider">
                 {hoverPeriod}
               </div>
             )}

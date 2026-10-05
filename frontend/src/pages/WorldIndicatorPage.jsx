@@ -766,7 +766,7 @@ export default function WorldIndicatorPage() {
                       )}
                     </dl>
                   </details>
-                  <div className="mt-6 flex flex-wrap gap-2 pt-4">
+                  <div className="mt-6 flex flex-wrap gap-2 pt-4 fe-divider">
                     <Link
                       to={countryPath(slug)}
                       className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"

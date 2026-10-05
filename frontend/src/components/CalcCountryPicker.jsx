@@ -103,7 +103,7 @@ export default function CalcCountryPicker({
           className="absolute left-0 right-0 z-30 mt-1.5 overflow-hidden rounded-xl shadow-lg fe-glass-pop"
           role="listbox"
         >
-          <label className="flex items-center gap-2 px-3 py-2">
+          <label className="flex items-center gap-2 px-3 py-2 fe-divider-b">
             <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
             <span className="sr-only">{t('calc.country.search')}</span>
             <input

@@ -1075,7 +1075,7 @@ function CompareSeriesPicker({
 
   return (
     <div className="fe-panel overflow-visible rounded-2xl p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
-      <div className="mb-5 pb-4">
+      <div className="mb-5 pb-4 fe-divider-b">
         <div className="text-sm font-medium text-champagne-ink">{t('w6g.compare.pickerTitle')}</div>
         <div className="mt-1 text-[15px] text-text-primary">{stepHint}</div>
         {status && (
@@ -2463,7 +2463,7 @@ export default function ComparePage() {
         {hasData && !loading && (
           <div
             data-block="compare-settings"
-            className="mt-5 grid gap-4 pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6"
+            className="mt-5 grid gap-4 pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6 fe-divider"
           >
             <div className="min-w-0">
               <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
@@ -2556,7 +2556,7 @@ export default function ComparePage() {
 
       {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
         <section data-block="compare-analysis" className="fe-panel fe-compare-analysis rounded-[2rem] p-5 md:p-7">
-          <div className="mb-5 flex flex-col gap-2 pb-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-5 flex flex-col gap-2 pb-4 sm:flex-row sm:items-end sm:justify-between fe-divider-b">
             <div>
               <div className="text-sm font-medium text-champagne-ink">
                 {t('compare.analysis.eyebrow')}
@@ -2615,7 +2615,7 @@ export default function ComparePage() {
                   {/п\.\s?п\.|p\.p\./.test(changeValue.unitShort || '') && (
                     <p className="mt-1 text-xs leading-snug text-text-tertiary">{t('x4.compare.ppHint')}</p>
                   )}
-                  <div className="mt-3 pt-2.5 text-xs text-text-secondary">
+                  <div className="mt-3 pt-2.5 text-xs text-text-secondary fe-divider">
                     {formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}
                   </div>
                 </div>

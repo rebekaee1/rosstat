@@ -218,7 +218,7 @@ export default function CountryComparePanel({
 
 
       {activeComparisonIds.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 pt-3">
+        <div className="mt-3 flex flex-wrap items-center gap-2 pt-3 fe-divider">
           {baseLabel && (
             <span className="fe-compare-base" title={baseLabel}>
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: baseColor }} aria-hidden="true" />

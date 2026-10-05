@@ -540,7 +540,7 @@ export default function RegionIndicatorPage() {
                 {t('regions.ind.fullRanking')}
               </Link>
               {active.rank.position > 5 && (
-                <div className="mt-2 pt-2 flex items-center justify-between text-[13px] px-2">
+                <div className="mt-2 pt-2 flex items-center justify-between text-[13px] px-2 fe-divider">
                   <span className="flex items-center gap-2">
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>

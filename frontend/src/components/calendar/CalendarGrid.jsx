@@ -94,7 +94,7 @@ export default function CalendarGrid({
 
   return (
     <div data-testid="calendar-grid" className="fe-panel rounded-[1.5rem] overflow-hidden mb-6">
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3 fe-divider-b">
         <Button
           variant="ghost"
           onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
@@ -144,7 +144,7 @@ export default function CalendarGrid({
         )}
       </div>
 
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 gap-1.5 p-2">
         {weekdays.map((wd) => (
           <div key={wd} className="text-center text-xs font-semibold text-text-secondary py-2">
             {wd}
@@ -155,7 +155,7 @@ export default function CalendarGrid({
       <div className="grid grid-cols-7">
         {cells.map((day, i) => {
           if (day === null) {
-            return <div key={`empty-${i}`} className="min-h-[3.5rem] md:min-h-[5.5rem] fe-glass-2" />;
+            return <div key={`empty-${i}`} className="min-h-[3.5rem] md:min-h-[5.5rem]" />;
           }
 
           const dateStr = fmt(year, month, day);
@@ -183,7 +183,7 @@ export default function CalendarGrid({
               aria-pressed={isSelected}
               aria-label={dayEvents.length ? t('w3.cal.dayLabel', { day, month: t(`calendar.monthGen.${month}`), n: dayEvents.length }) : undefined}
               className={cn(
-                'fe-cal-day relative min-h-[3.5rem] md:min-h-[5.5rem] transition-all fe-glass-2',
+                'fe-cal-day relative min-h-[3.5rem] md:min-h-[5.5rem] rounded-xl transition-all fe-glass-2',
                 'flex flex-col items-center pt-1.5 gap-1',
                 FOCUS_RING_SURFACE,
                 isSelected && 'bg-champagne/8',

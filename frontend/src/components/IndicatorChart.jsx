@@ -1028,7 +1028,7 @@ export default function IndicatorChart({
       )}
 
       {resolvedComparisonSeries.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 pt-3">
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 pt-3 fe-divider">
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{actualSeriesLabel || t('chart.primarySeries')}</span>
@@ -1043,7 +1043,7 @@ export default function IndicatorChart({
       )}
 
       {showForecast && hasForecast && (
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 fe-divider">
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{t('chart.legend.actual')}</span>

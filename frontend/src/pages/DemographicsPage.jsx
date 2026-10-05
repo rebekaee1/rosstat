@@ -79,7 +79,7 @@ function StructureTooltip({ active, payload, label }) {
           </div>
         );
       })}
-      <div className="mt-2 pt-2 flex justify-between gap-3">
+      <div className="mt-2 pt-2 flex justify-between gap-3 fe-divider">
         <span className="text-xs text-text-secondary">{t('demo.tooltip.total')}</span>
         <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
           {total.toFixed(1).replace('.', ',')} {t('demo.tooltip.mln')}
@@ -386,7 +386,7 @@ export default function DemographicsPage() {
         )}
 
         {!isLoading && series.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 pt-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 pt-3 fe-divider">
             {GROUPS.map((g) => (
               <div key={g.key} className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: g.color }} aria-hidden="true" />

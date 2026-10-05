@@ -196,7 +196,7 @@ export default function DataTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="p-4 flex items-center justify-between">
+        <div className="p-4 flex items-center justify-between fe-divider">
           <Button
             variant="secondary"
             className="fe-pager-btn"

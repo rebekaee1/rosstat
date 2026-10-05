@@ -228,7 +228,7 @@ export default function RussiaHome() {
           <RussiaTerritoryCard />
         </div>
 
-        <div className="relative mt-6 pt-5">
+        <div className="relative mt-6 pt-5 fe-divider">
           <h2 className="w2-main-title z5-main-title">{t('z5.ru.main.title')}</h2>
           <RussiaKeyFigures indicators={indicators} isLoading={isLoading} />
         </div>

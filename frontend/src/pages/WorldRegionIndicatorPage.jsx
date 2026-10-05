@@ -484,7 +484,7 @@ export default function WorldRegionIndicatorPage() {
                 ))}
               </ol>
               {rankPosition > 5 && (
-                <div className="mt-2 flex items-center justify-between px-2 pt-2 text-[13px]">
+                <div className="mt-2 flex items-center justify-between px-2 pt-2 text-[13px] fe-divider">
                   <span className="flex items-center gap-2">
                     <span className="w-4 text-right fe-num text-text-secondary">{rankPosition}</span>
                     <span className="font-medium text-champagne-ink">{regionName}</span>

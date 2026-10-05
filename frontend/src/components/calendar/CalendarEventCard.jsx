@@ -225,7 +225,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
 
         {hasValues && (
           <div className={cn(
-            'grid gap-2 pt-3 mt-3',
+            'grid gap-2 pt-3 mt-3 fe-divider',
             event.forecast_value ? 'grid-cols-3' : 'grid-cols-2',
           )}>
             <ValueCell label={t('z1.cal.prev')} value={event.previous_value} />

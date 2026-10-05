@@ -97,7 +97,7 @@ export default function CompareCountryStep({
 
       {noCountries && indicatorMatches.length > 0 ? (
         <div data-testid="compare-indicator-matches" className="overflow-hidden rounded-xl fe-glass-2">
-          <div className="px-4 py-2.5 text-sm leading-snug text-text-secondary">
+          <div className="px-4 py-2.5 text-sm leading-snug text-text-secondary fe-divider-b">
             {t('compare.indicatorMatches')}
           </div>
           {indicatorMatches.map((ind) => (

@@ -1692,7 +1692,7 @@ function DriverNode({ node }) {
         <div className="text-[10.5px] text-text-tertiary mt-1.5">{open ? 'Скрыть детали ▲' : 'Раскрыть ▼'}</div>
       </button>
       {open && (
-        <div className="mt-3 pt-3 space-y-1 text-[12px] text-text-secondary">
+        <div className="mt-3 pt-3 space-y-1 text-[12px] text-text-secondary fe-divider">
           {node.key === 'acquisition' && (
             <>
               {Object.entries(det.channels || {}).sort((a, b) => b[1] - a[1]).map(([ch, v]) => (
@@ -1924,7 +1924,7 @@ function GoalReconciliationCard({ d }) {
           </table>
           <Pager p={pager} />
           {(gr.metrika_only || []).length > 0 && (
-            <div className="mt-3 pt-3 text-[12px] text-text-secondary">
+            <div className="mt-3 pt-3 text-[12px] text-text-secondary fe-divider">
               <span className="font-medium">Только в Метрике (без нашего события): </span>
               {gr.metrika_only.map((g) => `${g.goal} — ${fmtInt(g.visits)}`).join(', ')}
             </div>
@@ -2479,7 +2479,7 @@ function ReliabilityTab({ d }) {
               )}
               {(r.js_errors_own || []).length === 0 && <p className="text-[12px] text-positive">В нашем коде ошибок за окно нет.</p>}
               {(r.js_errors_third_party || []).length > 0 && (
-                <div className="pt-2">
+                <div className="pt-2 fe-divider">
                   <div className="text-[11px] font-medium text-text-tertiary mb-1.5">Сторонние скрипты</div>
                   <ul className="space-y-1">
                     {r.js_errors_third_party.map((e, i) => (

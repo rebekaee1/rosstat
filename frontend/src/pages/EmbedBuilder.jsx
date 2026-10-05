@@ -98,7 +98,7 @@ function IndicatorCombobox({ indicators, value, onChange, placeholder }) {
       </button>
       {open && (
         <div className="absolute z-50 left-0 right-0 mt-1 rounded-xl shadow-2xl overflow-hidden fe-glass-pop" style={{ maxHeight: 340 }}>
-          <div className="p-2">
+          <div className="p-2 fe-divider-b">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-secondary" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
@@ -605,7 +605,7 @@ export default function EmbedBuilder() {
               </div>
             )}
 
-            <div className="space-y-1 pt-3">
+            <div className="space-y-1 pt-3 fe-divider">
               <label className="w5-check">
                 <input type="checkbox" checked={showTitle} onChange={(e) => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }} />
                 <span>{t('embed.showTitle')}</span>

@@ -14,7 +14,10 @@
 
 /* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
 .fe-ticker {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--color-warn-surface) 70%, #fff), var(--color-warn-surface));
+  /* Лента курсов: стекло над страницей (под ней при прокрутке проходит контент), блик сверху, мягкая тень снизу. */
+  background: var(--fe-glass-l1-sheen), color-mix(in srgb, var(--color-warn-surface) 80%, transparent);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  box-shadow: 0 10px 24px -18px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
 }
 /* Ширина как у шапки и страниц: один контейнер на весь сайт. */
 .fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }

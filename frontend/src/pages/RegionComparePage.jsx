@@ -114,7 +114,7 @@ export default function RegionComparePage() {
                 return (
                   <Link
                     to={regionIndicatorPath(region.slug, row.code)}
-                    className={`fe-press min-w-0 rounded-2xl border p-3 transition-colors ${
+                    className={`fe-press min-w-0 rounded-2xl p-3 transition-colors ${
                       leader
                         ? 'bg-champagne/[0.07] fe-shadow-2'
                         : 'fe-glass-2'

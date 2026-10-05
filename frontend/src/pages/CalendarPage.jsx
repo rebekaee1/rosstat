@@ -421,7 +421,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
       </div>
 
       {data?.total > 0 && (
-        <div className="flex items-center justify-center gap-4 mt-10 pt-6">
+        <div className="flex items-center justify-center gap-4 mt-10 pt-6 fe-divider">
           <a
             href="/api/v1/calendar/export/ical?importance_min=2"
             className={cn(

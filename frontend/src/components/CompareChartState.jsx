@@ -28,7 +28,7 @@ export default function CompareChartState({
         <div aria-hidden="true">
           <SkeletonBox className="mx-auto mb-1 h-7 w-2/3" />
           <SkeletonBox className="mx-auto mb-4 h-4 w-1/2" />
-          <div className="mb-4 flex justify-center pb-4">
+          <div className="mb-4 flex justify-center pb-4 fe-divider-b">
             <SkeletonBox className="h-4 w-5/6 max-w-md" />
           </div>
           <div className="skeleton w-full rounded-2xl" style={{ height }} />

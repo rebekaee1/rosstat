@@ -513,7 +513,7 @@ export default function IndicatorSearch({
             onClick={close}
           />
           <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
-            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2">
+            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2 fe-divider-b">
               {isLoading && qTrim
                 ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
                 : <Search className="w-5 h-5 text-text-tertiary shrink-0" aria-hidden="true" />}
@@ -666,7 +666,7 @@ export default function IndicatorSearch({
               </button>
             ) : null}
 
-            <div className="fe-search-kbd px-4 py-2 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden">
+            <div className="fe-search-kbd px-4 py-2 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden fe-divider">
               <span><kbd className="px-1 py-0.5 rounded fe-glass-2">↑</kbd> <kbd className="px-1 py-0.5 rounded fe-glass-2">↓</kbd> {t('search.hint.nav')}</span>
               <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Enter</kbd> {t('search.hint.open')}</span>
               <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Esc</kbd> {t('search.hint.close')}</span>

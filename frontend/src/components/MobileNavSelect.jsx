@@ -76,7 +76,7 @@ export default function MobileNavSelect({
           aria-labelledby={titleId}
           className="relative z-10 flex max-h-[min(78dvh,560px)] flex-col rounded-t-[1.5rem] shadow-[0_-18px_50px_rgba(35,30,16,0.18)] fe-glass-2"
         >
-          <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-3.5">
+          <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-3.5 fe-divider-b">
             <div className="min-w-0">
               <div className="mx-auto mb-2.5 h-1 w-9 rounded-full bg-border-subtle sm:mx-0" aria-hidden />
               <p

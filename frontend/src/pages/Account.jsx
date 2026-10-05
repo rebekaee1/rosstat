@@ -258,7 +258,7 @@ export default function Account() {
             <div id="account-feedback-error" role="alert" className="text-sm text-negative mt-2 empty:hidden">{fbErr}</div>
           </>
         )}
-        <p className="text-xs text-text-tertiary mt-4 pt-3">
+        <p className="text-xs text-text-tertiary mt-4 pt-3 fe-divider">
           {user.newsletter ? t('account.newsletterOn') : t('account.newsletterOff')}
           <Button variant="ghost" size="sm" onClick={toggleNewsletter} loading={nlBusy} className="ml-1 px-2">
             {user.newsletter ? t('account.unsubscribe') : t('account.subscribe')}
