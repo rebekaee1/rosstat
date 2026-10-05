@@ -13,10 +13,10 @@
 - Direct environment reads: **30**
 - Jobs: **42**
 - Middleware: **5**
-- Registry declarations: **923**
-- Registry references: **1786**
+- Registry declarations: **928**
+- Registry references: **1791**
 - Migration operations: **371**
-- Candidate effects: **2115**
+- Candidate effects: **2120**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -36,10 +36,10 @@
 | GET | /api/v1/health/ready | app.api.system.health_ready | [backend/app/api/system.py:74](../backend/app/api/system.py#L74) |
 | GET | /api/v1/metrics | app.api.system.prometheus_metrics | [backend/app/api/system.py:182](../backend/app/api/system.py#L182) |
 | GET | /api/v1/system/status | app.api.system.system_status | [backend/app/api/system.py:298](../backend/app/api/system.py#L298) |
-| GET | /api/v1/calendar | app.api.calendar.list_events | [backend/app/api/calendar.py:88](../backend/app/api/calendar.py#L88) |
-| GET | /api/v1/calendar/upcoming | app.api.calendar.upcoming_events | [backend/app/api/calendar.py:151](../backend/app/api/calendar.py#L151) |
-| GET | /api/v1/calendar/{event_id} | app.api.calendar.get_event | [backend/app/api/calendar.py:185](../backend/app/api/calendar.py#L185) |
-| GET | /api/v1/calendar/export/ical | app.api.calendar.export_ical | [backend/app/api/calendar.py:213](../backend/app/api/calendar.py#L213) |
+| GET | /api/v1/calendar | app.api.calendar.list_events | [backend/app/api/calendar.py:97](../backend/app/api/calendar.py#L97) |
+| GET | /api/v1/calendar/upcoming | app.api.calendar.upcoming_events | [backend/app/api/calendar.py:160](../backend/app/api/calendar.py#L160) |
+| GET | /api/v1/calendar/{event_id} | app.api.calendar.get_event | [backend/app/api/calendar.py:194](../backend/app/api/calendar.py#L194) |
+| GET | /api/v1/calendar/export/ical | app.api.calendar.export_ical | [backend/app/api/calendar.py:222](../backend/app/api/calendar.py#L222) |
 | GET | /api/v1/embed/spark/{code}.svg | app.api.embed.sparkline_svg | [backend/app/api/embed.py:155](../backend/app/api/embed.py#L155) |
 | GET | /api/v1/embed/card/{code}.svg | app.api.embed.card_svg | [backend/app/api/embed.py:221](../backend/app/api/embed.py#L221) |
 | GET | /api/v1/embed/badge/{code}.svg | app.api.embed.badge_svg | [backend/app/api/embed.py:337](../backend/app/api/embed.py#L337) |
@@ -145,38 +145,38 @@
 | GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2536](../backend/app/api/sitemap.py#L2536) |
 | GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2543](../backend/app/api/sitemap.py#L2543) |
 | GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2552](../backend/app/api/sitemap.py#L2552) |
-| GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:298](../backend/app/api/seo_pages.py#L298) |
-| GET/HEAD | /seo/page/home | app.api.seo_pages.seo_home | [backend/app/api/seo_pages.py:304](../backend/app/api/seo_pages.py#L304) |
-| GET/HEAD | /seo/page/{page} | app.api.seo_pages.seo_page | [backend/app/api/seo_pages.py:316](../backend/app/api/seo_pages.py#L316) |
-| GET/HEAD | /seo/category | app.api.seo_pages.seo_categories_hub | [backend/app/api/seo_pages.py:326](../backend/app/api/seo_pages.py#L326) |
-| GET/HEAD | /seo/category/{slug} | app.api.seo_pages.seo_category | [backend/app/api/seo_pages.py:332](../backend/app/api/seo_pages.py#L332) |
-| GET/HEAD | /seo/indicator/{code} | app.api.seo_pages.seo_indicator | [backend/app/api/seo_pages.py:341](../backend/app/api/seo_pages.py#L341) |
-| GET/HEAD | /seo/regions | app.api.seo_pages.seo_regions | [backend/app/api/seo_pages.py:373](../backend/app/api/seo_pages.py#L373) |
-| GET/HEAD | /seo/regions/map/{code} | app.api.seo_pages.seo_regions_map | [backend/app/api/seo_pages.py:389](../backend/app/api/seo_pages.py#L389) |
-| GET/HEAD | /seo/region/{slug} | app.api.seo_pages.seo_region | [backend/app/api/seo_pages.py:416](../backend/app/api/seo_pages.py#L416) |
-| GET/HEAD | /seo/region/{slug}/{code} | app.api.seo_pages.seo_region_indicator | [backend/app/api/seo_pages.py:430](../backend/app/api/seo_pages.py#L430) |
-| GET/HEAD | /seo/region-rating | app.api.seo_pages.seo_region_ratings_hub | [backend/app/api/seo_pages.py:446](../backend/app/api/seo_pages.py#L446) |
-| GET/HEAD | /seo/region-rating/{code} | app.api.seo_pages.seo_region_rating | [backend/app/api/seo_pages.py:456](../backend/app/api/seo_pages.py#L456) |
-| GET/HEAD | /seo/region-vs/{slug_a}-vs-{slug_b} | app.api.seo_pages.seo_region_vs | [backend/app/api/seo_pages.py:466](../backend/app/api/seo_pages.py#L466) |
-| GET/HEAD | /seo/today | app.api.seo_pages.seo_today_hub | [backend/app/api/seo_pages.py:478](../backend/app/api/seo_pages.py#L478) |
-| GET/HEAD | /seo/today/{code} | app.api.seo_pages.seo_today_indicator | [backend/app/api/seo_pages.py:484](../backend/app/api/seo_pages.py#L484) |
-| GET/HEAD | /seo/calendar-month/{year}/{month} | app.api.seo_pages.seo_calendar_month | [backend/app/api/seo_pages.py:496](../backend/app/api/seo_pages.py#L496) |
-| GET/HEAD | /seo/indicator-year/{code}/{year} | app.api.seo_pages.seo_indicator_year | [backend/app/api/seo_pages.py:504](../backend/app/api/seo_pages.py#L504) |
-| GET/HEAD | /seo/indicator-month/{code}/{period} | app.api.seo_pages.seo_indicator_month | [backend/app/api/seo_pages.py:551](../backend/app/api/seo_pages.py#L551) |
-| GET/HEAD | /seo/world | app.api.seo_pages.seo_world_home | [backend/app/api/seo_pages.py:573](../backend/app/api/seo_pages.py#L573) |
-| GET/HEAD | /seo/world/rating | app.api.seo_pages.seo_world_rating_default | [backend/app/api/seo_pages.py:583](../backend/app/api/seo_pages.py#L583) |
-| GET/HEAD | /seo/world/rating/{concept_slug} | app.api.seo_pages.seo_world_rating | [backend/app/api/seo_pages.py:603](../backend/app/api/seo_pages.py#L603) |
-| GET/HEAD | /seo/world/rating/{concept_slug}/{year} | app.api.seo_pages.seo_world_rating_year | [backend/app/api/seo_pages.py:641](../backend/app/api/seo_pages.py#L641) |
-| GET/HEAD | /seo/world/{slug}/regions | app.api.seo_pages.seo_world_subnational_hub | [backend/app/api/seo_pages.py:667](../backend/app/api/seo_pages.py#L667) |
-| GET/HEAD | /seo/world/{slug}/region-vs/{slug_a}-vs-{slug_b} | app.api.seo_pages.seo_world_subnational_compare | [backend/app/api/seo_pages.py:679](../backend/app/api/seo_pages.py#L679) |
-| GET/HEAD | /seo/world/{slug}/region/{region_slug}/{code}/{year} | app.api.seo_pages.seo_world_subnational_indicator_year | [backend/app/api/seo_pages.py:701](../backend/app/api/seo_pages.py#L701) |
-| GET/HEAD | /seo/world/{slug}/region/{region_slug}/{code} | app.api.seo_pages.seo_world_subnational_indicator | [backend/app/api/seo_pages.py:721](../backend/app/api/seo_pages.py#L721) |
-| GET/HEAD | /seo/world/{slug}/region/{region_slug} | app.api.seo_pages.seo_world_subnational_region | [backend/app/api/seo_pages.py:739](../backend/app/api/seo_pages.py#L739) |
-| GET/HEAD | /seo/world/{slug} | app.api.seo_pages.seo_world_country | [backend/app/api/seo_pages.py:754](../backend/app/api/seo_pages.py#L754) |
-| GET/HEAD | /seo/world/{slug}/{code} | app.api.seo_pages.seo_world_indicator | [backend/app/api/seo_pages.py:768](../backend/app/api/seo_pages.py#L768) |
-| GET/HEAD | /seo/world-indicator-year/{slug}/{code}/{year} | app.api.seo_pages.seo_world_indicator_year | [backend/app/api/seo_pages.py:802](../backend/app/api/seo_pages.py#L802) |
-| GET/HEAD | /seo/world-vs/{pair}/{concept} | app.api.seo_pages.seo_world_vs | [backend/app/api/seo_pages.py:835](../backend/app/api/seo_pages.py#L835) |
-| GET/HEAD | /seo/region-indicator-year/{slug}/{code}/{year} | app.api.seo_pages.seo_region_indicator_year | [backend/app/api/seo_pages.py:868](../backend/app/api/seo_pages.py#L868) |
+| GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:296](../backend/app/api/seo_pages.py#L296) |
+| GET/HEAD | /seo/page/home | app.api.seo_pages.seo_home | [backend/app/api/seo_pages.py:302](../backend/app/api/seo_pages.py#L302) |
+| GET/HEAD | /seo/page/{page} | app.api.seo_pages.seo_page | [backend/app/api/seo_pages.py:314](../backend/app/api/seo_pages.py#L314) |
+| GET/HEAD | /seo/category | app.api.seo_pages.seo_categories_hub | [backend/app/api/seo_pages.py:324](../backend/app/api/seo_pages.py#L324) |
+| GET/HEAD | /seo/category/{slug} | app.api.seo_pages.seo_category | [backend/app/api/seo_pages.py:330](../backend/app/api/seo_pages.py#L330) |
+| GET/HEAD | /seo/indicator/{code} | app.api.seo_pages.seo_indicator | [backend/app/api/seo_pages.py:339](../backend/app/api/seo_pages.py#L339) |
+| GET/HEAD | /seo/regions | app.api.seo_pages.seo_regions | [backend/app/api/seo_pages.py:371](../backend/app/api/seo_pages.py#L371) |
+| GET/HEAD | /seo/regions/map/{code} | app.api.seo_pages.seo_regions_map | [backend/app/api/seo_pages.py:387](../backend/app/api/seo_pages.py#L387) |
+| GET/HEAD | /seo/region/{slug} | app.api.seo_pages.seo_region | [backend/app/api/seo_pages.py:414](../backend/app/api/seo_pages.py#L414) |
+| GET/HEAD | /seo/region/{slug}/{code} | app.api.seo_pages.seo_region_indicator | [backend/app/api/seo_pages.py:428](../backend/app/api/seo_pages.py#L428) |
+| GET/HEAD | /seo/region-rating | app.api.seo_pages.seo_region_ratings_hub | [backend/app/api/seo_pages.py:444](../backend/app/api/seo_pages.py#L444) |
+| GET/HEAD | /seo/region-rating/{code} | app.api.seo_pages.seo_region_rating | [backend/app/api/seo_pages.py:454](../backend/app/api/seo_pages.py#L454) |
+| GET/HEAD | /seo/region-vs/{slug_a}-vs-{slug_b} | app.api.seo_pages.seo_region_vs | [backend/app/api/seo_pages.py:464](../backend/app/api/seo_pages.py#L464) |
+| GET/HEAD | /seo/today | app.api.seo_pages.seo_today_hub | [backend/app/api/seo_pages.py:476](../backend/app/api/seo_pages.py#L476) |
+| GET/HEAD | /seo/today/{code} | app.api.seo_pages.seo_today_indicator | [backend/app/api/seo_pages.py:482](../backend/app/api/seo_pages.py#L482) |
+| GET/HEAD | /seo/calendar-month/{year}/{month} | app.api.seo_pages.seo_calendar_month | [backend/app/api/seo_pages.py:494](../backend/app/api/seo_pages.py#L494) |
+| GET/HEAD | /seo/indicator-year/{code}/{year} | app.api.seo_pages.seo_indicator_year | [backend/app/api/seo_pages.py:502](../backend/app/api/seo_pages.py#L502) |
+| GET/HEAD | /seo/indicator-month/{code}/{period} | app.api.seo_pages.seo_indicator_month | [backend/app/api/seo_pages.py:549](../backend/app/api/seo_pages.py#L549) |
+| GET/HEAD | /seo/world | app.api.seo_pages.seo_world_home | [backend/app/api/seo_pages.py:571](../backend/app/api/seo_pages.py#L571) |
+| GET/HEAD | /seo/world/rating | app.api.seo_pages.seo_world_rating_default | [backend/app/api/seo_pages.py:581](../backend/app/api/seo_pages.py#L581) |
+| GET/HEAD | /seo/world/rating/{concept_slug} | app.api.seo_pages.seo_world_rating | [backend/app/api/seo_pages.py:601](../backend/app/api/seo_pages.py#L601) |
+| GET/HEAD | /seo/world/rating/{concept_slug}/{year} | app.api.seo_pages.seo_world_rating_year | [backend/app/api/seo_pages.py:639](../backend/app/api/seo_pages.py#L639) |
+| GET/HEAD | /seo/world/{slug}/regions | app.api.seo_pages.seo_world_subnational_hub | [backend/app/api/seo_pages.py:665](../backend/app/api/seo_pages.py#L665) |
+| GET/HEAD | /seo/world/{slug}/region-vs/{slug_a}-vs-{slug_b} | app.api.seo_pages.seo_world_subnational_compare | [backend/app/api/seo_pages.py:677](../backend/app/api/seo_pages.py#L677) |
+| GET/HEAD | /seo/world/{slug}/region/{region_slug}/{code}/{year} | app.api.seo_pages.seo_world_subnational_indicator_year | [backend/app/api/seo_pages.py:699](../backend/app/api/seo_pages.py#L699) |
+| GET/HEAD | /seo/world/{slug}/region/{region_slug}/{code} | app.api.seo_pages.seo_world_subnational_indicator | [backend/app/api/seo_pages.py:719](../backend/app/api/seo_pages.py#L719) |
+| GET/HEAD | /seo/world/{slug}/region/{region_slug} | app.api.seo_pages.seo_world_subnational_region | [backend/app/api/seo_pages.py:737](../backend/app/api/seo_pages.py#L737) |
+| GET/HEAD | /seo/world/{slug} | app.api.seo_pages.seo_world_country | [backend/app/api/seo_pages.py:752](../backend/app/api/seo_pages.py#L752) |
+| GET/HEAD | /seo/world/{slug}/{code} | app.api.seo_pages.seo_world_indicator | [backend/app/api/seo_pages.py:766](../backend/app/api/seo_pages.py#L766) |
+| GET/HEAD | /seo/world-indicator-year/{slug}/{code}/{year} | app.api.seo_pages.seo_world_indicator_year | [backend/app/api/seo_pages.py:800](../backend/app/api/seo_pages.py#L800) |
+| GET/HEAD | /seo/world-vs/{pair}/{concept} | app.api.seo_pages.seo_world_vs | [backend/app/api/seo_pages.py:833](../backend/app/api/seo_pages.py#L833) |
+| GET/HEAD | /seo/region-indicator-year/{slug}/{code}/{year} | app.api.seo_pages.seo_region_indicator_year | [backend/app/api/seo_pages.py:866](../backend/app/api/seo_pages.py#L866) |
 
 ## Middleware registration (last registered is outermost custom layer)
 
@@ -1910,6 +1910,8 @@ Relationships: `[]`
 | app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:103](../backend/app/services/bot_score.py#L103) |
 | app.services.brent_fred_parser._DEFAULT_BACKFILL_FROM | Call | computed source expression | [backend/app/services/brent_fred_parser.py:40](../backend/app/services/brent_fred_parser.py#L40) |
 | app.services.calculation_engine.DERIVED_SPECS | List | sequence/source expression | [backend/app/services/calculation_engine.py:66](../backend/app/services/calculation_engine.py#L66) |
+| app.services.calendar_i18n.INDICATOR_CALENDAR_CONTEXT_EN | Dict | 'cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services', 'ipi', 'unemployment', 'wages-nominal', 'retail-trade', 'housing-commissioned', 'ppi', 'construction-work', 'gdp-nominal', 'gdp-real', 'budget-revenue', 'budget-expenditure', 'budget-deficit', 'usd-rub', 'eur-rub', 'cny-rub', 'gold-price', 'ruonia', 'key-rate', 'international-reserves', 'm2', 'm1', 'm0', 'business-credit', 'consumer-credit', 'deposits-business', 'deposits-individual', 'deposit-rate', 'credit-rate-corp-short', 'credit-rate-corp-1to3y', 'credit-rate-corp-over3y', 'credit-rate-ind-short', 'credit-rate-ind-1to3y', 'credit-rate-ind-over3y', 'mortgage-rate', 'auto-loan-rate', 'exports', 'imports', 'trade-balance', 'services-exports', 'services-imports', 'current-account', 'external-debt', 'fdi-net' | [backend/app/services/calendar_i18n.py:10](../backend/app/services/calendar_i18n.py#L10) |
+| app.services.calendar_i18n.LEGACY_CONTEXT_RU | Dict | 'ipi', 'ruonia', 'exports', 'imports', 'budget-revenue', 'budget-expenditure', 'm2', 'm1', 'm0' | [backend/app/services/calendar_i18n.py:62](../backend/app/services/calendar_i18n.py#L62) |
 | app.services.calendar_seed.CBR_MEETINGS_2026 | List | sequence/source expression | [backend/app/services/calendar_seed.py:51](../backend/app/services/calendar_seed.py#L51) |
 | app.services.calendar_seed.CBR_MEETINGS_2027_TENTATIVE | List | sequence/source expression | [backend/app/services/calendar_seed.py:65](../backend/app/services/calendar_seed.py#L65) |
 | app.services.calendar_seed.ROSSTAT_MONTHLY_RELEASES | Dict | 'cpi', 'ipi', 'unemployment', 'wages-nominal', 'retail-trade', 'housing-commissioned', 'ppi', 'construction-work' | [backend/app/services/calendar_seed.py:75](../backend/app/services/calendar_seed.py#L75) |
@@ -2126,14 +2128,14 @@ Relationships: `[]`
 | app.services.rosstat_weekly_price_parser._BULLETIN_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:74](../backend/app/services/rosstat_weekly_price_parser.py#L74) |
 | app.services.rosstat_weekly_price_parser._REG_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:77](../backend/app/services/rosstat_weekly_price_parser.py#L77) |
 | app.services.rosstat_weekly_price_parser._BULLETIN_ROW_BY_LABEL | Dict | 'бензин автомобильный марки аи-92, л', 'бензин автомобильный марки аи-95, л', 'дизельное топливо, л' | [backend/app/services/rosstat_weekly_price_parser.py:82](../backend/app/services/rosstat_weekly_price_parser.py#L82) |
-| app.services.scrape_guard._SEARCH_UA_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:23](../backend/app/services/scrape_guard.py#L23) |
-| app.services.scrape_guard._NOISE_UA_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:35](../backend/app/services/scrape_guard.py#L35) |
-| app.services.scrape_guard._HOSTING_ASN | Call | computed source expression | [backend/app/services/scrape_guard.py:38](../backend/app/services/scrape_guard.py#L38) |
-| app.services.scrape_guard._HOSTING_ORG_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:66](../backend/app/services/scrape_guard.py#L66) |
-| app.services.scrape_guard._SKIP_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:85](../backend/app/services/scrape_guard.py#L85) |
-| app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:110](../backend/app/services/scrape_guard.py#L110) |
-| app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:119](../backend/app/services/scrape_guard.py#L119) |
-| app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:125](../backend/app/services/scrape_guard.py#L125) |
+| app.services.scrape_guard._SEARCH_UA_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:25](../backend/app/services/scrape_guard.py#L25) |
+| app.services.scrape_guard._NOISE_UA_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:37](../backend/app/services/scrape_guard.py#L37) |
+| app.services.scrape_guard._HOSTING_ASN | Call | computed source expression | [backend/app/services/scrape_guard.py:40](../backend/app/services/scrape_guard.py#L40) |
+| app.services.scrape_guard._HOSTING_ORG_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:68](../backend/app/services/scrape_guard.py#L68) |
+| app.services.scrape_guard._SKIP_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:87](../backend/app/services/scrape_guard.py#L87) |
+| app.services.scrape_guard._TELEMETRY_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:112](../backend/app/services/scrape_guard.py#L112) |
+| app.services.scrape_guard._AUTH_PREFIXES | Tuple | sequence/source expression | [backend/app/services/scrape_guard.py:121](../backend/app/services/scrape_guard.py#L121) |
+| app.services.scrape_guard._HEADLESS_GL_RE | Call | computed source expression | [backend/app/services/scrape_guard.py:127](../backend/app/services/scrape_guard.py#L127) |
 | app.services.search._PERCENT_UNITS | Tuple | sequence/source expression | [backend/app/services/search.py:46](../backend/app/services/search.py#L46) |
 | app.services.search._INTENT_CONCEPTS | Dict | 'cpi', 'unemployment', 'population', 'gdp-per-capita', 'gdp' | [backend/app/services/search.py:48](../backend/app/services/search.py#L48) |
 | app.services.search._REGION_HEADLINES | Dict | 'wage' | [backend/app/services/search.py:52](../backend/app/services/search.py#L52) |
@@ -2196,7 +2198,7 @@ Relationships: `[]`
 | app.services.seo_content.CATEGORIES | Call | computed source expression | [backend/app/services/seo_content.py:242](../backend/app/services/seo_content.py#L242) |
 | app.services.seo_content.STATIC_PAGES | List | sequence/source expression | [backend/app/services/seo_content.py:244](../backend/app/services/seo_content.py#L244) |
 | app.services.seo_content.PAGE_META | Dict | 'home', 'about', 'methodology', 'privacy', 'terms', 'compare', 'calculator', 'calculator-mortgage', 'calculator-compound', 'calendar', 'demographics', 'widgets', 'russia', 'russia-categories' | [backend/app/services/seo_content.py:259](../backend/app/services/seo_content.py#L259) |
-| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:608](../backend/app/services/seo_content.py#L608) |
+| app.services.seo_content.GLOBAL_INDICATOR_BLOCKS | Tuple | sequence/source expression | [backend/app/services/seo_content.py:607](../backend/app/services/seo_content.py#L607) |
 | app.services.seo_crawler.TRACKING_PARAMS | Set | sequence/source expression | [backend/app/services/seo_crawler.py:15](../backend/app/services/seo_crawler.py#L15) |
 | app.services.seo_i18n._VIEW_MODE_LABEL_EN | Dict | 'На конец периода', 'Средняя за период', 'К прошлому периоду', 'К году', 'К соотв. периоду пред. года', 'Г/г', 'Год к году', 'Кв/Кв', 'М/м', 'Н/н', 'По месяцам', 'По кварталам', 'По годам', 'По неделям', 'По дням', 'Уровень', 'Индекс', 'За период', 'Помесячно', 'Сглаживание', '12М среднее', 'Уровень ставки', 'Ежедневно', 'Понедельно', 'Поквартально', 'Годово', 'Частота отображения', 'Режим отображения', 'К прошлому году' | [backend/app/services/seo_i18n.py:45](../backend/app/services/seo_i18n.py#L45) |
 | app.services.seo_i18n._HERO_LABEL_EN | Dict | 'Год к году', 'Изменение г/г' | [backend/app/services/seo_i18n.py:77](../backend/app/services/seo_i18n.py#L77) |
@@ -2205,15 +2207,15 @@ Relationships: `[]`
 | app.services.seo_indicator_month._EN_MONTHS | Tuple | sequence/source expression | [backend/app/services/seo_indicator_month.py:50](../backend/app/services/seo_indicator_month.py#L50) |
 | app.services.seo_regional.MACRO_BY_TABLE | Dict | '1.1', '3.4', '2.10.1', '20.1', '8.1', '10.1', '16.20', '16.21', '16.22' | [backend/app/services/seo_regional.py:49](../backend/app/services/seo_regional.py#L49) |
 | app.services.seo_regional._MONTH_NAMES_GEN | Tuple | sequence/source expression | [backend/app/services/seo_regional.py:1281](../backend/app/services/seo_regional.py#L1281) |
-| app.services.seo_regional_year._ALLOWED_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/seo_regional_year.py:64](../backend/app/services/seo_regional_year.py#L64) |
-| app.services.seo_regional_year._YEAR_TEMPLATES_EN | Dict | 'h1', 'alt', 'caption', 'desc_main', 'change_vs', 'change_vs_pct', 'rf_h2', 'rf_para', 'rf_note', 'rank_h2', 'rank_full_link', 'rank_sentence', 'dyn_h2_by_year', 'dyn_h2_neighbors', 'checkpoints_h2', 'checkpoint_item', 'decade_h2', 'cta_h2', 'cta_link', 'cta_p', 'other_years_h2', 'other_year_link', 'trail_last', 'rank_desc', 'rank_desc_none', 'jsonld_name', 'keywords' | [backend/app/services/seo_regional_year.py:74](../backend/app/services/seo_regional_year.py#L74) |
-| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:902](../backend/app/services/seo_renderer.py#L902) |
-| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:911](../backend/app/services/seo_renderer.py#L911) |
-| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:920](../backend/app/services/seo_renderer.py#L920) |
-| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1016](../backend/app/services/seo_renderer.py#L1016) |
-| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1428](../backend/app/services/seo_renderer.py#L1428) |
-| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1600](../backend/app/services/seo_renderer.py#L1600) |
-| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:3070](../backend/app/services/seo_renderer.py#L3070) |
+| app.services.seo_regional_year._ALLOWED_REGION_KINDS | Tuple | sequence/source expression | [backend/app/services/seo_regional_year.py:65](../backend/app/services/seo_regional_year.py#L65) |
+| app.services.seo_regional_year._YEAR_TEMPLATES_EN | Dict | 'h1', 'alt', 'caption', 'desc_main', 'change_vs', 'change_vs_pct', 'rf_h2', 'rf_para', 'rf_note', 'rank_h2', 'rank_full_link', 'rank_sentence', 'dyn_h2_by_year', 'dyn_h2_neighbors', 'checkpoints_h2', 'checkpoint_item', 'decade_h2', 'cta_h2', 'cta_link', 'cta_p', 'other_years_h2', 'other_year_link', 'trail_last', 'rank_desc', 'rank_desc_none', 'jsonld_name', 'keywords' | [backend/app/services/seo_regional_year.py:75](../backend/app/services/seo_regional_year.py#L75) |
+| app.services.seo_renderer.FREQUENCY_LABELS_RU | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1040](../backend/app/services/seo_renderer.py#L1040) |
+| app.services.seo_renderer.FREQUENCY_LABELS_EN | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual', 'yearly' | [backend/app/services/seo_renderer.py:1049](../backend/app/services/seo_renderer.py#L1049) |
+| app.services.seo_renderer.FLAGSHIP_CODES | Call | computed source expression | [backend/app/services/seo_renderer.py:1058](../backend/app/services/seo_renderer.py#L1058) |
+| app.services.seo_renderer.YANDEX_VERIFICATION_CODES | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1154](../backend/app/services/seo_renderer.py#L1154) |
+| app.services.seo_renderer.AUTOLINK_TERMS | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1603](../backend/app/services/seo_renderer.py#L1603) |
+| app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN | Tuple | sequence/source expression | [backend/app/services/seo_renderer.py:1775](../backend/app/services/seo_renderer.py#L1775) |
+| app.services.seo_renderer._SSR_VS_COUNTRY_LABELS | Dict | 'germany', 'united-states', 'france', 'china', 'japan', 'russia' | [backend/app/services/seo_renderer.py:3244](../backend/app/services/seo_renderer.py#L3244) |
 | app.services.seo_today._MONTHS_GEN | Tuple | sequence/source expression | [backend/app/services/seo_today.py:49](../backend/app/services/seo_today.py#L49) |
 | app.services.seo_today._STALE_AFTER_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/seo_today.py:95](../backend/app/services/seo_today.py#L95) |
 | app.services.seo_today.TODAY_SPECS | DictComp | computed source expression | [backend/app/services/seo_today.py:127](../backend/app/services/seo_today.py#L127) |
@@ -2230,6 +2232,7 @@ Relationships: `[]`
 | app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:399](../backend/app/services/seo_world.py#L399) |
 | app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:493](../backend/app/services/seo_world.py#L493) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
+| app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:24](../backend/app/services/seo_year_ui.py#L24) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |
 | app.services.session_change_log.KEY_COLUMNS | Tuple | sequence/source expression | [backend/app/services/session_change_log.py:34](../backend/app/services/session_change_log.py#L34) |
 | app.services.session_change_log.MIRRORED_COLUMNS | Tuple | sequence/source expression | [backend/app/services/session_change_log.py:38](../backend/app/services/session_change_log.py#L38) |
@@ -2529,6 +2532,8 @@ Relationships: `[]`
 | scripts.metrika_daily_report.CHANNEL_RU | Dict | 'Ad traffic', 'Search engine traffic', 'Direct traffic', 'Internal traffic', 'Link traffic', 'Social network traffic' | [scripts/metrika_daily_report.py:44](../scripts/metrika_daily_report.py#L44) |
 | scripts.metrika_daily_report.CHANNEL_COLORS | Dict | 'Ad traffic', 'Search engine traffic', 'Direct traffic', 'Internal traffic', 'Link traffic', 'Social network traffic' | [scripts/metrika_daily_report.py:52](../scripts/metrika_daily_report.py#L52) |
 | scripts.read-project-workbooks.NS | Dict | 'm' | [scripts/read-project-workbooks.py:19](../scripts/read-project-workbooks.py#L19) |
+| scripts.refresh-search-crawler-ranges.YANDEX_VERIFIED_24S | Tuple | sequence/source expression | [scripts/refresh-search-crawler-ranges.py:37](../scripts/refresh-search-crawler-ranges.py#L37) |
+| scripts.refresh-search-crawler-ranges.MIN_PREFIXES | Dict | 'google', 'bing' | [scripts/refresh-search-crawler-ranges.py:48](../scripts/refresh-search-crawler-ranges.py#L48) |
 | scripts.repo-inventory.SKIP_DIRS | Set | sequence/source expression | [scripts/repo-inventory.py:56](../scripts/repo-inventory.py#L56) |
 | scripts.repo-inventory.SKIP_SUFFIXES | Set | sequence/source expression | [scripts/repo-inventory.py:63](../scripts/repo-inventory.py#L63) |
 | scripts.repo-inventory.SKIP_NAMES | Set | sequence/source expression | [scripts/repo-inventory.py:71](../scripts/repo-inventory.py#L71) |
