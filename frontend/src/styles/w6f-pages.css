@@ -67,7 +67,7 @@
 }
 @media (min-width: 768px) { .fe-cal-day__title { display: -webkit-box; } }
 .fe-cal-day__dots { display: flex; align-items: center; justify-content: center; gap: 3px; max-width: 100%; }
-.fe-cal-day__n { margin-left: 1px; color: var(--color-text-secondary); font-size: 11px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.fe-cal-day__n { margin-left: 1px; color: var(--color-text-secondary); font-size: 12px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
 @media (min-width: 768px) { .fe-cal-day__dots { display: none; } }
 .fe-cal-day__title.is-cbr { border-left-color: #3b82f6; }
 .fe-cal-day__title.is-rosstat { border-left-color: #10b981; }
@@ -182,8 +182,8 @@ a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
 }
 .fe-rank__name { grid-area: name; min-width: 0; font-size: 14px; line-height: 1.3; }
 .fe-rank__value { grid-area: value; font-size: 14px; font-weight: 650; white-space: nowrap; }
-.fe-rank__bar { grid-area: bar; height: 6px; border-radius: 9999px; background: rgba(32, 42, 60, 0.07); overflow: hidden; }
-.fe-rank__bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #D2BC7E, #9C7B22); }
+.fe-rank__bar { grid-area: bar; height: 6px; border-radius: 9999px; background: rgba(88, 74, 46, 0.09); overflow: hidden; }
+.fe-rank__bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, var(--fe-gold-bright, #C9A24D), var(--fe-gold, #B08A3E)); }
 @media (min-width: 640px) {
   .fe-rank__row {
     grid-template-columns: 40px minmax(0, 1.2fr) minmax(80px, 1fr) 128px;

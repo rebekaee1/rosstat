@@ -1,22 +1,25 @@
 @import "tailwindcss";
+@import "./styles/z1-tokens.css";
 
 @theme {
-  --color-obsidian: #EEF0F4;
-  --color-obsidian-light: #E6EAF0;
-  --color-obsidian-lighter: #DDE3EB;
-  --color-slate-dark: #CAD2DE;
+  /* Раунд 2 (Z1): тёплая «бумага» вместо серо-голубого фона; золото остаётся постоянным акцентом. */
+  --color-obsidian: #F6F2EA;
+  --color-obsidian-light: #F0EBE0;
+  --color-obsidian-lighter: #E8E2D4;
+  --color-slate-dark: #D4CCB9;
   --color-champagne: #AD8A48;
   --color-champagne-muted: #8A6B35;
-  --color-champagne-ink: #80642F;
+  --color-champagne-ink: #7A5F2A;
   --color-ivory: #202A3C;
   --color-ivory-muted: #465369;
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #F6F7F9;
-  --color-border-subtle: rgba(68, 87, 115, 0.13);
-  --color-border-champagne: rgba(173, 138, 72, 0.28);
+  --color-surface: #FFFEFC;
+  --color-surface-hover: #FAF7F0;
+  --color-border-subtle: rgba(88, 74, 46, 0.14);
+  --color-border-champagne: rgba(176, 138, 62, 0.32);
   --color-text-primary: #202A3C;
-  --color-text-secondary: #59697F;
-  --color-text-tertiary: #5F6E84;
+  /* Вторичный текст темнее прежнего: 6,4:1 на фоне страницы, 7,1:1 на карточке. */
+  --color-text-secondary: #4B596F;
+  --color-text-tertiary: #5A667A;
   --color-ice: #CAD8E5;
   --color-positive: #16A34A;
   --color-negative: #DC2626;
@@ -27,20 +30,28 @@
   --font-sans: "Manrope", system-ui, sans-serif;
   --font-display: "Manrope", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  /* Мелкий текст не меньше 13 px: text-xs был 12. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.45;
 }
 
 /* Shared visual foundation. Layout/chart components consume these same tokens. */
 :root {
   color-scheme: light;
-  --fe-ambient: #E9DFCD65;
-  --fe-glass: linear-gradient(130deg, #FFFFFFE8, #FFFFFF9C);
-  --fe-glass-soft: linear-gradient(130deg, #FFFFFFB8, #FFFFFF69);
+  --fe-ambient: #E4D3AC70;
+  --fe-glass: linear-gradient(130deg, #FFFFFFEE, #FFFDF8B0);
+  --fe-glass-soft: linear-gradient(130deg, #FFFFFFC2, #FFFCF572);
   --fe-glass-border: #FFFFFFE6;
-  --fe-nav-surface: rgba(244, 246, 249, 0.97);
-  --fe-shadow: 0 16px 45px -33px #26344E50, inset 0 1px 0 #FFFFFFA6;
-  --fe-button-bg: #F6F3EC;
-  --fe-button-border: #D3C4A3;
+  --fe-nav-surface: rgba(248, 245, 238, 0.97);
+  /* Двойная тень: тонкий контактный слой и широкий мягкий, оба тёплые (токен --fe-card-shadow в z1-tokens.css). */
+  --fe-shadow: var(--fe-card-shadow);
+  --fe-button-bg: #F7F1E3;
+  --fe-button-border: #D9C79B;
   --fe-art-opacity: 0.76;
+  /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
+  --fe-chip-active-bg: rgba(176, 138, 62, 0.17);
+  --fe-chip-active-border: #7A5F2A;
+  --fe-chip-active-ink: #6B5224;
 }
 
 /* Explicit preference also supports future theme controls; embed keeps its own palette. */
@@ -73,6 +84,12 @@
   --fe-glass-border: #BAD1EF26;
   --fe-nav-surface: rgba(28, 39, 55, 0.98);
   --fe-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
+  --fe-card-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
+  --fe-bg-warm: #151D2B;
+  --fe-text-muted: #BBC8D9;
+  --fe-chip-active-bg: rgba(208, 180, 125, 0.2);
+  --fe-chip-active-border: #D0B47D;
+  --fe-chip-active-ink: #E4C994;
   --fe-button-bg: #403A2E;
   --fe-button-border: #9D865650;
   --fe-art-opacity: 0.35;
@@ -80,9 +97,9 @@
 
 .fe-page-shell {
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--fe-box-wide, 1344px);
   margin-inline: auto;
-  padding-inline: clamp(16px, 3.1vw, 44px);
+  padding-inline: var(--fe-gutter, clamp(16px, 3.1vw, 32px));
 }
 .fe-panel, .fe-panel-soft {
   background: var(--fe-glass);
@@ -91,12 +108,14 @@
   box-shadow: var(--fe-shadow);
 }
 .fe-panel-soft { background: var(--fe-glass-soft); }
+/* Золотая кромка по верхнему краю: тонкий слой фона над стеклом, углы остаются чистыми. */
+.fe-panel { background: var(--fe-panel-edge, linear-gradient(90deg, transparent, transparent)) top center / 100% 1px no-repeat, var(--fe-glass); }
 .fe-calendar-event { background: var(--fe-glass); box-shadow: var(--fe-shadow); }
 .fe-dialog-panel { background: var(--fe-nav-surface); border-color: var(--fe-glass-border); }
 .fe-dialog-panel input { border-radius: 6px; }
 .fe-eyebrow {
   color: var(--color-text-secondary);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
   line-height: 1.5;
   letter-spacing: 0.12em;
@@ -109,8 +128,20 @@
   letter-spacing: -0.045em;
   font-weight: 570;
 }
+/* Тонкая золотая линия под заголовком раздела: постоянный акцент бренда, а не случайная вставка. */
+.fe-section-heading::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 2px;
+  margin-top: 10px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--fe-gold, #B08A3E), transparent);
+}
 .fe-data-page h1 { font-weight: 560; letter-spacing: -.04em; overflow-wrap: break-word; }
-.fe-reading { line-height: 1.8; overflow-wrap: anywhere; }
+.fe-reading { line-height: 1.8; overflow-wrap: anywhere; font-size: 1rem; }
+/* Длина строки 68–72 знака: длиннее глаз теряет начало следующей строки. */
+.fe-reading :is(p, li, blockquote) { max-width: 72ch; }
 .fe-reading h1 { line-height: 1.16; font-size: clamp(28px, 3vw, 40px); }
 .fe-reading h2 { margin-top: 32px; letter-spacing: -.025em; }
 .fe-reading a, .fe-link {
@@ -201,7 +232,7 @@
 }
 .fe-footer .fe-brand { font-size: 23px; }
 .fe-footer .fe-brand svg { width: 25px; }
-.fe-footer h4 { color: var(--color-text-secondary); font-size: 10px; letter-spacing: .12em; }
+.fe-footer h4 { color: var(--color-text-secondary); font-size: 12px; letter-spacing: .12em; }
 
 /* Composition only: HomeWorkbench still owns all live data and controls. */
 .fe-dashboard { padding-top: 100px; }
@@ -222,8 +253,8 @@
   opacity: var(--fe-art-opacity);
 }
 .fe-dashboard [data-block="home-hero"] h1 {
-  max-width: 720px;
-  font-size: clamp(34px, 3.7vw, 52px);
+  max-width: 760px;
+  font-size: clamp(34px, 4.3vw, 64px);
   font-weight: 540;
   line-height: 1.11;
   letter-spacing: -.05em;
@@ -231,9 +262,9 @@
 }
 .fe-dashboard [data-block="home-hero"] h1 + p {
   margin-top: 20px;
-  max-width: 600px;
-  font-size: clamp(14px, 1.2vw, 16px);
-  line-height: 1.75;
+  max-width: 620px;
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.7;
 }
 .fe-dashboard [data-block="home-data-scope"],
 .fe-dashboard [data-block="home-workbench"] {
@@ -248,9 +279,15 @@
 .fe-dashboard [data-block="home-data-scope"] .font-mono { font-family: var(--font-sans); }
 .fe-dashboard [data-block="home-data-scope"] dd {
   font-family: var(--font-sans);
-  font-size: 26px;
-  font-weight: 550;
+  font-size: 28px;
+  font-weight: 600;
   letter-spacing: -.035em;
+  font-variant-numeric: tabular-nums;
+  background: var(--fe-gold-gradient-text, linear-gradient(120deg, #6B5224, #B08A3E));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 .fe-dashboard [data-block="home-map-controls"] {
   margin-bottom: 18px;
@@ -259,7 +296,7 @@
 }
 .fe-dashboard [data-block="home-map-controls"] h2 { font-size: 20px; letter-spacing: -.02em; }
 .fe-category-card { min-height: 270px; transition: box-shadow 180ms, border-color 180ms, transform 180ms; }
-.fe-category-card:hover { box-shadow: 0 18px 44px -25px #26344E45; }
+.fe-category-card:hover { box-shadow: var(--fe-glow-gold, 0 0 0 1px rgba(176, 138, 62, 0.5)), var(--fe-card-shadow); transform: translateY(var(--fe-lift, -2px)); }
 .fe-category-card > :not(.fe-category-art) { position: relative; z-index: 1; }
 .fe-category-art {
   position: absolute;
@@ -311,6 +348,8 @@
 html {
   overflow-x: clip;
   scroll-behavior: smooth;
+  /* 16 px до 1600; дальше плавно до 18 px к 1920: на большом мониторе текст не мельчает, на телефоне ничего не меняется. */
+  font-size: clamp(16px, calc(16px + (100vw - 1600px) * 0.00625), 18px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -333,11 +372,16 @@ body {
      не рисуется, хотя computed и показывает blur(...). */
   overflow-x: clip;
   background-color: var(--color-obsidian);
-  background-image: radial-gradient(ellipse at 92% 0%, var(--fe-ambient), transparent 48%);
+  /* Спокойное золотое свечение сверху справа и прохладный отсвет слева: страница не плоская, но и не пёстрая. */
+  background-image:
+    radial-gradient(ellipse 62% 620px at 94% -6%, var(--fe-ambient), transparent 70%),
+    radial-gradient(ellipse 48% 520px at -8% 10%, rgba(214, 226, 238, 0.42), transparent 72%);
   background-repeat: no-repeat;
-  background-size: 100% 1100px;
+  background-size: 100% 1200px;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
@@ -521,13 +565,14 @@ nav.glass-surface-soft {
 
 /* ── Кнопка, чип, фокус, предохранитель анимаций (2026-10-04) ───────────────── */
 :root {
-  --color-accent-solid: #80642f;      /* champagne-ink: белый текст на нём ≥ 5:1 */
+  --color-accent-solid: #7a5f2a;      /* champagne-ink: белый текст на нём ≥ 6,5:1 */
   --color-on-accent: #ffffff;
   --fe-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   --fe-dur-fast: 120ms;
   --fe-dur-base: 200ms;
 }
 .fe-btn {
+  transition: transform 0.12s ease, box-shadow 0.18s ease, background-color 0.15s ease, border-color 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -544,8 +589,21 @@ nav.glass-surface-soft {
   white-space: nowrap;
 }
 .fe-btn--sm { min-height: 34px; padding: 0 12px; font-size: 13px; }
-.fe-btn--primary { background: var(--color-accent-solid); border-color: var(--color-accent-solid); color: var(--color-on-accent); }
-.fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) { background: #6b5329; border-color: #6b5329; }
+.fe-btn--primary {
+  background: linear-gradient(180deg, #876A33, var(--color-accent-solid) 70%);
+  border-color: var(--color-accent-solid);
+  color: var(--color-on-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 18px -12px rgba(122, 95, 42, 0.7);
+}
+.fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) {
+  background: linear-gradient(180deg, #7A5F2A, #6b5329 70%);
+  border-color: #6b5329;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 12px 22px -12px rgba(122, 95, 42, 0.8);
+}
+/* Подъём только при настоящем наведении мышью; на касании «залипает». */
+@media (hover: hover) {
+  .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
+}
 .fe-btn--secondary { background: var(--fe-glass-soft); border-color: var(--color-border-subtle); color: var(--color-text-primary); }
 .fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { border-color: var(--color-champagne); }
 .fe-btn--ghost { background: transparent; color: var(--color-champagne-ink); }
@@ -564,13 +622,33 @@ nav.glass-surface-soft {
   border-radius: 12px;
   background: var(--color-obsidian-lighter, rgba(68, 87, 115, 0.1));
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
+  text-wrap: balance;
 }
 .fe-chip:hover:not(:disabled):not(.is-active) { color: var(--color-text-primary); border-color: var(--color-border-subtle); }
-.fe-chip.is-active { background: rgba(173, 138, 72, 0.16); border-color: rgba(173, 138, 72, 0.35); color: var(--color-champagne-ink); }
+.fe-chip.is-active {
+  background: var(--fe-chip-active-bg);
+  border-color: var(--fe-chip-active-border);
+  color: var(--fe-chip-active-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+/* Подпись чипа: до двух строк по словам, лишнее скрывается с многоточием, а не рвётся посреди слова; полное имя в title. */
+.fe-chip__label {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-width: 0;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-align: inherit;
+  white-space: normal;
+}
 .fe-chip:disabled { opacity: 0.45; cursor: default; }
 @media (pointer: coarse) {
   .fe-btn { min-height: 44px; }
@@ -625,10 +703,24 @@ nav.glass-surface-soft {
 }
 
 /* Смысловые цвета изменений (см. lib/deltaTone.js). */
-.fe-tone--good { color: #15803d; }
+.fe-tone--good { color: #166534; }
 .fe-tone--bad { color: #b91c1c; }
 .fe-tone--neutral, .fe-tone--flat { color: var(--color-text-secondary); }
-.fe-delta-badge { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-variant-numeric: tabular-nums; }
+/* Плашка изменения: цвет смысла, мягкая заливка того же цвета, стрелка ▲▼. Без плашки — класс fe-delta-badge--plain. */
+.fe-delta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.fe-delta-badge > [aria-hidden='true'] { font-size: 0.72em; line-height: 1; }
+.fe-delta-badge--plain { padding: 0; background: none; }
 
 /* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
    .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
@@ -638,11 +730,12 @@ nav.glass-surface-soft {
    .fe-press    — отклик нажатия для кнопок и карточек (не двигает вёрстку).
    Всё отключается при prefers-reduced-motion. */
 @keyframes fe-reveal {
-  from { opacity: 0; transform: translate3d(0, var(--fe-rise, 14px), 0); }
+  from { opacity: 0; transform: translate3d(0, var(--fe-rise, 12px), 0); }
   to   { opacity: 1; transform: none; }
 }
 .fe-reveal {
-  animation: fe-reveal var(--fe-duration, 0.55s) cubic-bezier(0.22, 0.7, 0.2, 1) var(--fe-delay, 0s) both;
+  /* Общий словарь появления: сдвиг 12 px и прозрачность за 340 мс, ступень каскада 60 мс (токены z1-tokens.css). */
+  animation: fe-reveal var(--fe-duration, var(--fe-reveal-dur, 340ms)) cubic-bezier(0.22, 0.7, 0.2, 1) var(--fe-delay, 0s) both;
 }
 /* SSR-страница, оставленная на экране на время подгрузки чанка маршрута. */
 .fe-ssr-hold { padding-top: 5.5rem; }
@@ -681,11 +774,11 @@ nav.glass-surface-soft {
   animation: fe-page-progress-run 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) 120ms both;
 }
 .fe-press {
-  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.fe-press:active:not(:disabled) { transform: scale(0.985); }
+.fe-press:active:not(:disabled) { transform: scale(0.98); }
 @media (prefers-reduced-motion: reduce) {
   .fe-reveal { animation: none; }
   .fe-spinner { animation-duration: 2.4s; }
@@ -697,14 +790,13 @@ nav.glass-surface-soft {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+/* Тёплый бежево-золотой каркас с мягким бликом (1,6 с): виден на ivory-фоне и на белой карточке. */
 .skeleton {
-  background: linear-gradient(90deg,
-    var(--color-obsidian-light) 25%,
-    var(--color-obsidian-lighter) 37%,
-    var(--color-obsidian-light) 63%
-  );
+  background-color: color-mix(in srgb, var(--fe-gold, #B08A3E) 11%, var(--color-obsidian-light));
+  background-image: var(--fe-shimmer, linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.7) 50%, transparent 68%));
   background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out infinite;
+  background-repeat: no-repeat;
+  animation: shimmer var(--fe-shimmer-dur, 1.6s) ease-in-out infinite;
   border-radius: 0.5rem;
 }
 
@@ -785,7 +877,8 @@ nav.glass-surface-soft {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: sparkline-pulse 2.4s ease-in-out infinite;
+  /* Три мягких пульса и покой: десятки бесконечных анимаций на странице тормозят слабые телефоны. */
+  animation: sparkline-pulse 2.4s ease-in-out 3;
 }
 
 .sparkline-container {

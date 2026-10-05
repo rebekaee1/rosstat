@@ -7,7 +7,8 @@ export function SkeletonBox({ className, style }) {
 
 /**
  * Каркас графика. Радиус и поля — как у настоящей карточки (`.fe-panel.fe-chart-card`), высота плота —
- * как у IndicatorChart (280 на узком, 390 от 640px), чтобы при подмене на график страница не прыгала.
+ * как у IndicatorChart (280 на узком, 390 от 640px, 480 от 1024px: тот же шаг, что в chartHeightForWidth),
+ * чтобы при подмене на график страница не прыгала.
  * `height` задаёт фиксированную высоту плота (px) на любой ширине.
  */
 export function ChartSkeleton({ height }) {
@@ -16,7 +17,7 @@ export function ChartSkeleton({ height }) {
     <div className="fe-panel fe-chart-card" aria-hidden="true">
       <SkeletonBox className="mb-5 h-5 w-48 max-w-full" />
       <SkeletonBox
-        className={cn('w-full rounded-xl', !fixed && 'h-[280px] sm:h-[390px]')}
+        className={cn('w-full rounded-xl', !fixed && 'h-[280px] sm:h-[390px] lg:h-[480px]')}
         style={fixed ? { height } : undefined}
       />
     </div>

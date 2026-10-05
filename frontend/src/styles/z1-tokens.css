@@ -1,0 +1,228 @@
+/*
+ * Раунд 2, зона Z1: глобальные токены дизайн-системы и общий словарь движения.
+ * Подключается из index.css (@import). Остальные зоны берут значения только как
+ * var(--fe-…, запасное значение) и ничего здесь не правят.
+ *
+ * Что значит каждый токен (чтобы все зоны понимали его одинаково):
+ *   --fe-gold            основное золото: линии, кромки, заливки (не для мелкого текста: контраст 3:1)
+ *   --fe-gold-soft       мягкая золотая подложка (полупрозрачная): фон активного, плашки, подсветка
+ *   --fe-gold-ink        золото для ТЕКСТА на светлом фоне (контраст 5,4:1 на бумаге)
+ *   --fe-bg-warm         «бумага»: фон страницы (слоновая кость)
+ *   --fe-dark-surface    графит для тёмных стеклянных карточек (страны, подвал, герои)
+ *   --fe-text-muted      вторичный текст (контраст ≥ 5,7:1 на бумаге)
+ *   --fe-container-*     ширина КОНТЕНТА (без полей): данные 1280 → 1600 → 1760 → 1920, текст 760
+ *   --fe-box-*           то же плюс поля по бокам: это и есть max-width блока с padding-inline: var(--fe-gutter)
+ *   --fe-reveal-dur      длительность появления блока (340 мс); ступень каскада --fe-reveal-step (60 мс)
+ *   --fe-lift            подъём карточки при наведении: translateY(var(--fe-lift))
+ *   --fe-card-shadow     двойная тёплая тень карточки (значение для box-shadow)
+ *   --fe-glow-gold       золотое кольцо 1 px и мягкое свечение (значение для box-shadow, при наведении)
+ *   --fe-shimmer         градиент-блик для скелетов (значение для background-image)
+ */
+
+:root {
+  /* ── Палитра ─────────────────────────────────────────────────────────── */
+  --fe-gold: #B08A3E;
+  --fe-gold-bright: #C9A24D;
+  --fe-gold-soft: rgba(176, 138, 62, 0.16);
+  --fe-gold-ink: #7A5F2A;
+  --fe-gold-line: rgba(176, 138, 62, 0.55);
+  --fe-gold-gradient-text: linear-gradient(120deg, #6B5224 0%, #B08A3E 100%);
+  --fe-bg-warm: #F6F2EA;
+  --fe-bg-warm-2: #F0EBE0;
+  --fe-text-muted: #526077;
+
+  /* Тёмный стеклянный акцент (DS3): карточки-карты стран, подвал, редкие герои. Страница в целом остаётся светлой. */
+  --fe-dark-surface: #1E2638;
+  --fe-dark-surface-2: #2A3550;
+  --fe-dark-border: rgba(201, 162, 77, 0.42);
+  --fe-on-dark: #F3EFE6;
+  --fe-on-dark-muted: #B9C0CE;
+
+  /* ── Контейнеры (DS1) ────────────────────────────────────────────────── */
+  --fe-gutter: clamp(16px, 3.1vw, 32px);
+  --fe-container-text: 760px;
+  --fe-container-data: 1280px;
+  /* Оболочка (шапка, лента, подвал) и главная держатся той же ширины, что и страницы данных: края совпадают. */
+  --fe-container-wide: var(--fe-container-data);
+  --fe-box-text: calc(var(--fe-container-text) + 2 * var(--fe-gutter));
+  --fe-box-data: calc(var(--fe-container-data) + 2 * var(--fe-gutter));
+  --fe-box-wide: calc(var(--fe-container-wide) + 2 * var(--fe-gutter));
+
+  /* ── Движение (DS5) ──────────────────────────────────────────────────── */
+  --fe-reveal-dur: 340ms;
+  --fe-reveal-step: 60ms;
+  --fe-ease-reveal: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --fe-lift: -2px;
+  --fe-line-draw-dur: 700ms;
+
+  /* ── Поверхности ─────────────────────────────────────────────────────── */
+  --fe-card-shadow:
+    0 1px 2px rgba(70, 56, 28, 0.05),
+    0 20px 48px -32px rgba(70, 56, 28, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  --fe-glow-gold:
+    0 0 0 1px rgba(176, 138, 62, 0.5),
+    0 16px 36px -20px rgba(176, 138, 62, 0.6);
+  /* Тонкая золотая кромка по верхнему краю карточки: слой фона, а не рамка, чтобы углы оставались чистыми. */
+  --fe-panel-edge: linear-gradient(90deg, transparent 6%, rgba(176, 138, 62, 0.5) 50%, transparent 94%);
+  /* Радиальное золотое свечение 6–8 % за героями. */
+  --fe-glow-bg: radial-gradient(ellipse 60% 70% at 85% 0%, rgba(201, 162, 77, 0.1), transparent 70%);
+  --fe-shimmer: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.72) 50%, transparent 68%);
+  --fe-shimmer-dur: 1.6s;
+}
+
+/* Крупные экраны: контент растёт ступенями, поля остаются прежними (DS1). */
+@media (min-width: 1700px) { :root { --fe-container-data: 1600px; } }
+@media (min-width: 1920px) { :root { --fe-container-data: 1760px; } }
+@media (min-width: 2400px) { :root { --fe-container-data: 1920px; } }
+
+/* ── Контейнер страниц ──────────────────────────────────────────────────────
+   :where() обнуляет специфичность: правило перебивает утилиты Tailwind (слой ниже), но любая
+   страничная таблица стилей зоны, которой нужна иная ширина, перебивает его без усилий. */
+:where(.fe-data-page) { padding-inline: var(--fe-gutter); }
+:where(.fe-data-page.max-w-7xl, .fe-data-page.max-w-6xl, .fe-data-page.max-w-5xl, .fe-data-page.max-w-4xl) {
+  max-width: var(--fe-box-data);
+}
+:where(.fe-data-page.max-w-3xl) { max-width: var(--fe-box-text); }
+:where(.fe-gutter) { padding-inline: var(--fe-gutter); }
+
+.fe-container, .fe-container--data { width: 100%; max-width: var(--fe-box-data); margin-inline: auto; padding-inline: var(--fe-gutter); }
+.fe-container--wide { max-width: var(--fe-box-wide); }
+.fe-container--text { max-width: var(--fe-box-text); }
+
+/* ── Типографика (DS4) ──────────────────────────────────────────────────── */
+:where(h1, h2, h3, h4) { text-wrap: balance; }
+:where(p, li, dd) { text-wrap: pretty; }
+/* Цифры в таблицах и карточках не «пляшут» по ширине. */
+:where(table, .fe-datatable, .fe-stat-cell, .fe-num, .tabular) { font-variant-numeric: tabular-nums; }
+
+/* Мелкие подписи с произвольным размером Tailwind (9–12,5 px) поднимаются до 13 px;
+   заглавные «ярлыки» с разрядкой — до 12 px. Класс с вариантом (sm:text-[...]) правило не трогает. */
+:where(
+  [class*='text-[9px]'], [class*='text-[9.5px]'], [class*='text-[10px]'], [class*='text-[10.5px]'],
+  [class*='text-[11px]'], [class*='text-[11.5px]'], [class*='text-[12px]'], [class*='text-[12.5px]']
+):not([class*=':text-']) {
+  font-size: 0.8125rem;
+}
+:where(
+  [class*='text-[9px]'], [class*='text-[9.5px]'], [class*='text-[10px]'], [class*='text-[10.5px]'], [class*='text-[11px]'],
+  [class*='text-[11.5px]']
+).uppercase:not([class*=':text-']) {
+  font-size: 0.75rem;
+}
+
+/* Единица измерения рядом с числом: мельче и на пару тонов светлее, но не меньше 12 px (DS8). */
+.fe-unit {
+  margin-inline-start: 0.22em;
+  color: var(--color-text-tertiary);
+  font-size: max(12px, 0.6em);
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.fe-unit--tight { margin-inline-start: 0.1em; }
+
+/* Цифры-герои градиентом золота. Контраст крупного текста ≥ 3:1 (самая светлая точка 3,2:1 на белом). */
+.fe-gold-text {
+  background: var(--fe-gold-gradient-text);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Тонкая золотая линия под заголовком раздела. Заголовки раздела с классом font-display получают её сами. */
+.fe-gold-rule::after,
+:where(.fe-data-page h2.font-display)::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin-top: 9px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--fe-gold), transparent);
+}
+
+/* ── Поверхности ───────────────────────────────────────────────────────── */
+/* Стеклянный слой для ключевых карточек. Только по месту: backdrop-filter делает блок
+   контейнером для fixed-потомков, поэтому на каждую панель его не вешаем. */
+.fe-glass-key {
+  background: var(--fe-glass);
+  border: 1px solid var(--fe-glass-border);
+  box-shadow: var(--fe-card-shadow);
+  backdrop-filter: blur(18px) saturate(1.1);
+}
+@media (max-width: 767px) {
+  .fe-glass-key { backdrop-filter: none; }
+}
+
+/* Тёмная стеклянная карточка: графит, золотой контур, тёплый отсвет в правом верхнем углу.
+   Внутри переопределены цветовые токены, поэтому утилиты text-text-*, border-border-subtle работают сами. */
+.fe-dark-card, .fe-surface-dark {
+  --color-text-primary: var(--fe-on-dark);
+  --color-text-secondary: #C3CAD8;
+  --color-text-tertiary: var(--fe-on-dark-muted);
+  --color-border-subtle: rgba(255, 255, 255, 0.12);
+  --color-champagne-ink: #E0C27A;
+  --color-surface: rgba(255, 255, 255, 0.06);
+  position: relative;
+  border: 1px solid var(--fe-dark-border);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.18), transparent 58%),
+    linear-gradient(160deg, var(--fe-dark-surface-2), var(--fe-dark-surface) 72%);
+  color: var(--fe-on-dark);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 52px -30px rgba(18, 24, 38, 0.7);
+}
+.fe-dark-card a, .fe-surface-dark a { color: inherit; }
+
+/* Золотая подсветка-свечение за героем страницы (DS2). Кладётся фоном блока. */
+.fe-glow-hero { background-image: var(--fe-glow-bg); background-repeat: no-repeat; }
+
+/* ── Движение (DS5) ─────────────────────────────────────────────────────── */
+/* Каскад: родитель с .fe-stagger, у детей задержка 60 мс на ступень (до 12 ступеней). */
+.fe-stagger > * {
+  animation: fe-reveal var(--fe-reveal-dur) var(--fe-ease-reveal) both;
+  animation-delay: calc(var(--fe-i, 0) * var(--fe-reveal-step));
+}
+.fe-stagger > :nth-child(2) { --fe-i: 1; }
+.fe-stagger > :nth-child(3) { --fe-i: 2; }
+.fe-stagger > :nth-child(4) { --fe-i: 3; }
+.fe-stagger > :nth-child(5) { --fe-i: 4; }
+.fe-stagger > :nth-child(6) { --fe-i: 5; }
+.fe-stagger > :nth-child(7) { --fe-i: 6; }
+.fe-stagger > :nth-child(8) { --fe-i: 7; }
+.fe-stagger > :nth-child(9) { --fe-i: 8; }
+.fe-stagger > :nth-child(10) { --fe-i: 9; }
+.fe-stagger > :nth-child(11) { --fe-i: 10; }
+.fe-stagger > :nth-child(n + 12) { --fe-i: 11; }
+/* Существующий каскад страниц (--i от 0 до 5) выравнивается по той же ступени 60 мс. */
+:root .fe-reveal.fe-reveal--stagger { --fe-delay: calc(var(--i, 0) * var(--fe-reveal-step)); }
+
+/* Линия графика рисуется слева направо. Длину пути задаёт --path-length (getTotalLength). */
+@keyframes fe-line-draw {
+  from { stroke-dashoffset: var(--path-length, 1000); }
+  to { stroke-dashoffset: 0; }
+}
+.fe-draw-line {
+  stroke-dasharray: var(--path-length, 1000);
+  animation: fe-line-draw var(--fe-line-draw-dur) cubic-bezier(0.3, 0.7, 0.2, 1) both;
+}
+
+/* Подъём карточки на 2 px и золотое кольцо при наведении мышью; на касании hover «залипает», поэтому не включаем. */
+@media (hover: hover) {
+  :is(a, button, [role='link']).fe-panel,
+  .fe-lift {
+    transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  :is(a, button, [role='link']).fe-panel:hover,
+  .fe-lift:hover {
+    transform: translateY(var(--fe-lift));
+    box-shadow: var(--fe-glow-gold), var(--fe-card-shadow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-stagger > *, .fe-draw-line { animation: none; }
+  :is(a, button, [role='link']).fe-panel:hover, .fe-lift:hover { transform: none; }
+}

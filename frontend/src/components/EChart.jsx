@@ -9,6 +9,7 @@ import {
   TooltipComponent, VisualMapComponent, CalendarComponent, GridComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { ECHART_BASE } from '../lib/chartTheme';
 
 echarts.use([
   SankeyChart, SunburstChart, HeatmapChart,
@@ -32,7 +33,15 @@ export default function EChart({ option, height = 320, className = '' }) {
   }, []);
 
   useEffect(() => {
-    if (chartRef.current && option) chartRef.current.setOption(option, true);
+    if (!chartRef.current || !option) return;
+    // Общая тема: палитра, шрифт и стеклянная подсказка; всё, что задал вызывающий, имеет приоритет.
+    chartRef.current.setOption({
+      ...ECHART_BASE,
+      color: [...ECHART_BASE.color],
+      ...option,
+      textStyle: { ...ECHART_BASE.textStyle, ...option.textStyle },
+      tooltip: { ...ECHART_BASE.tooltip, ...option.tooltip },
+    }, true);
   }, [option]);
 
   return <div ref={nodeRef} className={className} style={{ width: '100%', height }} />;

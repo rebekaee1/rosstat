@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_HEIGHTS, CHART_THEME, GRID_PROPS, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, niceAxis,
+  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, TOOLTIP_STYLES,
+  areaGradientStops, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, lastPointTag, niceAxis,
 } from './chartTheme';
 
 function channel(c) {
@@ -48,8 +49,8 @@ describe('chartTheme', () => {
   });
 
   it('axisTick takes font and colour from the theme and allows overrides', () => {
-    expect(axisTick()).toMatchObject({ fill: CHART_THEME.axis, fontFamily: CHART_THEME.font, fontSize: 11 });
-    expect(axisTick({ fontSize: 12 }).fontSize).toBe(12);
+    expect(axisTick()).toMatchObject({ fill: CHART_THEME.axis, fontFamily: CHART_THEME.font, fontSize: 12 });
+    expect(axisTick({ fontSize: 13 }).fontSize).toBe(13);
   });
 
   it('exposes up to ten distinct series colours', () => {
@@ -104,5 +105,46 @@ describe('niceAxis: ровный шаг оси Y', () => {
     const axis = niceAxis([-0.4, 3.1]);
     expect(axis.ticks).toContain(0);
     expect(axis.ticks[1] - axis.ticks[0]).toBe(1);
+  });
+});
+
+
+describe('DS7: золотая линия, заливка, движение, подсказка', () => {
+  it('основная линия золотая 2,5–3 px, у ряда сравнения первым идёт золото', () => {
+    expect(CHART_LINE.stroke).toBe(CHART_THEME.gold);
+    expect(CHART_LINE.strokeWidth).toBeGreaterThanOrEqual(2.5);
+    expect(CHART_LINE.strokeWidth).toBeLessThanOrEqual(3);
+    expect(CHART_THEME.series[0]).toBe(CHART_THEME.gold);
+  });
+
+  it('заливка под линией 12–35 % у линии и почти ноль у оси', () => {
+    expect(CHART_AREA.top).toBeGreaterThanOrEqual(0.12);
+    expect(CHART_AREA.top).toBeLessThanOrEqual(0.35);
+    const [from, to] = areaGradientStops();
+    expect(from).toMatchObject({ offset: '0%', stopColor: CHART_THEME.gold, stopOpacity: CHART_AREA.top });
+    expect(to.stopOpacity).toBeLessThan(0.05);
+    expect(areaGradientStops('#202A3C', { top: 0.2 })[0].stopColor).toBe('#202A3C');
+  });
+
+  it('линия рисуется 700 мс', () => {
+    expect(CHART_MOTION.drawMs).toBe(700);
+  });
+
+  it('подсказка стеклянная, а курсор — золотая вертикаль', () => {
+    expect(TOOLTIP_STYLES.contentStyle.backdropFilter).toMatch(/blur\(/);
+    expect(TOOLTIP_STYLES.cursor.stroke).toMatch(/^rgba\(176,\s*138,\s*62/);
+  });
+
+  it('плашка последнего значения растёт с подписью и не уже своей высоты', () => {
+    const short = lastPointTag('28,1 млн');
+    const long = lastPointTag('30 767 млрд $');
+    expect(long.width).toBeGreaterThan(short.width);
+    expect(lastPointTag('').width).toBeGreaterThanOrEqual(short.height);
+    expect(short.radius).toBe(short.height / 2);
+  });
+
+  it('золото линии и тёмное золото текста различимы на карточке', () => {
+    expect(contrast(CHART_THEME.gold, CHART_THEME.surface)).toBeGreaterThanOrEqual(3);
+    expect(contrast(CHART_THEME.champagneInk, CHART_THEME.pearl)).toBeGreaterThanOrEqual(4.5);
   });
 });

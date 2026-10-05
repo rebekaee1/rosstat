@@ -9,7 +9,7 @@ import Button from './Button';
  * Человек отличает «грузится» от «сломалось» и может сам повторить, не уходя со страницы.
  * `onRefresh` — повторный запрос данных этой страницы; без него страница перезагружается целиком.
  */
-export default function LoadingNote({ onRefresh, slowAfterMs = 8000, className }) {
+export default function LoadingNote({ onRefresh, slowAfterMs = 5000, className }) {
   const t = useT();
   const [slow, setSlow] = useState(false);
   useEffect(() => {

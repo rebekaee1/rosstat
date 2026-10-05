@@ -1,31 +1,73 @@
 // Единая тема графиков: оси, сетка, шрифт, палитра, подсказка, высота по ширине.
-// Данные имеют фиксированную семантику: наблюдения = ink, прогноз = пунктир champagne,
-// сравнения = холодный slate. Страницы не пишут hex/rgba в разметке графика — берут отсюда.
+// Раунд 2 (DS7): основная линия графика золотая (`gold`), заливка под ней золото 30 % → 0, прогноз — пунктир ink,
+// сравнения — единая палитра `series` (золото, графит, затем спокойные приглушённые цвета).
+// Страницы не пишут hex/rgba в разметке графика — берут отсюда.
 //
-// Контраст подписей осей: #59697F на белой карточке графика 5,6:1, на фоне страницы
-// (#EEF0F4) 4,9:1 — оба выше порога 4,5:1 для текста.
+// Контраст подписей осей: #566379 на белой карточке графика 6,1:1, на фоне страницы
+// (#F6F2EA) 5,4:1 — оба выше порога 4,5:1 для текста.
 export const CHART_THEME = Object.freeze({
   ink: '#202A3C',
+  // Основное золото линий и заливок (не для мелкого текста: контраст на белом 3,2:1).
+  gold: '#B08A3E',
+  goldBright: '#C9A24D',
   champagne: '#AD8A48',
-  // Тёмный оттенок акцента для ТЕКСТА (на белом 5,5:1); champagne — только для линий и заливок.
-  champagneInk: '#80642F',
+  // Тёмный оттенок акцента для ТЕКСТА (на белом 6,0:1); champagne и gold — только для линий и заливок.
+  champagneInk: '#7A5F2A',
   blue: '#6B8299',
   ice: '#CAD8E5',
-  pearl: '#EEF0F4',
+  pearl: '#F6F2EA',
   surface: '#FFFFFF',
   grid: 'rgba(32,42,60,0.09)',
-  axis: '#59697F',
+  axis: '#566379',
   axisLine: 'rgba(32,42,60,0.18)',
   refLine: 'rgba(32,42,60,0.32)',
-  cursor: 'rgba(32,42,60,0.24)',
+  cursor: 'rgba(176,138,62,0.6)',
   font: 'Manrope, system-ui, sans-serif',
-  tickSize: 11,
-  // До 10 различимых цветов для рядов «Сравнения»; первый — ink, второй — champagne.
+  // Оси читаются: 12 px (было 11).
+  tickSize: 12,
+  // До 10 различимых цветов для рядов «Сравнения»; первый — золото, второй — графит.
   series: Object.freeze([
-    '#202A3C', '#AD8A48', '#6B8299', '#5D857F', '#957D9C',
-    '#A86F65', '#818754', '#59677D', '#987B68', '#708B9E',
+    '#B08A3E', '#202A3C', '#5E86A8', '#4F8A7B', '#8E6FA0',
+    '#B5675B', '#7E8A4B', '#5A6A86', '#A27B5C', '#6C93A8',
   ]),
 });
+
+/** Основная линия: золото 2,75 px со скруглёнными концами (DS7 просит 2,5–3 px). */
+export const CHART_LINE = Object.freeze({
+  stroke: CHART_THEME.gold,
+  strokeWidth: 2.75,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+});
+
+/** Заливка под линией: у линии 30 %, к оси 2 % (в диапазоне 12–35 % из DS7). */
+export const CHART_AREA = Object.freeze({ top: 0.3, bottom: 0.02 });
+
+/** Стопы градиента заливки для `<linearGradient>`: `areaGradientStops().map(...)`. Цвет по умолчанию — золото. */
+export function areaGradientStops(color = CHART_THEME.gold, { top = CHART_AREA.top, bottom = CHART_AREA.bottom } = {}) {
+  return [
+    { offset: '0%', stopColor: color, stopOpacity: top },
+    { offset: '100%', stopColor: color, stopOpacity: bottom },
+  ];
+}
+
+/** Движение графика: линия рисуется слева направо 700 мс, смена серии плавная. Для `animationDuration` Recharts. */
+export const CHART_MOTION = Object.freeze({
+  drawMs: 700,
+  switchMs: 450,
+  easing: 'ease-out',
+});
+
+/**
+ * Плашка с последним значением справа от линии («28,1 млн»): размеры под текст.
+ * Ширина считается по числу знаков (цифра ≈ 0,58 em), поэтому плашка не режет подпись и не налезает на линию:
+ * сдвиньте её на `gap` вправо от точки.
+ */
+export function lastPointTag(text, { fontSize = 12, padX = 8, height = 22, gap = 10 } = {}) {
+  const chars = String(text ?? '').length;
+  const width = Math.max(height, Math.ceil(chars * fontSize * 0.6) + padX * 2);
+  return { width, height, radius: height / 2, gap, fontSize, padX };
+}
 
 /** Стиль подписи оси для `tick={...}` Recharts. */
 export function axisTick(overrides = {}) {
@@ -63,19 +105,36 @@ export function refLabel(value, position = 'insideTopRight') {
  * тот же шрифт, рамка и радиус, что у собственных подсказок страниц.
  */
 export const TOOLTIP_STYLES = Object.freeze({
+  // Стеклянная плашка: полупрозрачная белая с размытием фона, золотая тонкая кромка.
   contentStyle: Object.freeze({
     fontFamily: CHART_THEME.font,
-    fontSize: 12,
+    fontSize: 13,
     color: CHART_THEME.ink,
-    background: CHART_THEME.surface,
-    border: '1px solid rgba(68,87,115,0.18)',
-    borderRadius: 12,
-    boxShadow: '0 12px 32px -18px rgba(38,52,78,0.45)',
+    background: 'rgba(255,255,255,0.86)',
+    backdropFilter: 'blur(14px) saturate(1.1)',
+    border: '1px solid rgba(176,138,62,0.34)',
+    borderRadius: 14,
+    boxShadow: '0 14px 34px -20px rgba(70,56,28,0.5)',
     padding: '10px 12px',
   }),
   labelStyle: Object.freeze({ color: CHART_THEME.axis, fontWeight: 600, marginBottom: 4 }),
   itemStyle: Object.freeze({ color: CHART_THEME.ink, padding: '1px 0' }),
+  // Вертикальная золотая линия под курсором.
   cursor: Object.freeze({ stroke: CHART_THEME.cursor, strokeWidth: 1 }),
+});
+
+/** Базовые настройки ECharts (BI и сложные диаграммы): та же палитра, шрифт и стеклянная подсказка. */
+export const ECHART_BASE = Object.freeze({
+  color: CHART_THEME.series,
+  textStyle: Object.freeze({ fontFamily: CHART_THEME.font, color: CHART_THEME.axis }),
+  tooltip: Object.freeze({
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderColor: 'rgba(176,138,62,0.34)',
+    borderWidth: 1,
+    padding: [10, 12],
+    textStyle: Object.freeze({ color: CHART_THEME.ink, fontFamily: CHART_THEME.font, fontSize: 13 }),
+    extraCssText: 'border-radius:14px;box-shadow:0 14px 34px -20px rgba(70,56,28,.5);backdrop-filter:blur(14px);',
+  }),
 });
 
 /**
@@ -101,7 +160,7 @@ export const NARROW_CHART_WIDTH = 420;
  * считается по числу знаков (цифра ≈ 6,6 px при шрифте 11) плюс запас: подпись не режется слева,
  * ось просто становится шире.
  */
-export function axisWidthForLabels(labels, { min = 36, max = 110, perChar = 7, pad = 10 } = {}) {
+export function axisWidthForLabels(labels, { min = 36, max = 110, perChar = 7.6, pad = 10 } = {}) {
   const longest = (labels || []).reduce((n, label) => Math.max(n, String(label ?? '').length), 0);
   return Math.max(min, Math.min(max, Math.round(longest * perChar) + pad));
 }

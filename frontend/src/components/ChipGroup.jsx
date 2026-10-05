@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
 import { splitChipOverflow } from '../lib/chipOverflow';
-import Chip from './Chip';
+import Chip, { ChipLabel } from './Chip';
+import { chipTitleFor } from '../lib/chipLabel';
 import '../styles/chart-controls.css';
 import '../styles/x2-indicator.css';
 
@@ -30,14 +31,15 @@ export default function ChipGroup({ label, nowrap = false, grid = false, dense =
  * Чип-ссылка (смена частоты, срез показателя): навигация, поэтому aria-current, а не aria-pressed.
  * Внешний вид — тот же `.fe-chip`, что у `Chip`.
  */
-export function ChipLink({ active = false, className, children, ...rest }) {
+export function ChipLink({ active = false, className, children, title, ...rest }) {
   return (
     <Link
       aria-current={active ? 'page' : undefined}
+      title={chipTitleFor(children, title)}
       className={cn('fe-chip fe-press', active && 'is-active', className)}
       {...rest}
     >
-      {children}
+      <ChipLabel>{children}</ChipLabel>
     </Link>
   );
 }

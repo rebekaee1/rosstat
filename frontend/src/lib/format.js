@@ -53,7 +53,7 @@ export function formatChartAxisDate(dateStr, format = 'short', { multiYear = fal
   return formatDate(dateStr, format === 'full' ? 'short' : format, loc);
 }
 
-/** JetBrains Mono 11px: чуть консервативнее реальной ширины кириллицы. */
+/** Оценка ширины знака подписи оси (12 px Manrope ≈ 6,8–7,2): зазор AXIS_LABEL_GAP_PX покрывает остаток. */
 const AXIS_PX_PER_CHAR = 6.6;
 const AXIS_LABEL_GAP_PX = 12;
 
@@ -501,6 +501,121 @@ export function formatAxisTick(val, digits = 2, locale) {
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs, loc);
   return decPart ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;
+}
+
+// ── Краткие числа и периоды для подписей (DS8) ────────────────────────────────────────────────
+// «28 076 986,00» → «28,1 млн», «849 680 млн €» → «849,7 млрд €», «30 767 млрд $» → «30,8 трлн $».
+
+const NBSP = '\u00A0';
+const SCALE_WORDS = {
+  ru: [[1e12, 'трлн'], [1e9, 'млрд'], [1e6, 'млн'], [1e3, 'тыс.']],
+  en: [[1e12, 'trillion'], [1e9, 'billion'], [1e6, 'million'], [1e3, 'thousand']],
+};
+const SCALE_SHORT_EN = { 1e12: 'T', 1e9: 'B', 1e6: 'M', 1e3: 'K' };
+// Единица, которая уже содержит масштаб: «млрд $» → множитель 1e9 и остаток «$».
+const UNIT_SCALE_RE = /^(трлн|млрд|млн|тыс\.?|trillion|billion|million|thousand|trn|bln|mln|ths\.?|bn)(?=\s|$)\s*(.*)$/i;
+const UNIT_SCALE_MULT = {
+  'трлн': 1e12, trillion: 1e12, trn: 1e12,
+  'млрд': 1e9, billion: 1e9, bln: 1e9, bn: 1e9,
+  'млн': 1e6, million: 1e6, mln: 1e6,
+  'тыс.': 1e3, 'тыс': 1e3, thousand: 1e3, 'ths.': 1e3, ths: 1e3,
+};
+// Единицы, которые не укрупняют: проценты, индексы, «на душу», цены за штуку.
+const NO_COMPACT_UNIT = /%|‰|п\.\s?п\.|пункт|индекс|index|на\s|per\s|\/|за\s|в\s(год|мес)/i;
+
+/** Сколько знаков после запятой у укрупнённого числа: 849,7 / 28,1 / 3,08. Хвост «,0» отбрасывается отдельно. */
+function compactDigitsFor(scaled) {
+  const abs = Math.abs(scaled);
+  return abs >= 10 ? 1 : 2;
+}
+
+function trimZeroDecimals(text, loc) {
+  const dec = loc === 'en' ? '.' : ',';
+  return text.includes(dec) ? text.replace(new RegExp(`\\${dec}?0+$`), '') : text;
+}
+
+/**
+ * Число в укрупнённом виде без единицы: «28,1 млн», «849,7 тыс.», «30,8 трлн»; EN: «28.1M», «849.7K».
+ * Ниже 100 000 число остаётся целым с разрядными пробелами («12 345»). Нечисло даёт «—».
+ * Единицы измерения не знает: для «млн €» и т. п. берите formatCompactWithUnit.
+ */
+export function formatCompactNumber(val, { locale, digits } = {}) {
+  if (val == null) return '—';
+  const num = Number(val);
+  if (!Number.isFinite(num)) return '—';
+  const loc = resolveFormatLocale(locale);
+  const abs = Math.abs(num);
+  if (abs < 1e5) {
+    // Малые числа: до 2 знаков только если они действительно есть; «12 345» без «,00».
+    const d = digits ?? (Number.isInteger(num) || abs >= 100 ? 0 : 2);
+    return trimZeroDecimals(formatFixed(num, d, loc), loc);
+  }
+  const step = SCALE_WORDS.ru.find(([limit]) => abs >= limit);
+  const [limit] = step || [1];
+  const scaled = num / limit;
+  const text = trimZeroDecimals(formatFixed(scaled, digits ?? compactDigitsFor(scaled), loc), loc);
+  if (loc === 'en') return `${text}${SCALE_SHORT_EN[limit]}`;
+  return `${text}${NBSP}${SCALE_WORDS.ru.find(([l]) => l === limit)[1]}`;
+}
+
+/**
+ * Значение и единица раздельно, чтобы единицу можно было набрать мельче (`.fe-unit`).
+ * «849 680» + «млн €» → { num: '849,7', unit: 'млрд €' }; «28 076 986» + «чел.» → { num: '28,1', unit: 'млн чел.' };
+ * «3,2» + «%» → { num: '3,2', unit: '%' } (проценты и индексы не укрупняются).
+ */
+export function formatCompactParts(val, unit = '', { locale, digits } = {}) {
+  const raw = String(unit ?? '').trim();
+  if (val == null || !Number.isFinite(Number(val))) return { num: '—', unit: raw, compacted: false };
+  const num = Number(val);
+  const loc = resolveFormatLocale(locale);
+  const scaleMatch = UNIT_SCALE_RE.exec(raw);
+  const mult = scaleMatch ? (UNIT_SCALE_MULT[scaleMatch[1].toLowerCase()] ?? 1) : 1;
+  const base = scaleMatch ? scaleMatch[2].trim() : raw;
+  const plain = () => {
+    const cfg = UNIT_CONFIG[raw];
+    const d = digits ?? (cfg ? cfg.digits : (Number.isInteger(num) ? 0 : 2));
+    return { num: formatFixed(num, d, loc), unit: raw, compacted: false };
+  };
+  if (NO_COMPACT_UNIT.test(raw)) return plain();
+  const actual = num * mult;
+  const abs = Math.abs(actual);
+  if (abs < 1e5 && mult === 1) return plain();
+  // Самая крупная ступень, не превышающая значение: 250 млн ₽ остаются «250 млн ₽», 849 680 млн € становятся «849,7 млрд €».
+  const step = SCALE_WORDS[loc].find(([limit]) => abs >= limit);
+  if (!step) return plain();
+  const [limit, word] = step;
+  const scaled = actual / limit;
+  const text = trimZeroDecimals(formatFixed(scaled, digits ?? compactDigitsFor(scaled), loc), loc);
+  const tail = base ? `${word}${NBSP}${base}` : word;
+  return { num: text, unit: tail, compacted: true };
+}
+
+/** «28,1 млн чел.», «849,7 млрд €», «3,2 %»: число и единица одной строкой, с неразрывным пробелом. */
+export function formatCompactWithUnit(val, unit = '', opts = {}) {
+  const parts = formatCompactParts(val, unit, opts);
+  if (parts.num === '—') return '—';
+  return parts.unit ? `${parts.num}${NBSP}${parts.unit}` : parts.num;
+}
+
+/**
+ * Короткая подпись периода для карточек и меток графика: «2 кв. 2026» / «Q2 2026», «окт 2026» / «Oct 2026», «2026».
+ * Римские «II кв.» из длинной формы формата `quarterly` здесь не нужны: арабская цифра понятнее.
+ */
+export function formatPeriodShort(dateStr, frequency = 'annual', locale) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '—';
+  const loc = resolveFormatLocale(locale);
+  const year = d.getUTCFullYear();
+  if (frequency === 'annual' || frequency === 'yearly') return String(year);
+  if (frequency === 'quarterly') {
+    const q = Math.ceil((d.getUTCMonth() + 1) / 3);
+    return loc === 'en' ? `Q${q} ${year}` : `${q}${NBSP}кв.${NBSP}${year}`;
+  }
+  if (frequency === 'day' || frequency === 'daily' || frequency === 'weekly') {
+    return `${d.getUTCDate()} ${MONTHS_SHORT[loc][d.getUTCMonth()]} ${year}`;
+  }
+  return `${MONTHS_SHORT[loc][d.getUTCMonth()]} ${year}`;
 }
 
 export function formatChange(val, locale) {
