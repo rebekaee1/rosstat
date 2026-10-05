@@ -90,11 +90,39 @@ export default function WorldConceptPicker({
   const activeLabel = labelFor(value, conceptsBySlug, t);
 
   useEffect(() => {
-    if (!mobileScroll) return;
+    if (!mobileScroll) return undefined;
     const row = rootRef.current?.querySelector('.fe-chip-row--mscroll');
     const active = row?.querySelector('[aria-current="page"], [aria-pressed="true"]');
-    if (!row || !active || row.scrollWidth <= row.clientWidth) return;
-    row.scrollLeft = Math.max(0, active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2);
+    if (!row) return undefined;
+    if (active && row.scrollWidth > row.clientWidth) {
+      row.scrollLeft = Math.max(0, active.offsetLeft - (row.clientWidth - active.offsetWidth) / 2);
+    }
+    // Затухание по краям ленты не должно «грязнить» выбранную пилюлю: пока она заходит под край, этот край не гасим.
+    const FADE_L = 14;
+    const FADE_R = 28;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const chip = row.querySelector('[aria-current="page"], [aria-pressed="true"]');
+      if (!chip) {
+        row.style.removeProperty('--fe-mask-l');
+        row.style.removeProperty('--fe-mask-r');
+        return;
+      }
+      const left = chip.offsetLeft - row.scrollLeft;
+      const right = left + chip.offsetWidth;
+      row.style.setProperty('--fe-mask-l', left < FADE_L ? '0px' : `${FADE_L}px`);
+      row.style.setProperty('--fe-mask-r', right > row.clientWidth - FADE_R ? '0px' : `${FADE_R}px`);
+    };
+    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+    update();
+    row.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    return () => {
+      row.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      window.cancelAnimationFrame(frame);
+    };
   }, [mobileScroll, value, matches.length]);
 
   useEffect(() => {
@@ -147,7 +175,7 @@ export default function WorldConceptPicker({
 
   if (collapsed) {
     return (
-      <div ref={rootRef} className="relative min-w-0">
+      <div ref={rootRef} className="fe-concept-picker relative min-w-0">
         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
             <p className="text-[13px] font-semibold text-text-secondary">
@@ -180,7 +208,7 @@ export default function WorldConceptPicker({
   }
 
   return (
-    <div ref={rootRef} className="min-w-0">
+    <div ref={rootRef} className="fe-concept-picker min-w-0">
       <div className="mb-1.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <p className="text-[13px] font-semibold text-text-secondary">
           {sectionLabel}

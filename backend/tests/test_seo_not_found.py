@@ -46,6 +46,10 @@ def test_seo_not_found_uses_app_glass_chrome(client):
     assert 'class="seo-menu-btn"' in html
     assert "seo-foot-in" in html
     assert "Manrope" in html
+    # Поиск доступен и из шапки (якорь к полю), поле имеет якорь и короткую подсказку, которая не режется.
+    assert 'class="seo-search-btn" href="#seo-404-q"' in html
+    assert 'id="seo-404-q"' in html
+    assert 'placeholder="Инфляция, ВВП, ставка…"' in html
 
 
 def test_seo_not_found_opts_out_of_ads(client):
@@ -83,7 +87,7 @@ def test_not_found_english_has_no_russian_copy():
     finally:
         reset_locale(token)
     assert "<h1>This page does not exist</h1>" in html
-    assert 'placeholder="Inflation, GDP, interest rate…"' in html
+    assert 'placeholder="Inflation, GDP, rates…"' in html
     assert not re.search(r"<h1>[^<]*[А-Яа-я]", html)
     assert "Такой страницы нет" not in html
 
@@ -102,3 +106,12 @@ def test_quicklink_page_keeps_ads(client):
     ))
     assert "/assets/behavior-standalone.js" in html
     assert "data-no-ads" not in html
+
+
+def test_breadcrumbs_have_separator_and_current_markers():
+    """Крошки чистых SSR-страниц: разделитель и текущая страница в своих тегах (CSS рисует «›» и обрезает)."""
+    from app.services.seo_renderer import _breadcrumbs_nav
+
+    html = _breadcrumbs_nav([("/", "Главная"), ("/russia", "Россия"), ("/russia/x", "Показатель 2024")])
+    assert html.count('class="seo-crumb-sep"') == 2
+    assert '<span class="seo-crumb-cur" aria-current="page">Показатель 2024</span>' in html

@@ -14,6 +14,7 @@ import {
   switchLanguage,
 } from './locale';
 import { translate } from './messages';
+import { restoreScrollAfterLanguageSwitch, rememberScrollForLanguageSwitch } from './langScroll';
 import { LocaleContext } from './localeContext';
 
 export function LocaleProvider({ children, locale: localeProp }) {
@@ -27,6 +28,9 @@ export function LocaleProvider({ children, locale: localeProp }) {
     bindUiLocale(locale);
     return () => bindUiLocale(undefined);
   }, [locale]);
+
+  // После смены языка страница перезагрузилась: возвращаем место, где человек был.
+  useEffect(() => restoreScrollAfterLanguageSwitch(), []);
 
   useEffect(() => {
     document.documentElement.lang = htmlLang(locale);
@@ -52,6 +56,7 @@ export function LocaleProvider({ children, locale: localeProp }) {
         if (!apexLocaleEnEnabled()) setLocalePreference('ru');
         url.searchParams.delete(PREVIEW_QUERY);
       }
+      rememberScrollForLanguageSwitch();
       window.location.assign(url.toString());
     };
     return { locale, t, isPreview, setPreviewLocale, switchLanguage };

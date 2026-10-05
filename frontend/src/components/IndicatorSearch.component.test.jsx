@@ -16,6 +16,9 @@ vi.mock('../lib/worldApi', () => ({
     ] },
     isPending: false,
   }),
+  useWorldCountries: () => ({
+    data: { countries: [{ slug: 'germany', code: 'DE' }, { slug: 'united-states', code: 'US' }] },
+  }),
   WORLD_GLOBAL_SEARCH_LIMIT: 50,
 }));
 vi.mock('../lib/track', () => ({ track: vi.fn(), events: {} }));
@@ -117,6 +120,26 @@ it('result rows show place, frequency and unit without internal codes and collap
   expect(text).toContain('Германия — shell.freq.monthly, индекс (2015 = 100)');
   expect(text).toContain('Германия — shell.freq.annual, %');
   expect(text).not.toMatch(/prc_hicp|de-unemp|\//);
+});
+
+it('страна показана своим флагом, у показателя страны — значок вида с мини-флагом', () => {
+  searchState.data = {
+    version: 'v2',
+    results: [
+      { key: 'd', kind: 'country', name: 'Германия', country_slug: 'germany', path: '/germany' },
+      { key: 'c', kind: 'world', name: 'Безработица', country_name: 'Германия', country_slug: 'germany', frequency: 'annual', unit: '%', path: '/germany/indicator/c' },
+      { key: 'x', kind: 'world', name: 'Прочее', country_name: 'Нигде', country_slug: 'nowhere', path: '/nowhere/indicator/x' },
+    ],
+  };
+  render(<MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter>);
+  fireEvent.click(screen.getByRole('button', { name: 'search.openAria' }));
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'германия' } });
+  const [country, indicator, unknown] = screen.getAllByRole('option');
+  expect(country.querySelector('.fe-search-row__flag')?.textContent).toBe('\u{1F1E9}\u{1F1EA}');
+  expect(country.querySelector('svg')).toBeNull();
+  expect(indicator.querySelector('.fe-search-row__badge')?.textContent).toBe('\u{1F1E9}\u{1F1EA}');
+  expect(indicator.querySelector('svg')).not.toBeNull();
+  expect(unknown.querySelector('.fe-search-row__badge')).toBeNull();
 });
 
 it('nothing found: friendly empty state with tips and examples that refill the field', () => {

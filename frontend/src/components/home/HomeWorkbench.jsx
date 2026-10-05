@@ -183,7 +183,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 <Link
                   to={fullRatingHref}
                   onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-                  className="inline-flex min-h-8 items-center gap-1 text-xs text-text-secondary transition-colors hover:text-champagne-ink"
+                  className="inline-flex min-h-8 items-center gap-1 text-xs text-text-secondary transition-colors hover:text-champagne-ink pointer-coarse:-my-1.5 pointer-coarse:min-h-11"
                 >
                   {t('home.map.moreMetrics')}
                   <ArrowRight size={12} aria-hidden="true" />

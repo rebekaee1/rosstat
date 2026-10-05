@@ -264,9 +264,10 @@ def _breadcrumbs_nav(items: list[tuple[str, str]]) -> str:
     last = len(items) - 1
     for index, (path, name) in enumerate(items):
         if index:
-            parts.append(" / ")
+            # Разделитель и текущая страница — в своих тегах: в чистых SSR-страницах CSS рисует «›» и обрезает длинное многоточием.
+            parts.append('<span class="seo-crumb-sep" aria-hidden="true"> / </span>')
         if index == last:
-            parts.append(escape(name))
+            parts.append(f'<span class="seo-crumb-cur" aria-current="page">{escape(name)}</span>')
         else:
             parts.append(_link(path, name))
     aria = "Breadcrumb" if get_locale() == "en" else "Хлебные крошки"
@@ -727,6 +728,14 @@ body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,san
 .seo-foot a{color:inherit}
 .seo-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .seo-scroll table{min-width:26rem}
+/* SPA-SSR до первого кадра React: блок выхода в хабы стоит прямо в #root (не внутри .seo-page) — без этих полей
+   пилюли прижимались к левому краю экрана; бренд сверху повторяет шапку приложения, пока грузится бандл. */
+.seo-section.seo-platform-nav{max-width:56rem;margin:1.5rem auto 0;padding:0 1rem 2rem}
+.seo-boot-bar{max-width:56rem;margin:0 auto;padding:.85rem 1rem 0}
+.seo-boot-bar .seo-brand{display:inline-flex;align-items:center;gap:.5rem;font-size:1.2rem;line-height:1}
+.seo-boot-bar .seo-brand svg{width:23px;height:27px}
+.seo-boot-bar .seo-brand small{display:none}
+html.fe-js .seo-boot-bar{display:none!important}
 /* SPA-SSR: клип SEO-тела только ПОСЛЕ первого React commit (класс fe-js
    ставит main.jsx через window.__feRevealSpa). Иначе на 4G секунды пустого
    #root: inline hide срабатывал до загрузки /assets/*, createRoot ещё нет.
@@ -768,13 +777,13 @@ body.seo-fast .seo-cta-in{max-width:69rem;background:#202a3c;border:0;border-rad
 body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#f3f5f8}
 body.seo-fast .seo-cta a.seo-btn{background:#f6f3ec;color:#263044;border:1px solid #d3c4a3}
 body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
-@media(max-width:640px){body.seo-fast .seo-topbar{position:static}body.seo-fast .seo-page{padding:1rem .8rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
+@media(max-width:640px){body.seo-fast .seo-topbar{position:static}body.seo-fast .seo-page{padding:1rem 1rem 2rem}body.seo-fast .seo-topbar-in{padding:.85rem 1rem;gap:.75rem}body.seo-fast .seo-answer{padding:1.2rem;border-radius:20px}body.seo-fast .seo-hero-value{font-size:2.8rem}body.seo-fast .seo-chart{border-radius:18px}body.seo-fast .seo-chart figcaption{font-size:.75rem;padding:.75rem}body.seo-fast .seo-chart img{border-radius:0}body.seo-fast .seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}body.seo-fast .seo-foot{font-size:.75rem}}
 @media(max-width:640px){.seo-chart[data-portrait="true"] img{aspect-ratio:1080/1350}}
 
 /* ── Единый вид чистых SSR-страниц: стеклянная капсула, плитки, сворачивание ──
    Только body.seo-fast (include_app=False). Токены как у приложения:
    жемчуг #EEF0F4, золото #AD8A48, карточки 24px, контролы 12–14px. */
-body.seo-fast .seo-topbar{position:sticky;top:.6rem;z-index:30;width:calc(100% - 1.25rem);max-width:72rem;margin:.6rem auto 0;border:1px solid rgba(255,255,255,.92);border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.9),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 16px 45px -33px rgba(38,52,78,.4),inset 0 1px 0 rgba(255,255,255,.7)}
+body.seo-fast .seo-topbar{position:sticky;top:.6rem;z-index:30;width:calc(100% - 2rem);max-width:72rem;margin:.6rem auto 0;border:1px solid rgba(255,255,255,.92);border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.9),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 16px 45px -33px rgba(38,52,78,.4),inset 0 1px 0 rgba(255,255,255,.7)}
 body.seo-fast .seo-topbar-in{max-width:none;margin:0;padding:.55rem .8rem .55rem 1rem;gap:.4rem .75rem;flex-wrap:wrap;align-items:center}
 body.seo-fast .seo-brand{order:1;font-size:1.3rem}
 body.seo-fast .seo-brand svg{width:26px;height:30px}
@@ -806,6 +815,11 @@ body.seo-fast .seo-lang{font-size:.8125rem}
 }
 body.seo-fast .seo-page{overflow-wrap:break-word}
 body.seo-fast .seo-eyebrow{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#80642f}
+body.seo-fast .seo-page > nav[aria-label]{display:flex;flex-wrap:nowrap;align-items:center;gap:0;min-width:0;overflow:hidden;white-space:nowrap}
+body.seo-fast .seo-page > nav[aria-label] a{flex:0 1 auto;min-width:1.6rem;overflow:hidden;text-overflow:ellipsis}
+body.seo-fast .seo-page > nav[aria-label] .seo-crumb-sep{flex:0 0 auto;font-size:0}
+body.seo-fast .seo-page > nav[aria-label] .seo-crumb-sep::before{content:"›";margin:0 .4rem;font-size:.8125rem;opacity:.55}
+body.seo-fast .seo-page > nav[aria-label] .seo-crumb-cur{flex:0 1 auto;min-width:0;max-width:60%;overflow:hidden;text-overflow:ellipsis;color:#202a3c;font-weight:600}
 body.seo-fast .seo-page h2{margin:2rem 0 .75rem;font-size:1.25rem;font-weight:650;letter-spacing:-.02em;line-height:1.3;text-transform:none;color:#202a3c}
 body.seo-fast .seo-page th{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#526074}
 body.seo-fast .seo-page td:last-child,body.seo-fast .seo-page th:last-child{white-space:nowrap}
@@ -847,11 +861,11 @@ body.seo-fast .seo-foot-in p{margin:0;max-width:44rem;line-height:1.55}
 body.seo-fast .seo-foot a{color:#202a3c}
 /* ── Фирменная 404 ── */
 body.seo-fast .seo-404{max-width:44rem;padding-top:2.25rem;text-align:left}
-body.seo-fast .seo-404-code{margin:0 0 .25rem;font-size:clamp(4.5rem,22vw,8rem);font-weight:650;letter-spacing:-.07em;line-height:1;background:linear-gradient(135deg,#ad8a48,#e6d5ad 55%,#c8ae78);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.seo-fast .seo-404-code{margin:0 0 .25rem;font-size:clamp(4.5rem,22vw,8rem);font-weight:650;letter-spacing:-.07em;line-height:1;background:linear-gradient(135deg,#80642f,#ad8a48 50%,#c8ae78);-webkit-background-clip:text;background-clip:text;color:transparent}
 body.seo-fast .seo-404 h1{margin:0 0 .6rem}
 body.seo-fast .seo-404-lead{max-width:34rem;margin:0 0 1.25rem;font-size:1.05rem}
 body.seo-fast .seo-search{display:flex;gap:.5rem;margin:0 0 1.75rem}
-body.seo-fast .seo-search input{flex:1;min-width:0;min-height:48px;padding:0 1rem;border:1px solid rgba(68,87,115,.2);border-radius:14px;background:rgba(255,255,255,.85);color:#202a3c;font:inherit;font-size:16px}
+body.seo-fast .seo-search input{flex:1;min-width:0;min-height:48px;padding:0 1rem;text-overflow:ellipsis;border:1px solid rgba(68,87,115,.2);border-radius:14px;background:rgba(255,255,255,.85);color:#202a3c;font:inherit;font-size:16px}
 body.seo-fast .seo-search input:focus-visible{outline:2px solid #80642f;outline-offset:2px}
 body.seo-fast .seo-search button{min-height:48px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font:inherit;font-size:.95rem;font-weight:650;cursor:pointer}
 body.seo-fast .seo-search button:hover{border-color:#ad8a48}
@@ -863,6 +877,11 @@ body.seo-fast .seo-404-grid a:hover{border-color:#ad8a48;color:#202a3c}
 body.seo-fast .seo-404-grid a:active{transform:scale(.98)}
 body.seo-fast .seo-404-grid b{display:block;font-size:1rem;font-weight:650;line-height:1.3}
 body.seo-fast .seo-404-grid span{display:block;margin-top:.25rem;font-size:.875rem;line-height:1.4;color:#526074}
+body.seo-fast .seo-search-btn{order:2;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:auto;border:1px solid rgba(68,87,115,.16);border-radius:14px;background:rgba(255,255,255,.7);color:#202a3c;text-decoration:none!important}
+body.seo-fast .seo-search-btn svg{width:18px;height:18px}
+body.seo-fast .seo-search-btn:hover{border-color:#ad8a48;color:#80642f}
+body.seo-fast .seo-search-btn ~ .seo-lang,body.seo-fast .seo-search-btn ~ .seo-menu-btn{margin-left:0}
+@media(min-width:1180px){body.seo-fast .seo-search-btn{order:3;margin-left:0}}
 body.seo-fast .seo-404-home{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
 body.seo-fast .seo-404-home:hover{border-color:#ad8a48;color:#202a3c}
 @media(prefers-reduced-motion:reduce){body.seo-fast *{transition:none!important}}
@@ -961,6 +980,20 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 </ul>
 </section>
 """
+
+
+def _ssr_boot_bar() -> str:
+    """Бренд над #root, пока грузится бандл: без шапки страница выглядела «голой».
+
+    Снаружи #root, чтобы снимок SSR-страницы (`__feSsrSnapshot`) не тащил его в приложение;
+    после первого кадра React прячется классом html.fe-js (см. SEO_CRITICAL_CSS).
+    """
+    return (
+        '<header class="seo-boot-bar"><a class="seo-brand" href="/" aria-label="Forecast Economy — Home">'
+        '<svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" '
+        'fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg>'
+        '<span>forecast<span class="seo-brand-light">economy</span></span></a></header>'
+    )
 
 
 def _ssr_chrome_header(canonical_path: str | None = None) -> str:
@@ -1377,6 +1410,7 @@ async def build_document(
     )
     head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
     spa_hide = ""
+    boot_bar = ""
     body_class = ""
     if not include_app:
         body_class = "seo-fast"
@@ -1387,6 +1421,7 @@ async def build_document(
         body = f"{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer(assets)}"
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
+        boot_bar = _ssr_boot_bar()
         if "seo-platform-nav" not in body:
             # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
@@ -1396,6 +1431,8 @@ async def build_document(
     body, lcp_preload = _responsive_charts(body)
     if is_preview_locale():
         body = _preview_body_urls(body, get_locale())
+        if boot_bar:
+            boot_bar = _preview_body_urls(boot_bar, get_locale())
     if lcp_preload:
         head_links = _deprioritize_modulepreload(head_links)
         body_scripts = _low_priority_module_scripts(body_scripts)
@@ -1442,7 +1479,7 @@ async def build_document(
 {structured}
 </head>
 <body class="{body_class}">
-{spa_hide}<div id="root">{body}</div>
+{spa_hide}{boot_bar}<div id="root">{body}</div>
 {body_scripts}
 </body>
 </html>"""
@@ -1476,7 +1513,7 @@ def render_not_found_html(message: str | None = None) -> str:
             "you need or open one of the popular sections."
         )
         eyebrow = "Error 404"
-        placeholder = "Inflation, GDP, interest rate…"
+        placeholder = "Inflation, GDP, rates…"
         search_label = "Search the platform"
         search_btn = "Search"
         popular = "Popular sections"
@@ -1496,7 +1533,7 @@ def render_not_found_html(message: str | None = None) -> str:
             "через поиск или откройте один из популярных разделов."
         )
         eyebrow = "Ошибка 404"
-        placeholder = "Инфляция, ВВП, ключевая ставка…"
+        placeholder = "Инфляция, ВВП, ставка…"
         search_label = "Поиск по платформе"
         search_btn = "Найти"
         popular = "Популярные разделы"
@@ -1512,6 +1549,14 @@ def render_not_found_html(message: str | None = None) -> str:
     # CTA «Открыть платформу» на 404 лишний: человеку нужен поиск и разделы.
     footer = _ssr_chrome_footer()
     footer = footer[footer.index("<footer"):]
+    # Шапка 404 как у приложения: поиск и язык под рукой. Поиск — якорь к полю ниже (без JS), язык — главная на другом языке.
+    header = _ssr_chrome_header("/")
+    search_btn_html = (
+        f'<a class="seo-search-btn" href="#seo-404-q" aria-label="{escape(search_label)}">'
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+        'stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>'
+    )
+    header = header.replace('<input type="checkbox" id="seo-menu-toggle"', search_btn_html + '<input type="checkbox" id="seo-menu-toggle"', 1)
     tile_html = "".join(
         f'<li><a href="{escape(href)}"><b>{escape(name)}</b><span>{escape(hint)}</span></a></li>'
         for href, name, hint in tiles
@@ -1527,13 +1572,13 @@ def render_not_found_html(message: str | None = None) -> str:
 <meta name="theme-color" content="#EEF0F4">
 </head>
 <body class="seo-fast" data-no-ads>
-{_ssr_chrome_header()}
+{header}
 <main class="seo-page seo-404">
 <p class="seo-404-code" role="img" aria-label="{escape(eyebrow)}">404</p>
 <h1>{escape(title)}</h1>
 <p class="seo-404-lead">{escape(lead)}</p>
 <form class="seo-search" action="/" method="get" role="search">
-<input type="search" name="q" placeholder="{escape(placeholder)}" aria-label="{escape(search_label)}" autocomplete="off" enterkeyhint="search">
+<input type="search" name="q" id="seo-404-q" placeholder="{escape(placeholder)}" aria-label="{escape(search_label)}" autocomplete="off" enterkeyhint="search">
 <button type="submit">{escape(search_btn)}</button>
 </form>
 <h2>{escape(popular)}</h2>

@@ -498,18 +498,39 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
 
-    // Гостю доступен один выбор — кнопка показателя в панели добавления.
+    // Гостю доступен один выбор: панель объясняет это одной фразой, а показатель — явная кнопка «+ Инфляция».
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Инфляция' }));
+    expect(screen.getByText('Добавьте один показатель в таблицу')).toBeTruthy();
+    expect(screen.queryByText('Дополнительные колонки — после входа')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Добавить колонку: Инфляция' }));
 
     // Колонки: место, страна, значение, инфляция, период.
     await waitFor(() => {
       const head = headRow();
       expect(within(head).getAllByRole('columnheader')).toHaveLength(5);
     });
-    // Второй добавить нельзя — достигнут гостевой лимит.
+    // Второй добавить нельзя — достигнут гостевой лимит: вместо выбора — приглашение зарегистрироваться.
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
-    expect(within(document.body).queryAllByRole('button', { name: 'Безработица' }).length).toBe(0);
+    expect(screen.getByText('Дополнительный показатель добавлен')).toBeTruthy();
+    expect(within(document.body).queryAllByRole('button', { name: /^Добавить колонку:/ }).length).toBe(0);
+    expect(screen.getByRole('link', { name: 'Создать аккаунт' })).toBeTruthy();
+  });
+
+  it('первая тройка получает медали, пока порядок «лучшие сверху»; после разворота медалей нет', async () => {
+    mockApiGet(ratingMocks());
+
+    renderPage(
+      <WorldRatingPage />,
+      { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate' },
+    );
+
+    await waitFor(() => expect(dataRows()).toHaveLength(2));
+    expect([...document.querySelectorAll('[data-medal]')].map((el) => el.getAttribute('data-medal'))).toEqual(['1', '2']);
+
+    // Обратный порядок: места 1–3 оказываются внизу, поэтому медали гаснут.
+    const sortButtons = screen.getAllByRole('button').filter((b) => b.getAttribute('aria-pressed') === 'false');
+    fireEvent.click(sortButtons.find((b) => b.textContent === 'По убыванию'));
+    await waitFor(() => expect(document.querySelectorAll('[data-medal]').length).toBe(0));
   });
 
   it('авторизованный открывает колонки в таблице до пяти показателей', async () => {

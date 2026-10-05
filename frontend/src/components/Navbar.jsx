@@ -15,6 +15,7 @@ import { PRIMARY_NAV, mobileNavGroups, primaryNav, resolveActiveNavId } from '..
 import { useLocale, useT } from '../i18n';
 import '../styles/ui-detail-nav-calendar.css';
 import '../styles/shell.css';
+import '../styles/z3-polish.css';
 
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();

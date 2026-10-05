@@ -41,6 +41,7 @@ import { useLocale, useT } from '../i18n';
 import PlanetView from '../components/PlanetView';
 import Button from '../components/Button';
 import Chip from '../components/Chip';
+import ChipGroup from '../components/ChipGroup';
 import CountryFlag from '../components/CountryFlag';
 import WorldCountUp from '../components/WorldCountUp';
 import YearPicker from '../components/YearPicker';
@@ -472,6 +473,10 @@ export default function WorldRatingPage() {
     return [...withValue, ...withoutValue];
   }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear]);
 
+  // Медали — только когда порядок «лучшие сверху» по базовому показателю: иначе места 1–3 окажутся где попало.
+  const medalsOn = sortedColSlug === SORT_BASE_COLUMN && sortedColDir === baseDirection;
+  const medalOf = (rank) => (medalsOn && rank >= 1 && rank <= 3 ? rank : undefined);
+
   const extraHeaderLabel = (col) => {
     const unit = localizeWorldUnit(col.unit, locale);
     if (!unit) return col.label;
@@ -739,42 +744,50 @@ export default function WorldRatingPage() {
               </div>
             </div>
             {addOpen && (
-              <div className="mb-3 max-w-lg rounded-3xl border border-border-subtle bg-obsidian-light px-4 py-3.5">
-                {!isAuthed && (
+              <div className="z3-add-panel fe-reveal" role="group" aria-label={t('world.rating.addColumn')}>
+                {isAuthed && atExtraMax ? (
+                  <p className="z3-add-panel__text">{t('world.rating.extraMax')}</p>
+                ) : (
                   <>
-                    <h3 className="text-sm font-semibold text-text-primary">
-                      {t('world.rating.extraGuestTitle')}
+                    <h3 className="z3-add-panel__title">
+                      {isAuthed
+                        ? t('z3.rating.pickTitle')
+                        : t(atExtraMax ? 'z3.rating.guestLimitTitle' : 'z3.rating.guestPickTitle')}
                     </h3>
-                    <p className="mt-1.5 text-xs leading-5 text-text-secondary">
-                      {t('world.rating.matrix.guestCap')}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button as={Link} size="sm" to="/register">
-                        {t('world.rating.register')}
-                      </Button>
-                      <Button as={Link} variant="secondary" size="sm" to="/login">
-                        {t('world.rating.login')}
-                      </Button>
-                    </div>
+                    {!isAuthed && (
+                      <p className="z3-add-panel__text">
+                        {t(atExtraMax ? 'z3.rating.guestLimitHint' : 'z3.rating.guestPickHint')}
+                      </p>
+                    )}
                   </>
                 )}
-                {isAuthed && atExtraMax && (
-                  <p className="text-xs leading-5 text-text-secondary">
-                    {t('world.rating.extraMax')}
-                  </p>
-                )}
-                {addableConcepts.length > 0 && !(isAuthed && atExtraMax) && (
-                  <div className={`flex flex-wrap ${isAuthed ? '' : 'mt-3'} gap-1.5`}>
-                    {addableConcepts
-                      .slice(0, isAuthed ? undefined : extraMax)
-                      .map((item) => (
+                {addableConcepts.length > 0 && !atExtraMax && (
+                  <ChipGroup label={t('z3.rating.pickTitle')} className="z3-add-panel__chips">
+                    {addableConcepts.map((item) => {
+                      const name = homeConceptLabel(item.slug, t, item.name);
+                      return (
                         <Chip
                           key={item.slug}
+                          aria-pressed={undefined}
+                          aria-label={t('z3.rating.addNamed', { name })}
+                          className="z3-add-chip"
                           onClick={() => addExtra(item.slug)}
                         >
-                          {homeConceptLabel(item.slug, t, item.name)}
+                          <Plus size={13} aria-hidden="true" />
+                          {name}
                         </Chip>
-                      ))}
+                      );
+                    })}
+                  </ChipGroup>
+                )}
+                {!isAuthed && atExtraMax && (
+                  <div className="z3-add-panel__actions">
+                    <Button as={Link} size="sm" to="/register">
+                      {t('world.rating.register')}
+                    </Button>
+                    <Button as={Link} variant="secondary" size="sm" to="/login">
+                      {t('world.rating.login')}
+                    </Button>
                   </div>
                 )}
               </div>
@@ -796,13 +809,14 @@ export default function WorldRatingPage() {
                           to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })}
                           className="w2-rank-row fe-press"
                         >
-                          <span className="w2-rank-pos">{item.rank}</span>
+                          <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
                           <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
                           <span className="w2-rank-name">{ratingCountryName(item)}</span>
                           <span className="w2-rank-value">
                             <strong>{fmtValue(item.value)}</strong>
                             {cardUnit(item) && <small>{cardUnit(item)}</small>}
                           </span>
+                          <ChevronRight className="w2-rank-chev" size={16} aria-hidden="true" />
                           {share > 0 && <span className="w2-rank-bar" style={{ '--w2-share': `${share}%` }} aria-hidden="true" />}
                         </Link>
                         {extraColumns.length > 0 && (
@@ -860,7 +874,9 @@ export default function WorldRatingPage() {
                     <tbody>
                       {displayRows.map((item) => (
                         <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
-                          <td className="px-4 py-3 tabular-nums text-text-tertiary">{item.rank}</td>
+                          <td className="px-4 py-3 tabular-nums text-text-tertiary">
+                            <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
+                          </td>
                           <td className="px-4 py-3">
                             <Link to={rowHref(item, { conceptSlug: activeConcept, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
                               <CountryFlag code={item.country_code} />
