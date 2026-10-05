@@ -1,0 +1,415 @@
+/*
+ * K1. Сцена света (раунд 3 «Хрусталь без границ»).
+ *
+ * Что здесь:
+ *   1. Токены сцены (--fe-scene-*, --fe-glint-color, --fe-light-color), светлая и тёмная тема.
+ *   2. Слой-небо `.fe-scene` (fixed): бумага, три каустики, текстура граней, силуэты граней в боковых полях.
+ *   3. Герой `.fe-scene-hero` (главная и страна) и утечка света `.fe-scene-leak` (≥1024 px).
+ *   4. Общие приёмы света для всех зон: `.fe-glint`, `.fe-cursor-light`, `.fe-drift`.
+ *   5. Бюджет: `.fe-cv-auto`, `.fe-cv-row`, `.fe-blur-cap`; выключатели движения и прозрачности.
+ *   6. Переход между страницами «преломление» (View Transitions).
+ *
+ * Правила: анимируются только transform, opacity и background-position; blur, тени и filter не анимируются;
+ * рамок нет; всё движение выключается через prefers-reduced-motion и атрибут html[data-fe-motion="off"]
+ * (его ставит lib/sceneBudget.js: reduced-motion, reduced-transparency, Save-Data, <=4 ядер).
+ * Картинки и наложения гаснут при html[data-fe-lite="on"] (Save-Data, reduced-transparency).
+ *
+ * Для авторов других зон:
+ *   .fe-glint        блик-проход 105 градусов (900 мс): сам при появлении в окне и при наведении.
+ *                    --fe-glint-delay: задержка. Вариант .fe-glint--loop повторяет проход раз в --fe-glint-period (12 с).
+ *                    Использует ::before: у элемента не должно быть своего ::before.
+ *   .fe-cursor-light свет за курсором (только мышь и тачпад). Использует ::after: у элемента не должно быть
+ *                    своего ::after; у родителя-носителя скругление берётся через border-radius: inherit.
+ *   .fe-drift        плавание 9-14 с (--fe-drift-dur, --fe-drift-y, --fe-drift-r, --fe-drift-delay, --r).
+ *                    Только для декоративных элементов, не больше одного в кадре на телефоне.
+ */
+
+/* ===== 1. Токены ===== */
+:root {
+  --fe-scene-paper: var(--color-obsidian, #F6F2EA);
+  --fe-scene-gold: rgba(246, 231, 190, 0.6);
+  --fe-scene-ice: rgba(191, 224, 245, 0.35);
+  --fe-scene-rose: rgba(244, 198, 216, 0.2);
+  --fe-scene-texture-opacity: 0.06;
+  --fe-scene-hero-opacity: 0.85;
+  --fe-scene-leak-opacity: 0.2;
+  --fe-glint-color: rgba(255, 255, 255, 0.65);
+  --fe-light-color: rgba(255, 255, 255, 0.55);
+}
+
+:root[data-theme="dark"], :root.dark {
+  --fe-scene-gold: rgba(201, 162, 77, 0.2);
+  --fe-scene-ice: rgba(86, 120, 170, 0.24);
+  --fe-scene-rose: rgba(150, 90, 130, 0.11);
+  --fe-scene-texture-opacity: 0;
+  --fe-scene-hero-opacity: 0;
+  --fe-glint-color: rgba(216, 230, 250, 0.24);
+  --fe-light-color: rgba(216, 230, 250, 0.14);
+}
+
+/* Небо рисует сцена: сияния из index.css (body) уходят, иначе золото и лёд лягут дважды и вернут серо-голубой угол.
+   Работает только при смонтированной сцене (класс ставит applySceneMode), встраиваемые виджеты не затронуты. */
+html.fe-scene-on body {
+  background-image: none;
+}
+/* Абсолютные слои героя и утечки света отсчитываются от корня приложения (его высота = высота страницы). */
+html.fe-scene-on #root {
+  position: relative;
+}
+
+/* ===== 2. Небо ===== */
+.fe-scene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--fe-scene-paper);
+  contain: layout paint style;
+}
+@supports (height: 100lvh) {
+  .fe-scene { height: 100lvh; }
+}
+
+.fe-scene__par {
+  position: absolute;
+  inset: 0;
+}
+.fe-scene__shard-slot {
+  inset: auto;
+}
+/* will-change только пока слой действительно едет (компьютер, движение разрешено). */
+@media (min-width: 768px) {
+  html[data-fe-motion="on"] .fe-scene__par { will-change: transform; }
+}
+
+/* Каустики: три цветных пятна без blur-фильтра (плавный радиальный градиент), дрейф 40 с. */
+.fe-scene__lamp {
+  position: absolute;
+  border-radius: 50%;
+  animation: fe-k1-sky 40s ease-in-out infinite alternate;
+}
+.fe-scene__lamp--gold {
+  right: -16vw;
+  top: -26vh;
+  width: 80vw;
+  height: 78vh;
+  background: radial-gradient(closest-side, var(--fe-scene-gold), transparent);
+  --fe-sky-dx: -4vw;
+  --fe-sky-dy: 3vh;
+}
+.fe-scene__lamp--ice {
+  left: -22vw;
+  top: 16vh;
+  width: 66vw;
+  height: 66vh;
+  background: radial-gradient(closest-side, var(--fe-scene-ice), transparent);
+  animation-duration: 46s;
+  animation-delay: -12s;
+  --fe-sky-dx: 5vw;
+  --fe-sky-dy: -3vh;
+}
+.fe-scene__lamp--rose {
+  left: 26vw;
+  bottom: -34vh;
+  width: 72vw;
+  height: 62vh;
+  background: radial-gradient(closest-side, var(--fe-scene-rose), transparent);
+  animation-duration: 52s;
+  animation-delay: -24s;
+  --fe-sky-dx: -5vw;
+  --fe-sky-dy: -2vh;
+}
+@keyframes fe-k1-sky {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(var(--fe-sky-dx, -3vw), var(--fe-sky-dy, 2vh), 0) scale(1.07); }
+}
+
+/* Текстура граней: тише в центре, только компьютер. Картинка грузится только там, где показывается. */
+.fe-scene__texture {
+  display: none;
+}
+@media (min-width: 768px) {
+  .fe-scene__texture {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: url('/brand/facets.webp') center / cover no-repeat;
+    opacity: var(--fe-scene-texture-opacity);
+    mix-blend-mode: multiply;
+    -webkit-mask-image: radial-gradient(ellipse 46% 56% at 50% 46%, rgba(0, 0, 0, 0.3), #000 92%);
+    mask-image: radial-gradient(ellipse 46% 56% at 50% 46%, rgba(0, 0, 0, 0.3), #000 92%);
+  }
+}
+
+/* Силуэты граней в боковых полях: только широкие экраны, где поля свободны от содержимого. */
+.fe-scene__shards {
+  display: none;
+}
+@media (min-width: 1600px) {
+  .fe-scene__shards {
+    display: block;
+    position: absolute;
+    inset: 0;
+  }
+  /* Свободное поле сбоку от контента: ширина окна минус контейнер данных (токен T1) и поля 2 x 32 px. */
+  .fe-scene__shards {
+    --fe-gutter: max(0px, calc((100vw - var(--fe-container-data, 1280px) - 64px) / 2));
+  }
+  .fe-scene__shard-slot {
+    position: absolute;
+    opacity: 0.55;
+  }
+  .fe-scene__shard-slot[data-side="left"] { left: calc(var(--fe-gutter) * var(--k, 0.1)); }
+  .fe-scene__shard-slot[data-side="right"] { right: calc(var(--fe-gutter) * var(--k, 0.1)); }
+  .fe-scene__shard {
+    display: block;
+    width: min(var(--w, 80px), calc(var(--fe-gutter) * 0.78));
+    height: auto;
+    transform: rotate(var(--r, 0deg));
+    filter: blur(1px);
+  }
+}
+
+/* ===== 3. Герой и утечка света ===== */
+.fe-scene-hero {
+  position: absolute;
+  top: 0;
+  right: -3vw;
+  width: min(104vw, 1700px);
+  aspect-ratio: 1920 / 1072;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  /* Левые ~55 % кадра пустые под заголовок: слева маска, снизу растворение. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000 62%), linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 30%, #000 62%), linear-gradient(180deg, #000 60%, transparent 100%);
+  mask-composite: intersect;
+}
+.fe-scene-hero.is-ready {
+  opacity: var(--fe-scene-hero-opacity);
+}
+.fe-scene-hero__float {
+  position: absolute;
+  inset: 0;
+}
+.fe-scene-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-width: 767px) {
+  .fe-scene-hero {
+    right: 0;
+    width: min(100vw, 560px);
+    aspect-ratio: 780 / 1044;
+    /* Слева на кадре холодное облако: оно уходит маской, остаются грани справа. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 22%, #000 50%), linear-gradient(180deg, #000 50%, transparent 98%);
+    mask-image: linear-gradient(90deg, transparent 22%, #000 50%), linear-gradient(180deg, #000 50%, transparent 98%);
+  }
+}
+
+.fe-scene-leak {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .fe-scene-leak {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    width: min(80vw, 1400px);
+    aspect-ratio: 1200 / 670;
+    pointer-events: none;
+    background: url('/brand/light-leak.webp') center / cover no-repeat;
+    mix-blend-mode: screen;
+    opacity: var(--fe-scene-leak-opacity);
+    -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent);
+    mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  }
+  .fe-scene-leak--top {
+    top: 0;
+    right: -6vw;
+  }
+  .fe-scene-leak--bottom {
+    bottom: 0;
+    left: -8vw;
+    transform: scaleX(-1);
+  }
+}
+
+/* ===== 4. Общие приёмы света ===== */
+
+/* Блик-проход 105 градусов. Полоса шире элемента в 2,6 раза, проходит слева направо сменой background-position. */
+.fe-glint {
+  position: relative;
+}
+.fe-glint::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background-image: linear-gradient(105deg, transparent 38%, var(--fe-glint-color) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  background-position: 115% 0;
+}
+.fe-glint[data-fe-glint="on"]::before {
+  animation: fe-glint-once 900ms cubic-bezier(0.22, 0.7, 0.2, 1) var(--fe-glint-delay, 0s) 1 both;
+}
+.fe-glint.fe-glint--loop::before {
+  animation: fe-glint-loop var(--fe-glint-period, 12s) linear var(--fe-glint-delay, 0s) infinite;
+}
+@media (hover: hover) {
+  .fe-glint:hover::before {
+    animation: fe-glint-hover 900ms cubic-bezier(0.22, 0.7, 0.2, 1) 1 both;
+  }
+}
+@keyframes fe-glint-once {
+  0% { opacity: 0; background-position: 115% 0; }
+  12% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; background-position: -15% 0; }
+}
+@keyframes fe-glint-hover {
+  0% { opacity: 0; background-position: 115% 0; }
+  12% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; background-position: -15% 0; }
+}
+/* Один проход (около 0,85 с) в начале периода, дальше пауза. */
+@keyframes fe-glint-loop {
+  0% { opacity: 0; background-position: 115% 0; }
+  1% { opacity: 1; }
+  6% { opacity: 1; }
+  7.5% { opacity: 0; background-position: -15% 0; }
+  100% { opacity: 0; background-position: -15% 0; }
+}
+
+/* Свет за курсором: только мышь и тачпад. Координаты --mx/--my ставит lib/useLightPointer.js. */
+@media (hover: hover) and (pointer: fine) {
+  :where(.fe-cursor-light) {
+    position: relative;
+  }
+  .fe-cursor-light::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), var(--fe-light-color), transparent 70%);
+  }
+  .fe-cursor-light[data-fe-lit]::after {
+    opacity: 1;
+  }
+}
+
+/* Плавание декоративных элементов. */
+.fe-drift {
+  animation: fe-drift var(--fe-drift-dur, 11s) ease-in-out var(--fe-drift-delay, 0s) infinite alternate;
+  will-change: transform;
+}
+@keyframes fe-drift {
+  from { transform: translate3d(0, calc(var(--fe-drift-y, 6px) * -1), 0) rotate(calc(var(--r, 0deg) - var(--fe-drift-r, 0.6deg))); }
+  to { transform: translate3d(0, var(--fe-drift-y, 6px), 0) rotate(calc(var(--r, 0deg) + var(--fe-drift-r, 0.6deg))); }
+}
+
+/* ===== 5. Бюджет ===== */
+
+/* Длинные списки: браузер не рисует строки вне окна. Высота резервируется, чтобы полоса прокрутки не прыгала. */
+.fe-cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+.fe-cv-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 72px;
+}
+
+/* Размытие у первых 12 дочерних элементов списка, дальше полупрозрачный фон без blur (бюджет 12 слоёв в кадре). */
+.fe-blur-cap > :nth-child(n + 13) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Выключатели: системная настройка и режим сцены (sceneBudget.js) гасят всё движение. */
+@media (prefers-reduced-motion: reduce) {
+  .fe-scene__lamp,
+  .fe-drift,
+  .fe-glint::before {
+    animation: none;
+    will-change: auto;
+  }
+  .fe-scene__par,
+  .fe-scene-hero__float { will-change: auto; }
+  .fe-cursor-light::after { display: none; }
+  .fe-scene-hero { transition: none; }
+}
+html[data-fe-motion="off"] .fe-scene__lamp,
+html[data-fe-motion="off"] .fe-drift,
+html[data-fe-motion="off"] .fe-glint::before {
+  animation: none;
+  will-change: auto;
+}
+html[data-fe-motion="off"] .fe-scene__par,
+html[data-fe-motion="off"] .fe-scene-hero__float { will-change: auto; }
+html[data-fe-motion="off"] .fe-cursor-light::after { display: none; }
+html[data-fe-motion="off"] .fe-scene-hero { transition: none; }
+
+/* Экономия: ни картинок, ни наложений (Save-Data, reduced-transparency). Остаётся цветной фон. */
+:root[data-theme="dark"] .fe-scene-hero,
+:root.dark .fe-scene-hero,
+html[data-fe-lite="on"] .fe-scene__texture,
+html[data-fe-lite="on"] .fe-scene__shards,
+html[data-fe-lite="on"] .fe-scene-hero,
+html[data-fe-lite="on"] .fe-scene-leak {
+  display: none;
+}
+
+/* Телефон: только каустики и герой. Каустики стоят, плавает один герой (не больше одной анимации в кадре). */
+@media (max-width: 767px) {
+  .fe-scene__lamp { animation: none; }
+}
+
+@media print {
+  .fe-scene,
+  .fe-scene-hero,
+  .fe-scene-leak { display: none; }
+}
+
+/* ===== 6. Переход между страницами «преломление» (View Transitions) ===== */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: fe-vt-out 220ms cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  }
+  ::view-transition-new(root) {
+    animation: fe-vt-in 220ms cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
+}
+html[data-fe-motion="off"]::view-transition-group(*),
+html[data-fe-motion="off"]::view-transition-old(*),
+html[data-fe-motion="off"]::view-transition-new(*) {
+  animation: none;
+}
+@keyframes fe-vt-out {
+  to { opacity: 0; transform: scale(0.994); }
+}
+@keyframes fe-vt-in {
+  from { opacity: 0; transform: scale(1.006); }
+}
