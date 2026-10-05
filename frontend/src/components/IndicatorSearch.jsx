@@ -330,7 +330,7 @@ export default function IndicatorSearch({
             </kbd>
           </button>
           {examples?.length ? (
-            <ul className="fe-search-examples fe-fade-x scrollbar-hide" aria-label={t('shell.search.examplesAria')}>
+            <ul className="fe-search-examples" aria-label={t('shell.search.examplesAria')}>
               {examples.map((example) => (
                 <li key={example}>
                   <Chip

@@ -46,73 +46,91 @@ function renderShell(route = '/', locale) {
 }
 
 describe('Navbar H-4 menu', () => {
-  it('десктоп: Главная, Россия, Рейтинг стран, Сравнение и Калькуляторы — без витрины мира', () => {
+  it('десктоп: Страны, Рейтинг, Сравнение, Прогнозы, Россия и Калькуляторы; на главную ведёт логотип', () => {
     renderShell();
 
     const nav = screen.getByRole('navigation');
     expect(within(nav).queryByRole('link', { name: /Регионы/i })).toBeNull();
-    expect(within(nav).queryByText('Категории')).toBeNull();
     expect(within(nav).queryByRole('link', { name: 'Демография' })).toBeNull();
     // Витрина «Мировая экономика» снята: её содержимое переехало на главную.
     expect(within(nav).queryByRole('link', { name: 'Мировая экономика' })).toBeNull();
+    // «Главная» не пункт меню: сайт мировой, а не про одну страну.
+    expect(within(nav).queryByRole('link', { name: 'Главная' })).toBeNull();
+    expect(within(nav).getByRole('link', { name: 'Forecast Economy — на главную' }).getAttribute('href')).toBe('/');
 
-    const rating = within(nav).getByRole('link', { name: 'Рейтинг стран' });
-    expect(rating.getAttribute('href')).toBe('/world/rating/gdp-usd');
-
-    expect(within(nav).getByRole('link', { name: 'Главная' }).getAttribute('href')).toBe('/');
-    expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
     // До xl подпись короткая, с xl — полная: в DOM обе, имя ссылки склеенное.
-    expect(within(nav).getByRole('link', { name: /Сравнение/ }).getAttribute('href')).toBe('/compare');
+    expect(within(nav).getByRole('link', { name: /Страны/ }).getAttribute('href')).toBe('/#countries');
+    expect(within(nav).getByRole('link', { name: /Рейтинг/ }).getAttribute('href')).toBe('/world/rating/gdp-usd');
+    expect(within(nav).getByRole('link', { name: 'Сравнение' }).getAttribute('href')).toBe('/compare');
+    expect(within(nav).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/methodology#read');
+    expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
     expect(within(nav).getByRole('button', { name: /Калькуляторы/i })).toBeTruthy();
   });
 
-  it('мобильное меню: те же разделы, что в шапке без JS, сгруппированные; без демографии', () => {
+  it('мобильное меню: мировые разделы сверху с подписями, «Россия» одной раскрывающейся строкой', () => {
     renderShell();
 
     fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
 
-    const nav = screen.getByRole('navigation');
-    expect(within(nav).queryByText('Категории')).toBeNull();
-    expect(within(nav).queryByRole('link', { name: 'Демография' })).toBeNull();
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    const hrefs = (root) => [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    const links = hrefs(menu);
+    // Порядок: страны, рейтинг, сравнение, прогнозы, категории, валюты, «Как мы считаем».
+    const order = ['/#countries', '/world/rating/gdp-usd', '/compare', '/methodology#read', '/russia/category', '/currencies', '/methodology'];
+    expect(order.map((href) => links.indexOf(href))).toEqual([...order.keys()]);
+    expect(within(menu).queryByRole('link', { name: 'Демография' })).toBeNull();
 
-    // Desktop + mobile дубли в DOM (Tailwind hidden не режет a11y в jsdom).
-    for (const name of ['Главная', 'Рейтинг стран']) {
-      const links = within(nav).getAllByRole('link', { name });
-      expect(links.length).toBe(2);
-    }
-    // Заголовок группы «Россия» и пункт «Россия» подряд — дубль: в меню телефона пункт называется «Обзор».
-    expect(within(nav).getAllByRole('link', { name: 'Россия' })).toHaveLength(1);
-    expect(within(nav).getByRole('link', { name: 'Обзор' }).getAttribute('href')).toBe(russiaHomePath());
-    expect(within(nav).getByRole('link', { name: 'Валюты' }).getAttribute('href')).toBe('/currencies');
-    const ratingLinks = within(nav).getAllByRole('link', { name: 'Рейтинг стран' });
-    expect(ratingLinks.every((a) => a.getAttribute('href') === '/world/rating/gdp-usd')).toBe(true);
-    expect(within(nav).getAllByRole('link', { name: /Сравнение/ }).length).toBe(2);
+    // Подпись к каждому пункту: что внутри.
+    const rating = [...menu.querySelectorAll('a')].find((a) => a.getAttribute('href') === '/world/rating/gdp-usd');
+    expect(rating.querySelector('.fe-mnav-label').textContent).toBe('Рейтинг стран');
+    expect(rating.querySelector('.fe-mnav-hint').textContent).toMatch(/впереди/);
+    expect(menu.querySelectorAll('.fe-mnav-hint').length).toBeGreaterThanOrEqual(8);
+    // Одно название «Сравнение» вместо «Сравнение индикаторов».
+    expect(within(menu).queryByText('Сравнение индикаторов')).toBeNull();
 
-    // Раздел «Россия»: Сегодня, Регионы, Календарь — раньше их в меню телефона не было вовсе.
-    expect(within(nav).getByText('Россия', { selector: 'p' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Сегодня' }).getAttribute('href')).toBe(todayPath());
-    expect(within(nav).getByRole('link', { name: 'Регионы' }).getAttribute('href')).toBe(regionHubPath());
-    expect(within(nav).getByRole('link', { name: 'Календарь' }).getAttribute('href')).toBe(calendarPath());
-    // Каталог стран — ядро платформы — доступен из меню.
-    expect(within(nav).getByRole('link', { name: 'Страны' }).getAttribute('href')).toBe('/#countries');
+    // Россия: одна строка-кнопка, пока закрыта пунктов России не видно.
+    const russia = within(menu).getByRole('button', { name: /^Россия/ });
+    expect(russia.getAttribute('aria-expanded')).toBe('false');
+    expect(links).not.toContain(todayPath());
+    fireEvent.click(russia);
+    expect(russia.getAttribute('aria-expanded')).toBe('true');
+    const opened = hrefs(menu);
+    expect(opened).toEqual(expect.arrayContaining([russiaHomePath(), todayPath(), regionHubPath(), calendarPath()]));
+    expect(within(menu).getByRole('link', { name: 'Экономика России' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: 'Новые данные сегодня' })).toBeTruthy();
 
-    expect(within(nav).getByRole('link', { name: 'Калькулятор инфляции' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Ипотечный калькулятор' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Сложные проценты' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'О проекте' })).toBeTruthy();
+    // «О проекте» и «Написать нам» рядом, в конце списка.
+    const tail = hrefs(menu).slice(-2);
+    expect(tail).toEqual(['/about', 'mailto:rebeka.ee@yandex.ru']);
+    expect(within(menu).getByRole('link', { name: 'Калькулятор инфляции' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: 'Ипотечный калькулятор' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: 'Сложные проценты' })).toBeTruthy();
   });
 
-  it('EN: в меню телефона тот же набор разделов, раздел Russia без пункта «Россия» в шапке', () => {
+  it('мобильное меню: на страницах России группа «Россия» раскрыта сама', () => {
+    renderShell('/russia/indicator/cpi');
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    expect(within(menu).getByRole('button', { name: /^Россия/ }).getAttribute('aria-expanded')).toBe('true');
+    expect(within(menu).getByRole('link', { name: 'Новые данные сегодня' }).getAttribute('href')).toBe(todayPath());
+  });
+
+  it('EN: в меню телефона те же мировые разделы, Russia раскрывающейся строкой', () => {
     renderShell('/', 'en');
 
     fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    const nav = screen.getByRole('navigation');
-    expect(within(nav).getByText('Russia', { selector: 'p' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Today' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Regions' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Calendar' })).toBeTruthy();
-    expect(within(nav).getByRole('link', { name: 'Countries' }).getAttribute('href')).toBe('/#countries');
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    const links = [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    for (const href of ['/#countries', '/world/rating/gdp-usd', '/compare', '/methodology#read', '/russia/category', '/currencies', '/methodology']) {
+      expect(links).toContain(href);
+    }
+    const russia = within(menu).getByRole('button', { name: /^Russia/ });
+    fireEvent.click(russia);
+    expect(within(menu).getByRole('link', { name: 'New data today' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: 'Regions' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: 'Calendar' })).toBeTruthy();
+    expect(within(menu).getByRole('link', { name: /^Compare/ })).toBeTruthy();
   });
 
   it('раздел /regions не осиротел: ссылка есть в футере', () => {
@@ -153,14 +171,13 @@ describe('Navbar H-4 menu', () => {
       .toBe('/#countries');
   });
 
-  it('на /world/rating/* подсвечен «Рейтинг стран», не «Главная»', () => {
+  it('на /world/rating/* подсвечен «Рейтинг стран»', () => {
     renderShell('/world/rating/unemployment-rate');
 
     const nav = screen.getByRole('navigation');
-    const rating = within(nav).getAllByRole('link', { name: 'Рейтинг стран' })[0];
-    const home = within(nav).getAllByRole('link', { name: 'Главная' })[0];
+    const rating = within(nav).getAllByRole('link', { name: /Рейтинг/ })[0];
     expect(rating.getAttribute('aria-current')).toBe('page');
-    expect(home.getAttribute('aria-current')).toBeNull();
+    expect(within(nav).getByRole('link', { name: 'Сравнение' }).getAttribute('aria-current')).toBeNull();
   });
 
   it('на карточке показателя России подсвечена «Россия»', () => {
@@ -168,12 +185,10 @@ describe('Navbar H-4 menu', () => {
 
     const nav = screen.getByRole('navigation');
     const russia = within(nav).getAllByRole('link', { name: 'Россия' })[0];
-    const home = within(nav).getAllByRole('link', { name: 'Главная' })[0];
     expect(russia.getAttribute('aria-current')).toBe('page');
-    expect(home.getAttribute('aria-current')).toBeNull();
   });
 
-  it('EN-версия: пункта «Россия»/«Russia» в навигации нет', () => {
+  it('EN-версия: пункта «Россия»/«Russia» в шапке нет, вместо него США; в меню телефона Russia есть', () => {
     const url = new URL(window.location.href);
     url.searchParams.set('preview_locale', 'en');
     window.history.pushState({}, '', url.toString());
@@ -181,16 +196,15 @@ describe('Navbar H-4 menu', () => {
       renderShell('/russia/indicator/cpi');
 
       const nav = screen.getByRole('navigation');
-      // Пункт скрыт даже на страницах русского раздела...
+      // Пункт скрыт в шапке даже на страницах русского раздела...
       expect(within(nav).queryByRole('link', { name: 'Россия' })).toBeNull();
       expect(within(nav).queryByRole('link', { name: 'Russia' })).toBeNull();
-      // ...но подсветка активной страницы /russia не ломается (resolveActiveNavId
-      // считает по полному массиву; сам пункт ни на что не указывает).
-      expect(within(nav).queryAllByRole('link', { name: 'Home' }).length).toBeGreaterThan(0);
-      expect(within(nav).queryByRole('link', { name: 'Country rankings' })).toBeTruthy();
+      expect(within(nav).queryByRole('link', { name: 'Country rankings' })).toBeNull();
+      expect(within(nav).queryByRole('link', { name: /Rankings/ })).toBeTruthy();
       expect(within(nav).queryByRole('link', { name: /United States|USA/ })).toBeTruthy();
       const usLinks = within(nav).queryAllByRole('link', { name: /United States|USA/ });
       expect(usLinks.every((a) => a.getAttribute('href') === '/united-states')).toBe(true);
+      // ...но подсветка активной страницы /russia не ломается: сам пункт ни на что не указывает.
       for (const link of within(nav).queryAllByRole('link')) {
         expect(link.getAttribute('aria-current')).toBeNull();
       }

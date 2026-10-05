@@ -30,27 +30,29 @@ function renderScope(countriesPayload, locale) {
   return renderPage(<HomeDataScope />, { path: '/', route: '/', locale });
 }
 
-describe('HomeDataScope — три живых числа платформы', () => {
-  it('показывает показатели в тысячах, число стран и глубину истории; Россия не на первом плане', async () => {
+const YEARS = new Date().getFullYear() - 1897;
+
+describe('HomeDataScope: три числа платформы', () => {
+  it('сразу итоговые числа и пояснения фразами: показатели, страны (и список растёт), история до N лет', async () => {
     renderScope();
 
     expect(screen.getByRole('heading', { name: 'Платформа в цифрах' })).toBeTruthy();
 
-    // Один раз «докручиваемое» число: без IntersectionObserver (тесты, печать) сразу итог.
+    // Без «бега»: число сразу итоговое (в первом кадре нет промежуточных 169 / 35 / 1956).
     await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
     expect(screen.getByText('тыс.')).toBeTruthy();
-    // Подписи — одно короткое слово над числом: три равные колонки, ни одна не переносится на вторую строку.
-    expect(screen.getByText('Показатели')).toBeTruthy();
+    expect(screen.getByText('показателей')).toBeTruthy();
     expect(screen.getByText('55')).toBeTruthy();
-    expect(screen.getByText('Страны')).toBeTruthy();
-    expect(screen.getByText('1897')).toBeTruthy();
-    expect(screen.getByText('Данные с')).toBeTruthy();
-    const labels = [...document.querySelectorAll('.fe-scope-stat__label')];
-    expect(labels).toHaveLength(3);
-    expect(labels.every((el) => el.textContent.trim().split(/\s+/).length <= 2)).toBe(true);
+    expect(screen.getByText('стран, и список растёт')).toBeTruthy();
+    // Глубина истории: «до 129 лет» и пояснение, с какого года.
+    expect(screen.getByText(String(YEARS))).toBeTruthy();
+    expect(screen.getByText('до')).toBeTruthy();
+    expect(screen.getByText('лет истории, с 1897 года')).toBeTruthy();
+    expect(screen.queryByText('1897')).toBeNull();
+    expect(document.querySelectorAll('.fe-scope-stat')).toHaveLength(3);
 
     // Российские 145 и 495 — только внутри раскрывашки, не в основной сетке.
-    const details = screen.getByText('Данные — только из официальных источников').closest('details');
+    const details = screen.getByText('Только официальные источники').closest('details');
     expect(details.contains(screen.getByText('145'))).toBe(true);
     expect(details.contains(screen.getByText('495'))).toBe(true);
     expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
@@ -58,21 +60,41 @@ describe('HomeDataScope — три живых числа платформы', ()
     expect(screen.queryByText(/США:.*штатам/)).toBeNull();
   });
 
+  it('плитки нажимаются: показатели ведут ко всем темам, страны к каталогу; история без ссылки', async () => {
+    renderScope();
+    await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
+    expect(screen.getByText('268').closest('a').getAttribute('href')).toBe('/russia/category');
+    expect(screen.getByText('55').closest('a').getAttribute('href')).toBe('/#countries');
+    expect(screen.getByText(String(YEARS)).closest('a')).toBeNull();
+  });
+
+  it('пока каталог грузится, вместо чисел «…», а не устаревший запасной набор', () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/world/countries', () => new Promise(() => {})],
+    ]);
+    renderPage(<HomeDataScope />, { path: '/', route: '/' });
+    expect(document.querySelectorAll('.fe-stat-wait')).toHaveLength(2);
+    const text = document.querySelector('[data-block="home-data-scope"]').textContent;
+    expect(text).not.toMatch(/169|35|1956|1954|174/);
+  });
+
   it('берёт число стран с API, а не устаревший фоллбэк', async () => {
     renderScope({ countries: COUNTRIES(57), total: 57 });
     await waitFor(() => expect(screen.getByText('57')).toBeTruthy());
-    expect(screen.getByText('Страны')).toBeTruthy();
+    expect(screen.getByText('стран, и список растёт')).toBeTruthy();
   });
 
-  it('если в каталоге нет чисел, вместо них — честный прочерк, а не выдуманное значение', async () => {
+  it('если в каталоге нет чисел, вместо них честный прочерк, а не выдуманное значение', async () => {
     renderScope({ countries: [], total: 0 });
     await waitFor(() => expect(screen.getAllByLabelText('нет данных')).toHaveLength(2));
     expect(screen.queryByText('тыс.')).toBeNull();
   });
 
-  it('официальные источники и режим обновления — в раскрывашке «Данные — только из официальных источников»', () => {
+  it('свёрнутая строка сразу называет источники; полный список и режим обновления в раскрывашке', () => {
     renderScope();
 
+    expect(screen.getByText('Росстат, Евростат, МВФ и другие')).toBeTruthy();
     expect(screen.getByText(
       'Евростат, МВФ, Бюро экономического анализа США, Бюро трудовой статистики США, ФРС, Росстат, Банк России, Минфин России',
     )).toBeTruthy();
@@ -88,23 +110,23 @@ describe('HomeDataScope — три живых числа платформы', ()
     expect(block.textContent).not.toContain('\u00B7');
   });
 
-  it('EN: без российских строк, источники международные', async () => {
+  it('EN: без российских строк, источники международные, история «up to N years»', async () => {
     renderScope(undefined, 'en');
 
     expect(screen.getByRole('heading', { name: 'The platform in numbers' })).toBeTruthy();
     await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
     expect(screen.getByText('K')).toBeTruthy();
-    expect(screen.getByText('Indicators')).toBeTruthy();
-    expect(screen.getByText('Countries')).toBeTruthy();
-    // «Data since 1897», а не «since 1897 years of history».
-    expect(screen.getByText('Data since')).toBeTruthy();
-    expect(screen.getByText('1897')).toBeTruthy();
-    expect(screen.queryByText(/years of history/)).toBeNull();
+    expect(screen.getByText('indicators')).toBeTruthy();
+    expect(screen.getByText('countries and counting')).toBeTruthy();
+    expect(screen.getByText('up to')).toBeTruthy();
+    expect(screen.getByText('years of history, since 1897')).toBeTruthy();
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('495')).toBeNull();
+    expect(screen.getByText('Eurostat, IMF, BLS and others')).toBeTruthy();
     expect(screen.getByText(
       'Eurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks',
     )).toBeTruthy();
     expect(screen.queryByText(/Rosstat/)).toBeNull();
+    expect(screen.getByText('268').closest('a').getAttribute('href')).toBe('/world/rating/gdp-usd');
   });
 });

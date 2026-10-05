@@ -9,7 +9,6 @@ import { track, events } from '../lib/track';
 import { openConsentSettings } from '../lib/consent';
 import useMediaQuery from '../lib/useMediaQuery';
 import {
-  comparePath,
   russiaCategoriesPath,
   russiaCategoryPath,
 } from '../lib/sitePaths';
@@ -22,6 +21,8 @@ import {
 } from '../lib/footerNav';
 import { useT, useLocale } from '../i18n';
 import '../styles/shell.css';
+
+const chipLink = cn(FOCUS_RING, 'fe-foot-chip fe-press');
 
 const footLink = cn(
   FOCUS_RING,
@@ -48,10 +49,26 @@ function ImageCredit({ t }) {
  * Группа ссылок подвала. На телефоне — аккордеон (заголовок-кнопка раскрывает список), чтобы подвал не занимал
  * три экрана; от 640 px — обычная колонка с заголовком. Все заголовки одного стиля, регистр обычный.
  */
-function FooterGroup({ title, hubTo, hubLabel, desktop, children }) {
+function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, children }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const expanded = desktop || open;
+  // Чипы: на телефоне группа раскрыта сразу и показана плитками-ссылками (входы в каталог не прячем за стрелкой).
+  if (chips && !desktop) {
+    return (
+      <section className="fe-foot-group fe-foot-group--chips">
+        <h3 className="fe-foot-title fe-foot-title--static">{title}</h3>
+        <ul className="fe-foot-chips">
+          {hubTo && hubLabel ? (
+            <li>
+              <Link to={hubTo} className={cn(FOCUS_RING, 'fe-foot-chip fe-foot-chip--all fe-press')}>{hubLabel}</Link>
+            </li>
+          ) : null}
+          {children}
+        </ul>
+      </section>
+    );
+  }
   return (
     <section className="fe-foot-group">
       <h3 className="fe-foot-title">
@@ -72,7 +89,7 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, children }) {
       </h3>
       <div id={panelId} className="fe-foot-panel" data-open={expanded} inert={!expanded}>
         <div className="fe-foot-panel__inner">
-          <ul className="fe-foot-list space-y-2 text-sm pointer-coarse:space-y-0">
+          <ul className="fe-foot-list text-sm">
             {!desktop && hubTo && hubLabel ? (
               <li>
                 <Link to={hubTo} className={footLink}>{hubLabel}</Link>
@@ -99,7 +116,7 @@ export default function Footer() {
   return (
     <footer className="fe-footer mt-auto border-t border-border-subtle">
       <div className="fe-page-shell fe-foot-wrap py-10 md:py-16">
-        <div className="fe-footer-grid grid grid-cols-1 gap-x-8 gap-y-0 sm:grid-cols-2 sm:gap-y-8 lg:grid-cols-3">
+        <div className="fe-footer-grid grid grid-cols-1 gap-x-8 gap-y-0 sm:grid-cols-2 sm:gap-y-8 md:grid-cols-4">
           <div>
             <Link to="/" className={cn(FOCUS_RING, 'mb-4 inline-flex rounded-lg')} aria-label={t('nav.homeAria')}>
               <Brand />
@@ -123,10 +140,11 @@ export default function Footer() {
               title={t(catalog.headingKey)}
               hubTo={catalog.headingTo}
               desktop={desktop}
+              chips
             >
               {catalog.links.map((item) => (
                 <li key={item.key}>
-                  <Link to={item.to} className={footLink}>
+                  <Link to={item.to} className={desktop ? footLink : chipLink}>
                     {item.label}
                   </Link>
                 </li>
@@ -138,26 +156,27 @@ export default function Footer() {
               hubTo={russiaCategoriesPath()}
               hubLabel={t('shell.footer.allCategories')}
               desktop={desktop}
+              chips
             >
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
                 <li key={c.slug}>
-                  <Link to={russiaCategoryPath(c.slug)} className={footLink}>
+                  <Link to={russiaCategoryPath(c.slug)} className={desktop ? footLink : chipLink}>
                     {categoryLabel(c)}
                   </Link>
                 </li>
               ))}
               {CATEGORIES.filter((c) => !c.apiCategory).map((c) => (
-                <li key={c.slug} className="text-text-tertiary">
+                <li key={c.slug} className={cn('text-text-tertiary', !desktop && 'fe-foot-chip fe-foot-chip--soon')}>
                   {categoryLabel(c)} <span className="text-xs">{t('common.soon')}</span>
                 </li>
               ))}
             </FooterGroup>
           )}
 
-          <FooterGroup title={t('footer.section.world')} desktop={desktop}>
+          <FooterGroup title={t('footer.section.world')} desktop={desktop} chips>
             {worldLinks.map((item) => (
               <li key={item.key}>
-                <Link to={item.to} className={footLink}>
+                <Link to={item.to} className={desktop ? footLink : chipLink}>
                   {t(item.key)}
                 </Link>
               </li>
@@ -175,11 +194,6 @@ export default function Footer() {
           </FooterGroup>
 
           <FooterGroup title={t('footer.tools')} desktop={desktop}>
-            <li>
-              <Link to={comparePath()} className={footLink}>
-                {t('footer.compare')}
-              </Link>
-            </li>
             <li>
               <Link to="/calculator" className={footLink}>
                 {t('footer.calcInflation')}

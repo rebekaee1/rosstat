@@ -4,8 +4,12 @@ import { ChevronRight, Globe2, Search } from 'lucide-react';
 import {
   groupCountriesByRegion,
   pluralRu,
+  useWorldCompareSnapshot,
   useWorldCountries,
+  useWorldMapSeries,
 } from '../../lib/worldApi';
+import { buildCountryFacts, formatEconomySize, formatPercentValue } from '../../lib/countryFacts';
+import Sparkline from '../Sparkline';
 import { HOME_MAP_RUSSIA_COUNTRY, countryPublicName, homeScopeCountriesCount } from '../../lib/homeWorkbench';
 import { countryFlag } from '../../lib/countryFlag';
 import { countryPath, russiaHomePath } from '../../lib/sitePaths';
@@ -30,11 +34,18 @@ function CountryMark({ code }) {
   );
 }
 
-function CountryRow({ country, regionLabel }) {
+function CountryRow({ country, regionLabel, facts }) {
+  const t = useT();
   const { locale } = useLocale();
   const primary = countryPublicName(country, locale);
+  const economy = facts ? formatEconomySize(facts.economyBn, locale) : '';
+  const inflation = facts && Number.isFinite(facts.inflation) ? formatPercentValue(facts.inflation, locale) : '';
+  const unemployment = facts && Number.isFinite(facts.unemployment) ? formatPercentValue(facts.unemployment, locale) : '';
+  const hasFacts = Boolean(economy || inflation || unemployment);
+  const spark = facts?.spark?.length > 1 ? facts.spark : null;
   return (
     <Link
+      // Карточка ведёт на обзор страны (главные цифры и все темы), а не на отдельный показатель.
       to={country.slug === 'russia' ? russiaHomePath() : countryPath(country.slug)}
       onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'country', code: country.code })}
       className="fe-country-row fe-press group"
@@ -43,7 +54,19 @@ function CountryRow({ country, regionLabel }) {
       <span className="min-w-0 flex-1">
         <span className="fe-country-row__name">{primary}</span>
         {regionLabel ? <span className="fe-country-row__meta">{regionLabel}</span> : null}
+        {hasFacts ? (
+          <span className="fe-country-row__facts">
+            {economy ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.gdp')}</span>{economy}</span> : null}
+            {inflation ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.inflation')}</span>{inflation}</span> : null}
+            {unemployment ? <span><span className="fe-country-row__fact-label">{t('w6b.catalog.unemployment')}</span>{unemployment}</span> : null}
+          </span>
+        ) : null}
       </span>
+      {spark ? (
+        <span className="fe-country-row__spark" aria-hidden="true">
+          <Sparkline points={spark} trend="flat" sentiment="neutral" height={34} />
+        </span>
+      ) : null}
       <ChevronRight size={16} className="fe-country-row__chevron" aria-hidden="true" />
     </Link>
   );
@@ -66,6 +89,18 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('all');
   const [expanded, setExpanded] = useState(false);
+  const [sort, setSort] = useState('alpha');
+  // Те же ответы, что у карты и рейтинга главной: общий кэш, лишних запросов нет.
+  const gdpQ = useWorldCompareSnapshot('gdp-usd');
+  const inflationQ = useWorldCompareSnapshot('hicp-index');
+  const unemploymentQ = useWorldCompareSnapshot('unemployment-rate');
+  const gdpSeriesQ = useWorldMapSeries('gdp-usd');
+  const facts = useMemo(() => buildCountryFacts({
+    gdp: gdpQ.data,
+    inflation: inflationQ.data,
+    unemployment: unemploymentQ.data,
+    gdpSeries: gdpSeriesQ.data,
+  }), [gdpQ.data, inflationQ.data, unemploymentQ.data, gdpSeriesQ.data]);
 
   const groups = useMemo(() => {
     const listed = Number(russiaSeriesCount) || 0;
@@ -99,15 +134,29 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
       })))
       .sort((a, b) => collator.compare(a.name, b.name));
   }, [groups, locale, t]);
+  // «По размеру экономики»: крупные сверху, страны без значения в конце (по алфавиту).
+  const ordered = useMemo(() => {
+    if (sort !== 'size') return entries;
+    const size = (entry) => facts.get(entry.country.code)?.economyBn;
+    return [...entries].sort((a, b) => {
+      const sa = size(a);
+      const sb = size(b);
+      const ha = Number.isFinite(sa);
+      const hb = Number.isFinite(sb);
+      if (ha && hb) return sb - sa;
+      if (ha !== hb) return ha ? -1 : 1;
+      return 0;
+    });
+  }, [entries, facts, sort]);
 
   const needle = normalize(query);
-  const filtered = useMemo(() => entries.filter((entry) => {
+  const filtered = useMemo(() => ordered.filter((entry) => {
     if (region !== 'all' && entry.regionId !== region) return false;
     if (!needle) return true;
     return normalize(entry.name).includes(needle)
       || normalize(entry.country.name_en).includes(needle)
       || normalize(entry.country.name).includes(needle);
-  }), [entries, region, needle]);
+  }), [ordered, region, needle]);
 
   const narrowed = Boolean(needle) || region !== 'all';
   const collapsible = !narrowed && filtered.length > COLLAPSED_COUNT;
@@ -142,7 +191,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
             id="home-countries-title"
             className="mt-1 text-lg font-semibold text-text-primary"
           >
-            {t('shell3.catalog.title')}
+            {sort === 'size' ? t('w6b.catalog.titleSize') : t('shell3.catalog.title')}
           </h2>
           {countriesTotal ? (
             <p className="mt-1 text-sm text-text-secondary">
@@ -185,6 +234,10 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
             </Chip>
           ))}
         </ChipGroup>
+        <ChipGroup label={t('w6b.catalog.sortAria')} nowrap className="fe-fade-x fe-country-sort">
+          <Chip active={sort === 'alpha'} onClick={() => { setSort('alpha'); setExpanded(false); }}>{t('w6b.catalog.sortAlpha')}</Chip>
+          <Chip active={sort === 'size'} onClick={() => { setSort('size'); setExpanded(false); }}>{t('w6b.catalog.sortSize')}</Chip>
+        </ChipGroup>
       </div>
 
       {isLoading ? (
@@ -200,7 +253,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
         <ul className="fe-country-grid">
           {visible.map((entry) => (
             <li key={entry.country.slug}>
-              <CountryRow country={entry.country} regionLabel={entry.regionName} />
+              <CountryRow country={entry.country} regionLabel={entry.regionName} facts={facts.get(entry.country.code)} />
             </li>
           ))}
         </ul>

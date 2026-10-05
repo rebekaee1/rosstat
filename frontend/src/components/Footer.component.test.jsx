@@ -26,7 +26,15 @@ describe('Footer', () => {
     const footer = screen.getByRole('contentinfo');
     const toggles = within(footer).getAllByRole('button', { expanded: false });
     const names = toggles.map((b) => b.textContent);
-    expect(names).toEqual(expect.arrayContaining(['Источники', 'Категории', 'Мир', 'Россия', 'Инструменты', 'Информация']));
+    expect(names).toEqual(expect.arrayContaining(['Источники', 'Россия', 'Инструменты', 'Информация']));
+    // «Категории» и «Мир» раскрыты сразу и показаны чипами-ссылками, а не спрятаны за стрелкой.
+    expect(names).not.toContain('Категории');
+    expect(names).not.toContain('Мир');
+    for (const title of ['Категории', 'Мир']) {
+      const group = within(footer).getByRole('heading', { name: title }).closest('section');
+      expect(group.className).toContain('fe-foot-group--chips');
+      expect(group.querySelectorAll('.fe-foot-chip').length).toBeGreaterThanOrEqual(3);
+    }
 
     const sources = within(footer).getByRole('button', { name: 'Источники' });
     const panel = document.getElementById(sources.getAttribute('aria-controls'));
@@ -44,7 +52,7 @@ describe('Footer', () => {
     const titles = [...footer.querySelectorAll('.fe-foot-title')];
     expect(titles.length).toBeGreaterThanOrEqual(6);
     for (const title of titles) {
-      expect(title.className).toBe('fe-foot-title');
+      expect(title.className).toMatch(/^fe-foot-title( fe-foot-title--static)?$/);
       expect(title.textContent).not.toBe(title.textContent.toUpperCase());
     }
     expect(within(footer).queryByText('Система работает')).toBeNull();
@@ -69,7 +77,8 @@ describe('Footer', () => {
     renderFooter();
     const summary = screen.getByText('Реквизиты').closest('summary');
     expect(summary.querySelector('svg.fe-foot-requisites__chevron')).toBeTruthy();
-    expect(document.querySelectorAll('ul.fe-foot-list').length).toBeGreaterThanOrEqual(6);
+    expect(document.querySelectorAll('ul.fe-foot-list').length).toBeGreaterThanOrEqual(4);
+    expect(document.querySelectorAll('ul.fe-foot-chips').length).toBe(2);
   });
 
   it('компьютер: колонки с обычными заголовками, без кнопок-аккордеонов, реквизиты на виду', () => {
@@ -80,5 +89,17 @@ describe('Footer', () => {
     expect(within(footer).getByRole('heading', { name: 'Мир' })).toBeTruthy();
     expect(within(footer).queryByText('Реквизиты')).toBeNull();
     expect(footer.querySelectorAll('[inert]')).toHaveLength(0);
+  });
+
+  it('«Сравнение» в подвале одно (в «Мир»), а не дубль в «Инструментах»; имена страниц единые', () => {
+    asDesktop();
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getAllByRole('link', { name: 'Сравнение' })).toHaveLength(1);
+    expect(within(footer).queryByRole('link', { name: 'Сравнение индикаторов' })).toBeNull();
+    expect(within(footer).getByRole('link', { name: 'Как мы считаем прогнозы' }).getAttribute('href')).toBe('/methodology');
+    expect(within(footer).getByRole('link', { name: 'Условия использования' }).getAttribute('href')).toBe('/terms');
+    expect(within(footer).getByRole('link', { name: 'Источники данных и изображений' }).getAttribute('href')).toBe('/about#credits');
+    expect(within(footer).queryByRole('link', { name: 'Благодарности' })).toBeNull();
   });
 });

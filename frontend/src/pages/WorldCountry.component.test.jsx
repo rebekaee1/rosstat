@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { act, fireEvent, screen, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import WorldCountry from './WorldCountry';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -443,7 +443,9 @@ describe('WorldCountry key figures', () => {
     const cards = document.querySelectorAll('.w2-kpi');
     expect(cards).toHaveLength(2);
     const first = cards[0].textContent.replace(/\u00A0/g, ' ');
-    expect(first).toContain('Изменение потребительских цен за год');
+    // Название плитки короткое и человеческое; полное официальное название остаётся в подсказке.
+    expect(first).toContain('Инфляция');
+    expect(cards[0].querySelector('.w2-kpi-name').getAttribute('title')).toBe('Изменение потребительских цен за год');
     expect(first).toContain('2,9');
     expect(first).not.toContain('2,92');
     expect(first).toContain('%');
@@ -577,5 +579,74 @@ describe('WorldCountry числа одним правилом (RU)', () => {
     expect(row.textContent).not.toMatch(/\d\.\d/);
     const big = screen.getByRole('link', { name: /Население/ });
     expect(big.textContent).toContain('83 400 000');
+  });
+});
+
+describe('WorldCountry: волна 6, профиль и список показателей', () => {
+  const OVERVIEW = [
+    {
+      concept_slug: 'hicp-index', name: 'Изменение потребительских цен за год', name_en: 'Consumer prices, year over year',
+      unit: '%', indicator_code: 'de-hicp', frequency: 'monthly', date: '2026-08-01', value: 2.9,
+    },
+    {
+      concept_slug: 'budget-balance-gdp', name: 'Сальдо бюджета сектора государственного управления', name_en: 'General government balance',
+      unit: '% ВВП', indicator_code: 'de-bud', frequency: 'annual', date: '2025-01-01', value: -2.1,
+    },
+  ];
+
+  it('заголовок плитки короткий и человеческий, у плитки без ряда есть значок «график недоступен»', async () => {
+    renderCountry('germany', { ...GERMANY, overview: OVERVIEW });
+    await screen.findByRole('heading', { name: 'Главное' });
+    const names = [...document.querySelectorAll('.w2-kpi-name')].map((el) => el.textContent);
+    expect(names).toEqual(['Инфляция', 'Баланс бюджета']);
+    await waitFor(() => expect(screen.getAllByText('график недоступен')).toHaveLength(2));
+  });
+
+  it('кнопка «Сравнить с Россией» ведёт на сравнение двух стран по сопоставимому показателю', async () => {
+    renderCountry('germany', { ...GERMANY, overview: OVERVIEW });
+    const link = await screen.findByRole('link', { name: /Сравнить с Россией/ });
+    expect(link.getAttribute('href')).toBe('/compare?codes=w:germany:hicp-index,w:russia:hicp-index');
+  });
+
+  it('без общего с Россией показателя кнопки «Сравнить с Россией» нет', async () => {
+    renderCountry('germany', { ...GERMANY, overview: [{ ...OVERVIEW[1], concept_slug: 'activity-rate' }] });
+    await screen.findByRole('heading', { name: 'Главное' });
+    expect(screen.queryByRole('link', { name: /Сравнить с Россией/ })).toBeNull();
+  });
+
+  it('«Мировые рынки» стоят ниже каталога показателей, а не перед ним', async () => {
+    renderCountry('united-states', US_COUNTRY);
+    const markets = await screen.findByTestId('country-market-indicators');
+    const catalog = document.querySelector('[data-world-country-category]');
+    expect(catalog.compareDocumentPosition(markets) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('почти-дубли свёрнуты в одну строку, а единица не повторяется в названии', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Население',
+        indicators: [
+          { code: 'de-b1', name: 'Число родившихся по возрасту матери, до 20 лет', unit: 'человек', frequency: 'annual', last_value: 10, last_date: '2025-01-01' },
+          { code: 'de-b2', name: 'Число родившихся по возрасту матери, 20-24', unit: 'человек', frequency: 'annual', last_value: 20, last_date: '2025-01-01' },
+          { code: 'de-b3', name: 'Число родившихся по месту проживания', unit: 'человек', frequency: 'annual', last_value: 30, last_date: '2025-01-01' },
+          { code: 'de-d', name: 'Число умерших, человек', unit: 'человек', frequency: 'annual', last_value: 40, last_date: '2025-01-01' },
+        ],
+      }],
+    });
+    await screen.findByRole('heading', { name: 'Население' });
+    const group = document.querySelector('.fe-ind-group');
+    expect(group).toBeTruthy();
+    expect(group.querySelector('.fe-ind-group__name').textContent).toBe('Число родившихся');
+    expect(group.querySelector('.fe-ind-group__count').textContent).toBe('3 разреза');
+    expect(group.hasAttribute('open')).toBe(false);
+    // Одиночный показатель: «, человек» в названии убрано, единица осталась подписью под ним.
+    const single = screen.getByRole('link', { name: /Число умерших/ });
+    expect(single.textContent).not.toMatch(/Число умерших, человек/);
+  });
+
+  it('EN: заголовок «The economy of the United States»', async () => {
+    renderCountry('united-states', US_COUNTRY, 'en');
+    expect(await screen.findByRole('heading', { level: 1, name: 'The economy of the United States' })).toBeTruthy();
   });
 });

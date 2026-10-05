@@ -4,7 +4,7 @@ import NotFound from './NotFound';
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
-  Search, BarChart3, ArrowUpRight,
+  Search, BarChart3, ArrowUpRight, ChevronDown, Scale, Spline,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -12,7 +12,7 @@ import {
   worldCountryTitle,
 } from '../lib/pageMeta';
 import {
-  useWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit,
+  useWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit, pluralRu,
 } from '../lib/worldApi';
 import {
   collapseCountryIndicators, indicatorPublicName, localizedDisplay,
@@ -48,7 +48,8 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
-import { countryPublicName } from '../lib/homeWorkbench';
+import { countryPublicName, homeConceptLabel, HOME_MAP_RUSSIA_CONCEPT_CODES } from '../lib/homeWorkbench';
+import { dropRepeatedUnit, groupNearDuplicates } from '../lib/countryIndicatorGroups';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
@@ -99,6 +100,7 @@ function kpiDigits(value) {
 }
 
 function CountryKpiCard({ item, slug, hero, locale }) {
+  const t = useT();
   const mode = `${item.concept_slug === 'hicp-index' ? 'yoy' : 'level'}-${item.frequency || 'annual'}`;
   const seriesQ = useWorldIndicatorData(slug, item.indicator_code, mode);
   const spark = useMemo(
@@ -110,7 +112,9 @@ function CountryKpiCard({ item, slug, hero, locale }) {
   const longUnit = unit.long && unit.long !== unit.short && !/за год|year[- ]over[- ]year|yoy/i.test(unit.long)
     ? unit.long
     : '';
-  const kpiName = localizedDisplay(locale, item.name, item.name_en);
+  const fullName = localizedDisplay(locale, item.name, item.name_en);
+  // Короткое человеческое имя («Инфляция», «Баланс бюджета») вместо длинного официального названия.
+  const kpiName = homeConceptLabel(item.concept_slug, t, fullName);
   const digits = kpiDigits(item.value);
   const format = (value) => formatWorldValue(value, digits, locale);
   return (
@@ -118,7 +122,7 @@ function CountryKpiCard({ item, slug, hero, locale }) {
       to={indicatorPath(slug, item.indicator_code)}
       className={`w2-kpi fe-press group${hero ? ' w2-kpi--hero' : ''}`}
     >
-      <span className="w2-kpi-name" title={kpiName}>{kpiName}</span>
+      <span className="w2-kpi-name" title={fullName}>{kpiName}</span>
       <span className="w2-kpi-value">
         <WorldCountUp value={item.value} format={format} />
         {unit.short && <small>{unit.short}</small>}
@@ -130,7 +134,14 @@ function CountryKpiCard({ item, slug, hero, locale }) {
       <span className="w2-kpi-spark" aria-hidden="true">
         {seriesQ.isLoading
           ? <SparklineSkeleton height={hero ? 52 : 40} />
-          : (spark.length > 1 && <Sparkline points={spark} trend="flat" sentiment="neutral" height={hero ? 52 : 40} />)}
+          : (spark.length > 1
+            ? <Sparkline points={spark} trend="flat" sentiment="neutral" height={hero ? 52 : 40} />
+            : (
+              <span className="w2-kpi-nospark">
+                <Spline size={14} aria-hidden="true" />
+                {t('w6b.country.noChart')}
+              </span>
+            ))}
       </span>
     </Link>
   );
@@ -188,12 +199,13 @@ function FreqBadges({ item, t }) {
 function IndicatorRow({ item, slug, to, sectionName }) {
   const t = useT();
   const { locale } = useLocale();
-  const name = shortUsIndicatorName(indicatorPublicName(item, locale), sectionName, locale);
   const unit = localizeWorldUnit(item.unit, locale);
+  // Единица показана под названием: в самом названии («..., человек») её не повторяем.
+  const name = dropRepeatedUnit(shortUsIndicatorName(indicatorPublicName(item, locale), sectionName, locale), unit);
   return (
     <Link
       to={to || indicatorPath(slug, item.code)}
-      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[92px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
+      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
       <div className="min-w-0 flex-1">
         <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
@@ -217,6 +229,48 @@ function IndicatorRow({ item, slug, to, sectionName }) {
       </div>
     </Link>
   );
+}
+
+/** Несколько близких показателей («Число родившихся» в трёх разрезах) одной свёрнутой строкой. */
+function IndicatorGroup({ group, slug, sectionName }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const n = group.items.length;
+  const word = locale === 'en'
+    ? t('w6b.country.cuts_many')
+    : pluralRu(n, [t('w6b.country.cuts_one'), t('w6b.country.cuts_few'), t('w6b.country.cuts_many')]);
+  return (
+    <details className="fe-ind-group md:col-span-2">
+      <summary className="fe-ind-group__summary">
+        <span className="fe-ind-group__name">{group.base}</span>
+        <span className="fe-ind-group__count">{n} {word}</span>
+        <ChevronDown size={16} aria-hidden="true" className="fe-ind-group__chevron" />
+      </summary>
+      <div className="mt-2 grid gap-2 md:grid-cols-2">
+        {group.items.map((ind) => (
+          <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={sectionName} />
+        ))}
+      </div>
+    </details>
+  );
+}
+
+/** Строки категории: почти-дубли свёрнуты, остальные показатели идут как есть. */
+function IndicatorRows({ items, slug, sectionName, locale, collapse }) {
+  const rows = useMemo(
+    () => (collapse
+      ? groupNearDuplicates(items, (item) => indicatorPublicName(item, locale))
+      : items.map((item) => ({ kind: 'single', item }))),
+    [items, locale, collapse],
+  );
+  return rows.map((row) => (row.kind === 'group'
+    ? <IndicatorGroup key={`g-${row.items[0].code}`} group={row} slug={slug} sectionName={sectionName} />
+    : <IndicatorRow key={row.item.code} item={row.item} slug={slug} sectionName={sectionName} />));
+}
+
+/** «The economy of the United States»: у нескольких стран английское название идёт с артиклем. */
+function withEnglishArticle(name) {
+  return /^(United States|United Kingdom|Netherlands)$/i.test(String(name || '').trim()) ? `the ${name}` : name;
 }
 
 export default function WorldCountry() {
@@ -334,6 +388,12 @@ export default function WorldCountry() {
     [catalogCategories],
   );
 
+  // «Сравнить с Россией»: первый главный показатель страны, который есть и у России (честная сопоставимость).
+  const russiaCompareHref = useMemo(() => {
+    const pick = (data?.overview || []).find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug]);
+    return pick ? `/compare?codes=w:${slug}:${pick.concept_slug},w:russia:${pick.concept_slug}` : '';
+  }, [data, slug]);
+
   const isUsCatalog = slug === 'united-states';
   const usTopics = useMemo(
     () => isUsCatalog ? groupUsSections(filteredCategories, locale) : [],
@@ -447,7 +507,7 @@ export default function WorldCountry() {
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-start lg:gap-7">
               <div>
                 <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
-                  {countryMeta?.h1 || countryName}
+                  {locale === 'en' && countryName ? `The economy of ${withEnglishArticle(countryName)}` : (countryMeta?.h1 || countryName)}
                 </h1>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
                   {t('w2.country.lead', { country: countryName })}
@@ -463,6 +523,17 @@ export default function WorldCountry() {
                   {t('world.country.compareCta')}
                   <ArrowUpRight size={14} aria-hidden="true" />
                 </Button>
+                {slug !== 'russia' && russiaCompareHref ? (
+                  <Button
+                    as={Link}
+                    to={russiaCompareHref}
+                    variant="secondary"
+                    className="mt-3 w-full sm:ml-3 sm:mt-4 sm:w-auto"
+                  >
+                    <Scale size={15} aria-hidden="true" />
+                    {t('w6b.country.compareRussia')}
+                  </Button>
+                ) : null}
               </div>
               <CountrySilhouette
                 code={data.country.code}
@@ -473,7 +544,8 @@ export default function WorldCountry() {
               />
             </div>
 
-            <div id="chart" className="fe-kpi-grid mt-6 scroll-mt-28">
+            <h2 className="w2-main-title mt-6">{t('w6b.country.main')}</h2>
+            <div id="chart" className="fe-kpi-grid mt-3 scroll-mt-28">
               {(data.overview || []).slice(0, 3).map((item, index) => (
                 <CountryKpiCard key={item.concept_slug} item={item} slug={slug} hero={index === 0} locale={locale} />
               ))}
@@ -518,31 +590,6 @@ export default function WorldCountry() {
               className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
             />
           </div>
-
-          {(data.market_indicators || []).length > 0 && (
-            <section className="mb-8" data-testid="country-market-indicators">
-              <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
-                <div className="min-w-0">
-                  <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
-                    {t('world.country.markets')}
-                  </h2>
-                </div>
-                <span className="shrink-0 text-sm text-text-tertiary">
-                  {data.market_indicators.length}
-                </span>
-              </div>
-              <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
-                {data.market_indicators.map((ind) => (
-                  <IndicatorRow
-                    key={ind.code}
-                    item={ind}
-                    slug={slug}
-                    to={russiaIndicatorPath(ind.code)}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
 
           {filteredCategories.length === 0 && (
             <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
@@ -640,10 +687,14 @@ export default function WorldCountry() {
                     </div>
                     <span className="shrink-0 text-sm tabular-nums text-text-tertiary">{formatCount(cat.count ?? cat.indicators.length, locale)}</span>
                   </div>
-                  <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
-                    {cat.indicators.map((ind) => (
-                      <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={isUsCatalog ? cat.name_ru : undefined} />
-                    ))}
+                  <div className="grid gap-2 sm:gap-2.5 md:grid-cols-2">
+                    <IndicatorRows
+                      items={cat.indicators}
+                      slug={slug}
+                      sectionName={isUsCatalog ? cat.name_ru : undefined}
+                      locale={locale}
+                      collapse={!isUsCatalog && !searching}
+                    />
                   </div>
                   {!searching && (isMobileSingle || denseCatalog) && cat.count > cat.indicators.length && (
                     <Button
@@ -663,6 +714,31 @@ export default function WorldCountry() {
               ))}
             </div>
           </div>
+          {(data.market_indicators || []).length > 0 && (
+            <section className="mt-10" data-testid="country-market-indicators">
+              <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
+                <div className="min-w-0">
+                  <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+                    {t('world.country.markets')}
+                  </h2>
+                </div>
+                <span className="shrink-0 text-sm text-text-tertiary">
+                  {data.market_indicators.length}
+                </span>
+              </div>
+              <div className="grid gap-2 sm:gap-2.5 md:grid-cols-2">
+                {data.market_indicators.map((ind) => (
+                  <IndicatorRow
+                    key={ind.code}
+                    item={ind}
+                    slug={slug}
+                    to={russiaIndicatorPath(ind.code)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           {(isUsCatalog || denseCatalog) && searching && matchCount > searchLimit && (
             <Button
               variant="secondary"

@@ -134,9 +134,27 @@ describe('CountrySilhouette', () => {
     }
   });
 
+  it('профиль страны заполнен: население без вылезания за край, столица и валюта', () => {
+    renderMap(
+      <CountrySilhouette
+        code="US"
+        name="США"
+        population={{ value: 342000000, unit: 'человек', year: 2025 }}
+        area={{ value: 9833517, unit: 'км²' }}
+      />,
+    );
+    expect(screen.getByText('Столица')).toBeTruthy();
+    expect(screen.getByText('Вашингтон')).toBeTruthy();
+    expect(screen.getByText('Валюта')).toBeTruthy();
+    expect(screen.getByText('Доллар США')).toBeTruthy();
+    // «342 млн человек»: неразрывный пробел только внутри «342 млн», дальше обычный: строка может перенестись, а не вылезти.
+    const pop = screen.getByText(/342/);
+    expect(pop.textContent).toContain('342\u00a0млн человек');
+  });
+
   it('без площади и населения не ломается и не рисует пустые строки', () => {
     renderMap(<CountrySilhouette code="AT" name="Австрия" region="Европа" />);
-    expect(screen.getByText('Профиль территории')).toBeTruthy();
+    expect(screen.getByText('Профиль страны')).toBeTruthy();
     expect(screen.queryByText('Площадь')).toBeNull();
     expect(screen.queryByText('Население')).toBeNull();
     expect(screen.queryByText(/Источник:/)).toBeNull();

@@ -47,22 +47,28 @@
   gap: 0;
   margin: 14px -10px 0;
 }
-/* Три равные колонки с тонкими разделителями; подпись над числом в одну строку, числа на одной линии. */
+/* Три равные колонки с тонкими разделителями; число сверху, пояснение фразой под ним (до двух строк). */
 .fe-scope-stat {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
+  min-height: 44px;
   padding-inline: 10px;
 }
 .fe-scope-stat + .fe-scope-stat { border-left: 1px solid var(--color-border-subtle); }
+/* Ссылка растянута на всю плитку: нажимается и число, и подпись. */
+.fe-scope-stat__link { display: inline-flex; align-items: baseline; gap: 4px; color: inherit; text-decoration: none; }
+.fe-scope-stat__link::after { content: ''; position: absolute; z-index: 1; inset: -4px 0; border-radius: 12px; }
+.fe-scope-stat__link:hover::after { background: color-mix(in srgb, var(--color-champagne) 12%, transparent); }
+.fe-scope-stat__link:focus-visible { outline: none; }
+.fe-scope-stat__link:focus-visible::after { outline: 2px solid var(--color-champagne-ink); outline-offset: 1px; }
 .fe-scope-stat__label {
-  overflow: hidden;
+  order: 2;
   font-size: 12px;
   line-height: 1.3;
   color: var(--color-text-secondary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num {
   display: flex;
@@ -85,6 +91,8 @@
 @media (max-width: 359px) {
   .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num { font-size: 22px; }
 }
+.fe-stat-unit--lead { margin-right: 2px; }
+.fe-stat-wait { color: var(--color-text-tertiary); }
 .fe-stat-unit {
   font-size: 13px;
   font-weight: 600;
@@ -109,6 +117,9 @@
   color: var(--color-text-secondary);
 }
 .fe-scope-more__summary::-webkit-details-marker { display: none; }
+.fe-scope-more__text { display: flex; min-width: 0; flex-direction: column; gap: 1px; }
+.fe-scope-more__lead { color: var(--color-text-primary); }
+.fe-scope-more__names { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
 .fe-scope-more__summary:hover { color: var(--color-text-primary); }
 .fe-scope-more__chevron { flex: none; transition: transform 0.2s var(--fe-ease-out); }
 .fe-scope-more[open] .fe-scope-more__chevron { transform: rotate(180deg); }
@@ -121,6 +132,8 @@
   color: var(--color-text-secondary);
 }
 .fe-scope-more__body p { margin: 0; }
+.fe-scope-more:not([open]) .fe-scope-more__body { display: none; }
+.fe-scope { align-self: start; }
 .fe-scope-more__list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .fe-scope-more__list strong { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 .fe-scope-more__label { font-weight: 600; color: var(--color-text-primary); }
@@ -166,14 +179,12 @@
   display: flex;
   gap: 8px;
   margin: 12px 0 0;
-  padding: 2px 32px 2px 0;
+  padding: 2px 0;
   list-style: none;
-  overflow-x: auto;
+  /* Примеры переносятся на вторую строку, а не прячутся за краем: ни один не обрезан («Безработица Германии»). */
+  flex-wrap: wrap;
 }
-.fe-search-examples > li { flex: none; }
-@media (min-width: 640px) {
-  .fe-search-examples { flex-wrap: wrap; overflow: visible; padding-right: 0; }
-}
+.fe-search-examples > li { flex: none; max-width: 100%; }
 @keyframes fe-rotate-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
@@ -299,15 +310,6 @@
   color: var(--color-champagne-ink);
 }
 
-/* ── Бегущая строка уходит при прокрутке вниз, шапка занимает её место ─────── */
-.fe-ticker { transition: transform 0.25s var(--fe-ease-out); }
-html[data-fe-ticker='hidden'] .fe-ticker { transform: translateY(-100%); }
-/* Шапка поднимается на место строки через `translate` (композитор), а не через `top`: раскладка не двигается, нет рывка. */
-html .fe-navbar {
-  transition-property: transform, opacity, background-color, box-shadow, border-color, translate;
-}
-html[data-fe-ticker='hidden'] .fe-navbar:not(.-translate-y-24) { translate: 0 -1.75rem; }
-
 /* ═══════════════════════════════════════════════════════════════════════════
    Волна 3 (X3): единый вертикальный ритм, каталог стран, меню, cookie, шапка, тикер.
    Правила index.css не слоистые, поэтому здесь специфичность чуть выше, а не !important.
@@ -336,7 +338,8 @@ main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
 
 /* ── Выбор показателя на главной: лента в один ряд, выбранный — тёмный ──────── */
 .fe-dashboard [data-block='home-map-controls'] .fe-chip.is-active,
-.fe-dashboard .fe-country-regions .fe-chip.is-active {
+.fe-dashboard .fe-country-regions .fe-chip.is-active,
+.fe-dashboard .fe-country-sort .fe-chip.is-active {
   border-color: var(--color-text-primary);
   background: var(--color-text-primary);
   color: var(--color-surface);
@@ -423,6 +426,13 @@ main#main-content .fe-ssr-hold { padding-top: 2.75rem; }
   white-space: nowrap;
 }
 .fe-country-row:hover .fe-country-row__name { color: var(--color-champagne-ink); }
+/* Три числа и линия истории ВВП прямо в карточке: по ней видно, что внутри страны, ещё до перехода. */
+.fe-country-row { align-items: flex-start; }
+.fe-country-row__flag { margin-top: 2px; }
+.fe-country-row__facts { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 6px; font-size: 13px; font-weight: 600; line-height: 1.35; color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.fe-country-row__fact-label { margin-right: 4px; font-weight: 400; color: var(--color-text-secondary); }
+.fe-country-row__spark { flex: none; align-self: center; width: 76px; min-height: 34px; overflow: hidden; }
+.fe-country-row__chevron { align-self: center; }
 .fe-country-row__meta { display: block; font-size: 12px; line-height: 1.3; color: var(--color-text-secondary); }
 .fe-country-row__chevron { flex: none; color: var(--color-text-tertiary); transition: transform 0.15s ease, color 0.15s ease; }
 .fe-country-row:hover .fe-country-row__chevron { color: var(--color-champagne-ink); transform: translateX(2px); }
@@ -551,6 +561,9 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 
 /* ── Тикер: затухание по краям и лёгкая подсказка прокрутки ─────────────────── */
 .fe-ticker__scroller { position: relative; height: 100%; }
+/* Строка не прячется при прокрутке: высота зарезервирована всегда (шапка под ней не «прыгает»). */
+.fe-ticker__sign { font-weight: 500; color: var(--color-text-secondary); }
+.fe-ticker__delta { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; color: var(--color-text-secondary); }
 .fe-ticker__fade {
   position: absolute;
   top: 0;
@@ -591,3 +604,70 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 .fe-route-skel { animation: fe-reveal 0.2s ease-out both; }
 .fe-route-skel__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 768px) { .fe-route-skel__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ═══ Волна 6 (зона B): меню с подписями, раскрывающейся Россией, колонками на планшете, подвал ═══ */
+.fe-mnav-columns { display: flex; flex-direction: column; gap: 4px; }
+.fe-navbar-mobile-menu .fe-mnav-link { align-items: flex-start; padding-block: 8px; text-align: left; }
+.fe-mnav-text { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 1px; }
+.fe-mnav-label { font-size: 15px; line-height: 1.3; }
+.fe-mnav-hint { font-size: 12px; font-weight: 400; line-height: 1.35; color: var(--color-text-tertiary); }
+.fe-navbar-mobile-menu .fe-mnav-icon { margin-top: 2px; }
+.fe-mnav-toggle { display: flex; min-height: 44px; cursor: pointer; background: transparent; border: 0; }
+.fe-mnav-chevron { flex: none; align-self: center; color: var(--color-text-tertiary); transition: transform 0.2s var(--fe-ease-out); }
+.fe-mnav-chevron.is-open { transform: rotate(180deg); }
+.fe-mnav-sub { display: flex; flex-direction: column; gap: 2px; margin-left: 14px; padding-left: 8px; border-left: 1px solid var(--color-border-subtle); }
+.fe-navbar-mobile-menu .fe-mnav-link--nested { min-height: 44px; padding-block: 6px; }
+.fe-navbar-mobile-menu .fe-mnav-link--nested .fe-mnav-icon { margin-top: 0; align-self: center; }
+
+/* Признак прокрутки: тень сверху и снизу появляется там, где за краем есть ещё пункты (приём «местной» подложки). */
+.fe-navbar .fe-mnav-scroll {
+  background:
+    linear-gradient(var(--color-surface) 30%, transparent) top / 100% 36px no-repeat local,
+    linear-gradient(transparent, var(--color-surface) 70%) bottom / 100% 36px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgba(35, 30, 16, 0.18), transparent) top / 100% 12px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgba(35, 30, 16, 0.18), transparent) bottom / 100% 12px no-repeat scroll;
+}
+
+/* Планшет: меню выше и в две колонки (группы раскладываются рядом), а не телефонная полоса на всю ширину. */
+@media (min-width: 640px) {
+  .fe-navbar .fe-navbar-mobile-menu { max-height: min(86dvh, 820px); }
+  .fe-mnav-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 20px; align-items: start; }
+  .fe-mnav-columns > .fe-mnav-group + .fe-mnav-group { margin-top: 0; padding-top: 0; border-top: 0; }
+}
+@media (min-width: 900px) {
+  .fe-mnav-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+
+/* Подвал на телефоне: «Категории» и «Мир» раскрыты чипами; логотип и подпись сжаты. */
+.fe-foot-group--chips { padding-block: 14px 6px; }
+.fe-foot-title--static { margin-bottom: 10px; }
+.fe-foot-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.fe-foot-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  background: var(--fe-glass-soft);
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.fe-foot-chip:hover { border-color: var(--color-border-champagne); }
+.fe-foot-chip--all { border-style: dashed; background: transparent; color: var(--color-champagne-ink); }
+.fe-foot-chip--soon { color: var(--color-text-tertiary); border-style: dotted; }
+@media (max-width: 639px) {
+  .fe-footer .fe-brand { font-size: 20px; }
+  .fe-footer .fe-brand svg { width: 22px; }
+  .fe-footer-grid > div:first-child > p { margin-bottom: 6px; font-size: 13px; line-height: 1.45; }
+}
+/* Планшет и шире: четыре колонки, строки ссылок вплотную друг к другу (шаг 44 px, меньше нельзя: нажимаемость). */
+.fe-foot-list { display: grid; gap: 8px; }
+@media (pointer: coarse) {
+  .fe-foot-list { gap: 0; }
+  .fe-foot-list > li > a, .fe-foot-list > li > button { display: inline-flex; align-items: center; min-height: 44px; }
+}
