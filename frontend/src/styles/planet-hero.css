@@ -1,0 +1,60 @@
+/* Главная: живая планета на первом экране (волна 6, зона C).
+   Слева заголовок, одна строка лида, поиск и числа платформы; справа планета. На телефоне и планшете порядок:
+   текст, поиск, планета, числа. Стеклянная петля-картина за hero больше не нужна: планета сама украшает экран. */
+.fe-dashboard [data-block="home-hero"]:has(.fe-hero-grid)::before { display: none; }
+
+.fe-hero-grid {
+  display: grid;
+  align-items: start;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "text" "planet" "scope";
+}
+.fe-hero-text { grid-area: text; }
+.fe-hero-planet { grid-area: planet; min-width: 0; }
+.fe-hero-scope { grid-area: scope; min-width: 0; }
+
+.fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(28px, 7.4vw, 34px); line-height: 1.12; }
+.fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+.fe-dashboard [data-block="home-hero"] .fe-hero-text .mt-5 { margin-top: 14px; }
+
+/* Планета внутри hero: стеклянная карточка вокруг шара, сразу под поиском. Выбор показателя и «Другие показатели»
+   стоят под шаром (на шаре — быстрые чипы), чтобы шар был виден целиком на первом экране. */
+.fe-dashboard .fe-hero-planet [data-block="home-workbench"] {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  padding: 8px;
+  border-radius: 28px;
+}
+.fe-dashboard .fe-hero-planet [data-block="home-workbench"] > .relative { order: 1; }
+.fe-dashboard .fe-hero-planet [data-block="home-map-controls"] {
+  order: 2;
+  margin: 10px 0 0;
+  padding: 12px 8px 4px;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 0;
+}
+.fe-dashboard .fe-hero-planet [data-block="home-map-controls"] h2 { font-size: 16px; }
+
+@media (min-width: 640px) {
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(32px, 4.4vw, 42px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { font-size: 15px; }
+  .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 12px; }
+}
+
+@media (min-width: 1024px) {
+  .fe-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 580px);
+    grid-template-areas: "text planet" "scope planet";
+    column-gap: 36px;
+    row-gap: 22px;
+  }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 3.3vw, 46px); }
+  .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 14px; }
+}

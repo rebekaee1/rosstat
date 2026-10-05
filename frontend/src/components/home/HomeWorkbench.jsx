@@ -25,7 +25,7 @@ import {
   useWorldCompareSnapshot,
   useWorldMapSeries,
 } from '../../lib/worldApi';
-import { SkeletonBox } from '../Skeleton';
+import PlanetPlaceholder from '../PlanetPlaceholder';
 import ApiRetryBanner from '../ApiRetryBanner';
 import ErrorBoundary from '../ErrorBoundary';
 import WorldConceptPicker from '../WorldConceptPicker';
@@ -39,6 +39,30 @@ import '../../styles/shell.css';
 const loadPlanetView = () => import('../PlanetView');
 const PlanetView = lazy(loadPlanetView);
 
+/** Сцена и дневная карта качаются заранее, пока человек читает первый экран: шар появляется без долгой паузы. */
+function warmPlanet() {
+  try {
+    // Экономия трафика: ничего заранее, шар загрузится, когда его попросят.
+    if (navigator.connection?.saveData) return;
+    import('../PlanetScene').catch(() => {});
+    new Image().src = '/planet/earth_day_2048.webp';
+  } catch { /* предзагрузка необязательна */ }
+}
+
+/** Ссылка «Поделиться видом»: ?planet=показатель:год:страна. Читается один раз при открытии страницы. */
+function readSharedView() {
+  try {
+    const raw = new URLSearchParams(window.location.search).get('planet');
+    if (!raw) return null;
+    const [concept, year, country] = raw.split(':');
+    return {
+      concept: /^[a-z0-9-]{1,60}$/.test(concept || '') ? concept : null,
+      year: /^\d{4}$/.test(year || '') ? Number(year) : null,
+      country: /^[A-Za-z]{2}$/.test(country || '') ? country.toUpperCase() : '',
+    };
+  } catch { return null; }
+}
+
 /**
  * true после первого кадра: планета монтируется
  * низкоприоритетным transition уже после первой отрисовки hero/поиска,
@@ -49,6 +73,7 @@ function useAfterFirstPaint() {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     loadPlanetView().catch(() => {});
+    warmPlanet();
     let timer = null;
     const raf = typeof window.requestAnimationFrame === 'function'
       ? window.requestAnimationFrame(() => {
@@ -72,8 +97,9 @@ export default function HomeWorkbench({ ratingConcepts }) {
   const t = useT();
   const { locale } = useLocale();
   const navigate = useNavigate();
-  const [picked, setPicked] = useState(null);
-  const [mapYear, setMapYear] = useState(null);
+  const [shared] = useState(readSharedView);
+  const [picked, setPicked] = useState(shared?.concept || null);
+  const [mapYear, setMapYear] = useState(shared?.year || null);
   const mapMounted = useAfterFirstPaint();
 
   const countriesQ = useWorldCountries();
@@ -136,6 +162,16 @@ export default function HomeWorkbench({ ratingConcepts }) {
     ? seriesPayload?.benchmark_by_year?.[String(activeYear)]
     : null;
 
+  const benchmarkSeries = useMemo(() => (seriesPayload?.years || [])
+    .map((year) => ({ year, value: seriesPayload?.benchmark_by_year?.[String(year)]?.value }))
+    .filter((point) => point.value != null && Number.isFinite(Number(point.value))), [seriesPayload]);
+
+  // Быстрая смена показателя прямо на шаре: первые показатели набора с короткими человеческими названиями.
+  const quickConcepts = useMemo(() => mapConcepts.slice(0, 5).map((item) => ({
+    slug: item.slug,
+    label: homeConceptLabel(item.slug, t, item.name),
+  })), [mapConcepts, t]);
+
   const onSelectCountry = (country, detail) => {
     track(events.HOME_COUNTRIES_MAP_SELECT, {
       code: country?.code,
@@ -149,15 +185,13 @@ export default function HomeWorkbench({ ratingConcepts }) {
     if (href) navigate(href);
   };
 
-  return (
-    <>
-      <HomeHero />
-
-      <section
-        data-block="home-workbench"
-        className="relative z-10 mb-10 md:mb-12"
-        aria-labelledby="home-world-map-title"
-      >
+  const skeleton = <PlanetPlaceholder />;
+  const workbench = (
+    <section
+      data-block="home-workbench"
+      className="relative z-10 mb-10 md:mb-12"
+      aria-labelledby="home-world-map-title"
+    >
         <div
           data-block="home-map-controls"
           className="mb-3 min-w-0"
@@ -210,7 +244,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
 
         <div className="relative min-w-0">
             {!mapMounted || mapDataPending ? (
-              <SkeletonBox className="h-[58rem] w-full rounded-2xl sm:h-[39rem]" />
+              skeleton
             ) : (
               <ErrorBoundary fallback={(
                 <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-border-subtle bg-surface-hover px-6 text-center text-sm text-text-secondary" role="alert">
@@ -219,7 +253,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                 </div>
               )}
               >
-              <Suspense fallback={<SkeletonBox className="h-[58rem] w-full rounded-2xl sm:h-[39rem]" />}>
+              <Suspense fallback={skeleton}>
                 <PlanetView
                   countries={mapCountries}
                   valuesByCode={valuesByCode}
@@ -238,12 +272,22 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   benchmark={benchmark}
                   ratingHref={fullRatingHref && activeYear ? `${fullRatingHref}?year=${activeYear}` : fullRatingHref}
                   onSelect={onSelectCountry}
+                  quickConcepts={quickConcepts}
+                  onConceptChange={(slug) => {
+                    setPicked(slug);
+                    setMapYear(null);
+                    track(events.HOME_COUNTRIES_METRIC, { concept: slug });
+                  }}
+                  shareable
+                  benchmarkSeries={benchmarkSeries}
+                  initialCountry={shared?.country || ''}
                 />
               </Suspense>
               </ErrorBoundary>
             )}
         </div>
-      </section>
-    </>
+    </section>
   );
+
+  return <HomeHero planet={workbench} />;
 }

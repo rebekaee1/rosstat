@@ -8,12 +8,15 @@ import {
   TextureLoader, Vector3,
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { geoEquirectangular, geoPath } from 'd3-geo';
+import { geoArea, geoEquirectangular, geoPath } from 'd3-geo';
 import {
   bindPlanetCountries, loadPlanetFeatures, lonLatToSphere,
   normalizePlanetCountryCode, pickPlanetCountry, planetNeedsFineFeatures, sphereToLonLat,
 } from '../lib/planetGeometry';
 import { outlineRings } from '../lib/planetAtlas';
+import {
+  bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, zoomedDistance,
+} from '../lib/planetView';
 import { WORLD_FEATURES } from '../lib/worldTopology';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
@@ -25,11 +28,21 @@ import {
   ATMOSPHERE_FRAGMENT, ATMOSPHERE_VERTEX, PLANET_FRAGMENT, PLANET_VERTEX,
 } from '../lib/planetShaders';
 
-const DEFAULT_FOCUS = [25, 24];
+// Запасная стартовая сторона (Атлантика: Америка, Европа, Африка); обычно её заменяет bestStartFocus по данным.
+const DEFAULT_FOCUS = [-25, 24];
 const MIN_DISTANCE = 1.45;
 const MAX_DISTANCE = 4.8;
 // Closer than this the 2048 px day map starts to blur; the 4096 px map is fetched once, on demand.
 const DETAIL_DISTANCE = 2.7;
+// Ближе этого расстояния подгружается подробный атлас 10m (линии границ без «лесенки»).
+const DEEP_DISTANCE = 2.15;
+// Ближе этого расстояния на шаре подписываются страны, а не только выбранная.
+const LABEL_DISTANCE = 2.9;
+// Самовращение до первого касания: градусов в секунду и кадров в секунду (30: экономим батарею).
+const SPIN_DEGREES_PER_SECOND = 4.5;
+const SPIN_TICK_MS = 33;
+const DOUBLE_TAP_MS = 320;
+const Y_AXIS = new Vector3(0, 1, 0);
 const INITIAL_DISTANCE = 3.35;
 const FLIGHT_SECONDS = 0.6;
 const INTRO_SECONDS = 1.4;
@@ -51,6 +64,36 @@ const MIN_OUTLINE_SPAN = 8;
 function tracePath(path, context, geometry, minSpanDegrees) {
   context.beginPath();
   for (const ring of outlineRings(geometry, minSpanDegrees)) path({ type: 'LineString', coordinates: ring });
+}
+
+// Страны без данных: светлый тёплый песок с мягкой косой штриховкой («скоро»), а не серая плашка, сливающаяся с океаном.
+const NO_DATA_FILL = '#EAE2CF';
+const NO_DATA_HATCH = '#B8A987';
+
+/** Soft diagonal hatching inside a country without data; tiny countries keep just the tint. */
+function hatchCountry(context, path, projection, entry, scale) {
+  const [[west, south], [east, north]] = entry.bounds || [[-180, -90], [180, 90]];
+  const left = west <= east ? projection([west, 0])[0] : 0;
+  const right = west <= east ? projection([east, 0])[0] : context.canvas.width;
+  const top = projection([0, Math.min(north, 89)])[1];
+  const bottom = projection([0, Math.max(south, -89)])[1];
+  if (right - left < 9 * scale || bottom - top < 9 * scale) return;
+  context.save();
+  context.beginPath();
+  path(entry.feature);
+  context.clip();
+  context.globalAlpha = 0.36;
+  context.strokeStyle = NO_DATA_HATCH;
+  context.lineWidth = 2.4 * scale;
+  context.lineCap = 'butt';
+  context.beginPath();
+  const height = bottom - top;
+  for (let x = left - height; x < right; x += 15 * scale) {
+    context.moveTo(x, bottom);
+    context.lineTo(x + height, top);
+  }
+  context.stroke();
+  context.restore();
 }
 
 /** Geography is rendered independently of country coverage in the API. */
@@ -75,9 +118,10 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
       const value = valueFor(valuesByCode, entry.dataCode);
       const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
       // Страны с данными закрашены почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
-      context.globalAlpha = hasValue ? 0.9 : 0.14;
-      context.fillStyle = hasValue ? colorModel.colorFor(value) : '#7f8c9b';
+      context.globalAlpha = hasValue ? 0.9 : 0.82;
+      context.fillStyle = hasValue ? colorModel.colorFor(value) : NO_DATA_FILL;
       context.fill();
+      if (!hasValue && entry.code !== 'AQ') hatchCountry(context, path, projection, entry, scale);
     }
     // Borders are a hairline: a pale veil keeps them visible over dark forest, a thin graphite line draws them.
     tracePath(path, context, entry.feature.geometry, minSpanDegrees);
@@ -180,58 +224,160 @@ function usePlanetTextures(budget, onError, wantDetail) {
   return textures;
 }
 
-function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover, surfaceReady, onZoomDetail }) {
+function PlanetControls({
+  entries, valuesByCode, cameraCommand, reducedMotion, defaultScope, interactive, touchNavigation, onHover,
+  surfaceReady, onZoomDetail, onZoomDeep, autoRotate, onInteract, onView, onOcean, onZoomState, controlApi, homeFocus,
+}) {
   const { camera, gl, invalidate, size } = useThree();
   const controlsRef = useRef(null);
   const flightRef = useRef(null);
+  const draggingRef = useRef(false);
+  const hoveredByMouse = useRef(false);
+  const [visible, setVisible] = useState(true);
   const aspect = size.width / size.height;
-  // On a phone-width stage the control column would sit on the sphere; leave it a margin.
-  // Controls live outside the stage on a phone, so the sphere may fill nearly the whole square.
+  // The sphere should fill the stage: overlays (buttons, card sheet) sit on top of it, not beside it.
   const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: size.width < 520 ? 1.1 : aspect < 1 ? 1.14 : 1.08 });
+  const maxDistance = Math.max(MAX_DISTANCE, fitDistance);
+  const vectors = useMemo(() => dataVectors(entries, valuesByCode), [entries, valuesByCode]);
+  // Callbacks and data change identity often; the long-lived listeners below read the latest through this ref.
+  const live = useRef({});
+  live.current = {
+    vectors, onView, onOcean, onZoomState, onInteract, onZoomDetail, onZoomDeep, onHover, fitDistance, maxDistance,
+  };
+  const oceanRef = useRef(null);
+  const zoomedRef = useRef(null);
+
+  const startFlight = useCallback((target, duration = FLIGHT_SECONDS) => {
+    const controls = controlsRef.current;
+    if (reducedMotion || duration <= 0) {
+      camera.position.copy(target);
+      camera.lookAt(0, 0, 0);
+      controls?.update();
+      flightRef.current = null;
+    } else {
+      const currentDistance = camera.position.length();
+      const start = camera.position.clone().normalize();
+      flightRef.current = {
+        start,
+        rotation: new Quaternion().setFromUnitVectors(start, target.clone().normalize()),
+        fromDistance: currentDistance,
+        toDistance: target.length(),
+        elapsed: 0,
+        duration,
+      };
+    }
+    invalidate();
+  }, [camera, invalidate, reducedMotion]);
+
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
+    const canvas = gl.domElement;
     // На телефоне шар вращается сразу: горизонтальный свайп поворачивает его, а вертикальный остаётся прокруткой
-    // страницы (touch-action: pan-y). Полное вращение по двум осям и щипок включаются кнопкой «Покрутить планету».
+    // страницы (touch-action: pan-y). Свободное вращение по двум осям включается кнопкой «Свободное вращение».
     const spinOnly = touchNavigation && !interactive;
     controls.enabled = true;
-    // Wheel belongs to the page. Only an explicitly active touch mode owns pinch.
-    controls.enableZoom = interactive && touchNavigation;
-    // OrbitControls.connect() writes 'none'; override it after connecting.
-    gl.domElement.style.setProperty('touch-action', interactive ? 'none' : 'pan-y pinch-zoom');
+    // Щипок на телефоне всегда принадлежит шару; колесо мыши на компьютере остаётся за страницей.
+    controls.enableZoom = touchNavigation;
+    controls.zoomSpeed = 0.6;
+    // OrbitControls.connect() writes 'none'; override it after connecting. Без pinch-zoom: щипок масштабирует
+    // планету, а не всю страницу браузера.
+    canvas.style.setProperty('touch-action', interactive ? 'none' : 'pan-y');
     controls.enablePan = false;
     controls.enableDamping = !reducedMotion;
     controls.dampingFactor = 0.12;
     controls.rotateSpeed = 0.55;
-    controls.zoomSpeed = 0.75;
     controls.minDistance = MIN_DISTANCE;
-    controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);
-    if (spinOnly) {
-      // Только поворот вокруг оси: наклон фиксируется на текущем, чтобы вертикальное движение пальца не крутило шар.
+    controls.maxDistance = live.current.maxDistance;
+    controls.minPolarAngle = 0.035;
+    controls.maxPolarAngle = Math.PI - 0.035;
+    // Наклон фиксируется только на время пальца: вертикальное движение не крутит шар,
+    // а программный перелёт к стране по-прежнему может менять широту.
+    const lockTilt = () => {
+      if (!spinOnly) return;
       const tilt = controls.getPolarAngle();
       controls.minPolarAngle = tilt;
       controls.maxPolarAngle = tilt;
-    } else {
+    };
+    const unlockTilt = () => {
       controls.minPolarAngle = 0.035;
       controls.maxPolarAngle = Math.PI - 0.035;
-    }
+    };
+    const report = () => {
+      const distance = camera.position.length();
+      const lonLat = sphereToLonLat(camera.position);
+      live.current.onView?.({ lon: lonLat?.[0] ?? 0, lat: lonLat?.[1] ?? 0, distance });
+      const zoomed = distance < LABEL_DISTANCE;
+      if (zoomedRef.current !== zoomed) { zoomedRef.current = zoomed; live.current.onZoomState?.(zoomed); }
+      const water = !hasVisibleData(live.current.vectors, [camera.position.x, camera.position.y, camera.position.z]);
+      if (oceanRef.current !== water) { oceanRef.current = water; live.current.onOcean?.(water); }
+    };
     const onChange = () => {
       // The closer the camera, the less surface a pixel of drag should cover; otherwise zoomed maps race away.
-      controls.rotateSpeed = 0.55 * Math.min(1, Math.max(0.35, (camera.position.length() - 1) / Math.max(1.2, fitDistance - 1)));
+      const fit = live.current.fitDistance;
+      controls.rotateSpeed = 0.55 * Math.min(1, Math.max(0.35, (camera.position.length() - 1) / Math.max(1.2, fit - 1)));
       invalidate();
-      if (camera.position.length() < DETAIL_DISTANCE) onZoomDetail?.();
+      const distance = camera.position.length();
+      if (distance < DETAIL_DISTANCE) live.current.onZoomDetail?.();
+      if (distance < DEEP_DISTANCE) live.current.onZoomDeep?.();
+      report();
     };
     controls.addEventListener('change', onChange);
-    const interrupt = () => { flightRef.current = null; onHover(null); invalidate(); };
-    controls.addEventListener('start', interrupt);
+    const onStart = () => {
+      draggingRef.current = true;
+      lockTilt();
+      flightRef.current = null;
+      live.current.onHover(null);
+      live.current.onInteract?.();
+      invalidate();
+    };
+    const onEnd = () => { draggingRef.current = false; unlockTilt(); };
+    controls.addEventListener('start', onStart);
+    controls.addEventListener('end', onEnd);
+
+    // Щипок по шару: Safari присылает свои gesture-события и масштабирует страницу, если их не остановить;
+    // Chrome и Firefox на телефонах слушаются touch-action (выше).
+    const stopGesture = (event) => event.preventDefault();
+    canvas.addEventListener('gesturestart', stopGesture, { passive: false });
+    canvas.addEventListener('gesturechange', stopGesture, { passive: false });
+    // Щипок на тачпаде приходит как колесо с зажатым ctrl: он должен масштабировать планету, а не страницу.
+    const onWheel = (event) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      const distance = camera.position.length();
+      const next = Math.min(live.current.maxDistance, Math.max(MIN_DISTANCE, distance * Math.exp(event.deltaY * 0.01)));
+      flightRef.current = null;
+      camera.position.multiplyScalar(next / distance);
+      controls.update();
+      live.current.onInteract?.();
+      invalidate();
+    };
+    canvas.addEventListener('wheel', onWheel, { passive: false });
+    const enter = (event) => { if (event.pointerType === 'mouse') hoveredByMouse.current = true; };
+    const leave = () => { hoveredByMouse.current = false; };
+    canvas.addEventListener('pointerenter', enter);
+    canvas.addEventListener('pointerleave', leave);
+
     controlsRef.current = controls;
     controls.update();
+    report();
     return () => {
       controls.removeEventListener('change', onChange);
-      controls.removeEventListener('start', interrupt);
+      controls.removeEventListener('start', onStart);
+      controls.removeEventListener('end', onEnd);
+      canvas.removeEventListener('gesturestart', stopGesture);
+      canvas.removeEventListener('gesturechange', stopGesture);
+      canvas.removeEventListener('wheel', onWheel);
+      canvas.removeEventListener('pointerenter', enter);
+      canvas.removeEventListener('pointerleave', leave);
       controls.dispose();
       controlsRef.current = null;
     };
-  }, [camera, gl, invalidate, reducedMotion, interactive, touchNavigation, onHover, fitDistance, onZoomDetail]);
+  }, [camera, gl, invalidate, reducedMotion, interactive, touchNavigation]);
+
+  // The orbit limit follows the stage size; it only needs to be refreshed, not recreated.
+  useEffect(() => {
+    if (controlsRef.current) controlsRef.current.maxDistance = maxDistance;
+  }, [maxDistance]);
 
   useEffect(() => {
     if (camera.position.length() < fitDistance) {
@@ -242,45 +388,80 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
     }
   }, [camera, fitDistance, invalidate]);
 
+  // Данные меняются (смена показателя или года): пересчитать, видна ли ещё окрашенная страна.
+  useEffect(() => {
+    if (!controlsRef.current) return;
+    const water = !hasVisibleData(vectors, [camera.position.x, camera.position.y, camera.position.z]);
+    if (oceanRef.current !== water) { oceanRef.current = water; live.current.onOcean?.(water); }
+  }, [vectors, camera]);
+
+  // Двойное касание: плавное приближение к точке на шаре.
+  useEffect(() => {
+    if (!controlApi) return undefined;
+    controlApi.current = {
+      zoomAt(lonLat) {
+        const distance = camera.position.length();
+        const next = zoomedDistance(distance, 'in', { min: MIN_DISTANCE, max: live.current.maxDistance });
+        const point = lonLatToSphere(lonLat, next);
+        if (!point) return;
+        startFlight(new Vector3(...point), 0.45);
+        if (next < DETAIL_DISTANCE) live.current.onZoomDetail?.();
+      },
+    };
+    return () => { controlApi.current = null; };
+  }, [controlApi, camera, startFlight]);
+
+  // Самовращение до первого касания; на компьютере замирает под указателем, вне экрана и в фоне не тратит кадры.
+  useEffect(() => {
+    const canvas = gl.domElement;
+    if (typeof IntersectionObserver !== 'function') return undefined;
+    const observer = new IntersectionObserver(([entry]) => setVisible(Boolean(entry?.isIntersecting)), { threshold: 0.2 });
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [gl]);
+  const spinning = Boolean(autoRotate) && !reducedMotion && visible;
+  useEffect(() => {
+    if (!spinning) return undefined;
+    let last = performance.now();
+    const timer = window.setInterval(() => {
+      const now = performance.now();
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      const controls = controlsRef.current;
+      if (!controls || flightRef.current || draggingRef.current || hoveredByMouse.current || document.hidden) return;
+      // Камера идёт на запад над поверхностью: страны плывут слева направо, как при вращении Земли.
+      camera.position.applyAxisAngle(Y_AXIS, -SPIN_DEGREES_PER_SECOND * dt * Math.PI / 180);
+      camera.lookAt(0, 0, 0);
+      controls.update();
+      invalidate();
+    }, SPIN_TICK_MS);
+    return () => window.clearInterval(timer);
+  }, [spinning, camera, invalidate]);
+
   useEffect(() => {
     if (!cameraCommand) return;
-    onHover(null);
+    live.current.onHover(null);
     const currentDistance = camera.position.length();
     let target = camera.position.clone();
     if (cameraCommand.type === 'focus') {
       const code = normalizePlanetCountryCode(cameraCommand.countryCode);
-      const entry = entries.find((item) => item.code === code);
-      if (!entry) return;
-      if (!entry.focus) return;
-      target = new Vector3(...lonLatToSphere(entry.focus, Math.max(currentDistance, fitDistance)));
+      const matches = entries.filter((item) => item.code === code && item.focus);
+      if (!matches.length) return;
+      // Главная суша страны: по ней и считаем размер, и наводим камеру.
+      const entry = matches.reduce((best, item) => (geoArea(item.feature) > geoArea(best.feature) ? item : best));
+      const distance = focusDistance({ current: currentDistance, fit: fitDistance, min: MIN_DISTANCE, area: geoArea(entry.feature) });
+      target = new Vector3(...lonLatToSphere(liftedFocus(entry.focus), distance));
+      if (distance < DETAIL_DISTANCE) live.current.onZoomDetail?.();
     } else if (cameraCommand.type === 'reset') {
-      target = new Vector3(...lonLatToSphere(
-        defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS,
-        Math.max(INITIAL_DISTANCE, fitDistance),
-      ));
+      const focus = defaultScope === 'europe' ? [15, 47] : homeFocus;
+      target = new Vector3(...lonLatToSphere(focus, Math.max(INITIAL_DISTANCE, fitDistance)));
     } else {
-      const factor = cameraCommand.type === 'zoomIn' ? 0.8 : 1.25;
-      target.normalize().multiplyScalar(Math.min(Math.max(MAX_DISTANCE, fitDistance), Math.max(MIN_DISTANCE, currentDistance * factor)));
-      if (target.length() < DETAIL_DISTANCE) onZoomDetail?.();
+      const next = zoomedDistance(currentDistance, cameraCommand.type === 'zoomIn' ? 'in' : 'out', { min: MIN_DISTANCE, max: maxDistance });
+      target.normalize().multiplyScalar(next);
+      if (next < DETAIL_DISTANCE) live.current.onZoomDetail?.();
     }
-    if (reducedMotion || cameraCommand.instant) {
-      camera.position.copy(target);
-      camera.lookAt(0, 0, 0);
-      controlsRef.current?.update();
-      flightRef.current = null;
-    } else {
-      const start = camera.position.clone().normalize();
-      flightRef.current = {
-        start,
-        rotation: new Quaternion().setFromUnitVectors(start, target.clone().normalize()),
-        fromDistance: currentDistance,
-        toDistance: target.length(),
-        elapsed: 0,
-        duration: FLIGHT_SECONDS,
-      };
-    }
-    invalidate();
-  }, [cameraCommand, entries, camera, invalidate, reducedMotion, defaultScope, fitDistance, onHover, onZoomDetail]);
+    startFlight(target, cameraCommand.instant ? 0 : FLIGHT_SECONDS);
+  }, [cameraCommand, entries, camera, defaultScope, fitDistance, maxDistance, homeFocus, startFlight]);
 
   const introDone = useRef(false);
   useEffect(() => {
@@ -289,7 +470,7 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
     if (cameraCommand) return;
     // The canvas already opened at the offset view, so the turn starts without a jump.
     const distance = camera.position.length();
-    const focus = defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS;
+    const focus = defaultScope === 'europe' ? [15, 47] : homeFocus;
     const to = new Vector3(...lonLatToSphere(focus, distance));
     if (reducedMotion) {
       camera.position.copy(to);
@@ -331,10 +512,11 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   return null;
 }
 
-function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady }) {
+function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady, zoomed, controlApi }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
+  const lastTap = useRef(null);
   const hoverCode = useRef(null);
   const [hover, setHover] = useState(null);
   const hoveredCode = hover && hover.command === cameraCommand ? hover.code : null;
@@ -350,7 +532,10 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     const texture = new CanvasTexture(paintAtlas(entries, {
       mode, valuesByCode, colorModel, width: fineAtlas ? ATLAS_DETAIL_WIDTH : ATLAS_WIDTH,
     }));
-    texture.colorSpace = SRGBColorSpace;
+    // Premultiplied alpha, raw values: thin low-alpha lines and tiny islands survive filtering and mipmaps
+    // (non-premultiplied upload turned their edge texels into black specks); the shader decodes sRGB itself.
+    texture.premultiplyAlpha = true;
+    texture.colorSpace = NoColorSpace;
     // Mipmaps: thin border lines otherwise sparkle when the sphere is minified on a phone.
     texture.minFilter = LinearMipmapLinearFilter;
     texture.generateMipmaps = true;
@@ -358,10 +543,13 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     return texture;
   }, [entries, mode, valuesByCode, colorModel, fineAtlas]);
   // One mask canvas per atlas; hover and selection repaint it instead of allocating a new texture each time.
+  // The mask is repainted and re-uploaded on every hover change, so it stays 2048 wide; the shader blurs its edge lightly
+  // (softMask) and the border geometry gets finer from the 10m atlas when the camera is close.
+  const highlightWidth = ATLAS_WIDTH;
   const highlight = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = ATLAS_WIDTH;
-    canvas.height = ATLAS_WIDTH / 2;
+    canvas.width = highlightWidth;
+    canvas.height = highlightWidth / 2;
     paintHighlight(canvas, entries, selectedCode, hoveredCode);
     const texture = new CanvasTexture(canvas);
     // Coverage data, not colour: sampled raw so the 0.5 crossing stays on the true border.
@@ -372,7 +560,7 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     return texture;
     // Later selection/hover changes repaint the same canvas in the effect below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entries]);
+  }, [entries, highlightWidth]);
   useEffect(() => {
     paintHighlight(highlight.image, entries, selectedCode, hoveredCode);
     highlight.needsUpdate = true;
@@ -392,11 +580,12 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     atlasMap: { value: atlas },
     highlightMap: { value: highlight },
     surfaceTexel: { value: 1 / textures.surface.image.width },
+    highlightTexel: { value: 1 / highlightWidth },
     // In «Data» the base surface calms down so country colours read as one scale.
     dataWash: { value: mode === 'data' ? 1 : 0 },
-  }), [textures, atlas, highlight, mode]);
-  // A soft veil of air around the limb: gentle on «Earth», almost gone behind the data colours.
-  const atmosphereUniforms = useMemo(() => ({ strength: { value: mode === 'data' ? 0.2 : 0.42 } }), [mode]);
+  }), [textures, atlas, highlight, highlightWidth, mode]);
+  // A soft veil of air around the limb: a visible glow along the edge even behind the data colours.
+  const atmosphereUniforms = useMemo(() => ({ strength: { value: mode === 'data' ? 0.32 : 0.42 } }), [mode]);
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   useEffect(() => {
@@ -467,8 +656,22 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
     const tap = completedTap.current;
     completedTap.current = null;
     if (!tap || tap.pointerId !== event.pointerId || tap.timeStamp !== event.nativeEvent.timeStamp) return;
+    // Двойное касание приближает шар к точке касания и не считается повторным нажатием («открыть страну»).
+    const native = event.nativeEvent;
+    const previous = lastTap.current;
+    if (previous && native.timeStamp - previous.time < DOUBLE_TAP_MS && Math.hypot(native.clientX - previous.x, native.clientY - previous.y) < 28) {
+      lastTap.current = null;
+      const point = sphereToLonLat(event.point);
+      if (point) controlApi?.current?.zoomAt(point);
+      return;
+    }
+    lastTap.current = { time: native.timeStamp, x: native.clientX, y: native.clientY };
     const entry = hit(event);
-    onSelect(entry?.country ? entry.dataCode : null);
+    // Суша без страницы в каталоге передаёт своё название: интерфейс отвечает «данных пока нет», а не молчит.
+    onSelect(
+      entry?.country ? entry.dataCode : null,
+      entry && !entry.country ? { name: entry.name, code: entry.code } : null,
+    );
   };
   const selected = selectedCode
     ? entries.find((entry) => entry.code === normalizePlanetCountryCode(selectedCode)) : null;
@@ -490,8 +693,8 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       >
         <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
       </mesh>
-      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues} selectedCode={selectedCode}
-        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly />
+      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues && !zoomed} selectedCode={selectedCode}
+        hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly={!zoomed} />
       <mesh raycast={() => null} renderOrder={1}>
         <sphereGeometry args={[1.035, 64, 40]} />
         <shaderMaterial vertexShader={ATMOSPHERE_VERTEX} fragmentShader={ATMOSPHERE_FRAGMENT} uniforms={atmosphereUniforms}
@@ -513,12 +716,13 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
 
 function SceneContents({ entries, budget, onError, ...props }) {
   const [wantDetail, setWantDetail] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const requestDetail = useCallback(() => setWantDetail(true), []);
   const textures = usePlanetTextures(budget, onError, wantDetail);
   return (
     <>
-      <PlanetControls entries={entries} onZoomDetail={requestDetail} {...props} />
-      {textures && <Earth textures={textures} budget={budget} entries={entries} {...props} />}
+      <PlanetControls entries={entries} onZoomDetail={requestDetail} onZoomState={setZoomed} {...props} />
+      {textures && <Earth textures={textures} budget={budget} entries={entries} zoomed={zoomed} {...props} />}
     </>
   );
 }
@@ -566,8 +770,12 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
       if (timer != null) window.clearTimeout(timer);
     };
   }, [surfaceReady, budget]);
+  // Сильное приближение просит самые подробные границы: у «ступенчатой» линии 50m нет вида лучше без 10m.
+  const [deepZoom, setDeepZoom] = useState(false);
+  const requestDeep = useCallback(() => setDeepZoom(true), []);
   useEffect(() => {
-    if (atlasLevel.current >= 2 || !planetNeedsFineFeatures(entries, props.selectedCode)) return undefined;
+    const wanted = (deepZoom && budget.materialDetail) || planetNeedsFineFeatures(entries, props.selectedCode);
+    if (atlasLevel.current >= 2 || !wanted) return undefined;
     let active = true;
     // Microstates and disconnected territories need the complete atlas when focused.
     loadPlanetFeatures('fine').then((fine) => {
@@ -577,7 +785,7 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
       }
     });
     return () => { active = false; };
-  }, [entries, props.selectedCode]);
+  }, [entries, props.selectedCode, deepZoom, budget]);
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReducedMotion(preference.matches);
@@ -585,7 +793,10 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
     return () => preference.removeEventListener('change', update);
   }, []);
   const [introOffset] = useState(() => (reducedMotion ? [0, 0] : INTRO_OFFSET));
-  const initialFocus = defaultScope === 'europe' ? [15, 47] : DEFAULT_FOCUS;
+  // Стартовая сторона: где в поле зрения больше всего стран с данными (Америка и Европа), а не «пустая» Африка.
+  const [homeFocus] = useState(() => bestStartFocus(entries, props.valuesByCode, { fallback: DEFAULT_FOCUS }));
+  const controlApi = useRef(null);
+  const initialFocus = defaultScope === 'europe' ? [15, 47] : homeFocus;
   const initialPosition = lonLatToSphere([initialFocus[0] + introOffset[0], initialFocus[1] + introOffset[1]], INITIAL_DISTANCE);
   return (
     <SceneBoundary onError={onError}>
@@ -611,6 +822,9 @@ export default function PlanetScene({ countries, defaultScope, onError, onReady,
             interactive={interactive}
             touchNavigation={touchNavigation}
             surfaceReady={surfaceReady}
+            homeFocus={homeFocus}
+            controlApi={controlApi}
+            onZoomDeep={requestDeep}
             {...props}
             onReady={handleReady}
           />
