@@ -50,6 +50,7 @@ import WorldCountUp from '../components/WorldCountUp';
 import YearPicker from '../components/YearPicker';
 import '../styles/world.css';
 import '../styles/w6d.css';
+import '../styles/z6-rating.css';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { ratingHeading } from '../lib/ratingConcepts';
 import {
@@ -429,6 +430,17 @@ export default function WorldRatingPage() {
     return 'day';
   }, [ranked]);
 
+  // Колонки «Период» нет: общий период — одной строкой под заголовком таблицы, дата страны — в подсказке к значению.
+  const periodNote = useMemo(() => {
+    const dates = ranked.map((item) => item.date).filter(Boolean).sort();
+    if (!dates.length) return '';
+    const from = formatDate(dates[0], periodGranularity, locale);
+    const to = formatDate(dates[dates.length - 1], periodGranularity, locale);
+    return from === to
+      ? t('z6.rating.periodNote', { period: from })
+      : t('z6.rating.periodRange', { from, to });
+  }, [ranked, periodGranularity, locale, t]);
+
   const loading = catalogQ.isLoading || mapSeriesQ.isLoading;
   const error = catalogQ.isError || mapSeriesQ.isError;
   const retry = () => {
@@ -440,7 +452,7 @@ export default function WorldRatingPage() {
     extraSeries2.refetch();
     extraSeries3.refetch();
   };
-  const colCount = (sharedUnit ? 7 : 8) + extraColumns.length;
+  const colCount = (sharedUnit ? 6 : 7) + extraColumns.length;
 
   const shortName = homeConceptLabel(viewSlug, t, concept.name);
   const targetName = homeConceptLabel(activeConcept, t, targetConcept.name);
@@ -632,12 +644,12 @@ export default function WorldRatingPage() {
   }, [benchmark, viewSlug, fmtValue, factUnit, t]);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6">
+    <div className="fe-data-page z6-page mx-auto w-full px-4 pb-12 pt-24 sm:px-6">
       <Breadcrumbs
         items={worldRatingTrail(targetName || targetConcept.name || t('crumb.rating'), activeConcept)}
       />
 
-      <header className="mb-4">
+      <header className="z6-head mb-4">
         <div className="w2-kicker mb-2 flex items-center gap-2">
           <Globe2 size={14} aria-hidden="true" />
           {t('nav.worldRating')}
@@ -645,12 +657,14 @@ export default function WorldRatingPage() {
         <h1 className="max-w-4xl font-display text-2xl font-bold leading-tight text-text-primary sm:text-3xl lg:text-4xl">
           {heading.title}
         </h1>
-        {heading.subtitle && <p className="w6d-subtitle">{heading.subtitle}</p>}
-        {/* Пояснение не стоит между заголовком и планетой: планета должна быть видна на первом экране. */}
-        <details className="w2-details w2-details--tight">
-          <summary>{t('x1.rating.details')}</summary>
-          <p className="max-w-3xl leading-6">{t('world.rating.intro')}</p>
-        </details>
+        {/* Подзаголовок и «Подробнее» в одну строку: пояснение раскрывается поверх, а не сдвигает рейтинг вниз. */}
+        <div className="z6-head__sub">
+          {heading.subtitle && <p className="w6d-subtitle">{heading.subtitle}</p>}
+          <details className="w2-details w2-details--tight">
+            <summary>{t('x1.rating.details')}</summary>
+            <p className="max-w-3xl leading-6">{t('world.rating.intro')}</p>
+          </details>
+        </div>
       </header>
 
       {error && (
@@ -673,453 +687,471 @@ export default function WorldRatingPage() {
 
       {!unknownConcept && (
         <>
-          <section className="mb-4 rounded-3xl border border-border-subtle bg-surface px-3.5 py-3 shadow-sm sm:px-4" aria-busy={switching}>
-            <RatingMetricPicker
-              concepts={concepts}
-              value={activeConcept}
-              linkForSlug={(slug) => ({
-                pathname: activeYear ? worldRatingYearPath(slug, activeYear) : worldRatingPath(slug),
-                search: keepSearch,
-              })}
-              label={t('world.rating.conceptLabel')}
-            />
-            <div className="mt-1.5"><WorldMapConceptNote conceptSlug={activeConcept} /></div>
-            {loading && concepts.length === 0 && (
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {[0, 1, 2].map((i) => (
-                  <SkeletonBox key={i} className="h-11 w-28 rounded-xl" />
-                ))}
-              </div>
-            )}
-          </section>
+          <div className="z6-split">
+            <div className="z6-main">
+              <section className="z6-toolbar" aria-busy={switching}>
+                <RatingMetricPicker
+                  concepts={concepts}
+                  value={activeConcept}
+                  linkForSlug={(slug) => ({
+                    pathname: activeYear ? worldRatingYearPath(slug, activeYear) : worldRatingPath(slug),
+                    search: keepSearch,
+                  })}
+                  label={t('world.rating.conceptLabel')}
+                  loading={loading && concepts.length === 0}
+                  trailing={<WorldMapConceptNote conceptSlug={activeConcept} label={t('z6.rating.whatIsMetric')} />}
+                />
+              </section>
 
-          <section id="chart" className="mb-5 grid scroll-mt-24 gap-4">
-            {switching && (
-              <p className="w6d-switching-note" role="status">
-                <span className="fe-search-spinner" aria-hidden="true" />
-                {t('w6d.rating.updating', { name: targetName })}
-              </p>
-            )}
-            <div className={`min-w-0${switching ? ' w6d-switching' : ''}`} aria-busy={switching}>
-              {mapSeriesQ.isLoading ? (
-                <div className="w2-planet-skeleton" role="status" aria-label={t('planet.loading')}>
-                  <LoadingNote onRefresh={() => mapSeriesQ.refetch()} />
-                  <SkeletonBox className="h-12 w-full rounded-xl" />
-                  <div className="w2-planet-skeleton-orb" aria-hidden="true" />
-                </div>
-              ) : (
-                <>
-                  <PlanetView
-                    initialMode="data"
-                    countries={mapCountries}
-                    valuesByCode={valuesByCode}
-                    detailsByCode={detailsByCode}
-                    unit={localizeWorldUnit(concept.unit || mapSeriesQ.data?.concept?.unit || '', locale)}
-                    metricName={shortName}
-                    periodLabel={activeYear ? String(activeYear) : ''}
-                    colorMode={conceptColorMode(viewSlug)}
-                    colorDirection={sortedColDir}
-                    defaultScope="world"
-                    years={years}
-                    year={activeYear}
-                    onYearChange={setSelectedYear}
-                    conceptSlug={viewSlug}
-                    rankingItems={ranked}
-                    benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
-                    ratingHref="#rating-table"
-                    hideListOnPhone
-                    onSelect={openCountry}
-                  />
-                </>
+              {ranked.length > 0 && (
+                <aside className="w2-facts z6-ribbon fe-reveal" aria-label={t('world.rating.summary')}>
+                  <div className="w2-facts-grid">
+                    {[
+                      [first, t('w2.rating.first')],
+                      [last, t('w2.rating.last')],
+                    ].filter(([item]) => item).map(([item, label]) => (
+                      <Link
+                        key={item.country_code}
+                        to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
+                        className="w2-fact fe-press"
+                        data-place={label === t('w2.rating.first') ? 'first' : 'last'}
+                      >
+                        <span className="w2-fact-label">{label}</span>
+                        <span className="w2-fact-name">
+                          <CountryFlag code={item.country_code} />
+                          <span className="min-w-0">{ratingCountryName(item)}</span>
+                        </span>
+                        <span className="w2-fact-value">
+                          <WorldCountUp value={item.value} format={fmtValue} />
+                          {factUnit && <small>{factUnit}</small>}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </aside>
               )}
-            </div>
 
-            {ranked.length > 0 && (
-              <aside className="w2-facts fe-reveal" aria-label={t('world.rating.summary')}>
-                <div className="w2-facts-grid">
-                  {[
-                    [first, t('w2.rating.first')],
-                    [last, t('w2.rating.last')],
-                  ].filter(([item]) => item).map(([item, label]) => (
-                    <Link
-                      key={item.country_code}
-                      to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
-                      className="w2-fact fe-press"
+              <section id="rating-table" className="z6-table scroll-mt-24">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="font-display text-2xl font-bold text-text-primary">
+                      {t('world.rating.allWithData', { n: ranked.length })}
+                    </h2>
+                    {periodNote && <p className="z6-table__sub">{periodNote}</p>}
+                  </div>
+                  <div className="flex min-w-0 flex-wrap items-end gap-2.5">
+                    <div className="block min-w-[7.5rem]">
+                      <span className="mb-1 block text-xs text-text-secondary">
+                        {t('common.year')}
+                      </span>
+                      <YearPicker
+                        years={years}
+                        value={activeYear || null}
+                        onChange={setSelectedYear}
+                        label={t('common.year')}
+                        disabled={!years.length}
+                        align="start"
+                        className="w-32 [--fe-year-h:40px] pointer-coarse:[--fe-year-h:44px]"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="mb-1 text-xs text-text-secondary">
+                        {t('world.rating.sortOrder')}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <Chip
+                          active={sortedColDir === 'desc'}
+                          onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
+                        >
+                          {t('world.rating.sortDesc')}
+                        </Chip>
+                        <Chip
+                          active={sortedColDir === 'asc'}
+                          onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
+                        >
+                          {t('world.rating.sortAsc')}
+                        </Chip>
+                      </div>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      aria-expanded={addOpen}
+                      onClick={() => setAddOpen((prev) => !prev)}
+                      className="gap-1.5"
                     >
-                      <span className="w2-fact-label">{label}</span>
-                      <span className="w2-fact-name">
-                        <CountryFlag code={item.country_code} />
-                        <span className="min-w-0">{ratingCountryName(item)}</span>
-                      </span>
-                      <span className="w2-fact-value">
-                        <WorldCountUp value={item.value} format={fmtValue} />
-                        {factUnit && <small>{factUnit}</small>}
-                      </span>
-                    </Link>
-                  ))}
+                      <Plus size={14} aria-hidden="true" />
+                      {t('world.rating.addColumn')}
+                    </Button>
+                  </div>
                 </div>
-                <details className="w2-details">
-                  <summary>{t('w2.rating.howTitle')}</summary>
-                  <p>
-                    {viewSlug === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
-                      ? t('world.rating.noteYoy')
-                      : t('world.rating.noteDefault')}
-                  </p>
-                </details>
-                {locale === 'ru' && (
-                  <div className="w2-facts-russia">
-                    <p className="w2-facts-label">{t('world.rating.russiaRegions')}</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        as={Link}
-                        variant="ghost"
-                        size="sm"
-                        to={russiaLinks.countryHref}
-                        className="gap-1.5 bg-champagne/15!"
-                      >
-                        <Globe2 size={13} aria-hidden="true" />
-                        {russiaIndicatorCode
-                          ? t('world.rating.russiaIndicator')
-                          : t('world.rating.russiaSection')}
-                      </Button>
-                      <Button
-                        as={Link}
-                        variant="secondary"
-                        size="sm"
-                        to={russiaLinks.regionsHref}
-                        className="gap-1.5"
-                      >
-                        <MapPinned size={13} aria-hidden="true" />
-                        {t('world.rating.russiaRegionsLink')}
-                      </Button>
-                      {russiaLinks.regionRatingHref && (
+                {addOpen && (
+                  <div className="z3-add-panel fe-reveal" role="group" aria-label={t('world.rating.addColumn')}>
+                    {isAuthed && atExtraMax ? (
+                      <p className="z3-add-panel__text">{t('world.rating.extraMax')}</p>
+                    ) : (
+                      <>
+                        <h3 className="z3-add-panel__title">
+                          {isAuthed
+                            ? t('z3.rating.pickTitle')
+                            : t(atExtraMax ? 'z3.rating.guestLimitTitle' : 'z3.rating.guestPickTitle')}
+                        </h3>
+                        {!isAuthed && (
+                          <p className="z3-add-panel__text">
+                            {t(atExtraMax ? 'z3.rating.guestLimitHint' : 'z3.rating.guestPickHint')}
+                          </p>
+                        )}
+                      </>
+                    )}
+                    {addableConcepts.length > 0 && !atExtraMax && (
+                      <ChipGroup label={t('z3.rating.pickTitle')} className="z3-add-panel__chips">
+                        {addableConcepts.map((item) => {
+                          const name = homeConceptLabel(item.slug, t, item.name);
+                          return (
+                            <Chip
+                              key={item.slug}
+                              aria-pressed={undefined}
+                              aria-label={t('z3.rating.addNamed', { name })}
+                              className="z3-add-chip"
+                              onClick={() => addExtra(item.slug)}
+                            >
+                              <Plus size={13} aria-hidden="true" />
+                              {name}
+                            </Chip>
+                          );
+                        })}
+                      </ChipGroup>
+                    )}
+                    {!isAuthed && atExtraMax && (
+                      <div className="z3-add-panel__actions">
+                        <Button as={Link} size="sm" to="/register">
+                          {t('world.rating.register')}
+                        </Button>
+                        <Button as={Link} variant="secondary" size="sm" to="/login">
+                          {t('world.rating.login')}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {narrow ? (
+                  <>
+                    <p className="mb-2 text-xs text-text-secondary">
+                      {valueHeader}
+                      {activeYear ? `, ${activeYear}` : ''}
+                    </p>
+                    <ol className={`w2-rank-list${switching ? ' w6d-switching' : ''}`}>
+                      {visibleRows.map((item) => {
+                        const share = shareOf(item.value, barMax.max, barMax.positive);
+                        return (
+                          <li key={item.country_code} className="w2-rank-item">
+                            <Link
+                              to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
+                              className="w2-rank-row fe-press"
+                            >
+                              <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
+                              <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
+                              <span className="w2-rank-name">
+                                {ratingCountryName(item)}
+                                <span className="w6d-rank-sub">
+                                  <RatingDelta
+                                    change={changeByCode.get(item.country_code)}
+                                    percentUnit={percentUnit}
+                                    polarity={polarity}
+                                    locale={locale}
+                                  />
+                                </span>
+                              </span>
+                              <span className="w2-rank-value">
+                                <strong>{fmtValue(item.value)}</strong>
+                                {cardUnit(item) && <small>{cardUnit(item)}</small>}
+                              </span>
+                              <ChevronRight className="w2-rank-chev" size={16} aria-hidden="true" />
+                              {share > 0 && <span className="w2-rank-bar" style={{ '--w2-share': `${share}%` }} aria-hidden="true" />}
+                            </Link>
+                            {extraColumns.length > 0 && (
+                              <dl className="w2-rank-extra">
+                                {extraColumns.map((col) => (
+                                  <div key={col.slug}>
+                                    <dt>{col.label}</dt>
+                                    <dd>{formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            )}
+                          </li>
+                        );
+                      })}
+                      {!loading && displayRows.length === 0 && (
+                        <li className="px-4 py-8 text-center text-sm text-text-secondary">
+                          {t('world.rating.emptyYear')}
+                        </li>
+                      )}
+                    </ol>
+                  </>
+                ) : (
+                  <div
+                    className="z6-table-card overflow-x-auto rounded-3xl border border-border-subtle bg-surface"
+                    data-scroll={extraColumns.length > 0 ? 'x' : undefined}
+                  >
+                    <div style={tableStyle} className="transition-transform duration-200">
+                      <table className="w6d-table w-full min-w-[34rem] text-sm">
+                        <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
+                          <tr className="text-left text-xs text-text-secondary">
+                            <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
+                            <SortableTh
+                              label={t('world.rating.col.country')}
+                              right={false}
+                              active={sortedColSlug === SORT_NAME_COLUMN}
+                              dir={sortedColDir}
+                              onClick={() => handleSortClick(SORT_NAME_COLUMN)}
+                            />
+                            <SortableTh
+                              label={valueHeader}
+                              active={sortedColSlug === SORT_BASE_COLUMN}
+                              dir={sortedColDir}
+                              onClick={() => handleSortClick(SORT_BASE_COLUMN)}
+                            />
+                            <th className="w6d-col-bar px-2 py-3 font-medium" aria-hidden="true" />
+                            <SortableTh
+                              label={t('w6d.rating.col.change')}
+                              active={sortedColSlug === SORT_DELTA_COLUMN}
+                              dir={sortedColDir}
+                              onClick={() => handleSortClick(SORT_DELTA_COLUMN)}
+                            />
+                            <th className="w6d-col-trend px-4 py-3 text-right font-medium">{t('w6d.rating.col.trend')}</th>
+                            {extraColumns.map((col) => (
+                              <SortableTh
+                                key={col.slug}
+                                minWidth
+                                label={extraHeaderLabel(col)}
+                                active={sortedColSlug === col.slug}
+                                dir={sortedColDir}
+                                onClick={() => handleSortClick(col.slug)}
+                                onRemove={{
+                                  label: t('world.rating.extraRemove'),
+                                  onClick: () => removeExtra(col.slug),
+                                }}
+                              />
+                            ))}
+                            {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {visibleRows.map((item, rowIndex) => (
+                            <tr
+                              key={item.country_code}
+                              className="z6-row border-t border-border-subtle"
+                              data-top={medalOf(item.rank)}
+                              style={{ '--z6-i': Math.min(rowIndex, 24) }}
+                            >
+                              <td className="px-4 py-3 tabular-nums text-text-tertiary">
+                                <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
+                              </td>
+                              <td className="px-4 py-3">
+                                <Link to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
+                                  <CountryFlag code={item.country_code} />
+                                  {ratingCountryName(item)}
+                                </Link>
+                              </td>
+                              <td
+                                className="z6-val px-4 py-3 text-right font-semibold tabular-nums text-text-primary"
+                                title={item.date ? t('z6.rating.rowPeriod', { period: formatDate(item.date, periodGranularity, locale) }) : undefined}
+                              >
+                                {fmtValue(item.value)}
+                              </td>
+                              <td className="w6d-col-bar px-2 py-3" aria-hidden="true">
+                                <span className="w6d-bar" style={{ '--z6-s': (shareOf(item.value, barMax.max, barMax.positive) / 100).toFixed(3) }}>
+                                  <span style={{ width: `${shareOf(item.value, barMax.max, barMax.positive)}%` }} />
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <RatingDelta
+                                  change={changeByCode.get(item.country_code)}
+                                  percentUnit={percentUnit}
+                                  polarity={polarity}
+                                  locale={locale}
+                                />
+                              </td>
+                              <td className="w6d-col-trend px-4 py-3 text-right text-champagne-ink">
+                                <RatingSpark
+                                  points={sparkByCode.get(item.country_code)}
+                                  label={t('w6d.rating.trendLabel', { name: ratingCountryName(item) })}
+                                />
+                              </td>
+                              {extraColumns.map((col) => (
+                                <td
+                                  key={col.slug}
+                                  className="px-4 py-3 text-right tabular-nums text-text-primary"
+                                >
+                                  {formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}
+                                </td>
+                              ))}
+                              {!sharedUnit && (
+                                <td className="px-4 py-3 text-xs text-text-secondary">
+                                  {item.unit ? localizeWorldUnit(item.unit, locale) : (concept.unit ? localizeWorldUnit(concept.unit, locale) : t('world.rating.fallbackUnit'))}
+                                </td>
+                              )}
+                            </tr>
+                          ))}
+                          {!loading && displayRows.length === 0 && (
+                            <tr>
+                              <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
+                                {t('world.rating.emptyYear')}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+                {displayRows.length > TABLE_COMPACT_ROWS + 3 && (
+                  <button
+                    type="button"
+                    className="w6d-showall fe-press"
+                    aria-expanded={!compactRows}
+                    onClick={() => setShowAllRows((open) => !open)}
+                  >
+                    {compactRows ? t('w6d.rating.showAll', { n: displayRows.length }) : t('w6d.rating.showLess')}
+                    <ChevronDown size={15} aria-hidden="true" className={compactRows ? '' : 'w6d-rot'} />
+                  </button>
+                )}
+                {medianNote && <p className="w6d-median">{medianNote}</p>}
+                {!narrow && maxShift > 0 && (
+                  <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
+                    <Button
+                      variant="secondary"
+                      aria-label={t('world.rating.slideLeft')}
+                      disabled={tableShift <= 0}
+                      onClick={() => setTableShift(Math.max(0, tableShift - 1))}
+                      className="w-10 px-0! pointer-coarse:w-11"
+                    >
+                      <ChevronLeft size={15} aria-hidden="true" />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      aria-label={t('world.rating.slideRight')}
+                      disabled={tableShift >= maxShift}
+                      onClick={() => setTableShift(Math.min(maxShift, tableShift + 1))}
+                      className="w-10 px-0! pointer-coarse:w-11"
+                    >
+                      <ChevronRight size={15} aria-hidden="true" />
+                    </Button>
+                  </div>
+                )}
+              </section>
+
+              {ranked.length > 0 && (
+                <section className="w2-facts z6-notes fe-reveal">
+                  <details className="w2-details">
+                    <summary>{t('w2.rating.howTitle')}</summary>
+                    <p>
+                      {viewSlug === 'hicp-index' || mapSeriesQ.data?.concept?.value_mode === 'yoy'
+                        ? t('world.rating.noteYoy')
+                        : t('world.rating.noteDefault')}
+                    </p>
+                  </details>
+                  {locale === 'ru' && (
+                    <div className="w2-facts-russia">
+                      <p className="w2-facts-label">{t('world.rating.russiaRegions')}</p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          as={Link}
+                          variant="ghost"
+                          size="sm"
+                          to={russiaLinks.countryHref}
+                          className="gap-1.5 bg-champagne/15!"
+                        >
+                          <Globe2 size={13} aria-hidden="true" />
+                          {russiaIndicatorCode
+                            ? t('world.rating.russiaIndicator')
+                            : t('world.rating.russiaSection')}
+                        </Button>
                         <Button
                           as={Link}
                           variant="secondary"
                           size="sm"
-                          to={russiaLinks.regionRatingHref}
+                          to={russiaLinks.regionsHref}
+                          className="gap-1.5"
                         >
-                          {t('world.rating.regionRatingLink')}
+                          <MapPinned size={13} aria-hidden="true" />
+                          {t('world.rating.russiaRegionsLink')}
                         </Button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </aside>
-            )}
-          </section>
-
-          <section id="rating-table" className="mb-5 scroll-mt-24">
-            <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
-              <h2 className="font-display text-2xl font-bold text-text-primary">
-                {t('world.rating.allWithData', { n: ranked.length })}
-              </h2>
-              <div className="flex min-w-0 flex-wrap items-end gap-2.5">
-                <div className="block min-w-[7.5rem]">
-                  <span className="mb-1 block text-xs text-text-secondary">
-                    {t('common.year')}
-                  </span>
-                  <YearPicker
-                    years={years}
-                    value={activeYear || null}
-                    onChange={setSelectedYear}
-                    label={t('common.year')}
-                    disabled={!years.length}
-                    align="start"
-                    className="w-32 [--fe-year-h:40px] pointer-coarse:[--fe-year-h:44px]"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="mb-1 text-xs text-text-secondary">
-                    {t('world.rating.sortOrder')}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    <Chip
-                      active={sortedColDir === 'desc'}
-                      onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'desc' })}
-                    >
-                      {t('world.rating.sortDesc')}
-                    </Chip>
-                    <Chip
-                      active={sortedColDir === 'asc'}
-                      onClick={() => setSortOverride({ slug: sortedColSlug, dir: 'asc' })}
-                    >
-                      {t('world.rating.sortAsc')}
-                    </Chip>
-                  </div>
-                </div>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  aria-expanded={addOpen}
-                  onClick={() => setAddOpen((prev) => !prev)}
-                  className="gap-1.5"
-                >
-                  <Plus size={14} aria-hidden="true" />
-                  {t('world.rating.addColumn')}
-                </Button>
-              </div>
-            </div>
-            {addOpen && (
-              <div className="z3-add-panel fe-reveal" role="group" aria-label={t('world.rating.addColumn')}>
-                {isAuthed && atExtraMax ? (
-                  <p className="z3-add-panel__text">{t('world.rating.extraMax')}</p>
-                ) : (
-                  <>
-                    <h3 className="z3-add-panel__title">
-                      {isAuthed
-                        ? t('z3.rating.pickTitle')
-                        : t(atExtraMax ? 'z3.rating.guestLimitTitle' : 'z3.rating.guestPickTitle')}
-                    </h3>
-                    {!isAuthed && (
-                      <p className="z3-add-panel__text">
-                        {t(atExtraMax ? 'z3.rating.guestLimitHint' : 'z3.rating.guestPickHint')}
-                      </p>
-                    )}
-                  </>
-                )}
-                {addableConcepts.length > 0 && !atExtraMax && (
-                  <ChipGroup label={t('z3.rating.pickTitle')} className="z3-add-panel__chips">
-                    {addableConcepts.map((item) => {
-                      const name = homeConceptLabel(item.slug, t, item.name);
-                      return (
-                        <Chip
-                          key={item.slug}
-                          aria-pressed={undefined}
-                          aria-label={t('z3.rating.addNamed', { name })}
-                          className="z3-add-chip"
-                          onClick={() => addExtra(item.slug)}
-                        >
-                          <Plus size={13} aria-hidden="true" />
-                          {name}
-                        </Chip>
-                      );
-                    })}
-                  </ChipGroup>
-                )}
-                {!isAuthed && atExtraMax && (
-                  <div className="z3-add-panel__actions">
-                    <Button as={Link} size="sm" to="/register">
-                      {t('world.rating.register')}
-                    </Button>
-                    <Button as={Link} variant="secondary" size="sm" to="/login">
-                      {t('world.rating.login')}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {narrow ? (
-              <>
-                <p className="mb-2 text-xs text-text-secondary">
-                  {valueHeader}
-                  {activeYear ? `, ${activeYear}` : ''}
-                </p>
-                <ol className={`w2-rank-list${switching ? ' w6d-switching' : ''}`}>
-                  {visibleRows.map((item) => {
-                    const share = shareOf(item.value, barMax.max, barMax.positive);
-                    return (
-                      <li key={item.country_code} className="w2-rank-item">
-                        <Link
-                          to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })}
-                          className="w2-rank-row fe-press"
-                        >
-                          <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
-                          <span className="w2-rank-flag"><CountryFlag code={item.country_code} /></span>
-                          <span className="w2-rank-name">
-                            {ratingCountryName(item)}
-                            <span className="w6d-rank-sub">
-                              <RatingDelta
-                                change={changeByCode.get(item.country_code)}
-                                percentUnit={percentUnit}
-                                polarity={polarity}
-                                locale={locale}
-                              />
-                            </span>
-                          </span>
-                          <span className="w2-rank-value">
-                            <strong>{fmtValue(item.value)}</strong>
-                            {cardUnit(item) && <small>{cardUnit(item)}</small>}
-                          </span>
-                          <ChevronRight className="w2-rank-chev" size={16} aria-hidden="true" />
-                          {share > 0 && <span className="w2-rank-bar" style={{ '--w2-share': `${share}%` }} aria-hidden="true" />}
-                        </Link>
-                        {extraColumns.length > 0 && (
-                          <dl className="w2-rank-extra">
-                            {extraColumns.map((col) => (
-                              <div key={col.slug}>
-                                <dt>{col.label}</dt>
-                                <dd>{formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}</dd>
-                              </div>
-                            ))}
-                          </dl>
+                        {russiaLinks.regionRatingHref && (
+                          <Button
+                            as={Link}
+                            variant="secondary"
+                            size="sm"
+                            to={russiaLinks.regionRatingHref}
+                          >
+                            {t('world.rating.regionRatingLink')}
+                          </Button>
                         )}
-                      </li>
-                    );
-                  })}
-                  {!loading && displayRows.length === 0 && (
-                    <li className="px-4 py-8 text-center text-sm text-text-secondary">
-                      {t('world.rating.emptyYear')}
-                    </li>
+                      </div>
+                    </div>
                   )}
-                </ol>
-              </>
-            ) : (
-              <div className="overflow-x-auto rounded-3xl border border-border-subtle bg-surface">
-                <div style={tableStyle} className="transition-transform duration-200">
-                  <table className="w6d-table w-full min-w-[34rem] text-sm">
-                    <thead className="sticky top-0 z-10 bg-obsidian-light/95 backdrop-blur-sm">
-                      <tr className="text-left text-xs text-text-secondary">
-                        <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
-                        <SortableTh
-                          label={t('world.rating.col.country')}
-                          right={false}
-                          active={sortedColSlug === SORT_NAME_COLUMN}
-                          dir={sortedColDir}
-                          onClick={() => handleSortClick(SORT_NAME_COLUMN)}
-                        />
-                        <SortableTh
-                          label={valueHeader}
-                          active={sortedColSlug === SORT_BASE_COLUMN}
-                          dir={sortedColDir}
-                          onClick={() => handleSortClick(SORT_BASE_COLUMN)}
-                        />
-                        <th className="w6d-col-bar px-2 py-3 font-medium" aria-hidden="true" />
-                        <SortableTh
-                          label={t('w6d.rating.col.change')}
-                          active={sortedColSlug === SORT_DELTA_COLUMN}
-                          dir={sortedColDir}
-                          onClick={() => handleSortClick(SORT_DELTA_COLUMN)}
-                        />
-                        <th className="w6d-col-trend px-4 py-3 text-right font-medium">{t('w6d.rating.col.trend')}</th>
-                        {extraColumns.map((col) => (
-                          <SortableTh
-                            key={col.slug}
-                            minWidth
-                            label={extraHeaderLabel(col)}
-                            active={sortedColSlug === col.slug}
-                            dir={sortedColDir}
-                            onClick={() => handleSortClick(col.slug)}
-                            onRemove={{
-                              label: t('world.rating.extraRemove'),
-                              onClick: () => removeExtra(col.slug),
-                            }}
-                          />
-                        ))}
-                        {!sharedUnit && <th className="px-4 py-3 font-medium">{t('world.rating.col.unit')}</th>}
-                        <th className="px-4 py-3 font-medium">{t('common.period')}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visibleRows.map((item) => (
-                        <tr key={item.country_code} className="border-t border-border-subtle transition-colors hover:bg-surface-hover">
-                          <td className="px-4 py-3 tabular-nums text-text-tertiary">
-                            <span className="w2-rank-pos" data-medal={medalOf(item.rank)}>{item.rank}</span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <Link to={rowHref(item, { conceptSlug: viewSlug, russiaIndicatorCode })} className="inline-flex items-center gap-2.5 font-medium text-text-primary transition-colors hover:text-champagne">
-                              <CountryFlag code={item.country_code} />
-                              {ratingCountryName(item)}
-                            </Link>
-                          </td>
-                          <td className="px-4 py-3 text-right font-semibold tabular-nums text-text-primary">
-                            {fmtValue(item.value)}
-                          </td>
-                          <td className="w6d-col-bar px-2 py-3" aria-hidden="true">
-                            <span className="w6d-bar"><span style={{ width: `${shareOf(item.value, barMax.max, barMax.positive)}%` }} /></span>
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <RatingDelta
-                              change={changeByCode.get(item.country_code)}
-                              percentUnit={percentUnit}
-                              polarity={polarity}
-                              locale={locale}
-                            />
-                          </td>
-                          <td className="w6d-col-trend px-4 py-3 text-right text-champagne-ink">
-                            <RatingSpark
-                              points={sparkByCode.get(item.country_code)}
-                              label={t('w6d.rating.trendLabel', { name: ratingCountryName(item) })}
-                            />
-                          </td>
-                          {extraColumns.map((col) => (
-                            <td
-                              key={col.slug}
-                              className="px-4 py-3 text-right tabular-nums text-text-primary"
-                            >
-                              {formatWorldValue(lookupExtraValue(col.seriesData, activeYear, item)?.value, undefined, locale)}
-                            </td>
-                          ))}
-                          {!sharedUnit && (
-                            <td className="px-4 py-3 text-xs text-text-secondary">
-                              {item.unit ? localizeWorldUnit(item.unit, locale) : (concept.unit ? localizeWorldUnit(concept.unit, locale) : t('world.rating.fallbackUnit'))}
-                            </td>
-                          )}
-                          <td className="px-4 py-3 text-xs text-text-tertiary">
-                            {item.date ? formatDate(item.date, periodGranularity, locale) : '—'}
-                          </td>
-                        </tr>
-                      ))}
-                      {!loading && displayRows.length === 0 && (
-                        <tr>
-                          <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
-                            {t('world.rating.emptyYear')}
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                </section>
+              )}
+
+              <OtherYears
+                years={years}
+                activeYear={activeYear}
+                hrefFor={(year) => ratingTarget(activeConcept, year)}
+              />
+            </div>
+            <div className="z6-side">
+              <section id="chart" className="z6-planet scroll-mt-24">
+                {switching && (
+                  <p className="w6d-switching-note" role="status">
+                    <span className="fe-search-spinner" aria-hidden="true" />
+                    {t('w6d.rating.updating', { name: targetName })}
+                  </p>
+                )}
+                <div className={`min-w-0${switching ? ' w6d-switching' : ''}`} aria-busy={switching}>
+                  {mapSeriesQ.isLoading ? (
+                    <div className="w2-planet-skeleton" role="status" aria-label={t('planet.loading')}>
+                      <LoadingNote onRefresh={() => mapSeriesQ.refetch()} />
+                      <SkeletonBox className="h-12 w-full rounded-xl" />
+                      <div className="w2-planet-skeleton-orb" aria-hidden="true" />
+                    </div>
+                  ) : (
+                    <>
+                      <PlanetView
+                        initialMode="data"
+                        countries={mapCountries}
+                        valuesByCode={valuesByCode}
+                        detailsByCode={detailsByCode}
+                        unit={localizeWorldUnit(concept.unit || mapSeriesQ.data?.concept?.unit || '', locale)}
+                        metricName={shortName}
+                        periodLabel={activeYear ? String(activeYear) : ''}
+                        colorMode={conceptColorMode(viewSlug)}
+                        colorDirection={sortedColDir}
+                        defaultScope="world"
+                        years={years}
+                        year={activeYear}
+                        onYearChange={setSelectedYear}
+                        conceptSlug={viewSlug}
+                        rankingItems={ranked}
+                        benchmark={mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)]}
+                        ratingHref="#rating-table"
+                        hideListOnPhone
+                        onSelect={openCountry}
+                      />
+                    </>
+                  )}
                 </div>
-              </div>
-            )}
-            {displayRows.length > TABLE_COMPACT_ROWS + 3 && (
-              <button
-                type="button"
-                className="w6d-showall fe-press"
-                aria-expanded={!compactRows}
-                onClick={() => setShowAllRows((open) => !open)}
-              >
-                {compactRows ? t('w6d.rating.showAll', { n: displayRows.length }) : t('w6d.rating.showLess')}
-                <ChevronDown size={15} aria-hidden="true" className={compactRows ? '' : 'w6d-rot'} />
-              </button>
-            )}
-            {medianNote && <p className="w6d-median">{medianNote}</p>}
-            {!narrow && maxShift > 0 && (
-              <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
-                <Button
-                  variant="secondary"
-                  aria-label={t('world.rating.slideLeft')}
-                  disabled={tableShift <= 0}
-                  onClick={() => setTableShift(Math.max(0, tableShift - 1))}
-                  className="w-10 px-0! pointer-coarse:w-11"
-                >
-                  <ChevronLeft size={15} aria-hidden="true" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  aria-label={t('world.rating.slideRight')}
-                  disabled={tableShift >= maxShift}
-                  onClick={() => setTableShift(Math.min(maxShift, tableShift + 1))}
-                  className="w-10 px-0! pointer-coarse:w-11"
-                >
-                  <ChevronRight size={15} aria-hidden="true" />
-                </Button>
-              </div>
-            )}
-          </section>
+              </section>
 
-          <RankShifts
-            shifts={shifts}
-            nameOf={(code) => ratingCountryName(yearItems[code] || { country_code: code })}
-            hrefOf={(code) => rowHref(yearItems[code] || { country_code: code }, { conceptSlug: viewSlug, russiaIndicatorCode })}
-          />
-
-          <OtherYears
-            years={years}
-            activeYear={activeYear}
-            hrefFor={(year) => ratingTarget(activeConcept, year)}
-          />
+              <RankShifts
+                compact
+                shifts={shifts}
+                nameOf={(code) => ratingCountryName(yearItems[code] || { country_code: code })}
+                hrefOf={(code) => rowHref(yearItems[code] || { country_code: code }, { conceptSlug: viewSlug, russiaIndicatorCode })}
+              />
+            </div>
+          </div>
 
           {withoutData.length > 0 && (
             <details className="w2-details w2-details--card">

@@ -13,6 +13,7 @@ import { groupRatingConcepts, quickRatingConcepts, ratingIconKey } from '../lib/
 import { localizeWorldUnit, prefetchWorldMapSeries } from '../lib/worldApi';
 import { splitUnit } from '../lib/countryFlag';
 import '../styles/w6d.css';
+import '../styles/z6-rating.css';
 
 const ICONS = {
   banknote: Banknote,
@@ -40,6 +41,8 @@ function ConceptIcon({ slug, size = 18 }) {
  */
 export default function RatingMetricPicker({
   concepts = [], value, linkForSlug, label, onPick = null,
+  // Справка («Что это за показатель») ложится в ту же строку, а не под плиту; `loading` рисует заглушки чипов.
+  trailing = null, loading = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -141,18 +144,23 @@ export default function RatingMetricPicker({
               </Link>
             );
           })}
+          {loading && quick.length === 0 && [0, 1, 2, 3].map((i) => (
+            <span key={i} className="z6-quick-ghost" aria-hidden="true" />
+          ))}
         </div>
         <button
           type="button"
           className={cn('w6d-picker__all fe-press', open && 'is-open')}
           aria-expanded={open}
           aria-controls={panelId}
+          disabled={list.length === 0}
           onClick={() => setOpen((previous) => !previous)}
         >
           <LayoutGrid size={16} aria-hidden="true" />
-          <span>{t('w6d.rating.allMetrics', { n: list.length })}</span>
+          <span>{t('z6.rating.otherMetric')}</span>
           <ChevronDown size={15} aria-hidden="true" className="w6d-picker__chev" />
         </button>
+        {trailing ? <div className="z6-picker__trailing">{trailing}</div> : null}
       </div>
       {activeItem && !quick.some((item) => item.slug === value) && (
         <p className="w6d-picker__current">

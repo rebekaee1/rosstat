@@ -1,0 +1,259 @@
+/*
+ * Раунд 2, зона Z6: «Рейтинг стран».
+ * Идея страницы: сверху одна тонкая строка выбора показателя, под ней слева таблица (главное, ради чего пришли),
+ * справа шар без дублирующего списка стран, под шаром те, кто сильнее всего поднялся и опустился.
+ * Золото берётся из общих токенов `--fe-*` (запасные значения на случай, если токены ещё не подключены);
+ * оттенки считаются от цвета поверхности, поэтому светлая и тёмная темы работают без отдельных правил.
+ * Всё в классах `.z6-*` и усиленных селекторах; чужие файлы не переопределяются.
+ */
+
+.z6-page {
+  max-width: var(--fe-container-data, 80rem);
+  --z6-gold: var(--fe-gold, var(--color-champagne, #ad8a48));
+  --z6-gold-soft: var(--fe-gold-soft, #e6d3a3);
+  --z6-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642f));
+  --z6-muted: var(--fe-text-muted, var(--color-text-secondary, #59697f));
+  --z6-line: color-mix(in srgb, var(--z6-gold) 20%, var(--color-border-subtle, rgba(68, 87, 115, 0.13)));
+  --z6-shadow: var(--fe-card-shadow, 0 1px 2px rgba(32, 42, 60, 0.04), 0 16px 34px -22px rgba(32, 42, 60, 0.28));
+  --z6-sticky-top: 96px;
+}
+
+/* ── Заголовок: компактнее, пояснение «Подробнее» раскрывается поверх, а не сдвигает рейтинг ── */
+.z6-head h1 { font-size: clamp(1.75rem, 1.25rem + 1.3vw, 2.5rem); line-height: 1.08; }
+.z6-head__sub { position: relative; display: flex; flex-wrap: wrap; align-items: center; column-gap: 18px; }
+.z6-head__sub .w6d-subtitle { margin: 4px 0 0; }
+.z6-head__sub .w2-details { margin-top: 2px; }
+@media (min-width: 640px) {
+  .z6-head__sub .w2-details > p {
+    position: absolute; z-index: 30; left: 0; top: 100%;
+    width: min(36rem, 100%); margin: 4px 0 0; padding: 14px 18px;
+    border: 1px solid var(--color-border-champagne, rgba(173, 138, 72, 0.28)); border-radius: 18px;
+    background: color-mix(in srgb, var(--color-surface, #fff) 90%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow: 0 18px 40px -24px rgba(32, 42, 60, 0.5);
+    color: var(--color-text-secondary);
+  }
+}
+
+/* ── Раскладка: слева таблица, справа шар ── */
+.z6-split { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+/* На узком экране колонки «растворяются», порядок блоков задаёт `order`: выбор, шар, итоги, таблица. */
+.z6-main, .z6-side { display: contents; }
+.z6-toolbar { order: 1; }
+.z6-planet { order: 2; }
+.z6-ribbon { order: 3; }
+.z6-table { order: 4; }
+.z6-split .w6d-shifts { order: 5; }
+.z6-notes { order: 6; }
+.z6-split .w6d-years { order: 7; }
+
+@media (min-width: 1100px) {
+  .z6-split {
+    display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 20px 24px; align-items: start;
+  }
+  .z6-main, .z6-side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .z6-main > *, .z6-side > * { order: 0; }
+}
+@media (min-width: 1700px) {
+  .z6-split { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px 32px; }
+}
+
+/* ── Выбор показателя: одна строка ── */
+.z6-toolbar {
+  padding: 10px 12px; border: 1px solid var(--z6-line); border-radius: 20px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)), var(--color-surface, #fff));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--z6-gold) 38%, transparent), var(--z6-shadow);
+}
+.z6-toolbar .w6d-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.z6-toolbar .w6d-picker__label {
+  flex: 0 0 auto; margin: 0; color: var(--z6-gold-ink); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.z6-toolbar .w6d-picker__bar { flex: 1 1 auto; min-width: 0; gap: 8px; }
+.z6-toolbar .w6d-picker__current,
+.z6-toolbar .w6d-picker__panel { flex: 1 1 100%; }
+.z6-toolbar .w6d-quick,
+.z6-toolbar .w6d-picker__all {
+  border-radius: 999px; padding: 0 14px;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+.z6-toolbar .w6d-quick.is-active {
+  border-color: color-mix(in srgb, var(--z6-gold) 55%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--z6-gold) 26%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 12%, var(--color-surface, #fff)));
+  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--z6-gold) 80%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.z6-toolbar .w6d-picker__all:disabled { opacity: 0.55; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all { min-height: 40px; }
+  .z6-toolbar .w6d-quick:hover:not(.is-active), .z6-toolbar .w6d-picker__all:hover:not(:disabled) { transform: translateY(-1px); }
+}
+.z6-picker__trailing { margin-left: auto; display: flex; align-items: center; }
+.z6-picker__trailing:empty { display: none; }
+.z6-note-btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; color: var(--z6-gold-ink); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.z6-note-btn__label { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--z6-gold) 60%, transparent); }
+.z6-note-btn { min-width: 44px; min-height: 44px; }
+@media (hover: hover) and (pointer: fine) { .z6-note-btn { min-height: 40px; min-width: 40px; } }
+@media (min-width: 1100px) {
+  /* Подпись «Показатель рейтинга» остаётся для чтения с экрана: названия кнопок и заголовок страницы и так всё говорят. */
+  .z6-split .z6-toolbar .w6d-picker__label {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+}
+.z6-quick-ghost {
+  display: inline-block; width: 104px; height: 44px; border-radius: 999px;
+  background: linear-gradient(100deg, color-mix(in srgb, var(--z6-gold) 8%, transparent) 20%, color-mix(in srgb, var(--z6-gold) 20%, transparent) 50%, color-mix(in srgb, var(--z6-gold) 8%, transparent) 80%) 0 0 / 220% 100%;
+  animation: z6-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes z6-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+/* ── Шар: список стран убран (его заменяет таблица), карточка на всю свою ширину ── */
+.z6-planet { min-width: 0; display: grid; gap: 10px; }
+.z6-planet .planet-info { display: none; }
+.z6-planet .planet-shell {
+  grid-template-columns: minmax(0, 1fr);
+  border-color: var(--z6-line); box-shadow: var(--z6-shadow);
+}
+.z6-planet .planet-toolbar { padding: 12px 14px; }
+
+/* ── Золотая лента: первое и последнее место ── */
+.z6-ribbon.w2-facts {
+  position: relative; padding: 0; overflow: hidden; container: z6ribbon / inline-size;
+  border: 1px solid color-mix(in srgb, var(--z6-gold) 38%, transparent); border-radius: 20px;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--z6-gold) 22%, var(--color-surface, #fff)) 0%, color-mix(in srgb, var(--z6-gold) 9%, var(--color-surface, #fff)) 55%, var(--color-surface, #fff) 100%);
+  box-shadow: var(--z6-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.z6-ribbon.w2-facts::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 4px;
+  background: linear-gradient(180deg, var(--z6-gold-soft), var(--z6-gold));
+}
+.z6-ribbon .w2-facts-grid { gap: 0; }
+.z6-ribbon .w2-fact {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 4px 14px;
+  padding: 12px 18px 12px 22px; border: 0; border-radius: 0; background: transparent;
+  transition: background-color 0.2s ease;
+}
+.z6-ribbon .w2-fact + .w2-fact { border-left: 1px solid color-mix(in srgb, var(--z6-gold) 28%, transparent); padding-left: 18px; }
+.z6-ribbon .w2-fact-label {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
+  color: var(--z6-gold-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+}
+.z6-ribbon .w2-fact-label::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: linear-gradient(135deg, #f1dfa6, #c9a24f);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--z6-gold) 20%, transparent);
+}
+.z6-ribbon .w2-fact[data-place='last'] .w2-fact-label::before {
+  background: linear-gradient(135deg, #cfd6e2, #8f9bb0); box-shadow: 0 0 0 3px rgba(143, 155, 176, 0.2);
+}
+.z6-ribbon .w2-fact-name { font-size: 15px; }
+.z6-ribbon .w2-fact-value { justify-content: flex-end; font-size: 20px; font-weight: 650; }
+@media (hover: hover) { .z6-ribbon .w2-fact:hover { background: color-mix(in srgb, var(--z6-gold) 8%, transparent); } }
+@container z6ribbon (max-width: 540px) {
+  .z6-ribbon .w2-facts-grid { grid-template-columns: minmax(0, 1fr); }
+  .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); }
+  .z6-ribbon .w2-fact + .w2-fact { border-left: 0; border-top: 1px solid color-mix(in srgb, var(--z6-gold) 28%, transparent); padding-left: 22px; }
+  .z6-ribbon .w2-fact-value { justify-content: flex-start; }
+}
+
+/* ── Таблица ── */
+.z6-table { min-width: 0; }
+.z6-table__sub { margin: 2px 0 0; color: var(--z6-muted); font-size: 13px; line-height: 1.4; }
+.z6-table-card {
+  container: z6table / inline-size;
+  border-color: var(--z6-line); box-shadow: var(--z6-shadow);
+}
+/* Без дополнительных колонок обрезаем без прокрутки, чтобы шапка липла к верху окна. */
+@supports (overflow: clip) {
+  .z6-table-card:not([data-scroll]) { overflow: clip; }
+}
+.z6-table-card thead {
+  top: var(--z6-sticky-top);
+  background: color-mix(in srgb, var(--z6-gold) 8%, var(--color-surface, #fff));
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--z6-gold) 34%, transparent);
+}
+.z6-table-card thead th { padding-block: 12px; color: var(--z6-muted); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em; }
+.z6-table-card thead th:not(.w6d-col-bar) { padding-inline: 12px; }
+.z6-table-card tbody td { padding-block: 12px; vertical-align: middle; }
+.z6-table-card tbody td:not(.w6d-col-bar) { padding-inline: 12px; }
+.z6-table-card tbody td:first-child { padding-left: 16px; }
+.z6-table-card thead th:first-child { padding-left: 16px; }
+.z6-row { transition: background-color 0.18s ease; animation: z6-row-in 320ms ease both; animation-delay: calc(var(--z6-i, 0) * 18ms); }
+@keyframes z6-row-in { from { opacity: 0; } to { opacity: 1; } }
+.z6-row td:nth-child(2) a { font-size: 15px; }
+/* Цифры крупнее: у остальных строк спокойные, у тройки лидеров выразительные. */
+.z6-val { font-size: 16px; letter-spacing: -0.01em; }
+@media (hover: hover) {
+  .z6-row:hover { background: color-mix(in srgb, var(--z6-gold) 6%, transparent); }
+}
+.z6-row[data-top] {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--z6-gold) 16%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)) 72%, transparent);
+}
+.z6-row[data-top] td:first-child { box-shadow: inset 3px 0 0 var(--z6-gold); }
+.z6-row[data-top] .z6-val { font-size: 17px; font-weight: 700; }
+.z6-row[data-top='1'] .z6-val { font-size: 18px; }
+@media (hover: hover) {
+  .z6-row[data-top]:hover {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--z6-gold) 24%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 8%, var(--color-surface, #fff)) 72%, transparent);
+  }
+}
+/* Полоски: золото от светлого к насыщенному, густота зависит от значения. */
+.z6-table-card .w6d-bar {
+  height: 8px; background: color-mix(in srgb, var(--z6-gold) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z6-gold) 10%, transparent);
+}
+.z6-table-card .w6d-bar > span {
+  opacity: 1; transform-origin: left center;
+  background: linear-gradient(90deg, var(--z6-gold-soft), var(--z6-gold));
+  background-size: calc(100% / max(var(--z6-s, 1), 0.08)) 100%; background-repeat: no-repeat;
+  animation: z6-bar-grow 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--z6-i, 0) * 22ms + 120ms);
+}
+@keyframes z6-bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* Ширина столбцов зависит от ширины самой таблицы, а не окна. */
+.z6-table .w6d-table .w6d-col-bar { width: 20%; min-width: 4.5rem; }
+.z6-table .w6d-table .w6d-col-trend,
+.z6-table .w6d-table .w6d-col-bar { display: table-cell; }
+@container z6table (max-width: 640px) {
+  .z6-table .w6d-table .w6d-col-trend { display: none; }
+}
+@container z6table (max-width: 500px) {
+  .z6-table .w6d-table .w6d-col-bar { display: none; }
+}
+.z6-table .w6d-showall {
+  border-color: var(--z6-line); background: color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)); box-shadow: var(--z6-shadow);
+}
+.z6-table .w6d-median { color: var(--z6-muted); }
+
+/* ── Кто поднялся и опустился: узкий блок под шаром ── */
+.z6-split .w6d-shifts { margin: 0; }
+.w6d-shifts--compact {
+  padding: 16px 16px 14px; border: 1px solid var(--z6-line); border-radius: 24px;
+  background: var(--color-surface, #fff); box-shadow: var(--z6-shadow);
+}
+.w6d-shifts--compact .w6d-block-title { margin-bottom: 4px; font-size: 18px; line-height: 1.25; }
+.w6d-shifts--compact .w6d-shifts__lead { margin: 0 0 12px; }
+.w6d-shifts--compact .w6d-shifts__cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.w6d-shifts--compact .w6d-shifts__head { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.w6d-shifts--compact .w6d-shifts__head::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.w6d-shifts--compact .w6d-shifts__col.is-up .w6d-shifts__head { color: var(--color-positive, #16a34a); }
+.w6d-shifts--compact .w6d-shifts__col.is-down .w6d-shifts__head { color: var(--color-negative, #dc2626); }
+.w6d-shifts--compact .w6d-shifts__list { gap: 4px; }
+.w6d-shifts--compact .w6d-shift {
+  min-height: 40px; padding: 2px 10px; border-color: transparent; border-radius: 12px;
+  background: color-mix(in srgb, var(--z6-gold) 4%, transparent);
+  transition: background-color 0.18s ease;
+}
+@media (hover: hover) { .w6d-shifts--compact .w6d-shift:hover { background: color-mix(in srgb, var(--z6-gold) 10%, transparent); } }
+
+/* ── Пояснения под таблицей ── */
+.z6-notes.w2-facts { padding: 6px 18px 14px; border-color: var(--z6-line); box-shadow: var(--z6-shadow); }
+.z6-notes .w2-details { margin-top: 4px; }
+.z6-split .w6d-years { margin: 4px 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .z6-row, .z6-table-card .w6d-bar > span, .z6-quick-ghost { animation: none; }
+  .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-ribbon .w2-fact, .z6-row, .w6d-shifts--compact .w6d-shift { transition: none; }
+  .z6-toolbar .w6d-quick:hover, .z6-toolbar .w6d-picker__all:hover { transform: none; }
+}

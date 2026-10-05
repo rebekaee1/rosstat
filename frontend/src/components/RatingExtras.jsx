@@ -5,6 +5,7 @@ import { pluralRu } from '../lib/worldApi';
 import { cn, formatValue } from '../lib/format';
 import { deltaTone } from '../lib/deltaTone';
 import '../styles/w6d.css';
+import '../styles/z6-rating.css';
 
 /** Мини-график страны по годам: линия и точка последнего значения; цветом не оценивает, только форма. */
 export function RatingSpark({ points = [], label = '', width = 76, height = 26 }) {
@@ -84,11 +85,16 @@ export function OtherYears({ years = [], activeYear, hrefFor, onPick = null }) {
 }
 
 /** Блок «Как изменились места за 5 лет»: кто поднялся, кто опустился. */
-export function RankShifts({ shifts, nameOf, hrefOf }) {
+export function RankShifts({
+  shifts, nameOf, hrefOf, compact = false, className = '',
+}) {
   const t = useT();
   const { locale } = useLocale();
   if (!shifts || (!shifts.risers.length && !shifts.fallers.length)) return null;
   const spanYears = shifts.toYear - shifts.fromYear;
+  // Узкий вариант (рядом с шаром): по три строки в каждом списке, подпись «было — стало» остаётся.
+  const risers = compact ? shifts.risers.slice(0, 3) : shifts.risers;
+  const fallers = compact ? shifts.fallers.slice(0, 3) : shifts.fallers;
   const row = (move, sign) => (
     <li key={move.code} className="w6d-shift">
       <Link to={hrefOf(move.code)} className="w6d-shift__name fe-press">{nameOf(move.code)}</Link>
@@ -100,7 +106,7 @@ export function RankShifts({ shifts, nameOf, hrefOf }) {
     </li>
   );
   return (
-    <section className="w6d-shifts" aria-labelledby="w6d-shifts-title">
+    <section className={cn('w6d-shifts', compact && 'w6d-shifts--compact', className)} aria-labelledby="w6d-shifts-title">
       <h2 id="w6d-shifts-title" className="w6d-block-title">
         {t('w6d.rating.shiftsTitle', {
           n: spanYears,
@@ -109,16 +115,16 @@ export function RankShifts({ shifts, nameOf, hrefOf }) {
       </h2>
       <p className="w6d-shifts__lead">{t('w6d.rating.shiftsLead', { from: shifts.fromYear, to: shifts.toYear })}</p>
       <div className="w6d-shifts__cols">
-        {shifts.risers.length > 0 && (
-          <div>
+        {risers.length > 0 && (
+          <div className="w6d-shifts__col is-up">
             <h3 className="w6d-shifts__head">{t('w6d.rating.risers')}</h3>
-            <ul className="w6d-shifts__list">{shifts.risers.map((m) => row(m, 1))}</ul>
+            <ul className="w6d-shifts__list">{risers.map((m) => row(m, 1))}</ul>
           </div>
         )}
-        {shifts.fallers.length > 0 && (
-          <div>
+        {fallers.length > 0 && (
+          <div className="w6d-shifts__col is-down">
             <h3 className="w6d-shifts__head">{t('w6d.rating.fallers')}</h3>
-            <ul className="w6d-shifts__list">{shifts.fallers.map((m) => row(m, -1))}</ul>
+            <ul className="w6d-shifts__list">{fallers.map((m) => row(m, -1))}</ul>
           </div>
         )}
       </div>

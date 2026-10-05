@@ -27,8 +27,9 @@ function tipPosition(anchorRect) {
 /**
  * Дискретная справка у карты для концептов МВФ/WEO: hover/focus и tap.
  * Тултип в portal (fixed), чтобы соседние чипы и overflow родителя не клипали текст.
+ * Необязательный `label` показывает рядом со значком подпись («Что это за показатель»).
  */
-export default function WorldMapConceptNote({ conceptSlug }) {
+export default function WorldMapConceptNote({ conceptSlug, label = '' }) {
   const t = useT();
   const { locale } = useLocale();
   const tipId = useId();
@@ -144,7 +145,7 @@ export default function WorldMapConceptNote({ conceptSlug }) {
         type="button"
         aria-expanded={open}
         aria-controls={tipId}
-        aria-label={t('home.map.weoNoteAria')}
+        aria-label={label ? undefined : t('home.map.weoNoteAria')}
         onClick={() => {
           clearCloseTimer();
           setOpen((prev) => !prev);
@@ -153,9 +154,10 @@ export default function WorldMapConceptNote({ conceptSlug }) {
           clearCloseTimer();
           setOpen(true);
         }}
-        className="fe-map-btn fe-press h-7 w-7 rounded-lg text-text-secondary transition-colors hover:bg-champagne/10 hover:text-champagne-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne/40"
+        className={`fe-map-btn fe-press ${label ? 'z6-note-btn' : 'h-7 w-7'} rounded-lg text-text-secondary transition-colors hover:bg-champagne/10 hover:text-champagne-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-champagne/40`}
       >
         <Info size={14} strokeWidth={1.75} aria-hidden="true" />
+        {label ? <span className="z6-note-btn__label">{label}</span> : null}
       </button>
       {tip}
     </div>

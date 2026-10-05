@@ -3091,4 +3091,10 @@ export default {
   'z5.reg.quick.moskva': 'Moscow',
   'z5.reg.quick.sankt-peterburg': 'Saint Petersburg',
   'z5.reg.quick.respublika-tatarstan': 'Tatarstan',
+  // ===== Z6 =====
+  'z6.rating.otherMetric': 'Other indicator',
+  'z6.rating.whatIsMetric': 'What this indicator means',
+  'z6.rating.periodNote': 'Data for {period}',
+  'z6.rating.periodRange': 'Data periods from {from} to {to}',
+  'z6.rating.rowPeriod': 'Period: {period}',
 };
