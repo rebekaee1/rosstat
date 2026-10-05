@@ -149,8 +149,8 @@ export default function ChartBrush({
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <path d={spark.area} fill={CHART_THEME.ink} fillOpacity={0.08} />
-            <path d={spark.line} fill="none" stroke={CHART_THEME.axis} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
+            <path d={spark.area} fill={CHART_THEME.goldLight} fillOpacity={0.3} />
+            <path d={spark.line} fill="none" stroke={CHART_THEME.gold} strokeOpacity={0.85} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
           </svg>
         )}
         <div className="fe-brush__shade" style={{ left: 0, width: `${left}%` }} aria-hidden="true" />

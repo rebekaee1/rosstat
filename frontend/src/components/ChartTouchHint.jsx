@@ -3,6 +3,7 @@
 import { Hand } from 'lucide-react';
 import { useT } from '../i18n';
 import '../styles/w5-tools.css';
+import '../styles/k4-charts.css';
 
 export default function ChartTouchHint({ visible }) {
   const t = useT();

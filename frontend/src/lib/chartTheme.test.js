@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, TOOLTIP_STYLES,
+  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, PRISM_STOPS, RIBBON_STOPS,
+  SAPPHIRE_STOPS, TOOLTIP_STYLES,
   areaGradientStops, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, lastPointTag, niceAxis,
 } from './chartTheme';
 
@@ -46,6 +47,22 @@ describe('chartTheme', () => {
   it('grid is a dark translucent line, not white-on-white', () => {
     expect(GRID_PROPS.stroke).toMatch(/^rgba\(32,\s*42,\s*60/);
     expect(GRID_PROPS.vertical).toBe(false);
+  });
+
+  it('сетка без пунктира: полосы 4–5 % чередуются с пустыми', () => {
+    expect(GRID_PROPS.strokeDasharray).toBeUndefined();
+    expect(GRID_PROPS.horizontalFill).toHaveLength(2);
+    const alpha = Number(GRID_PROPS.horizontalFill[0].match(/,\s*([0-9.]+)\)$/)[1]);
+    expect(alpha).toBeGreaterThanOrEqual(0.04);
+    expect(alpha).toBeLessThanOrEqual(0.05);
+  });
+
+  it('лента: градиент золото-светлое → золото → тёмное, заливка 35 % → 0, второй ряд сапфир', () => {
+    expect(RIBBON_STOPS.map((s) => s.color)).toEqual(['#E9CD8E', '#C9A24D', '#A9812F']);
+    expect(SAPPHIRE_STOPS.map((s) => s.color)).toEqual(['#5C86C8', '#1E2A4A']);
+    expect(CHART_AREA.top).toBe(0.35);
+    expect(CHART_AREA.bottom).toBe(0);
+    expect(PRISM_STOPS).toHaveLength(2);
   });
 
   it('axisTick takes font and colour from the theme and allows overrides', () => {
@@ -126,8 +143,8 @@ describe('DS7: золотая линия, заливка, движение, по
     expect(areaGradientStops('#202A3C', { top: 0.2 })[0].stopColor).toBe('#202A3C');
   });
 
-  it('линия рисуется 700 мс', () => {
-    expect(CHART_MOTION.drawMs).toBe(700);
+  it('линия рисуется 900 мс (K4.1)', () => {
+    expect(CHART_MOTION.drawMs).toBe(900);
   });
 
   it('подсказка стеклянная, а курсор — золотая вертикаль', () => {

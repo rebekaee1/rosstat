@@ -1,5 +1,5 @@
 import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
-import { useEffect, useRef, useMemo, useState, useCallback, useId } from 'react';
+import { useEffect, useRef, useMemo, useState, useCallback } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
   Tooltip, CartesianGrid, ReferenceLine, ReferenceArea, ReferenceDot,
@@ -13,22 +13,27 @@ import { track, events } from '../lib/track';
 import { valueWithUnit } from '../lib/valueText';
 import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
 import { useLocale, useT } from '../i18n';
-import { CHART_THEME } from '../lib/chartTheme';
+import { CHART_THEME, GRID_PROPS } from '../lib/chartTheme';
+import { useChartGlassIds } from '../lib/chartHooks';
 import {
   formatAxisTickCompact, needsCompactAxis, spansManyYears, yearAxisTicks,
 } from '../lib/chartAxis';
 import ChartBrandCaption from './ChartBrandCaption';
+import ChartGlassDefs from './ChartGlassDefs';
 import ChartBrush from './ChartBrush';
 import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import '../styles/chart-controls.css';
 import '../styles/z4-indicator.css';
+import '../styles/k4-charts.css';
 
-// Основная линия: спокойное золото (DS7), 2,75 px. Запасное значение совпадает с палитрой бренда, пока в теме нет своего токена.
+// Основная линия: «стеклянная лента» 3 px (K4.1). Сплошной цвет нужен подсказке, легенде и шарику; сама линия — градиент ribbon.
 const LINE = CHART_THEME.gold ?? CHART_THEME.line ?? '#B08A3E';
-// Прогноз: тот же ряд продолжается пунктиром более тёплого, тёмного золота, чтобы линия факта и линия прогноза не сливались.
+// Прогноз: тот же ряд продолжается линией более тёмного золота, которая тает по прозрачности вдоль, чтобы факт и прогноз не сливались.
 const FORECAST = CHART_THEME.champagneInk ?? '#80642F';
+// Ряд сравнения по умолчанию — сапфир (светлый → тёмный); чужие цвета рисуются как заданы.
+const SAPPHIRE_LINES = new Set([CHART_THEME.sapphire, CHART_THEME.blue]);
 
 // Одни и те же короткие подписи на всех страницах: «1 г., 5 л., 10 л., Всё». У годовых рядов нет смысла в «1 г.»
 // (одна точка), поэтому там начинаем с 5 лет и добавляем 25.
@@ -63,6 +68,11 @@ const MIN_WINDOW = 10;
 // Появление блока средствами CSS: без задержки, график виден сразу (раньше gsap скрывал его на ~1.3 с).
 const REVEAL_STYLE = { '--fe-duration': '0.28s', '--fe-rise': '8px' };
 const ZOOM_STEP = 1.18;
+const TYPE_OPTIONS = [
+  { key: 'area', labelKey: 'w6e.type.area', icon: AreaIcon },
+  { key: 'line', labelKey: 'w6e.type.line', icon: LineIcon },
+  { key: 'bar', labelKey: 'w6e.type.bar', icon: BarChart3 },
+];
 
 function dateBasedWindowSize(data, months, minWindow = MIN_WINDOW) {
   if (!months || !data.length) return data.length;
@@ -134,7 +144,7 @@ function CustomTooltip({
       ? band.value
       : null;
     return (
-      <div className="fe-chart-tip glass-surface rounded-lg px-2.5 py-1.5 shadow-lg">
+      <div className="fe-chart-tip fe-chart-tooltip">
         <span className="fe-chart-tip__date">{formatDate(label, dateFormat)}</span>
         <span
           className="fe-chart-tip__value"
@@ -162,7 +172,7 @@ function CustomTooltip({
   }
 
   return (
-    <div className={`glass-surface rounded-xl px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
+    <div className={`fe-chart-tooltip fe-chart-tooltip--stack ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
       <p className="text-xs text-text-secondary mb-2">{formatDate(label, dateFormat)}</p>
 
       {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
@@ -223,26 +233,24 @@ function CustomTooltip({
  * Точка последнего наблюдения с подписью значения плашкой: число читается без наведения.
  * Плашка стоит с той стороны линии, где пусто: над точкой у растущего ряда, под ней у падающего.
  */
-function LastPointMarker({ cx, cy, text, anchorEnd, below }) {
+function LastPointMarker({ cx, cy, text, anchorEnd, below, beadId }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
   const width = pointLabelWidth(text);
   const height = 22;
   const x = anchorEnd ? cx - width + 12 : cx - 12;
   const y = below ? cy + 14 : cy - 14 - height;
   return (
-    <g pointerEvents="none" className="z4-lastpoint">
-      <circle cx={cx} cy={cy} r={9} fill={LINE} fillOpacity={0.2} />
-      <circle cx={cx} cy={cy} r={4.5} fill={LINE} stroke="#FFFFFF" strokeWidth={2} />
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        rx={11}
-        fill="#FFFFFF"
-        stroke={LINE}
-        strokeOpacity={0.6}
-      />
+    <g pointerEvents="none" className="z4-lastpoint k4-lastpoint">
+      {/* Гало пульсирует три раза (класс k4-lastpoint__halo), затем остаётся тихим кругом. */}
+      <circle className="k4-lastpoint__halo" cx={cx} cy={cy} r={11} fill={CHART_THEME.goldBright} fillOpacity={0.28} />
+      {/* Гранёная бусина 12 px: тёмный низ, светлая грань сверху слева, белый блик. */}
+      <circle cx={cx} cy={cy} r={6.5} fill={`url(#${beadId})`} />
+      <path d={`M${cx - 4.4} ${cy - 1.4} L${cx - 1.2} ${cy - 5.2} L${cx + 2.6} ${cy - 3.6} Z`} fill="#fff" fillOpacity={0.55} />
+      <path d={`M${cx + 5.2} ${cy + 1.4} L${cx + 1.8} ${cy + 5.4} L${cx - 1.6} ${cy + 4.6} Z`} fill={CHART_THEME.goldDeep} fillOpacity={0.35} />
+      <circle cx={cx - 2} cy={cy - 2.2} r={1.3} fill="#fff" fillOpacity={0.9} />
+      {/* Плашка значения — стеклянная: без обводки, мягкая тень (класс k4-lastpoint__tag), блик сверху. */}
+      <rect className="k4-lastpoint__tag" x={x} y={y} width={width} height={height} rx={11} fill="#FFFFFF" fillOpacity={0.92} />
+      <rect x={x + 6} y={y + 1} width={Math.max(0, width - 12)} height={1.2} rx={0.6} fill="#FFFFFF" />
       <text
         x={x + width / 2}
         y={y + height / 2 + 4.2}
@@ -254,6 +262,28 @@ function LastPointMarker({ cx, cy, text, anchorEnd, below }) {
       >
         {text}
       </text>
+    </g>
+  );
+}
+
+/**
+ * Вертикальный «луч» на границе факта и прогноза: тонкая светлая линия, тающая к краям, и размытое свечение рядом.
+ * Градиент задан в координатах плота (userSpaceOnUse), потому что у вертикальной линии нулевая ширина ограничивающей рамки.
+ */
+function NowBeam({ x1, y1, y2, beamId }) {
+  if (![x1, y1, y2].every(Number.isFinite)) return null;
+  return (
+    <g pointerEvents="none" className="k4-beam">
+      <defs>
+        <linearGradient id={beamId} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x1} y2={y2}>
+          <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={0} />
+          <stop offset="35%" stopColor={CHART_THEME.goldBright} stopOpacity={0.95} />
+          <stop offset="75%" stopColor={CHART_THEME.goldLight} stopOpacity={0.7} />
+          <stop offset="100%" stopColor={CHART_THEME.goldLight} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <line className="k4-beam__glow" x1={x1} x2={x1} y1={y1} y2={y2} stroke={`url(#${beamId})`} strokeWidth={9} strokeLinecap="round" opacity={0.55} />
+      <line x1={x1} x2={x1} y1={y1} y2={y2} stroke={`url(#${beamId})`} strokeWidth={1.6} strokeLinecap="round" />
     </g>
   );
 }
@@ -291,7 +321,7 @@ export default function IndicatorChart({
   const t = useT();
   const { locale } = useLocale();
   const digits = chartValueDigits(unit, chartMode ?? mode);
-  const gradientId = `actual-${useId().replaceAll(':', '')}`;
+  const glass = useChartGlassIds('k4');
   const chartAreaRef = useRef(null);
   const rangeOptions = (RANGE_PRESETS[rangePreset] || RANGE_PRESETS.default).map((opt) => ({
     ...opt,
@@ -326,7 +356,7 @@ export default function IndicatorChart({
       return comparisonSeries.map((series, index) => ({
         ...series,
         dataKey: series.dataKey || `comparison_${index}`,
-        color: series.color || CHART_THEME.blue,
+        color: series.color || CHART_THEME.sapphire,
       }));
     }
     if (comparisonData?.length) {
@@ -334,7 +364,7 @@ export default function IndicatorChart({
         data: comparisonData,
         dataKey: 'comparison_0',
         label: comparisonLabel || t('chart.compareSeries'),
-        color: CHART_THEME.blue,
+        color: CHART_THEME.sapphire,
       }];
     }
     return [];
@@ -756,12 +786,10 @@ export default function IndicatorChart({
         {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
             но всегда прижаты вправо (а не уезжают влево). Созвон 2026-06-16. */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
-          <ChipGroup label={t('chart.typeAria')} className="fe-seg">
-            {[
-              { key: 'area', label: t('w6e.type.area'), icon: AreaIcon },
-              { key: 'line', label: t('w6e.type.line'), icon: LineIcon },
-              { key: 'bar', label: t('w6e.type.bar'), icon: BarChart3 },
-            ].map((opt) => {
+          <ChipGroup label={t('chart.typeAria')} className="fe-seg" style={{ '--seg-i': TYPE_OPTIONS.findIndex((o) => o.key === chartType), '--seg-n': TYPE_OPTIONS.length }}>
+            {/* Бегунок общего жёлоба: сам едет под выбранную кнопку (transform), кнопки лежат поверх. */}
+            <span className="fe-seg__thumb" aria-hidden="true" />
+            {TYPE_OPTIONS.map((opt) => {
               const IconComp = opt.icon;
               return (
                 <Chip
@@ -771,7 +799,7 @@ export default function IndicatorChart({
                   className="fe-chip--seg"
                 >
                   <IconComp className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                  <span>{opt.label}</span>
+                  <span>{t(opt.labelKey)}</span>
                 </Chip>
               );
             })}
@@ -826,22 +854,16 @@ export default function IndicatorChart({
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }}>
             <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={LINE} stopOpacity={0.3} />
-                <stop offset="100%" stopColor={LINE} stopOpacity={0.02} />
-              </linearGradient>
+              <ChartGlassDefs ids={glass} forecastColor={FORECAST} />
             </defs>
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke={CHART_THEME.grid}
-              vertical={false}
-            />
+            {/* Сетка без пунктира: полосы 4,5 % чередуются (K4.1), линии едва заметны. */}
+            <CartesianGrid {...GRID_PROPS} />
             <XAxis
               dataKey="date"
               tickFormatter={xTickFormat}
-              stroke="rgba(0,0,0,0.1)"
-              tick={{ fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
+              stroke="rgba(88,74,46,0.12)"
+              tick={{ fill: CHART_THEME.axis, fontSize: CHART_THEME.tickSize, fontFamily: CHART_THEME.font }}
               tickLine={false}
               ticks={xTicks}
               interval={0}
@@ -850,8 +872,8 @@ export default function IndicatorChart({
               padding={{ left: 8, right: 10 }}
             />
             <YAxis
-              stroke="rgba(0,0,0,0.1)"
-              tick={{ fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
+              stroke="rgba(88,74,46,0.12)"
+              tick={{ fill: CHART_THEME.axis, fontSize: CHART_THEME.tickSize, fontFamily: CHART_THEME.font }}
               tickLine={false}
               axisLine={false}
               domain={yDomain}
@@ -874,14 +896,14 @@ export default function IndicatorChart({
                   actualSeriesLabel={actualSeriesLabel}
                 />
               )}
-              cursor={isDragging || !isHovering ? false : { stroke: 'rgba(128,100,47,0.45)', strokeWidth: 1, strokeDasharray: '3 3' }}
+              cursor={isDragging || !isHovering ? false : { stroke: CHART_THEME.cursor, strokeWidth: 1.5 }}
               active={isHovering && !isDragging}
               position={resolvedComparisonSeries.length ? undefined : { y: 0 }}
               wrapperStyle={{ pointerEvents: 'none', zIndex: 20 }}
               isAnimationActive={false}
             />
             {baselineY !== null && (
-              <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
+              <ReferenceLine y={baselineY} stroke="rgba(88,74,46,0.2)" strokeWidth={1} />
             )}
 
             {/* Полоса прогноза: только для area/line. Для bar её скрываем —
@@ -891,65 +913,105 @@ export default function IndicatorChart({
                 x1={forecastBoundaryDate}
                 x2={forecastEndDate}
                 fill={CHART_THEME.champagne}
-                fillOpacity={0.11}
+                fillOpacity={0.07}
                 stroke="none"
                 ifOverflow="visible"
                 style={{ pointerEvents: 'none' }}
               />
             )}
+            {/* «Сейчас»: вертикальный луч света вместо штриховой линии. */}
             {forecastBoundaryDate && showForecast && chartType !== 'bar' && (
               <ReferenceLine
                 x={forecastBoundaryDate}
-                stroke="rgba(173,138,72,0.7)"
-                strokeDasharray="4 4"
-                strokeWidth={1.5}
-                style={{ pointerEvents: 'none' }}
+                ifOverflow="visible"
+                shape={(props) => (
+                  <NowBeam x1={props.x1 ?? props.x} y1={props.y1} y2={props.y2} beamId={glass.beam} />
+                )}
               />
             )}
 
             {chartType === 'bar' ? (
               <Bar
                 dataKey="actual"
-                fill={LINE}
-                fillOpacity={0.78}
-                stroke={LINE}
+                fill={`url(#${glass.bar})`}
+                stroke="none"
+                radius={[7, 7, 0, 0]}
                 isAnimationActive={false}
                 maxBarSize={28}
               />
             ) : chartType === 'line' ? (
-              <Line
-                dataKey="actual"
-                stroke={LINE}
-                strokeWidth={2.75}
-                dot={false}
-                activeDot={isDragging ? false : { r: 4.5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
-                isAnimationActive={false}
-                connectNulls
-              />
+              <>
+                <Line
+                  className="k4-ribbon"
+                  dataKey="actual"
+                  stroke={`url(#${glass.ribbon})`}
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  dot={false}
+                  activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                  connectNulls
+                />
+                {/* Белый блик-штрих 1 px поверх ленты, смещён на 1 px вверх (css k4-gloss). */}
+                <Line
+                  className="k4-gloss"
+                  dataKey="actual"
+                  stroke="rgba(255,255,255,0.72)"
+                  strokeWidth={1}
+                  strokeLinecap="round"
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                  connectNulls
+                  legendType="none"
+                  tooltipType="none"
+                />
+              </>
             ) : (
-              <Area
-                dataKey="actual"
-                stroke={LINE}
-                strokeWidth={2.75}
-                fill={`url(#${gradientId})`}
-                dot={false}
-                activeDot={isDragging ? false : { r: 4.5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
-                isAnimationActive={false}
-                connectNulls
-              />
+              <>
+                <Area
+                  className="k4-ribbon"
+                  dataKey="actual"
+                  stroke={`url(#${glass.ribbon})`}
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill={`url(#${glass.area})`}
+                  dot={false}
+                  activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                  connectNulls
+                />
+                <Line
+                  className="k4-gloss"
+                  dataKey="actual"
+                  stroke="rgba(255,255,255,0.72)"
+                  strokeWidth={1}
+                  strokeLinecap="round"
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                  connectNulls
+                  legendType="none"
+                  tooltipType="none"
+                />
+              </>
             )}
 
+            {/* Коридор прогноза — «призма»: золото слева, лёд справа, края растушёваны (css k4-prism), без пунктира. */}
             {showForecast && chartType !== 'bar' && hasBand && (
               <Area
+                className="k4-prism"
                 dataKey="band"
                 stroke="none"
-                fill={CHART_THEME.champagne}
-                fillOpacity={0.22}
+                fill={`url(#${glass.prism})`}
                 dot={false}
                 activeDot={false}
                 isAnimationActive={false}
                 connectNulls
                 legendType="none"
+                tooltipType="none"
               />
             )}
 
@@ -957,39 +1019,46 @@ export default function IndicatorChart({
               chartType === 'bar' ? (
                 <Bar
                   dataKey="forecast"
-                  fill={FORECAST}
-                  fillOpacity={0.7}
-                  stroke={FORECAST}
+                  fill={`url(#${glass.barForecast})`}
+                  stroke="none"
+                  radius={[7, 7, 0, 0]}
                   isAnimationActive={false}
                   maxBarSize={28}
                 />
               ) : (
                 <Line
+                  className="k4-forecast"
                   dataKey="forecast"
-                  stroke={FORECAST}
-                  strokeWidth={2.75}
+                  stroke={`url(#${glass.forecast})`}
+                  strokeWidth={3}
+                  strokeLinecap="round"
                   connectNulls
-                  strokeDasharray="7 5"
-                  dot={(props) => props.payload?.date === forecastLast?.date
-                    ? <circle cx={props.cx} cy={props.cy} r="5" fill={FORECAST} stroke="#fff" strokeWidth="2" />
-                    : null}
-                  activeDot={isDragging ? false : { r: 7, fill: FORECAST, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  dot={(props) => (props.payload?.date === forecastLast?.date
+                    ? <circle cx={props.cx} cy={props.cy} r="5" fill={FORECAST} fillOpacity={0.9} stroke="#fff" strokeWidth="2" />
+                    : null)}
+                  activeDot={isDragging ? false : { r: 6, fill: FORECAST, stroke: '#FFFFFF', strokeWidth: 2 }}
                   isAnimationActive={false}
                 />
               )
             )}
-            {resolvedComparisonSeries.map((series) => (
-              <Line
-                key={series.dataKey}
-                dataKey={series.dataKey}
-                stroke={series.color}
-                strokeWidth={2}
-                connectNulls
-                dot={false}
-                activeDot={isDragging ? false : { r: 4, fill: series.color, stroke: '#FFFFFF', strokeWidth: 2 }}
-                isAnimationActive={false}
-              />
-            ))}
+            {resolvedComparisonSeries.map((series) => {
+              const sapphire = SAPPHIRE_LINES.has(series.color);
+              return (
+                <Line
+                  key={series.dataKey}
+                  className={sapphire ? 'k4-ribbon k4-ribbon--sapphire' : 'k4-ribbon k4-ribbon--plain'}
+                  dataKey={series.dataKey}
+                  stroke={sapphire ? `url(#${glass.sapphire})` : series.color}
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  connectNulls
+                  dot={false}
+                  activeDot={isDragging ? false : { r: 4.5, fill: series.color, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                />
+              );
+            })}
             {lastPointRow && chartType !== 'bar' && !isDragging && (
               <ReferenceDot
                 x={lastPointRow.date}
@@ -1003,6 +1072,7 @@ export default function IndicatorChart({
                     text={formatPointLabel(lastPointRow.actual, digits, locale)}
                     anchorEnd={Number(props.cx) > plotWidth * 0.45}
                     below={lastPointBelow}
+                    beadId={glass.bead}
                   />
                 )}
               />
@@ -1030,12 +1100,12 @@ export default function IndicatorChart({
       {resolvedComparisonSeries.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 pt-3 fe-divider">
           <div className="flex items-center gap-2">
-            <span className="h-0.5 w-5 rounded-full" style={{ background: LINE }} />
+            <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             <span className="text-xs text-text-secondary">{actualSeriesLabel || t('chart.primarySeries')}</span>
           </div>
           {resolvedComparisonSeries.map((series) => (
             <div key={series.dataKey} className="flex min-w-0 items-center gap-2">
-              <span className="h-0.5 w-5 shrink-0 rounded-full" style={{ backgroundColor: series.color }} />
+              <span className={SAPPHIRE_LINES.has(series.color) ? 'k4-swatch k4-swatch--sapphire shrink-0' : 'k4-swatch shrink-0'} style={SAPPHIRE_LINES.has(series.color) ? undefined : { backgroundColor: series.color }} aria-hidden="true" />
               <span className="max-w-[14rem] truncate text-xs text-text-secondary">{series.label}</span>
             </div>
           ))}
@@ -1045,16 +1115,16 @@ export default function IndicatorChart({
       {showForecast && hasForecast && (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 fe-divider">
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 rounded-full" style={{ background: LINE }} />
+            <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             <span className="text-xs text-text-secondary">{t('chart.legend.actual')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 rounded-full" style={{ background: FORECAST, opacity: 0.85 }} />
+            <span className="k4-swatch k4-swatch--forecast" aria-hidden="true" />
             <span className="text-xs text-text-secondary">{t('common.forecast')}</span>
           </div>
           {hasBand && (
             <div className="flex items-center gap-2">
-              <span className="h-2.5 w-5 rounded-sm" style={{ background: CHART_THEME.champagne, opacity: 0.28 }} />
+              <span className="k4-swatch k4-swatch--prism" aria-hidden="true" />
               <span className="text-xs text-text-secondary">{t('w6e.forecast.range')}</span>
             </div>
           )}

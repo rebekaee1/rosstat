@@ -7,6 +7,7 @@ import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import Button from './Button';
 import '../styles/regions-w4.css';
+import '../styles/k4-charts.css';
 
 const STEP_MS = 900;
 
@@ -90,9 +91,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
           onChange={handleSlider}
           aria-label={t('map.timeline.yearOnMap')}
           className="map-timeline w-full"
-          style={{
-            background: `linear-gradient(to right, var(--color-champagne) 0%, var(--color-champagne) ${pct}%, var(--color-border-subtle) ${pct}%, var(--color-border-subtle) 100%)`,
-          }}
+          style={{ '--k4-pct': `${pct}%` }}
         />
         <div className="fe-num mt-1 flex justify-between text-xs text-text-secondary">
           <span>{min}</span>

@@ -52,7 +52,7 @@ export default function ChartDownloadMenu({
           <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
         </Button>
         {open && (
-          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5 shadow-2xl">
+          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5">
             {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
               <button
                 key={id}
@@ -60,7 +60,7 @@ export default function ChartDownloadMenu({
                 role="menuitem"
                 title={itemHint}
                 onClick={() => { setOpen(false); run?.(); }}
-                className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-obsidian-light"
+                className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-white/60 hover:shadow-[var(--fe-l2-shadow)]"
               >
                 <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
                 <span className="min-w-0 flex-1">{label}</span>

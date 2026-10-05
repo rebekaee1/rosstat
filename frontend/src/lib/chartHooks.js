@@ -1,5 +1,7 @@
 // Хуки графиков: ширина контейнера, подсказка по касанию, предпочтение «меньше движения».
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useId, useMemo, useRef, useState,
+} from 'react';
 
 /**
  * Ширина элемента через ResizeObserver. Возвращает [refCallback, width].
@@ -107,4 +109,25 @@ export function useTouchTooltip(containerRef) {
     // На компьютере undefined → Recharts сам показывает по наведению; на сенсоре false скрывает.
     tooltipProps: coarse ? { active: open ? undefined : false } : {},
   };
+}
+
+/**
+ * Набор идентификаторов градиентов одного графика (лента, сапфир, заливка, прогноз, коридор, столбцы, шарик).
+ * У каждого графика на странице свои id: два графика рядом не берут чужие градиенты.
+ */
+export function useChartGlassIds(prefix = 'fe-glass') {
+  const raw = useId().replace(/[^A-Za-z0-9_-]/g, '');
+  const base = `${prefix}-${raw}`;
+  return useMemo(() => ({
+    ribbon: `${base}-ribbon`,
+    sapphire: `${base}-sapphire`,
+    area: `${base}-area`,
+    areaSapphire: `${base}-area-sapphire`,
+    forecast: `${base}-forecast`,
+    prism: `${base}-prism`,
+    bar: `${base}-bar`,
+    barForecast: `${base}-bar-forecast`,
+    beam: `${base}-beam`,
+    bead: `${base}-bead`,
+  }), [base]);
 }

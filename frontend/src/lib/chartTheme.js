@@ -1,9 +1,11 @@
 // Единая тема графиков: оси, сетка, шрифт, палитра, подсказка, высота по ширине.
-// Раунд 2 (DS7): основная линия графика золотая (`gold`), заливка под ней золото 30 % → 0, прогноз — пунктир ink,
-// сравнения — единая палитра `series` (золото, графит, затем спокойные приглушённые цвета).
+// Раунд 2 (DS7): основная линия графика золотая (`gold`), сравнения — единая палитра `series`.
+// Раунд 3 (K4, «хрусталь без границ»): линия — «стеклянная лента» (градиент по длине, свечение, блик-штрих),
+// заливка золото 35 % → 0, сетка — чередование полос без пунктира, прогноз — линия, тающая по прозрачности,
+// коридор — «призма», второй ряд — сапфир. Градиенты рисует components/ChartGlassDefs.jsx по этим же значениям.
 // Страницы не пишут hex/rgba в разметке графика — берут отсюда.
 //
-// Контраст подписей осей: #566379 на белой карточке графика 6,1:1, на фоне страницы
+// Контраст подписей осей: #55627A на белой карточке графика 6,1:1, на фоне страницы
 // (#F6F2EA) 5,4:1 — оба выше порога 4,5:1 для текста.
 export const CHART_THEME = Object.freeze({
   ink: '#202A3C',
@@ -18,13 +20,22 @@ export const CHART_THEME = Object.freeze({
   pearl: '#F6F2EA',
   surface: '#FFFFFF',
   grid: 'rgba(32,42,60,0.09)',
-  axis: '#566379',
+  axis: '#55627A',
   axisLine: 'rgba(32,42,60,0.18)',
   refLine: 'rgba(32,42,60,0.32)',
   cursor: 'rgba(176,138,62,0.6)',
+  // Светлое и тёмное золото ленты: градиент по длине линии идёт goldLight → goldBright → goldDeep.
+  goldLight: '#E9CD8E',
+  goldDeep: '#A9812F',
+  // Второй ряд: сапфир (светлый → тёмный).
+  sapphire: '#3F66A8',
+  sapphireLight: '#5C86C8',
+  sapphireDeep: '#1E2A4A',
   font: 'Manrope, system-ui, sans-serif',
   // Оси читаются: 12 px (было 11).
   tickSize: 12,
+  // Чередующиеся полосы сетки (4,5 % тёплого тона) вместо пунктирных линий.
+  gridBand: 'rgba(88,74,46,0.045)',
   // До 10 различимых цветов для рядов «Сравнения»; первый — золото, второй — графит.
   series: Object.freeze([
     '#B08A3E', '#202A3C', '#5E86A8', '#4F8A7B', '#8E6FA0',
@@ -32,16 +43,35 @@ export const CHART_THEME = Object.freeze({
   ]),
 });
 
-/** Основная линия: золото 2,75 px со скруглёнными концами (DS7 просит 2,5–3 px). */
+/** Основная линия: «стеклянная лента» 3 px со скруглёнными концами; сам цвет — градиент ribbon из ChartGlassDefs. */
 export const CHART_LINE = Object.freeze({
   stroke: CHART_THEME.gold,
-  strokeWidth: 2.75,
+  strokeWidth: 3,
   strokeLinecap: 'round',
   strokeLinejoin: 'round',
 });
 
-/** Заливка под линией: у линии 30 %, к оси 2 % (в диапазоне 12–35 % из DS7). */
-export const CHART_AREA = Object.freeze({ top: 0.3, bottom: 0.02 });
+/** Заливка под линией: у линии 35 % светлого золота, к оси 0 (K4.1). */
+export const CHART_AREA = Object.freeze({ top: 0.35, bottom: 0 });
+
+/** Цвет заливки под лентой: светлое золото (rgba(233,205,142,.35) → 0). */
+export const CHART_AREA_COLOR = CHART_THEME.goldLight;
+
+/** Остановки градиентов ленты по длине линии (`x1=0 → x2=1`). */
+export const RIBBON_STOPS = Object.freeze([
+  { offset: '0%', color: CHART_THEME.goldLight },
+  { offset: '52%', color: CHART_THEME.goldBright },
+  { offset: '100%', color: CHART_THEME.goldDeep },
+]);
+export const SAPPHIRE_STOPS = Object.freeze([
+  { offset: '0%', color: CHART_THEME.sapphireLight },
+  { offset: '100%', color: CHART_THEME.sapphireDeep },
+]);
+/** Коридор прогноза («призма»): тёплое золото слева, лёд справа; края растушёваны. */
+export const PRISM_STOPS = Object.freeze([
+  { offset: '0%', color: 'rgba(233,205,142,0.5)' },
+  { offset: '100%', color: 'rgba(188,212,236,0.3)' },
+]);
 
 /** Стопы градиента заливки для `<linearGradient>`: `areaGradientStops().map(...)`. Цвет по умолчанию — золото. */
 export function areaGradientStops(color = CHART_THEME.gold, { top = CHART_AREA.top, bottom = CHART_AREA.bottom } = {}) {
@@ -51,9 +81,9 @@ export function areaGradientStops(color = CHART_THEME.gold, { top = CHART_AREA.t
   ];
 }
 
-/** Движение графика: линия рисуется слева направо 700 мс, смена серии плавная. Для `animationDuration` Recharts. */
+/** Движение графика: линия рисуется слева направо 900 мс, смена серии плавная. Для `animationDuration` Recharts. */
 export const CHART_MOTION = Object.freeze({
-  drawMs: 700,
+  drawMs: 900,
   switchMs: 450,
   easing: 'ease-out',
 });
@@ -79,11 +109,14 @@ export function axisTick(overrides = {}) {
   };
 }
 
-/** Общие свойства `<CartesianGrid>`: пунктир, только горизонтальные линии. */
+/**
+ * Общие свойства `<CartesianGrid>`: без пунктира. Горизонтальные полосы чередуются (4,5 % тёплого тона и пусто),
+ * сами линии почти не видны — читается ритм, а не решётка.
+ */
 export const GRID_PROPS = Object.freeze({
-  strokeDasharray: '3 3',
-  stroke: CHART_THEME.grid,
+  stroke: 'rgba(32,42,60,0.04)',
   vertical: false,
+  horizontalFill: Object.freeze([CHART_THEME.gridBand, 'rgba(88,74,46,0)']),
 });
 
 /** Свойства линии оси (`axisLine`) и подписи вдоль неё. */
@@ -119,8 +152,8 @@ export const TOOLTIP_STYLES = Object.freeze({
   }),
   labelStyle: Object.freeze({ color: CHART_THEME.axis, fontWeight: 600, marginBottom: 4 }),
   itemStyle: Object.freeze({ color: CHART_THEME.ink, padding: '1px 0' }),
-  // Вертикальная золотая линия под курсором.
-  cursor: Object.freeze({ stroke: CHART_THEME.cursor, strokeWidth: 1 }),
+  // Вертикальная золотая линия под курсором (сплошная, без пунктира).
+  cursor: Object.freeze({ stroke: CHART_THEME.cursor, strokeWidth: 1.5 }),
 });
 
 /** Базовые настройки ECharts (BI и сложные диаграммы): та же палитра, шрифт и стеклянная подсказка. */

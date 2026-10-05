@@ -141,8 +141,9 @@ function createLabelResources(labels) {
       labelMap: { value: atlas.texture },
       ink: { value: new Color('#202A3C') },
       paper: { value: new Color('#FFFFFF') },
-      line: { value: new Color('#D3C4A3') },
-      selectedLine: { value: new Color('#80642F') },
+      // Подписи на шаре без контура (K4.5): край панели — лишь чуть теплее самой панели, у выбранной страны — мягкое золото.
+      line: { value: new Color('#F2ECDD') },
+      selectedLine: { value: new Color('#E9CD8E') },
     },
     transparent: true,
     // Explicit hemisphere and whole-label silhouette clipping keeps the glyphs
