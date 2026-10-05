@@ -373,6 +373,8 @@ export default function RegionsHome() {
   const mapCardRef = useRef(null);
   const [mapPicked, setMapPicked] = useState(null);
   const [mapShape, setMapShape] = useState('regions');
+  // Поиск показателя и региона свёрнут в одну кнопку «Найти»: над картой остаётся один ряд управления.
+  const [findOpen, setFindOpen] = useState(isCustomMetric);
   const [exportingMap, setExportingMap] = useState(false);
   const [exportingGif, setExportingGif] = useState(false);
 
@@ -779,34 +781,50 @@ export default function RegionsHome() {
                 );
               })}
             </div>
-            <MapMetricSearch
-              activeCode={isCustomMetric ? activeMapCode : null}
-              activeName={customName}
-              onPick={selectCustom}
-              onClear={clearCustom}
-            />
           </div>
 
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <MapRegionSearch names={namesBySlug} onPick={(slug) => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'search' }); }} />
-            <div className="fe-map-quick" aria-label={t('w6f.map.quick')}>
-              {QUICK_REGIONS.filter((slug) => namesBySlug[slug]).map((slug) => (
-                <button
-                  key={slug}
-                  type="button"
-                  aria-pressed={mapPicked === slug}
-                  onClick={() => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'quick' }); }}
-                  className={`fe-chip fe-press ${mapPicked === slug ? 'is-active' : ''}`}
-                >
-                  {namesBySlug[slug]}
-                </button>
-              ))}
-            </div>
-            <div className="fe-map-shape sm:ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              aria-expanded={findOpen}
+              aria-controls="fe-map-find-panel"
+              onClick={() => setFindOpen((v) => !v)}
+              className={`fe-chip fe-press gap-1.5 ${findOpen || isCustomMetric ? 'is-active' : ''}`}
+              data-testid="map-find-toggle"
+            >
+              <Search size={14} aria-hidden="true" />
+              {t('w7p.map.find')}
+            </button>
+            <div className="fe-map-shape ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
               <button type="button" aria-pressed={mapShape === 'regions'} onClick={() => setMapShape('regions')}>{t('w6f.map.shape.regions')}</button>
               <button type="button" aria-pressed={mapShape === 'bubbles'} onClick={() => setMapShape('bubbles')}>{t('w6f.map.shape.bubbles')}</button>
             </div>
           </div>
+
+          {findOpen && (
+            <div id="fe-map-find-panel" className="mb-3 flex flex-col gap-2 rounded-2xl border border-border-subtle bg-obsidian-lighter/60 p-2.5 sm:flex-row sm:flex-wrap sm:items-center" data-testid="map-find-panel">
+              <MapMetricSearch
+                activeCode={isCustomMetric ? activeMapCode : null}
+                activeName={customName}
+                onPick={selectCustom}
+                onClear={clearCustom}
+              />
+              <MapRegionSearch names={namesBySlug} onPick={(slug) => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'search' }); }} />
+              <div className="fe-map-quick w-full" aria-label={t('w6f.map.quick')}>
+                {QUICK_REGIONS.filter((slug) => namesBySlug[slug]).map((slug) => (
+                  <button
+                    key={slug}
+                    type="button"
+                    aria-pressed={mapPicked === slug}
+                    onClick={() => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'quick' }); }}
+                    className={`fe-chip fe-press ${mapPicked === slug ? 'is-active' : ''}`}
+                  >
+                    {namesBySlug[slug]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div id="chart" data-block="regions-map" className="relative rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
             <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">

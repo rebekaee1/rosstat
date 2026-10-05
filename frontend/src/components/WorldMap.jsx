@@ -670,11 +670,13 @@ export function CountrySilhouette({
   }, [geometry]);
   if (!countryPath) return null;
   const areaUnitRaw = (area?.unit || '').trim();
+  // Между числом и единицей обычный пробел: длинная строка из числа с неразрывными пробелами и единицы
+  // не должна рваться по буквам, перенос идёт по границе слов.
   const areaUnit = (!areaUnitRaw || areaUnitRaw === 'км²' || areaUnitRaw === 'km²' || areaUnitRaw === 'км2')
     ? t('world.unit.km2')
     : areaUnitRaw;
   const areaValue = area?.value != null
-    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1, locale)}\u00a0${areaUnit}`
+    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1, locale)} ${areaUnit}`
     : '';
   const popUnitRaw = (population?.unit || '').trim();
   const popUnit = (
@@ -690,7 +692,7 @@ export function CountrySilhouette({
   const populationValue = population?.value != null
     ? (Number.isFinite(populationNumber) && populationNumber >= 1e6
       ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1, locale)}\u00a0${t('w2.country.million')} ${popUnit}`
-      : `${formatValue(population.value, 0, locale)}\u00a0${popUnit}`)
+      : `${formatValue(population.value, 0, locale)} ${popUnit}`)
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');

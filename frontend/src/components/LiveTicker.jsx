@@ -23,7 +23,7 @@ const TICKER_META = {
   'cny-rub-live':  { nameKey: 'w6b.ticker.cny', cur: 'rub', linkTo: russiaIndicatorPath('cny-rub'), decimals: 2 },
   'eur-usd':       { nameKey: 'w6b.ticker.eur', cur: 'usd', linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
   'gbp-usd':       { nameKey: 'w6b.ticker.gbp', cur: 'usd', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
-  'usd-cny':       { nameKey: 'w6b.ticker.usd', cur: 'cny', linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
+  'usd-cny':       { nameKey: 'w7p.ticker.usdcny', cur: 'cny', pairLabel: true, linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
   'btc-usd':       { nameKey: 'w6b.ticker.btc', cur: 'usd', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
   'brent':         { nameKey: 'w6b.ticker.brent', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
   'gold-rub-live': { nameKey: 'w6b.ticker.gold', cur: 'rub', perGram: true, linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
@@ -145,7 +145,9 @@ function TickerCell({ snapshot, nowMs }) {
     isStale && 'opacity-60',
   );
 
-  const sign = CURRENCY_SIGN[meta.cur] || '';
+  // У пары «доллар к юаню» по-английски подпись «USD/CNY» сама говорит, что это за число: знак ¥ рядом
+  // читался как «доллар к иене».
+  const sign = (meta.pairLabel && locale === 'en') ? '' : (CURRENCY_SIGN[meta.cur] || '');
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
   const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;

@@ -43,6 +43,13 @@ function formatTodayDate(d, locale) {
   }
 }
 
+// «процентного пункта» не должно рваться на три строки в узкой карточке: слова пункта держим вместе, а между числом
+// и единицей оставляем обычный пробел, чтобы подпись переносилась как «+0,34» и «процентного пункта».
+function keepUnitWordsTogether(delta) {
+  if (!delta || delta.flat) return delta;
+  return { ...delta, text: delta.text.replace('\u00a0процентного пункта', ' процентного\u00a0пункта') };
+}
+
 const CBR_RATE_CODES = new Set(['usd-rub', 'eur-rub', 'cny-rub']);
 // Биржевые индексы измеряются в «пунктах»: людям понятнее изменение в процентах.
 const INDEX_UNITS = new Set(['пунктов', 'пункт', 'points', 'pts']);
@@ -75,7 +82,7 @@ function TodayCard({ code, index }) {
   const delta = change == null ? null
     : isIndexUnit
       ? (pctChange == null ? null : formatDeltaWithUnit(pctChange, unit, { pct: true, locale }))
-      : formatDeltaWithUnit(change, unit, { locale, plain: true });
+      : keepUnitWordsTogether(formatDeltaWithUnit(change, unit, { locale, plain: true }));
   const dateFmt = resolveDateFormat({ frequency: indicator?.frequency });
   const dateText = last ? glueDate(formatDate(last.date, dateFmt, locale)) : '';
   const meta = !last ? null : (CBR_RATE_CODES.has(code)

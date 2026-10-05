@@ -205,14 +205,15 @@ export default function CalendarGrid({
 
               {uniqueSources.length > 0 && (
                 // Телефон: цветные точки по источникам; от планшета их заменяет название главного события дня.
-                <div className="flex gap-0.5 md:hidden">
+                <div className="fe-cal-day__dots" aria-hidden="true">
                   {uniqueSources.slice(0, 3).map((s) => (
                     <span key={s} className={cn('w-2 h-2 rounded-full', SOURCE_DOT[s] || 'bg-text-tertiary')} />
                   ))}
+                  <span className="fe-cal-day__n">{dayEvents.length}</span>
                 </div>
               )}
               {topEvent && (
-                <span className={cn('fe-cal-day__title hidden md:block', SOURCE_BAR[topEvent.source] || SOURCE_BAR.cbr)}>
+                <span className={cn('fe-cal-day__title', SOURCE_BAR[topEvent.source] || SOURCE_BAR.cbr)}>
                   {shortEventTitle(topEvent.title, locale)}
                   {dayEvents.length > 1 && <span className="fe-cal-day__more"> +{dayEvents.length - 1}</span>}
                 </span>

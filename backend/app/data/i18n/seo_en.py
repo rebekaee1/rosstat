@@ -897,7 +897,7 @@ TODAY_HUB_DESC_EN: str = (
     "Bank of Russia key rate, inflation, gold and fuel prices, MOEX index. "
     "Official data, updated as sources publish."
 )
-TODAY_HUB_H1_EN: str = "Russia's economy today"
+TODAY_HUB_H1_EN: str = "Russia's economy: latest data"
 
 # Per-code EN twins for TodaySpec.query / question (series codes unchanged).
 TODAY_SPECS_EN: dict[str, dict[str, str]] = {
@@ -1007,7 +1007,7 @@ TODAY_TEMPLATES_EN: dict[str, str] = {
         "latest values, a chart, and a table; full history and forecast are on the "
         "indicator cards."
     ),
-    "hub_h2": "Indicators for today",
+    "hub_h2": "Latest values",
     "hub_more_h2": "More data",
     "hub_more_p": (
         "More than 100 macroeconomic indicators — on the "

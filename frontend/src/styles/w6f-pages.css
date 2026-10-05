@@ -45,7 +45,9 @@
   .fe-cal-side { grid-column: 2; grid-row: 1; position: sticky; top: 112px; min-width: 0; }
 }
 .fe-cal-day__title {
-  display: -webkit-box;
+  /* Названия в клетках только от планшета: на телефоне вместо них точки и число событий.
+     Правило без слоя сильнее утилиты Tailwind «hidden», поэтому скрываем здесь, а не классом. */
+  display: none;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   max-width: 100%;
@@ -57,8 +59,16 @@
   line-height: 1.2;
   text-align: left;
   color: var(--color-text-primary);
-  overflow-wrap: anywhere;
+  /* Переносим по словам, не по слогам и не по символам. */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  text-overflow: ellipsis;
 }
+@media (min-width: 768px) { .fe-cal-day__title { display: -webkit-box; } }
+.fe-cal-day__dots { display: flex; align-items: center; justify-content: center; gap: 3px; max-width: 100%; }
+.fe-cal-day__n { margin-left: 1px; color: var(--color-text-secondary); font-size: 11px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+@media (min-width: 768px) { .fe-cal-day__dots { display: none; } }
 .fe-cal-day__title.is-cbr { border-left-color: #3b82f6; }
 .fe-cal-day__title.is-rosstat { border-left-color: #10b981; }
 .fe-cal-day__title.is-minfin { border-left-color: #f59e0b; }

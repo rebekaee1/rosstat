@@ -164,4 +164,18 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(document.documentElement.dataset.feTicker).toBeUndefined();
     expect(document.querySelector('.fe-ticker').className).toContain('h-9');
   });
+  it('EN: пара доллар к юаню подписана «USD/CNY» без знака юаня, чтобы не читалась как доллар к иене', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        snapshots: [
+          { code: 'usd-cny', price: 6.7, change_pct: 0, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ECB' },
+        ],
+      }),
+    }));
+    renderTicker({ locale: 'en', route: '/' });
+    expect(await screen.findByText('6.70')).toBeTruthy();
+    expect(screen.getByText('w7p.ticker.usdcny')).toBeTruthy();
+    expect(document.body.textContent).not.toContain('\u00A5');
+  });
 });

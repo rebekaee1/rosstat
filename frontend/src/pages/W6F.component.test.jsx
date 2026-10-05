@@ -85,7 +85,10 @@ describe('календарь России', () => {
       expect(cell).toBeTruthy();
       return cell;
     });
-    expect(Number(todayCell.textContent.match(/\d+/)[0])).toBe(new Date().getDate());
+    // Число дня стоит в первом элементе клетки (дальше точки и число событий).
+    expect(Number(todayCell.firstElementChild.textContent)).toBe(new Date().getDate());
+    // Волна 7: на телефоне в клетке точки и число событий (названия видны только от планшета).
+    expect(todayCell.querySelector('.fe-cal-day__n').textContent).toBe('1');
     // Клетки без разовых событий не «событийные»: у них нет оттенка и нет точек.
     const heated = container.querySelectorAll('.fe-cal-day[data-heat]');
     expect(heated.length).toBe(1);

@@ -206,6 +206,8 @@ export default function EmbedBuilder() {
   const tickerCodes = tickerList.join(',');
   const [speed, setSpeed] = useState('normal');
   const [codeTab, setCodeTab] = useState('iframe');
+  // На телефоне закреплённый предпросмотр можно свернуть до одной строки: под ним остаётся место для настроек.
+  const [previewOpen, setPreviewOpen] = useState(true);
 
   const isCustom = sizePreset === -1;
   const w = isCustom ? customW : SIZE_PRESETS[sizePreset]?.w || 600;
@@ -368,7 +370,7 @@ export default function EmbedBuilder() {
     : (fitsAsIs ? previewBoxW : Math.min(previewBoxW, Math.max(360, availW)));
   const widthScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
   // Закреплённый предпросмотр на телефоне не должен съедать экран: ограничиваем высоту.
-  const maxPreviewH = compactPreview ? 150 : Infinity;
+  const maxPreviewH = compactPreview ? 112 : Infinity;
   const heightScale = previewH > maxPreviewH ? maxPreviewH / previewH : 1;
   const previewScale = Math.min(widthScale, heightScale);
   const previewW = renderW;
@@ -423,10 +425,21 @@ export default function EmbedBuilder() {
 
       <div className="fe-w6g-embed-grid">
         {/* Предпросмотр закреплён сверху: изменения видно сразу */}
-        <section className="w5-embed-preview fe-w6g-embed-preview" aria-label={t('w5.embed.previewHeading')}>
+        <section className={cn('w5-embed-preview fe-w6g-embed-preview', !previewOpen && 'is-collapsed')} aria-label={t('w5.embed.previewHeading')}>
             <div className="w5-embed-preview__head">
               <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.previewHeading')}</h2>
-              <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
+              <div className="flex items-center gap-2">
+                <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
+                <button
+                  type="button"
+                  className="fe-w7p-preview-toggle fe-press"
+                  aria-expanded={previewOpen}
+                  aria-label={previewOpen ? t('w7p.embed.collapse') : t('w7p.embed.expand')}
+                  onClick={() => setPreviewOpen((v) => !v)}
+                >
+                  <ChevronDown className={cn('h-4 w-4 transition-transform', previewOpen && 'rotate-180')} aria-hidden="true" />
+                </button>
+              </div>
             </div>
             <div ref={setStageNode} className="w5-embed-preview__stage" style={{ background: stageBg }}>
               <div

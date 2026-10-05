@@ -52,7 +52,9 @@ describe('TodayHub', () => {
     const inflation = within(cardOf('Инфляция')).getAllByText(/\+0,34/)[0].closest('.fe-delta-badge');
     expect(inflation.className).toContain('fe-tone--bad');
     // Волна 6: «п. п.» заменено словами, слово «сегодня» ушло с карточек (дата стоит рядом с числом).
-    expect(inflation.textContent).toContain('процентного пункта');
+    expect(inflation.textContent.replace(/\u00a0/g, ' ')).toContain('процентного пункта');
+    // Единица не рвётся на три строки: слова «процентного пункта» связаны неразрывным пробелом.
+    expect(inflation.textContent).toContain('процентного\u00a0пункта');
     expect(inflation.textContent).not.toContain('п. п.');
     expect(cardOf('Инфляция').textContent).not.toMatch(/сегодня/);
     const dollar = within(cardOf('Курс доллара')).getByText(/\+0,28/).closest('.fe-delta-badge');

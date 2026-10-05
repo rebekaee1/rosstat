@@ -76,4 +76,14 @@ describe('EmbedLink («Встроить»)', () => {
     const link = screen.getByRole('link', { name: 'Встроить' });
     expect(link.getAttribute('href')).toBe('/widgets?code=usd-rub');
   });
+  it('волна 7: предпросмотр сворачивается кнопкой', async () => {
+    setup();
+    await screen.findByTitle('Превью виджета');
+    const toggle = screen.getByRole('button', { name: 'Свернуть предпросмотр' });
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.click(toggle);
+    const section = document.querySelector('.fe-w6g-embed-preview');
+    expect(section.className).toContain('is-collapsed');
+    expect(screen.getByRole('button', { name: 'Развернуть предпросмотр' }).getAttribute('aria-expanded')).toBe('false');
+  });
 });

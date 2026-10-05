@@ -1369,10 +1369,10 @@ export default {
   'today.metaDesc':
     'Key Russian economic indicators for today: USD, EUR and CNY rates, Bank of Russia key rate, inflation, gold and fuel prices, MOEX index. Official data, updated daily.',
   'today.eyebrow': 'Snapshot for {date}',
-  'today.h1': 'Russia’s economy today',
+  'today.h1': 'Russia’s economy: latest data',
   'today.intro':
     'Latest readings for key indicators. Each card shows the latest value, chart and table; full history and forecasts are on the indicator pages.',
-  'today.sectionTitle': 'Indicators for today',
+  'today.sectionTitle': 'Latest values',
   'today.cardToday': '{query} today',
   'today.moreTitle': 'More data',
   'today.moreBody.beforeHome': 'More than 100 macroeconomic indicators — on the ',
@@ -2957,4 +2957,22 @@ export default {
   'w6g.pop.placeNote': 'of {total} countries on the site',
   'w6g.pop.decade': 'Over 10 years',
   'w6g.pop.decadeNote': 'since {year}',
+
+  // волна 7, зона P
+  'w7p.embed.collapse': 'Collapse preview',
+  'w7p.embed.expand': 'Expand preview',
+  'w7p.map.find': 'Find',
+  'w7p.ticker.usdcny': 'USD/CNY',
+  'w7p.preview.close': 'Collapse',
+  'w7p.compare.subtitleShort': 'Countries and indicators on one chart.',
+  'w7p.compare.demoShort': 'A ready-made example',
+  'w7p.reg.benefitsAria': 'What an account gives you',
+  'w7p.reg.b1': 'Download data for any period: Excel, CSV and image',
+  'w7p.reg.b2': 'Compare three or more indicators on one chart',
+  'w7p.reg.b3': 'Free. You can browse the data without an account too',
+  'w7p.reg.legalBefore': 'I accept the',
+  'w7p.reg.legalTerms': 'terms of use',
+  'w7p.reg.legalMid': 'and',
+  'w7p.reg.legalPrivacy': 'privacy policy',
+  'w7p.reg.legalAfter': ', including personal data processing.',
 };

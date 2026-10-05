@@ -48,6 +48,13 @@ describe('экран радости после регистрации', () => {
     expect(await screen.findByText('destination')).toBeTruthy();
   });
 
+  it('волна 7: три строки выгод над формой и короткая юридическая фраза', () => {
+    render(<MemoryRouter initialEntries={['/register']}><Routes><Route path="/register" element={<Register />} /></Routes></MemoryRouter>);
+    const items = document.querySelectorAll('.fe-w7p-benefits li');
+    expect(items).toHaveLength(3);
+    expect(screen.getByText('w7p.reg.legalTerms')).toBeTruthy();
+  });
+
   it('оба согласия оформлены одним стилем (золотой чекбокс сайта)', () => {
     render(<MemoryRouter initialEntries={['/register']}><Routes><Route path="/register" element={<Register />} /></Routes></MemoryRouter>);
     const boxes = screen.getAllByRole('checkbox');
