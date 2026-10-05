@@ -306,5 +306,23 @@ describe('Navbar K3: капсула, сжатие на телефоне, «Ещ�
     expect(links.every((a) => a.querySelector('.fe-mnav-tile svg'))).toBe(true);
     await waitFor(() => expect(menu.querySelectorAll('.fe-mnav-foot a').length).toBe(2));
   });
+
+  it('«Настройки cookie» лежат в меню-шторке и раскрывают настройки (плавающего значка на странице нет)', () => {
+    renderNav();
+    let opened = 0;
+    const onOpen = () => { opened += 1; };
+    window.addEventListener('fe:consent:open', onOpen);
+    try {
+      fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+      const item = screen.getByTestId('menu-cookie-settings');
+      expect(item.textContent).toContain('Настройки cookie');
+      fireEvent.click(item);
+    } finally {
+      window.removeEventListener('fe:consent:open', onOpen);
+    }
+    expect(opened).toBe(1);
+    // Меню закрылось, чтобы настройки не оказались под шторкой.
+    expect(document.getElementById('fe-nav-mobile-menu')).toBeNull();
+  });
 });
 

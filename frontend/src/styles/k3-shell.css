@@ -10,7 +10,7 @@
      .fe-bsheet / .fe-bsheet-scrim   шторка снизу (components/BottomSheet.jsx)
      .fe-dock                      нижняя панель телефона (components/MobileDock.jsx)
      .fe-mnav-tile                 иконка пункта меню в стеклянной «грани» 40 px
-     .fe-cookie-fab                значок свёрнутой cookie-плашки */
+     (значок cookie убран: после прокрутки на телефоне плашка прячется, настройки в меню «Ещё»)  */
 
 :root {
   /* Цвет «бумаги» для стекла шапки, ленты, панелей: rgb(var(--k3-paper) / альфа). */
@@ -417,46 +417,11 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   main#main-content { padding-bottom: calc(var(--fe-dock-reserve, 0px) + 16px); }
 }
 
-/* ═══ Cookie: стеклянная капсула и значок ═════════════════════════════════ */
-.fe-cookie-fab {
-  position: fixed;
-  right: 12px;
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  z-index: 80;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 50%;
-  background: var(--fe-pop-bg);
-  box-shadow: var(--fe-shadow-l2), var(--fe-float-shadow), var(--fe-inset-glint);
-  color: var(--color-champagne-ink);
-  cursor: pointer;
-  /* Значок cookie виден только вместе с док-панелью (html[data-fe-dock]): пока страница едет вниз, он не лежит поверх цифр. */
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  /* Над док-панелью, когда она на экране (--fe-dock-h ставит MobileDock), иначе у самого края. */
-  transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
-  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s 0.24s;
-  -webkit-tap-highlight-color: transparent;
-}
-html[data-fe-dock='visible'] .fe-cookie-fab {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s;
-}
-.fe-cookie-fab svg { width: 20px; height: 20px; }
-.fe-cookie-fab:active { scale: 0.96; }
-@media (min-width: 640px) {
-  .fe-cookie-fab { display: none; }
-}
+/* ═══ Cookie: стеклянная капсула ═══════════════════════════════════════ */
 @media (max-width: 639px) {
   /* Плашка тоньше: отступы 6 px вместо 8 (вместе с одной строкой 48 px это ≈ 60 px вместо 72). */
   .fe-cookie-wrap { padding: 6px 6px max(6px, env(safe-area-inset-bottom, 0px)); }
-  /* Плашка cookie, возвращённая нажатием на значок, встаёт над док-панелью, а не под ней. */
+  /* Раскрытые настройки cookie встают над док-панелью, а не под ней. */
   .fe-cookie-wrap {
     transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
     transition: transform 0.3s var(--k3-ease);
@@ -484,11 +449,37 @@ html[data-fe-dock='visible'] .fe-cookie-fab {
 /* ═══ Движение и печать ══════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   nav.fe-navbar--glass::after, nav.fe-navbar--glass .fe-brand,
-  .fe-ticker, .fe-dock, .fe-dock__gem, .fe-cookie-fab, .fe-cookie-wrap { transition: none; }
+  .fe-ticker, .fe-dock, .fe-dock__gem, .fe-cookie-wrap { transition: none; }
   .fe-bsheet, .fe-bsheet-scrim, .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { animation: none; }
   nav.fe-navbar--glass[data-scrolled='true'], nav.fe-navbar--glass[data-compact='true'] { transform: none; }
   .fe-ticker[data-hidden='true'] { transform: none; opacity: 1; pointer-events: auto; }
 }
 @media print {
-  .fe-dock, .fe-bsheet, .fe-bsheet-scrim, .fe-cookie-fab, .fe-cookie-wrap { display: none !important; }
+  .fe-dock, .fe-bsheet, .fe-bsheet-scrim, .fe-cookie-wrap { display: none !important; }
+}
+
+/* ═══ Круг 4 ═══════════════════════════════════════════════════════════════ */
+:root { --k3-ticker-h: 36px; }
+
+/* G3.1: на экранах уже 1536 px капсула шапки той же ширины, что контент страниц (--fe-container-wide: 80–1360 на 1440), а не 16–1424.
+   От 1536 px действует прежняя ширина: там полные подписи пунктов и им нужна капсула до 1440 px. */
+@media (max-width: 1535px) {
+  nav.fe-navbar.fe-navbar--glass { max-width: var(--fe-container-wide, 1280px); }
+}
+
+/* Телефон: лента курсов 28 px вместо 36 (лента + шапка 64 = 92 px вместо 100). От высоты ленты зависят верх шапки (top),
+   верхний отступ main и сдвиг сжатой шапки; все три читают --k3-ticker-h. Две строки в ячейке (подпись 10 px над ценой 13 px). */
+@media (max-width: 767px) {
+  :root { --k3-ticker-h: 28px; }
+  .fe-ticker { height: var(--k3-ticker-h); }
+  nav.fe-navbar--glass { top: var(--k3-ticker-h); }
+  nav.fe-navbar--glass[data-compact='true'] { transform: translateY(calc(6px - var(--k3-ticker-h))); }
+  main#main-content { padding-top: var(--k3-ticker-h); }
+  .fe-ticker .fe-ticker__cell { min-height: 0; padding-block: 0; }
+  .fe-ticker .fe-ticker__name { font-size: 10px; line-height: 1; }
+  .fe-ticker .fe-ticker__price { font-size: 13px; line-height: 1.05; }
+  .fe-ticker .fe-ticker__delta { font-size: 11.5px; line-height: 1.05; }
+}
+@media (prefers-reduced-motion: reduce) {
+  nav.fe-navbar--glass[data-compact='true'] { transform: none; }
 }

@@ -256,7 +256,7 @@ describe('cookie choices remain usable when measurement fails', () => {
   });
 });
 
-describe('K3: на телефоне после первой прокрутки плашка сворачивается в значок', () => {
+describe('K3: на телефоне после первой прокрутки плашка прячется', () => {
   const realMatchMedia = window.matchMedia;
   async function scrollTo(y) {
     Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
@@ -268,7 +268,6 @@ describe('K3: на телефоне после первой прокрутки �
   afterEach(() => {
     window.matchMedia = realMatchMedia;
     Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
-    document.documentElement.style.removeProperty('--fe-cookie-fab-h');
   });
   const phone = () => {
     window.matchMedia = (query) => ({
@@ -276,29 +275,38 @@ describe('K3: на телефоне после первой прокрутки �
     });
   };
 
-  it('телефон: после прокрутки вместо плашки значок 44 px; согласие не записано и не отправлено', async () => {
+  it('телефон: после прокрутки плашка спрятана целиком, плавающего значка нет; согласие не записано и не отправлено', async () => {
     phone();
     renderConsent();
     expect(screen.getByRole('dialog')).toBeTruthy();
     await scrollTo(120);
     expect(screen.queryByRole('dialog')).toBeNull();
-    const fab = screen.getByRole('button', { name: 'Настройки cookie' });
-    expect(fab.className).toContain('fe-cookie-fab');
-    expect(document.documentElement.style.getPropertyValue('--fe-cookie-fab-h')).toBe('56px');
+    // Значок на странице не плавает: он ложился на цифры и кнопки.
+    expect(document.querySelector('.fe-cookie-fab')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Настройки cookie' })).toBeNull();
     // Молчание не согласие: ни записи выбора, ни события.
     expect(getConsent()).toBeNull();
     expect(track).not.toHaveBeenCalled();
   });
 
-  it('нажатие на значок возвращает плашку, и дальше она уже не сворачивается', async () => {
+  it('вернувшись наверх страницы, посетитель снова видит плашку; выбор по-прежнему не записан', async () => {
     phone();
     renderConsent();
     await scrollTo(120);
-    fireEvent.click(screen.getByRole('button', { name: 'Настройки cookie' }));
-    expect(screen.getByRole('dialog')).toBeTruthy();
-    await scrollTo(400);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    await scrollTo(0);
     expect(screen.getByRole('dialog')).toBeTruthy();
     expect(getConsent()).toBeNull();
+  });
+
+  it('настройки из меню или подвала (событие) раскрываются и после прокрутки', async () => {
+    phone();
+    renderConsent();
+    await scrollTo(120);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    act(() => { window.dispatchEvent(new Event(CONSENT_OPEN_EVENT)); });
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Сохранить выбор' })).toBeTruthy();
   });
 
   it('компьютер: плашка не сворачивается при прокрутке', async () => {
