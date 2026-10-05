@@ -26,9 +26,9 @@
 }
 
 /* ── Контейнер страницы: по токену Z1, запасное значение — как было ────────────────────── */
-:root .z4-page { max-width: var(--fe-container-data, 80rem); }
+:root .z4-page { max-width: var(--fe-box-data, 85rem); }
 @media (min-width: 1700px) {
-  :root .z4-page { max-width: var(--fe-container-data, 100rem); }
+  :root .z4-page { max-width: var(--fe-box-data, 85rem); }
 }
 
 /* ── Шапка: название слева, главное число справа ───────────────────────────────────────── */

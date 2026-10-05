@@ -10,7 +10,7 @@
  */
 
 .z6-page {
-  max-width: var(--fe-container-data, 80rem);
+  max-width: var(--fe-box-data, 85rem);
   --z6-gold: var(--fe-gold, var(--color-champagne, #ad8a48));
   --z6-gold-soft: var(--fe-gold-soft, #e6d3a3);
   --z6-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642f));
