@@ -1,6 +1,6 @@
 // Результат калькулятора, который «липнет» снизу на телефоне и планшете (раунд 3, K8.3).
 // Пока человек двигает ползунки и поля, сам блок результата остаётся ниже экрана; плашка показывает то же число
-// над нижней кромкой (над доком: отступ задаёт переменная --fe-dock-h) и по нажатию прокручивает к блоку.
+// над док-панелью K3 (bottom: --fe-dock-h + 8 px), одной строкой 44 px, и по нажатию прокручивает к блоку. Пока блок виден, плашки нет.
 // Плашка живёт в document.body: backdrop-filter у родителей сделал бы fixed относительным к ним, а не к окну.
 // На широком экране (от 1024 px) результат стоит рядом с формой, плашка скрыта стилями (styles/k8-tools.css).
 import { useEffect, useState } from 'react';
@@ -44,11 +44,11 @@ export default function CalcStickyResult({ targetRef, value, active = true, labe
       aria-label={t('k8.sticky.aria', { value })}
       onClick={goToResult}
     >
-      <span className="min-w-0">
-        <span className="fe-k8-sticky__label block">{shownLabel}</span>
-        <span className="fe-k8-sticky__value fe-k8-engraved block">{value}</span>
+      <span className="fe-k8-sticky__row">
+        <span className="fe-k8-sticky__label">{shownLabel}</span>
+        <span className="fe-k8-sticky__value fe-k8-engraved">{value}</span>
       </span>
-      <span className="fe-k8-sticky__go" aria-hidden="true"><ArrowDown size={20} /></span>
+      <span className="fe-k8-sticky__go" aria-hidden="true"><ArrowDown size={18} /></span>
     </button>,
     document.body,
   );

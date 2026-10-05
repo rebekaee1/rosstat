@@ -59,6 +59,27 @@ describe('k8-tools.css', () => {
   });
 });
 
+describe('k8-tools.css, круг 4', () => {
+  it('подложка поиска тёплая, прозрачная (альфа ≤ 0,35 в светлой теме) и размыта не больше чем на 14 px', () => {
+    const block = /\.fe-k8-scrim\s*\{([^}]*)\}/.exec(k8);
+    expect(block).not.toBeNull();
+    const alphas = [...block[1].matchAll(/rgba\([^)]*,\s*([0-9.]+)\)/g)].map((m) => Number(m[1]));
+    expect(alphas.length).toBeGreaterThanOrEqual(3);
+    for (const a of alphas) expect(a).toBeLessThanOrEqual(0.35);
+    const blurs = [...k8.matchAll(/\.fe-k8-scrim[^{]*\{[^}]*blur\((\d+)px\)/g)].map((m) => Number(m[1]));
+    expect(blurs.length).toBeGreaterThan(0);
+    for (const b of blurs) expect(b).toBeLessThanOrEqual(14);
+    expect(block[1]).not.toMatch(/rgba\(\s*(0|20|40|60|128),\s*(0|20|40|60|128),\s*(0|20|40|60|128)/);
+  });
+
+  it('плашка результата стоит над доком на 8 px, одной строкой не выше 44 px', () => {
+    const block = /\.fe-k8-sticky\s*\{([^}]*)\}/.exec(k8)[1];
+    expect(block).toMatch(/bottom:\s*calc\(var\(--fe-dock-h, 0px\) \+ 8px/);
+    expect(block).toMatch(/min-height:\s*44px/);
+    expect(k8).toMatch(/\.fe-k8-sticky__row\s*\{\s*display:\s*flex/);
+  });
+});
+
 describe('z8-tools.css (K8)', () => {
   it('вкладки-жёлоб: бегунок едет только transform, номер задаёт разметка', () => {
     expect(z8).toMatch(/\.fe-z8-seg::before[\s\S]*translateX\(calc\(var\(--k8-i, 0\) \* 100%\)\)/);

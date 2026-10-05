@@ -19,6 +19,7 @@ import { homeConceptLabel } from '../lib/homeWorkbench';
 import { splitUnit } from '../lib/countryFlag';
 import Chip from './Chip';
 import CountryFlag from './CountryFlag';
+import EmptyState from './brand/EmptyState';
 import { RatingSpark } from './RatingExtras';
 import '../styles/shell.css';
 import '../styles/w6d.css';
@@ -479,7 +480,7 @@ export default function IndicatorSearch({
           onFocus={arm}
           className={cn(
             FOCUS_RING,
-            'rounded-xl flex items-center justify-center p-1.5 text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 fe-glass-2',
+            'rounded-xl flex items-center justify-center p-1.5 text-text-secondary hover:text-text-primary transition-colors [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 fe-glass-2',
             className,
           )}
           aria-label={t('search.openAriaMod', { mod })}
@@ -613,8 +614,7 @@ export default function IndicatorSearch({
                         : globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
                           : (
                             <div className="text-center" data-testid="search-nothing">
-                              <span className="fe-k8-shard mx-auto" aria-hidden="true" />
-                              <p className="mt-3 text-base font-semibold text-text-primary">{t('search.nothingFound', { query: qTrim })}</p>
+                              <EmptyState variant="no-results" size={80} title={t('search.nothingFound', { query: qTrim })} />
                               <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
                                 <li>{t('shell.search.tip.spelling')}</li>
                                 <li>{t('shell.search.tip.short')}</li>

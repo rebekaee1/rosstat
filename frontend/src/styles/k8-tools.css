@@ -11,7 +11,7 @@
  *   7. .fe-k8-stone     результат расчёта: L2 «камень» с золотой гравировкой; блик-проход даёт K1 (.fe-glint).
  *   8. .fe-k8-sticky    на телефоне результат липнет снизу, пока сам блок вне окна (над доком: --fe-dock-h).
  *   9. Поиск ⌘K         панель L1 blur 28, поле-колодец, строки без линий, активная L2, заголовок группы с гранью.
- *  10. .fe-k8-empty / .fe-k8-shard   пустое состояние (CSS-аналог K2.6 до слияния EmptyState): осколок и фраза.
+ *  10. Пустые состояния  берутся из K2 (EmptyState); раньше здесь был CSS-аналог.
  *  11. Вход и виджеты   кнопки входа через соцсети без рамок, оболочка полей.
  *  12. Строки курсов    L2-полки с зазором 8 px вместо одной плиты с разделителями.
  *
@@ -44,7 +44,6 @@
     inset 0 -1px 0 rgba(176, 138, 62, 0.14);
   --k8-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --k8-search-blur: 28px;
-  --k8-scrim: rgba(20, 33, 61, 0.25);
 }
 :root[data-theme='dark'],
 :root.dark {
@@ -63,7 +62,6 @@
     0 1px 2px rgba(0, 0, 0, 0.3),
     0 24px 48px -26px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(216, 230, 250, 0.1);
-  --k8-scrim: rgba(6, 10, 20, 0.5);
 }
 @media (max-width: 767px) {
   :root { --k8-search-blur: 18px; }
@@ -295,14 +293,17 @@
   position: fixed;
   left: 12px;
   right: 12px;
-  bottom: calc(var(--fe-dock-h, 0px) + 12px + env(safe-area-inset-bottom, 0px));
+  /* Над док-панелью K3: --fe-dock-h = 76 px, пока док на экране (0, когда спрятан); safe-area док считает сам, мы добавляем её здесь. */
+  bottom: calc(var(--fe-dock-h, 0px) + 8px + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 56px;
-  padding: 8px 10px 8px 18px;
+  gap: 10px;
+  max-width: 440px;
+  min-height: 44px;
+  margin-inline: auto;
+  padding: 4px 4px 4px 16px;
   border: 0;
   border-radius: 22px;
   background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
@@ -314,13 +315,17 @@
   cursor: pointer;
   animation: k8-sticky-in 0.28s var(--fe-ease-reveal) backwards;
 }
-.fe-k8-sticky__label { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+/* Одна строка: подпись и число рядом. */
+.fe-k8-sticky__row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.fe-k8-sticky__label { flex: none; font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
 .fe-k8-sticky__value {
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-display);
-  font-size: clamp(22px, 6.4vw, 30px);
+  font-size: 20px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.2;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -330,8 +335,8 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   background: var(--fe-glass-active);
   color: var(--fe-on-gold);
@@ -347,10 +352,24 @@
 }
 
 /* ===== 9. Поиск ⌘K ===== */
-/* Фон за панелью тонируется, без размытия: на экране остаётся один слой blur (сама панель). */
+/* Подложка: тёплое стекло вместо серого затемнения. Один слой градиента сапфир → золото → сапфир (альфа ≤ 0,30),
+   лёгкое размытие 10 px (8 px на телефоне): под панелью поиска это один слой blur сверху бюджета (панель + подложка). */
 .fe-k8-scrim {
-  background: var(--k8-scrim);
+  background: linear-gradient(160deg, rgba(31, 43, 79, 0.26), rgba(176, 138, 62, 0.22) 55%, rgba(31, 43, 79, 0.3));
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  backdrop-filter: blur(10px) saturate(1.2);
 }
+@media (max-width: 767px) {
+  .fe-k8-scrim { -webkit-backdrop-filter: blur(8px) saturate(1.2); backdrop-filter: blur(8px) saturate(1.2); }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .fe-k8-scrim { background: linear-gradient(160deg, rgba(31, 43, 79, 0.34), rgba(176, 138, 62, 0.28) 55%, rgba(31, 43, 79, 0.36)); }
+}
+:root[data-theme='dark'] .fe-k8-scrim { background: linear-gradient(160deg, rgba(6, 10, 24, 0.5), rgba(120, 92, 38, 0.3) 55%, rgba(6, 10, 24, 0.55)); }
+:root[data-theme='dark'] .fe-k8-subhead { background: rgba(34, 47, 66, 0.92); }
+html[data-fe-lite='on'] .fe-k8-scrim { -webkit-backdrop-filter: none; backdrop-filter: none; }
+/* Подзаголовок группы в выпадающем списке: тёплая светлая плашка, не серая. */
+.fe-k8-subhead { background: rgba(255, 250, 238, 0.92); }
 :root .fe-search-panel {
   border-radius: 26px;
   background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
@@ -408,39 +427,7 @@
 :root .fe-search-more { background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55)); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 :root .fe-search-kbd { padding-top: 10px; }
 
-/* ===== 10. Пустое состояние (до слияния K2 EmptyState): осколок и одна фраза ===== */
-.fe-k8-empty {
-  display: grid;
-  justify-items: center;
-  gap: 10px;
-  padding: 22px 16px;
-  text-align: center;
-}
-.fe-k8-shard {
-  position: relative;
-  display: block;
-  width: 64px;
-  height: 64px;
-}
-.fe-k8-shard::before {
-  content: '';
-  position: absolute;
-  inset: 8px 14px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(233, 205, 142, 0.75) 45%, rgba(176, 138, 62, 0.85) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 14px 18px -10px rgba(120, 90, 30, 0.55);
-  transform: rotate(32deg) scale(1, 1.25);
-}
-.fe-k8-shard::after {
-  content: '';
-  position: absolute;
-  inset: 14px 26px 30px 20px;
-  border-radius: 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), transparent);
-  transform: rotate(32deg);
-}
-.fe-k8-empty__text { margin: 0; font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
-.fe-k8-empty__hint { margin: 0; max-width: 34ch; font-size: 13px; line-height: 1.5; color: var(--color-text-secondary); }
+/* ===== 10. Пустые состояния: компонент EmptyState (K2, components/brand/EmptyState.jsx); локальных аналогов больше нет ===== */
 
 /* ===== 11. Вход через соцсети и поля форм ===== */
 /* Фирменные цвета кнопок остаются, но без рамок и с тем же светом, что у всех кнопок: блик сверху и тень снизу. */

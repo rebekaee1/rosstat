@@ -110,7 +110,7 @@ function IndicatorCombobox({ indicators, value, onChange, placeholder }) {
           <div className="overflow-y-auto" style={{ maxHeight: 280 }}>
             {grouped.map(cat => (
               <div key={cat.slug}>
-                <div className="px-3 py-1.5 text-xs text-text-secondary font-semibold bg-surface-hover sticky top-0">
+                <div className="px-3 py-1.5 text-xs text-text-secondary font-semibold fe-k8-subhead sticky top-0">
                   {locale === 'en' && cat.nameEn ? cat.nameEn : cat.name}
                 </div>
                 {cat.items.map(ind => (
