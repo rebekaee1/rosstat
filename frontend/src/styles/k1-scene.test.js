@@ -44,4 +44,27 @@ describe('k1-scene.css', () => {
       expect(() => readFileSync(file)).not.toThrow();
     }
   });
+
+  it('герой лежит поверх страницы и смешивается multiply (приёмка F1.1: под страницей его закрывали панели)', () => {
+    const base = stripped.match(/\.fe-scene-hero \{[^}]*\}/)[0];
+    expect(base).toMatch(/z-index:\s*1;/);
+    expect(base).toMatch(/mix-blend-mode:\s*multiply/);
+    expect(base).toMatch(/pointer-events:\s*none/);
+    expect(base).toMatch(/aspect-ratio:\s*1600 \/ 893/);
+    for (const v of ['--fe-hero-frame-w', '--fe-hero-frame-right', '--fe-hero-frame-top']) {
+      expect(base).toContain(v);
+    }
+    expect(stripped).toMatch(/\.fe-scene-hero\[data-fe-hero="country"\]/);
+  });
+
+  it('у каустик нет края: градиент гаснет до 85 %, элемент закрыт радиальной маской и больше пятна (F1.2)', () => {
+    for (const name of ['gold', 'ice', 'rose']) {
+      const rule = stripped.match(new RegExp(`\\.fe-scene__lamp--${name} \\{[^}]*\\}`))[0];
+      expect(rule).toMatch(/transparent 82%/);
+      expect(rule).not.toMatch(/closest-side, var\(--fe-scene-\w+\), transparent\)/);
+    }
+    const lamp = stripped.match(/\.fe-scene__lamp \{[^}]*\}/)[0];
+    expect(lamp).toMatch(/mask-image:\s*radial-gradient\(closest-side/);
+    expect(lamp).not.toMatch(/border-radius/);
+  });
 });
