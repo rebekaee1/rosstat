@@ -65,6 +65,7 @@ RESERVED_FIRST_SEGMENTS: frozenset[str] = frozenset({
     "ranking",
     "rankings",
     "compare",
+    "forecasts",
     "widgets",
     "login",
     "register",
@@ -120,6 +121,11 @@ def home() -> str:
 def compare() -> str:
     """Сравнение показателей."""
     return "/compare"
+
+
+def forecasts() -> str:
+    """Витрина прогнозов платформы: /forecasts."""
+    return "/forecasts"
 
 
 def country(slug: str) -> str:

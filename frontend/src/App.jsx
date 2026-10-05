@@ -58,6 +58,7 @@ const CategoryPage = lazy(() => import('./pages/CategoryPage'));
 const CategoriesHub = lazy(() => import('./pages/CategoriesHub'));
 const RegionRatingsHub = lazy(() => import('./pages/RegionRatingsHub'));
 const ComparePage = lazy(() => import('./pages/ComparePage'));
+const ForecastsPage = lazy(() => import('./pages/ForecastsPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const EmbedBuilder = lazy(() => import('./pages/EmbedBuilder'));
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'));
@@ -170,6 +171,19 @@ function CountriesToHome() {
   return <Navigate to={{ pathname: '/', search, hash: '#countries' }} replace />;
 }
 
+/**
+ * Сервер уже признал этот адрес несуществующим и отдал документ 404 с флагом `window.__feNotFound`
+ * (backend `render_not_found_html`). Приложение показывает свою страницу 404 в общей оболочке:
+ * без этого адрес вроде `/germany/indicator/нет` открыл бы пустую карточку страны.
+ * Флаг действует только на этом адресе: любой переход по ссылке работает как обычно.
+ */
+const SERVER_404_PATH = typeof window !== 'undefined' && window.__feNotFound ? window.location.pathname : null;
+
+function ServerNotFoundGate({ children }) {
+  const { pathname } = useLocation();
+  return SERVER_404_PATH !== null && pathname === SERVER_404_PATH ? <NotFound /> : children;
+}
+
 const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare)/;
 
 function EmbedSpinner() {
@@ -229,6 +243,7 @@ function AppRoutes() {
       <main id="main-content" tabIndex={-1} className="relative z-0 flex-1 pt-9 outline-none">
         <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
+          <ServerNotFoundGate>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
@@ -236,6 +251,7 @@ function AppRoutes() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/compare" element={<ComparePage />} />
+            <Route path="/forecasts" element={<ForecastsPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
             <Route path="/calculator/mortgage" element={<MortgageCalculatorPage />} />
@@ -318,6 +334,7 @@ function AppRoutes() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ServerNotFoundGate>
           </Suspense>
         </ErrorBoundary>
       </main>

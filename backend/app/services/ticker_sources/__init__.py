@@ -22,6 +22,11 @@ from datetime import date, datetime, timezone
 class TickerSnapshot:
     """Один снимок live-котировки.
 
+    source_kind — откуда число по смыслу: `market` (биржевая котировка),
+                  `central_bank` (официальный курс ЦБ), `ecb` (справочный курс ЕЦБ),
+                  `official` (дневной ряд официального источника). Выводится из `source`.
+    as_of       — момент значения: метка времени для живых котировок, календарная
+                  дата для дневных рядов. Страница курса и лента сравнивают числа по ней.
     code        — стабильный идентификатор инструмента в нашей системе
                   (`usd-rub-live`, `btc-usd`, `brent`, ...).
     price       — last traded price в собственной валюте инструмента.
@@ -52,10 +57,40 @@ class TickerSnapshot:
             "market_open": self.market_open,
             "fetched_at": self.fetched_at.isoformat(),
             "source": self.source,
+            "source_kind": source_kind(self.source),
         }
         if self.as_of_date is not None:
             out["as_of_date"] = self.as_of_date.isoformat()
+        out["as_of"] = out.get("as_of_date") or out["fetched_at"]
         return out
+
+
+def source_kind(source: str | None) -> str:
+    """Тип источника по его короткой метке: биржа, ЦБ, ЕЦБ или прочий официальный ряд."""
+    text = str(source or "").strip().lower()
+    if "moex" in text or "мосбирж" in text or "binance" in text:
+        return "market"
+    if "банк россии" in text or "цб" in text.split() or text in {"cbr", "цб рф", "цб"} or "cbr" in text:
+        return "central_bank"
+    if "ецб" in text or "ecb" in text:
+        return "ecb"
+    return "official"
+
+
+# Подпись над ценой: (русская, английская). Для прочих официальных рядов подписью служит название источника.
+SOURCE_KIND_LABELS: dict[str, tuple[str, str]] = {
+    "market": ("Биржа", "Exchange"),
+    "central_bank": ("ЦБ", "Central bank"),
+    "ecb": ("ЕЦБ", "ECB"),
+}
+
+
+def source_label(kind: str, source: str | None, locale: str) -> str:
+    """Короткая подпись источника для ленты: «Биржа» или «ЦБ»; иначе название источника как есть."""
+    pair = SOURCE_KIND_LABELS.get(kind)
+    if pair is None:
+        return str(source or "")
+    return pair[1] if locale == "en" else pair[0]
 
 
 def utcnow() -> datetime:

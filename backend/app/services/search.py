@@ -963,6 +963,55 @@ def _result_measure_names(item: dict, world_rows: dict) -> tuple[str, ...]:
     return names + (native_dimension_labels(row.provider, row.slice_json) if row is not None else ())
 
 
+_REGIONAL_INDICATOR_KINDS = ("region_indicator", "subnational_indicator")
+_PRICE_WORDS = re.compile(r"потребительск|инфляц|consumer price|inflation|\bcpi\b|hicp|ипц", re.I)
+_ANNUAL_CHANGE_WORDS = re.compile(
+    r"за год|за 12 месяц|год к году|годов\w+ (?:темп|рост|изменени)|12.month|year.over.year|annual (?:rate|change)|yoy",
+    re.I,
+)
+
+
+def _annual_inflation_row(item: dict) -> bool:
+    """Ряд цен, который уже показывает рост за год (а не индекс или месячный прирост)."""
+    if item.get("kind") not in ("russia", "world"):
+        return False
+    text = " ".join(str(item.get(field) or "") for field in ("name_ru", "name_en", "unit"))
+    code = str(item.get("code") or "")
+    price = bool(_PRICE_WORDS.search(text)) or any(part in code for part in ("cpi", "hicp", "inflation"))
+    annual = bool(_ANNUAL_CHANGE_WORDS.search(text)) or code.endswith(("-yoy", "-annual-rate", "-annual-change"))
+    return price and annual
+
+
+def _is_single_letter_query(raw: str) -> bool:
+    """Запрос из одной буквы («п», «c»): человек ещё не договорил слово."""
+    letters = re.findall(r"[a-zа-яё]", (raw or "").lower())
+    return len(letters) == 1
+
+
+def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
+    """Порядок выдачи: сильнее совпадение выше; при равенстве региональные ряды ниже; на языке хоста выше.
+
+    Запрос из одной буквы подходит едва ли не к каждому региональному ряду (прямые инвестиции по
+    округам, цены по областям). Страны и основные показатели страны человеку нужнее, поэтому для такого
+    запроса региональные ряды идут в конец независимо от счёта.
+    """
+    single_letter = _is_single_letter_query(raw)
+
+    def key(item: dict):
+        regional_indicator = item["kind"] in _REGIONAL_INDICATOR_KINDS
+        return (
+            1 if single_letter and not intent.regions and regional_indicator else 0,
+            -item["score"],
+            # При равном счёте годовая инфляция страны выше индекса цен и месячного прироста.
+            0 if _annual_inflation_row(item) else 1,
+            1 if not intent.regions and regional_indicator else 0,
+            0 if (locale == "ru" and item.get("country_slug") == "russia") or (locale == "en" and item.get("country_slug") != "russia") else 1,
+            item["key"],
+        )
+
+    return key
+
+
 async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
@@ -1011,10 +1060,7 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
         if item["score"] < 900:
             item["score"] += relevance_bonus(intent.terms, names=(item.get("name_ru", ""), item.get("name_en", "")),
                 frequencies=frequencies, count=len(results))
-    results.sort(key=lambda item: (-item["score"],
-        1 if not intent.regions and item["kind"] in ("region_indicator", "subnational_indicator") else 0,
-        0 if (locale == "ru" and item.get("country_slug") == "russia") or (locale == "en" and item.get("country_slug") != "russia") else 1,
-        item["key"]))
+    results.sort(key=_result_sort_key(intent, locale, raw))
     seen, unique = set(), []
     for result in results:
         # Distinct slices can share canonical path but retain different code and

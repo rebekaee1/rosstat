@@ -62,7 +62,7 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).getByRole('link', { name: /Страны/ }).getAttribute('href')).toBe('/#countries');
     expect(within(nav).getByRole('link', { name: /Рейтинг/ }).getAttribute('href')).toBe('/world/rating/gdp-usd');
     expect(within(nav).getByRole('link', { name: 'Сравнение' }).getAttribute('href')).toBe('/compare');
-    expect(within(nav).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/methodology#read');
+    expect(within(nav).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/forecasts');
     expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
     expect(within(nav).getByRole('button', { name: /Инструменты/i })).toBeTruthy();
   });
@@ -76,7 +76,7 @@ describe('Navbar H-4 menu', () => {
     const hrefs = (root) => [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
     const links = hrefs(menu);
     // Порядок: страны, рейтинг, сравнение, прогнозы, категории, валюты, «Как мы считаем».
-    const order = ['/#countries', '/world/rating/gdp-usd', '/compare', '/methodology#read', '/russia/category', '/currencies', '/methodology'];
+    const order = ['/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/methodology'];
     expect(order.map((href) => links.indexOf(href))).toEqual([...order.keys()]);
     expect(within(menu).queryByRole('link', { name: 'Демография' })).toBeNull();
 
@@ -122,7 +122,7 @@ describe('Navbar H-4 menu', () => {
 
     const menu = document.getElementById('fe-nav-mobile-menu');
     const links = [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    for (const href of ['/#countries', '/world/rating/gdp-usd', '/compare', '/methodology#read', '/russia/category', '/currencies', '/methodology']) {
+    for (const href of ['/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/methodology']) {
       expect(links).toContain(href);
     }
     const russia = within(menu).getByRole('button', { name: /^Russia/ });

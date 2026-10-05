@@ -9,6 +9,7 @@ import {
   calendarPath,
   comparePath,
   countryPath,
+  forecastsPath,
   homePath,
   regionHubPath,
   russiaCategoriesPath,
@@ -23,8 +24,8 @@ export const UNITED_STATES_SLUG = 'united-states';
 
 export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 
-/** Раздел «Прогнозы»: отдельной страницы-витрины нет, ссылка ведёт к объяснению прогнозов в «Как мы считаем». */
-export const FORECASTS_TO = '/methodology#read';
+/** Раздел «Прогнозы»: настоящая страница-витрина; объяснение метода остаётся второй ссылкой «Как мы считаем». */
+export const FORECASTS_TO = forecastsPath();
 
 /**
  * `match` — префикс пути для подсветки; побеждает самый длинный матч.

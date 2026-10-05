@@ -253,6 +253,14 @@
         "slug": "demographics",
         "title": "Age structure of Russia's population"
       },
+      "forecasts": {
+        "description": "Platform forecasts one year ahead for Russia and other countries: prices, GDP, unemployment, rates, wages. Built from official data, with the range in which the indicator is most likely to land.",
+        "h1": "Forecasts",
+        "intro": "These are the forecasts the platform builds itself from official data: for Russia and for countries where the forecast passed a test on past data. For each series you see the latest value, the value expected in a year, and the range it is most likely to fall in.",
+        "path": "/forecasts",
+        "slug": "forecasts",
+        "title": "Economic forecasts one year ahead: inflation, GDP, unemployment"
+      },
       "home": {
         "description": "Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.",
         "h1": "Country economies in one place",
@@ -374,6 +382,14 @@
       "path": "/russia/demographics",
       "slug": "demographics",
       "title": "Возрастная структура населения России"
+    },
+    "forecasts": {
+      "description": "Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным, с коридором, в котором показатель скорее всего окажется.",
+      "h1": "Прогнозы",
+      "intro": "Здесь собраны прогнозы, которые платформа считает сама по официальным данным: по России и по странам, где прогноз прошёл проверку на прошлых данных. Для каждого ряда видно, сколько сейчас, какое значение ожидается через год и в каком коридоре оно, скорее всего, окажется.",
+      "path": "/forecasts",
+      "slug": "forecasts",
+      "title": "Прогнозы экономики на год вперёд: инфляция, ВВП, безработица"
     },
     "home": {
       "description": "Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.",
