@@ -143,12 +143,42 @@ describe('IndicatorChart', () => {
     within(type).getAllByRole('button').forEach((b) => expect(b.className).toContain('fe-chip'));
   });
 
-  it('слайдер окна — .fe-range (область нажатия 44px задана CSS)', () => {
+  it('период выбирается рамкой с двумя ручками под графиком, а не отдельным ползунком «Раньше / Позже»', () => {
     const { container } = renderChart();
-    const slider = container.querySelector('input[type="range"]');
-    expect(slider).toBeTruthy();
-    expect(slider.className).toContain('fe-range');
+    expect(container.querySelector('input[type="range"]')).toBeNull();
+    const brush = container.querySelector('.fe-brush');
+    expect(brush).toBeTruthy();
+    const handles = within(brush).getAllByRole('slider');
+    expect(handles).toHaveLength(2);
+    expect(handles.map((h) => h.getAttribute('aria-label'))).toEqual(['Начало периода', 'Конец периода']);
+    expect(container.textContent).not.toContain('Раньше');
   });
+
+  it('стрелки на ручке сдвигают границу окна на одну точку', () => {
+    const { container } = renderChart();
+    const brush = container.querySelector('.fe-brush');
+    const [startHandle] = within(brush).getAllByRole('slider');
+    const before = Number(startHandle.getAttribute('aria-valuenow'));
+    fireEvent.keyDown(startHandle, { key: 'ArrowLeft' });
+    const after = Number(within(container.querySelector('.fe-brush')).getAllByRole('slider')[0].getAttribute('aria-valuenow'));
+    expect(after).toBe(before - 1);
+  });
+
+  it('вид графика подписан словами, периоды короткие и одинаковые', () => {
+    renderChart();
+    const type = screen.getByRole('group', { name: 'Тип графика' });
+    expect(within(type).getAllByRole('button').map((b) => b.textContent)).toEqual(['Область', 'Линия', 'Столбцы']);
+    const range = screen.getByRole('group', { name: 'Период графика' });
+    expect(within(range).getAllByRole('button').map((b) => b.textContent)).toEqual(['1 г.', '5 л.', '10 л.', 'Всё']);
+  });
+
+  it('подсказки «мышью» (Ctrl + scroll) на графике больше нет', () => {
+    const { container } = renderChart();
+    const plot = container.querySelector('.fe-chart-plot');
+    fireEvent.mouseEnter(plot);
+    expect(container.textContent).not.toMatch(/Ctrl|scroll/i);
+  });
+
 
   it('сенсор: тап по плоту открывает подсказку, тап вне закрывает', () => {
     const { container } = renderChart();

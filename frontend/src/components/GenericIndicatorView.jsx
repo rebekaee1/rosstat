@@ -14,8 +14,11 @@ import IndicatorDataTableSection from './IndicatorDataTableSection';
 import IndicatorSeoBlocks from './IndicatorSeoBlocks';
 import RelatedIndicators from './RelatedIndicators';
 import { downloadExcel, downloadCSV } from '../lib/excel';
+import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
+import { resolveDateFormat } from '../lib/format';
+import { WorldHeroLine } from './WorldStatTiles';
 import { track, events } from '../lib/track';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
 
 /**
@@ -74,6 +77,7 @@ export default function GenericIndicatorView({
   headerRef,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const [showForecast, setShowForecast] = useState(true);
   const [fullChartData, setFullChartData] = useState([]);
 
@@ -113,6 +117,16 @@ export default function GenericIndicatorView({
 
   const handleFullData = useCallback((d) => setFullChartData(d), []);
 
+  // Одна строка с главным числом под названием: как на странице показателя страны.
+  const heroSummary = useMemo(() => buildIndicatorSummary({
+    points: dataPoints,
+    frequency: effectiveIndicator?.frequency,
+    unit: effectiveIndicator?.unit,
+    dataDigits: dataDigitsOf(dataPoints),
+    locale,
+  }), [dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
+  const heroDateFormat = resolveDateFormat({ chartMode: 'cpi', frequency: effectiveIndicator?.frequency, safeViewMode: safeMode });
+
   // Выгрузка — всегда полный ряд (вся история), а не видимое окно графика.
   const handleDownloadExcel = useCallback(async () => {
     try {
@@ -140,20 +154,11 @@ export default function GenericIndicatorView({
         loading={loadingInd}
         headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
-      />
-
-      <IndicatorTelemetryGrid
-        indicator={effectiveIndicator}
-        viewStats={viewStats}
-        stats={stats}
-        {...FLAGS}
-        chartMode="cpi"
-        safeViewMode={safeMode}
-        cpiPrevDate={null}
-        adj={IDENTITY}
-        firstDate={dataPoints?.[0]?.date}
-        loading={loadingInd || isLoading}
-      />
+      >
+        {!loadingInd && heroSummary ? (
+          <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} />
+        ) : null}
+      </IndicatorDetailHeader>
 
       <ViewModesPanel>
         {variantGroup ? (
@@ -192,6 +197,20 @@ export default function GenericIndicatorView({
         onDownloadExcel={handleDownloadExcel}
         worldCompare={indicator?.world_compare}
         onNeedCompatibleMode={setViewMode}
+      />
+
+      <IndicatorTelemetryGrid
+        indicator={effectiveIndicator}
+        viewStats={viewStats}
+        stats={stats}
+        {...FLAGS}
+        chartMode="cpi"
+        safeViewMode={safeMode}
+        cpiPrevDate={null}
+        adj={IDENTITY}
+        firstDate={dataPoints?.[0]?.date}
+        points={dataPoints}
+        loading={loadingInd || isLoading}
       />
 
       <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecast ? 'on' : 'off'}>

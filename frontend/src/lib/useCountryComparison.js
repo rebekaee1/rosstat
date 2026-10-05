@@ -259,6 +259,9 @@ export function useCountryComparison({
   const displayedComparisonSeries = rebased?.series || loadedComparisonSeries;
   const displayedUnit = rebased ? t('world.chart.rebasedUnit') : unit;
   const displayedTitle = rebased ? t('world.chart.rebasedTitle', { title }) : title;
+  // «Динамика (=100)»: график сам ставит базу на начало выбранного окна, поэтому ему нужны исходные ряды, а не пересчитанные с давней общей даты.
+  const windowRebase = comparisonScale === 'index' && loadedComparisonSeries.length > 0;
+  const windowRebaseUnit = t('w6e.compare.unit');
 
   const toggleComparison = (id) => {
     const absolute = surface === 'russia'
@@ -301,5 +304,7 @@ export function useCountryComparison({
     displayedComparisonSeries,
     displayedUnit,
     displayedTitle,
+    windowRebase,
+    windowRebaseUnit,
   };
 }

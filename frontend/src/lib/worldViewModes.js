@@ -123,12 +123,34 @@ export function tidyPublicName(name, locale = 'ru') {
       text = text.replace(/,\s*index\s*\([^)]*\)\s*$/i, '');
     }
   } else {
-    text = text.replace(/%\s*ЭАН/gi, '% от рабочей силы');
+    text = tidyVariantLabel(text, 'ru');
     if (/индекс/i.test(text.replace(/,\s*индекс\s*\([^)]*\)\s*$/i, ''))) {
       text = text.replace(/,\s*индекс\s*\([^)]*\)\s*$/i, '');
     }
   }
   return text.trim();
+}
+
+function yearsWordRu(n) {
+  const mod100 = n % 100;
+  const mod10 = n % 10;
+  if (mod100 > 10 && mod100 < 20) return 'лет';
+  if (mod10 === 1) return 'год';
+  if (mod10 >= 2 && mod10 <= 4) return 'года';
+  return 'лет';
+}
+
+/**
+ * Подпись среза или возраста для человека: «Все возрасты, % от рабочей силы», «25–74 года».
+ * Источники отдают «Все возраста», «% ЭАН» и «25–74 лет»: опечатки и аббревиатуры убираем на выходе.
+ */
+export function tidyVariantLabel(label, locale = 'ru') {
+  const text = String(label ?? '').trim();
+  if (!text || locale === 'en') return text;
+  return text
+    .replace(/%\s*ЭАН/gi, '% от рабочей силы')
+    .replace(/(В|в)се возраста/g, '$1се возрасты')
+    .replace(/(\d+)\s*[\u2013\u2014-]\s*(\d+)\s+лет(?![А-Яа-яЁё])/g, (_m, from, to) => `${from}\u2013${to} ${yearsWordRu(Number(to))}`);
 }
 
 /** Locale-facing indicator title. EN never stays on a Cyrillic `name`. */
@@ -578,7 +600,7 @@ export function worldVariantsToPickerGroup(variants, groupLabel = 'Срез', { 
       code: v.code,
       label: locale === 'en'
         ? pickEnDisplay(v.label, v.label_en)
-        : (v.label || v.label_ru || ''),
+        : tidyVariantLabel(v.label || v.label_ru || '', 'ru'),
     })),
   };
 }

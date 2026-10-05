@@ -5,9 +5,13 @@ import { valueWithUnit } from '../lib/valueText';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
+import { formatDeltaWithUnit } from '../lib/deltaText';
+import { formatPercentChange, growthDigits, unitKind } from '../lib/indicatorSummary';
+import { useLocale } from '../i18n';
 import Button from './Button';
 import Spinner from './Spinner';
 import '../styles/chart-controls.css';
+import '../styles/w6e-indicator.css';
 
 const PAGE_SIZE = 20;
 // Блок появляется средствами CSS сразу, без задержки (раньше gsap скрывал таблицу на ~1.3 с).
@@ -18,6 +22,7 @@ export default function DataTable({
   showUnitInValues = true, loading = false,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const resolvedTitle = title ?? t('table.historicalDefault');
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
@@ -52,6 +57,36 @@ export default function DataTable({
     return rows;
   }, [data, search, sortAsc, dateFormat, unit, valueDigits]);
 
+  // Изменение к прошлому периоду и самые высокое и низкое значения считаем по всему ряду, а не по странице.
+  const { changes, maxDate, minDate } = useMemo(() => {
+    const asc = [...(data || [])]
+      .filter((r) => r && r.date && Number.isFinite(Number(r.value)))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const map = new Map();
+    const rate = unitKind(unit) === 'rate';
+    let hi = null;
+    let lo = null;
+    asc.forEach((row, i) => {
+      const v = Number(row.value);
+      if (hi == null || v > Number(hi.value)) hi = row;
+      if (lo == null || v < Number(lo.value)) lo = row;
+      if (i === 0) return;
+      const prev = Number(asc[i - 1].value);
+      if (rate) {
+        const shown = formatDeltaWithUnit(v - prev, unit, { digits: valueDigits ?? 2, locale });
+        map.set(row.date, shown.flat ? '0' : shown.text);
+      } else if (prev > 0 && v >= 0) {
+        const pct = (v / prev - 1) * 100;
+        map.set(row.date, formatPercentChange(pct, locale, growthDigits(pct)) || '0');
+      }
+    });
+    return {
+      changes: map,
+      maxDate: asc.length > 2 ? hi?.date : null,
+      minDate: asc.length > 2 ? lo?.date : null,
+    };
+  }, [data, unit, valueDigits, locale]);
+
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
   const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
@@ -59,7 +94,7 @@ export default function DataTable({
 
   return (
     <div
-      className="fe-reveal fe-datatable rounded-[1.5rem] bg-surface border border-border-subtle overflow-hidden"
+      className="fe-reveal fe-datatable fe-histtable rounded-[1.5rem] bg-surface border border-border-subtle overflow-hidden"
       style={REVEAL_STYLE}
       aria-busy={loading || undefined}
     >
@@ -80,7 +115,7 @@ export default function DataTable({
         </div>
       </div>
 
-      <div className="overflow-x-auto scrollbar-hide">
+      <div className="fe-histtable__scroll overflow-x-auto scrollbar-hide">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-t border-border-subtle">
@@ -101,13 +136,16 @@ export default function DataTable({
               <th scope="col" className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary">
                 {tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
               </th>
+              <th scope="col" className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary">
+                {t('w6e.table.change')}
+              </th>
             </tr>
           </thead>
           <tbody>
             {pageData.length === 0 ? (
               <tr>
                 <td
-                  colSpan={2}
+                  colSpan={3}
                   role="status"
                   className="px-5 py-12 text-center text-sm text-text-secondary"
                 >
@@ -125,16 +163,23 @@ export default function DataTable({
                   key={row.date}
                   className={cn(
                     'border-t border-border-subtle transition-colors',
-                    'hover:bg-surface-hover'
+                    'hover:bg-surface-hover',
+                    row.date === maxDate && 'is-max',
+                    row.date === minDate && 'is-min',
                   )}
                 >
                   <td className="px-5 py-2.5 text-text-secondary text-sm tabular-nums">
                     {formatDate(row.date, dateFormat)}
+                    {row.date === maxDate && <span className="fe-histtable__tag">{t('w6e.table.max')}</span>}
+                    {row.date === minDate && <span className="fe-histtable__tag">{t('w6e.table.min')}</span>}
                   </td>
                   <td className="px-5 py-2.5 text-right text-sm font-semibold tabular-nums text-text-primary">
                     {showUnitInValues
                       ? valueWithUnit(row.value, valueDigits, unit)
                       : formatValue(row.value, valueDigits)}
+                  </td>
+                  <td className="fe-histtable__chg px-5 py-2.5 text-right text-sm">
+                    {changes.get(row.date) ?? '\u2014'}
                   </td>
                 </tr>
               ))

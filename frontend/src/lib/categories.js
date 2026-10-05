@@ -259,6 +259,22 @@ export function indicatorCategoryKey(indicator) {
   return indicator.category_ru || indicator.category || null;
 }
 
+/**
+ * Показатели, у которых в базе стоит неверная для человека категория. Доходность гособлигаций США лежит в «Индексах»,
+ * но это не биржевой индекс, а ставка: в крошках и теге показываем «Ставки». Правка только на экране; в каталоге базы
+ * и в тексте для поисковых систем категория меняется отдельной миграцией данных.
+ */
+const CATEGORY_DISPLAY_OVERRIDES = Object.freeze({ 'ust-10y': 'Ставки' });
+
+/** Категория показателя для экрана: исправленная, если для кода есть правка, иначе как пришла из каталога. */
+export function displayCategoryLabel(code, apiLabel) {
+  const text = String(code || '');
+  for (const [base, label] of Object.entries(CATEGORY_DISPLAY_OVERRIDES)) {
+    if (text === base || text.startsWith(`${base}-`)) return label;
+  }
+  return apiLabel;
+}
+
 export function findCategoryByApiLabel(label) {
   if (!label) return null;
   return (

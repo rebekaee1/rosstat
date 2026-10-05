@@ -19,8 +19,12 @@ export function useViewModeSummary(key, order, text) {
   }, [register, id, key, order, text]);
 }
 
+// «Значения» и «Values» стоят по умолчанию: в короткой строке свёрнутой панели они только удлиняют её и обрезают главное.
+const DEFAULT_GROUP_LABELS = new Set(['Значения', 'Values', 'Уровень', 'Level']);
+
 /** «Год к году, по месяцам»: подпись группы и, строчными, выбранной детализации. */
 export function modeSummaryText(groupLabel, subLabel) {
   const sub = subLabel ? subLabel.charAt(0).toLowerCase() + subLabel.slice(1) : '';
-  return [groupLabel, sub].filter(Boolean).join(', ');
+  const group = DEFAULT_GROUP_LABELS.has(groupLabel) ? '' : groupLabel;
+  return [group, sub].filter(Boolean).join(', ');
 }

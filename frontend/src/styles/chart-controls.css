@@ -110,3 +110,140 @@ a.fe-chip { text-decoration: none; }
 .fe-chip-row--tight { gap: 4px; }
 .fe-chart-skel-controls { height: 34px; }
 @media (pointer: coarse) { .fe-chart-skel-controls { height: 44px; } }
+
+/* ── Волна 6 (зона E): управление графиком ────────────────────────────────────────── */
+
+/* Вид графика (Область / Линия / Столбцы): склеенный переключатель с подписями. Он не похож на период, поэтому выбранное не путается. */
+:root .fe-seg {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-obsidian-lighter, #dde3eb) 60%, transparent);
+}
+:root .fe-seg > .fe-chip.fe-chip--seg,
+:root .fe-chart-toolbar .fe-seg > .fe-chip.fe-chip--seg {
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+:root .fe-seg > .fe-chip.fe-chip--seg.is-active {
+  background: var(--color-surface, #fff);
+  color: var(--color-text-primary);
+  box-shadow: 0 1px 3px rgba(32, 42, 60, 0.18), 0 0 0 1px rgba(32, 42, 60, 0.06);
+}
+:root .fe-seg > .fe-chip.fe-chip--seg:hover:not(.is-active) { color: var(--color-text-primary); }
+@media (pointer: coarse) {
+  :root .fe-seg > .fe-chip.fe-chip--seg,
+  :root .fe-chart-toolbar .fe-seg > .fe-chip.fe-chip--seg { min-height: 40px; padding: 0 10px; }
+}
+@media (max-width: 420px) {
+  :root .fe-seg > .fe-chip.fe-chip--seg { padding: 0 8px; gap: 4px; font-size: 12px; }
+}
+
+/* Период (1 г., 5 л., 10 л., Всё): золотые «таблетки»; выбранный залит золотом, остальные спокойные. */
+:root .fe-chart-toolbar .fe-chip:not(.fe-chip--seg).is-active {
+  border-color: var(--color-champagne-ink, #80642f);
+  background: rgba(173, 138, 72, 0.2);
+  color: var(--color-champagne-ink, #80642f);
+  font-weight: 700;
+}
+
+/* Системную синюю рамку фокуса на графике не рисуем: при касании она похожа на сбой стиля. */
+.recharts-wrapper:focus,
+.recharts-wrapper:focus-visible,
+.recharts-wrapper *:focus,
+.recharts-wrapper *:focus-visible,
+.recharts-surface:focus,
+.recharts-surface:focus-visible { outline: none !important; }
+
+/* Компактная подсказка: одна строка над линией, ничего не закрывает. */
+.fe-chart-tip {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 8px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.fe-chart-tip__date { color: var(--color-text-secondary); font-size: 12px; }
+.fe-chart-tip__value { color: var(--color-text-primary); font-size: 14px; font-weight: 700; }
+.fe-chart-tip__tag { color: var(--color-champagne-ink, #80642f); font-size: 11px; font-weight: 600; }
+.fe-chart-tip__range { color: var(--color-text-secondary); font-size: 11px; }
+
+.fe-chart-note { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
+
+/* Рамка выбора периода под графиком: копия ряда и окно с двумя ручками. */
+.fe-brush { margin-top: 6px; padding: 0 2px; }
+.fe-brush__track {
+  position: relative;
+  height: 44px;
+  overflow: visible;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-obsidian-lighter, #dde3eb) 55%, transparent);
+  touch-action: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fe-brush__spark { position: absolute; inset: 2px 0; width: 100%; height: calc(100% - 4px); pointer-events: none; }
+.fe-brush__shade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.62);
+  pointer-events: none;
+}
+.fe-brush__window {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-top: 2px solid var(--color-champagne, #ad8a48);
+  border-bottom: 2px solid var(--color-champagne, #ad8a48);
+  background: rgba(173, 138, 72, 0.1);
+  cursor: grab;
+}
+.fe-brush[data-active='move'] .fe-brush__window { cursor: grabbing; }
+.fe-brush__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  transform: translateX(-50%);
+  cursor: ew-resize;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.fe-brush__handle > span {
+  display: block;
+  width: 12px;
+  height: 28px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  background: var(--color-champagne, #ad8a48);
+  box-shadow: 0 1px 4px rgba(32, 42, 60, 0.3);
+}
+.fe-brush__handle:focus-visible > span { outline: 2px solid var(--color-champagne-ink, #80642f); outline-offset: 2px; }
+.fe-brush__handle:focus { outline: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .fe-brush__handle > span { transition: transform 0.12s ease; }
+  .fe-brush[data-active='start'] .fe-brush__handle--start > span,
+  .fe-brush[data-active='end'] .fe-brush__handle--end > span { transform: scale(1.12); }
+}

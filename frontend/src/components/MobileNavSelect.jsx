@@ -28,6 +28,7 @@ export default function MobileNavSelect({
   options,
   onChange,
   className = '',
+  pickTitle = '',
 }) {
   const t = useT();
   const sectionLabel = label || t('mobile.section');
@@ -85,7 +86,7 @@ export default function MobileNavSelect({
                 {sectionLabel}
               </p>
               <p className="mt-0.5 truncate text-sm font-medium text-text-primary">
-                {t('mobile.pickSection')}
+                {pickTitle || t('mobile.pickSection')}
               </p>
             </div>
             <button

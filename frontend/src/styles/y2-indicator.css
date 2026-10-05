@@ -26,13 +26,15 @@
 .fe-vm-toggle__main { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 1px; }
 .fe-vm-toggle__label { color: var(--color-text-secondary); font-size: 12px; font-weight: 600; line-height: 1.3; }
 .fe-vm-toggle__sum {
+  display: -webkit-box;
   overflow: hidden;
   color: var(--color-text-primary);
   font-size: 14px;
   font-weight: 650;
   line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-wrap: balance;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .fe-vm-toggle__act {
   display: inline-flex;

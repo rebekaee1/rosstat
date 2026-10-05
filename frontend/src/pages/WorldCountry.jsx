@@ -2,7 +2,7 @@
 // Темы слева + сетка показателей; поиск не ломает сетку.
 import NotFound from './NotFound';
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   Search, BarChart3, ArrowUpRight,
 } from 'lucide-react';
@@ -240,6 +240,8 @@ export default function WorldCountry() {
   const searching = normalize(deferredQuery).length > 0;
 
   const countryName = countryPublicName(data?.country, locale);
+  // Переход по крошке с карточки показателя: название страны уже известно и стоит в крошках сразу, пока грузятся данные.
+  const crumbNameFromLink = useLocation().state?.crumbName;
   const notFound = isError && error?.response?.status === 404;
 
   const countryMeta = useMemo(() => {
@@ -410,7 +412,7 @@ export default function WorldCountry() {
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
-      <Breadcrumbs items={worldCountryTrail(countryName || '…', slug)} />
+      <Breadcrumbs items={worldCountryTrail(countryName || crumbNameFromLink || '', slug)} />
 
       {isError && !notFound && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">

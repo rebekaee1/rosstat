@@ -4,6 +4,8 @@ import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { periodPhrase } from '../lib/periodPhrase';
+import { bestGrowth, growthOverYears, unitKind } from '../lib/indicatorSummary';
+import { pluralRu } from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
@@ -27,6 +29,7 @@ export default function IndicatorTelemetryGrid({
   adj,
   loading,
   firstDate,
+  points = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -134,6 +137,14 @@ export default function IndicatorTelemetryGrid({
     : periodPhrase(t, currentDate, dateFmt, locale);
   const firstYear = firstDate ? new Date(firstDate).getUTCFullYear() : null;
 
+  // Среднее и «исторический максимум» у денег, индексов и объёмов ничего не говорят: вместо них рост за год и за десять лет.
+  const growthMode = Array.isArray(points) && points.length > 1 && unitKind(unit) !== 'rate';
+  const yearGrowth = growthMode ? growthOverYears(points, 1, { maxGapDays: 120 }) : null;
+  const longGrowth = growthMode ? bestGrowth(points) : null;
+  const yearsWord = (n) => (locale === 'en'
+    ? t(`w2.span.years.${n === 1 ? 'one' : 'many'}`)
+    : pluralRu(n, [t('w2.span.years.one'), t('w2.span.years.few'), t('w2.span.years.many')]));
+
   return (
     <section className="fe-tele-section">
       <div className="fe-tele-grid">
@@ -157,7 +168,27 @@ export default function IndicatorTelemetryGrid({
           meta={periodPhrase(t, s?.previousDate ?? cpiPrevDate, dateFmt, locale)}
           delay={1}
         />
-        {(s?.highest || stats?.highest) && (
+        {growthMode && yearGrowth && (
+          <TelemetryCard
+            label={t('w6e.tile.yearChange')}
+            value={yearGrowth.pct}
+            unit="%"
+            valueDigits={Math.abs(yearGrowth.pct) >= 100 ? 0 : 1}
+            meta={t('w6e.tile.growthNote', { date: formatDate(yearGrowth.from.date, dateFmt, locale) })}
+            delay={2}
+          />
+        )}
+        {growthMode && longGrowth && (
+          <TelemetryCard
+            label={t('w6e.tile.growth', { n: longGrowth.years, word: yearsWord(longGrowth.years) })}
+            value={longGrowth.pct}
+            unit="%"
+            valueDigits={Math.abs(longGrowth.pct) >= 100 ? 0 : 1}
+            meta={t('w6e.tile.growthNote', { date: formatDate(longGrowth.from.date, dateFmt, locale) })}
+            delay={3}
+          />
+        )}
+        {!growthMode && (s?.highest || stats?.highest) && (
           <TelemetryCard
             label={t('w3.tele.max')}
             value={s?.highest?.value ?? adj(stats?.highest?.value)}
@@ -169,7 +200,7 @@ export default function IndicatorTelemetryGrid({
             delay={2}
           />
         )}
-        {(s?.average != null || stats?.average != null) && (
+        {!growthMode && (s?.average != null || stats?.average != null) && (
           <TelemetryCard
             label={t('w3.tele.avg')}
             value={s?.average ?? adj(stats?.average)}

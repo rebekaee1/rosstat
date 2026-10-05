@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { waitFor } from '@testing-library/react';
 import WorldIndicatorPage from './WorldIndicatorPage';
 import { renderPage, mockApiGet } from '../test/renderPage';
+import api from '../lib/api';
 
 vi.mock('../components/WorldChartSection', () => ({
   default: () => <section id="chart" data-testid="chart-stub" />,
@@ -97,8 +98,10 @@ describe('WorldIndicatorPage plain language', () => {
     await waitFor(() => expect(document.querySelectorAll('.w2-stat')).toHaveLength(4));
     const text = document.body.textContent.replace(/\u00A0/g, ' ');
     expect(text).toContain('Сейчас');
-    expect(text).toContain('Исторический максимум');
-    expect(text).toContain('В среднем');
+    // Процент: максимум и среднее считаются за доступный период, а не «за всё время».
+    expect(text).toContain('Максимум за весь период');
+    expect(text).toContain('Среднее за весь период');
+    expect(text).not.toContain('Исторический максимум');
     expect(text).not.toMatch(/НАБЛ|ПЕРИОД\.|ПИК|ДАТА:/);
     // Плитка «Сейчас»: значение с единицей и датой, знаков после запятой ровно как в данных («3,1», а не «3,10»).
     const now = document.querySelectorAll('.w2-stat')[0].textContent.replace(/\u00A0/g, ' ');
@@ -124,8 +127,9 @@ describe('WorldIndicatorPage plain language', () => {
     await waitFor(() => expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy());
     const nav = document.querySelector('nav[aria-label]');
     const last = nav.querySelector('[aria-current="page"]');
-    expect(last.textContent.endsWith('…')).toBe(true);
-    expect(last.textContent.length).toBeLessThanOrEqual(41);
+    // Название режет CSS по ширине строки (одна строка, многоточие), а не обрубок текста в коде.
+    expect(last.className).toContain('fe-crumbs__current');
+    expect(nav.className).toContain('flex-nowrap!');
     expect(nav.className).not.toMatch(/uppercase|font-mono/);
   });
 });
@@ -307,5 +311,70 @@ describe('WorldIndicatorPage US annual series', () => {
 
     await waitFor(() => expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy());
     expect(document.querySelector('a[href^="/united-states/indicator/us-test/"]')).toBeNull();
+  });
+});
+
+describe('WorldIndicatorPage: режим, который сервер не отдал', () => {
+  const GDP_META = {
+    country: { code: 'IN', slug: 'india', name: 'Индия', name_en: 'India', region: 'Азия' },
+    primary_code: 'in-gdp',
+    indicator: {
+      code: 'in-gdp', name: 'Валовой внутренний продукт', unit: 'млрд $', frequency: 'annual', category: 'ВВП', source: 'МВФ',
+    },
+    modes: [
+      { id: 'level-annual', label: 'По годам', group: 'Уровень', type: 'level', freq: 'annual', unit: 'млрд $' },
+      { id: 'yoy-annual', label: 'По годам', group: 'К году', type: 'yoy', freq: 'annual', unit: '%' },
+    ],
+    forecast_available: false,
+  };
+  const LEVEL = Array.from({ length: 12 }, (_, i) => ({ date: `${2014 + i}-01-01`, value: 2000 + i * 100 }));
+
+  function mockGdp() {
+    return vi.spyOn(api, 'get').mockImplementation((url, config) => {
+      if (url === '/auth/me') return Promise.resolve({ data: { user: null } });
+      if (/^\/world\/indicators\/india\/in-gdp$/.test(url)) return Promise.resolve({ data: GDP_META });
+      if (/^\/world\/indicators\/india\/in-gdp\/data/.test(url)) {
+        if (config?.params?.mode === 'yoy-annual') {
+          const err = new Error('mode unavailable');
+          err.response = { status: 400 };
+          return Promise.reject(err);
+        }
+        return Promise.resolve({
+          data: {
+            code: 'in-gdp', mode: 'level-annual', unit: 'млрд $', frequency: 'annual', points: LEVEL, count: LEVEL.length,
+          },
+        });
+      }
+      const err = new Error(`unmocked GET ${url}`);
+      err.response = { status: 404 };
+      return Promise.reject(err);
+    });
+  }
+
+  it('«Год к году» не ломается: график считается из значений, без плашки об ошибке', async () => {
+    mockGdp();
+    renderPage(<WorldIndicatorPage />, {
+      path: '/:countrySlug/indicator/:code',
+      route: '/india/indicator/in-gdp?mode=yoy-annual',
+    });
+    await waitFor(() => expect(document.querySelector('[data-testid="indicator-hero"]')).toBeTruthy());
+    // 2100 / 2000 - 1 = 5,0 %: проценты, посчитанные из значений, а не пустое состояние.
+    const hero = document.querySelector('[data-testid="indicator-hero"]').textContent.replace(/\u00A0/g, ' ');
+    expect(hero).toContain('%');
+    expect(document.querySelector('[data-testid="chart-stub"]')).toBeTruthy();
+    expect(document.body.textContent).not.toContain('Не удалось загрузить ряд данных');
+    expect(document.body.textContent).not.toContain('Нет данных для графика');
+  });
+
+  it('под заголовком одна строка с главным числом и единицей рядом', async () => {
+    mockGdp();
+    renderPage(<WorldIndicatorPage />, {
+      path: '/:countrySlug/indicator/:code',
+      route: '/india/indicator/in-gdp',
+    });
+    await waitFor(() => expect(document.querySelector('[data-testid="indicator-hero"]')).toBeTruthy());
+    const hero = document.querySelector('[data-testid="indicator-hero"]').textContent.replace(/\u00A0/g, ' ');
+    expect(hero).toContain('Индия:');
+    expect(hero).toContain('3,1 трлн $');
   });
 });

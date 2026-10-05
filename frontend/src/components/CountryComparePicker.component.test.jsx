@@ -131,6 +131,66 @@ describe('CountryComparePicker', () => {
     expect(screen.getByText('Сравнение стран')).toBeTruthy();
   });
 
+  it('offers popular countries as one-tap chips and toggles the tapped one', () => {
+    const onToggle = vi.fn();
+    renderPicker(
+      <CountryComparePanel
+        pickerOptions={[
+          { code: 'average', country_name: 'Среднее по странам' },
+          ...OPTIONS,
+          { code: 'peer:china:cn', country_name: 'Китай', country_slug: 'china' },
+        ]}
+        activeComparisonIds={[]}
+        selectedComparisons={[]}
+        comparisonQueries={[]}
+        comparisonScale="values"
+        onToggle={onToggle}
+        onOpen={vi.fn()}
+        onScale={vi.fn()}
+        conceptSlug="gdp-usd"
+        countrySlug="russia"
+        compareCodes={[]}
+        rebased={null}
+        loadedComparisonSeries={[]}
+      />,
+    );
+    const group = screen.getByRole('group', { name: 'Сравнить с:' });
+    const names = [...group.querySelectorAll('button')].map((b) => b.textContent);
+    // Китай и Германия популярнее остальных и идут первыми; «Среднее по странам» в чипах не предлагается.
+    expect(names.slice(0, 2)).toEqual(['Китай', 'Германия']);
+    expect(names).not.toContain('Среднее по странам');
+    fireEvent.click(screen.getByRole('button', { name: 'Китай' }));
+    expect(onToggle).toHaveBeenCalledWith('peer:china:cn');
+  });
+
+  it('shows the base country first without a remove cross, and proposes growth in percent when sizes differ', () => {
+    const onScale = vi.fn();
+    renderPicker(
+      <CountryComparePanel
+        pickerOptions={OPTIONS}
+        activeComparisonIds={['peer:germany:de-hicp']}
+        selectedComparisons={[{ id: 'peer:germany:de-hicp', label: 'Германия', color: '#397C8C' }]}
+        comparisonQueries={[]}
+        comparisonScale="values"
+        onToggle={vi.fn()}
+        onOpen={vi.fn()}
+        onScale={onScale}
+        conceptSlug="gdp-usd"
+        countrySlug="australia"
+        compareCodes={['w:germany:gdp-usd']}
+        rebased={null}
+        loadedComparisonSeries={[]}
+        baseLabel="Австралия"
+        suggestPercent
+      />,
+    );
+    const base = screen.getByText('Австралия').closest('.fe-compare-base');
+    expect(base).toBeTruthy();
+    expect(base.querySelector('svg')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Показать рост в процентах' }));
+    expect(onScale).toHaveBeenCalledWith('index');
+  });
+
   it('sends inflation comparisons to the rate ranking instead of raw index levels', () => {
     renderPicker(
       <CountryComparePanel
@@ -194,6 +254,9 @@ describe('IndicatorChartSection world compare', () => {
       { path: '/russia/indicator/:code', route: '/russia/indicator/cpi' },
     );
     expect(screen.getByText('Сравнение стран')).toBeTruthy();
+    // Страны чипами одним нажатием; поиск остальных открывается по кнопке «Другие страны».
+    expect(screen.getByRole('button', { name: 'Германия' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Другие страны' }));
     expect(screen.getByRole('searchbox')).toBeTruthy();
   });
 

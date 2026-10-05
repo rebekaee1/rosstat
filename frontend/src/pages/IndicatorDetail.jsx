@@ -555,33 +555,6 @@ export default function IndicatorDetail() {
 
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
 
-      <IndicatorTelemetryGrid
-        indicator={effectiveIndicator}
-        viewStats={s}
-        stats={stats}
-        isPriceCategory={isPriceCategory}
-        isHousingFamily={isHousingFamily}
-        isPpiFamily={isPpiFamily}
-        chartMode={chartMode}
-        safeViewMode={safeViewMode}
-        cpiPrevDate={cpiPrevDate}
-        adj={adj}
-        firstDate={dataPoints?.[0]?.date}
-        loading={
-          loadingInd
-          || (chartMode === 'inflation' && loadingInflation)
-          || (chartMode === 'annual' && loadingAnnual)
-          || (chartMode === 'weekly' && loadingWeekly)
-          || (chartMode === 'quarterly' && loadingQuarterly)
-          || (chartMode === 'yoy' && loadingYoy)
-          || (chartMode === 'qoq' && loadingQoq)
-          || (chartMode === 'period-monthly' && loadingPeriodMonthly)
-          || (chartMode === 'period-weekly' && loadingPeriodWeekly)
-          || (chartMode === 'mom' && loadingData)
-          || (chartMode === 'index' && loadingData)
-        }
-      />
-
       {/* Оба переключателя — НАД графиком, сверху вниз:
           1) «Состав» (категории-родственники: cpi → cpi-food / housing-primary →
              housing-secondary и т.д.) — меняет сам индикатор и весь набор данных.
@@ -703,6 +676,34 @@ export default function IndicatorDetail() {
         onDownloadExcel={handleDownloadExcel}
         worldCompare={indicator?.world_compare}
         onNeedCompatibleMode={setViewMode}
+      />
+
+      {/* Плитки значений идут под графиком: на странице сначала то, что человек пришёл посмотреть. */}
+      <IndicatorTelemetryGrid
+        indicator={effectiveIndicator}
+        viewStats={s}
+        stats={stats}
+        isPriceCategory={isPriceCategory}
+        isHousingFamily={isHousingFamily}
+        isPpiFamily={isPpiFamily}
+        chartMode={chartMode}
+        safeViewMode={safeViewMode}
+        cpiPrevDate={cpiPrevDate}
+        adj={adj}
+        firstDate={dataPoints?.[0]?.date}
+        loading={
+          loadingInd
+          || (chartMode === 'inflation' && loadingInflation)
+          || (chartMode === 'annual' && loadingAnnual)
+          || (chartMode === 'weekly' && loadingWeekly)
+          || (chartMode === 'quarterly' && loadingQuarterly)
+          || (chartMode === 'yoy' && loadingYoy)
+          || (chartMode === 'qoq' && loadingQoq)
+          || (chartMode === 'period-monthly' && loadingPeriodMonthly)
+          || (chartMode === 'period-weekly' && loadingPeriodWeekly)
+          || (chartMode === 'mom' && loadingData)
+          || (chartMode === 'index' && loadingData)
+        }
       />
 
       <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecastDataForSection ? 'on' : 'off'}>
