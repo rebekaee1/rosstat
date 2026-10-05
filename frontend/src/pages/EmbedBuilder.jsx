@@ -1,10 +1,11 @@
 import { useState, useMemo, useRef, useCallback, useEffect, useDeferredValue } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Check, Copy, ChevronDown, Search, BarChart3, CreditCard, Table2, ScrollText, GitCompare, X } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { CATEGORIES, isIndicatorListed } from '../lib/categories';
 import { cn } from '../lib/format';
 import { useElementWidth } from '../lib/chartHooks';
+import useMediaQuery from '../lib/useMediaQuery';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { PERIODS } from '../embed/useEmbedParams';
@@ -21,6 +22,7 @@ import Spinner from '../components/Spinner';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/platform-pages.css';
 import '../styles/w5-tools.css';
+import '../styles/w6-g.css';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'w5.embed.type.chartHint', icon: BarChart3 },
@@ -90,7 +92,7 @@ function IndicatorCombobox({ indicators, value, onChange, placeholder }) {
       <button type="button" onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox" aria-expanded={open}
         className="fe-tap fe-press w-full min-h-11 flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-border-subtle bg-surface text-sm text-text-primary hover:border-champagne/40 transition-colors text-left">
-        <span className="truncate">{selected?.name || placeholder || t('embed.pickIndicator')}</span>
+        <span className="truncate">{selected?.name || placeholder || t('w6g.embed.pickIndicator')}</span>
         <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
@@ -182,10 +184,16 @@ export default function EmbedBuilder() {
   });
 
   const { data: indicators } = useIndicators();
+  const [searchParams] = useSearchParams();
+  const compactPreview = useMediaQuery('(max-width: 1023px)');
 
   const [type, setType] = useState('chart');
-  const [code, setCode] = useState('cpi');
-  const [codeB, setCodeB] = useState('key-rate');
+  // С карточки показателя приходят по «Встроить» с ?code=…; без него показываем понятный пример: курс доллара.
+  const [code, setCode] = useState(() => {
+    const fromUrl = (searchParams.get('code') || '').trim().toLowerCase();
+    return /^[a-z0-9-]{2,64}$/.test(fromUrl) ? fromUrl : 'usd-rub';
+  });
+  const [codeB, setCodeB] = useState('eur-rub');
   const [period, setPeriod] = useState('1y');
   const [theme, setTheme] = useState('light');
   const [sizePreset, setSizePreset] = useState(1);
@@ -251,12 +259,12 @@ export default function EmbedBuilder() {
         prodParams.set('forecast', showForecast.toString());
         src = `${EMBED_ORIGIN}/embed/chart/${code}?${prodParams}`;
         iframeW = w; iframeH = h;
-        title = `${name} — Forecast Economy`;
+        title = `${name} — forecasteconomy`;
         break;
       case 'card':
         src = `${EMBED_ORIGIN}/embed/card/${code}?${prodParams}`;
         iframeW = 320; iframeH = 200;
-        title = `${name} — Forecast Economy`;
+        title = `${name} — forecasteconomy`;
         break;
       case 'table':
         prodParams.set('limit', limit.toString());
@@ -269,7 +277,7 @@ export default function EmbedBuilder() {
         prodParams.set('speed', speed);
         src = `${EMBED_ORIGIN}/embed/ticker?${prodParams}`;
         iframeW = '100%'; iframeH = 40;
-        title = t('embed.defaultTitle');
+        title = t('w6g.embed.defaultTitle');
         break;
       case 'compare': {
         const metaB = indicators?.find(i => i.code === codeB);
@@ -358,7 +366,11 @@ export default function EmbedBuilder() {
   const renderW = typeof previewBoxW === 'string'
     ? previewBoxW
     : (fitsAsIs ? previewBoxW : Math.min(previewBoxW, Math.max(360, availW)));
-  const previewScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
+  const widthScale = typeof renderW === 'number' && availW > 0 && renderW > availW ? availW / renderW : 1;
+  // Закреплённый предпросмотр на телефоне не должен съедать экран: ограничиваем высоту.
+  const maxPreviewH = compactPreview ? 150 : Infinity;
+  const heightScale = previewH > maxPreviewH ? maxPreviewH / previewH : 1;
+  const previewScale = Math.min(widthScale, heightScale);
   const previewW = renderW;
   // Превью грузится в iframe: пока он не сообщил о загрузке, показываем кольцо ожидания.
   // Не загрузился за 12 секунд — понятная ошибка с кнопкой «Повторить», а не пустой прямоугольник.
@@ -382,8 +394,8 @@ export default function EmbedBuilder() {
   const stageBg = theme === 'dark' ? '#111' : '#f5f5f5';
 
   return (
-    <div className="fe-data-page w5-embed max-w-6xl mx-auto px-4 pt-24 md:pt-28 pb-12 sm:pb-16">
-      <Breadcrumbs items={toolTrail(widgetsSeo.h1, widgetsSeo.path)} className="mb-6" />
+    <div className="fe-data-page fe-gutter w5-embed max-w-6xl mx-auto pt-24 md:pt-28 pb-12 sm:pb-16">
+      <Breadcrumbs items={toolTrail(t('w6g.embed.crumb'), widgetsSeo.path)} className="mb-6" />
       <header className="mb-8 max-w-2xl">
         <h1 className="mb-3 font-display text-3xl font-bold text-text-primary md:text-4xl">
           {t('embed.constructor')}
@@ -409,22 +421,75 @@ export default function EmbedBuilder() {
         ))}
       </div>
 
-      <div className="w5-embed-grid">
+      <div className="fe-w6g-embed-grid">
+        {/* Предпросмотр закреплён сверху: изменения видно сразу */}
+        <section className="w5-embed-preview fe-w6g-embed-preview" aria-label={t('w5.embed.previewHeading')}>
+            <div className="w5-embed-preview__head">
+              <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.previewHeading')}</h2>
+              <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
+            </div>
+            <div ref={setStageNode} className="w5-embed-preview__stage" style={{ background: stageBg }}>
+              <div
+                className="relative"
+                style={previewScale < 1
+                  ? { width: previewW * previewScale, height: previewH * previewScale }
+                  : { width: previewW, height: previewH, maxWidth: '100%' }}
+              >
+                <div
+                  className="absolute left-0 top-0"
+                  style={previewScale < 1
+                    ? { width: previewW, height: previewH, transform: `scale(${previewScale})`, transformOrigin: 'top left' }
+                    : { width: '100%', height: '100%' }}
+                >
+                <iframe
+                  key={`${previewUrl}#${attempt}`}
+                  src={previewUrl}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  style={{ border: 'none', borderRadius: 12, overflow: 'hidden', maxWidth: '100%' }}
+                  title={t('pgui.embed.previewTitle')}
+                  onLoad={() => { setLoadedUrl(previewUrl); setFailedUrl(''); }}
+                />
+                </div>
+                {(previewLoading || previewFailed) && (
+                  <div
+                    className={cn('w5-embed-preview__state', theme === 'dark' && 'is-dark')}
+                    role={previewFailed ? 'alert' : 'status'}
+                  >
+                    {previewFailed ? (
+                      <>
+                        <p className="max-w-xs text-sm font-medium">{t('y1.embed.previewFailed')}</p>
+                        <p className="max-w-xs text-xs opacity-80">{t('y1.embed.previewFailedHint')}</p>
+                        <Button variant="secondary" size="sm" onClick={retryPreview}>{t('y1.embed.previewRetry')}</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Spinner size={22} />
+                        <span className="text-sm">{t('pgui.embed.previewLoading')}</span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+        </section>
+
         {/* Шаг 2: настройки */}
-        <div className="space-y-5">
+        <div className="space-y-5 fe-w6g-embed-settings">
           <div className="space-y-5 rounded-3xl border border-border-subtle bg-surface p-5">
             <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.step2')}</h2>
 
             {needsIndicator && (
               <div className="w5-embed-field">
-                <span className="w5-embed-label">{t('embed.indicator')}</span>
+                <span className="w5-embed-label">{t('w6g.embed.indicator')}</span>
                 <IndicatorCombobox indicators={indicators} value={code} onChange={(c) => { setCode(c); track(events.EMBED_INDICATOR_SELECT, { code: c }); }} />
               </div>
             )}
 
             {needsSecondIndicator && (
               <div className="w5-embed-field">
-                <span className="w5-embed-label">{t('embed.indicatorB')}</span>
+                <span className="w5-embed-label">{t('w6g.embed.indicatorB')}</span>
                 <IndicatorCombobox indicators={indicators} value={codeB} onChange={(c) => { setCodeB(c); track(events.EMBED_INDICATOR_SELECT, { code: c, position: 'b' }); }} />
               </div>
             )}
@@ -548,66 +613,13 @@ export default function EmbedBuilder() {
           </div>
         </div>
 
-        {/* Превью и код */}
-        <div className="space-y-5">
-          <section className="w5-embed-preview" aria-label={t('w5.embed.previewHeading')}>
-            <div className="w5-embed-preview__head">
-              <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.previewHeading')}</h2>
-            </div>
-            <div ref={setStageNode} className="w5-embed-preview__stage" style={{ background: stageBg }}>
-              <div
-                className="relative"
-                style={previewScale < 1
-                  ? { width: previewW * previewScale, height: previewH * previewScale }
-                  : { width: previewW, height: previewH, maxWidth: '100%' }}
-              >
-                <div
-                  className="absolute left-0 top-0"
-                  style={previewScale < 1
-                    ? { width: previewW, height: previewH, transform: `scale(${previewScale})`, transformOrigin: 'top left' }
-                    : { width: '100%', height: '100%' }}
-                >
-                <iframe
-                  key={`${previewUrl}#${attempt}`}
-                  src={previewUrl}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  style={{ border: 'none', borderRadius: 12, overflow: 'hidden', maxWidth: '100%' }}
-                  title={t('pgui.embed.previewTitle')}
-                  onLoad={() => { setLoadedUrl(previewUrl); setFailedUrl(''); }}
-                />
-                </div>
-                {(previewLoading || previewFailed) && (
-                  <div
-                    className={cn('w5-embed-preview__state', theme === 'dark' && 'is-dark')}
-                    role={previewFailed ? 'alert' : 'status'}
-                  >
-                    {previewFailed ? (
-                      <>
-                        <p className="max-w-xs text-sm font-medium">{t('y1.embed.previewFailed')}</p>
-                        <p className="max-w-xs text-xs opacity-80">{t('y1.embed.previewFailedHint')}</p>
-                        <Button variant="secondary" size="sm" onClick={retryPreview}>{t('y1.embed.previewRetry')}</Button>
-                      </>
-                    ) : (
-                      <>
-                        <Spinner size={22} />
-                        <span className="text-sm">{t('pgui.embed.previewLoading')}</span>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className="w5-embed-code" aria-label={t('w5.embed.step3')}>
+        {/* Код для вставки */}
+        <section className="w5-embed-code fe-w6g-embed-code" aria-label={t('w5.embed.step3')}>
             <div className="w5-embed-code__head">
               <div>
                 <h2 className="text-base font-semibold text-text-primary">{t('w5.embed.step3')}</h2>
                 <p className="mt-1 text-sm text-text-secondary">{t('w5.embed.step3Hint')}</p>
               </div>
-              <CopyButton text={embedCode} onCopy={() => track(events.EMBED_CODE_COPY, { format: codeTab })} />
             </div>
             <div className="space-y-2 px-4 pb-4">
               <span className="w5-embed-label">{t('w5.embed.fmt.title')}</span>
@@ -620,15 +632,14 @@ export default function EmbedBuilder() {
               </div>
               <p className="text-sm text-text-secondary">{t(activeFormat.hintKey)}</p>
             </div>
-            <details className="border-t border-border-subtle">
+            <details open className="border-t border-border-subtle">
               <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-2 px-4 text-sm font-semibold text-champagne-ink">
-                {t('w5.embed.showCode')}
+                {t('w6g.embed.codeSummary')}
                 <ChevronDown className="h-4 w-4" aria-hidden="true" />
               </summary>
               <pre className="w5-embed-code__pre">{embedCode}</pre>
             </details>
-          </section>
-        </div>
+        </section>
       </div>
     </div>
   );

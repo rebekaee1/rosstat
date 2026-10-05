@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Landmark, Search, X } from 'lucide-react';
 import Button from '../Button';
 import Chip from '../Chip';
+import { SkeletonBox } from '../Skeleton';
 import { flagForSlug, COUNTRY_GROUPS } from '../../lib/slugFlags';
 import { cn } from '../../lib/format';
 import { useT } from '../../i18n';
@@ -33,6 +34,7 @@ function Flag({ slug }) {
 export default function CompareCountryStep({
   countries, query, onQuery, onSelect,
   indicatorMatches = [], matchesPending = false, onAddIndicator, atCap = false, capHint,
+  loading = false,
 }) {
   const t = useT();
   const [group, setGroup] = useState('all');
@@ -53,6 +55,7 @@ export default function CompareCountryStep({
 
   const canExpand = !searching && group === 'all' && !expanded && countries.length > COLLAPSED_COUNT;
   const noCountries = countries.length === 0;
+  const waitingCatalog = loading && !searching && countries.length <= 1;
 
   return (
     <div>
@@ -124,7 +127,7 @@ export default function CompareCountryStep({
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="fe-compare-countries grid grid-cols-2 content-start gap-2">
             {visible.map((c) => (
               <button
                 key={c.key}
@@ -139,6 +142,14 @@ export default function CompareCountryStep({
                 <span className="min-w-0 flex-1 line-clamp-2 text-[15px] leading-snug text-text-primary">{c.label}</span>
               </button>
             ))}
+            {waitingCatalog && (
+              <>
+                <span className="sr-only" role="status" aria-busy="true">{t('common.loading')}</span>
+                {Array.from({ length: Math.max(0, COLLAPSED_COUNT - visible.length) }, (_, i) => (
+                  <SkeletonBox key={`sk-${i}`} className="h-12 rounded-xl" />
+                ))}
+              </>
+            )}
           </div>
           {canExpand && (
             <Button variant="secondary" className="mt-3 w-full" onClick={() => setExpanded(true)}>

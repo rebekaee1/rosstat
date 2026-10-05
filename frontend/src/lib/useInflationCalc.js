@@ -122,11 +122,12 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
    */
   const sourceUrl = isRussia ? RUSSIA_SOURCE_URL : (metaQ.data?.indicator?.source_url || null);
 
+  // Пока название страны неизвестно, возвращаем null: страница не должна показывать слаг («united-states»).
   const countryName = isRussia
     ? null
     : (seriesQ.data?.meta?.country_name
-      || countries.find((c) => c.slug === countrySlug)?.name
-      || countrySlug);
+      || countries.find((c) => c.slug === resolvedSlug)?.name
+      || null);
 
   const isLoading = isRussia
     ? (qCpi.isLoading || qFood.isLoading || qNonfood.isLoading || qServices.isLoading)
@@ -146,15 +147,18 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
   const { refetch: refetchServices } = qServices;
   const { refetch: refetchSeries } = seriesQ;
   const { refetch: refetchMeta } = metaQ;
-  /** Повторить загрузку того, что нужно выбранной стране (кнопка «Повторить» под ошибкой). */
+  const { refetch: refetchCatalog } = catalogQ;
+  const catalogFailed = catalogQ.isError;
+  /** Повторить загрузку того, что нужно выбранной стране (кнопка «Повторить» под ошибкой): ряд, описание источника и, если упал, каталог стран. */
   const refetch = useCallback(() => {
     if (isRussia) {
       refetchCpi(); refetchFood(); refetchNonfood(); refetchServices();
     } else {
       refetchSeries();
       if (indicatorCode) refetchMeta();
+      if (catalogFailed) refetchCatalog();
     }
-  }, [isRussia, indicatorCode, refetchCpi, refetchFood, refetchNonfood, refetchServices, refetchSeries, refetchMeta]);
+  }, [isRussia, indicatorCode, catalogFailed, refetchCpi, refetchFood, refetchNonfood, refetchServices, refetchSeries, refetchMeta, refetchCatalog]);
 
   return useMemo(() => {
     const base = {

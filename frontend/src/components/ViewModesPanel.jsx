@@ -16,7 +16,7 @@ import '../styles/y2-indicator.css';
  * Сами переключатели сообщают панели свою подпись через `useViewModeSummary`; если ни один
  * не сообщил (или их нет), панель ничего не сворачивает и ничего не рисует лишнего.
  */
-export function ViewModesPanel({ children, className }) {
+export function ViewModesPanel({ children, className, label }) {
   const t = useT();
   const baseId = useId();
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ export function ViewModesPanel({ children, className }) {
             onClick={() => setOpen((v) => !v)}
           >
             <span className="fe-vm-toggle__main">
-              <span className="fe-vm-toggle__label">{t('y2.view.label')}</span>
+              <span className="fe-vm-toggle__label">{label || t('y2.view.label')}</span>
               <span className="fe-vm-toggle__sum">{summary}</span>
             </span>
             <span className="fe-vm-toggle__act">

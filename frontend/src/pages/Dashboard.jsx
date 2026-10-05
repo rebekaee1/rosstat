@@ -5,6 +5,7 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import HomeWorkbench from '../components/home/HomeWorkbench';
 import HomeCountryList from '../components/home/HomeCountryList';
+import HomeTools from '../components/home/HomeTools';
 import { useWorldRatingConcepts } from '../lib/worldApi';
 import { readHomeBootstrap } from '../lib/homeBootstrap';
 import { useLocale } from '../i18n';
@@ -42,6 +43,7 @@ export default function Dashboard() {
       <div className="relative">
         <HomeWorkbench ratingConcepts={ratingConcepts} />
       </div>
+      <HomeTools />
       <HomeCountryList russiaSeriesCount={listedCount} />
     </div>
   );

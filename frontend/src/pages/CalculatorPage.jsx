@@ -12,7 +12,7 @@ import {
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
-import { formatDate, formatAxisTick, pickChartAxisTicks, cn } from '../lib/format';
+import { formatDate, pickChartAxisTicks, cn } from '../lib/format';
 import { formatInput, fmtPct, decimalText, years as yearsPhrase } from '../lib/calcFormat';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
@@ -33,27 +33,33 @@ import CalcCountryPicker from '../components/CalcCountryPicker';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalculatorSiblings from '../components/CalculatorSiblings';
+import CalculatorShowcase from '../components/CalculatorShowcase';
+import CalcBeforeAfter from '../components/CalcBeforeAfter';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
+import '../styles/w6-g.css';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { useLocale, useT } from '../i18n';
 import {
   defaultCountrySlug,
-  formatCalcAmount,
   normalizePeriod,
   RUSSIA_SLUG,
 } from '../lib/inflationCalc';
+import { RUB, currencyForCountry, currencyInPhrase, formatMoney } from '../lib/countryCurrency';
 import {
   russiaIndicatorPath,
   russiaHomePath,
   regionHubPath,
   demographicsPath,
+  countryPath,
+  comparePath,
+  worldRatingPath,
 } from '../lib/sitePaths';
 
 /* ─── Constants ─── */
@@ -75,7 +81,7 @@ const MILESTONES = [
 ];
 
 const WORLD_FAQ_KEYS = [
-  { q: 'calc.inflation.faq.world.q1', a: 'calc.inflation.faq.world.a1' },
+  { q: 'calc.inflation.faq.world.q1', a: 'w6g.calc.faq.world.a1' },
   { q: 'calc.inflation.faq.world.q2', a: 'calc.inflation.faq.world.a2' },
 ];
 
@@ -94,7 +100,7 @@ const CATEGORY_META = [
   { key: 'services', labelKey: 'calc.inflation.cat.services', icon: Wrench },
 ];
 
-/** Перелинковка «Смотреть дальше»: ключи i18n + дефолты на случай гонки агентов. */
+/** Перелинковка «Смотреть дальше» для России. Для других стран ссылки строятся по выбранной стране. */
 const WATCH_MORE_LINKS = [
   {
     key: 'world.calc.watchMore.regions',
@@ -118,14 +124,14 @@ const WATCH_MORE_LINKS = [
 
 /* ─── Sub-components ─── */
 
-function ChartTooltip({ active, payload, label, withRuble = true }) {
+function ChartTooltip({ active, payload, label, format }) {
   if (!active || !payload?.length) return null;
   const p = payload[0];
   if (p?.value == null) return null;
   return (
     <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[160px] max-w-[calc(100vw-48px)]">
       <p className="text-xs text-text-secondary mb-1.5">{formatDate(label, 'full')}</p>
-      <p className="text-sm font-semibold tabular-nums text-champagne-ink">{formatCalcAmount(p.value, { withRuble })}</p>
+      <p className="text-sm font-semibold tabular-nums text-champagne-ink">{format(p.value)}</p>
     </div>
   );
 }
@@ -190,7 +196,7 @@ function CategoryBars({ result }) {
   );
 }
 
-function YearlyBreakdownTable({ breakdown, withRuble = true, partial = null }) {
+function YearlyBreakdownTable({ breakdown, format, partial = null }) {
   const t = useT();
   const [expanded, setExpanded] = useState(false);
   if (!breakdown?.length) return null;
@@ -249,7 +255,7 @@ function YearlyBreakdownTable({ breakdown, withRuble = true, partial = null }) {
                     {fmtPct(row.cumulativeRate, true)}
                   </td>
                   <td className="py-2 px-1 text-right text-xs text-text-secondary tabular-nums hidden sm:table-cell">
-                    {formatCalcAmount(row.purchasingPower, { withRuble })}
+                    {format(row.purchasingPower)}
                   </td>
                 </tr>
               );
@@ -311,7 +317,7 @@ export default function CalculatorPage() {
 
   const {
     result, isLoading, isError, isFetching, refetch, lastAvailableYear, minYear, lastAvailableDate,
-    countries, source, sourceUrl, resolvedCountrySlug, countryName, seriesStartYear, isRussia,
+    countries, countriesLoading, source, sourceUrl, resolvedCountrySlug, countryName, seriesStartYear, isRussia,
   } = useInflationCalc(amount, rawFromYear, rawToYear, countrySlug);
 
   // K4a: канонизированный период — производное состояние, синхронизируемое во
@@ -330,6 +336,10 @@ export default function CalculatorPage() {
   const toYear = periodTouched ? rawToYear : normalized.to;
 
   const withRuble = isRussia;
+  // Валюта страны: «Сумма в австралийских долларах», «A$100 000» вместо «нац. валюта».
+  const currency = isRussia ? RUB : currencyForCountry(resolvedCountrySlug);
+  const money = useCallback((n) => formatMoney(n, currency, locale), [currency, locale]);
+  const shortSymbolPrefix = Boolean(currency?.prefix && currency.symbol.length <= 2);
   const sourceLabel = source ? localizeSource(source, locale) : '';
   // K4b: имя источника ведёт на его сайт (source_url, новая вкладка); без URL —
   // внутренний фолбэк: страница страны или карточка ИПЦ России.
@@ -418,6 +428,7 @@ export default function CalculatorPage() {
   // считался бы с 1991, а пользователь видел «с 1990».
   const dispFrom = result?.effectiveFrom ?? fromYear;
   const dispTo = result?.effectiveTo ?? toYear;
+  const amountText = isRussia ? formatInput(amount) : money(amount);
 
   const handleCopyText = useCallback(async () => {
     if (!result) return;
@@ -426,27 +437,27 @@ export default function CalculatorPage() {
     const toY = result.effectiveTo ?? toYear;
     const text = reversed
       ? t(withRuble ? 'calc.inflation.shareReverse' : 'calc.inflation.shareReversePlain', {
-        amount: formatInput(amount),
+        amount: amountText,
         to: toY,
-        value: formatCalcAmount(result.purchasing, { withRuble }),
+        value: money(result.purchasing),
         from: fromY,
         inflation: fmtPct(result.totalInflation),
       })
       : t(withRuble ? 'calc.inflation.shareForward' : 'calc.inflation.shareForwardPlain', {
-        amount: formatInput(amount),
+        amount: amountText,
         from: fromY,
-        value: formatCalcAmount(result.equivalent, { withRuble }),
+        value: money(result.equivalent),
         to: toY,
         inflation: fmtPct(result.totalInflation),
       });
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
-  }, [result, amount, fromYear, toYear, reversed, t, withRuble]);
+  }, [result, amountText, fromYear, toYear, reversed, t, withRuble, money]);
 
-  const formatHero = useCallback((v) => formatCalcAmount(v, { withRuble }), [withRuble]);
+  const formatHero = money;
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
   const heroPrefix = reversed
-    ? t(withRuble ? 'calc.inflation.heroWas' : 'calc.inflation.heroWasPlain', { amount: formatInput(amount), year: dispTo })
-    : t(withRuble ? 'calc.inflation.heroIs' : 'calc.inflation.heroIsPlain', { amount: formatInput(amount), year: dispFrom });
+    ? t(withRuble ? 'calc.inflation.heroWas' : 'calc.inflation.heroWasPlain', { amount: amountText, year: dispTo })
+    : t(withRuble ? 'calc.inflation.heroIs' : 'calc.inflation.heroIsPlain', { amount: amountText, year: dispFrom });
   const heroSuffix = t('calc.inflation.inYear', { year: reversed ? dispFrom : dispTo });
 
   const chartData = useMemo(() => {
@@ -475,10 +486,10 @@ export default function CalculatorPage() {
     const niceMax = Math.ceil(hi / step) * step;
     const ticks = [];
     for (let v = niceMin; v <= niceMax + step * 0.01; v += step) ticks.push(Math.round(v));
-    const sampleLabel = `${formatAxisTick(niceMax, 0)}${isRussia ? ' ₽' : ''}`;
+    const sampleLabel = money(niceMax);
     const w = axisWidthForLabels([sampleLabel], { min: 50, max: 110, perChar: 7.2, pad: 12 });
     return { yDomain: [niceMin, niceMax], yTicks: ticks, yWidth: w };
-  }, [chartData, amount, chartMode, isRussia]);
+  }, [chartData, amount, chartMode, money]);
 
   // Подписи оси X — через равные годовые промежутки (а не «2016, 2019, 2026»).
   const xTicks = useMemo(
@@ -508,6 +519,33 @@ export default function CalculatorPage() {
     const month = formatDate(result.periodTo, 'short').split(' ')[0];
     return { year: end.getUTCFullYear(), text: t('x4.calc.partialYear', { month }) };
   }, [result, t]);
+
+  // «Смотреть дальше» следует за выбранной страной: для России её разделы, для других стран страница страны,
+  // рейтинг инфляции и сравнение.
+  const watchMore = useMemo(() => {
+    if (isRussia || !resolvedCountrySlug) {
+      return WATCH_MORE_LINKS.map((item) => ({
+        key: item.key,
+        to: item.to,
+        label: t(item.key, locale === 'en' ? item.fallbackEn : item.fallbackRu),
+      }));
+    }
+    return [
+      {
+        key: 'country',
+        to: countryPath(resolvedCountrySlug),
+        label: countryName
+          ? t('w6g.calc.watchMore.country', { country: countryName })
+          : t('w6g.calc.watchMore.countryGeneric'),
+      },
+      { key: 'rating', to: worldRatingPath('hicp-index'), label: t('w6g.calc.watchMore.rating') },
+      {
+        key: 'compare',
+        to: `${comparePath()}?codes=${encodeURIComponent(`w:${resolvedCountrySlug}:hicp-index`)}`,
+        label: t('w6g.calc.watchMore.compare'),
+      },
+    ];
+  }, [isRussia, resolvedCountrySlug, countryName, locale, t]);
 
   /* ── Insights ── */
   const insights = useMemo(() => {
@@ -615,7 +653,7 @@ export default function CalculatorPage() {
   /* ─── Render ─── */
 
   return (
-    <div className="fe-data-page max-w-3xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-12 sm:pb-16">
+    <div className="fe-data-page fe-gutter max-w-3xl mx-auto pt-24 md:pt-28 pb-12 sm:pb-16">
 
       <div style={revealStyle(0)} className="fe-reveal mb-8">
         <Breadcrumbs items={toolTrail(t('calc.inflation.title'), '/calculator')} />
@@ -637,9 +675,13 @@ export default function CalculatorPage() {
         <p className="text-base text-text-secondary leading-relaxed max-w-xl">
           {isRussia
             ? t('calc.inflation.subtitle')
-            : t('calc.inflation.subtitleWorld', { country: countryName || '' })}
+            : countryName
+              ? t('w6g.calc.subtitleWorld', { country: countryName })
+              : t('w6g.calc.subtitleWorldNoName')}
         </p>
       </header>
+
+      <CalculatorShowcase current="inflation" />
 
       {/* Calculator Card */}
       <section style={revealStyle(2)} data-block="calc-form" className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
@@ -649,29 +691,43 @@ export default function CalculatorPage() {
           value={resolvedCountrySlug}
           onChange={handleCountryChange}
           russiaLabel={t('calc.country.russia')}
+          loading={countriesLoading}
+          fallbackName={countryName || ''}
         />
 
-        {/* Amount + direction toggle */}
+        {/* Направление расчёта: два понятных варианта вместо кнопки «Прямой расчёт» */}
+        <div className="fe-w6g-direction" role="group" aria-label={t('w6g.calc.directionAria')}>
+          <Chip
+            active={!reversed}
+            onClick={() => { if (reversed) { setReversed(false); track(events.CALC_DIRECTION, { reversed: false }); } }}
+            className="gap-1.5 rounded-full"
+          >
+            <ArrowUpDown className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('w6g.calc.directionToday')}
+          </Chip>
+          <Chip
+            active={reversed}
+            onClick={() => { if (!reversed) { setReversed(true); track(events.CALC_DIRECTION, { reversed: true }); } }}
+            className="gap-1.5 rounded-full"
+          >
+            <ArrowUpDown className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('w6g.calc.directionThen')}
+          </Chip>
+        </div>
+
+        {/* Amount */}
         <div className="mb-6">
           <CalcMoneyField
             id="calc-amount"
-            label={t('calc.inflation.amount')}
-            unitName={t(withRuble ? 'calc.ui.unitRubles' : 'calc.ui.unitLocal')}
+            label={currency
+              ? `${t('calc.inflation.amount')} ${currencyInPhrase(currency, locale)}`
+              : t('calc.inflation.amount')}
+            unitName={isRussia ? t('calc.ui.unitRubles') : (currency ? '' : t('calc.ui.unitLocal'))}
             value={amount}
             onChange={setAmount}
-            prefix={withRuble ? '₽' : ''}
-            suffix={withRuble ? '' : t('calc.ui.suffixLocal')}
-            placeholder="100 000"
-            labelAddon={(
-              <Chip
-                active={reversed}
-                onClick={() => { setReversed(r => !r); track(events.CALC_DIRECTION, { reversed: !reversed }); }}
-                className="gap-1.5 rounded-full"
-              >
-                <ArrowUpDown className="w-3.5 h-3.5"  />
-                {reversed ? t('calc.inflation.reverse') : t('calc.inflation.forward')}
-              </Chip>
-            )}
+            prefix={isRussia ? '₽' : (shortSymbolPrefix ? currency.symbol : '')}
+            suffix={isRussia || shortSymbolPrefix ? '' : (currency ? currency.symbol : t('calc.ui.suffixLocal'))}
+            placeholder={locale === 'en' ? '100,000' : '100 000'}
           />
           {reversed && (
             <p className="mt-2 text-xs text-champagne-ink">
@@ -737,7 +793,7 @@ export default function CalculatorPage() {
       {/* Error */}
       {isError && !isLoading && (
         <ApiRetryBanner className="mb-6" onRetry={refetch} isFetching={isFetching}>
-          {t(isRussia ? 'w5.calc.inflation.loadError' : 'calc.inflation.loadErrorWorld')}
+          {t(isRussia ? 'w5.calc.inflation.loadError' : 'w6g.calc.loadError')}
         </ApiRetryBanner>
       )}
 
@@ -772,10 +828,28 @@ export default function CalculatorPage() {
                 'block min-h-[1.2em] font-display font-bold tracking-tight mb-1',
                 extremeInflation
                   ? 'text-negative text-3xl md:text-4xl lg:text-5xl'
-                  : 'text-text-primary text-4xl md:text-5xl lg:text-6xl'
+                  : 'fe-w6g-hero-num text-4xl md:text-5xl lg:text-6xl'
               )}
             />
-            <p className="text-sm text-text-secondary mb-6">{heroSuffix}</p>
+            <p className="text-sm text-text-secondary mb-2">{heroSuffix}</p>
+
+            <CalcBeforeAfter
+              ariaLabel={t('w6g.calc.baAria', {
+                a: reversed ? money(result.purchasing) : amountText,
+                b: reversed ? amountText : money(result.equivalent),
+              })}
+              before={{
+                label: String(reversed ? dispFrom : dispFrom),
+                value: reversed ? result.purchasing : amount,
+                text: reversed ? money(result.purchasing) : amountText,
+              }}
+              after={{
+                label: String(dispTo),
+                value: reversed ? amount : result.equivalent,
+                text: reversed ? amountText : money(result.equivalent),
+              }}
+            />
+            <div className="mb-6" />
 
             {/* В-29: границы периода проговорены явно — «из 2000 в 2026»
                 означает с января 2000 по последний доступный месяц 2026. */}
@@ -791,7 +865,7 @@ export default function CalculatorPage() {
             {(result.clamped || urlPeriodClamped) && (
               <p className="text-xs text-text-tertiary mb-6 -mt-4">
                 {t(
-                  isRussia ? 'w5.calc.inflation.clampedNote' : 'calc.inflation.shortSeries',
+                  isRussia ? 'w5.calc.inflation.clampedNote' : (countryName ? 'w6g.calc.shortData' : 'w6g.calc.shortDataNoName'),
                   {
                     min: effectiveMin,
                     max: effectiveMax,
@@ -904,10 +978,10 @@ export default function CalculatorPage() {
                     />
                     <YAxis stroke={CHART_THEME.axisLine} tick={axisTick()}
                       tickLine={false} axisLine={false} domain={yDomain} ticks={yTicks}
-                      tickFormatter={v => `${formatAxisTick(v, 0)}${withRuble ? '\u00A0₽' : ''}`} width={yWidth}
+                      tickFormatter={(v) => money(v)} width={yWidth}
                     />
                     <Tooltip
-                      content={<ChartTooltip withRuble={withRuble} />}
+                      content={<ChartTooltip format={money} />}
                       cursor={TOOLTIP_STYLES.cursor}
                       {...touchTip.tooltipProps}
                     />
@@ -918,7 +992,7 @@ export default function CalculatorPage() {
                       stroke={CHART_THEME.refLine}
                       strokeDasharray="6 4"
                       label={yTicks?.includes(amount) ? undefined : refLabel(
-                        formatCalcAmount(amount, { withRuble }),
+                        money(amount),
                         chartMode === 'purchasing' ? 'insideBottomRight' : 'insideTopLeft',
                       )}
                     />
@@ -967,7 +1041,7 @@ export default function CalculatorPage() {
               <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
-              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} withRuble={withRuble} partial={partialYear} />
+              <YearlyBreakdownTable breakdown={result.yearlyBreakdown} format={money} partial={partialYear} />
             </section>
           )}
         </>
@@ -980,7 +1054,7 @@ export default function CalculatorPage() {
           paragraphs={[
             t(isRussia ? 'w5.calc.inflation.how.p1' : 'w5.calc.inflation.how.world.p1'),
             t(isRussia ? 'w5.calc.inflation.how.p2' : 'w5.calc.inflation.how.world.p2'),
-            t(isRussia ? 'w5.calc.inflation.how.p3' : 'calc.inflation.method.world.p3'),
+            t(isRussia ? 'w5.calc.inflation.how.p3' : 'w6g.calc.method.p3'),
           ]}
         />
       </div>
@@ -1007,14 +1081,14 @@ export default function CalculatorPage() {
           {t('world.calc.watchMore.title', locale === 'en' ? 'Keep exploring' : 'Смотреть дальше')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {WATCH_MORE_LINKS.map((item) => (
+          {watchMore.map((item) => (
             <Link
               key={item.key}
               to={item.to}
               className="fe-panel fe-press group block min-h-11 rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors"
             >
               <p className="text-sm font-semibold text-text-primary group-hover:text-champagne-ink transition-colors">
-                {t(item.key, locale === 'en' ? item.fallbackEn : item.fallbackRu)}
+                {item.label}
               </p>
             </Link>
           ))}

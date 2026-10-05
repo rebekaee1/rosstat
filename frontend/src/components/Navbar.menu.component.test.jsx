@@ -72,6 +72,28 @@ describe('Navbar: появление и закрытие панелей', () => 
     expect([...menu.querySelectorAll('a')].some((a) => a.getAttribute('href') === '/currencies')).toBe(true);
   });
 
+  it('выпадашка инструментов: три калькулятора и виджеты, у каждого пометка, для кого он', () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
+    const menu = screen.getByRole('menu');
+    const hrefs = [...menu.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    expect(hrefs).toEqual(['/calculator', '/calculator/mortgage', '/calculator/compound', '/widgets']);
+    expect(menu.textContent).toContain('Россия и страны мира');
+    expect(menu.textContent).toContain('Для рублёвых кредитов');
+    expect(menu.textContent).toContain('Для любой валюты');
+    expect(menu.textContent).toContain('Встроить график на сайт');
+  });
+
+  it('мобильное меню: «Виджеты» лежат в группе «Инструменты» вместе с калькуляторами', () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    const widgets = [...menu.querySelectorAll('a')].find((a) => a.getAttribute('href') === '/widgets');
+    expect(widgets).toBeTruthy();
+    expect(widgets.textContent.trim()).toBe('Виджеты');
+    expect(widgets.closest('.fe-mnav-group').textContent).toContain('Инструменты');
+  });
+
   it('мобильное меню закрывается тапом вне панели, но не тапом внутри неё', () => {
     renderNav();
     fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
@@ -84,9 +106,9 @@ describe('Navbar: появление и закрытие панелей', () => 
     expect(document.getElementById('fe-nav-mobile-menu')).toBeNull();
   });
 
-  it('выпадашка калькуляторов: панель с классом появления, Esc закрывает и возвращает фокус на кнопку', () => {
+  it('выпадашка инструментов: панель с классом появления, Esc закрывает и возвращает фокус на кнопку', () => {
     renderNav();
-    const btn = screen.getByRole('button', { name: /Калькуляторы/i });
+    const btn = screen.getByRole('button', { name: /Инструменты/i });
     fireEvent.click(btn);
 
     const menu = screen.getByRole('menu');
@@ -98,9 +120,9 @@ describe('Navbar: появление и закрытие панелей', () => 
     expect(document.activeElement).toBe(btn);
   });
 
-  it('выпадашка калькуляторов закрывается тапом вне (pointerdown)', () => {
+  it('выпадашка инструментов закрывается тапом вне (pointerdown)', () => {
     renderNav();
-    fireEvent.click(screen.getByRole('button', { name: /Калькуляторы/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Инструменты/i }));
     expect(screen.getByRole('menu')).toBeTruthy();
 
     fireEvent.pointerDown(document.body);

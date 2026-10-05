@@ -1,14 +1,27 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GitCompare, Globe2, X, Search, Check } from 'lucide-react';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchCountries, suggestedCompareOptions } from '../lib/worldCompareSearch';
 import { useLocale, useT } from '../i18n';
 import { MAX_COMPARISONS, COMPARISON_COLORS } from '../lib/useCountryComparison';
+import { orderCountryOptions } from '../lib/countryOrder';
 import Button from './Button';
 import Chip from './Chip';
 import Spinner from './Spinner';
 import CountryFlag from './CountryFlag';
+import '../styles/w6-g.css';
+
+/** После выбора страны график должен быть на виду: подкручиваем к нему, если он ушёл за край экрана. */
+function scrollChartIntoView() {
+  const chart = document.getElementById('chart');
+  if (!chart?.scrollIntoView) return;
+  const top = chart.getBoundingClientRect().top;
+  if (top >= 0 && top < window.innerHeight * 0.5) return;
+  const reduce = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  chart.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
 
 export function CountryComparePicker({
   options,
@@ -19,13 +32,15 @@ export function CountryComparePicker({
   const t = useT();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const inputRef = useRef(null);
   const selected = new Set(selectedIds);
-  const filtered = filterSearchCountries(options, query);
+  const filtered = query.trim() ? filterSearchCountries(options, query) : orderCountryOptions(options);
   useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
   return (
     <div className="relative min-w-0 flex-1">
       <Search size={14} className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-text-tertiary" />
       <input
+        ref={inputRef}
         type="search"
         value={query}
         onFocus={() => {
@@ -43,7 +58,7 @@ export function CountryComparePicker({
         className="w-full rounded-xl border border-border-subtle bg-surface py-2.5 pl-9 pr-3 text-sm text-text-primary pointer-coarse:min-h-11 pointer-coarse:text-base outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
       />
       {open && (
-        <div className="fe-dialog-panel absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
+        <div className="fe-dialog-panel fe-w6g-solid-panel absolute left-0 right-0 top-full z-[60] mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
           {filtered.length ? filtered.map((option) => {
             const checked = selected.has(option.code);
             const disabled = !checked && selectedIds.length >= MAX_COMPARISONS;
@@ -56,6 +71,10 @@ export function CountryComparePicker({
                 onClick={() => {
                   onToggle(option.code);
                   setQuery('');
+                  // Выбор сделан: список закрывается, клавиатура уходит, график остаётся на виду.
+                  setOpen(false);
+                  inputRef.current?.blur();
+                  window.setTimeout(scrollChartIntoView, 60);
                 }}
                 className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm text-text-secondary transition-colors hover:bg-obsidian-light hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-35"
               >
@@ -75,6 +94,23 @@ export function CountryComparePicker({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Страны разного размера на одной оси: меньшая линия кажется ровной, хотя меняется.
+ * Плашка стоит НАД графиком и одним нажатием включает проценты.
+ */
+export function ScaleNudge({ show, onScale }) {
+  const t = useT();
+  if (!show) return null;
+  return (
+    <div className="fe-w6g-scale-nudge mb-3" role="status" data-testid="compare-scale-nudge" data-no-export="true">
+      <p>{t('w6g.chart.scaleNudge')}</p>
+      <Button variant="primary" onClick={() => onScale('index')}>
+        {t('w6g.chart.showPercent')}
+      </Button>
     </div>
   );
 }
@@ -151,6 +187,7 @@ export default function CountryComparePanel({
           />
         </div>
       )}
+
 
       {activeComparisonIds.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3">

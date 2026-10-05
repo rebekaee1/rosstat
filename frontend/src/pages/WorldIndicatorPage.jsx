@@ -46,6 +46,8 @@ import LoadingNote from '../components/LoadingNote';
 import DeltaBadge from '../components/DeltaBadge';
 import WorldCountUp from '../components/WorldCountUp';
 import WorldStatTiles, { WorldHeroLine } from '../components/WorldStatTiles';
+import PopulationStats from '../components/PopulationStats';
+import { isPeopleUnit } from '../lib/populationFacts';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
@@ -304,6 +306,9 @@ export default function WorldIndicatorPage() {
       return Number.isFinite(value) ? (String(Math.abs(value)).split('.')[1] || '').length : 0;
     })))
     : chartValueDigits(rawUnit || displayUnit);
+  // Численность населения: плитки «28,1 млн», «за год», «место среди стран», «рост за 10 лет».
+  const isPopulation = indicator?.concept_slug === 'population'
+    && isPeopleUnit(rawUnit || displayUnit || indicator?.unit);
   const polarity = indicatorPolarity(displayName);
   const summary = useMemo(
     () => buildIndicatorSummary({
@@ -622,6 +627,8 @@ export default function WorldIndicatorPage() {
                   <SkeletonBox key={i} className="h-32 rounded-3xl" />
                 ))}
               </div>
+            ) : isPopulation ? (
+              <PopulationStats points={points} unit={rawUnit} countrySlug={slug} />
             ) : (
               <WorldStatTiles
                 summary={summary}

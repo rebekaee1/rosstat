@@ -19,7 +19,7 @@ import { chartCaption } from '../lib/chartCaption';
 import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import { countryPath, worldRatingPath } from '../lib/sitePaths';
-import CountryComparePanel from './CountryComparePicker';
+import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 
 /**
  * Секция графика мировой карточки.
@@ -84,6 +84,7 @@ export default function WorldChartSection({
     setComparisonPickerActive,
     compareCodes,
     rebased,
+    scaleMismatch,
     loadedComparisonSeries,
     displayedUnit,
     windowRebase,
@@ -126,6 +127,9 @@ export default function WorldChartSection({
     if (sizes.length < 2) return false;
     return Math.max(...sizes) / Math.min(...sizes) >= 2;
   }, [loadedComparisonSeries, dataPoints, unit, modeMeta?.type]);
+
+  // Плашка «Показать в процентах» над графиком; предложение внутри панели сравнения не дублирует её.
+  const showScaleNudge = scaleMismatch && comparisonScale === 'values';
 
   const handleDownloadImage = async () => {
     if (!downloadAuthed) {
@@ -202,9 +206,10 @@ export default function WorldChartSection({
           rebased={rebased}
           loadedComparisonSeries={loadedComparisonSeries}
           baseLabel={country?.name || ''}
-          suggestPercent={suggestPercent}
+          suggestPercent={suggestPercent && !showScaleNudge}
         />
       </div>
+      <ScaleNudge show={showScaleNudge} onScale={setComparisonScale} />
 
       {chartLoading ? (
         <ChartSectionSkeleton />

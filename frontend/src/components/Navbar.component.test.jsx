@@ -46,7 +46,7 @@ function renderShell(route = '/', locale) {
 }
 
 describe('Navbar H-4 menu', () => {
-  it('десктоп: Страны, Рейтинг, Сравнение, Прогнозы, Россия и Калькуляторы; на главную ведёт логотип', () => {
+  it('десктоп: Страны, Рейтинг, Сравнение, Прогнозы, Россия и Инструменты; на главную ведёт логотип', () => {
     renderShell();
 
     const nav = screen.getByRole('navigation');
@@ -64,7 +64,7 @@ describe('Navbar H-4 menu', () => {
     expect(within(nav).getByRole('link', { name: 'Сравнение' }).getAttribute('href')).toBe('/compare');
     expect(within(nav).getByRole('link', { name: 'Прогнозы' }).getAttribute('href')).toBe('/methodology#read');
     expect(within(nav).getByRole('link', { name: 'Россия' }).getAttribute('href')).toBe(russiaHomePath());
-    expect(within(nav).getByRole('button', { name: /Калькуляторы/i })).toBeTruthy();
+    expect(within(nav).getByRole('button', { name: /Инструменты/i })).toBeTruthy();
   });
 
   it('мобильное меню: мировые разделы сверху с подписями, «Россия» одной раскрывающейся строкой', () => {

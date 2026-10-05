@@ -34,7 +34,7 @@ const COMMON_ROUTES = [
 describe('ComparePage: состояния графика', () => {
   it('без выбранных показателей — вежливо озвученное состояние «не выбраны», без кнопки «Повторить»', async () => {
     mockApiGet(COMMON_ROUTES);
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     const box = await screen.findByTestId('compare-empty');
     expect(box.getAttribute('data-state')).toBe('none');
     expect(box.getAttribute('role')).toBe('status');

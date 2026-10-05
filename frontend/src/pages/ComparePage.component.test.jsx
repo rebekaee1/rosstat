@@ -95,7 +95,7 @@ describe('ComparePage', () => {
 
   it('AddIndicator dual-write: compare_search и search_query(compare-macro)', async () => {
     mockCompareApis();
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     fireEvent.click(await screen.findByRole('button', { name: 'Россия' }));
     fireEvent.click(await screen.findByRole('button', { name: /Макропоказатели/ }));
     const input = await screen.findByPlaceholderText('Найдите или выберите макроиндикатор…');
@@ -118,7 +118,7 @@ describe('ComparePage', () => {
 
   it('на шаге России поиск сразу по всему каталогу, плитки макро/регионы на месте', async () => {
     mockCompareApis();
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     fireEvent.click(await screen.findByRole('button', { name: 'Россия' }));
     expect(screen.getByRole('button', { name: /Макропоказатели/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: /Регионы/ })).toBeTruthy();
@@ -130,7 +130,7 @@ describe('ComparePage', () => {
 
   it('фраза «Сначала выберите страну, затем показатель» на странице один раз', async () => {
     mockCompareApis();
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     await screen.findByRole('heading', { level: 1 });
     expect(screen.getAllByText(/Сначала выберите страну/i)).toHaveLength(1);
     expect(document.body.textContent.match(/выберите страну, затем показатель/gi) || []).toHaveLength(1);
@@ -138,7 +138,7 @@ describe('ComparePage', () => {
 
   it('показывает шаг выбора страны с Россией первой', async () => {
     mockCompareApis();
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     expect(await screen.findByText('Страна')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Россия' })).toBeTruthy();
     expect(await screen.findByRole('button', { name: 'Германия' })).toBeTruthy();
@@ -216,7 +216,7 @@ describe('ComparePage', () => {
         ],
       }],
     ]);
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare', locale: 'en' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=', locale: 'en' });
     const heading = await screen.findByRole('heading', { level: 1 });
     expect(heading.textContent).toBe('Compare indicators');
     const picker = document.querySelector('[data-block="compare-add"]');
@@ -270,7 +270,7 @@ describe('ComparePage', () => {
       path: '/compare',
       route: '/compare?codes=w:united-states:us-unemployment-rate',
     });
-    expect(await screen.findByRole('heading', { level: 2, name: /Уровень безработицы — США/ })).toBeTruthy();
+    expect(await screen.findByRole('heading', { level: 2, name: /Безработица: США/ })).toBeTruthy();
     expect(screen.queryByTestId('compare-chart-skeleton')).toBeNull();
     expect(screen.queryByTestId('compare-empty')).toBeNull();
     const urls = spy.mock.calls.map((call) => String(call[0]));
@@ -332,7 +332,7 @@ describe('ComparePage', () => {
         ],
       }],
     ]);
-    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=' });
     fireEvent.click(await screen.findByRole('button', { name: 'США' }));
     expect(await screen.findByRole('button', { name: /Макропоказатели/ })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Штаты/ }));

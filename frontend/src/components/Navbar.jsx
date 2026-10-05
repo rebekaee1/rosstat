@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Menu, X, ChevronDown, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2, Home, Info,
-  Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp,
+  Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -90,11 +90,12 @@ const MOBILE_ICONS = {
   book: BookOpen,
 };
 
-// Три калькулятора — три разных значка: в меню телефона их различают с первого взгляда.
+// Инструменты: три калькулятора (три разных значка, у каждого пометка «для каких стран») и конструктор виджетов.
 const CALCULATOR_ITEMS = [
-  { to: '/calculator', labelKey: 'nav.calc.inflation', icon: Percent },
-  { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage', icon: Building2 },
-  { to: '/calculator/compound', labelKey: 'nav.calc.compound', icon: PiggyBank },
+  { to: '/calculator', labelKey: 'nav.calc.inflation', noteKey: 'w6g.nav.note.inflation', icon: Percent },
+  { to: '/calculator/mortgage', labelKey: 'nav.calc.mortgage', noteKey: 'w6g.nav.note.mortgage', icon: Building2 },
+  { to: '/calculator/compound', labelKey: 'nav.calc.compound', noteKey: 'w6g.nav.note.compound', icon: PiggyBank },
+  { to: '/widgets', labelKey: 'w6g.nav.widgets', noteKey: 'w6g.nav.note.widgets', icon: Code2 },
 ];
 
 export default function Navbar() {
@@ -255,7 +256,7 @@ export default function Navbar() {
             aria-haspopup="menu"
             aria-controls={calcOpen ? 'fe-nav-calc-menu' : undefined}
           >
-            {t('nav.calculators')}
+            {t('w6g.nav.tools')}
             <ChevronDown className={cn('w-4 h-4 transition-transform', calcOpen && 'rotate-180')} />
           </button>
           {calcOpen && (
@@ -275,7 +276,8 @@ export default function Navbar() {
                   onClick={closeAll}
                   role="menuitem"
                 >
-                  {t(c.labelKey)}
+                  <span className="block">{t(c.labelKey)}</span>
+                  <span className="block text-xs font-normal text-text-secondary">{t(c.noteKey)}</span>
                 </NavLink>
               ))}
             </div>
@@ -370,7 +372,7 @@ export default function Navbar() {
                 );
               })}
               <div className="fe-mnav-group">
-                <p className="fe-mnav-title">{t('nav.calculators')}</p>
+                <p className="fe-mnav-title">{t('w6g.nav.tools')}</p>
                 {CALCULATOR_ITEMS.map((c) => {
                   const CalcIcon = c.icon;
                   return (

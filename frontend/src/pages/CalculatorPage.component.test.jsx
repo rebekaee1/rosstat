@@ -219,7 +219,7 @@ describe('CalculatorPage country select', () => {
     });
 
     await waitFor(() => {
-      expect(collapseWs(document.body.textContent)).toMatch(/ряд есть с 2018/);
+      expect(collapseWs(document.body.textContent)).toMatch(/данные есть с 2018/);
     });
     expect(collapseWs(document.body.textContent)).toMatch(/2019–2020|2019-2020/);
     expect(collapseWs(document.body.textContent)).toMatch(/106[ ,]080/);

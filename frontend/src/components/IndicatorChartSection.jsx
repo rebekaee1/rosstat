@@ -12,9 +12,11 @@ import { useLocale, useT } from '../i18n';
 import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
 import { forecastTooltipLabel, levelTooltipLabel } from '../i18n/chartTooltipLabels';
 import { useCountryComparison } from '../lib/useCountryComparison';
-import CountryComparePanel from './CountryComparePicker';
+import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 import ChartDownloadMenu from './ChartDownloadMenu';
 import ForecastControl from './ForecastControl';
+import EmbedLink from './EmbedLink';
+import Button from './Button';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import '../styles/y2-indicator.css';
@@ -250,6 +252,7 @@ export default function IndicatorChartSection({
             onExcel={onDownloadExcel}
             onPng={handleDownloadImage}
           />
+          <EmbedLink code={code} />
           <Link
             to="/methodology"
             title={t('chart.methodologyHint')}
@@ -285,6 +288,10 @@ export default function IndicatorChartSection({
           baseLabel={t('nav.russia')}
         />
       </div>
+      <ScaleNudge
+        show={compareCompatible && comparison.scaleMismatch && comparison.comparisonScale === 'values'}
+        onScale={comparison.setComparisonScale}
+      />
 
       {chartLoading ? (
         <ChartSectionSkeleton />
