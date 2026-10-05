@@ -196,11 +196,42 @@ describe('WorldChartSection', () => {
     expect(within(compare).getByRole('button', { name: 'Китай' })).toBeTruthy();
   });
 
-  it('название показателя не повторяется над графиком: один заголовок секции и подпись «что показано»', () => {
+  it('над графиком человеческое название: «Население, Германия: за 10 лет, человек»; один заголовок секции', () => {
     const { container } = renderSection();
-    expect(container.textContent).not.toContain('Население');
+    expect(container.querySelectorAll('h2')).toHaveLength(1);
     expect(container.querySelector('h2').textContent).toBe('Динамика показателя');
-    expect(container.querySelector('.fe-chart-title').textContent).toContain('Значения');
+    const title = container.querySelector('.fe-chart-title').textContent;
+    expect(title).toBe('Население, Германия: за 10 лет, человек');
+    // Выбор другого периода меняет слова о периоде в названии.
+    fireEvent.click(within(container.querySelector('.fe-chart-toolbar')).getByRole('button', { name: '5 л.' }));
+    expect(container.querySelector('.fe-chart-title').textContent).toBe('Население, Германия: за 5 лет, человек');
+  });
+
+  it('график идёт в разметке после сравнения стран и действий, а на телефоне первым его ставит CSS (order)', () => {
+    const { container } = renderSection();
+    const section = container.querySelector('section#chart');
+    expect(section.className).toContain('z4-chart-section');
+    const kids = [...section.children].map((el) => el.className.split(' ')[0]);
+    expect(kids).toEqual(['fe-chart-head', 'z4-compare', 'z4-chart-wrap']);
+    expect(section.querySelector('.z4-chart-wrap .fe-chart-plot')).toBeTruthy();
+  });
+
+  it('рядом с «Скачать» стоит заметная кнопка «Сохранить картинкой»', () => {
+    const onDownloadCsv = vi.fn();
+    renderSection({ onDownloadCsv });
+    const save = screen.getByRole('button', { name: 'Сохранить график как картинку' });
+    expect(save.textContent).toContain('Сохранить картинкой');
+    // Скачать остаётся одним, а картинка не прячется в меню.
+    expect(screen.getAllByRole('button', { name: /Скачать/ })).toHaveLength(1);
+  });
+
+  it('прогноза нет: «i» с пояснением и ссылкой «Как мы считаем прогнозы»', () => {
+    renderSection();
+    const info = screen.getByRole('button', { name: 'Прогноз для этого показателя пока не строится' });
+    expect(info.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(info);
+    expect(info.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('link', { name: 'Как мы считаем прогнозы' }).getAttribute('href')).toBe('/methodology');
   });
 
   it('есть прогноз: переключатель включён по умолчанию', () => {

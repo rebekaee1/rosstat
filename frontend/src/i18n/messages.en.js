@@ -2973,4 +2973,19 @@ export default {
   'w7p.reg.legalMid': 'and',
   'w7p.reg.legalPrivacy': 'privacy policy',
   'w7p.reg.legalAfter': ', including personal data processing.',
+
+  // ===== Z4 =====
+  'z4.mode.index': 'Growth since the start',
+  'z4.range.1y': 'last year',
+  'z4.range.5y': 'last 5 years',
+  'z4.range.10y': 'last 10 years',
+  'z4.range.25y': 'last 25 years',
+  'z4.range.all': 'all time',
+  'z4.png.save': 'Save as image',
+  'z4.png.aria': 'Save the chart as an image',
+  'z4.png.title': 'An image with the title, source and site address',
+  'z4.png.source': 'Source: {source}',
+  'z4.forecast.how': 'How we build forecasts',
+  'z4.variants.more': 'More indicators',
+  'z4.tiles.aria': 'Key figures',
 };

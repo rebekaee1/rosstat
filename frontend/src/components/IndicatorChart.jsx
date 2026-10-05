@@ -19,10 +19,16 @@ import {
 } from '../lib/chartAxis';
 import ChartBrandCaption from './ChartBrandCaption';
 import ChartBrush from './ChartBrush';
-import { chartPlotHeight } from './chartLayout';
+import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import '../styles/chart-controls.css';
+import '../styles/z4-indicator.css';
+
+// Основная линия: спокойное золото (DS7), 2,75 px. Запасное значение совпадает с палитрой бренда, пока в теме нет своего токена.
+const LINE = CHART_THEME.gold ?? CHART_THEME.line ?? '#B08A3E';
+// Прогноз: тот же ряд продолжается пунктиром более тёплого, тёмного золота, чтобы линия факта и линия прогноза не сливались.
+const FORECAST = CHART_THEME.champagneInk ?? '#80642F';
 
 // Одни и те же короткие подписи на всех страницах: «1 г., 5 л., 10 л., Всё». У годовых рядов нет смысла в «1 г.»
 // (одна точка), поэтому там начинаем с 5 лет и добавляем 25.
@@ -166,7 +172,7 @@ function CustomTooltip({
         <div className={compactNumeric ? 'text-left' : 'flex items-center justify-between gap-4'}>
           {(!numericTooltipOnly || comparisons.length > 0) && (
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-text-primary" />
+              <span className="w-2 h-2 rounded-full" style={{ background: LINE }} />
               <span className="max-w-[150px] truncate text-xs text-text-tertiary">
                 {actualSeriesLabel || actualLabel}
               </span>
@@ -213,23 +219,38 @@ function CustomTooltip({
   );
 }
 
-/** Точка последнего наблюдения с подписью значения: чтобы число читалось без наведения. */
-function LastPointMarker({ cx, cy, text, anchorEnd }) {
+/**
+ * Точка последнего наблюдения с подписью значения плашкой: число читается без наведения.
+ * Плашка стоит с той стороны линии, где пусто: над точкой у растущего ряда, под ней у падающего.
+ */
+function LastPointMarker({ cx, cy, text, anchorEnd, below }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const width = pointLabelWidth(text);
+  const height = 22;
+  const x = anchorEnd ? cx - width + 12 : cx - 12;
+  const y = below ? cy + 14 : cy - 14 - height;
   return (
-    <g pointerEvents="none">
-      <circle cx={cx} cy={cy} r={4.5} fill={CHART_THEME.ink} stroke="#FFFFFF" strokeWidth={2} />
+    <g pointerEvents="none" className="z4-lastpoint">
+      <circle cx={cx} cy={cy} r={9} fill={LINE} fillOpacity={0.2} />
+      <circle cx={cx} cy={cy} r={4.5} fill={LINE} stroke="#FFFFFF" strokeWidth={2} />
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx={11}
+        fill="#FFFFFF"
+        stroke={LINE}
+        strokeOpacity={0.6}
+      />
       <text
-        x={anchorEnd ? cx + 2 : cx - 2}
-        y={cy - 11}
-        textAnchor={anchorEnd ? 'end' : 'start'}
+        x={x + width / 2}
+        y={y + height / 2 + 4.2}
+        textAnchor="middle"
         fill={CHART_THEME.ink}
         fontSize={12}
         fontWeight={700}
         fontFamily={CHART_THEME.font}
-        stroke="#FFFFFF"
-        strokeWidth={3}
-        paintOrder="stroke"
       >
         {text}
       </text>
@@ -265,6 +286,7 @@ export default function IndicatorChart({
   actualSeriesLabel = '',
   rebaseVisible = false,
   ariaTitle = '',
+  chartTitleBuilder = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -656,7 +678,11 @@ export default function IndicatorChart({
     });
   }, [yearTicks, visibleData, xTickBudget, dateFormat, xAxisPlotWidth, formatXAxisLabel]);
 
-  const title = cpiChartTitle
+  // Заголовок со словами о периоде («ВВП, США: за 10 лет, млрд $»); пока окно подвинули вручную, период не называем.
+  const rangeText = windowOverride == null ? t(`z4.range.${activeRange}`) : '';
+  const builtTitle = chartTitleBuilder ? chartTitleBuilder(rangeText) : null;
+  const title = builtTitle
+    ?? cpiChartTitle
     ?? (mode === 'cpi'
       ? t('chart.title.cpiMom')
       : t('chart.title.inflation12m'));
@@ -693,6 +719,16 @@ export default function IndicatorChart({
     }
     return null;
   }, [visualData]);
+  // Предыдущее значение: у падающего ряда плашка с подписью уходит под линию, у растущего стоит над ней.
+  const lastPointBelow = useMemo(() => {
+    if (!lastPointRow) return false;
+    const idx = visualData.indexOf(lastPointRow);
+    for (let i = idx - 1; i >= 0; i -= 1) {
+      const v = visualData[i].actual;
+      if (v != null && Number.isFinite(Number(v))) return Number(v) > Number(lastPointRow.actual);
+    }
+    return false;
+  }, [visualData, lastPointRow]);
   const showBrush = dataLen >= minWindow * 2;
 
   if (!dataLen) {
@@ -782,17 +818,17 @@ export default function IndicatorChart({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         className={cn(
-          'fe-chart-plot fe-chart-draw rounded-xl relative',
+          'fe-chart-plot z4-plot fe-chart-draw rounded-xl relative',
           isDragging ? 'cursor-grabbing select-none' : 'cursor-crosshair'
         )}
         style={{ touchAction: 'pan-y' }}
       >
-        <ResponsiveContainer width="100%" height={chartPlotHeight(plotWidth)}>
+        <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.15} />
-                <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0} />
+                <stop offset="0%" stopColor={LINE} stopOpacity={0.3} />
+                <stop offset="100%" stopColor={LINE} stopOpacity={0.02} />
               </linearGradient>
             </defs>
 
@@ -838,7 +874,7 @@ export default function IndicatorChart({
                   actualSeriesLabel={actualSeriesLabel}
                 />
               )}
-              cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
+              cursor={isDragging || !isHovering ? false : { stroke: 'rgba(128,100,47,0.45)', strokeWidth: 1, strokeDasharray: '3 3' }}
               active={isHovering && !isDragging}
               position={resolvedComparisonSeries.length ? undefined : { y: 0 }}
               wrapperStyle={{ pointerEvents: 'none', zIndex: 20 }}
@@ -874,30 +910,30 @@ export default function IndicatorChart({
             {chartType === 'bar' ? (
               <Bar
                 dataKey="actual"
-                fill={CHART_THEME.ink}
-                fillOpacity={0.7}
-                stroke={CHART_THEME.ink}
+                fill={LINE}
+                fillOpacity={0.78}
+                stroke={LINE}
                 isAnimationActive={false}
                 maxBarSize={28}
               />
             ) : chartType === 'line' ? (
               <Line
                 dataKey="actual"
-                stroke={CHART_THEME.ink}
-                strokeWidth={2.5}
+                stroke={LINE}
+                strokeWidth={2.75}
                 dot={false}
-                activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
+                activeDot={isDragging ? false : { r: 4.5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
                 connectNulls
               />
             ) : (
               <Area
                 dataKey="actual"
-                stroke={CHART_THEME.ink}
-                strokeWidth={2.5}
+                stroke={LINE}
+                strokeWidth={2.75}
                 fill={`url(#${gradientId})`}
                 dot={false}
-                activeDot={isDragging ? false : { r: 4, fill: CHART_THEME.ink, stroke: '#FFFFFF', strokeWidth: 2 }}
+                activeDot={isDragging ? false : { r: 4.5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
                 connectNulls
               />
@@ -921,23 +957,23 @@ export default function IndicatorChart({
               chartType === 'bar' ? (
                 <Bar
                   dataKey="forecast"
-                  fill={CHART_THEME.champagne}
-                  fillOpacity={0.8}
-                  stroke={CHART_THEME.champagne}
+                  fill={FORECAST}
+                  fillOpacity={0.7}
+                  stroke={FORECAST}
                   isAnimationActive={false}
                   maxBarSize={28}
                 />
               ) : (
                 <Line
                   dataKey="forecast"
-                  stroke={CHART_THEME.champagne}
+                  stroke={FORECAST}
                   strokeWidth={2.75}
                   connectNulls
                   strokeDasharray="7 5"
                   dot={(props) => props.payload?.date === forecastLast?.date
-                    ? <circle cx={props.cx} cy={props.cy} r="5" fill={CHART_THEME.champagne} stroke="#fff" strokeWidth="2" />
+                    ? <circle cx={props.cx} cy={props.cy} r="5" fill={FORECAST} stroke="#fff" strokeWidth="2" />
                     : null}
-                  activeDot={isDragging ? false : { r: 7, fill: CHART_THEME.champagne, stroke: '#FFFFFF', strokeWidth: 2 }}
+                  activeDot={isDragging ? false : { r: 7, fill: FORECAST, stroke: '#FFFFFF', strokeWidth: 2 }}
                   isAnimationActive={false}
                 />
               )
@@ -964,8 +1000,9 @@ export default function IndicatorChart({
                   <LastPointMarker
                     cx={props.cx}
                     cy={props.cy}
-                    text={formatValue(lastPointRow.actual, digits)}
+                    text={formatPointLabel(lastPointRow.actual, digits, locale)}
                     anchorEnd={Number(props.cx) > plotWidth * 0.45}
+                    below={lastPointBelow}
                   />
                 )}
               />
@@ -993,7 +1030,7 @@ export default function IndicatorChart({
       {resolvedComparisonSeries.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
           <div className="flex items-center gap-2">
-            <span className="h-0.5 w-5 rounded-full bg-text-primary" />
+            <span className="h-0.5 w-5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{actualSeriesLabel || t('chart.primarySeries')}</span>
           </div>
           {resolvedComparisonSeries.map((series) => (
@@ -1008,11 +1045,11 @@ export default function IndicatorChart({
       {showForecast && hasForecast && (
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 bg-text-primary rounded-full" />
+            <span className="w-5 h-0.5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{t('chart.legend.actual')}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-0.5 rounded-full" style={{ background: CHART_THEME.champagne, opacity: 0.8 }} />
+            <span className="w-5 h-0.5 rounded-full" style={{ background: FORECAST, opacity: 0.85 }} />
             <span className="text-xs text-text-secondary">{t('common.forecast')}</span>
           </div>
           {hasBand && (

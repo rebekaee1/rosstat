@@ -8,6 +8,7 @@ import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
+import IndicatorHeroValue from '../components/IndicatorHeroValue';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
 import HousingIndicatorControls from '../components/HousingIndicatorControls';
@@ -25,6 +26,10 @@ import IndicatorSeoBlocks from '../components/IndicatorSeoBlocks';
 import RegionCrossLink from '../components/RegionCrossLink';
 import RelatedIndicators from '../components/RelatedIndicators';
 import { findVariantGroup } from '../lib/indicatorVariants';
+import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
+import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
+import { indicatorPolarity } from '../lib/deltaTone';
+import { resolveDateFormat } from '../lib/format';
 import useIndicatorViewModeData from '../lib/useIndicatorViewModeData';
 import {
   findViewModeFamily,
@@ -60,6 +65,7 @@ import { isIndicatorListed } from '../lib/categories';
 import {
   russiaIndicatorPath,
 } from '../lib/sitePaths';
+import '../styles/z4-indicator.css';
 
 // Правка №16 (звонок 2026-05-21): на карточке ИПП по умолчанию показываем
 // г/г %, не уровень индекса 2018=100 (raw 105.2 без контекста бессмыслен).
@@ -503,11 +509,51 @@ export default function IndicatorDetail() {
   });
   const s = viewStats;
 
+  // Главное число в шапке (компьютер): тот же ряд и та же единица, что нарисованы на графике.
+  const heroPoints = useMemo(() => (chartMode === 'inflation'
+    ? (inflationResp?.actuals || [])
+    : chartSeriesForViewMode({
+      chartMode,
+      isUnemploymentFamily,
+      dataPoints,
+      momDataPoints,
+      quarterlyDataPoints,
+      annualDataPoints,
+      weeklyDataPoints,
+      yoyDataPoints,
+      qoqDataPoints,
+      periodWeeklyDataPoints,
+      periodMonthlyDataPoints,
+    })), [
+    chartMode, inflationResp, isUnemploymentFamily, dataPoints, momDataPoints, quarterlyDataPoints,
+    annualDataPoints, weeklyDataPoints, yoyDataPoints, qoqDataPoints, periodWeeklyDataPoints, periodMonthlyDataPoints,
+  ]);
+  const heroUnit = chartMode === 'index'
+    ? t('indicator.telemetry.unitIndex')
+    : ((isPpiFamily || isHousingFamily) ? '%' : (effectiveIndicator?.unit || '%'));
+  const heroSummary = useMemo(() => buildIndicatorSummary({
+    points: heroPoints,
+    frequency: effectiveIndicator?.frequency,
+    unit: heroUnit,
+    dataDigits: dataDigitsOf(heroPoints),
+    locale,
+  }), [heroPoints, effectiveIndicator?.frequency, heroUnit, locale]);
+  const heroDateFormat = resolveDateFormat({
+    chartMode, frequency: effectiveIndicator?.frequency, safeViewMode,
+  });
+  const heroFreq = effectiveIndicator?.frequency;
+  const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+    : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
+      : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
+        : heroFreq === 'monthly' ? t('w3.tele.delta.prevMonth')
+          : t('w3.tele.delta.prevValue');
+  const heroPolarity = indicatorPolarity(indicator?.name, indicator?.name_en, indicator?.code);
+
   const genericFamily = getViewModeFamily(code);
   const useGeneric = !!genericFamily;
   if (useGeneric) {
     return (
-      <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+      <div className="fe-data-page z4-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
         <GenericIndicatorView
           code={code}
           indicator={indicator}
@@ -524,7 +570,7 @@ export default function IndicatorDetail() {
   }
 
   return (
-    <div className="fe-data-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
+    <div className="fe-data-page z4-page max-w-7xl mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-24 md:pb-28">
       {(indError || dataError) && (
         <div className="mb-8">
           <ApiRetryBanner
@@ -551,6 +597,17 @@ export default function IndicatorDetail() {
         code={code}
         loading={loadingInd}
         displayFrequency={effectiveIndicator?.frequency}
+        aside={(heroSummary || loadingInd || chartLoading) ? (
+          <IndicatorHeroValue
+            summary={heroSummary}
+            points={heroPoints}
+            dateFormat={heroDateFormat}
+            polarity={heroPolarity}
+            frequency={heroFreq}
+            deltaSuffix={heroDeltaSuffix}
+            loading={loadingInd || Boolean(chartLoading)}
+          />
+        ) : null}
       />
 
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
@@ -638,6 +695,8 @@ export default function IndicatorDetail() {
         )}
       </ViewModesPanel>
 
+      {/* График и справа (на компьютере) плитки значений; на телефоне плитки идут под графиком: сначала то, что человек пришёл посмотреть. */}
+      <div className="z4-stage">
       <IndicatorChartSection
         code={code}
         indicator={effectiveIndicator}
@@ -678,7 +737,7 @@ export default function IndicatorDetail() {
         onNeedCompatibleMode={setViewMode}
       />
 
-      {/* Плитки значений идут под графиком: на странице сначала то, что человек пришёл посмотреть. */}
+        <div className="z4-tiles">
       <IndicatorTelemetryGrid
         indicator={effectiveIndicator}
         viewStats={s}
@@ -706,6 +765,33 @@ export default function IndicatorDetail() {
         }
       />
 
+        </div>
+      </div>
+
+      <div className="z4-lower">
+        <div className="z4-lower__table">
+      <IndicatorDataTableSection
+        indicator={effectiveIndicator}
+        chartMode={chartMode}
+        safeViewMode={safeViewMode}
+        isPriceCategory={isPriceCategory}
+        isHousingFamily={isHousingFamily}
+        isPpiFamily={isPpiFamily}
+        isCbrTermSliceFamily={isCbrTermSliceFamily}
+        isUnemploymentFamily={isUnemploymentFamily}
+        inflationResp={inflationResp}
+        dataPoints={dataPoints}
+        momDataPoints={momDataPoints}
+        quarterlyDataPoints={quarterlyDataPoints}
+        annualDataPoints={annualDataPoints}
+        weeklyDataPoints={weeklyDataPoints}
+        yoyDataPoints={yoyDataPoints}
+        qoqDataPoints={qoqDataPoints}
+        periodMonthlyDataPoints={periodMonthlyDataPoints}
+        periodWeeklyDataPoints={periodWeeklyDataPoints}
+      />
+        </div>
+        <div className="z4-lower__aside">
       <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecastDataForSection ? 'on' : 'off'}>
         <IndicatorMethodologyPanel
           indicator={indicator}
@@ -739,27 +825,8 @@ export default function IndicatorDetail() {
           hasForecastData={hasForecastDataForSection}
         />
       </div>
-
-      <IndicatorDataTableSection
-        indicator={effectiveIndicator}
-        chartMode={chartMode}
-        safeViewMode={safeViewMode}
-        isPriceCategory={isPriceCategory}
-        isHousingFamily={isHousingFamily}
-        isPpiFamily={isPpiFamily}
-        isCbrTermSliceFamily={isCbrTermSliceFamily}
-        isUnemploymentFamily={isUnemploymentFamily}
-        inflationResp={inflationResp}
-        dataPoints={dataPoints}
-        momDataPoints={momDataPoints}
-        quarterlyDataPoints={quarterlyDataPoints}
-        annualDataPoints={annualDataPoints}
-        weeklyDataPoints={weeklyDataPoints}
-        yoyDataPoints={yoyDataPoints}
-        qoqDataPoints={qoqDataPoints}
-        periodMonthlyDataPoints={periodMonthlyDataPoints}
-        periodWeeklyDataPoints={periodWeeklyDataPoints}
-      />
+        </div>
+      </div>
 
       <IndicatorSeoBlocks blocks={indicator?.seo_blocks} indicatorCode={code} />
 

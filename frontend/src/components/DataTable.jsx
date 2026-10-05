@@ -12,6 +12,7 @@ import Button from './Button';
 import Spinner from './Spinner';
 import '../styles/chart-controls.css';
 import '../styles/w6e-indicator.css';
+import '../styles/z4-indicator.css';
 
 const PAGE_SIZE = 20;
 // Блок появляется средствами CSS сразу, без задержки (раньше gsap скрывал таблицу на ~1.3 с).
@@ -91,6 +92,8 @@ export default function DataTable({
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
   const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
   const tableUnit = unitSuffix(unit);
+  // Длинная единица («индекс, старт = 100») не сжимает заголовок столбца до шести строк: она остаётся в подсказке и в блоке «О показателе».
+  const longUnit = String(tableUnit || '').trim().length > 16;
 
   return (
     <div
@@ -133,8 +136,12 @@ export default function DataTable({
                   {sortAsc ? <ChevronUp className="w-3 h-3" aria-hidden="true" /> : <ChevronDown className="w-3 h-3" aria-hidden="true" />}
                 </button>
               </th>
-              <th scope="col" className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary">
-                {tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
+              <th
+                scope="col"
+                className="fe-histtable__valhead text-right px-5 py-3 text-[13px] font-semibold text-text-secondary"
+                title={tableUnit && longUnit ? t('table.valueWithUnit', { unit: tableUnit }) : undefined}
+              >
+                {tableUnit && !longUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
               </th>
               <th scope="col" className="text-right px-5 py-3 text-[13px] font-semibold text-text-secondary">
                 {t('w6e.table.change')}

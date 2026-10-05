@@ -2,6 +2,7 @@ import Chip from './Chip';
 import ChipGroup, { OverflowChipGroup } from './ChipGroup';
 import { PickerCard, PickerLabel, PickerHint } from './PickerParts';
 import { useT } from '../i18n';
+import { cn } from '../lib/format';
 import { pickerHintKey } from '../lib/pickerLabels';
 import { modeSummaryText, useViewModeSummary } from './viewModesContext';
 
@@ -33,6 +34,7 @@ export default function ModeGroupsPicker({
   useViewModeSummary(
     'mode', 20,
     modeSummaryText(activeGroup?.label, currentSub?.label),
+    activeGroup?.label || '',
   );
 
   const body = (
@@ -73,5 +75,5 @@ export default function ModeGroupsPicker({
     </>
   );
 
-  return <PickerCard compact={compact} className={className}>{body}</PickerCard>;
+  return <PickerCard compact={compact} className={cn('fe-pick-card--mode', className)}>{body}</PickerCard>;
 }

@@ -241,12 +241,16 @@ describe('DataTable', () => {
 });
 
 describe('ChartSectionSkeleton', () => {
-  it('повторяет оболочку и высоту графика (390 по умолчанию), скрыт от скринридера', () => {
+  it('повторяет оболочку и высоту графика (общий класс плота, высота от окна), скрыт от скринридера', () => {
     const { container } = wrap(<ChartSectionSkeleton />);
     const card = container.querySelector('.fe-chart-card');
     expect(card).toBeTruthy();
+    // Высоту плота задаёт CSS-класс z4-plot: тот же, что у самого графика, поэтому подмена не сдвигает страницу.
     const plot = container.querySelector('.fe-chart-plot');
-    expect(plot.style.height).toBe('390px');
+    expect(plot.className).toContain('z4-plot');
+    expect(plot.style.height).toBe('');
+    // Под плотом стоит полоса выбора периода, как у готового графика.
+    expect(container.querySelector('.z4-skel-brush')).toBeTruthy();
     expect(container.querySelector('[aria-hidden="true"]')).toBeTruthy();
     expect(screen.getByRole('status').textContent).toBe('График загружается');
   });
