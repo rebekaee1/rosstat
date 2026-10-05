@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1597,
-    "code_files": 1245,
-    "current_reviews": 1597,
+    "files": 1599,
+    "code_files": 1247,
+    "current_reviews": 1599,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 99,
       "data_schema_reviewed": 5,
-      "reviewed": 1411
+      "reviewed": 1413
     },
-    "definitions": 10512,
-    "annotated_definitions": 10512,
+    "definitions": 10521,
+    "annotated_definitions": 10521,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4300,15 +4300,15 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "ba07d271f753fd34d529bb35d6b874b727fe0bdf85df315c363cede7029271d0",
-      "bytes": 167391,
-      "lines": 3504,
+      "sha256": "fb01ffc6b0d2740cdd343a128777c7a7d73c192859fafdfca90dc3b129627723",
+      "bytes": 171092,
+      "lines": 3540,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 89,
-      "annotated_definitions": 89,
+      "definitions": 90,
+      "annotated_definitions": 90,
       "missing_definitions": []
     },
     {
@@ -8576,6 +8576,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_seo_ticker.py",
+      "sha256": "de532da11fbdc290f0b9dae811f1270dffa1db5e23cb0fa5d3984d4225ed7740",
+      "bytes": 1940,
+      "lines": 40,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_seo_world.py",
       "sha256": "a73bc0ad90688845aaa377a28adef2e451de3d7b9efb312df6cb7b9f56129052",
       "bytes": 50629,
@@ -10098,9 +10111,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "dc32e16c91be88b56bf15ccb24f8420d8df355e4ec80a1cb7f4ab020eee83b96",
-      "bytes": 452062,
-      "lines": 2476,
+      "sha256": "fc0e0c255acad411c80c680dd4cd760ede1163f1fa7af04fef673c6d1a1a155d",
+      "bytes": 452480,
+      "lines": 2478,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10111,9 +10124,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "a4f50d4d0c3fc8fe9129ca5cced51c5fe175a1acd4bcc487ba89251e512075a2",
-      "bytes": 3933466,
-      "lines": 136320,
+      "sha256": "63c33e4164af9914ec4d3847b3ef684e25dc90bc57d75a30db98414f21d3b18c",
+      "bytes": 3940288,
+      "lines": 136437,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -10124,7 +10137,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "6de6e346d1b38b1132780c8bdef5e097e1f70f605d61a9ac69af4f9cf6efcbdf",
+      "sha256": "fee5b9416d9a41121e936937661a9c5a1fbb8f8a87038f88e717328d23b93b83",
       "bytes": 10896,
       "lines": 119,
       "code": false,
@@ -10670,9 +10683,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "a00e225aadf4e13abae1236f32acfca7dd87a4b3de7798607f99f9a98349ca4a",
-      "bytes": 2661062,
-      "lines": 95848,
+      "sha256": "31e945cc058ae85d6d461399e2dc28a9a2426dee77083c754ff28f57910255df",
+      "bytes": 2664678,
+      "lines": 95993,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -10722,9 +10735,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "67929b5e41f2a48690d86e6a8e61037b9d24a38983095bec032520be64fd89dd",
-      "bytes": 9370716,
-      "lines": 279796,
+      "sha256": "08473e1b26406076d7c534b4a1da745d7de77f6bcf42e5b5c8e2e3b4db92edfd",
+      "bytes": 9370936,
+      "lines": 279805,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -10735,7 +10748,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "d60a7d7ba3da74ed9b534a82a7795807448c0b4df6d0cde4a9c164fc7b0bd2a6",
+      "sha256": "ab7d0dc3efd947b3d345beace6473f245aab2bef8cf21b4bea0df43c29b93be5",
       "bytes": 462896,
       "lines": 2575,
       "code": false,
@@ -11528,9 +11541,9 @@
     },
     {
       "path": "frontend/nginx.conf",
-      "sha256": "376d9e4b4bdf35d72f5229f235e3a71a856e1a12ff769a0a67bd6e599d607d69",
-      "bytes": 54920,
-      "lines": 1074,
+      "sha256": "45b3862d8bcee0cb184bc64ca2cb65aa917559f0523afacc9cdcf76a459961c1",
+      "bytes": 55159,
+      "lines": 1079,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12564,6 +12577,19 @@
       "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/seo-ticker.js",
+      "sha256": "e33c05f1804bcd77a175c96b220e3522f103b47f41f1e36b71578a3ae2dfde9a",
+      "bytes": 4281,
+      "lines": 79,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 5,
+      "annotated_definitions": 5,
       "missing_definitions": []
     },
     {
@@ -20797,14 +20823,15 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "0fd7c496ab390c22b40a9797333fb06c409cf070a7ffee560ba70417e49e7a88",
-  "javascript_inventory_sha256": "e0f94eddbe66c39474b5c1b07812c81c3341139aa3d196c1b537ff4602fa77ef",
-  "baseline_commit": "75df32051905ad529e3cfbc44c948511e8bff4be",
+  "ledger_sha256": "80be5eb34cadc6bd6de84fe9909a560fe9a2da486c8098b6d961bdde77f3dfc7",
+  "javascript_inventory_sha256": "929e0bf72612a5dbfe26262da0e4f7c3d8bde93b0f28903fe6a413158c4e9f44",
+  "baseline_commit": "a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "backend/app/data/i18n/seo_en.py",
-    "backend/app/services/seo_content.py",
+    "backend/app/services/seo_renderer.py",
     "docs/backlog.md",
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
     "docs/indicator-index.json",
     "docs/mechanism-inventory.json",
     "docs/mechanism-inventory.md"

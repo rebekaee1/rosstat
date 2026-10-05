@@ -7,7 +7,7 @@ from app.services.locale import reset_locale, set_locale
 from app.services.seo_renderer import _ssr_ticker
 
 
-def test_ticker_container_ru_uses_russian_lane_and_hidden_until_data():
+def test_ticker_container_ru_uses_russian_lane_and_reserves_height():
     token = set_locale("ru")
     try:
         html = _ssr_ticker()
@@ -15,7 +15,8 @@ def test_ticker_container_ru_uses_russian_lane_and_hidden_until_data():
         reset_locale(token)
     assert 'id="seo-ticker"' in html
     assert 'data-lane="russia"' in html
-    assert " hidden" in html, "до ответа API строка скрыта"
+    assert " hidden" not in html, "высота зарезервирована сразу, иначе страница сдвигается"
+    assert "<noscript>" in html, "без JavaScript пустая строка скрывается"
     assert '<script src="/seo-ticker.js" defer></script>' in html
 
 
@@ -35,5 +36,5 @@ def test_ticker_script_matches_app_codes_and_never_breaks_the_page():
     for code in ("usd-rub-live", "eur-rub-live", "cny-rub-live", "eur-usd", "gbp-usd", "usd-cny", "btc-usd", "brent", "gold-rub-live"):
         assert code in src
     assert "/api/v1/ticker/live" in src
-    assert ".catch(" in src, "сбой запроса не должен ломать страницу"
+    assert ".catch(" in src and "root.hidden = true" in src, "сбой запроса прячет строку и не ломает страницу"
     assert "innerHTML" in src and "esc(" in src, "значения подставляются только через экранирование"

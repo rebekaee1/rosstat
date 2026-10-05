@@ -421,6 +421,123 @@
       ],
       "mcp_tools": []
     },
+    "frontend/public/seo-ticker.js": {
+      "sha256": "e33c05f1804bcd77a175c96b220e3522f103b47f41f1e36b71578a3ae2dfde9a",
+      "imports": [],
+      "routes": [],
+      "functions": [
+        {
+          "line": 8,
+          "end_line": 79,
+          "owner": "<module>",
+          "name": null,
+          "kind": "FunctionExpression",
+          "callback_context": "function () {\n  'use strict';\n  var root = document.getElementById('seo-ticker');\n  if (!root || !window.fetch) return;\n\n  var en = (document.documentElement.lang || 'ru').slice(0, 2) === 'en';\n  var lane = root.getAttribute('data-lane') || 'world';\n\n  var META = {\n    'usd-rub-live': { l: 'USD/RUB', p: 'usd-rub', d: 2 },\n    'eur-rub-live': { l: 'EUR/RUB', p: 'eur-rub', d: 2 },\n    'cny-rub-live': { l: 'CNY/RUB', p: 'cny-rub', d: 2 },\n    'eur-usd': { l: 'EUR/USD', p: 'eur-usd', d: 2 },\n    'gbp-usd': { l: 'GBP/USD', p: 'gbp-usd', d: 2 },\n    'usd-cny': { l: 'USD/CNY', p: 'usd-cny', d: 2 },\n    'btc-usd': { l: 'BTC/USD', p: 'btc-usd', d: 0 },\n    'brent': { l: 'Brent', p: 'brent', d: 2 },\n    'gold-rub-live': { l: en ? 'Gold ₽/g' : 'Золото ₽/г', p: 'gold-price', d: 0 }\n  };\n  var SRC = en ? { market: 'exchange', cb: 'central bank' } : { market: 'биржа', cb: 'ЦБ' };\n  var tag = en ? 'en-US' : 'ru-RU';\n\n  function esc(s) {\n    return String(s).replace(/[&<>\"]/g, function (c) {\n      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c];\n    });\n  }\n  function num(v, d) {\n    return v.toLocaleString(tag, { minimumFractionDigits: d, maximumFractionDigits: d });\n  }\n  function srcKind(s) {\n    s = String(s || '');\n    if (/moex|мосбирж/i.test(s)) return 'market';\n    if (/cbr|банк россии|цб/i.test(s)) return 'cb';\n    return null;\n  }\n\n  function cell(s) {\n    var m = META[s.code];\n    if (!m || !(s.price > 0)) return '';\n    var html = '<span class=\"seo-tk-l\">' + esc(m.l) + '</span><b class=\"seo-tk-v\">' + esc(num(s.price, m.d)) + '</b>';\n    var kind = srcKind(s.source);\n    if (kind) html += '<span class=\"seo-tk-s\">' + esc(SRC[kind]) + '</span>';\n    var pct = s.change_pct;\n    if (typeof pct === 'number' && Math.abs(pct) >= 0.005) {\n      var up = pct > 0;\n      var body = (up ? '+' : '−') + num(Math.abs(pct), 2) + '%';\n      html += '<span class=\"seo-tk-d ' + (up ? 'seo-tk-up' : 'seo-tk-down') + '\"><i aria-hidden=\"true\">' +\n        (up ? '↗' : '↘') + '</i>' + esc(body) + '</span>';\n    }\n    return '<a class=\"seo-tk\" href=\"/russia/indicator/' + m.p + '\">' + html + '</a>';\n  }\n\n  function render(data) {\n    var rows = (data && data.snapshots) || [];\n    var items = rows.map(cell).filter(Boolean).join('');\n    if (!items) { root.hidden = true; return; }\n    // Две одинаковые половины дают бесшовную петлю: анимация сдвигает дорожку ровно на половину.\n    root.innerHTML = '<div class=\"seo-tk-view\"><div class=\"seo-tk-track\">' +\n      '<div class=\"seo-tk-set\">' + items + '</div>' +\n      '<div class=\"seo-tk-set\" aria-hidden=\"true\">' + items.replace(/<a /g, '<a tabindex=\"-1\" ') + '</div></div></div>';\n    var track = root.firstChild.firstChild;\n    var half = track.firstChild.getBoundingClientRect().width;\n    // Скорость примерно 40 px/с: читаемо, но не отвлекает.\n    if (half > 0) track.style.setProperty('--seo-tk-run', Math.max(20, Math.round(half / 40)) + 's');\n  }\n\n  fetch('/api/v1/ticker/live?lane=' + encodeURIComponent(lane), { cache: 'no-store', credentials: 'same-origin' })\n    .then(function (r) { if (!r.ok) throw new Error('ticker ' + r.status); return r.json(); })\n    .then(render)\n    .catch(function () { root.hidden = true; });\n}"
+        },
+        {
+          "line": 30,
+          "end_line": 34,
+          "owner": "<callback@8>",
+          "name": "esc",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 31,
+          "end_line": 33,
+          "owner": "<callback@8>.esc",
+          "name": null,
+          "kind": "FunctionExpression",
+          "callback_context": "String(s).replace"
+        },
+        {
+          "line": 35,
+          "end_line": 37,
+          "owner": "<callback@8>",
+          "name": "num",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 38,
+          "end_line": 43,
+          "owner": "<callback@8>",
+          "name": "srcKind",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 45,
+          "end_line": 59,
+          "owner": "<callback@8>",
+          "name": "cell",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 61,
+          "end_line": 73,
+          "owner": "<callback@8>",
+          "name": "render",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 76,
+          "end_line": 76,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "FunctionExpression",
+          "callback_context": "fetch('/api/v1/ticker/live?lane=' + encodeURIComponent(lane), { cache: 'no-store', credentials: 'same-origin' })\n    .then"
+        },
+        {
+          "line": 78,
+          "end_line": 78,
+          "owner": "<callback@8>",
+          "name": null,
+          "kind": "FunctionExpression",
+          "callback_context": "fetch('/api/v1/ticker/live?lane=' + encodeURIComponent(lane), { cache: 'no-store', credentials: 'same-origin' })\n    .then(function (r) { if (!r.ok) throw new Error('ticker ' + r.status); return r.json(); })\n    .then(render)\n    .catch"
+        }
+      ],
+      "hooks": [],
+      "http": [
+        {
+          "line": 75,
+          "end_line": 75,
+          "owner": "<callback@8>",
+          "callee": "fetch",
+          "arguments": [
+            "'/api/v1/ticker/live?lane=' + encodeURIComponent(lane)",
+            "{ cache: 'no-store', credentials: 'same-origin' }"
+          ]
+        }
+      ],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [
+        {
+          "line": 16,
+          "end_line": 26,
+          "owner": "<callback@8>",
+          "name": "META",
+          "kind": "ObjectExpression",
+          "entries": [
+            "'usd-rub-live'",
+            "'eur-rub-live'",
+            "'cny-rub-live'",
+            "'eur-usd'",
+            "'gbp-usd'",
+            "'usd-cny'",
+            "'btc-usd'",
+            "'brent'",
+            "'gold-rub-live'"
+          ],
+          "initializer": null
+        }
+      ],
+      "mcp_tools": []
+    },
     "frontend/scripts/precompress.mjs": {
       "sha256": "ce0f4d4dc1cd9eb06a2690b4f82f72b6b4d27521fab77e1d65913faa2bb38803",
       "imports": [
@@ -136306,15 +136423,15 @@
   "totals": {
     "imports": 2573,
     "routes": 77,
-    "functions": 7819,
+    "functions": 7828,
     "hooks": 1717,
-    "http": 80,
+    "http": 81,
     "storage": 62,
     "events": 210,
     "jsx_handlers": 734,
-    "registries": 375,
+    "registries": 376,
     "mcp_tools": 7,
-    "files": 501,
+    "files": 502,
     "parse_errors": 0
   }
 }

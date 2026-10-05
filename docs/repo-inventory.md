@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1461  ·  **Строк:** 1 047 277  ·  **Токенов (≈):** 9 872 894
+**Файлов:** 1463  ·  **Строк:** 1 047 565  ·  **Токенов (≈):** 9 876 958
 
 ## По верхним папкам
 
@@ -16,11 +16,11 @@
 | `(root)` | 8 | 2 415 | 52 392 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 678 | 248 641 | 2 735 386 |
+| `backend` | 679 | 248 717 | 2 736 665 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 115 | 673 540 | 5 754 016 |
-| `frontend` | 540 | 101 065 | 1 075 957 |
+| `docs` | 115 | 673 668 | 5 755 808 |
+| `frontend` | 541 | 101 149 | 1 076 950 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 98 | 20 295 | 240 639 |
 
@@ -28,8 +28,8 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 279 796 | 2 299 100 |
-| `docs/client-mechanism-inventory.json` | 136 320 | 978 424 |
+| `docs/mechanism-inventory.json` | 279 805 | 2 299 155 |
+| `docs/client-mechanism-inventory.json` | 136 437 | 980 090 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
 | `docs/mechanism-inventory.md` | 2 575 | 114 534 |
-| `docs/backlog.md` | 2 476 | 76 420 |
+| `docs/backlog.md` | 2 478 | 76 491 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/seed_data.py` | 5 661 | 58 541 |
@@ -50,7 +50,7 @@
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `frontend/src/pages/AdminBI.jsx` | 2 964 | 42 044 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
-| `backend/app/services/seo_renderer.py` | 3 504 | 39 147 |
+| `backend/app/services/seo_renderer.py` | 3 540 | 40 006 |
 | `frontend/src/i18n/messages.ru.js` | 2 560 | 36 694 |
 | `CONTEXT.md` | 1 203 | 36 297 |
 | `frontend/src/i18n/messages.en.js` | 2 554 | 35 653 |
@@ -79,8 +79,8 @@
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
 | `docs/data-contracts.md` | 485 | 14 409 |
 | `backend/tests/test_seo_growth_pages.py` | 1 406 | 13 545 |
+| `frontend/nginx.conf` | 1 079 | 13 077 |
 | `backend/app/services/search_intent.py` | 910 | 13 034 |
-| `frontend/nginx.conf` | 1 074 | 13 030 |
 | `docs/data_sources.md` | 642 | 12 999 |
 | `backend/app/services/admin_bi.py` | 1 315 | 12 850 |
 | `docs/architecture.md` | 436 | 12 733 |
@@ -890,6 +890,7 @@
 | `frontend/src/lib/breadcrumbs.test.js` | 108 | 959 |
 | `backend/app/services/world_subnational_forecast.py` | 86 | 958 |
 | `backend/app/services/identity/service.py` | 110 | 948 |
+| `frontend/public/seo-ticker.js` | 79 | 946 |
 | `frontend/src/pages/RegionIndicatorPage.component.test.jsx` | 113 | 945 |
 | `backend/tests/test_cbr_keyrate.py` | 109 | 944 |
 | `docs/analytics_api_inventory/metrika_management.md` | 49 | 942 |
@@ -1201,6 +1202,7 @@
 | `backend/alembic/versions/20260827_region_monthly_points.py` | 55 | 421 |
 | `backend/tests/test_yandex_clean_param.py` | 45 | 421 |
 | `backend/tests/forecast_strategies/snapshots/cpi_2025_11.json` | 107 | 420 |
+| `backend/tests/test_seo_ticker.py` | 40 | 420 |
 | `frontend/src/behavior-standalone.js` | 45 | 418 |
 | `backend/tests/forecast_strategies/test_registry.py` | 55 | 413 |
 | `backend/alembic/versions/20260706_etl_perf.py` | 48 | 411 |

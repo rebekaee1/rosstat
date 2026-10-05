@@ -4,15 +4,15 @@
 
 - imports: 2573
 - routes: 77
-- functions: 7819
+- functions: 7828
 - hooks: 1717
-- http: 80
+- http: 81
 - storage: 62
 - events: 210
 - jsx_handlers: 734
-- registries: 375
+- registries: 376
 - mcp_tools: 7
-- files: 501
+- files: 502
 - parse_errors: 0
 
 Полные call sites, выражения, anonymous callbacks, owner и строки — [JSON](client-mechanism-inventory.json). Смысл, loading/empty/error/access и исключения — [досье клиента](code-review/client-mechanism-acceptance-2026-09-30.md) и рецензии соответствующего файла.

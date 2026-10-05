@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `75df32051905ad529e3cfbc44c948511e8bff4be`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a9bad6a1c8daaf0985035c2b60ebacf07ff1a7f1`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1597 |
-| Код, шаблоны и стили | 1245 |
-| Актуальные рецензии без пропусков guard | 1597 |
-| Именованные определения Python/JS: с аннотацией / всего | 10512 / 10512 |
+| Файлы в явно определённом scope | 1599 |
+| Код, шаблоны и стили | 1247 |
+| Актуальные рецензии без пропусков guard | 1599 |
+| Именованные определения Python/JS: с аннотацией / всего | 10521 / 10521 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -366,7 +366,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_region_compare.py](../backend/app/services/seo_region_compare.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
-| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 89/89 | актуально |
+| [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 90/90 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 44/44 | актуально |
 | [backend/app/services/seo_world_compare.py](../backend/app/services/seo_world_compare.py) | reviewed | 14/14 | актуально |
@@ -695,6 +695,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_seo_og.py](../backend/tests/test_seo_og.py) | reviewed | 77/77 | актуально |
 | [backend/tests/test_seo_regional_year.py](../backend/tests/test_seo_regional_year.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_seo_source_link.py](../backend/tests/test_seo_source_link.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_seo_ticker.py](../backend/tests/test_seo_ticker.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_seo_world.py](../backend/tests/test_seo_world.py) | reviewed | 31/31 | актуально |
 | [backend/tests/test_seo_world_year.py](../backend/tests/test_seo_world_year.py) | reviewed | 23/23 | актуально |
 | [backend/tests/test_session_analysis.py](../backend/tests/test_session_analysis.py) | reviewed | 31/31 | актуально |
@@ -1002,6 +1003,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/planet/earth_night_4096.jpg](../frontend/public/planet/earth_night_4096.jpg) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/planet/source-manifest.json](../frontend/public/planet/source-manifest.json) | data_schema_reviewed | 0/0 | актуально |
 | [frontend/public/robots.txt](../frontend/public/robots.txt) | reviewed | 0/0 | актуально |
+| [frontend/public/seo-ticker.js](../frontend/public/seo-ticker.js) | reviewed | 5/5 | актуально |
 | [frontend/public/yandex-app-icon-256.png](../frontend/public/yandex-app-icon-256.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/yandex-app-icon-512.png](../frontend/public/yandex-app-icon-512.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/yandex_02b4966d46881470.html](../frontend/public/yandex_02b4966d46881470.html) | reviewed | 0/0 | актуально |

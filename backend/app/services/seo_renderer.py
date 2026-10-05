@@ -964,15 +964,16 @@ _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 def _ssr_ticker() -> str:
-    """Контейнер бегущей строки курсов чистых SSR-страниц. Заполняет /seo-ticker.js; до ответа API и при любом
-    сбое строка скрыта (hidden). Набор курсов зависит от языка, как в приложении: ru → рублёвый, en → мировой."""
+    """Контейнер бегущей строки курсов чистых SSR-страниц. Заполняет /seo-ticker.js; высота строки зарезервирована сразу (без сдвига
+    страницы), при сбое запроса скрипт скрывает её (hidden). Набор курсов зависит от языка, как в приложении: ru → рублёвый, en → мировой."""
     from app.services.locale import get_locale
 
     en = get_locale() == "en"
     label = "Live exchange rates" if en else "Курсы валют и рынков"
     lane = "world" if en else "russia"
     return (
-        f'<div class="seo-ticker" id="seo-ticker" data-lane="{lane}" role="region" aria-label="{label}" hidden></div>'
+        f'<div class="seo-ticker" id="seo-ticker" data-lane="{lane}" role="region" aria-label="{label}"></div>'
+        '<noscript><style>.seo-ticker{display:none}</style></noscript>'
         '<script src="/seo-ticker.js" defer></script>'
     )
 

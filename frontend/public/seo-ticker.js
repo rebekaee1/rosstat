@@ -3,7 +3,7 @@
  * поэтому приложение со своей лентой здесь не загружается. Тот же источник данных и тот же набор курсов,
  * что у приложения (`/api/v1/ticker/live`, `components/LiveTicker.jsx`); разметка и стили ленты — в
  * `seo_renderer.py` (`.seo-ticker`). Файл не хэшируется Vite, поэтому nginx отдаёт его с no-cache.
- * Любой сбой (сеть, 429, пустой ответ) оставляет строку скрытой: страница остаётся рабочей без неё.
+ * Высота строки зарезервирована разметкой (страница не сдвигается); любой сбой (сеть, 429, пустой ответ) прячет её: страница остаётся рабочей без неё.
  */
 (function () {
   'use strict';
@@ -61,12 +61,11 @@
   function render(data) {
     var rows = (data && data.snapshots) || [];
     var items = rows.map(cell).filter(Boolean).join('');
-    if (!items) return;
+    if (!items) { root.hidden = true; return; }
     // Две одинаковые половины дают бесшовную петлю: анимация сдвигает дорожку ровно на половину.
     root.innerHTML = '<div class="seo-tk-view"><div class="seo-tk-track">' +
       '<div class="seo-tk-set">' + items + '</div>' +
       '<div class="seo-tk-set" aria-hidden="true">' + items.replace(/<a /g, '<a tabindex="-1" ') + '</div></div></div>';
-    root.hidden = false;
     var track = root.firstChild.firstChild;
     var half = track.firstChild.getBoundingClientRect().width;
     // Скорость примерно 40 px/с: читаемо, но не отвлекает.
@@ -76,5 +75,5 @@
   fetch('/api/v1/ticker/live?lane=' + encodeURIComponent(lane), { cache: 'no-store', credentials: 'same-origin' })
     .then(function (r) { if (!r.ok) throw new Error('ticker ' + r.status); return r.json(); })
     .then(render)
-    .catch(function () { /* строка остаётся скрытой */ });
+    .catch(function () { root.hidden = true; });
 })();

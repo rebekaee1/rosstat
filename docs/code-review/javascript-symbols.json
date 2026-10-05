@@ -138,6 +138,44 @@
     "exports": [],
     "anonymous_functions": 3
   },
+  "frontend/public/seo-ticker.js": {
+    "sha256": "e33c05f1804bcd77a175c96b220e3522f103b47f41f1e36b71578a3ae2dfde9a",
+    "definitions": [
+      {
+        "name": "esc",
+        "line": 30,
+        "end_line": 34,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "num",
+        "line": 35,
+        "end_line": 37,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "srcKind",
+        "line": 38,
+        "end_line": 43,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "cell",
+        "line": 45,
+        "end_line": 59,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "render",
+        "line": 61,
+        "end_line": 73,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/scripts/precompress.mjs": {
     "sha256": "ce0f4d4dc1cd9eb06a2690b4f82f72b6b4d27521fab77e1d65913faa2bb38803",
     "definitions": [
