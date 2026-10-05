@@ -10,6 +10,9 @@
  *     `sw_enabled === false`, service worker снимает регистрацию и чистит кэши.
  *     Проверка — при активации и не чаще раза в 30 минут при навигации; ошибка
  *     сети выключением не считается. Клиент (lib/pwa.js) делает то же самое.
+ *   - push / notificationclick — заготовка: сервер ничего не отправляет, пока не включены
+ *     оба флага отправки (backend app/services/web_push.py), а подписка создаётся только по
+ *     явному действию пользователя (lib/pushSubscription.js, на него нигде нет вызовов).
  */
 const VERSION = '__SW_VERSION__';
 const CACHE = `fe-offline-${VERSION}`;
@@ -67,4 +70,40 @@ self.addEventListener('fetch', (event) => {
       return cached || new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }),
   );
+});
+
+// ── Push (заготовка, ничего не запрашивает и не показывает без серверной отправки) ──
+self.addEventListener('push', (event) => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (_) { data = {}; }
+  const title = typeof data.title === 'string' && data.title ? data.title.slice(0, 120) : 'Forecast Economy';
+  const options = {
+    body: typeof data.body === 'string' ? data.body.slice(0, 300) : '',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    tag: typeof data.tag === 'string' ? data.tag.slice(0, 64) : undefined,
+    data: { url: typeof data.url === 'string' ? data.url : '/' },
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  // Открываем только страницы нашего origin: произвольный URL из payload не доверяем.
+  let target = '/';
+  try {
+    const url = new URL((event.notification.data && event.notification.data.url) || '/', self.location.origin);
+    if (url.origin === self.location.origin) target = url.pathname + url.search + url.hash;
+  } catch (_) { /* остаётся / */ }
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of windows) {
+      if ('focus' in client) {
+        await client.focus();
+        if ('navigate' in client) { try { await client.navigate(target); } catch (_) { /* iOS */ } }
+        return;
+      }
+    }
+    await self.clients.openWindow(target);
+  })());
 });

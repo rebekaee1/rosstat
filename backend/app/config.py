@@ -366,6 +366,22 @@ class Settings(BaseSettings):
     pwa_enabled: bool = True
     pwa_install_prompt_enabled: bool = True
 
+    # Web-push — ТОЛЬКО ПОДГОТОВКА (2026-10-05): ничего никому не отправляется.
+    #   push_subscribe_enabled — принимать подписки (/push/subscribe, /push/unsubscribe; иначе 404)
+    #                            и отдавать клиенту публичный ключ VAPID; по умолчанию выключено.
+    #   push_send_enabled      — отдельный выключатель ОТПРАВКИ: пока false, сервис отправки
+    #                            (services/web_push.py) отказывает безусловно.
+    #   push_dry_run           — даже при включённой отправке по умолчанию сухой прогон (ничего
+    #                            не уходит в сеть); реальная отправка требует push_dry_run=false.
+    # Ключи VAPID — только через окружение (`scripts/generate-vapid-keys.py`), не коммитить;
+    # приватный ключ никуда не логируется и не отдаётся API.
+    push_subscribe_enabled: bool = False
+    push_send_enabled: bool = False
+    push_dry_run: bool = True
+    vapid_public_key: str = ""
+    vapid_private_key: str = ""
+    vapid_subject: str = ""  # mailto:… или https://… (требование VAPID)
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

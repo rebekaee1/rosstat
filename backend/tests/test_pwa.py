@@ -89,7 +89,9 @@ def test_config_flags(client, monkeypatch, pwa, prompt, expect_sw, expect_prompt
     r = client.get("/api/v1/pwa/config")
     assert r.status_code == 200
     assert r.headers["cache-control"] == "no-store"
-    assert r.json() == {"sw_enabled": expect_sw, "install_prompt_enabled": expect_prompt}
+    body = r.json()
+    assert body["sw_enabled"] is expect_sw and body["install_prompt_enabled"] is expect_prompt
+    assert body["push_enabled"] is False and body["vapid_public_key"] is None  # push по умолчанию закрыт
 
 
 def test_defaults_enable_install_prompt_with_emergency_off():

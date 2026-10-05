@@ -250,6 +250,13 @@ services:
       RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES: ${RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES:-10}
       RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN: ${RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN:-10}
       # «Пульс»: дневные снапшоты + LLM-отчёт владельцу + кнопки бота (П9б)
+      # Web-push: только подготовка. Всё выключено; отправка требует двух флагов + ключей VAPID из окружения.
+      RUSTATS_PUSH_SUBSCRIBE_ENABLED: ${RUSTATS_PUSH_SUBSCRIBE_ENABLED:-false}
+      RUSTATS_PUSH_SEND_ENABLED: ${RUSTATS_PUSH_SEND_ENABLED:-false}
+      RUSTATS_PUSH_DRY_RUN: ${RUSTATS_PUSH_DRY_RUN:-true}
+      RUSTATS_VAPID_PUBLIC_KEY: ${RUSTATS_VAPID_PUBLIC_KEY:-}
+      RUSTATS_VAPID_PRIVATE_KEY: ${RUSTATS_VAPID_PRIVATE_KEY:-}
+      RUSTATS_VAPID_SUBJECT: ${RUSTATS_VAPID_SUBJECT:-}
       # PWA: аварийные выключатели без пересборки фронта (по умолчанию включено).
       RUSTATS_PWA_ENABLED: ${RUSTATS_PWA_ENABLED:-true}
       RUSTATS_PWA_INSTALL_PROMPT_ENABLED: ${RUSTATS_PWA_INSTALL_PROMPT_ENABLED:-true}

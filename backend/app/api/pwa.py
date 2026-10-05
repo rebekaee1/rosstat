@@ -145,7 +145,11 @@ async def offline_page():
 async def pwa_config(response: Response):
     """Публичные флаги для фронта и service worker (без пересборки фронта)."""
     response.headers["Cache-Control"] = "no-store"
+    # Подписка на push доступна клиенту только за флагом и при настроенном публичном ключе.
+    push_ready = bool(settings.pwa_enabled and settings.push_subscribe_enabled and settings.vapid_public_key)
     return {
         "sw_enabled": bool(settings.pwa_enabled),
         "install_prompt_enabled": bool(settings.pwa_enabled and settings.pwa_install_prompt_enabled),
+        "push_enabled": push_ready,
+        "vapid_public_key": settings.vapid_public_key if push_ready else None,
     }
