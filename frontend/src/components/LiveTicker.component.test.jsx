@@ -35,10 +35,17 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('LiveTicker запрашивает lane по locale, не по path', () => {
-  it('ru на мировой странице — lane=russia', async () => {
+describe('LiveTicker запрашивает lane по языку и региону страницы', () => {
+  it('ru на странице другой страны — lane=world: рубль там не главное', async () => {
     const fetchMock = mockTickerFetch();
     renderTicker({ locale: 'ru', route: '/germany' });
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(fetchMock.mock.calls[0][0]).toContain('lane=world');
+  });
+
+  it('ru на странице России и в «Валютах» — lane=russia', async () => {
+    const fetchMock = mockTickerFetch();
+    renderTicker({ locale: 'ru', route: '/russia/indicator/cpi' });
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(fetchMock.mock.calls[0][0]).toContain('lane=russia');
   });
@@ -65,7 +72,7 @@ describe('LiveTicker запрашивает lane по locale, не по path', (
   });
 });
 
-describe('LiveTicker: единые знаки, источник и человеческая дата', () => {
+describe('LiveTicker: понятные подписи, единые знаки и человеческая дата', () => {
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Moscow' });
   function mockSnapshots() {
     const fetchMock = vi.fn().mockResolvedValue({
@@ -81,28 +88,45 @@ describe('LiveTicker: единые знаки, источник и челове�
     vi.stubGlobal('fetch', fetchMock);
   }
 
-  it('курсы — два знака после запятой, минус настоящий, а не дефис', async () => {
+  it('вместо кодов пар — названия («Доллар», «Евро»), курс со знаком валюты, изменение стрелкой и в процентах', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });
     expect(await screen.findByText('84,41')).toBeTruthy();
     expect(screen.getByText('94,32')).toBeTruthy();
-    expect(document.body.textContent).toContain('\u22120,34%');
-    expect(document.body.textContent).not.toMatch(/-\d,\d\d%/);
+    expect(screen.getByText('w6b.ticker.usd')).toBeTruthy();
+    expect(screen.getByText('w6b.ticker.eur')).toBeTruthy();
+    expect(document.body.textContent).not.toMatch(/USD\/RUB|EUR\/RUB/);
+    const text = document.body.textContent.replace(/\u00a0/g, ' ');
+    expect(text).toContain('84,41 \u20BD');
+    // Между стрелкой и числом — скрытая от глаз подпись для скринридера («снизился на»).
+    expect(text).toContain('\u25BCw6b.ticker.down0,3 %');
+    expect(text).toContain('\u25B2w6b.ticker.up0,2 %');
+    expect(text).not.toMatch(/-\d,\d %/);
   });
 
-  it('подписывает, откуда число: биржа или ЦБ; сегодняшнюю дату не пишет, чужую пишет словами', async () => {
+  it('слова «биржа» и «ЦБ» не занимают места в строке, но остаются в подсказке; чужую дату пишет словами', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });
     await screen.findByText('84,41');
-    expect(screen.getByText('shell.ticker.source.market')).toBeTruthy();
-    expect(screen.getByText('shell.ticker.source.cb')).toBeTruthy();
+    expect(screen.queryByText('shell.ticker.source.market')).toBeNull();
+    expect(screen.queryByText('shell.ticker.source.cb')).toBeNull();
+    const usd = screen.getByText('84,41').closest('a');
+    expect(usd.getAttribute('title')).toContain('shell.ticker.source.market');
     // Нет «04.10»-подобных технических дат.
     expect(document.body.textContent).not.toMatch(/\b\d{2}\.\d{2}\b/);
     // Устаревший ряд Brent получил дату словами (ключ i18n подставляет саму дату).
     expect(screen.getAllByText('shell.ticker.asOf')).toHaveLength(1);
   });
 
-  it('курс за вчера или выходные не подписывается датой («as of Oct 2» убрано), нулевое изменение не показывается', async () => {
+  it('последний пункт ведёт в раздел «Валюты»', async () => {
+    mockSnapshots();
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('84,41');
+    const all = screen.getByText('w6b.ticker.all').closest('a');
+    expect(all.getAttribute('href')).toBe('/currencies');
+  });
+
+  it('EN: цена со знаком доллара перед числом, минус не дефис, нулевое изменение не показывается', async () => {
     const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toLocaleDateString('en-CA', { timeZone: 'UTC' });
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
@@ -115,9 +139,12 @@ describe('LiveTicker: единые знаки, источник и челове�
     }));
     renderTicker({ locale: 'en', route: '/' });
     await screen.findByText('1.12');
+    // Курс за вчера или выходные не подписывается датой.
     expect(screen.queryByText('shell.ticker.asOf')).toBeNull();
-    expect(document.body.textContent).not.toContain('0,00%');
-    expect(document.body.textContent).not.toMatch(/\b0\.00%/);
+    const text = document.body.textContent;
+    expect(text).toContain('$1.12');
+    expect(text).toContain('\u25BCw6b.ticker.down0.7%');
+    expect(text).not.toMatch(/\b0\.0%/);
   });
 
   it('лента курсов получает затухание по краям: два слоя-индикатора вместо маски на прокручиваемом блоке', async () => {
@@ -128,14 +155,13 @@ describe('LiveTicker: единые знаки, источник и челове�
     expect(document.querySelector('[role="group"]').className).not.toContain('fe-fade-x');
   });
 
-  it('при прокрутке вниз строка уходит, при прокрутке вверх возвращается', async () => {
+  it('строка не прячется при прокрутке: высота зарезервирована всегда, шапка под ней не прыгает', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });
     await screen.findByText('84,41');
     const setY = (y) => { Object.defineProperty(window, 'scrollY', { value: y, configurable: true }); window.dispatchEvent(new Event('scroll')); };
     await act(async () => { setY(400); });
-    await waitFor(() => expect(document.documentElement.dataset.feTicker).toBe('hidden'));
-    await act(async () => { setY(300); });
-    await waitFor(() => expect(document.documentElement.dataset.feTicker).toBe('shown'));
+    expect(document.documentElement.dataset.feTicker).toBeUndefined();
+    expect(document.querySelector('.fe-ticker').className).toContain('h-9');
   });
 });

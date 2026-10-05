@@ -4,6 +4,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import {
+  HOME_PICKER_PLACEHOLDER,
   conceptColorMode,
   countryPublicName,
   defaultSortForConcept,
@@ -168,7 +169,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
             <WorldConceptPicker
               concepts={mapConcepts.length
                 ? mapConcepts
-                : [{ slug: concept, name: conceptName }]}
+                : HOME_PICKER_PLACEHOLDER}
               value={concept}
               onChange={(slug) => {
                 setPicked(slug);

@@ -26,6 +26,7 @@ import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { localizeSource } from '../i18n/viewModeLabels';
+import { countryReference } from '../lib/countryReference';
 import '../styles/world.css';
 import SourceLink from './SourceLink';
 import Chip from './Chip';
@@ -661,6 +662,7 @@ export function CountrySilhouette({
   const t = useT();
   const { locale } = useLocale();
   const geometry = useCountryOutline(code);
+  const reference = countryReference(code, locale);
   const countryPath = useMemo(() => {
     if (!geometry) return null;
     const projection = geoMercator().fitExtent([[20, 16], [340, 184]], geometry);
@@ -687,7 +689,7 @@ export function CountrySilhouette({
   const populationNumber = Number(population?.value);
   const populationValue = population?.value != null
     ? (Number.isFinite(populationNumber) && populationNumber >= 1e6
-      ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1, locale)}\u00a0${t('w2.country.million')}\u00a0${popUnit}`
+      ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1, locale)}\u00a0${t('w2.country.million')} ${popUnit}`
       : `${formatValue(population.value, 0, locale)}\u00a0${popUnit}`)
     : '';
   const populationYear = population?.year
@@ -718,7 +720,7 @@ export function CountrySilhouette({
   return (
     <section className="w2-profile" aria-label={t('world.map.outlineAria', { name })}>
       <div className="w2-profile-head">
-        <h2 className="w2-profile-title">{t('world.territory.profile')}</h2>
+        <h2 className="w2-profile-title">{t('w6b.country.profile')}</h2>
         {region && <span className="w2-profile-region">{region}</span>}
       </div>
       <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
@@ -728,7 +730,7 @@ export function CountrySilhouette({
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      {(areaValue || populationValue) && (
+      {(areaValue || populationValue || reference) && (
         <dl className="w2-profile-facts">
           {areaValue && (
             <div>
@@ -736,6 +738,18 @@ export function CountrySilhouette({
               <dd>
                 {areaValue}
               </dd>
+            </div>
+          )}
+          {reference?.capital && (
+            <div>
+              <dt>{t('w6b.country.capital')}</dt>
+              <dd>{reference.capital}</dd>
+            </div>
+          )}
+          {reference?.currency && (
+            <div>
+              <dt>{t('w6b.country.currency')}</dt>
+              <dd>{reference.currency}</dd>
             </div>
           )}
           {populationValue && (

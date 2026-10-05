@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-  Menu, X, ChevronDown, BarChart3, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2, Home, Info, Landmark,
-  Map as MapIcon, Percent, PiggyBank,
+  Menu, X, ChevronDown, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2, Home, Info,
+  Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -11,7 +11,8 @@ import IndicatorSearch from './IndicatorSearch';
 import LocaleSwitcher from './LocaleSwitcher';
 import Brand from './Brand';
 import { useAuth } from '../context/authContext';
-import { PRIMARY_NAV, mobileNavGroups, primaryNav, resolveActiveNavId } from '../lib/navItems';
+import { mobileNavGroups, primaryNav, resolveActiveNavId } from '../lib/navItems';
+import { isRussiaSectionPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import '../styles/ui-detail-nav-calendar.css';
 import '../styles/shell.css';
@@ -84,6 +85,9 @@ const MOBILE_ICONS = {
   map: MapIcon,
   calendar: CalendarDays,
   coins: Coins,
+  trend: TrendingUp,
+  layers: Layers,
+  book: BookOpen,
 };
 
 // Три калькулятора — три разных значка: в меню телефона их различают с первого взгляда.
@@ -99,6 +103,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [calcOpen, setCalcOpen] = useState(false);
+  // Раскрытые группы меню: «Россия» раскрыта сама только на страницах российского раздела.
+  const [openGroups, setOpenGroups] = useState({});
   const navRef = useRef(null);
   const calcWrapRef = useRef(null);
   const calcBtnRef = useRef(null);
@@ -307,28 +313,62 @@ export default function Navbar() {
       {mobileOpen && (
         <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] lg:hidden">
           <div className="fe-mnav-scroll">
-            <div className="flex flex-col gap-1">
-              {mobileGroups.map((group) => (
-                <div key={group.id} className="fe-mnav-group">
-                  {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
-                  {group.items.map((item) => {
-                    const Icon = MOBILE_ICONS[item.icon];
-                    const isActive = mobileActiveId === item.id;
-                    return (
-                      <Link
-                        key={`m-${item.id}`}
-                        to={item.to}
-                        className={cn(navItemClass(isActive), 'fe-mnav-link')}
-                        onClick={closeAll}
-                        aria-current={isActive ? 'page' : undefined}
+            <div className="fe-mnav-columns">
+              {mobileGroups.map((group) => {
+                const renderLink = (item, nested = false) => {
+                  const Icon = MOBILE_ICONS[item.icon];
+                  const isActive = mobileActiveId === item.id;
+                  return (
+                    <Link
+                      key={`m-${item.id}`}
+                      to={item.to}
+                      className={cn(navItemClass(isActive), 'fe-mnav-link', nested && 'fe-mnav-link--nested')}
+                      onClick={closeAll}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
+                      <span className="fe-mnav-text">
+                        <span className="fe-mnav-label">{t(item.labelKey)}</span>
+                        {item.hintKey ? <span className="fe-mnav-hint">{t(item.hintKey)}</span> : null}
+                      </span>
+                    </Link>
+                  );
+                };
+                if (group.collapsible) {
+                  const GroupIcon = MOBILE_ICONS[group.icon];
+                  const open = openGroups[group.id] ?? isRussiaSectionPath(pathname);
+                  const panelId = `fe-nav-group-${group.id}`;
+                  return (
+                    <div key={group.id} className="fe-mnav-group fe-mnav-group--collapsible">
+                      <button
+                        type="button"
+                        className={cn(navItemClass(false), 'fe-mnav-link fe-mnav-toggle w-full text-left')}
+                        aria-expanded={open}
+                        aria-controls={panelId}
+                        onClick={() => setOpenGroups((prev) => ({ ...prev, [group.id]: !open }))}
                       >
-                        {Icon ? <Icon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
-                        {t(item.labelKey)}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))}
+                        {GroupIcon ? <GroupIcon size={18} aria-hidden="true" className="fe-mnav-icon" /> : null}
+                        <span className="fe-mnav-text">
+                          <span className="fe-mnav-label">{t(group.titleKey)}</span>
+                          {group.hintKey ? <span className="fe-mnav-hint">{t(group.hintKey)}</span> : null}
+                        </span>
+                        <ChevronDown size={16} aria-hidden="true" className={cn('fe-mnav-chevron', open && 'is-open')} />
+                      </button>
+                      {open ? (
+                        <div id={panelId} className="fe-mnav-sub">
+                          {group.items.map((item) => renderLink(item, true))}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                }
+                return (
+                  <div key={group.id} className="fe-mnav-group">
+                    {group.titleKey ? <p className="fe-mnav-title">{t(group.titleKey)}</p> : null}
+                    {group.items.map((item) => renderLink(item))}
+                  </div>
+                );
+              })}
               <div className="fe-mnav-group">
                 <p className="fe-mnav-title">{t('nav.calculators')}</p>
                 {CALCULATOR_ITEMS.map((c) => {
@@ -336,7 +376,7 @@ export default function Navbar() {
                   return (
                     <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
                       <CalcIcon size={18} aria-hidden="true" className="fe-mnav-icon" />
-                      {t(c.labelKey)}
+                      <span className="fe-mnav-text"><span className="fe-mnav-label">{t(c.labelKey)}</span></span>
                     </NavLink>
                   );
                 })}
@@ -344,8 +384,16 @@ export default function Navbar() {
               <div className="fe-mnav-group">
                 <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
                   <Info size={18} aria-hidden="true" className="fe-mnav-icon" />
-                  {t('nav.about')}
+                  <span className="fe-mnav-text"><span className="fe-mnav-label">{t('nav.about')}</span></span>
                 </NavLink>
+                <a
+                  href="mailto:rebeka.ee@yandex.ru"
+                  className={cn(navItemClass(false), 'fe-mnav-link')}
+                  onClick={() => { track(events.CONTACT_EMAIL); closeAll(); }}
+                >
+                  <Mail size={18} aria-hidden="true" className="fe-mnav-icon" />
+                  <span className="fe-mnav-text"><span className="fe-mnav-label">{t('shell.footer.contact')}</span></span>
+                </a>
               </div>
             </div>
           </div>

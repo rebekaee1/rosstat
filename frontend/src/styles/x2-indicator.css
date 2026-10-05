@@ -254,5 +254,10 @@
   :root .fe-data-header .w2-profile-source { grid-area: source; margin: 4px 0 0; }
 }
 
+/* Планшет: профиль страны занимает ширину целиком, четыре факта в ряд (население, площадь, столица, валюта). */
+@media (min-width: 640px) and (max-width: 1023px) {
+  :root .fe-data-header .w2-profile-facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
 /* Список показателей страны: число и дата — на одной базовой линии, не прыгают от длины названия. */
 :root .fe-ind-row__value { font-variant-numeric: tabular-nums; }

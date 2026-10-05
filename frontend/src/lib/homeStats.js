@@ -12,3 +12,11 @@ export function startYear(periodValue) {
   const match = /^\s*(\d{4})/.exec(String(periodValue || ''));
   return match ? Number(match[1]) : null;
 }
+
+/** Сколько лет охватывает история данных: «с 1897» при текущем 2026 → 129. Нет года — null. */
+export function historyYears(since, now = new Date()) {
+  const first = Number(since);
+  if (!Number.isFinite(first) || first <= 0) return null;
+  const span = now.getFullYear() - first;
+  return span > 0 ? span : null;
+}

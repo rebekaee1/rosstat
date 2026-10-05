@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
 import { cn } from '../lib/format';
-import DeltaBadge from './DeltaBadge';
-import { russiaIndicatorPath } from '../lib/sitePaths';
-import { tickerLaneForLocale } from '../lib/tickerLane';
+import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
+import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
 import { useLocale, useT } from '../i18n';
@@ -17,16 +17,21 @@ import '../styles/platform-pages.css';
  */
 const TICKER_META = {
   // Единые знаки: курсы — два знака после запятой, биткоин и золото — целые.
-  'usd-rub-live':  { label: 'USD/RUB', linkTo: russiaIndicatorPath('usd-rub'), decimals: 2 },
-  'eur-rub-live':  { label: 'EUR/RUB', linkTo: russiaIndicatorPath('eur-rub'), decimals: 2 },
-  'cny-rub-live':  { label: 'CNY/RUB', linkTo: russiaIndicatorPath('cny-rub'), decimals: 2 },
-  'eur-usd':       { label: 'EUR/USD', linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
-  'gbp-usd':       { label: 'GBP/USD', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
-  'usd-cny':       { label: 'USD/CNY', linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
-  'btc-usd':       { label: 'BTC/USD', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
-  'brent':         { label: 'Brent',   linkTo: russiaIndicatorPath('brent'),   decimals: 2 },
-  'gold-rub-live': { labelKey: 'ticker.gold', linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
+  // nameKey — человеческое имя вместо кода пары («Доллар», а не USD/RUB); cur — в чём цена.
+  'usd-rub-live':  { nameKey: 'w6b.ticker.usd', cur: 'rub', linkTo: russiaIndicatorPath('usd-rub'), decimals: 2 },
+  'eur-rub-live':  { nameKey: 'w6b.ticker.eur', cur: 'rub', linkTo: russiaIndicatorPath('eur-rub'), decimals: 2 },
+  'cny-rub-live':  { nameKey: 'w6b.ticker.cny', cur: 'rub', linkTo: russiaIndicatorPath('cny-rub'), decimals: 2 },
+  'eur-usd':       { nameKey: 'w6b.ticker.eur', cur: 'usd', linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
+  'gbp-usd':       { nameKey: 'w6b.ticker.gbp', cur: 'usd', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
+  'usd-cny':       { nameKey: 'w6b.ticker.usd', cur: 'cny', linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
+  'btc-usd':       { nameKey: 'w6b.ticker.btc', cur: 'usd', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
+  'brent':         { nameKey: 'w6b.ticker.brent', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
+  'gold-rub-live': { nameKey: 'w6b.ticker.gold', cur: 'rub', perGram: true, linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
 };
+
+const currenciesPath = () => russiaCategoryPath('currencies');
+
+const CURRENCY_SIGN = { rub: '\u20BD', usd: '$', cny: '\u00A5' };
 
 function formatPrice(value, decimals, locale = 'ru') {
   if (value === null || value === undefined) return '—';
@@ -37,17 +42,15 @@ function formatPrice(value, decimals, locale = 'ru') {
   });
 }
 
+/** Изменение за день: «0,1 %» без знака (направление показывает стрелка рядом), один знак после запятой. */
 function formatPct(pct, locale = 'ru') {
-  if (pct === null || pct === undefined) return '—';
-  const sign = pct > 0 ? '+' : '';
+  if (pct === null || pct === undefined) return '\u2014';
   const tag = locale === 'en' ? 'en-US' : 'ru-RU';
   const body = Math.abs(pct).toLocaleString(tag, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
   });
-  // Keep explicit sign; toLocaleString may omit '+' for positives.
-  if (pct < 0) return `\u2212${body}%`;
-  return `${sign}${body}%`;
+  return locale === 'en' ? `${body}%` : `${body}\u00a0%`;
 }
 
 function formatAsOfTitle(isoDate, locale = 'ru') {
@@ -116,6 +119,8 @@ function TickerCell({ snapshot, nowMs }) {
     : null;
 
   const titleParts = [t('ticker.source', { source: snapshot.source })];
+  // Слова «биржа» и «ЦБ» не занимают места в строке, но остаются в подсказке.
+  if (sourceKind) titleParts.unshift(t(`shell.ticker.source.${sourceKind}`));
   if (!isIntraday) {
     if (asOfTitle) titleParts.push(t('ticker.valueAsOf', { date: asOfTitle }));
   } else {
@@ -140,24 +145,27 @@ function TickerCell({ snapshot, nowMs }) {
     isStale && 'opacity-60',
   );
 
+  const sign = CURRENCY_SIGN[meta.cur] || '';
+  // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
+  const signFirst = locale === 'en' && meta.cur !== 'rub';
+  const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
   const body = (
     <>
-      <span className="text-xs font-medium text-text-secondary">
-        {meta.labelKey ? t(meta.labelKey) : meta.label}
-      </span>
+      <span className="text-xs font-medium text-text-secondary">{t(meta.nameKey)}</span>
       <span className="text-sm font-semibold tabular-nums text-text-primary">
-        {hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '—'}
+        {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}
+        <span>{hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '\u2014'}</span>
+        {!signFirst && hasPrice && sign ? <span className="fe-ticker__sign">{`\u00a0${sign}${meta.perGram ? t('w6b.ticker.perGram') : ''}`}</span> : null}
       </span>
-      {sourceKind ? (
-        <span className="text-xs text-text-secondary">{t(`shell.ticker.source.${sourceKind}`)}</span>
-      ) : null}
       {asOfHuman ? (
         <span className="text-xs text-text-secondary">{t('shell.ticker.asOf', { date: asOfHuman })}</span>
       ) : null}
-      {pct !== null && pct !== undefined && Math.abs(pct) >= 0.005 ? (
-        <DeltaBadge delta={pct} className="hidden text-xs xl:inline-flex">
+      {showPct ? (
+        <span className="fe-ticker__delta tabular-nums">
+          <span aria-hidden="true">{pct > 0 ? '\u25B2' : '\u25BC'}</span>
+          <span className="sr-only">{pct > 0 ? t('w6b.ticker.up') : t('w6b.ticker.down')}</span>
           {formatPct(pct, locale)}
-        </DeltaBadge>
+        </span>
       ) : null}
     </>
   );
@@ -193,51 +201,6 @@ async function fetchLiveTicker(lane) {
     throw err;
   }
   return r.json();
-}
-
-/**
- * Две липкие плашки (бегущая строка и шапка) съедали ~110 px телефона. При прокрутке вниз строка уходит вверх,
- * шапка поднимается на её место; при прокрутке вверх или у начала страницы всё возвращается.
- * Состояние — атрибут на <html>, его читают стили в styles/shell.css.
- */
-function useHideOnScroll() {
-  useEffect(() => {
-    const root = document.documentElement;
-    // Гистерезис: состояние меняется только после заметного пути в одну сторону от «якоря»
-    // (низшая точка при показе, высшая при скрытии). Дрожь пальца и инерция не переключают строку туда-сюда.
-    const HIDE_AFTER = 36;
-    const SHOW_AFTER = 28;
-    let hidden = false;
-    let anchor = window.scrollY;
-    let frame = 0;
-    const set = (next) => {
-      hidden = next;
-      root.dataset.feTicker = next ? 'hidden' : 'shown';
-    };
-    const apply = () => {
-      frame = 0;
-      const y = window.scrollY;
-      if (y < 48) {
-        if (hidden || root.dataset.feTicker !== 'shown') set(false);
-        anchor = y;
-        return;
-      }
-      if (!hidden) {
-        anchor = Math.min(anchor, y);
-        if (y > 96 && y - anchor > HIDE_AFTER) { set(true); anchor = y; }
-      } else {
-        anchor = Math.max(anchor, y);
-        if (anchor - y > SHOW_AFTER) { set(false); anchor = y; }
-      }
-    };
-    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(apply); };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.cancelAnimationFrame(frame);
-      delete root.dataset.feTicker;
-    };
-  }, []);
 }
 
 /**
@@ -291,10 +254,10 @@ function useEdgeFade(dep) {
 }
 
 export default function LiveTicker() {
-  useHideOnScroll();
   const t = useT();
   const { locale } = useLocale();
-  const lane = tickerLaneForLocale(locale);
+  const { pathname } = useLocation();
+  const lane = tickerLaneFor(locale, pathname);
   const { data, dataUpdatedAt } = useQuery({
     queryKey: ['ticker', 'live', lane],
     queryFn: () => fetchLiveTicker(lane),
@@ -333,6 +296,13 @@ export default function LiveTicker() {
                 {snapshots.map((s) => (
                   <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
                 ))}
+                <Link
+                  to={currenciesPath()}
+                  className="flex h-full min-h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-2 text-xs font-medium text-champagne-ink hover:bg-champagne/10 sm:px-3"
+                >
+                  {t('w6b.ticker.all')}
+                  <ChevronRight size={12} aria-hidden="true" />
+                </Link>
               </div>
             </div>
           </div>

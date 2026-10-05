@@ -11,6 +11,7 @@ import {
   countryPath,
   homePath,
   regionHubPath,
+  russiaCategoriesPath,
   russiaCategoryPath,
   russiaHomePath,
   todayPath,
@@ -22,15 +23,55 @@ export const UNITED_STATES_SLUG = 'united-states';
 
 export const WORLD_RATING_TO = worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
 
+/** Раздел «Прогнозы»: отдельной страницы-витрины нет, ссылка ведёт к объяснению прогнозов в «Как мы считаем». */
+export const FORECASTS_TO = '/methodology#read';
+
 /**
  * `match` — префикс пути для подсветки; побеждает самый длинный матч.
  * `exact` — только для главной: префикс «/» иначе совпал бы со всем сайтом.
  * `shortLabelKey` — подпись до xl: в пилюлю не влезает полное название, а
  * прятать сам пункт нельзя — иначе раздел становится недостижим (overlap
  * логотипа ловится только `scripts/e2e/navbar-overlap.mjs`).
+ * `hintKey` — подпись под пунктом в меню телефона и планшета («что внутри»).
+ * Главная не пункт меню: на неё ведёт логотип. Меню мировое: страны, рейтинг, сравнение, прогнозы;
+ * Россия — один раскрывающийся раздел, а не половина списка.
  */
 export const PRIMARY_NAV = [
   { id: 'home', to: homePath(), match: homePath(), exact: true, labelKey: 'common.home' },
+  {
+    id: 'countries',
+    to: '/#countries',
+    match: '/#countries',
+    labelKey: 'w6b.nav.countries',
+    shortLabelKey: 'w6b.nav.countriesShort',
+    hintKey: 'w6b.nav.countries.hint',
+    icon: 'globe',
+  },
+  {
+    id: 'world-rating',
+    to: WORLD_RATING_TO,
+    match: '/world/rating',
+    labelKey: 'nav.worldRating',
+    shortLabelKey: 'w6b.nav.ratingShort',
+    hintKey: 'w6b.nav.rating.hint',
+    icon: 'chart',
+  },
+  {
+    id: 'compare',
+    to: comparePath(),
+    match: comparePath(),
+    labelKey: 'nav.compare',
+    hintKey: 'w6b.nav.compare.hint',
+    icon: 'compare',
+  },
+  {
+    id: 'forecasts',
+    to: FORECASTS_TO,
+    match: '/forecasts',
+    labelKey: 'w6b.nav.forecasts',
+    hintKey: 'w6b.nav.forecasts.hint',
+    icon: 'trend',
+  },
   { id: 'russia', to: russiaHomePath(), match: russiaHomePath(), labelKey: 'nav.russia' },
   {
     id: 'united-states',
@@ -39,27 +80,12 @@ export const PRIMARY_NAV = [
     labelKey: 'nav.unitedStates',
     shortLabelKey: 'nav.usa',
   },
-  { id: 'world-rating', to: WORLD_RATING_TO, match: '/world/rating', labelKey: 'nav.worldRating' },
-  {
-    id: 'compare',
-    to: comparePath(),
-    match: comparePath(),
-    labelKey: 'nav.compareIndicators',
-    shortLabelKey: 'nav.compare',
-  },
 ];
 
-/**
- * Primary-пункты для локали: RU держит «Россия», EN — «United States»
- * на том же месте. Страницы /russia на EN остаются, но не как главный пункт.
- * Подсветка активного пункта (`resolveActiveNavId`) считается по ПОЛНОМУ
- * PRIMARY_NAV, иначе скрытие ломало бы aria-current на страницах раздела.
- */
+/** Пункты верхней пилюли (десктоп): без главной, RU держит «Россия», EN — «США» на том же месте. */
 export function primaryNav(locale) {
-  if (locale === 'en') {
-    return PRIMARY_NAV.filter((item) => item.id !== 'russia');
-  }
-  return PRIMARY_NAV.filter((item) => item.id !== 'united-states');
+  const hidden = new Set(['home', locale === 'en' ? 'russia' : 'united-states']);
+  return PRIMARY_NAV.filter((item) => !hidden.has(item.id));
 }
 
 /** Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна. */
@@ -80,32 +106,44 @@ export function resolveActiveNavId(pathname, items = PRIMARY_NAV) {
 }
 
 /**
- * Меню телефона: те же разделы, что в шапке без JS и на статических страницах (Сегодня, Регионы, Страны,
- * Календарь), но сгруппированные. Десктопная пилюля всех не вмещает, поэтому длинный список живёт только здесь.
- * `icon` — имя значка (Navbar сопоставляет его с lucide), `to` с хешем ведёт к каталогу стран на главной.
+ * Меню телефона и планшета. Сверху мировые разделы (страны, рейтинг, сравнение, прогнозы, категории, валюты,
+ * «Как мы считаем»), у каждого короткая подпись. Россия одной раскрывающейся строкой; калькуляторы и
+ * «О проекте» рисует Navbar. `icon` — имя значка (Navbar сопоставляет его с lucide).
  */
 export function mobileNavGroups(locale) {
-  const primary = primaryNav(locale);
-  const byId = Object.fromEntries(primary.map((item) => [item.id, item]));
+  const byId = Object.fromEntries(PRIMARY_NAV.map((item) => [item.id, item]));
   const main = [
-    { id: 'home', icon: 'home', ...byId.home },
-    { id: 'countries', icon: 'globe', to: '/#countries', match: '/#countries', labelKey: 'shell.nav.countries' },
-    { id: 'world-rating', icon: 'chart', ...byId['world-rating'] },
-    { id: 'compare', icon: 'compare', ...byId.compare },
-    { id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'), labelKey: 'shell3.nav.currencies' },
+    byId.countries,
+    byId['world-rating'],
+    byId.compare,
+    byId.forecasts,
+    {
+      id: 'categories', icon: 'layers', to: russiaCategoriesPath(), match: russiaCategoriesPath(),
+      labelKey: 'w6b.nav.categories', hintKey: 'w6b.nav.categories.hint',
+    },
+    {
+      id: 'currencies', icon: 'coins', to: russiaCategoryPath('currencies'), match: russiaCategoryPath('currencies'),
+      labelKey: 'shell3.nav.currencies', hintKey: 'w6b.nav.currencies.hint',
+    },
+    {
+      id: 'methodology', icon: 'book', to: '/methodology', match: '/methodology',
+      labelKey: 'w6b.nav.method', hintKey: 'w6b.nav.method.hint',
+    },
   ];
-  if (byId['united-states']) {
-    main.splice(2, 0, { id: 'united-states', icon: 'flag', ...byId['united-states'] });
+  if (locale === 'en') {
+    main.splice(1, 0, { ...byId['united-states'], icon: 'flag', hintKey: 'w6b.nav.us.hint' });
   }
   const russiaItems = [
-    { id: 'today', icon: 'clock', to: todayPath(), match: todayPath(), labelKey: 'shell.nav.today' },
+    { id: 'russia', icon: 'landmark', to: russiaHomePath(), match: russiaHomePath(), labelKey: 'w6b.nav.russiaEconomy' },
+    { id: 'today', icon: 'clock', to: todayPath(), match: todayPath(), labelKey: 'w6b.nav.russiaToday' },
     { id: 'regions', icon: 'map', to: regionHubPath(), match: regionHubPath(), labelKey: 'shell.nav.regions' },
     { id: 'calendar', icon: 'calendar', to: calendarPath(), match: calendarPath(), labelKey: 'shell.nav.calendar' },
   ];
-  // Заголовок группы уже «Россия», поэтому первый пункт — «Обзор», а не второе подряд «Россия».
-  if (byId.russia) russiaItems.unshift({ id: 'russia', icon: 'landmark', ...byId.russia, labelKey: 'shell3.nav.russiaOverview' });
   return [
     { id: 'main', titleKey: null, items: main },
-    { id: 'russia', titleKey: 'shell.nav.groupRussia', items: russiaItems },
+    {
+      id: 'russia', titleKey: 'shell.nav.groupRussia', hintKey: 'w6b.nav.russia.hint', icon: 'landmark',
+      collapsible: true, items: russiaItems,
+    },
   ];
 }

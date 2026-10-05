@@ -45,7 +45,7 @@ export default function Terms() {
           Правовая информация
         </p>
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
-          Пользовательское соглашение
+          Условия использования
         </h1>
         <p className="text-sm text-text-secondary mb-8">Редакция от 24 сентября 2026 г.</p>
 

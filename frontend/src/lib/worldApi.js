@@ -471,8 +471,15 @@ const REGION_ID_BY_LABEL = Object.freeze({
 /** Порядок секций: Европа первой — там наибольшая глубина истории. */
 const REGION_ORDER = Object.freeze(['europe', 'americas', 'asia', 'africa', 'oceania']);
 
+/**
+ * Закавказье по физической географии отнесено к Азии (в базе стоит «Европа»): страна не должна числиться
+ * в Европе только из-за членства в европейских объединениях.
+ */
+const REGION_ID_BY_CODE = Object.freeze({ AZ: 'asia', AM: 'asia', GE: 'asia' });
+
 export function countryRegionId(country) {
   if (country?.slug === 'russia' || country?.code === 'RU') return 'europe';
+  if (REGION_ID_BY_CODE[country?.code]) return REGION_ID_BY_CODE[country.code];
   return REGION_ID_BY_LABEL[String(country?.region || '').trim()] || 'other';
 }
 
@@ -488,7 +495,9 @@ export function groupCountriesByRegion(countries, { locale = 'ru' } = {}) {
     const id = countryRegionId(country);
     if (!map.has(id)) map.set(id, { id, region: '', countries: [] });
     const bucket = map.get(id);
-    if (!bucket.region && country?.region) bucket.region = country.region;
+    if (!bucket.region && country?.region && REGION_ID_BY_LABEL[String(country.region).trim()] === id) {
+      bucket.region = country.region;
+    }
     bucket.countries.push(country);
   }
   const rank = (id) => {

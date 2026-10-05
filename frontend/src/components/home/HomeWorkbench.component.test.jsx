@@ -327,4 +327,15 @@ describe('HomeWorkbench', () => {
     expect((await planetProps()).rankingItems.at(-1)).toMatchObject({ country_code: 'C39', value: 39 });
     expect((await planetProps()).rankingItems[0].value).toBe(0);
   });
+
+  it('чипы показателей видны сразу все (из словаря), пока каталог понятий ещё не пришёл', () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/rating\/concepts/, () => new Promise(() => {})],
+    ]);
+    renderPage(<HomeWorkbench ratingConcepts={{ data: undefined }} />, { path: '/', route: '/' });
+    const group = screen.getByRole('group', { name: 'Показатель' });
+    const labels = [...group.querySelectorAll('.fe-chip')].map((el) => el.textContent);
+    expect(labels).toEqual(['ВВП', 'ВВП на душу населения', 'Безработица', 'Инфляция', 'Население']);
+  });
 });

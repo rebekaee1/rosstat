@@ -94,6 +94,14 @@ export const HOME_MAP_CONCEPT_ORDER = Object.freeze([
 export const DEFAULT_HOME_COUNTRY_CONCEPT = 'gdp-usd';
 
 /**
+ * Чипы выбора показателя, пока каталог понятий ещё не пришёл: названия берутся из словаря, а не из API,
+ * поэтому ряд виден целиком сразу, макет не прыгает, когда приходит ответ.
+ */
+export const HOME_PICKER_PLACEHOLDER = Object.freeze(
+  HOME_MAP_CONCEPT_ORDER.slice(0, 5).map((slug) => Object.freeze({ slug })),
+);
+
+/**
  * Оставляет из ответа API только показатели главной и выстраивает их порядком
  * HOME_MAP_CONCEPT_ORDER. Если ни одного из них нет — отдаёт список как есть,
  * чтобы карта не осталась без выбора.
