@@ -3,7 +3,7 @@
 import { useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area, CartesianGrid, ComposedChart, Line, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts';
 import { ArrowRightLeft, Info, Search, X } from 'lucide-react';
 import Button from './Button';
@@ -16,6 +16,9 @@ import { cn, formatDate, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { CHART_THEME, GRID_PROPS, axisTick } from '../lib/chartTheme';
+import { useChartGlassIds } from '../lib/chartHooks';
+import ChartGlassDefs from './ChartGlassDefs';
+import EmptyState from './brand/EmptyState';
 import {
   CURRENCY_TABS, UNITS, buildEdges, convert, convertibleUnits, formatConverted,
   pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity,
@@ -27,6 +30,7 @@ import { useLocale, useT } from '../i18n';
 import '../styles/y2-indicator.css';
 import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
+import '../styles/k4-charts.css';
 import '../styles/k8-tools.css';
 
 const QUICK_AMOUNTS = ['1', '100', '1000', '10000'];
@@ -282,11 +286,24 @@ function ChartTip({ active, payload, unit, locale }) {
   );
 }
 
+/** Бусина на конце ленты: гало, гранёный шарик (градиент bead из ChartGlassDefs) и белый блик. */
+function EndBead({ cx, cy, beadId }) {
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  return (
+    <g pointerEvents="none" className="k4-lastpoint">
+      <circle className="k4-lastpoint__halo" cx={cx} cy={cy} r={11} fill={CHART_THEME.goldBright} fillOpacity={0.28} />
+      <circle cx={cx} cy={cy} r={6.5} fill={`url(#${beadId})`} />
+      <circle cx={cx - 2} cy={cy - 2.2} r={1.3} fill="#fff" fillOpacity={0.9} />
+    </g>
+  );
+}
+
 /** Крупный график выбранной пары за год: золотая линия, текущее значение и изменение за год. */
 function YearChart({ pair }) {
   const t = useT();
   const { locale } = useLocale();
   const { data, isLoading } = useIndicatorData(pair?.code, { limit: 400 });
+  const glass = useChartGlassIds('k8cur');
   const series = useMemo(() => yearSeries(data?.data, { invert: pair?.invert }), [data, pair?.invert]);
   if (!pair) return null;
   const quote = UNITS[pair.quote];
@@ -332,13 +349,8 @@ function YearChart({ pair }) {
       <div className="fe-z8-chart__plot" role="img" aria-label={title}>
         <div className="fe-z8-chart__abs">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-            <defs>
-              <linearGradient id="z8CurGold" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={CHART_THEME.champagne} stopOpacity={0.32} />
-                <stop offset="100%" stopColor={CHART_THEME.champagne} stopOpacity={0.02} />
-              </linearGradient>
-            </defs>
+          <ComposedChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+            <defs><ChartGlassDefs ids={glass} /></defs>
             <CartesianGrid {...GRID_PROPS} />
             <XAxis
               dataKey="date"
@@ -360,17 +372,41 @@ function YearChart({ pair }) {
             />
             <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1.5, strokeOpacity: 0.55 }} />
             <Area
+              className="k4-ribbon"
               type="monotone"
               dataKey="value"
-              stroke={CHART_THEME.champagne}
-              strokeWidth={2.5}
-              fill="url(#z8CurGold)"
+              stroke={`url(#${glass.ribbon})`}
+              strokeWidth={3}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill={`url(#${glass.area})`}
               dot={false}
-              activeDot={{ r: 5, fill: CHART_THEME.champagne, stroke: CHART_THEME.surface, strokeWidth: 2 }}
+              activeDot={{ r: 5, fill: CHART_THEME.goldBright, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive
-              animationDuration={700}
+              animationDuration={900}
             />
-          </AreaChart>
+            {/* Белый блик-штрих 1 px поверх ленты (css k4-gloss). */}
+            <Line
+              className="k4-gloss"
+              type="monotone"
+              dataKey="value"
+              stroke="rgba(255,255,255,0.72)"
+              strokeWidth={1}
+              strokeLinecap="round"
+              dot={false}
+              activeDot={false}
+              isAnimationActive={false}
+              legendType="none"
+              tooltipType="none"
+            />
+            <ReferenceDot
+              x={series[lastIndex].date}
+              y={series[lastIndex].value}
+              r={4.5}
+              ifOverflow="visible"
+              shape={(props) => <EndBead cx={props.cx} cy={props.cy} beadId={glass.bead} />}
+            />
+          </ComposedChart>
         </ResponsiveContainer>
         </div>
       </div>
@@ -546,9 +582,12 @@ export default function CurrencyDesk({ indicators }) {
 
         {rows.length === 0 ? (
           <div className="fe-w6g-empty" role="status">
-            <span className="fe-k8-shard" aria-hidden="true" />
-            <p>{t('w6g.cur.nothing')}</p>
-            <Button variant="secondary" onClick={() => setQuery('')}>{t('w4.compare.clearSearch')}</Button>
+            <EmptyState
+              variant="no-results"
+              size={88}
+              title={t('w6g.cur.nothing')}
+              action={<Button variant="secondary" onClick={() => setQuery('')}>{t('w4.compare.clearSearch')}</Button>}
+            />
           </div>
         ) : (
           <div className="fe-trow-list fe-z8-rows">

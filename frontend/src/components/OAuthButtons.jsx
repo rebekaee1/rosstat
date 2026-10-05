@@ -79,8 +79,8 @@ export default function OAuthButtons({
 
   if (providers === null && !showGoogleEmailFallback) {
     return <div className="space-y-2.5" aria-hidden>
-      <div className="h-11 rounded-xl bg-obsidian-lighter/40 motion-safe:animate-pulse" />
-      <div className="h-11 rounded-xl bg-obsidian-lighter/40 motion-safe:animate-pulse" />
+      <div className="h-11 rounded-xl skeleton" />
+      <div className="h-11 rounded-xl skeleton" />
     </div>;
   }
   const order = locale === 'en' ? ['google', 'yandex', 'vk'] : ['yandex', 'vk', 'google'];

@@ -30,6 +30,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import SourceLink from '../components/SourceLink';
 import CalcCountryPicker from '../components/CalcCountryPicker';
+import EmptyState from '../components/brand/EmptyState';
 import CalcSlider from '../components/CalcSlider';
 import CalcMoneyField from '../components/CalcMoneyField';
 import CalculatorSiblings from '../components/CalculatorSiblings';
@@ -814,14 +815,13 @@ export default function CalculatorPage() {
 
       {/* Страна без данных о ценах: короткая подсказка вместо пустой области (она занимала экран). */}
       {!isError && !isLoading && !result && amount > 0 && (
-        <p
+        <div
           role="status"
           data-testid="calc-no-data"
-          className="mb-6 rounded-[1.5rem] p-5 text-sm text-text-secondary fe-glass-lite fe-k8-empty"
+          className="mb-6 rounded-[1.5rem] p-5 text-sm text-text-secondary fe-glass-lite"
         >
-          <span className="fe-k8-shard" aria-hidden="true" />
-          {t('w6a.calc.noData')}
-        </p>
+          <EmptyState variant="no-data" size={80} title={t('w6a.calc.noData')} />
+        </div>
       )}
 
       {result && !isLoading && (
