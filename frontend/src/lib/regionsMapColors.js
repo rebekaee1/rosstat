@@ -1,7 +1,27 @@
 // Квантильная шкала choropleth карты регионов — одна точка истины для
 // живого SVG (RegionsMap) и покадрового GIF-экспорта (regionsMapGif).
 
-export const MAP_SCALE = ['#EFEAE0', '#E3D5B3', '#D2BC7E', '#BE9F4E', '#9C7B22'];
+// Девять ступеней вместо пяти: у соседей с близкими значениями цвета теперь различимы. Опорные пять
+// цветов прежние (светлый песочный → золото), промежуточные получены плавным переходом между ними.
+const MAP_SCALE_STOPS = ['#EFEAE0', '#E3D5B3', '#D2BC7E', '#BE9F4E', '#9C7B22'];
+
+function mixHex(a, b, f) {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+  const mixed = pa.map((v, i) => Math.round(v + (pb[i] - v) * f));
+  return `#${mixed.map((v) => v.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+}
+
+function buildScale(stops, steps) {
+  return Array.from({ length: steps }, (_, i) => {
+    const pos = (i / (steps - 1)) * (stops.length - 1);
+    const lo = Math.floor(pos);
+    const hi = Math.min(stops.length - 1, lo + 1);
+    return mixHex(stops[lo], stops[hi], pos - lo);
+  });
+}
+
+export const MAP_SCALE = buildScale(MAP_SCALE_STOPS, 9);
 export const MAP_NO_DATA = '#F3F1EC';
 
 /**

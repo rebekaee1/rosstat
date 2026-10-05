@@ -36,9 +36,11 @@ import {
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import usStatesMap from '../lib/usStatesMap.json';
+import { plainUsIndicatorName } from '../lib/usCatalogTopics';
 import Spinner from '../components/Spinner';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/w6f-pages.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -262,7 +264,7 @@ export default function WorldRegionsHome() {
       navigate(countryRegionMapPath(countrySlug, activeCode || defaultCode || OVERVIEW));
       return;
     }
-    navigate(countryRegionsPath(countrySlug));
+    navigate(`${countryRegionsPath(countrySlug)}?view=list`);
   };
 
   const setMetric = (nextCode) => {
@@ -311,7 +313,9 @@ export default function WorldRegionsHome() {
     return <Navigate to={regionHubPath()} replace />;
   }
 
-  const view = isMapRoute ? 'map' : 'list';
+  // Карта по умолчанию: человек пришёл за картой, а не за списком из 51 одинаковой строки.
+  // Список остаётся по вкладке «Список» (?view=list).
+  const view = isMapRoute ? 'map' : (params.get('view') === 'list' ? 'list' : 'map');
   const chipCls = (active) => `fe-chip fe-press ${active ? 'is-active' : ''}`;
 
   return (
@@ -382,6 +386,9 @@ export default function WorldRegionsHome() {
               title={kindPlural}
               count={filteredRegions.length}
             />
+            {countrySlug === 'united-states' && regions.length === 51 && (
+              <p className="-mt-1 mb-3 text-sm text-text-secondary" data-testid="us-territories-note">{t('w6f.us.count51')}</p>
+            )}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
               {filteredRegions.map((r) => (
                 <RegionCard
@@ -409,7 +416,7 @@ export default function WorldRegionsHome() {
       {hub.data && view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="fe-chip-row--grid w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="fe-chip-ribbon w-full min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"
@@ -431,7 +438,7 @@ export default function WorldRegionsHome() {
                     onClick={() => setMetric(ind.code)}
                     className={chipCls(selected)}
                   >
-                    {ind.name}
+                    {plainUsIndicatorName(ind.name, locale).label}
                   </button>
                 );
               })}

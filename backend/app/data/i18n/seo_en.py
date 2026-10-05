@@ -569,7 +569,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "Schedule of macroeconomic data releases: Rosstat, Bank of Russia, "
             "Ministry of Finance."
         ),
-        h1="Economic release calendar",
+        h1="Russia: economic calendar",
         intro=(
             "The calendar helps track release dates for macroeconomic data "
             "and updates from official sources."

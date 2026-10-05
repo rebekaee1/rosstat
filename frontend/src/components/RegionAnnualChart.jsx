@@ -4,8 +4,9 @@
 // Ось Y для ряда «Россия»: если масштабы региона и РФ несопоставимы (напр.
 // посевные площади Краснодарского края ~500 тыс. га против ~7 млн га по РФ),
 // одна общая ось прижимает линию региона к нулю и график перестаёт читаться.
-// В этом случае РФ автоматически уводится на правую ось (dual-axis), а под
-// графиком появляется подпись, какая линия к какой оси относится.
+// В этом случае обе линии пересчитываются в «Россия = 100» и рисуются на одной оси: две разные
+// шкалы в одном поле (волна 6) заставляли новичка сравнивать высоту линий, которая ничего не значит.
+// Старый вариант с правой осью остался только для графика с нашим прогнозом (у него нет ряда РФ).
 import { useCallback, useMemo, useRef, useId } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
@@ -41,7 +42,7 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
@@ -71,7 +72,9 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
           {forecastLabel}: {formatRegionValue(forecast.value)}
         </div>
       )}
-      {unit ? <div className="mt-1 text-[11px] text-text-secondary">{unit}</div> : null}
+      {indexNote
+        ? <div className="mt-1 text-[11px] text-text-secondary">{indexNote}</div>
+        : (unit ? <div className="mt-1 text-[11px] text-text-secondary">{unit}</div> : null)}
     </div>
   );
 }
@@ -145,7 +148,7 @@ export default function RegionAnnualChart({
   );
 
   // Несоразмерные масштабы (регион ≪ Россия или наоборот) → РФ на правую ось.
-  const dualAxis = useMemo(() => {
+  const scalesDiffer = useMemo(() => {
     if (!showRussia) return false;
     const regionMax = Math.max(...data.map(d => Math.abs(d.value ?? 0)));
     const rfMax = Math.max(...data.map(d => Math.abs(d.russia ?? 0)));
@@ -154,11 +157,30 @@ export default function RegionAnnualChart({
     return ratio > DUAL_AXIS_RATIO || ratio < 1 / DUAL_AXIS_RATIO;
   }, [data, showRussia]);
 
+  // Несопоставимые масштабы: честнее всего «Россия = 100» на одной оси (регион в процентах от России).
+  // Индекс имеет смысл только для положительных величин (у изменений за год бывают минусы — там остаётся вторая ось).
+  const positiveOnly = useMemo(
+    () => data.every((d) => (d.russia == null || d.russia > 0) && (d.value == null || d.value >= 0) && (d.compare == null || d.compare >= 0)),
+    [data],
+  );
+  const indexMode = scalesDiffer && !forecastSeries?.length && positiveOnly;
+  const dualAxis = scalesDiffer && !indexMode;
+  const plotData = useMemo(() => {
+    if (!indexMode) return data;
+    const idx = (v, rf) => (v != null && rf ? (Number(v) / Number(rf)) * 100 : null);
+    return data.map((d) => ({
+      ...d,
+      value: idx(d.value, d.russia),
+      compare: idx(d.compare, d.russia),
+      russia: d.russia ? 100 : null,
+    }));
+  }, [data, indexMode]);
+
   const isNarrow = plotWidth > 0 && plotWidth < NARROW_CHART_WIDTH;
 
   // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
   // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
-  const leftValues = useMemo(() => data.flatMap(d => [d.value, d.compare, d.forecast]), [data]);
+  const leftValues = useMemo(() => plotData.flatMap(d => [d.value, d.compare, d.forecast]), [plotData]);
   const rightValues = useMemo(() => (dualAxis ? data.map(d => d.russia) : []), [data, dualAxis]);
   const leftScale = useMemo(() => axisScaleFor(leftValues), [leftValues]);
   const rightScale = useMemo(() => axisScaleFor(rightValues), [rightValues]);
@@ -217,7 +239,7 @@ export default function RegionAnnualChart({
         })}
       >
         <ResponsiveContainer>
-          <ComposedChart data={data} margin={chartMargin}>
+          <ComposedChart data={plotData} margin={chartMargin}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.28} />
@@ -279,6 +301,7 @@ export default function RegionAnnualChart({
                   compareName={compareName}
                   russiaLabel={russiaLabel}
                   forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
+                  indexNote={indexMode ? t('w6f.reg.indexNote') : null}
                   tickLabel={(v) => {
                     const d = data.find((x) => String(x.period) === String(v));
                     return d ? d.label : String(v);
@@ -347,8 +370,11 @@ export default function RegionAnnualChart({
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="inline-block w-5 border-t-2 border-dashed" style={{ borderColor: CHART_THEME.axis }} />
-            {russiaLabel}
+            {indexMode ? t('w6f.reg.russia100', { name: russiaLabel }) : russiaLabel}
           </span>
+          {indexMode && (
+            <span className="basis-full text-xs" data-testid="index-note">{t('w6f.reg.indexExplain', { region: regionName })}</span>
+          )}
         </div>
       )}
       {dualAxis && (

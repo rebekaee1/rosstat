@@ -271,6 +271,14 @@ export default function RegionIndicatorPage() {
     };
   }, [activeSeries, isMonthly, locale]);
 
+  // «Лучший / худший год» там, где понятно, что хорошо (безработица ниже — лучше), иначе просто наибольшее и наименьшее.
+  const extremePolarity = indicatorPolarity(indName, code);
+  const extremeKeys = extremePolarity === 'up-good'
+    ? { max: 'w6f.reg.bestYear', min: 'w6f.reg.worstYear' }
+    : extremePolarity === 'up-bad'
+      ? { max: 'w6f.reg.worstYear', min: 'w6f.reg.bestYear' }
+      : { max: 'w6f.reg.highestYear', min: 'w6f.reg.lowestYear' };
+
   const tableRows = useMemo(
     () => (activeSeries.length ? [...activeSeries].reverse() : []),
     [activeSeries],
@@ -472,7 +480,8 @@ export default function RegionIndicatorPage() {
               }
               >
                 <span className="inline-flex items-center gap-1.5">
-                  {active.rank.rank_as_achievement && (
+                  {/* Кубок только у тройки лидеров: у последнего места он выглядел насмешкой. */}
+                  {active.rank.rank_as_achievement && active.rank.position <= 3 && (
                     <Trophy size={14} className="text-champagne-ink" />
                   )}
                   {active.rank.position}
@@ -485,10 +494,10 @@ export default function RegionIndicatorPage() {
             )}
             {stats && (
               <>
-                <StatCell label={t('regions.ind.max', { year: stats.maxAt })}>
+                <StatCell label={t(extremeKeys.max, { year: stats.maxAt })}>
                   {formatRegionWithUnit(statValue(stats.max, stats), active.indicator.unit, locale)}
                 </StatCell>
-                <StatCell label={t('regions.ind.min', { year: stats.minAt })}>
+                <StatCell label={t(extremeKeys.min, { year: stats.minAt })}>
                   {formatRegionWithUnit(statValue(stats.min, stats), active.indicator.unit, locale)}
                 </StatCell>
               </>

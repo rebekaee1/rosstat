@@ -132,3 +132,25 @@ export function findDailyRecurring(monthEvents, { minDays = 8 } = {}) {
 export function recurringKeyOf(event) {
   return `${event?.source || ''}|${String(event?.title || '').trim()}`;
 }
+
+/**
+ * Какой день открыть в календаре по умолчанию: сегодня, если в нём есть разовые события; иначе ближайший
+ * день с важным событием (важность 2 и выше); иначе ближайший день с любым разовым событием.
+ * Ежедневные публикации (курсы, ставки) в расчёт не берутся: они есть в каждый будний день и ничего не говорят.
+ *
+ * @param {Array<object>} monthEvents — события месяца.
+ * @param {string} todayStr — сегодня в виде YYYY-MM-DD.
+ * @param {Set<string>} recurringKeys — ключи ежедневных событий (`findDailyRecurring(...).keys`).
+ * @returns {string|null}
+ */
+export function pickDefaultDay(monthEvents, todayStr, recurringKeys = new Set()) {
+  const own = (Array.isArray(monthEvents) ? monthEvents : []).filter(
+    (ev) => ev?.scheduled_date && !recurringKeys.has(recurringKeyOf(ev)),
+  );
+  if (own.some((ev) => ev.scheduled_date === todayStr)) return todayStr;
+  const future = own
+    .filter((ev) => ev.scheduled_date > todayStr)
+    .sort((a, b) => a.scheduled_date.localeCompare(b.scheduled_date));
+  const important = future.find((ev) => (ev.importance || 0) >= 2);
+  return (important || future[0])?.scheduled_date || null;
+}

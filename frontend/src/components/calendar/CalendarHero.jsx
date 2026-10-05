@@ -5,6 +5,7 @@ import {
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
+import { cn } from '../../lib/format';
 import { plural } from '../../lib/calcFormat';
 import { plainEventTitle } from '../../lib/calendarText';
 import '../../styles/ui-detail-nav-calendar.css';
@@ -30,7 +31,8 @@ function pluralUnit(n, unit, t, locale) {
   return t(`w3.cal.unit.${unit}.${form}`);
 }
 
-export default function CalendarHero({ nextEvent }) {
+/** `stacked` — узкая колонка рядом с сеткой месяца: название и дата сверху, таймер под ними. */
+export default function CalendarHero({ nextEvent, stacked = false }) {
   const t = useT();
   const { locale } = useLocale();
   const [remaining, setRemaining] = useState(null);
@@ -62,11 +64,14 @@ export default function CalendarHero({ nextEvent }) {
   return (
     <div
       style={{ '--fe-duration': '0.4s', '--fe-rise': '12px' }}
-      className="fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[1.5rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6 md:p-8 mb-8"
+      className={cn(
+        'fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[1.5rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6',
+        stacked ? 'mb-4' : 'md:p-8 mb-8',
+      )}
     >
       <div className="absolute top-0 right-0 w-48 h-48 bg-champagne/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
 
-      <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div className={cn('relative flex flex-col gap-6', !stacked && 'md:flex-row md:items-center md:justify-between')}>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-3">
             <CalendarIcon className="w-4 h-4 text-champagne" />

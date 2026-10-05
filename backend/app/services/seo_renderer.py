@@ -760,7 +760,7 @@ body.seo-fast .seo-topbar-in{max-width:72rem;gap:1.4rem;padding:1rem 1.5rem}
 body.seo-fast .seo-brand{display:flex;align-items:center;gap:.65rem;font-size:1.55rem;font-weight:750;letter-spacing:-.065em;color:#202a3c;line-height:1;flex-shrink:0}
 body.seo-fast .seo-brand svg{width:31px;height:35px;flex-shrink:0}
 body.seo-fast .seo-brand-light{font-weight:400}
-body.seo-fast .seo-brand small{display:block;font-size:7px;font-weight:600;letter-spacing:.16em;color:#ad8a48;margin-top:6px}
+body.seo-fast .seo-brand small{display:block;font-size:7px;font-weight:600;letter-spacing:.16em;color:inherit;margin-top:6px}
 body.seo-fast .seo-topnav{gap:.1rem 1.1rem;font-size:.78rem;max-width:100%;padding:.4rem 0;flex-wrap:wrap;overflow:visible}
 body.seo-fast .seo-topnav a{padding:.3rem 0}
 body.seo-fast .seo-topnav a{color:#526074}
@@ -861,15 +861,44 @@ body.seo-fast .seo-cta a.seo-btn{min-height:44px;display:inline-flex;align-items
 body.seo-fast .seo-cta a.seo-btn:hover{border-color:#ad8a48;background:#fff;color:#202a3c}
 body.seo-fast .seo-foot{max-width:none;margin:2rem 0 0;padding:0;font-size:.8125rem;color:#526074}
 body.seo-fast .seo-foot-in{max-width:72rem;margin:0 auto;padding:1.5rem 1.25rem calc(2.25rem + env(safe-area-inset-bottom,0px));border:1px solid rgba(255,255,255,.9);border-bottom:0;border-radius:32px 32px 0 0;background:linear-gradient(130deg,rgba(255,255,255,.72),rgba(255,255,255,.4))}
-body.seo-fast .seo-foot-links{display:flex;flex-wrap:wrap;gap:.25rem 1.25rem;margin:0 0 1rem}
-body.seo-fast .seo-foot-links a{display:inline-flex;align-items:center;min-height:36px;color:#202a3c;text-decoration:none;font-size:.875rem;font-weight:600}
+body.seo-fast .seo-foot-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.25rem;margin:0 0 1.25rem}
+@media(min-width:760px){body.seo-fast .seo-foot-links{grid-template-columns:repeat(4,minmax(0,1fr))}}
+body.seo-fast .seo-foot-col{display:flex;flex-direction:column;min-width:0}
+body.seo-fast .seo-foot-title{margin:0 0 .35rem;font-size:.75rem;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:#526074}
+body.seo-fast .seo-foot-links a{display:inline-flex;align-items:center;min-height:40px;color:#202a3c;text-decoration:none;font-size:.875rem;font-weight:600}
 body.seo-fast .seo-foot-links a:hover{color:#80642f}
+body.seo-fast .seo-nav-login,body.seo-fast .seo-nav-reg{font-weight:650}
+body.seo-fast .seo-nav-reg{padding-left:.9rem!important;padding-right:.9rem!important;border-radius:999px!important;background:#202a3c!important;color:#fff!important;border-color:transparent!important;justify-content:center}
+body.seo-fast .seo-nav-reg:hover{background:#80642f!important;color:#fff!important}
+@media(min-width:1180px){body.seo-fast .seo-nav-reg{margin-left:.35rem;padding:.4rem 1rem!important}}
+body.seo-fast .seo-lang-seg{order:2;display:inline-flex;align-items:center;margin-left:auto;padding:3px;border:1px solid rgba(68,87,115,.16);border-radius:999px;background:rgba(255,255,255,.7)}
+body.seo-fast .seo-lang-seg a,body.seo-fast .seo-lang-seg span{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:38px;border-radius:999px;font-size:.8125rem;font-weight:700;letter-spacing:.04em;text-decoration:none!important;color:#526074}
+body.seo-fast .seo-lang-seg [aria-current]{background:#f6f3ec;color:#202a3c;box-shadow:inset 0 0 0 1px #d3c4a3}
+body.seo-fast .seo-lang-seg a:hover{color:#80642f}
+body.seo-fast .seo-search-btn ~ .seo-lang-seg{margin-left:0}
+body.seo-fast .seo-lang-seg ~ .seo-menu-btn{margin-left:0}
+@media(min-width:1180px){body.seo-fast .seo-lang-seg{order:3;margin-left:0}}
 body.seo-fast .seo-foot-in p{margin:0;max-width:44rem;line-height:1.55}
 body.seo-fast .seo-foot a{color:#202a3c}
 /* ── Фирменная 404 ── */
 body.seo-fast .seo-404{max-width:44rem;padding-top:2.25rem;text-align:left}
-body.seo-fast .seo-404-code{margin:0 0 .25rem;font-size:clamp(4.5rem,22vw,8rem);font-weight:650;letter-spacing:-.07em;line-height:1;background:linear-gradient(135deg,#80642f,#ad8a48 50%,#c8ae78);-webkit-background-clip:text;background-clip:text;color:transparent}
+body.seo-fast .seo-404-planet{display:block;width:92px;height:92px;margin:0 0 .35rem}
+body.seo-fast .seo-404-planet .seo-orbit{transform-origin:60px 60px;animation:seo-404-spin 28s linear infinite}
+@keyframes seo-404-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){body.seo-fast .seo-404-planet .seo-orbit{animation:none}}
+body.seo-fast .seo-404-eyebrow{margin:0 0 .35rem;font-size:.8125rem;font-weight:650;color:#80642f}
 body.seo-fast .seo-404 h1{margin:0 0 .6rem}
+body.seo-fast .seo-404-guess{margin:0 0 1.25rem}
+body.seo-fast .seo-404-guess p{margin:0 0 .5rem;font-size:.9375rem;color:#526074}
+body.seo-fast .seo-404-guess ul{display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0;list-style:none}
+body.seo-fast .seo-404-guess a{display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;border:1px solid #d3c4a3;border-radius:999px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
+body.seo-fast .seo-404-guess a:hover{border-color:#ad8a48}
+body.seo-fast .seo-404-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.5rem;padding:0;list-style:none}
+body.seo-fast .seo-404-chips a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid rgba(68,87,115,.16);border-radius:999px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;text-decoration:none!important}
+body.seo-fast .seo-404-chips a:hover{border-color:#ad8a48;color:#80642f}
+body.seo-fast .seo-404-actions{display:flex;flex-wrap:wrap;gap:.6rem}
+body.seo-fast .seo-404-back{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid rgba(68,87,115,.16);border-radius:14px;background:rgba(255,255,255,.7);color:#202a3c;font:inherit;font-weight:650;cursor:pointer}
+body.seo-fast .seo-404-back:hover{border-color:#ad8a48}
 body.seo-fast .seo-404-lead{max-width:34rem;margin:0 0 1.25rem;font-size:1.05rem}
 body.seo-fast .seo-search{display:flex;gap:.5rem;margin:0 0 1.75rem}
 body.seo-fast .seo-search input{flex:1;min-width:0;min-height:48px;padding:0 1rem;text-overflow:ellipsis;border:1px solid rgba(68,87,115,.2);border-radius:14px;background:rgba(255,255,255,.85);color:#202a3c;font:inherit;font-size:16px}
@@ -1010,9 +1039,11 @@ def _ssr_boot_splash() -> str:
 # навигацией и CTA-футер на главную. Одна точка правки для всех программатик-
 # семейств без React-bundle (годовые landing'и + брендовая 404).
 #
-# Состав seo-topnav ≠ клиентская Navbar: здесь перелинковка для робота.
+# Состав seo-topnav повторяет меню приложения (frontend/src/lib/navItems.js, мобильные
+# группы) и столбцы подвала (frontend/src/lib/footerNav.js): человек, попавший на 404 или
+# годовую страницу, видит те же разделы и те же слова, что и в приложении. Если меняется
+# состав меню или подвала в приложении, правятся и эти константы (одна точка правки здесь).
 # Обязательны хабы /russia/today, /russia/region, /world, /russia/calendar.
-# Клиентскую шапку «пункт в пункт» не синхронизировать.
 #
 # Масштаб (site_urls, 2026-08): chrome видят только ~2,5k годовых landing'ов;
 # ~77k URL — SPA-SSR (include_app=True) без chrome. Для них — блок
@@ -1020,32 +1051,100 @@ def _ssr_boot_splash() -> str:
 #
 # RU-константы ниже — эталон и для тестов структуры href. EN — через
 # `_ssr_chrome_*()` / `_ssr_platform_deep_links()` по get_locale().
+def _foot_nav(en: bool) -> str:
+    """Столбцы подвала как в приложении: Мир, страна (Россия/США), Инструменты, Информация."""
+    if en:
+        label = "About the service"
+        groups = (
+            ("World", (
+                ("/#countries", "Countries"),
+                (paths.world_rating("gdp-usd"), "Country rankings"),
+                ("/compare", "Compare indicators"),
+                ("/currencies", "Currencies"),
+                (paths.today(), "Economy today"),
+                (paths.region_rating_hub(), "Regional rankings"),
+                (paths.calendar(), "Release calendar"),
+            )),
+            ("United States", (
+                (paths.country("united-states"), "United States"),
+                (paths.country_regions("united-states"), "US states"),
+            )),
+            ("Tools", (
+                ("/calculator", "Inflation calculator"),
+                ("/calculator/mortgage", "Mortgage calculator"),
+                ("/calculator/compound", "Compound interest"),
+            )),
+            ("Information", (
+                ("/about", "About"),
+                ("/methodology", "Methodology"),
+                ("/privacy", "Privacy"),
+                ("/terms", "Terms of use"),
+            )),
+        )
+    else:
+        label = "О сервисе"
+        groups = (
+            ("Мир", (
+                ("/#countries", "Страны"),
+                (paths.world_rating("gdp-usd"), "Рейтинг стран"),
+                ("/compare", "Сравнение индикаторов"),
+                ("/currencies", "Валюты"),
+            )),
+            ("Россия", (
+                (paths.russia_home(), "Россия"),
+                (paths.today(), "Экономика сегодня"),
+                (paths.region_hub(), "Регионы России"),
+                (paths.region_rating_hub(), "Рейтинги регионов"),
+                (paths.calendar(), "Календарь публикаций"),
+                (paths.demographics(), "Демография"),
+            )),
+            ("Инструменты", (
+                ("/calculator", "Калькулятор инфляции"),
+                ("/calculator/mortgage", "Ипотечный калькулятор"),
+                ("/calculator/compound", "Сложные проценты"),
+            )),
+            ("Информация", (
+                ("/about", "О проекте"),
+                ("/methodology", "Методология"),
+                ("/privacy", "Конфиденциальность"),
+                ("/terms", "Условия использования"),
+            )),
+        )
+    cols = "".join(
+        f'<div class="seo-foot-col"><p class="seo-foot-title">{escape(title)}</p>'
+        + "".join(f'<a href="{escape(href)}">{escape(text)}</a>' for href, text in links)
+        + "</div>"
+        for title, links in groups
+    )
+    return f'<nav class="seo-foot-links" aria-label="{label}">{cols}</nav>'
+
+
 _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Открыть меню разделов">
 <label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Меню</label>
-<nav class="seo-topnav" aria-label="Разделы сайта"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a></nav>
+<nav class="seo-topnav" aria-label="Разделы сайта"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/currencies">Валюты</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a><a class="seo-nav-login" href="/login" rel="nofollow">Войти</a><a class="seo-nav-reg" href="/register" rel="nofollow">Регистрация</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Open the section menu">
 <label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Menu</label>
-<nav class="seo-topnav" aria-label="Site sections"><a href="/">Home</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/calculator">Calculators</a><a href="/about">About</a></nav>
+<nav class="seo-topnav" aria-label="Site sections"><a href="/">Home</a><a href="{paths.country("united-states")}">United States</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/currencies">Currencies</a><a href="/calculator">Calculators</a><a href="/about">About</a><a class="seo-nav-login" href="/login" rel="nofollow">Sign in</a><a class="seo-nav-reg" href="/register" rel="nofollow">Sign up</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Интерактивные графики, сравнения и проверенные прогнозы</strong> — для показателей России, регионов и доступных стран. Просмотр открыт всем, скачивание — после бесплатной регистрации.</p>
 <a class="seo-btn" href="/">Открыть платформу</a>
 </div></div>
-<footer class="seo-foot"><div class="seo-foot-in"><nav class="seo-foot-links" aria-label="О сервисе"><a href="/about">О проекте</a><a href="/methodology">Методология</a><a href="/calculator">Калькуляторы</a><a href="/privacy">Конфиденциальность</a><a href="/terms">Условия использования</a></nav><p>Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
+<footer class="seo-foot"><div class="seo-foot-in">{_foot_nav(False)}<p>Данные — только официальные первоисточники: государственные статистические ведомства, центральные банки и официальные биржи. Обновляются по мере публикации. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 <p><strong>Interactive charts, comparisons, and validated forecasts</strong> — official statistics for national economies, their regions, and available countries. Browsing is open to everyone; downloads require a free account.</p>
 <a class="seo-btn" href="/">Open the platform</a>
 </div></div>
-<footer class="seo-foot"><div class="seo-foot-in"><nav class="seo-foot-links" aria-label="About the service"><a href="/about">About</a><a href="/methodology">Methodology</a><a href="/calculator">Calculators</a><a href="/privacy">Privacy</a><a href="/terms">Terms of use</a></nav><p>Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
+<footer class="seo-foot"><div class="seo-foot-in">{_foot_nav(True)}<p>Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
 
 def _ssr_ticker() -> str:
@@ -1612,11 +1711,98 @@ async def build_document(
 </html>"""
 
 
-def render_not_found_html(message: str | None = None) -> str:
+_NF_PLANET_SVG = (
+    '<svg class="seo-404-planet" viewBox="0 0 120 120" aria-hidden="true" focusable="false">'
+    '<defs><radialGradient id="seoNfFill" cx="35%" cy="30%" r="75%">'
+    '<stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#E6EAF0"/>'
+    '<stop offset="100%" stop-color="#CAD2DE"/></radialGradient></defs>'
+    '<circle cx="60" cy="60" r="34" fill="url(#seoNfFill)" stroke="rgba(32,42,60,0.16)"/>'
+    '<ellipse cx="60" cy="60" rx="34" ry="12" fill="none" stroke="rgba(32,42,60,0.12)"/>'
+    '<ellipse cx="60" cy="60" rx="13" ry="34" fill="none" stroke="rgba(32,42,60,0.12)"/>'
+    '<path d="M44 48c6-6 14-4 18 1s-2 9-9 9-12-2-9-10Z" fill="rgba(173,138,72,0.28)"/>'
+    '<path d="M66 70c5-3 11-1 11 4s-6 7-11 5-3-7 0-9Z" fill="rgba(173,138,72,0.22)"/>'
+    '<g class="seo-orbit"><ellipse cx="60" cy="60" rx="52" ry="17" fill="none" stroke="#AD8A48" '
+    'stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="3 5" transform="rotate(-18 60 60)"/>'
+    '<circle cx="105" cy="45" r="4.5" fill="#AD8A48"/></g></svg>'
+)
+
+# «Возможно, вы искали»: слова из адреса, который ввёл человек, подсказывают раздел.
+# Правила повторяют frontend/src/lib/notFoundSuggest.js (одно поведение на сервере и в приложении).
+_NF_GUESS_RULES: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("rank", "rating", "gdp", "vvp", "top"), "rating"),
+    (("calc", "calculator", "kalk", "inflation", "mortgage", "ipotek"), "calculator"),
+    (("region", "regions", "oblast", "okrug"), "regions"),
+    (("compare", "comparison", "vs", "sravn"), "compare"),
+    (("today", "segodnya", "now"), "today"),
+    (("calendar", "kalendar", "schedule"), "calendar"),
+    (("currency", "currencies", "usd", "eur", "dollar", "rate", "rates", "kurs", "fx"), "currencies"),
+    (("usa", "us", "america", "states"), "usa"),
+    (("russia", "rossiya", "rus"), "russia"),
+    (("about", "contact", "contacts"), "about"),
+    (("method", "methodology", "forecast", "prognoz"), "methodology"),
+)
+
+
+def _not_found_guesses(path: str | None, en: bool) -> list[tuple[str, str]]:
+    """До трёх разделов, которые вероятнее всего имел в виду человек (по словам в адресе)."""
+    if not path:
+        return []
+    raw = path.partition("?")[0].lower()
+    words = set(re.findall(r"[a-z]+", raw))
+    if not words:
+        return []
+    targets = {
+        "rating": (paths.world_rating("gdp-usd"), "Country ranking by GDP", "Рейтинг стран по ВВП"),
+        "calculator": ("/calculator", "Inflation calculator", "Калькулятор инфляции"),
+        "regions": (paths.region_hub(), "Regions of Russia", "Регионы России"),
+        "compare": ("/compare", "Compare indicators", "Сравнение показателей"),
+        "today": (paths.today(), "Russian economy now", "Экономика России сейчас"),
+        "calendar": (paths.calendar(), "Release calendar", "Календарь публикаций"),
+        "currencies": ("/currencies", "Currencies", "Валюты"),
+        "usa": (paths.country("united-states"), "United States", "США"),
+        "russia": (paths.russia_home(), "Russia", "Россия"),
+        "about": ("/about", "About the project", "О проекте"),
+        "methodology": ("/methodology", "Forecast methodology", "Методология прогнозов"),
+    }
+    def _hit(keys: tuple[str, ...]) -> bool:
+        # Короткие слова (us, vs) — только целиком; длинные — по началу («rankings» → «rank»).
+        return any(w == k or (len(k) >= 4 and w.startswith(k)) for w in words for k in keys)
+
+    found: list[tuple[str, str]] = []
+    for keys, name in _NF_GUESS_RULES:
+        if _hit(keys):
+            href, label_en, label_ru = targets[name]
+            found.append((href, label_en if en else label_ru))
+        if len(found) == 3:
+            break
+    return found
+
+
+def _not_found_lang_toggle(en: bool) -> str:
+    """Переключатель RU | EN, как в шапке приложения: текущий язык отмечен, второй ведёт на главную."""
+    urls = _locale_cluster("/")
+    if urls:
+        ru_href, en_href = urls["ru"], urls["en"]
+    else:
+        # Тестовый режим и хосты без пары языков: предпросмотр на этой же странице.
+        ru_href, en_href = "/?preview_locale=ru", "/?preview_locale=en"
+    current_ru = '<span aria-current="true">RU</span>'
+    current_en = '<span aria-current="true">EN</span>'
+    ru_link = f'<a rel="alternate" hreflang="ru" lang="ru" href="{escape(ru_href)}">RU</a>'
+    en_link = f'<a rel="alternate" hreflang="en" lang="en" href="{escape(en_href)}">EN</a>'
+    label = "Language" if en else "Язык"
+    return (
+        f'<div class="seo-lang-seg" role="group" aria-label="{label}">'
+        f'{current_ru if not en else ru_link}{current_en if en else en_link}</div>'
+    )
+
+
+def render_not_found_html(message: str | None = None, path: str | None = None) -> str:
     """Фирменная 404 для SSR-роутов и nginx catch-all.
 
-    Самодостаточный документ (без asset-fetch и БД): critical CSS + стеклянная
-    шапка/подвал приложения + поиск и плитки популярных разделов. HTTP-статус
+    Самодостаточный документ (без asset-fetch и БД): critical CSS + та же шапка,
+    бегущая строка и подвал, что у остальных страниц сайта; поиск, «Возможно, вы искали»
+    (по словам из адреса), чипы популярных разделов и «Вернуться назад». HTTP-статус
     404 и noindex выставляют вызывающие (nginx error_page / ``_html_response``).
 
     Почему не монтировать SPA со статусом 404: SPA сама решает по адресу, что
@@ -1624,10 +1810,12 @@ def render_not_found_html(message: str | None = None) -> str:
     требует загрузки бандла (в момент деплоя ассеты могут отсутствовать) и
     ничего не показывает роботам. Чистый документ предсказуем: один заголовок
     для любого битого адреса, всегда с поиском и выходом на главные разделы.
+    Язык берётся из запроса (хост, X-FE-Locale), поэтому первый кадр сразу на нужном языке.
 
     ``message`` оставлен ради совместимости вызовов и игнорируется: рендереры
     раньше отдавали «Страна не найдена»/«Страница не найдена» в зависимости от
     пути, а посетителю важно одно — «такой страницы нет, вот куда идти».
+    ``path`` (необязательный) — адрес запроса для подсказки «Возможно, вы искали».
     """
     from app.services.locale import get_locale, html_lang
 
@@ -1644,14 +1832,18 @@ def render_not_found_html(message: str | None = None) -> str:
         search_label = "Search the platform"
         search_btn = "Search"
         popular = "Popular sections"
+        guess_label = "Maybe you were looking for"
         home_label = "Go to the home page"
-        tiles = (
-            (paths.today(), "Today", "Key indicators with the latest values"),
-            ("/#countries", "Countries", "Economic indicators for countries worldwide"),
-            (paths.world_rating("gdp-usd"), "Country rankings", "Who is ahead by GDP and other measures"),
-            (paths.region_hub(), "Regions", "Map and rankings of Russian regions"),
-            ("/compare", "Compare", "Put two indicators on one chart"),
-            (paths.calendar(), "Calendar", "When new statistics come out"),
+        back_label = "Go back"
+        chips = (
+            (paths.world_rating("gdp-usd"), "Country rankings"),
+            (paths.country("united-states"), "United States"),
+            ("/compare", "Compare"),
+            ("/currencies", "Currencies"),
+            ("/calculator", "Calculators"),
+            (paths.today(), "Today"),
+            (paths.region_hub(), "Regions"),
+            (paths.calendar(), "Calendar"),
         )
     else:
         title = "Такой страницы нет"
@@ -1664,29 +1856,50 @@ def render_not_found_html(message: str | None = None) -> str:
         search_label = "Поиск по платформе"
         search_btn = "Найти"
         popular = "Популярные разделы"
+        guess_label = "Возможно, вы искали"
         home_label = "На главную"
-        tiles = (
-            (paths.russia_home(), "Россия", "Инфляция, ставка, ВВП и другие показатели"),
-            (paths.today(), "Сегодня", "Главные показатели со свежими значениями"),
-            ("/#countries", "Страны", "Экономические показатели по странам"),
-            (paths.world_rating("gdp-usd"), "Рейтинг стран", "Кто впереди по ВВП и другим показателям"),
-            (paths.region_hub(), "Регионы", "Карта и рейтинги регионов России"),
-            ("/compare", "Сравнение", "Два показателя на одном графике"),
+        back_label = "Вернуться назад"
+        chips = (
+            ("/#countries", "Страны"),
+            (paths.world_rating("gdp-usd"), "Рейтинг стран"),
+            ("/compare", "Сравнение"),
+            ("/currencies", "Валюты"),
+            ("/calculator", "Калькуляторы"),
+            (paths.russia_home(), "Россия"),
+            (paths.today(), "Сегодня"),
+            (paths.region_hub(), "Регионы"),
+            (paths.calendar(), "Календарь"),
         )
     # CTA «Открыть платформу» на 404 лишний: человеку нужен поиск и разделы.
     footer = _ssr_chrome_footer()
     footer = footer[footer.index("<footer"):]
-    # Шапка 404 как у приложения: поиск и язык под рукой. Поиск — якорь к полю ниже (без JS), язык — главная на другом языке.
-    header = _ssr_chrome_header("/")
+    # Шапка 404 та же, что у остальных страниц: поиск и язык под рукой. Поиск — якорь к полю ниже (без JS).
+    header = _ssr_chrome_header()
     search_btn_html = (
         f'<a class="seo-search-btn" href="#seo-404-q" aria-label="{escape(search_label)}">'
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
         'stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></a>'
     )
-    header = header.replace('<input type="checkbox" id="seo-menu-toggle"', search_btn_html + '<input type="checkbox" id="seo-menu-toggle"', 1)
-    tile_html = "".join(
-        f'<li><a href="{escape(href)}"><b>{escape(name)}</b><span>{escape(hint)}</span></a></li>'
-        for href, name, hint in tiles
+    header = header.replace(
+        '<input type="checkbox" id="seo-menu-toggle"',
+        search_btn_html + _not_found_lang_toggle(en) + '<input type="checkbox" id="seo-menu-toggle"',
+        1,
+    )
+    chip_html = "".join(
+        f'<li><a href="{escape(href)}">{escape(name)}</a></li>' for href, name in chips
+    )
+    guesses = _not_found_guesses(path, en)
+    guess_html = ""
+    if guesses:
+        guess_html = (
+            f'<div class="seo-404-guess"><p>{escape(guess_label)}</p><ul>'
+            + "".join(f'<li><a href="{escape(href)}">{escape(name)}</a></li>' for href, name in guesses)
+            + "</ul></div>"
+        )
+    back_script = (
+        "<script>(function(){var b=document.getElementById('seo-404-back');if(!b)return;"
+        "b.hidden=false;b.addEventListener('click',function(){"
+        "if(history.length>1){history.back()}else{location.href='/'}})})();</script>"
     )
     return f"""<!DOCTYPE html>
 <html lang="{html_lang()}">
@@ -1700,20 +1913,27 @@ def render_not_found_html(message: str | None = None) -> str:
 <meta name="color-scheme" content="light">
 </head>
 <body class="seo-fast" data-no-ads>
+{_ssr_ticker()}
 {header}
 <main class="seo-page seo-404">
-<p class="seo-404-code" role="img" aria-label="{escape(eyebrow)}">404</p>
+{_NF_PLANET_SVG}
+<p class="seo-404-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(title)}</h1>
 <p class="seo-404-lead">{escape(lead)}</p>
+{guess_html}
 <form class="seo-search" action="/" method="get" role="search">
 <input type="search" name="q" id="seo-404-q" placeholder="{escape(placeholder)}" aria-label="{escape(search_label)}" autocomplete="off" enterkeyhint="search">
 <button type="submit">{escape(search_btn)}</button>
 </form>
 <h2>{escape(popular)}</h2>
-<ul class="seo-404-grid">{tile_html}</ul>
+<ul class="seo-404-chips">{chip_html}</ul>
+<div class="seo-404-actions">
+<button type="button" class="seo-404-back" id="seo-404-back" hidden>{escape(back_label)}</button>
 <a class="seo-404-home" href="/">{escape(home_label)}</a>
+</div>
 </main>
 {footer}
+{back_script}
 </body>
 </html>"""
 

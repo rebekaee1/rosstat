@@ -21,8 +21,10 @@ import { SkeletonBox } from '../components/Skeleton';
 import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import { RegionSearchField, RegionSectionHeading } from '../components/regions/RegionParts';
+import RegionRanking from '../components/regions/RegionRanking';
 import { formatRegionCompact, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
+import { plural } from '../lib/calcFormat';
 import MobileNavSelect from '../components/MobileNavSelect';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionsTrail } from '../lib/breadcrumbs';
@@ -40,8 +42,6 @@ import {
   regionHubPath,
   regionIndicatorPath,
   regionPath,
-  regionRatingHubPath,
-  regionRatingPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
@@ -161,6 +161,64 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   );
 }
 
+/** Поиск региона над картой: выбранный регион подсвечивается на карте, под ней открывается его карточка. */
+function MapRegionSearch({ names, onPick }) {
+  const { t } = useLocale();
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const options = useMemo(
+    () => Object.entries(names).map(([slug, name]) => ({ slug, name })),
+    [names],
+  );
+  const results = useMemo(() => {
+    const q = normalizeSearchQuery(query);
+    if (!q) return options.slice(0, 8);
+    return filterSearchOptions(options, q, { searchKind: 'region', getSearchItem: (item) => ({ ...item, country_slug: 'russia' }) }).slice(0, 8);
+  }, [options, query]);
+  const pick = (slug) => {
+    onPick(slug);
+    setOpen(false);
+    setQuery('');
+  };
+  return (
+    <div className="relative min-w-0 flex-1 sm:max-w-xs" data-testid="map-region-search">
+      <div className="flex min-h-11 items-center gap-2 rounded-xl border border-border-subtle bg-surface px-3 text-sm text-text-secondary focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink">
+        <Search size={14} className="shrink-0" aria-hidden="true" />
+        <input
+          type="text"
+          value={query}
+          placeholder={t('w6f.map.findRegion')}
+          aria-label={t('w6f.map.findRegion')}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onChange={(e) => { setOpen(true); setQuery(e.target.value); }}
+          className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-text-tertiary"
+          role="combobox"
+          aria-expanded={open}
+        />
+      </div>
+      {open && results.length > 0 && (
+        <ul className="absolute left-0 z-30 mt-2 max-h-72 w-[min(calc(100vw-2rem),22rem)] overflow-auto rounded-xl border border-border-subtle bg-surface py-1 shadow-2xl" role="listbox">
+          {results.map((r) => (
+            <li key={r.slug} role="option" aria-selected="false">
+              <button
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); pick(r.slug); }}
+                className="fe-tap w-full px-3.5 py-2 text-left text-sm text-text-primary transition-colors hover:bg-surface-hover"
+              >
+                {r.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// Быстрый выбор: самые частые запросы; кнопка показывается, только если регион есть в данных.
+const QUICK_REGIONS = ['moskva', 'sankt-peterburg', 'respublika-tatarstan'];
+
 const CONTRAST_METRICS = [
   { code: 'srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy', labelKey: 'regions.metric.wages' },
   { code: 'uroven-bezrabotitsy', labelKey: 'regions.metric.unemployment', betterIsLow: true },
@@ -185,8 +243,12 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
   const code = heat.data.indicator.code;
   const unit = heat.data.indicator.unit || '';
   const ratio = second.value ? Math.abs(first.value / second.value) : null;
+  // «в 4,6 раза выше» вместо «× 4,6»: знак умножения новичку ничего не говорит.
   const ratioLabel = ratio && ratio >= 1.05
-    ? `× ${ratio.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 })}`
+    ? t('w6f.reg.timesHigher', {
+      n: ratio.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 }),
+      word: Number.isInteger(Math.round(ratio * 10) / 10) ? plural(ratio, 'раз', 'раза', 'раз') : 'раза',
+    })
     : null;
   const side = (row, tone) => (
     <Link
@@ -309,6 +371,8 @@ export default function RegionsHome() {
     mapOn && (heatmap.isSuccess || heatmap.isError),
   );
   const mapCardRef = useRef(null);
+  const [mapPicked, setMapPicked] = useState(null);
+  const [mapShape, setMapShape] = useState('regions');
   const [exportingMap, setExportingMap] = useState(false);
   const [exportingGif, setExportingGif] = useState(false);
 
@@ -486,30 +550,6 @@ export default function RegionsHome() {
         <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
           {t('regions.intro')}
         </p>
-        {/* В режиме карты те же показатели уже выбираются чипами над картой — вторую сетку не показываем. */}
-        {view === 'list' && (
-          <section className="mt-5" aria-labelledby="regions-rankings-title">
-            <h2 id="regions-rankings-title" className="text-base font-semibold text-text-primary">
-              <Link to={regionRatingHubPath()} className="fe-tap-inline hover:text-champagne-ink">
-                {t('russia.link.ratings.title')}
-              </Link>
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">
-              {t('regions.hub.ratingsLead')}
-            </p>
-            <div className="fe-chip-row--grid mt-3">
-              {MAP_METRICS.map((metric) => (
-                <Link
-                  key={metric.code}
-                  to={regionRatingPath(metric.code)}
-                  className="fe-chip fe-press"
-                >
-                  {t('regions.ratingLink', { name: t(metric.labelKey) })}
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
 
       <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl border border-border-subtle bg-surface p-1" role="tablist" aria-label={t('regions.viewAria')}>
@@ -537,6 +577,9 @@ export default function RegionsHome() {
 
       {view === 'list' && (
         <>
+          {/* Рейтинг: выбранный показатель, место, полоса и значение; «Ещё показатели» ищет по всему каталогу. */}
+          <RegionRanking metrics={MAP_METRICS} />
+
           {contrastVisible.some((m) => m.heat.data) ? (
             <div data-block="contrasts" className="fe-reveal mb-4 space-y-4 rounded-3xl border border-border-subtle bg-surface p-4">
               <div className="flex items-center justify-between gap-3">
@@ -572,6 +615,7 @@ export default function RegionsHome() {
             <SkeletonBox className="mb-4 h-[236px] rounded-3xl" />
           ) : null}
 
+          <h2 className="mb-3 font-display text-lg font-bold text-text-primary">{t('w6f.rank.allRegions')}</h2>
           <RegionSearchField
             className="mb-6"
             value={query}
@@ -743,6 +787,27 @@ export default function RegionsHome() {
             />
           </div>
 
+          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <MapRegionSearch names={namesBySlug} onPick={(slug) => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'search' }); }} />
+            <div className="fe-map-quick" aria-label={t('w6f.map.quick')}>
+              {QUICK_REGIONS.filter((slug) => namesBySlug[slug]).map((slug) => (
+                <button
+                  key={slug}
+                  type="button"
+                  aria-pressed={mapPicked === slug}
+                  onClick={() => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'quick' }); }}
+                  className={`fe-chip fe-press ${mapPicked === slug ? 'is-active' : ''}`}
+                >
+                  {namesBySlug[slug]}
+                </button>
+              ))}
+            </div>
+            <div className="fe-map-shape sm:ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
+              <button type="button" aria-pressed={mapShape === 'regions'} onClick={() => setMapShape('regions')}>{t('w6f.map.shape.regions')}</button>
+              <button type="button" aria-pressed={mapShape === 'bubbles'} onClick={() => setMapShape('bubbles')}>{t('w6f.map.shape.bubbles')}</button>
+            </div>
+          </div>
+
           <div id="chart" data-block="regions-map" className="relative rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
             <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1">
@@ -823,6 +888,9 @@ export default function RegionsHome() {
                 unit={paint.indicator?.unit || ''}
                 nameBySlug={namesBySlug}
                 brandMark
+                shape={mapShape}
+                pickedSlug={mapPicked}
+                onPickedChange={setMapPicked}
                 onSelect={(slug) => {
                   track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
                   navigate(activeMapCode ? regionIndicatorPath(slug, activeMapCode) : regionPath(slug));

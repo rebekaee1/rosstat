@@ -22,6 +22,7 @@ import { useLocale, useT } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
+import '../styles/w6f-pages.css';
 
 function todayLabel(code, t) {
   const key = `today.spec.${code}`;
@@ -43,6 +44,8 @@ function formatTodayDate(d, locale) {
 }
 
 const CBR_RATE_CODES = new Set(['usd-rub', 'eur-rub', 'cny-rub']);
+// Биржевые индексы измеряются в «пунктах»: людям понятнее изменение в процентах.
+const INDEX_UNITS = new Set(['пунктов', 'пункт', 'points', 'pts']);
 
 // Сколько последних значений брать для мини-графика. Ключевая ставка меняется раз в 1–2 месяца:
 // за 30 дней это ровная линия-«заплатка», поэтому показываем около года.
@@ -65,7 +68,14 @@ function TodayCard({ code, index }) {
   const change = last && prev ? last.value - prev.value : null;
   const unit = indicator?.unit || '';
   const polarity = indicatorPolarity(query, indicator?.name, indicator?.code);
-  const delta = change != null ? formatDeltaWithUnit(change, unit, { locale }) : null;
+  const isIndexUnit = INDEX_UNITS.has(unit);
+  const pctChange = isIndexUnit && change != null && prev && Number(prev.value) !== 0
+    ? (change / Number(prev.value)) * 100
+    : null;
+  const delta = change == null ? null
+    : isIndexUnit
+      ? (pctChange == null ? null : formatDeltaWithUnit(pctChange, unit, { pct: true, locale }))
+      : formatDeltaWithUnit(change, unit, { locale, plain: true });
   const dateFmt = resolveDateFormat({ frequency: indicator?.frequency });
   const dateText = last ? glueDate(formatDate(last.date, dateFmt, locale)) : '';
   const meta = !last ? null : (CBR_RATE_CODES.has(code)
@@ -84,7 +94,7 @@ function TodayCard({ code, index }) {
   if (isError && !last) {
     return (
       <div className="fe-today-card fe-today-card--error" role="alert">
-        <p className="fe-today-card__label">{t('today.cardToday', { query })}</p>
+        <p className="fe-today-card__label">{query}</p>
         <p className="fe-today-card__meta">{t('pgui.today.cardError')}</p>
         <Button variant="secondary" size="sm" className="mt-auto self-start" loading={isFetching} onClick={() => refetch()}>
           {t('common.retry')}
@@ -100,7 +110,7 @@ function TodayCard({ code, index }) {
       className="fe-reveal fe-reveal--free fe-reveal--stagger fe-today-card fe-press group"
     >
       <div className="fe-today-card__top">
-        <p className="fe-today-card__label">{t('today.cardToday', { query })}</p>
+        <p className="fe-today-card__label">{query}</p>
         <ArrowUpRight className="fe-today-card__go" aria-hidden="true" />
       </div>
       {isLoading ? (
@@ -115,8 +125,10 @@ function TodayCard({ code, index }) {
         <>
           <p className="fe-today-card__value">
             <span className="fe-today-card__num">{formatValue(last.value, unitDigits(unit), locale)}</span>
-            {unitSuffix(unit) ? <span className="fe-today-card__unit">{unitSuffix(unit)}</span> : null}
+            {unitSuffix(unit) && !isIndexUnit ? <span className="fe-today-card__unit">{unitSuffix(unit)}</span> : null}
           </p>
+          {/* Дата рядом с числом и крупнее: видно, какой день или месяц показан («сегодня» для месячных данных обманывало). */}
+          {meta && <p className="fe-today-card__asof">{meta}</p>}
           {delta && (
             <p className="fe-today-card__delta">
               {delta.flat ? (
@@ -141,7 +153,7 @@ function TodayCard({ code, index }) {
               title={t('x2.today.noChart')}
             />
           )}
-          {meta && <p className="fe-today-card__meta">{meta}</p>}
+          <p className="fe-today-card__go-text" aria-hidden="true">{t('w6f.today.openChart')}</p>
         </>
       )}
     </Link>

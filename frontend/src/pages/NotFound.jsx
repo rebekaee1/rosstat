@@ -1,12 +1,14 @@
-import { Link } from 'react-router-dom';
-import { BarChart3, Calculator, CalendarDays, Globe2, Map as MapIcon, Scale } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, BarChart3, Calculator, CalendarDays, Coins, Flag, Globe2, Landmark, Map as MapIcon, Scale } from 'lucide-react';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import useDocumentMeta from '../lib/useMeta';
 import { WORLD_RATING_TO } from '../lib/navItems';
-import { calendarPath, regionHubPath, todayPath } from '../lib/sitePaths';
-import { useT } from '../i18n';
+import { suggestForPath } from '../lib/notFoundSuggest';
+import { calendarPath, countryPath, regionHubPath, russiaHomePath, todayPath } from '../lib/sitePaths';
+import { useLocale, useT } from '../i18n';
 import '../styles/w5-pages.css';
+import '../styles/w6f-pages.css';
 
 /** Маленькая планета с орбитой: «здесь пока ничего нет». Только SVG, без картинок. */
 function LostPlanet() {
@@ -32,14 +34,24 @@ function LostPlanet() {
   );
 }
 
-const SECTIONS = [
-  { to: WORLD_RATING_TO, icon: Globe2, titleKey: 'notFound.link.worldRating', hintKey: 'w5.nf.hint.rating' },
-  { to: '/compare', icon: Scale, titleKey: 'w5.nf.compare', hintKey: 'w5.nf.hint.compare' },
-  { to: regionHubPath(), icon: MapIcon, titleKey: 'w5.nf.regions', hintKey: 'w5.nf.hint.regions' },
-  { to: todayPath(), icon: BarChart3, titleKey: 'w5.nf.today', hintKey: 'w5.nf.hint.today' },
-  { to: calendarPath(), icon: CalendarDays, titleKey: 'w5.nf.calendar', hintKey: 'w5.nf.hint.calendar' },
-  { to: '/calculator', icon: Calculator, titleKey: 'w5.nf.calculators', hintKey: 'w5.nf.hint.calculators' },
-];
+/** Популярные разделы чипами (то же меню, что на сервере: страны и рейтинг первыми, у англоязычных ещё США). */
+function popularSections(locale) {
+  const items = [
+    { to: WORLD_RATING_TO, icon: Globe2, titleKey: 'notFound.link.worldRating' },
+    { to: '/compare', icon: Scale, titleKey: 'w5.nf.compare' },
+    { to: '/currencies', icon: Coins, titleKey: 'shell3.nav.currencies' },
+    { to: '/calculator', icon: Calculator, titleKey: 'w5.nf.calculators' },
+    { to: todayPath(), icon: BarChart3, titleKey: 'w5.nf.today' },
+    { to: regionHubPath(), icon: MapIcon, titleKey: 'w5.nf.regions' },
+    { to: calendarPath(), icon: CalendarDays, titleKey: 'w5.nf.calendar' },
+  ];
+  if (locale === 'en') {
+    items.splice(1, 0, { to: countryPath('united-states'), icon: Flag, titleKey: 'nav.unitedStates' });
+  } else {
+    items.splice(1, 0, { to: russiaHomePath(), icon: Landmark, titleKey: 'nav.russia' });
+  }
+  return items;
+}
 
 /**
  * Страница 404 внутри общей оболочки сайта (шапка и подвал рисует App): дружелюбный заголовок,
@@ -47,6 +59,15 @@ const SECTIONS = [
  */
 export default function NotFound() {
   const t = useT();
+  const { locale } = useLocale();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const guesses = suggestForPath(pathname);
+  const sections = popularSections(locale);
+  const goBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate('/');
+  };
   useDocumentMeta({
     title: t('notFound.metaTitle'),
     description: t('notFound.metaDesc'),
@@ -69,20 +90,36 @@ export default function NotFound() {
         <IndicatorSearch variant="inline" inlinePlaceholder={t('pgui.notFound.searchPlaceholder')} />
       </div>
 
+      {guesses.length > 0 && (
+        <div className="fe-reveal mb-8" data-nf-guess>
+          <p className="mb-2 text-sm text-text-secondary">{t('w6f.nf.guess')}</p>
+          <ul className="w6f-nf-chips">
+            {guesses.map((g) => (
+              <li key={g.to}>
+                <Link to={g.to} className="w6f-nf-chip w6f-nf-chip--strong fe-press">{t(g.labelKey)}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <h2 className="mb-3 text-base font-semibold text-text-primary">{t('w5.nf.popular')}</h2>
-      <ul className="w5-nf-grid">
-        {SECTIONS.map(({ to, icon: Icon, titleKey, hintKey }, index) => (
-          <li key={to} className="fe-reveal" style={{ '--fe-delay': `${Math.min(0.12 + index * 0.03, 0.2).toFixed(2)}s` }}>
-            <Link to={to} className="w5-nf-card fe-press">
-              <Icon className="w5-nf-card__icon" aria-hidden="true" />
-              <span className="w5-nf-card__title">{t(titleKey)}</span>
-              <span className="w5-nf-card__hint">{t(hintKey)}</span>
+      <ul className="w6f-nf-chips">
+        {sections.map(({ to, icon: Icon, titleKey }) => (
+          <li key={to}>
+            <Link to={to} className="w6f-nf-chip fe-press">
+              <Icon className="h-4 w-4 shrink-0 text-champagne-ink" aria-hidden="true" />
+              {t(titleKey)}
             </Link>
           </li>
         ))}
       </ul>
 
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10 flex flex-wrap justify-center gap-3">
+        <Button type="button" variant="secondary" onClick={goBack}>
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          {t('w6f.nf.back')}
+        </Button>
         <Button as={Link} to="/" variant="primary">
           {t('common.backHome')}
         </Button>

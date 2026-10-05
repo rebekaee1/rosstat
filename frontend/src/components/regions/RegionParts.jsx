@@ -6,7 +6,7 @@ import DeltaBadge from '../DeltaBadge';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { yearDelta } from '../../lib/regionsApi';
 import {
-  compactParts, formatRegionWithUnit, formatDeltaPercent, formatPointsDelta, isPercentUnit, plainIndicatorTitle,
+  compactParts, explainIndicator, formatRegionWithUnit, formatDeltaPercent, formatPointsDelta, isPercentUnit, plainIndicatorTitle,
 } from '../../lib/regionUi';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
@@ -19,9 +19,14 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
     const pts = formatPointsDelta(value, prevValue, locale);
     if (!pts) return null;
     return (
-      <DeltaBadge delta={pts.diff} polarity={indicatorPolarity(name, label)} className="text-xs">
-        {pts.text}
-      </DeltaBadge>
+      <span title={locale === 'en'
+        ? 'Change in percentage points: the difference between this year and the previous one.'
+        : 'Изменение в процентных пунктах: разница между этим годом и прошлым.'}
+      >
+        <DeltaBadge delta={pts.diff} polarity={indicatorPolarity(name, label)} className="text-xs">
+          {pts.text}
+        </DeltaBadge>
+      </span>
     );
   }
   const d = yearDelta(value, prevValue);
@@ -35,6 +40,28 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
     >
       {formatDeltaPercent(signed, locale)}
     </DeltaBadge>
+  );
+}
+
+/**
+ * Крошечный указатель направления «было → стало» (прошлый год и последний): короткая линия с точкой.
+ * Это не история ряда, а наглядный знак роста или падения; полный график открывается по нажатию на строку.
+ */
+export function TrendTick({ value, prevValue, polarity = 'neutral' }) {
+  const a = Number(prevValue);
+  const b = Number(value);
+  if (value == null || prevValue == null || !Number.isFinite(a) || !Number.isFinite(b)) return null;
+  const same = Math.abs(b - a) < 1e-9;
+  const y1 = same ? 10 : (b > a ? 15 : 5);
+  const y2 = same ? 10 : (b > a ? 5 : 15);
+  const good = (b > a && polarity === 'up-good') || (b < a && polarity === 'up-bad');
+  const bad = (b > a && polarity === 'up-bad') || (b < a && polarity === 'up-good');
+  const color = good ? '#15803d' : bad ? '#b91c1c' : '#AD8A48';
+  return (
+    <svg className="fe-trend-tick" viewBox="0 0 44 20" width="44" height="20" aria-hidden="true" focusable="false">
+      <line x1="3" y1={y1} x2="39" y2={y2} stroke={color} strokeWidth="2" strokeLinecap="round" />
+      <circle cx="39" cy={y2} r="2.6" fill={color} />
+    </svg>
   );
 }
 
@@ -65,7 +92,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
         <RegionValue value={item.value} unit={item.unit} locale={locale} />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-xs text-text-secondary">{item.period_label || item.year}</span>
+        <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
         <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} label={item.label} unit={item.unit} />
       </div>
       {empty && <span className="sr-only">{t('common.noData')}</span>}
@@ -76,22 +103,27 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
 export function RegionIndicatorRow({ item, to, title }) {
   const { locale } = useLocale();
   const empty = item.value == null;
+  const explain = explainIndicator(item.name, item.unit, locale);
   const Card = empty ? 'div' : Link;
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
       className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 transition-colors hover:border-border-champagne sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
     >
-      <div className="min-w-0 flex-1 text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
-        {title || plainIndicatorTitle(item.name, locale)}
+      <div className="min-w-0 flex-1">
+        <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
+          {title || plainIndicatorTitle(item.name, locale)}
+        </div>
+        {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
         <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">
+          <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />
           <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />
-          <span className="text-xs text-text-secondary">{item.period_label || item.year}</span>
+          <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
         </div>
       </div>
     </Card>

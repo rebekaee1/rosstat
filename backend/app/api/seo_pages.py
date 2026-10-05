@@ -265,6 +265,13 @@ def _permanent_redirect(path: str, request: Request | None = None) -> Response:
     )
 
 
+def _requested_path(request: Request | None) -> str | None:
+    """Адрес, который ввёл человек (nginx кладёт оригинал в X-Original-URI): подсказка на 404."""
+    if request is None:
+        return None
+    return request.headers.get("x-original-uri") or request.url.path
+
+
 def _html_response(status_code: int, html: str, request: Request | None = None) -> Response:
     headers = {"Cache-Control": "no-cache"}
     if status_code == 404 and "<html" not in html.lower():
@@ -273,7 +280,7 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         from app.services.seo_renderer import render_not_found_html
         # Один заголовок и одна помощь для любого пути: раньше «Страна не
         # найдена» / «Страница не найдена» зависели от рендерера (N46).
-        html = render_not_found_html()
+        html = render_not_found_html(path=_requested_path(request))
     if status_code == 404:
         # nginx error_page ставит этот заголовок сам; ответ парсера 404
         # проходит proxy без intercept и раньше уходил только с meta.
@@ -294,9 +301,10 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
 # methods GET+HEAD: роботы (и curl -I) проверяют страницы HEAD-запросом —
 # чистый @router.get отвечал бы 405.
 @router.api_route("/seo/not-found", methods=["GET", "HEAD"], include_in_schema=False)
-async def seo_not_found():
+async def seo_not_found(request: Request):
     """Брендовая 404 для nginx catch-all (unknown URL → error_page)."""
-    return _html_response(404, render_not_found_html())
+    original = request.headers.get("x-original-uri")
+    return _html_response(404, render_not_found_html(path=original))
 
 
 @router.api_route("/seo/page/home", methods=["GET", "HEAD"], include_in_schema=False)

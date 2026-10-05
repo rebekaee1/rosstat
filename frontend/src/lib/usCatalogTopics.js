@@ -85,3 +85,43 @@ export function shortUsIndicatorName(name, sectionName, locale) {
   const prefix = `${sectionName}: `;
   return name?.startsWith(prefix) ? name.slice(prefix.length) : name;
 }
+
+// Названия для людей: коды отраслей уходят в подсказку «i», а канцелярские названия разделов получают понятные.
+const CODE_TAIL_RE = /\s*\(\s*(?:код(?:ы)?\s+отрасл[а-яё]*|NAICS(?:\s+code)?|industry\s+code)\s*([^)]*)\)\s*$/i;
+
+const SECTION_TITLES_RU = {
+  'Вклад заработков отраслей в изменение доходов': 'Какую долю доходов дают отрасли',
+  'Квартальный вклад заработков в изменение доходов': 'Какую долю доходов дают отрасли, по кварталам',
+  'Вклад отраслей в рост ВВП': 'Какие отрасли двигают рост ВВП',
+  'Квартальный вклад отраслей в рост ВВП': 'Какие отрасли двигают рост ВВП, по кварталам',
+  'Валовой операционный излишек по отраслям': 'Прибыль бизнеса по отраслям',
+  'Налоги на производство за вычетом субсидий по отраслям': 'Налоги на бизнес за вычетом субсидий, по отраслям',
+  'Налоги на производство и импорт по отраслям': 'Налоги на бизнес и импорт, по отраслям',
+  'Субсидии производству по отраслям': 'Государственная поддержка бизнеса по отраслям',
+  'Вклад категорий в изменение потребительских расходов': 'Что изменило потребительские расходы',
+};
+const SECTION_TITLES_EN = {
+  'Industry contribution to GDP growth': 'Which industries drive GDP growth',
+  'Quarterly industry contribution to GDP growth': 'Which industries drive GDP growth, by quarter',
+};
+
+/**
+ * Название показателя без кода отрасли: `{ label, hint }`. Код («код отрасли 311-316» / «NAICS 311») не
+ * теряется, а переезжает в подсказку; название остаётся читаемым для человека без отраслевых справочников.
+ */
+export function plainUsIndicatorName(name, locale = 'ru') {
+  const raw = String(name || '');
+  const m = CODE_TAIL_RE.exec(raw);
+  if (!m) return { label: raw, hint: '' };
+  const code = m[1].trim();
+  return {
+    label: raw.replace(CODE_TAIL_RE, '').trim(),
+    hint: code ? (locale === 'en' ? `NAICS industry code: ${code}` : `Код отрасли: ${code}`) : '',
+  };
+}
+
+/** Понятное название раздела каталога США; незнакомые названия возвращаются как есть. */
+export function plainUsSectionTitle(name, locale = 'ru') {
+  const table = locale === 'en' ? SECTION_TITLES_EN : SECTION_TITLES_RU;
+  return table[name] || name;
+}

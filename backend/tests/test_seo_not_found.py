@@ -20,22 +20,59 @@ def test_seo_not_found_branded(client):
     assert r.headers.get("x-robots-tag") == "noindex, follow"
 
 
-def test_seo_not_found_has_search_and_popular_tiles(client):
-    """Не тупик: поле поиска (GET на главную с q) и 4–6 плиток разделов."""
+def test_seo_not_found_has_search_and_popular_chips(client):
+    """Не тупик: поле поиска (GET на главную с q), чипы популярных разделов и «Вернуться назад»."""
     html = client.get("/seo/not-found").text
     form = re.search(r'<form class="seo-search"[^>]*>(.*?)</form>', html, re.S)
     assert form, "нет формы поиска"
     assert 'action="/"' in html and 'method="get"' in html
     assert 'name="q"' in form.group(1)
     assert 'type="submit"' in form.group(1)
-    grid = re.search(r'<ul class="seo-404-grid">(.*?)</ul>', html, re.S)
-    assert grid
-    tiles = re.findall(r"<li><a href=", grid.group(1))
-    assert 4 <= len(tiles) <= 6
+    chips = re.search(r'<ul class="seo-404-chips">(.*?)</ul>', html, re.S)
+    assert chips
+    links = re.findall(r"<li><a href=", chips.group(1))
+    assert 6 <= len(links) <= 10
+    # Валюты и калькуляторы раньше пропадали: теперь они в чипах, как и в основном меню.
+    assert 'href="/currencies"' in chips.group(1)
+    assert 'href="/calculator"' in chips.group(1)
+    assert 'id="seo-404-back"' in html and "Вернуться назад" in html
+    # Вместо огромной цифры 404 — маленькая планета; цифра остаётся только словами в подписи.
+    assert "seo-404-code" not in html
+    assert 'class="seo-404-planet"' in html
     # Дружелюбный текст без маркированного списка из 14 ссылок и без «откройте
     # главную и воспользуйтесь поиском в шапке».
     assert "воспользуйтесь поиском в шапке" not in html
     assert "Разделы каталога" not in html
+
+
+def test_seo_not_found_shares_header_ticker_and_footer_with_the_app(client):
+    """Одна шапка на всех страницах: язык RU/EN, бегущая строка, «Валюты», вход и регистрация, общий подвал."""
+    html = client.get("/seo/not-found").text
+    assert 'id="seo-ticker"' in html and "/seo-ticker.js" in html
+    assert 'class="seo-lang-seg"' in html
+    assert ">RU<" in html and ">EN<" in html
+    assert ">Валюты<" in html and ">Калькуляторы<" in html
+    assert 'href="/login"' in html and 'href="/register"' in html
+    # Подзаголовок бренда тёмный, как в приложении (раньше был золотым).
+    assert "small{display:block;font-size:7px;font-weight:600;letter-spacing:.16em;color:inherit" in html
+    # Подвал со столбцами, как в приложении.
+    assert 'class="seo-foot-col"' in html
+    assert ">Инструменты<" in html and ">Информация<" in html
+
+
+def test_seo_not_found_suggests_a_section_from_the_address():
+    """«Возможно, вы искали»: по словам из адреса предлагается раздел сайта (рейтинг, калькуляторы)."""
+    from app.services.seo_renderer import _not_found_guesses, render_not_found_html
+
+    ru = _not_found_guesses("/ranking/gdp", False)
+    assert ru and ru[0][0] == "/world/rating/gdp-usd"
+    assert ru[0][1] == "Рейтинг стран по ВВП"
+    assert _not_found_guesses("/calculators", False)[0][0] == "/calculator"
+    assert _not_found_guesses("/zzz", False) == []
+    html = render_not_found_html(path="/ranking/gdp")
+    assert "Возможно, вы искали" in html
+    assert 'href="/world/rating/gdp-usd"' in html
+    assert "Возможно, вы искали" not in render_not_found_html(path="/zzz")
 
 
 def test_seo_not_found_uses_app_glass_chrome(client):
@@ -115,3 +152,22 @@ def test_breadcrumbs_have_separator_and_current_markers():
     html = _breadcrumbs_nav([("/", "Главная"), ("/russia", "Россия"), ("/russia/x", "Показатель 2024")])
     assert html.count('class="seo-crumb-sep"') == 2
     assert '<span class="seo-crumb-cur" aria-current="page">Показатель 2024</span>' in html
+
+
+def test_not_found_english_matches_the_app_header_and_suggests_in_english():
+    """404 на английском с первого кадра: США в меню, «Sign in», переключатель, подсказка и «Go back»."""
+    from app.services.locale import reset_locale, set_locale
+    from app.services.seo_renderer import render_not_found_html
+
+    token = set_locale("en")
+    try:
+        html = render_not_found_html(path="/rankings")
+    finally:
+        reset_locale(token)
+    assert ">United States<" in html and ">Currencies<" in html
+    assert ">Sign in<" in html and ">Sign up<" in html
+    assert 'class="seo-lang-seg"' in html and "Maybe you were looking for" in html
+    assert 'href="/world/rating/gdp-usd">Country ranking by GDP<' in html
+    assert ">Go back<" in html
+    assert not re.search(r"<h1>[^<]*[А-Яа-я]", html)
+    assert ">Войти<" not in html and "Вернуться" not in html

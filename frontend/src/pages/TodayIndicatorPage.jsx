@@ -75,7 +75,7 @@ export default function TodayIndicatorPage() {
   const freq = indicator?.frequency || 'monthly';
   const isCbrRate = ['usd-rub', 'eur-rub', 'cny-rub'].includes(code);
   const polarity = indicatorPolarity(spec?.query, indicator?.name, indicator?.code);
-  const deltaInfo = stats?.change != null ? formatDeltaWithUnit(stats.change, indicator?.unit, { locale }) : null;
+  const deltaInfo = stats?.change != null ? formatDeltaWithUnit(stats.change, indicator?.unit, { locale, plain: true }) : null;
 
   // Мета только после полного набора данных — иначе «Источник — undefined»
   // и мигание title (ADR-0003: CSR не должен перетирать SSR промежуточным).

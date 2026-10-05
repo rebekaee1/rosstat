@@ -34,6 +34,44 @@ export function plainEventTitle(title, locale = 'ru') {
   return text.replace(/\s*\([A-ZА-ЯЁ]{2,6}\)\s*$/u, '').trim();
 }
 
+/**
+ * Описание события для человека: расшифровывает сокращения, которые встречаются в описаниях из базы
+ * (RUONIA, ИПЦ, ИЦП, ВРП), и оставляет одну первую фразу: «что это», без абзацев про методологию.
+ */
+export function plainEventText(text, locale = 'ru') {
+  let out = String(text || '').trim();
+  if (!out) return '';
+  // Аббревиатура в скобках после расшифровки («индекс потребительских цен (ИПЦ)») — лишняя.
+  out = out.replace(/\s*\((?:ИПЦ|ИЦП|ВРП|RUONIA|CPI)\)/g, '');
+  if (locale === 'en') {
+    out = out
+      .replace(/\b(?:the\s+)?RUONIA(?:\s+rate)?\b/gi, 'overnight interbank rate')
+      .replace(/\bCPI\b/g, 'consumer prices (inflation)');
+  } else {
+    out = out
+      .replace(/(?:ставк[аиу]\s+)?\bRUONIA\b/gi, 'ставка по однодневным кредитам между банками')
+      // \b в JavaScript не видит кириллицу, поэтому границы слова — через lookaround.
+      .replace(/(?<![А-Яа-яЁё])ИПЦ(?![А-Яа-яЁё])/g, 'инфляция')
+      .replace(/(?<![А-Яа-яЁё])ИЦП(?![А-Яа-яЁё])/g, 'цены производителей')
+      .replace(/(?<![А-Яа-яЁё])ВРП(?![А-Яа-яЁё])/g, 'производство региона');
+  }
+  const sentence = out.match(/^.+?[.!?](?=\s|$)/);
+  const first = sentence ? sentence[0].trim() : out;
+  return first.charAt(0).toUpperCase() + first.slice(1);
+}
+
+/** Короткое название для клетки календаря: два-три слова, без служебных слов. */
+export function shortEventTitle(title, locale = 'ru') {
+  const text = plainEventTitle(title, locale);
+  if (!text) return '';
+  const KNOWN = locale === 'en'
+    ? [[/^Key rate decision$/i, 'Key rate'], [/consumer price/i, 'Inflation'], [/producer price/i, 'Producer prices']]
+    : [[/^Решение по ключевой ставке$/i, 'Ключевая ставка'], [/потребительских цен/i, 'Инфляция'], [/цен производителей/i, 'Цены производителей']];
+  for (const [re, short] of KNOWN) if (re.test(text)) return short;
+  const words = text.split(/\s+/);
+  return words.length > 3 ? `${words.slice(0, 3).join(' ')}…` : text;
+}
+
 function englishMonth(stemText) {
   const low = stemText.toLowerCase();
   const hit = MONTH_STEMS.find(([stem]) => low.startsWith(stem));

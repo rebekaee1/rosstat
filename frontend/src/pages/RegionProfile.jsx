@@ -1,8 +1,8 @@
 // Страница региона: /russia/region/{slug}
 // Как у стран: темы слева, сетка показателей справа.
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
-import { useParams } from 'react-router-dom';
-import { MapPin, SearchX } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { GitCompare, MapPin, SearchX } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionProfile } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -124,14 +124,28 @@ export default function RegionProfile() {
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
               {t('w4.regions.profile.intro', { sections: data.sections.length })}
             </p>
+            {headline.length > 0 && (
+              <Link
+                to={regionIndicatorPath(slug, headline.find((h) => h.code === '3.4')?.code || headline[0].code)}
+                className="fe-chip fe-press mt-3 gap-1.5 text-champagne-ink"
+                data-testid="region-compare-russia"
+              >
+                <GitCompare size={14} aria-hidden="true" />
+                {t('w6f.reg.compareRussia')}
+              </Link>
+            )}
           </div>
 
           {headline.length > 0 && (
-            <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-              {headline.map((h, i) => (
-                <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
-              ))}
-            </div>
+            <>
+              {/* Одна общая подпись вместо года на каждой карточке: у показателей разные «последние данные». */}
+              <p className="mb-2 text-sm text-text-secondary" data-testid="region-latest-note">{t('w6f.reg.latestNote')}</p>
+              <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                {headline.map((h, i) => (
+                  <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
+                ))}
+              </div>
+            </>
           )}
 
           <RegionSearchField

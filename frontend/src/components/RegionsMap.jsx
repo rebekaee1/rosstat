@@ -7,18 +7,21 @@
 // Зум (+/−/сброс) и панорамирование перетаскиванием — правка созвона
 // «На правки 13» (мелкие республики Кавказа не разглядеть без приближения).
 import { useMemo, useState, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, Maximize2, X, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Minus, Maximize2, X, ArrowRight, GitCompare } from 'lucide-react';
 import mapData from '../lib/regionsMap.json';
 import { formatRegionValue } from '../lib/regionsApi';
 import { unitLabel } from '../lib/regionUi';
 import { colorsBySlug, valueExtent, MAP_SCALE, MAP_NO_DATA } from '../lib/regionsMapColors';
+import { bubbleLayout } from '../lib/regionsBubbles';
 import {
   regionPath,
+  regionVsPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
 import '../styles/regions-w4.css';
+import '../styles/w6f-pages.css';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
@@ -54,6 +57,9 @@ export default function RegionsMap({
   className = '',           // доп. классы SVG-обёртки (например aspect-square)
   mapData: mapDataProp = null, // чужая геометрия; compact viewBox России — только дефолт
   ariaLabel = null,
+  shape = 'regions',        // 'bubbles' — одинаковые кружки по регионам (равная площадь), без полигонов
+  pickedSlug,               // регион выбран снаружи (поиск, быстрый выбор); undefined — выбор внутри карты
+  onPickedChange = null,    // сообщает наружу, что выбор изменился
 }) {
   const geometry = mapDataProp || mapData;
   const compact = variant === 'compact';
@@ -63,8 +69,17 @@ export default function RegionsMap({
   const [hover, setHover] = useState(null); // { slug, x, y }
   // Касание пальцем: первое нажатие выбирает регион (подсветка + карточка со ссылкой «Открыть»),
   // переход — только по кнопке или повторному касанию. Мышь и клавиатура ведут сразу, как раньше.
-  const [picked, setPicked] = useState(null); // slug
+  const [pickedInner, setPickedInner] = useState(null); // slug
+  const picked = pickedSlug !== undefined ? pickedSlug : pickedInner;
+  const setPicked = useCallback((slug) => {
+    setPickedInner(slug);
+    if (onPickedChange) onPickedChange(slug);
+  }, [onPickedChange]);
+  // Второй регион для сравнения: «Сравнить с…» на карточке выбранного региона.
+  const [compareSlug, setCompareSlug] = useState(null);
   const pointerTypeRef = useRef('mouse');
+  const bubbles = shape === 'bubbles' && !compact;
+  const bubblePos = useMemo(() => (bubbles ? bubbleLayout(geometry) : null), [bubbles, geometry]);
 
   // Зум/пан: transform = translate(tx,ty) scale(k) в координатах viewBox.
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
@@ -141,7 +156,7 @@ export default function RegionsMap({
       return;
     }
     openRegion(slug);
-  }, [compact, picked, openRegion]);
+  }, [compact, picked, openRegion, setPicked]);
 
   const handleMove = useCallback((e, slug) => {
     const box = e.currentTarget.ownerSVGElement.getBoundingClientRect();
@@ -176,6 +191,15 @@ export default function RegionsMap({
   const onPointerUp = useCallback(() => {
     setTimeout(() => { panRef.current = null; }, 0);
   }, []);
+
+  // Место выбранного региона среди всех, у кого есть значение (1 — самое высокое значение).
+  const rank = useMemo(() => {
+    if (!picked || !valuesBySlug) return null;
+    const mine = valuesBySlug.get(picked);
+    if (mine == null) return null;
+    const all = [...valuesBySlug.values()].filter((v) => v != null && Number.isFinite(Number(v)));
+    return { place: all.filter((v) => Number(v) > Number(mine)).length + 1, total: all.length };
+  }, [picked, valuesBySlug]);
 
   const hoverValue = hover && valuesBySlug ? valuesBySlug.get(hover.slug) : null;
   const { k, tx, ty } = view;
@@ -214,7 +238,7 @@ export default function RegionsMap({
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
             {/* Подложка-«шов»: обводка своим цветом фиксированной (не /k) толщины —
                 закрывает микрозазоры упрощённых полигонов при зуме. */}
-            {geometry.regions.map((r) => (
+            {!bubbles && geometry.regions.map((r) => (
               <path
                 key={`seal-${r.slug}`}
                 d={r.path}
@@ -228,7 +252,45 @@ export default function RegionsMap({
             ))}
             {/* Интерактивный слой: fill + тонкая постоянная обводка (screen px).
                 Hover-stroke сюда НЕ кладём — отдельный overlay ниже. */}
-            {geometry.regions.map((r) => (
+            {bubbles && geometry.regions.map((r) => (
+              <path
+                key={`ghost-${r.slug}`}
+                d={r.path}
+                fill="none"
+                stroke="rgba(26,26,46,0.12)"
+                strokeWidth={0.5}
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+                aria-hidden="true"
+              />
+            ))}
+            {bubbles && geometry.regions.map((r) => {
+              const pos = bubblePos.get(r.slug);
+              if (!pos) return null;
+              return (
+                <circle
+                  key={`bubble-${r.slug}`}
+                  cx={pos.x}
+                  cy={pos.y}
+                  r={pos.r}
+                  fill={colorFor(r.slug)}
+                  stroke="rgba(26,26,46,0.35)"
+                  strokeWidth={1}
+                  vectorEffect="non-scaling-stroke"
+                  style={{ transition: `fill ${transitionMs}ms ease` }}
+                  className="cursor-pointer"
+                  onClick={() => handleSelect(r.slug)}
+                  onMouseMove={(e) => handleMove(e, r.slug)}
+                  onMouseLeave={() => setHover(null)}
+                  role="button"
+                  aria-label={nameBySlug[r.slug] || r.slug}
+                  data-region-slug={r.slug}
+                  data-bubble="true"
+                  tabIndex={-1}
+                />
+              );
+            })}
+            {!bubbles && geometry.regions.map((r) => (
               <path
                 key={r.slug}
                 d={r.path}
@@ -247,17 +309,9 @@ export default function RegionsMap({
                 tabIndex={-1}
               />
             ))}
-            {(geometry.markers || []).map((m) => (
-              <circle
+            {!bubbles && (geometry.markers || []).map((m) => (
+              <g
                 key={m.slug}
-                cx={m.cx}
-                cy={m.cy}
-                r={(dark ? 5.5 : 7) / k}
-                fill={colorFor(m.slug)}
-                stroke={dark ? 'rgba(255,243,197,0.7)' : 'rgba(26,26,46,0.45)'}
-                strokeWidth={dark ? 1 : 1.4}
-                vectorEffect="non-scaling-stroke"
-                style={{ transition: `fill ${transitionMs}ms ease` }}
                 className="cursor-pointer"
                 onClick={() => handleSelect(m.slug)}
                 onMouseMove={(e) => handleMove(e, m.slug)}
@@ -266,12 +320,39 @@ export default function RegionsMap({
                 aria-label={nameBySlug[m.slug] || m.slug}
                 data-region-slug={m.slug}
                 tabIndex={-1}
-              />
+              >
+                {/* Невидимый широкий круг: в маркер размером с зерно пальцем не попасть. */}
+                {!compact && <circle cx={m.cx} cy={m.cy} r={20 / k} fill="transparent" />}
+                <circle
+                  cx={m.cx}
+                  cy={m.cy}
+                  r={(dark ? 6.5 : 10) / k}
+                  fill={colorFor(m.slug)}
+                  stroke={dark ? 'rgba(255,243,197,0.7)' : 'rgba(26,26,46,0.45)'}
+                  strokeWidth={dark ? 1 : 1.4}
+                  vectorEffect="non-scaling-stroke"
+                  style={{ transition: `fill ${transitionMs}ms ease` }}
+                />
+              </g>
             ))}
             {/* Hover-outline: актуальный path/marker из mapData (та же геометрия,
                 что fill). vector-effect=non-scaling-stroke — толщина в px экрана
                 при любом зуме, без «отстающей» /k-обводки на fill-слое. */}
-            {hoverRegion && (
+            {bubbles && outlineSlug && bubblePos.get(outlineSlug) && (
+              <circle
+                cx={bubblePos.get(outlineSlug).x}
+                cy={bubblePos.get(outlineSlug).y}
+                r={bubblePos.get(outlineSlug).r + 1.6}
+                fill="none"
+                stroke={hoverStroke}
+                strokeWidth={2}
+                vectorEffect="non-scaling-stroke"
+                pointerEvents="none"
+                aria-hidden="true"
+                data-hover-outline={outlineSlug}
+              />
+            )}
+            {!bubbles && hoverRegion && (
               <path
                 d={hoverRegion.path}
                 fill="none"
@@ -283,11 +364,11 @@ export default function RegionsMap({
                 data-hover-outline={hoverRegion.slug}
               />
             )}
-            {hoverMarker && (
+            {!bubbles && hoverMarker && (
               <circle
                 cx={hoverMarker.cx}
                 cy={hoverMarker.cy}
-                r={(dark ? 7.5 : 9) / k}
+                r={(dark ? 8.5 : 12) / k}
                 fill="none"
                 stroke={hoverStroke}
                 strokeWidth={dark ? 1.6 : 2}
@@ -381,11 +462,34 @@ export default function RegionsMap({
                 {formatRegionValue(valuesBySlug.get(picked))}{unitText ? `\u00A0${unitText}` : ''}
               </div>
             )}
+            {rank && (
+              <div className="fe-map-pick__rank" data-testid="map-pick-rank">
+                {t('w6f.map.place', { place: rank.place, total: rank.total })}
+              </div>
+            )}
           </div>
-          <button type="button" className="fe-map-pick__open fe-press" onClick={() => openRegion(picked)}>
-            {t('z2.map.open')}
-            <ArrowRight size={14} aria-hidden="true" />
-          </button>
+          <div className="fe-map-pick__actions">
+            {compareSlug && compareSlug !== picked ? (
+              <Link to={regionVsPath(compareSlug, picked)} className="fe-map-pick__open fe-press">
+                <GitCompare size={14} aria-hidden="true" />
+                {t('w6f.map.compareWith', { name: nameBySlug[compareSlug] || compareSlug })}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="fe-map-pick__cmp fe-press"
+                aria-pressed={compareSlug === picked}
+                onClick={() => setCompareSlug(compareSlug === picked ? null : picked)}
+              >
+                <GitCompare size={14} aria-hidden="true" />
+                {compareSlug === picked ? t('w6f.map.inCompare') : t('w6f.map.addCompare')}
+              </button>
+            )}
+            <button type="button" className="fe-map-pick__open fe-press" onClick={() => openRegion(picked)}>
+              {t('z2.map.open')}
+              <ArrowRight size={14} aria-hidden="true" />
+            </button>
+          </div>
           <button type="button" className="fe-map-pick__close fe-press" onClick={() => setPicked(null)} aria-label={t('common.close')}>
             <X size={16} aria-hidden="true" />
           </button>

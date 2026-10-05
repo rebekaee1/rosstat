@@ -44,6 +44,8 @@ import {
   russiaIndicatorPath,
   russiaIndicatorYearPath,
   todayPath,
+  WORLD_RATING_DEFAULT_CONCEPT,
+  worldRatingPath,
 } from './lib/sitePaths';
 
 const LiveTicker = lazy(() => import('./components/LiveTicker'));
@@ -280,6 +282,12 @@ function AppRoutes() {
             <Route path="/category/:slug" element={<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} />
             <Route path="/indicator/:code/:year" element={<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />} />
             <Route path="/indicator/:code" element={<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} />
+            {/* Названия, которые люди угадывают: рейтинг стран и калькуляторы (nginx на проде делает то же 301). */}
+            <Route path="/rankings" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
+            <Route path="/ranking" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
+            <Route path="/rankings/gdp" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
+            <Route path="/ranking/gdp" element={<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} />
+            <Route path="/calculators" element={<NavigateKeepSearch to="/calculator" />} />
             <Route path="/today" element={<NavigateKeepSearch to={todayPath()} />} />
             <Route path="/today/:code" element={<RedirectTo build={({ code }) => todayPath(code)} />} />
             <Route path="/calendar" element={<NavigateKeepSearch to={calendarPath()} />} />

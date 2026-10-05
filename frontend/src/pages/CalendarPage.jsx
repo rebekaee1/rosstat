@@ -9,13 +9,14 @@ import { FOCUS_RING_SURFACE } from '../lib/uiTokens';
 import CalendarHero from '../components/calendar/CalendarHero';
 import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarEventCard from '../components/calendar/CalendarEventCard';
+import CalendarUpcoming from '../components/calendar/CalendarUpcoming';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
 import { plainEventTitle, pluralForm } from '../lib/calendarText';
-import { groupSimilarEvents, findDailyRecurring, recurringKeyOf } from '../lib/calendarGrouping';
+import { groupSimilarEvents, findDailyRecurring, recurringKeyOf, pickDefaultDay } from '../lib/calendarGrouping';
 import { calendarMonthTrail, calendarTrail } from '../lib/breadcrumbs';
 import {
   calendarPath,
@@ -24,6 +25,7 @@ import { useT, useLocale } from '../i18n';
 import '../styles/indicator-russia.css';
 import '../styles/regions-w4.css';
 import '../styles/w5-pages.css';
+import '../styles/w6f-pages.css';
 
 const WEEKDAY_KEYS = [
   'calendar.weekday.sun',
@@ -128,7 +130,10 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     return isNaN(p) ? initMonth : Math.max(0, Math.min(11, p));
   });
   const [source, setSource] = useState(searchParams.get('source') || '');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [onlyImportant, setOnlyImportant] = useState(searchParams.get('imp') === '1');
+  // undefined — день выбирает сам календарь (сегодня или ближайшее важное), null — человек попросил весь месяц,
+  // строка — человек выбрал день в сетке.
+  const [pickedDate, setPickedDate] = useState(undefined);
   const navigate = useNavigate();
 
   const calendarSeo = getPageSeo('calendar', locale);
@@ -144,12 +149,13 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     path: seoPath || calendarSeo.path,
   });
 
-  const syncParams = useCallback((y, m, src) => {
+  const syncParams = useCallback((y, m, src, imp) => {
     const next = new URLSearchParams(searchParams);
     const isCurrentMonth = y === initYear && m === initMonth;
     if (isCurrentMonth) { next.delete('y'); next.delete('m'); }
     else { next.set('y', String(y)); next.set('m', String(m)); }
     if (src) next.set('source', src); else next.delete('source');
+    if (imp) next.set('imp', '1'); else next.delete('imp');
     setSearchParams(next, { replace: true });
   }, [searchParams, setSearchParams, initYear, initMonth]);
 
@@ -165,18 +171,36 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     }
     setMonth(newMonth);
     setYear(newYear);
-    setSelectedDate(null);
-    syncParams(newYear, newMonth, source);
-  }, [month, year, source, syncParams, seoPath, navigate]);
+    setPickedDate(undefined);
+    syncParams(newYear, newMonth, source, onlyImportant);
+  }, [month, year, source, onlyImportant, syncParams, seoPath, navigate]);
 
   const handleSourceChange = useCallback((v) => {
     setSource(v);
-    syncParams(year, month, v);
-  }, [year, month, syncParams]);
+    syncParams(year, month, v, onlyImportant);
+  }, [year, month, onlyImportant, syncParams]);
+
+  const handleImportantChange = useCallback((v) => {
+    setOnlyImportant(v);
+    setPickedDate(undefined);
+    syncParams(year, month, source, v);
+  }, [year, month, source, syncParams]);
 
   const handleSelectDate = useCallback((d) => {
-    setSelectedDate(d);
+    setPickedDate(d);
   }, []);
+
+  // Нажатие на «ближайшее событие» справа: открыть этот день, при необходимости перейти в его месяц.
+  const handlePickUpcoming = useCallback((dateStr) => {
+    const [y, m] = dateStr.split('-').map(Number);
+    if (seoPath) { navigate(calendarPath(y, String(m).padStart(2, '0'))); return; }
+    if (y !== year || m - 1 !== month) {
+      setYear(y);
+      setMonth(m - 1);
+      syncParams(y, m - 1, source, onlyImportant);
+    }
+    setPickedDate(dateStr);
+  }, [seoPath, navigate, year, month, source, onlyImportant, syncParams]);
 
   const dates = useMemo(() => monthRange(year, month), [year, month]);
 
@@ -193,7 +217,12 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const upcomingList = upcomingData?.events;
   const nextImportant = upcomingList?.find((e) => e.importance === 3) || upcomingList?.[0] || null;
 
-  const allEvents = useMemo(() => data?.events || [], [data]);
+  const monthEvents = useMemo(() => data?.events || [], [data]);
+  // «Только важные»: события средней и высокой важности (без ежедневных курсов и рядовых публикаций).
+  const allEvents = useMemo(
+    () => (onlyImportant ? monthEvents.filter((e) => (e.importance || 0) >= 2) : monthEvents),
+    [monthEvents, onlyImportant],
+  );
   // Ошибка без данных: сетку не рисуем (раньше «календарь недоступен» стоял над готовой пустой сеткой), остаётся плашка с повтором.
   const failedWithoutData = isError && !data;
 
@@ -210,8 +239,15 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   }, [year, month]);
 
   // Ежедневные события («Ставка RUONIA», курсы) — одной строкой «Каждый рабочий день», а не в каждом дне.
-  const recurring = useMemo(() => findDailyRecurring(allEvents), [allEvents]);
-  const showRecurring = !selectedDate && recurring.items.length > 0;
+  const recurring = useMemo(() => findDailyRecurring(monthEvents), [monthEvents]);
+
+  // По умолчанию открыт сегодняшний день или ближайший с важным событием; только в текущем месяце самой страницы.
+  const autoDate = useMemo(() => {
+    if (seoPath || fixedYear != null || !isCurrentMonth) return null;
+    return pickDefaultDay(allEvents, todayStr, recurring.keys);
+  }, [seoPath, fixedYear, isCurrentMonth, allEvents, todayStr, recurring]);
+  const selectedDate = pickedDate !== undefined ? pickedDate : autoDate;
+  const showRecurring = !selectedDate && !onlyImportant && recurring.items.length > 0;
 
   const visibleEvents = useMemo(() => {
     let filtered = allEvents;
@@ -249,7 +285,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     : (isCurrentMonth && allEvents.length > 0 && !source ? 'emptyUpcoming' : 'emptyMonth');
 
   return (
-    <div className="fe-data-page max-w-4xl mx-auto px-4 md:px-8 pt-20 pb-12 sm:pb-16">
+    <div className="fe-data-page max-w-4xl md:max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-12 sm:pb-16">
       <Breadcrumbs
         items={seoPath
           ? calendarMonthTrail(`${monthLabel} ${year}`, year, month + 1)
@@ -264,115 +300,125 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         <p className="text-text-secondary leading-relaxed max-w-2xl">
           {t('z1.cal.lead')}
         </p>
+        <p className="mt-2 text-sm text-text-secondary max-w-2xl" data-testid="calendar-scope">{t('w6f.cal.scope')}</p>
       </header>
 
-      <CalendarHero nextEvent={nextImportant} />
+      <div className="fe-cal-layout">
+        <aside className="fe-cal-side">
+          <CalendarHero nextEvent={nextImportant} stacked />
+          <CalendarUpcoming events={upcomingList || []} onPick={handlePickUpcoming} />
+        </aside>
+        <div className="fe-cal-main">
+        {isError && !isFetching && (
+          <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
+            <span className="font-semibold">{t('calendar.state.error.title')}</span>{' '}
+            {t('calendar.state.error.hint')}
+          </ApiRetryBanner>
+        )}
 
-      {isError && (
-        <ApiRetryBanner className="mb-6" onRetry={() => refetch()} isFetching={isFetching}>
-          <span className="font-semibold">{t('calendar.state.error.title')}</span>{' '}
-          {t('calendar.state.error.hint')}
-        </ApiRetryBanner>
-      )}
+        {isLoading ? (
+          <CalendarSkeleton onRefresh={() => refetch()} />
+        ) : failedWithoutData ? null : (
+          <>
+            <CalendarGrid
+              year={year}
+              month={month}
+              onPrev={() => goMonth(-1)}
+              onNext={() => goMonth(1)}
+              events={allEvents}
+              selectedDate={selectedDate}
+              onSelectDate={handleSelectDate}
+              source={source}
+              onSourceChange={handleSourceChange}
+              recurringKeys={recurring.keys}
+              onlyImportant={onlyImportant}
+              onToggleImportant={handleImportantChange}
+            />
 
-      {isLoading ? (
-        <CalendarSkeleton onRefresh={() => refetch()} />
-      ) : failedWithoutData ? null : (
-        <>
-          <CalendarGrid
-            year={year}
-            month={month}
-            onPrev={() => goMonth(-1)}
-            onNext={() => goMonth(1)}
-            events={allEvents}
-            selectedDate={selectedDate}
-            onSelectDate={handleSelectDate}
-            source={source}
-            onSourceChange={handleSourceChange}
-          />
-
-          {selectedDate && (
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-sm font-semibold text-text-primary">
-                {formatDayLabel(selectedDate, t)}
-              </h2>
-              <button
-                type="button"
-                onClick={() => { setSelectedDate(null); track(events.CALENDAR_CLEAR_DAY); }}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
-              >
-                <X className="w-3 h-3" />
-                {t('calendar.state.showMonth')}
-              </button>
-            </div>
-          )}
-
-          {showRecurring && (
-            <section className="fe-cal-recurring mb-6" aria-label={t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')} data-testid="calendar-recurring">
-              <h3 className="fe-cal-recurring__title">{t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')}</h3>
-              <ul className="fe-cal-recurring__list">
-                {recurring.items.map((item) => (
-                  <li key={item.key}>
-                    <span className="min-w-0">{plainEventTitle(item.title, locale)}</span>
-                    {item.time ? <span className="fe-num shrink-0 text-text-secondary">{item.time.slice(0, 5)}</span> : null}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {grouped.length === 0 ? (
-            // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
-            !isError && !showRecurring && (
-              <div
-                className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] border border-border-subtle bg-surface px-6 py-10 text-center"
-                role="status"
-                data-testid="calendar-empty"
-              >
-                <CalendarX2 className="mb-3 h-8 w-8 text-text-tertiary" aria-hidden="true" />
-                <p className="mb-2 text-lg text-text-secondary">{t(`calendar.state.${emptyKind}.title`)}</p>
-                <p className="text-sm text-text-tertiary">{t(`calendar.state.${emptyKind}.hint`)}</p>
-                {!selectedDate && source && (
-                  <button
-                    type="button"
-                    onClick={() => handleSourceChange('')}
-                    className={cn(
-                      FOCUS_RING_SURFACE,
-                      'mt-4 inline-flex min-h-11 items-center rounded-xl border border-border-subtle px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-champagne/30 hover:text-text-primary',
-                    )}
-                  >
-                    {t('calendar.state.resetFilter')}
-                  </button>
-                )}
+            {selectedDate && (
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-sm font-semibold text-text-primary">
+                  {formatDayLabel(selectedDate, t)}
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => { setPickedDate(null); track(events.CALENDAR_CLEAR_DAY); }}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                  {t('calendar.state.showMonth')}
+                </button>
               </div>
-            )
-          ) : (
-            <div className="space-y-6">
-              {grouped.map((group) => {
-                const isPast = group.dateStr < todayStr;
-                return (
-                  <section key={group.dateStr}>
-                    {!selectedDate && (
-                      <h3 className={cn('fe-cal-dayhead', group.isToday && 'is-today')}>
-                        {group.label}
-                        <span className="fe-cal-dayhead__count">
-                          — {group.events.length} {t(`z1.cal.events.${pluralForm(group.events.length, locale)}`)}
-                        </span>
-                      </h3>
-                    )}
-                    <DayEvents
-                      events={group.events}
-                      isPast={isPast}
-                      isToday={group.isToday}
-                      defaultOpen={Boolean(selectedDate)}
-                    />
-                  </section>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
+            )}
+
+            {showRecurring && (
+              <section className="fe-cal-recurring mb-6" aria-label={t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')} data-testid="calendar-recurring">
+                <h3 className="fe-cal-recurring__title">{t(recurring.everyDay ? 'y1.cal.everyDay' : 'y1.cal.everyWorkday')}</h3>
+                <ul className="fe-cal-recurring__list">
+                  {recurring.items.map((item) => (
+                    <li key={item.key}>
+                      <span className="min-w-0">{plainEventTitle(item.title, locale)}</span>
+                      {item.time ? <span className="fe-num shrink-0 text-text-secondary">{item.time.slice(0, 5)}</span> : null}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {grouped.length === 0 ? (
+              // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
+              !isError && !showRecurring && (
+                <div
+                  className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] border border-border-subtle bg-surface px-6 py-10 text-center"
+                  role="status"
+                  data-testid="calendar-empty"
+                >
+                  <CalendarX2 className="mb-3 h-8 w-8 text-text-tertiary" aria-hidden="true" />
+                  <p className="mb-2 text-lg text-text-secondary">{t(`calendar.state.${emptyKind}.title`)}</p>
+                  <p className="text-sm text-text-tertiary">{t(`calendar.state.${emptyKind}.hint`)}</p>
+                  {!selectedDate && source && (
+                    <button
+                      type="button"
+                      onClick={() => handleSourceChange('')}
+                      className={cn(
+                        FOCUS_RING_SURFACE,
+                        'mt-4 inline-flex min-h-11 items-center rounded-xl border border-border-subtle px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-champagne/30 hover:text-text-primary',
+                      )}
+                    >
+                      {t('calendar.state.resetFilter')}
+                    </button>
+                  )}
+                </div>
+              )
+            ) : (
+              <div className="space-y-6">
+                {grouped.map((group) => {
+                  const isPast = group.dateStr < todayStr;
+                  return (
+                    <section key={group.dateStr}>
+                      {!selectedDate && (
+                        <h3 className={cn('fe-cal-dayhead', group.isToday && 'is-today')}>
+                          {group.label}
+                          <span className="fe-cal-dayhead__count">
+                            — {group.events.length} {t(`z1.cal.events.${pluralForm(group.events.length, locale)}`)}
+                          </span>
+                        </h3>
+                      )}
+                      <DayEvents
+                        events={group.events}
+                        isPast={isPast}
+                        isToday={group.isToday}
+                        defaultOpen={Boolean(selectedDate)}
+                      />
+                    </section>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
+        </div>
+      </div>
 
       {data?.total > 0 && (
         <div className="flex items-center justify-center gap-4 mt-10 pt-6 border-t border-border-subtle">
