@@ -79,8 +79,8 @@ export default function Register() {
   const passwordInvalid = ['auth.validation.passwordShort', 'auth.validation.passwordLong'].some((key) => error === t(key));
   const consentInvalid = error === t('auth.register.consentRequired');
   const fieldClass = (invalid) => cn(
-    'fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border text-text-primary focus:outline-none',
-    invalid ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+    'fe-input w-full px-3.5 py-2.5 rounded-xl text-text-primary focus:outline-none',
+    invalid && 'is-invalid',
   );
   const describedBy = error ? 'register-error' : undefined;
 
@@ -123,7 +123,7 @@ export default function Register() {
       />
 
       {googleUnavailable && (
-        <div role="status" className="rounded-xl border border-champagne/30 bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary mb-4">
+        <div role="status" className="rounded-xl bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary mb-4 fe-shadow-2">
           {t('auth.register.googleUnavailable')}
         </div>
       )}

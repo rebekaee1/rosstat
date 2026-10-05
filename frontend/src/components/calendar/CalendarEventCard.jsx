@@ -140,7 +140,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         className={cn(
           revealClass,
           'group flex items-center gap-3 px-4 py-2.5 rounded-xl',
-          'border border-border-subtle bg-surface',
+          'fe-glass-2',
           'transition-colors hover:bg-surface-hover',
           isPast && 'opacity-60',
         )}
@@ -176,12 +176,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
       style={revealStyle}
       className={cn(
         revealClass,
-        'fe-calendar-event group relative rounded-[1.5rem] border bg-surface transition-all duration-200',
+        'fe-calendar-event group relative rounded-[1.5rem] transition-all duration-200',
         'border-l-[3px]',
         src.border,
-        isHigh ? 'border-border-subtle shadow-sm hover:shadow-md' : 'border-border-subtle',
+        isHigh ? 'shadow-sm hover:shadow-md' : '',
         isPast && 'opacity-70',
-        isToday && 'ring-1 ring-champagne/20',
+        isToday && '',
       )}
     >
       <div className={cn('px-5 py-4', isHigh ? 'md:px-6 md:py-5' : '')}>
@@ -225,7 +225,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
 
         {hasValues && (
           <div className={cn(
-            'grid gap-2 pt-3 mt-3 border-t border-border-subtle',
+            'grid gap-2 pt-3 mt-3 fe-divider',
             event.forecast_value ? 'grid-cols-3' : 'grid-cols-2',
           )}>
             <ValueCell label={t('z1.cal.prev')} value={event.previous_value} />

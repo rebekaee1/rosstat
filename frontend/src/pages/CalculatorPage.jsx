@@ -130,7 +130,7 @@ function ChartTooltip({ active, payload, label, format }) {
   const p = payload[0];
   if (p?.value == null) return null;
   return (
-    <div className="glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl min-w-[160px] max-w-[calc(100vw-48px)]">
+    <div className="glass-surface rounded-xl px-4 py-3 shadow-2xl min-w-[160px] max-w-[calc(100vw-48px)]">
       <p className="text-xs text-text-secondary mb-1.5">{formatDate(label, 'full')}</p>
       <p className="text-sm font-semibold tabular-nums text-champagne-ink">{format(p.value)}</p>
     </div>
@@ -140,7 +140,7 @@ function ChartTooltip({ active, payload, label, format }) {
 function InsightCard(props) {
   const Icon = props.icon;
   return (
-    <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
+    <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
       <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5">
         <Icon className="w-3.5 h-3.5 text-champagne" />
       </div>
@@ -167,7 +167,7 @@ function CategoryBars({ result }) {
         const isMax = i === 0;
         return (
           <div key={c.key} className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface border border-border-subtle shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0 fe-glass-2">
               <Icon className="w-3.5 h-3.5 text-text-tertiary" />
             </div>
             <div className="flex-1 min-w-0">
@@ -789,7 +789,7 @@ export default function CalculatorPage() {
       {isLoading && (
         <div
           style={revealStyle(3)}
-          className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle p-6 md:p-8 mb-6 min-h-[22rem]"
+          className="fe-reveal fe-panel rounded-[2rem] p-6 md:p-8 mb-6 min-h-[22rem]"
           aria-busy="true"
           role="status"
         >
@@ -817,7 +817,7 @@ export default function CalculatorPage() {
         <p
           role="status"
           data-testid="calc-no-data"
-          className="mb-6 rounded-[1.5rem] border border-border-subtle bg-surface p-5 text-sm text-text-secondary"
+          className="mb-6 rounded-[1.5rem] p-5 text-sm text-text-secondary fe-glass-lite"
         >
           {t('w6a.calc.noData')}
         </p>
@@ -830,8 +830,8 @@ export default function CalculatorPage() {
             style={revealStyle(3)}
             data-block="calc-result"
             className={cn(
-              'fe-reveal fe-z8-result rounded-[2rem] border p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500',
-              extremeInflation ? 'bg-negative/[0.03] border-negative/20' : 'bg-surface border-border-champagne'
+              'fe-reveal fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500 fe-glass-lite',
+              extremeInflation ? 'bg-negative/[0.03] fe-shadow-2' : 'fe-glass-2'
             )}
             aria-live="polite"
           >
@@ -929,7 +929,7 @@ export default function CalculatorPage() {
           {/* ── Insights ── */}
           {insights.length > 0 && (
             <section style={revealStyle(4)} className="fe-reveal mb-6">
-              <div className="flex items-start gap-3 rounded-3xl border border-border-champagne bg-surface p-5">
+              <div className="flex items-start gap-3 rounded-3xl p-5 fe-glass-lite">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-champagne/10">
                   {(() => { const LeadIcon = insights[0].icon; return <LeadIcon className="h-4 w-4 text-champagne" aria-hidden="true" />; })()}
                 </div>
@@ -955,7 +955,7 @@ export default function CalculatorPage() {
             <section
               ref={setChartWidthNode}
               style={revealStyle(5)}
-              className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6"
+              className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6"
             >
               <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
                 <h3 className="text-base font-semibold text-text-primary">
@@ -1042,7 +1042,7 @@ export default function CalculatorPage() {
 
           {/* ── Category Breakdown ── */}
           {isRussia && (
-            <section style={revealStyle(6)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+            <section style={revealStyle(6)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
               <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.catsTitle')}
               </h3>
@@ -1052,7 +1052,7 @@ export default function CalculatorPage() {
 
           {/* ── Yearly Breakdown ── */}
           {result.yearlyBreakdown?.length > 1 && (
-            <section style={revealStyle(7)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
+            <section style={revealStyle(7)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-6 md:p-8 mb-6">
               <h3 className="text-base font-semibold text-text-primary mb-5">
                 {t('calc.inflation.yearsTitle')}
               </h3>
@@ -1105,7 +1105,7 @@ export default function CalculatorPage() {
             <Link
               key={item.key}
               to={item.to}
-              className="fe-panel fe-press group block min-h-11 rounded-2xl bg-surface border border-border-subtle p-4 hover:border-champagne/30 transition-colors"
+              className="fe-panel fe-press group block min-h-11 rounded-2xl p-4 transition-colors fe-float"
             >
               <p className="text-sm font-semibold text-text-primary group-hover:text-champagne-ink transition-colors">
                 {item.label}

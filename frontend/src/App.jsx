@@ -244,7 +244,7 @@ function AppRoutes() {
       <CookieConsent />
       {/* Бегущая строка — декор: сбой её чанка не должен ронять всё приложение. */}
       <ErrorBoundary fallback={null}>
-        <Suspense fallback={<div className="fixed top-0 inset-x-0 z-[110] h-9 border-b border-champagne/15 bg-[#faf7f0]" style={{ height: 36 }} aria-hidden="true" />}>
+        <Suspense fallback={<div className="fixed top-0 inset-x-0 z-[110] h-9 bg-[#faf7f0]" style={{ height: 36 }} aria-hidden="true" />}>
           <LiveTicker />
         </Suspense>
       </ErrorBoundary>

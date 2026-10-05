@@ -145,7 +145,7 @@ export default function RegionRatingPage() {
           </div>
 
           <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+            <div className="rounded-2xl p-4 fe-glass-lite">
               <div className="flex items-center gap-1 text-xs font-medium text-text-secondary">
                 {achievement && <Trophy size={13} className="text-champagne-ink" aria-hidden="true" />}
                 {bestLabel}
@@ -155,20 +155,20 @@ export default function RegionRatingPage() {
                 {formatRegionWithUnit(top.raw ?? top.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+            <div className="rounded-2xl p-4 fe-glass-lite">
               <div className="text-xs font-medium text-text-secondary">{worstLabel}</div>
               <div className="mt-1 font-semibold text-text-primary">{bottom.name}</div>
               <div className="fe-num text-sm text-text-secondary">
                 {formatRegionWithUnit(bottom.raw ?? bottom.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="rounded-2xl border border-border-subtle bg-surface p-4">
+            <div className="rounded-2xl p-4 fe-glass-lite">
               <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
               <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
             </div>
           </div>
 
-          <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5">
+          <div className="mb-8 rounded-3xl p-3 sm:p-5 fe-glass-lite">
             <RegionsMap
               valuesBySlug={mapValues}
               unit={data.indicator.unit}
@@ -182,7 +182,7 @@ export default function RegionRatingPage() {
             <h2 className="mb-3 font-display text-xl font-bold text-text-primary">
               {listTitle}
             </h2>
-            <div className="max-h-[32rem] overflow-auto rounded-2xl border border-border-subtle bg-surface">
+            <div className="max-h-[32rem] overflow-auto rounded-2xl fe-glass-lite">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 backdrop-blur-sm z-10">
                   <tr className="text-left text-xs font-medium text-text-secondary">
@@ -230,7 +230,7 @@ export default function RegionRatingPage() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-border-subtle bg-surface p-5">
+          <section className="rounded-3xl p-5 fe-glass-lite">
             <h2 className="mb-2 font-display text-base font-semibold text-text-primary">{t('regions.rating.sourceHeading')}</h2>
             <p className="text-sm leading-relaxed text-text-secondary">
               {t('w4.rating.source', { year: data.year })}
@@ -240,7 +240,7 @@ export default function RegionRatingPage() {
       )}
 
       {!isLoading && !isError && (!data || ranked.length < 10) && (
-        <div role="status" className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+        <div role="status" className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
           <BarChart3 size={24} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
           <p>{t('regions.rating.empty')}</p>
           <Link to={regionRatingHubPath()} className="fe-tap-inline mt-2 text-champagne-ink hover:underline">

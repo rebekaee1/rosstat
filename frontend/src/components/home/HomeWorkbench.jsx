@@ -251,9 +251,9 @@ export default function HomeWorkbench({ ratingConcepts }) {
               skeleton
             ) : (
               <ErrorBoundary fallback={(
-                <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-border-subtle bg-surface-hover px-6 text-center text-sm text-text-secondary" role="alert">
+                <div className="flex h-[22rem] w-full flex-col items-center justify-center gap-3 rounded-2xl px-6 text-center text-sm text-text-secondary fe-glass-lite" role="alert">
                   <p>{t('home.map.loadError')}</p>
-                  <button type="button" onClick={() => window.location.reload()} className="min-h-11 rounded-lg border border-border-subtle bg-surface px-4 text-text-primary">{t('common.retry')}</button>
+                  <button type="button" onClick={() => window.location.reload()} className="min-h-11 rounded-lg px-4 text-text-primary fe-glass-2">{t('common.retry')}</button>
                 </div>
               )}
               >

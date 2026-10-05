@@ -39,19 +39,20 @@
 :root {
   color-scheme: light;
   --fe-ambient: #E4D3AC70;
-  --fe-glass: linear-gradient(130deg, #FFFFFFEE, #FFFDF8B0);
-  --fe-glass-soft: linear-gradient(130deg, #FFFFFFC2, #FFFCF572);
-  --fe-glass-border: #FFFFFFE6;
-  --fe-nav-surface: rgba(248, 245, 238, 0.97);
+  /* Стекло полупрозрачное (альфа ≤ 0,6): сквозь него видно сияние фона. Блик по краю: --fe-glass-border (значение, не рамка). */
+  --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.58), rgba(255, 253, 248, 0.42));
+  --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.46), rgba(255, 252, 245, 0.32));
+  --fe-glass-border: rgba(255, 255, 255, 0.8);
+  --fe-nav-surface: rgba(248, 245, 238, 0.8);
   /* Двойная тень: тонкий контактный слой и широкий мягкий, оба тёплые (токен --fe-card-shadow в z1-tokens.css). */
   --fe-shadow: var(--fe-card-shadow);
   --fe-button-bg: #F7F1E3;
   --fe-button-border: #D9C79B;
   --fe-art-opacity: 0.76;
+  --fe-focus: #B08A3E;
   /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
-  --fe-chip-active-bg: rgba(176, 138, 62, 0.17);
-  --fe-chip-active-border: #7A5F2A;
-  --fe-chip-active-ink: #6B5224;
+  --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #C9A24D, #B08A3E));
+  --fe-chip-active-ink: var(--fe-on-gold, #231B0B);
 }
 
 /* Explicit preference also supports future theme controls; embed keeps its own palette. */
@@ -72,27 +73,38 @@
   --color-border-champagne: #D0B47D50;
   --color-text-primary: #EDF1F7;
   --color-text-secondary: #BBC8D9;
-  --color-text-tertiary: #9CAEC6;
+  --color-text-tertiary: #A8B9CF; /* R3: ≥ 4,5:1 на стекле L1 с золотым/ледяным сиянием (было 4,3:1) */
   --color-positive: #69D29C;
   --color-negative: #F18A8A;
   --color-warn-surface: #393225;
   --color-warn-text: #F5E7C9;
   --color-warn-muted: #DBC79F;
   --fe-ambient: #80664021;
-  --fe-glass: linear-gradient(130deg, #29384BED, #202D40CC);
-  --fe-glass-soft: linear-gradient(130deg, #29384BBF, #202D4080);
-  --fe-glass-border: #BAD1EF26;
-  --fe-nav-surface: rgba(28, 39, 55, 0.98);
-  --fe-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
-  --fe-card-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
+  --fe-glass: linear-gradient(130deg, rgba(41, 56, 75, 0.6), rgba(32, 45, 64, 0.5));
+  --fe-glass-soft: linear-gradient(130deg, rgba(41, 56, 75, 0.46), rgba(32, 45, 64, 0.36));
+  --fe-glass-border: rgba(216, 230, 250, 0.08);
+  --fe-nav-surface: rgba(28, 39, 55, 0.86);
+  --fe-glass-l1: rgba(41, 56, 75, 0.55);
+  --fe-glass-l1-soft: rgba(41, 56, 75, 0.42);
+  --fe-glass-l1-sheen: linear-gradient(130deg, rgba(216, 230, 250, 0.1), transparent 55%);
+  --fe-glass-l2: rgba(56, 74, 98, 0.5);
+  --fe-pop-bg: rgba(34, 47, 66, 0.9);
+  --fe-glass-l2-hover: rgba(66, 86, 112, 0.62);
+  --fe-inset-glint: inset 0 1px 0 rgba(216, 230, 250, 0.14);
+  --fe-inset-glint-bottom: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  --fe-float-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 24px 56px -28px rgba(0, 0, 0, 0.6);
+  --fe-float-shadow-hover: 0 1px 2px rgba(0, 0, 0, 0.3), 0 32px 64px -28px rgba(0, 0, 0, 0.7);
+  --fe-shadow-l2: 0 6px 18px -12px rgba(0, 0, 0, 0.55);
+  --fe-divider-line: rgba(188, 208, 235, 0.12);
+  --fe-glow-gold-bg: rgba(208, 180, 125, 0.1);
+  --fe-glow-ice-bg: rgba(95, 128, 168, 0.16);
+  --fe-shadow: var(--fe-card-shadow);
   --fe-bg-warm: #151D2B;
   --fe-text-muted: #BBC8D9;
-  --fe-chip-active-bg: rgba(208, 180, 125, 0.2);
-  --fe-chip-active-border: #D0B47D;
-  --fe-chip-active-ink: #E4C994;
   --fe-button-bg: #403A2E;
   --fe-button-border: #9D865650;
   --fe-art-opacity: 0.35;
+  --fe-focus: #D0B47D;
 }
 
 .fe-page-shell {
@@ -102,16 +114,26 @@
   padding-inline: var(--fe-gutter, clamp(16px, 3.1vw, 32px));
 }
 .fe-panel, .fe-panel-soft {
-  background: var(--fe-glass);
-  border: 1px solid var(--fe-glass-border);
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
   border-radius: 24px;
-  box-shadow: var(--fe-shadow);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
-.fe-panel-soft { background: var(--fe-glass-soft); }
-/* Золотая кромка по верхнему краю: тонкий слой фона над стеклом, углы остаются чистыми. */
-.fe-panel { background: var(--fe-panel-edge, linear-gradient(90deg, transparent, transparent)) top center / 100% 1px no-repeat, var(--fe-glass); }
-.fe-calendar-event { background: var(--fe-glass); box-shadow: var(--fe-shadow); }
-.fe-dialog-panel { background: var(--fe-nav-surface); border-color: var(--fe-glass-border); }
+.fe-panel-soft { background: var(--fe-glass-l1-sheen), var(--fe-glass-l1-soft); }
+.fe-calendar-event {
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
+/* Диалог (поиск ⌘K и др.): тот же хрусталь, но плотнее, чтобы текст читался поверх страницы. */
+.fe-dialog-panel {
+  background: var(--fe-glass-l1-sheen), var(--fe-nav-surface);
+  border: 0;
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
 .fe-dialog-panel input { border-radius: 6px; }
 .fe-eyebrow {
   color: var(--color-text-secondary);
@@ -153,40 +175,48 @@
 .fe-reading a:hover, .fe-link:hover { text-decoration-color: currentColor; }
 /* Champagne stays decorative; its text shade needs contrast on pearl. */
 .fe-data-page :is(a, button, p, span, label, dt, dd).text-champagne { color: var(--color-champagne-ink); }
-.fe-summary-card { border-radius: 18px; }
+.fe-summary-card {
+  border: 0;
+  border-radius: 18px;
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
 .fe-auth-card h1 { font-size: clamp(25px, 2.5vw, 32px); margin-bottom: 12px; }
 .fe-auth-card button { min-height: 44px; }
 .fe-auth-card input[type="checkbox"] { width: 18px; height: 18px; flex: none; }
 .fe-auth-card label:has(input[type="checkbox"]) { min-height: 44px; padding-block: 4px; }
-.fe-input { min-height: 48px; background: var(--fe-glass-soft); }
-:where(.fe-data-page, .fe-navbar, .fe-footer, .fe-dialog-panel) :is(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--color-champagne-ink);
-  outline-offset: 3px;
+/* Поле ввода: слой L2 без рамки. Ошибка — нижняя линия 2 px цвета «падение» (исключение 5 эталона). */
+.fe-input {
+  min-height: 48px;
+  border: 0;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
+.fe-input[aria-invalid='true'], .fe-input.is-invalid { border-bottom: 2px solid var(--color-negative); }
 .fe-button-primary, .fe-button-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 40px;
-  border: 1px solid var(--fe-button-border);
-  background: var(--fe-button-bg);
+  border: 0;
+  border-radius: 12px;
   color: var(--color-text-primary);
-  box-shadow: inset 0 1px 0 var(--fe-glass-border);
-  transition: border-color 160ms, background-color 160ms, box-shadow 160ms;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease;
+}
+.fe-button-primary {
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .fe-button-secondary {
-  background: var(--fe-glass-soft);
-  border-color: var(--color-border-subtle);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
-.fe-button-primary:hover, .fe-button-secondary:hover {
-  border-color: var(--color-champagne);
-  box-shadow: 0 4px 14px -8px var(--color-champagne);
-}
-.fe-button-primary:focus-visible, .fe-button-secondary:focus-visible {
-  outline: 2px solid var(--color-champagne);
-  outline-offset: 3px;
-}
+.fe-button-primary:hover { background: var(--fe-glass-active-hover); box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+.fe-button-secondary:hover { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
+.fe-button-primary:active, .fe-button-secondary:active { transform: scale(0.98); transition-duration: 0.12s; }
 
 .fe-brand {
   display: inline-flex;
@@ -211,7 +241,7 @@
 }
 .fe-brand-compact { font-size: 23px; gap: 7px; }
 .fe-brand-compact svg { width: 26px; height: 31px; }
-.fe-navbar { box-shadow: var(--fe-shadow); }
+.fe-navbar { border: 0; box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); }
 .fe-navbar > a { min-height: 40px; }
 .fe-navbar a[aria-current="page"] { color: var(--color-text-primary); }
 .fe-navbar a[aria-current="page"]::after {
@@ -268,10 +298,11 @@
 }
 .fe-dashboard [data-block="home-data-scope"],
 .fe-dashboard [data-block="home-workbench"] {
-  background: var(--fe-glass);
-  border: 1px solid var(--fe-glass-border);
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
   border-radius: 24px;
-  box-shadow: var(--fe-shadow);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 /* The indicator picker, country search and planet read as one working surface. */
 .fe-dashboard [data-block="home-workbench"] { padding: 24px; border-radius: 28px; }
@@ -292,11 +323,10 @@
 .fe-dashboard [data-block="home-map-controls"] {
   margin-bottom: 18px;
   padding: 0 2px 18px;
-  border-bottom: 1px solid var(--color-border-subtle);
 }
 .fe-dashboard [data-block="home-map-controls"] h2 { font-size: 20px; letter-spacing: -.02em; }
-.fe-category-card { min-height: 270px; transition: box-shadow 180ms, border-color 180ms, transform 180ms; }
-.fe-category-card:hover { box-shadow: var(--fe-glow-gold, 0 0 0 1px rgba(176, 138, 62, 0.5)), var(--fe-card-shadow); transform: translateY(var(--fe-lift, -2px)); }
+.fe-category-card { min-height: 270px; transition: box-shadow 200ms var(--fe-ease-reveal), transform 200ms var(--fe-ease-reveal); }
+.fe-category-card:hover { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); transform: translateY(var(--fe-lift, -2px)); }
 .fe-category-card > :not(.fe-category-art) { position: relative; z-index: 1; }
 .fe-category-art {
   position: absolute;
@@ -311,7 +341,7 @@
   mask-image: linear-gradient(90deg, transparent, #000 55%), linear-gradient(0deg, transparent, #000 70%);
   mask-composite: intersect;
 }
-.fe-category-icon { background: var(--fe-glass); border: 1px solid var(--fe-glass-border); }
+.fe-category-icon { background: var(--fe-glass-l2); border: 0; box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 
 @media (min-width: 1280px) {
   .fe-footer-grid { grid-template-columns: 1.6fr repeat(5, minmax(0, 1fr)); gap: 28px; }
@@ -372,12 +402,14 @@ body {
      не рисуется, хотя computed и показывает blur(...). */
   overflow-x: clip;
   background-color: var(--color-obsidian);
-  /* Спокойное золотое свечение сверху справа и прохладный отсвет слева: страница не плоская, но и не пёстрая. */
+  /* Слой L0: бумага и сияния (золото сверху справа, лёд слева, тёплое пятно внизу). На компьютере они закреплены за окном,
+     поэтому стеклянные панели при прокрутке «плывут» над светом, а не тащат его за собой. */
   background-image:
-    radial-gradient(ellipse 62% 620px at 94% -6%, var(--fe-ambient), transparent 70%),
-    radial-gradient(ellipse 48% 520px at -8% 10%, rgba(214, 226, 238, 0.42), transparent 72%);
+    radial-gradient(ellipse 62% 58% at 94% -4%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%),
+    radial-gradient(ellipse 52% 52% at -6% 22%, var(--fe-glow-ice-bg, rgba(202, 216, 229, 0.35)), transparent 72%),
+    radial-gradient(ellipse 58% 46% at 72% 104%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%);
   background-repeat: no-repeat;
-  background-size: 100% 1200px;
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 1rem;
@@ -385,6 +417,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
+}
+
+@media (max-width: 767px) {
+  /* На телефоне fixed-фон дёргается при прокрутке и ест кадры: сияние остаётся в верхней части страницы. */
+  body { background-attachment: scroll; background-size: 100% 1400px; }
 }
 
 #root {
@@ -462,6 +499,18 @@ nav.glass-surface-soft {
   background: var(--fe-nav-surface);
 }
 
+/* Нет backdrop-filter: плотные тёмные слои (светлые описаны в styles/z1-tokens.css). */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-theme="dark"], :root.dark {
+    --fe-glass-l1: rgba(41, 56, 75, 0.9);
+    --fe-glass-l1-soft: rgba(41, 56, 75, 0.82);
+    --fe-glass-l2: rgba(56, 74, 98, 0.9);
+    --fe-pop-bg: rgba(34, 47, 66, 0.96);
+    --fe-glass: linear-gradient(130deg, rgba(41, 56, 75, 0.94), rgba(32, 45, 64, 0.88));
+    --fe-glass-soft: linear-gradient(130deg, rgba(41, 56, 75, 0.86), rgba(32, 45, 64, 0.8));
+  }
+}
+
 /* Ползунок времени на карте регионов: тонкий трек + champagne-бегунок. */
 .map-timeline {
   -webkit-appearance: none;
@@ -477,9 +526,8 @@ nav.glass-surface-soft {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background: #fff;
-  border: 3px solid var(--color-champagne);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: transform 0.12s ease;
 }
 .map-timeline::-webkit-slider-thumb:hover {
@@ -489,9 +537,8 @@ nav.glass-surface-soft {
   width: 18px;
   height: 18px;
   border-radius: 9999px;
-  background: #fff;
-  border: 3px solid var(--color-champagne);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .scrollbar-hide {
@@ -526,8 +573,8 @@ nav.glass-surface-soft {
   width: 1rem;
   height: 1rem;
   border-radius: 9999px;
-  border: 2px solid color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent);
-  border-top-color: var(--color-champagne, #ad8a48);
+  background: conic-gradient(from -45deg, var(--color-champagne, #ad8a48) 0 25%, color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent) 25% 100%);
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
   animation: fe-search-turn 0.7s linear infinite;
 }
 .fe-search-progress {
@@ -558,7 +605,7 @@ nav.glass-surface-soft {
   animation: fe-search-dots 1.2s steps(1, end) infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fe-search-spinner { animation: none; border-top-color: color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent); }
+  .fe-search-spinner { animation: none; background: color-mix(in srgb, var(--color-champagne, #ad8a48) 28%, transparent); }
   .fe-search-progress::before { animation: none; width: 100%; opacity: 0.35; }
   .fe-search-loading-text::after { animation: none; content: '...'; }
 }
@@ -572,14 +619,14 @@ nav.glass-surface-soft {
   --fe-dur-base: 200ms;
 }
 .fe-btn {
-  transition: transform 0.12s ease, box-shadow 0.18s ease, background-color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease, color 0.15s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
@@ -589,51 +636,63 @@ nav.glass-surface-soft {
   white-space: nowrap;
 }
 .fe-btn--sm { min-height: 34px; padding: 0 12px; font-size: 13px; }
+/* Primary: золотая заливка с бликом, тёмный текст (контраст ≥ 6:1), тень цвета золота. */
 .fe-btn--primary {
-  background: linear-gradient(180deg, #876A33, var(--color-accent-solid) 70%);
-  border-color: var(--color-accent-solid);
-  color: var(--color-on-accent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 18px -12px rgba(122, 95, 42, 0.7);
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) {
-  background: linear-gradient(180deg, #7A5F2A, #6b5329 70%);
-  border-color: #6b5329;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 12px 22px -12px rgba(122, 95, 42, 0.8);
+  background: var(--fe-glass-active-hover);
+  box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
-/* Подъём только при настоящем наведении мышью; на касании «залипает». */
+/* Парение только при настоящем наведении мышью; на касании «залипает». */
 @media (hover: hover) {
-  .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
+  .fe-btn:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
 }
-.fe-btn--secondary { background: var(--fe-glass-soft); border-color: var(--color-border-subtle); color: var(--color-text-primary); }
-.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { border-color: var(--color-champagne); }
+.fe-btn:active:not(:disabled):not([aria-disabled='true']) { transform: scale(0.98); transition-duration: 0.12s; }
+/* Secondary: слой L2, без рамки. */
+.fe-btn--secondary { background: var(--fe-glass-l2); color: var(--color-text-primary); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
 .fe-btn--ghost { background: transparent; color: var(--color-champagne-ink); }
-.fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: rgba(173, 138, 72, 0.1); }
+.fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 .fe-btn:disabled, .fe-btn[aria-disabled='true'] { opacity: 0.5; cursor: default; }
 .fe-btn[aria-busy='true'] { cursor: progress; }
 .fe-btn__spinner { --fe-spinner-size: 14px; }
-.fe-btn--primary .fe-btn__spinner { border-color: rgba(255, 255, 255, 0.35); border-top-color: #fff; }
+.fe-btn--primary .fe-btn__spinner { border-color: rgba(35, 27, 11, 0.3); border-top-color: var(--fe-on-gold); }
 .fe-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid transparent;
+  border: 0;
   border-radius: 12px;
-  background: var(--color-obsidian-lighter, rgba(68, 87, 115, 0.1));
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   text-wrap: balance;
+  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease, color 0.15s ease;
 }
-.fe-chip:hover:not(:disabled):not(.is-active) { color: var(--color-text-primary); border-color: var(--color-border-subtle); }
+@media (hover: hover) {
+  .fe-chip:hover:not(:disabled):not(.is-active) {
+    background: var(--fe-glass-l2-hover);
+    color: var(--color-text-primary);
+    transform: translateY(var(--fe-lift, -2px));
+    box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
+  }
+}
+.fe-chip:active:not(:disabled) { transform: scale(0.98); transition-duration: 0.12s; }
+/* Активный чип: золотая заливка вместо контура. */
 .fe-chip.is-active {
   background: var(--fe-chip-active-bg);
-  border-color: var(--fe-chip-active-border);
   color: var(--fe-chip-active-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  font-weight: 600;
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 /* Подпись чипа: до двух строк по словам, лишнее скрывается с многоточием, а не рвётся посреди слова; полное имя в title. */
 .fe-chip__label {
@@ -676,15 +735,16 @@ nav.glass-surface-soft {
   input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea { font-size: 16px; }
 }
 /* Единый фокус с клавиатуры вне зависимости от обёртки страницы. */
-:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-champagne-ink);
+:where(a, button, input, select, textarea, summary, [tabindex], [role='button'], [role='tab']):focus-visible {
+  outline: 2px solid var(--fe-focus, #B08A3E);
   outline-offset: 2px;
 }
 :where(a, button, summary, [role='button']) { -webkit-tap-highlight-color: transparent; }
 /* На сенсорных экранах hover «залипает» после нажатия: тени и подъём только при настоящем наведении. */
 @media (hover: none) {
-  .fe-button-primary:hover, .fe-button-secondary:hover { box-shadow: inset 0 1px 0 var(--fe-glass-border); }
-  .fe-category-card:hover { transform: none; }
+  .fe-button-primary:hover { box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+  .fe-button-secondary:hover { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+  .fe-category-card:hover { transform: none; box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom); }
 }
 /* Предохранитель: у тех, кто просил меньше движения, не остаётся ни одной бесконечной или длинной анимации. */
 @media (prefers-reduced-motion: reduce) {
@@ -695,10 +755,12 @@ nav.glass-surface-soft {
     scroll-behavior: auto !important;
   }
   .fe-spinner, .fe-search-spinner { animation-duration: 2.4s !important; animation-iteration-count: infinite !important; }
+  /* Парение и нажатие тоже отключены: тень и цвет меняются, но ничего не движется. */
+  .fe-chip, .fe-btn, .fe-button-primary, .fe-button-secondary, .fe-category-card { transform: none !important; }
 }
 @media print {
   .fe-navbar, nav.glass-surface, [data-consent], .fe-page-progress, .fe-ticker { display: none !important; }
-  .fe-panel, .fe-chart-card { box-shadow: none !important; backdrop-filter: none !important; break-inside: avoid; }
+  .fe-panel, .fe-glass, .fe-glass-2, .fe-glass-dark, .fe-chart-card { box-shadow: none !important; backdrop-filter: none !important; break-inside: avoid; }
   body { background: #fff !important; }
 }
 
@@ -713,14 +775,15 @@ nav.glass-surface-soft {
   gap: 5px;
   padding: 2px 9px 2px 7px;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
   white-space: nowrap;
 }
 .fe-delta-badge > [aria-hidden='true'] { font-size: 0.72em; line-height: 1; }
-.fe-delta-badge--plain { padding: 0; background: none; }
+.fe-delta-badge--plain { padding: 0; background: none; box-shadow: none; }
 
 /* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
    .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
@@ -747,8 +810,8 @@ nav.glass-surface-soft {
   height: var(--fe-spinner-size, 1rem);
   flex-shrink: 0;
   border-radius: 9999px;
-  border: 2px solid color-mix(in srgb, var(--color-champagne, #ad8a48) 26%, transparent);
-  border-top-color: var(--color-champagne, #ad8a48);
+  background: conic-gradient(from -45deg, var(--color-champagne, #ad8a48) 0 25%, color-mix(in srgb, var(--color-champagne, #ad8a48) 26%, transparent) 25% 100%);
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
   animation: fe-spin 0.7s linear infinite;
 }
 @keyframes fe-page-progress-run {
@@ -798,6 +861,7 @@ nav.glass-surface-soft {
   background-repeat: no-repeat;
   animation: shimmer var(--fe-shimmer-dur, 1.6s) ease-in-out infinite;
   border-radius: 0.5rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 /* Calculator slider */
@@ -815,9 +879,8 @@ nav.glass-surface-soft {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--color-surface);
-  border: 2px solid var(--color-champagne);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
   cursor: grab;
 }
@@ -833,16 +896,14 @@ nav.glass-surface-soft {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--color-surface);
-  border: 2px solid var(--color-champagne);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
   cursor: grab;
 }
 .calc-slider::-moz-range-track {
   height: 4px;
   background: var(--color-border-subtle);
   border-radius: 9999px;
-  border: none;
 }
 .calc-slider:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(173,138,72,0.45);

@@ -14,7 +14,7 @@ export default function RouteFallback() {
       {/* Каркас виден сразу (без задержки появления) и повторяет форму страницы: крошка, шапка, плитки значений, график. */}
       <div className="fe-route-skel" aria-hidden="true">
         <SkeletonBox className="mb-5 h-3 w-40 rounded" />
-        <div className="mb-4 rounded-[1.5rem] border border-border-subtle bg-surface p-5 md:p-6">
+        <div className="fe-glass mb-4 rounded-[1.5rem] p-5 md:p-6">
           <SkeletonBox className="mb-4 h-3 w-24 rounded" />
           <SkeletonBox className="mb-3 h-9 w-3/4 max-w-xl rounded-lg" />
           <SkeletonBox className="h-4 w-1/2 max-w-md rounded" />
@@ -23,7 +23,7 @@ export default function RouteFallback() {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className={`rounded-[1.5rem] border border-border-subtle bg-surface p-4 ${i === 2 ? 'hidden md:block' : ''}`}
+              className={`fe-glass rounded-[1.5rem] p-4 ${i === 2 ? 'hidden md:block' : ''}`}
             >
               <SkeletonBox className="mb-3 h-3 w-20 rounded" />
               <SkeletonBox className="mb-2 h-8 w-24 rounded-lg" />

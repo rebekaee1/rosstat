@@ -44,7 +44,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
 
   return (
     <div
-      className="fe-reveal rounded-[2rem] bg-surface border border-border-subtle overflow-hidden"
+      className="fe-reveal rounded-[2rem] overflow-hidden fe-glass-lite"
       style={{ '--fe-duration': '0.28s', '--fe-rise': '8px' }}
     >
       <div className="p-5 flex items-center justify-between flex-wrap gap-3">

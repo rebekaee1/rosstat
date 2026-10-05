@@ -45,7 +45,7 @@ function PopularCard({ metric, index }) {
   return (
     <Link
       to={regionRatingPath(metric.code)}
-      className="fe-panel fe-press fe-reveal group flex min-w-0 flex-col rounded-3xl border border-border-subtle bg-surface p-4 transition-colors hover:border-border-champagne"
+      className="fe-panel fe-press fe-reveal group flex min-w-0 flex-col rounded-3xl p-4 transition-colors fe-float"
       style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
     >
       <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ function ThemeGroup({ name, items }) {
   const [open, setOpen] = useState(false);
   return (
     <details
-      className="fe-acc rounded-2xl border border-border-subtle bg-surface"
+      className="fe-acc rounded-2xl fe-glass-lite"
       open={open}
       onToggle={(e) => setOpen(e.currentTarget.open)}
     >
@@ -91,7 +91,7 @@ function ThemeGroup({ name, items }) {
         <ChevronDown size={16} className="fe-acc__chev shrink-0 text-text-secondary" aria-hidden="true" />
       </summary>
       {open && (
-        <ul className="divide-y divide-border-subtle border-t border-border-subtle">
+        <ul className="fe-divide-y">
           {items.map((ind) => (
             <li key={ind.code}>
               <Link
@@ -172,14 +172,14 @@ export default function RegionRatingsHub() {
       )}
 
       {!isLoading && !isError && sections.length === 0 && (
-        <p className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+        <p className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
           {t('common.noData')}
         </p>
       )}
 
       {!isLoading && !isError && searching && (
         found.length === 0 ? (
-          <div role="status" className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+          <div role="status" className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
             <SearchX size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
             {t('regions.home.nothingFound', { query: deferredQuery })}
             <div className="mt-3">
@@ -187,7 +187,7 @@ export default function RegionRatingsHub() {
             </div>
           </div>
         ) : (
-          <ul className="divide-y divide-border-subtle overflow-hidden rounded-2xl border border-border-subtle bg-surface">
+          <ul className="overflow-hidden rounded-2xl fe-glass-lite fe-divide-y">
             {found.slice(0, SEARCH_LIMIT).map((ind) => (
               <li key={ind.code}>
                 <Link

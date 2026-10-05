@@ -53,7 +53,7 @@ export default function DownloadLimitModal() {
       onClick={close}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
+        className="w-full max-w-md rounded-2xl shadow-2xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

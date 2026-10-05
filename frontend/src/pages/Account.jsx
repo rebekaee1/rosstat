@@ -157,7 +157,7 @@ export default function Account() {
         {t('account.intro')}
       </p>
 
-      <section className="fe-panel fe-reveal rounded-3xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm">
+      <section className="fe-panel fe-reveal rounded-3xl p-5 mb-5 shadow-sm">
         <h2 className="text-base font-semibold text-text-primary mb-3">{t('account.profile')}</h2>
         <dl className="text-sm space-y-1.5">
           <div className="flex justify-between items-center gap-4 min-h-[28px]">
@@ -179,8 +179,7 @@ export default function Account() {
                     aria-invalid={nameErr ? true : undefined}
                     aria-describedby={nameErr ? 'account-name-error' : undefined}
                     className={cn(
-                      'min-w-0 flex-1 max-w-[16rem] px-2.5 py-1 rounded-lg bg-obsidian-lighter/50 border text-text-primary focus:outline-none pointer-coarse:min-h-11',
-                      nameErr ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+                      'min-w-0 flex-1 max-w-[16rem] px-2.5 py-1 rounded-lg text-text-primary focus:outline-none pointer-coarse:min-h-11 fe-glass-2',
                     )}
                   />
                   <Button variant="ghost" size="sm" onClick={saveName} loading={nameBusy} className="shrink-0 px-2">
@@ -209,14 +208,14 @@ export default function Account() {
       <section
         ref={feedbackRef}
         id="feedback"
-        className="fe-panel fe-reveal rounded-3xl bg-surface border border-border-subtle p-5 mb-5 shadow-sm scroll-mt-28"
+        className="fe-panel fe-reveal rounded-3xl p-5 mb-5 shadow-sm scroll-mt-28"
       >
         <h2 className="flex items-center gap-2 text-base font-semibold text-text-primary mb-2">
           <MessageSquare className="w-4 h-4 text-champagne" />
           {t('account.feedback')}
         </h2>
         {fbSent ? (
-          <div role="status" className="flex items-start gap-2.5 rounded-xl bg-positive/10 border border-positive/30 px-4 py-3 text-sm text-text-primary">
+          <div role="status" className="flex items-start gap-2.5 rounded-xl bg-positive/10 px-4 py-3 text-sm text-text-primary fe-shadow-2">
             <CheckCircle2 className="w-5 h-5 text-positive shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <p className="font-medium">{t('account.feedbackSentTitle')}</p>
@@ -241,8 +240,8 @@ export default function Account() {
               aria-invalid={fbErr ? true : undefined}
               aria-describedby={fbErr ? 'account-feedback-error' : undefined}
               className={cn(
-                'w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border text-text-primary focus:outline-none resize-y',
-                fbErr ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+                'w-full px-3.5 py-2.5 rounded-xl text-text-primary focus:outline-none resize-y fe-glass-2',
+                fbErr && 'is-invalid',
               )}
             />
             <div className="flex items-center justify-between gap-3 mt-2">
@@ -259,7 +258,7 @@ export default function Account() {
             <div id="account-feedback-error" role="alert" className="text-sm text-negative mt-2 empty:hidden">{fbErr}</div>
           </>
         )}
-        <p className="text-xs text-text-tertiary mt-4 pt-3 border-t border-border-subtle/70">
+        <p className="text-xs text-text-tertiary mt-4 pt-3 fe-divider">
           {user.newsletter ? t('account.newsletterOn') : t('account.newsletterOff')}
           <Button variant="ghost" size="sm" onClick={toggleNewsletter} loading={nlBusy} className="ml-1 px-2">
             {user.newsletter ? t('account.unsubscribe') : t('account.subscribe')}
@@ -268,7 +267,7 @@ export default function Account() {
       </section>
 
       {user.is_admin && (
-        <section className="fe-panel rounded-3xl bg-surface border border-border-champagne p-5 mb-5 shadow-sm">
+        <section className="fe-panel rounded-3xl p-5 mb-5 shadow-sm">
           <h2 className="text-base font-semibold text-text-primary mb-2">{t('account.admin')}</h2>
           <p className="text-sm text-text-secondary mb-3">
             {t('account.adminBody')}
@@ -281,14 +280,14 @@ export default function Account() {
 
       <div role="status" className="empty:hidden mb-4">
         {msg && (
-          <div className="flex items-start gap-2 rounded-xl border border-positive/30 bg-positive/10 px-3.5 py-2.5 text-sm text-text-primary">
+          <div className="flex items-start gap-2 rounded-xl bg-positive/10 px-3.5 py-2.5 text-sm text-text-primary fe-shadow-2">
             <CheckCircle2 className="w-4 h-4 text-positive shrink-0 mt-0.5" aria-hidden="true" />
             {msg}
           </div>
         )}
       </div>
       <div role="alert" className="empty:hidden mb-4">
-        {err && <div className="rounded-xl border border-negative/40 px-3.5 py-2.5 text-sm text-negative">{err}</div>}
+        {err && <div className="rounded-xl px-3.5 py-2.5 text-sm text-negative fe-glass-2">{err}</div>}
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -308,7 +307,7 @@ export default function Account() {
           onClick={doDelete}
           disabled={busy}
           loading={busyKey === 'delete'}
-          className="ml-auto text-negative! border-negative/40! hover:bg-negative/10!"
+          className="ml-auto text-negative! hover:bg-negative/10!"
         >
           {t('account.delete')}
         </Button>

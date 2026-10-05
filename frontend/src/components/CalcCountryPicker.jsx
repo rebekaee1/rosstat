@@ -81,7 +81,7 @@ export default function CalcCountryPicker({
         type="button"
         className={cn(
           FOCUS_RING_SURFACE,
-          'flex h-11 w-full items-center gap-2 rounded-xl border border-border-subtle bg-obsidian px-3 text-left text-sm font-medium text-text-primary transition-colors hover:border-champagne/20',
+          'flex h-11 w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-text-primary transition-colors fe-glass-2',
         )}
         aria-expanded={open}
         aria-haspopup="listbox"
@@ -100,10 +100,10 @@ export default function CalcCountryPicker({
 
       {open && (
         <div
-          className="absolute left-0 right-0 z-30 mt-1.5 overflow-hidden rounded-xl border border-border-subtle bg-surface shadow-lg"
+          className="absolute left-0 right-0 z-30 mt-1.5 overflow-hidden rounded-xl shadow-lg fe-glass-pop"
           role="listbox"
         >
-          <label className="flex items-center gap-2 border-b border-border-subtle px-3 py-2">
+          <label className="flex items-center gap-2 px-3 py-2 fe-divider-b">
             <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
             <span className="sr-only">{t('calc.country.search')}</span>
             <input
@@ -139,7 +139,7 @@ export default function CalcCountryPicker({
                   aria-selected={c.slug === selected.slug}
                   onClick={() => pick(c.slug)}
                   className={cn(
-                    'flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors border-b border-border-subtle/60 last:border-b-0',
+                    'flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors last:border-b-0 fe-glass-2',
                     c.slug === selected.slug
                       ? 'bg-champagne/10 text-champagne-ink font-medium'
                       : 'text-text-primary hover:bg-obsidian-lighter',

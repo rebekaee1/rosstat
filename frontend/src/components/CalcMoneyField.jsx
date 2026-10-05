@@ -114,8 +114,8 @@ export default function CalcMoneyField({
           aria-describedby={error ? errorId : undefined}
           className={cn(
             FOCUS_RING_SURFACE,
-            'calc-field-input w-full rounded-2xl border border-border-subtle bg-obsidian',
-            'font-display font-bold tabular-nums text-text-primary transition-colors hover:border-champagne/20',
+            'calc-field-input w-full rounded-2xl fe-glass-lite',
+            'font-display font-bold tabular-nums text-text-primary transition-colors',
             'placeholder:font-normal placeholder:text-text-tertiary/60',
             big ? 'py-4 text-2xl md:text-3xl' : 'py-3 text-xl',
             prefix ? (big ? 'pl-10' : 'pl-9') : 'pl-4',

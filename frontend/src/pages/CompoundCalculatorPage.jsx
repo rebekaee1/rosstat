@@ -169,7 +169,7 @@ export default function CompoundCalculatorPage() {
       <div className="fe-z8-calc__out">
       {result && (
         <>
-          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
+          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[17rem]" aria-live="polite">
             <p className="text-sm text-text-secondary mb-2">{t('calc.compound.growsIn', {
               years: yearsLabel(years),
             })}</p>
@@ -188,7 +188,7 @@ export default function CompoundCalculatorPage() {
             </CalcStatGrid>
           </section>
 
-          <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+          <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-base font-semibold text-text-primary mb-5">
               {t('calc.compound.chartTitle')}
             </h3>
@@ -234,7 +234,7 @@ export default function CompoundCalculatorPage() {
           </section>
 
           <section style={revealStyle(5)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Flame className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.compound.insight.gain', {
@@ -243,7 +243,7 @@ export default function CompoundCalculatorPage() {
                 })}
               </p>
             </div>
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><PiggyBank className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.compound.insight.inflation', {

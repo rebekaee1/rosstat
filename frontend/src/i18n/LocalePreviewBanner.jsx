@@ -46,7 +46,7 @@ export default function LocalePreviewBanner() {
         aria-expanded="false"
         onClick={() => setOpen(true)}
         style={lift}
-        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-champagne/25 bg-obsidian/70 text-champagne opacity-55 backdrop-blur-sm hover:opacity-100 focus-visible:opacity-100"
+        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full text-champagne opacity-55 backdrop-blur-sm hover:opacity-100 focus-visible:opacity-100 fe-glass-pop"
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -57,7 +57,7 @@ export default function LocalePreviewBanner() {
     <div
       role="status"
       style={lift}
-      className="fixed right-2 z-[60] w-max max-w-[calc(100%-1rem)] rounded-2xl border border-champagne/30 bg-obsidian p-3 text-xs text-text-secondary shadow-sm"
+      className="fixed right-2 z-[60] w-max max-w-[calc(100%-1rem)] rounded-2xl p-3 text-xs text-text-secondary shadow-sm fe-glass-pop"
     >
       <div className="flex items-start gap-2">
         <p className="min-w-0 flex-1">{t('preview.banner')}</p>

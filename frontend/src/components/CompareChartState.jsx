@@ -22,13 +22,13 @@ export default function CompareChartState({
         data-testid="compare-chart-skeleton"
         role="status"
         aria-busy="true"
-        className="fe-panel rounded-[2rem] border border-border-subtle bg-surface p-4 md:p-6"
+        className="fe-panel rounded-[2rem] p-4 md:p-6"
       >
         <span className="sr-only">{t('compare.loadingSeries')}</span>
         <div aria-hidden="true">
           <SkeletonBox className="mx-auto mb-1 h-7 w-2/3" />
           <SkeletonBox className="mx-auto mb-4 h-4 w-1/2" />
-          <div className="mb-4 flex justify-center border-b border-border-subtle pb-4">
+          <div className="mb-4 flex justify-center pb-4 fe-divider-b">
             <SkeletonBox className="h-4 w-5/6 max-w-md" />
           </div>
           <div className="skeleton w-full rounded-2xl" style={{ height }} />
@@ -77,7 +77,7 @@ export default function CompareChartState({
       role="status"
       aria-live="polite"
       style={compact ? undefined : { minHeight: height + CARD_EXTRA }}
-      className={`flex flex-col items-center justify-center rounded-[2rem] border border-dashed border-border-subtle bg-surface text-center ${compact ? 'p-5' : 'p-6 md:p-8'}`}
+      className={`flex flex-col items-center justify-center fe-glass-lite rounded-[2rem] text-center ${compact ? 'p-5' : 'p-6 md:p-8'}`}
     >
       <GitCompare className={`${compact ? 'mb-2 h-7 w-7' : 'mb-4 h-10 w-10'} text-champagne-ink opacity-70`} aria-hidden="true" />
       {title && <p className="mb-1 text-base font-semibold text-text-primary">{title}</p>}

@@ -101,7 +101,7 @@ export default function RegionComparePage() {
           </p>
 
           {data.rows.length === 0 && (
-            <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="mb-8 rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               <GitCompare size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('pgui.regions.compareNoRows')}
             </div>
@@ -114,10 +114,10 @@ export default function RegionComparePage() {
                 return (
                   <Link
                     to={regionIndicatorPath(region.slug, row.code)}
-                    className={`fe-press min-w-0 rounded-2xl border p-3 transition-colors ${
+                    className={`fe-press min-w-0 rounded-2xl p-3 transition-colors ${
                       leader
-                        ? 'border-border-champagne bg-champagne/[0.07]'
-                        : 'border-border-subtle bg-obsidian-light hover:border-border-champagne'
+                        ? 'bg-champagne/[0.07] fe-shadow-2'
+                        : 'fe-glass-2'
                     }`}
                   >
                     <span className="flex items-center gap-1 text-[13px] leading-snug text-text-secondary">
@@ -156,7 +156,7 @@ export default function RegionComparePage() {
             })}
           </div>
 
-          <section className="rounded-3xl border border-border-subtle bg-surface p-5">
+          <section className="rounded-3xl p-5 fe-glass-lite">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2 flex items-center gap-2">
               <GitCompare size={16} className="text-champagne-ink" /> {t('regions.compareProfiles')}
             </h2>

@@ -327,8 +327,8 @@ export default function Navbar() {
           'rounded-[1.5rem] px-3 sm:px-5 lg:px-6 py-3 flex items-center gap-2 sm:gap-3',
           'max-w-[1440px] w-[calc(100%-2rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))]',
           scrolled
-            ? 'glass-surface border border-border-subtle shadow-lg shadow-black/5'
-            : 'glass-surface-soft border border-black/[0.04]',
+            ? 'glass-surface shadow-lg shadow-black/5'
+            : 'glass-surface-soft',
           isAdmin && scrolled && !menuOpen && '-translate-y-24 opacity-0 pointer-events-none'
         )}
       >
@@ -370,7 +370,7 @@ export default function Navbar() {
           {calcOpen && (
             <div
               id="fe-nav-calc-menu"
-              className="fe-nav-panel fe-nav-tools fe-reveal fe-reveal--free fe-reveal--panel absolute right-0 top-full z-[110] mt-2 rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08]"
+              className="fe-nav-panel fe-nav-tools fe-reveal fe-reveal--free fe-reveal--panel absolute right-0 top-full z-[110] mt-2 rounded-2xl shadow-2xl"
               role="menu"
             >
               {CALCULATOR_ITEMS.map((c) => {
@@ -426,7 +426,7 @@ export default function Navbar() {
 
 
       {mobileOpen && (
-        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/[0.08] xl:hidden">
+        <div ref={mobileMenuRef} id="fe-nav-mobile-menu" className="fe-reveal fe-reveal--free fe-reveal--panel fe-navbar-mobile-menu absolute left-0 right-0 top-full z-[110] mt-2 max-h-[min(80dvh,600px)] rounded-2xl shadow-2xl xl:hidden fe-glass-pop">
           <div className="fe-mnav-scroll">
             <div className="fe-mnav-columns">
               {mobileGroups.map((group) => {

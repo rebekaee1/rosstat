@@ -134,7 +134,7 @@ function CustomTooltip({
       ? band.value
       : null;
     return (
-      <div className="fe-chart-tip glass-surface rounded-lg border border-border-subtle px-2.5 py-1.5 shadow-lg">
+      <div className="fe-chart-tip glass-surface rounded-lg px-2.5 py-1.5 shadow-lg">
         <span className="fe-chart-tip__date">{formatDate(label, dateFormat)}</span>
         <span
           className="fe-chart-tip__value"
@@ -162,7 +162,7 @@ function CustomTooltip({
   }
 
   return (
-    <div className={`glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
+    <div className={`glass-surface rounded-xl px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
       <p className="text-xs text-text-secondary mb-2">{formatDate(label, dateFormat)}</p>
 
       {/* Bridge-точка (последний факт, от которого тянется прогнозная линия)
@@ -200,7 +200,7 @@ function CustomTooltip({
       {comparisons.map((series, index) => (
         <div
           key={series.dataKey}
-          className={`mt-1 flex items-center justify-between gap-4 ${numericTooltipOnly && index === 0 ? 'border-t border-border-subtle pt-1.5' : ''}`}
+          className={`mt-1 flex items-center justify-between gap-4 ${numericTooltipOnly && index === 0 ? 'fe-divider pt-1.5' : ''}`}
         >
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: series.color }} />
@@ -733,8 +733,8 @@ export default function IndicatorChart({
 
   if (!dataLen) {
     return (
-      <div role="status" className="fe-chart-card fe-reveal border border-border-subtle bg-surface p-8 md:p-10 shadow-sm min-h-[240px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-obsidian-lighter border border-border-subtle">
+      <div role="status" className="fe-chart-card fe-reveal p-8 md:p-10 shadow-sm min-h-[240px] flex flex-col items-center justify-center text-center gap-4" style={REVEAL_STYLE}>
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl fe-glass-lite">
           <Activity className="w-7 h-7 text-champagne/80" aria-hidden />
         </div>
         <div className="max-w-md space-y-2">
@@ -1028,7 +1028,7 @@ export default function IndicatorChart({
       )}
 
       {resolvedComparisonSeries.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border-subtle pt-3">
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 pt-3 fe-divider">
           <div className="flex items-center gap-2">
             <span className="h-0.5 w-5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{actualSeriesLabel || t('chart.primarySeries')}</span>
@@ -1043,7 +1043,7 @@ export default function IndicatorChart({
       )}
 
       {showForecast && hasForecast && (
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-4 pt-3 fe-divider">
           <div className="flex items-center gap-2">
             <span className="w-5 h-0.5 rounded-full" style={{ background: LINE }} />
             <span className="text-xs text-text-secondary">{t('chart.legend.actual')}</span>

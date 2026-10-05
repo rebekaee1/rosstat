@@ -58,7 +58,7 @@ describe('Login form states', () => {
     resolve({});
   });
 
-  it('announces wrong credentials and highlights both fields with the error token', async () => {
+  it('announces wrong credentials and marks both fields as invalid (underline token, no frame)', async () => {
     vi.mocked(loginUser).mockRejectedValue(new Error('401'));
     renderLogin();
     fireEvent.change(screen.getByLabelText('common.email'), { target: { value: 'a@b.co' } });
@@ -67,7 +67,7 @@ describe('Login form states', () => {
     const alert = screen.getByRole('alert');
     await waitFor(() => expect(alert.textContent).toBe('auth.login.errorCredentials'));
     await waitFor(() => expect(screen.getByLabelText('common.email').getAttribute('aria-invalid')).toBe('true'));
-    expect(screen.getByLabelText('common.password').className).toContain('border-negative');
+    expect(screen.getByLabelText('common.password').className).toContain('is-invalid');
     expect(screen.getByLabelText('common.email').getAttribute('aria-describedby')).toBe(alert.id);
   });
 });

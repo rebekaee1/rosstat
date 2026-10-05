@@ -175,7 +175,7 @@ function fetchDashboard(period, from, to, fresh = false) {
 
 const TT_STYLE = {
   contentStyle: {
-    background: '#fff', border: '1px solid rgba(26,26,46,0.12)', borderRadius: 12,
+    background: 'rgba(255,255,255,0.9)', border: 0, borderRadius: 12,
     fontSize: 12, boxShadow: '0 8px 24px rgba(0,0,0,0.10)', padding: '8px 12px',
   },
   labelStyle: { color: 'rgba(26,26,46,0.6)', fontWeight: 600, marginBottom: 2 },
@@ -217,7 +217,7 @@ function MethodHint({ text }) {
         className="cursor-help text-text-tertiary hover:text-champagne focus:outline-none">
         <Info size={13} />
       </span>
-      <span className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 hidden w-64 -translate-x-1/2 rounded-xl border border-border-subtle bg-surface p-3 text-left text-[11.5px] font-normal leading-snug text-text-secondary shadow-xl group-hover/hint:block group-focus-within/hint:block">
+      <span className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-1.5 hidden w-64 -translate-x-1/2 rounded-xl p-3 text-left text-[11.5px] font-normal leading-snug text-text-secondary shadow-xl group-hover/hint:block group-focus-within/hint:block fe-glass-pop">
         {text}
       </span>
     </span>
@@ -232,7 +232,7 @@ function Card({ title, icon: Icon, insight, children, span, source, window: wind
     ? (windowMeta.from === windowMeta.to ? windowMeta.label : `${windowMeta.label} — МСК`)
     : null;
   return (
-    <section className={`rounded-2xl bg-surface border border-border-subtle p-5 ${span || ''}`}>
+    <section className={`rounded-2xl fe-glass-lite p-5 ${span || ''}`}>
       <h2 className="flex items-center gap-2 text-[15px] font-semibold text-text-primary">
         {Icon && <Icon size={16} className="text-champagne" />}
         <span className="min-w-0 flex-1">
@@ -242,10 +242,10 @@ function Card({ title, icon: Icon, insight, children, span, source, window: wind
         {compare && (
           <button
             type="button" onClick={compare.toggle}
-            className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full border transition-colors ${
+            className={`shrink-0 text-[10px] px-2 py-0.5 rounded-full transition-colors ${
               compare.on
-                ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-transparent text-text-tertiary border-border-subtle hover:text-blue-700 hover:border-blue-300'
+                ? 'bg-blue-600 text-white fe-shadow-2'
+                : 'bg-transparent text-text-tertiary hover:text-blue-700 fe-glass-2'
             }`}
             title="Наложить данные Яндекс.Метрики для сверки">
             ⇄ Метрика
@@ -273,7 +273,7 @@ function Card({ title, icon: Icon, insight, children, span, source, window: wind
 // Парный блок сверки: приглушённый повтор диаграммы по данным Метрики.
 function MetrikaOverlay({ children }) {
   return (
-    <div className="mt-3 pt-3 border-t border-dashed border-blue-200">
+    <div className="mt-3 pt-3">
       <div className="text-[11px] text-blue-700 mb-2">По Яндекс.Метрике (сверка)</div>
       {children}
     </div>
@@ -286,7 +286,7 @@ function Empty({ note }) {
 
 function Kpi({ label, value, sub, series, color = GOLD }) {
   return (
-    <div className="rounded-xl bg-surface border border-border-subtle px-4 py-3 relative overflow-hidden">
+    <div className="rounded-xl px-4 py-3 relative overflow-hidden fe-glass-2">
       <div className="text-[12px] text-text-tertiary">{label}</div>
       <div className="text-xl font-bold text-text-primary tabular-nums">{value}</div>
       {sub && <div className="text-[11px] text-text-tertiary mt-0.5">{sub}</div>}
@@ -383,12 +383,12 @@ function Pager({ p }) {
       <span className="tabular-nums">{fmtInt(from)}–{fmtInt(to)} из {fmtInt(p.total)}</span>
       <div className="flex items-center gap-1">
         <button type="button" disabled={p.cur === 0} onClick={() => p.setPage(p.cur - 1)}
-          className="px-2.5 py-1 rounded-lg border border-border-subtle disabled:opacity-35 hover:text-text-primary">
+          className="px-2.5 py-1 rounded-lg disabled:opacity-35 hover:text-text-primary fe-glass-2">
           ← Назад
         </button>
         <span className="px-2 tabular-nums">{p.cur + 1} / {p.pages}</span>
         <button type="button" disabled={p.cur >= p.pages - 1} onClick={() => p.setPage(p.cur + 1)}
-          className="px-2.5 py-1 rounded-lg border border-border-subtle disabled:opacity-35 hover:text-text-primary">
+          className="px-2.5 py-1 rounded-lg disabled:opacity-35 hover:text-text-primary fe-glass-2">
           Вперёд →
         </button>
       </div>
@@ -1528,7 +1528,7 @@ function HypothesesTab({ d, onOpenSlices }) {
   return (
     <div className="space-y-3">
       {rows.map((h) => (
-        <div key={h.id} className="rounded-2xl bg-surface border border-border-subtle p-4">
+        <div key={h.id} className="rounded-2xl p-4 fe-glass-lite">
           <div className="flex items-start gap-3">
             <span className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${
               h.verdict === true ? 'bg-positive/10 text-positive'
@@ -1609,7 +1609,7 @@ function DatasetTab({ d }) {
             const dicts = Object.entries(s).filter(([, v]) => v && typeof v === 'object' && !Array.isArray(v));
             const lists = Object.entries(s).filter(([, v]) => Array.isArray(v));
             return (
-              <div key={name} className="rounded-xl border border-border-subtle p-4">
+              <div key={name} className="rounded-xl p-4 fe-glass-2">
                 <div className="text-[13px] font-semibold text-text-primary mb-0.5">{DATASET_TITLE_RU[name] || s.title || name}</div>
                 <div className="text-[10.5px] text-text-tertiary font-mono mb-2">{name}</div>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2">
@@ -1681,7 +1681,7 @@ function DriverNode({ node }) {
   const progress = node.target ? Math.min(node.value / node.target * 100, 100) : 0;
   const det = node.detail || {};
   return (
-    <div className="rounded-2xl bg-surface border border-border-subtle p-4">
+    <div className="rounded-2xl p-4 fe-glass-lite">
       <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
         <div className="flex items-center justify-between gap-2">
           <span className="flex items-center gap-1.5 text-[12.5px] text-text-tertiary">
@@ -1704,7 +1704,7 @@ function DriverNode({ node }) {
         <div className="text-[10.5px] text-text-tertiary mt-1.5">{open ? 'Скрыть детали ▲' : 'Раскрыть ▼'}</div>
       </button>
       {open && (
-        <div className="mt-3 pt-3 border-t border-border-subtle space-y-1 text-[12px] text-text-secondary">
+        <div className="mt-3 pt-3 space-y-1 text-[12px] text-text-secondary fe-divider">
           {node.key === 'acquisition' && (
             <>
               {Object.entries(det.channels || {}).sort((a, b) => b[1] - a[1]).map(([ch, v]) => (
@@ -1785,7 +1785,7 @@ function MetricTreeTab({ d }) {
   return (
     <div className="space-y-5">
       {audience && (
-        <section className="rounded-2xl bg-surface border border-border-subtle p-6">
+        <section className="rounded-2xl p-6 fe-glass-lite">
           <div className="text-[13px] text-text-secondary">Цель: 10 000 реальных людей в день</div>
           <div className="flex flex-wrap items-baseline gap-3 mt-2">
             <span className="text-4xl font-bold tabular-nums text-text-primary">{fmtInt(Math.round(audience.period_average_daily_visitors || 0))}</span>
@@ -1797,7 +1797,7 @@ function MetricTreeTab({ d }) {
           <p className="text-xs text-text-secondary mt-3">Этот счётчик включает неопределённый трафик и не подтверждает достижение цели по реальным людям.</p>
         </section>
       )}
-      <section className="rounded-2xl bg-surface border border-border-subtle p-6">
+      <section className="rounded-2xl p-6 fe-glass-lite">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="text-[13px] text-text-tertiary">{ns.label || 'Сессии в день'} — операционный показатель</div>
@@ -1936,7 +1936,7 @@ function GoalReconciliationCard({ d }) {
           </table>
           <Pager p={pager} />
           {(gr.metrika_only || []).length > 0 && (
-            <div className="mt-3 pt-3 border-t border-dashed border-border-subtle text-[12px] text-text-secondary">
+            <div className="mt-3 pt-3 text-[12px] text-text-secondary fe-divider">
               <span className="font-medium">Только в Метрике (без нашего события): </span>
               {gr.metrika_only.map((g) => `${g.goal} — ${fmtInt(g.visits)}`).join(', ')}
             </div>
@@ -2373,14 +2373,14 @@ function SlicesTab() {
           <label className="text-[12px] text-text-secondary flex items-center gap-2">
             Метрика
             <select value={metric} onChange={(e) => { setMetric(e.target.value); setDim1(''); setDim2(''); }}
-              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              className="px-2.5 py-1.5 rounded-lg text-[12.5px] text-text-primary fe-glass-2">
               {metricNames.map((m) => <option key={m} value={m}>{sliceMetricLabel(m)}</option>)}
             </select>
           </label>
           <label className="text-[12px] text-text-secondary flex items-center gap-2">
             Измерение 1
             <select value={dim1} onChange={(e) => setDim1(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              className="px-2.5 py-1.5 rounded-lg text-[12.5px] text-text-primary fe-glass-2">
               <option value="">—</option>
               {dimOptions.map((x) => <option key={x} value={x}>{sliceDimLabel(x)}</option>)}
             </select>
@@ -2388,7 +2388,7 @@ function SlicesTab() {
           <label className="text-[12px] text-text-secondary flex items-center gap-2">
             Измерение 2
             <select value={dim2} onChange={(e) => setDim2(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              className="px-2.5 py-1.5 rounded-lg text-[12.5px] text-text-primary fe-glass-2">
               <option value="">—</option>
               {dimOptions.filter((x) => x !== dim1).map((x) => <option key={x} value={x}>{sliceDimLabel(x)}</option>)}
             </select>
@@ -2396,7 +2396,7 @@ function SlicesTab() {
           <label className="text-[12px] text-text-secondary flex items-center gap-2">
             Дней
             <select value={days} onChange={(e) => setDays(Number(e.target.value))}
-              className="px-2.5 py-1.5 rounded-lg bg-obsidian border border-border-subtle text-[12.5px] text-text-primary">
+              className="px-2.5 py-1.5 rounded-lg text-[12.5px] text-text-primary fe-glass-2">
               {[7, 30, 90, 365].map((x) => <option key={x} value={x}>{x}</option>)}
             </select>
           </label>
@@ -2460,7 +2460,7 @@ function ReliabilityTab({ d }) {
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {['LCP', 'INP', 'CLS', 'FCP', 'TTFB'].map((m) => (
-          <div key={m} className="rounded-xl bg-surface border border-border-subtle px-4 py-3">
+          <div key={m} className="rounded-xl px-4 py-3 fe-glass-2">
             <div className="text-[12px] text-text-tertiary">{m} — p75</div>
             <div className="text-xl font-bold tabular-nums" style={{ color: vitalStatus(m, vitals[m]) }}>
               {vitals[m] != null ? (m === 'CLS' ? vitals[m] : `${fmtInt(Math.round(vitals[m]))} мс`) : '—'}
@@ -2491,7 +2491,7 @@ function ReliabilityTab({ d }) {
               )}
               {(r.js_errors_own || []).length === 0 && <p className="text-[12px] text-positive">В нашем коде ошибок за окно нет.</p>}
               {(r.js_errors_third_party || []).length > 0 && (
-                <div className="pt-2 border-t border-border-subtle/60">
+                <div className="pt-2 fe-divider">
                   <div className="text-[11px] font-medium text-text-tertiary mb-1.5">Сторонние скрипты</div>
                   <ul className="space-y-1">
                     {r.js_errors_third_party.map((e, i) => (
@@ -2744,7 +2744,7 @@ function TermsLegend() {
         <span className="text-[10px]">{open ? '▲' : '▼'}</span>
       </button>
       {open && (
-        <div className="mt-2 grid sm:grid-cols-2 gap-3 rounded-2xl bg-surface border border-border-subtle p-4">
+        <div className="mt-2 grid sm:grid-cols-2 gap-3 rounded-2xl p-4 fe-glass-lite">
           {TERMS.map(([term, layer, def]) => (
             <div key={term} className="text-[12.5px] leading-snug">
               <span className="font-semibold text-text-primary">{term}</span>
@@ -2785,18 +2785,18 @@ function AdminLogin({ onSuccess }) {
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4 pt-24">
-      <form onSubmit={submit} className="w-full max-w-sm rounded-2xl bg-surface border border-border-subtle p-6 space-y-4">
+      <form onSubmit={submit} className="w-full max-w-sm rounded-2xl p-6 space-y-4 fe-glass-lite">
         <h1 className="text-lg font-semibold text-text-primary">Служебный раздел</h1>
         <p className="text-[13px] text-text-secondary">Доступ по учётной записи администратора.</p>
         <input
           type="email" autoComplete="username" required value={email}
           onChange={(e) => setEmail(e.target.value)} placeholder="E-mail"
-          className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-border-subtle text-[14px] outline-none focus:border-border-champagne"
+          className="w-full px-3.5 py-2.5 rounded-xl text-[14px] outline-none fe-glass-2"
         />
         <input
           type="password" autoComplete="current-password" required value={password}
           onChange={(e) => setPassword(e.target.value)} placeholder="Пароль"
-          className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-border-subtle text-[14px] outline-none focus:border-border-champagne"
+          className="w-full px-3.5 py-2.5 rounded-xl text-[14px] outline-none fe-glass-2"
         />
         {error && <p className="text-[13px] text-negative">{error}</p>}
         <button
@@ -2889,7 +2889,7 @@ export default function AdminBI() {
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pt-24 pb-10">
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <h1 className="text-xl font-bold text-text-primary">BI-аналитика платформы</h1>
-        <div className="flex items-center gap-1 rounded-full bg-surface border border-border-subtle p-1">
+        <div className="flex items-center gap-1 rounded-full p-1 fe-glass-2">
           {PERIODS.map((p) => (
             <button
               key={p.id} type="button" onClick={() => setPeriod(p.id)}
@@ -2906,13 +2906,13 @@ export default function AdminBI() {
             <input
               type="date" value={customFrom} max={customTo || undefined}
               onChange={(e) => setCustomFrom(e.target.value)}
-              className="rounded-lg border border-border-subtle bg-surface px-2 py-1 text-[12px]"
+              className="rounded-lg px-2 py-1 text-[12px] fe-glass-2"
             />
             <span>—</span>
             <input
               type="date" value={customTo} min={customFrom || undefined}
               onChange={(e) => setCustomTo(e.target.value)}
-              className="rounded-lg border border-border-subtle bg-surface px-2 py-1 text-[12px]"
+              className="rounded-lg px-2 py-1 text-[12px] fe-glass-2"
             />
             <span className="text-text-tertiary">МСК</span>
           </div>
@@ -2944,10 +2944,10 @@ export default function AdminBI() {
         {TABS.map((t) => (
           <button
             key={t.id} type="button" onClick={() => setTab(t.id)}
-            className={`flex items-center gap-1.5 whitespace-nowrap px-3.5 py-1.5 rounded-full text-[13px] border transition-colors ${
+            className={`flex items-center gap-1.5 whitespace-nowrap px-3.5 py-1.5 rounded-full text-[13px] transition-colors ${
               tab === t.id
-                ? 'bg-champagne/15 text-champagne border-transparent font-medium'
-                : 'bg-surface text-text-secondary border-border-subtle hover:text-text-primary'
+                ? 'bg-champagne/15 text-champagne font-medium fe-shadow-2'
+                : 'text-text-secondary hover:text-text-primary fe-glass-2'
             }`}
           >
             <t.icon size={13} />

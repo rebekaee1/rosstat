@@ -71,7 +71,7 @@ function RussiaTerritoryCard() {
   return (
     <aside
       data-block="russia-territory-card"
-      className="relative min-h-[270px] overflow-hidden rounded-2xl border border-white/10 bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
+      className="relative min-h-[270px] overflow-hidden rounded-2xl bg-[#191A20] shadow-[0_20px_45px_rgba(24,24,31,0.18)]"
       aria-label={t('russia.map.caption')}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
@@ -105,7 +105,7 @@ function RussiaTerritoryCard() {
         </Suspense>
       </div>
 
-      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 border-t border-white/10 pt-3 sm:items-end sm:gap-3">
+      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 pt-3 sm:items-end sm:gap-3">
         <div className="min-w-0">
           <div className="max-w-[11rem] truncate text-sm font-semibold text-white/90">
             {t('crumb.russia')}
@@ -211,7 +211,7 @@ export default function RussiaHome() {
     <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={crumbs} />
 
-      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
+      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-champagne/10 blur-3xl" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">
@@ -228,7 +228,7 @@ export default function RussiaHome() {
           <RussiaTerritoryCard />
         </div>
 
-        <div className="relative mt-6 border-t border-border-subtle pt-5">
+        <div className="relative mt-6 pt-5 fe-divider">
           <h2 className="w2-main-title z5-main-title">{t('z5.ru.main.title')}</h2>
           <RussiaKeyFigures indicators={indicators} isLoading={isLoading} />
         </div>
@@ -251,7 +251,7 @@ export default function RussiaHome() {
               <Link
                 key={item.to}
                 to={item.to}
-                className="fe-press group flex items-start gap-3 rounded-[1.5rem] border border-border-subtle bg-surface px-4 py-3.5 transition-all hover:border-border-champagne hover:shadow-sm"
+                className="fe-press group flex items-start gap-3 rounded-[1.5rem] px-4 py-3.5 transition-all hover:shadow-sm fe-glass-lite fe-float"
               >
                 <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-champagne/10 text-champagne-ink">
                   <Icon size={15} />
@@ -352,7 +352,7 @@ export default function RussiaHome() {
 
             <div className="min-w-0 space-y-8">
               {totalIndicators === 0 && !isError && (
-                <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+                <div className="rounded-2xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
                   {t('world.country.emptyCatalog')}
                 </div>
               )}

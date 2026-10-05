@@ -105,7 +105,7 @@ export default function WorldMapConceptNote({ conceptSlug, label = '' }) {
           left: coords.left,
           width: coords.width,
         }}
-        className="z-[220] rounded-xl border border-border-subtle bg-surface px-3.5 py-3 text-[12px] leading-5 text-text-secondary shadow-lg"
+        className="z-[220] rounded-xl px-3.5 py-3 text-[12px] leading-5 text-text-secondary shadow-lg fe-glass-2"
       >
         <p>{t('home.map.weoNote.p1')}</p>
         <p className="mt-2">{t('home.map.weoNote.p2')}</p>

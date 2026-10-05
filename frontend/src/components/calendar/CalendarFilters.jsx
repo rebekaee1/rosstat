@@ -12,8 +12,8 @@ function Pill({ active, onClick, children, className }) {
         FOCUS_RING_SURFACE,
         'px-3 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap',
         active
-          ? 'bg-champagne/10 text-champagne border border-champagne/20'
-          : 'bg-obsidian-lighter/50 text-text-secondary border border-transparent hover:bg-obsidian-lighter hover:text-text-primary',
+          ? 'bg-champagne/10 text-champagne fe-shadow-2'
+          : 'text-text-secondary hover:bg-obsidian-lighter hover:text-text-primary fe-glass-2',
         className,
       )}
     >
@@ -55,7 +55,7 @@ export default function CalendarFilters({
   };
 
   return (
-    <div className="sticky top-[4.5rem] z-30 -mx-4 px-4 md:-mx-8 md:px-8 py-3 bg-obsidian/95 backdrop-blur-lg border-b border-border-subtle mb-6">
+    <div className="sticky top-[4.5rem] z-30 -mx-4 px-4 md:-mx-8 md:px-8 py-3 backdrop-blur-lg mb-6 fe-glass-2">
       <div className="flex flex-wrap items-center gap-2">
         <Filter className="w-4 h-4 text-text-tertiary shrink-0 hidden sm:block" />
 

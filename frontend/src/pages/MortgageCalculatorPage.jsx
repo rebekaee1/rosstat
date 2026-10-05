@@ -200,7 +200,7 @@ export default function MortgageCalculatorPage() {
       <div className="fe-z8-calc__out">
       {result && (
         <>
-          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] bg-surface border border-border-champagne p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
+          <section style={revealStyle(3)} className="fe-reveal fe-panel fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
@@ -259,7 +259,7 @@ export default function MortgageCalculatorPage() {
             </div>
           </section>
 
-          <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+          <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
             <h3 className="text-base font-semibold text-text-primary mb-5">
               {t('calc.mortgage.chartTitle')}
             </h3>
@@ -304,7 +304,7 @@ export default function MortgageCalculatorPage() {
           </section>
 
           {yearBreakdown && (
-            <section style={revealStyle(5)} className="fe-reveal fe-panel rounded-[2rem] bg-surface border border-border-subtle shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
+            <section style={revealStyle(5)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon className="w-4 h-4 text-champagne" />
                 <h3 className="text-base font-semibold text-text-primary">
@@ -327,7 +327,7 @@ export default function MortgageCalculatorPage() {
                 <CalcStatTile index={1} label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
                 <CalcStatTile index={2} label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
               </CalcStatGrid>
-              <div className="mt-4 h-3 rounded-full overflow-hidden bg-obsidian border border-border-subtle flex">
+              <div className="mt-4 h-3 rounded-full overflow-hidden flex fe-glass-2">
                 <div
                   className="h-full transition-all duration-300"
                   style={{
@@ -350,13 +350,13 @@ export default function MortgageCalculatorPage() {
           )}
 
           <section style={revealStyle(6)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Percent className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.mortgage.insight.ratePoint', { amount: formatRubles(result.principal * years / 100 * 0.55) })}
               </p>
             </div>
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Clock className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.mortgage.insight.firstYear', {
@@ -365,7 +365,7 @@ export default function MortgageCalculatorPage() {
                 })}
               </p>
             </div>
-            <div className="flex items-start gap-3 p-3.5 rounded-xl bg-obsidian-light/70 border border-border-subtle sm:col-span-2">
+            <div className="flex items-start gap-3 p-3.5 rounded-xl sm:col-span-2 fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Wallet className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.mortgage.insight.income', { income: formatRubles(result.payment / 0.45) })}

@@ -84,7 +84,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className="fe-panel fe-summary-card fe-press fe-reveal group flex min-w-0 flex-col rounded-2xl border border-border-subtle bg-surface p-3.5 transition-colors hover:border-border-champagne"
+      className="fe-panel fe-summary-card fe-press fe-reveal group flex min-w-0 flex-col rounded-2xl p-3.5 transition-colors fe-float"
       style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
     >
       <div className="line-clamp-2 min-h-[2.4em] text-[13px] leading-snug text-text-secondary">{label}</div>
@@ -108,7 +108,7 @@ export function RegionIndicatorRow({ item, to, title }) {
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 transition-colors hover:border-border-champagne sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
+      className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float"
     >
       <div className="min-w-0 flex-1">
         <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
@@ -116,7 +116,7 @@ export function RegionIndicatorRow({ item, to, title }) {
         </div>
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
-      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
+      <div className="flex items-baseline justify-between gap-3 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
         <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
@@ -152,7 +152,7 @@ export function RegionSearchField({ value, onChange, placeholder, ariaLabel, cla
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="min-h-12 w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-[15px] text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-champagne-ink focus:outline-none focus:ring-[3px] focus:ring-champagne/25"
+        className="min-h-12 w-full rounded-xl py-3 pl-10 pr-4 text-[15px] text-text-primary shadow-sm placeholder:text-text-tertiary focus:outline-none fe-glass-2"
         aria-label={ariaLabel}
       />
     </div>

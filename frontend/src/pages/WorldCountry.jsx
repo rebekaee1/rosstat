@@ -447,7 +447,7 @@ export default function WorldCountry() {
           {data.country?.has_regions && (
             <Link
               to={countryRegionsPath(slug)}
-              className="fe-panel mb-8 flex items-center justify-between gap-4 rounded-xl border border-border-subtle bg-surface px-5 py-4 transition-colors hover:border-border-champagne"
+              className="fe-panel mb-8 flex items-center justify-between gap-4 rounded-xl px-5 py-4 transition-colors"
             >
               <div>
                 <div className="w2-kicker">
@@ -474,12 +474,12 @@ export default function WorldCountry() {
               onChange={(e) => { setQuery(e.target.value); setSearchLimit(120); }}
               placeholder={t('world.country.findIndicator')}
               aria-label={t('world.country.findIndicatorAria')}
-              className="w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
+              className="w-full rounded-xl py-3 pl-10 pr-4 text-sm text-text-primary shadow-sm placeholder:text-text-tertiary focus:outline-none fe-glass-2"
             />
           </div>
 
           {filteredCategories.length === 0 && (
-            <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-2xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               {searching ? (
                 <>
                   {t('world.country.emptySearch', { query })}

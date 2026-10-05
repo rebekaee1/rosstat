@@ -63,7 +63,7 @@ function StructureTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
   return (
-    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl border border-border-subtle px-3 py-3 shadow-2xl">
+    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl px-3 py-3 shadow-2xl">
       <p className="text-xs text-text-secondary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
@@ -79,7 +79,7 @@ function StructureTooltip({ active, payload, label }) {
           </div>
         );
       })}
-      <div className="mt-2 pt-2 border-t border-border-subtle flex justify-between gap-3">
+      <div className="mt-2 pt-2 flex justify-between gap-3 fe-divider">
         <span className="text-xs text-text-secondary">{t('demo.tooltip.total')}</span>
         <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
           {total.toFixed(1).replace('.', ',')} {t('demo.tooltip.mln')}
@@ -93,7 +93,7 @@ function PercentTooltip({ active, payload, label }) {
   const t = useT();
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl border border-border-subtle px-3 py-3 shadow-2xl">
+    <div className="glass-surface w-[min(280px,calc(100vw-72px))] rounded-xl px-3 py-3 shadow-2xl">
       <p className="text-xs text-text-secondary mb-2">{t('demo.tooltip.year', { year: label })}</p>
       {payload.map((p) => {
         const g = GROUPS.find(g => g.key === p.dataKey);
@@ -121,7 +121,7 @@ function StructureBar({ latest }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex rounded-xl overflow-hidden h-10 border border-border-subtle" aria-hidden="true">
+      <div className="flex rounded-xl overflow-hidden h-10 fe-glass-2" aria-hidden="true">
         {GROUPS.map((g, i) => {
           const pct = ((latest[g.key] || 0) / total) * 100;
           if (pct < 0.5) return null;
@@ -130,7 +130,7 @@ function StructureBar({ latest }) {
               key={g.key}
               className={cn(
                 'flex items-center justify-center text-xs font-semibold transition-all',
-                i > 0 && 'border-l border-white/20',
+                i > 0 && '',
               )}
               style={{
                 width: `${pct}%`,
@@ -255,7 +255,7 @@ export default function DemographicsPage() {
         <section
           aria-busy="true"
           aria-label={t('demo.loadingAria')}
-          className="rounded-[2rem] border border-border-subtle bg-surface p-6 shadow-md ring-1 ring-black/[0.06] md:p-8 mb-8"
+          className="rounded-[2rem] p-6 shadow-md md:p-8 mb-8 fe-glass-lite"
         >
           <div className="flex items-center justify-between mb-6">
             <SkeletonBox className="h-3 w-44 rounded-md" />
@@ -386,7 +386,7 @@ export default function DemographicsPage() {
         )}
 
         {!isLoading && series.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 pt-3 border-t border-border-subtle">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 pt-3 fe-divider">
             {GROUPS.map((g) => (
               <div key={g.key} className="flex items-center gap-2">
                 <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: g.color }} aria-hidden="true" />
@@ -401,7 +401,7 @@ export default function DemographicsPage() {
       <div className="flex justify-center">
         <Link
           to={russiaCategoryPath('population')}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border-subtle bg-surface text-text-secondary hover:text-champagne hover:border-champagne/30 transition-colors text-sm font-medium shadow-sm"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-text-secondary hover:text-champagne transition-colors text-sm font-medium shadow-sm fe-glass-2"
         >
           {t('demo.allIndicators')}
           <ArrowRight className="w-4 h-4" />

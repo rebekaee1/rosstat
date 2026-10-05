@@ -60,7 +60,7 @@ function isNegativeCapable(series) {
 
 function StatCell({ label, children }) {
   return (
-    <div className="fe-stat-cell min-w-0 rounded-2xl border border-border-subtle bg-surface p-3 sm:p-3.5">
+    <div className="fe-stat-cell min-w-0 rounded-2xl p-3 sm:p-3.5 fe-glass-lite">
       <div className="text-xs font-medium leading-snug text-text-secondary">{label}</div>
       <div className="fe-num mt-1 break-words text-[15px] font-semibold leading-tight text-text-primary">
         {children}
@@ -286,7 +286,7 @@ export default function WorldRegionIndicatorPage() {
       )}
 
       {payload && series.length === 0 && (
-        <div className="mb-4 rounded-2xl border border-border-subtle bg-surface p-5 text-center text-sm text-text-secondary">
+        <div className="mb-4 rounded-2xl p-5 text-center text-sm text-text-secondary fe-glass-lite">
           {t('pgui.regions.indNoData')}
         </div>
       )}
@@ -297,7 +297,7 @@ export default function WorldRegionIndicatorPage() {
             <div className="mb-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
               <span className="font-medium text-champagne-ink">{regionName}</span>
               {payload.indicator.section && (
-                <span className="min-w-0 border-l border-border-subtle pl-2 text-text-secondary">{payload.indicator.section}</span>
+                <span className="min-w-0 pl-2 text-text-secondary">{payload.indicator.section}</span>
               )}
             </div>
             <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
@@ -323,7 +323,7 @@ export default function WorldRegionIndicatorPage() {
             </div>
           </div>
 
-          <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-3xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
+          <div id="chart" data-block="world-region-chart" className="fe-panel mb-4 scroll-mt-24 rounded-3xl p-3 sm:p-4" ref={chartRef}>
             <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-sm text-text-secondary">
                 {first && last
@@ -334,10 +334,10 @@ export default function WorldRegionIndicatorPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors sm:w-auto ${
+                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl fe-glass-2 px-3 py-1 text-sm transition-colors sm:w-auto ${
                     compareSlug
-                      ? 'border-[#5B7DA8] text-[#5B7DA8]'
-                      : 'border-border-subtle text-text-secondary hover:text-text-secondary'
+                      ? 'text-[#5B7DA8]'
+                      : 'text-text-secondary hover:text-text-secondary'
                   }`}
                 >
                   <GitCompare size={12} className="shrink-0 opacity-70" aria-hidden />
@@ -395,7 +395,7 @@ export default function WorldRegionIndicatorPage() {
               forecastSeries={!showYoY && forecastQ.data?.available ? forecastQ.data.points : null}
             />
             {forecastQ.data?.available && !showYoY && (
-              <div className="mt-2 rounded-lg border border-border-subtle bg-champagne/5 px-3 py-2 text-xs leading-relaxed text-text-secondary">
+              <div className="mt-2 rounded-lg bg-champagne/5 px-3 py-2 text-xs leading-relaxed text-text-secondary fe-shadow-2">
                 <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
                 {' — '}{forecastQ.data.model_name}
                 {' — '}MASE {Number(forecastQ.data.quality.mase).toFixed(2)}
@@ -460,7 +460,7 @@ export default function WorldRegionIndicatorPage() {
           </div>
 
           {rank?.top?.length > 0 && (
-            <div data-block="world-region-rating" className="fe-panel mb-6 rounded-3xl border border-border-subtle bg-surface p-4">
+            <div data-block="world-region-rating" className="fe-panel mb-6 rounded-3xl p-4">
               <h2 className="mb-3 text-sm font-semibold text-text-primary">
                 {t(
                   rank.rank_as_achievement ? 'world.regions.topAchieve' : 'world.regions.topNeutral',
@@ -484,7 +484,7 @@ export default function WorldRegionIndicatorPage() {
                 ))}
               </ol>
               {rankPosition > 5 && (
-                <div className="mt-2 flex items-center justify-between border-t border-border-subtle px-2 pt-2 text-[13px]">
+                <div className="mt-2 flex items-center justify-between px-2 pt-2 text-[13px] fe-divider">
                   <span className="flex items-center gap-2">
                     <span className="w-4 text-right fe-num text-text-secondary">{rankPosition}</span>
                     <span className="font-medium text-champagne-ink">{regionName}</span>
@@ -495,7 +495,7 @@ export default function WorldRegionIndicatorPage() {
             </div>
           )}
 
-          <div className="fe-panel mb-6 overflow-hidden rounded-3xl border border-border-subtle bg-surface">
+          <div className="fe-panel mb-6 overflow-hidden rounded-3xl">
             <button
               type="button"
               onClick={() => setShowTable((v) => !v)}
@@ -509,7 +509,7 @@ export default function WorldRegionIndicatorPage() {
               <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
             {showTable && (
-              <div className="max-h-96 overflow-auto border-t border-border-subtle">
+              <div className="max-h-96 overflow-auto">
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-secondary">
@@ -560,7 +560,7 @@ export default function WorldRegionIndicatorPage() {
           )}
 
           {payload.indicator.national_code && (
-            <div className="fe-panel mb-6 rounded-xl border border-border-champagne/40 bg-surface p-4">
+            <div className="fe-panel mb-6 rounded-xl p-4">
               <h2 className="mb-2 text-sm font-semibold text-text-primary">
                 {t('world.regions.nationalTitle')}
               </h2>
@@ -576,7 +576,7 @@ export default function WorldRegionIndicatorPage() {
                 </Link>
                 <Link
                   to={`/compare?codes=w:${countrySlug}:${payload.indicator.national_code},s:${countrySlug}:${slug}:${code}`}
-                  className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                  className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"
                 >
                   <GitCompare size={13} /> {t('world.regions.compareNational', { country: countryName })}
                 </Link>
@@ -594,7 +594,7 @@ export default function WorldRegionIndicatorPage() {
                   <Link
                     key={s.code}
                     to={countryRegionIndicatorPath(countrySlug, slug, s.code)}
-                    className="fe-tap-inline gap-1 rounded-full border border-border-subtle bg-surface px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                    className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"
                   >
                     {s.name.length > 60 ? `${s.name.slice(0, 57)}…` : s.name}
                     <ArrowUpRight size={12} />

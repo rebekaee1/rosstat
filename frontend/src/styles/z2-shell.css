@@ -14,7 +14,10 @@
 
 /* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
 .fe-ticker {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--color-warn-surface) 70%, #fff), var(--color-warn-surface));
+  /* Лента курсов: стекло над страницей (под ней при прокрутке проходит контент), блик сверху, мягкая тень снизу. */
+  background: var(--fe-glass-l1-sheen), color-mix(in srgb, var(--color-warn-surface) 80%, transparent);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  box-shadow: 0 10px 24px -18px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
 }
 /* Ширина как у шапки и страниц: один контейнер на весь сайт. */
 .fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }
@@ -136,16 +139,14 @@ nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after {
 nav.fe-navbar a.fe-nav-login {
   color: var(--color-text-primary);
   font-weight: 650;
-  border: 1px solid var(--color-border-subtle);
-  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
-  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  background: var(--fe-glass-l2);
+  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--fe-l2-shadow);
 }
 nav.fe-navbar a.fe-nav-login:hover {
-  border-color: var(--z2-gold);
   background: var(--z2-gold-soft);
   box-shadow: 0 6px 16px -10px var(--z2-gold);
 }
-nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne); }
 
 /* Затемнение под открытым меню: лёгкое матовое стекло, а не тяжёлый блюр. */
 .fe-nav-scrim {
@@ -165,22 +166,20 @@ nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne
   min-width: 44px;
   min-height: 44px;
   padding: 0;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 9999px;
-  background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+  background: var(--fe-glass-l2);
   color: var(--color-text-secondary);
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--fe-l2-shadow);
 }
-.fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { border-color: var(--color-border-champagne); background: var(--z2-gold-soft); color: var(--color-text-primary); }
+.fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { background: var(--z2-gold-soft); color: var(--color-text-primary); }
 .fe-nav-round > svg:not([class*='chevron']) { width: 18px; height: 18px; }
 
-/* Выпадающие панели шапки: тёплое стекло, золотая кромка. */
+/* Выпадающие панели шапки: тёплое стекло (L1, плотнее для читаемости над страницей), блик сверху и тень, без кромки. */
 .fe-nav-panel {
-  background: color-mix(in srgb, var(--color-surface) 93%, transparent);
-  -webkit-backdrop-filter: blur(18px) saturate(1.15);
-  backdrop-filter: blur(18px) saturate(1.15);
-  border-color: var(--color-border-champagne);
-  box-shadow: 0 24px 60px -24px rgba(38, 52, 78, 0.38), inset 0 1px 0 #fffc;
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-nav-tools { min-width: 300px; padding: 8px; }
 .fe-nav-tool {
@@ -204,7 +203,6 @@ nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne
   flex: none;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 11px;
   background: linear-gradient(145deg, color-mix(in srgb, var(--z2-gold) 24%, #fff), color-mix(in srgb, var(--z2-gold) 10%, #fff));
   color: var(--fe-gold-ink, var(--color-champagne-ink));
@@ -219,8 +217,9 @@ nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 8px 24px;
   padding: 18px 20px 14px;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 22px;
+  background: var(--fe-pop-bg);
+  box-shadow: var(--fe-card-shadow);
 }
 .fe-mega__title { margin: 0 0 8px; font-size: 12px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; color: var(--z2-gold-ink); }
 .fe-mega__list { display: grid; margin: 0; padding: 0; list-style: none; }
@@ -247,7 +246,6 @@ nav.fe-navbar a.fe-nav-login.flex-1 { border-color: var(--color-border-champagne
   gap: 12px;
   margin-top: 4px;
   padding-top: 10px;
-  border-top: 1px solid var(--color-border-subtle);
 }
 .fe-mega__all { font-size: 14px; font-weight: 650; color: var(--z2-gold-ink); }
 .fe-mega__all:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -279,11 +277,9 @@ nav.fe-navbar .fe-navbar-mobile-menu a[aria-current='page'] { background: var(--
 /* Компьютер: плашка 52 px у левого края, шириной до 500 px. Телефон: полоса одной строкой.
    Молчание не считается согласием: плашка не закрывается сама. */
 .fe-cookie-panel {
-  background: color-mix(in srgb, var(--color-surface) 86%, transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  backdrop-filter: blur(16px) saturate(1.2);
-  border-color: var(--color-border-champagne);
-  box-shadow: 0 14px 38px -16px rgba(26, 34, 52, 0.32), inset 0 1px 0 #fffc;
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-cookie-compact { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 6px 4px 16px; }
 .fe-cookie-compact__text {
@@ -348,10 +344,13 @@ footer.fe-footer {
   position: relative;
   overflow: hidden;
   border-top: 0;
-  background-color: var(--z2-dark);
-  background-image:
+  /* L3: тёмный хрусталь на графите, золотое сияние в углах; тень и блик вместо контура. */
+  background:
     radial-gradient(900px 280px at 14% -140px, rgba(220, 193, 137, 0.17), transparent 70%),
-    radial-gradient(760px 260px at 96% 112%, rgba(220, 193, 137, 0.09), transparent 70%);
+    radial-gradient(760px 260px at 96% 112%, rgba(220, 193, 137, 0.09), transparent 70%),
+    var(--fe-dark-glass);
+  box-shadow: var(--fe-dark-shadow), var(--fe-dark-glint);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.2);
   color: var(--color-text-secondary);
 }
 footer.fe-footer::before {
@@ -408,7 +407,6 @@ footer.fe-footer .fe-foot-title { margin-bottom: 8px; }
     gap: 12px 40px;
     margin-bottom: 18px;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--color-border-subtle);
   }
   .fe-foot-brand { display: flex; flex: 1 1 520px; align-items: center; gap: 20px; min-width: 0; }
   .fe-foot-brand > a { flex: none; margin-bottom: 0; }
@@ -443,8 +441,7 @@ footer.fe-footer .fe-foot-credit a { color: inherit; }
 footer.fe-footer .fe-foot-requisites__summary { color: var(--color-text-secondary); }
 
 /* Чипы телефона на тёмном фоне. */
-footer.fe-footer .fe-foot-chip { color: var(--color-text-primary); background: var(--fe-glass-soft); border-color: var(--color-border-subtle); }
-footer.fe-footer .fe-foot-chip:hover { border-color: var(--color-border-champagne); }
+footer.fe-footer .fe-foot-chip { color: var(--color-text-primary); background: var(--fe-glass-soft); }
 footer.fe-footer .fe-foot-chip--soon { color: var(--color-text-tertiary); }
 
 /* ═══ Страница 404: «4, планета, 4» ═══════════════════════════════════ */
@@ -484,14 +481,12 @@ footer.fe-footer .fe-foot-chip--soon { color: var(--color-text-tertiary); }
 .z2-nf-actions .fe-btn { min-height: 48px; padding: 0 24px; font-size: 15px; border-radius: 14px; }
 /* Главная кнопка страницы 404: золотая заливка и мягкое свечение. */
 .z2-nf-actions .z2-nf-home {
-  border-color: transparent;
   background: linear-gradient(135deg, #cfa95a, #a4803c 60%, #8f6d2e);
   color: #fff;
   box-shadow: 0 12px 26px -14px rgba(143, 109, 46, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 .z2-nf-actions .z2-nf-home:hover:not(:disabled):not([aria-disabled='true']) {
   background: linear-gradient(135deg, #d8b468, #ad8940 60%, #96742f);
-  border-color: transparent;
   box-shadow: 0 16px 30px -14px rgba(143, 109, 46, 1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 .z2-nf-section-title { margin: 0 0 10px; font-size: 15px; font-weight: 650; color: var(--color-text-primary); }

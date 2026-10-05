@@ -199,7 +199,7 @@ export default function RegisterNudge() {
           <FabIcon className="h-5 w-5" aria-hidden="true" />
         </button>
       ) : (
-        <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 overflow-hidden">
+        <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl overflow-hidden fe-glass-pop">
           <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-champagne" />
@@ -226,7 +226,7 @@ export default function RegisterNudge() {
             })}
           </ul>
           <p className="px-5 pb-3 text-xs text-text-tertiary">{t(variant.noteKey)}</p>
-          <div className="flex items-center gap-3 px-5 py-3 border-t border-border-subtle bg-obsidian-lighter/30">
+          <div className="flex items-center gap-3 px-5 py-3 fe-glass-2">
             <Button
               as={Link}
               to={isAuthed ? variant.ctaTo : authLink('/register')}

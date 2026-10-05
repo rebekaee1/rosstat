@@ -64,7 +64,7 @@ function isNegativeCapable(series) {
 
 function StatCell({ label, children }) {
   return (
-    <div className="min-w-0 rounded-2xl border border-border-subtle bg-surface p-3 sm:p-3.5">
+    <div className="min-w-0 rounded-2xl p-3 sm:p-3.5 fe-glass-lite">
       <div className="text-xs font-medium leading-snug text-text-secondary">{label}</div>
       <div className="fe-num mt-1 text-[15px] font-semibold leading-tight text-text-primary">
         {children}
@@ -317,7 +317,7 @@ export default function RegionIndicatorPage() {
       )}
 
       {cardReady && active && !last && (
-        <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+        <div className="rounded-2xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
           {t('pgui.regions.indNoData')}
         </div>
       )}
@@ -328,7 +328,7 @@ export default function RegionIndicatorPage() {
             <div className="mb-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
               <span className="font-medium text-champagne-ink">{regionName}</span>
               {active.indicator.section_name && (
-                <span className="min-w-0 border-l border-border-subtle pl-2 text-text-secondary">{active.indicator.section_name}</span>
+                <span className="min-w-0 pl-2 text-text-secondary">{active.indicator.section_name}</span>
               )}
             </div>
             <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
@@ -367,7 +367,7 @@ export default function RegionIndicatorPage() {
             </div>
           </div>
 
-          <div id="chart" data-block="region-chart" className="fe-panel mb-4 w-full min-w-0 max-w-full scroll-mt-24 rounded-3xl border border-border-subtle bg-surface p-3 sm:p-4" ref={chartRef}>
+          <div id="chart" data-block="region-chart" className="fe-panel mb-4 w-full min-w-0 max-w-full scroll-mt-24 rounded-3xl p-3 sm:p-4" ref={chartRef}>
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-sm text-text-secondary">
                 {isMonthly
@@ -376,10 +376,10 @@ export default function RegionIndicatorPage() {
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
                 <label
-                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl border px-3 py-1 text-sm transition-colors sm:w-auto ${
+                  className={`fe-tap inline-flex w-full min-w-0 max-w-full items-center gap-1.5 rounded-xl fe-glass-2 px-3 py-1 text-sm transition-colors sm:w-auto ${
                     compareSlug
-                      ? 'border-[#5B7DA8] text-[#5B7DA8]'
-                      : 'border-border-subtle text-text-secondary hover:text-text-secondary'
+                      ? 'text-[#5B7DA8]'
+                      : 'text-text-secondary hover:text-text-secondary'
                   }`}
                 >
                   <GitCompare size={12} className="shrink-0 opacity-70" aria-hidden />
@@ -508,7 +508,7 @@ export default function RegionIndicatorPage() {
           </div>
 
           {active.rank?.top?.length > 0 && (
-            <div data-block="region-rating" className="mb-6 rounded-3xl border border-border-subtle bg-surface p-4">
+            <div data-block="region-rating" className="mb-6 rounded-3xl p-4 fe-glass-lite">
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t(
                   active.rank.rank_as_achievement
@@ -540,7 +540,7 @@ export default function RegionIndicatorPage() {
                 {t('regions.ind.fullRanking')}
               </Link>
               {active.rank.position > 5 && (
-                <div className="mt-2 pt-2 border-t border-border-subtle flex items-center justify-between text-[13px] px-2">
+                <div className="mt-2 pt-2 flex items-center justify-between text-[13px] px-2 fe-divider">
                   <span className="flex items-center gap-2">
                     <span className="fe-num w-4 text-right text-text-secondary">{active.rank.position}</span>
                     <span className="text-champagne-ink font-medium">{regionName}</span>
@@ -551,7 +551,7 @@ export default function RegionIndicatorPage() {
             </div>
           )}
 
-          <div className="mb-6 overflow-hidden rounded-3xl border border-border-subtle bg-surface">
+          <div className="mb-6 overflow-hidden rounded-3xl fe-glass-lite">
             <button
               onClick={() => setShowTable(v => !v)}
               className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-surface-hover transition-colors"
@@ -564,7 +564,7 @@ export default function RegionIndicatorPage() {
               <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
             {showTable && (
-              <div className="max-h-96 overflow-auto border-t border-border-subtle">
+              <div className="max-h-96 overflow-auto">
                 <table className="w-full min-w-[18rem] text-[13px]">
                   <thead className="sticky top-0 bg-surface">
                     <tr className="text-left text-text-secondary">
@@ -602,7 +602,7 @@ export default function RegionIndicatorPage() {
           </div>
 
           {active.indicator.macro_code && (
-            <div className="mb-6 rounded-3xl border border-border-champagne/40 bg-surface p-4">
+            <div className="mb-6 rounded-3xl p-4 fe-glass-lite">
               <h2 className="text-sm font-semibold text-text-primary mb-2">
                 {t('regions.ind.macroTitle')}
               </h2>
@@ -620,7 +620,7 @@ export default function RegionIndicatorPage() {
                 <Link
                   to={`/compare?codes=${active.indicator.macro_code},r:${slug}:${code}`}
                   onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: `region:${slug}:${code}`, to: 'compare' })}
-                  className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne-ink hover:border-border-champagne transition-colors"
+                  className="fe-tap-inline gap-1 px-3 py-1.5 rounded-full text-text-secondary text-[13px] font-medium hover:text-champagne-ink transition-colors fe-glass-2"
                 >
                   <GitCompare size={13} /> {t('regions.ind.compareRussia')}
                 </Link>
@@ -638,7 +638,7 @@ export default function RegionIndicatorPage() {
                   <li key={s.code} className="min-w-0">
                     <Link
                       to={regionIndicatorPath(slug, s.code)}
-                      className="fe-tap fe-press flex h-full items-center justify-between gap-3 rounded-2xl border border-border-subtle bg-surface px-3.5 py-2.5 text-sm leading-snug text-text-primary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                      className="fe-tap fe-press flex h-full items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5 text-sm leading-snug text-text-primary transition-colors hover:text-champagne-ink fe-glass-lite fe-float"
                     >
                       <span className="min-w-0 break-words">{glueNumbers(s.name)}</span>
                       <ArrowUpRight size={14} className="shrink-0 text-text-secondary" aria-hidden="true" />

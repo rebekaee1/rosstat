@@ -184,7 +184,7 @@ export default function WorldRegionProfile() {
           )}
 
           {isUsCatalog && profile.data.comparison_regions?.length > 0 && (
-            <section className="mb-6 rounded-3xl border border-border-subtle bg-surface p-4" aria-label={locale === 'en' ? 'Compare states' : 'Сравнить штаты'}>
+            <section className="mb-6 rounded-3xl p-4 fe-glass-lite" aria-label={locale === 'en' ? 'Compare states' : 'Сравнить штаты'}>
               <h2 className="mb-2 text-sm font-semibold text-text-primary">{locale === 'en' ? 'Compare with another state' : 'Сравнить с другим штатом'}</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.data.comparison_regions.slice(0, 8).map((other) => (
@@ -213,13 +213,13 @@ export default function WorldRegionProfile() {
           />
 
           {!searching && filteredSections.length === 0 && (
-            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               {t('pgui.regions.profileEmpty')}
             </div>
           )}
 
           {searching && filteredSections.length === 0 && (
-            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               <SearchX size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('regions.profile.nothingFound', { query })}
               <div className="mt-3">
@@ -313,7 +313,7 @@ export default function WorldRegionProfile() {
             <button
               type="button"
               onClick={() => setSearchLimit((current) => current + 120)}
-              className="fe-tap mt-5 rounded-full border border-border-subtle bg-surface px-5 py-2.5 text-sm text-text-secondary hover:border-border-champagne hover:text-text-primary"
+              className="fe-tap mt-5 rounded-full px-5 py-2.5 text-sm text-text-secondary hover:text-text-primary fe-glass-2"
             >
               {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}
               {locale === 'en' ? ' of ' : ' из '}

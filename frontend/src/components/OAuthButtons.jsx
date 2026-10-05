@@ -10,7 +10,7 @@ import Button from './Button';
 const PROVIDER_UI = {
   google: {
     labelKey: 'auth.oauth.google',
-    className: 'bg-white! hover:bg-[#f5f5f5]! text-[#1f1f1f]! border-[#dadce0]!',
+    className: 'bg-white! hover:bg-[#f5f5f5]! text-[#1f1f1f]! shadow-[0_1px_3px_rgba(60,48,24,0.22)]!',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
         <path fill="#4285F4" d="M21.35 12.21c0-.71-.06-1.42-.18-2.11H12v3.99h5.25a4.5 4.5 0 0 1-1.95 2.95v2.45h3.16c1.85-1.71 2.89-4.23 2.89-7.28Z" />
@@ -22,7 +22,7 @@ const PROVIDER_UI = {
   },
   yandex: {
     labelKey: 'auth.oauth.yandex',
-    className: 'bg-[#FC3F1D]! hover:bg-[#e5380f]! text-white! border-transparent!',
+    className: 'bg-[#FC3F1D]! hover:bg-[#e5380f]! text-white!',
     logo: (
       <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#FC3F1D] text-[13px] font-bold leading-none">
         Я
@@ -31,7 +31,7 @@ const PROVIDER_UI = {
   },
   vk: {
     labelKey: 'auth.oauth.vk',
-    className: 'bg-[#0077FF]! hover:bg-[#0a6ae0]! text-white! border-transparent!',
+    className: 'bg-[#0077FF]! hover:bg-[#0a6ae0]! text-white!',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
         <path d="M12.8 17.2c-5.5 0-8.9-3.8-9-10.1h2.8c.1 4.6 2.2 6.6 3.8 7V7.1h2.6v3.9c1.6-.2 3.3-2 3.9-3.9h2.6c-.45 2.35-2.2 4.1-3.45 4.85 1.25.6 3.25 2.15 4.05 5.25h-2.9c-.6-1.95-2.15-3.45-4.2-3.7v3.7h-1z" />
@@ -150,7 +150,7 @@ export default function OAuthButtons({
           aria-label={t('auth.oauth.dialogAria')}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
+            className="w-full max-w-md rounded-2xl shadow-2xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-display font-bold text-text-primary mb-1">

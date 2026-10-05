@@ -50,7 +50,7 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const periodLabel = tickLabel ? tickLabel(label) : label;
   return (
-    <div className="bg-surface border border-border-subtle rounded-xl px-3 py-2 shadow-lg text-xs max-w-[calc(100vw-48px)]">
+    <div className="rounded-xl px-3 py-2 shadow-lg text-xs max-w-[calc(100vw-48px)] fe-glass-2">
       <div className="text-text-secondary mb-1">{periodLabel}</div>
       {region && (
         <div className="font-semibold tabular-nums text-champagne-ink">

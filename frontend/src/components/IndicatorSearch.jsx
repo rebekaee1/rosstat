@@ -419,7 +419,7 @@ export default function IndicatorSearch({
           onFocus={arm}
           className={cn(
             FOCUS_RING,
-            'flex items-center gap-2 rounded-full pl-3 pr-3.5 py-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
+            'flex items-center gap-2 rounded-full pl-3 pr-3.5 py-1.5 text-text-secondary hover:text-text-primary transition-colors fe-glass-2',
             className,
           )}
           aria-label={t('search.openAriaMod', { mod })}
@@ -439,8 +439,8 @@ export default function IndicatorSearch({
             onFocus={arm}
             className={cn(
               FOCUS_RING,
-              'group w-full flex min-h-14 items-center gap-3 rounded-2xl border border-border-subtle bg-surface px-4 py-3.5 text-left fe-press',
-              'shadow-sm hover:border-champagne/40 transition-colors',
+              'group w-full flex min-h-14 items-center gap-3 rounded-2xl px-4 py-3.5 text-left fe-press fe-glass-lite',
+              'shadow-sm transition-colors',
               className,
             )}
             aria-label={t('search.openAria')}
@@ -450,7 +450,7 @@ export default function IndicatorSearch({
               ? <RotatingHint lead={t('shell.search.hintLead')} items={examples} />
               : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
             {/* Подсказка про клавиши только там, где есть клавиатура и мышь: на планшете «⌘K» ничего не говорит. */}
-            <kbd className="hidden pointer-fine:inline text-xs font-sans text-text-tertiary border border-border-subtle rounded px-1.5 py-0.5">
+            <kbd className="hidden pointer-fine:inline text-xs font-sans text-text-tertiary rounded px-1.5 py-0.5 fe-glass-2">
               {isAppleModKey ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
@@ -478,7 +478,7 @@ export default function IndicatorSearch({
           onFocus={arm}
           className={cn(
             FOCUS_RING,
-            'rounded-xl flex items-center justify-center p-1.5 bg-obsidian-lighter/50 border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11',
+            'rounded-xl flex items-center justify-center p-1.5 text-text-secondary hover:text-text-primary hover:bg-obsidian-lighter/80 transition-colors [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 fe-glass-2',
             className,
           )}
           aria-label={t('search.openAriaMod', { mod })}
@@ -512,8 +512,8 @@ export default function IndicatorSearch({
             className="absolute inset-0 bg-text-primary/30 backdrop-blur-[2px]"
             onClick={close}
           />
-          <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl border border-border-subtle bg-surface shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
-            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2 border-b border-border-subtle">
+          <div className="fe-dialog-panel fe-search-panel relative flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col rounded-2xl shadow-2xl overflow-hidden sm:max-h-[calc(90dvh-1rem)]">
+            <div className="fe-search-field relative flex shrink-0 items-center gap-3 px-4 py-2 fe-divider-b">
               {isLoading && qTrim
                 ? <span className="fe-search-spinner shrink-0" aria-hidden="true" data-testid="search-spinner" />
                 : <Search className="w-5 h-5 text-text-tertiary shrink-0" aria-hidden="true" />}
@@ -666,10 +666,10 @@ export default function IndicatorSearch({
               </button>
             ) : null}
 
-            <div className="fe-search-kbd px-4 py-2 border-t border-border-subtle flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden">
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">↑</kbd> <kbd className="px-1 py-0.5 rounded border border-border-subtle">↓</kbd> {t('search.hint.nav')}</span>
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Enter</kbd> {t('search.hint.open')}</span>
-              <span><kbd className="px-1 py-0.5 rounded border border-border-subtle">Esc</kbd> {t('search.hint.close')}</span>
+            <div className="fe-search-kbd px-4 py-2 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-tertiary [@media(pointer:coarse)]:hidden fe-divider">
+              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">↑</kbd> <kbd className="px-1 py-0.5 rounded fe-glass-2">↓</kbd> {t('search.hint.nav')}</span>
+              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Enter</kbd> {t('search.hint.open')}</span>
+              <span><kbd className="px-1 py-0.5 rounded fe-glass-2">Esc</kbd> {t('search.hint.close')}</span>
             </div>
           </div>
         </div>,

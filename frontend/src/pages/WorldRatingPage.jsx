@@ -674,7 +674,7 @@ export default function WorldRatingPage() {
       )}
 
       {unknownConcept && (
-        <div className="mb-8 rounded-3xl border border-border-subtle bg-surface p-6">
+        <div className="mb-8 rounded-3xl p-6 fe-glass-lite">
           <h2 className="font-display text-xl font-semibold text-text-primary">{t('world.rating.notFoundTitle')}</h2>
           <p className="mt-2 text-sm text-text-secondary">
             {t('world.rating.notFoundBody')}
@@ -892,7 +892,7 @@ export default function WorldRatingPage() {
                   </>
                 ) : (
                   <div
-                    className="z6-table-card overflow-x-auto rounded-3xl border border-border-subtle bg-surface"
+                    className="z6-table-card overflow-x-auto rounded-3xl fe-glass-lite"
                     data-scroll={extraColumns.length > 0 ? 'x' : undefined}
                   >
                     <div style={tableStyle} className="transition-transform duration-200">

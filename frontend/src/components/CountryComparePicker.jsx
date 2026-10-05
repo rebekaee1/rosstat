@@ -63,10 +63,10 @@ export function CountryComparePicker({
         }}
         placeholder={selectedIds.length ? t('world.chart.addCountry') : t('world.findCountry')}
         aria-label={t('world.chart.searchCompareAria')}
-        className="w-full rounded-xl border border-border-subtle bg-surface py-2.5 pl-9 pr-3 text-sm text-text-primary pointer-coarse:min-h-11 pointer-coarse:text-base outline-none transition-colors placeholder:text-text-tertiary focus:border-border-champagne"
+        className="w-full rounded-xl py-2.5 pl-9 pr-3 text-sm text-text-primary pointer-coarse:min-h-11 pointer-coarse:text-base outline-none transition-colors placeholder:text-text-tertiary fe-glass-2"
       />
       {open && (
-        <div className="fe-dialog-panel fe-w6g-solid-panel absolute left-0 right-0 top-full z-[60] mt-2 max-h-64 overflow-y-auto rounded-xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
+        <div className="fe-dialog-panel fe-w6g-solid-panel absolute left-0 right-0 top-full z-[60] mt-2 max-h-64 overflow-y-auto rounded-xl p-1.5 shadow-2xl">
           {filtered.length ? filtered.map((option) => {
             const checked = selected.has(option.code);
             const disabled = !checked && selectedIds.length >= MAX_COMPARISONS;
@@ -92,7 +92,7 @@ export function CountryComparePicker({
                     : <Globe2 size={16} className="shrink-0 text-text-tertiary" aria-hidden="true" />}
                   <span className="truncate">{option.country_name}</span>
                 </span>
-                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${checked ? 'border-champagne-ink bg-champagne-ink text-white' : 'border-border-subtle'}`}>
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md ${checked ? 'bg-champagne-ink text-white shadow-sm' : 'fe-glass-2'}`}>
                   {checked && <Check size={12} />}
                 </span>
               </button>
@@ -170,7 +170,7 @@ export default function CountryComparePanel({
     .filter((option) => !activeComparisonIds.includes(option.code));
   const atLimit = activeComparisonIds.length >= MAX_COMPARISONS;
   return (
-    <div className="fe-compare-panel mb-4 rounded-3xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
+    <div className="fe-compare-panel mb-4 rounded-3xl p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
       <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
         <GitCompare size={15} className="text-champagne" aria-hidden="true" />
         {t('world.chart.compare')}
@@ -218,7 +218,7 @@ export default function CountryComparePanel({
 
 
       {activeComparisonIds.length > 0 && (
-        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3">
+        <div className="mt-3 flex flex-wrap items-center gap-2 pt-3 fe-divider">
           {baseLabel && (
             <span className="fe-compare-base" title={baseLabel}>
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: baseColor }} aria-hidden="true" />
