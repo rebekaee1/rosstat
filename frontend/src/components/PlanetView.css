@@ -19,6 +19,14 @@
   width: 100%;
   color: var(--planet-ink);
 }
+:root[data-theme="dark"] .planet-view, :root.dark .planet-view {
+  --planet-paper: rgba(41,56,75,.5);
+  --planet-glass-strong: rgba(41,56,75,.82);
+  --planet-well: rgba(216,230,250,.07);
+  --planet-well-shadow: inset 0 3px 8px rgba(0,0,0,.35), inset 0 -1px 0 rgba(216,230,250,.08);
+}
+:root[data-theme="dark"] .planet-view .planet-country-card, :root.dark .planet-view .planet-country-card { background: var(--fe-glass-l1-sheen), rgba(41,56,75,.82); }
+:root[data-theme="dark"] .planet-country-list > button:nth-child(even), :root.dark .planet-country-list > button:nth-child(even) { background: rgba(216,230,250,.05); }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .planet-view { --planet-glass: rgba(255,255,255,.9); --planet-glass-strong: rgba(255,255,255,.95); --planet-well: rgba(255,255,255,.8); }
   .planet-shell { background: rgba(255,255,255,.86); }
