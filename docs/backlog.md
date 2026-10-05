@@ -1,5 +1,17 @@
 # Backlog — текущие правки в работе
 
+<a id="pwa-install-2026-10-05"></a>
+
+## 2026-10-05 — установка сайта как приложения (PWA) (локально, не выпущено)
+
+**Статус:** код, тесты и проверка в Chromium/WebKit (Playwright, локально) готовы отдельным коммитом; push/deploy не выполнялись.
+Контракт и пределы — [data-contracts §6](data-contracts.md), события — [frontend_instrumentation](analytics_api_inventory/frontend_instrumentation.md).
+**Что сделать владельцу при выкладке:** выкатить `Caddyfile` (CSP: `worker-src`, `child-src 'self'`, `manifest-src`) **до или вместе** с
+фронтом, иначе service worker блокируется CSP (приложение при этом работает как раньше); пересобрать `frontend` (новые location в
+nginx, `sw.js`, иконки) и перезапустить `backend` (манифест, `/api/v1/pwa/config`); завести цели Метрики `pwa_*` (список в отчёте).
+Аварийно выключить: `RUSTATS_PWA_ENABLED=false` (снимет service worker у всех) или `RUSTATS_PWA_INSTALL_PROMPT_ENABLED=false`.
+**Остаток:** реальная установка на Android/iPhone, Яндекс Браузер, живая проверка CSP, решение по гео-редиректу apex→ru для установленного приложения.
+
 <a id="api-interest-fake-door-2026-10-05"></a>
 
 ## 2026-10-05 — замер платного спроса «API и выгрузка с прогнозом» (локально, не выпущено, флаг выключен)

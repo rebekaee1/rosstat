@@ -197,6 +197,14 @@ ym(107136069, 'init', {
 | `api_interest_view` | `ApiInterestLink` (график показателя; окно лимита) | показ точки входа «API и выгрузка с прогнозом», не чаще 1 раза за сессию на точку входа; только при `RUSTATS_API_INTEREST_ENABLED=true` | `source` (`indicator`/`limit_modal`) |
 | `api_interest_click` | `ApiInterestLink` | клик по точке входа, открывает окно заявки | `source`, `indicator_code` |
 | `api_interest_submit` | `ApiInterestModal` | заявка отправлена (замер платного спроса) | `use_case`, `source`; почта в событие не кладётся |
+| `pwa_install_prompt_view` | `PwaInstallPrompt` | показ окна «Установить приложение» (один раз на показ) | `platform` (`android`/`ios`) |
+| `pwa_ios_hint_view` | `PwaInstallPrompt`, `PwaInstallEntry` | показ подсказки iPhone «Поделиться → На экран Домой» | `platform` |
+| `pwa_install_prompt_accept` | `PwaInstallPrompt` | «Установить» (Android) / «Понятно» (iPhone) | `platform` |
+| `pwa_install_prompt_dismiss` | `PwaInstallPrompt` | «Не сейчас» или крестик, откладывает показ 3/7/14/30 дней | `platform`, `dismiss_count` |
+| `pwa_install_native_accepted` / `pwa_install_native_dismissed` | `lib/pwa.js` | выбор в системном окне установки (Android) | `platform` |
+| `pwa_installed` | `lib/pwa.js` | событие браузера `appinstalled` | `platform` |
+| `pwa_app_launch` | `lib/pwa.js` | запуск из установленного приложения, раз за сессию | `platform` |
+| `pwa_install_entry_click` | `PwaInstallEntry` (подвал) | клик «Установить приложение» | `platform` |
 | `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
 | `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |
 | `newsletter_opt_in` / `newsletter_opt_out` | кабинет | подписка на рассылку | — |

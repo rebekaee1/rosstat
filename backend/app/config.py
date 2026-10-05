@@ -358,6 +358,14 @@ class Settings(BaseSettings):
     # Включает владелец в .env; код выкладкой опрос не включает.
     api_interest_enabled: bool = False
 
+    # Веб-приложение (PWA, 2026-10-05). Аварийные выключатели БЕЗ пересборки фронта:
+    # фронт и сам service worker читают их из GET /api/v1/pwa/config.
+    #   pwa_enabled=false                 — SW снимает себя и чистит кэши, SW не регистрируется;
+    #   pwa_install_prompt_enabled=false  — окно «Установить приложение» и пункт в подвале скрыты.
+    # Манифест отдаётся всегда (установка из меню браузера не зависит от флагов).
+    pwa_enabled: bool = True
+    pwa_install_prompt_enabled: bool = True
+
     # Админ-BI (/admin/bi): comma-separated email'ы с доступом к дашборду.
     # Вход обычной сессией; email сверяется по способам входа пользователя.
     admin_emails: str = "admin_forecasteconomy@forecasteconomy.com"

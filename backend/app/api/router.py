@@ -20,6 +20,7 @@ from app.api.world import router as world_router
 from app.api.world_subnational import router as world_subnational_router
 from app.api.search import router as search_router
 from app.api.api_interest import router as api_interest_router
+from app.api.pwa import config_router as pwa_config_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(indicators_router)
@@ -42,3 +43,4 @@ api_router.include_router(world_router)
 api_router.include_router(world_subnational_router)
 api_router.include_router(search_router)
 api_router.include_router(api_interest_router)
+api_router.include_router(pwa_config_router)

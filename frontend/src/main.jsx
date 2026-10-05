@@ -5,6 +5,7 @@ import SpaRoot from './SpaRoot.jsx';
 import { seedQueryClientFromHomeBootstrap } from './lib/homeBootstrap';
 import { installChunkRecovery } from './lib/chunkRecovery';
 import { mountWhenCssReady } from './lib/mountWhenCssReady';
+import { initPwa } from './lib/pwa';
 import './index.css';
 import './styles/data-visuals.css';
 
@@ -12,6 +13,10 @@ import './styles/data-visuals.css';
 // перезагрузка за новым index.html (не чаще раза в 5 минут, не при вводе текста
 // и не во время загрузки файла). Иначе — обычный экран ошибки.
 installChunkRecovery(window);
+
+// PWA: перехват beforeinstallprompt/appinstalled должен стоять до монтирования React; service worker
+// регистрируется только если публичный конфиг его не выключил (аварийный выход без пересборки).
+initPwa();
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({

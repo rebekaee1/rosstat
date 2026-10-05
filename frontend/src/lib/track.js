@@ -97,6 +97,8 @@ export function track(event, params) {
   payload = { ...(payload || {}), authed: _identity.authed ? 1 : 0 };
   ym(COUNTER_ID, 'reachGoal', event, payload);
   sendEvent(event, payload);
+  // Локальный сигнал для лёгких подписчиков (lib/pwa.js: «полезное действие»). Только имя, без параметров.
+  try { window.dispatchEvent(new CustomEvent('fe:track', { detail: { event } })); } catch { /* не критично */ }
 }
 
 export function sendEvent(eventName, params) {
@@ -260,6 +262,18 @@ export const events = {
   API_INTEREST_VIEW: 'api_interest_view',
   API_INTEREST_CLICK: 'api_interest_click',
   API_INTEREST_SUBMIT: 'api_interest_submit',
+
+  // Установка сайта как приложения (PWA, 2026-10-05). Параметры — только platform
+  // (android | ios) и dismiss_count; ничего персонального.
+  PWA_INSTALL_PROMPT_VIEW: 'pwa_install_prompt_view',
+  PWA_INSTALL_PROMPT_ACCEPT: 'pwa_install_prompt_accept',
+  PWA_INSTALL_PROMPT_DISMISS: 'pwa_install_prompt_dismiss',
+  PWA_INSTALL_NATIVE_ACCEPTED: 'pwa_install_native_accepted',
+  PWA_INSTALL_NATIVE_DISMISSED: 'pwa_install_native_dismissed',
+  PWA_INSTALLED: 'pwa_installed',
+  PWA_APP_LAUNCH: 'pwa_app_launch',
+  PWA_IOS_HINT_VIEW: 'pwa_ios_hint_view',
+  PWA_INSTALL_ENTRY_CLICK: 'pwa_install_entry_click',
 
   // Спрос-аналитика поиска: что пользователи ищут — введённое (debounce),
   // выбранное и брошенное. Агрегируется в ежедневный Telegram-дайджест,
