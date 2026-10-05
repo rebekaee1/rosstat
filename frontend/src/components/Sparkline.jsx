@@ -98,8 +98,8 @@ export default function Sparkline({
   const color = resolveColor(trend, sentiment);
   const dotR = 2.5;
   const glowR = 5;
-  // Поля вмещают светящееся кольцо последней точки целиком, иначе оно срезается краем SVG.
-  const pad = glowR + 1;
+  // Поля вмещают кольцо последней точки вместе с его пульсом (масштаб до 1,5), иначе край SVG его срезает.
+  const pad = Math.ceil(glowR * 1.5) + 1;
 
   const safeId = uid.replace(/:/g, '_');
   const areaGradId = `spark-area-${safeId}`;

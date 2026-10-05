@@ -28,7 +28,6 @@
 }
 
 /* ── Рейтинг: строки-карточки на телефоне нажимаются (шеврон, подсветка, медали) ───── */
-.w2-rank-row { grid-template-columns: 26px 24px minmax(0, 1fr) auto 16px; }
 .w2-rank-chev { color: var(--color-text-tertiary); opacity: 0.75; }
 .w2-rank-row:active { background: color-mix(in srgb, var(--color-champagne) 12%, transparent); }
 @media (hover: hover) {

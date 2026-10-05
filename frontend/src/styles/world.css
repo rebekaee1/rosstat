@@ -140,7 +140,7 @@
 .w2-rank-row {
   position: relative;
   display: grid;
-  grid-template-columns: 26px 24px minmax(0, 1fr) auto;
+  grid-template-columns: 26px 24px minmax(0, 1fr) auto 16px;
   align-items: center;
   gap: 10px;
   min-height: 56px;

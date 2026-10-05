@@ -773,7 +773,7 @@ nav.glass-surface-soft {
 
 @keyframes sparkline-pulse {
   0%, 100% { transform: scale(1);   opacity: 0.2; }
-  50%      { transform: scale(1.8); opacity: 0.06; }
+  50%      { transform: scale(1.5); opacity: 0.06; }
 }
 
 .sparkline-area-animate {
@@ -785,7 +785,7 @@ nav.glass-surface-soft {
   opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  animation: sparkline-pulse 2.4s ease-in-out infinite, sparkline-area-fade 300ms ease-out forwards;
+  animation: sparkline-pulse 2.4s ease-in-out infinite;
 }
 
 .sparkline-container {
