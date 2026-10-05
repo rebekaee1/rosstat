@@ -66,6 +66,45 @@ describe('z1-tokens.css', () => {
   });
 });
 
+describe('z1-tokens.css: хрусталь без границ (R3)', () => {
+  const GLASS = [
+    '--fe-glass-l1', '--fe-glass-l1-sheen', '--fe-glass-l2', '--fe-glass-active', '--fe-blur-l1', '--fe-blur-l2',
+    '--fe-inset-glint', '--fe-inset-glint-bottom', '--fe-float-shadow', '--fe-float-shadow-hover', '--fe-shadow-l2', '--fe-dark-glass',
+  ];
+  it.each(GLASS)('объявляет токен слоя %s', (name) => {
+    expect(declared(name)).toBe(true);
+  });
+
+  it('blur L1 18 px, на телефоне 12 px; L2 12 px', () => {
+    expect(tokens).toMatch(/--fe-blur-l1:\s*18px/);
+    expect(tokens).toMatch(/max-width:\s*767px\)\s*\{\s*:root\s*\{\s*--fe-blur-l1:\s*12px/);
+    expect(tokens).toMatch(/--fe-blur-l2:\s*12px/);
+  });
+
+  it('утилитарные классы стекла объявлены и описаны в шапке', () => {
+    for (const cls of ['fe-glass', 'fe-glass-2', 'fe-glass-active', 'fe-glass-dark', 'fe-float', 'fe-divider']) {
+      expect(tokens).toMatch(new RegExp(`\\.${cls}\\b`));
+      expect(tokens.slice(0, tokens.indexOf(':root {'))).toContain(`.${cls} `);
+    }
+  });
+
+  it('есть плотный запасной вариант без backdrop-filter', () => {
+    expect(tokens).toMatch(/@supports not \(\(backdrop-filter: blur\(1px\)\)/);
+  });
+
+  it('стекло полупрозрачное: альфа L1 и --fe-glass не выше 0,6', () => {
+    const l1 = /--fe-glass-l1:\s*rgba\(255,\s*255,\s*255,\s*([0-9.]+)\)/.exec(tokens);
+    expect(Number(l1[1])).toBeLessThanOrEqual(0.6);
+    const glass = /--fe-glass:\s*linear-gradient\(130deg,\s*rgba\(255,\s*255,\s*255,\s*([0-9.]+)\)/.exec(indexCss);
+    expect(Number(glass[1])).toBeLessThanOrEqual(0.6);
+  });
+
+  it('кромка и кольцо удалены: --fe-panel-edge нет, .fe-panel без top-center 1px слоя', () => {
+    expect(tokens + indexCss).not.toMatch(/--fe-panel-edge/);
+    expect(indexCss).not.toMatch(/top center \/ 100% 1px/);
+  });
+});
+
 describe('index.css: базовая палитра и типографика раунда 2', () => {
   it('фон страницы тёплый, а вторичный текст темнее прежнего', () => {
     expect(indexCss).toMatch(/--color-obsidian:\s*#F6F2EA/);
