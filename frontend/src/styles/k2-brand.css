@@ -160,15 +160,15 @@ footer.fe-footer.fe-k2-footer {
   -webkit-backdrop-filter: none;
   color: #C7CBD6;
 }
-/* Верх — волна света длиной 96 px над подвалом: страница плавно уходит в сапфир, среза нет. */
+/* Верх: переход длиной 160 px над подвалом, один оттенок (прозрачный → сапфир) без цветного стопа: полосы нет. */
 footer.fe-footer.fe-k2-footer::before {
   content: '';
   position: absolute;
-  top: -96px;
+  top: -160px;
   left: 0;
   right: 0;
-  height: 96px;
-  background: linear-gradient(180deg, rgba(246, 242, 234, 0) 0%, rgba(232, 200, 119, 0.16) 38%, rgba(27, 43, 79, 0.55) 78%, #0E1A33 100%);
+  height: 160px;
+  background: linear-gradient(180deg, rgba(14, 26, 51, 0) 0%, rgba(14, 26, 51, 0.04) 25%, rgba(14, 26, 51, 0.16) 50%, rgba(14, 26, 51, 0.46) 75%, #0E1A33 100%);
   opacity: 1;
   pointer-events: none;
   z-index: 0;
@@ -181,7 +181,7 @@ footer.fe-footer.fe-k2-footer::after {
   left: 0;
   right: 0;
   height: 100px;
-  background: radial-gradient(70% 100% at 50% 0, rgba(240, 214, 150, 0.3), rgba(201, 162, 77, 0.1) 52%, transparent 80%);
+  background: radial-gradient(70% 100% at 50% 0, rgba(240, 214, 150, 0.16), rgba(201, 162, 77, 0.05) 52%, transparent 80%);
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
@@ -195,6 +195,9 @@ footer.fe-footer.fe-k2-footer::after {
   object-fit: cover;
   object-position: 50% 0;
   opacity: 0.85;
+  /* верх кадра растворяется в сапфир подвала на 160 px: резкого начала нет */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 160px);
+  mask-image: linear-gradient(180deg, transparent, #000 160px);
 }
 /* Затемнение слева (под ссылками) и сверху (под логотипом и строкой источников): текст ≥ 4,5:1 на самом ярком месте кадра. */
 .fe-k2-foot-bg::after {
@@ -284,8 +287,7 @@ footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-
   inset: -12% -22% 30%;
   z-index: -1;
   background:
-    radial-gradient(46% 52% at 50% 36%, rgba(246, 231, 190, 0.8), rgba(246, 231, 190, 0) 72%),
-    radial-gradient(40% 40% at 20% 60%, rgba(191, 224, 245, 0.35), rgba(191, 224, 245, 0) 70%);
+    radial-gradient(46% 52% at 50% 36%, rgba(246, 231, 190, 0.8), rgba(246, 231, 190, 0) 72%);
   pointer-events: none;
 }
 .z2-nf-code.fe-nf-code { align-items: center; gap: clamp(0px, 0.6vw, 8px); }
