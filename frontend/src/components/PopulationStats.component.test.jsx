@@ -175,16 +175,86 @@ describe('витрина калькуляторов, главная, было/с
     expect(links[1].textContent).toContain('Для рублёвой ипотеки в России');
   });
 
-  it('главная: две карточки без заголовка «Инструменты»', () => {
-    render(
-      <MemoryRouter>
-        <LocaleProvider locale="ru"><HomeTools /></LocaleProvider>
-      </MemoryRouter>,
-    );
-    const links = screen.getAllByRole('link');
-    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/calculator', '/currencies']);
-    expect(links[0].textContent).toContain('Сколько стоили бы ваши деньги');
+  it('главная: «Попробуйте сами», три живых мини-инструмента со ссылками на большие страницы', () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      ['/world/countries', { countries: [], total: 0 }],
+      [/^\/world\/compare\/snapshot\//, { items: [] }],
+    ]);
+    renderPage(<HomeTools />, { path: '/', route: '/' });
+    expect(screen.getByRole('heading', { name: 'Попробуйте сами' })).toBeTruthy();
     expect(screen.queryByText('Инструменты')).toBeNull();
+    const more = [...document.querySelectorAll('.fe-tool__more')].map((a) => a.getAttribute('href'));
+    expect(more).toEqual(['/currencies', '/calculator', '/compare']);
+    expect(screen.getByRole('heading', { name: 'Конвертер валют' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Что будет с деньгами' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Сравните две страны' })).toBeTruthy();
+  });
+
+  it('главная: конвертер считает сумму по курсам списка показателей, меняет валюты местами и просит цифры', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, [
+        { code: 'usd-rub', name: 'USD/RUB', unit: '₽', current_value: 80, current_date: '2026-10-03', is_active: true },
+        { code: 'eur-rub', name: 'EUR/RUB', unit: '₽', current_value: 90, current_date: '2026-10-03', is_active: true },
+      ]],
+      ['/world/countries', { countries: [], total: 0 }],
+      [/^\/world\/compare\/snapshot\//, { items: [] }],
+    ]);
+    renderPage(<HomeTools />, { path: '/', route: '/' });
+    const amount = screen.getByLabelText('Сумма');
+    // 100 $ по 80 ₽: 8 000 ₽, под числом дата курса.
+    expect(await screen.findByText(/8\s000/)).toBeTruthy();
+    expect(screen.getByText(/Пересчёт по официальным курсам на 3 октября/)).toBeTruthy();
+    fireEvent.change(amount, { target: { value: '250,5' } });
+    expect(await screen.findByText(/20\s040/)).toBeTruthy();
+    fireEvent.change(amount, { target: { value: 'abc' } });
+    expect(screen.getByText('Введите сумму цифрами')).toBeTruthy();
+    expect(amount.getAttribute('aria-invalid')).toBe('true');
+    // Кнопка «Поменять валюты местами»: из рубля в доллар.
+    fireEvent.change(amount, { target: { value: '8000' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Поменять валюты местами' }));
+    expect((screen.getByLabelText('Из')).value).toBe('RUB');
+    expect(await screen.findByText(/^100/)).toBeTruthy();
+  });
+
+  it('главная: инфляция «на пальцах» берёт ставку России из среза и пересчитывает при движении ползунка', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      ['/world/countries', { countries: [], total: 0 }],
+      ['/world/compare/snapshot/hicp-index', { items: [{ country_code: 'RU', country_slug: 'russia', value: 8, unit: '%' }] }],
+      [/^\/world\/compare\/snapshot\//, { items: [] }],
+    ]);
+    renderPage(<HomeTools />, { path: '/', route: '/' });
+    // 100 000 ₽ через 10 лет при 8 % в год: 100000 / 1,08^10 = 46 319.
+    expect(await screen.findByText(/46\s319/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText(/Через сколько лет/), { target: { value: '1' } });
+    // Через 1 год: 92 593, и «1 год» в единственном числе.
+    expect(await screen.findByText(/92\s593/)).toBeTruthy();
+    expect(screen.getAllByText(/1 год(?!а)/).length).toBeGreaterThan(0);
+  });
+
+  it('главная: сравнение ведёт на готовый график выбранных стран и показателя', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      ['/world/countries', { countries: [
+        { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States' },
+        { code: 'CN', slug: 'china', name: 'Китай', name_en: 'China' },
+        { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany' },
+      ], total: 3 }],
+      [/^\/world\/compare\/snapshot\//, { items: [] }],
+    ]);
+    renderPage(<HomeTools />, { path: '/', route: '/' });
+    const go = await screen.findByRole('link', { name: 'Показать график' });
+    expect(decodeURIComponent(go.getAttribute('href'))).toBe('/compare?codes=w:united-states:gdp-usd,w:china:gdp-usd');
+    fireEvent.change(screen.getByLabelText('Вторая страна'), { target: { value: 'germany' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Цены' }));
+    const href = decodeURIComponent(screen.getByRole('link', { name: 'Показать график' }).getAttribute('href'));
+    expect(href).toContain('codes=w:united-states:hicp-index,w:germany:hicp-index');
+    expect(href).toContain('rep=w:united-states:hicp-index:yoy,w:germany:hicp-index:yoy');
   });
 
   it('было / стало: высота столбика пропорциональна сумме, меньший не пропадает', () => {

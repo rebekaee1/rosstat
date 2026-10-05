@@ -1,20 +1,25 @@
-/* Главная: живая планета на первом экране (волна 6, зона C).
-   Слева заголовок, одна строка лида, поиск и числа платформы; справа планета. На телефоне и планшете порядок:
-   текст, поиск, планета, числа. Стеклянная петля-картина за hero больше не нужна: планета сама украшает экран. */
-.fe-dashboard [data-block="home-hero"]:has(.fe-hero-grid)::before { display: none; }
+/* Главная: живая планета на первом экране.
+   Телефон и планшет: текст и поиск, планета, «Мир сейчас», числа платформы.
+   Компьютер от 1280: слева колонка текста (заголовок, поиск, быстрые ссылки, «Мир сейчас», числа платформы),
+   справа широкая и невысокая карточка планеты: шар слева, рейтинг стран со своей прокруткой справа.
+   Колонка слева больше не пустеет рядом с картой. Раскладка карточки внутри считает сама планета по ширине
+   СВОЕГО контейнера (`.planet-host`), поэтому здесь только размеры шара и обёртка. */
+.fe-dashboard [data-block="home-hero"]:has(.fe-hero-grid) { --z3-gold: var(--fe-gold, var(--color-champagne, #AD8A48)); }
 
 .fe-hero-grid {
   display: grid;
   align-items: start;
   gap: 14px;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "text" "planet" "scope";
+  grid-template-areas: "text" "planet" "today" "scope";
 }
+/* Порядок в разметке совпадает с порядком на телефоне (текст, планета, «Мир сейчас», числа): фокус клавиатуры идёт так же, как глаз. */
 .fe-hero-text { grid-area: text; }
-.fe-hero-planet { grid-area: planet; min-width: 0; }
+.fe-hero-planet { grid-area: planet; min-width: 0; position: relative; }
+.fe-hero-grid > .fe-today { grid-area: today; }
 .fe-hero-scope { grid-area: scope; min-width: 0; }
 
-.fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(28px, 7.4vw, 34px); line-height: 1.12; }
+.fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(32px, 9vw, 38px); line-height: 1.1; text-wrap: balance; }
 .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p {
   margin-top: 10px;
   font-size: 14px;
@@ -23,14 +28,34 @@
 }
 .fe-dashboard [data-block="home-hero"] .fe-hero-text .mt-5 { margin-top: 14px; }
 
-/* Планета внутри hero: стеклянная карточка вокруг шара, сразу под поиском. Выбор показателя и «Другие показатели»
-   стоят под шаром (на шаре — быстрые чипы), чтобы шар был виден целиком на первом экране. */
+/* Планета внутри hero: стеклянная карточка с тонкой золотой кромкой, сразу под поиском. Выбор показателя и
+   «Другие показатели» стоят под шаром (на шаре только быстрые чипы), чтобы шар был виден целиком на первом экране. */
 .fe-dashboard .fe-hero-planet [data-block="home-workbench"] {
+  position: relative;
   display: flex;
   flex-direction: column;
   margin-bottom: 0;
   padding: 8px;
   border-radius: 28px;
+  border-color: color-mix(in srgb, var(--z3-gold) 24%, var(--fe-glass-border, #FFFFFFE6));
+  box-shadow:
+    inset 0 1px 0 #FFFFFFB3,
+    0 2px 5px -2px rgb(38 52 78 / 0.12),
+    0 34px 64px -34px rgb(38 52 78 / 0.42),
+    0 0 0 1px color-mix(in srgb, var(--z3-gold) 8%, transparent);
+}
+.fe-dashboard .fe-hero-planet [data-block="home-workbench"]::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: -1px;
+  left: 16%;
+  right: 16%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--z3-gold) 50%, transparent);
+  opacity: 0.75;
+  pointer-events: none;
 }
 .fe-dashboard .fe-hero-planet [data-block="home-workbench"] > .relative { order: 1; }
 .fe-dashboard .fe-hero-planet [data-block="home-map-controls"] {
@@ -42,29 +67,84 @@
 }
 .fe-dashboard .fe-hero-planet [data-block="home-map-controls"] h2 { font-size: 16px; }
 
+/* Тёплое поле позади hero: золотое сияние за планетой и тонкие орбиты вокруг шара (центр по центру колонки планеты). */
+.fe-dashboard [data-block="home-hero"]:has(.fe-hero-grid)::before {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: -1;
+  inset: -90px -44px -40px -44px;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 40% at 12% 4%, color-mix(in srgb, var(--color-ice, #CAD8E5) 55%, transparent), transparent 72%),
+    radial-gradient(56% 56% at 82% 34%, color-mix(in srgb, var(--z3-gold) 15%, transparent), transparent 74%);
+  -webkit-mask-image: none;
+  mask-image: none;
+  opacity: 1;
+}
+.fe-hero-planet::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -70px -6vw -50px -4vw;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 38%,
+    transparent 0 330px,
+    color-mix(in srgb, var(--z3-gold) 26%, transparent) 331px 332px,
+    transparent 333px 452px,
+    color-mix(in srgb, var(--z3-gold) 15%, transparent) 453px 454px,
+    transparent 455px 600px,
+    color-mix(in srgb, var(--z3-gold) 9%, transparent) 601px 602px,
+    transparent 603px
+  );
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+  mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+@media (max-width: 1023px) {
+  .fe-hero-planet::before { display: none; }
+}
+
 @media (min-width: 640px) {
-  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(32px, 4.4vw, 42px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 5vw, 46px); }
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { font-size: 15px; }
   .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 12px; }
 }
 
 @media (min-width: 1024px) {
+  .fe-hero-grid { row-gap: 20px; }
+  .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 14px; }
+}
+
+/* Широкий экран: две колонки. Слева текст, «Мир сейчас» и числа платформы, справа карточка планеты (шар и рейтинг рядом)
+   на всю высоту левой колонки. Лишняя высота достаётся пустой нижней строке, а не растягивает блоки слева. */
+@media (min-width: 1280px) {
   .fe-hero-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 580px);
-    grid-template-areas: "text planet" "scope planet";
-    /* Лишняя высота правой колонки достаётся пустой нижней строке, а не растягивает текст и «платформу в цифрах». */
-    grid-template-rows: auto 1fr;
-    column-gap: 36px;
+    grid-template-columns: clamp(400px, 33%, 540px) minmax(0, 1fr);
+    grid-template-areas: "text planet" "today planet" "scope planet" "fill planet";
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: clamp(32px, 3vw, 56px);
     row-gap: 22px;
   }
-  /* Раскрытый рейтинг стран скроллится внутри карточки: страница не вытягивается на 55 строк, левая колонка не пустеет. */
-  .fe-dashboard .fe-hero-planet .planet-country-list:not(.is-compact) {
-    max-height: min(560px, 62vh);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(40px, 3.1vw, 56px); line-height: 1.06; }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { font-size: 16px; line-height: 1.55; }
+}
+
+/* Размер шара зависит от высоты экрана: на 1280x720 шар, поиск и год помещаются в первый экран, на высоких мониторах шар крупнее.
+   Правило срабатывает только когда карточка широкая (шар слева, рейтинг справа); на телефоне размер задаёт сама планета. */
+@container planet (min-width: 701px) {
+  .fe-dashboard .fe-hero-planet .planet-view {
+    --planet-scene-height: clamp(400px, calc(100vh - 300px), min(78cqw, 600px));
   }
-  /* Заголовок с поиском и числа платформы стоят подряд у верха левой колонки. */
-  .fe-hero-text, .fe-hero-scope { align-self: start; }
-  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 3.3vw, 46px); }
-  .fe-dashboard .fe-hero-planet [data-block="home-workbench"] { padding: 14px; }
+}
+@supports (height: 100svh) {
+  @container planet (min-width: 701px) {
+    .fe-dashboard .fe-hero-planet .planet-view {
+      --planet-scene-height: clamp(400px, calc(100svh - 300px), min(78cqw, 600px));
+    }
+  }
+}
+/* Узкая карточка (телефон): шар чуть меньше ширины, чтобы под ним сразу был поиск страны. */
+@container planet (max-width: 440px) {
+  .fe-dashboard .fe-hero-planet .planet-view { --planet-scene-height: min(92cqw, 340px); }
 }

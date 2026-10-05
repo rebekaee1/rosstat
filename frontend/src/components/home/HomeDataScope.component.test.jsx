@@ -129,4 +129,34 @@ describe('HomeDataScope: три числа платформы', () => {
     expect(screen.queryByText(/Rosstat/)).toBeNull();
     expect(screen.getByText('268').closest('a').getAttribute('href')).toBe('/world/rating/gdp-usd');
   });
+
+  it('значки у плиток, строка «обновляется по мере публикации» видна сразу, не прячется в раскрывашке', async () => {
+    renderScope();
+    await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
+    expect(document.querySelectorAll('.fe-scope-stat__icon')).toHaveLength(3);
+    const update = screen.getByText(/обновляются автоматически/);
+    expect(update.closest('details')).toBeNull();
+    expect(update.closest('.fe-scope-update')).toBeTruthy();
+    // Обещания «ежедневно» нет: источники публикуют с разной частотой.
+    expect(document.querySelector('[data-block="home-data-scope"]').textContent).not.toMatch(/ежедневн/i);
+  });
+
+  it('счёт цифр: если число в экране, набегает от нуля один раз и приходит к итоговому; итог всегда в разметке', async () => {
+    const frames = [];
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => { frames.push(callback); return frames.length; });
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 60, height: 30, top: 120, bottom: 150, left: 0, right: 60, x: 0, y: 120, toJSON: () => ({}),
+    });
+    renderScope();
+    const number = await screen.findByText('0', { selector: '.fe-scope-stat__link span, dd span' });
+    expect(number).toBeTruthy();
+    // Кадр за кадром до итога.
+    const run = (time) => { const next = frames.splice(0); next.forEach((callback) => callback(time)); };
+    run(0);
+    run(1000);
+    run(2000);
+    await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
+    expect(screen.getByText('55')).toBeTruthy();
+  });
 });

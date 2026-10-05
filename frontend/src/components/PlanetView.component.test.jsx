@@ -485,7 +485,42 @@ describe('PlanetView interaction contract', () => {
     rerender(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="earth" periodLabel="2025" />);
   });
 
-  it('collapses a long list for phones and expands it on request without a nested scroll', () => {
+  it('legend is two compact rows: title with the colour-guide button, then the strip with both ends; the details sit behind the button', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" colorDirection="asc" periodLabel="2025" />);
+    await screen.findByTestId('planet-scene');
+    const key = container.querySelector('.planet-key');
+    expect(key.querySelector('.planet-key-head .planet-key-title')).toBeTruthy();
+    expect(key.querySelector('.planet-key-head details.planet-scale summary').textContent).toBe('planet.legend');
+    expect(key.querySelector('.planet-key-scale .planet-key-bar')).toBeTruthy();
+    expect(key.querySelectorAll('.planet-key-scale .planet-key-ends > span')).toHaveLength(2);
+    // Порядок цвета, интервалы и пометка про страны с узором лежат за кнопкой, а не отдельными абзацами под шкалой.
+    const legend = key.querySelector('details.planet-scale .planet-legend');
+    expect(legend.querySelector('.planet-key-order').textContent).toBe('w6c.key.rule');
+    expect(legend.querySelector('.planet-key-note').textContent).toBe('w6c.key.noData: 2');
+    expect(key.querySelector(':scope > .planet-key-order, :scope > .planet-key-note')).toBeNull();
+    expect(key.querySelector('details.planet-scale').hasAttribute('open')).toBe(false);
+  });
+
+  it('passes the start focus to the scene only when a page asks for one (the home page starts over Eurasia or the USA)', async () => {
+    const { unmount } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} startFocus={[52, 38]} />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.startFocus).toEqual([52, 38]);
+    unmount();
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.startFocus).toBeNull();
+  });
+
+  it('on a narrow screen the country field asks for a short «Country», not a clipped long phrase', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
+      matches: query.includes('max-width: 520px'), media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+    }));
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} />);
+    await screen.findByTestId('planet-scene');
+    expect(screen.getByRole('combobox').getAttribute('placeholder')).toBe('z3.planet.searchShort');
+  });
+
+  it('collapses a long list for phones to five rows and expands it on request without a nested scroll', () => {
     const many = Array.from({ length: 20 }, (_, index) => ({ code: `Y${index}`, slug: `y-${index}`, name: `Страна ${index}` }));
     const { container } = render(<PlanetView countries={many} valuesByCode={Object.fromEntries(many.map((country, index) => [country.code, index]))} />);
     expect(container.querySelector('.planet-country-list').classList.contains('is-compact')).toBe(true);

@@ -96,14 +96,14 @@ describe('HomeCountryList — каталог стран', () => {
   it('длинный список свёрнут до первых строк и раскрывается кнопкой «Показать все страны»', async () => {
     renderCatalog(manyCountries(30));
     await screen.findAllByRole('link');
-    // 30 стран + Россия, добавленная каркасом, — видно 12.
-    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(12);
+    // 30 стран + Россия, добавленная каркасом, — по алфавиту видно 16 (четыре строки по четыре).
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(16);
 
     const more = screen.getByRole('button', { name: /Показать все страны \(31\)/ });
     fireEvent.click(more);
     expect(document.querySelectorAll('.fe-country-row')).toHaveLength(31);
     fireEvent.click(screen.getByRole('button', { name: 'Свернуть список' }));
-    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(12);
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(16);
   });
 
   it('EN: заголовок и поле по-английски, названия стран по-английски', async () => {
@@ -154,6 +154,69 @@ describe('HomeCountryList — каталог стран', () => {
       const names = screen.getAllByRole('link').map((a) => a.querySelector('.fe-country-row__name')?.textContent).filter(Boolean);
       expect(names.slice(0, 3)).toEqual(['Германия', 'Япония', 'Австрия']);
       expect(names).toContain('Россия');
+    });
+  });
+
+  describe('по умолчанию по размеру экономики', () => {
+    function renderSized(countries = COUNTRIES) {
+      mockApiGet([
+        ['/auth/me', { user: null }],
+        ['/world/countries', { countries, total: countries.length }],
+        ['/world/compare/snapshot/gdp-usd', { items: [
+          { country_code: 'DE', value: 4500, unit: 'млрд $' },
+          { country_code: 'JP', value: 4200, unit: 'млрд $' },
+          { country_code: 'AT', value: 520, unit: 'млрд $' },
+        ] }],
+        ['/world/compare/snapshot/hicp-index', { items: [{ country_code: 'DE', value: 2.3 }, { country_code: 'AT', value: 7 }] }],
+        ['/world/compare/snapshot/unemployment-rate', { items: [{ country_code: 'DE', value: 4 }, { country_code: 'AT', value: 6.5 }] }],
+        ['/world/compare/map-series/gdp-usd', { years: [2023, 2024], values_by_year: {
+          2019: { DE: { value: 3 } }, 2020: { DE: { value: 3.2 } }, 2021: { DE: { value: 3.5 } }, 2022: { DE: { value: 3.9 } },
+          2023: { DE: { value: 4.1 } }, 2024: { DE: { value: 4.5 } },
+        } }],
+      ]);
+      return renderPage(<HomeCountryList russiaSeriesCount={8} />, { path: '/', route: '/' });
+    }
+
+    it('без нажатий крупные экономики сверху, заголовок про размер экономики, три крупные карточки и золотая полоска у десятки', async () => {
+      renderSized();
+      expect(await screen.findByRole('heading', { name: 'Все страны по размеру экономики' })).toBeTruthy();
+      const names = screen.getAllByRole('link').map((a) => a.querySelector('.fe-country-row__name')?.textContent).filter(Boolean);
+      expect(names.slice(0, 3)).toEqual(['Германия', 'Япония', 'Австрия']);
+      expect(screen.getByRole('button', { name: 'По размеру экономики' }).getAttribute('aria-pressed')).toBe('true');
+      expect(document.querySelector('.fe-country-grid').getAttribute('data-featured')).toBe('true');
+      expect(document.querySelectorAll('.fe-country-row.is-top').length).toBeGreaterThanOrEqual(3);
+      // Поиск и фильтр возвращают обычную сетку: крупных карточек нет.
+      fireEvent.change(screen.getByRole('searchbox', { name: 'Найти страну' }), { target: { value: 'япон' } });
+      expect(document.querySelector('.fe-country-grid').getAttribute('data-featured')).toBeNull();
+    });
+
+    it('инфляция и безработица с цветным маркером и словом для скринридера, регион у карточки в data-атрибуте', async () => {
+      renderSized();
+      const germany = await screen.findByRole('link', { name: /Германия/ });
+      const metrics = [...germany.querySelectorAll('.fe-country-row__metric')];
+      expect(metrics.map((node) => node.getAttribute('data-tone'))).toEqual(['good', 'good']);
+      expect(germany.getAttribute('data-region')).toBe('europe');
+      const austria = screen.getByRole('link', { name: /Австрия/ });
+      expect(austria.querySelector('.fe-country-row__metric').getAttribute('data-tone')).toBe('warn');
+      expect(austria.querySelector('.fe-country-row__metric .sr-only').textContent).toBe('стоит присмотреться');
+      expect(germany.querySelector('.fe-country-row__spark')).toBeTruthy();
+    });
+
+    it('свёрнутый список при сортировке по размеру: три крупные и 12 обычных, то есть 15 карточек', async () => {
+      const many = Array.from({ length: 30 }, (_, i) => ({
+        code: `E${i}`, slug: `eu-${i}`, name: `Страна ${String(i).padStart(2, '0')}`, name_en: `Country ${i}`, region: 'Европа', indicators_count: 3,
+      }));
+      mockApiGet([
+        ['/auth/me', { user: null }],
+        ['/world/countries', { countries: many, total: many.length }],
+        ['/world/compare/snapshot/gdp-usd', { items: many.map((c, i) => ({ country_code: c.code, value: 1000 - i, unit: 'млрд $' })) }],
+        ['/world/compare/snapshot/hicp-index', { items: [] }],
+        ['/world/compare/snapshot/unemployment-rate', { items: [] }],
+        ['/world/compare/map-series/gdp-usd', { years: [], values_by_year: {} }],
+      ]);
+      renderPage(<HomeCountryList russiaSeriesCount={8} />, { path: '/', route: '/' });
+      await screen.findByRole('heading', { name: 'Все страны по размеру экономики' });
+      expect(document.querySelectorAll('.fe-country-row')).toHaveLength(15);
     });
   });
 
