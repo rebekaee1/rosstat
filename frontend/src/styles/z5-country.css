@@ -885,7 +885,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 :root .z5-ru-territory {
   border-radius: 24px;
   background: var(--k6-sapphire, var(--fe-dark-glass));
-  /* Внутри панели героя размытие невидимо, а fixed-подсказки карты остались бы в ловушке blur: слой без backdrop-filter. */
+  /* Внутри размытой панели героя собственный blur невидим, а в бюджете слоёв он лишний: backdrop-filter не ставим. */
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
