@@ -68,7 +68,7 @@ export default function PlanetView({
   countries = [], valuesByCode = null, detailsByCode = null,
   unit = '', metricName = '', periodLabel = '',
   colorMode = 'relative', colorDirection = null, defaultScope = 'world',
-  initialMode = 'earth', onSelect,
+  initialMode = 'data', showLayerSwitch = false, onSelect,
   years = [], year = null, onYearChange, conceptSlug = '',
   rankingItems = [], benchmark = null, ratingHref = '',
   // На телефоне список стран под планетой не нужен, если ниже на странице стоит свой полный список.
@@ -77,7 +77,7 @@ export default function PlanetView({
   const t = useT();
   const { locale } = useLocale();
   const id = useId().replaceAll(':', '');
-  const [mode, setMode] = useState(initialMode === 'data' ? 'data' : 'earth');
+  const [mode, setMode] = useState(initialMode === 'earth' ? 'earth' : 'data');
   const [sceneStatus, setSceneStatus] = useState('loading');
   const [sceneGeneration, setSceneGeneration] = useState(0);
   const [PlanetScene, setPlanetScene] = useState(() => lazy(() => import('./PlanetScene')));
@@ -334,7 +334,7 @@ export default function PlanetView({
             <span>{t('common.year')}</span>
             <YearPicker years={years} value={year} onChange={onYearChange} label={t('map.timeline.yearOnMap')} />
           </div>}
-          {hasMetric && !isMap && <div className="planet-layer-control"><span className="planet-control-label">{t('planet.viewLabel')}</span><div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
+          {showLayerSwitch && hasMetric && !isMap && <div className="planet-layer-control"><span className="planet-control-label">{t('planet.viewLabel')}</span><div className="planet-layer-switch" role="group" aria-label={t('planet.layerLabel')}>
               <button type="button" aria-pressed={mode === 'earth'} onClick={() => { setMode('earth'); setHoverCode(null); setHoverPlace(null); }}><Globe2 size={15} aria-hidden="true" />{t('planet.earth')}</button>
               <button type="button" aria-pressed={mode === 'data'} onClick={() => { setMode('data'); setHoverCode(null); setHoverPlace(null); }}><Layers3 size={15} aria-hidden="true" />{t('planet.data')}</button>
             </div></div>}

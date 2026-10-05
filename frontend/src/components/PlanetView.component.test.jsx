@@ -54,7 +54,7 @@ afterEach(() => vi.restoreAllMocks());
 describe('PlanetView interaction contract', () => {
   it('starts in Earth and selects a country before opening its actual row', async () => {
     const onSelect = vi.fn();
-    const { container } = render(<PlanetView countries={countries} detailsByCode={new Map([['DE', germanyDetail]])} valuesByCode={new Map([['DE', 3.2]])} metricName="Безработица" unit="%" onSelect={onSelect} />);
+    const { container } = render(<PlanetView initialMode="earth" showLayerSwitch countries={countries} detailsByCode={new Map([['DE', germanyDetail]])} valuesByCode={new Map([['DE', 3.2]])} metricName="Безработица" unit="%" onSelect={onSelect} />);
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
     expect(scene.props.mode).toBe('earth');
     expect(container.querySelector('[data-scene-ready="true"]')).toBeTruthy();
@@ -199,7 +199,7 @@ describe('PlanetView interaction contract', () => {
   });
 
   it('offers Earth and Data while numeric colour intervals remain available through a disclosure', async () => {
-    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: -5, MT: 10 }} unit="%" metricName="Сальдо" colorMode="diverging" initialMode="data" />);
+    const { container } = render(<PlanetView initialMode="earth" showLayerSwitch countries={countries} valuesByCode={{ DE: -5, MT: 10 }} unit="%" metricName="Сальдо" colorMode="diverging" initialMode="data" />);
     await screen.findByTestId('planet-scene');
     const layers = within(screen.getByRole('group', { name: 'planet.layerLabel' }));
     expect(layers.getAllByRole('button').map((button) => button.textContent)).toEqual(['planet.earth', 'planet.data']);
@@ -230,7 +230,7 @@ describe('PlanetView interaction contract', () => {
       initialMode: 'data',
       onSelect,
     };
-    const { container, rerender } = render(<PlanetView {...initialProps} />);
+    const { container, rerender } = render(<PlanetView initialMode="earth" showLayerSwitch {...initialProps} />);
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
     fireEvent.click(screen.getByRole('button', { name: 'planet.earth' }));
     expect(scene.props.mode).toBe('earth');
@@ -238,7 +238,7 @@ describe('PlanetView interaction contract', () => {
     expect(scene.props.unit).toBe('%');
 
     const currentDetail = { ...germanyDetail, date: '2026-07-01', value: 5.1 };
-    rerender(<PlanetView {...initialProps} detailsByCode={{ DE: currentDetail }} valuesByCode={{ DE: 5.1 }} />);
+    rerender(<PlanetView initialMode="earth" showLayerSwitch {...initialProps} detailsByCode={{ DE: currentDetail }} valuesByCode={{ DE: 5.1 }} />);
     expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
     expect(screen.getByText('июль 2026')).toBeTruthy();
     expect(screen.queryByText('июнь 2026')).toBeNull();
@@ -541,9 +541,16 @@ describe('PlanetView interaction contract', () => {
   });
 
   it('keeps every country name off the globe until one is selected or hovered', async () => {
-    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    render(<PlanetView initialMode="earth" showLayerSwitch countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('planet-scene');
     expect(scene.props.selectedCode).toBeNull();
     expect(scene.props.mode).toBe('earth');
+  });
+  it('по умолчанию показывает данные на шаре, без переключателя «Земля / Данные»', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(screen.queryByRole('button', { name: 'planet.earth' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'planet.data' })).toBeNull();
+    expect(container.querySelector('.planet-stage').dataset.planetMode).toBe('data');
   });
 });

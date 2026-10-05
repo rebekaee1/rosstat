@@ -190,7 +190,10 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
   const fitDistance = planetFitDistance({ fov: camera.fov, aspect, padding: size.width < 520 ? 1.1 : aspect < 1 ? 1.14 : 1.08 });
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
-    controls.enabled = interactive;
+    // На телефоне шар вращается сразу: горизонтальный свайп поворачивает его, а вертикальный остаётся прокруткой
+    // страницы (touch-action: pan-y). Полное вращение по двум осям и щипок включаются кнопкой «Покрутить планету».
+    const spinOnly = touchNavigation && !interactive;
+    controls.enabled = true;
     // Wheel belongs to the page. Only an explicitly active touch mode owns pinch.
     controls.enableZoom = interactive && touchNavigation;
     // OrbitControls.connect() writes 'none'; override it after connecting.
@@ -202,8 +205,15 @@ function PlanetControls({ entries, cameraCommand, reducedMotion, defaultScope, i
     controls.zoomSpeed = 0.75;
     controls.minDistance = MIN_DISTANCE;
     controls.maxDistance = Math.max(MAX_DISTANCE, fitDistance);
-    controls.minPolarAngle = 0.035;
-    controls.maxPolarAngle = Math.PI - 0.035;
+    if (spinOnly) {
+      // Только поворот вокруг оси: наклон фиксируется на текущем, чтобы вертикальное движение пальца не крутило шар.
+      const tilt = controls.getPolarAngle();
+      controls.minPolarAngle = tilt;
+      controls.maxPolarAngle = tilt;
+    } else {
+      controls.minPolarAngle = 0.035;
+      controls.maxPolarAngle = Math.PI - 0.035;
+    }
     const onChange = () => {
       // The closer the camera, the less surface a pixel of drag should cover; otherwise zoomed maps race away.
       controls.rotateSpeed = 0.55 * Math.min(1, Math.max(0.35, (camera.position.length() - 1) / Math.max(1.2, fitDistance - 1)));
