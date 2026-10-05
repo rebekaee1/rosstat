@@ -5,6 +5,7 @@
 // озвучивался бы.
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { replayGlint } from '../lib/calcGlint';
 import '../styles/z8-tools.css';
 
 export default function CalcAnimatedNumber({ value, format, className }) {
@@ -29,7 +30,9 @@ export default function CalcAnimatedNumber({ value, format, className }) {
       return undefined;
     }
     const counter = { v: from };
-    // Пока цифры «считаются», итог светится золотом (см. .is-counting в z8-tools.css).
+    // Блик по камню результата (K1 .fe-glint): первый проход даёт появление блока, повтор — пересчёт.
+    if (!first) replayGlint(node.closest('.fe-glint'));
+    // Пока цифры «считаются», на них стоит класс .is-counting (стилей свечения нет: блик идёт по всему камню).
     const box = node.parentElement;
     box?.classList.add('is-counting');
     const tween = gsap.to(counter, {

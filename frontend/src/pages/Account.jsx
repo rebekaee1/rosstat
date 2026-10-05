@@ -13,6 +13,7 @@ import { cn } from '../lib/format';
 import Button from '../components/Button';
 import Spinner from '../components/Spinner';
 import '../styles/w5-pages.css';
+import '../styles/k8-tools.css';
 
 export default function Account() {
   const t = useT();
@@ -179,7 +180,7 @@ export default function Account() {
                     aria-invalid={nameErr ? true : undefined}
                     aria-describedby={nameErr ? 'account-name-error' : undefined}
                     className={cn(
-                      'min-w-0 flex-1 max-w-[16rem] px-2.5 py-1 rounded-lg text-text-primary focus:outline-none pointer-coarse:min-h-11 fe-glass-2',
+                      'min-w-0 flex-1 max-w-[16rem] px-2.5 py-1 rounded-lg text-text-primary focus:outline-none pointer-coarse:min-h-11 fe-k8-well',
                     )}
                   />
                   <Button variant="ghost" size="sm" onClick={saveName} loading={nameBusy} className="shrink-0 px-2">
@@ -240,7 +241,7 @@ export default function Account() {
               aria-invalid={fbErr ? true : undefined}
               aria-describedby={fbErr ? 'account-feedback-error' : undefined}
               className={cn(
-                'w-full px-3.5 py-2.5 rounded-xl text-text-primary focus:outline-none resize-y fe-glass-2',
+                'w-full px-3.5 py-2.5 rounded-xl text-text-primary focus:outline-none resize-y fe-k8-well',
                 fbErr && 'is-invalid',
               )}
             />
@@ -258,7 +259,7 @@ export default function Account() {
             <div id="account-feedback-error" role="alert" className="text-sm text-negative mt-2 empty:hidden">{fbErr}</div>
           </>
         )}
-        <p className="text-xs text-text-tertiary mt-4 pt-3 fe-divider">
+        <p className="text-xs text-text-tertiary mt-5 pt-1">
           {user.newsletter ? t('account.newsletterOn') : t('account.newsletterOff')}
           <Button variant="ghost" size="sm" onClick={toggleNewsletter} loading={nlBusy} className="ml-1 px-2">
             {user.newsletter ? t('account.unsubscribe') : t('account.subscribe')}

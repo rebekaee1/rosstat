@@ -24,6 +24,7 @@ import '../styles/platform-pages.css';
 import '../styles/w5-tools.css';
 import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'w5.embed.type.chartHint', icon: BarChart3 },
@@ -92,18 +93,18 @@ function IndicatorCombobox({ indicators, value, onChange, placeholder }) {
     <div ref={ref} className="relative">
       <button type="button" onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox" aria-expanded={open}
-        className="fe-tap fe-press w-full min-h-11 flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-sm text-text-primary transition-colors text-left fe-glass-2">
+        className="fe-tap fe-press w-full min-h-11 flex items-center justify-between gap-2 px-3 py-2.5 rounded-2xl text-sm text-text-primary text-left fe-k8-well">
         <span className="truncate">{selected?.name || placeholder || t('w6g.embed.pickIndicator')}</span>
         <ChevronDown className={cn('w-4 h-4 text-text-secondary transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
         <div className="absolute z-50 left-0 right-0 mt-1 rounded-xl shadow-2xl overflow-hidden fe-glass-pop" style={{ maxHeight: 340 }}>
-          <div className="p-2 fe-divider-b">
+          <div className="p-2 pb-1">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-secondary" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder={t('embed.search')} autoFocus
-                className="w-full pl-8 pr-3 py-2 bg-obsidian-lighter rounded-lg text-sm text-text-primary placeholder:text-text-tertiary border-none outline-none" />
+                className="fe-k8-well w-full pl-8 pr-3 py-2 rounded-xl text-sm text-text-primary placeholder:text-text-tertiary outline-none" />
             </div>
           </div>
           <div className="overflow-y-auto" style={{ maxHeight: 280 }}>
@@ -585,11 +586,11 @@ export default function EmbedBuilder() {
                   <div className="flex items-center gap-2">
                     <input type="number" inputMode="numeric" value={customW} onChange={(e) => setCustomW(Math.max(200, +e.target.value))} min={200} max={1200}
                       aria-label={t('w5.embed.width')}
-                      className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-glass-2" />
+                      className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-k8-well" />
                     <span className="text-xs text-text-secondary" aria-hidden="true">×</span>
                     <input type="number" inputMode="numeric" value={customH} onChange={(e) => setCustomH(Math.max(100, +e.target.value))} min={100} max={800}
                       aria-label={t('w5.embed.height')}
-                      className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-glass-2" />
+                      className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-k8-well" />
                     <span className="text-xs text-text-secondary">px</span>
                   </div>
                 )}
@@ -601,11 +602,11 @@ export default function EmbedBuilder() {
                 <span className="w5-embed-label">{t('embed.rowCount')}</span>
                 <input type="number" inputMode="numeric" value={limit} onChange={(e) => setLimit(Math.max(1, Math.min(50, +e.target.value)))} min={1} max={50}
                   aria-label={t('embed.rowCount')}
-                  className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-glass-2" />
+                  className="fe-tap w-24 rounded-xl px-2 py-1 text-center text-sm text-text-primary outline-none fe-k8-well" />
               </div>
             )}
 
-            <div className="space-y-1 pt-3 fe-divider">
+            <div className="space-y-1 pt-4">
               <label className="w5-check">
                 <input type="checkbox" checked={showTitle} onChange={(e) => { setShowTitle(e.target.checked); track(events.EMBED_OPTION_TOGGLE, { option: 'title', value: e.target.checked }); }} />
                 <span>{t('embed.showTitle')}</span>

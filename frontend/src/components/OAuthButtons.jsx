@@ -6,11 +6,12 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale } from '../i18n';
 import Button from './Button';
+import '../styles/k8-tools.css';
 
 const PROVIDER_UI = {
   google: {
     labelKey: 'auth.oauth.google',
-    className: 'bg-white! hover:bg-[#f5f5f5]! text-[#1f1f1f]! shadow-[0_1px_3px_rgba(60,48,24,0.22)]!',
+    className: 'bg-white! hover:bg-[#f5f5f5]! text-[#1f1f1f]! fe-k8-oauth fe-k8-oauth--light',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
         <path fill="#4285F4" d="M21.35 12.21c0-.71-.06-1.42-.18-2.11H12v3.99h5.25a4.5 4.5 0 0 1-1.95 2.95v2.45h3.16c1.85-1.71 2.89-4.23 2.89-7.28Z" />
@@ -22,7 +23,7 @@ const PROVIDER_UI = {
   },
   yandex: {
     labelKey: 'auth.oauth.yandex',
-    className: 'bg-[#FC3F1D]! hover:bg-[#e5380f]! text-white!',
+    className: 'bg-[#FC3F1D]! hover:bg-[#e5380f]! text-white! fe-k8-oauth',
     logo: (
       <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white text-[#FC3F1D] text-[13px] font-bold leading-none">
         Я
@@ -31,7 +32,7 @@ const PROVIDER_UI = {
   },
   vk: {
     labelKey: 'auth.oauth.vk',
-    className: 'bg-[#0077FF]! hover:bg-[#0a6ae0]! text-white!',
+    className: 'bg-[#0077FF]! hover:bg-[#0a6ae0]! text-white! fe-k8-oauth',
     logo: (
       <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" aria-hidden="true">
         <path d="M12.8 17.2c-5.5 0-8.9-3.8-9-10.1h2.8c.1 4.6 2.2 6.6 3.8 7V7.1h2.6v3.9c1.6-.2 3.3-2 3.9-3.9h2.6c-.45 2.35-2.2 4.1-3.45 4.85 1.25.6 3.25 2.15 4.05 5.25h-2.9c-.6-1.95-2.15-3.45-4.2-3.7v3.7h-1z" />
@@ -135,22 +136,22 @@ export default function OAuthButtons({
 
       {dividerLabel && (
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-border-subtle" />
+          <div className="fe-k8-seam" aria-hidden="true" />
           <span className="text-xs text-text-tertiary uppercase tracking-wider">{dividerLabel}</span>
-          <div className="flex-1 h-px bg-border-subtle" />
+          <div className="fe-k8-seam" aria-hidden="true" />
         </div>
       )}
 
       {pending && createPortal((
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 fe-k8-scrim fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
           onClick={() => setPending(null)}
           role="dialog"
           aria-modal="true"
           aria-label={t('auth.oauth.dialogAria')}
         >
           <div
-            className="w-full max-w-md rounded-2xl shadow-2xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
+            className="w-full max-w-md rounded-3xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] fe-glass-pop"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-display font-bold text-text-primary mb-1">

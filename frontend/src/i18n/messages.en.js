@@ -3268,4 +3268,7 @@ export default {
   'zb.change.percent.up': 'up {n}%',
   'zb.change.percent.down': 'down {n}%',
   'zb.change.flat': 'about the same',
+  // ===== K8 =====
+  'k8.sticky.label': 'Result',
+  'k8.sticky.aria': 'Calculation result: {value}. Press to go to the result',
 };

@@ -51,7 +51,14 @@
   color: var(--color-text-primary);
   overflow-wrap: anywhere;
 }
-.w5-tile--accent .w5-tile__value { color: var(--color-champagne-ink); }
+.w5-tile--accent .w5-tile__value {
+  /* Главная цифра плитки: золотая гравировка, контраст крупного текста ≥ 3:1. */
+  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
 
 /* ── Ключевая ставка: пилюля под заголовком ─────────────────────────────── */
 .w5-keyrate {
@@ -72,7 +79,7 @@
   transform: translateY(var(--fe-lift, -2px));
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint);
 }
-.w5-keyrate__dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--color-champagne); }
+.w5-keyrate__dot { width: 8px; height: 8px; border-radius: 9999px; background: radial-gradient(circle at 35% 30%, #f6e3ab, var(--color-champagne)); box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.5); }
 @media (pointer: coarse) { .w5-keyrate { min-height: 44px; } }
 
 /* ── «Как считаем»: раскрывающийся блок простыми словами ────────────────── */
@@ -237,7 +244,7 @@
   display: grid;
   place-content: center;
   cursor: pointer;
-  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.15s ease, box-shadow 0.2s ease; box-shadow: var(--fe-l2-shadow);
+  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.15s ease; box-shadow: var(--fe-l2-shadow);
 }
 .w5-check input::after {
   content: '';

@@ -1,6 +1,6 @@
 // Раздел «Курсы валют и криптовалют». Слева: две плитки доллара («Курс ЦБ» и «Рынок»), конвертер, вкладки «Валюты / Крипто / Мир»
 // и строки курсов. Справа: график выбранной пары за год и «Золото, нефть, биткоин». На телефоне всё идёт одной колонкой.
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
@@ -22,10 +22,12 @@ import {
 } from '../lib/currencyRates';
 import { MARKET_BOARD_CODES, chartPairFor, useMarketSnapshots, yearSeries } from '../lib/currencyMarket';
 import { track, events } from '../lib/track';
+import { useGlintOnChange } from '../lib/calcGlint';
 import { useLocale, useT } from '../i18n';
 import '../styles/y2-indicator.css';
 import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 
 const QUICK_AMOUNTS = ['1', '100', '1000', '10000'];
 const MARKET_LABEL_KEYS = { 'gold-rub-live': 'w6b.ticker.gold', brent: 'w6b.ticker.brent', 'btc-usd': 'w6b.ticker.btc' };
@@ -130,12 +132,46 @@ function RateTiles({ edges, market }) {
   );
 }
 
+/** Результат конвертера: «камень» с золотой цифрой; блик проходит заново, когда число изменилось. */
+function ConverterOut({ result, one, safeFrom, safeTo, basisKey }) {
+  const t = useT();
+  const { locale } = useLocale();
+  const ref = useRef(null);
+  useGlintOnChange(ref, result ? result.value : null);
+  return (
+    <div ref={ref} className="fe-z8-conv__out fe-glint" aria-live="polite" data-testid="converter-result">
+      {result ? (
+        <>
+          <p className="fe-z8-conv__sum">
+            <span className="fe-z8-conv__num">{formatConverted(result.value, locale)}</span>
+            <span className="fe-z8-conv__unit">{unitName(safeTo, locale)}</span>
+          </p>
+          {one && (
+            <p className="fe-z8-conv__rate">
+              {`1 ${safeFrom} = ${formatConverted(one.value, locale)} ${safeTo}`}
+            </p>
+          )}
+          {result.date && (
+            <p className="fe-z8-conv__note">
+              {t(basisKey, { date: formatDate(result.date, 'day', locale) })}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="fe-z8-conv__note">{t('w6g.cur.badAmount')}</p>
+      )}
+    </div>
+  );
+}
+
 function Converter({ edges, from, to, onFrom, onTo }) {
   const t = useT();
   const { locale } = useLocale();
   const id = useId();
   const units = useMemo(() => convertibleUnits(edges), [edges]);
   const [amountText, setAmountText] = useState('100');
+  // Каждое нажатие на «⇄» поворачивает стрелки ещё на 180° (k8-tools: --k8-turn).
+  const [turns, setTurns] = useState(0);
   if (units.length < 2) return null;
 
   const safeFrom = units.includes(from) ? from : units[0];
@@ -149,6 +185,7 @@ function Converter({ edges, from, to, onFrom, onTo }) {
   const swap = () => {
     onFrom(safeTo);
     onTo(safeFrom);
+    setTurns((n) => n + 1);
     track(events.COMPARE_CHANGE, { converter: 'swap' });
   };
   const optionOf = (unit) => {
@@ -189,7 +226,14 @@ function Converter({ edges, from, to, onFrom, onTo }) {
           emptyText={t('w6g.cur.nothing')}
           className="fe-z8-conv__from"
         />
-        <button type="button" className="fe-z8-swap fe-press" onClick={swap} aria-label={t('w6g.cur.swap')} title={t('w6g.cur.swap')}>
+        <button
+          type="button"
+          className="fe-z8-swap fe-press"
+          style={{ '--k8-turn': `${turns * 180}deg` }}
+          onClick={swap}
+          aria-label={t('w6g.cur.swap')}
+          title={t('w6g.cur.swap')}
+        >
           <ArrowRightLeft size={18} aria-hidden="true" />
         </button>
         <CurrencySelect
@@ -215,28 +259,13 @@ function Converter({ edges, from, to, onFrom, onTo }) {
         ))}
       </div>
 
-      <div className="fe-z8-conv__out" aria-live="polite" data-testid="converter-result">
-        {result ? (
-          <>
-            <p className="fe-z8-conv__sum">
-              <span className="fe-z8-conv__num">{formatConverted(result.value, locale)}</span>
-              <span className="fe-z8-conv__unit">{unitName(safeTo, locale)}</span>
-            </p>
-            {one && (
-              <p className="fe-z8-conv__rate">
-                {`1 ${safeFrom} = ${formatConverted(one.value, locale)} ${safeTo}`}
-              </p>
-            )}
-            {result.date && (
-              <p className="fe-z8-conv__note">
-                {t(basisKey, { date: formatDate(result.date, 'day', locale) })}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className="fe-z8-conv__note">{t('w6g.cur.badAmount')}</p>
-        )}
-      </div>
+      <ConverterOut
+        result={result}
+        one={one}
+        safeFrom={safeFrom}
+        safeTo={safeTo}
+        basisKey={basisKey}
+      />
     </section>
   );
 }
@@ -329,7 +358,7 @@ function YearChart({ pair }) {
               tick={axisTick({ fontSize: 12 })}
               tickFormatter={(v) => formatValue(v, rateDigits(v) > 2 ? 3 : rateDigits(v), locale)}
             />
-            <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeDasharray: '3 3' }} />
+            <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1.5, strokeOpacity: 0.55 }} />
             <Area
               type="monotone"
               dataKey="value"
@@ -478,7 +507,12 @@ export default function CurrencyDesk({ indicators }) {
 
       <section className="fe-z8-cur__list" data-block="currency-list" aria-label={t('w6g.cur.listTitle')}>
         <div className="fe-z8-toolbar">
-          <div className="fe-z8-seg" role="group" aria-label={t('w6g.cur.tabsAria')}>
+          <div
+            className={cn('fe-z8-seg', needle && 'is-idle')}
+            style={{ '--k8-i': Math.max(0, tabs.indexOf(activeTab)), '--k8-n': Math.max(1, tabs.length) }}
+            role="group"
+            aria-label={t('w6g.cur.tabsAria')}
+          >
             {tabs.map((id) => (
               <button
                 key={id}
@@ -512,6 +546,7 @@ export default function CurrencyDesk({ indicators }) {
 
         {rows.length === 0 ? (
           <div className="fe-w6g-empty" role="status">
+            <span className="fe-k8-shard" aria-hidden="true" />
             <p>{t('w6g.cur.nothing')}</p>
             <Button variant="secondary" onClick={() => setQuery('')}>{t('w4.compare.clearSearch')}</Button>
           </div>

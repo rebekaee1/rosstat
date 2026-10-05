@@ -1,6 +1,7 @@
-/* Раунд 2, зона Z8: валюты, калькуляторы, методология, поиск, виджеты.
+/* Раунд 2, зона Z8: валюты, калькуляторы, методология, поиск, виджеты. Раунд 3, K8: хрусталь без границ.
    Глобальные токены задаёт зона Z1 (--fe-*); здесь они применяются только с запасным значением.
-   Свои локальные имена (--z8-*) собраны в первом правиле и живут только внутри наших блоков. */
+   Свои локальные имена (--z8-*) собраны в первом правиле и живут только внутри наших блоков.
+   Колодцы полей, жёлоб ползунка, камень результата и прочие новые приёмы K8 живут в k8-tools.css (--k8-*). */
 
 .fe-z8-cur,
 .fe-z8-calc,
@@ -62,19 +63,25 @@
   gap: 4px;
   min-width: 0;
   padding: 16px 18px 15px;
-  border-radius: 20px;
-  background: var(--fe-glass, linear-gradient(130deg, #ffffffe8, #ffffff9c));
-  box-shadow: var(--fe-card-shadow);
-  transition: transform 0.24s var(--z8-ease), box-shadow 0.24s var(--z8-ease);
+  border-radius: 22px;
+  /* «Рынок»: L2, стекло без рамки (блик сверху, тень снизу). */
+  background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55));
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+  transition: transform 0.24s var(--z8-ease);
 }
 @media (hover: hover) {
   .fe-z8-rate:hover { transform: translateY(calc(-1 * var(--z8-lift))); }
 }
+/* «Курс ЦБ»: золотое стекло. Свет задают заливка и тень, окантовки нет. */
 .fe-z8-rate--cb {
   background:
-    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 60%),
-    var(--fe-glass, linear-gradient(130deg, #ffffffe8, #ffffff9c));
-  box-shadow: var(--z8-shadow);
+    radial-gradient(120% 90% at 100% 0%, rgba(233, 205, 142, 0.55), transparent 62%),
+    linear-gradient(135deg, rgba(255, 246, 220, 0.72), rgba(233, 205, 142, 0.34) 70%, rgba(255, 255, 255, 0.4));
+  box-shadow:
+    0 1px 2px rgba(60, 48, 24, 0.06),
+    0 22px 40px -24px rgba(176, 138, 62, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(176, 138, 62, 0.16);
 }
 .fe-z8-rate__label {
   display: flex;
@@ -91,8 +98,8 @@
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: radial-gradient(circle at 35% 30%, #e6c981, var(--z8-gold));
-  box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.2);
+  background: radial-gradient(circle at 35% 30%, #f6e3ab, var(--z8-gold));
+  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.55);
 }
 .fe-z8-rate__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0; }
 .fe-z8-rate__num {
@@ -104,7 +111,14 @@
   font-variant-numeric: tabular-nums;
   color: var(--color-text-primary);
 }
-.fe-z8-rate--cb .fe-z8-rate__num { color: var(--z8-gold-ink); }
+.fe-z8-rate--cb .fe-z8-rate__num {
+  /* Золотая гравировка: крупная цифра градиентом #6B5224 → #B08A3E (контраст крупного текста ≥ 3:1). */
+  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
 .fe-z8-rate__unit { font-size: 17px; font-weight: 600; color: var(--color-text-secondary); }
 .fe-z8-rate__delta { font-size: 13px; }
 .fe-z8-rate__note { margin: 0; font-size: 13px; line-height: 1.4; color: var(--z8-muted); }
@@ -138,18 +152,23 @@
   width: 100%;
   min-height: 48px;
   padding: 0 14px;
-  border-radius: 14px;
-  background: var(--fe-glass-l2);
+  border-radius: 16px;
+  /* Поле «вырезано в стекле»: колодец (K8.1). Фокус даёт свечение, не кольцо. */
+  background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-primary);
   font: inherit;
   font-size: 18px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.18s; box-shadow: var(--fe-l2-shadow);
 }
-.fe-z8-input:hover { background: var(--fe-glass-l2-hover); }
-.fe-z8-input:focus-visible { outline: none;  box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.22); }
-.fe-z8-input[aria-invalid='true'] { box-shadow: inset 0 -2px 0 var(--color-negative); }
+.fe-z8-input:hover { background: var(--k8-well-bg-hover, rgba(255, 255, 255, 0.58)); }
+.fe-z8-input:focus-visible {
+  outline: none;
+  background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+}
+.fe-z8-input[aria-invalid='true'] { box-shadow: var(--k8-well-shadow), inset 0 -2px 0 var(--color-negative); }
 .fe-z8-swap {
   display: inline-flex;
   align-items: center;
@@ -157,19 +176,24 @@
   width: 48px;
   height: 48px;
   border-radius: 999px;
-  background: var(--fe-glass-l2);
-  color: var(--z8-gold-ink);
+  /* Золотая бусина: радиальный блик, нижняя тень. Каждое нажатие поворачивает стрелки на 180° (--k8-turn). */
+  background: var(--k8-bead, radial-gradient(circle at 32% 26%, #fff 0, #fbebc0 16%, #e3c06c 50%, #b08a3e 100%));
+  color: var(--fe-on-gold, #231b0b);
   cursor: pointer;
-  transition: transform 0.3s var(--z8-ease), box-shadow 0.2s; box-shadow: var(--fe-l2-shadow);
+  box-shadow: var(--k8-bead-shadow, 0 6px 12px -4px rgba(120, 90, 30, 0.55), inset 0 -3px 5px rgba(122, 95, 42, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.8));
+  transition: transform 0.2s var(--z8-ease);
 }
-.fe-z8-swap:hover { box-shadow: var(--z8-glow); }
-.fe-z8-swap:active svg { transform: rotate(180deg); }
-.fe-z8-swap svg { transition: transform 0.3s var(--z8-ease); }
+@media (hover: hover) {
+  .fe-z8-swap:hover { transform: scale(1.06); box-shadow: var(--k8-bead-shadow), 0 0 18px 2px rgba(201, 162, 77, 0.5); }
+}
+.fe-z8-swap:active { transform: scale(0.94); }
+.fe-z8-swap svg { transform: rotate(var(--k8-turn, 0deg)); transition: transform 0.4s var(--k8-spring, var(--z8-ease)); }
 .fe-z8-quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .fe-z8-quick__btn {
   min-height: 36px;
-  padding: 0 14px;
+  padding: 0 16px;
   border-radius: 999px;
+  /* «Жетон» L2: блик сверху, тень снизу; выбранный заливается золотом. */
   background: var(--fe-glass-l2);
   color: var(--color-text-secondary);
   font: inherit;
@@ -177,12 +201,25 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: transform 0.2s var(--fe-ease-reveal), color 0.18s, background-color 0.18s, box-shadow 0.2s ease; box-shadow: var(--fe-l2-shadow);
+  transition: transform 0.2s var(--fe-ease-reveal), color 0.18s, background-color 0.18s;
+  box-shadow: var(--fe-l2-shadow);
 }
-.fe-z8-quick__btn:hover { color: var(--z8-gold-ink); }
-.fe-z8-quick__btn.is-active { background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg); color: var(--z8-gold-ink); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
+@media (hover: hover) {
+  .fe-z8-quick__btn:hover { color: var(--z8-gold-ink); transform: translateY(-2px); }
+}
+.fe-z8-quick__btn:active { transform: scale(0.97); }
+.fe-z8-quick__btn.is-active { background: var(--fe-glass-active); color: var(--fe-on-gold); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
 @media (pointer: coarse) { .fe-z8-quick__btn { min-height: 44px; } }
-.fe-z8-conv__out { margin-top: 16px; padding-top: 16px; min-height: 96px; }
+.fe-z8-conv__out {
+  /* Результат конвертера: L2 «камень» с золотой гравировкой; блик при пересчёте (класс .fe-glint в разметке). */
+  position: relative;
+  margin-top: 16px;
+  padding: 16px 20px 14px;
+  min-height: 112px;
+  border-radius: 22px;
+  background: var(--k8-stone-bg, linear-gradient(130deg, rgba(255, 255, 255, 0.68), rgba(255, 250, 236, 0.46)));
+  box-shadow: var(--k8-stone-shadow, var(--fe-shadow-l2), var(--fe-inset-glint));
+}
 .fe-z8-conv__sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; }
 .fe-z8-conv__num {
   font-family: var(--font-display);
@@ -191,7 +228,12 @@
   line-height: 1.05;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
-  color: var(--color-text-primary);
+  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: var(--k8-engrave-light, none);
   animation: z8-num-in 0.35s var(--z8-ease) both;
 }
 @keyframes z8-num-in { from { opacity: 0.35; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -207,24 +249,30 @@
   gap: 10px;
   width: 100%;
   min-height: 48px;
-  padding: 0 12px 0 10px;
-  border-radius: 14px;
-  background: var(--fe-glass-l2);
+  padding: 0 12px 0 8px;
+  border-radius: 16px;
+  /* Селект: тот же колодец, что у поля; список открывается стеклянной панелью L1. */
+  background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-primary);
   font: inherit;
   font-size: 16px;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
-  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.18s; box-shadow: var(--fe-l2-shadow);
 }
-.fe-z8-select__button:hover { background: var(--fe-glass-l2-hover); }
+.fe-z8-select__button:hover { background: var(--k8-well-bg-hover, rgba(255, 255, 255, 0.58)); }
 .fe-z8-select.is-open .fe-z8-select__button,
-.fe-z8-select__button:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.22); }
+.fe-z8-select__button:focus-visible {
+  outline: none;
+  background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+}
 .fe-z8-select__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fe-z8-select__chev { flex: none; color: var(--color-text-secondary); transition: transform 0.2s var(--z8-ease); }
 .fe-z8-select.is-open .fe-z8-select__chev { transform: rotate(180deg); }
 .fe-z8-coin {
+  position: relative;
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -232,24 +280,40 @@
   width: 30px;
   height: 30px;
   border-radius: 999px;
-  background: var(--z8-gold-soft);
   color: var(--z8-gold-ink);
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
 }
+/* Значок валюты: стеклянный диск, блик в левом верхнем углу, тень снизу. Перекрывает фон из w6-g.css. */
+:root .fe-z8-coin {
+  background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 42%, rgba(233, 205, 142, 0.5) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.22), 0 5px 10px -5px rgba(90, 68, 24, 0.45);
+}
+.fe-z8-coin::after {
+  content: '';
+  position: absolute;
+  inset: 3px 22% auto;
+  height: 34%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
 .fe-z8-select__panel {
   position: absolute;
   z-index: 40;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   left: 0;
   min-width: 100%;
   width: max-content;
   max-width: min(320px, 86vw);
   padding: 8px;
-  border-radius: 16px;
-  background: var(--fe-glass-l2);
-  box-shadow: 0 22px 48px -22px rgba(32, 42, 60, 0.5);
+  border-radius: 20px;
+  /* Список: слой L1 плотнее (читается поверх страницы), blur 18 px. */
+  background: var(--fe-glass-l1-sheen, none), var(--fe-pop-bg, rgba(255, 255, 255, 0.88));
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  box-shadow: var(--fe-float-shadow-hover, 0 22px 48px -22px rgba(32, 42, 60, 0.5)), var(--fe-inset-glint, none), var(--fe-inset-glint-bottom, none);
   animation: z8-pop 0.16s var(--z8-ease) both;
 }
 @keyframes z8-pop { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
@@ -264,10 +328,12 @@
   min-height: 40px;
   padding: 0 10px;
   margin-bottom: 6px;
-  border-radius: 10px;
-  background: var(--color-surface-hover, #F6F7F9);
+  border-radius: 14px;
+  background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--k8-well-shadow, none);
   color: var(--color-text-tertiary, #6b7788);
 }
+.fe-z8-select__search:focus-within { background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8)); box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 18px 2px rgba(201, 162, 77, 0.45)); }
 .fe-z8-select__search input {
   flex: 1;
   min-width: 0;
@@ -284,15 +350,16 @@
   align-items: center;
   gap: 10px;
   min-height: 44px;
-  padding: 0 10px;
-  border-radius: 10px;
+  padding: 0 10px 0 8px;
+  border-radius: 14px;
   font-size: 15px;
   font-weight: 500;
   color: var(--color-text-primary);
   cursor: pointer;
 }
-.fe-z8-select__option.is-active { background: var(--z8-gold-soft); }
-.fe-z8-select__option.is-current { font-weight: 700; color: var(--z8-gold-ink); }
+/* Под курсором или клавишей: L2 с бликом; выбранная: тёплая золотая заливка. Линий между строками нет. */
+.fe-z8-select__option.is-active { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.72)); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+.fe-z8-select__option.is-current { font-weight: 700; color: var(--z8-gold-ink); background: linear-gradient(135deg, rgba(233, 205, 142, 0.5), rgba(201, 162, 77, 0.2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
 .fe-z8-select__optname { flex: 1; min-width: 0; }
 .fe-z8-select__empty { padding: 12px 10px; font-size: 14px; color: var(--z8-muted); }
 
@@ -322,23 +389,35 @@
 .fe-z8-chart__plot { position: relative; flex: 1 1 auto; min-height: 250px; }
 .fe-z8-chart__abs { position: absolute; inset: 0; }
 .fe-z8-chart__skeleton { width: 100%; height: 320px; border-radius: 16px; }
-.fe-z8-tip { padding: 10px 14px; border-radius: 12px; box-shadow: 0 14px 30px -18px rgba(32, 42, 60, 0.55); }
+.fe-z8-tip {
+  padding: 10px 14px;
+  border-radius: 14px;
+  /* Подсказка графика: L2 без рамки, золотая вертикаль рисуется самим графиком. */
+  background: var(--fe-pop-bg, rgba(255, 255, 255, 0.88));
+  box-shadow: 0 14px 30px -18px rgba(32, 42, 60, 0.55), var(--fe-inset-glint, none);
+}
 .fe-z8-tip__date { margin: 0 0 2px; font-size: 12px; color: var(--color-text-secondary); }
 .fe-z8-tip__val { margin: 0; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--z8-gold-ink); }
 
 /* --- золото, нефть, биткоин --- */
 .fe-z8-board { padding: 20px 22px 14px; border-radius: 24px; }
 .fe-z8-board__title { margin: 0 0 6px; font-size: 18px; font-weight: 700; color: var(--color-text-primary); }
-.fe-z8-board__list { margin: 0; padding: 0; list-style: none; }
-.fe-z8-board__list li + li { border-top: 1px solid var(--color-border-subtle); }
+.fe-z8-board__list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .fe-z8-board__row {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 56px;
-  padding: 8px 4px;
+  padding: 8px 14px;
+  border-radius: 16px;
+  /* Строка-полка L2: линий между строками нет, отделяет зазор и тень. */
+  background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55));
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   color: var(--color-text-primary);
-  transition: color 0.18s;
+  transition: color 0.18s, transform 0.2s var(--fe-ease-reveal);
+}
+@media (hover: hover) {
+  .fe-z8-board__row:hover { transform: translateY(-2px); }
 }
 .fe-z8-board__row:hover .fe-z8-board__name { color: var(--z8-gold-ink); }
 .fe-z8-board__name { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; transition: color 0.18s; }
@@ -349,15 +428,35 @@
 
 /* --- вкладки сегментом, поиск, строки --- */
 .fe-z8-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+/* Вкладки: общий жёлоб (инсет-тень) и золотой бегунок, который переезжает пружиной 260 мс (transform).
+   Номер активной и число вкладок задаёт разметка через --k8-i и --k8-n; кнопки одной ширины. */
 .fe-z8-seg {
-  display: inline-flex;
-  gap: 4px;
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   padding: 4px;
   border-radius: 999px;
-  background: var(--fe-glass-soft, rgba(255, 255, 255, 0.6));
-  box-shadow: var(--fe-l2-shadow);
+  background: var(--k8-trough-bg, rgba(255, 255, 255, 0.4));
+  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(120, 90, 30, 0.2));
 }
+.fe-z8-seg::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--k8-n, 3));
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%), var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateX(calc(var(--k8-i, 0) * 100%));
+  transition: transform 0.26s var(--k8-spring, ease), opacity 0.2s ease;
+}
+.fe-z8-seg.is-idle::before { opacity: 0; }
 .fe-z8-seg__btn {
+  position: relative;
+  z-index: 1;
   min-height: 40px;
   padding: 0 18px;
   border: 0;
@@ -367,15 +466,12 @@
   font: inherit;
   font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: color 0.2s;
 }
 .fe-z8-seg__btn:hover { color: var(--color-text-primary); }
-.fe-z8-seg__btn.is-active {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg);
-  color: var(--z8-gold-ink);
-  box-shadow: var(--fe-shadow-active), var(--fe-inset-glint);
-}
+.fe-z8-seg__btn.is-active { background: transparent; color: var(--fe-on-gold, #231b0b); box-shadow: none; }
 @media (pointer: coarse) { .fe-z8-seg__btn { min-height: 44px; } }
 .fe-z8-search {
   display: flex;
@@ -386,11 +482,15 @@
   min-height: 48px;
   padding: 0 14px;
   border-radius: 999px;
-  background: var(--fe-glass-l2);
+  background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-tertiary, #6b7788);
-  transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.18s; box-shadow: var(--fe-l2-shadow);
 }
-.fe-z8-search:focus-within {  box-shadow: 0 0 0 3px rgba(173, 138, 72, 0.2); }
+.fe-z8-search:hover { background: var(--k8-well-bg-hover, rgba(255, 255, 255, 0.58)); }
+.fe-z8-search:focus-within {
+  background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+}
 .fe-z8-search__input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--color-text-primary); font: inherit; font-size: 16px; }
 .fe-z8-search__clear {
   display: inline-flex;
@@ -412,8 +512,12 @@
 .fe-z8-cur .fe-trow__num { font-size: 18px; }
 .fe-z8-cur .fe-w6g-coin { width: 40px; height: 40px; font-size: 20px; }
 .fe-z8-cur .fe-trow.fe-z8-row { transition: background-color 0.2s, transform 0.24s var(--z8-ease); }
+/* Пустой результат поиска валюты: осколок и фраза, как у остальных пустых состояний (K2.6). */
+.fe-z8-cur .fe-w6g-empty { justify-items: center; text-align: center; padding: 26px 16px; }
 
 @media (prefers-reduced-motion: reduce) {
+  .fe-z8-seg::before, .fe-z8-tabs::before, .fe-z8-quick__btn, .fe-z8-board__row { transition: none; }
+  .fe-z8-quick__btn:hover, .fe-z8-board__row:hover { transform: none; }
   .fe-z8-rate, .fe-z8-swap, .fe-z8-swap svg, .fe-z8-select__chev, .fe-z8-cur .fe-trow.fe-z8-row { transition: none; }
   .fe-z8-select__panel, .fe-z8-conv__num { animation: none; }
 }
@@ -441,9 +545,9 @@
   height: 52px;
   margin-top: 4px;
   border-radius: 18px;
-  background: radial-gradient(circle at 30% 20%, rgba(230, 201, 129, 0.35), rgba(173, 138, 72, 0.1));
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), rgba(233, 205, 142, 0.55) 60%, rgba(201, 162, 77, 0.4));
   color: var(--z8-gold-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 22px -14px rgba(173, 138, 72, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.2), 0 12px 22px -14px rgba(120, 90, 30, 0.7);
 }
 .fe-z8-calc__headtext { min-width: 0; }
 .fe-z8-calc__title {
@@ -475,17 +579,34 @@
 
 /* --- вкладки калькуляторов --- */
 .fe-z8-tabs {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   max-width: 880px;
   margin: 20px 0 24px;
   padding: 5px;
-  border-radius: 20px;
-  background: var(--fe-glass-soft, rgba(255, 255, 255, 0.6));
-  box-shadow: var(--fe-card-shadow);
+  border-radius: 22px;
+  background: var(--k8-trough-bg, rgba(255, 255, 255, 0.4));
+  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(120, 90, 30, 0.2));
+}
+/* Бегунок: золотое стекло шириной в одну вкладку; номер активной задаёт разметка (--k8-i). Едет только transform. */
+.fe-z8-tabs::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: calc((100% - 10px - 12px) / 3);
+  border-radius: 17px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%), var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transform: translateX(calc(var(--k8-i, 0) * (100% + 6px)));
+  transition: transform 0.26s var(--k8-spring, ease);
 }
 .fe-z8-tab {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -496,20 +617,16 @@
   border-radius: 15px;
   color: var(--color-text-secondary);
   text-align: left;
-  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: color 0.2s;
 }
-.fe-z8-tab:hover { color: var(--color-text-primary); background: color-mix(in srgb, var(--z8-gold) 8%, transparent); }
-.fe-z8-tab.is-active {
-  color: var(--z8-gold-ink);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg);
-  box-shadow: var(--fe-shadow-active), var(--fe-inset-glint);
-}
+.fe-z8-tab:hover { color: var(--color-text-primary); }
+.fe-z8-tab.is-active { color: var(--fe-on-gold, #231b0b); background: transparent; box-shadow: none; }
 .fe-z8-tab__icon { display: inline-flex; flex: none; }
 .fe-z8-tab__text { display: grid; min-width: 0; }
 .fe-z8-tab__title { font-size: 15px; font-weight: 650; line-height: 1.25; }
 .fe-z8-tab__full { display: none; }
 .fe-z8-tab__for { display: none; font-size: 12px; line-height: 1.25; font-weight: 500; color: var(--color-text-secondary); }
-.fe-z8-tab.is-active .fe-z8-tab__for { color: var(--z8-gold-ink); }
+.fe-z8-tab.is-active .fe-z8-tab__for { color: #3a2b0c; }
 @media (max-width: 479px) {
   .fe-z8-tab { flex-direction: column; gap: 2px; padding: 6px 4px; }
   .fe-z8-tab__text { justify-items: center; text-align: center; }
@@ -537,15 +654,14 @@
   .fe-z8-calc__side { position: sticky; top: 104px; }
 }
 
-.fe-z8-card { border-radius: 24px; box-shadow: var(--z8-shadow); }
+.fe-z8-card { border-radius: 26px; }
 .fe-z8-calc__side > section.fe-panel { margin-bottom: 0; }
 .fe-z8-calc__out > section,
 .fe-z8-calc__out > div[aria-busy='true'] {
   margin-bottom: 20px;
   padding: 24px 26px;
-  border-radius: 24px;
+  border-radius: 26px;
   min-height: 0;
-  box-shadow: var(--z8-shadow);
 }
 .fe-z8-calc__out > section:last-child { margin-bottom: 0; }
 .fe-z8-calc__out > div[aria-busy='true'] { min-height: 20rem; }
@@ -554,7 +670,7 @@
   .fe-z8-calc__out > section, .fe-z8-calc__out > div[aria-busy='true'] { padding: 20px 18px; }
 }
 
-/* --- итог: золотая кромка, свечение, золотой счёт --- */
+/* --- итог: «камень» L2 (.fe-k8-stone в k8-tools.css), золотая гравировка, блик-проход при пересчёте --- */
 .fe-z8-result { position: relative; overflow: hidden; }
 .fe-z8-result::after {
   content: '';
@@ -567,24 +683,20 @@
   pointer-events: none;
 }
 .fe-z8-result > * { position: relative; z-index: 1; }
-.fe-z8-calc .fe-z8-result .calc-result-number:not(.text-negative) { color: var(--z8-gold-ink); }
-.fe-z8-calc .calc-result-number { transition: color 0.5s ease, text-shadow 0.6s ease; }
-.fe-z8-calc .calc-result-number.is-counting { text-shadow: 0 0 28px rgba(201, 162, 77, 0.65); }
-.fe-z8-calc .w5-tile { transition: transform 0.24s var(--z8-ease), border-color 0.2s; }
+.fe-z8-calc .calc-result-number { transition: color 0.5s ease; }
+.fe-z8-calc .w5-tile { transition: transform 0.24s var(--z8-ease); }
 @media (hover: hover) { .fe-z8-calc .w5-tile:hover { transform: translateY(calc(-1 * var(--z8-lift))); } }
-.fe-z8-calc .w5-tile--accent { background: linear-gradient(160deg, color-mix(in srgb, var(--z8-gold) 14%, var(--color-obsidian, #EEF0F4)), var(--color-obsidian, #EEF0F4)); }
+.fe-z8-calc .w5-tile--accent { background: linear-gradient(160deg, rgba(233, 205, 142, 0.5), rgba(255, 255, 255, 0.5)); }
 .fe-z8-calc .w5-tile__value { font-size: clamp(18px, 2vw, 24px); }
 
-/* --- боковая подсказка: тёмное стекло с золотым контуром --- */
+/* --- боковая подсказка: светлое золотое стекло L2 (раньше тёмная плита с контуром) --- */
 .fe-z8-hint { position: relative; }
 .fe-z8-calc .fe-z8-hint {
   padding: 22px 24px;
   border-radius: 24px;
-  background:
-    radial-gradient(120% 100% at 100% 0%, rgba(201, 162, 77, 0.22), transparent 55%),
-    var(--fe-dark-surface, #1E2638);
-  color: #F3EFE6;
-  box-shadow: 0 22px 44px -26px rgba(20, 28, 46, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: var(--k8-stone-bg, linear-gradient(130deg, rgba(255, 255, 255, 0.68), rgba(255, 250, 236, 0.46)));
+  box-shadow: var(--k8-stone-shadow, var(--fe-shadow-l2), var(--fe-inset-glint));
+  color: var(--color-text-primary);
   overflow: hidden;
 }
 .fe-z8-hint__label {
@@ -594,7 +706,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #D7BC7E;
+  color: var(--fe-gold-ink, #7a5f2a);
 }
 .fe-z8-hint__big {
   margin: 0;
@@ -604,14 +716,15 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(100deg, #F2DDA4 10%, #C9A24D 60%, #E8CF93);
+  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: #E6C981;
+  color: var(--fe-gold-ink, #7a5f2a);
+  filter: var(--k8-engrave-light, none);
 }
-.fe-z8-hint__line { margin: 6px 0 0; font-size: 16px; font-weight: 600; line-height: 1.35; color: #F3EFE6; }
-.fe-z8-hint__sub { margin: 4px 0 0; font-size: 14px; line-height: 1.45; color: rgba(243, 239, 230, 0.78); }
+.fe-z8-hint__line { margin: 6px 0 0; font-size: 16px; font-weight: 600; line-height: 1.35; color: var(--color-text-primary); }
+.fe-z8-hint__sub { margin: 4px 0 0; font-size: 14px; line-height: 1.45; color: var(--color-text-secondary); }
 
 /* --- низ страницы: вопросы слева, метод и соседние калькуляторы справа --- */
 .fe-z8-calc__lower { display: grid; gap: 8px; margin-top: 32px; grid-template-columns: minmax(0, 1fr); }
@@ -659,9 +772,11 @@
     position: sticky;
     top: 112px;
     padding: 18px 16px 14px;
-    border-radius: 20px;
-    background: var(--fe-glass-soft, rgba(255, 255, 255, 0.6));
-    box-shadow: var(--fe-card-shadow);
+    border-radius: 22px;
+    background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+    box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+    -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+    backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
   }
 }
 .fe-z8-meth__toc-title { margin: 0 0 8px; padding-left: 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--z8-gold-ink); }
@@ -678,8 +793,8 @@
   color: var(--color-text-secondary);
   transition: background-color 0.2s, color 0.2s;
 }
-.fe-z8-meth__toc a:hover { color: var(--color-text-primary); background: color-mix(in srgb, var(--z8-gold) 8%, transparent); }
-.fe-z8-meth__toc a.is-active { color: var(--z8-gold-ink); background: var(--z8-gold-soft); }
+.fe-z8-meth__toc a:hover { color: var(--color-text-primary); background: rgba(255, 255, 255, 0.5); }
+.fe-z8-meth__toc a.is-active { color: var(--z8-gold-ink); background: linear-gradient(135deg, rgba(233, 205, 142, 0.5), rgba(201, 162, 77, 0.2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
 .fe-z8-meth__toc a.is-active::before {
   content: '';
   position: absolute;
@@ -694,21 +809,12 @@
 /* Карточки по высоте содержимого: раскрытие «Подробнее» не растягивает соседнюю. */
 .fe-z8-meth .x4-cards.fe-z8-meth__cards { align-items: start; gap: 18px; margin-bottom: 0; }
 @media (min-width: 640px) { .fe-z8-meth .x4-cards.fe-z8-meth__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Карточки-разделы: L1 (.fe-panel из разметки). Золотой кромки сверху больше нет: форму задают блик и тень. */
 .fe-z8-meth .x4-card {
   position: relative;
-  box-shadow: var(--z8-shadow);
-  transition: transform 0.24s var(--z8-ease), box-shadow 0.24s var(--z8-ease);
+  transition: transform 0.24s var(--z8-ease);
 }
-@media (hover: hover) { .fe-z8-meth .x4-card:hover { transform: translateY(calc(-1 * var(--z8-lift))); } }
-.fe-z8-meth .x4-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 24px auto 24px;
-  height: 2px;
-  border-radius: 0 0 2px 2px;
-  background: var(--z8-gold-line);
-  opacity: 0.8;
-}
+@media (hover: hover) { .fe-z8-meth .x4-card:hover { transform: translateY(calc(-1 * var(--z8-lift))); box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); } }
 .fe-z8-meth .x4-card__body { font-size: 16px; }
 @media (min-width: 900px) {
   .fe-z8-meth .x4-card--wide .x4-mini-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
@@ -726,7 +832,7 @@
   padding: 12px 14px;
   border-radius: 16px;
   background: var(--fe-glass-l2);
-  transition: transform 0.24s var(--z8-ease), box-shadow 0.2s ease; box-shadow: var(--fe-l2-shadow);
+  transition: transform 0.24s var(--z8-ease); box-shadow: var(--fe-l2-shadow);
 }
 @media (hover: hover) { .fe-z8-source:hover { transform: translateY(calc(-1 * var(--z8-lift))); } }
 .fe-z8-source__badge {
@@ -738,7 +844,8 @@
   height: 44px;
   padding: 0 6px;
   border-radius: 14px;
-  background: radial-gradient(circle at 30% 20%, rgba(230, 201, 129, 0.35), rgba(173, 138, 72, 0.08));
+  background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 42%, rgba(233, 205, 142, 0.5) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.2), 0 6px 12px -6px rgba(90, 68, 24, 0.45);
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;

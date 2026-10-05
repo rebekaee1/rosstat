@@ -3274,4 +3274,7 @@ export default {
   'zb.change.percent.up': 'выше на {n} %',
   'zb.change.percent.down': 'ниже на {n} %',
   'zb.change.flat': 'почти без изменений',
+  // ===== K8 =====
+  'k8.sticky.label': 'Результат',
+  'k8.sticky.aria': 'Результат расчёта: {value}. Нажмите, чтобы перейти к результату',
 };

@@ -8,6 +8,7 @@ import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
+import '../styles/k8-tools.css';
 
 const ITEMS = [
   {
@@ -26,8 +27,10 @@ const ITEMS = [
 
 export default function CalculatorShowcase({ current }) {
   const t = useT();
+  // Золотой бегунок в жёлобе встаёт под активную вкладку (k8-tools / z8-tools: --k8-i).
+  const activeIndex = Math.max(0, ITEMS.findIndex((item) => item.id === current));
   return (
-    <nav data-block="calc-showcase" className="fe-z8-tabs" aria-label={t('w6g.calc.showcaseAria')}>
+    <nav data-block="calc-showcase" className="fe-z8-tabs" style={{ '--k8-i': activeIndex }} aria-label={t('w6g.calc.showcaseAria')}>
       {ITEMS.map((item) => {
         const Icon = item.icon;
         const active = item.id === current;

@@ -36,6 +36,7 @@ import CalculatorSiblings from '../components/CalculatorSiblings';
 import CalculatorShowcase from '../components/CalculatorShowcase';
 import CalcBeforeAfter from '../components/CalcBeforeAfter';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
+import CalcStickyResult from '../components/CalcStickyResult';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
@@ -43,6 +44,7 @@ import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
 import '../styles/z8-tools.css';
 import '../styles/w6-g.css';
+import '../styles/k8-tools.css';
 import Chip from '../components/Chip';
 import Button from '../components/Button';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -180,12 +182,9 @@ function CategoryBars({ result }) {
                   {fmtPct(c.rate, true)}
                 </span>
               </div>
-              <div className="h-1.5 rounded-full bg-obsidian-lighter overflow-hidden">
+              <div className="h-2.5 fe-k8-tube">
                 <div
-                  className={cn(
-                    'h-full rounded-full transition-all duration-700',
-                    isMax ? 'bg-champagne' : 'bg-champagne/40'
-                  )}
+                  className={cn('fe-k8-liquid transition-all duration-700', !isMax && 'fe-k8-liquid--pale')}
                   style={{ width: `${width}%` }}
                 />
               </div>
@@ -238,9 +237,9 @@ function YearlyBreakdownTable({ breakdown, format, partial = null }) {
                   </td>
                   <td className="py-2 px-1">
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-1 rounded-full bg-obsidian-lighter overflow-hidden max-w-[120px]">
+                      <div className="flex-1 h-2 max-w-[120px] fe-k8-tube">
                         <div
-                          className={cn('h-full rounded-full', row.isPeak ? 'bg-champagne' : 'bg-champagne/50')}
+                          className={cn('fe-k8-liquid', !row.isPeak && 'fe-k8-liquid--pale')}
                           style={{ width: `${barW}%` }}
                         />
                       </div>
@@ -308,6 +307,7 @@ export default function CalculatorPage() {
     () => countryParam || defaultCountrySlug(locale),
   );
   const [copied, setCopied] = useState(false);
+  const resultRef = useRef(null);
   const [chartMode, setChartMode] = useState('purchasing');
   const chartBoxRef = useRef(null);
   const touchTip = useTouchTooltip(chartBoxRef);
@@ -817,8 +817,9 @@ export default function CalculatorPage() {
         <p
           role="status"
           data-testid="calc-no-data"
-          className="mb-6 rounded-[1.5rem] p-5 text-sm text-text-secondary fe-glass-lite"
+          className="mb-6 rounded-[1.5rem] p-5 text-sm text-text-secondary fe-glass-lite fe-k8-empty"
         >
+          <span className="fe-k8-shard" aria-hidden="true" />
           {t('w6a.calc.noData')}
         </p>
       )}
@@ -827,11 +828,12 @@ export default function CalculatorPage() {
         <>
           {/* ── Result Card ── */}
           <section
+            ref={resultRef}
             style={revealStyle(3)}
             data-block="calc-result"
             className={cn(
-              'fe-reveal fe-z8-result rounded-[2rem] p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500 fe-glass-lite',
-              extremeInflation ? 'bg-negative/[0.03] fe-shadow-2' : 'fe-glass-2'
+              'fe-reveal fe-z8-result fe-k8-stone fe-glint rounded-[2rem] p-6 md:p-8 mb-6 min-h-[22rem] transition-colors duration-500',
+              extremeInflation && 'fe-k8-stone--warn'
             )}
             aria-live="polite"
           >
@@ -1064,6 +1066,12 @@ export default function CalculatorPage() {
 
       </div>
       </div>
+
+      <CalcStickyResult
+        targetRef={resultRef}
+        active={Boolean(result && !isLoading)}
+        value={heroValue != null ? formatHero(heroValue) : ''}
+      />
 
       <div className="fe-z8-calc__lower">
       {/* ── Как считаем (простыми словами; формулы на виду нет) ── */}

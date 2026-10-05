@@ -13,6 +13,7 @@ import { cn } from '../lib/format';
 import Button from '../components/Button';
 import { usePrefersReducedMotion } from '../lib/chartHooks';
 import '../styles/w5-pages.css';
+import '../styles/k8-tools.css';
 
 export default function Register() {
   const t = useT();

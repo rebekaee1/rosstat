@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
+import '../styles/k8-tools.css';
 
 /**
  * Раскрывающиеся блоки вопрос–ответ (калькулятор, «О показателе» на индикаторе).
@@ -15,7 +16,7 @@ export default function FaqAccordion({ items, onToggle }) {
   if (!Array.isArray(items) || items.length === 0) return null;
 
   return (
-    <div className="fe-divide-y">
+    <div className="fe-k8-faq-list">
       {items.map((item, i) => {
         const title = item.title ?? item.q;
         const body = item.body ?? item.a;
@@ -23,7 +24,7 @@ export default function FaqAccordion({ items, onToggle }) {
         const isOpen = open === i;
 
         return (
-          <div key={i}>
+          <div key={i} className="fe-k8-faq">
             <button
               type="button"
               onClick={() => {
@@ -31,7 +32,7 @@ export default function FaqAccordion({ items, onToggle }) {
                 setOpen(next);
                 onToggle?.({ index: i, title, open: next === i });
               }}
-              className={cn(FOCUS_RING, 'fe-tap w-full flex items-center justify-between gap-4 py-5 text-left rounded-sm')}
+              className={cn(FOCUS_RING, 'fe-tap w-full flex items-center justify-between gap-4 py-4 text-left rounded-xl')}
               aria-expanded={isOpen}
               aria-controls={`${baseId}-${i}`}
             >
@@ -52,7 +53,7 @@ export default function FaqAccordion({ items, onToggle }) {
               aria-hidden={!isOpen}
             >
               <div className="overflow-hidden min-h-0">
-                <p className="pb-5 text-sm text-text-secondary leading-relaxed -mt-1 whitespace-pre-line">
+                <p className="pb-4 text-sm text-text-secondary leading-relaxed -mt-1 whitespace-pre-line">
                   {body}
                 </p>
               </div>
