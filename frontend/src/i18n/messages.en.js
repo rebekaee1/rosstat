@@ -3274,4 +3274,9 @@ export default {
   'k3.dock.more': 'More',
   'k3.sheet.menuAria': 'Site menu',
   'k3.sheet.dragHint': 'Drag down to close',
+  // ===== K2 =====
+  'k2.empty.noData': 'No data yet',
+  'k2.empty.noResults': 'Nothing found',
+  'k2.empty.error': 'Could not load. Please try again',
+  'k2.empty.waiting': 'Loading data',
 };

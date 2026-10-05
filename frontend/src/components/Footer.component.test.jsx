@@ -160,4 +160,31 @@ describe('Footer', () => {
     expect(footer.querySelector('.fe-foot-sources')).toBeNull();
     expect(within(footer).getByRole('button', { name: 'Источники' })).toBeTruthy();
   });
+
+  it('сапфир: ленивый кадр фона (на телефоне свой), эмблема-водяной знак, грань у каждого заголовка', () => {
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    expect(footer.className).toContain('fe-k2-footer');
+    const bg = footer.querySelector('.fe-k2-foot-bg');
+    expect(bg.getAttribute('aria-hidden')).toBe('true');
+    const img = bg.querySelector('picture img');
+    expect(img.getAttribute('src')).toBe('/brand/footer-desktop.webp');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.getAttribute('alt')).toBe('');
+    expect(img.getAttribute('width')).toBe('1920');
+    expect(bg.querySelector('source').getAttribute('srcset')).toBe('/brand/footer-phone.webp');
+    expect(footer.querySelector('.fe-k2-foot-emblem img').getAttribute('src')).toBe('/brand/emblem-f.webp');
+    for (const title of footer.querySelectorAll('.fe-foot-title')) {
+      expect(title.querySelector('svg.fe-facet')).toBeTruthy();
+    }
+  });
+
+  it('компьютер: источники данных — отдельные пилюли списка, заголовок строки с гранью', () => {
+    asDesktop();
+    renderFooter();
+    const footer = screen.getByRole('contentinfo');
+    const strip = footer.querySelector('.fe-foot-sources');
+    expect(strip.querySelector('.fe-foot-sources__label svg.fe-facet')).toBeTruthy();
+    expect(strip.querySelectorAll('li').length).toBeGreaterThanOrEqual(3);
+  });
 });

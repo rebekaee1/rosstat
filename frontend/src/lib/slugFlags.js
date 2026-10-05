@@ -1,6 +1,6 @@
-// Флаги стран по slug каталога (эмодзи из региональных индикаторов ISO-кода).
+// Флаги стран по slug каталога (эмодзи из региональных индикаторов ISO-кода; векторные капли — components/brand/flagArt.js по тому же ISO-коду).
 // Нужен там, где в данных есть только slug (подбор стран в сравнении). Нет в карте — пустая строка, а не серый глобус.
-const SLUG_ISO = {
+export const SLUG_ISO = {
   albania: 'AL', armenia: 'AM', australia: 'AU', austria: 'AT', azerbaijan: 'AZ', belgium: 'BE',
   bosnia: 'BA', brazil: 'BR', bulgaria: 'BG', canada: 'CA', china: 'CN', croatia: 'HR', cyprus: 'CY',
   czechia: 'CZ', denmark: 'DK', estonia: 'EE', finland: 'FI', france: 'FR', georgia: 'GE',
@@ -17,6 +17,11 @@ export function flagFromIso(iso) {
   const code = String(iso || '').toUpperCase();
   if (!/^[A-Z]{2}$/.test(code)) return '';
   return String.fromCodePoint(...[...code].map((ch) => 0x1F1E6 + ch.charCodeAt(0) - 65));
+}
+
+/** ISO-код страны по slug каталога (для <CountryFlag code glass />); неизвестный slug — пустая строка. */
+export function isoForSlug(slug) {
+  return SLUG_ISO[slug] || '';
 }
 
 export function flagForSlug(slug) {

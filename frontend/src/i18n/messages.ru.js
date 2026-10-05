@@ -3280,4 +3280,9 @@ export default {
   'k3.dock.more': 'Ещё',
   'k3.sheet.menuAria': 'Меню сайта',
   'k3.sheet.dragHint': 'Потяните вниз, чтобы закрыть',
+  // ===== K2 =====
+  'k2.empty.noData': 'Данных пока нет',
+  'k2.empty.noResults': 'Ничего не нашли',
+  'k2.empty.error': 'Не удалось загрузить. Попробуйте ещё раз',
+  'k2.empty.waiting': 'Загружаем данные',
 };

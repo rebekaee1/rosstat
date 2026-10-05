@@ -26,17 +26,24 @@ describe('NotFound', () => {
     expect(screen.getByText('Популярные разделы')).toBeTruthy();
   });
 
-  it('«404» с планетой вместо нуля, золотая «На главную» и вторая кнопка «Вернуться назад»', async () => {
+  it('«404» со стеклянным глобусом вместо нуля, золотая «На главную» и вторая кнопка «Вернуться назад»', async () => {
     mockApiGet([['/auth/me', { user: null }], [/^\/indicators/, []]]);
     const { container } = renderPage(<NotFound />, { path: '*', route: '/net-takoy-stranitsy' });
     await screen.findByRole('heading', { level: 1 });
     const code = container.querySelector('.z2-nf-code');
     expect(code.getAttribute('aria-hidden')).toBe('true');
     expect([...code.querySelectorAll('.z2-nf-digit')].map((d) => d.textContent)).toEqual(['4', '4']);
-    // Планета стоит между цифрами и вращается: поверхность и орбита — отдельные анимируемые группы.
-    expect(code.children[1].tagName.toLowerCase()).toBe('svg');
-    expect(code.querySelector('.z2-nf-surface')).toBeTruthy();
-    expect(code.querySelector('.z2-nf-orbit')).toBeTruthy();
+    // Хрустальный глобус стоит между цифрами: картинка с осколками, каустика под ним и искра по орбите.
+    const globe = code.children[1];
+    expect(globe.className).toContain('fe-nf-globe');
+    const img = globe.querySelector('img.fe-nf-globe__img');
+    expect(img.getAttribute('src')).toBe('/brand/404-shards.webp');
+    expect(img.getAttribute('alt')).toBe('');
+    expect(img.getAttribute('width')).toBe('1200');
+    expect(globe.querySelector('.fe-nf-caustic')).toBeTruthy();
+    expect(globe.querySelector('.fe-nf-spark')).toBeTruthy();
+    // Цифры — толстое стекло: слои рисуются из data-d, текст «4» остаётся для верстки.
+    expect([...code.querySelectorAll('.fe-nf-digit')].map((d) => d.getAttribute('data-d'))).toEqual(['4', '4']);
     const home = screen.getByRole('link', { name: 'На главную' });
     expect(home.className).toContain('z2-nf-home');
     expect(screen.getByRole('button', { name: 'Вернуться назад' })).toBeTruthy();
