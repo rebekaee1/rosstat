@@ -206,12 +206,12 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(dialog.firstElementChild.className).toMatch(/max-h-\[min\(30rem/);
   });
 
-  it.each(['ru', 'en'])('компактная плашка: короткая строка для телефона, значок-шестерёнка вместо слова, ширина до 500 px (%s)', (locale) => {
+  it.each(['ru', 'en'])('компактная плашка: короткая строка для телефона, значок-шестерёнка вместо слова, ширина до 416 px (%s)', (locale) => {
     renderConsent(locale);
     const dialog = screen.getByRole('dialog');
     const panel = dialog.firstElementChild;
     expect(panel.className).toContain('fe-cookie-panel');
-    expect(panel.className).toContain('sm:max-w-[31rem]');
+    expect(panel.className).toContain('sm:max-w-[26rem]');
     // Длинный текст для компьютера и короткий для телефона лежат рядом, CSS показывает один из них.
     expect(dialog.querySelector('.fe-cookie-compact__long').textContent).toBe(translate('cookie.summary', undefined, locale));
     expect(dialog.querySelector('.fe-cookie-compact__short').textContent).toBe(translate('z2.cookie.short', undefined, locale));
@@ -255,3 +255,65 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(document.querySelector('[data-analytics-overlay]')).toBeNull();
   });
 });
+
+describe('K3: на телефоне после первой прокрутки плашка сворачивается в значок', () => {
+  const realMatchMedia = window.matchMedia;
+  async function scrollTo(y) {
+    Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
+    await act(async () => {
+      window.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => { setTimeout(resolve, 40); });
+    });
+  }
+  afterEach(() => {
+    window.matchMedia = realMatchMedia;
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+    document.documentElement.style.removeProperty('--fe-cookie-fab-h');
+  });
+  const phone = () => {
+    window.matchMedia = (query) => ({
+      matches: query.includes('max-width: 639px'), media: query, addEventListener() {}, removeEventListener() {},
+    });
+  };
+
+  it('телефон: после прокрутки вместо плашки значок 44 px; согласие не записано и не отправлено', async () => {
+    phone();
+    renderConsent();
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    await scrollTo(120);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    const fab = screen.getByRole('button', { name: 'Настройки cookie' });
+    expect(fab.className).toContain('fe-cookie-fab');
+    expect(document.documentElement.style.getPropertyValue('--fe-cookie-fab-h')).toBe('56px');
+    // Молчание не согласие: ни записи выбора, ни события.
+    expect(getConsent()).toBeNull();
+    expect(track).not.toHaveBeenCalled();
+  });
+
+  it('нажатие на значок возвращает плашку, и дальше она уже не сворачивается', async () => {
+    phone();
+    renderConsent();
+    await scrollTo(120);
+    fireEvent.click(screen.getByRole('button', { name: 'Настройки cookie' }));
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    await scrollTo(400);
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(getConsent()).toBeNull();
+  });
+
+  it('компьютер: плашка не сворачивается при прокрутке', async () => {
+    renderConsent();
+    await scrollTo(400);
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Настройки cookie' })).toBeNull();
+  });
+
+  it('открытые настройки не сворачиваются', async () => {
+    phone();
+    renderConsent();
+    fireEvent.click(screen.getByRole('button', { name: 'Настроить' }));
+    await scrollTo(400);
+    expect(screen.getByRole('dialog')).toBeTruthy();
+  });
+});
+

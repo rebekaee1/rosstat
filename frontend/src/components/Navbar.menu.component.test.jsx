@@ -3,6 +3,7 @@ import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import { renderPage, mockApiGet } from '../test/renderPage';
+import { OPEN_NAV_MENU_EVENT } from '../lib/navItems';
 
 vi.mock('./IndicatorSearch', () => ({
   default: () => <div data-testid="indicator-search-stub" />,
@@ -24,14 +25,18 @@ describe('Navbar: появление и закрытие панелей', () => 
     expect(nav.style.opacity).toBe('');
   });
 
-  it('мобильное меню: появляется с классом панели, закрывается по Esc и возвращает фокус на кнопку', () => {
+  it('мобильное меню: шторка снизу (диалог в body), закрывается по Esc и возвращает фокус на кнопку', () => {
     renderNav();
     const toggle = screen.getByRole('button', { name: 'Открыть меню' });
     fireEvent.click(toggle);
 
     const menu = document.getElementById('fe-nav-mobile-menu');
     expect(menu).toBeTruthy();
-    expect(menu.className).toContain('fe-reveal--panel');
+    // R3: меню телефона стало шторкой снизу (components/BottomSheet.jsx), рисуется порталом в body и держит роль диалога.
+    expect(menu.className).toContain('fe-sheet');
+    expect(menu.getAttribute('role')).toBe('dialog');
+    expect(menu.getAttribute('aria-modal')).toBe('true');
+    expect(menu.parentElement).toBe(document.body);
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(toggle.getAttribute('aria-controls')).toBe('fe-nav-mobile-menu');
 
@@ -247,3 +252,59 @@ describe('Navbar: круглые кнопки телефона', () => {
     expect(lang).toHaveLength(1);
   });
 });
+
+describe('Navbar K3: капсула, сжатие на телефоне, «Ещё» из док-панели', () => {
+  async function scrollTo(y) {
+    Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
+    await act(async () => {
+      window.dispatchEvent(new Event('scroll'));
+      await new Promise((resolve) => { setTimeout(resolve, 40); });
+    });
+  }
+  afterEach(() => {
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+  });
+
+  it('шапка стеклянная капсула: класс слоя, плотнее после прокрутки, сжимается при движении вниз и возвращается вверх', async () => {
+    renderNav();
+    const nav = screen.getByRole('navigation');
+    expect(nav.className).toContain('fe-navbar--glass');
+    expect(nav.className).not.toContain('glass-surface');
+    expect(nav.getAttribute('data-scrolled')).toBe('false');
+    expect(nav.getAttribute('data-compact')).toBe('false');
+    await scrollTo(300);
+    expect(nav.getAttribute('data-scrolled')).toBe('true');
+    expect(nav.getAttribute('data-compact')).toBe('true');
+    await scrollTo(240);
+    expect(nav.getAttribute('data-scrolled')).toBe('true');
+    expect(nav.getAttribute('data-compact')).toBe('false');
+  });
+
+  it('три кружка телефона лежат в одной капсуле', () => {
+    renderNav();
+    const cluster = document.querySelector('.fe-nav-cluster');
+    expect(cluster).toBeTruthy();
+    expect(cluster.querySelectorAll('.fe-nav-round')).toHaveLength(2);
+    expect(cluster.contains(screen.getByRole('button', { name: 'Открыть меню' }))).toBe(true);
+  });
+
+  it('событие «Ещё» из нижней док-панели открывает меню-шторку', () => {
+    renderNav();
+    expect(document.getElementById('fe-nav-mobile-menu')).toBeNull();
+    act(() => { window.dispatchEvent(new CustomEvent(OPEN_NAV_MENU_EVENT)); });
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    expect(menu).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Закрыть меню' }).getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('у каждого пункта шторки иконка-грань, а «Войти» и «Регистрация» закреплены внизу', async () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    const links = [...menu.querySelectorAll('.fe-mnav-scroll a.fe-mnav-link')];
+    expect(links.length).toBeGreaterThan(8);
+    expect(links.every((a) => a.querySelector('.fe-mnav-tile svg'))).toBe(true);
+    await waitFor(() => expect(menu.querySelectorAll('.fe-mnav-foot a').length).toBe(2));
+  });
+});
+
