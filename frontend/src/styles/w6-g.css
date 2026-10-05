@@ -3,7 +3,7 @@
 
 /* Единые боковые поля страниц инструментов: те же, что у главной (fe-page-shell). */
 .fe-gutter {
-  padding-inline: clamp(16px, 3.1vw, 44px);
+  padding-inline: var(--fe-gutter, clamp(16px, 3.1vw, 32px));
 }
 
 /* ---------- Сравнение ---------- */
@@ -363,7 +363,7 @@
 }
 .fe-w6g-ba__bar--was { background: color-mix(in srgb, var(--color-champagne) 38%, transparent); }
 .fe-w6g-ba__bar--now { background: var(--color-champagne); }
-.fe-w6g-ba__label { font-size: 0.75rem; color: var(--color-text-secondary); text-align: center; }
+.fe-w6g-ba__label { font-size: 0.8125rem; color: var(--color-text-secondary); text-align: center; }
 @media (prefers-reduced-motion: reduce) {
   .fe-w6g-ba__bar { transition: none; }
 }

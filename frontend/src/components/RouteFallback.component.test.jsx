@@ -34,6 +34,6 @@ it('never prints the server-rendered text for a human: only the skeleton, even w
 it('offers a refresh button after the wait gets long', () => {
   vi.useFakeTimers();
   render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
-  act(() => { vi.advanceTimersByTime(8100); });
+  act(() => { vi.advanceTimersByTime(5100); });
   expect(screen.getByRole('button', { name: /Обновить/ })).toBeTruthy();
 });

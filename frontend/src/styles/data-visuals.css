@@ -18,11 +18,22 @@
 .fe-chart-signature {
   margin: 16px 0 0;
   padding-top: 10px;
-  border-top: 1px solid rgba(32, 42, 60, .08);
-  color: #697587;
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-text-tertiary);
   text-align: right;
-  font: 500 11px/1.5 var(--font-sans);
+  font: 500 12px/1.5 var(--font-sans);
   letter-spacing: -.01em;
+}
+/* Золотая точка перед адресом: подпись становится фирменной отметкой, а не серой приписью. */
+.fe-chart-signature::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--fe-gold, #B08A3E);
+  vertical-align: 1px;
 }
 .fe-data-page { min-width: 0; }
 .fe-data-header {
@@ -31,8 +42,11 @@
   padding: clamp(20px, 3vw, 40px);
   border: 1px solid rgba(255, 255, 255, .9);
   border-radius: 28px;
-  background: linear-gradient(120deg, rgba(255,255,255,.87), rgba(255,255,255,.4) 65%, rgba(202,216,229,.25));
-  box-shadow: 0 12px 35px -25px rgba(32,42,60,.24), inset 0 1px 0 #fff;
+  /* Золотое свечение 6–8 % справа сверху и тёплая белизна слева: герой выделяется без цветного фона. */
+  background:
+    var(--fe-glow-bg, none),
+    linear-gradient(120deg, rgba(255,255,255,.9), rgba(255,253,247,.5) 62%, rgba(232,220,190,.3));
+  box-shadow: var(--fe-card-shadow);
 }
 .fe-data-header h1 {
   letter-spacing: -.045em;
@@ -42,7 +56,7 @@
 .fe-stat-cell {
   background: rgba(255,255,255,.72);
   border-radius: 16px;
-  border-color: rgba(32,42,60,.09);
+  border-color: var(--color-border-subtle);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
 }
 .fe-stat-cell .font-mono { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
@@ -55,7 +69,7 @@
   .fe-chart-toolbar { gap: 12px; margin-bottom: 12px; }
   .fe-chart-toolbar > div { margin-left: 0; width: 100%; justify-content: space-between; }
   .fe-chart-toolbar button { padding-left: 8px; padding-right: 8px; }
-  .fe-chart-signature { margin-top: 10px; font-size: 10px; }
+  .fe-chart-signature { margin-top: 10px; font-size: 12px; }
   .fe-data-header { padding: 20px 16px; margin-bottom: 24px; border-radius: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {

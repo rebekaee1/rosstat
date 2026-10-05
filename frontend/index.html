@@ -17,34 +17,36 @@
          Публичные URL рендерит backend. index,follow здесь индексировал
          сырой shell (/index.html) и виджеты. -->
     <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#EEF0F4" />
+    <meta name="theme-color" content="#F6F2EA" />
     <meta name="color-scheme" content="light" />
     <link rel="preload" href="/fonts/manrope-latin-cyrillic.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high" />
 
     <!-- Волна 6 (1.1): фирменная заставка до первого кадра приложения. Блок дублирует
-         BOOT_* в backend/app/services/seo_renderer.py (тест test_boot_splash_in_sync);
+         BOOT_* в backend/app/services/seo_renderer.py (тест test_boot_splash_in_sync).
+         Раунд 2 (Z1): фон «бумага» #F6F2EA и золото #B08A3E вместо серо-голубого #EEF0F4 и #AD8A48;
+         те же значения нужно перенести в _BOOT_STYLE и разметку заставки seo_renderer.py;
          класс fe-boot ставит скрипт, снимает приложение (spaReveal) или таймер на 12 с.
          Без JS заставки нет. В оболочке нет серверного текста, поэтому подписи нет. -->
     <style id="fe-boot-css">
-      html{background:#EEF0F4;color-scheme:light}
+      html{background:#F6F2EA;color-scheme:light}
       @font-face{font-family:Manrope;src:url('/fonts/manrope-latin-cyrillic.woff2') format('woff2');font-weight:200 800;font-display:swap}
       .fe-boot-splash{display:none}
       html.fe-boot{overflow:hidden}
       html.fe-boot #root{visibility:hidden}
-      html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(233,223,205,.6),transparent 44%),radial-gradient(ellipse at 6% 100%,rgba(202,216,229,.45),transparent 40%),#EEF0F4;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
+      html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(228,211,172,.6),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(214,226,238,.42),transparent 40%),#F6F2EA;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
       html.fe-js .fe-boot-splash{display:none!important}
       .fe-boot-brand{display:inline-flex;align-items:center;gap:.6rem;font-size:1.65rem;font-weight:750;letter-spacing:-.06em;line-height:1}
       .fe-boot-brand svg{width:34px;height:39px}
       .fe-boot-brand i{font-style:normal;font-weight:400}
-      .fe-boot-globe{width:132px;height:132px;color:#AD8A48}
+      .fe-boot-globe{width:132px;height:132px;color:#B08A3E}
       .fe-boot-globe .fe-g-ring{fill:rgba(255,255,255,.55);stroke:currentColor;stroke-width:1.4;stroke-dasharray:6 5;animation:feBootRing 7s linear infinite;transform-origin:60px 60px}
       .fe-boot-globe .fe-g-m{fill:none;stroke:currentColor;stroke-width:1.1;opacity:.55;transform-box:fill-box;transform-origin:center;animation:feBootSpin 3.2s ease-in-out infinite}
       .fe-boot-globe .fe-g-m:nth-of-type(2){animation-delay:-1.07s}
       .fe-boot-globe .fe-g-m:nth-of-type(3){animation-delay:-2.13s}
       .fe-boot-globe .fe-g-p{fill:none;stroke:currentColor;stroke-width:1;opacity:.35}
-      .fe-boot-globe .fe-g-dot{fill:#AD8A48;animation:feBootPulse 1.6s ease-in-out infinite}
+      .fe-boot-globe .fe-g-dot{fill:#B08A3E;animation:feBootPulse 1.6s ease-in-out infinite}
       .fe-boot-skel{display:flex;flex-direction:column;gap:10px;width:100%;max-width:26rem;margin-top:6px}
-      .fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(173,138,72,.12);animation:feBootShim 1.5s linear infinite}
+      .fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(176,138,62,.14);animation:feBootShim 1.6s linear infinite}
       .fe-boot-skel b:nth-child(1){width:46%}
       .fe-boot-skel b:nth-child(2){height:84px;border-radius:18px}
       .fe-boot-skel b:nth-child(3){width:72%}
@@ -152,7 +154,7 @@
   </head>
   <body>
     <div class="fe-boot-splash" aria-hidden="true">
-      <span class="fe-boot-brand"><svg viewBox="0 0 40 44"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<i>economy</i></span></span>
+      <span class="fe-boot-brand"><svg viewBox="0 0 40 44"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#B08A3E"/></svg><span>forecast<i>economy</i></span></span>
       <svg class="fe-boot-globe" viewBox="0 0 120 120"><circle class="fe-g-ring" cx="60" cy="60" r="56"/><ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><path class="fe-g-p" d="M8 60H112M14 36H106M14 84H106"/><circle class="fe-g-dot" cx="60" cy="60" r="3"/></svg>
       <div class="fe-boot-skel"><b></b><b></b><b></b></div>
     </div>

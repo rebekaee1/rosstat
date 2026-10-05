@@ -8,7 +8,7 @@ import LoadingNote from './LoadingNote';
  */
 export default function RouteFallback() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pt-24 md:px-8 md:pt-28" role="status" aria-busy="true" aria-live="polite">
+    <div className="fe-container fe-route-shell pt-24 md:pt-28" role="status" aria-busy="true" aria-live="polite">
       <span className="fe-page-progress" aria-hidden="true" />
       <LoadingNote className="mb-4" />
       {/* Каркас виден сразу (без задержки появления) и повторяет форму страницы: крошка, шапка, плитки значений, график. */}

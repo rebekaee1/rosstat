@@ -4,12 +4,13 @@ import { SkeletonBox } from './Skeleton';
 
 const COLOR_POSITIVE = '#16A34A';
 const COLOR_NEGATIVE = '#DC2626';
-const COLOR_CHAMPAGNE = CHART_THEME.champagne;
-const COLOR_FLAT = '#9CA3AF';
+const COLOR_GOLD = CHART_THEME.gold;
+// «Ровно» с известным смыслом — не серый, а приглушённое золото: спарклайн всегда в палитре бренда.
+const COLOR_FLAT = '#B9A474';
 
 function resolveColor(trend, sentiment) {
-  // Смысл неизвестен — золото, без оценки «хорошо/плохо»; серым остаётся только «ровно» с известным смыслом.
-  if (sentiment === 'neutral') return COLOR_CHAMPAGNE;
+  // Смысл неизвестен — золото, без оценки «хорошо/плохо».
+  if (sentiment === 'neutral') return COLOR_GOLD;
 
   if (trend === 'flat') return COLOR_FLAT;
 
@@ -83,6 +84,7 @@ export default function Sparkline({
   height = 48,
   className = '',
   staggerMs = 0,
+  color: colorOverride,
 }) {
   const uid = useId();
   // Наблюдаем за обёрткой, а не за <svg>: svg появляется только после замера ширины, когда эффект уже отработал,
@@ -95,7 +97,7 @@ export default function Sparkline({
   const hasPoints = (points?.length ?? 0) >= 2;
 
   const revealed = reducedMotion || inView || typeof IntersectionObserver === 'undefined';
-  const color = resolveColor(trend, sentiment);
+  const color = colorOverride || resolveColor(trend, sentiment);
   const dotR = 2.5;
   const glowR = 5;
   // Поля вмещают кольцо последней точки вместе с его пульсом (масштаб до 1,5), иначе край SVG его срезает.
@@ -116,7 +118,8 @@ export default function Sparkline({
           observer.disconnect();
         }
       },
-      { threshold: 0.3 },
+      // Рисуем заранее: за 160 px до края экрана, чтобы при быстрой прокрутке карточка не оставалась пустой.
+      { threshold: 0.01, rootMargin: '160px 0px' },
     );
     observer.observe(wrapRef.current);
     return () => observer.disconnect();
@@ -168,7 +171,7 @@ export default function Sparkline({
       >
         <defs>
           <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.12} />
+            <stop offset="0%" stopColor={color} stopOpacity={0.2} />
             <stop offset="100%" stopColor={color} stopOpacity={0} />
           </linearGradient>
           <linearGradient id={lineGradId} x1="0" y1="0" x2="1" y2="0">
@@ -194,7 +197,7 @@ export default function Sparkline({
           d={linePath}
           fill="none"
           stroke={`url(#${lineGradId})`}
-          strokeWidth={1.5}
+          strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
           style={
@@ -202,7 +205,7 @@ export default function Sparkline({
               ? {
                   strokeDasharray: pathLength,
                   strokeDashoffset: 0,
-                  animation: `sparkline-reveal 800ms ease-out forwards`,
+                  animation: `sparkline-reveal 700ms ease-out forwards`,
                 }
               : instantReveal
                 ? { opacity: 1 }
@@ -222,7 +225,7 @@ export default function Sparkline({
           className={revealed ? 'sparkline-glow' : ''}
           style={{
             opacity: revealed ? undefined : 0,
-            animationDelay: reducedMotion ? '0ms' : `${800 + staggerMs}ms`,
+            animationDelay: reducedMotion ? '0ms' : `${700 + staggerMs}ms`,
           }}
         />
 
@@ -234,7 +237,7 @@ export default function Sparkline({
           fill={color}
           style={{
             opacity: revealed ? 1 : 0,
-            transition: reducedMotion ? 'none' : `opacity 200ms ${800 + staggerMs}ms`,
+            transition: reducedMotion ? 'none' : `opacity 200ms ${700 + staggerMs}ms`,
           }}
         />
       </svg>

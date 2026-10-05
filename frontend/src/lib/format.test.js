@@ -18,6 +18,10 @@ import {
   adjustCpiDisplay,
   adjustCpiForecastDisplay,
   resolveDateFormat,
+  formatCompactNumber,
+  formatCompactParts,
+  formatCompactWithUnit,
+  formatPeriodShort,
 } from './format';
 
 /** Индексы выбранных тиков в полном ряду (для overlap-проверки). */
@@ -486,5 +490,55 @@ describe('formatValue: отрицательный ноль', () => {
     expect(formatValue(-0.4, 0, 'ru')).toBe('0');
     expect(formatValue(-0.5, 0, 'ru')).toBe('-1');
     expect(formatValue(-1.234, 2, 'ru')).toBe('-1,23');
+  });
+});
+
+
+describe('DS8: краткие числа, единицы и периоды', () => {
+  const N = '\u00A0';
+
+  it('«28 076 986» читается как «28,1 млн», а мелкие числа остаются целыми', () => {
+    expect(formatCompactNumber(28076986, { locale: 'ru' })).toBe(`28,1${N}млн`);
+    expect(formatCompactNumber(849680, { locale: 'ru' })).toBe(`849,7${N}тыс.`);
+    expect(formatCompactNumber(30767e9, { locale: 'ru' })).toBe(`30,8${N}трлн`);
+    expect(formatCompactNumber(12345, { locale: 'ru' })).toBe(`12${N}345`);
+    expect(formatCompactNumber(null)).toBe('—');
+    expect(formatCompactNumber('x')).toBe('—');
+  });
+
+  it('в английской локали суффиксы M / K / T и точка', () => {
+    expect(formatCompactNumber(28076986, { locale: 'en' })).toBe('28.1M');
+    expect(formatCompactNumber(2.5e12, { locale: 'en' })).toBe('2.5T');
+  });
+
+  it('нули после запятой не выводятся: «3 млн», а не «3,0 млн»', () => {
+    expect(formatCompactNumber(3000000, { locale: 'ru' })).toBe(`3${N}млн`);
+  });
+
+  it('единица с масштабом пересчитывается: «849 680 млн €» → «849,7 млрд €»', () => {
+    expect(formatCompactWithUnit(849680, 'млн €', { locale: 'ru' })).toBe(`849,7${N}млрд${N}€`);
+    expect(formatCompactWithUnit(30767, 'млрд $', { locale: 'ru' })).toBe(`30,8${N}трлн${N}$`);
+    expect(formatCompactWithUnit(250, 'млн ₽', { locale: 'ru' })).toBe(`250${N}млн${N}₽`);
+    expect(formatCompactWithUnit(28076986, 'чел.', { locale: 'ru' })).toBe(`28,1${N}млн${N}чел.`);
+  });
+
+  it('проценты и индексы не укрупняются', () => {
+    expect(formatCompactParts(3.2, '%', { locale: 'ru' })).toEqual({ num: '3,20', unit: '%', compacted: false });
+    expect(formatCompactParts(1645.7, 'индекс', { locale: 'ru' }).compacted).toBe(false);
+  });
+
+  it('число и единица отдаются раздельно, чтобы единицу набрать мельче', () => {
+    const parts = formatCompactParts(28076986, 'чел.', { locale: 'ru' });
+    expect(parts).toEqual({ num: '28,1', unit: `млн${N}чел.`, compacted: true });
+    expect(formatCompactParts(null, '%').num).toBe('—');
+  });
+
+  it('период: «2 кв. 2026» / «Q2 2026», месяц и год', () => {
+    expect(formatPeriodShort('2026-05-01', 'quarterly', 'ru')).toBe(`2${N}кв.${N}2026`);
+    expect(formatPeriodShort('2026-05-01', 'quarterly', 'en')).toBe('Q2 2026');
+    expect(formatPeriodShort('2026-05-01', 'annual', 'ru')).toBe('2026');
+    expect(formatPeriodShort('2026-10-03', 'monthly', 'ru')).toBe('окт 2026');
+    expect(formatPeriodShort('2026-10-03', 'monthly', 'en')).toBe('Oct 2026');
+    expect(formatPeriodShort('', 'monthly')).toBe('—');
   });
 });

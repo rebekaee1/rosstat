@@ -98,10 +98,10 @@
   color: var(--color-text-primary);
   text-decoration: none;
 }
-.w2-fact-label { color: var(--color-text-secondary); font-size: 12px; font-weight: 500; }
+.w2-fact-label { color: var(--color-text-secondary); font-size: 13px; font-weight: 500; }
 .w2-fact-name { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .w2-fact-value { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; font-size: 22px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.2; }
-.w2-fact-value small { color: var(--color-text-secondary); font-size: 12px; font-weight: 400; letter-spacing: 0; }
+.w2-fact-value small { color: var(--color-text-secondary); font-size: 13px; font-weight: 400; letter-spacing: 0; }
 .w2-facts-russia { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--color-border-subtle); }
 .w2-facts-label { margin: 0 0 8px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
 @media (hover: hover) { .w2-fact:hover { border-color: var(--color-border-champagne); } }
@@ -153,7 +153,7 @@
 .w2-rank-name { min-width: 0; font-size: 15px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .w2-rank-value { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .w2-rank-value strong { font-size: 16px; font-weight: 600; }
-.w2-rank-value small { color: var(--color-text-secondary); font-size: 12px; }
+.w2-rank-value small { color: var(--color-text-secondary); font-size: 13px; }
 .w2-rank-bar { position: absolute; left: 14px; right: 14px; bottom: 5px; height: 3px; border-radius: 999px; background: color-mix(in srgb, var(--color-champagne) 14%, transparent); overflow: hidden; }
 .w2-rank-bar::after { content: ''; position: absolute; inset: 0 auto 0 0; width: var(--w2-share, 0); border-radius: inherit; background: var(--color-champagne); opacity: 0.75; }
 .w2-rank-extra { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 8px 14px 10px 52px; border-top: 1px solid var(--color-border-subtle); font-size: 13px; }
@@ -189,18 +189,18 @@
   padding-top: 12px;
   border-top: 1px solid var(--color-border-subtle);
 }
-.w2-profile-facts dt { color: var(--color-text-secondary); font-size: 12px; }
+.w2-profile-facts dt { color: var(--color-text-secondary); font-size: 13px; }
 .w2-profile-facts dd { margin: 2px 0 0; color: var(--color-text-primary); font-size: 16px; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; }
-.w2-profile-facts dd small { display: block; color: var(--color-text-tertiary); font-size: 12px; font-weight: 400; }
+.w2-profile-facts dd small { display: block; color: var(--color-text-tertiary); font-size: 13px; font-weight: 400; }
 .w2-profile-facts > div { min-width: 0; }
 /* Переносим по словам: «Австралийский доллар» и «км²» не рвём посередине. Крайний случай (очень длинное слово) — break-word. */
 .w2-profile-facts dd { overflow-wrap: break-word; word-break: normal; hyphens: none; }
 @media (max-width: 479px) {
   .w2-profile-facts dd { font-size: 14px; }
-  .w2-profile-facts dt { font-size: 11.5px; }
+  .w2-profile-facts dt { font-size: 13px; }
 }
 .w2-main-title { margin: 0; color: var(--color-text-primary); font-size: 18px; font-weight: 650; line-height: 1.3; }
-.w2-kpi-nospark { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-tertiary); font-size: 12px; line-height: 1.3; }
+.w2-kpi-nospark { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-tertiary); font-size: 13px; line-height: 1.3; }
 /* Свёрнутые почти-дубли списка показателей. */
 .fe-ind-group { border: 1px solid var(--color-border-subtle); border-radius: 12px; background: var(--color-surface); padding: 0 14px; }
 .fe-ind-group[open] { padding-bottom: 12px; }
@@ -210,7 +210,7 @@
 .fe-ind-group__count { flex: none; font-size: 13px; color: var(--color-text-secondary); }
 .fe-ind-group__chevron { flex: none; color: var(--color-text-tertiary); transition: transform 0.2s ease; }
 .fe-ind-group[open] .fe-ind-group__chevron { transform: rotate(180deg); }
-.w2-profile-source { margin: 12px 0 0; color: var(--color-text-tertiary); font-size: 12px; line-height: 1.5; }
+.w2-profile-source { margin: 12px 0 0; color: var(--color-text-tertiary); font-size: 13px; line-height: 1.5; }
 .w2-profile-source a { color: var(--color-champagne-ink); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--color-border-champagne); }
 
 /* Три главные цифры страны: название, число с единицей, период и мини-график. */
@@ -304,7 +304,7 @@
   border: 1px solid var(--color-border-subtle);
   border-radius: 16px;
   background: var(--color-surface);
-  box-shadow: 0 16px 36px -12px rgba(32, 42, 60, 0.28);
+  box-shadow: 0 16px 36px -12px rgba(70, 56, 28, 0.3);
   animation: fe-year-in 0.16s ease-out;
 }
 .fe-year-pop--start { right: auto; left: 0; }
