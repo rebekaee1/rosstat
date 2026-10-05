@@ -75,7 +75,7 @@ export default function CalendarGrid({
   ];
 
   return (
-    <div className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface overflow-hidden mb-6">
+    <div data-testid="calendar-grid" className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface overflow-hidden mb-6">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
         <Button
           variant="ghost"

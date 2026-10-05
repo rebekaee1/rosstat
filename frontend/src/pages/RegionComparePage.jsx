@@ -5,6 +5,7 @@ import useDocumentMeta from '../lib/useMeta';
 import api from '../lib/api';
 import { formatRegionWithUnit } from '../lib/regionUi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import { SkeletonBox } from '../components/Skeleton';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
@@ -78,6 +79,7 @@ export default function RegionComparePage() {
 
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-2 h-4 w-40" />
           <SkeletonBox className="mb-3 h-9 w-full max-w-xl sm:h-10" />
           <SkeletonBox className="mb-8 h-6 w-full max-w-3xl" />

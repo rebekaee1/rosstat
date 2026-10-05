@@ -1,17 +1,19 @@
-import { it, expect, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
-import RouteFallback, { SsrHandoffDone } from './RouteFallback';
+import { it, expect, afterEach, vi } from 'vitest';
+import { render, screen, cleanup, act } from '@testing-library/react';
+import RouteFallback from './RouteFallback';
+import { LocaleProvider } from '../i18n';
 
-afterEach(() => { cleanup(); delete window.__feSsrSnapshot; });
+afterEach(() => { cleanup(); vi.useRealTimers(); });
 
-it('shows a layout skeleton when there is no server-rendered page to hold', () => {
-  render(<RouteFallback />);
-  expect(screen.getByRole('status').getAttribute('aria-busy')).toBe('true');
-  expect(document.querySelector('.fe-ssr-hold')).toBeNull();
+it('shows a layout skeleton with a caption while the route chunk loads', () => {
+  render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
+  expect(screen.getAllByRole('status')[0].getAttribute('aria-busy')).toBe('true');
+  expect(screen.getByTestId('loading-note').textContent).toContain('Загружаем данные');
+  expect(screen.queryByRole('button', { name: /Обновить/ })).toBeNull();
 });
 
 it('the skeleton is visible at once (no delayed fade-in) and is shaped like cards: header, value tiles, chart', () => {
-  render(<RouteFallback />);
+  render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
   const skeleton = document.querySelector('.fe-route-skel');
   expect(skeleton).toBeTruthy();
   // Раньше каркас стартовал с задержкой 0.15 с и первые мгновения казался пустой страницей.
@@ -21,14 +23,17 @@ it('the skeleton is visible at once (no delayed fade-in) and is shaped like card
   expect(skeleton.querySelectorAll('.skeleton').length).toBeGreaterThanOrEqual(8);
 });
 
-it('keeps the server-rendered page on screen while the route chunk loads, then lets go of it', () => {
+it('never prints the server-rendered text for a human: only the skeleton, even when a snapshot exists', () => {
   window.__feSsrSnapshot = '<div class="seo-page"><h1>Key rate</h1></div>';
-  render(<RouteFallback />);
-  expect(document.querySelector('.fe-ssr-hold h1').textContent).toBe('Key rate');
-  cleanup();
-  render(<SsrHandoffDone />);
-  expect(window.__feSsrSnapshot).toBeNull();
-  cleanup();
-  render(<RouteFallback />);
+  render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
   expect(document.querySelector('.fe-ssr-hold')).toBeNull();
+  expect(document.body.textContent).not.toContain('Key rate');
+  delete window.__feSsrSnapshot;
+});
+
+it('offers a refresh button after the wait gets long', () => {
+  vi.useFakeTimers();
+  render(<LocaleProvider locale="ru"><RouteFallback /></LocaleProvider>);
+  act(() => { vi.advanceTimersByTime(8100); });
+  expect(screen.getByRole('button', { name: /Обновить/ })).toBeTruthy();
 });

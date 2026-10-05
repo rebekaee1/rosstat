@@ -41,6 +41,7 @@ import IndicatorMethodologyPanel from '../components/IndicatorMethodologyPanel';
 import SourceLink from '../components/SourceLink';
 import DataTable from '../components/DataTable';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import DeltaBadge from '../components/DeltaBadge';
 import WorldCountUp from '../components/WorldCountUp';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -513,6 +514,7 @@ export default function WorldIndicatorPage() {
 
       {(metaQ.isLoading || redirecting) && (
         <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => metaQ.refetch()} className="mb-4" />
           <SkeletonBox className="h-6 w-28 rounded-full" />
           <SkeletonBox className="h-8 w-3/4 max-w-full sm:h-10 md:h-14 lg:h-[4.5rem]" />
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">

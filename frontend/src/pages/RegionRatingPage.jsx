@@ -6,6 +6,7 @@ import { useRegionsHeatmap } from '../lib/regionsApi';
 import { formatRegionNumber, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import RegionsMap from '../components/RegionsMap';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import { regionRatingTrail } from '../lib/breadcrumbs';
@@ -90,6 +91,7 @@ export default function RegionRatingPage() {
 
       {isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-2 mt-6 h-4 w-48" />
           <SkeletonBox className="mb-3 h-8 w-full max-w-xl sm:h-9" />
           <SkeletonBox className="mb-4 h-12 w-full max-w-3xl" />

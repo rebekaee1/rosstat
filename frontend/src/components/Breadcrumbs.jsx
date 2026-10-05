@@ -13,6 +13,14 @@ import '../styles/indicator-russia.css';
  * длинное название текущей страницы обрезается многоточием по ширине строки, а не рвёт вёрстку.
  * `variant="mono"` (карточки индикаторов) — компактнее, без разрядки и капса.
  */
+/** Название ещё не пришло: страницы передают «…». Вместо многоточия (выглядит как баг) показываем серую полоску того же места. */
+const PLACEHOLDER = '…';
+
+function CrumbText({ name }) {
+  if (name !== PLACEHOLDER) return name;
+  return <span className="skeleton fe-crumbs__ph" aria-hidden="true" data-testid="crumb-placeholder" />;
+}
+
 export default function Breadcrumbs({
   items,
   className,
@@ -37,8 +45,8 @@ export default function Breadcrumbs({
               className={cn('fe-crumbs__item', isLast && 'fe-crumbs__item--last')}
             >
               {isLast ? (
-                <span className="fe-crumbs__current" aria-current="page" title={item.name}>
-                  {item.name}
+                <span className="fe-crumbs__current" aria-current="page" title={item.name === PLACEHOLDER ? undefined : item.name}>
+                  <CrumbText name={item.name} />
                 </span>
               ) : (
                 <>
@@ -50,9 +58,9 @@ export default function Breadcrumbs({
                       position: index + 1,
                     })}
                     className="fe-crumbs__link"
-                    title={item.name}
+                    title={item.name === PLACEHOLDER ? undefined : item.name}
                   >
-                    {item.name}
+                    <CrumbText name={item.name} />
                   </Link>
                   <ChevronRight className="fe-crumbs__sep" aria-hidden="true" />
                 </>

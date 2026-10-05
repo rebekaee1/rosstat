@@ -32,6 +32,15 @@ export default function Login() {
   };
   const oauthError = oauthErrors[params.get('error')] || (params.get('error') ? t('auth.login.errorGeneric') : null);
   const [error, setError] = useState(oauthError);
+  const [googleUnavailable, setGoogleUnavailable] = useState(false);
+
+  // Google ещё не подключён: честно говорим об этом и переводим человека к почте и паролю.
+  const switchToEmailLogin = () => {
+    setGoogleUnavailable(true);
+    const field = document.getElementById('email');
+    field?.focus();
+    field?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -61,7 +70,21 @@ export default function Login() {
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.login.title')}</h1>
       <p className="text-sm text-text-secondary mb-6 text-center">{t('auth.login.subtitle')}</p>
 
-      <OAuthButtons next={next} intent="login" dividerLabel={t('auth.oauth.divider')} />
+      <OAuthButtons
+        next={next}
+        intent="login"
+        dividerLabel={t('auth.oauth.divider')}
+        showGoogleEmailFallback
+        preferRealGoogle
+        googleFallbackLabelKey="auth.oauth.google"
+        onGoogleEmailFallback={switchToEmailLogin}
+      />
+
+      {googleUnavailable && (
+        <div role="status" data-testid="login-google-unavailable" className="rounded-xl border border-champagne/30 bg-champagne/10 px-3.5 py-3 text-sm text-text-secondary mb-4">
+          {t('w6a.login.googleUnavailable')}
+        </div>
+      )}
 
       <form onSubmit={submit} className="space-y-4">
         <div>
@@ -87,6 +110,17 @@ export default function Login() {
           className={fieldClass(credentialsInvalid)}
         />
 
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[13px] text-text-secondary">
+          <span data-testid="login-remember">{t('w6a.login.remember')}</span>
+          <a
+            href={`mailto:rebeka.ee@yandex.ru?subject=${encodeURIComponent(t('w6a.login.forgotSubject'))}`}
+            className="inline-flex min-h-11 items-center font-medium text-champagne-ink hover:underline"
+            data-testid="login-forgot"
+          >
+            {t('auth.login.forgot')}
+          </a>
+        </div>
+
         <div id="login-error" role="alert" className="w5-auth-error">{error}</div>
         <span role="status" className="sr-only">{busy ? t('auth.login.busy') : ''}</span>
 
@@ -100,7 +134,6 @@ export default function Login() {
         <Button as={Link} to={authLink('/register', next)} variant="secondary" className="w-full">
           {t('auth.login.createAccount')}
         </Button>
-        <p className="w5-auth-note">{t('w5.auth.forgotSoon')}</p>
       </div>
       </div>
     </div>

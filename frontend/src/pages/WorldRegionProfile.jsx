@@ -11,6 +11,7 @@ import {
 } from '../components/regions/RegionParts';
 import { prioritizeIndicators } from '../lib/regionUi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
@@ -141,6 +142,7 @@ export default function WorldRegionProfile() {
       )}
       {profile.isLoading && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => profile.refetch()} className="mb-4" />
           <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
           <SkeletonBox className="h-[2.6rem] w-72 max-w-full sm:h-10" />
           <SkeletonBox className="mt-3 h-5 w-full max-w-2xl" />

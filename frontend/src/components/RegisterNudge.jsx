@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Sparkles, X, ChevronUp, Download, CalendarRange, Bell,
+  Sparkles, X, Download, CalendarRange, Bell,
   MessageSquare, AlertCircle, Lightbulb,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
@@ -10,6 +10,9 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useT } from '../i18n';
 import { authLink, prepareAuthReturn } from '../lib/authReturn';
+import {
+  hasDownloadAttempt, markDownloadAttempt, readActions, shouldOfferNudge, writeActions,
+} from '../lib/registerNudge';
 import Button from './Button';
 import '../styles/indicator-russia.css';
 import '../styles/shell.css';
@@ -22,9 +25,13 @@ const HIDDEN_PATHS = ['/', '/login', '/register', '/account'];
 // Два режима одного плавающего окна:
 //   guest    — приглашение зарегистрироваться (открыть скачивание);
 //   feedback — для авторизованных: позвать оставить обратную связь.
+// Волна 6: приглашение не висит на каждой странице. Гостю оно показывается после второго действия
+// (или первой попытки скачать) и только там, где есть что скачать (см. lib/registerNudge.js);
+// свёрнутый вид — маленькая кнопка-значок, а не широкая золотая плашка.
 const REGISTER_VARIANT = {
   storageKey: 'fe_nudge_dismissed',
   pillKey: 'nudge.register.pill',
+  Icon: Download,
   titleKey: 'nudge.register.title',
   benefitKeys: [
     { icon: Download, textKey: 'nudge.register.benefit.download' },
@@ -37,6 +44,7 @@ const REGISTER_VARIANT = {
   mobileSubKey: 'shell3.nudge.register.sub',
   ctaKey: 'nudge.register.cta',
   ctaTo: '/register',
+  requireDownloadable: true,
   ev: {
     view: events.REGISTER_NUDGE_VIEW,
     expand: events.REGISTER_NUDGE_EXPAND,
@@ -47,6 +55,7 @@ const REGISTER_VARIANT = {
 const FEEDBACK_VARIANT = {
   storageKey: 'fe_feedback_nudge_dismissed',
   pillKey: 'nudge.feedback.pill',
+  Icon: MessageSquare,
   titleKey: 'nudge.feedback.title',
   benefitKeys: [
     { icon: MessageSquare, textKey: 'nudge.feedback.benefit.missing' },
@@ -58,6 +67,7 @@ const FEEDBACK_VARIANT = {
   mobileSubKey: 'shell3.nudge.feedback.sub',
   ctaKey: 'nudge.feedback.cta',
   ctaTo: '/account#feedback',
+  requireDownloadable: false,
   ev: {
     view: events.FEEDBACK_NUDGE_VIEW,
     expand: events.FEEDBACK_NUDGE_EXPAND,
@@ -79,6 +89,10 @@ export default function RegisterNudge() {
   const [dismissed, setDismissed] = useState(() => readDismissed(variant.storageKey));
   const [expanded, setExpanded] = useState(false);
   const [variantKey, setVariantKey] = useState(variant.storageKey);
+  const [actions, setActions] = useState(() => readActions());
+  const [downloadAttempted, setDownloadAttempted] = useState(() => hasDownloadAttempt());
+  const [nearFooter, setNearFooter] = useState(false);
+  const [prevPath, setPrevPath] = useState(location.pathname);
   const lastTrackedRef = useRef(null);
 
   // Смена режима (вход/выход) — у каждого свой ключ скрытия. Корректируем
@@ -90,8 +104,42 @@ export default function RegisterNudge() {
     setExpanded(false);
   }
 
+  // Действие = переход на другую страницу внутри сайта за сессию (первый вход не считается).
+  // Счёт ведём в состоянии (тот же паттерн «подправить состояние при смене пропса»), в хранилище только пишем.
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname);
+    setActions((n) => n + 1);
+  }
+  useEffect(() => { writeActions(actions); }, [actions]);
+
+  // Первая попытка скачать (сервер ответил «после регистрации») показывает приглашение сразу.
+  useEffect(() => {
+    const onLimit = () => { markDownloadAttempt(); setDownloadAttempted(true); };
+    window.addEventListener('fe:download-limit', onLimit);
+    return () => window.removeEventListener('fe:download-limit', onLimit);
+  }, []);
+
   const onHiddenPath = HIDDEN_PATHS.includes(location.pathname);
-  const visible = !isLoading && !dismissed && !onHiddenPath;
+  const offered = shouldOfferNudge({
+    actions,
+    downloadAttempted,
+    pathname: location.pathname,
+    requireDownloadable: variant.requireDownloadable,
+  });
+  const visible = !isLoading && !dismissed && !onHiddenPath && offered;
+
+  // Значок прячется, когда на экране подвал: не закрывает ссылки и реквизиты.
+  useEffect(() => {
+    if (!visible || typeof IntersectionObserver === 'undefined') return undefined;
+    const footer = document.querySelector('footer');
+    if (!footer) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => setNearFooter(Boolean(entry?.isIntersecting)),
+      { rootMargin: '0px 0px 64px 0px' },
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [visible, location.pathname]);
 
   // Цель «показан» — один раз на каждый режим (ключ режима — в ref внутри эффекта).
   useEffect(() => {
@@ -113,6 +161,8 @@ export default function RegisterNudge() {
     setDismissed(true);
   };
 
+  const FabIcon = variant.Icon;
+
   return (
     <>
     <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m fe-nudge-root sm:hidden print:hidden" aria-label={pill}>
@@ -131,19 +181,21 @@ export default function RegisterNudge() {
         {t(variant.ctaKey)}
       </Button>
     </aside>
-    <div className="fe-nudge-root hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
+    <div
+      className="fe-nudge-root fe-nudge-desk hidden sm:block print:hidden"
+      data-near-footer={nearFooter && !expanded ? 'true' : undefined}
+    >
       {!expanded ? (
-        <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px]">
-          <Button
-            onClick={expand}
-            aria-label={pill}
-            className="gap-2.5 rounded-full! py-3 pl-4 pr-5 shadow-xl"
-          >
-            <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
-            <span className="hidden sm:inline">{pill}</span>
-            <ChevronUp className="w-4 h-4 shrink-0 opacity-80" aria-hidden="true" />
-          </Button>
-        </div>
+        <button
+          type="button"
+          onClick={expand}
+          aria-label={pill}
+          title={pill}
+          className={cn(FOCUS_RING, 'fe-press fe-nudge-fab')}
+          data-testid="nudge-fab"
+        >
+          <FabIcon className="h-5 w-5" aria-hidden="true" />
+        </button>
       ) : (
         <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] w-[340px] max-w-[calc(100vw-2rem)] rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 overflow-hidden">
           <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-2">
@@ -154,7 +206,7 @@ export default function RegisterNudge() {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className={cn(FOCUS_RING, 'fe-press flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11')}
+              className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary')}
               aria-label={t('nudge.register.collapse')}
             >
               <X className="w-4 h-4" aria-hidden="true" />
@@ -184,7 +236,7 @@ export default function RegisterNudge() {
             <button
               type="button"
               onClick={dismiss}
-              className={cn(FOCUS_RING, 'fe-press rounded-md px-2 text-xs text-text-tertiary hover:text-text-secondary whitespace-nowrap min-h-8 pointer-coarse:min-h-11')}
+              className={cn(FOCUS_RING, 'fe-press rounded-md px-2 text-xs text-text-tertiary hover:text-text-secondary whitespace-nowrap min-h-11')}
             >
               {t('nudge.register.dismiss')}
             </button>

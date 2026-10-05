@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useIndicatorData } from './hooks';
 import { useWorldCompareCatalog, useWorldCompareSeries, useWorldIndicator } from './worldApi';
 import { useLocale } from '../i18n';
@@ -137,10 +137,31 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
 
   const countriesLoading = catalogQ.isLoading;
 
+  const isFetching = isRussia
+    ? (qCpi.isFetching || qFood.isFetching || qNonfood.isFetching || qServices.isFetching)
+    : (seriesQ.isFetching || metaQ.isFetching);
+  const { refetch: refetchCpi } = qCpi;
+  const { refetch: refetchFood } = qFood;
+  const { refetch: refetchNonfood } = qNonfood;
+  const { refetch: refetchServices } = qServices;
+  const { refetch: refetchSeries } = seriesQ;
+  const { refetch: refetchMeta } = metaQ;
+  /** Повторить загрузку того, что нужно выбранной стране (кнопка «Повторить» под ошибкой). */
+  const refetch = useCallback(() => {
+    if (isRussia) {
+      refetchCpi(); refetchFood(); refetchNonfood(); refetchServices();
+    } else {
+      refetchSeries();
+      if (indicatorCode) refetchMeta();
+    }
+  }, [isRussia, indicatorCode, refetchCpi, refetchFood, refetchNonfood, refetchServices, refetchSeries, refetchMeta]);
+
   return useMemo(() => {
     const base = {
       isLoading,
       isError,
+      isFetching,
+      refetch,
       lastAvailableYear,
       minYear,
       lastAvailableDate,
@@ -192,7 +213,7 @@ export default function useInflationCalc(amount, fromYear, toYear, countrySlug =
     };
   }, [
     amount, fromYear, toYear, cpiAll, cpiFood, cpiNonfood, cpiServices,
-    worldPoints, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
+    worldPoints, isLoading, isError, isFetching, refetch, lastAvailableYear, minYear, lastAvailableDate,
     countries, countriesLoading, source, sourceUrl, countryName, seriesStartYear,
     isRussia, resolvedSlug,
   ]);

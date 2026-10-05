@@ -81,6 +81,29 @@ export default function CookieConsent() {
 
   useEffect(() => () => notifyOverlayVisibility(false, false), []);
 
+  // Баннер не должен навсегда закрывать конец страницы: резервируем под ним место внизу документа
+  // (переменная читается в styles/shell.css, класс fe-cookie-pad на <body>).
+  const panelRef = useRef(null);
+  useEffect(() => {
+    if (!overlayVisible || typeof document === 'undefined') return undefined;
+    const root = document.documentElement;
+    const node = panelRef.current;
+    const apply = () => {
+      const h = node ? Math.ceil(node.getBoundingClientRect().height) : 0;
+      root.style.setProperty('--fe-cookie-h', `${h + 12}px`);
+    };
+    apply();
+    let observer = null;
+    if (node && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(apply);
+      observer.observe(node);
+    }
+    return () => {
+      if (observer) observer.disconnect();
+      root.style.removeProperty('--fe-cookie-h');
+    };
+  }, [overlayVisible, expanded]);
+
   // Служебные страницы (/admin/*) — баннер не показываем: админ не «посетитель»,
   // а перекрытие карточек BI мешает работе (владелец, 2026-07-06).
   if (!overlayVisible) return null;
@@ -124,34 +147,60 @@ export default function CookieConsent() {
       className="fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-3 [padding-bottom:max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
     >
       <div
+        ref={panelRef}
         data-analytics-overlay="cookie-consent"
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
-        className="pointer-events-auto mx-auto sm:mx-0 sm:max-w-md flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
+        className={cn(
+          'pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle shadow-[0_-8px_40px_rgba(26,26,46,0.12)] sm:shadow-[0_12px_40px_rgba(26,26,46,0.16)] fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
+          expanded ? 'sm:max-w-md' : 'sm:max-w-xl',
+        )}
       >
-        <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
-          <div className="min-w-0 flex-1 self-center">
-            {expanded && <p className="text-sm font-semibold text-text-primary mb-1">{t('cookie.title')}</p>}
-            {!expanded && (
-              <p className="text-[13px] text-text-secondary leading-snug">
-                {t('cookie.summary')}{' '}
-                <Link to="/privacy" className="text-champagne-ink hover:underline">
-                  {t('cookie.privacyShort')}
-                </Link>
-              </p>
-            )}
+        {expanded ? (
+          <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
+            <div className="min-w-0 flex-1 self-center">
+              <p className="text-sm font-semibold text-text-primary mb-1">{t('cookie.title')}</p>
+            </div>
+            <button
+              type="button"
+              aria-label={t('common.close')}
+              data-analytics-action="consent-dismiss"
+              data-fe-interaction-action="dismiss"
+              onClick={dismiss}
+              className={cn(FOCUS_RING, 'fe-press -mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
+            >
+              <X className="w-4 h-4" aria-hidden="true" />
+            </button>
           </div>
-          <button
-            type="button"
-            aria-label={t('common.close')}
-            data-analytics-action="consent-dismiss"
-            data-fe-interaction-action="dismiss"
-            onClick={dismiss}
-            className={cn(FOCUS_RING, 'fe-press -mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-text-tertiary hover:text-text-primary transition-colors')}
-          >
-            <X className="w-4 h-4" aria-hidden="true" />
-          </button>
-        </div>
+        ) : (
+          <div className="fe-cookie-compact">
+            <p className="fe-cookie-compact__text">
+              {t('cookie.summary')}{' '}
+              <Link to="/privacy" className="text-champagne-ink hover:underline">
+                {t('cookie.privacyShort')}
+              </Link>
+            </p>
+            <div className="fe-cookie-compact__actions">
+              <Button
+                data-analytics-action="consent-accept"
+                data-fe-interaction-action="accept"
+                onClick={() => commit(true, true, 'accept_all')}
+                className={btnBase}
+              >
+                {t('cookie.accept')}
+              </Button>
+              <Button
+                variant="ghost"
+                data-analytics-action="consent-customize"
+                data-fe-interaction-action="customize"
+                onClick={() => setExpanded(true)}
+                className={btnBase}
+              >
+                {t('cookie.customize')}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {expanded && (
           <div data-consent-scroll-body className="min-h-0 overflow-y-auto overscroll-contain px-3 pb-3">
@@ -181,8 +230,8 @@ export default function CookieConsent() {
           </div>
         )}
 
+        {expanded && (
         <div data-consent-actions className="grid shrink-0 grid-cols-2 gap-2 px-3 pb-3 pt-1">
-          {expanded ? (
             <>
               <Button
                 data-analytics-action="consent-save"
@@ -211,28 +260,8 @@ export default function CookieConsent() {
                 {t('shell.cookie.necessaryOnly')}
               </Button>
             </>
-          ) : (
-            <>
-              <Button
-                data-analytics-action="consent-accept"
-                data-fe-interaction-action="accept"
-                onClick={() => commit(true, true, 'accept_all')}
-                className={cn(btnBase, 'flex-1')}
-              >
-                {t('cookie.accept')}
-              </Button>
-              <Button
-                variant="secondary"
-                data-analytics-action="consent-customize"
-                data-fe-interaction-action="customize"
-                onClick={() => setExpanded(true)}
-                className={cn(btnBase, 'sm:flex-none')}
-              >
-                {t('cookie.customize')}
-              </Button>
-            </>
-          )}
         </div>
+        )}
       </div>
     </div>
   );

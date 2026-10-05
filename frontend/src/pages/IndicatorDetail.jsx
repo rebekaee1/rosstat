@@ -6,6 +6,7 @@ import {
 } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
@@ -205,7 +206,6 @@ export default function IndicatorDetail() {
     data: indicator,
     isLoading: loadingInd,
     isError: indError,
-    error: indErr,
     refetch: refetchInd,
     isFetching: fetchingInd,
   } = useIndicator(code);
@@ -534,7 +534,6 @@ export default function IndicatorDetail() {
             {indError && (
               <span className="block">
                 {t('indicator.error.cardLoad')}
-                {indErr?.message ? ` (${indErr.message})` : ''}.
               </span>
             )}
             {dataError && (
@@ -546,6 +545,7 @@ export default function IndicatorDetail() {
         </div>
       )}
 
+      {loadingInd && <LoadingNote onRefresh={refetchIndicatorPage} className="mb-4" />}
       <IndicatorDetailHeader
         indicator={indicator}
         code={code}

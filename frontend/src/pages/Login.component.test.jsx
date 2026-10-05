@@ -26,6 +26,23 @@ const renderLogin = () => render(
   </MemoryRouter>,
 );
 
+describe('Login wave 6: forgot password, remember note, Google', () => {
+  it('has a "Forgot password?" link that opens a letter and a 30-day remember note', () => {
+    renderLogin();
+    const forgot = screen.getByTestId('login-forgot');
+    expect(forgot.textContent).toBe('auth.login.forgot');
+    expect(forgot.getAttribute('href')).toMatch(/^mailto:/);
+    expect(screen.getByTestId('login-remember').textContent).toBe('w6a.login.remember');
+  });
+
+  it('shows a Google button; while Google is not connected it says so and moves to the email field', async () => {
+    renderLogin();
+    expect(screen.queryByTestId('login-google-unavailable')).toBeNull();
+    fireEvent.click(await screen.findByRole('button', { name: 'auth.oauth.google' }));
+    expect(screen.getByTestId('login-google-unavailable').textContent).toBe('w6a.login.googleUnavailable');
+  });
+});
+
 describe('Login form states', () => {
   it('marks the submit button busy while the request is pending', async () => {
     let resolve;

@@ -1,37 +1,16 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
 import { SkeletonBox } from './Skeleton';
-import { useT } from '../i18n';
+import LoadingNote from './LoadingNote';
 
 /**
- * Что видно, пока подгружается чанк страницы: тонкая полоса прогресса сверху и каркас страницы
- * (крошка, шапка, два блока) вместо одного маленького прямоугольника — контент не «прыгает» при появлении.
+ * Что видно, пока подгружается чанк страницы: тонкая полоса прогресса сверху, подпись «Загружаем данные…»
+ * (через 8 с к ней добавляется кнопка «Обновить») и каркас страницы (крошка, шапка, два блока):
+ * контент не «прыгает» при появлении. Серверный текст человеку не показываем, роботам он остаётся в HTML.
  */
-/** Ставится внутри Suspense после Routes: срабатывает, когда страница реально смонтирована. */
-export function SsrHandoffDone() {
-  useLayoutEffect(() => { window.__feSsrSnapshot = null; }, []);
-  return null;
-}
-
 export default function RouteFallback() {
-  const t = useT();
-  const [held] = useState(() => (typeof window !== 'undefined' ? window.__feSsrSnapshot : null));
-  const [slow, setSlow] = useState(false);
-  useEffect(() => {
-    const timer = setTimeout(() => setSlow(true), 4000);
-    return () => clearTimeout(timer);
-  }, []);
-  if (held) {
-    return (
-      <>
-        <span className="fe-page-progress" aria-hidden="true" />
-        <div className="fe-ssr-hold" dangerouslySetInnerHTML={{ __html: held }} />
-      </>
-    );
-  }
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pt-24 md:px-8 md:pt-28" role="status" aria-busy="true" aria-live="polite">
       <span className="fe-page-progress" aria-hidden="true" />
-      <span className={slow ? 'mb-4 block text-sm text-text-secondary' : 'sr-only'}>{slow ? t('route.slow') : '…'}</span>
+      <LoadingNote className="mb-4" />
       {/* Каркас виден сразу (без задержки появления) и повторяет форму страницы: крошка, шапка, плитки значений, график. */}
       <div className="fe-route-skel" aria-hidden="true">
         <SkeletonBox className="mb-5 h-3 w-40 rounded" />

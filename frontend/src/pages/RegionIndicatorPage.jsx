@@ -22,6 +22,7 @@ import { formatRegionNumber, formatRegionWithUnit, glueNumbers, unitLabel, NBSP 
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Chip from '../components/Chip';
@@ -296,6 +297,7 @@ export default function RegionIndicatorPage() {
       )}
       {!cardReady && !isError && (
         <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-2 mt-6 h-4 w-40" />
           <SkeletonBox className="mb-5 h-8 w-full max-w-2xl sm:h-9" />
           <SkeletonBox className="mb-6 h-9 w-64 sm:h-10" />

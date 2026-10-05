@@ -78,6 +78,21 @@ describe('ComparePage', () => {
     expect(heading.textContent).toBe('Сравнение показателей');
   });
 
+  it('волна 6: гость видит про лимит только когда упёрся в него', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
+    await screen.findByRole('heading', { level: 1 });
+    expect(screen.queryByTestId('compare-limit-note')).toBeNull();
+    expect(document.body.textContent).not.toContain('Сравнение — до 2 показателей');
+  });
+
+  it('волна 6: на двух выбранных показателях появляется «Для трёх и больше — регистрация»', async () => {
+    mockCompareApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=cpi,key-rate' });
+    const note = await screen.findByTestId('compare-limit-note');
+    expect(note.textContent).toContain('Для трёх и больше показателей нужна бесплатная регистрация');
+  });
+
   it('AddIndicator dual-write: compare_search и search_query(compare-macro)', async () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });

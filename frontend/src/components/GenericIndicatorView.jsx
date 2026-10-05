@@ -17,6 +17,7 @@ import { downloadExcel, downloadCSV } from '../lib/excel';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
+import LoadingNote from './LoadingNote';
 
 /**
  * Generic (config-driven) карточка индикатора для семей из
@@ -128,12 +129,14 @@ export default function GenericIndicatorView({
     } catch { /* сеть/сервер — молча */ }
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
-  const chartEmptyHint = !isLoading && !isError && (dataPoints?.length ?? 0) === 0
-    ? t('indicator.empty.recalc')
+  // При сбое подсказка под пустым графиком ссылается на кнопку «Повторить» выше, а не рассказывает про «загрузку с сервера».
+  const chartEmptyHint = !isLoading && (dataPoints?.length ?? 0) === 0
+    ? t(isError ? 'indicator.empty.seriesFetch' : 'indicator.empty.recalc')
     : undefined;
 
   return (
     <>
+      {loadingInd && <LoadingNote onRefresh={() => refetch()} className="mb-4" />}
       <IndicatorDetailHeader
         indicator={indicator}
         code={code}

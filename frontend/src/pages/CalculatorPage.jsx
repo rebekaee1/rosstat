@@ -24,6 +24,8 @@ import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
+import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import SourceLink from '../components/SourceLink';
@@ -308,7 +310,7 @@ export default function CalculatorPage() {
   const [periodTouched, setPeriodTouched] = useState(false);
 
   const {
-    result, isLoading, isError, lastAvailableYear, minYear, lastAvailableDate,
+    result, isLoading, isError, isFetching, refetch, lastAvailableYear, minYear, lastAvailableDate,
     countries, source, sourceUrl, resolvedCountrySlug, countryName, seriesStartYear, isRussia,
   } = useInflationCalc(amount, rawFromYear, rawToYear, countrySlug);
 
@@ -720,7 +722,7 @@ export default function CalculatorPage() {
           aria-busy="true"
           role="status"
         >
-          <span className="sr-only">{t('common.loading')}</span>
+          <LoadingNote onRefresh={refetch} className="mb-4" />
           <SkeletonBox className="h-4 w-48 mb-4"  />
           <SkeletonBox className="h-14 w-72 max-w-full mb-4" />
           <SkeletonBox className="h-4 w-56 max-w-full mb-8" />
@@ -734,9 +736,20 @@ export default function CalculatorPage() {
 
       {/* Error */}
       {isError && !isLoading && (
-        <div className="rounded-[2rem] bg-warn-surface border border-champagne/35 p-6 mb-6 text-sm text-warn-text">
+        <ApiRetryBanner className="mb-6" onRetry={refetch} isFetching={isFetching}>
           {t(isRussia ? 'w5.calc.inflation.loadError' : 'calc.inflation.loadErrorWorld')}
-        </div>
+        </ApiRetryBanner>
+      )}
+
+      {/* Страна без данных о ценах: короткая подсказка вместо пустой области (она занимала экран). */}
+      {!isError && !isLoading && !result && amount > 0 && (
+        <p
+          role="status"
+          data-testid="calc-no-data"
+          className="mb-6 rounded-[1.5rem] border border-border-subtle bg-surface p-5 text-sm text-text-secondary"
+        >
+          {t('w6a.calc.noData')}
+        </p>
       )}
 
       {result && !isLoading && (

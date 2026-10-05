@@ -357,7 +357,7 @@ def _nonblocking_stylesheets(head_links: str) -> str:
     """Critical inline CSS paints SSR content while full styles load."""
     lines = []
     for line in head_links.splitlines():
-        if not re.search(r'\brel="stylesheet"', line, flags=re.I) or "data-fe-css" in line:
+        if not re.search(r'\brel="stylesheet"', line, flags=re.I):
             lines.append(line)
             continue
         href_match = re.search(r'href="([^"]+)"', line)
@@ -365,6 +365,12 @@ def _nonblocking_stylesheets(head_links: str) -> str:
             lines.append(line)
             continue
         href = href_match.group(1)
+        if "data-fe-css" in line:
+            # Оболочка Vite уже отдаёт неблокирующую ссылку (см. vite.config.js):
+            # не дублируем атрибуты, только добавляем запасной вариант без JS.
+            lines.append(line)
+            lines.append(f'<noscript><link rel="stylesheet" href="{href}"></noscript>')
+            continue
         lines.append(re.sub(
             r"\s*/?>$",
             ' media="print" data-fe-css="1" fetchpriority="low" onload="this.media=\'all\'">',
@@ -649,6 +655,7 @@ def _default_keywords() -> str:
 # Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
+html{background:#EEF0F4;color-scheme:light}
 body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 .seo-page{box-sizing:border-box;width:100%;max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
@@ -916,10 +923,88 @@ body.seo-fast .seo-tk-down{color:#c02626;background:rgba(220,38,38,.08);border-c
 _SPA_SSR_HIDE_SCRIPT = (
     '<script>'
     'window.__feRevealSpa=function(){'
+    'document.documentElement.classList.remove("fe-boot");'
     'document.documentElement.classList.add("fe-js");'
     '};'
     '</script>'
 )
+
+# Волна 6 (1.1): человек не должен видеть «голый» серверный текст и пустой экран.
+# Пока приложение и его стили не готовы, SSR-тело в #root скрыто от глаз (класс
+# html.fe-boot ставит маленький скрипт в <head> до первого кадра), а поверх стоит
+# фирменная заставка: логотип, золотой контур шара, скелет. Роботам, поисковым
+# системам и посетителям без JS текст остаётся в HTML и виден: скрипт не ставит
+# класс им (по User-Agent и webdriver), а без JS класса нет вовсе. Запасной
+# таймер снимает заставку через 12 с, если приложение так и не загрузилось, —
+# тогда человек видит обычный SSR-текст, а не вечную заставку.
+# Тот же блок CSS/разметки продублирован в frontend/index.html (оболочка для
+# /login, /register, /account): держать в синхроне (тест в test_seo_og.py).
+BOOT_FALLBACK_MS = 12000
+
+_BOOT_STYLE = """<style id="fe-boot-css">
+.fe-boot-splash{display:none}
+html.fe-boot{overflow:hidden}
+html.fe-boot #root{visibility:hidden}
+html.fe-boot .seo-boot-bar{display:none!important}
+html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(233,223,205,.6),transparent 44%),radial-gradient(ellipse at 6% 100%,rgba(202,216,229,.45),transparent 40%),#EEF0F4;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
+html.fe-js .fe-boot-splash{display:none!important}
+.fe-boot-brand{display:inline-flex;align-items:center;gap:.6rem;font-size:1.65rem;font-weight:750;letter-spacing:-.06em;line-height:1}
+.fe-boot-brand svg{width:34px;height:39px}
+.fe-boot-brand i{font-style:normal;font-weight:400}
+.fe-boot-globe{width:132px;height:132px;color:#AD8A48}
+.fe-boot-globe .fe-g-ring{fill:rgba(255,255,255,.55);stroke:currentColor;stroke-width:1.4;stroke-dasharray:6 5;animation:feBootRing 7s linear infinite;transform-origin:60px 60px}
+.fe-boot-globe .fe-g-m{fill:none;stroke:currentColor;stroke-width:1.1;opacity:.55;transform-box:fill-box;transform-origin:center;animation:feBootSpin 3.2s ease-in-out infinite}
+.fe-boot-globe .fe-g-m:nth-of-type(2){animation-delay:-1.07s}
+.fe-boot-globe .fe-g-m:nth-of-type(3){animation-delay:-2.13s}
+.fe-boot-globe .fe-g-p{fill:none;stroke:currentColor;stroke-width:1;opacity:.35}
+.fe-boot-globe .fe-g-dot{fill:#AD8A48;animation:feBootPulse 1.6s ease-in-out infinite}
+.fe-boot-cap{margin:-8px 0 0;font-size:13px;letter-spacing:.02em;color:#59697F}
+.fe-boot-skel{display:flex;flex-direction:column;gap:10px;width:100%;max-width:26rem;margin-top:6px}
+.fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(173,138,72,.12);animation:feBootShim 1.5s linear infinite}
+.fe-boot-skel b:nth-child(1){width:46%}
+.fe-boot-skel b:nth-child(2){height:84px;border-radius:18px}
+.fe-boot-skel b:nth-child(3){width:72%}
+@keyframes feBootRing{to{transform:rotate(360deg)}}
+@keyframes feBootSpin{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.06)}}
+@keyframes feBootPulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes feBootShim{to{background-position:-220% 0,0 0}}
+@media(prefers-reduced-motion:reduce){.fe-boot-splash *{animation:none!important}}
+</style>"""
+
+_BOOT_SCRIPT = (
+    '<script>'
+    '(function(){try{var h=document.documentElement;'
+    'if(location.pathname.indexOf("/embed/")===0||'
+    'navigator.webdriver||'
+    '/bot|crawl|spider|slurp|facebookexternalhit|lighthouse|headless/i.test(navigator.userAgent||""))return;'
+    'h.classList.add("fe-boot");'
+    f'setTimeout(function(){{h.classList.remove("fe-boot")}},{BOOT_FALLBACK_MS});'
+    '}catch(e){}})();'
+    '</script>'
+)
+
+
+def _ssr_boot_splash() -> str:
+    """Заставка для человека, пока грузится приложение (скрыта без html.fe-boot)."""
+    from app.services.locale import get_locale
+
+    caption = "Loading…" if get_locale() == "en" else "Загружаем…"
+    return (
+        '<div class="fe-boot-splash" aria-hidden="true">'
+        '<span class="fe-boot-brand"><svg viewBox="0 0 40 44"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" '
+        'fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg>'
+        '<span>forecast<i>economy</i></span></span>'
+        '<svg class="fe-boot-globe" viewBox="0 0 120 120">'
+        '<circle class="fe-g-ring" cx="60" cy="60" r="56"/>'
+        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
+        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
+        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
+        '<path class="fe-g-p" d="M8 60H112M14 36H106M14 84H106"/>'
+        '<circle class="fe-g-dot" cx="60" cy="60" r="3"/></svg>'
+        f'<p class="fe-boot-cap">{caption}</p>'
+        '<div class="fe-boot-skel"><b></b><b></b><b></b></div>'
+        '</div>'
+    )
 
 # Брендовый «хром» чистых SSR-страниц (include_app=False): единая шапка с
 # навигацией и CTA-футер на главную. Одна точка правки для всех программатик-
@@ -1447,6 +1532,8 @@ async def build_document(
     head_links = assets.head_links if include_app else _strip_preloads(assets.head_links)
     spa_hide = ""
     boot_bar = ""
+    boot_head = ""
+    boot_splash = ""
     body_class = ""
     if not include_app:
         body_class = "seo-fast"
@@ -1458,6 +1545,8 @@ async def build_document(
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         boot_bar = _ssr_boot_bar()
+        boot_head = f"{_BOOT_STYLE}\n{_BOOT_SCRIPT}"
+        boot_splash = _ssr_boot_splash()
         if "seo-platform-nav" not in body:
             # SPA-SSR без chrome: бот видит только prerender в #root. Единый блок
             # выхода в хабы — иначе тонкие семейства (/today/*, /calendar/*) —
@@ -1484,6 +1573,7 @@ async def build_document(
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 {lcp_preload}
 {SEO_CRITICAL_CSS}
+{boot_head}
 {css_preload}
 {head_early}
 {_consent_bootstrap()}
@@ -1493,6 +1583,7 @@ async def build_document(
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="{robots_content}">
 <meta name="theme-color" content="#EEF0F4">
+<meta name="color-scheme" content="light">
 {_yandex_verification_meta()}
 <link rel="canonical" href="{escape(url)}">
 <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="{escape(_absolute("/feed.xml"))}">
@@ -1515,7 +1606,7 @@ async def build_document(
 {structured}
 </head>
 <body class="{body_class}">
-{spa_hide}{boot_bar}<div id="root">{body}</div>
+{spa_hide}{boot_splash}{boot_bar}<div id="root">{body}</div>
 {body_scripts}
 </body>
 </html>"""
@@ -1606,6 +1697,7 @@ def render_not_found_html(message: str | None = None) -> str:
 <title>{escape(title)} — Forecast Economy</title>
 <meta name="robots" content="noindex, follow">
 <meta name="theme-color" content="#EEF0F4">
+<meta name="color-scheme" content="light">
 </head>
 <body class="seo-fast" data-no-ads>
 {header}

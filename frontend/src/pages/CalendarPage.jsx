@@ -11,6 +11,7 @@ import CalendarGrid from '../components/calendar/CalendarGrid';
 import CalendarEventCard from '../components/calendar/CalendarEventCard';
 import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
+import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
 import { plainEventTitle, pluralForm } from '../lib/calendarText';
@@ -60,11 +61,10 @@ function monthRange(year, month) {
   return { from, to };
 }
 
-function CalendarSkeleton() {
-  const t = useT();
+function CalendarSkeleton({ onRefresh }) {
   return (
     <div className="space-y-4" role="status" aria-busy="true">
-      <span className="sr-only">{t('calendar.state.loading')}</span>
+      <LoadingNote onRefresh={onRefresh} />
       <SkeletonBox className="h-[22rem] w-full rounded-[1.5rem]" />
       <div className="space-y-3">
         {[1, 2, 3].map((i) => <SkeletonBox key={i} className="h-24 w-full rounded-[1.5rem]" />)}
@@ -194,6 +194,8 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
   const nextImportant = upcomingList?.find((e) => e.importance === 3) || upcomingList?.[0] || null;
 
   const allEvents = useMemo(() => data?.events || [], [data]);
+  // Ошибка без данных: сетку не рисуем (раньше «календарь недоступен» стоял над готовой пустой сеткой), остаётся плашка с повтором.
+  const failedWithoutData = isError && !data;
 
   const todayStr = useMemo(() => {
     const d = new Date();
@@ -274,8 +276,8 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
       )}
 
       {isLoading ? (
-        <CalendarSkeleton />
-      ) : (
+        <CalendarSkeleton onRefresh={() => refetch()} />
+      ) : failedWithoutData ? null : (
         <>
           <CalendarGrid
             year={year}
