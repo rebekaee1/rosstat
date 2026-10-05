@@ -50,7 +50,8 @@ def test_seo_not_found_shares_header_ticker_and_footer_with_the_app(client):
     html = client.get("/seo/not-found").text
     assert 'id="seo-ticker"' in html and "/seo-ticker.js" in html
     assert 'class="seo-lang-seg"' in html
-    assert ">RU<" in html and ">EN<" in html
+    # Язык как в приложении: кружок с кодом и стрелка, список по нажатию (без флага).
+    assert 'class="seo-lang-code"' in html and "Русский" in html and "English" in html
     assert ">Валюты<" in html and ">Калькуляторы<" in html
     assert 'href="/login"' in html and 'href="/register"' in html
     # Подзаголовок бренда тёмный, как в приложении (раньше был золотым).

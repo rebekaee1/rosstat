@@ -557,7 +557,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         "ключевая ставка ЦБ, инфляция, цена золота и топлива, индекс МосБиржи. "
         "Официальные данные, обновление по мере публикации источников."
     )
-    hub_h1 = today_hub_h1() or "Экономика России сегодня"
+    hub_h1 = today_hub_h1() or "Экономика России: последние данные"
     og_path = paths.og_today()
     hub_alt_tpl = today_template("hub_alt")
     hub_alt = (
@@ -579,7 +579,7 @@ async def render_today_hub_html(db: AsyncSession) -> tuple[int, str]:
         "страницу показателя с последними значениями, графиком и таблицей; полная история и прогноз — "
         "на карточках индикаторов."
     )
-    hub_h2 = today_template("hub_h2") or "Показатели на сегодня"
+    hub_h2 = today_template("hub_h2") or "Последние значения"
     hub_more_h2 = today_template("hub_more_h2") or "Больше данных"
     hub_more_tpl = today_template("hub_more_p")
     if hub_more_tpl:

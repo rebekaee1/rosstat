@@ -107,9 +107,11 @@ export default function Register() {
     <div className="fe-data-page max-w-md mx-auto px-4 pt-28 pb-24">
       <div className="fe-panel fe-auth-card fe-reveal p-5 sm:p-8">
       <h1 className="text-2xl font-display font-bold text-text-primary mb-1 text-center">{t('auth.register.title')}</h1>
-      <p className="text-sm text-text-secondary mb-6 text-center">
-        {t('auth.register.subtitle')}
-      </p>
+      <ul className="fe-w7p-benefits" aria-label={t('w7p.reg.benefitsAria')}>
+        <li>{t('w7p.reg.b1')}</li>
+        <li>{t('w7p.reg.b2')}</li>
+        <li>{t('w7p.reg.b3')}</li>
+      </ul>
 
       <OAuthButtons
         next={next}
@@ -159,11 +161,11 @@ export default function Register() {
             aria-describedby={consentInvalid ? describedBy : undefined}
           />
           <span>
-            {t('auth.oauth.policyBefore')}{' '}
-            <Link to="/terms" className="fe-link">{t('auth.oauth.terms')}</Link>{' '}
-            {t('auth.oauth.policyMid')}{' '}
-            <Link to="/privacy" className="fe-link">{t('auth.oauth.privacy')}</Link>
-            {t('auth.oauth.policyAfter')}
+            {t('w7p.reg.legalBefore')}{' '}
+            <Link to="/terms" className="fe-link">{t('w7p.reg.legalTerms')}</Link>{' '}
+            {t('w7p.reg.legalMid')}{' '}
+            <Link to="/privacy" className="fe-link">{t('w7p.reg.legalPrivacy')}</Link>
+            {t('w7p.reg.legalAfter')}
           </span>
         </label>
         <label className="w5-consent">

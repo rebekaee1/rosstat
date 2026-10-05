@@ -456,3 +456,24 @@
 .fe-auth-card input[type='checkbox']:checked { background: var(--color-accent-solid); border-color: var(--color-accent-solid); }
 .fe-auth-card input[type='checkbox']:checked::after { transform: rotate(-45deg) scale(1); }
 @media (prefers-reduced-motion: reduce) { .fe-auth-card input[type='checkbox']::after { transition: none; } }
+
+/* Регистрация: три строки выгод над формой (волна 7). */
+.fe-w7p-benefits { display: grid; gap: 6px; margin: 0 0 18px; padding: 0; list-style: none; }
+.fe-w7p-benefits li {
+  position: relative;
+  padding-left: 24px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.fe-w7p-benefits li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  width: 6px;
+  height: 11px;
+  border: solid var(--color-champagne-ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
+}

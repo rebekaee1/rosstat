@@ -294,9 +294,13 @@
   padding: 14px 16px;
   border-top: 1px solid var(--color-border-subtle);
   background: var(--color-obsidian);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px;
   line-height: 1.6;
   color: var(--color-text-secondary);
+  /* Без лигатур: иначе «<!--» склеивается в один знак и код читается неверно. */
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   max-height: 260px;

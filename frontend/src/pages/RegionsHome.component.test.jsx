@@ -46,6 +46,8 @@ describe('RegionsHome scoped keyboard correction', () => {
     ['ru', 'Найти показатель для карты'], ['en', 'Find an indicator for the map'],
   ])('matches punctuation-layout metric input in the %s map catalogue without dropping frequency or unit', async (locale, label) => {
     const get = mount('/russia/region/map/overview', locale);
+    // Поиск показателя и региона свёрнут в одну кнопку «Найти» (волна 7).
+    fireEvent.click(await screen.findByTestId('map-find-toggle'));
     const input = await screen.findByRole('combobox', { name: label });
     await waitFor(() => expect(get).toHaveBeenCalledWith('/regions/catalog', expect.anything()));
     fireEvent.focus(input);
@@ -61,6 +63,7 @@ describe('RegionsHome scoped keyboard correction', () => {
 
   it('keeps a partially typed native metric title discoverable without dropping added facets', async () => {
     mount('/russia/region/map/overview');
+    fireEvent.click(await screen.findByTestId('map-find-toggle'));
     const input = await screen.findByRole('combobox', { name: 'Найти показатель для карты' });
     fireEvent.focus(input);
     const q = 'Плотность автомобильных дорог общего пользования с твердым п';

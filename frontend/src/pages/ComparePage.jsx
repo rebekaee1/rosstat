@@ -1808,20 +1808,24 @@ export default function ComparePage() {
     <div className="fe-data-page fe-gutter max-w-7xl mx-auto pt-24 md:pt-28 pb-12 md:pb-16">
       <UpsellModal open={upsellOpen} onClose={() => setUpsellOpen(false)} />
 
-      <div className="mb-6 md:mb-8 max-w-4xl">
-        <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-6" />
+      <div className="mb-3 md:mb-8 max-w-4xl">
+        <Breadcrumbs items={toolTrail(t('compare.title'), comparePath())} className="mb-3 md:mb-6" />
 
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-4 leading-tight">
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 leading-tight">
           {t('compare.title')}
         </h1>
-        <p className="max-w-2xl text-[15px] leading-relaxed text-text-secondary md:text-base">
+        {/* На телефоне пояснение в одну строку, чтобы график был виден без прокрутки. */}
+        <p className="max-w-2xl text-sm leading-snug text-text-secondary sm:hidden">
+          {t('w7p.compare.subtitleShort')}
+        </p>
+        <p className="hidden max-w-2xl text-[15px] leading-relaxed text-text-secondary sm:block md:text-base">
           {t('w6g.compare.subtitle')}
         </p>
       </div>
 
-      <section data-block="compare-add" className="mb-6">
+      <section data-block="compare-add" className="mb-4 md:mb-6">
         {/* Готовые сравнения: один тап, и график уже построен. */}
-        <div className="mb-4" role="group" aria-label={t('w6g.compare.presetsAria')}>
+        <div className="mb-2.5 md:mb-4" role="group" aria-label={t('w6g.compare.presetsAria')}>
           <div className="fe-scroll-row">
             {COMPARE_PRESETS.map((preset) => (
               <Chip
@@ -1836,8 +1840,11 @@ export default function ComparePage() {
         </div>
 
         {isDemo && (
-          <div className="fe-compare-demo mb-4" data-testid="compare-demo">
-            <p className="fe-compare-demo__text">{t('w6g.compare.demoNote')}</p>
+          <div className="fe-compare-demo mb-3 md:mb-4" data-testid="compare-demo">
+            <p className="fe-compare-demo__text">
+              <span className="sm:hidden">{t('w7p.compare.demoShort')}</span>
+              <span className="hidden sm:inline">{t('w6g.compare.demoNote')}</span>
+            </p>
             <Button variant="secondary" onClick={startEditing}>
               {t('w6g.compare.edit')}
             </Button>
@@ -2050,15 +2057,6 @@ export default function ComparePage() {
               )}
               style={{ touchAction: 'pan-y' }}
             >
-              {!isAuthed && !isAuthLoading && (
-                <div
-                  aria-hidden="true"
-                  data-no-export="true"
-                  className="pointer-events-none absolute bottom-1 right-2 z-10 select-none whitespace-nowrap text-[11px] font-medium text-text-primary opacity-30"
-                >
-                  forecasteconomy.com
-                </div>
-              )}
               <ResponsiveContainer width="100%" height={chartHeight}>
                 <ComposedChart
                   data={chartRows}
@@ -2120,6 +2118,16 @@ export default function ComparePage() {
                   ))}
                 </ComposedChart>
               </ResponsiveContainer>
+              {/* Знак сайта стоит под графиком, а не поверх него: раньше он налезал на подписи дат. */}
+              {!isAuthed && !isAuthLoading && (
+                <div
+                  aria-hidden="true"
+                  data-no-export="true"
+                  className="pointer-events-none select-none whitespace-nowrap pb-0.5 pr-2 pt-0.5 text-right text-[11px] font-medium text-text-primary opacity-40"
+                >
+                  forecasteconomy.com
+                </div>
+              )}
             </div>
 
             {/* Панорама окна по всей истории — как на карточке индикатора. */}

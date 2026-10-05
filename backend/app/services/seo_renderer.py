@@ -871,13 +871,22 @@ body.seo-fast .seo-nav-login,body.seo-fast .seo-nav-reg{font-weight:650}
 body.seo-fast .seo-nav-reg{padding-left:.9rem!important;padding-right:.9rem!important;border-radius:999px!important;background:#202a3c!important;color:#fff!important;border-color:transparent!important;justify-content:center}
 body.seo-fast .seo-nav-reg:hover{background:#80642f!important;color:#fff!important}
 @media(min-width:1180px){body.seo-fast .seo-nav-reg{margin-left:.35rem;padding:.4rem 1rem!important}}
-body.seo-fast .seo-lang-seg{order:2;display:inline-flex;align-items:center;margin-left:auto;padding:3px;border:1px solid rgba(68,87,115,.16);border-radius:999px;background:rgba(255,255,255,.7)}
-body.seo-fast .seo-lang-seg a,body.seo-fast .seo-lang-seg span{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:38px;border-radius:999px;font-size:.8125rem;font-weight:700;letter-spacing:.04em;text-decoration:none!important;color:#526074}
-body.seo-fast .seo-lang-seg [aria-current]{background:#f6f3ec;color:#202a3c;box-shadow:inset 0 0 0 1px #d3c4a3}
-body.seo-fast .seo-lang-seg a:hover{color:#80642f}
+body.seo-fast .seo-lang-seg{order:2;position:relative;margin-left:auto}
+body.seo-fast .seo-lang-seg summary{display:inline-flex;align-items:center;justify-content:center;gap:.25rem;min-width:44px;min-height:44px;border-radius:14px;color:#526074;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
+body.seo-fast .seo-lang-seg summary::-webkit-details-marker{display:none}
+body.seo-fast .seo-lang-seg summary:hover,body.seo-fast .seo-lang-seg[open] summary{color:#80642f}
+body.seo-fast .seo-lang-seg summary:focus-visible{outline:2px solid #80642f;outline-offset:2px}
+body.seo-fast .seo-lang-code{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid rgba(128,100,47,.4);border-radius:999px;background:rgba(173,138,72,.1);color:#202a3c;font-size:9.5px;font-weight:700;letter-spacing:.02em;line-height:1}
+body.seo-fast .seo-lang-seg summary svg{width:12px;height:12px;transition:transform .15s}
+body.seo-fast .seo-lang-seg[open] summary svg{transform:rotate(180deg)}
+body.seo-fast .seo-lang-list{position:absolute;top:100%;right:0;z-index:40;min-width:10.5rem;margin-top:.4rem;padding:.35rem;border:1px solid rgba(68,87,115,.16);border-radius:16px;background:#fff;box-shadow:0 18px 40px -22px rgba(38,52,78,.5)}
+body.seo-fast .seo-lang-list a,body.seo-fast .seo-lang-list span{display:flex;align-items:center;gap:.6rem;min-height:44px;padding:0 .7rem;border-radius:12px;color:#202a3c;font-size:.9rem;text-decoration:none!important}
+body.seo-fast .seo-lang-list [aria-current]{background:#f6f3ec;color:#80642f;font-weight:650}
+body.seo-fast .seo-lang-list a:hover{background:rgba(173,138,72,.1)}
 body.seo-fast .seo-search-btn ~ .seo-lang-seg{margin-left:0}
 body.seo-fast .seo-lang-seg ~ .seo-menu-btn{margin-left:0}
 @media(min-width:1180px){body.seo-fast .seo-lang-seg{order:3;margin-left:0}}
+@media(max-width:479px){body.seo-fast .seo-topbar-in:has(.seo-search-btn){gap:.4rem .3rem}body.seo-fast .seo-topbar-in:has(.seo-search-btn) .seo-brand{font-size:1.1rem}}
 body.seo-fast .seo-foot-in p{margin:0;max-width:44rem;line-height:1.55}
 body.seo-fast .seo-foot a{color:#202a3c}
 /* ── Фирменная 404 ── */
@@ -1779,21 +1788,36 @@ def _not_found_guesses(path: str | None, en: bool) -> list[tuple[str, str]]:
 
 
 def _not_found_lang_toggle(en: bool) -> str:
-    """Переключатель RU | EN, как в шапке приложения: текущий язык отмечен, второй ведёт на главную."""
+    """Выбор языка, как в шапке приложения: кружок с кодом и стрелка, список открывается по нажатию (без JS).
+
+    Текущий язык отмечен, второй ведёт на главную в той же паре языков.
+    """
     urls = _locale_cluster("/")
     if urls:
         ru_href, en_href = urls["ru"], urls["en"]
     else:
         # Тестовый режим и хосты без пары языков: предпросмотр на этой же странице.
         ru_href, en_href = "/?preview_locale=ru", "/?preview_locale=en"
-    current_ru = '<span aria-current="true">RU</span>'
-    current_en = '<span aria-current="true">EN</span>'
-    ru_link = f'<a rel="alternate" hreflang="ru" lang="ru" href="{escape(ru_href)}">RU</a>'
-    en_link = f'<a rel="alternate" hreflang="en" lang="en" href="{escape(en_href)}">EN</a>'
     label = "Language" if en else "Язык"
+    current_name = "English" if en else "Русский"
+    code = "EN" if en else "RU"
+
+    def _row(row_code: str, name: str, href: str, active: bool) -> str:
+        badge = f'<span class="seo-lang-code" aria-hidden="true">{row_code}</span>'
+        if active:
+            return f'<span aria-current="true">{badge}{name}</span>'
+        low = row_code.lower()
+        return f'<a rel="alternate" hreflang="{low}" lang="{low}" href="{escape(href)}">{badge}{name}</a>'
+
+    chevron = (
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" '
+        'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'
+    )
     return (
-        f'<div class="seo-lang-seg" role="group" aria-label="{label}">'
-        f'{current_ru if not en else ru_link}{current_en if en else en_link}</div>'
+        '<details class="seo-lang-seg">'
+        f'<summary aria-label="{label}: {current_name}"><span class="seo-lang-code" aria-hidden="true">{code}</span>{chevron}</summary>'
+        f'<div class="seo-lang-list" role="group" aria-label="{label}">'
+        f'{_row("RU", "Русский", ru_href, not en)}{_row("EN", "English", en_href, en)}</div></details>'
     )
 
 

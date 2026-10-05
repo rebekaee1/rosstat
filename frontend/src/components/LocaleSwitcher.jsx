@@ -10,58 +10,24 @@ const LOCALES = [
   { code: 'en', labelKey: 'nav.locale.en' },
 ];
 
-function FlagRu({ className }) {
-  return (
-    <svg viewBox="0 0 16 12" className={className} aria-hidden focusable="false">
-      <rect width="16" height="4" fill="#fff" />
-      <rect y="4" width="16" height="4" fill="#0039A6" />
-      <rect y="8" width="16" height="4" fill="#D52B1E" />
-    </svg>
-  );
-}
-
-function FlagUs({ className }) {
-  return (
-    <svg viewBox="0 0 16 12" className={className} aria-hidden focusable="false">
-      <rect width="16" height="12" fill="#BF0A30" />
-      <rect y="1.09" width="16" height="1.09" fill="#fff" />
-      <rect y="3.27" width="16" height="1.09" fill="#fff" />
-      <rect y="5.45" width="16" height="1.09" fill="#fff" />
-      <rect y="7.64" width="16" height="1.09" fill="#fff" />
-      <rect y="9.82" width="16" height="1.09" fill="#fff" />
-      <rect width="7.2" height="6.54" fill="#002868" />
-      <circle cx="1.6" cy="1.5" r="0.38" fill="#fff" />
-      <circle cx="3.6" cy="1.5" r="0.38" fill="#fff" />
-      <circle cx="5.6" cy="1.5" r="0.38" fill="#fff" />
-      <circle cx="2.6" cy="3.15" r="0.38" fill="#fff" />
-      <circle cx="4.6" cy="3.15" r="0.38" fill="#fff" />
-      <circle cx="1.6" cy="4.8" r="0.38" fill="#fff" />
-      <circle cx="3.6" cy="4.8" r="0.38" fill="#fff" />
-      <circle cx="5.6" cy="4.8" r="0.38" fill="#fff" />
-    </svg>
-  );
-}
-
+/** Язык показываем кружком с кодом (RU / EN): флаг означает страну, а не язык. */
 function LocaleFlag({ locale, className }) {
   return (
     <span
+      aria-hidden="true"
       className={cn(
-        'inline-flex h-[14px] w-[18px] shrink-0 overflow-hidden rounded-[2px]',
-        'ring-1 ring-black/[0.14] dark:ring-white/20',
+        'inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full',
+        'border border-champagne-ink/40 bg-champagne/10 text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-text-primary',
         className,
       )}
     >
-      {locale === 'en' ? (
-        <FlagUs className="h-full w-full" />
-      ) : (
-        <FlagRu className="h-full w-full" />
-      )}
+      {locale === 'en' ? 'EN' : 'RU'}
     </span>
   );
 }
 
 /**
- * Язык в шапке: флаг текущей локали, клик открывает список флагов.
+ * Язык в шапке: кружок с кодом текущего языка, клик открывает список языков.
  * До cutover / localhost: тот же origin + ?preview_locale=en (не канон).
  * После cutover на прод-хостах: path-identical host-swap (EN=apex, RU=ru.).
  */
@@ -110,8 +76,6 @@ export default function LocaleSwitcher() {
         aria-haspopup="menu"
       >
         <LocaleFlag locale={current.code} />
-        {/* Подпись RU/EN: флаг — это страна, а не язык. На самых узких экранах шапке не хватает ширины. */}
-        <span className="hidden text-xs font-semibold uppercase min-[400px]:inline">{current.code}</span>
         <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} />
       </button>
       {open && (

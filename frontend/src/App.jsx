@@ -164,6 +164,12 @@ function NavigateKeepSearch({ to }) {
   return <Navigate to={`${to}${search}`} replace />;
 }
 
+/** Guessed address of the country list: the home page, scrolled to the list. */
+function CountriesToHome() {
+  const { search } = useLocation();
+  return <Navigate to={{ pathname: '/', search, hash: '#countries' }} replace />;
+}
+
 const EMBED_RE = /^\/embed\/(chart|card|table|ticker|compare)/;
 
 function EmbedSpinner() {
@@ -294,6 +300,8 @@ function AppRoutes() {
             <Route path="/calendar/:year/:month" element={<RedirectTo build={({ year, month }) => calendarPath(year, month)} />} />
             <Route path="/demographics" element={<NavigateKeepSearch to={demographicsPath()} />} />
             <Route path="/regions" element={<NavigateKeepSearch to={regionHubPath()} />} />
+            <Route path="/russia/regions" element={<NavigateKeepSearch to={regionHubPath()} />} />
+            <Route path="/countries" element={<CountriesToHome />} />
             <Route path="/regions/map/:code" element={<RedirectTo build={({ code }) => regionMapPath(code)} />} />
             <Route path="/region/:slug" element={<RedirectTo build={({ slug }) => regionPath(slug)} />} />
             <Route path="/region/:slug/:code" element={<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} />

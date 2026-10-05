@@ -193,7 +193,12 @@
 .w2-profile-facts dd { margin: 2px 0 0; color: var(--color-text-primary); font-size: 16px; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; }
 .w2-profile-facts dd small { display: block; color: var(--color-text-tertiary); font-size: 12px; font-weight: 400; }
 .w2-profile-facts > div { min-width: 0; }
-.w2-profile-facts dd { overflow-wrap: anywhere; }
+/* Переносим по словам: «Австралийский доллар» и «км²» не рвём посередине. Крайний случай (очень длинное слово) — break-word. */
+.w2-profile-facts dd { overflow-wrap: break-word; word-break: normal; hyphens: none; }
+@media (max-width: 479px) {
+  .w2-profile-facts dd { font-size: 14px; }
+  .w2-profile-facts dt { font-size: 11.5px; }
+}
 .w2-main-title { margin: 0; color: var(--color-text-primary); font-size: 18px; font-weight: 650; line-height: 1.3; }
 .w2-kpi-nospark { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-tertiary); font-size: 12px; line-height: 1.3; }
 /* Свёрнутые почти-дубли списка показателей. */
