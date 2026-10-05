@@ -26,6 +26,9 @@ function renderDock(route = '/', locale = 'ru') {
 afterEach(() => {
   Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
   document.documentElement.style.removeProperty('--fe-dock-h');
+  document.documentElement.style.removeProperty('--fe-dock-reserve');
+  delete document.documentElement.dataset.feDock;
+  document.querySelectorAll('footer.fe-footer').forEach((n) => n.remove());
 });
 
 describe('MobileDock: нижняя док-панель телефона', () => {
@@ -58,6 +61,24 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     await scrollTo(220);
     expect(dock.getAttribute('data-visible')).toBe('true');
     expect(document.documentElement.style.getPropertyValue('--fe-dock-h')).toBe('76px');
+    // Место под панелью зарезервировано всегда, пока она смонтирована; значок cookie показывается вместе с ней.
+    expect(document.documentElement.style.getPropertyValue('--fe-dock-reserve')).toBe('76px');
+    expect(document.documentElement.dataset.feDock).toBe('visible');
+  });
+
+  it('над тёмным подвалом панель получает тёмный тон, выше подвала нет', async () => {
+    const footer = document.createElement('footer');
+    footer.className = 'fe-footer';
+    document.body.appendChild(footer);
+    const place = (top) => { footer.getBoundingClientRect = () => ({ top, bottom: top + 900 }); };
+    renderDock();
+    const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
+    place(5000);
+    await scrollTo(300);
+    expect(dock.getAttribute('data-tone')).toBeNull();
+    place(window.innerHeight - 100);
+    await scrollTo(320);
+    expect(dock.getAttribute('data-tone')).toBe('dark');
   });
 
   it('после остановки прокрутки панель появляется и без движения вверх', async () => {

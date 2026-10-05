@@ -33,7 +33,7 @@ describe('Navbar: появление и закрытие панелей', () => 
     const menu = document.getElementById('fe-nav-mobile-menu');
     expect(menu).toBeTruthy();
     // R3: меню телефона стало шторкой снизу (components/BottomSheet.jsx), рисуется порталом в body и держит роль диалога.
-    expect(menu.className).toContain('fe-sheet');
+    expect(menu.className).toContain('fe-bsheet');
     expect(menu.getAttribute('role')).toBe('dialog');
     expect(menu.getAttribute('aria-modal')).toBe('true');
     expect(menu.parentElement).toBe(document.body);

@@ -7,7 +7,7 @@
    <nav> сделал бы его «корнем фона», и выпадающие панели внутри него (меню «Инструменты», страны мира, язык) размывали бы пустоту.
 
    Новые общие классы этой зоны (для переноса в фундамент, если пригодятся другим зонам):
-     .fe-sheet / .fe-sheet-scrim   шторка снизу (components/BottomSheet.jsx)
+     .fe-bsheet / .fe-bsheet-scrim   шторка снизу (components/BottomSheet.jsx)
      .fe-dock                      нижняя панель телефона (components/MobileDock.jsx)
      .fe-mnav-tile                 иконка пункта меню в стеклянной «грани» 40 px
      .fe-cookie-fab                значок свёрнутой cookie-плашки */
@@ -28,25 +28,36 @@
   --k3-caption: #a8b9cf;
 }
 
-/* ═══ Шапка: парящая стеклянная капсула ═══════════════════════════════════ */
-nav.fe-navbar--glass {
-  background: none;
-  box-shadow: none;
+/* Тёмный тон: шапка, лента и док над тёмным подвалом (data-tone="dark" ставит useFooterTone). Сапфировое стекло, светлый текст,
+   золото светлее: светлое стекло над графитом становилось грязно-серым, а подписи теряли контраст. */
+nav.fe-navbar--glass[data-tone='dark'],
+.fe-ticker[data-tone='dark'],
+.fe-dock[data-tone='dark'] {
+  --k3-paper: 22 32 56;
+  --k3-caption: #a8b9cf;
+  --color-text-primary: #f3efe6;
+  --color-text-secondary: #c3cad8;
+  --color-text-tertiary: #a8b9cf;
+  --color-champagne-ink: #e0c27a;
+  --fe-glass-l2: rgba(255, 255, 255, 0.12);
+  --fe-glass-l2-hover: rgba(255, 255, 255, 0.2);
+  --fe-pop-bg: rgba(26, 38, 64, 0.94);
+  --fe-glass-l1-sheen: linear-gradient(130deg, rgba(255, 255, 255, 0.16), transparent 55%);
+  --fe-inset-glint: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --fe-float-shadow: 0 1px 2px rgba(8, 14, 30, 0.3), 0 24px 56px -28px rgba(8, 14, 30, 0.6);
 }
-/* Основа: L1, блик сверху (диагональ и inset), тень-парение, размытие 26 px. */
-nav.fe-navbar--glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  pointer-events: none;
+
+/* ═══ Шапка: парящая стеклянная капсула ═══════════════════════════════════ */
+/* Основа: L1, блик сверху (диагональ и inset), тень-парение, размытие 26 px. Размытие стоит на самом закреплённом блоке,
+   а не на псевдоэлементе: так оно видит страницу под шапкой и не зависит от анимации появления родителя. */
+nav.fe-navbar--glass {
   background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.55);
   -webkit-backdrop-filter: blur(26px) saturate(1.3);
   backdrop-filter: blur(26px) saturate(1.3);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
-/* Прокрутка: слой плотнее (0,55 → 0,7) и тень глубже. Меняется только прозрачность слоя, а не цвет и не тень. */
+/* Прокрутка: слой плотнее (0,55 → 0,7) и тень глубже. Меняется только прозрачность слоя, а не цвет и не тень.
+   Слой лежит над основой (z-index -1 внутри контекста шапки), под содержимым. */
 nav.fe-navbar--glass::after {
   content: '';
   position: absolute;
@@ -65,6 +76,8 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 
 /* Телефон: шапка сжимается до 56 px при прокрутке вниз и возвращается при прокрутке вверх; лента курсов уезжает вместе с ней. */
 @media (max-width: 767px) {
+  /* В покое шапка ниже: 64 px вместо 72 (лента 36 + шапка 64 = 100 px, было 108). */
+  nav.fe-navbar--glass { padding-block: 8px; }
   nav.fe-navbar--glass[data-compact='true'] {
     transform: translateY(-30px);
     padding-block: 4px;
@@ -92,14 +105,9 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 }
 
 /* ═══ Лента курсов ════════════════════════════════════════════════════════ */
-.fe-ticker::before {
-  /* Основа ленты: стекло L1 (размытие 24 px), блик сверху, тень снизу. */
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.6);
+.fe-ticker {
+  /* Основа ленты: стекло L1 (размытие 24 px), блик сверху, тень снизу. Плотность .72: цифры страницы под лентой не читаются. */
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.72);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: 0 14px 28px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
@@ -149,11 +157,11 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   .fe-ticker {
     transition: transform 0.28s var(--k3-ease), opacity 0.2s ease;
   }
-  /* Бюджет размытия на телефоне: лента без blur, чуть плотнее. */
-  .fe-ticker::before {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.84);
+  /* Телефон: blur 18 (в кадре ≤ 4 слоя: лента, шапка, док, cookie), плотнее: .8. */
+  .fe-ticker {
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    backdrop-filter: blur(18px) saturate(1.25);
+    background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.8);
   }
   .fe-ticker[data-hidden='true'] {
     transform: translateY(-100%);
@@ -179,7 +187,10 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   }
   .fe-ticker .fe-ticker__name { grid-area: name; font-size: 11px; line-height: 1.15; color: var(--k3-caption); }
   .fe-ticker .fe-ticker__quote { grid-area: quote; }
-  .fe-ticker .fe-ticker__delta { grid-area: delta; align-self: end; font-size: 12px; }
+  .fe-ticker .fe-ticker__delta { grid-area: delta; align-self: end; font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  /* «Все валюты» на телефоне не липнет к краю, а стоит последней ячейкой: ничего не накрывает и не просвечивает (приёмка F3.1). */
+  .fe-ticker .fe-ticker__all { position: static; background: none; }
+  .fe-ticker .fe-ticker__all::before { display: none; }
 }
 
 /* ═══ Выпадающие панели шапки ═════════════════════════════════════════════ */
@@ -214,7 +225,8 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   height: 64px;
   margin-inline: auto;
   border-radius: 28px;
-  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.6);
+  /* Плотность .88: подписи дока читаются, текст страницы сквозь них не проступает (размытие 24 px остаётся). */
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.88);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
@@ -288,7 +300,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 .fe-dock__item:active .fe-dock__gem { transform: scale(0.94); }
 
 /* ═══ Шторка снизу (меню телефона и планшета) ══════════════════════════════ */
-.fe-sheet-scrim {
+.fe-bsheet-scrim {
   position: fixed;
   inset: 0;
   z-index: 120;
@@ -296,7 +308,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   touch-action: none;
   animation: fe-k3-fade 0.24s ease backwards;
 }
-.fe-sheet {
+.fe-bsheet {
   position: fixed;
   left: 0;
   right: 0;
@@ -309,7 +321,8 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   max-height: min(86dvh, 760px);
   margin-inline: auto;
   border-radius: 28px 28px 0 0;
-  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.78);
+  /* Плотность .9: нижняя часть листа не просвечивает текстом страницы (приёмка: было .78). */
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.9);
   -webkit-backdrop-filter: blur(28px) saturate(1.3);
   backdrop-filter: blur(28px) saturate(1.3);
   box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), var(--fe-inset-glint);
@@ -317,12 +330,12 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   outline: none;
   animation: fe-k3-sheet-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
-@media (min-width: 640px) { .fe-sheet { max-width: 720px; } }
-@media (min-width: 900px) { .fe-sheet { max-width: 880px; } }
+@media (min-width: 640px) { .fe-bsheet { max-width: 720px; } }
+@media (min-width: 900px) { .fe-bsheet { max-width: 880px; } }
 @keyframes fe-k3-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fe-k3-sheet-in { from { transform: translateY(100%); } to { transform: none; } }
 
-.fe-sheet__grab {
+.fe-bsheet__grab {
   flex: none;
   display: flex;
   align-items: center;
@@ -332,26 +345,26 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   touch-action: none;
 }
 /* Ручка-капля: золотая «капля света», тянется вниз. */
-.fe-sheet__handle {
+.fe-bsheet__handle {
   width: 48px;
   height: 6px;
   border-radius: 9999px;
   background: linear-gradient(90deg, rgba(176, 138, 62, 0.35), rgba(201, 162, 77, 0.95) 50%, rgba(176, 138, 62, 0.35));
   box-shadow: 0 2px 10px rgba(201, 162, 77, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
-.fe-sheet__body { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
-.fe-sheet__foot { flex: none; }
+.fe-bsheet__body { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+.fe-bsheet__foot { flex: none; }
 
 /* Пункты меню в шторке: 56 px, иконка-грань, без линий (между группами воздух). */
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 8px; background: none; }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-group { gap: 4px; animation: fe-mnav-in 0.22s var(--fe-ease-out, ease-out) backwards; }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 14px; padding-top: 0; }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 8px; background: none; }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { gap: 4px; animation: fe-mnav-in 0.22s var(--fe-ease-out, ease-out) backwards; }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 14px; padding-top: 0; }
 @media (min-width: 640px) {
   /* В две и три колонки группы лежат рядом: воздух между рядами даёт зазор сетки, а не верхний отступ. */
-  .fe-sheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 0; }
-  .fe-sheet .fe-mnav-columns { row-gap: 14px; }
+  .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 0; }
+  .fe-bsheet .fe-mnav-columns { row-gap: 14px; }
 }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-title {
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-title {
   padding: 4px 12px 2px;
   font-size: 12px;
   font-weight: 650;
@@ -359,7 +372,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   text-transform: uppercase;
   color: var(--color-champagne-ink);
 }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link {
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link {
   align-items: center;
   gap: 14px;
   min-height: 56px;
@@ -367,12 +380,12 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   border-radius: 18px;
   text-align: left;
 }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link--nested { min-height: 56px; }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link:active { background: var(--fe-glass-l2-hover); }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] { background: rgb(201 162 77 / 0.16); }
-.fe-sheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] .fe-mnav-label { color: var(--color-champagne-ink); }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link--nested { min-height: 56px; }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link:active { background: var(--fe-glass-l2-hover); }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] { background: rgb(201 162 77 / 0.16); }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] .fe-mnav-label { color: var(--color-champagne-ink); }
 @media (hover: hover) {
-  .fe-sheet.fe-navbar-mobile-menu .fe-mnav-link:hover { background: var(--fe-glass-l2-hover); }
+  .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link:hover { background: var(--fe-glass-l2-hover); }
 }
 .fe-mnav-tile {
   display: grid;
@@ -384,17 +397,24 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   background: linear-gradient(145deg, rgb(255 255 255 / 0.92), rgb(246 231 190 / 0.55));
   box-shadow: var(--fe-l2-shadow);
 }
-.fe-sheet .fe-mnav-tile .fe-mnav-icon { margin-top: 0; color: var(--color-champagne-ink); }
-.fe-sheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile {
+.fe-bsheet .fe-mnav-tile .fe-mnav-icon { margin-top: 0; color: var(--color-champagne-ink); }
+.fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile {
   background: var(--fe-glass-active);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
-.fe-sheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-gold); }
-.fe-sheet .fe-mnav-chevron { margin-right: 4px; }
+.fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-gold); }
+.fe-bsheet .fe-mnav-chevron { margin-right: 4px; }
 /* Вход и регистрация: закреплены внизу, над ними мягкий свет вместо линии. */
-.fe-sheet .fe-mnav-foot {
+.fe-bsheet .fe-mnav-foot a { display: flex; align-items: center; justify-content: center; min-height: 48px; }
+.fe-bsheet .fe-mnav-foot {
   padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, transparent, rgb(var(--k3-paper) / 0.6));
+}
+
+/* ═══ Место под док-панелью ═══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Последние строки страницы не уходят под док: запас на высоту панели (--fe-dock-reserve ставит MobileDock) + 16 px. */
+  main#main-content { padding-bottom: calc(var(--fe-dock-reserve, 0px) + 16px); }
 }
 
 /* ═══ Cookie: стеклянная капсула и значок ═════════════════════════════════ */
@@ -413,10 +433,20 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   box-shadow: var(--fe-shadow-l2), var(--fe-float-shadow), var(--fe-inset-glint);
   color: var(--color-champagne-ink);
   cursor: pointer;
+  /* Значок cookie виден только вместе с док-панелью (html[data-fe-dock]): пока страница едет вниз, он не лежит поверх цифр. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
   /* Над док-панелью, когда она на экране (--fe-dock-h ставит MobileDock), иначе у самого края. */
   transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
-  transition: transform 0.3s var(--k3-ease);
+  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s 0.24s;
   -webkit-tap-highlight-color: transparent;
+}
+html[data-fe-dock='visible'] .fe-cookie-fab {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s;
 }
 .fe-cookie-fab svg { width: 20px; height: 20px; }
 .fe-cookie-fab:active { scale: 0.96; }
@@ -424,6 +454,8 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   .fe-cookie-fab { display: none; }
 }
 @media (max-width: 639px) {
+  /* Плашка тоньше: отступы 6 px вместо 8 (вместе с одной строкой 48 px это ≈ 60 px вместо 72). */
+  .fe-cookie-wrap { padding: 6px 6px max(6px, env(safe-area-inset-bottom, 0px)); }
   /* Плашка cookie, возвращённая нажатием на значок, встаёт над док-панелью, а не под ней. */
   .fe-cookie-wrap {
     transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
@@ -434,7 +466,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 /* ═══ Плотные слои: без backdrop-filter и при «меньше прозрачности» ═════════ */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   nav.fe-navbar--glass::before, .fe-ticker::before { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.94); }
-  .fe-dock, .fe-sheet { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96); }
+  .fe-dock, .fe-bsheet { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96); }
 }
 @media (prefers-reduced-transparency: reduce) {
   nav.fe-navbar--glass::before, .fe-ticker::before {
@@ -442,7 +474,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
     backdrop-filter: none;
     background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96);
   }
-  .fe-dock, .fe-sheet {
+  .fe-dock, .fe-bsheet {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.97);
@@ -453,10 +485,10 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 @media (prefers-reduced-motion: reduce) {
   nav.fe-navbar--glass::after, nav.fe-navbar--glass .fe-brand,
   .fe-ticker, .fe-dock, .fe-dock__gem, .fe-cookie-fab, .fe-cookie-wrap { transition: none; }
-  .fe-sheet, .fe-sheet-scrim, .fe-sheet.fe-navbar-mobile-menu .fe-mnav-group { animation: none; }
+  .fe-bsheet, .fe-bsheet-scrim, .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { animation: none; }
   nav.fe-navbar--glass[data-scrolled='true'], nav.fe-navbar--glass[data-compact='true'] { transform: none; }
   .fe-ticker[data-hidden='true'] { transform: none; opacity: 1; pointer-events: auto; }
 }
 @media print {
-  .fe-dock, .fe-sheet, .fe-sheet-scrim, .fe-cookie-fab, .fe-cookie-wrap { display: none !important; }
+  .fe-dock, .fe-bsheet, .fe-bsheet-scrim, .fe-cookie-fab, .fe-cookie-wrap { display: none !important; }
 }

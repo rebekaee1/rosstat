@@ -14,6 +14,7 @@ import Brand from './Brand';
 import { useAuth } from '../context/authContext';
 import { mobileNavGroups, primaryNav, resolveActiveNavId, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
 import { useScrollDirection } from '../lib/useScrollDirection';
+import { useFooterTone } from '../lib/useFooterTone';
 import { megaCountries, megaIndicators } from '../lib/megaMenu';
 import { isRussiaSectionPath } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
@@ -165,6 +166,8 @@ export default function Navbar() {
   // Прокрутка: шапка плотнее (scrolled), а на телефоне при движении вниз сжимается и уезжает вверх вместе с лентой курсов.
   const { scrolled, deep, dir } = useScrollDirection();
   const compact = deep && dir === 'down';
+  // Над тёмным подвалом шапка получает тёмный тон (сапфировое стекло): светлое стекло там становилось грязно-серым.
+  const overFooter = useFooterTone().nav;
   // Открытые панели помнят адрес, на котором их открыли: при любом переходе (ссылка, «назад», программный переход)
   // адрес меняется, и панель закрывается сама, без отдельных обработчиков на каждой ссылке.
   const { pathname, key: locationKey } = useLocation();
@@ -330,6 +333,7 @@ export default function Navbar() {
         style={{ '--fe-duration': '0.3s', '--fe-rise': '-8px' }}
         data-scrolled={scrolled ? 'true' : 'false'}
         data-compact={compact && !menuOpen ? 'true' : 'false'}
+        data-tone={overFooter ? 'dark' : undefined}
         className={cn(
           // .fe-reveal: шапка видна сразу (в SSR и без JS), лишь мягко опускается на 8px.
           // Стекло капсулы (L1, плотнее при прокрутке) и тень задаёт styles/k3-shell.css; движутся только transform и opacity.
