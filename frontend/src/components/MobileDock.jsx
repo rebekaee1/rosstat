@@ -32,7 +32,7 @@ export default function MobileDock() {
   const activeId = pathname === '/' && hash === '#countries' ? 'countries' : resolveActiveNavId(pathname);
 
   // --fe-dock-reserve: место под панелью, пока она смонтирована (main и подвал на телефоне добавляют его к нижнему отступу);
-  // --fe-dock-h: сколько занимает панель сейчас (0, пока спрятана); data-fe-dock: показывает значок cookie вместе с панелью.
+  // --fe-dock-h: сколько занимает панель сейчас (0, пока спрятана); data-fe-dock: признак «панель на экране» для CSS.
   useEffect(() => {
     if (hidden) return undefined;
     const root = document.documentElement;

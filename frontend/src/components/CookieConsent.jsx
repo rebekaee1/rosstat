@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Cookie, Settings2, X } from 'lucide-react';
+import { Settings2, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import Button from './Button';
@@ -30,9 +30,9 @@ import '../styles/k3-shell.css';
  * в футере и на странице политики). Смена CONSENT_VERSION (новая редакция
  * политики) показывает баннер заново.
  *
- * Телефон: после первой прокрутки плашка сворачивается в значок 44 px справа внизу (над док-панелью, если она
- * на экране), нажатие на значок возвращает плашку. Сворачивание только прячет плашку: согласие не записывается,
- * молчание остаётся молчанием.
+ * Телефон: после первой прокрутки плашка прячется целиком (плавающего значка нет: он ложился на цифры и кнопки страницы).
+ * «Настройки cookie» остаются в меню «Ещё» и в подвале; вернувшись наверх страницы, посетитель снова видит плашку.
+ * Прятание не записывает согласие: молчание остаётся молчанием, трекеры и выбор не меняются.
  */
 
 // Два переключателя обычными словами вместо названий сервисов. «Необходимые» — не переключатель, а строка текста.
@@ -57,11 +57,10 @@ export default function CookieConsent() {
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
-  // Телефон: свёрнутый значок после первой прокрутки; `pinned` — посетитель сам вернул плашку, больше не сворачиваем.
+  // Телефон: после первой прокрутки плашка спрятана (открытые настройки не прячутся).
   const phone = useMediaQuery('(max-width: 639px)');
   const { scrolled } = useScrollDirection();
-  const [pinned, setPinned] = useState(false);
-  const collapsed = phone && scrolled && !expanded && !pinned;
+  const collapsed = phone && scrolled && !expanded;
   const committing = useRef(false);
   const overlayVisible = visible && !pathname.startsWith('/admin');
   // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).
@@ -82,7 +81,6 @@ export default function CookieConsent() {
         ads: current ? Boolean(current.ads) : true,
       });
       setExpanded(true);
-      setPinned(false);
       setVisible(true);
     };
     window.addEventListener(CONSENT_OPEN_EVENT, reopen);
@@ -102,13 +100,8 @@ export default function CookieConsent() {
     if (!overlayVisible || typeof document === 'undefined') return undefined;
     const root = document.documentElement;
     const node = panelRef.current;
-    // Свёрнутый значок места внизу документа не занимает; его высота нужна только тем, кто стоит рядом (--fe-cookie-fab-h).
-    if (collapsed || !node) {
-      root.style.setProperty('--fe-cookie-fab-h', collapsed ? '56px' : '0px');
-      return () => {
-        root.style.removeProperty('--fe-cookie-fab-h');
-      };
-    }
+    // Спрятанная плашка места внизу документа не занимает.
+    if (collapsed || !node) return undefined;
     const apply = () => {
       const h = Math.ceil(node.getBoundingClientRect().height);
       root.style.setProperty('--fe-cookie-h', `${h + 12}px`);
@@ -139,7 +132,6 @@ export default function CookieConsent() {
     finally {
       setVisible(false);
       setExpanded(false);
-      setPinned(false);
     }
     try {
       track(events.CONSENT_UPDATE, {
@@ -161,19 +153,7 @@ export default function CookieConsent() {
     );
   };
 
-  if (collapsed) {
-    return (
-      <button
-        type="button"
-        className="fe-cookie-fab fe-reveal fe-reveal--free"
-        aria-label={t('cookie.aria')}
-        data-fe-interaction="consent-reopen"
-        onClick={() => setPinned(true)}
-      >
-        <Cookie aria-hidden="true" />
-      </button>
-    );
-  }
+  if (collapsed) return null;
 
   return (
     <div

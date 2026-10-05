@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Menu, X, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
-  Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
+  Cookie, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -14,6 +14,7 @@ import Brand from './Brand';
 import { useAuth } from '../context/authContext';
 import { mobileNavGroups, primaryNav, resolveActiveNavId, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
 import { useScrollDirection } from '../lib/useScrollDirection';
+import { openConsentSettings } from '../lib/consent';
 import { useFooterTone } from '../lib/useFooterTone';
 import { megaCountries, megaIndicators } from '../lib/megaMenu';
 import { isRussiaSectionPath } from '../lib/sitePaths';
@@ -527,6 +528,16 @@ export default function Navbar() {
               <MnavTile icon={Mail} />
               <span className="fe-mnav-text"><span className="fe-mnav-label">{t('shell.footer.contact')}</span></span>
             </a>
+            {/* Настройки cookie живут здесь и в подвале: плавающего значка на странице нет. */}
+            <button
+              type="button"
+              className={cn(navItemClass(false), 'fe-mnav-link w-full text-left')}
+              data-testid="menu-cookie-settings"
+              onClick={() => { closeAll(); openConsentSettings(); }}
+            >
+              <MnavTile icon={Cookie} />
+              <span className="fe-mnav-text"><span className="fe-mnav-label">{t('cookie.aria')}</span></span>
+            </button>
           </div>
         </div>
       </BottomSheet>
