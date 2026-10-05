@@ -10,10 +10,10 @@ import { API_INTEREST_EVENT, API_INTEREST_USE_CASES } from '../lib/apiInterest';
 import Button from './Button';
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const FIELD = 'fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 border text-text-primary focus:outline-none';
+const FIELD = 'fe-input w-full px-3.5 py-2.5 rounded-xl bg-obsidian-lighter/50 text-text-primary focus:outline-none';
 const fieldClass = (invalid) => cn(
   FIELD,
-  invalid ? 'border-negative focus:border-negative' : 'border-border-subtle focus:border-champagne/50',
+  invalid && 'is-invalid',
 );
 
 /**
@@ -100,7 +100,7 @@ export default function ApiInterestModal() {
       onClick={close}
     >
       <div
-        className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface shadow-2xl ring-1 ring-black/10 p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
+        className="w-full max-w-md rounded-2xl fe-glass-pop shadow-2xl p-6 fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

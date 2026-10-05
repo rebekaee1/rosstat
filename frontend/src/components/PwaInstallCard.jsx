@@ -11,7 +11,7 @@ import Button from './Button';
 function IosStep({ icon: Icon, label }) {
   return (
     <li className="flex min-w-0 flex-1 flex-col items-center gap-1.5 text-center">
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-obsidian-lighter/50 text-champagne-ink">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-obsidian-lighter/50 text-champagne-ink">
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
       <span className="text-xs leading-tight text-text-secondary">{label}</span>
@@ -46,7 +46,7 @@ export default function PwaInstallCard({
       className={cn(
         'fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] print:hidden',
         floating && 'fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom,0px)+12px)] z-40 mx-auto max-w-md',
-        'rounded-2xl border border-border-subtle bg-surface p-4 shadow-2xl ring-1 ring-black/10',
+        'rounded-2xl fe-glass-pop p-4 shadow-2xl',
         className,
       )}
     >

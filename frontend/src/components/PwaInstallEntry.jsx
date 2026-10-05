@@ -54,7 +54,7 @@ export default function PwaInstallEntry({ className }) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="pwa-entry-title"
-            className="w-full max-w-md rounded-2xl border border-border-subtle bg-surface p-5 shadow-2xl"
+            className="w-full max-w-md rounded-2xl fe-glass-pop p-5 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-3">
