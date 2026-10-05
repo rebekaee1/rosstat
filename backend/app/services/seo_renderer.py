@@ -884,7 +884,28 @@ body.seo-fast .seo-search-btn ~ .seo-lang,body.seo-fast .seo-search-btn ~ .seo-m
 @media(min-width:1180px){body.seo-fast .seo-search-btn{order:3;margin-left:0}}
 body.seo-fast .seo-404-home{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
 body.seo-fast .seo-404-home:hover{border-color:#ad8a48;color:#202a3c}
-@media(prefers-reduced-motion:reduce){body.seo-fast *{transition:none!important}}
+@media(prefers-reduced-motion:reduce){/* ── Бегущая строка курсов: стеклянная капсула бренда (скрипт /seo-ticker.js, данные /api/v1/ticker/live) ── */
+body.seo-fast .seo-ticker{position:relative;height:38px;background:linear-gradient(180deg,rgba(255,252,246,.94),rgba(250,247,240,.82));border-bottom:1px solid rgba(173,138,72,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 30px -24px rgba(38,52,78,.4);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+body.seo-fast .seo-tk-view{height:100%;max-width:72rem;margin:0 auto;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
+body.seo-fast .seo-tk-track{display:flex;width:max-content;height:100%;animation:seo-tk-run var(--seo-tk-run,60s) linear infinite;will-change:transform}
+body.seo-fast .seo-tk-view:hover .seo-tk-track,body.seo-fast .seo-tk-view:focus-within .seo-tk-track,body.seo-fast .seo-tk-view:active .seo-tk-track{animation-play-state:paused}
+body.seo-fast .seo-tk-set{display:flex;align-items:center;flex:0 0 auto}
+body.seo-fast .seo-tk{display:inline-flex;align-items:center;gap:.45rem;height:100%;padding:0 .2rem 0 .9rem;white-space:nowrap;color:#202a3c;text-decoration:none;font-size:.8125rem}
+body.seo-fast .seo-tk::after{content:"";flex:0 0 auto;width:4px;height:4px;margin-left:.7rem;border-radius:1px;background:#ad8a48;opacity:.5}
+body.seo-fast .seo-tk:hover{color:#80642f}
+body.seo-fast .seo-tk:focus-visible{outline:2px solid #80642f;outline-offset:-3px;border-radius:8px}
+body.seo-fast .seo-tk-l{color:#59697f;font-size:.75rem;font-weight:500}
+body.seo-fast .seo-tk-v{font-size:.875rem;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+body.seo-fast .seo-tk-s{color:#59697f;font-size:.75rem}
+body.seo-fast .seo-tk-d{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .5rem;border:1px solid transparent;border-radius:999px;font-size:.75rem;font-weight:600;font-variant-numeric:tabular-nums}
+body.seo-fast .seo-tk-d i{font-style:normal;font-size:.8rem;line-height:1}
+body.seo-fast .seo-tk-up{color:#167a43;background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.18)}
+body.seo-fast .seo-tk-down{color:#c02626;background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.16)}
+@keyframes seo-tk-run{to{transform:translateX(-50%)}}
+@media(pointer:coarse){body.seo-fast .seo-ticker{height:44px}}
+@media(prefers-reduced-motion:reduce){body.seo-fast .seo-tk-track{animation:none}body.seo-fast .seo-tk-view{overflow-x:auto}body.seo-fast .seo-tk-set + .seo-tk-set{display:none}}
+@media print{body.seo-fast .seo-ticker{display:none}}
+body.seo-fast *{transition:none!important}}
 
 </style>"""
 
@@ -941,6 +962,20 @@ _SSR_CHROME_FOOTER_EN = f"""<div class="seo-cta"><div class="seo-cta-in">
 </div></div>
 <footer class="seo-foot"><div class="seo-foot-in"><nav class="seo-foot-links" aria-label="About the service"><a href="/about">About</a><a href="/methodology">Methodology</a><a href="/calculator">Calculators</a><a href="/privacy">Privacy</a><a href="/terms">Terms of use</a></nav><p>Data come only from official primary sources: national statistical offices, central banks, and official exchanges. Updated as publishers release. © Forecast Economy — <a href="/">forecasteconomy.com</a></p></div></footer>
 <script type="module" src="/assets/behavior-standalone.js" defer></script>"""
+
+def _ssr_ticker() -> str:
+    """Контейнер бегущей строки курсов чистых SSR-страниц. Заполняет /seo-ticker.js; до ответа API и при любом
+    сбое строка скрыта (hidden). Набор курсов зависит от языка, как в приложении: ru → рублёвый, en → мировой."""
+    from app.services.locale import get_locale
+
+    en = get_locale() == "en"
+    label = "Live exchange rates" if en else "Курсы валют и рынков"
+    lane = "world" if en else "russia"
+    return (
+        f'<div class="seo-ticker" id="seo-ticker" data-lane="{lane}" role="region" aria-label="{label}" hidden></div>'
+        '<script src="/seo-ticker.js" defer></script>'
+    )
+
 
 # Единый выход вглубь платформы для SPA-SSR (include_app=True): без chrome
 # тонкие страницы (/today/*, /calendar/*) оставляли боту только крошки.
@@ -1418,7 +1453,7 @@ async def build_document(
         # Чистые SSR-страницы получают брендовый хром: шапка-навигация + CTA на
         # платформу + футер об источниках. React-страницы — нет (гидратация
         # заменит #root своим layout'ом). Locale-aware: EN chrome на apex.
-        body = f"{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer(assets)}"
+        body = f"{_ssr_ticker()}\n{_ssr_chrome_header(canonical_path)}\n{body}\n{_ssr_chrome_footer(assets)}"
     else:
         spa_hide = _SPA_SSR_HIDE_SCRIPT
         boot_bar = _ssr_boot_bar()
