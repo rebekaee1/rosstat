@@ -29,7 +29,7 @@ export default function TelemetryCard({
   const shown = hasChange
     ? (pctChange != null
       ? formatDeltaWithUnit(pctChange, unit, { pct: true, locale })
-      : formatDeltaWithUnit(change, unit, { digits, locale }))
+      : formatDeltaWithUnit(change, unit, { digits, locale, plain: true }))
     : null;
   const valueText = String(formatValue(value, digits));
 

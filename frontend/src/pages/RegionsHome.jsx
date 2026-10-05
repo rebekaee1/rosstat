@@ -46,6 +46,7 @@ import {
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
+import '../styles/z5-country.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -539,7 +540,7 @@ export default function RegionsHome() {
   const gifAvailable = !!(activeMapCode && paint.hasHistory && series.data);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
+    <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs items={regionsTrail()} className="mb-6" />
       <div className="mb-6">
         <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
@@ -754,7 +755,7 @@ export default function RegionsHome() {
       {view === 'map' && (
         <div className="mt-4">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <div className="fe-chip-row--grid min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
+            <div className="fe-chip-row--grid z5-metric-ribbon min-w-0 sm:flex-1" role="tablist" aria-label={t('regions.map.metricAria')}>
               <button
                 type="button"
                 role="tab"
@@ -783,7 +784,7 @@ export default function RegionsHome() {
             </div>
           </div>
 
-          <div className="mb-3 flex flex-wrap items-center gap-2">
+          <div className="z5-map-tools mb-3 flex flex-wrap items-center gap-2">
             <button
               type="button"
               aria-expanded={findOpen}
@@ -803,15 +804,9 @@ export default function RegionsHome() {
 
           {findOpen && (
             <div id="fe-map-find-panel" className="mb-3 flex flex-col gap-2 rounded-2xl border border-border-subtle bg-obsidian-lighter/60 p-2.5 sm:flex-row sm:flex-wrap sm:items-center" data-testid="map-find-panel">
-              <MapMetricSearch
-                activeCode={isCustomMetric ? activeMapCode : null}
-                activeName={customName}
-                onPick={selectCustom}
-                onClear={clearCustom}
-              />
-              <MapRegionSearch names={namesBySlug} onPick={(slug) => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'search' }); }} />
-              <div className="fe-map-quick w-full" aria-label={t('w6f.map.quick')}>
-                {QUICK_REGIONS.filter((slug) => namesBySlug[slug]).map((slug) => (
+              <div className="fe-map-quick z5-map-quick w-full" role="group" aria-label={t('w6f.map.quick')}>
+                <span className="fe-map-quick__label">{t('z5.reg.quick')}</span>
+                {QUICK_REGIONS.map((slug) => (
                   <button
                     key={slug}
                     type="button"
@@ -819,10 +814,18 @@ export default function RegionsHome() {
                     onClick={() => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'quick' }); }}
                     className={`fe-chip fe-press ${mapPicked === slug ? 'is-active' : ''}`}
                   >
-                    {namesBySlug[slug]}
+                    {namesBySlug[slug] || t(`z5.reg.quick.${slug}`)}
                   </button>
                 ))}
               </div>
+              <MapMetricSearch
+                activeCode={isCustomMetric ? activeMapCode : null}
+                activeName={customName}
+                onPick={selectCustom}
+                onClear={clearCustom}
+              />
+              <MapRegionSearch names={namesBySlug} onPick={(slug) => { setMapPicked(slug); track(events.REGIONS_MAP_SELECT, { region: slug, metric: 'search' }); }} />
+
             </div>
           )}
 

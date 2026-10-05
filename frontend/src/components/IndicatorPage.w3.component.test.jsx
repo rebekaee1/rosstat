@@ -30,7 +30,8 @@ describe('TelemetryCard', () => {
     expect(screen.getByText('14,00')).toBeTruthy();
     const delta = container.querySelector('.fe-delta-badge');
     expect(delta.textContent).toContain('+0,50');
-    expect(delta.textContent).toContain('п. п.');
+    // Слова вместо жаргона «п. п.».
+    expect(delta.textContent.replace(/\u00a0/g, ' ')).toContain('процентного пункта');
     expect(delta.className).toContain('fe-tone--bad');
     expect(screen.getByText('на 4 октября 2026')).toBeTruthy();
   });

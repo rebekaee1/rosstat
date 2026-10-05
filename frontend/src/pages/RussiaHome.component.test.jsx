@@ -176,10 +176,11 @@ describe('RussiaHome быстрые входы (SEO-требование)', () =
 
     const grid = screen.getByTestId('russia-sections-grid');
     expect(grid.className).toMatch(/grid-cols-1/);
-    // Пять карточек: отдельного lg:grid-cols-5 нет, остаётся три колонки.
+    // Шесть карточек в три колонки: lg:grid-cols-4 нет.
     expect(grid.className).toMatch(/lg:grid-cols-3/);
     expect(grid.className).not.toMatch(/lg:grid-cols-4/);
-    expect(grid.querySelectorAll('a')).toHaveLength(5);
+    // Шесть входов: два ряда по три, без пустого места (последний «Сравнить с миром»).
+    expect(grid.querySelectorAll('a')).toHaveLength(6);
 
     const today = within(grid).getByRole('link', { name: /Сегодня/ });
     expect(today.getAttribute('href')).toBe('/russia/today');

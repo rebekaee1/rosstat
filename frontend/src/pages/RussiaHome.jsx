@@ -8,7 +8,7 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ArrowUpRight, CalendarDays, MapPinned, Newspaper, Trophy, Users,
+  ArrowUpRight, CalendarDays, MapPinned, Newspaper, Scale, Trophy, Users,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { useRegionsLanding } from '../lib/regionsApi';
@@ -16,25 +16,17 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { useLocale, useT } from '../i18n';
 import { CATEGORIES, categoryLabel } from '../lib/categories';
-import {
-  groupRussiaCategories,
-  russiaIndicatorChange,
-  russiaIndicatorDisplay,
-  russiaOverviewChips,
-} from '../lib/russiaHomeCards';
-import { resolveDateFormat } from '../lib/format';
-import { indicatorPolarity } from '../lib/deltaTone';
-import { formatDeltaWithUnit } from '../lib/deltaText';
-import { periodPhrase } from '../lib/periodPhrase';
-import DeltaBadge from '../components/DeltaBadge';
+import { groupRussiaCategories } from '../lib/russiaHomeCards';
+import RussiaKeyFigures from '../components/russia/RussiaKeyFigures';
+import RussiaCategorySection from '../components/russia/RussiaCategorySection';
 import {
   calendarPath,
+  comparePath,
   demographicsPath,
   regionHubPath,
   regionRatingHubPath,
   russiaCategoriesPath,
   russiaHomePath,
-  russiaIndicatorPath,
   todayPath,
 } from '../lib/sitePaths';
 import Breadcrumbs from '../components/Breadcrumbs';
@@ -46,6 +38,7 @@ import { breadcrumbJsonLd, russiaHomeTrail } from '../lib/breadcrumbs';
 import { mountJsonLd } from '../lib/jsonLd';
 import '../styles/platform-pages.css';
 import '../styles/indicator-russia.css';
+import '../styles/z5-country.css';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 
@@ -132,6 +125,7 @@ const QUICK_LINK_DEFS = [
   { to: regionRatingHubPath(), titleKey: 'russia.link.ratings.title', descKey: 'russia.link.ratings.desc', icon: Trophy },
   { to: calendarPath(), titleKey: 'russia.link.calendar.title', descKey: 'russia.link.calendar.desc', icon: CalendarDays },
   { to: demographicsPath(), titleKey: 'russia.link.demographics.title', descKey: 'russia.link.demographics.desc', icon: Users },
+  { to: comparePath(), titleKey: 'z5.ru.link.compare.title', descKey: 'z5.ru.link.compare.desc', icon: Scale },
 ];
 
 const QUICK_GRID_LG = {
@@ -139,71 +133,8 @@ const QUICK_GRID_LG = {
   2: 'lg:grid-cols-2',
   3: 'lg:grid-cols-3',
   4: 'lg:grid-cols-4',
+  6: 'lg:grid-cols-3',
 }[QUICK_LINK_DEFS.length] || 'lg:grid-cols-3';
-
-function indicatorDate(t, dateStr, frequency, locale) {
-  return periodPhrase(t, dateStr, resolveDateFormat({ frequency }), locale) || '';
-}
-
-function formatNumberRu(value, locale) {
-  return value.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
-}
-
-/** Частота плитки: официальная подпись из словаря, при отсутствии — сырой код. */
-function FreqBadge({ item, t }) {
-  if (!item.frequency) return null;
-  const key = `world.freq.${item.frequency}`;
-  const label = t(key);
-  return (
-    <span className="rounded-full bg-obsidian-light px-2.5 py-0.5 text-xs font-medium text-text-secondary">
-      {label !== key ? label : item.frequency}
-    </span>
-  );
-}
-
-/**
- * Плитка показателя секции — аналог IndicatorRow страницы страны, но на
- * российском слое данных (hero-семантика IndicatorTile, ссылки в /russia).
- */
-function RussiaIndicatorTile({ indicator }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const display = russiaIndicatorDisplay(indicator);
-  const changeNum = russiaIndicatorChange(indicator);
-  const title = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
-  const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);
-  const delta = changeNum != null ? formatDeltaWithUnit(changeNum, display?.unit, { locale }) : null;
-  const date = indicatorDate(t, indicator.current_date, indicator.frequency, locale);
-
-  return (
-    <Link
-      to={russiaIndicatorPath(indicator.code)}
-      className="fe-rus-tile fe-press group"
-    >
-      <div className="min-w-0 flex-1">
-        <div className="fe-rus-tile__title">{title}</div>
-        <div className="fe-rus-tile__meta">
-          <FreqBadge item={indicator} t={t} />
-        </div>
-      </div>
-      <div className="fe-rus-tile__side">
-        <div className="fe-rus-tile__value">
-          <span className="fe-rus-tile__num">{display ? formatNumberRu(display.value, locale) : '—'}</span>
-          {display?.unit ? <span className="fe-rus-tile__unit">{display.unit}</span> : null}
-        </div>
-        <div className="fe-rus-tile__foot">
-          {delta && (delta.flat
-            ? <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
-            : <DeltaBadge delta={changeNum} polarity={polarity}>{delta.text}</DeltaBadge>)}
-          {date && <span className="fe-rus-tile__date">{date}</span>}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 /**
  * Мобильный вьюпорт: единственная колонка секций + select-навигация.
@@ -248,8 +179,6 @@ export default function RussiaHome() {
     [grouped],
   );
 
-  const chips = useMemo(() => russiaOverviewChips(indicators), [indicators]);
-
   // Резолв активной категории для мобильного select: сброс, если категория
   // исчезла из выборки (локаль/обновление данных).
   const resolvedActiveCategory = grouped.some((g) => g.category.slug === activeCategory)
@@ -279,7 +208,7 @@ export default function RussiaHome() {
   }, [crumbs]);
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={crumbs} />
 
       <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] border border-border-subtle bg-surface p-4 shadow-[0_22px_70px_rgba(35,30,16,0.06)] sm:mb-8 sm:rounded-[2rem] sm:p-8">
@@ -299,39 +228,9 @@ export default function RussiaHome() {
           <RussiaTerritoryCard />
         </div>
 
-        <div className="relative mt-6 grid gap-2 border-t border-border-subtle pt-5 sm:grid-cols-3 sm:gap-4" data-testid="russia-overview-chips">
-          {chips.map((chip) => (
-            <Link
-              key={chip.code}
-              to={russiaIndicatorPath(chip.code)}
-              className="fe-rus-chip fe-press group"
-            >
-              <div className="fe-rus-chip__name">
-                {locale === 'en' && chip.indicator.name_en
-                  ? chip.indicator.name_en
-                  : chip.indicator.name}
-              </div>
-              <div className="fe-rus-chip__value">
-                <span className="fe-rus-chip__num">
-                  {chip.value.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
-                {chip.unit ? <span className="fe-rus-chip__unit">{chip.unit}</span> : null}
-              </div>
-              <div className="fe-rus-chip__date">
-                {indicatorDate(t, chip.indicator.current_date, chip.indicator.frequency, locale)}
-              </div>
-            </Link>
-          ))}
-          {isLoading && (
-            <div className="sm:col-span-3 grid gap-2 sm:grid-cols-3 sm:gap-4">
-              {[0, 1, 2].map((i) => (
-                <SkeletonBox key={i} className="h-[86px] rounded-xl" />
-              ))}
-            </div>
-          )}
+        <div className="relative mt-6 border-t border-border-subtle pt-5">
+          <h2 className="w2-main-title z5-main-title">{t('z5.ru.main.title')}</h2>
+          <RussiaKeyFigures indicators={indicators} isLoading={isLoading} />
         </div>
       </section>
 
@@ -459,24 +358,7 @@ export default function RussiaHome() {
               )}
 
               {visibleCategories.map((g) => (
-                <section key={g.category.slug} id={`cat-${g.category.slug}`} className="scroll-mt-24" data-testid="russia-section">
-                  <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
-                    <div className="min-w-0">
-                      <div className="text-[13px] font-semibold text-champagne-ink">
-                        {t('world.country.indicators')}
-                      </div>
-                      <h2 className="mt-1 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
-                        {categoryLabel(g.category, locale)}
-                      </h2>
-                    </div>
-                    <span className="shrink-0 text-sm tabular-nums text-text-secondary">{g.count}</span>
-                  </div>
-                  <div className="grid gap-2 sm:gap-2.5 xl:grid-cols-2">
-                    {g.indicators.map((ind) => (
-                      <RussiaIndicatorTile key={ind.code} indicator={ind} />
-                    ))}
-                  </div>
-                </section>
+                <RussiaCategorySection key={g.category.slug} group={g} label={categoryLabel(g.category, locale)} />
               ))}
             </div>
           </div>

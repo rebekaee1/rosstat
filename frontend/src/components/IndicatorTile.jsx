@@ -67,9 +67,9 @@ export default function IndicatorTile({
     ? findCategoryByApiLabel(indicator.category_ru || indicator.category)?.nameEn
     : null) || indicator.category || t('tile.metric');
 
-  // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов остаётся «п. п.».
+  // Единица стоит рядом с числом; в изменении её не повторяем («84,41 USD, +0,12 USD»). Для процентов вместо «п. п.» стоят слова: «процентного пункта».
   const change = changeNum != null && Number.isFinite(changeNum)
-    ? formatDeltaWithUnit(changeNum, displayUnit === '%' ? displayUnit : '', { locale })
+    ? formatDeltaWithUnit(changeNum, displayUnit === '%' ? displayUnit : '', { locale, plain: true })
     : null;
   const periodKey = hasHero ? 'year' : indicator.frequency;
   const perText = ['daily', 'weekly', 'monthly', 'quarterly', 'annual', 'year'].includes(periodKey)

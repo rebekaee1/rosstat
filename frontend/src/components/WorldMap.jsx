@@ -658,6 +658,8 @@ export function CountrySilhouette({
   area = null,
   population = null,
   slug = '',
+  className = '',
+  badge = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -720,9 +722,10 @@ export function CountrySilhouette({
     });
   }
   return (
-    <section className="w2-profile" aria-label={t('world.map.outlineAria', { name })}>
+    <section className={`w2-profile${className ? ` ${className}` : ''}`} aria-label={t('world.map.outlineAria', { name })}>
       <div className="w2-profile-head">
         <h2 className="w2-profile-title">{t('w6b.country.profile')}</h2>
+        {badge}
         {region && <span className="w2-profile-region">{region}</span>}
       </div>
       <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>

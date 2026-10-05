@@ -1,10 +1,12 @@
 // Страница страны: /world/{slug}
 // Темы слева + сетка показателей; поиск не ломает сетку.
 import NotFound from './NotFound';
-import { useEffect, useMemo, useState, useDeferredValue } from 'react';
+import {
+  useEffect, useMemo, useState, useDeferredValue,
+} from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
-  Search, BarChart3, ArrowUpRight, ChevronDown, Scale, Spline,
+  Search, BarChart3, ArrowUpRight, Scale,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -12,27 +14,25 @@ import {
   worldCountryTitle,
 } from '../lib/pageMeta';
 import {
-  useWorldCountry, useCachedWorldCountry, useWorldIndicatorData, formatWorldValue, localizeWorldUnit, pluralRu,
+  useWorldCountry, useWorldCountries, useCachedWorldCountry,
 } from '../lib/worldApi';
 import {
   collapseCountryIndicators, indicatorPublicName, localizedDisplay,
 } from '../lib/worldViewModes';
-import { formatChange, formatCount, formatDate } from '../lib/format';
-import { indicatorPolarity } from '../lib/deltaTone';
-import { splitUnit } from '../lib/countryFlag';
+import { formatCount } from '../lib/format';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Button from '../components/Button';
-import Chip from '../components/Chip';
 import CountryFlag from '../components/CountryFlag';
-import DeltaBadge from '../components/DeltaBadge';
-import Sparkline, { SparklineSkeleton } from '../components/Sparkline';
-import WorldCountUp from '../components/WorldCountUp';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import LoadingNote from '../components/LoadingNote';
 import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
-import { groupUsSections, shortUsIndicatorName } from '../lib/usCatalogTopics';
+import CountryKeyFigures, { KEY_FIGURES_MAX } from '../components/country/CountryKeyFigures';
+import CountryTopicNav, { GdpForecastCard, SimilarCountries } from '../components/country/CountryTopicNav';
+import { IndicatorRow, IndicatorRows } from '../components/country/CountryIndicatorRow';
+import { SparkBudgetContext, createSparkBudget } from '../components/country/sparkBudget';
+import { groupUsSections } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions } from '../lib/searchSynonyms';
 import { CountrySilhouette } from '../components/WorldMap';
@@ -44,16 +44,16 @@ import { mountJsonLd } from '../lib/jsonLd';
 import {
   countryPath,
   countryRegionsPath,
-  indicatorPath,
   russiaIndicatorPath,
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
-import { countryPublicName, homeConceptLabel, HOME_MAP_RUSSIA_CONCEPT_CODES } from '../lib/homeWorkbench';
-import { dropRepeatedUnit, groupNearDuplicates } from '../lib/countryIndicatorGroups';
+import { countryPublicName, HOME_MAP_RUSSIA_CONCEPT_CODES } from '../lib/homeWorkbench';
+import { indicatorsCountText, similarCountries, topicDisplayName } from '../lib/countryKeyFigures';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
+import '../styles/z5-country.css';
 import usePageLoading from '../lib/usePageLoading';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
@@ -69,204 +69,11 @@ function topicRank(category) {
 /** Тема с меньшим числом показателей уходит в конец списка и не открывается по умолчанию. */
 const THIN_TOPIC = 5;
 
+/** Сколько мини-графиков в строках списка загружается за один визит: сайт не должен «душить» себя запросами. */
+const SPARK_BUDGET = 36;
+
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
-}
-
-function formatIndicatorDate(dateStr, frequency, locale) {
-  if (!dateStr) return '—';
-  if (frequency === 'annual') return formatDate(dateStr, 'annual', locale);
-  if (frequency === 'quarterly') return formatDate(dateStr, 'quarterly', locale);
-  return formatDate(dateStr, 'full', locale);
-}
-
-function CompactChange({ change, label, locale }) {
-  if (change == null || !Number.isFinite(Number(change)) || Math.abs(Number(change)) < 1e-12) {
-    return null;
-  }
-  const n = Number(change);
-  // Цвет по смыслу показателя: рост безработицы или инфляции не «зелёный», неизвестный смысл — нейтрально.
-  return (
-    <DeltaBadge delta={n} polarity={indicatorPolarity(label)} className="text-xs">
-      {formatChange(n, locale)}
-    </DeltaBadge>
-  );
-}
-
-/** Единицу и период человек видит рядом с числом: «2,9 % — август 2026», а не голая цифра. */
-function kpiDigits(value) {
-  const abs = Math.abs(Number(value));
-  if (abs >= 1000) return 0;
-  return abs >= 1 ? 1 : 2;
-}
-
-function CountryKpiCard({ item, slug, hero, locale }) {
-  const t = useT();
-  const mode = `${item.concept_slug === 'hicp-index' ? 'yoy' : 'level'}-${item.frequency || 'annual'}`;
-  const seriesQ = useWorldIndicatorData(slug, item.indicator_code, mode);
-  const spark = useMemo(
-    () => (seriesQ.data?.points || []).map((point) => Number(point.value)).filter(Number.isFinite).slice(-36),
-    [seriesQ.data],
-  );
-  const unit = splitUnit(localizeWorldUnit(item.unit, locale));
-  // «изменение за год, %» уже сказано в названии («… за год») — не повторяем в подписи периода.
-  const longUnit = unit.long && unit.long !== unit.short && !/за год|year[- ]over[- ]year|yoy/i.test(unit.long)
-    ? unit.long
-    : '';
-  const fullName = localizedDisplay(locale, item.name, item.name_en);
-  // Короткое человеческое имя («Инфляция», «Баланс бюджета») вместо длинного официального названия.
-  const kpiName = homeConceptLabel(item.concept_slug, t, fullName);
-  const digits = kpiDigits(item.value);
-  const format = (value) => formatWorldValue(value, digits, locale);
-  return (
-    <Link
-      to={indicatorPath(slug, item.indicator_code)}
-      className={`w2-kpi fe-press group${hero ? ' w2-kpi--hero' : ''}`}
-    >
-      <span className="w2-kpi-name" title={fullName}>{kpiName}</span>
-      <span className="w2-kpi-value">
-        <WorldCountUp value={item.value} format={format} fromZero={false} />
-        {unit.short && <small>{unit.short}</small>}
-      </span>
-      <span className="w2-kpi-period">
-        {formatIndicatorDate(item.date, item.frequency, locale)}
-        {longUnit ? `, ${longUnit}` : ''}
-      </span>
-      <span className="w2-kpi-spark" aria-hidden="true">
-        {seriesQ.isLoading
-          ? <SparklineSkeleton height={hero ? 52 : 40} />
-          : (spark.length > 1
-            ? <Sparkline points={spark} trend="flat" sentiment="neutral" height={hero ? 52 : 40} />
-            : (
-              <span className="w2-kpi-nospark">
-                <Spline size={14} aria-hidden="true" />
-                {t('w6b.country.noChart')}
-              </span>
-            ))}
-      </span>
-    </Link>
-  );
-}
-
-/**
- * Частота плитки — самая детальная из доступных: месячные данные показывают
- * «мес.», квартальные (без месячных) — «кв.», только годовые — «год».
- * Если частот несколько, остальные перечислены в подсказке бейджа.
- */
-const FREQ_BADGE_PRIORITY = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'];
-
-function FreqBadges({ item, t }) {
-  const officialFreqs = Array.isArray(item.frequencies)
-    ? item.frequencies.map((f) => (typeof f === 'string' ? f : f.freq)).filter(Boolean)
-    : (item.frequency ? [item.frequency] : []);
-  const aggregated = Array.isArray(item.aggregated_frequencies)
-    ? item.aggregated_frequencies.filter((f) => f && !officialFreqs.includes(f))
-    : [];
-  if (!officialFreqs.length && !aggregated.length) return null;
-
-  const toLabel = (f) => {
-    const key = `world.freq.${f}`;
-    const label = t(key);
-    return label !== key ? label : f;
-  };
-
-  const byPriority = (freqs) => FREQ_BADGE_PRIORITY.filter((f) => freqs.includes(f));
-  const shown = byPriority([...officialFreqs, ...aggregated]);
-  if (!shown.length) return null;
-  const primary = shown[0];
-  const primaryIsAggregated = !officialFreqs.includes(primary);
-  // Официальный годовой ряд: дата «2025» и так говорит «раз в год»; лишний чип «год» только рвёт строку.
-  if (primary === 'annual' && !primaryIsAggregated) return null;
-  const restLabels = shown.slice(1).map(
-    (f) => `${officialFreqs.includes(f) ? '' : '~'}${toLabel(f)}`,
-  );
-  const title = restLabels.length
-    ? `${primaryIsAggregated ? '~' : ''}${toLabel(primary)}; также: ${restLabels.join(', ')}`
-    : undefined;
-
-  return (
-    <span
-      title={title}
-      className={
-        'cursor-help rounded-full bg-obsidian-light px-2 py-0.5'
-        + (primaryIsAggregated ? ' opacity-60' : '')
-      }
-    >
-      {primaryIsAggregated ? '~' : ''}{toLabel(primary)}
-    </span>
-  );
-}
-
-function IndicatorRow({ item, slug, to, sectionName }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const unit = localizeWorldUnit(item.unit, locale);
-  // Единица показана под названием: в самом названии («..., человек») её не повторяем.
-  const name = dropRepeatedUnit(shortUsIndicatorName(indicatorPublicName(item, locale), sectionName, locale), unit);
-  return (
-    <Link
-      to={to || indicatorPath(slug, item.code)}
-      className="group flex flex-col gap-2 rounded-xl border border-border-subtle bg-white px-3.5 py-3 transition-all hover:border-border-champagne hover:shadow-[0_12px_30px_rgba(35,30,16,0.06)] sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5"
-    >
-      <div className="min-w-0 flex-1">
-        <div className="break-words text-[13px] leading-snug text-text-primary transition-colors group-hover:text-champagne sm:text-[14px]">
-          {name}
-        </div>
-        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-text-tertiary sm:mt-1.5">
-          <FreqBadges item={item} t={t} />
-          {unit && <span className="min-w-0 break-words">{unit}</span>}
-        </div>
-      </div>
-      <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[7.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:border-0 sm:pt-0 sm:text-right">
-        <div className="text-[15px] font-semibold tabular-nums text-text-primary sm:text-[14px] sm:font-medium">
-          {formatWorldValue(item.last_value, undefined, locale)}
-        </div>
-        <div className="flex items-center gap-1.5">
-          <CompactChange change={item.change} label={indicatorPublicName(item, locale)} locale={locale} />
-          <span className="text-xs text-text-tertiary">
-            {formatIndicatorDate(item.last_date, item.frequency, locale)}
-          </span>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-/** Несколько близких показателей («Число родившихся» в трёх разрезах) одной свёрнутой строкой. */
-function IndicatorGroup({ group, slug, sectionName }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const n = group.items.length;
-  const word = locale === 'en'
-    ? t('w6b.country.cuts_many')
-    : pluralRu(n, [t('w6b.country.cuts_one'), t('w6b.country.cuts_few'), t('w6b.country.cuts_many')]);
-  return (
-    <details className="fe-ind-group md:col-span-2">
-      <summary className="fe-ind-group__summary">
-        <span className="fe-ind-group__name">{group.base}</span>
-        <span className="fe-ind-group__count">{n} {word}</span>
-        <ChevronDown size={16} aria-hidden="true" className="fe-ind-group__chevron" />
-      </summary>
-      <div className="mt-2 grid gap-2 md:grid-cols-2">
-        {group.items.map((ind) => (
-          <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={sectionName} />
-        ))}
-      </div>
-    </details>
-  );
-}
-
-/** Строки категории: почти-дубли свёрнуты, остальные показатели идут как есть. */
-function IndicatorRows({ items, slug, sectionName, locale, collapse }) {
-  const rows = useMemo(
-    () => (collapse
-      ? groupNearDuplicates(items, (item) => indicatorPublicName(item, locale))
-      : items.map((item) => ({ kind: 'single', item }))),
-    [items, locale, collapse],
-  );
-  return rows.map((row) => (row.kind === 'group'
-    ? <IndicatorGroup key={`g-${row.items[0].code}`} group={row} slug={slug} sectionName={sectionName} />
-    : <IndicatorRow key={row.item.code} item={row.item} slug={slug} sectionName={sectionName} />));
 }
 
 /** «The economy of the United States»: у нескольких стран английское название идёт с артиклем. */
@@ -300,6 +107,26 @@ export default function WorldCountry() {
   // Переход по крошке с карточки показателя: название страны уже известно и стоит в крошках сразу, пока грузятся данные.
   const crumbNameFromLink = useLocation().state?.crumbName;
   const notFound = isError && error?.response?.status === 404;
+  // Каталог стран нужен только для «Похожих стран»: из кэша берётся сразу, иначе грузится после основных данных.
+  const [catalogWanted, setCatalogWanted] = useState(false);
+  const hasData = !!data;
+  useEffect(() => {
+    if (!hasData) return undefined;
+    const timer = window.setTimeout(() => setCatalogWanted(true), 600);
+    return () => window.clearTimeout(timer);
+  }, [hasData]);
+  const catalogQ = useWorldCountries({ enabled: catalogWanted });
+  const similar = useMemo(
+    () => similarCountries(catalogQ.data, data?.country || cachedCountry),
+    [catalogQ.data, data, cachedCountry],
+  );
+  const gdpItem = useMemo(
+    () => (data?.overview || []).find((item) => /^gdp-/.test(item.concept_slug)) || null,
+    [data],
+  );
+  // Новая страна: новый бюджет мини-графиков.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sparkBudget = useMemo(() => createSparkBudget(SPARK_BUDGET), [slug]);
 
   const countryMeta = useMemo(() => {
     if (!countryName || !data) return null;
@@ -474,7 +301,7 @@ export default function WorldCountry() {
   if (notFound) return <NotFound />;
 
   return (
-    <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
+    <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={worldCountryTrail(countryName || previewName || crumbNameFromLink || '…', slug)} />
 
       {isError && !notFound && (
@@ -484,99 +311,113 @@ export default function WorldCountry() {
       )}
 
       {isLoading && (
-        <div className="space-y-5" role="status" aria-busy="true" aria-label={t('common.loading')} data-testid="country-skeleton">
-          {previewName ? (
-            <div data-testid="country-preview">
-              <div className="w2-kicker mb-2 flex items-center gap-2">
-                <CountryFlag code={cachedCountry.code} className="w2-kicker-flag" />
-                {localizedDisplay(locale, cachedCountry.region, cachedCountry.region_en)}
+        <div
+          className="fe-data-header z5-hero z5-hero--loading"
+          role="status"
+          aria-busy="true"
+          aria-label={t('common.loading')}
+          data-testid="country-skeleton"
+        >
+          <div className="z5-hero__grid">
+            <div className="z5-hero__lead">
+              {previewName ? (
+                <div data-testid="country-preview">
+                  <div className="w2-kicker mb-2 flex items-center gap-2">
+                    <CountryFlag code={cachedCountry.code} className="w2-kicker-flag" />
+                    {localizedDisplay(locale, cachedCountry.region, cachedCountry.region_en)}
+                  </div>
+                  <h1 className="z5-hero__title font-display font-bold text-text-primary">
+                    {worldCountryTitle(slug, previewName, locale)}
+                  </h1>
+                  <p className="z5-hero__text text-text-secondary">
+                    {t('w2.country.lead', { country: previewName })}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <SkeletonBox className="mb-3 h-4 w-28" />
+                  <SkeletonBox className="mb-4 h-12 w-3/4 max-w-md" />
+                  <div className="space-y-2">
+                    <SkeletonBox className="h-4 w-full max-w-xl" />
+                    <SkeletonBox className="h-4 w-2/3 max-w-md" />
+                  </div>
+                </>
+              )}
+              <div className="z5-hero__actions">
+                <SkeletonBox className="h-11 w-52 rounded-xl" />
+                <SkeletonBox className="h-11 w-44 rounded-xl" />
               </div>
-              <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
-                {worldCountryTitle(slug, previewName, locale)}
-              </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
-                {t('w2.country.lead', { country: previewName })}
-              </p>
             </div>
-          ) : (
-            <>
-              <SkeletonBox className="h-4 w-28" />
-              <SkeletonBox className="h-9 w-3/4 max-w-md" />
-              <div className="space-y-2">
-                <SkeletonBox className="h-4 w-full max-w-xl" />
-                <SkeletonBox className="h-4 w-2/3 max-w-md" />
-              </div>
-            </>
-          )}
-          <LoadingNote onRefresh={() => refetch()} />
-          <SkeletonBox className="h-12 w-full rounded-xl sm:w-60" />
-          <SkeletonBox className="h-32 w-full rounded-3xl" />
-          <div className="fe-kpi-grid">
-            {[0, 1, 2].map((i) => <SkeletonBox key={i} className="h-[104px] rounded-3xl sm:h-44" />)}
+            <div className="z5-hero__profile z5-profile-skel" aria-hidden="true" />
           </div>
-          <SkeletonBox className="h-12 w-full rounded-xl" />
-          <SkeletonBox className="h-14 w-full rounded-xl" />
+          <h2 className="w2-main-title z5-main-title" aria-hidden="true">{t('w6b.country.main')}</h2>
+          <div className="z5-key-grid z5-key-grid--n3">
+            {[0, 1, 2].map((i) => <div key={i} className="z5-key z5-key--skel w2-kpi" aria-hidden="true" />)}
+          </div>
+          <LoadingNote onRefresh={() => refetch()} />
         </div>
       )}
 
       {data && (
         <>
-          <div className="fe-data-header">
-            <div className="w2-kicker mb-2 flex items-center gap-2">
-              <CountryFlag code={data.country.code} className="w2-kicker-flag" />
-              {localizedDisplay(locale, data.country.region, data.country.region_en)}
-            </div>
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(260px,0.7fr)] lg:items-start lg:gap-7">
-              <div>
-                <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
+          <div className="fe-data-header z5-hero">
+            <div className="z5-hero__grid">
+              <div className="z5-hero__lead">
+                <div className="w2-kicker mb-2 flex items-center gap-2">
+                  <CountryFlag code={data.country.code} className="w2-kicker-flag" />
+                  {localizedDisplay(locale, data.country.region, data.country.region_en)}
+                </div>
+                <h1 className="z5-hero__title font-display font-bold text-text-primary">
                   {locale === 'en' && countryName ? `The economy of ${withEnglishArticle(countryName)}` : (countryMeta?.h1 || countryName)}
                 </h1>
-                <p className="mt-3 max-w-2xl text-sm leading-6 text-text-secondary sm:text-base">
+                <p className="z5-hero__text text-text-secondary">
                   {t('w2.country.lead', { country: countryName })}
                 </p>
-                <Button
-                  as={Link}
-                  to={data.overview?.[0]
-                    ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
-                    : '/compare'}
-                  className="mt-4 w-full sm:w-auto"
-                >
-                  <BarChart3 size={15} aria-hidden="true" />
-                  {t('world.country.compareCta')}
-                  <ArrowUpRight size={14} aria-hidden="true" />
-                </Button>
-                {slug !== 'russia' && russiaCompareHref ? (
+                <div className="z5-hero__actions">
                   <Button
                     as={Link}
-                    to={russiaCompareHref}
-                    variant="secondary"
-                    className="mt-3 w-full sm:ml-3 sm:mt-4 sm:w-auto"
+                    to={data.overview?.[0]
+                      ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
+                      : '/compare'}
+                    className="w-full sm:w-auto"
                   >
-                    <Scale size={15} aria-hidden="true" />
-                    {t('w6b.country.compareRussia')}
+                    <BarChart3 size={15} aria-hidden="true" />
+                    {t('world.country.compareCta')}
+                    <ArrowUpRight size={14} aria-hidden="true" />
                   </Button>
-                ) : null}
+                  {slug !== 'russia' && russiaCompareHref ? (
+                    <Button
+                      as={Link}
+                      to={russiaCompareHref}
+                      variant="secondary"
+                      className="w-full sm:w-auto"
+                    >
+                      <Scale size={15} aria-hidden="true" />
+                      {t('w6b.country.compareRussia')}
+                    </Button>
+                  ) : null}
+                </div>
               </div>
-              <CountrySilhouette
-                code={data.country.code}
-                name={countryName}
-                slug={slug}
-                area={data.area}
-                population={data.population}
-              />
+              <div className="z5-hero__profile">
+                <CountrySilhouette
+                  code={data.country.code}
+                  name={countryName}
+                  slug={slug}
+                  area={data.area}
+                  population={data.population}
+                  className="z5-profile"
+                  badge={(
+                    <span className="z5-flag-badge">
+                      <CountryFlag code={data.country.code} />
+                      <span>{countryName}</span>
+                    </span>
+                  )}
+                />
+              </div>
             </div>
 
-            <h2 className="w2-main-title mt-6">{t('w6b.country.main')}</h2>
-            <div id="chart" className="fe-kpi-grid mt-3 scroll-mt-28">
-              {(data.overview || []).slice(0, 3).map((item, index) => (
-                <CountryKpiCard key={item.concept_slug} item={item} slug={slug} hero={index === 0} locale={locale} />
-              ))}
-              {!data.overview?.length && (
-                <div className="col-span-2 text-sm text-text-secondary sm:col-span-3">
-                  {t('world.country.coverageAlt')}
-                </div>
-              )}
-            </div>
+            <h2 className="w2-main-title z5-main-title">{t('w6b.country.main')}</h2>
+            <CountryKeyFigures items={(data.overview || []).slice(0, KEY_FIGURES_MAX)} slug={slug} locale={locale} />
           </div>
 
           {data.country?.has_regions && (
@@ -601,7 +442,7 @@ export default function WorldCountry() {
             </Link>
           )}
 
-          <div className="relative mb-6">
+          <div className="z5-search relative mb-6">
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input
               type="search"
@@ -642,7 +483,7 @@ export default function WorldCountry() {
               onChange={selectCategory}
               options={filteredCategories.map((cat) => ({
                 value: cat.name,
-                label: localizedDisplay(locale, cat.name, cat.name_en),
+                label: topicDisplayName(cat, locale),
                 count: formatCount(cat.indicators.length, locale),
               }))}
             />
@@ -662,42 +503,33 @@ export default function WorldCountry() {
                 sectionKey={(cat) => cat.name}
                 sectionLabel={(cat) => localizedDisplay(locale, cat.name, cat.name_en)}
                 themesLabel={t('world.country.themes')}
-                detailLabel={locale === 'en' ? 'Detailed topics' : 'Подробные темы'}
+                detailLabel={t('z5.topics.more')}
               />
             )}
             {!searching && !isUsCatalog && (
-              <aside className="hidden min-w-0 lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto">
-                <div className="mb-2 px-2 text-[13px] font-semibold text-text-secondary">
-                  {t('world.country.themes')}
-                </div>
-                <div className="flex flex-col gap-2">
-                  {filteredCategories.map((cat) => (
-                    <Chip
-                      key={cat.name}
-                      active={resolvedActiveCategory === cat.name}
-                      onClick={() => {
-                        selectCategory(cat.name);
-                        document.querySelectorAll('[data-world-country-category]')
-                          .forEach((section) => {
-                            if (section.dataset.worldCountryCategory === cat.name) {
-                              section.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-                            }
-                          });
-                      }}
-                      aria-current={resolvedActiveCategory === cat.name ? 'true' : undefined}
-                      className="w-full justify-between! gap-4 px-3.5 py-2.5 text-left text-sm!"
-                    >
-                      <span className="min-w-0 truncate">{localizedDisplay(locale, cat.name, cat.name_en)}</span>
-                      <span className="shrink-0 text-xs tabular-nums opacity-70">{formatCount(cat.indicators.length, locale)}</span>
-                    </Chip>
-                  ))}
-                </div>
-              </aside>
+              <CountryTopicNav
+                categories={filteredCategories}
+                active={resolvedActiveCategory}
+                locale={locale}
+                onPick={(name) => {
+                  selectCategory(name);
+                  document.querySelectorAll('[data-world-country-category]')
+                    .forEach((section) => {
+                      if (section.dataset.worldCountryCategory === name) {
+                        section.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+                      }
+                    });
+                }}
+              >
+                <GdpForecastCard slug={slug} item={gdpItem} />
+                <SimilarCountries countries={similar} locale={locale} />
+              </CountryTopicNav>
             )}
 
-            <div className="min-w-0 space-y-8">
+            <SparkBudgetContext.Provider value={sparkBudget}>
+            <div className="z5-catalog min-w-0 space-y-8">
               {visibleCategories.map((cat) => (
-                <section key={cat.name} className="scroll-mt-24" data-world-country-category={cat.name}>
+                <section key={cat.name} className="z5-section scroll-mt-24" data-world-country-category={cat.name}>
                   <div className={`mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4${isMobileSingle && !searching && !isUsCatalog ? ' sr-only' : ''}`}>
                     <div className="min-w-0">
                       {searching && (
@@ -705,11 +537,11 @@ export default function WorldCountry() {
                           {t('regions.searchResults')}
                         </div>
                       )}
-                      <h2 className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">{localizedDisplay(locale, cat.name, cat.name_en)}</h2>
+                      <h2 className="z5-section-title font-display font-bold text-text-primary">{topicDisplayName(cat, locale)}</h2>
                     </div>
-                    <span className="shrink-0 text-sm tabular-nums text-text-tertiary">{formatCount(cat.count ?? cat.indicators.length, locale)}</span>
+                    <span className="z5-section-count">{indicatorsCountText(cat.count ?? cat.indicators.length, locale, t)}</span>
                   </div>
-                  <div className="grid gap-2 sm:gap-2.5 md:grid-cols-2">
+                  <div className="z5-rows">
                     <IndicatorRows
                       items={cat.indicators}
                       slug={slug}
@@ -735,6 +567,7 @@ export default function WorldCountry() {
                 </section>
               ))}
             </div>
+            </SparkBudgetContext.Provider>
           </div>
           {(data.market_indicators || []).length > 0 && (
             <section className="mt-10" data-testid="country-market-indicators">
@@ -748,18 +581,21 @@ export default function WorldCountry() {
                   {data.market_indicators.length}
                 </span>
               </div>
-              <div className="grid gap-2 sm:gap-2.5 md:grid-cols-2">
+              <div className="z5-rows">
                 {data.market_indicators.map((ind) => (
                   <IndicatorRow
                     key={ind.code}
                     item={ind}
                     slug={slug}
                     to={russiaIndicatorPath(ind.code)}
+                    sparkEnabled={false}
                   />
                 ))}
               </div>
             </section>
           )}
+
+          <SimilarCountries countries={similar} locale={locale} className="z5-similar--page" />
 
           {(isUsCatalog || denseCatalog) && searching && matchCount > searchLimit && (
             <Button
