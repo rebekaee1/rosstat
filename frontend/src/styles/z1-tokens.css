@@ -14,9 +14,24 @@
  *   --fe-box-*           то же плюс поля по бокам: это и есть max-width блока с padding-inline: var(--fe-gutter)
  *   --fe-reveal-dur      длительность появления блока (340 мс); ступень каскада --fe-reveal-step (60 мс)
  *   --fe-lift            подъём карточки при наведении: translateY(var(--fe-lift))
- *   --fe-card-shadow     двойная тёплая тень карточки (значение для box-shadow)
- *   --fe-glow-gold       золотое кольцо 1 px и мягкое свечение (значение для box-shadow, при наведении)
+ *   --fe-card-shadow     тень-парение карточки + блик сверху (значение для box-shadow)
+ *   --fe-glow-gold       мягкое золотое свечение БЕЗ кольца (значение для box-shadow, при наведении)
  *   --fe-shimmer         градиент-блик для скелетов (значение для background-image)
+ *
+ * «Хрусталь без границ» (R3, эталон R3/DESIGN_STANDARD.md): отделение элемента даёт не рамка, а
+ * разница светлоты слоёв, блик сверху и мягкая тень снизу. Слои и их токены:
+ *   L1 панель        --fe-glass-l1 (+ --fe-glass-l1-sheen, --fe-blur-l1, --fe-float-shadow, --fe-inset-glint*)
+ *   L2 элемент       --fe-glass-l2 (+ --fe-blur-l2, --fe-shadow-l2): чипы, кнопки, поля, плитки
+ *   L2 активный      --fe-glass-active (золотая заливка), --fe-on-gold (текст на ней)
+ *   L3 тёмный        --fe-dark-glass: профиль страны, подвал
+ * Классы для зон (рамок не имеют, border: 0):
+ *   .fe-glass          слой L1: любая панель, карточка, тулбар, меню
+ *   .fe-glass-2        слой L2: элемент внутри панели (плитка, поле, сегмент)
+ *   .fe-glass-active   активное состояние L2: золотая заливка, не контур
+ *   .fe-glass-dark     слой L3: тёмный хрусталь с золотым сиянием в углу
+ *   .fe-float          парение при наведении мышью: подъём на 2 px, тень растёт; нажатие scale(.98)
+ *   .fe-divider        единственный разрешённый разделитель: линия 1 px rgba(88,74,46,.10) (как hr)
+ * Пока backdrop-filter не поддерживается, альфа L1 поднимается до 0,86, L2 до 0,9 (см. @supports ниже).
  */
 
 :root {
@@ -34,7 +49,6 @@
   /* Тёмный стеклянный акцент (DS3): карточки-карты стран, подвал, редкие герои. Страница в целом остаётся светлой. */
   --fe-dark-surface: #1E2638;
   --fe-dark-surface-2: #2A3550;
-  --fe-dark-border: rgba(201, 162, 77, 0.42);
   --fe-on-dark: #F3EFE6;
   --fe-on-dark-muted: #B9C0CE;
 
@@ -56,15 +70,39 @@
   --fe-line-draw-dur: 700ms;
 
   /* ── Поверхности ─────────────────────────────────────────────────────── */
-  --fe-card-shadow:
-    0 1px 2px rgba(70, 56, 28, 0.05),
-    0 20px 48px -32px rgba(70, 56, 28, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  /* ── Хрусталь: слои, блик, тень (R3) ─────────────────────────────────── */
+  --fe-glass-l1: rgba(255, 255, 255, 0.52);
+  --fe-glass-l1-soft: rgba(255, 255, 255, 0.42);
+  --fe-glass-l1-sheen: linear-gradient(130deg, rgba(255, 255, 255, 0.55), transparent 55%);
+  --fe-glass-l2: rgba(255, 255, 255, 0.55);
+  --fe-glass-l2-hover: rgba(255, 255, 255, 0.72);
+  --fe-glass-active: linear-gradient(135deg, #C9A24D, #B08A3E);
+  --fe-glass-active-hover: linear-gradient(135deg, #D2AE5E, #BA9446);
+  --fe-on-gold: #231B0B;
+  --fe-blur-l1: 18px;
+  --fe-blur-l2: 12px;
+  --fe-inset-glint: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --fe-inset-glint-bottom: inset 0 -1px 0 rgba(176, 138, 62, 0.1);
+  --fe-float-shadow: 0 1px 2px rgba(60, 48, 24, 0.06), 0 24px 56px -28px rgba(60, 48, 24, 0.38);
+  --fe-float-shadow-hover: 0 1px 2px rgba(60, 48, 24, 0.06), 0 32px 64px -28px rgba(60, 48, 24, 0.45);
+  --fe-shadow-l2: 0 6px 18px -12px rgba(60, 48, 24, 0.35);
+  --fe-shadow-active: 0 8px 22px -12px rgba(176, 138, 62, 0.55);
+  --fe-divider-line: rgba(88, 74, 46, 0.1);
+  --fe-dark-glass:
+    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 58%),
+    linear-gradient(160deg, rgba(42, 53, 80, 0.86), rgba(30, 38, 56, 0.92) 72%);
+  --fe-dark-shadow: 0 24px 52px -30px rgba(18, 24, 38, 0.7);
+  --fe-dark-glint: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* Сияние фона страницы: золото и лёд (слой L0 в body). */
+  --fe-glow-gold-bg: rgba(201, 162, 77, 0.14);
+  --fe-glow-ice-bg: rgba(202, 216, 229, 0.35);
+
+  /* Старое имя: тень-парение с бликом. */
+  --fe-card-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  /* Золотое свечение при наведении: только тень, без кольца 0 0 0 1px. */
   --fe-glow-gold:
-    0 0 0 1px rgba(176, 138, 62, 0.5),
-    0 16px 36px -20px rgba(176, 138, 62, 0.6);
-  /* Тонкая золотая кромка по верхнему краю карточки: слой фона, а не рамка, чтобы углы оставались чистыми. */
-  --fe-panel-edge: linear-gradient(90deg, transparent 6%, rgba(176, 138, 62, 0.5) 50%, transparent 94%);
+    0 1px 2px rgba(60, 48, 24, 0.06),
+    0 20px 40px -22px rgba(176, 138, 62, 0.55);
   /* Радиальное золотое свечение 6–8 % за героями. */
   --fe-glow-bg: radial-gradient(ellipse 60% 70% at 85% 0%, rgba(201, 162, 77, 0.1), transparent 70%);
   --fe-shimmer: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.72) 50%, transparent 68%);
@@ -143,22 +181,40 @@
   background: linear-gradient(90deg, var(--fe-gold), transparent);
 }
 
-/* ── Поверхности ───────────────────────────────────────────────────────── */
-/* Стеклянный слой для ключевых карточек. Только по месту: backdrop-filter делает блок
-   контейнером для fixed-потомков, поэтому на каждую панель его не вешаем. */
+/* ── Поверхности: хрусталь без границ (R3) ───────────────────────────────────
+   Только по месту: backdrop-filter делает блок контейнером для fixed-потомков, поэтому blur вешаем на
+   панель, а не на обёртку, внутри которой рендерится меню/диалог. Рамок нет: слой отличается светлотой,
+   бликом сверху (inset) и тенью снизу. Тень и блик обязательны и без blur. */
+
+/* L1: панель, карточка, тулбар, меню, плашка согласия. */
+.fe-glass,
 .fe-glass-key {
-  background: var(--fe-glass);
-  border: 1px solid var(--fe-glass-border);
-  box-shadow: var(--fe-card-shadow);
-  backdrop-filter: blur(18px) saturate(1.1);
-}
-@media (max-width: 767px) {
-  .fe-glass-key { backdrop-filter: none; }
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 
-/* Тёмная стеклянная карточка: графит, золотой контур, тёплый отсвет в правом верхнем углу.
-   Внутри переопределены цветовые токены, поэтому утилиты text-text-*, border-border-subtle работают сами. */
-.fe-dark-card, .fe-surface-dark {
+/* L2: элемент внутри панели (плитка, поле, сегмент). Blur только у крупных плиток: на мелких его не видно, а стоит дорого. */
+.fe-glass-2 {
+  background: var(--fe-glass-l2);
+  border: 0;
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+  backdrop-filter: blur(var(--fe-blur-l2));
+}
+
+/* L2 активный: золотая заливка вместо контура. */
+.fe-glass-active {
+  background: var(--fe-glass-active);
+  border: 0;
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* L3: тёмный хрусталь. Внутри переопределены цветовые токены, поэтому text-text-*, divider и surface работают сами. */
+.fe-glass-dark,
+.fe-dark-card,
+.fe-surface-dark {
   --color-text-primary: var(--fe-on-dark);
   --color-text-secondary: #C3CAD8;
   --color-text-tertiary: var(--fe-on-dark-muted);
@@ -166,15 +222,39 @@
   --color-champagne-ink: #E0C27A;
   --color-surface: rgba(255, 255, 255, 0.06);
   position: relative;
-  border: 1px solid var(--fe-dark-border);
+  border: 0;
   border-radius: 24px;
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.18), transparent 58%),
-    linear-gradient(160deg, var(--fe-dark-surface-2), var(--fe-dark-surface) 72%);
+  background: var(--fe-dark-glass);
   color: var(--fe-on-dark);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 52px -30px rgba(18, 24, 38, 0.7);
+  box-shadow: var(--fe-dark-shadow), var(--fe-dark-glint);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.2);
 }
-.fe-dark-card a, .fe-surface-dark a { color: inherit; }
+.fe-glass-dark a, .fe-dark-card a, .fe-surface-dark a { color: inherit; }
+
+/* Парение: подъём на 2 px и рост тени при наведении мышью. Кольца и смены цвета рамки нет. */
+.fe-float { transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background-color 0.2s ease; }
+
+/* Единственный разрешённый разделитель (как hr): линия 1 px тёплого графита 10 %. */
+.fe-divider, hr { border: 0; border-top: 1px solid var(--fe-divider-line); }
+
+@media (max-width: 767px) {
+  :root { --fe-blur-l1: 12px; }
+  .fe-glass-2 { backdrop-filter: none; }
+}
+
+/* Движок без backdrop-filter: плотные слои, блик и тень остаются. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --fe-glass-l1: rgba(255, 255, 255, 0.86);
+    --fe-glass-l1-soft: rgba(255, 255, 255, 0.78);
+    --fe-glass-l2: rgba(255, 255, 255, 0.9);
+    --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(255, 253, 248, 0.84));
+    --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.84), rgba(255, 252, 245, 0.76));
+    --fe-dark-glass:
+      radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 58%),
+      linear-gradient(160deg, #2A3550, #1E2638 72%);
+  }
+}
 
 /* Золотая подсветка-свечение за героем страницы (DS2). Кладётся фоном блока. */
 .fe-glow-hero { background-image: var(--fe-glow-bg); background-repeat: no-repeat; }
@@ -209,20 +289,32 @@
   animation: fe-line-draw var(--fe-line-draw-dur) cubic-bezier(0.3, 0.7, 0.2, 1) both;
 }
 
-/* Подъём карточки на 2 px и золотое кольцо при наведении мышью; на касании hover «залипает», поэтому не включаем. */
+/* Парение при наведении мышью: подъём на 2 px, тень растёт (без кольца); на касании hover «залипает», поэтому не включаем.
+   Нажатие: scale(.98) за 120 мс. */
 @media (hover: hover) {
-  :is(a, button, [role='link']).fe-panel,
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark),
   .fe-lift {
-    transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background-color 0.2s ease;
   }
-  :is(a, button, [role='link']).fe-panel:hover,
-  .fe-lift:hover {
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key):hover,
+  .fe-lift:hover,
+  .fe-float:hover {
     transform: translateY(var(--fe-lift));
-    box-shadow: var(--fe-glow-gold), var(--fe-card-shadow);
+    box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
   }
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-dark-card, .fe-glass-dark):hover {
+    transform: translateY(var(--fe-lift));
+    box-shadow: 0 32px 64px -30px rgba(18, 24, 38, 0.8), var(--fe-dark-glint);
+  }
+}
+:is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):active,
+.fe-lift:active {
+  transform: scale(0.98);
+  transition-duration: 0.12s;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fe-stagger > *, .fe-draw-line { animation: none; }
-  :is(a, button, [role='link']).fe-panel:hover, .fe-lift:hover { transform: none; }
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):is(:hover, :active),
+  .fe-lift:is(:hover, :active), .fe-float:is(:hover, :active) { transform: none; }
 }

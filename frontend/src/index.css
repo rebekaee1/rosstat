@@ -39,19 +39,19 @@
 :root {
   color-scheme: light;
   --fe-ambient: #E4D3AC70;
-  --fe-glass: linear-gradient(130deg, #FFFFFFEE, #FFFDF8B0);
-  --fe-glass-soft: linear-gradient(130deg, #FFFFFFC2, #FFFCF572);
-  --fe-glass-border: #FFFFFFE6;
-  --fe-nav-surface: rgba(248, 245, 238, 0.97);
+  /* Стекло полупрозрачное (альфа ≤ 0,6): сквозь него видно сияние фона. Блик по краю: --fe-glass-border (значение, не рамка). */
+  --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.58), rgba(255, 253, 248, 0.42));
+  --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.46), rgba(255, 252, 245, 0.32));
+  --fe-glass-border: rgba(255, 255, 255, 0.8);
+  --fe-nav-surface: rgba(248, 245, 238, 0.8);
   /* Двойная тень: тонкий контактный слой и широкий мягкий, оба тёплые (токен --fe-card-shadow в z1-tokens.css). */
   --fe-shadow: var(--fe-card-shadow);
   --fe-button-bg: #F7F1E3;
   --fe-button-border: #D9C79B;
   --fe-art-opacity: 0.76;
   /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
-  --fe-chip-active-bg: rgba(176, 138, 62, 0.17);
-  --fe-chip-active-border: #7A5F2A;
-  --fe-chip-active-ink: #6B5224;
+  --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #C9A24D, #B08A3E));
+  --fe-chip-active-ink: var(--fe-on-gold, #231B0B);
 }
 
 /* Explicit preference also supports future theme controls; embed keeps its own palette. */
@@ -79,17 +79,26 @@
   --color-warn-text: #F5E7C9;
   --color-warn-muted: #DBC79F;
   --fe-ambient: #80664021;
-  --fe-glass: linear-gradient(130deg, #29384BED, #202D40CC);
-  --fe-glass-soft: linear-gradient(130deg, #29384BBF, #202D4080);
-  --fe-glass-border: #BAD1EF26;
-  --fe-nav-surface: rgba(28, 39, 55, 0.98);
-  --fe-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
-  --fe-card-shadow: 0 16px 45px -28px #00000080, inset 0 1px 0 #D8E6FA13;
+  --fe-glass: linear-gradient(130deg, rgba(41, 56, 75, 0.6), rgba(32, 45, 64, 0.5));
+  --fe-glass-soft: linear-gradient(130deg, rgba(41, 56, 75, 0.46), rgba(32, 45, 64, 0.36));
+  --fe-glass-border: rgba(216, 230, 250, 0.08);
+  --fe-nav-surface: rgba(28, 39, 55, 0.86);
+  --fe-glass-l1: rgba(41, 56, 75, 0.55);
+  --fe-glass-l1-soft: rgba(41, 56, 75, 0.42);
+  --fe-glass-l1-sheen: linear-gradient(130deg, rgba(216, 230, 250, 0.1), transparent 55%);
+  --fe-glass-l2: rgba(56, 74, 98, 0.5);
+  --fe-glass-l2-hover: rgba(66, 86, 112, 0.62);
+  --fe-inset-glint: inset 0 1px 0 rgba(216, 230, 250, 0.14);
+  --fe-inset-glint-bottom: inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+  --fe-float-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 24px 56px -28px rgba(0, 0, 0, 0.6);
+  --fe-float-shadow-hover: 0 1px 2px rgba(0, 0, 0, 0.3), 0 32px 64px -28px rgba(0, 0, 0, 0.7);
+  --fe-shadow-l2: 0 6px 18px -12px rgba(0, 0, 0, 0.55);
+  --fe-divider-line: rgba(188, 208, 235, 0.12);
+  --fe-glow-gold-bg: rgba(208, 180, 125, 0.1);
+  --fe-glow-ice-bg: rgba(95, 128, 168, 0.16);
+  --fe-shadow: var(--fe-card-shadow);
   --fe-bg-warm: #151D2B;
   --fe-text-muted: #BBC8D9;
-  --fe-chip-active-bg: rgba(208, 180, 125, 0.2);
-  --fe-chip-active-border: #D0B47D;
-  --fe-chip-active-ink: #E4C994;
   --fe-button-bg: #403A2E;
   --fe-button-border: #9D865650;
   --fe-art-opacity: 0.35;
@@ -102,16 +111,21 @@
   padding-inline: var(--fe-gutter, clamp(16px, 3.1vw, 32px));
 }
 .fe-panel, .fe-panel-soft {
-  background: var(--fe-glass);
-  border: 1px solid var(--fe-glass-border);
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
   border-radius: 24px;
-  box-shadow: var(--fe-shadow);
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
-.fe-panel-soft { background: var(--fe-glass-soft); }
-/* Золотая кромка по верхнему краю: тонкий слой фона над стеклом, углы остаются чистыми. */
-.fe-panel { background: var(--fe-panel-edge, linear-gradient(90deg, transparent, transparent)) top center / 100% 1px no-repeat, var(--fe-glass); }
+.fe-panel-soft { background: var(--fe-glass-l1-sheen), var(--fe-glass-l1-soft); }
 .fe-calendar-event { background: var(--fe-glass); box-shadow: var(--fe-shadow); }
-.fe-dialog-panel { background: var(--fe-nav-surface); border-color: var(--fe-glass-border); }
+/* Диалог (поиск ⌘K и др.): тот же хрусталь, но плотнее, чтобы текст читался поверх страницы. */
+.fe-dialog-panel {
+  background: var(--fe-glass-l1-sheen), var(--fe-nav-surface);
+  border: 0;
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
+}
 .fe-dialog-panel input { border-radius: 6px; }
 .fe-eyebrow {
   color: var(--color-text-secondary);
@@ -372,12 +386,14 @@ body {
      не рисуется, хотя computed и показывает blur(...). */
   overflow-x: clip;
   background-color: var(--color-obsidian);
-  /* Спокойное золотое свечение сверху справа и прохладный отсвет слева: страница не плоская, но и не пёстрая. */
+  /* Слой L0: бумага и сияния (золото сверху справа, лёд слева, тёплое пятно внизу). На компьютере они закреплены за окном,
+     поэтому стеклянные панели при прокрутке «плывут» над светом, а не тащат его за собой. */
   background-image:
-    radial-gradient(ellipse 62% 620px at 94% -6%, var(--fe-ambient), transparent 70%),
-    radial-gradient(ellipse 48% 520px at -8% 10%, rgba(214, 226, 238, 0.42), transparent 72%);
+    radial-gradient(ellipse 62% 58% at 94% -4%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%),
+    radial-gradient(ellipse 52% 52% at -6% 22%, var(--fe-glow-ice-bg, rgba(202, 216, 229, 0.35)), transparent 72%),
+    radial-gradient(ellipse 58% 46% at 72% 104%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%);
   background-repeat: no-repeat;
-  background-size: 100% 1200px;
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-size: 1rem;
@@ -385,6 +401,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
+}
+
+@media (max-width: 767px) {
+  /* На телефоне fixed-фон дёргается при прокрутке и ест кадры: сияние остаётся в верхней части страницы. */
+  body { background-attachment: scroll; background-size: 100% 1400px; }
 }
 
 #root {
@@ -460,6 +481,17 @@ body {
 nav.glass-surface,
 nav.glass-surface-soft {
   background: var(--fe-nav-surface);
+}
+
+/* Нет backdrop-filter: плотные тёмные слои (светлые описаны в styles/z1-tokens.css). */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-theme="dark"], :root.dark {
+    --fe-glass-l1: rgba(41, 56, 75, 0.9);
+    --fe-glass-l1-soft: rgba(41, 56, 75, 0.82);
+    --fe-glass-l2: rgba(56, 74, 98, 0.9);
+    --fe-glass: linear-gradient(130deg, rgba(41, 56, 75, 0.94), rgba(32, 45, 64, 0.88));
+    --fe-glass-soft: linear-gradient(130deg, rgba(41, 56, 75, 0.86), rgba(32, 45, 64, 0.8));
+  }
 }
 
 /* Ползунок времени на карте регионов: тонкий трек + champagne-бегунок. */
@@ -631,7 +663,6 @@ nav.glass-surface-soft {
 .fe-chip:hover:not(:disabled):not(.is-active) { color: var(--color-text-primary); border-color: var(--color-border-subtle); }
 .fe-chip.is-active {
   background: var(--fe-chip-active-bg);
-  border-color: var(--fe-chip-active-border);
   color: var(--fe-chip-active-ink);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
