@@ -6,13 +6,14 @@ import { useLightPointer } from '../lib/useLightPointer';
 import '../styles/k1-scene.css';
 
 /**
- * Сцена света (раунд 3, K1): всё, что лежит ПОД страницей и даёт стеклу что преломлять.
+ * Сцена света (раунд 3, K1): всё, что даёт стеклу что преломлять: слои под страницей и кадр граней героя поверх неё.
  * Декор: ни текста, ни фокуса, ни событий (aria-hidden, pointer-events: none).
  *
  *  1. `.fe-scene` (fixed): бумага, три каустики (золото, лёд, роза) с дрейфом 40 с, текстура граней (≥768 px),
  *     6 силуэтов граней в боковых полях (≥1600 px) с параллаксом 0,15 / 0,3. На телефоне только каустики.
- *  2. `.fe-scene-hero` (абсолютно в верху страницы): кадр граней справа сверху, только на главной и в карточке
- *     страны; монтируется после загрузки страницы, чтобы не мешать LCP. Размеры заданы, сдвига вёрстки нет.
+ *  2. `.fe-scene-hero` (абсолютно в верху страницы, поверх страницы, multiply): кадр граней справа сверху, только на
+ *     главной и в карточке страны; монтируется после загрузки страницы, чтобы не мешать LCP. Размеры заданы
+ *     (aspect-ratio в CSS, width/height на img и source), сдвига вёрстки нет.
  *  3. `.fe-scene-leak` (абсолютно, только ≥1024 px): «утечка света» за героем и за подвалом, режим screen.
  *
  * Бюджет, выключатели и режимы: `lib/sceneBudget.js`. Классы `.fe-glint`, `.fe-cursor-light`, `.fe-drift`
@@ -134,7 +135,7 @@ function HeroLayer({ kind }) {
     <div className={`fe-scene-hero${loaded ? ' is-ready' : ''}`} data-fe-hero={kind} aria-hidden="true">
       <div className="fe-scene-hero__float fe-drift" style={{ '--fe-drift-dur': '12s', '--fe-drift-y': '6px', '--fe-drift-r': '0deg' }}>
         <picture>
-          <source media="(min-width: 768px)" srcSet="/brand/hero-desktop.webp" width="1920" height="1072" />
+          <source media="(min-width: 768px)" srcSet="/brand/hero-desktop.webp" width="1600" height="893" />
           <img
             ref={imgRef}
             src="/brand/hero-phone.webp"

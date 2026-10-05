@@ -67,7 +67,7 @@ describe('LightScene', () => {
     expect(img.getAttribute('height')).toBe('1044');
     expect(img.getAttribute('loading')).toBe('lazy');
     expect(img.getAttribute('alt')).toBe('');
-    expect(hero.querySelector('source').getAttribute('width')).toBe('1920');
+    expect(hero.querySelector('source').getAttribute('width')).toBe('1600');
     home.unmount();
 
     const country = scene('/germany');

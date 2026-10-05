@@ -4,7 +4,7 @@
  * Что здесь:
  *   1. Токены сцены (--fe-scene-*, --fe-glint-color, --fe-light-color), светлая и тёмная тема.
  *   2. Слой-небо `.fe-scene` (fixed): бумага, три каустики, текстура граней, силуэты граней в боковых полях.
- *   3. Герой `.fe-scene-hero` (главная и страна) и утечка света `.fe-scene-leak` (≥1024 px).
+ *   3. Герой `.fe-scene-hero` (главная и страна, поверх страницы, multiply) и утечка света `.fe-scene-leak` (≥1024 px).
  *   4. Общие приёмы света для всех зон: `.fe-glint`, `.fe-cursor-light`, `.fe-drift`.
  *   5. Бюджет: `.fe-cv-auto`, `.fe-cv-row`, `.fe-blur-cap`; выключатели движения и прозрачности.
  *   6. Переход между страницами «преломление» (View Transitions).
@@ -86,38 +86,41 @@ html.fe-scene-on #root {
   html[data-fe-motion="on"] .fe-scene__par { will-change: transform; }
 }
 
-/* Каустики: три цветных пятна без blur-фильтра (плавный радиальный градиент), дрейф 40 с. */
+/* Каустики: три цветных пятна без blur-фильтра, дрейф 40 с. Градиент гаснет в ноль на 80-85 % радиуса, а сам
+   элемент заметно больше пятна и дополнительно закрыт радиальной маской: у пятна нет края, совпадающего с краем
+   элемента (приёмка F1.2: раньше ледяное пятно читалось бледно-голубым прямоугольником). */
 .fe-scene__lamp {
   position: absolute;
-  border-radius: 50%;
   animation: fe-k1-sky 40s ease-in-out infinite alternate;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0, #000 45%, transparent 98%);
+  mask-image: radial-gradient(closest-side, #000 0, #000 45%, transparent 98%);
 }
 .fe-scene__lamp--gold {
-  right: -16vw;
-  top: -26vh;
-  width: 80vw;
-  height: 78vh;
-  background: radial-gradient(closest-side, var(--fe-scene-gold), transparent);
+  right: -26vw;
+  top: -38vh;
+  width: 104vw;
+  height: 104vh;
+  background: radial-gradient(closest-side, var(--fe-scene-gold) 0%, color-mix(in srgb, var(--fe-scene-gold) 45%, transparent) 42%, transparent 82%);
   --fe-sky-dx: -4vw;
   --fe-sky-dy: 3vh;
 }
 .fe-scene__lamp--ice {
-  left: -22vw;
-  top: 16vh;
-  width: 66vw;
-  height: 66vh;
-  background: radial-gradient(closest-side, var(--fe-scene-ice), transparent);
+  left: -34vw;
+  top: 2vh;
+  width: 92vw;
+  height: 96vh;
+  background: radial-gradient(closest-side, var(--fe-scene-ice) 0%, color-mix(in srgb, var(--fe-scene-ice) 45%, transparent) 42%, transparent 82%);
   animation-duration: 46s;
   animation-delay: -12s;
   --fe-sky-dx: 5vw;
   --fe-sky-dy: -3vh;
 }
 .fe-scene__lamp--rose {
-  left: 26vw;
-  bottom: -34vh;
-  width: 72vw;
-  height: 62vh;
-  background: radial-gradient(closest-side, var(--fe-scene-rose), transparent);
+  left: 16vw;
+  bottom: -50vh;
+  width: 96vw;
+  height: 90vh;
+  background: radial-gradient(closest-side, var(--fe-scene-rose) 0%, color-mix(in srgb, var(--fe-scene-rose) 45%, transparent) 42%, transparent 82%);
   animation-duration: 52s;
   animation-delay: -24s;
   --fe-sky-dx: -5vw;
@@ -175,21 +178,40 @@ html.fe-scene-on #root {
 }
 
 /* ===== 3. Герой и утечка света ===== */
+/*
+ * Кадр граней героя (приёмка F1.1). Раньше он лежал под страницей (z-index -1), и главную закрывали карточка планеты
+ * и арт `[data-block="home-hero"]::before`, а страну плита hero: ни одного кристалла на экране.
+ * Теперь слой стоит НАД страницей (z-index 1: выше main, ниже шапки, ленты, подвала-диалогов) и смешивается режимом
+ * multiply. Кадр заранее выровнен: его кремовый фон стал белым (белое при multiply ничего не меняет), грани остались
+ * золотыми. Поэтому кристаллы просвечивают и сквозь стекло панелей, и в полях, но не светлят и не закрывают текст
+ * (multiply только темнит, текст остаётся тёмным), а края кадра не видны вовсе. Курсор и клики проходят насквозь.
+ * Положение задают переменные: --fe-hero-frame-w, --fe-hero-frame-right, --fe-hero-frame-top (по странице и ширине).
+ * Кристаллы лежат в кадре на x 67-94 %, y 0-89 %; маска слева и снизу оставляет их у края, а не по всему экрану.
+ */
 .fe-scene-hero {
+  --fe-hero-frame-w: min(52vw, 1100px);
+  --fe-hero-frame-right: -7vw;
+  --fe-hero-frame-top: 0px;
   position: absolute;
-  top: 0;
-  right: -3vw;
-  width: min(104vw, 1700px);
-  aspect-ratio: 1920 / 1072;
-  z-index: -1;
+  top: var(--fe-hero-frame-top);
+  right: var(--fe-hero-frame-right);
+  width: var(--fe-hero-frame-w);
+  aspect-ratio: 1600 / 893;
+  z-index: 1;
   pointer-events: none;
+  mix-blend-mode: multiply;
   opacity: 0;
   transition: opacity 0.6s ease;
-  /* Левые ~55 % кадра пустые под заголовок: слева маска, снизу растворение. */
-  -webkit-mask-image: linear-gradient(90deg, transparent 30%, #000 62%), linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 30%, #000 62%), linear-gradient(180deg, #000 60%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 36%, #000 66%), linear-gradient(180deg, #000 56%, transparent 96%);
   mask-composite: intersect;
+}
+/* Страна: кластер в пустой середине hero, между заголовком и карточкой профиля (на 1440 центр около x 815). */
+.fe-scene-hero[data-fe-hero="country"] {
+  --fe-hero-frame-w: min(44vw, 940px);
+  --fe-hero-frame-right: 34.8vw;
+  --fe-hero-frame-top: 8vw;
 }
 .fe-scene-hero.is-ready {
   opacity: var(--fe-scene-hero-opacity);
@@ -205,13 +227,15 @@ html.fe-scene-on #root {
   object-fit: cover;
 }
 @media (max-width: 767px) {
-  .fe-scene-hero {
-    right: 0;
-    width: min(100vw, 560px);
+  .fe-scene-hero,
+  .fe-scene-hero[data-fe-hero="country"] {
+    --fe-hero-frame-w: 78vw;
+    --fe-hero-frame-right: -4vw;
+    --fe-hero-frame-top: 40px;
     aspect-ratio: 780 / 1044;
-    /* Слева на кадре холодное облако: оно уходит маской, остаются грани справа. */
-    -webkit-mask-image: linear-gradient(90deg, transparent 22%, #000 50%), linear-gradient(180deg, #000 50%, transparent 98%);
-    mask-image: linear-gradient(90deg, transparent 22%, #000 50%), linear-gradient(180deg, #000 50%, transparent 98%);
+    /* Слева на кадре холодное облако: оно уходит маской, остаются грани справа от заголовка. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%);
+    mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%);
   }
 }
 
