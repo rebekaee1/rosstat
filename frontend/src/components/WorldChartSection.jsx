@@ -39,6 +39,9 @@ function lastAbs(points) {
   return null;
 }
 
+// Постоянный пустой массив: новый [] на каждом рендере заставлял график перерисовываться бесконечно.
+const NO_SERIES = [];
+
 export default function WorldChartSection({
   code,
   indicator,
@@ -236,7 +239,7 @@ export default function WorldChartSection({
             referenceLineY={!windowRebase && (unit === '%' || unit === 'п.п.') ? 0 : null}
             numericTooltipOnly
             actualSeriesLabel={country?.name}
-            comparisonSeries={windowRebase ? loadedComparisonSeries : []}
+            comparisonSeries={windowRebase ? loadedComparisonSeries : NO_SERIES}
             rebaseVisible={windowRebase}
           />
         </div>

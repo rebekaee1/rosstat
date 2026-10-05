@@ -339,6 +339,10 @@ function PlanetControls({
     const stopGesture = (event) => event.preventDefault();
     canvas.addEventListener('gesturestart', stopGesture, { passive: false });
     canvas.addEventListener('gesturechange', stopGesture, { passive: false });
+    // Страховка для iOS: щипок двумя пальцами по шару не должен масштабировать страницу ни при каких обстоятельствах.
+    const stopPinch = (event) => { if (event.touches && event.touches.length > 1) event.preventDefault(); };
+    canvas.addEventListener('touchstart', stopPinch, { passive: false });
+    canvas.addEventListener('touchmove', stopPinch, { passive: false });
     // Щипок на тачпаде приходит как колесо с зажатым ctrl: он должен масштабировать планету, а не страницу.
     const onWheel = (event) => {
       if (!event.ctrlKey) return;
@@ -366,6 +370,8 @@ function PlanetControls({
       controls.removeEventListener('end', onEnd);
       canvas.removeEventListener('gesturestart', stopGesture);
       canvas.removeEventListener('gesturechange', stopGesture);
+      canvas.removeEventListener('touchstart', stopPinch);
+      canvas.removeEventListener('touchmove', stopPinch);
       canvas.removeEventListener('wheel', onWheel);
       canvas.removeEventListener('pointerenter', enter);
       canvas.removeEventListener('pointerleave', leave);
