@@ -114,7 +114,7 @@ describe('WorldRatingPage, волна 6 (зона D)', () => {
   it('показывает все показатели группами, с поиском, а «ВВП на душу к ЕС» называется понятно', async () => {
     renderRating('/world/rating/gdp-usd');
     await screen.findByTestId('world-map-stub');
-    const open = await screen.findByRole('button', { name: /Все показатели \(8\)/ });
+    const open = await screen.findByRole('button', { name: /Другой показатель/ });
     fireEvent.click(open);
     const panel = document.querySelector('.w6d-picker__panel');
     expect(panel).toBeTruthy();

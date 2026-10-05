@@ -2973,4 +2973,10 @@ export default {
   'w7p.reg.legalMid': 'and',
   'w7p.reg.legalPrivacy': 'privacy policy',
   'w7p.reg.legalAfter': ', including personal data processing.',
+  // ===== Z6 =====
+  'z6.rating.otherMetric': 'Other indicator',
+  'z6.rating.whatIsMetric': 'What this indicator means',
+  'z6.rating.periodNote': 'Data for {period}',
+  'z6.rating.periodRange': 'Data periods from {from} to {to}',
+  'z6.rating.rowPeriod': 'Period: {period}',
 };

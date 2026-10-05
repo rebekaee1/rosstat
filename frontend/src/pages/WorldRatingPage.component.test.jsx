@@ -239,7 +239,10 @@ describe('WorldRatingPage', () => {
 
     const row = dataRows()[0];
     expect(within(row).queryByText('%')).toBeNull();
-    expect(row.textContent).toContain('июнь 2025');
+    // Колонки «Период» нет: месяц стоит одной строкой под заголовком таблицы и в подсказке к значению.
+    expect(within(head).queryByText('Период')).toBeNull();
+    expect(document.querySelector('#rating-table').textContent).toContain('Данные за июнь 2025');
+    expect(row.querySelector('[title="Период: июнь 2025"]')).toBeTruthy();
     expect(row.textContent).not.toContain('1 июня 2025');
   });
 
@@ -504,10 +507,10 @@ describe('WorldRatingPage', () => {
     expect(screen.queryByText('Дополнительные колонки — после входа')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Добавить колонку: Инфляция' }));
 
-    // Колонки: место, страна, значение, изменение, по годам, инфляция, период (полоска доли скрыта от скринридера).
+    // Колонки: место, страна, значение, изменение, по годам, инфляция (полоска доли скрыта от скринридера; колонки периода нет).
     await waitFor(() => {
       const head = headRow();
-      expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(6);
     });
     // Второй добавить нельзя — достигнут гостевой лимит: вместо выбора — приглашение зарегистрироваться.
     fireEvent.click(screen.getByRole('button', { name: 'Добавить показатель' }));
@@ -541,10 +544,10 @@ describe('WorldRatingPage', () => {
       { path: '/world/rating/:conceptSlug', route: '/world/rating/unemployment-rate?cols=hicp-index' },
     );
 
-    // Колонки: место, страна, значение, изменение, по годам, инфляция, период (полоска доли скрыта от скринридера).
+    // Колонки: место, страна, значение, изменение, по годам, инфляция (полоска доли скрыта от скринридера; колонки периода нет).
     await waitFor(() => {
       const head = headRow();
-      expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
+      expect(within(head).getAllByRole('columnheader')).toHaveLength(6);
     });
     expect(screen.queryByRole('link', { name: 'Создать аккаунт' })).toBeNull();
   });
@@ -680,7 +683,7 @@ describe('WorldRatingPage', () => {
 
     await waitFor(() => expect(dataRows()).toHaveLength(2));
     const head = headRow();
-    expect(within(head).getAllByRole('columnheader')).toHaveLength(7);
+    expect(within(head).getAllByRole('columnheader')).toHaveLength(6);
     // Шапка доп-колонки несёт единицу измерения своего концепта.
     expect(within(head).getByText(/Инфляция, %/)).toBeTruthy();
     // Значения инфляции взяты из 2025 — ближайшего опубликованного года к базе 2026

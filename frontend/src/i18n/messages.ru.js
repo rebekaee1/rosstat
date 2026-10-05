@@ -2979,4 +2979,10 @@ export default {
   'w7p.reg.legalMid': 'и',
   'w7p.reg.legalPrivacy': 'политикой конфиденциальности',
   'w7p.reg.legalAfter': ', включая обработку персональных данных.',
+  // ===== Z6 =====
+  'z6.rating.otherMetric': 'Другой показатель',
+  'z6.rating.whatIsMetric': 'Что это за показатель',
+  'z6.rating.periodNote': 'Данные за {period}',
+  'z6.rating.periodRange': 'Данные за периоды с {from} по {to}',
+  'z6.rating.rowPeriod': 'Период: {period}',
 };
