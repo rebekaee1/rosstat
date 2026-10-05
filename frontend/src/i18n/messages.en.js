@@ -12,7 +12,7 @@ export default {
   "planet.searchPlaceholder": "Find a country…",
   "planet.searchResults": "Countries",
   "planet.noMatches": "No country found",
-  "planet.loading": "Loading Earth…",
+  "planet.loading": "Loading the world map…",
   "planet.unavailable": "The 3D view is unavailable. You can choose a country on the map.",
   "planet.retry": "Retry",
   "planet.selectTitle": "Explore countries",

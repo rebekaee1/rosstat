@@ -159,12 +159,33 @@ function createLabelResources(labels) {
   return { ...atlas, geometry, material, mesh, uv, active };
 }
 
+// Всё, что лежит поверх шара и не должно закрывать подписи или быть закрыто ими.
+const OVERLAY_SELECTOR = '.planet-quick, .planet-camera-controls button, .planet-stage-bottom > *, .planet-minimap, .planet-play-year, .planet-gesture-hint';
+const OVERLAY_PAD = 4;
+
+/** Прямоугольники кнопок и чипов в пикселях холста; пусто, если рядом нет оболочки сцены (тесты, встраивание). */
+function overlayKeepOut(canvas) {
+  const stage = canvas?.closest?.('.planet-stage');
+  if (!stage || typeof canvas.getBoundingClientRect !== 'function') return [];
+  const origin = canvas.getBoundingClientRect();
+  const zones = [];
+  stage.querySelectorAll(OVERLAY_SELECTOR).forEach((node) => {
+    const box = node.getBoundingClientRect();
+    if (!(box.width > 0 && box.height > 0)) return;
+    zones.push({
+      left: box.left - origin.left - OVERLAY_PAD, right: box.right - origin.left + OVERLAY_PAD,
+      top: box.top - origin.top - OVERLAY_PAD, bottom: box.bottom - origin.top + OVERLAY_PAD,
+    });
+  });
+  return zones;
+}
+
 /**
  * Geographic labels share one texture and one draw call. This callback only runs
  * on the parent demand frames; it never requests another frame or sets state.
  */
 export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, unit = '', valueDigits, showValues = false, selectedCode, hoverCode, compact = false, selectionOnly = false }) {
-  const { camera, size, invalidate } = useThree();
+  const { camera, size, invalidate, gl } = useThree();
   // The metric heading and country card retain the denominator of percentage
   // units; repeating it on every country would obscure the surface.
   const labels = useMemo(() => buildPlanetLabels(entries, {
@@ -217,6 +238,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
         height: label.height * fontScale,
       };
     });
+    const keepOut = overlayKeepOut(gl?.domElement);
     scratch.projected.set(0, 0, 0).project(camera);
     const globe = {
       x: (scratch.projected.x + 1) * size.width / 2,
@@ -230,12 +252,14 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
       valuesOnly: showValues,
       selectionOnly,
       globe,
+      keepOut,
     });
     current.mesh.count = visible.length;
     visible.forEach((label, index) => {
       // Move the camera-facing quad upward in screen space, clear of the marker.
       scratch.point.set(...label.position).applyMatrix4(camera.matrixWorldInverse);
       scratch.point.y += (label.y - label.labelY) * label.worldPerPixel;
+      scratch.point.x += (label.labelX - label.x) * label.worldPerPixel;
       scratch.point.applyMatrix4(camera.matrixWorld);
       scratch.matrix.makeScale(label.width * label.worldPerPixel, label.height * label.worldPerPixel, 1);
       scratch.matrix.setPosition(scratch.point);

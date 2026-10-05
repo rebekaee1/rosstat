@@ -121,7 +121,7 @@
 .planet-minimap-sea { fill: rgba(255,255,255,.82); stroke: rgba(255,255,255,.9); stroke-width: 2; }
 .planet-minimap-land { fill: #CDBF9B; stroke: none; }
 .planet-minimap-frame { fill: rgba(173,138,72,.2); stroke: #80642F; vector-effect: non-scaling-stroke; stroke-width: 1.6; }
-.planet-loading { position: absolute; left: 0; right: 0; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 9px; z-index: 1; color: var(--planet-muted); font-size: 13px; pointer-events: none; }
+.planet-loading { animation: planet-loading-in 300ms ease-out 700ms both; position: absolute; left: 0; right: 0; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 9px; z-index: 1; color: var(--planet-muted); font-size: 13px; pointer-events: none; }
 .planet-hover-label { position: absolute; z-index: 3; left: clamp(10px, calc(var(--planet-pointer-x, 18px) + 16px), calc(100% - 236px)); top: clamp(10px, calc(var(--planet-pointer-y, 18px) + 18px), calc(100% - 92px)); width: max-content; max-width: 220px; display: grid; gap: 2px; padding: 9px 12px 10px; border: 1px solid var(--planet-accent-line); border-radius: 12px; color: var(--planet-ink); background: var(--planet-paper); box-shadow: 0 10px 28px -12px rgba(32,42,60,.35); font-size: 13px; line-height: 1.35; pointer-events: none; }
 .planet-hover-label > span { font-weight: 600; }
 .planet-hover-label strong { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--planet-accent-ink); }
@@ -298,11 +298,12 @@
 @media (orientation: landscape) and (max-height: 520px) and (max-width: 950px) { .planet-view { --planet-scene-height: min(300px, 72dvh); } }
 .planet-view--placeholder .planet-shell { display: block; min-height: calc(var(--planet-scene-height) + 260px); }
 @container planet (max-width: 700px) { .planet-view--placeholder .planet-shell { min-height: calc(var(--planet-scene-height) + 560px); } }
-.planet-view--placeholder .planet-stage { background: transparent; }
+/* Заглушка стоит на том же фоне, что и настоящая сцена: при подмене не мигает подложка. */
 @media (prefers-reduced-motion: reduce) {
-  .planet-loading svg, .planet-country-card.is-selected, .planet-orb, .planet-gesture-hint, .planet-gesture-hint svg, .planet-back-to-countries { animation: none; }
+  .planet-loading, .planet-loading svg, .planet-country-card.is-selected, .planet-orb, .planet-gesture-hint, .planet-gesture-hint svg, .planet-back-to-countries { animation: none; }
   .planet-view button, .planet-view a, .planet-stage canvas, .planet-country-list > button > svg, .planet-orb { transition: none; }
 }
+@keyframes planet-loading-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes planet-orb-turn { from { background-position: 0% 50%, 31% 25%, 70% 78%, 22% 50%, 0 0; } to { background-position: 0% 50%, 31% 25%, 70% 78%, 56% 50%, 0 0; } }
 @keyframes planet-card-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @keyframes planet-hint-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }

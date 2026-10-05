@@ -736,7 +736,8 @@ export function CountrySilhouette({
             <div>
               <dt>{t('world.territory.area')}</dt>
               <dd>
-                {areaValue}
+                {/* Число с единицей не рвётся на «км» и «2». */}
+                <span className="whitespace-nowrap">{areaValue}</span>
               </dd>
             </div>
           )}

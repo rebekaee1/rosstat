@@ -70,9 +70,11 @@ export default function IndicatorDetailHeader({
   const categoryLinkName = locale === 'en'
     ? (category?.nameEn || category?.name || indicator?.category)
     : (categoryFixed ? category?.name : indicator?.category);
-  const title = indicator?.name || code;
+  // Пока настоящее название не пришло, в крошках серая заглушка: ни внутренний код, ни раздел (страна, категория) не показываются.
+  const nameKnown = Boolean(indicator?.name);
+  const title = indicator?.name || '';
   const globalMarket = isGlobalMarketIndicator(code);
-  const crumbs = year
+  const fullCrumbs = year
     ? (globalMarket
       ? globalMarketIndicatorYearTrail(
         categoryCrumbName,
@@ -91,6 +93,9 @@ export default function IndicatorDetailHeader({
     : (globalMarket
       ? globalMarketIndicatorTrail(categoryCrumbName, category?.slug, title, code)
       : russiaIndicatorTrail(categoryCrumbName, category?.slug, title, code));
+  const crumbs = nameKnown
+    ? fullCrumbs
+    : fullCrumbs.map((item, index) => (index === 0 ? item : { ...item, name: '' }));
   const freqLabel = localizeViewModeLabel(
     FREQ_MAP[effectiveFrequency] || effectiveFrequency,
     locale,
@@ -130,8 +135,8 @@ export default function IndicatorDetailHeader({
             style={revealStyle(2)}
             className="fe-reveal fe-reveal--free fe-reveal--stagger text-[1.7rem] leading-[1.2] text-pretty sm:text-3xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-1.5 md:mb-4 md:leading-tight"
           >
-            <MobileTitle title={title} />
-            <span className="hidden md:inline">{title}</span>
+            <MobileTitle title={title || code} />
+            <span className="hidden md:inline">{title || code}</span>
           </h1>
           {children}
 

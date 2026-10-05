@@ -166,6 +166,17 @@ def prepare_language(text: str) -> str:
         return consume((r"доллар.*|dollars?|usd", r"иен.*|йен.*|yen|jpy", r"сша|us|american|japanese|японск.*", r"курс.*|exchange|rate"), "usd jpy")
     if has(r"доллар.*|dollars?|usd") and (has(r"руб.*|rubles?|roubles?|rub") or (words and words[-1] in ("r", "ru", "ру"))) and not has_currency_scale:
         return consume((r"доллар.*|dollars?|usd", r"руб.*|rubles?|roubles?|rub|r|ru|ру", r"сша|us|american", r"курс.*|exchange|rate"), "usd rub")
+    # A bare currency request ("usd", "dollar rate", "us dollar exchange rate")
+    # means the exchange rate. Only a query made entirely of the currency word
+    # and rate filler qualifies, so "gdp usd" keeps USD as a unit facet.
+    fx_filler = r"rates?|exchange|курс.*|today|сегодня|current|текущий|сша|us|american|dollars?|доллар.*|usd|euros?|eur|евро|yuan|cny|юан.*"
+    if words and all(re.fullmatch(fx_filler, word) for word in words):
+        if any(re.fullmatch(r"dollars?|доллар.*|usd", word) for word in words) and not any(re.fullmatch(r"euros?|eur|евро|yuan|cny|юан.*", word) for word in words):
+            return "usd rub"
+        if any(re.fullmatch(r"euros?|eur", word) for word in words) and not any(re.fullmatch(r"dollars?|доллар.*|usd|yuan|cny|юан.*", word) for word in words):
+            return "eur rub"
+        if any(re.fullmatch(r"yuan|cny", word) for word in words) and not any(re.fullmatch(r"dollars?|доллар.*|usd|euros?|eur|евро|юан.*", word) for word in words):
+            return "cny rub"
     if has(r"завод.*|промышленност.*|factories|industry") and has(r"выпуска.*|производ.*|producing|produce|output"):
         return consume((r"завод.*|промышленност.*|factories|industry", r"выпуска.*|производ.*|producing|produce|output", r"продукц.*"), "industrial production")
     if not food_sector and has(r"продукт.*|food|grocery") and has(r"подорож.*|дороже|expensive|price.*"):

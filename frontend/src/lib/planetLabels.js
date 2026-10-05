@@ -164,6 +164,8 @@ export function layoutPlanetLabels(candidates, {
   maxVisible = 24, padding = 6, collisionGap = 5, anchorGap = 12, globe = null, valuesOnly = false,
   // «Данные»: на шаре подписана только выбранная или наведённая страна, а не случайные крупные.
   selectionOnly = false,
+  // Прямоугольники кнопок и чипов поверх шара (в тех же пикселях): подпись не заходит под них.
+  keepOut = [],
 } = {}) {
   if (!(width > 0 && height > 0)) return [];
   const selected = normalizePlanetCountryCode(selectedCode);
@@ -182,12 +184,24 @@ export function layoutPlanetLabels(candidates, {
   const result = [];
   for (const candidate of visible) {
     const bottom = candidate.y - anchorGap;
-    const box = {
+    let box = {
       left: candidate.x - candidate.width / 2,
       right: candidate.x + candidate.width / 2,
       top: bottom - candidate.height,
       bottom,
     };
+    // Подпись под чипом или кнопкой: сначала чуть сдвигаем вбок (острие остаётся над страной), иначе не рисуем.
+    let shiftX = 0;
+    if (keepOut.length && keepOut.some((zone) => intersects(box, zone, 2))) {
+      const fits = [0.2, -0.2].find((factor) => {
+        const moved = { ...box, left: box.left + factor * candidate.width, right: box.right + factor * candidate.width };
+        return !keepOut.some((zone) => intersects(moved, zone, 2))
+          && moved.left >= padding && moved.right <= width - padding;
+      });
+      if (fits === undefined) continue;
+      shiftX = fits * candidate.width;
+      box = { ...box, left: box.left + shiftX, right: box.right + shiftX };
+    }
     if (box.left < padding || box.right > width - padding || box.top < padding || box.bottom > height - padding) continue;
     if (globe && [globe.x, globe.y, globe.radius].every(Number.isFinite)) {
       const radius = Math.max(0, globe.radius - 2);
@@ -195,7 +209,7 @@ export function layoutPlanetLabels(candidates, {
       if (corners.some(([x, y]) => (x - globe.x) ** 2 + (y - globe.y) ** 2 > radius ** 2)) continue;
     }
     if (result.some((label) => intersects(box, label.box, collisionGap))) continue;
-    result.push({ ...candidate, box, labelX: candidate.x, labelY: (box.top + box.bottom) / 2, active: priority(candidate) });
+    result.push({ ...candidate, box, labelX: candidate.x + shiftX, labelY: (box.top + box.bottom) / 2, active: priority(candidate) });
     if (result.length >= maxVisible) break;
   }
   return result;

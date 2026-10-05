@@ -35,4 +35,30 @@ describe('WorldCountUp', () => {
     const { container } = render(<WorldCountUp value={null} format={format} />);
     expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('');
   });
+  it('shows the final value at once when counting from zero is switched off', () => {
+    vi.useFakeTimers();
+    let now = 0;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    vi.stubGlobal('requestAnimationFrame', (callback) => setTimeout(() => callback(now), 16));
+    vi.stubGlobal('cancelAnimationFrame', (id) => clearTimeout(id));
+    const { container, rerender } = render(<WorldCountUp value={200} format={format} fromZero={false} />);
+    expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('200');
+    act(() => { vi.advanceTimersByTime(48); });
+    expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('200');
+    rerender(<WorldCountUp value={300} format={format} fromZero={false} />);
+    expect(container.querySelector('[aria-hidden="true"]').textContent).not.toBe('');
+  });
+
+  it('jumps to the final value when the first frame arrives late because the page was busy', () => {
+    vi.useFakeTimers();
+    let now = 0;
+    vi.spyOn(performance, 'now').mockImplementation(() => now);
+    vi.stubGlobal('requestAnimationFrame', (callback) => setTimeout(() => callback(now), 16));
+    vi.stubGlobal('cancelAnimationFrame', (id) => clearTimeout(id));
+    const { container } = render(<WorldCountUp value={1000} format={format} />);
+    expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('0');
+    now = 400;
+    act(() => { vi.advanceTimersByTime(16); });
+    expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('1000');
+  });
 });

@@ -42,6 +42,22 @@ def test_unknown_and_measure_qualifiers_never_become_stop_words(query, noun):
     assert match_score(intent, code='cpi', names=('Consumer price index',)) is None
 
 
+@pytest.mark.parametrize('query, expected', [
+    ('usd', 'usd-rub'), ('USD', 'usd-rub'), ('dollar rate', 'usd-rub'), ('us dollar exchange rate', 'usd-rub'),
+    ('usd rate', 'usd-rub'), ('курс доллара', 'usd-rub'), ('usd rub', 'usd-rub'),
+    ('euro rate', 'eur-rub'), ('yuan rate', 'cny-rub'),
+])
+def test_bare_currency_request_means_exchange_rate(query, expected):
+    intent = parse_intent(query, [])
+    assert [group[0] for group in intent.terms] == [expected]
+
+
+def test_currency_word_with_other_words_stays_a_unit_facet():
+    keys = [group[0] for group in parse_intent('gdp usd', []).terms]
+    assert 'usd-rub' not in keys and 'gdp' in keys
+    assert 'usd-rub' not in [group[0] for group in parse_intent('dollar index', []).terms]
+
+
 @pytest.mark.parametrize('topic, name, expected', [
     ('gas-price', 'Natural gas extraction', False),
     ('gas-price', 'Natural gas price', True),

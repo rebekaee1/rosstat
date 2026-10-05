@@ -12,7 +12,7 @@ export default {
   "planet.searchPlaceholder": "Найти страну…",
   "planet.searchResults": "Страны",
   "planet.noMatches": "Страна не найдена",
-  "planet.loading": "Загружаем Землю…",
+  "planet.loading": "Загружаем карту мира…",
   "planet.unavailable": "3D-представление недоступно. Вы можете выбрать страну на карте.",
   "planet.retry": "Повторить",
   "planet.selectTitle": "Исследуйте страны",

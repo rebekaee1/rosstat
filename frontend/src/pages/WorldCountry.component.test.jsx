@@ -447,7 +447,8 @@ describe('WorldCountry key figures', () => {
     expect(first).toContain('Инфляция');
     expect(cards[0].querySelector('.w2-kpi-name').getAttribute('title')).toBe('Изменение потребительских цен за год');
     expect(first).toContain('2,9');
-    expect(first).not.toContain('2,92');
+    // Видимое число сразу итоговое (не «докручивается» от нуля) и округлено до одного знака.
+    expect(cards[0].querySelector('.w2-kpi-value [aria-hidden="true"]').textContent).toBe('2,9');
     expect(first).toContain('%');
     expect(first).toContain('август 2026');
     expect(first).not.toContain('prc_hicp');
