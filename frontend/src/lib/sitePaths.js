@@ -30,6 +30,7 @@ export const RESERVED_FIRST_SEGMENTS = Object.freeze([
   'ranking',
   'rankings',
   'compare',
+  'forecasts',
   'widgets',
   'login',
   'register',
@@ -85,6 +86,11 @@ export function homePath() {
 
 export function comparePath() {
   return '/compare';
+}
+
+/** Витрина прогнозов платформы (зеркало backend `site_paths.forecasts`). */
+export function forecastsPath() {
+  return '/forecasts';
 }
 
 export function countryPath(countrySlug) {

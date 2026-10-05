@@ -980,14 +980,15 @@ _SPA_SSR_HIDE_SCRIPT = (
 BOOT_FALLBACK_MS = 12000
 
 _BOOT_STYLE = """<style id="fe-boot-css">
+html{background:#F6F1E6}
 .fe-boot-splash{display:none}
-html.fe-boot{overflow:hidden}
+html.fe-boot{overflow:hidden;background:#F6F1E6}
 html.fe-boot #root{visibility:hidden}
 html.fe-boot .seo-boot-bar{display:none!important}
-html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(233,223,205,.6),transparent 44%),radial-gradient(ellipse at 6% 100%,rgba(202,216,229,.45),transparent 40%),#EEF0F4;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
+html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(224,200,150,.34),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(173,138,72,.12),transparent 42%),#F6F1E6;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
 html.fe-js .fe-boot-splash{display:none!important}
-.fe-boot-brand{display:inline-flex;align-items:center;gap:.6rem;font-size:1.65rem;font-weight:750;letter-spacing:-.06em;line-height:1}
-.fe-boot-brand svg{width:34px;height:39px}
+.fe-boot-brand{display:inline-flex;align-items:center;gap:.7rem;font-size:2.1rem;font-weight:750;letter-spacing:-.06em;line-height:1}
+.fe-boot-brand svg{width:46px;height:52px}
 .fe-boot-brand i{font-style:normal;font-weight:400}
 .fe-boot-globe{width:132px;height:132px;color:#AD8A48}
 .fe-boot-globe .fe-g-ring{fill:rgba(255,255,255,.55);stroke:currentColor;stroke-width:1.4;stroke-dasharray:6 5;animation:feBootRing 7s linear infinite;transform-origin:60px 60px}
@@ -1069,6 +1070,7 @@ def _foot_nav(en: bool) -> str:
                 ("/#countries", "Countries"),
                 (paths.world_rating("gdp-usd"), "Country rankings"),
                 ("/compare", "Compare indicators"),
+                ("/forecasts", "Forecasts"),
                 ("/currencies", "Currencies"),
                 (paths.today(), "Economy today"),
                 (paths.region_rating_hub(), "Regional rankings"),
@@ -1097,6 +1099,7 @@ def _foot_nav(en: bool) -> str:
                 ("/#countries", "Страны"),
                 (paths.world_rating("gdp-usd"), "Рейтинг стран"),
                 ("/compare", "Сравнение индикаторов"),
+                ("/forecasts", "Прогнозы"),
                 ("/currencies", "Валюты"),
             )),
             ("Россия", (
@@ -1132,14 +1135,14 @@ _SSR_CHROME_HEADER = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Открыть меню разделов">
 <label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Меню</label>
-<nav class="seo-topnav" aria-label="Разделы сайта"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/currencies">Валюты</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a><a class="seo-nav-login" href="/login" rel="nofollow">Войти</a><a class="seo-nav-reg" href="/register" rel="nofollow">Регистрация</a></nav>
+<nav class="seo-topnav" aria-label="Разделы сайта"><a href="/">Главная</a><a href="{paths.russia_home()}">Россия</a><a href="{paths.today()}">Сегодня</a><a href="{paths.region_hub()}">Регионы</a><a href="/#countries">Страны</a><a href="{paths.world_rating("gdp-usd")}">Рейтинг стран</a><a href="{paths.calendar()}">Календарь</a><a href="/compare">Сравнение</a><a href="/forecasts">Прогнозы</a><a href="/currencies">Валюты</a><a href="/calculator">Калькуляторы</a><a href="/about">О проекте</a><a class="seo-nav-login" href="/login" rel="nofollow">Войти</a><a class="seo-nav-reg" href="/register" rel="nofollow">Регистрация</a></nav>
 </div></header>"""
 
 _SSR_CHROME_HEADER_EN = f"""<header class="seo-topbar"><div class="seo-topbar-in">
 <a class="seo-brand" href="/" aria-label="Forecast Economy — Home"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<span class="seo-brand-light">economy</span><small>ECONOMIC INTELLIGENCE</small></span></a>
 <input type="checkbox" id="seo-menu-toggle" class="seo-menu-check" aria-label="Open the section menu">
 <label class="seo-menu-btn" for="seo-menu-toggle"><span class="seo-menu-ico" aria-hidden="true"></span>Menu</label>
-<nav class="seo-topnav" aria-label="Site sections"><a href="/">Home</a><a href="{paths.country("united-states")}">United States</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/currencies">Currencies</a><a href="/calculator">Calculators</a><a href="/about">About</a><a class="seo-nav-login" href="/login" rel="nofollow">Sign in</a><a class="seo-nav-reg" href="/register" rel="nofollow">Sign up</a></nav>
+<nav class="seo-topnav" aria-label="Site sections"><a href="/">Home</a><a href="{paths.country("united-states")}">United States</a><a href="{paths.today()}">Today</a><a href="{paths.region_hub()}">Regions</a><a href="/#countries">Countries</a><a href="{paths.world_rating("gdp-usd")}">Country rankings</a><a href="{paths.calendar()}">Calendar</a><a href="/compare">Compare</a><a href="/forecasts">Forecasts</a><a href="/currencies">Currencies</a><a href="/calculator">Calculators</a><a href="/about">About</a><a class="seo-nav-login" href="/login" rel="nofollow">Sign in</a><a class="seo-nav-reg" href="/register" rel="nofollow">Sign up</a></nav>
 </div></header>"""
 
 _SSR_CHROME_FOOTER = f"""<div class="seo-cta"><div class="seo-cta-in">
@@ -1187,6 +1190,7 @@ _SSR_PLATFORM_DEEP_LINKS = f"""
 <li><a href="{paths.calendar()}">Календарь публикаций</a></li>
 <li><a href="{paths.demographics()}">Демография</a></li>
 <li><a href="/compare">Сравнение показателей</a></li>
+<li><a href="/forecasts">Прогнозы</a></li>
 <li><a href="/calculator">Калькулятор инфляции</a></li>
 </ul>
 </section>
@@ -1205,6 +1209,7 @@ _SSR_PLATFORM_DEEP_LINKS_EN = f"""
 <li><a href="{paths.calendar()}">Release calendar</a></li>
 <li><a href="{paths.demographics()}">Demographics</a></li>
 <li><a href="/compare">Compare indicators</a></li>
+<li><a href="/forecasts">Forecasts</a></li>
 <li><a href="/calculator">Inflation calculator</a></li>
 </ul>
 </section>
@@ -1592,6 +1597,7 @@ async def build_document(
     og_image: str | None = None,
     include_app: bool = True,
     preserve_mode_query: bool = False,
+    not_found: bool = False,
 ) -> str:
     """Полный SSR HTML-документ.
 
@@ -1600,18 +1606,55 @@ async def build_document(
     landing'и: у SPA-роутера нет такого маршрута, гидратация показала бы 404).
     preserve_mode_query=True — только для проверенного годового режима,
     чей самостоятельный документ описывает выбранный материализованный ряд.
+    not_found=True — документ ответа 404 (см. `render_not_found_html`).
+    """
+    return compose_document(
+        assets=await get_app_assets(),
+        title=title,
+        description=description,
+        canonical_path=canonical_path,
+        body=body,
+        json_ld=json_ld,
+        keywords=keywords,
+        extra_head=extra_head,
+        og_image=og_image,
+        include_app=include_app,
+        preserve_mode_query=preserve_mode_query,
+        not_found=not_found,
+    )
+
+
+def compose_document(
+    *,
+    assets: AppAssets,
+    title: str,
+    description: str,
+    canonical_path: str,
+    body: str,
+    json_ld: list[dict] | None = None,
+    keywords: str | None = None,
+    extra_head: str | None = None,
+    og_image: str | None = None,
+    include_app: bool = True,
+    preserve_mode_query: bool = False,
+    not_found: bool = False,
+) -> str:
+    """Синхронная сборка документа из уже известных ассетов приложения.
+
+    Нужна там, где HTML собирается без ожидания (`_html_response` для 404).
+    Документ 404: без canonical и hreflang (адреса нет), всегда noindex и с флагом
+    `window.__feNotFound`: приложение показывает свою страницу 404 в общей оболочке.
     """
     from app.services.locale import get_locale, html_lang, is_preview_locale, og_locale
     from app.services.index_policy import robots_for_path, strip_mode_query
 
     if not preserve_mode_query:
         canonical_path = strip_mode_query(canonical_path)
-    if is_preview_locale():
+    if is_preview_locale() or not_found:
         robots_content = "noindex, follow"
     else:
         robots_content = robots_for_path(canonical_path)
 
-    assets = await get_app_assets()
     url = _absolute(canonical_path, canonical=True)
     safe_title = escape(title)
     safe_desc = escape(truncate_meta(clean_text(description), 300))
@@ -1628,6 +1671,12 @@ async def build_document(
     structured = "\n".join(_json_script(item) for item in structured_items)
     extras = extra_head or ""
     hreflang = _hreflang_head(canonical_path)
+    canonical_link = f'<link rel="canonical" href="{escape(url)}">'
+    if not_found:
+        # Адреса нет: ни канона, ни языковых пар. Флаг читает App.jsx до отрисовки.
+        hreflang = ""
+        canonical_link = ""
+        extras = f"{extras}\n<script>window.__feNotFound=true</script>".strip()
     og_url = escape(og_image or _absolute("/og-image-v3.png"))
     body_scripts = assets.body_scripts if include_app else ""
     lang = html_lang()
@@ -1693,7 +1742,7 @@ async def build_document(
 <meta name="theme-color" content="#EEF0F4">
 <meta name="color-scheme" content="light">
 {_yandex_verification_meta()}
-<link rel="canonical" href="{escape(url)}">
+{canonical_link}
 <link rel="alternate" type="application/rss+xml" title="{rss_title}" href="{escape(_absolute("/feed.xml"))}">
 {hreflang}
 {extras}
@@ -1824,16 +1873,19 @@ def _not_found_lang_toggle(en: bool) -> str:
 def render_not_found_html(message: str | None = None, path: str | None = None) -> str:
     """Фирменная 404 для SSR-роутов и nginx catch-all.
 
-    Самодостаточный документ (без asset-fetch и БД): critical CSS + та же шапка,
-    бегущая строка и подвал, что у остальных страниц сайта; поиск, «Возможно, вы искали»
-    (по словам из адреса), чипы популярных разделов и «Вернуться назад». HTTP-статус
-    404 и noindex выставляют вызывающие (nginx error_page / ``_html_response``).
+    Два режима одного содержимого (поиск, «Возможно, вы искали» по словам из адреса,
+    чипы популярных разделов, «Вернуться назад»). HTTP-статус 404 и noindex выставляют
+    вызывающие (nginx error_page / ``_html_response``).
 
-    Почему не монтировать SPA со статусом 404: SPA сама решает по адресу, что
-    рисовать (у `/germany/indicator/нет` это пустая карточка мира, не 404),
-    требует загрузки бандла (в момент деплоя ассеты могут отсутствовать) и
-    ничего не показывает роботам. Чистый документ предсказуем: один заголовок
-    для любого битого адреса, всегда с поиском и выходом на главные разделы.
+    1. Приложение собрано и известно процессу (``_APP_ASSETS``): отдаётся документ
+       приложения с флагом ``window.__feNotFound``. Шапку, ленту курсов и подвал рисует
+       приложение, то есть они ровно те же, что на всех страницах; страницу 404 рисует
+       ``NotFound.jsx`` (App.jsx показывает её на адресе, который сервер признал
+       несуществующим, даже если маршрут вроде `/germany/indicator/нет` иначе открыл бы
+       пустую карточку). Текст в ``#root`` остаётся для роботов и посетителей без JavaScript.
+    2. Приложения нет (минуты выкладки, сбой оболочки): самодостаточный документ без
+       asset-fetch и БД: critical CSS + шапка, лента и подвал чистых SSR-страниц.
+
     Язык берётся из запроса (хост, X-FE-Locale), поэтому первый кадр сразу на нужном языке.
 
     ``message`` оставлен ради совместимости вызовов и игнорируется: рендереры
@@ -1925,21 +1977,7 @@ def render_not_found_html(message: str | None = None, path: str | None = None) -
         "b.hidden=false;b.addEventListener('click',function(){"
         "if(history.length>1){history.back()}else{location.href='/'}})})();</script>"
     )
-    return f"""<!DOCTYPE html>
-<html lang="{html_lang()}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{SEO_CRITICAL_CSS}
-<title>{escape(title)} — Forecast Economy</title>
-<meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#EEF0F4">
-<meta name="color-scheme" content="light">
-</head>
-<body class="seo-fast" data-no-ads>
-{_ssr_ticker()}
-{header}
-<main class="seo-page seo-404">
+    main_block = f"""<main class="seo-page seo-404">
 {_NF_PLANET_SVG}
 <p class="seo-404-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(title)}</h1>
@@ -1955,7 +1993,37 @@ def render_not_found_html(message: str | None = None, path: str | None = None) -
 <button type="button" class="seo-404-back" id="seo-404-back" hidden>{escape(back_label)}</button>
 <a class="seo-404-home" href="/">{escape(home_label)}</a>
 </div>
-</main>
+</main>"""
+    # Общая оболочка: когда приложение доступно, 404 отдаётся документом приложения. Шапка, лента курсов
+    # и подвал те же, что на всех страницах, а страницу 404 рисует NotFound.jsx (флаг window.__feNotFound).
+    # Текст ниже остаётся в #root для роботов и посетителей без JavaScript.
+    # Без собранного приложения (минуты выкладки, сбой оболочки) остаётся самодостаточная страница.
+    shell = _APP_ASSETS
+    if shell is not None and shell.body_scripts:
+        return compose_document(
+            assets=shell,
+            title=f"{title} — Forecast Economy",
+            description=lead,
+            canonical_path=path.partition("?")[0] if path and path.startswith("/") else "/",
+            body=main_block,
+            include_app=True,
+            not_found=True,
+        )
+    return f"""<!DOCTYPE html>
+<html lang="{html_lang()}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{SEO_CRITICAL_CSS}
+<title>{escape(title)} — Forecast Economy</title>
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#EEF0F4">
+<meta name="color-scheme" content="light">
+</head>
+<body class="seo-fast" data-no-ads>
+{_ssr_ticker()}
+{header}
+{main_block}
 {footer}
 {back_script}
 </body>
@@ -2061,6 +2129,7 @@ def _page_trail(page_slug: str, page: PageSeo) -> list[tuple[str, str]]:
         return crumbs.demographics_trail()
     if page_slug in {
         "compare",
+        "forecasts",
         "calculator",
         "calculator-mortgage",
         "calculator-compound",

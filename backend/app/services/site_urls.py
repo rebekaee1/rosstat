@@ -88,6 +88,7 @@ _STATIC_WITHOUT_DATA_LASTMOD = frozenset({
     "/calculator/mortgage",
     "/calculator/compound",
     "/compare",
+    "/forecasts",
     "/russia/calendar",
     "/russia/demographics",
 })

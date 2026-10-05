@@ -27,6 +27,7 @@ EN_EXACT_PATHS: frozenset[str] = frozenset({
     "/privacy",
     "/terms",
     "/compare",
+    "/forecasts",
     "/calculator",
     "/calculator/mortgage",
     "/calculator/compound",

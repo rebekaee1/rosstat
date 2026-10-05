@@ -172,3 +172,59 @@ def test_not_found_english_matches_the_app_header_and_suggests_in_english():
     assert ">Go back<" in html
     assert not re.search(r"<h1>[^<]*[А-Яа-я]", html)
     assert ">Войти<" not in html and "Вернуться" not in html
+
+
+def _with_app_shell(monkeypatch):
+    from app.services import seo_renderer
+
+    monkeypatch.setattr(
+        seo_renderer,
+        "_APP_ASSETS",
+        seo_renderer.AppAssets(
+            head_links='<link rel="stylesheet" href="/assets/main-x.css">',
+            body_scripts='<script type="module" src="/assets/main-x.js"></script>',
+        ),
+    )
+
+
+def test_not_found_is_the_app_document_when_the_shell_is_available(monkeypatch):
+    """БД3: 404 в общей оболочке: тот же документ приложения, флаг для NotFound.jsx, без канона и языковых пар."""
+    from app.services.seo_renderer import render_not_found_html
+
+    _with_app_shell(monkeypatch)
+    html = render_not_found_html(path="/zzz-nothing")
+    assert "<script>window.__feNotFound=true</script>" in html
+    assert '<meta name="robots" content="noindex, follow">' in html
+    assert 'rel="canonical"' not in html and 'hreflang' not in html
+    assert "/assets/main-x.js" in html and "/assets/main-x.css" in html
+    # Текст для роботов и посетителей без JavaScript лежит в #root, а шапку и подвал рисует приложение.
+    root = html.split('<div id="root">', 1)[1]
+    assert "<h1>Такой страницы нет</h1>" in root
+    assert 'class="seo-topbar"' not in html and 'class="seo-foot-in"' not in html
+    # Бумажная заставка на первом кадре: человек не видит белого экрана.
+    assert 'class="fe-boot-splash"' in html
+
+
+def test_not_found_route_keeps_status_and_noindex_in_the_app_shell(client, monkeypatch):
+    from app.services import seo_renderer
+
+    async def warm():
+        _with_app_shell(monkeypatch)
+        return seo_renderer._APP_ASSETS
+
+    monkeypatch.setattr(seo_renderer, "get_app_assets", warm)
+    r = client.get("/seo/not-found", headers={"x-original-uri": "/nothing/here"})
+    assert r.status_code == 404
+    assert r.headers.get("x-robots-tag") == "noindex, follow"
+    assert "window.__feNotFound=true" in r.text
+
+
+def test_not_found_without_the_shell_stays_a_self_contained_page(monkeypatch):
+    """Минуты выкладки: приложения нет, страница всё равно целая (шапка, лента, подвал, поиск)."""
+    from app.services import seo_renderer
+
+    monkeypatch.setattr(seo_renderer, "_APP_ASSETS", None)
+    html = seo_renderer.render_not_found_html(path="/zzz")
+    assert "__feNotFound" not in html
+    assert 'class="seo-topbar"' in html and 'class="seo-foot-in"' in html
+    assert 'id="seo-404-q"' in html

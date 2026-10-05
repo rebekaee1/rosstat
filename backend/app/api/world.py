@@ -68,6 +68,7 @@ from app.data.global_market_indicators import market_indicator_codes_for_country
 from app.data.world_country_area import area_payload
 from app.data.world_country_population import population_payload as curated_population_payload
 from app.data.world_indicator_titles_ru import is_public_catalog_name
+from app.data.world_simple_names import simple_indicator_name
 from app.database import get_db
 from app.models import (
     Indicator,
@@ -1686,6 +1687,8 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             "name_ru": catalog_name,
             "name": name,  # compat / locale-facing
             "name_en": _indicator_name_en(ind),
+            # Слово, которое человек скажет вслух («Госдолг»); None, если смысл ряда не сверен.
+            "simple_name": simple_indicator_name(ind, get_locale()),
             "unit_ru": ind.unit_ru or ind.unit,
             "unit": unit,
             "unit_suffix": unit_suffix(unit),
@@ -1706,6 +1709,17 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
             # периоду»); каждый код — прямая ссылка на свой ряд.
             "merged_slices": merged_slices,
         }
+        # Ряды цен: главное число за год, индекс или месячное значение остаются мелким рядом.
+        headline = None
+        _own_concept = concept_for_indicator(ind)
+        _price_slug = _own_concept.slug if _own_concept is not None else concept_slug_for_national_code(ind.code)
+        if normalize_frequency(ind.frequency) == "monthly" and _price_slug == "hicp-index":
+            from app.services.search_latest import world_price_headline
+
+            recent_year = (await latest_world_point_series(db, [ind.id], limit=13)).get(ind.id) or []
+            headline = world_price_headline(ind, list(reversed(recent_year)))
+        if headline is not None:
+            item["headline"] = headline
         by_cat.setdefault(cat_ru or "Прочее", []).append(item)
 
     from app.services.seo_i18n import localize_category_name
@@ -2082,6 +2096,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "name": _indicator_display_name(ind),
             "name_ru": display_name(ind.name_ru, ind.code),
             "name_en": _indicator_name_en(ind) or ind.name_en,
+            "simple_name": simple_indicator_name(ind, get_locale()),
             "unit": unit,
             "unit_ru": ind.unit_ru or ind.unit or "",
             "unit_suffix": unit_suffix(unit),

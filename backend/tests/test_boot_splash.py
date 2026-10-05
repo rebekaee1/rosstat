@@ -100,6 +100,21 @@ def test_html_background_and_light_scheme_prevent_black_flash():
     assert '<meta name="color-scheme" content="light">' in render_not_found_html()
 
 
+def test_first_frame_is_paper_with_the_logo_not_a_white_or_grey_screen():
+    """БД8: фон бумаги на самом html и в заставке, крупный логотип; чистые SSR-страницы не затронуты."""
+    html = _spa_doc()
+    css = html.split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
+    assert "html{background:#F6F1E6}" in css
+    assert "html.fe-boot{overflow:hidden;background:#F6F1E6}" in css
+    splash_rule = [line for line in css.splitlines() if line.startswith("html.fe-boot .fe-boot-splash{")][0]
+    assert splash_rule.rstrip("}").endswith("#F6F1E6;color:#202A3C;font-family:Manrope,system-ui,sans-serif")
+    assert "#EEF0F4" not in splash_rule
+    # Логотип с золотым квадратом внутри заставки и крупнее прежнего.
+    splash = html.split('<div class="fe-boot-splash"', 1)[1].split("</div>", 1)[0]
+    assert 'fill="#AD8A48"' in splash and "forecast<i>economy</i>" in splash
+    assert ".fe-boot-brand svg{width:46px;height:52px}" in css
+
+
 def test_shell_index_html_mirrors_the_splash_contract():
     """frontend/index.html (оболочка /login, /register, /account) держит тот же блок заставки."""
     from app.services.seo_renderer import BOOT_FALLBACK_MS

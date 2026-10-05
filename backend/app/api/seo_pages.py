@@ -302,7 +302,14 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
 # чистый @router.get отвечал бы 405.
 @router.api_route("/seo/not-found", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_not_found(request: Request):
-    """Брендовая 404 для nginx catch-all (unknown URL → error_page)."""
+    """Брендовая 404 для nginx catch-all (unknown URL → error_page).
+
+    Отдаётся документом приложения (общая шапка, лента, подвал); ассеты греем заранее,
+    чтобы первый же 404 после рестарта не вышел самодостаточной запасной страницей.
+    """
+    from app.services.seo_renderer import get_app_assets
+
+    await get_app_assets()
     original = request.headers.get("x-original-uri")
     return _html_response(404, render_not_found_html(path=original))
 
@@ -315,6 +322,20 @@ async def seo_home(request: Request, db: AsyncSession = Depends(get_db)):
 
     status, html = await _cached_html(
         "dashboard", f"home:{get_locale()}", _SSR_TTL_HOME, _render, db=db,
+    )
+    return _html_response(status, html, request)
+
+
+@router.api_route("/seo/page/forecasts", methods=["GET", "HEAD"], include_in_schema=False)
+async def seo_forecasts(request: Request, db: AsyncSession = Depends(get_db)):
+    """Витрина прогнозов: таблица строится из тех же данных, что API (до `{page}`, иначе её съест статика)."""
+    from app.services.seo_forecasts import render_forecasts_html
+
+    async def _render():
+        return await render_forecasts_html(db)
+
+    status, html = await _cached_html(
+        "ssr-world", f"forecasts:{get_locale()}", _SSR_TTL_INDICATOR, _render, db=db,
     )
     return _html_response(status, html, request)
 

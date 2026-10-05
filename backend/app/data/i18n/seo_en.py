@@ -490,6 +490,49 @@ PAGE_META_EN: dict[str, PageSeo] = {
             (paths.russia_category("finance"), "Finance and FX"),
         ),
     ),
+    "forecasts": PageSeo(
+        slug="forecasts",
+        path="/forecasts",
+        title="Economic forecasts one year ahead: inflation, GDP, unemployment",
+        description=(
+            "Platform forecasts one year ahead for Russia and other countries: prices, GDP, "
+            "unemployment, rates, wages. Built from official data, with the range in which "
+            "the indicator is most likely to land."
+        ),
+        h1="Forecasts",
+        intro=(
+            "These are the forecasts the platform builds itself from official data: for Russia "
+            "and for countries where the forecast passed a test on past data. For each series "
+            "you see the latest value, the value expected in a year, and the range it is "
+            "most likely to fall in."
+        ),
+        keywords=(
+            "inflation forecast, GDP forecast, unemployment forecast, Russia economic forecast, "
+            "price forecast, mortgage rate forecast, wage forecast, country economic forecasts"
+        ),
+        links=(
+            ("/methodology#read", "How we build forecasts"),
+            (paths.russia_indicator("cpi"), "Inflation in Russia"),
+            (paths.russia_indicator("gdp-real"), "Russia GDP"),
+            ("/compare", "Compare indicators"),
+            (paths.world_rating("gdp-usd"), "Country ranking by GDP"),
+        ),
+        blocks=(
+            SeoBlock(
+                "How to read a forecast",
+                "The solid line is the actual data, the dashed line is the forecast, and the band "
+                "around it is the range the value falls into 19 times out of 20 according to the "
+                "model. A forecast rests on the past and may differ from reality; it is reference "
+                "information, not investment advice.",
+            ),
+            SeoBlock(
+                "What is not here",
+                "The platform does not forecast exchange rates, the key rate, stocks or commodity "
+                "prices: for those we show history only. We do not repeat or replace forecasts "
+                "from international organizations.",
+            ),
+        ),
+    ),
     "calculator": PageSeo(
         slug="calculator",
         path="/calculator",

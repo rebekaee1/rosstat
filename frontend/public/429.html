@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex">
+<meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F6F1E6">
-<title>404 — Страница не найдена | Forecast Economy</title>
+<title>429 — Слишком много запросов | Forecast Economy</title>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 html{background:#F6F1E6;color-scheme:light}
@@ -18,7 +18,9 @@ body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:c
 .code{margin:1.6rem 0 .2rem;font-size:3.6rem;font-weight:750;letter-spacing:-.04em;line-height:1;background:linear-gradient(120deg,#80642F,#C9A24D);-webkit-background-clip:text;background-clip:text;color:transparent}
 h1{margin:0 0 .6rem;font-size:1.35rem;font-weight:700;line-height:1.3}
 p{margin:0 0 1.5rem;font-size:1rem;line-height:1.55;color:#465369}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 1.5rem;border-radius:999px;border:1px solid #80642F;font:inherit;font-weight:650;font-size:1rem;text-decoration:none;color:#fff;background:linear-gradient(120deg,#80642F,#AD8A48)}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 1.5rem;border-radius:999px;border:1px solid #D3C4A3;font:inherit;font-weight:650;font-size:1rem;text-decoration:none;cursor:pointer;color:#202A3C;background:#F6F3EC}
+.btn.primary{border-color:#80642F;color:#fff;background:linear-gradient(120deg,#80642F,#AD8A48)}
 .btn:focus-visible{outline:2px solid #80642F;outline-offset:3px}
 html[lang="en"] .ru,html[lang="ru"] .en{display:none}
 </style>
@@ -26,12 +28,15 @@ html[lang="en"] .ru,html[lang="ru"] .en{display:none}
 <body>
 <main class="card">
   <a class="brand" href="/" aria-label="Forecast Economy"><svg viewBox="0 0 40 44" aria-hidden="true"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<i>economy</i></span></a>
-  <p class="code" aria-hidden="true">404</p>
-  <h1 class="ru">Такой страницы нет</h1>
-  <h1 class="en">This page does not exist</h1>
-  <p class="ru">Возможно, в адресе опечатка или страница переехала.</p>
-  <p class="en">The address may have a typo, or the page has moved.</p>
-  <a class="btn" href="/"><span class="ru">На главную</span><span class="en">Go to the home page</span></a>
+  <p class="code" aria-hidden="true">429</p>
+  <h1 class="ru">Слишком много запросов</h1>
+  <h1 class="en">Too many requests</h1>
+  <p class="ru">Вы открывали страницы слишком часто. Подождите минуту и попробуйте снова.</p>
+  <p class="en">You opened pages too quickly. Wait a minute and try again.</p>
+  <div class="actions">
+    <button class="btn primary" type="button" id="reload"><span class="ru">Обновить</span><span class="en">Reload</span></button>
+    <a class="btn" href="/"><span class="ru">На главную</span><span class="en">Home page</span></a>
+  </div>
 </main>
 <script>
 (function(){try{
@@ -39,8 +44,9 @@ var h=location.hostname,q=location.search,en=/^(www\.)?forecasteconomy\.com$/i.t
 if(/^ru\./i.test(h)||/[?&]preview_locale=ru/.test(q))en=false;
 if(/[?&]preview_locale=en/.test(q))en=true;
 document.documentElement.lang=en?'en':'ru';
-document.title=en?'404 — Page not found | Forecast Economy':'404 — Страница не найдена | Forecast Economy';
+document.title=en?'429 — Too many requests | Forecast Economy':'429 — Слишком много запросов | Forecast Economy';
 }catch(e){}
+document.getElementById('reload').addEventListener('click',function(){location.reload()});
 })();
 </script>
 </body>
