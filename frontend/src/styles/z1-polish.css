@@ -1,0 +1,28 @@
+/* Волна 5, исполнитель Z1: мелкая полировка (страна, валюты, календарь). */
+
+/* Пока страница грузится, плавающее приглашение не показываем. */
+:root[data-fe-loading] .fe-nudge-root { display: none !important; }
+
+/* Подсказка при долгой загрузке. */
+.fe-slow-hint {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Главные цифры страны: название в одну строку, период мелко. */
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:root .fe-kpi-grid > .w2-kpi > .w2-kpi-period { font-size: 12px; }
+@media (min-width: 640px) {
+  :root .fe-kpi-grid > .w2-kpi > .w2-kpi-name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+}

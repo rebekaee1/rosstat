@@ -96,9 +96,10 @@ export default function Sparkline({
 
   const revealed = reducedMotion || inView || typeof IntersectionObserver === 'undefined';
   const color = resolveColor(trend, sentiment);
-  const pad = 4;
   const dotR = 2.5;
   const glowR = 5;
+  // Поля вмещают светящееся кольцо последней точки целиком, иначе оно срезается краем SVG.
+  const pad = glowR + 1;
 
   const safeId = uid.replace(/:/g, '_');
   const areaGradId = `spark-area-${safeId}`;

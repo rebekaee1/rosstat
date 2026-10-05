@@ -71,7 +71,7 @@
 @media (min-width: 768px) { .fe-trow-list { max-width: 52rem; } }
 .fe-trow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 64px auto;
+  grid-template-columns: minmax(0, 1fr) 72px auto;
   align-items: center;
   gap: 4px 12px;
   min-height: 64px;
@@ -98,7 +98,9 @@
 .fe-trow:hover .fe-trow__title { color: var(--color-champagne-ink); }
 .fe-trow__meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 6px; font-size: 13px; line-height: 1.4; }
 .fe-trow__vs, .fe-trow__date { color: var(--color-text-secondary); font-size: 13px; }
-.fe-trow__spark { min-width: 0; }
+.fe-trow__spark { min-width: 0; overflow: hidden; }
+/* Мини-график внутри строки занимает только свою колонку и не заходит под число. */
+:root .fe-trow__spark .fe-tile__spark { flex: none; width: 100%; min-width: 0; max-width: none; }
 .fe-trow__val { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
 .fe-trow__num {
   color: var(--color-text-primary);

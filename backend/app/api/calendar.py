@@ -57,7 +57,16 @@ def _effective_status(ev: EconomicEvent) -> str:
 
 
 def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> CalendarEventOut:
+    from app.services.calendar_i18n import english_event_description
     from app.services.seo_i18n import event_public_title
+
+    description = ev.description
+    indicator_name = indicator.name if indicator else None
+    if get_locale() == "en":
+        # Описания и названия показателей хранятся по-русски: на английской странице отдаём английский
+        # близнец или ничего, а не русский текст посреди английской страницы.
+        description = english_event_description(ev.description, indicator.code if indicator else None)
+        indicator_name = (indicator.name_en or indicator.code) if indicator else None
 
     return CalendarEventOut(
         id=ev.id,
@@ -75,13 +84,13 @@ def _build_event_out(ev: EconomicEvent, indicator: Indicator | None) -> Calendar
         previous_value=ev.previous_value,
         forecast_value=ev.forecast_value,
         actual_value=ev.actual_value,
-        description=ev.description,
+        description=description,
         source_url=ev.source_url,
         event_key=ev.event_key,
         source_event_uid=ev.source_event_uid,
         source_hash=ev.source_hash,
         indicator_code=indicator.code if indicator else None,
-        indicator_name=indicator.name if indicator else None,
+        indicator_name=indicator_name,
     )
 
 

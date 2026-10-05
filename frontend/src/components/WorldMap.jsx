@@ -672,7 +672,7 @@ export function CountrySilhouette({
     ? t('world.unit.km2')
     : areaUnitRaw;
   const areaValue = area?.value != null
-    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1)} ${areaUnit}`
+    ? `${formatValue(area.value, Number.isInteger(Number(area.value)) ? 0 : 1, locale)}\u00a0${areaUnit}`
     : '';
   const popUnitRaw = (population?.unit || '').trim();
   const popUnit = (
@@ -687,8 +687,8 @@ export function CountrySilhouette({
   const populationNumber = Number(population?.value);
   const populationValue = population?.value != null
     ? (Number.isFinite(populationNumber) && populationNumber >= 1e6
-      ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1)} ${t('w2.country.million')} ${popUnit}`
-      : `${formatValue(population.value, 0)} ${popUnit}`)
+      ? `${formatValue(populationNumber / 1e6, populationNumber >= 1e7 ? 0 : 1, locale)}\u00a0${t('w2.country.million')}\u00a0${popUnit}`
+      : `${formatValue(population.value, 0, locale)}\u00a0${popUnit}`)
     : '';
   const populationYear = population?.year
     || (population?.date ? String(population.date).slice(0, 4) : '');

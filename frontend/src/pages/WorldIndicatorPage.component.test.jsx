@@ -97,7 +97,7 @@ describe('WorldIndicatorPage plain language', () => {
     await waitFor(() => expect(document.querySelectorAll('.w2-stat')).toHaveLength(4));
     const text = document.body.textContent.replace(/\u00A0/g, ' ');
     expect(text).toContain('Сейчас');
-    expect(text).toContain('Максимум за всё время');
+    expect(text).toContain('Исторический максимум');
     expect(text).toContain('В среднем');
     expect(text).not.toMatch(/НАБЛ|ПЕРИОД\.|ПИК|ДАТА:/);
     // Плитка «Сейчас»: значение с единицей и датой, знаков после запятой ровно как в данных («3,1», а не «3,10»).

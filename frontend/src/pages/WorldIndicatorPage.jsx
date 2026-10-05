@@ -404,31 +404,29 @@ export default function WorldIndicatorPage() {
   const methodologyContent = useMemo(() => {
     const description = indicator?.description;
     const methodology = indicator?.methodology;
+    const source = sourceLabel || indicator?.source || (locale === 'en' ? 'the listed source' : 'указанный источник');
+    const subject = displayName || indicator?.name_en || (locale === 'en' ? 'This indicator' : 'Показатель');
+    const place = countryName || (locale === 'en' ? 'this country' : 'эта страна');
+    // Пустая методология не должна выглядеть пустой: говорим, откуда данные и что показано на графике.
+    const fallbackDescription = t('z1.world.descFallback', { subject, place, source });
+    const fallbackMethodology = t('z1.world.methodFallback', { source });
     if (locale !== 'en') {
+      const cleaned = typeof methodology === 'string'
+        ? methodology.replace(/\s*На графике показан наиболее общий доступный срез показателя\.?/g, '').trim()
+        : methodology;
       return {
-        description,
-        methodology: typeof methodology === 'string'
-          ? methodology.replace(/\s*На графике показан наиболее общий доступный срез показателя\.?/g, '').trim()
-          : methodology,
+        description: description || fallbackDescription,
+        methodology: cleaned || fallbackMethodology,
       };
     }
     const hideRu = (text) => (
       text && /[А-Яа-яЁё]/.test(text) ? undefined : text
     );
-    const frequency = indicator?.frequency || '';
-    const frequencyDescription = ['annual', 'monthly', 'quarterly', 'weekly', 'daily'].includes(frequency)
-      ? `${frequency} statistical series` : 'published statistical series';
-    const article = frequency === 'annual' ? 'an' : 'a';
-    const source = sourceLabel || indicator?.source || 'the listed source';
-    const subject = displayName || indicator?.name_en || 'This indicator';
-    const place = countryName || 'this country';
-    const safeDescription = hideRu(description);
-    const safeMethodology = hideRu(methodology);
     return {
-      description: safeDescription || `${subject} is ${article} ${frequencyDescription} for ${place}. The chart shows the available observations and their dates.`,
-      methodology: safeMethodology || `Source: ${source}. Values use the published series; forecasts, where available, are marked separately from observations.`,
+      description: hideRu(description) || fallbackDescription,
+      methodology: hideRu(methodology) || fallbackMethodology,
     };
-  }, [indicator?.description, indicator?.methodology, indicator?.frequency, indicator?.source, sourceLabel, displayName, countryName, indicator?.name_en, locale]);
+  }, [indicator?.description, indicator?.methodology, indicator?.source, sourceLabel, displayName, countryName, indicator?.name_en, locale, t]);
 
   const methodologyIndicator = useMemo(() => {
     if (!indicator) return null;

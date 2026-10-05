@@ -51,6 +51,8 @@ import { localizeSource } from '../i18n/viewModeLabels';
 import { countryPublicName } from '../lib/homeWorkbench';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
+import '../styles/z1-polish.css';
+import usePageLoading, { useSlowFlag } from '../lib/usePageLoading';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
 const TOPIC_PRIORITY = [
@@ -61,6 +63,9 @@ function topicRank(category) {
   const index = TOPIC_PRIORITY.indexOf(category?.name_ru || category?.name);
   return index === -1 ? TOPIC_PRIORITY.length : index;
 }
+
+/** Тема с меньшим числом показателей уходит в конец списка и не открывается по умолчанию. */
+const THIN_TOPIC = 5;
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -101,6 +106,11 @@ function CountryKpiCard({ item, slug, hero, locale }) {
     [seriesQ.data],
   );
   const unit = splitUnit(localizeWorldUnit(item.unit, locale));
+  // «изменение за год, %» уже сказано в названии («… за год») — не повторяем в подписи периода.
+  const longUnit = unit.long && unit.long !== unit.short && !/за год|year[- ]over[- ]year|yoy/i.test(unit.long)
+    ? unit.long
+    : '';
+  const kpiName = localizedDisplay(locale, item.name, item.name_en);
   const digits = kpiDigits(item.value);
   const format = (value) => formatWorldValue(value, digits, locale);
   return (
@@ -108,14 +118,14 @@ function CountryKpiCard({ item, slug, hero, locale }) {
       to={indicatorPath(slug, item.indicator_code)}
       className={`w2-kpi fe-press group${hero ? ' w2-kpi--hero' : ''}`}
     >
-      <span className="w2-kpi-name">{localizedDisplay(locale, item.name, item.name_en)}</span>
+      <span className="w2-kpi-name" title={kpiName}>{kpiName}</span>
       <span className="w2-kpi-value">
         <WorldCountUp value={item.value} format={format} />
         {unit.short && <small>{unit.short}</small>}
       </span>
       <span className="w2-kpi-period">
         {formatIndicatorDate(item.date, item.frequency, locale)}
-        {unit.long && unit.long !== unit.short ? `, ${unit.long}` : ''}
+        {longUnit ? `, ${longUnit}` : ''}
       </span>
       <span className="w2-kpi-spark" aria-hidden="true">
         {seriesQ.isLoading
@@ -224,6 +234,8 @@ export default function WorldCountry() {
       ? !window.matchMedia('(min-width: 1024px)').matches
       : false,
   );
+  usePageLoading(isLoading);
+  const slowLoading = useSlowFlag(isLoading, 5000);
   const deferredQuery = useDeferredValue(query);
   const searching = normalize(deferredQuery).length > 0;
 
@@ -290,7 +302,9 @@ export default function WorldCountry() {
     // Каталог США своей навигацией по темам; остальные страны — главные темы первыми, остальное по алфавиту.
     return slug === 'united-states'
       ? mapped
-      : [...mapped].sort((a, b) => topicRank(a) - topicRank(b));
+      : [...mapped].sort((a, b) => (
+        Number(a.count < THIN_TOPIC) - Number(b.count < THIN_TOPIC) || topicRank(a) - topicRank(b)
+      ));
   }, [data, slug]);
 
   const filteredCategories = useMemo(() => {
@@ -405,16 +419,21 @@ export default function WorldCountry() {
       )}
 
       {isLoading && (
-        <div className="space-y-4" role="status" aria-busy="true" aria-label={t('common.loading')}>
+        <div className="space-y-5" role="status" aria-busy="true" aria-label={t('common.loading')} data-testid="country-skeleton">
           <SkeletonBox className="h-4 w-28" />
-          <SkeletonBox className="h-10 w-3/4 max-w-md" />
-          <SkeletonBox className="h-4 w-full max-w-xl" />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-            <SkeletonBox className="col-span-2 h-40 rounded-3xl sm:col-span-1" />
-            <SkeletonBox className="h-36 rounded-3xl" />
-            <SkeletonBox className="h-36 rounded-3xl" />
+          <SkeletonBox className="h-9 w-3/4 max-w-md" />
+          <div className="space-y-2">
+            <SkeletonBox className="h-4 w-full max-w-xl" />
+            <SkeletonBox className="h-4 w-2/3 max-w-md" />
+          </div>
+          <SkeletonBox className="h-12 w-full rounded-xl sm:w-60" />
+          <SkeletonBox className="h-32 w-full rounded-3xl" />
+          <div className="fe-kpi-grid">
+            {[0, 1, 2].map((i) => <SkeletonBox key={i} className="h-[104px] rounded-3xl sm:h-44" />)}
           </div>
           <SkeletonBox className="h-12 w-full rounded-xl" />
+          <SkeletonBox className="h-14 w-full rounded-xl" />
+          {slowLoading && <p className="fe-slow-hint">{t('z1.country.slowLoading')}</p>}
         </div>
       )}
 
@@ -610,7 +629,7 @@ export default function WorldCountry() {
             <div className="min-w-0 space-y-8">
               {visibleCategories.map((cat) => (
                 <section key={cat.name} className="scroll-mt-24" data-world-country-category={cat.name}>
-                  <div className="mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4">
+                  <div className={`mb-3 flex items-end justify-between gap-3 sm:mb-4 sm:gap-4${isMobileSingle && !searching && !isUsCatalog ? ' sr-only' : ''}`}>
                     <div className="min-w-0">
                       {searching && (
                         <div className="w2-kicker">

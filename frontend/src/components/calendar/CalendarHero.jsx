@@ -6,6 +6,7 @@ import {
 } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
 import { plural } from '../../lib/calcFormat';
+import { plainEventTitle } from '../../lib/calendarText';
 import '../../styles/ui-detail-nav-calendar.css';
 
 
@@ -74,7 +75,7 @@ export default function CalendarHero({ nextEvent }) {
             </span>
           </div>
           <h2 className="text-lg md:text-xl font-semibold text-text-primary leading-snug mb-2 line-clamp-2">
-            {String(nextEvent.title || '').replace(/\s*\([A-ZА-ЯЁ]{2,6}\)\s*$/u, '').trim()}
+            {plainEventTitle(nextEvent.title, locale)}
           </h2>
           <p className="text-sm text-text-secondary">
             {new Date(nextEvent.scheduled_date).toLocaleDateString(dateLocale, {

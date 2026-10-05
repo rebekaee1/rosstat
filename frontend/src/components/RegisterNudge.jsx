@@ -13,6 +13,7 @@ import { authLink, prepareAuthReturn } from '../lib/authReturn';
 import Button from './Button';
 import '../styles/indicator-russia.css';
 import '../styles/shell.css';
+import '../styles/z1-polish.css';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».
@@ -114,7 +115,7 @@ export default function RegisterNudge() {
 
   return (
     <>
-    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m sm:hidden print:hidden" aria-label={pill}>
+    <aside className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px] fe-nudge-m fe-nudge-root sm:hidden print:hidden" aria-label={pill}>
       <span className="fe-nudge-m__icon" aria-hidden="true"><Sparkles className="h-5 w-5" /></span>
       <div className="fe-nudge-m__text">
         <p className="fe-nudge-m__title">{t(variant.mobileTitleKey)}</p>
@@ -130,7 +131,7 @@ export default function RegisterNudge() {
         {t(variant.ctaKey)}
       </Button>
     </aside>
-    <div className="hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
+    <div className="fe-nudge-root hidden sm:block fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)] print:hidden">
       {!expanded ? (
         <div className="fe-reveal [--fe-duration:0.2s] [--fe-rise:8px]">
           <Button

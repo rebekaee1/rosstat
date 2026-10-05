@@ -13,6 +13,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { track, events } from '../lib/track';
+import { plainEventTitle, pluralForm } from '../lib/calendarText';
 import { groupSimilarEvents, findDailyRecurring, recurringKeyOf } from '../lib/calendarGrouping';
 import { calendarMonthTrail, calendarTrail } from '../lib/breadcrumbs';
 import {
@@ -251,11 +252,10 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
 
       <header className="mb-6">
         <h1 className="font-display text-3xl md:text-[2.4rem] font-bold text-text-primary tracking-tight mb-3">
-          Экономический календарь
+          {t('z1.cal.title')}
         </h1>
         <p className="text-text-secondary leading-relaxed max-w-2xl">
-          Расписание публикаций Росстата, заседаний ЦБ РФ и данных Минфина.
-          Фактические значения обновляются автоматически.
+          {t('z1.cal.lead')}
         </p>
       </header>
 
@@ -306,7 +306,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
               <ul className="fe-cal-recurring__list">
                 {recurring.items.map((item) => (
                   <li key={item.key}>
-                    <span className="min-w-0">{item.title}</span>
+                    <span className="min-w-0">{plainEventTitle(item.title, locale)}</span>
                     {item.time ? <span className="fe-num shrink-0 text-text-secondary">{item.time.slice(0, 5)}</span> : null}
                   </li>
                 ))}
@@ -349,7 +349,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                       <h3 className={cn('fe-cal-dayhead', group.isToday && 'is-today')}>
                         {group.label}
                         <span className="fe-cal-dayhead__count">
-                          — {group.events.length} {group.events.length === 1 ? 'событие' : group.events.length < 5 ? 'события' : 'событий'}
+                          — {group.events.length} {t(`z1.cal.events.${pluralForm(group.events.length, locale)}`)}
                         </span>
                       </h3>
                     )}

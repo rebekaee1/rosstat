@@ -8,7 +8,8 @@ import {
   calendarPath,
   russiaIndicatorPath,
 } from '../../lib/sitePaths';
-import { useT } from '../../i18n';
+import { useLocale, useT } from '../../i18n';
+import { plainEventTitle, localizeReferencePeriod, pluralForm } from '../../lib/calendarText';
 import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import '../../styles/ui-detail-nav-calendar.css';
 
@@ -111,13 +112,9 @@ function ActualValueCell({ value, previous, forecast, polarity }) {
   );
 }
 
-/** «Индекс потребительских цен (ИПЦ)» → «Индекс потребительских цен»: скобочная аббревиатура — шум. */
-function plainEventTitle(title) {
-  return String(title || '').replace(/\s*\([A-ZА-ЯЁ]{2,6}\)\s*$/u, '').trim();
-}
-
 export default function CalendarEventCard({ event, isPast, isToday, index = 0, forceCompact = false }) {
   const t = useT();
+  const { locale } = useLocale();
   // Вход карточки средствами CSS, каскад ≤ 200 мс. Прошедшие события приглушены (opacity) — их не анимируем,
   // иначе в конце входа прозрачность «щёлкнула» бы с 1 до 0.7.
   const revealClass = isPast ? null : 'fe-reveal fe-reveal--free fe-reveal--stagger';
@@ -126,6 +123,8 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
   const sourceLabel = t(src.labelKey);
   const isHigh = event.importance === 3;
   const isLow = event.importance === 1;
+  const title = plainEventTitle(event.title, locale);
+  const period = localizeReferencePeriod(event.reference_period, locale);
   const hasValues = event.previous_value != null || event.forecast_value != null || event.actual_value != null;
 
   const linkedIndicators = Array.isArray(event.indicators) && event.indicators.length > 0
@@ -147,12 +146,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         )}
       >
         <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', src.dot)} />
-        <span className="text-sm text-text-secondary truncate flex-1">{plainEventTitle(event.title)}</span>
+        <span className="min-w-0 flex-1 text-sm leading-snug text-text-secondary line-clamp-2">{title}</span>
         {event.scheduled_time && (
           <span className="text-xs text-text-tertiary font-mono shrink-0">{event.scheduled_time}</span>
         )}
-        {event.reference_period && (
-          <span className="text-xs text-text-tertiary shrink-0 hidden sm:inline">{event.reference_period}</span>
+        {period && (
+          <span className="text-xs text-text-tertiary shrink-0 hidden sm:inline">{period}</span>
         )}
         {linkedIndicators.length === 1 ? (
           <Link
@@ -164,7 +163,9 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         ) : (
-          <span className="text-xs text-text-tertiary shrink-0">{t('calendar.event.seriesCount', { n: linkedIndicators.length })}</span>
+          <span className="text-xs text-text-tertiary shrink-0">{linkedIndicators.length > 0
+              ? `${linkedIndicators.length} ${t(`z1.cal.ind.${pluralForm(linkedIndicators.length, locale)}`)}`
+              : null}</span>
         )}
       </div>
     );
@@ -197,7 +198,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           </div>
           {event.scheduled_time && (
             <span className="text-sm font-mono text-text-secondary shrink-0">
-              {event.scheduled_time} <span className="text-text-tertiary text-xs">МСК</span>
+              {event.scheduled_time} <span className="text-text-tertiary text-xs">{t('calendar.hero.msk')}</span>
             </span>
           )}
         </div>
@@ -206,12 +207,12 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           'font-semibold text-text-primary leading-snug mb-1',
           isHigh ? 'text-base md:text-lg' : 'text-sm',
         )}>
-          {plainEventTitle(event.title)}
+          {title}
         </h3>
 
-        {event.reference_period && (
+        {period && (
           <p className="text-sm text-text-secondary mb-2">
-            за {event.reference_period}
+            {t('z1.cal.period', { period })}
           </p>
         )}
 
@@ -226,9 +227,9 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
             'grid gap-2 pt-3 mt-3 border-t border-border-subtle',
             event.forecast_value ? 'grid-cols-3' : 'grid-cols-2',
           )}>
-            <ValueCell label="Предыдущее" value={event.previous_value} />
+            <ValueCell label={t('z1.cal.prev')} value={event.previous_value} />
             {event.forecast_value && (
-              <ValueCell label="Прогноз" value={event.forecast_value} />
+              <ValueCell label={t('z1.cal.forecast')} value={event.forecast_value} />
             )}
             <ActualValueCell
               value={event.actual_value}
@@ -239,26 +240,31 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           </div>
         )}
 
-        <div className="flex items-center gap-2 mt-3 pt-2 flex-wrap">
-          {linkedIndicators.map((ind) => (
-            <Link
-              key={ind.code}
-              to={russiaIndicatorPath(ind.code)}
-              className={cn(
-                FOCUS_RING_SURFACE,
-                'inline-flex items-center gap-1.5 text-xs font-medium text-champagne hover:text-champagne-muted rounded-lg transition-colors',
-              )}
-            >
-              {ind.name}
-              <ArrowUpRight className="w-3 h-3" />
-            </Link>
-          ))}
+        <div className="mt-3 flex flex-col items-start gap-2 pt-2">
+          {linkedIndicators.length > 0 && (
+            <ul className="flex flex-col gap-1.5">
+              {linkedIndicators.map((ind) => (
+                <li key={ind.code}>
+                  <Link
+                    to={russiaIndicatorPath(ind.code)}
+                    className={cn(
+                      FOCUS_RING_SURFACE,
+                      'inline-flex items-center gap-1.5 rounded-lg py-0.5 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted',
+                    )}
+                  >
+                    {ind.name}
+                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           <SourceLink
             href={event.source_url}
             fallbackTo={linkedIndicators[0] ? russiaIndicatorPath(linkedIndicators[0].code) : calendarPath()}
-            className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors ml-auto"
+            className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors"
           >
-            Источник
+            {t('z1.cal.source')}
             {isExternalHref(event.source_url) ? <ExternalLink className="w-3 h-3" aria-hidden="true" /> : null}
           </SourceLink>
         </div>

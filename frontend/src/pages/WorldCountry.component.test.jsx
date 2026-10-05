@@ -284,9 +284,9 @@ describe('WorldCountry frequency badges', () => {
     const row = await screen.findByRole('link', { name: /Уровень безработицы/ });
     const badges = Array.from(row.querySelectorAll('span.rounded-full'));
     // Месячные данные — только «мес.»; кв./год перечислены в подсказке.
-    expect(badges.map((b) => b.textContent)).toEqual(['мес.']);
+    expect(badges.map((b) => b.textContent)).toEqual(['ежемесячно']);
     expect(badges[0].className).not.toContain('opacity-60');
-    expect(badges[0].getAttribute('title')).toBe('мес.; также: кв., ~год');
+    expect(badges[0].getAttribute('title')).toBe('ежемесячно; также: ежеквартально, ~ежегодно');
   });
 
   it('нет месячных среди официальных — показывается квартальный бейдж', async () => {
@@ -309,8 +309,8 @@ describe('WorldCountry frequency badges', () => {
 
     const row = await screen.findByRole('link', { name: /ВВП/ });
     const badges = Array.from(row.querySelectorAll('span.rounded-full'));
-    expect(badges.map((b) => b.textContent)).toEqual(['кв.']);
-    expect(badges[0].getAttribute('title')).toBe('кв.; также: год');
+    expect(badges.map((b) => b.textContent)).toEqual(['ежеквартально']);
+    expect(badges[0].getAttribute('title')).toBe('ежеквартально; также: ежегодно');
   });
 
   it('только расчётная частота — бейдж приглушён с тильдой', async () => {
@@ -334,7 +334,7 @@ describe('WorldCountry frequency badges', () => {
 
     const row = await screen.findByRole('link', { name: /ВВП годовой/ });
     const badges = Array.from(row.querySelectorAll('span.rounded-full'));
-    expect(badges.map((b) => b.textContent)).toEqual(['~год']);
+    expect(badges.map((b) => b.textContent)).toEqual(['~ежегодно']);
     expect(badges[0].className).toContain('opacity-60');
     expect(badges[0].getAttribute('title')).toBeNull();
   });
@@ -470,6 +470,26 @@ describe('WorldCountry key figures', () => {
     await screen.findByRole('heading', { name: 'Национальные счета' });
     const order = Array.from(document.querySelectorAll('[data-world-country-category]')).map((node) => node.dataset.worldCountryCategory);
     expect(order).toEqual(['Национальные счета', 'Население', 'Бизнес и инвестиции']);
+  });
+
+  it('moves a thin topic behind the full ones so the first screen is not poor', async () => {
+    vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
+      matches: media.includes('min-width'), media, addEventListener() {}, removeEventListener() {},
+    }));
+    const many = (prefix) => Array.from({ length: 6 }, (_, i) => ({
+      code: `${prefix}-${i}`, name: `${prefix} ${i}`, frequency: 'annual', last_value: 1, last_date: '2025-01-01',
+    }));
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [
+        { name: 'Национальные счета', indicators: [{ code: 'de-n', name: 'ВВП', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
+        { name: 'Рынок труда', indicators: many('lab') },
+        { name: 'Цены', indicators: many('pr') },
+      ],
+    });
+    await screen.findByRole('heading', { name: 'Цены' });
+    const order = Array.from(document.querySelectorAll('[data-world-country-category]')).map((node) => node.dataset.worldCountryCategory);
+    expect(order).toEqual(['Цены', 'Рынок труда', 'Национальные счета']);
   });
 });
 

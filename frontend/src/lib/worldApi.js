@@ -402,12 +402,28 @@ const WORLD_UNIT_EN = Object.freeze({
   'млрд долларов США (цены 2017)': 'billion USD (2017 prices)',
 });
 
-/** EN overlay for world units when API still returned a Russian label. */
+/** Сокращения и коды, которые не нужны человеку рядом с числом. */
+function tidyUnitEn(text) {
+  return text
+    .replace(/chain[- ]linked volumes,?\s*\(?(\d{4})\)?/i, 'in $1 prices')
+    .replace(/\s*\(NSA\)/g, ', not seasonally adjusted')
+    .replace(/\s*\(SCA\)/g, ', seasonally and calendar adjusted')
+    .replace(/\s*\(SA\)/g, ', seasonally adjusted')
+    .replace(/(\d{4})=100/g, '$1 = 100');
+}
+
+function tidyUnitRu(text) {
+  return text
+    .replace(/%\s*ЭАН/gi, '% от рабочей силы')
+    .replace(/(\d{4})=100/g, '$1 = 100');
+}
+
+/** Единица измерения для человека: на английском без русских подписей, на обоих языках без аббревиатур и кодов. */
 export function localizeWorldUnit(unit, locale = 'ru') {
   const text = String(unit || '').trim();
   if (!text) return '';
-  if (locale !== 'en') return text;
-  return WORLD_UNIT_EN[text] || WORLD_UNIT_EN[text.toLowerCase()] || text;
+  if (locale !== 'en') return tidyUnitRu(text);
+  return tidyUnitEn(WORLD_UNIT_EN[text] || WORLD_UNIT_EN[text.toLowerCase()] || text);
 }
 
 /** Русское склонение (копия логики regionsApi — без кросс-импорта домена). */
