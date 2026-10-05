@@ -52,7 +52,7 @@ export default function ChartDownloadMenu({
           <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
         </Button>
         {open && (
-          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl border border-border-subtle bg-surface p-1.5 shadow-2xl">
+          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5 shadow-2xl">
             {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
               <button
                 key={id}

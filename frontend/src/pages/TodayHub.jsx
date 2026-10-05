@@ -206,7 +206,7 @@ export default function TodayHub() {
         </div>
       </section>
 
-      <section className="bg-surface border border-border-subtle rounded-[1.5rem] p-5">
+      <section className="rounded-[1.5rem] p-5 fe-glass-lite">
         <h2 className="font-display text-base font-semibold text-text-primary mb-2">
           {t('today.moreTitle')}
         </h2>

@@ -159,7 +159,7 @@ export default function TodayIndicatorPage() {
       )}
 
       {!isLoading && !isError && !(last && indicator) && (
-        <div className="rounded-2xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+        <div className="rounded-2xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
           {t('pgui.today.noData')}
           <div className="mt-4 flex justify-center">
             <Button as={Link} to={todayPath()} variant="secondary" size="sm">{t('today.sectionTitle')}</Button>
@@ -256,7 +256,7 @@ export default function TodayIndicatorPage() {
 
           <section className="mb-8">
             <h2 className="font-display text-lg font-semibold text-text-primary mb-3">{t('today.page.recent')}</h2>
-            <div className="overflow-x-auto rounded-[1.5rem] border border-border-subtle bg-surface">
+            <div className="overflow-x-auto rounded-[1.5rem] fe-glass-lite">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-obsidian-light/50 text-left text-[13px] text-text-secondary">
@@ -276,7 +276,7 @@ export default function TodayIndicatorPage() {
             </div>
           </section>
 
-          <section className="bg-surface border border-border-subtle rounded-[1.5rem] p-5">
+          <section className="rounded-[1.5rem] p-5 fe-glass-lite">
             <h2 className="font-display text-base font-semibold text-text-primary mb-2">{t('today.page.fullHistoryTitle')}</h2>
             <p className="text-sm text-text-secondary">
               {t('today.page.fullHistoryBody')}

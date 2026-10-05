@@ -93,10 +93,10 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
 
   return (
     <div className="relative w-full shrink-0 sm:w-64 sm:flex-none">
-      <div className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
+      <div className={`flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm transition-colors ${
         isCustom
-          ? 'border-transparent bg-champagne/15 text-champagne-ink'
-          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink'
+          ? 'bg-champagne/15 text-champagne-ink fe-shadow-2'
+          : 'text-text-secondary fe-glass-2'
       }`}
       >
         <Search size={13} className="shrink-0" />
@@ -125,7 +125,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
         )}
       </div>
       {open && (
-        <div className="absolute right-0 z-30 mt-2 max-h-72 w-[min(calc(100vw-2rem),26rem)] overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl sm:left-0 sm:right-auto">
+        <div className="absolute right-0 z-30 mt-2 max-h-72 w-[min(calc(100vw-2rem),26rem)] overflow-auto rounded-xl shadow-2xl sm:left-0 sm:right-auto fe-glass-pop">
           {results.length === 0 ? (
             <div className="px-3.5 py-3 text-sm text-text-secondary">
               {t('regions.home.nothingFound', { query })}
@@ -146,7 +146,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => setResultLimit((current) => current + 50)}
-              className="w-full border-t border-border-subtle px-3.5 py-3 text-left text-sm text-champagne-ink hover:bg-surface-hover"
+              className="w-full px-3.5 py-3 text-left text-sm text-champagne-ink hover:bg-surface-hover fe-glass-2"
             >
               {locale === 'en' ? 'Show more indicators' : 'Показать ещё показатели'}: {Math.min(resultLimit, results.length)} / {results.length}
             </button>
@@ -161,7 +161,7 @@ function RegionCard({ region, metric, metricName, countrySlug }) {
   return (
     <Link
       to={countryRegionPath(countrySlug, region.slug)}
-      className="fe-press group flex items-center justify-between gap-3 rounded-2xl border border-border-subtle bg-surface px-3.5 py-3 transition-colors hover:border-border-champagne sm:px-4 sm:py-3.5"
+      className="fe-press group flex items-center justify-between gap-3 rounded-2xl px-3.5 py-3 transition-colors sm:px-4 sm:py-3.5 fe-glass-lite fe-float"
     >
       <div className="min-w-0">
         <div className="text-[15px] font-medium leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
@@ -336,7 +336,7 @@ export default function WorldRegionsHome() {
         </p>
       </div>
 
-      <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl border border-border-subtle bg-surface p-1" role="tablist" aria-label={t('regions.viewAria')}>
+      <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl p-1 fe-glass-lite" role="tablist" aria-label={t('regions.viewAria')}>
         <button
           type="button"
           role="tab"
@@ -401,7 +401,7 @@ export default function WorldRegionsHome() {
               ))}
             </div>
             {filteredRegions.length === 0 && (
-              <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+              <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
                 <MapPin size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
                 {t('world.regions.noRegions', { query })}
                 <div className="mt-3">
@@ -459,7 +459,7 @@ export default function WorldRegionsHome() {
             onPick={(i) => setMetric(i.code)}
           />
 
-          <div id="chart" data-block="world-regions-map" className="relative rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
+          <div id="chart" data-block="world-regions-map" className="relative rounded-3xl p-3 sm:p-5 fe-glass-lite" ref={mapCardRef}>
             <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 {activeCode && map.data?.indicator ? (
@@ -483,7 +483,7 @@ export default function WorldRegionsHome() {
                   onClick={handlePng}
                   title={isAuthed ? t('download.mapPng') : t('download.afterRegister')}
                   aria-label={t('download.mapPng')}
-                  className="fe-chip fe-press gap-1 border-border-subtle"
+                  className="fe-chip fe-press gap-1"
                 >
                   <ImageIcon size={13} aria-hidden="true" /> PNG
                 </button>

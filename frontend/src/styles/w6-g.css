@@ -21,9 +21,9 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 1rem;
   background: color-mix(in srgb, var(--color-champagne) 7%, transparent);
+  box-shadow: var(--fe-l2-shadow);
 }
 .fe-compare-demo__text {
   min-width: 0;
@@ -82,13 +82,12 @@
   width: 100%;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 0.875rem;
-  background: var(--color-surface);
+  background: var(--fe-glass-l2);
   color: var(--color-text-primary);
   /* 16 px: iOS не увеличивает страницу при фокусе в поле */
   font: inherit;
-  font-size: 1rem;
+  font-size: 1rem; box-shadow: var(--fe-l2-shadow);
 }
 .fe-w6g-input {
   font-weight: 650;
@@ -105,17 +104,15 @@
   justify-content: center;
   width: 2.75rem;
   height: 2.75rem;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 999px;
-  background: var(--color-surface);
+  background: var(--fe-glass-l2);
   color: var(--color-champagne-ink);
-  cursor: pointer;
+  cursor: pointer; box-shadow: var(--fe-l2-shadow);
 }
-.fe-w6g-swap:hover { border-color: var(--color-border-champagne); }
+.fe-w6g-swap:hover { background: var(--fe-glass-l2-hover); }
 .fe-w6g-converter__out {
   margin-top: 1rem;
   padding-top: 0.875rem;
-  border-top: 1px solid var(--color-border-subtle);
   min-height: 4.25rem;
 }
 .fe-w6g-converter__sum {
@@ -160,12 +157,11 @@
   max-width: 20rem;
   min-height: 2.75rem;
   padding: 0 0.75rem;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-text-tertiary);
+  background: var(--fe-glass-l2);
+  color: var(--color-text-tertiary); box-shadow: var(--fe-l2-shadow);
 }
-.fe-w6g-search:focus-within { border-color: var(--color-champagne-ink); }
+.fe-w6g-search:focus-within { box-shadow: var(--fe-focus-ring);}
 .fe-w6g-search__input {
   flex: 1;
   min-width: 0;
@@ -231,9 +227,10 @@
   justify-items: start;
   gap: 0.75rem;
   padding: 1.5rem 1rem;
-  border: 1px dashed var(--color-border-subtle);
   border-radius: 1.25rem;
   color: var(--color-text-secondary);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
 }
 .fe-w6g-empty p { margin: 0; }
 
@@ -291,17 +288,16 @@
   gap: 0.75rem;
   min-height: 3.5rem;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 1.125rem;
-  background: var(--color-surface);
+  background: var(--fe-glass-l2);
   color: var(--color-text-primary);
-  transition: border-color 0.2s, background-color 0.2s;
+  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s, box-shadow 0.2s ease; box-shadow: var(--fe-l2-shadow);
 }
-.fe-w6g-showcase__card:hover { border-color: var(--color-border-champagne); }
-.fe-w6g-showcase__card.is-active {
-  border-color: var(--color-border-champagne);
-  background: color-mix(in srgb, var(--color-champagne) 9%, var(--color-surface));
+.fe-w6g-showcase__card:hover {
+  transform: translateY(var(--fe-lift, -2px));
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint);
 }
+.fe-w6g-showcase__card.is-active { background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
 .fe-w6g-showcase__icon {
   display: inline-flex;
   flex: none;
@@ -399,7 +395,10 @@
   border-radius: 1.25rem;
   color: var(--color-text-primary);
 }
-.fe-w6g-home-tools__card:hover { border-color: var(--color-border-champagne); }
+.fe-w6g-home-tools__card:hover {
+  transform: translateY(var(--fe-lift, -2px));
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint);
+}
 
 /* ---------- Конструктор виджетов ---------- */
 /* Три блока: предпросмотр закреплён сверху, настройки, код. На компьютере предпросмотр и код справа. */
@@ -462,12 +461,12 @@
   gap: 0.625rem 1rem;
   margin-top: 0.75rem;
   padding: 0.625rem 0.875rem;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 0.875rem;
   background: color-mix(in srgb, var(--color-champagne) 8%, transparent);
   font-size: 0.8125rem;
   line-height: 1.4;
   color: var(--color-text-primary);
+  box-shadow: var(--fe-l2-shadow);
 }
 .fe-w6g-scale-nudge p {
   min-width: 0;

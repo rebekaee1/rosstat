@@ -38,7 +38,7 @@ export default function CalculatorSiblings({ current }) {
           <Link
             key={item.id}
             to={item.to}
-            className="fe-panel fe-press group block min-h-11 rounded-2xl border border-border-subtle bg-surface p-4 transition-colors hover:border-champagne/30"
+            className="fe-panel fe-press group block min-h-11 rounded-2xl p-4 transition-colors fe-float"
           >
             <p className="mb-1 text-sm font-semibold text-text-primary transition-colors group-hover:text-champagne-ink">
               {t(item.titleKey)}

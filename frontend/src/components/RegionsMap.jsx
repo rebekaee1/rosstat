@@ -394,7 +394,7 @@ export default function RegionsMap({
                   disabled={k >= ZOOM_MAX}
                   aria-label={t('regions.zoomIn')}
                   title={t('regions.zoomIn')}
-                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:text-champagne-ink disabled:opacity-40"
                 >
                   <Plus size={16} />
                 </button>
@@ -404,7 +404,7 @@ export default function RegionsMap({
                   disabled={k <= 1}
                   aria-label={t('regions.zoomOut')}
                   title={t('regions.zoomOut')}
-                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-40"
+                  className="fe-map-btn fe-press text-text-secondary transition-colors hover:text-champagne-ink disabled:opacity-40"
                 >
                   <Minus size={16} />
                 </button>
@@ -414,7 +414,7 @@ export default function RegionsMap({
                     onClick={() => setView({ k: 1, tx: 0, ty: 0 })}
                     aria-label={t('regions.zoomReset')}
                     title={t('regions.zoomReset')}
-                    className="fe-map-btn fe-press text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                    className="fe-map-btn fe-press text-text-secondary transition-colors hover:text-champagne-ink"
                   >
                     <Maximize2 size={15} />
                   </button>
@@ -426,7 +426,7 @@ export default function RegionsMap({
 
         {compact && compactHover && nameBySlug[hover.slug] && (
           <div
-            className="absolute z-10 pointer-events-none rounded-lg border border-white/25 bg-[#1E1F26]/92 px-2.5 py-1 text-xs text-white shadow-lg whitespace-nowrap"
+            className="absolute z-10 pointer-events-none rounded-lg bg-[#1E1F26]/92 px-2.5 py-1 text-xs text-white shadow-lg whitespace-nowrap"
             style={{ left: `${compactHover.x}%`, top: `${compactHover.y}%`, transform: 'translate(-50%, -50%)' }}
           >
             <span className="font-medium">{nameBySlug[hover.slug]}</span>
@@ -440,7 +440,7 @@ export default function RegionsMap({
 
         {!compact && hover && (
           <div
-            className="absolute z-10 pointer-events-none bg-surface border border-border-subtle rounded-lg px-3 py-1.5 shadow-lg text-xs whitespace-nowrap -translate-x-1/2 -translate-y-full"
+            className="absolute z-10 pointer-events-none rounded-lg px-3 py-1.5 shadow-lg text-xs whitespace-nowrap -translate-x-1/2 -translate-y-full fe-glass-pop"
             style={{ left: `${hover.x}%`, top: `${Math.max(hover.y - 2, 0)}%` }}
           >
             <div className="font-medium text-text-primary">{nameBySlug[hover.slug] || hover.slug}</div>

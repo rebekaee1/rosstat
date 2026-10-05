@@ -74,9 +74,9 @@ export default function MobileNavSelect({
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}
-          className="relative z-10 flex max-h-[min(78dvh,560px)] flex-col rounded-t-[1.5rem] border border-border-subtle bg-surface shadow-[0_-18px_50px_rgba(35,30,16,0.18)]"
+          className="relative z-10 flex max-h-[min(78dvh,560px)] flex-col rounded-t-[1.5rem] shadow-[0_-18px_50px_rgba(35,30,16,0.18)] fe-glass-2"
         >
-          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border-subtle px-4 pb-3 pt-3.5">
+          <div className="flex shrink-0 items-center justify-between gap-3 px-4 pb-3 pt-3.5">
             <div className="min-w-0">
               <div className="mx-auto mb-2.5 h-1 w-9 rounded-full bg-border-subtle sm:mx-0" aria-hidden />
               <p
@@ -152,8 +152,8 @@ export default function MobileNavSelect({
         aria-expanded={open}
         className={cn(
           FOCUS_RING_SURFACE,
-          'fe-press flex min-h-12 w-full items-center gap-3 rounded-xl border border-border-subtle bg-surface px-3.5 text-left shadow-sm',
-          'active:border-border-champagne',
+          'fe-press flex min-h-12 w-full items-center gap-3 rounded-xl px-3.5 text-left shadow-sm fe-glass-2',
+          '',
         )}
       >
         <span className="flex min-w-0 flex-1 items-center text-[15px] font-medium text-text-primary">

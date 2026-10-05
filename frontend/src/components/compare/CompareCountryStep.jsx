@@ -60,7 +60,7 @@ export default function CompareCountryStep({
   return (
     <div>
       <div className="mb-2 text-sm font-medium text-text-secondary">{t('compare.country')}</div>
-      <div className="mb-3 flex items-center gap-2 rounded-xl border border-border-subtle bg-obsidian-light px-3 transition-colors focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink">
+      <div className="mb-3 flex items-center gap-2 rounded-xl px-3 transition-colors fe-glass-2">
         <Search className="h-4 w-4 shrink-0 text-text-tertiary" aria-hidden="true" />
         <input
           type="text"
@@ -96,8 +96,8 @@ export default function CompareCountryStep({
       )}
 
       {noCountries && indicatorMatches.length > 0 ? (
-        <div data-testid="compare-indicator-matches" className="overflow-hidden rounded-xl border border-border-subtle bg-obsidian-light/45">
-          <div className="border-b border-border-subtle/60 px-4 py-2.5 text-sm leading-snug text-text-secondary">
+        <div data-testid="compare-indicator-matches" className="overflow-hidden rounded-xl fe-glass-2">
+          <div className="px-4 py-2.5 text-sm leading-snug text-text-secondary">
             {t('compare.indicatorMatches')}
           </div>
           {indicatorMatches.map((ind) => (
@@ -107,7 +107,7 @@ export default function CompareCountryStep({
               disabled={atCap}
               title={atCap ? capHint : undefined}
               onClick={() => onAddIndicator(ind)}
-              className="fe-tap fe-press flex min-h-12 w-full items-center gap-3 border-b border-border-subtle/60 px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-obsidian-lighter disabled:cursor-not-allowed disabled:opacity-60"
+              className="fe-tap fe-press flex min-h-12 w-full items-center gap-3 px-4 py-2.5 text-left transition-colors last:border-b-0 hover:bg-obsidian-lighter disabled:cursor-not-allowed disabled:opacity-60 fe-glass-2"
             >
               <Flag slug="russia" />
               <span className="min-w-0 flex-1 break-words leading-snug text-[15px] text-text-primary">{ind.label}</span>
@@ -116,7 +116,7 @@ export default function CompareCountryStep({
           ))}
         </div>
       ) : noCountries ? (
-        <div role="status" className="rounded-xl border border-dashed border-border-subtle px-4 py-6 text-center text-sm text-text-secondary">
+        <div role="status" className="rounded-xl px-4 py-6 text-center text-sm text-text-secondary fe-glass-2">
           <Search className="mx-auto mb-2 h-5 w-5 text-champagne-ink" aria-hidden="true" />
           <p>{t(matchesPending ? 'common.loading' : 'w4.compare.noCountry')}</p>
           {!matchesPending && query && (
@@ -134,8 +134,8 @@ export default function CompareCountryStep({
                 type="button"
                 onClick={() => onSelect(c.key)}
                 className={cn(
-                  'fe-tap fe-press flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl border border-border-subtle bg-obsidian-light/60 px-3 text-left',
-                  'transition-colors hover:border-border-champagne hover:bg-obsidian-lighter',
+                  'fe-tap fe-press flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl px-3 text-left fe-glass-2',
+                  'transition-colors hover:bg-obsidian-lighter',
                 )}
               >
                 <Flag slug={c.key} />

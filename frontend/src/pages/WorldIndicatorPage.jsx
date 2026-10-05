@@ -499,7 +499,7 @@ export default function WorldIndicatorPage() {
       />
 
       {notFound && (
-        <div className="mt-8 rounded-2xl border border-border-subtle bg-surface p-8 text-center">
+        <div className="mt-8 rounded-2xl p-8 text-center fe-glass-lite">
           <h1 className="mb-3 font-display text-2xl font-bold text-text-primary">{t('world.indicator.notFoundTitle')}</h1>
           <p className="mb-6 text-text-secondary">
             {t('world.indicator.notFoundBody')}
@@ -548,7 +548,7 @@ export default function WorldIndicatorPage() {
           >
             <div className="z4-hero__main">
               <div className="z4-hero__meta mb-2.5 flex flex-wrap items-center gap-2 sm:gap-3 md:mb-3">
-                <span className="flex items-center gap-2 rounded-full border border-border-subtle bg-obsidian-light px-3 py-1 text-[13px] font-medium text-text-secondary">
+                <span className="flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium text-text-secondary fe-glass-2">
                   <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
                   {freqLabel}
                 </span>
@@ -709,7 +709,7 @@ export default function WorldIndicatorPage() {
                   content={methodologyContent}
                   sourcePath={indicator.source_url || indicatorPath(slug, code)}
                 />
-                <div className="z4-about rounded-3xl border border-border-subtle bg-obsidian-light p-5 sm:p-6">
+                <div className="z4-about rounded-3xl p-5 sm:p-6 fe-glass-lite">
                   <h3 className="mb-4 text-base font-semibold text-text-primary">
                     {t('world.indicator.aboutSeries')}
                   </h3>
@@ -766,17 +766,17 @@ export default function WorldIndicatorPage() {
                       )}
                     </dl>
                   </details>
-                  <div className="mt-6 flex flex-wrap gap-2 border-t border-border-subtle pt-4">
+                  <div className="mt-6 flex flex-wrap gap-2 pt-4">
                     <Link
                       to={countryPath(slug)}
-                      className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                      className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"
                     >
                       {t('world.indicator.allOfCountry', { country: countryName || country?.name || '' })}
                       <ArrowUpRight size={12} aria-hidden="true" />
                     </Link>
                     <Link
                       to="/#countries"
-                      className="fe-tap-inline gap-1 rounded-full border border-border-subtle px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:border-border-champagne hover:text-champagne-ink"
+                      className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"
                     >
                       {t('world.indicator.allCountries')}
                       <ArrowUpRight size={12} aria-hidden="true" />

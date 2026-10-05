@@ -140,9 +140,8 @@ function TickerCell({ snapshot, nowMs }) {
     'md:gap-2 md:px-3.5',
     'transition-colors duration-200',
     meta.linkTo && 'hover:bg-champagne/10',
-    'border border-transparent',
     // Вспышка нового тика нейтральная: рост курса не «хорошо» и не «плохо», цвет не должен оценивать.
-    flash && 'bg-champagne/15 border-champagne/30',
+    flash && 'bg-champagne/15 fe-shadow-2',
     isStale && 'opacity-60',
   );
 
@@ -283,13 +282,13 @@ export default function LiveTicker() {
   const { ref: scrollerRef, edges, measure } = useEdgeFade(snapshots.length);
   if (snapshots.length === 0) {
     return (
-      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15" />
+      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface fe-shadow-2" />
     );
   }
 
   return (
     <div
-      className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface border-b border-champagne/15 shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+      className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 bg-warn-surface shadow-sm pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] fe-shadow-2"
     >
       <div className="fe-ticker__inner mx-auto h-full">
         <div className="fe-ticker__scroller">

@@ -52,7 +52,7 @@ export default function ApiRetryBanner({ children, onRetry, isFetching, classNam
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md sm:flex-row sm:items-center sm:justify-between',
+        'flex flex-col gap-3 rounded-2xl bg-warn-surface px-4 py-4 text-sm shadow-md sm:flex-row sm:items-center sm:justify-between fe-shadow-2',
         className
       )}
       role="alert"

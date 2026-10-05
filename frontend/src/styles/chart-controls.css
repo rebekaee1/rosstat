@@ -16,12 +16,6 @@
 .fe-chip-row--nowrap::-webkit-scrollbar { display: none; }
 .fe-chip-row--nowrap > .fe-chip { flex-shrink: 0; }
 
-/* Контраст неактивного чипа: text-secondary на obsidian-lighter даёт 4.3:1, на осветлённой подложке — выше 4.5:1. */
-.fe-chip-row .fe-chip:not(.is-active):not(:disabled),
-.fe-chart-toolbar .fe-chip:not(.is-active):not(:disabled) {
-  background: color-mix(in srgb, var(--color-obsidian-lighter, #dde3eb) 55%, var(--color-surface, #fff));
-}
-
 /* Ссылки-чипы (смена частоты, срез показателя): без подчёркивания. */
 a.fe-chip { text-decoration: none; }
 
@@ -84,18 +78,16 @@ a.fe-chip { text-decoration: none; }
   width: 20px;
   height: 20px;
   margin-top: -7px;
-  border: 3px solid #fff;
   border-radius: 9999px;
-  background: var(--color-champagne, #ad8a48);
-  box-shadow: 0 1px 4px rgba(32, 42, 60, 0.3);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .fe-range::-moz-range-thumb {
   width: 14px;
   height: 14px;
-  border: 3px solid #fff;
   border-radius: 9999px;
-  background: var(--color-champagne, #ad8a48);
-  box-shadow: 0 1px 4px rgba(32, 42, 60, 0.3);
+  background: var(--fe-glass-active);
+  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 .fe-range:focus-visible { outline: none; }
 .fe-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--color-champagne-ink, #80642f); outline-offset: 2px; }
@@ -119,9 +111,9 @@ a.fe-chip { text-decoration: none; }
   flex-wrap: nowrap;
   gap: 2px;
   padding: 3px;
-  border: 1px solid var(--color-border-subtle);
   border-radius: 14px;
   background: color-mix(in srgb, var(--color-obsidian-lighter, #dde3eb) 60%, transparent);
+  box-shadow: inset 0 1px 3px rgba(60, 48, 24, 0.14);
 }
 :root .fe-seg > .fe-chip.fe-chip--seg,
 :root .fe-chart-toolbar .fe-seg > .fe-chip.fe-chip--seg {
@@ -131,14 +123,15 @@ a.fe-chip { text-decoration: none; }
   border: 0;
   border-radius: 11px;
   background: transparent;
+  box-shadow: none;
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 600;
 }
 :root .fe-seg > .fe-chip.fe-chip--seg.is-active {
-  background: var(--color-surface, #fff);
-  color: var(--color-text-primary);
-  box-shadow: 0 1px 3px rgba(32, 42, 60, 0.18), 0 0 0 1px rgba(32, 42, 60, 0.06);
+  background: var(--fe-glass-active);
+  color: var(--fe-on-gold);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 :root .fe-seg > .fe-chip.fe-chip--seg:hover:not(.is-active) { color: var(--color-text-primary); }
 @media (pointer: coarse) {
@@ -149,13 +142,7 @@ a.fe-chip { text-decoration: none; }
   :root .fe-seg > .fe-chip.fe-chip--seg { padding: 0 8px; gap: 4px; font-size: 12px; }
 }
 
-/* Период (1 г., 5 л., 10 л., Всё): золотые «таблетки»; выбранный залит золотом, остальные спокойные. */
-:root .fe-chart-toolbar .fe-chip:not(.fe-chip--seg).is-active {
-  border-color: var(--color-champagne-ink, #80642f);
-  background: rgba(173, 138, 72, 0.2);
-  color: var(--color-champagne-ink, #80642f);
-  font-weight: 700;
-}
+/* Период (1 г., 5 л., 10 л., Всё): выбранный залит золотом по общему правилу .fe-chip.is-active (index.css). */
 
 /* Системную синюю рамку фокуса на графике не рисуем: при касании она похожа на сбой стиля. */
 .recharts-wrapper:focus,
@@ -208,9 +195,7 @@ a.fe-chip { text-decoration: none; }
   position: absolute;
   top: 0;
   bottom: 0;
-  border-top: 2px solid var(--color-champagne, #ad8a48);
-  border-bottom: 2px solid var(--color-champagne, #ad8a48);
-  background: rgba(173, 138, 72, 0.1);
+  background: rgba(173, 138, 72, 0.16);
   cursor: grab;
 }
 .fe-brush[data-active='move'] .fe-brush__window { cursor: grabbing; }
@@ -235,7 +220,6 @@ a.fe-chip { text-decoration: none; }
   display: block;
   width: 12px;
   height: 28px;
-  border: 2px solid #fff;
   border-radius: 8px;
   background: var(--color-champagne, #ad8a48);
   box-shadow: 0 1px 4px rgba(32, 42, 60, 0.3);

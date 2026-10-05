@@ -25,8 +25,10 @@
  *   L2 активный      --fe-glass-active (золотая заливка), --fe-on-gold (текст на ней)
  *   L3 тёмный        --fe-dark-glass: профиль страны, подвал
  * Классы для зон (рамок не имеют, border: 0):
- *   .fe-glass          слой L1: любая панель, карточка, тулбар, меню
- *   .fe-glass-2        слой L2: элемент внутри панели (плитка, поле, сегмент)
+ *   .fe-glass          слой L1 с blur: единичная панель, тулбар, меню, плашка
+ *   .fe-glass-pop      слой L1 плотнее (альфа .88) и с blur: выпадающие списки, меню, диалоги, подсказки
+ *   .fe-glass-lite     слой L1 без blur: повторяющиеся карточки списков (вид тот же, дешевле)
+ *   .fe-glass-2        слой L2 без blur: элемент внутри панели (плитка, поле, сегмент)
  *   .fe-glass-active   активное состояние L2: золотая заливка, не контур
  *   .fe-glass-dark     слой L3: тёмный хрусталь с золотым сиянием в углу
  *   .fe-float          парение при наведении мышью: подъём на 2 px, тень растёт; нажатие scale(.98)
@@ -75,6 +77,10 @@
   --fe-glass-l1-soft: rgba(255, 255, 255, 0.42);
   --fe-glass-l1-sheen: linear-gradient(130deg, rgba(255, 255, 255, 0.55), transparent 55%);
   --fe-glass-l2: rgba(255, 255, 255, 0.55);
+  --fe-pop-bg: rgba(255, 255, 255, 0.88);
+  /* Готовые значения для background/box-shadow: слой L1 (без blur: для повторяющихся карточек) и тень L2. */
+  --fe-l1-bg: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  --fe-l2-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   --fe-glass-l2-hover: rgba(255, 255, 255, 0.72);
   --fe-glass-active: linear-gradient(135deg, #C9A24D, #B08A3E);
   --fe-glass-active-hover: linear-gradient(135deg, #D2AE5E, #BA9446);
@@ -88,6 +94,7 @@
   --fe-shadow-l2: 0 6px 18px -12px rgba(60, 48, 24, 0.35);
   --fe-shadow-active: 0 8px 22px -12px rgba(176, 138, 62, 0.55);
   --fe-divider-line: rgba(88, 74, 46, 0.1);
+  --fe-focus-ring: 0 0 0 3px rgba(176, 138, 62, 0.35);
   --fe-dark-glass:
     radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 58%),
     linear-gradient(160deg, rgba(42, 53, 80, 0.86), rgba(30, 38, 56, 0.92) 72%);
@@ -195,12 +202,34 @@
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 
-/* L2: элемент внутри панели (плитка, поле, сегмент). Blur только у крупных плиток: на мелких его не видно, а стоит дорого. */
+/* L1 без blur: повторяющиеся карточки списков. Вид тот же (прозрачность, блик, тень), но десятки blur-слоёв в кадре не нужны. */
+.fe-glass-lite {
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  border: 0;
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+}
+
+/* L2: элемент внутри панели (плитка, поле, сегмент). Без blur: внутри L1 он невидим, а стоит дорого. */
 .fe-glass-2 {
   background: var(--fe-glass-l2);
   border: 0;
   box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
-  backdrop-filter: blur(var(--fe-blur-l2));
+}
+a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--fe-ease-reveal); }
+@media (hover: hover) {
+  a.fe-glass-2:hover, button.fe-glass-2:hover:not(:disabled), [role='button'].fe-glass-2:hover { background: var(--fe-glass-l2-hover); }
+}
+.fe-glass-2:focus-within { box-shadow: var(--fe-focus-ring), var(--fe-shadow-l2); }
+.fe-glass-2.is-invalid, .fe-glass-2[aria-invalid='true'] { box-shadow: inset 0 -2px 0 var(--color-negative), var(--fe-shadow-l2); }
+/* Только тень L2, когда фон уже задан своим тоном (тонированные плашки). */
+.fe-shadow-2 { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+
+/* Всплывающий слой (меню, выпадающие списки, диалоги, подсказки): L1 плотнее, чтобы текст страницы под ним не мешал. */
+.fe-glass-pop {
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
+  border: 0;
+  box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 
 /* L2 активный: золотая заливка вместо контура. */
@@ -234,12 +263,20 @@
 /* Парение: подъём на 2 px и рост тени при наведении мышью. Кольца и смены цвета рамки нет. */
 .fe-float { transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background-color 0.2s ease; }
 
+/* Панель с blur — собственный слой наложения: выпадающий список внутри неё без этого прятался бы под соседней панелью.
+   Если внутри есть раскрытый список/меню (listbox, menu, .fe-glass-pop, aria-expanded), панель поднимается над соседями. */
+:is(.fe-panel, .fe-panel-soft, .fe-glass, .fe-glass-key, .fe-summary-card, .fe-calendar-event, .fe-data-header, .fe-dashboard [data-block='home-workbench'], .fe-dashboard [data-block='home-data-scope']):not(.absolute, .fixed, .sticky):has([role='listbox'], [role='menu'], .fe-glass-pop, [aria-expanded='true']) {
+  position: relative;
+  z-index: 40;
+}
+
 /* Единственный разрешённый разделитель (как hr): линия 1 px тёплого графита 10 %. */
 .fe-divider, hr { border: 0; border-top: 1px solid var(--fe-divider-line); }
+.fe-divider-b { border: 0; border-bottom: 1px solid var(--fe-divider-line); }
+.fe-divide-y > * + * { border-top: 1px solid var(--fe-divider-line); }
 
 @media (max-width: 767px) {
   :root { --fe-blur-l1: 12px; }
-  .fe-glass-2 { backdrop-filter: none; }
 }
 
 /* Движок без backdrop-filter: плотные слои, блик и тень остаются. */
@@ -248,6 +285,7 @@
     --fe-glass-l1: rgba(255, 255, 255, 0.86);
     --fe-glass-l1-soft: rgba(255, 255, 255, 0.78);
     --fe-glass-l2: rgba(255, 255, 255, 0.9);
+    --fe-pop-bg: rgba(255, 255, 255, 0.96);
     --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(255, 253, 248, 0.84));
     --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.84), rgba(255, 252, 245, 0.76));
     --fe-dark-glass:
@@ -292,11 +330,11 @@
 /* Парение при наведении мышью: подъём на 2 px, тень растёт (без кольца); на касании hover «залипает», поэтому не включаем.
    Нажатие: scale(.98) за 120 мс. */
 @media (hover: hover) {
-  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark),
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-lite, .fe-glass-key, .fe-dark-card, .fe-glass-dark),
   .fe-lift {
     transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background-color 0.2s ease;
   }
-  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key):hover,
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-lite, .fe-glass-key):hover,
   .fe-lift:hover,
   .fe-float:hover {
     transform: translateY(var(--fe-lift));
@@ -307,7 +345,7 @@
     box-shadow: 0 32px 64px -30px rgba(18, 24, 38, 0.8), var(--fe-dark-glint);
   }
 }
-:is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):active,
+:is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-lite, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):active,
 .fe-lift:active {
   transform: scale(0.98);
   transition-duration: 0.12s;
@@ -315,6 +353,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fe-stagger > *, .fe-draw-line { animation: none; }
-  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):is(:hover, :active),
+  :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-lite, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):is(:hover, :active),
   .fe-lift:is(:hover, :active), .fe-float:is(:hover, :active) { transform: none; }
 }

@@ -31,7 +31,7 @@ export default function RegionCrossLink({ macroCode }) {
 
   return (
     <section className="mt-12">
-      <div className="rounded-2xl border border-border-subtle bg-surface p-5">
+      <div className="rounded-2xl p-5 fe-glass-lite">
         <div className="flex items-center gap-2 text-champagne text-xs font-mono uppercase tracking-widest mb-2">
           <MapPin size={13} />
           {t('indicator.regionCross.eyebrow')}
@@ -53,21 +53,21 @@ export default function RegionCrossLink({ macroCode }) {
           <Link
             to={regionRatingPath(regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `rating:${regionInd.code}` })}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-text-secondary text-[13px] font-medium hover:text-champagne transition-colors fe-glass-2"
           >
             {t('indicator.regionCross.rating')} <ArrowUpRight size={13} />
           </Link>
           <Link
             to={regionIndicatorPath('moskva', regionInd.code)}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: `region:moskva:${regionInd.code}` })}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-text-secondary text-[13px] font-medium hover:text-champagne transition-colors fe-glass-2"
           >
             {t('indicator.regionCross.example')} <ArrowUpRight size={13} />
           </Link>
           <Link
             to={`/compare?codes=${macroCode},r:moskva:${regionInd.code}`}
             onClick={() => track(events.REGION_CROSSLINK_CLICK, { from: macroCode, to: 'compare-macro-region' })}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-border-subtle text-text-secondary text-[13px] font-medium hover:text-champagne hover:border-border-champagne transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-text-secondary text-[13px] font-medium hover:text-champagne transition-colors fe-glass-2"
           >
             {t('indicator.regionCross.compare')} <ArrowUpRight size={13} />
           </Link>

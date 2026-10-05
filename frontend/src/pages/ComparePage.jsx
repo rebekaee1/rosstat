@@ -335,7 +335,7 @@ const AXIS_DOMAIN = ['auto', 'auto'];
 const HOVER_CURSOR = Object.freeze({ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeDasharray: '4 4' });
 
 const FIELD_CLS =
-  'flex items-center gap-2 rounded-lg border bg-obsidian-light px-3 py-2 transition-colors';
+  'flex items-center gap-2 rounded-lg px-3 py-2 transition-colors fe-glass-2';
 
 /** Шапка карточки добавления: иконка + заголовок + подсказка. */
 function AddCardHeader({ icon, title, hint }) {
@@ -480,8 +480,8 @@ function ComboSelect({
         className={cn(
           FIELD_CLS,
           'pointer-coarse:min-h-12',
-          disabled ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink',
-          value && !open && 'border-champagne/30',
+          disabled ? 'opacity-60' : '',
+          value && !open && '',
         )}
       >
         <Search className="h-4 w-4 shrink-0 text-text-tertiary" />
@@ -528,7 +528,7 @@ function ComboSelect({
       )}
 
       {open && !disabled && !phone && (
-        <div className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+        <div className="absolute z-40 mt-2 max-h-72 w-full overflow-auto rounded-xl shadow-2xl fe-glass-pop">
           {total === 0 ? (
             <div className="px-4 py-3 text-sm text-text-tertiary">{t('compare.nothingFound')}</div>
           ) : (
@@ -624,7 +624,7 @@ function AddRegionSeries({
   };
 
   return (
-    <div className="fe-panel rounded-xl border border-border-subtle bg-surface p-3">
+    <div className="fe-panel rounded-xl p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addRegionTitle')}
@@ -711,7 +711,7 @@ function AddSubnationalSeries({
   };
 
   return (
-    <div className="fe-panel rounded-xl border border-border-subtle bg-surface p-3">
+    <div className="fe-panel rounded-xl p-3">
       <AddCardHeader
         icon={MapPin}
         title={t('compare.addSubnationalTitle', { kind: kindPlural })}
@@ -804,7 +804,7 @@ function AddIndicator({
     <div className="relative">
       <div className={cn(
         FIELD_CLS,
-        atCap ? 'border-border-subtle/50 opacity-60' : 'border-border-subtle focus-within:border-champagne-ink focus-within:ring-1 focus-within:ring-champagne-ink',
+        atCap ? 'opacity-60' : '',
       )}>
         <Search className="w-4 h-4 text-text-tertiary shrink-0" />
         <input
@@ -821,12 +821,12 @@ function AddIndicator({
       </div>
       {atCap && <div className="mt-2"><CapNotice text={capHint} onLimit={onLimit} /></div>}
       {openList && !atCap && results.length === 0 && (
-        <div className="absolute z-40 mt-2 w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-sm text-text-tertiary shadow-2xl">
+        <div className="absolute z-40 mt-2 w-full rounded-xl px-4 py-3 text-sm text-text-tertiary shadow-2xl fe-glass-pop">
           {t('compare.nothingFound')}
         </div>
       )}
       {openList && !atCap && results.length > 0 && (
-        <div className="absolute z-40 mt-2 w-full max-h-80 overflow-auto rounded-xl border border-border-subtle bg-surface shadow-2xl">
+        <div className="absolute z-40 mt-2 w-full max-h-80 overflow-auto rounded-xl shadow-2xl fe-glass-pop">
           {results.map((ind) => (
             <button
               key={ind.code}
@@ -1074,8 +1074,8 @@ function CompareSeriesPicker({
   };
 
   return (
-    <div className="fe-panel overflow-visible rounded-2xl border border-border-subtle bg-surface p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
-      <div className="mb-5 border-b border-border-subtle pb-4">
+    <div className="fe-panel overflow-visible rounded-2xl p-4 shadow-[0_16px_45px_rgba(35,30,16,0.05)] sm:p-5">
+      <div className="mb-5 pb-4">
         <div className="text-sm font-medium text-champagne-ink">{t('w6g.compare.pickerTitle')}</div>
         <div className="mt-1 text-[15px] text-text-primary">{stepHint}</div>
         {status && (
@@ -1115,7 +1115,7 @@ function CompareSeriesPicker({
             <div className="mb-2 text-sm font-medium text-text-secondary">
               {t('compare.conceptGroup')}
             </div>
-            <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+            <div className="rounded-xl p-3 fe-glass-2">
               <AddIndicator
                 indicators={russiaLandingPool(indicators, worldItems, locale)}
                 selected={selected}
@@ -1168,7 +1168,7 @@ function CompareSeriesPicker({
           <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.macroRussia')}
           </div>
-          <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+          <div className="rounded-xl p-3 fe-glass-2">
             <AddIndicator
               indicators={indicators}
               selected={selected}
@@ -1253,7 +1253,7 @@ function CompareSeriesPicker({
           <div className="mb-2 text-sm font-medium text-text-secondary">
             {t('compare.countryIndicator', { country: selectedCountry.label })}
           </div>
-          <div className="rounded-xl border border-border-subtle bg-obsidian-light/45 p-3">
+          <div className="rounded-xl p-3 fe-glass-2">
             <AddWorldCountrySeries
               items={worldItems}
               countrySlug={countryKey}
@@ -1307,7 +1307,7 @@ function UpsellModal({ open, onClose }) {
       onClick={onClose}
     >
       <div
-        className="fe-panel fe-dialog-panel w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl border border-border-subtle bg-surface shadow-2xl p-6"
+        className="fe-panel fe-dialog-panel w-full max-w-md max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-2xl shadow-2xl p-6"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -1330,7 +1330,7 @@ function UpsellModal({ open, onClose }) {
           <Link to="/register" onClick={onClose} className="fe-button-primary flex-1 text-center rounded-xl text-sm font-semibold py-2.5">
             {t('compare.upsellRegister')}
           </Link>
-          <Link to="/login" onClick={onClose} className="flex-1 text-center rounded-xl border border-border-subtle text-text-primary text-sm font-medium py-2.5 hover:border-champagne/40 transition-colors">
+          <Link to="/login" onClick={onClose} className="flex-1 text-center rounded-xl text-text-primary text-sm font-medium py-2.5 transition-colors fe-glass-2">
             {t('common.login')}
           </Link>
         </div>
@@ -1342,7 +1342,7 @@ function UpsellModal({ open, onClose }) {
 function CompareTooltip({ active, payload, label, dateFormat = 'short' }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl border border-border-subtle px-4 py-3 shadow-2xl">
+    <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl px-4 py-3 shadow-2xl">
       <p className="mb-2 text-xs text-text-secondary">{formatDate(label, dateFormat)}</p>
       {payload.filter((p) => p.value != null).map((p) => (
         <div key={p.dataKey} className="mb-1 flex items-center justify-between gap-4">
@@ -2174,7 +2174,7 @@ export default function ComparePage() {
         )}
 
         {dataSpacesCount > 1 && compatibilityNote && (
-          <div className="mb-4 rounded-xl border border-champagne/20 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary">
+          <div className="mb-4 rounded-xl bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary fe-shadow-2">
             {t(compatibilityNote)}
           </div>
         )}
@@ -2207,7 +2207,7 @@ export default function ComparePage() {
             />
 
             {compatibilityMessage && (
-              <div className="mt-3 rounded-xl border border-champagne/25 bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary" role="status">
+              <div className="mt-3 rounded-xl bg-champagne/[0.06] px-3.5 py-2.5 text-xs leading-relaxed text-text-secondary fe-shadow-2" role="status">
                 {compatibilityMessage}
               </div>
             )}
@@ -2232,7 +2232,7 @@ export default function ComparePage() {
       </section>
 
       {hasError && hasData && !loading && (
-        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-champagne/35 bg-warn-surface px-4 py-4 text-sm shadow-md sm:flex-row sm:items-center sm:justify-between" role="alert">
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-warn-surface px-4 py-4 text-sm shadow-md sm:flex-row sm:items-center sm:justify-between fe-shadow-2" role="alert">
           <p className="min-w-0 text-text-primary">
             <span className="font-semibold">{t('compare.loadPartial')}</span>{' '}
             {t('compare.loadPartialHint')}
@@ -2463,7 +2463,7 @@ export default function ComparePage() {
         {hasData && !loading && (
           <div
             data-block="compare-settings"
-            className="mt-5 grid gap-4 border-t border-border-subtle pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6"
+            className="mt-5 grid gap-4 pt-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6"
           >
             <div className="min-w-0">
               <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
@@ -2491,7 +2491,7 @@ export default function ComparePage() {
                 {t('w4.compare.stepLabel')}
               </div>
               {hasWorldSeries ? (
-                <span className="inline-flex min-h-[34px] items-center rounded-xl border border-border-subtle bg-obsidian-lighter px-3 text-xs text-text-secondary">
+                <span className="inline-flex min-h-[34px] items-center rounded-xl px-3 text-xs text-text-secondary fe-glass-2">
                   {t('w6g.compare.step.official')}
                 </span>
               ) : (
@@ -2555,8 +2555,8 @@ export default function ComparePage() {
       </section>
 
       {hasData && analysisSummary.metrics.some((metric) => metric.last) && (
-        <section data-block="compare-analysis" className="fe-panel fe-compare-analysis rounded-[2rem] border border-border-subtle bg-surface p-5 md:p-7">
-          <div className="mb-5 flex flex-col gap-2 border-b border-border-subtle pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <section data-block="compare-analysis" className="fe-panel fe-compare-analysis rounded-[2rem] p-5 md:p-7">
+          <div className="mb-5 flex flex-col gap-2 pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="text-sm font-medium text-champagne-ink">
                 {t('compare.analysis.eyebrow')}
@@ -2615,7 +2615,7 @@ export default function ComparePage() {
                   {/п\.\s?п\.|p\.p\./.test(changeValue.unitShort || '') && (
                     <p className="mt-1 text-xs leading-snug text-text-tertiary">{t('x4.compare.ppHint')}</p>
                   )}
-                  <div className="mt-3 border-t border-border-subtle pt-2.5 text-xs text-text-secondary">
+                  <div className="mt-3 pt-2.5 text-xs text-text-secondary">
                     {formatDate(metric.first.date, compareDateFmt)} → {formatDate(metric.last.date, compareDateFmt)}
                   </div>
                 </div>
@@ -2624,7 +2624,7 @@ export default function ComparePage() {
           </div>
 
           {analysisSummary.correlations.length > 0 && (
-            <div className="mt-5 rounded-2xl border border-champagne/15 bg-champagne/[0.05] p-4">
+            <div className="mt-5 rounded-2xl bg-champagne/[0.05] p-4 fe-shadow-2">
               <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
                 <Sparkles size={14} className="text-champagne" />
                 {t('compare.analysis.sync')}

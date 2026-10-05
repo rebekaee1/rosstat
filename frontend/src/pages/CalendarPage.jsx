@@ -96,7 +96,7 @@ function DayEvents({ events: dayEvents, isPast, isToday, defaultOpen }) {
         <CalendarEventCard key={ev.id} event={ev} isPast={isPast} isToday={isToday} index={i} />
       ))}
       {collapse && (
-        <details className="fe-acc rounded-xl border border-border-subtle bg-surface" open={defaultOpen || undefined}>
+        <details className="fe-acc rounded-xl fe-glass-2" open={defaultOpen || undefined}>
           <summary className="fe-tap flex items-center justify-between gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-text-secondary">
             {t('x4.cal.daily', { n: lows.length })}
             <ChevronDown className="fe-acc__chev h-4 w-4 shrink-0" aria-hidden="true" />
@@ -369,7 +369,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
               // При ошибке загрузки текст «нет событий» был бы неправдой — о причине уже говорит баннер выше.
               !isError && !showRecurring && (
                 <div
-                  className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] border border-border-subtle bg-surface px-6 py-10 text-center"
+                  className="fe-reveal fe-reveal--free flex flex-col items-center rounded-[1.5rem] px-6 py-10 text-center fe-glass-lite"
                   role="status"
                   data-testid="calendar-empty"
                 >
@@ -382,7 +382,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                       onClick={() => handleSourceChange('')}
                       className={cn(
                         FOCUS_RING_SURFACE,
-                        'mt-4 inline-flex min-h-11 items-center rounded-xl border border-border-subtle px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-champagne/30 hover:text-text-primary',
+                        'mt-4 inline-flex min-h-11 items-center rounded-xl px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary fe-glass-2',
                       )}
                     >
                       {t('calendar.state.resetFilter')}
@@ -421,13 +421,13 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
       </div>
 
       {data?.total > 0 && (
-        <div className="flex items-center justify-center gap-4 mt-10 pt-6 border-t border-border-subtle">
+        <div className="flex items-center justify-center gap-4 mt-10 pt-6">
           <a
             href="/api/v1/calendar/export/ical?importance_min=2"
             className={cn(
               FOCUS_RING_SURFACE,
               'inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium',
-              'border border-border-subtle text-text-secondary hover:text-text-primary hover:border-champagne/30 transition-colors',
+              'text-text-secondary hover:text-text-primary transition-colors',
             )}
             onClick={() => track(events.DOWNLOAD_ICAL)}
             download
@@ -444,7 +444,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
         </h2>
         <dl className="space-y-4">
           {FAQ_KEYS.map((item) => (
-            <div key={item.q} className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface p-5">
+            <div key={item.q} className="fe-panel rounded-[1.5rem] p-5">
               <dt className="font-semibold text-text-primary text-sm mb-2">{t(item.q)}</dt>
               <dd className="text-sm text-text-secondary leading-relaxed">{t(item.a)}</dd>
             </div>

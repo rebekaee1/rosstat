@@ -45,12 +45,6 @@
 @media (min-width: 640px) and (pointer: coarse) {
   :root .fe-chip-row.fe-chip-row--grid > .fe-chip { min-height: 44px; }
 }
-:root .fe-chip-row.fe-chip-row--grid > .fe-chip.is-active,
-:root .fe-chip-row.fe-chip-row--dense > .fe-chip.is-active {
-  border-color: var(--color-champagne-ink);
-  background: rgba(173, 138, 72, 0.18);
-  color: var(--color-champagne-ink);
-}
 
 /* Нижний ряд (детализация): короткие подписи по ширине текста, строка добита до края — без рваного хвоста. */
 :root .fe-chip-row.fe-chip-row--dense {
@@ -73,7 +67,6 @@
 }
 :root .fe-chip-row .fe-chip.fe-chip--more {
   flex: 0 0 auto;
-  border: 1px dashed var(--color-border-champagne);
   background: transparent;
   color: var(--color-champagne-ink);
 }

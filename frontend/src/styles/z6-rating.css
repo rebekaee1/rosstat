@@ -27,7 +27,7 @@
   .z6-head__sub .w2-details > p {
     position: absolute; z-index: 30; left: 0; top: 100%;
     width: min(36rem, 100%); margin: 4px 0 0; padding: 14px 18px;
-    border: 1px solid var(--color-border-champagne, rgba(173, 138, 72, 0.28)); border-radius: 18px;
+     border-radius: 18px;
     background: color-mix(in srgb, var(--color-surface, #fff) 90%, transparent);
     -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
     box-shadow: 0 18px 40px -24px rgba(32, 42, 60, 0.5);
@@ -61,7 +61,7 @@
 
 /* ── Выбор показателя: одна строка ── */
 .z6-toolbar {
-  padding: 10px 12px; border: 1px solid var(--z6-line); border-radius: 20px;
+  padding: 10px 12px;  border-radius: 20px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)), var(--color-surface, #fff));
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--z6-gold) 38%, transparent), var(--z6-shadow);
 }
@@ -79,9 +79,8 @@
   transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 .z6-toolbar .w6d-quick.is-active {
-  border-color: color-mix(in srgb, var(--z6-gold) 55%, transparent);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--z6-gold) 26%, var(--color-surface, #fff)), color-mix(in srgb, var(--z6-gold) 12%, var(--color-surface, #fff)));
-  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--z6-gold) 80%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg);
+  box-shadow: var(--fe-shadow-active), var(--fe-inset-glint);
 }
 .z6-toolbar .w6d-picker__all:disabled { opacity: 0.55; cursor: default; }
 @media (hover: hover) and (pointer: fine) {
@@ -112,14 +111,14 @@
 .z6-planet .planet-info { display: none; }
 .z6-planet .planet-shell {
   grid-template-columns: minmax(0, 1fr);
-  border-color: var(--z6-line); box-shadow: var(--z6-shadow);
+   box-shadow: var(--z6-shadow);
 }
 .z6-planet .planet-toolbar { padding: 12px 14px; }
 
 /* ── Золотая лента: первое и последнее место ── */
 .z6-ribbon.w2-facts {
   position: relative; padding: 0; overflow: hidden; container: z6ribbon / inline-size;
-  border: 1px solid color-mix(in srgb, var(--z6-gold) 38%, transparent); border-radius: 20px;
+   border-radius: 20px;
   background: linear-gradient(105deg, color-mix(in srgb, var(--z6-gold) 22%, var(--color-surface, #fff)) 0%, color-mix(in srgb, var(--z6-gold) 9%, var(--color-surface, #fff)) 55%, var(--color-surface, #fff) 100%);
   box-shadow: var(--z6-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
@@ -133,7 +132,7 @@
   padding: 12px 18px 12px 22px; border: 0; border-radius: 0; background: transparent;
   transition: background-color 0.2s ease;
 }
-.z6-ribbon .w2-fact + .w2-fact { border-left: 1px solid color-mix(in srgb, var(--z6-gold) 28%, transparent); padding-left: 18px; }
+.z6-ribbon .w2-fact + .w2-fact { padding-left: 18px; }
 .z6-ribbon .w2-fact-label {
   grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
   color: var(--z6-gold-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
@@ -152,7 +151,7 @@
 @container z6ribbon (max-width: 540px) {
   .z6-ribbon .w2-facts-grid { grid-template-columns: minmax(0, 1fr); }
   .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); }
-  .z6-ribbon .w2-fact + .w2-fact { border-left: 0; border-top: 1px solid color-mix(in srgb, var(--z6-gold) 28%, transparent); padding-left: 22px; }
+  .z6-ribbon .w2-fact + .w2-fact { border-left: 0; padding-left: 22px; }
   .z6-ribbon .w2-fact-value { justify-content: flex-start; }
 }
 
@@ -161,7 +160,7 @@
 .z6-table__sub { margin: 2px 0 0; color: var(--z6-muted); font-size: 13px; line-height: 1.4; }
 .z6-table-card {
   container: z6table / inline-size;
-  border-color: var(--z6-line); box-shadow: var(--z6-shadow);
+   box-shadow: var(--z6-shadow);
 }
 /* Без дополнительных колонок обрезаем без прокрутки, чтобы шапка липла к верху окна. */
 @supports (overflow: clip) {
@@ -201,7 +200,7 @@
 /* Полоски: золото от светлого к насыщенному, густота зависит от значения. */
 .z6-table-card .w6d-bar {
   height: 8px; background: color-mix(in srgb, var(--z6-gold) 12%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--z6-gold) 10%, transparent);
+  box-shadow: none;
 }
 .z6-table-card .w6d-bar > span {
   opacity: 1; transform-origin: left center;
@@ -221,16 +220,14 @@
 @container z6table (max-width: 500px) {
   .z6-table .w6d-table .w6d-col-bar { display: none; }
 }
-.z6-table .w6d-showall {
-  border-color: var(--z6-line); background: color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)); box-shadow: var(--z6-shadow);
-}
+.z6-table .w6d-showall { background: color-mix(in srgb, var(--z6-gold) 5%, var(--color-surface, #fff)); box-shadow: var(--z6-shadow); }
 .z6-table .w6d-median { color: var(--z6-muted); }
 
 /* ── Кто поднялся и опустился: узкий блок под шаром ── */
 .z6-split .w6d-shifts { margin: 0; }
 .w6d-shifts--compact {
-  padding: 16px 16px 14px; border: 1px solid var(--z6-line); border-radius: 24px;
-  background: var(--color-surface, #fff); box-shadow: var(--z6-shadow);
+  padding: 16px 16px 14px;  border-radius: 24px;
+  background: var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
 }
 .w6d-shifts--compact .w6d-block-title { margin-bottom: 4px; font-size: 18px; line-height: 1.25; }
 .w6d-shifts--compact .w6d-shifts__lead { margin: 0 0 12px; }
@@ -241,14 +238,14 @@
 .w6d-shifts--compact .w6d-shifts__col.is-down .w6d-shifts__head { color: var(--color-negative, #dc2626); }
 .w6d-shifts--compact .w6d-shifts__list { gap: 4px; }
 .w6d-shifts--compact .w6d-shift {
-  min-height: 40px; padding: 2px 10px; border-color: transparent; border-radius: 12px;
+  min-height: 40px; padding: 2px 10px;  border-radius: 12px;
   background: color-mix(in srgb, var(--z6-gold) 4%, transparent);
   transition: background-color 0.18s ease;
 }
 @media (hover: hover) { .w6d-shifts--compact .w6d-shift:hover { background: color-mix(in srgb, var(--z6-gold) 10%, transparent); } }
 
 /* ── Пояснения под таблицей ── */
-.z6-notes.w2-facts { padding: 6px 18px 14px; border-color: var(--z6-line); box-shadow: var(--z6-shadow); }
+.z6-notes.w2-facts { padding: 6px 18px 14px; box-shadow: var(--z6-shadow); }
 .z6-notes .w2-details { margin-top: 4px; }
 .z6-split .w6d-years { margin: 4px 0 0; }
 

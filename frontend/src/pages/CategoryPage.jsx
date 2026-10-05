@@ -161,7 +161,7 @@ export default function CategoryPage({ fixedSlug }) {
         return (
           <Link
             to={feat.to}
-            className="fe-press group flex items-center gap-5 rounded-[1.5rem] border border-border-champagne bg-champagne/[0.04] p-5 md:p-6 mb-8 transition-colors hover:bg-champagne/[0.07]"
+            className="fe-press group flex items-center gap-5 rounded-[1.5rem] bg-champagne/[0.04] p-5 md:p-6 mb-8 transition-colors hover:bg-champagne/[0.07] fe-shadow-2"
           >
             <div className="shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-champagne/10">
               <Icon className="w-6 h-6 text-champagne-ink" />
@@ -267,7 +267,7 @@ export default function CategoryPage({ fixedSlug }) {
                   to: rel.slug,
                   surface: 'category-related',
                 })}
-                className="fe-press group flex items-center justify-between gap-4 p-5 rounded-[1.5rem] border border-border-subtle bg-surface hover:border-champagne/30 transition-colors"
+                className="fe-press group flex items-center justify-between gap-4 p-5 rounded-[1.5rem] transition-colors fe-glass-lite fe-float"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-text-primary mb-1 truncate">

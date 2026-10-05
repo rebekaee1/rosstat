@@ -97,7 +97,7 @@ export default function DataTable({
 
   return (
     <div
-      className="fe-reveal fe-datatable fe-histtable rounded-[1.5rem] bg-surface border border-border-subtle overflow-hidden"
+      className="fe-reveal fe-datatable fe-histtable rounded-[1.5rem] overflow-hidden fe-glass-lite"
       style={REVEAL_STYLE}
       aria-busy={loading || undefined}
     >
@@ -113,7 +113,7 @@ export default function DataTable({
             aria-label={t('w3.table.search')}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 text-base sm:text-sm bg-surface-hover border border-border-subtle rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none focus:border-champagne/40"
+            className="w-full pl-8 pr-3 py-2 text-base sm:text-sm rounded-xl text-text-primary placeholder:text-text-tertiary focus:outline-none fe-glass-2"
           />
         </div>
       </div>
@@ -196,7 +196,7 @@ export default function DataTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="p-4 border-t border-border-subtle flex items-center justify-between">
+        <div className="p-4 flex items-center justify-between">
           <Button
             variant="secondary"
             className="fe-pager-btn"

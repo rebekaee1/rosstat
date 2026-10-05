@@ -65,7 +65,7 @@ export default function CalendarHero({ nextEvent, stacked = false }) {
     <div
       style={{ '--fe-duration': '0.4s', '--fe-rise': '12px' }}
       className={cn(
-        'fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[1.5rem] border border-champagne/15 bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6',
+        'fe-reveal fe-reveal--free fe-panel relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-surface via-surface to-champagne/[0.04] p-6',
         stacked ? 'mb-4' : 'md:p-8 mb-8',
       )}
     >

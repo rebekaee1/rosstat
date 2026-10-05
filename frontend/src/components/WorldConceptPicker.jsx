@@ -175,7 +175,7 @@ export default function WorldConceptPicker({
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         placeholder={t('common.search')}
-        className="h-8 w-full max-w-[11rem] rounded-lg border border-border-subtle bg-obsidian-light py-0 pl-7 pr-2 text-xs text-text-primary outline-none focus:border-border-champagne sm:max-w-[13rem]"
+        className="h-8 w-full max-w-[11rem] rounded-lg py-0 pl-7 pr-2 text-xs text-text-primary outline-none sm:max-w-[13rem] fe-glass-2"
       />
     </label>
   );
@@ -193,7 +193,7 @@ export default function WorldConceptPicker({
         </div>
         <button
           type="button"
-          className="inline-flex h-9 max-w-full items-center gap-2 rounded-xl border border-border-subtle bg-surface px-3 text-left text-sm font-medium text-text-primary transition-colors hover:border-border-champagne"
+          className="inline-flex h-9 max-w-full items-center gap-2 rounded-xl px-3 text-left text-sm font-medium text-text-primary transition-colors fe-glass-2"
           aria-expanded={open}
           aria-haspopup="listbox"
           onClick={() => setOpen((prev) => !prev)}
@@ -203,7 +203,7 @@ export default function WorldConceptPicker({
         </button>
         {open && (
           <div
-            className="absolute left-0 right-0 z-30 mt-1.5 max-h-[min(20rem,50vh)] overflow-y-auto rounded-xl border border-border-subtle bg-surface p-3 shadow-lg sm:right-auto sm:min-w-[22rem]"
+            className="absolute left-0 right-0 z-30 mt-1.5 max-h-[min(20rem,50vh)] overflow-y-auto rounded-xl p-3 shadow-lg sm:right-auto sm:min-w-[22rem] fe-glass-pop"
             role="listbox"
           >
             <div className="mb-2">{searchField}</div>

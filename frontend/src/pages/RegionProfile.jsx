@@ -157,13 +157,13 @@ export default function RegionProfile() {
           />
 
           {!searching && filteredSections.length === 0 && (
-            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               {t('pgui.regions.profileEmpty')}
             </div>
           )}
 
           {searching && filteredSections.length === 0 && (
-            <div className="rounded-3xl border border-border-subtle bg-surface p-6 text-center text-sm text-text-secondary">
+            <div className="rounded-3xl p-6 text-center text-sm text-text-secondary fe-glass-lite">
               <SearchX size={22} className="mx-auto mb-2 text-champagne-ink" aria-hidden="true" />
               {t('regions.profile.nothingFound', { query })}
               <div className="mt-3">

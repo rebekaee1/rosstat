@@ -15,7 +15,7 @@ const li = 'text-text-secondary leading-relaxed';
 
 function CookieRow({ name, purpose, consent }) {
   return (
-    <div className="rounded-xl border border-border-subtle px-4 py-3 mb-2">
+    <div className="rounded-xl px-4 py-3 mb-2 fe-glass-2">
       <p className="text-sm font-semibold text-text-primary">{name}</p>
       <p className="text-sm text-text-secondary leading-relaxed mt-0.5">{purpose}</p>
       <p className="text-xs text-text-tertiary mt-1">{consent}</p>

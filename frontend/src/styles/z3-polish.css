@@ -6,9 +6,8 @@
   margin: 0 0 12px;
   max-width: 34rem;
   padding: 14px 16px 16px;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 24px;
-  background: color-mix(in srgb, var(--color-champagne) 6%, var(--color-surface));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-champagne) 16%, transparent), transparent 75%), var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
 }
 .z3-add-panel__title { margin: 0; color: var(--color-text-primary); font-size: 15px; font-weight: 650; line-height: 1.3; }
 .z3-add-panel__text { margin: 4px 0 0; color: var(--color-text-secondary); font-size: 13px; line-height: 1.5; }
@@ -17,15 +16,11 @@
 /* Чип «+ показатель» читается кнопкой: золотая рамка и плюс, а не серая плашка-сирота. */
 .z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled) {
   gap: 6px;
-  border-color: var(--color-border-champagne);
   background: var(--color-surface);
   color: var(--color-champagne-ink);
   font-weight: 600;
 }
-.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled):hover {
-  border-color: var(--color-champagne);
-  background: color-mix(in srgb, var(--color-champagne) 12%, var(--color-surface));
-}
+.z3-add-panel .fe-chip.z3-add-chip:not(.is-active):not(:disabled):hover { background: color-mix(in srgb, var(--color-champagne) 12%, var(--color-surface)); }
 
 /* ── Рейтинг: строки-карточки на телефоне нажимаются (шеврон, подсветка, медали) ───── */
 .w2-rank-chev { color: var(--color-text-tertiary); opacity: 0.75; }
@@ -47,7 +42,7 @@
   color: #202a3c;
   font-size: 12px;
   font-weight: 700;
-  box-shadow: inset 0 0 0 1px rgba(32, 42, 60, 0.14), 0 1px 2px rgba(32, 42, 60, 0.12);
+  box-shadow: 0 1px 2px rgba(32, 42, 60, 0.12);
 }
 .w2-rank-pos[data-medal='1'] { background: linear-gradient(135deg, #f1dfa6, #c9a24f); }
 .w2-rank-pos[data-medal='2'] { background: linear-gradient(135deg, #f4f6f9, #b4bdc9); }
@@ -64,7 +59,7 @@
   border: 0;
   border-radius: 50%;
   background: #dcdfe1;
-  box-shadow: inset 0 0 0 1px rgba(32, 42, 60, 0.12);
+  box-shadow: none;
 }
 
 /* ── Планета на телефоне: фон сцены плавно уходит в белый, без резкой нижней кромки ──── */
@@ -74,15 +69,11 @@
       linear-gradient(180deg, transparent 70%, var(--planet-paper) 100%),
       radial-gradient(circle at 50% 50%, var(--planet-paper) 0%, var(--planet-paper) 34%, var(--fe-button-bg, #F6F3EC) 100%);
   }
-  .planet-view .planet-country-card {
-    border-top-color: transparent;
-    background: var(--planet-paper);
-  }
+  .planet-view .planet-country-card { background: var(--planet-paper); }
 }
 
 /* ── Выбор показателя: выбранная пилюля одинаково тёмная на главной и в рейтинге ──── */
 .fe-concept-picker .fe-chip.is-active {
-  border-color: var(--color-text-primary);
   background: var(--color-text-primary);
   color: var(--color-surface);
 }
@@ -97,9 +88,9 @@
   position: absolute;
   inset: 5px;
   z-index: -1;
-  border: 1px solid var(--color-border-champagne);
   border-radius: 50%;
-  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
 }
 
 /* ── Текстовые ссылки и «Подробнее»: зона нажатия не меньше 44 px на телефоне, вид не меняется ──── */
@@ -126,5 +117,5 @@
   border-radius: 50%;
   background: var(--color-surface);
   font-size: 12px;
-  box-shadow: 0 0 0 1px var(--color-border-subtle);
+  box-shadow: none;
 }

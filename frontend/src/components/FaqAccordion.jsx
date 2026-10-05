@@ -15,7 +15,7 @@ export default function FaqAccordion({ items, onToggle }) {
   if (!Array.isArray(items) || items.length === 0) return null;
 
   return (
-    <div className="divide-y divide-border-subtle border-t border-b border-border-subtle">
+    <div className="fe-divide-y">
       {items.map((item, i) => {
         const title = item.title ?? item.q;
         const body = item.body ?? item.a;

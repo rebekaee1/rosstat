@@ -17,7 +17,7 @@ function LocaleFlag({ locale, className }) {
       aria-hidden="true"
       className={cn(
         'inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full',
-        'border border-champagne-ink/40 bg-champagne/10 text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-text-primary',
+        'bg-champagne/10 text-[9.5px] font-bold uppercase leading-none tracking-[0.02em] text-text-primary fe-shadow-2',
         className,
       )}
     >
@@ -82,8 +82,8 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
       {open && (
         <div
           className={cn(
-            'absolute top-full z-[110] mt-2 min-w-[10.5rem] rounded-2xl border border-border-subtle',
-            'bg-surface py-1.5 shadow-2xl ring-1 ring-black/[0.08]',
+            'absolute top-full z-[110] mt-2 min-w-[10.5rem] rounded-2xl fe-glass-pop',
+            'py-1.5 shadow-2xl fe-glass-pop',
             'right-0',
           )}
           role="menu"

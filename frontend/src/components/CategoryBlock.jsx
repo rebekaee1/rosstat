@@ -91,8 +91,8 @@ export default function CategoryBlock({
       }}
       className={cn(
         FOCUS_RING_SURFACE,
-        'fe-panel fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] border overflow-hidden',
-        category.apiCategory && 'hover:border-champagne/30 lift-hover cursor-pointer',
+        'fe-panel fe-category-card group relative flex flex-col p-6 rounded-[1.5rem] overflow-hidden',
+        category.apiCategory && 'lift-hover cursor-pointer',
         !category.apiCategory && 'opacity-50 cursor-not-allowed',
         soon && 'opacity-70'
       )}
@@ -120,7 +120,7 @@ export default function CategoryBlock({
         </div>
         {category.apiCategory && (
           <span
-            className="rounded-full border border-border-subtle bg-surface/90 px-2.5 py-1 text-xs font-medium text-text-secondary"
+            className="rounded-full px-2.5 py-1 text-xs font-medium text-text-secondary fe-glass-2"
             title={!countsKnown ? t('category.countsUnavailable') : undefined}
           >
             {!countsKnown

@@ -93,8 +93,8 @@ export default function CalendarGrid({
   ];
 
   return (
-    <div data-testid="calendar-grid" className="fe-panel rounded-[1.5rem] border border-border-subtle bg-surface overflow-hidden mb-6">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
+    <div data-testid="calendar-grid" className="fe-panel rounded-[1.5rem] overflow-hidden mb-6">
+      <div className="flex items-center justify-between px-4 py-3">
         <Button
           variant="ghost"
           onClick={() => { onPrev(); track(trackEvents.CALENDAR_MONTH_NAV, { direction: 'prev' }); }}
@@ -118,7 +118,7 @@ export default function CalendarGrid({
         </Button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5 px-4 py-2.5 border-b border-border-subtle bg-obsidian/40">
+      <div className="flex flex-wrap items-center gap-1.5 px-4 py-2.5 fe-glass-2">
         {sourceButtons.map((sb) => (
           <Chip
             key={sb.value}
@@ -152,10 +152,10 @@ export default function CalendarGrid({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 border-t border-border-subtle">
+      <div className="grid grid-cols-7">
         {cells.map((day, i) => {
           if (day === null) {
-            return <div key={`empty-${i}`} className="min-h-[3.5rem] md:min-h-[5.5rem] border-b border-r border-border-subtle/50 bg-obsidian/20" />;
+            return <div key={`empty-${i}`} className="min-h-[3.5rem] md:min-h-[5.5rem] fe-glass-2" />;
           }
 
           const dateStr = fmt(year, month, day);
@@ -183,7 +183,7 @@ export default function CalendarGrid({
               aria-pressed={isSelected}
               aria-label={dayEvents.length ? t('w3.cal.dayLabel', { day, month: t(`calendar.monthGen.${month}`), n: dayEvents.length }) : undefined}
               className={cn(
-                'fe-cal-day relative min-h-[3.5rem] md:min-h-[5.5rem] border-b border-r border-border-subtle/50 transition-all',
+                'fe-cal-day relative min-h-[3.5rem] md:min-h-[5.5rem] transition-all fe-glass-2',
                 'flex flex-col items-center pt-1.5 gap-1',
                 FOCUS_RING_SURFACE,
                 isSelected && 'bg-champagne/8',
@@ -195,8 +195,8 @@ export default function CalendarGrid({
               <span className={cn(
                 'w-7 h-7 flex items-center justify-center rounded-full text-sm tabular-nums leading-none',
                 isToday && !isSelected && 'bg-champagne-ink text-white font-bold',
-                isToday && isSelected && 'bg-champagne-ink text-white font-bold ring-2 ring-champagne-ink/40 ring-offset-2 ring-offset-surface',
-                !isToday && isSelected && 'bg-champagne/15 text-champagne-ink font-semibold ring-2 ring-champagne-ink/70',
+                isToday && isSelected && 'bg-champagne-ink text-white font-bold fe-shadow-2',
+                !isToday && isSelected && 'bg-champagne/15 text-champagne-ink font-semibold fe-shadow-2',
                 !isToday && !isSelected && hasHigh && 'font-semibold text-text-primary',
                 !isToday && !isSelected && !hasHigh && 'text-text-secondary',
               )}>

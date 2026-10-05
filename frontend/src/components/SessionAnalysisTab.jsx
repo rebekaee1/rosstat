@@ -3,8 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../lib/api';
 
 const BASE = '/admin/bi/session-analysis';
-const box = 'rounded-xl border border-border-subtle bg-surface p-4';
-const button = 'rounded-lg border border-border-subtle px-3 py-2 text-sm hover:bg-champagne/10 disabled:opacity-40';
+const box = 'rounded-xl p-4 fe-glass-2';
+const button = 'rounded-lg px-3 py-2 text-sm hover:bg-champagne/10 disabled:opacity-40 fe-glass-2';
 const visualLabels = { not_reviewed: 'Запись не просмотрена', dom_only: 'Есть состояния DOM, пиксельного просмотра нет', partial: 'Просмотрена часть записи', reviewed: 'Запись просмотрена полностью' };
 const gapLabels = { not_captured_or_expired: 'Запись не собрана или истёк срок хранения', missing_sequence: 'Не доставлен участок записи', missing_fragment: 'Не доставлена часть пакета', end_not_received: 'Завершение записи не доставлено', missing_full_snapshot: 'Нет начального состояния страницы', client_dropped_events: 'Часть событий потеряна на устройстве', invalid_payload: 'Повреждённый участок записи', server_read_byte_limit: 'Достигнут лимит размера чтения', server_read_row_limit: 'Достигнут лимит количества пакетов' };
 const gapLabel = gap => gapLabels[gap?.reason] || 'Часть записи недоступна';
@@ -75,7 +75,7 @@ function ReplayPlayer({ sessionId }) {
       {!query.data.recordings?.length && <p className="text-sm">Собственная запись этой сессии отсутствует.</p>}
       {!!query.data.recordings?.length && <>
         <label className="text-sm">Страница записи
-          <select aria-label="Страница записи" className="ml-2 rounded border border-border-subtle bg-surface px-2 py-1 max-w-full" value={index} onChange={e => { setIndex(Number(e.target.value)); setOffset(0); setError(''); }}>
+          <select aria-label="Страница записи" className="ml-2 rounded px-2 py-1 max-w-full fe-glass-2" value={index} onChange={e => { setIndex(Number(e.target.value)); setOffset(0); setError(''); }}>
             {query.data.recordings.map((r, i) => <option key={r.recording_id} value={i}>{i + 1}. {r.page} — {time(r.duration_ms)}</option>)}
           </select>
         </label>
@@ -89,7 +89,7 @@ function ReplayPlayer({ sessionId }) {
           </label>
         </div>}
         {error && <p role="alert" className="text-negative text-sm">{error}</p>}
-        <div className="overflow-auto max-h-[650px] rounded-lg border border-border-subtle bg-white" ref={root} />
+        <div className="overflow-auto max-h-[650px] rounded-lg fe-glass-2" ref={root} />
       </>}
     </>}
   </section>;
@@ -102,7 +102,7 @@ function RawEvents({ sessionId }) {
   return <section className={box}>
     <h3 className="font-semibold mb-2">Все сохранённые события</h3>
     <label className="text-sm">Источник
-      <select aria-label="Источник событий" className="ml-2 border border-border-subtle rounded bg-surface p-1" value={source} onChange={e => { setSource(e.target.value); setCursor(null); }}>
+      <select aria-label="Источник событий" className="ml-2 rounded p-1 fe-glass-2" value={source} onChange={e => { setSource(e.target.value); setCursor(null); }}>
         <option value="behavior">Поведение и производительность</option>
         <option value="frontend">Бизнес-события</option>
       </select>

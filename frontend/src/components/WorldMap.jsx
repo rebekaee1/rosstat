@@ -379,7 +379,7 @@ export default function WorldMap({
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl border border-[#d7dfe5] bg-[#E8EEF3] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_16px_40px_rgba(38,54,67,0.05)]">
+      <div className="relative overflow-hidden rounded-2xl bg-[#E8EEF3] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_16px_40px_rgba(38,54,67,0.05)]">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -493,21 +493,21 @@ export default function WorldMap({
         </svg>
 
         <div className="absolute right-3 top-3 flex flex-col gap-1" data-no-export="true">
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
             <Plus size={15} />
           </button>
-          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink disabled:opacity-35">
+          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
             <Minus size={15} />
           </button>
           {k > 1 && (
-            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-9 w-9 rounded-lg border border-border-subtle bg-white/95 text-text-secondary shadow-sm transition-colors hover:border-border-champagne hover:text-champagne-ink">
+            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink fe-glass-2">
               <Maximize2 size={14} />
             </button>
           )}
         </div>
 
         {hover && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl border border-border-subtle bg-white/95 px-3.5 py-3 text-xs shadow-xl backdrop-blur-sm">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl px-3.5 py-3 text-xs shadow-xl backdrop-blur-sm fe-glass-pop">
             <div className="font-semibold text-text-primary">{hover.country.name}</div>
             <div className="mt-1 font-mono text-base font-semibold text-champagne">
               {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
@@ -522,7 +522,7 @@ export default function WorldMap({
               </div>
             )}
             {hoverPeriod && (
-              <div className="mt-1.5 border-t border-border-subtle pt-1.5 font-mono text-xs text-text-secondary">
+              <div className="mt-1.5 pt-1.5 font-mono text-xs text-text-secondary">
                 {hoverPeriod}
               </div>
             )}
@@ -531,7 +531,7 @@ export default function WorldMap({
       </div>
 
       {valuesByCode && (
-        <div className="mt-4 rounded-xl border border-border-subtle bg-obsidian-light/45 px-3 py-3">
+        <div className="mt-4 rounded-xl px-3 py-3 fe-glass-2">
           <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <div className="text-xs font-medium text-text-secondary">
               {metricName || t('world.map.distribution')}
@@ -551,7 +551,7 @@ export default function WorldMap({
                 title={t(bin.labelKey)}
               >
                 <div
-                  className="h-3.5 rounded-[4px] border border-black/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.32)]"
+                  className="h-3.5 rounded-[4px] shadow-[inset_0_1px_0_rgba(255,255,255,0.32)] fe-glass-2"
                   style={{ backgroundColor: bin.color }}
                 />
                 <div className="mt-1 break-words font-mono text-xs leading-tight tabular-nums text-text-secondary">
@@ -584,7 +584,7 @@ export default function WorldMap({
             )}
             <span className="inline-flex items-center gap-1.5">
               <span
-                className="h-2.5 w-4 rounded-[3px] border border-black/[0.08]"
+                className="h-2.5 w-4 rounded-[3px] fe-glass-2"
                 style={{
                   backgroundColor: WORLD_NO_DATA,
                   backgroundImage: 'repeating-linear-gradient(35deg, transparent 0, transparent 3px, rgba(122,132,130,0.2) 3px, rgba(122,132,130,0.2) 5px)',

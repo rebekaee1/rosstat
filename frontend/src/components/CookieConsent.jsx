@@ -153,7 +153,7 @@ export default function CookieConsent() {
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
         className={cn(
-          'fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl bg-obsidian border border-border-subtle fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
+          'fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden rounded-2xl fe-reveal [--fe-duration:0.22s] [--fe-rise:10px]',
           expanded ? 'sm:max-w-md' : 'sm:max-w-[31rem]',
         )}
       >
