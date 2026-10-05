@@ -101,3 +101,10 @@ describe('yearDelta', () => {
     expect(yearDelta(-5, 10)).toBeNull();
   });
 });
+
+describe('shortUnit: пустая единица', () => {
+  it('null и undefined дают пустую строку, а не исключение', () => {
+    expect(shortUnit(null)).toBe('');
+    expect(shortUnit(undefined)).toBe('');
+  });
+});

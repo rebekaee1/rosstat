@@ -202,7 +202,7 @@ export function pluralRu(n, [one, few, many]) {
 
 /** Короткая единица для компактных подписей. */
 export function shortUnit(unit = '') {
-  const u = unit.trim().toLowerCase();
+  const u = String(unit ?? '').trim().toLowerCase();
   const map = [
     [/^million rubles/, 'mln ₽'],
     [/^billion rubles/, 'bln ₽'],
@@ -236,7 +236,8 @@ export function shortUnit(unit = '') {
   for (const [re, short] of map) {
     if (re.test(u)) return short;
   }
-  return unit.length > 26 ? '' : unit;
+  const raw = String(unit ?? '');
+  return raw.length > 26 ? '' : raw;
 }
 
 /** Дельта к прошлому году: направление и текст.

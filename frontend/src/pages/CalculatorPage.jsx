@@ -381,7 +381,7 @@ export default function CalculatorPage() {
     else if (preset.from === null) setRawFromYear(effectiveMin);
     else setRawFromYear(Math.max(effectiveMax - preset.offset, effectiveMin));
     setRawToYear(effectiveMax);
-    track(events.CALC_PRESET, { preset: preset.label });
+    track(events.CALC_PRESET, { preset: preset.labelKey });
   }, [effectiveMin, effectiveMax]);
 
   const handleCountryChange = useCallback((slug) => {

@@ -1006,12 +1006,14 @@ async def render_world_rating_html(
             without_data=without_tpl.format(n=without_data),
         )
     else:
+        missing = (
+            f"; у ещё {_countries_phrase(without_data)} из каталога значения за этот год нет"
+            if without_data else ""
+        )
         intro = (
             f"Рейтинг стран по показателю «{name}» за {active_year} год. "
-            f"В таблице {_countries_phrase(with_data)} с опубликованным значением; ещё "
-            f"{_countries_phrase(without_data)} мирового каталога не имеют значения за этот год. "
-            f"Порядок таблицы нейтральный: пользователь может переключить сортировку "
-            f"по возрастанию или убыванию значения."
+            f"В таблице {_countries_phrase(with_data)} с опубликованным значением{missing}. "
+            f"Страны можно расположить по возрастанию или по убыванию значения."
         )
     if concept["money_unit_guard"]:
         intro += (
@@ -1019,7 +1021,7 @@ async def render_world_rating_html(
             if en and world_template("rating_money_guard")
             else (
                 " Денежные показатели не пересчитываются в другую валюту: в рейтинг "
-                "попадают только ряды, уже опубликованные в сопоставимой единице."
+                "попадают только значения, уже опубликованные в сопоставимой единице."
             )
         )
     if concept.get("index_base_guard"):

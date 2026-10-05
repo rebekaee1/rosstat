@@ -650,7 +650,7 @@ def _default_keywords() -> str:
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
 body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
-.seo-page{max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
+.seo-page{box-sizing:border-box;width:100%;max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
 .seo-note{font-size:13px;color:#8a6d1f;background:#fdf6e3;border:1px solid #ecd9a0;border-radius:8px;padding:.5rem .75rem;margin:.5rem 0}
 .seo-page h1{font-size:1.5rem;font-weight:700;line-height:1.3;letter-spacing:-.01em;margin:0 0 .75rem;max-width:48rem;color:#1A1A2E}

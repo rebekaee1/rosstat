@@ -66,7 +66,7 @@ Eurostat сохраняет отдельные country/remap/slice транза�
 До отдельного выпуска это не поведение production. PostgreSQL/Redis outbox,
 unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отдельной работой.
 
-**Last updated:** 2026-09-30 (содержательная сверка frontend/docs на `main 972579f`; цикл знаний, валютные canonical, ticker и РСЯ; production этим проходом не опрашивался). Ранее 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
+**Last updated:** 2026-10-05 (волны правок интерфейса 04–05.10, календарь и категории сверены с кодом). Ранее 2026-09-30 (содержательная сверка frontend/docs на `main 972579f`; цикл знаний, валютные canonical, ticker и РСЯ; production этим проходом не опрашивался). Ранее 2026-09-27 (ночной I/O stall при ротации nginx-лога, `fe:ver:*` под `allkeys-lru` — operational traps ниже; текущий статус и границы доказательства — [backlog](docs/backlog.md#2026-09-27--проверка-выпуска-3-web-worker--scheduler)). Ранее 2026-09-25 (sitemap: потолок 50 000 URL, lastmod по содержанию, шард без полной пересборки — `CONTEXT.md::Sitemap protocol trap`).
 
 > **Историческая хроника:** следующий абзац сохраняет решения на указанные даты. Поздние дополнения ADR и текущий код могут их уточнять или отменять; указатель сверок — [architecture-history](docs/architecture-history.md).
 
@@ -362,13 +362,13 @@ Daily ETL (06:00 МСК, `RUSTATS_SCHEDULER_CRON_HOUR/MINUTE`) запускае�
 
 ### Category
 
-Функциональная группа индикаторов: Цены, Ставки, Финансы, **Рынок труда**, ВВП, Торговля, Бизнес, Население, Наука. Девять штук. На главной — сетка карточек, на `/category/{slug}` — список индикаторов в категории.
+Функциональная группа индикаторов: Цены, Ставки, Валюты, Индексы, Финансы, Товарные рынки, **Рынок труда**, ВВП, Население, Торговля, Бизнес, Наука. Двенадцать штук (источник: `CATEGORY_META_EN` и русские названия в `seo_content.py`; сверено 05.10.2026). На главной — сетка карточек, на `/category/{slug}` — список индикаторов в категории.
 
 В БД хранится русское имя (`Цены`, `Рынок труда`); URL использует slug (`prices`, `labor`). Маппинг — `frontend/src/lib/categories.js` (включает `seoTitle`/`seoDescription`, идентичные backend `seo_content.py::CATEGORY_META.title/description` — это **зеркало backend SSR**, не источник правды; см. ADR-0003).
 
 ### Calendar event
 
-Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата, международные резервы РФ). После ADR-0005 public calendar **source-bound**: событие показывается пользователю только если `date_confidence = official_explicit` (официальная дата из календаря/ICS/страницы) или `official_rule` (дата рассчитана по опубликованному правилу + versioned `ru_working_calendar` с source_url), `is_estimated = false`, и заполнены `event_key`, `source_url`, `source_hash`, `last_seen_at`. `estimated` rows и миграционные legacy rows без provenance скрыты из `/api/v1/calendar`, `/upcoming` и iCal. Переносы обновляются по stable `event_key`, старая дата хранится в `metadata_json.reschedule_audit`. Статус `scheduled` → `released` автоматически промотится по `scheduled_date < today`.
+Запись в `EconomicEvent` для расписания публикаций (релиз CPI Росстата, заседание совета директоров ЦБ, недельный ИПЦ Росстата, международные резервы РФ). После ADR-0005 public calendar **source-bound**: событие показывается пользователю только если `date_confidence = official_explicit` (официальная дата из календаря/ICS/страницы) или `official_rule` (дата рассчитана по опубликованному правилу + versioned `ru_working_calendar` с source_url), `is_estimated = false`, и заполнены `event_key`, `source_url`, `source_hash`, `last_seen_at`. `estimated` rows и миграционные legacy rows без provenance скрыты из `/api/v1/calendar`, `/upcoming` и iCal. Переносы обновляются по stable `event_key`, старая дата хранится в `metadata_json.reschedule_audit`. Прошедшая дата сама по себе не означает выпуск: статус `released` ставится только при наличии `actual_value` (его заполняет enrichment из опубликованных данных), а API (`_effective_status`) показывает для прошедшего события без факта `awaiting_confirmation`. Задача `_promote_past_events` не продвигает статус по дате, а откатывает прежние необоснованные `released` без факта обратно в `scheduled` (обновлено 05.10.2026 по чтению `scheduler.py` и `api/calendar.py`).
 
 ### Embed widget
 

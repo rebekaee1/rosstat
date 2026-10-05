@@ -71,4 +71,20 @@ describe('CalendarPage: видимые состояния', () => {
     const summary = screen.getByText('Ежедневные курсы и ставки: 4');
     expect(summary.closest('details').hasAttribute('open')).toBe(false);
   });
+  it('лендинг прошедшего месяца показывает все события месяца, а не только будущие', async () => {
+    mockApiGet([
+      [/^\/calendar\?/, {
+        total: 1,
+        events: [
+          { id: 7, title: 'Индекс потребительских цен (ИПЦ)', importance: 3, source: 'rosstat', scheduled_date: '2020-04-10', scheduled_time: '19:00', source_event_uid: 'rosstat-cpi-2020-04-10', indicator_code: 'cpi' },
+        ],
+      }],
+      [/^\/calendar\/upcoming/, { events: [] }],
+    ]);
+    renderPage(<CalendarPage fixedYear={2020} fixedMonth={3} seoPath="/calendar/2020/04" />, {
+      path: '/calendar/:year/:month', route: '/calendar/2020/04', locale: 'ru',
+    });
+    expect(await screen.findByText('Индекс потребительских цен')).toBeTruthy();
+    expect(screen.queryByTestId('calendar-empty')).toBeNull();
+  });
 });

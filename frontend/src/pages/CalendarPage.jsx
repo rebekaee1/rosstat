@@ -200,7 +200,12 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }, []);
 
-  const isCurrentMonth = year === initYear && month === initMonth;
+  // «Текущий» месяц считаем от реальной даты, а не от открытой страницы: на лендинге прошедшего месяца
+  // события не отсекаются по сегодняшнему дню.
+  const isCurrentMonth = useMemo(() => {
+    const now = new Date();
+    return year === now.getFullYear() && month === now.getMonth();
+  }, [year, month]);
 
   // Ежедневные события («Ставка RUONIA», курсы) — одной строкой «Каждый рабочий день», а не в каждом дне.
   const recurring = useMemo(() => findDailyRecurring(allEvents), [allEvents]);

@@ -1439,7 +1439,7 @@ export default {
   'world.map.band.zero4': 'Just above zero',
   'world.map.band.zero5': 'Moderately above zero',
   'world.map.band.zero6': 'Far above zero',
-  'world.map.bandRank': '{band}, {rank}th percentile',
+  'world.map.bandRank': '{band}, percentile {rank}',
   'world.map.scaleMedian': 'Position vs median',
   'world.map.scaleZero': 'Deviation from zero',
   'world.map.legendMedian':
@@ -1683,7 +1683,7 @@ export default {
   'regions.ind.metaRankAchieve':
     ', ranked {position} of {total} Russian regions.',
   'regions.ind.metaRankNeutral':
-    ', {position}th by magnitude among {total} Russian regions.',
+    ', position {position} by magnitude among {total} Russian regions.',
   'regions.ind.jsonLdDesc':
     '{name} ({unit}), {region}, {from}–{to}. Source: Rosstat.',
   'regions.ind.creatorRosstat': 'Rosstat',
@@ -1765,7 +1765,7 @@ export default {
   'world.map.signed.nearPos': 'Above zero, near zero',
   'world.map.signed.modPos': 'Moderately above zero',
   'world.map.signed.strongPos': 'Strongly above zero',
-  'world.map.bandWithPct': '{label}, {rank}th percentile',
+  'world.map.bandWithPct': '{label}, percentile {rank}',
   'embed.copied': 'Copied',
   'embed.copyCode': 'Copy code',
   'embed.nothingFound': 'Nothing found',

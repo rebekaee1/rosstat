@@ -7,7 +7,7 @@
 
 /* ── Переключатели показа: 1–2 строки вместо стопки кнопок ───────────────── */
 :root .fe-pick-card { margin-bottom: 16px; padding: 14px; }
-@media (min-width: 640px) { .fe-pick-card { margin-bottom: 24px; padding: 16px; } }
+@media (min-width: 640px) { :root .fe-pick-card { margin-bottom: 24px; padding: 16px; } }
 :root .fe-pick-label { margin-bottom: 8px; }
 :root .fe-pick-hint { margin-top: 8px; }
 :root .fe-pick-sub { margin-top: 12px; padding-top: 12px; }
@@ -145,19 +145,19 @@
   font-weight: 600;
   white-space: nowrap;
 }
-@media (pointer: coarse) { .fe-help-link { width: auto; height: 44px; } }
+@media (pointer: coarse) { :root .fe-help-link { width: auto; height: 44px; } }
 
 /* ── Методология: формулы мелким шрифтом не оставляем ──────────────────── */
 :root .fe-more__body { font-size: 14px; }
 
 /* ── Плитки каталога: компактнее, общая подпись даты ──────────────────── */
 :root .fe-tile { gap: 10px; padding: 14px 16px; }
-@media (min-width: 640px) { .fe-tile { padding: 16px 18px; } }
+@media (min-width: 640px) { :root .fe-tile { padding: 16px 18px; } }
 :root .fe-tile__top { align-items: center; }
 :root .fe-tile__foot { margin-top: 6px; }
 :root .fe-tile__date { white-space: nowrap; }
 :root .fe-cat-grid { gap: 10px; }
-@media (min-width: 640px) { .fe-cat-grid { gap: 14px; } }
+@media (min-width: 640px) { :root .fe-cat-grid { gap: 14px; } }
 :root .fe-tile__body--spark { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 :root .fe-tile__main { min-width: 0; }
 :root .fe-tile__spark { flex: 0 0 38%; min-width: 84px; max-width: 150px; align-self: center; }

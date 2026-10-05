@@ -435,7 +435,8 @@ function formatFixed(num, digits, locale) {
   const dec = loc === 'en' ? '.' : ',';
   const fixed = num.toFixed(digits);
   const [intPart, decPart] = fixed.split('.');
-  const sign = intPart.startsWith('-') ? '-' : '';
+  // Округлилось до нуля (−0,001 при двух знаках) — знак «минус» не нужен: «0,00», а не «−0,00».
+  const sign = intPart.startsWith('-') && Number(fixed) !== 0 ? '-' : '';
   const abs = intPart.replace('-', '');
   const grouped = groupThousands(abs, loc);
   return decPart !== undefined ? `${sign}${grouped}${dec}${decPart}` : `${sign}${grouped}`;

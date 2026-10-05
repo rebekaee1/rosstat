@@ -478,3 +478,13 @@ describe('relativeTime', () => {
     expect(relativeTime(new Date().toISOString(), 'en')).toBe('just now');
   });
 });
+
+describe('formatValue: отрицательный ноль', () => {
+  it('значение, округлённое до нуля, выводится без знака минус (ru и en)', () => {
+    expect(formatValue(-0.001, 2, 'ru')).toBe('0,00');
+    expect(formatValue(-0.001, 2, 'en')).toBe('0.00');
+    expect(formatValue(-0.4, 0, 'ru')).toBe('0');
+    expect(formatValue(-0.5, 0, 'ru')).toBe('-1');
+    expect(formatValue(-1.234, 2, 'ru')).toBe('-1,23');
+  });
+});

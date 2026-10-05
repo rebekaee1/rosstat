@@ -72,7 +72,12 @@ export function readLocalePreference() {
   for (const part of String(document.cookie || '').split(';')) {
     const item = part.trim();
     if (!item.startsWith(prefix)) continue;
-    const value = decodeURIComponent(item.slice(prefix.length)).trim().toLowerCase();
+    let value = '';
+    try {
+      value = decodeURIComponent(item.slice(prefix.length)).trim().toLowerCase();
+    } catch {
+      continue; // битая cookie не должна ронять провайдер
+    }
     if (value === 'en' || value === 'ru') return value;
   }
   return null;

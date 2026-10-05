@@ -77,10 +77,10 @@ function statValue(value, { max, min }) {
   return Math.max(Math.abs(max), Math.abs(min)) >= 1000 ? Math.round(value) : value;
 }
 
-const MONTH_NAMES_RU = [
-  'январь', 'февраль', 'март', 'апрель', 'май', 'июнь',
-  'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь',
-];
+/** Название месяца на языке интерфейса (ru: «январь», en: «January»). */
+function monthName(month, locale) {
+  return new Date(2000, month - 1, 1).toLocaleDateString(locale === 'en' ? 'en-US' : 'ru-RU', { month: 'long' });
+}
 
 const ABORTION_SIBLING = {  'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
     code: 'beremennosti-s-abortivnym-ishodom-na-1000-zhenschin',
@@ -185,7 +185,7 @@ export default function RegionIndicatorPage() {
   const last = activeSeries[activeSeries.length - 1];
   const first = activeSeries[0];
   const lastLabel = last
-    ? (isMonthly ? `${MONTH_NAMES_RU[last.month - 1]} ${last.year}` : String(last.year))
+    ? (isMonthly ? `${monthName(last.month, locale)} ${last.year}` : String(last.year))
     : '';
 
   // Карточка рендерится от активного ряда (месячного или годового).
@@ -262,13 +262,13 @@ export default function RegionIndicatorPage() {
     const min = Math.min(...values);
     const at = (idx) => {
       const p = activeSeries[idx];
-      return isMonthly ? MONTH_NAMES_RU[p.month - 1] + ' ' + p.year : p.year;
+      return isMonthly ? monthName(p.month, locale) + ' ' + p.year : p.year;
     };
     return {
       max, maxAt: at(values.indexOf(max)),
       min, minAt: at(values.indexOf(min)),
     };
-  }, [activeSeries, isMonthly]);
+  }, [activeSeries, isMonthly, locale]);
 
   const tableRows = useMemo(
     () => (activeSeries.length ? [...activeSeries].reverse() : []),
@@ -573,7 +573,7 @@ export default function RegionIndicatorPage() {
                       return (
                         <tr key={pKey} className="border-t border-border-subtle">
                           <td className="fe-num px-3 py-1.5 text-text-secondary sm:px-4">
-                            {isMonthly ? `${MONTH_NAMES_RU[p.month - 1]} ${p.year}` : p.year}
+                            {isMonthly ? `${monthName(p.month, locale)} ${p.year}` : p.year}
                           </td>
                           <td className="fe-num px-3 py-1.5 text-right text-text-primary sm:px-4">{formatRegionNumber(p.value, active.indicator.unit, locale)}</td>
                           {active.russia_series?.length > 0 && (
