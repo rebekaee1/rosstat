@@ -258,6 +258,24 @@
 :root:root .z4-tiles .w2-stat-value,
 :root:root .z4-tiles .fe-tele__num { letter-spacing: -0.035em; }
 
+/* Круг 4: плитки значений в две колонки (нечётная последняя на всю ширину). Правая колонка становится ниже
+   на одну плитку-строку и сравнивается по высоте с плитой графика: пустота под графиком слева закрывается без
+   растягивания самого графика (ECharts/Recharts остаются в блоке с явной высотой плота). */
+@media (min-width: 1100px) {
+  :root:root .z4-tiles .fe-substat-grid,
+  :root:root .z4-tiles .fe-substat-grid[data-count],
+  :root:root .z4-tiles .fe-tele-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  :root:root .z4-tiles .fe-substat-grid > .w2-stat:last-child:nth-child(even),
+  :root:root .z4-tiles .fe-tele-grid > .fe-tele:last-child:nth-child(even) { grid-column: 1 / -1; }
+  :root:root .z4-tiles .w2-stat,
+  :root:root .z4-tiles .fe-tele { padding: 12px 14px; }
+  :root:root .z4-tiles .w2-stat-value,
+  :root:root .z4-tiles .fe-tele__num { font-size: 22px; }
+}
+
 /* Кнопки действий: L2 чуть светлее карточки, на которой лежат (иначе слой не читается). */
 :root:root .z4-chart-head .fe-btn--secondary,
 :root:root .z4-chart-head .fe-help-link,
@@ -383,9 +401,7 @@
 }
 .fe-compare-gap__beads i + i { margin-left: -5px; }
 
-/* Ленты рядов: золото и сапфир со свечением снизу (stroke задаёт градиент в defs графика). */
-.fe-compare-plot .fe-cl-0 .recharts-line-curve { filter: drop-shadow(0 6px 8px rgba(201, 162, 77, 0.42)); }
-.fe-compare-plot .fe-cl-1 .recharts-line-curve { filter: drop-shadow(0 6px 8px rgba(53, 89, 154, 0.36)); }
+/* Ленты рядов рисуют классы K4 (.k4-ribbon, .k4-gloss из styles/k4-charts.css): свечение, блик-штрих; бусину и заливку задаёт ComparePage. */
 
 /* Подписи концов линий: линза с флагом страны. */
 .fe-compare-end__flag {
