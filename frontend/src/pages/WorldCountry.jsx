@@ -50,6 +50,7 @@ import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { countryPublicName, HOME_MAP_RUSSIA_CONCEPT_CODES } from '../lib/homeWorkbench';
 import { indicatorsCountText, similarCountries, topicDisplayName } from '../lib/countryKeyFigures';
+import { readCountryBootstrap } from '../lib/countryBootstrap';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
@@ -103,7 +104,10 @@ export default function WorldCountry() {
   const countryName = countryPublicName(data?.country, locale);
   // Название и флаг из каталога стран, который уже в кэше: человек видит страну сразу после нажатия.
   const cachedCountry = useCachedWorldCountry(slug);
-  const previewName = countryPublicName(cachedCountry, locale);
+  // Серверная предзагрузка «Главного» (#fe-country-bootstrap): название страны и четыре карточки до ответа API.
+  const preload = useMemo(() => readCountryBootstrap(slug, locale), [slug, locale]);
+  const previewCountry = cachedCountry || preload?.country || null;
+  const previewName = countryPublicName(previewCountry, locale);
   // Переход по крошке с карточки показателя: название страны уже известно и стоит в крошках сразу, пока грузятся данные.
   const crumbNameFromLink = useLocation().state?.crumbName;
   const notFound = isError && error?.response?.status === 404;
@@ -221,10 +225,11 @@ export default function WorldCountry() {
   );
 
   // «Сравнить с Россией»: первый главный показатель страны, который есть и у России (честная сопоставимость).
+  const heroOverview = useMemo(() => data?.overview || preload?.overview || [], [data, preload]);
   const russiaCompareHref = useMemo(() => {
-    const pick = (data?.overview || []).find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug]);
+    const pick = heroOverview.find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug]);
     return pick ? `/compare?codes=w:${slug}:${pick.concept_slug},w:russia:${pick.concept_slug}` : '';
-  }, [data, slug]);
+  }, [heroOverview, slug]);
 
   const isUsCatalog = slug === 'united-states';
   const usTopics = useMemo(
@@ -297,6 +302,32 @@ export default function WorldCountry() {
     };
   }, [filteredCategories, searching, isMobileSingle, isUsCatalog, denseCatalog]);
 
+  // Кнопки героя одинаковы до и после ответа API: «Главное» из предзагрузки даёт их сразу.
+  const heroActions = (
+    <div className="z5-hero__actions">
+      <Button
+        as={Link}
+        to={heroOverview[0] ? `/compare?codes=w:${slug}:${heroOverview[0].concept_slug}` : '/compare'}
+        className="w-full sm:w-auto"
+      >
+        <BarChart3 size={15} aria-hidden="true" />
+        {t('world.country.compareCta')}
+        <ArrowUpRight size={14} aria-hidden="true" />
+      </Button>
+      {slug !== 'russia' && russiaCompareHref ? (
+        <Button
+          as={Link}
+          to={russiaCompareHref}
+          variant="secondary"
+          className="w-full sm:w-auto"
+        >
+          <Scale size={15} aria-hidden="true" />
+          {t('w6b.country.compareRussia')}
+        </Button>
+      ) : null}
+    </div>
+  );
+
   // Несуществующий адрес страны — общая страница 404 (та же оболочка, поиск и популярные разделы).
   if (notFound) return <NotFound />;
 
@@ -323,8 +354,8 @@ export default function WorldCountry() {
               {previewName ? (
                 <div data-testid="country-preview">
                   <div className="w2-kicker mb-2 flex items-center gap-2">
-                    <CountryFlag code={cachedCountry.code} className="w2-kicker-flag" />
-                    {localizedDisplay(locale, cachedCountry.region, cachedCountry.region_en)}
+                    <CountryFlag code={previewCountry.code} className="w2-kicker-flag" />
+                    {localizedDisplay(locale, previewCountry.region, previewCountry.region_en)}
                   </div>
                   <h1 className="z5-hero__title font-display font-bold text-text-primary">
                     {worldCountryTitle(slug, previewName, locale)}
@@ -343,17 +374,28 @@ export default function WorldCountry() {
                   </div>
                 </>
               )}
-              <div className="z5-hero__actions">
-                <SkeletonBox className="h-11 w-52 rounded-xl" />
-                <SkeletonBox className="h-11 w-44 rounded-xl" />
-              </div>
+              {preload ? heroActions : (
+                <div className="z5-hero__actions">
+                  <SkeletonBox className="h-11 w-52 rounded-xl" />
+                  <SkeletonBox className="h-11 w-44 rounded-xl" />
+                </div>
+              )}
             </div>
             <div className="z5-hero__profile z5-profile-skel" aria-hidden="true" />
           </div>
           <h2 className="w2-main-title z5-main-title" aria-hidden="true">{t('w6b.country.main')}</h2>
-          <div className="z5-key-grid z5-key-grid--n3">
-            {[0, 1, 2].map((i) => <div key={i} className="z5-key z5-key--skel w2-kpi" aria-hidden="true" />)}
-          </div>
+          {preload ? (
+            <CountryKeyFigures
+              items={preload.overview.slice(0, KEY_FIGURES_MAX)}
+              slug={slug}
+              locale={locale}
+              preload={preload}
+            />
+          ) : (
+            <div className="z5-key-grid z5-key-grid--n3">
+              {[0, 1, 2].map((i) => <div key={i} className="z5-key z5-key--skel w2-kpi" aria-hidden="true" />)}
+            </div>
+          )}
           <LoadingNote onRefresh={() => refetch()} />
         </div>
       )}
@@ -373,30 +415,7 @@ export default function WorldCountry() {
                 <p className="z5-hero__text text-text-secondary">
                   {t('w2.country.lead', { country: countryName })}
                 </p>
-                <div className="z5-hero__actions">
-                  <Button
-                    as={Link}
-                    to={data.overview?.[0]
-                      ? `/compare?codes=w:${slug}:${data.overview[0].concept_slug}`
-                      : '/compare'}
-                    className="w-full sm:w-auto"
-                  >
-                    <BarChart3 size={15} aria-hidden="true" />
-                    {t('world.country.compareCta')}
-                    <ArrowUpRight size={14} aria-hidden="true" />
-                  </Button>
-                  {slug !== 'russia' && russiaCompareHref ? (
-                    <Button
-                      as={Link}
-                      to={russiaCompareHref}
-                      variant="secondary"
-                      className="w-full sm:w-auto"
-                    >
-                      <Scale size={15} aria-hidden="true" />
-                      {t('w6b.country.compareRussia')}
-                    </Button>
-                  ) : null}
-                </div>
+                {heroActions}
               </div>
               <div className="z5-hero__profile">
                 <CountrySilhouette
@@ -417,7 +436,12 @@ export default function WorldCountry() {
             </div>
 
             <h2 className="w2-main-title z5-main-title">{t('w6b.country.main')}</h2>
-            <CountryKeyFigures items={(data.overview || []).slice(0, KEY_FIGURES_MAX)} slug={slug} locale={locale} />
+            <CountryKeyFigures
+              items={(data.overview || []).slice(0, KEY_FIGURES_MAX)}
+              slug={slug}
+              locale={locale}
+              preload={preload}
+            />
           </div>
 
           {data.country?.has_regions && (

@@ -851,6 +851,10 @@ WORLD_TEMPLATES_EN: dict[str, str] = {
         "the primary source."
     ),
     "country_h2_key": "Key indicators",
+    "country_h2_main": "Key figures",
+    "country_figure_year_ago": "A year ago: {value}.",
+    "country_figure_real": "adjusted for inflation",
+    "country_figure_yoy": "year over year",
     "country_h2_source": "Data source",
     "country_source_national": (
         "Data are published by {source_phrase}. Series on this site use the source "

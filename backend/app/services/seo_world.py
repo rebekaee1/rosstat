@@ -1603,11 +1603,23 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         '<a href="/">главной витрине</a> Forecast Economy.'
     )
 
+    # «Главное»: те же цифры, что в карточках страницы (текстом для поисковика и
+    # JSON предзагрузки для приложения). Сбой блока не ломает страницу.
+    from app.services.seo_country_figures import (
+        load_country_key_figures,
+        render_bootstrap_head,
+        render_key_figures_html,
+    )
+
+    key_figures = await load_country_key_figures(db, country)
+    key_figures_html = render_key_figures_html(key_figures, slug)
+
     body = f"""<div class="seo-page">
 {_breadcrumbs_nav(crumbs.world_country_trail(country_label, paths.country(slug)))}
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(h1_text)}</h1>
 <p>{lead}</p>
+{key_figures_html}
 {figure_html}
 <section class="seo-section"><h2>{escape(h2_key)}</h2>{key_table}</section>
 {''.join(sections)}
@@ -1654,6 +1666,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         json_ld=json_ld,
         keywords=keywords,
         og_image=_absolute(og_path),
+        extra_head=render_bootstrap_head(key_figures) or None,
     )
     return 200, html
 

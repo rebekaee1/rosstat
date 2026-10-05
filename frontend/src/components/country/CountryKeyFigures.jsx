@@ -13,6 +13,7 @@ import { homeConceptLabel } from '../../lib/homeWorkbench';
 import {
   figureDigits, humanizeQualifier, scaleMoneyUnit, yearAgoPoint,
 } from '../../lib/countryKeyFigures';
+import { preloadedFigurePoints } from '../../lib/countryBootstrap';
 import { indicatorPath } from '../../lib/sitePaths';
 import { useT } from '../../i18n';
 import DeltaBadge from '../DeltaBadge';
@@ -38,15 +39,17 @@ function formatPeriod(dateStr, frequency, locale) {
   return formatDate(dateStr, 'full', locale);
 }
 
-function KeyFigureCard({ item, slug, locale, index }) {
+function KeyFigureCard({ item, slug, locale, index, preload }) {
   const t = useT();
   const sparkHeight = useSparkHeight(88, 52);
   const frequency = item.frequency || 'annual';
   const mode = `${item.concept_slug === 'hicp-index' ? 'yoy' : 'level'}-${frequency}`;
-  const seriesQ = useWorldIndicatorData(slug, item.indicator_code, mode);
+  // Сервер уже положил точки этого ряда в страницу: карточка рисуется без запроса.
+  const preloaded = useMemo(() => preloadedFigurePoints(preload, item), [preload, item]);
+  const seriesQ = useWorldIndicatorData(slug, item.indicator_code, mode, { enabled: !preloaded });
   const allPoints = useMemo(
-    () => (seriesQ.data?.points || []).filter((point) => Number.isFinite(Number(point.value))),
-    [seriesQ.data],
+    () => preloaded || (seriesQ.data?.points || []).filter((point) => Number.isFinite(Number(point.value))),
+    [preloaded, seriesQ.data],
   );
   const spark = useMemo(
     () => allPoints.map((point) => Number(point.value)).slice(-(SPARK_POINTS[frequency] || 40)),
@@ -100,7 +103,7 @@ function KeyFigureCard({ item, slug, locale, index }) {
         </DeltaBadge>
       ) : <span className="z5-key__ago z5-key__ago--empty" aria-hidden="true" />}
       <span className="w2-kpi-spark z5-key__spark" aria-hidden="true">
-        {seriesQ.isLoading
+        {seriesQ.isLoading && !preloaded
           ? <span className="z5-spark-skel" />
           : (spark.length > 1
             ? <Sparkline points={spark} trend="flat" sentiment="neutral" height={sparkHeight} staggerMs={index * 90} />
@@ -115,13 +118,13 @@ function KeyFigureCard({ item, slug, locale, index }) {
   );
 }
 
-export default function CountryKeyFigures({ items, slug, locale }) {
+export default function CountryKeyFigures({ items, slug, locale, preload = null }) {
   const t = useT();
   const list = (items || []).slice(0, KEY_FIGURES_MAX);
   return (
     <div id="chart" className={`z5-key-grid z5-key-grid--n${list.length || 3} scroll-mt-28`}>
       {list.map((item, index) => (
-        <KeyFigureCard key={item.concept_slug} item={item} slug={slug} locale={locale} index={index} />
+        <KeyFigureCard key={item.concept_slug} item={item} slug={slug} locale={locale} index={index} preload={preload} />
       ))}
       {!list.length && (
         <div className="col-span-2 text-sm text-text-secondary sm:col-span-3">
