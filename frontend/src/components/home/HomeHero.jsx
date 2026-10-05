@@ -12,6 +12,7 @@ import { useLocale, useT } from '../../i18n';
 import '../../styles/shell.css';
 import '../../styles/planet-hero.css';
 import '../../styles/z3-home.css';
+import '../../styles/k7-home.css';
 
 /**
  * Hero главной. Слева (на компьютере): заголовок, поиск и быстрые ссылки, «Мир сейчас» с четырьмя живыми фактами
@@ -59,7 +60,7 @@ export default function HomeHero({ planet = null }) {
               </>
             ) : t('home.hero.subtitle')}
           </p>
-          <div className="relative z-20 mt-5 max-w-xl">
+          <div className="fe-hero-search relative z-20 mt-5 max-w-xl">
             <IndicatorSearch variant="inline" examples={examples} initialQuery={seededQuery} />
           </div>
           {planet ? (

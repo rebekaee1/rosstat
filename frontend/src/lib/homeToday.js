@@ -73,6 +73,24 @@ export function splitPercent(value, locale = 'ru') {
 }
 
 /**
+ * Разбор уже готовой строки числа («30,8», «$30.8», «34,9») на число, знаки после запятой и обрамление: нужно, чтобы
+ * цифра на плитке «набегала» от нуля и приходила к тому же тексту, который лежит в разметке. Не число: null.
+ * @returns {{ prefix: string, value: number, digits: number, suffix: string } | null}
+ */
+export function parseShownNumber(text, locale = 'ru') {
+  const match = /^(\D*?)(\d[\d\s\u00a0\u202f.,]*)(\D*)$/.exec(String(text ?? '').trim());
+  if (!match) return null;
+  const decimal = locale === 'en' ? '.' : ',';
+  const group = locale === 'en' ? ',' : '.';
+  const body = match[2].replace(/[\s\u00a0\u202f]/g, '').split(group).join('');
+  const at = body.indexOf(decimal);
+  const digits = at < 0 ? 0 : body.length - at - 1;
+  const value = Number(at < 0 ? body : body.replace(decimal, '.'));
+  if (!Number.isFinite(value)) return null;
+  return { prefix: match[1], value, digits, suffix: match[3] };
+}
+
+/**
  * Лесенка и положение страны в ней. `entries` уже отсортированы по рейтингу (место 1 слева).
  * @returns {{ bars: number[], mark: number, rank: number, total: number } | null}
  */

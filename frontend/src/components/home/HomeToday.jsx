@@ -1,22 +1,28 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useWorldCompareSnapshot, useWorldCountries } from '../../lib/worldApi';
-import { buildTodayTiles } from '../../lib/homeToday';
+import { buildTodayTiles, parseShownNumber } from '../../lib/homeToday';
+import { formatValue } from '../../lib/format';
 import { countryPublicName, mapSelectHref } from '../../lib/homeWorkbench';
 import { countryFlag } from '../../lib/countryFlag';
 import { worldRatingPath } from '../../lib/sitePaths';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 import { SkeletonBox } from '../Skeleton';
+import CountUp from './CountUp';
 import '../../styles/z3-home.css';
 
 const BAR_STEP = 4;
 const BAR_WIDTH = 2.6;
 const BAR_AREA = 22;
 
-/** Лесенка всех стран в порядке рейтинга: выбранная страна золотая и выше соседей. Чисто декоративна, смысл дублирует подпись «место N из M». */
+/**
+ * Лесенка всех стран в порядке рейтинга: столбики-«стёкла», выбранная страна золотая и выше соседей.
+ * Чисто декоративна, смысл дублирует подпись «место N из M». Градиенты заданы в самом SVG (у каждого экземпляра свой id).
+ */
 function Ladder({ ladder }) {
+  const gid = `g${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const count = ladder.bars.length;
   return (
     <svg
@@ -26,16 +32,29 @@ function Ladder({ ladder }) {
       aria-hidden="true"
       focusable="false"
     >
+      <defs>
+        <linearGradient id={`${gid}-glass`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.95" />
+          <stop offset="1" stopColor="#C9A24D" stopOpacity="0.42" />
+        </linearGradient>
+        <linearGradient id={`${gid}-gold`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#F3E4B8" />
+          <stop offset="0.45" stopColor="#C9A24D" />
+          <stop offset="1" stopColor="#8F6B24" />
+        </linearGradient>
+      </defs>
       {ladder.bars.map((height, index) => {
         const h = Math.max(2, height * BAR_AREA);
         return (
           <rect
             key={index}
             className={index === ladder.mark ? 'is-mark' : undefined}
+            fill={`url(#${gid}-${index === ladder.mark ? 'gold' : 'glass'})`}
             x={index * BAR_STEP}
             y={BAR_AREA - h}
             width={BAR_WIDTH}
             height={h}
+            rx="0.6"
             style={{ '--i': index }}
           />
         );
@@ -56,17 +75,27 @@ function TodayTile({ tile, href, countriesByCode }) {
   const caption = t(`z3.today.${tile.id}.caption`)
     + (tile.year ? `, ${tile.year}` : '');
   const rank = t('z3.today.rank', { rank: tile.ladder.rank, total: tile.ladder.total });
+  const shown = useMemo(() => {
+    const parsed = parseShownNumber(tile.value.num, locale);
+    if (!parsed) return null;
+    const { prefix, digits, suffix } = parsed;
+    return { parsed, format: (n) => `${prefix}${formatValue(n, digits, locale)}${suffix}` };
+  }, [tile.value.num, locale]);
   return (
     <Link
       to={href}
       onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'today-tile', tile: tile.id, code: tile.item.country_code })}
-      className="fe-today__tile fe-press"
+      className="fe-today__tile fe-press fe-glint fe-cursor-light"
       data-tile={tile.id}
       title={catalog ? countryPublicName(catalog, locale) : undefined}
     >
       <span className="fe-today__label">{label}</span>
       <span className="fe-today__value">
-        <span className="fe-today__num">{tile.value.num}</span>
+        <span className="fe-today__num">
+          {shown
+            ? <CountUp value={shown.parsed.value} format={shown.format} text={tile.value.num} group="today" />
+            : tile.value.num}
+        </span>
         <span className="fe-today__unit">{tile.value.unit}</span>
       </span>
       <span className="fe-today__place">

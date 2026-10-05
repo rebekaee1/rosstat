@@ -185,9 +185,12 @@ describe('HomeCountryList — каталог стран', () => {
       expect(screen.getByRole('button', { name: 'По размеру экономики' }).getAttribute('aria-pressed')).toBe('true');
       expect(document.querySelector('.fe-country-grid').getAttribute('data-featured')).toBe('true');
       expect(document.querySelectorAll('.fe-country-row.is-top').length).toBeGreaterThanOrEqual(3);
+      // Медали-грани (золото, серебро, бронза) только у трёх первых карточек; в сетке без размера их нет.
+      expect([...document.querySelectorAll('.fe-country-row__medal')].map((medal) => medal.getAttribute('data-rank'))).toEqual(['1', '2', '3']);
       // Поиск и фильтр возвращают обычную сетку: крупных карточек нет.
       fireEvent.change(screen.getByRole('searchbox', { name: 'Найти страну' }), { target: { value: 'япон' } });
       expect(document.querySelector('.fe-country-grid').getAttribute('data-featured')).toBeNull();
+      expect(document.querySelectorAll('.fe-country-row__medal')).toHaveLength(0);
     });
 
     it('инфляция и безработица с цветным маркером и словом для скринридера, регион у карточки в data-атрибуте', async () => {

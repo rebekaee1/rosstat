@@ -62,6 +62,11 @@ describe('HomeToday: «Мир сейчас»', () => {
     expect(prices.textContent).toContain('\u{1F1F9}\u{1F1F7}');
     expect(prices.querySelectorAll('.fe-today__ladder rect')).toHaveLength(4);
     expect(prices.querySelectorAll('.fe-today__ladder rect.is-mark')).toHaveLength(1);
+    // Столбики-стёкла: заливка берётся из градиентов внутри SVG; текущая страна золотая.
+    const rects = [...prices.querySelectorAll('.fe-today__ladder rect')];
+    expect(prices.querySelectorAll('.fe-today__ladder linearGradient')).toHaveLength(2);
+    expect(rects.every((rect) => /^url\(#g[\w-]+-(glass|gold)\)$/.test(rect.getAttribute('fill')))).toBe(true);
+    expect(prices.querySelector('.fe-today__ladder rect.is-mark').getAttribute('fill')).toMatch(/-gold\)$/);
     expect(prices.getAttribute('href')).toBe('/turkey/indicator/turkey-x');
     const jobs = block.querySelector('[data-tile="jobs"]');
     expect(jobs.textContent).toContain('Япония');

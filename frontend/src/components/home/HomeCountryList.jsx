@@ -30,12 +30,14 @@ import '../../styles/z3-home.css';
 const COLLAPSED_COUNT = 16;
 const COLLAPSED_COUNT_FEATURED = 15;
 
-function CountryMark({ code }) {
+function CountryMark({ code, medal = 0 }) {
   // Флаг вместо двухбуквенного кода; для не-ISO кодов — нейтральный глобус, а не «XX».
+  // Три крупнейшие экономики носят медаль-грань на углу флага (рисует CSS по data-medal, текста нет: порядок карточек уже говорит о месте).
   const flag = countryFlag(code);
   return (
     <span className="fe-country-row__flag" aria-hidden="true">
       {flag || <Globe2 size={18} className="text-champagne-ink" />}
+      {medal ? <i className="fe-country-row__medal" data-rank={medal} /> : null}
     </span>
   );
 }
@@ -53,7 +55,7 @@ function Metric({ label, value, tone }) {
   );
 }
 
-function CountryRow({ country, regionLabel, regionId, facts, topTen = false }) {
+function CountryRow({ country, regionLabel, regionId, facts, topTen = false, medal = 0 }) {
   const t = useT();
   const { locale } = useLocale();
   const primary = countryPublicName(country, locale);
@@ -68,10 +70,11 @@ function CountryRow({ country, regionLabel, regionId, facts, topTen = false }) {
       // Карточка ведёт на обзор страны (главные цифры и все темы), а не на отдельный показатель.
       to={country.slug === 'russia' ? russiaHomePath() : countryPath(country.slug)}
       onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'country', code: country.code })}
-      className={'fe-country-row fe-press group' + (topTen ? ' is-top' : '')}
+      className={'fe-country-row fe-press fe-glint group' + (topTen ? ' is-top' : '')}
       data-region={regionId}
+      data-medal={medal || undefined}
     >
-      <CountryMark code={country.code} />
+      <CountryMark code={country.code} medal={medal} />
       <span className="fe-country-row__main">
         <span className="fe-country-row__name">{primary}</span>
         {regionLabel ? <span className="fe-country-row__meta">{regionLabel}</span> : null}
@@ -236,7 +239,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
             </p>
           ) : null}
         </div>
-        <div className="mb-1.5 h-px min-w-[4rem] flex-1 bg-border-subtle" />
+        <div className="fe-k7-seam mb-1.5 min-w-[4rem] flex-1" aria-hidden="true" />
       </div>
 
       {isError && (
@@ -288,7 +291,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
         </div>
       ) : (
         <ul className="fe-country-grid" data-featured={effectiveSort === 'size' && !narrowed ? 'true' : undefined}>
-          {visible.map((entry) => (
+          {visible.map((entry, index) => (
             <li key={entry.country.slug}>
               <CountryRow
                 country={entry.country}
@@ -296,6 +299,7 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
                 regionId={entry.regionId}
                 facts={facts.get(entry.country.code)}
                 topTen={topCodes.has(entry.country.code)}
+                medal={effectiveSort === 'size' && !narrowed && index < 3 ? index + 1 : 0}
               />
             </li>
           ))}
