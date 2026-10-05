@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import IndicatorSearch from '../IndicatorSearch';
 import HomeDataScope from './HomeDataScope';
@@ -14,7 +14,16 @@ import '../../styles/shell.css';
  */
 export default function HomeHero() {
   const t = useT();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
+  // `?q=` нужен один раз, чтобы открыть поиск; после этого убираем его из адреса (иначе поиск «возвращается» при смене языка).
+  const seededQuery = useRef(params.get('q')).current;
+  useEffect(() => {
+    if (!params.get('q')) return;
+    const next = new URLSearchParams(params);
+    next.delete('q');
+    setParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const examples = useMemo(() => searchExamples(t, HOME_EXAMPLE_COUNT), [t]);
   return (
     <header
@@ -31,7 +40,7 @@ export default function HomeHero() {
             {t('home.hero.subtitle')}
           </p>
           <div className="relative z-20 mt-5 max-w-xl">
-            <IndicatorSearch variant="inline" examples={examples} initialQuery={params.get('q')} />
+            <IndicatorSearch variant="inline" examples={examples} initialQuery={seededQuery} />
           </div>
         </div>
 
