@@ -884,7 +884,7 @@ body.seo-fast .seo-search-btn ~ .seo-lang,body.seo-fast .seo-search-btn ~ .seo-m
 @media(min-width:1180px){body.seo-fast .seo-search-btn{order:3;margin-left:0}}
 body.seo-fast .seo-404-home{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
 body.seo-fast .seo-404-home:hover{border-color:#ad8a48;color:#202a3c}
-@media(prefers-reduced-motion:reduce){/* ── Бегущая строка курсов: стеклянная капсула бренда (скрипт /seo-ticker.js, данные /api/v1/ticker/live) ── */
+/* ── Бегущая строка курсов: стеклянная капсула бренда (скрипт /seo-ticker.js, данные /api/v1/ticker/live) ── */
 body.seo-fast .seo-ticker{position:relative;height:38px;background:linear-gradient(180deg,rgba(255,252,246,.94),rgba(250,247,240,.82));border-bottom:1px solid rgba(173,138,72,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 30px -24px rgba(38,52,78,.4);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 body.seo-fast .seo-tk-view{height:100%;max-width:72rem;margin:0 auto;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
 body.seo-fast .seo-tk-track{display:flex;width:max-content;height:100%;animation:seo-tk-run var(--seo-tk-run,60s) linear infinite;will-change:transform}
@@ -905,7 +905,7 @@ body.seo-fast .seo-tk-down{color:#c02626;background:rgba(220,38,38,.08);border-c
 @media(pointer:coarse){body.seo-fast .seo-ticker{height:44px}}
 @media(prefers-reduced-motion:reduce){body.seo-fast .seo-tk-track{animation:none}body.seo-fast .seo-tk-view{overflow-x:auto}body.seo-fast .seo-tk-set + .seo-tk-set{display:none}}
 @media print{body.seo-fast .seo-ticker{display:none}}
-body.seo-fast *{transition:none!important}}
+@media(prefers-reduced-motion:reduce){body.seo-fast *{transition:none!important}}
 
 </style>"""
 
