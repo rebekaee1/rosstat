@@ -74,6 +74,18 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
     expect(w6d).toMatch(/max-width: 639px\)\s*\{\s*\.w6d-years__list\s*\{[^}]*overflow-x: auto/);
   });
 
+  it('круг 4: заливки топ-3 — лёгкий оттенок стекла, альфа не выше .35', () => {
+    for (const m of k6.matchAll(/--k6-tint-[a-z-]+:\s*rgba\([^)]*,\s*([0-9.]+)\)/g)) {
+      expect(Number(m[1]), m[0]).toBeLessThanOrEqual(0.35);
+    }
+    expect(z6).toMatch(/\[data-top='1'\] td \{ background: linear-gradient\(var\(--k6-tint-gold\)[^}]*var\(--fe-glass-l1\)/);
+  });
+
+  it('круг 4: пятна страны меньше и тише, текст героя не шире 58 %', () => {
+    expect(z5).toMatch(/\.z5-mood::after\s*\{[^}]*width: 40%;[^}]*opacity: 0\.12/);
+    expect(z5).toMatch(/\.z5-hero__lead \{[^}]*max-width: 58%/);
+  });
+
   it('кольца вокруг активных элементов заменены свечением с размытием', () => {
     for (const css of [z5, z6, world, w6d, k6]) {
       expect(css).not.toMatch(/box-shadow\s*:[^;]*0\s+0\s+0\s+[0-9.]+px/);

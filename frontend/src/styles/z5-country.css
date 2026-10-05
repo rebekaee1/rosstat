@@ -99,24 +99,25 @@
   border-radius: inherit;
   pointer-events: none;
 }
+/* Круг 4: пятна меньше (40 %) и тише (альфа .12), цвета чистые: красные оттенки флага уходят в тёплое золото (lib/countryMood.js). */
 .z5-mood::before,
 .z5-mood::after {
   content: '';
   position: absolute;
-  width: 58%;
+  width: 40%;
   aspect-ratio: 1;
   border-radius: 50%;
-  opacity: 0.2;
+  opacity: 0.12;
 }
 .z5-mood::before {
-  left: -14%;
-  top: -34%;
+  left: -8%;
+  top: -24%;
   background: radial-gradient(closest-side, var(--mood-a, #C9A24D), transparent 74%);
   animation: z5-mood-drift 20s ease-in-out infinite alternate;
 }
 .z5-mood::after {
-  right: -10%;
-  bottom: -46%;
+  right: 8%;
+  bottom: -30%;
   background: radial-gradient(closest-side, var(--mood-b, #B08A3E), transparent 74%);
   animation: z5-mood-drift 24s ease-in-out -9s infinite alternate-reverse;
 }
@@ -160,7 +161,8 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 }
 @media (min-width: 1024px) {
   .z5-hero__grid { flex-direction: row; align-items: stretch; gap: 36px; }
-  .z5-hero__lead { flex: 1 1 0; display: flex; flex-direction: column; justify-content: center; }
+  /* G6.1: заголовок и лид не шире 58 % плиты, пока профиль грузится и колонка пуста: текст не ложится на кристаллы героя (K1). */
+  .z5-hero__lead { flex: 1 1 0; max-width: 58%; display: flex; flex-direction: column; justify-content: center; }
   .z5-hero__profile { flex: 0 0 min(470px, 40%); }
 }
 .w2-main-title.z5-main-title {

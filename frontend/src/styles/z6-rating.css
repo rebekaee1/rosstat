@@ -207,15 +207,15 @@
   .z6-row:hover td { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.78)); }
 }
 /* Топ-3: у строки свой тон стекла (золото, лёд, бронза) вместо полосы слева; сам знак отличия — медаль в первой ячейке. */
-.z6-row[data-top='1'] td { background: var(--k6-tint-gold, rgba(250, 234, 176, 0.7)); }
-.z6-row[data-top='2'] td { background: var(--k6-tint-silver, rgba(226, 235, 247, 0.74)); }
-.z6-row[data-top='3'] td { background: var(--k6-tint-bronze, rgba(248, 224, 204, 0.7)); }
+.z6-row[data-top='1'] td { background: linear-gradient(var(--k6-tint-gold), var(--k6-tint-gold)), var(--fe-glass-l1); }
+.z6-row[data-top='2'] td { background: linear-gradient(var(--k6-tint-silver), var(--k6-tint-silver)), var(--fe-glass-l1); }
+.z6-row[data-top='3'] td { background: linear-gradient(var(--k6-tint-bronze), var(--k6-tint-bronze)), var(--fe-glass-l1); }
 .z6-row[data-top] .z6-val { font-size: 17px; font-weight: 700; }
 .z6-row[data-top='1'] .z6-val { font-size: 18px; }
 @media (hover: hover) {
-  .z6-row[data-top='1']:hover td { background: var(--k6-tint-gold-hover, rgba(252, 241, 196, 0.9)); }
-  .z6-row[data-top='2']:hover td { background: var(--k6-tint-silver-hover, rgba(238, 244, 252, 0.92)); }
-  .z6-row[data-top='3']:hover td { background: var(--k6-tint-bronze-hover, rgba(251, 235, 220, 0.9)); }
+  .z6-row[data-top='1']:hover td { background: linear-gradient(var(--k6-tint-gold-hover), var(--k6-tint-gold-hover)), var(--fe-glass-l2-hover); }
+  .z6-row[data-top='2']:hover td { background: linear-gradient(var(--k6-tint-silver-hover), var(--k6-tint-silver-hover)), var(--fe-glass-l2-hover); }
+  .z6-row[data-top='3']:hover td { background: linear-gradient(var(--k6-tint-bronze-hover), var(--k6-tint-bronze-hover)), var(--fe-glass-l2-hover); }
 }
 /* Столбец-трубка: жёлоб с внутренней тенью, «жидкое золото» с бликом и свечением на конце (K6.5). */
 .z6-table-card .w6d-bar {

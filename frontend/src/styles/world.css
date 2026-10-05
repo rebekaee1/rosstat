@@ -137,9 +137,9 @@
 .w2-rank-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
 /* Телефон: строка рейтинга — низкая L1-полка без линий; у топ-3 свой тон стекла, знак отличия — медаль. */
 .w2-rank-item { min-width: 0; border-radius: 18px; background: var(--fe-l1-bg); overflow: hidden; box-shadow: var(--fe-card-shadow); }
-.w2-rank-item:has([data-medal='1']) { background: linear-gradient(135deg, var(--k6-tint-gold, rgba(250, 234, 176, 0.7)), transparent 80%), var(--fe-glass-l1); }
-.w2-rank-item:has([data-medal='2']) { background: linear-gradient(135deg, var(--k6-tint-silver, rgba(226, 235, 247, 0.74)), transparent 80%), var(--fe-glass-l1); }
-.w2-rank-item:has([data-medal='3']) { background: linear-gradient(135deg, var(--k6-tint-bronze, rgba(248, 224, 204, 0.7)), transparent 80%), var(--fe-glass-l1); }
+.w2-rank-item:has([data-medal='1']) { background: linear-gradient(135deg, var(--k6-tint-gold, rgba(233, 201, 122, 0.26)), transparent 80%), var(--fe-glass-l1); }
+.w2-rank-item:has([data-medal='2']) { background: linear-gradient(135deg, var(--k6-tint-silver, rgba(190, 206, 228, 0.28)), transparent 80%), var(--fe-glass-l1); }
+.w2-rank-item:has([data-medal='3']) { background: linear-gradient(135deg, var(--k6-tint-bronze, rgba(224, 176, 142, 0.26)), transparent 80%), var(--fe-glass-l1); }
 .w2-rank-row {
   position: relative;
   display: grid;
