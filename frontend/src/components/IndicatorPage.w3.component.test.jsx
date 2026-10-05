@@ -141,7 +141,26 @@ describe('IndicatorForecastSection без прогноза', () => {
     expect(card).toBeTruthy();
     expect(card.className).not.toContain('border-dashed');
     expect(card.textContent).not.toMatch(/режим|ряд|переключател/i);
-    expect(within(card).getByRole('link').getAttribute('href')).toContain('/russia/category');
+    const hrefs = within(card).getAllByRole('link').map((a) => a.getAttribute('href'));
+    // Не тупик: сравнение с другим показателем и каталог.
+    expect(hrefs.some((h) => h.includes('/russia/category'))).toBe(true);
+    expect(hrefs.some((h) => h.startsWith('/compare?codes=x'))).toBe(true);
+  });
+
+  it('у курса валюты вместо «Другие показатели» ведёт к парам: евро, юань, нефть', () => {
+    const { container } = wrap(
+      <IndicatorForecastSection
+        indicator={{ code: 'usd-rub' }}
+        chartMode="cpi"
+        safeViewMode="level"
+        forecastEnabled={false}
+        showForecast
+        hasForecastData={false}
+      />,
+    );
+    const card = container.querySelector('[data-block="forecast-empty"]');
+    const names = within(card).getAllByRole('link').map((a) => a.textContent);
+    expect(names).toEqual(expect.arrayContaining(['Курс евро', 'Курс юаня', 'Нефть Brent']));
   });
 });
 

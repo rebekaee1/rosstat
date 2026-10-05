@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GitCompare, Globe2, X, Search, Check } from 'lucide-react';
 import useSearchTracking from '../lib/useSearchTracking';
-import { filterSearchCountries } from '../lib/worldCompareSearch';
-import { useT } from '../i18n';
+import { filterSearchCountries, suggestedCompareOptions } from '../lib/worldCompareSearch';
+import { useLocale, useT } from '../i18n';
 import { MAX_COMPARISONS, COMPARISON_COLORS } from '../lib/useCountryComparison';
 import Button from './Button';
 import Chip from './Chip';
@@ -94,53 +94,72 @@ export default function CountryComparePanel({
   rebased,
   loadedComparisonSeries,
   hint,
+  baseLabel = '',
+  baseColor = '#202A3C',
+  suggestPercent = false,
 }) {
   const t = useT();
+  const { locale } = useLocale();
+  const [searchOpen, setSearchOpen] = useState(false);
   if (!pickerOptions.length) return null;
+  const quick = suggestedCompareOptions(pickerOptions, locale)
+    .filter((option) => !activeComparisonIds.includes(option.code));
+  const atLimit = activeComparisonIds.length >= MAX_COMPARISONS;
   return (
-    <div className="mb-4 rounded-3xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <div className="min-w-0 sm:min-w-[11rem]">
-          <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-            <GitCompare size={15} className="text-champagne" aria-hidden="true" />
-            {t('world.chart.compare')}
-          </div>
-          <div className="mt-1 text-xs text-text-secondary">
-            {t('world.chart.compareLimit', { n: MAX_COMPARISONS })}
-          </div>
-        </div>
-        <CountryComparePicker
-          options={pickerOptions}
-          selectedIds={activeComparisonIds}
-          onToggle={onToggle}
-          onOpen={onOpen}
-        />
-        {activeComparisonIds.length > 0 && (
-          <div className="inline-flex shrink-0 gap-1" role="group" aria-label={t('world.chart.compare')}>
-            {[
-              ['values', t('world.chart.scaleValues')],
-              ['index', t('world.chart.scaleIndex')],
-            ].map(([id, label]) => (
-              <Chip
-                key={id}
-                active={comparisonScale === id}
-                onClick={() => onScale(id)}
-              >
-                {label}
-              </Chip>
-            ))}
-          </div>
-        )}
+    <div className="fe-compare-panel mb-4 rounded-3xl border border-border-subtle bg-surface p-4 shadow-[0_10px_30px_rgba(35,30,16,0.04)]">
+      <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+        <GitCompare size={15} className="text-champagne" aria-hidden="true" />
+        {t('world.chart.compare')}
       </div>
 
-      {hint && (
-        <p className="mt-3 text-xs leading-4 text-text-tertiary">
-          {hint}
-        </p>
+      {/* Одно нажатие: популярные страны чипами, поиск остальных по кнопке. */}
+      {!atLimit && (
+        <div className="fe-compare-quick mt-3" role="group" aria-label={t('w6e.compare.with')}>
+          <span className="fe-compare-quick__label">{t('w6e.compare.with')}</span>
+          {quick.map((option) => (
+            <Chip
+              key={option.code}
+              active={false}
+              className="fe-chip--country"
+              onClick={() => onToggle(option.code)}
+            >
+              {option.country_code ? <CountryFlag code={option.country_code} /> : null}
+              <span className="min-w-0 truncate">{option.country_name}</span>
+            </Chip>
+          ))}
+          <Chip
+            active={searchOpen}
+            className="fe-chip--more"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen((value) => !value);
+              onOpen?.();
+            }}
+          >
+            {t('w6e.compare.others')}
+          </Chip>
+        </div>
+      )}
+
+      {searchOpen && !atLimit && (
+        <div className="mt-3">
+          <CountryComparePicker
+            options={pickerOptions}
+            selectedIds={activeComparisonIds}
+            onToggle={onToggle}
+            onOpen={onOpen}
+          />
+        </div>
       )}
 
       {activeComparisonIds.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-subtle pt-3">
+          {baseLabel && (
+            <span className="fe-compare-base" title={baseLabel}>
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: baseColor }} aria-hidden="true" />
+              <span className="min-w-0 truncate">{baseLabel}</span>
+            </span>
+          )}
           {selectedComparisons.map((item, index) => (
             <Button
               key={item.id}
@@ -157,6 +176,21 @@ export default function CountryComparePanel({
               <X size={12} className="shrink-0 text-text-tertiary" aria-hidden="true" />
             </Button>
           ))}
+          <div className="inline-flex shrink-0 gap-1" role="group" aria-label={t('world.chart.compare')}>
+            {[
+              ['values', t('world.chart.scaleValues'), undefined],
+              ['index', t('world.chart.scaleIndex'), t('w6e.compare.scaleHint')],
+            ].map(([id, label, title]) => (
+              <Chip
+                key={id}
+                active={comparisonScale === id}
+                title={title}
+                onClick={() => onScale(id)}
+              >
+                {label}
+              </Chip>
+            ))}
+          </div>
           {conceptSlug === 'hicp-index' && compareCodes.length > 0 ? (
             <Link to="/world/rating/hicp-index" className="ml-auto inline-flex min-h-8 items-center text-xs text-champagne-ink hover:underline pointer-coarse:min-h-11">
               {t('world.chart.compareInflationRates')}
@@ -174,11 +208,21 @@ export default function CountryComparePanel({
         </div>
       )}
 
-      {rebased && (
+      {suggestPercent && comparisonScale === 'values' && (
+        <div className="fe-compare-suggest" role="note">
+          <span>{t('w6e.compare.suggest')}</span>
+          <Button variant="secondary" size="sm" onClick={() => onScale('index')}>
+            {t('w6e.compare.suggestCta')}
+          </Button>
+        </div>
+      )}
+
+      {hint && (
         <p className="mt-3 text-xs leading-4 text-text-tertiary">
-          {t('world.chart.rebaseNote', { date: rebased.startDate })}
+          {hint}
         </p>
       )}
+
       {comparisonScale === 'index' && loadedComparisonSeries.length > 0 && !rebased && (
         <p className="mt-3 text-xs text-text-secondary">
           {t('world.chart.rebaseFail')}

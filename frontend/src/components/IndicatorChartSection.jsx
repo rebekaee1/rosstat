@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Lock, HelpCircle } from 'lucide-react';
-import { resolveDateFormat, cn } from '../lib/format';
+import { HelpCircle } from 'lucide-react';
+import { resolveDateFormat } from '../lib/format';
 import { track, events } from '../lib/track';
 import { useDownloadAccess } from '../lib/useDownloadAccess';
 import { exportNodeToPng } from '../lib/chartImage';
@@ -13,10 +13,12 @@ import { resolveChartTitle } from '../i18n/resolveViewModeCopy';
 import { forecastTooltipLabel, levelTooltipLabel } from '../i18n/chartTooltipLabels';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import CountryComparePanel from './CountryComparePicker';
-import Button from './Button';
+import ChartDownloadMenu from './ChartDownloadMenu';
+import ForecastControl from './ForecastControl';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import '../styles/y2-indicator.css';
+import '../styles/w6e-indicator.css';
 
 /* ── Mode-зависимые подписи ──
    chartMode принимает значения: 'cpi' (default для всех некоммодити-индикаторов),
@@ -49,71 +51,6 @@ function ruYears(n) {
   if (mod10 === 1) return `${n} год`;
   if (mod10 >= 2 && mod10 <= 4) return `${n} года`;
   return `${n} лет`;
-}
-
-/**
- * Скачивание данных и картинки одним блоком (ADR-0007 Phase 2).
- * Авторизованный и гость до лимита видят три обычные кнопки: клик сам решает гейт (сервер отдаёт файл либо
- * зовёт войти). Гость, исчерпавший лимит, видит один понятный элемент «Войдите, чтобы скачать» вместо трёх замков.
- */
-function DownloadBar({
-  blocked, authed, hint, onCsv, onExcel, onPng,
-}) {
-  const t = useT();
-  if (blocked) {
-    return (
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={onCsv}
-        title={t('download.dataBlocked')}
-        data-no-export="true"
-      >
-        <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-        {t('w3.chart.loginToDownload')}
-      </Button>
-    );
-  }
-  return (
-    <div className="fe-dl" role="group" aria-label={t('w3.chart.download')} title={hint || undefined} data-no-export="true">
-      <span className="fe-dl__label" aria-hidden="true">{t('w3.chart.download')}</span>
-      <Button variant="secondary" size="sm" onClick={onCsv} aria-label={t('download.downloadLabel', { label: 'CSV' })}>CSV</Button>
-      <Button variant="secondary" size="sm" onClick={onExcel} aria-label={t('download.downloadLabel', { label: 'Excel' })}>Excel</Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={onPng}
-        title={authed ? t('download.chartPng') : t('download.chartBlocked')}
-        aria-label={authed ? t('download.chartPng') : t('download.chartBlocked')}
-      >
-        PNG
-        {authed ? null : <Lock className="h-3 w-3" aria-hidden="true" />}
-      </Button>
-    </div>
-  );
-}
-
-/** Переключатель прогноза: подписанная «таблетка», видна и в выключенном состоянии. */
-function ForecastSwitch({ enabled, on, onToggle }) {
-  const t = useT();
-  const active = enabled && on;
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={active}
-      aria-disabled={!enabled}
-      aria-label={t('chart.forecastAria')}
-      title={enabled ? undefined : t('chart.forecastUnavailable')}
-      onClick={enabled ? onToggle : undefined}
-      className={cn('fe-forecast-switch fe-press', active && 'is-on', !enabled && 'is-unavailable')}
-    >
-      <span className="fe-forecast-switch__track" aria-hidden="true">
-        <span className="fe-forecast-switch__thumb" />
-      </span>
-      <span>{enabled ? t('common.forecast') : t('w3.chart.forecastNone')}</span>
-    </button>
-  );
 }
 
 /**
@@ -248,10 +185,16 @@ export default function IndicatorChartSection({
     comparison.toggleComparison(id);
   };
   const overlayActive = compareCompatible && comparison.loadedComparisonSeries.length > 0;
-  const chartDataPoints = overlayActive ? comparison.displayedDataPoints : compareBasePoints;
-  const chartComparisonSeries = compareCompatible ? comparison.displayedComparisonSeries : [];
-  const chartDisplayUnit = overlayActive ? comparison.displayedUnit : chartUnit;
-  const chartDisplayTitle = overlayActive ? comparison.displayedTitle : cpiChartTitle;
+  // «Динамика (=100)»: график сам ставит базу на начало выбранного периода, поэтому ему идут исходные ряды.
+  const windowRebase = overlayActive && comparison.windowRebase;
+  const chartDataPoints = overlayActive && !windowRebase ? comparison.displayedDataPoints : compareBasePoints;
+  const chartComparisonSeries = compareCompatible
+    ? (windowRebase ? comparison.loadedComparisonSeries : comparison.displayedComparisonSeries)
+    : [];
+  const chartDisplayUnit = windowRebase ? comparison.windowRebaseUnit : (overlayActive ? comparison.displayedUnit : chartUnit);
+  const chartDisplayTitle = windowRebase
+    ? t('w6e.compare.captionIndex')
+    : (overlayActive ? comparison.displayedTitle : cpiChartTitle);
   const compareHint = compareConcept && !compareCompatible
     ? t('world.chart.compareNeedsMode')
     : null;
@@ -293,10 +236,15 @@ export default function IndicatorChartSection({
         <h2 className="fe-chart-head__title">{t('indicator.chartDynamicsLabel')}</h2>
 
         <div className="fe-chart-actions">
-          <ForecastSwitch enabled={forecastEnabled} on={showForecast} onToggle={handleForecastToggle} />
-          <DownloadBar
-            blocked={downloadBlocked}
-            authed={downloadAuthed}
+          <ForecastControl
+            enabled={forecastEnabled}
+            on={forecastEnabled && showForecast}
+            onToggle={handleForecastToggle}
+            reason={t('chart.forecastUnavailable')}
+          />
+          <ChartDownloadMenu
+            dataBlocked={downloadBlocked}
+            imageBlocked={!downloadAuthed}
             hint={guestHistoryHint}
             onCsv={onDownloadCsv}
             onExcel={onDownloadExcel}
@@ -317,6 +265,26 @@ export default function IndicatorChartSection({
       {guestHistoryHint && !downloadBlocked && (
         <p className="fe-chart-hint">{guestHistoryHint}</p>
       )}
+
+      <div id="compare" className="scroll-mt-24">
+        <CountryComparePanel
+          pickerOptions={comparison.pickerOptions}
+          activeComparisonIds={comparison.activeComparisonIds}
+          selectedComparisons={comparison.selectedComparisons}
+          comparisonQueries={comparison.comparisonQueries}
+          comparisonScale={comparison.comparisonScale}
+          onToggle={handleToggleCompare}
+          onOpen={() => comparison.setComparisonPickerActive(true)}
+          onScale={comparison.setComparisonScale}
+          conceptSlug={compareConcept?.slug}
+          countrySlug="russia"
+          compareCodes={comparison.compareCodes}
+          rebased={compareCompatible ? comparison.rebased : null}
+          loadedComparisonSeries={compareCompatible ? comparison.loadedComparisonSeries : []}
+          hint={compareHint}
+          baseLabel={t('nav.russia')}
+        />
+      </div>
 
       {chartLoading ? (
         <ChartSectionSkeleton />
@@ -358,28 +326,11 @@ export default function IndicatorChartSection({
             numericTooltipOnly={chartComparisonSeries.length > 0}
             actualSeriesLabel={chartComparisonSeries.length ? t('nav.russia') : ''}
             comparisonSeries={chartComparisonSeries.length ? chartComparisonSeries : null}
+            rebaseVisible={windowRebase}
           />
         </div>
       )}
 
-      <div className="fe-chart-after">
-        <CountryComparePanel
-          pickerOptions={comparison.pickerOptions}
-          activeComparisonIds={comparison.activeComparisonIds}
-          selectedComparisons={comparison.selectedComparisons}
-          comparisonQueries={comparison.comparisonQueries}
-          comparisonScale={comparison.comparisonScale}
-          onToggle={handleToggleCompare}
-          onOpen={() => comparison.setComparisonPickerActive(true)}
-          onScale={comparison.setComparisonScale}
-          conceptSlug={compareConcept?.slug}
-          countrySlug="russia"
-          compareCodes={comparison.compareCodes}
-          rebased={compareCompatible ? comparison.rebased : null}
-          loadedComparisonSeries={compareCompatible ? comparison.loadedComparisonSeries : []}
-          hint={compareHint}
-        />
-      </div>
     </section>
   );
 }

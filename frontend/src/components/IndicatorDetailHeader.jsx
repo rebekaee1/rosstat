@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { Activity } from 'lucide-react';
-import { findCategoryByApiLabel } from '../lib/categories';
+import { displayCategoryLabel, findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
 import { SkeletonBox } from './Skeleton';
 import '../styles/ui-detail-nav-calendar.css';
@@ -55,19 +55,21 @@ export default function IndicatorDetailHeader({
   code,
   loading,
   displayFrequency,
+  children = null,
 }) {
   const { locale } = useLocale();
   const { year } = useParams();
   const effectiveFrequency = displayFrequency ?? indicator?.frequency;
-  const category = findCategoryByApiLabel(
-    indicator?.category_ru || indicator?.category,
-  );
+  const apiCategory = indicator?.category_ru || indicator?.category;
+  const shownCategory = displayCategoryLabel(code, apiCategory);
+  const categoryFixed = shownCategory !== apiCategory;
+  const category = findCategoryByApiLabel(shownCategory);
   const categoryCrumbName = locale === 'en'
     ? (category?.nameEn || category?.name)
     : category?.name;
   const categoryLinkName = locale === 'en'
     ? (category?.nameEn || category?.name || indicator?.category)
-    : indicator?.category;
+    : (categoryFixed ? category?.name : indicator?.category);
   const title = indicator?.name || code;
   const globalMarket = isGlobalMarketIndicator(code);
   const crumbs = year
@@ -131,6 +133,7 @@ export default function IndicatorDetailHeader({
             <MobileTitle title={title} />
             <span className="hidden md:inline">{title}</span>
           </h1>
+          {children}
 
         </>
       )}

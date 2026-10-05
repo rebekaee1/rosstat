@@ -431,11 +431,15 @@ const WORLD_UNIT_EN = Object.freeze({
   пунктов: 'points',
   'млн чел.': 'million people',
   'млрд долларов США (цены 2017)': 'billion USD (2017 prices)',
+  промилле: 'per 1,000 people',
+  '‰': 'per 1,000 people',
+  'USD/баррель': '$ per barrel',
 });
 
 /** Сокращения и коды, которые не нужны человеку рядом с числом. */
 function tidyUnitEn(text) {
   return text
+    .replace(/^(?:per mille|‰)$/i, 'per 1,000 people')
     .replace(/chain[- ]linked volumes,?\s*\(?(\d{4})\)?/i, 'in $1 prices')
     .replace(/\s*\(NSA\)/g, ', not seasonally adjusted')
     .replace(/\s*\(SCA\)/g, ', seasonally and calendar adjusted')
@@ -463,6 +467,8 @@ const WORLD_UNIT_RU = Object.freeze({
 function tidyUnitRu(text) {
   const known = WORLD_UNIT_RU[text.toLowerCase()];
   return (known || text)
+    .replace(/^(?:промилле|‰)$/i, 'на 1000 жителей')
+    .replace(/^USD\/баррель$/i, '$ за баррель')
     .replace(/%\s*ЭАН/gi, '% от рабочей силы')
     .replace(/(\d{4})=100/g, '$1 = 100');
 }

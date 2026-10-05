@@ -1,0 +1,143 @@
+/*
+ * Волна 6, зона E: страница показателя (шапка с главным числом, плитки, прогноз, сравнение стран, крошки).
+ * Правила с `:root` в начале нужны там, где порядок подключения CSS-файлов может перебить специфичность.
+ */
+
+/* ── Хлебные крошки: заглушка вместо «…», строка не прыгает ─────────────────────────── */
+:root .fe-crumbs { min-height: 1.4em; }
+:root .fe-crumbs__ghost {
+  display: inline-block;
+  width: 6.5rem;
+  height: 0.9em;
+  border-radius: 6px;
+  background: var(--color-obsidian-lighter, #dde3eb);
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root .fe-crumbs__ghost { animation: fe-ghost-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes fe-ghost-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+
+/* ── Главная строка под названием: «Германия: 2,3 % за 2025 год» ───────────────────────── */
+:root .fe-hero-line {
+  margin: 0 0 6px;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+@media (min-width: 768px) { :root .fe-hero-line { margin-bottom: 4px; font-size: 20px; } }
+:root .fe-hero-line__place { color: var(--color-text-primary); font-weight: 600; }
+:root .fe-hero-line__value {
+  color: var(--color-text-primary);
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+:root .fe-hero-line__unit { color: var(--color-text-secondary); font-size: 0.62em; font-weight: 600; letter-spacing: 0; }
+:root .fe-hero-line__when,
+:root .fe-hero-line__extra { color: var(--color-text-secondary); }
+:root .fe-hero-line-skeleton { width: min(18rem, 80%); height: 28px; margin-bottom: 6px; border-radius: 10px; }
+
+/* ── Плитки: без дыр у плиток без изменения, 3 плитки делят ряд поровну ─────────────────── */
+@supports (grid-template-rows: subgrid) {
+  :root .fe-substat-grid > .w2-stat.w2-stat--nodelta > .w2-stat-note { grid-row: 3; }
+}
+@media (min-width: 1024px) {
+  :root .fe-substat-grid[data-count='3'] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  :root .fe-substat-grid[data-count='2'] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+:root .fe-substat-grid .w2-stat-delta { align-items: center; }
+
+/* ── Прогноз: нет — одна фраза вместо выключенного тумблера ───────────────────────────── */
+:root .fe-forecast-none {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+}
+:root .fe-forecast-none svg { flex: none; color: var(--color-text-tertiary); }
+
+/* Страница без прогноза не заканчивается тупиком: сравнение, рейтинг, страна. */
+:root .fe-next-steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
+:root .fe-next-steps__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+:root .fe-next-steps__link:hover { border-color: var(--color-border-champagne); color: var(--color-champagne-ink); }
+@media (pointer: coarse) { :root .fe-next-steps__link { min-height: 44px; } }
+
+:root .fe-note-card__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ── Сравнение стран одним нажатием ─────────────────────────────────────────────────── */
+:root .fe-compare-quick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+:root .fe-compare-quick__label { margin-right: 2px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
+:root .fe-compare-quick .fe-chip { gap: 6px; max-width: 100%; }
+:root .fe-compare-base {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  background: var(--color-obsidian-lighter, #dde3eb);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+:root .fe-compare-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(173, 138, 72, 0.1);
+  color: var(--color-text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ── Таблица «Исторические данные»: на широком экране не растягивается на всю ширину ───── */
+@media (min-width: 768px) {
+  :root .fe-histtable { max-width: 62%; min-width: 30rem; }
+}
+@media (min-width: 768px) {
+  /* Шапка закреплена: у таблицы своя высота и прокрутка, иначе «прилипать» ей не к чему. */
+  :root .fe-histtable__scroll { max-height: 34rem; overflow-y: auto; }
+}
+:root .fe-histtable thead th { position: sticky; top: 0; z-index: 1; background: var(--color-surface, #fff); }
+:root .fe-histtable tr.is-max td { background: rgba(77, 138, 100, 0.1); }
+:root .fe-histtable tr.is-min td { background: rgba(200, 107, 91, 0.1); }
+:root .fe-histtable__chg { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+:root .fe-histtable__tag {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 9999px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}

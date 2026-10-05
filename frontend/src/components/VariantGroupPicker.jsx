@@ -50,6 +50,7 @@ export default function VariantGroupPicker({
             value: item.code,
             label: item.displayLabel,
           }))}
+          pickTitle={t('w6e.pickVariant')}
           onChange={(code) => {
             navigate(`${root}/${code}${suffix}`, { preventScrollReset: true });
           }}

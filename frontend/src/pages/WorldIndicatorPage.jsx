@@ -10,11 +10,12 @@ import { getSiteOrigin } from '../lib/siteOrigin';
 import { completeDataset } from '../lib/datasetJsonLd';
 import { mountJsonLd } from '../lib/jsonLd';
 import {
-  useWorldIndicator, useWorldIndicatorData, useWorldCountry, formatWorldValue,
-  localizeWorldUnit, pluralRu,
+  useWorldIndicator, useWorldIndicatorData, useWorldCountry, useWorldCompareSnapshot, formatWorldValue,
+  localizeWorldUnit,
 } from '../lib/worldApi';
 import {
   adaptWorldModes,
+  buildWorldModeToken,
   findWorldMode,
   indicatorPublicName,
   isEmptySeries,
@@ -27,10 +28,10 @@ import {
   worldModeToLegacyDataToken,
   worldVariantsToPickerGroup,
 } from '../lib/worldViewModes';
-import { formatDate, formatChange, chartValueDigits, resolveDateFormat } from '../lib/format';
-import { glueDate } from '../lib/periodPhrase';
+import { formatDate, chartValueDigits, resolveDateFormat } from '../lib/format';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { splitUnit } from '../lib/countryFlag';
+import { buildIndicatorSummary, rankAmongCountries } from '../lib/indicatorSummary';
+import { deriveWorldMode } from '../lib/worldDerive';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
 import WorldViewModePicker from '../components/WorldViewModePicker';
@@ -44,6 +45,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import DeltaBadge from '../components/DeltaBadge';
 import WorldCountUp from '../components/WorldCountUp';
+import WorldStatTiles, { WorldHeroLine } from '../components/WorldStatTiles';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
@@ -57,71 +59,9 @@ import {
 } from '../lib/sitePaths';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
+import '../styles/w6e-indicator.css';
 
 const EMPTY_POINTS = [];
-
-function computeWorldTelemetry(points) {
-  if (!points?.length) return null;
-  const last = points[points.length - 1];
-  const prev = points.length > 1 ? points[points.length - 2] : null;
-  let highest = last;
-  let sum = 0;
-  let n = 0;
-  for (const p of points) {
-    const v = Number(p.value);
-    if (!Number.isFinite(v)) continue;
-    sum += v;
-    n += 1;
-    if (v > Number(highest.value)) highest = p;
-  }
-  const change = prev != null && Number.isFinite(Number(last.value)) && Number.isFinite(Number(prev.value))
-    ? Number(last.value) - Number(prev.value)
-    : null;
-  return {
-    currentValue: last.value,
-    currentDate: last.date,
-    previousValue: prev?.value,
-    previousDate: prev?.date,
-    change,
-    highest: { value: highest.value, date: highest.date },
-    average: n ? sum / n : null,
-    dataCount: points.length,
-  };
-}
-
-/** Длинное название в крошках не должно занимать две строки: режем по слову и ставим многоточие. */
-function shortCrumb(text, limit = 40) {
-  const value = String(text || '').trim();
-  if (value.length <= limit) return value;
-  const cut = value.slice(0, limit);
-  const space = cut.lastIndexOf(' ');
-  return `${(space > limit * 0.6 ? cut.slice(0, space) : cut).replace(/[\s,.;:—-]+$/, '')}…`;
-}
-
-/** «Данные за 12 лет» вместо «НАБЛ.: 12 ПЕРИОД.»: сколько лет охватывает ряд, считая по частоте. */
-function dataSpan(count, frequency) {
-  const n = Number(count);
-  if (!Number.isFinite(n) || n < 1) return null;
-  const perYear = { annual: 1, quarterly: 4, monthly: 12, weekly: 52, daily: 365 }[frequency] || 1;
-  const years = Math.round(n / perYear);
-  if (years >= 1) return { value: years, unit: 'years' };
-  return { value: n, unit: frequency === 'daily' ? 'days' : frequency === 'weekly' ? 'weeks' : 'months' };
-}
-
-/** Плитка одного числа: подпись, значение с единицей, пояснение. Без капса и моно. */
-function StatTile({ label, children, note, tone = null, index = 0 }) {
-  return (
-    <div
-      className="w2-stat fe-reveal"
-      style={{ '--fe-delay': `${Math.min(index, 4) * 40}ms`, '--fe-duration': '0.4s', '--fe-rise': '10px' }}
-    >
-      <p className="w2-stat-label">{label}</p>
-      <p className="w2-stat-value">{children}</p>
-      {tone}
-      {note && <p className="w2-stat-note">{note}</p>}
-    </div>
-  );
-}
 
 export default function WorldIndicatorPage() {
   const { countrySlug, slug: slugParam, code } = useParams();
@@ -171,7 +111,7 @@ export default function WorldIndicatorPage() {
     return fromMeta;
   }, [metaQ.data, countryQ.data]);
 
-  const modes = useMemo(
+  const allModes = useMemo(
     () => adaptWorldModes({
       modes: metaQ.data?.modes,
       frequencies,
@@ -179,6 +119,15 @@ export default function WorldIndicatorPage() {
     }),
     [metaQ.data, frequencies],
   );
+  // Режимы, которые не удалось ни загрузить, ни посчитать, прячем: кнопка не должна вести в сломанное состояние.
+  const [failedModes, setFailedModes] = useState(() => new Set());
+  const modes = useMemo(() => {
+    const level = allModes.find((m) => m.type === 'level');
+    // У ряда, который уже сам индекс («2015 = 100»), второй «Индекс» от старта ничем не отличается от «Значений».
+    const levelIsIndex = /индекс|index|=\s*100/i.test(level?.unit || metaQ.data?.indicator?.unit || '');
+    return allModes.filter((m) => !(m.type === 'index' && levelIsIndex)
+      && !failedModes.has(`${code}|${m.id}`));
+  }, [allModes, failedModes, code, metaQ.data?.indicator?.unit]);
 
   const fallbackFreq = frequencies[0]?.freq || metaQ.data?.indicator?.frequency || 'monthly';
   const activeMode = resolveWorldMode(modes, urlMode, fallbackFreq);
@@ -211,6 +160,33 @@ export default function WorldIndicatorPage() {
     requestCode: dataCode,
     includeForecast: forecastAvailable && showForecast,
   });
+  // Сервер отказал в режиме «год к году», «к прошлому периоду» или «индекс»: считаем его на странице из значений.
+  const modeType = modeParsed?.type;
+  const needsFallback = Boolean(
+    dataQ.isError && !redirecting && modeType && modeType !== 'level' && modeParsed?.freq,
+  );
+  const levelToken = needsFallback ? buildWorldModeToken('level', modeParsed.freq) : null;
+  const levelQ = useWorldIndicatorData(
+    slug,
+    code,
+    levelToken ? (apiIsComposite ? levelToken : worldModeToLegacyDataToken(levelToken)) : null,
+    { requestCode: dataCode },
+  );
+  const derived = useMemo(
+    () => (needsFallback && levelQ.data?.points ? deriveWorldMode(levelQ.data.points, modeType) : null),
+    [needsFallback, levelQ.data, modeType],
+  );
+  const modeUnusable = needsFallback && Boolean(levelQ.data) && !derived;
+  useEffect(() => {
+    if (!modeUnusable || !activeMode) return;
+    setFailedModes((prev) => {
+      const key = `${code}|${activeMode}`;
+      if (prev.has(key)) return prev;
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  }, [modeUnusable, activeMode, code]);
 
 
   const [fullChartData, setFullChartData] = useState([]);
@@ -295,13 +271,24 @@ export default function WorldIndicatorPage() {
 
   // Стабильная ссылка обязательна: IndicatorChart сообщает объединённый ряд
   // через onFullData; новый [] на каждом рендере замыкал update-loop.
-  const points = dataQ.data?.points || EMPTY_POINTS;
-  const forecastPoints = dataQ.data?.forecast?.points || EMPTY_POINTS;
-  const empty = !dataQ.isLoading && isEmptySeries(points);
+  const points = derived ? derived.points : (dataQ.data?.points || EMPTY_POINTS);
+  const forecastPoints = derived ? EMPTY_POINTS : (dataQ.data?.forecast?.points || EMPTY_POINTS);
+  const dataLoading = dataQ.isLoading || (needsFallback && levelQ.isLoading);
+  const dataError = needsFallback ? levelQ.isError : dataQ.isError;
+  const dataRefetch = needsFallback ? levelQ.refetch : dataQ.refetch;
+  const dataFetching = needsFallback ? levelQ.isFetching : dataQ.isFetching;
+  const empty = !dataLoading && !dataError && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
-  const telemetry = useMemo(() => computeWorldTelemetry(points), [points]);
-  const rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
+  let rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
     || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
+  if (derived) {
+    rawUnit = derived.unit === 'percent' ? '%'
+      : derived.unit === 'index' ? t('w6e.unit.indexStart')
+        : (levelQ.data?.unit || modeMeta?.unit || indicator?.unit || '');
+  } else if ((modeType === 'yoy' || modeType === 'step') && /индекс|index|=\s*100/i.test(rawUnit)) {
+    // «Изменение за год» не может быть в «индексе 2015 = 100»: это проценты.
+    rawUnit = '%';
+  }
   const displayUnit = localizeWorldUnit(rawUnit, locale);
   const unitBesideValue = localizeWorldUnit(
     dataQ.data?.unit_suffix || indicator?.unit_suffix || '',
@@ -317,14 +304,26 @@ export default function WorldIndicatorPage() {
       return Number.isFinite(value) ? (String(Math.abs(value)).split('.')[1] || '').length : 0;
     })))
     : chartValueDigits(rawUnit || displayUnit);
-  const unitParts = splitUnit(displayUnit);
-  const span = dataSpan(telemetry?.dataCount, activeFreq);
-  const spanWord = (unit, n) => (locale === 'en'
-    ? t(`w2.span.${unit}.${n === 1 ? 'one' : 'many'}`)
-    : pluralRu(n, [t(`w2.span.${unit}.one`), t(`w2.span.${unit}.few`), t(`w2.span.${unit}.many`)]));
-  const spanText = span ? t('w2.span.text', { n: span.value, word: spanWord(span.unit, span.value) }) : undefined;
   const polarity = indicatorPolarity(displayName);
-  const statFormat = (value) => formatWorldValue(value, valueDigits, locale);
+  const summary = useMemo(
+    () => buildIndicatorSummary({
+      points,
+      frequency: dataQ.data?.frequency || modeParsed?.freq || indicator?.frequency,
+      unit: displayUnit,
+      modeType,
+      dataDigits: valueDigits,
+      locale,
+    }),
+    [points, dataQ.data?.frequency, modeParsed?.freq, indicator?.frequency, displayUnit, modeType, valueDigits, locale],
+  );
+  // Место среди стран: по снимку последних значений того же понятия, только для обычных величин (ВВП, население).
+  const rankConcept = summary?.kind === 'level' && modeType === 'level' ? indicator?.concept_slug : null;
+  const snapshotQ = useWorldCompareSnapshot(rankConcept);
+  const rank = useMemo(() => {
+    const snap = snapshotQ.data;
+    if (!snap?.items || snap?.concept?.value_mode !== 'level') return null;
+    return rankAmongCountries(snap.items, country?.code, summary?.last?.value);
+  }, [snapshotQ.data, country?.code, summary?.last?.value]);
   const deltaSuffix = activeFreq === 'quarterly' ? t('indicator.telemetry.delta.prevQuarter')
     : activeFreq === 'annual' ? t('indicator.telemetry.delta.prevYear')
       : activeFreq === 'weekly' ? t('indicator.telemetry.delta.prevWeek')
@@ -478,9 +477,9 @@ export default function WorldIndicatorPage() {
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6 md:px-8 md:pt-28 md:pb-28">
       <Breadcrumbs
         items={worldIndicatorTrail(
-          countryName || country?.name || '…',
+          countryName || country?.name || '',
           slug,
-          shortCrumb(displayName) || '…',
+          displayName || '',
           code,
         )}
         className="flex-nowrap! overflow-hidden [&>span:last-child]:min-w-0 [&>span:last-child>span]:block [&>span:last-child>span]:truncate"
@@ -550,70 +549,15 @@ export default function WorldIndicatorPage() {
             <h1 className="mb-1.5 text-pretty font-display text-[1.3rem] font-bold leading-[1.28] tracking-tight text-text-primary sm:text-3xl md:mb-4 md:text-5xl md:leading-tight lg:text-6xl">
               {displayName}
             </h1>
+            {summary ? (
+              <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} />
+            ) : (dataLoading && !dataError ? <SkeletonBox className="fe-hero-line-skeleton" /> : null)}
             {metaQ.data._fromMock && (
               <p className="mt-2 text-xs text-text-secondary">
                 {t('world.mockData')}
               </p>
             )}
           </header>
-
-          <section className="mb-6 md:mb-10">
-            {dataQ.isLoading && !telemetry ? (
-              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-                {[0, 1, 2, 3].map((i) => (
-                  <SkeletonBox key={i} className="h-32 rounded-3xl" />
-                ))}
-              </div>
-            ) : (
-              <>
-                <div className="fe-substat-grid grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
-                  <StatTile
-                    index={0}
-                    label={t('w2.ind.now')}
-                    note={telemetry?.currentDate ? glueDate(formatDate(telemetry.currentDate, dateFormat, locale)) : undefined}
-                    tone={telemetry?.change != null && telemetry.change !== 0 ? (
-                      <p className="w2-stat-delta">
-                        <DeltaBadge delta={telemetry.change} polarity={polarity}>
-                          {formatChange(telemetry.change, locale)}
-                        </DeltaBadge>
-                        <span>{deltaSuffix}</span>
-                      </p>
-                    ) : null}
-                  >
-                    <WorldCountUp value={telemetry?.currentValue} format={statFormat} />
-                    {unitParts.short && <small>{unitParts.short}</small>}
-                  </StatTile>
-                  <StatTile
-                    index={1}
-                    label={previousLabel}
-                    note={telemetry?.previousDate ? glueDate(formatDate(telemetry.previousDate, dateFormat, locale)) : undefined}
-                  >
-                    {telemetry?.previousValue != null ? statFormat(telemetry.previousValue) : '—'}
-                    {unitParts.short && telemetry?.previousValue != null && <small>{unitParts.short}</small>}
-                  </StatTile>
-                  {telemetry?.highest && (
-                    <StatTile
-                      index={2}
-                      label={t('w2.ind.max')}
-                      note={glueDate(formatDate(telemetry.highest.date, dateFormat, locale))}
-                    >
-                      {statFormat(telemetry.highest.value)}
-                      {unitParts.short && <small>{unitParts.short}</small>}
-                    </StatTile>
-                  )}
-                  {telemetry?.average != null && (
-                    <StatTile index={3} label={t('w2.ind.avg')} note={spanText}>
-                      {statFormat(telemetry.average)}
-                      {unitParts.short && <small>{unitParts.short}</small>}
-                    </StatTile>
-                  )}
-                </div>
-                {unitParts.long && unitParts.long !== unitParts.short && (
-                  <p className="mt-3 text-sm text-text-secondary">{t('w2.ind.unitNote', { unit: unitParts.long })}</p>
-                )}
-              </>
-            )}
-          </section>
 
           <ViewModesPanel>
             {variantGroup && (
@@ -634,40 +578,62 @@ export default function WorldIndicatorPage() {
             )}
           </ViewModesPanel>
 
-          {dataQ.isError && (
-            <ApiRetryBanner onRetry={dataQ.refetch} isFetching={dataQ.isFetching} className="mb-6">
+          {dataError && (
+            <ApiRetryBanner onRetry={dataRefetch} isFetching={dataFetching} className="mb-6">
               {t('world.indicator.dataLoadError')}
             </ApiRetryBanner>
           )}
 
-          <WorldChartSection
-            code={code}
-            indicator={chartIndicator}
-            modeMeta={modeMeta}
-            dataPoints={points}
-            forecastData={forecastPoints}
-            forecastEnabled={forecastAvailable}
-            forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
-            forecastGateStatus={
-              dataQ.data?.forecast?.quality?.gate_status
-              || metaQ.data?.forecast_gate_status
-              || (forecastAvailable ? 'passed' : null)
-            }
-            showForecast={showForecast}
-            onToggleForecast={() => setShowForecast((current) => !current)}
-            chartLoading={dataQ.isLoading}
-            emptyHint={empty ? t('world.indicator.emptyMode') : undefined}
-            onFullData={setFullChartData}
-            onDownloadCsv={handleDownloadCSV}
-            onDownloadExcel={handleDownloadExcel}
-            frequency={activeFreq}
-            aggregated={aggregated}
-            aggregation={dataQ.data?.aggregation || modeMeta?.aggregation || null}
-            unit={displayUnit}
-            country={country}
-            conceptSlug={indicator.concept_slug}
-            comparisonPeers={metaQ.data.peers || []}
-          />
+          {!dataError && (
+            <WorldChartSection
+              code={code}
+              indicator={chartIndicator}
+              modeMeta={modeMeta}
+              dataPoints={points}
+              forecastData={forecastPoints}
+              forecastEnabled={forecastAvailable && !derived}
+              forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
+              forecastGateStatus={
+                dataQ.data?.forecast?.quality?.gate_status
+                || metaQ.data?.forecast_gate_status
+                || (forecastAvailable ? 'passed' : null)
+              }
+              showForecast={showForecast}
+              onToggleForecast={() => setShowForecast((current) => !current)}
+              chartLoading={dataLoading}
+              emptyHint={empty ? t('world.indicator.emptyMode') : undefined}
+              onFullData={setFullChartData}
+              onDownloadCsv={handleDownloadCSV}
+              onDownloadExcel={handleDownloadExcel}
+              frequency={activeFreq}
+              aggregated={aggregated}
+              aggregation={dataQ.data?.aggregation || modeMeta?.aggregation || null}
+              unit={displayUnit}
+              country={country}
+              conceptSlug={indicator.concept_slug}
+              comparisonPeers={metaQ.data.peers || []}
+            />
+          )}
+
+          <section className="mb-6 md:mb-10">
+            {dataLoading && !summary ? (
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <SkeletonBox key={i} className="h-32 rounded-3xl" />
+                ))}
+              </div>
+            ) : (
+              <WorldStatTiles
+                summary={summary}
+                dateFormat={dateFormat}
+                frequency={activeFreq}
+                previousLabel={previousLabel}
+                deltaSuffix={deltaSuffix}
+                polarity={polarity}
+                rank={rank}
+              />
+            )}
+          </section>
 
           {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
             <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>

@@ -2,9 +2,9 @@ import { rememberAuthView, restoredAuthView } from '../lib/authReturn';
 import { useEffect, useRef, useMemo, useState, useCallback, useId } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, Bar, XAxis, YAxis,
-  Tooltip, CartesianGrid, ReferenceLine, ReferenceArea,
+  Tooltip, CartesianGrid, ReferenceLine, ReferenceArea, ReferenceDot,
 } from 'recharts';
-import { Activity, ZoomIn, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
+import { Activity, AreaChart as AreaIcon, BarChart3, LineChart as LineIcon } from 'lucide-react';
 import {
   formatDate, formatAxisTick, formatValue,
   chartValueDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
@@ -12,45 +12,33 @@ import {
 import { track, events } from '../lib/track';
 import { valueWithUnit } from '../lib/valueText';
 import { buildForecastVisualSeries, mergeActualForecastChartSeries } from '../lib/chartForecastMerge';
-import { useT } from '../i18n';
+import { useLocale, useT } from '../i18n';
 import { CHART_THEME } from '../lib/chartTheme';
+import {
+  formatAxisTickCompact, needsCompactAxis, spansManyYears, yearAxisTicks,
+} from '../lib/chartAxis';
 import ChartBrandCaption from './ChartBrandCaption';
+import ChartBrush from './ChartBrush';
 import { chartPlotHeight } from './chartLayout';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
 import '../styles/chart-controls.css';
 
+// Одни и те же короткие подписи на всех страницах: «1 г., 5 л., 10 л., Всё». У годовых рядов нет смысла в «1 г.»
+// (одна точка), поэтому там начинаем с 5 лет и добавляем 25.
+const R_1Y = { key: '1y', labelKey: 'w6e.range.1y', months: 12 };
+const R_5Y = { key: '5y', labelKey: 'w6e.range.5y', months: 60 };
+const R_10Y = { key: '10y', labelKey: 'w6e.range.10y', months: 120 };
+const R_25Y = { key: '25y', labelKey: 'w6e.range.25y', months: 300 };
+const R_ALL = { key: 'all', labelKey: 'w6e.range.all', months: null };
+const SHORT_RANGES = [R_1Y, R_5Y, R_10Y, R_ALL];
+
 const RANGE_PRESETS = {
-  default: [
-    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
-    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
-    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
-    { key: 'all', labelKey: 'compare.range.all', months: null },
-  ],
-  annual: [
-    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
-    { key: '25y', labelKey: 'chart.range.25y', months: 300 },
-    { key: 'all', labelKey: 'compare.range.all', months: null },
-  ],
-  quarterly: [
-    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
-    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
-    { key: '10y', labelKey: 'compare.range.10y', months: 120 },
-    { key: '25y', labelKey: 'chart.range.25y', months: 300 },
-    { key: 'all', labelKey: 'compare.range.all', months: null },
-  ],
-  weekly: [
-    { key: '6m', labelKey: 'chart.range.6m', months: 6 },
-    { key: '1y', labelKey: 'chart.range.1y', months: 12 },
-    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
-    { key: 'all', labelKey: 'compare.range.all', months: null },
-  ],
-  daily: [
-    { key: '1y', labelKey: 'chart.range.1y', months: 12 },
-    { key: '3y', labelKey: 'compare.range.3y', months: 36 },
-    { key: '5y', labelKey: 'compare.range.5y', months: 60 },
-    { key: 'all', labelKey: 'compare.range.all', months: null },
-  ],
+  default: SHORT_RANGES,
+  annual: [R_5Y, R_10Y, R_25Y, R_ALL],
+  quarterly: SHORT_RANGES,
+  weekly: SHORT_RANGES,
+  daily: SHORT_RANGES,
 };
 
 const RANGE_DEFAULTS = {
@@ -58,24 +46,51 @@ const RANGE_DEFAULTS = {
   annual: '10y',
   quarterly: '5y',
   weekly: '1y',
-  daily: '3y',
+  daily: '1y',
 };
 
+// Наименьшее окно в точках: у годовых рядов «5 лет» это 5 точек, у квартальных «1 год» это 4.
+const MIN_WINDOWS = {
+  default: 10, annual: 5, quarterly: 6, weekly: 10, daily: 10,
+};
 const MIN_WINDOW = 10;
 // Появление блока средствами CSS: без задержки, график виден сразу (раньше gsap скрывал его на ~1.3 с).
 const REVEAL_STYLE = { '--fe-duration': '0.28s', '--fe-rise': '8px' };
 const ZOOM_STEP = 1.18;
 
-function dateBasedWindowSize(data, months) {
+function dateBasedWindowSize(data, months, minWindow = MIN_WINDOW) {
   if (!months || !data.length) return data.length;
   const last = new Date(data[data.length - 1].date);
   const cutoff = new Date(last);
   cutoff.setUTCMonth(cutoff.getUTCMonth() - months);
   const cutoffStr = cutoff.toISOString().slice(0, 10);
   for (let i = 0; i < data.length; i++) {
-    if (data[i].date >= cutoffStr) return Math.max(MIN_WINDOW, data.length - i);
+    if (data[i].date >= cutoffStr) return Math.max(minWindow, data.length - i);
   }
   return data.length;
+}
+
+/**
+ * Сдвигает ряд так, чтобы первая точка видимого окна равнялась 100 у основной страны и у каждой выбранной.
+ * Базой служит первая строка окна, где у всех положительные значения; без такой строки возвращаем null.
+ */
+function rebaseVisibleRows(rows, series) {
+  if (!rows.length || !series.length) return null;
+  const start = rows.findIndex((row) => Number(row.actual) > 0
+    && series.every((item) => Number(row[item.dataKey]) > 0));
+  if (start < 0) return null;
+  const baseActual = Number(rows[start].actual);
+  const bases = series.map((item) => Number(rows[start][item.dataKey]));
+  const mapped = rows.slice(start).map((row) => {
+    const next = { date: row.date };
+    if (row.actual != null) next.actual = (Number(row.actual) / baseActual) * 100;
+    series.forEach((item, i) => {
+      const v = row[item.dataKey];
+      if (v != null) next[item.dataKey] = (Number(v) / bases[i]) * 100;
+    });
+    return next;
+  });
+  return { rows: mapped, startDate: rows[start].date };
 }
 
 function CustomTooltip({
@@ -103,6 +118,42 @@ function CustomTooltip({
   const forecastLabel = forecastTooltipLabel
     || (mode === 'cpi' ? t('common.forecast') : t('chart.tooltip.forecast12m'));
   const compactNumeric = numericTooltipOnly && comparisons.length === 0;
+
+  // Один ряд: узкая подсказка в одну строку «дата  значение». Она стоит над линией (см. position у Tooltip) и ничего не закрывает.
+  if (comparisons.length === 0 && (actual || forecast)) {
+    const main = actual || forecast;
+    const isForecast = !actual;
+    const band = payload.find((p) => p.dataKey === 'band');
+    const range = isForecast && Array.isArray(band?.value) && band.value.length === 2
+      ? band.value
+      : null;
+    return (
+      <div className="fe-chart-tip glass-surface rounded-lg border border-border-subtle px-2.5 py-1.5 shadow-lg">
+        <span className="fe-chart-tip__date">{formatDate(label, dateFormat)}</span>
+        <span
+          className="fe-chart-tip__value"
+          style={isForecast ? { color: CHART_THEME.champagneInk } : undefined}
+        >
+          {numericTooltipOnly
+            ? formatValue(main.value, valueDigits)
+            : valueWithUnit(main.value, valueDigits, unit)}
+        </span>
+        {isForecast && (
+          <span className="fe-chart-tip__tag">
+            {forecastTooltipLabel || t('common.forecast')}
+          </span>
+        )}
+        {range && (
+          <span className="fe-chart-tip__range">
+            {t('w6e.forecast.rangeTip', {
+              from: formatValue(range[0], valueDigits),
+              to: formatValue(range[1], valueDigits),
+            })}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={`glass-surface rounded-xl border border-border-subtle px-4 py-3 shadow-2xl ${compactNumeric ? 'min-w-[118px]' : 'min-w-[200px]'}`}>
@@ -162,6 +213,30 @@ function CustomTooltip({
   );
 }
 
+/** Точка последнего наблюдения с подписью значения: чтобы число читалось без наведения. */
+function LastPointMarker({ cx, cy, text, anchorEnd }) {
+  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  return (
+    <g pointerEvents="none">
+      <circle cx={cx} cy={cy} r={4.5} fill={CHART_THEME.ink} stroke="#FFFFFF" strokeWidth={2} />
+      <text
+        x={anchorEnd ? cx + 2 : cx - 2}
+        y={cy - 11}
+        textAnchor={anchorEnd ? 'end' : 'start'}
+        fill={CHART_THEME.ink}
+        fontSize={12}
+        fontWeight={700}
+        fontFamily={CHART_THEME.font}
+        stroke="#FFFFFF"
+        strokeWidth={3}
+        paintOrder="stroke"
+      >
+        {text}
+      </text>
+    </g>
+  );
+}
+
 export default function IndicatorChart({
   inflation,
   showForecast = true,
@@ -188,8 +263,11 @@ export default function IndicatorChart({
   comparisonLabel = '',
   comparisonSeries = null,
   actualSeriesLabel = '',
+  rebaseVisible = false,
+  ariaTitle = '',
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const digits = chartValueDigits(unit, chartMode ?? mode);
   const gradientId = `actual-${useId().replaceAll(':', '')}`;
   const chartAreaRef = useRef(null);
@@ -198,6 +276,7 @@ export default function IndicatorChart({
     label: t(opt.labelKey),
   }));
   const defaultRange = RANGE_DEFAULTS[rangePreset] || RANGE_DEFAULTS.default;
+  const minWindow = MIN_WINDOWS[rangePreset] ?? MIN_WINDOW;
   const viewKey = `${indicatorCode}:${chartMode ?? mode}:${rangePreset}`;
   const [savedView] = useState(() => restoredAuthView(viewKey));
   const [range, setRange] = useState(savedView?.range ?? defaultRange);
@@ -298,10 +377,12 @@ export default function IndicatorChart({
   // видимого окна графика. Экспорт обязан отдавать всю историю, не 5-летний срез.
   useEffect(() => { onFullDataRef.current?.(chartData); }, [chartData]);
 
+  // Сохранённый до входа вид мог указывать на период, которого больше нет в списке (например, «3 года»).
+  const activeRange = rangeOptions.some((r) => r.key === range) ? range : defaultRange;
   const presetWindow = useMemo(() => {
-    const opt = rangeOptions.find(r => r.key === range);
-    return dateBasedWindowSize(chartData, opt?.months);
-  }, [chartData, range, rangeOptions]);
+    const opt = rangeOptions.find(r => r.key === activeRange);
+    return dateBasedWindowSize(chartData, opt?.months, minWindow);
+  }, [chartData, activeRange, rangeOptions, minWindow]);
 
   const windowSize = windowOverride ?? presetWindow;
   const maxOffset = Math.max(0, dataLen - windowSize);
@@ -309,10 +390,34 @@ export default function IndicatorChart({
 
   const startIdx = Math.max(0, dataLen - windowSize - clampedOffset);
   const endIdx = dataLen - clampedOffset;
-  const visibleData = useMemo(
+  const windowRows = useMemo(
     () => chartData.slice(startIdx, endIdx),
     [chartData, startIdx, endIdx]
   );
+  // «Динамика (=100)»: база на начале выбранного окна, а не на общей давней дате. Линии стартуют ровно со 100.
+  const rebased = useMemo(
+    () => (rebaseVisible && resolvedComparisonSeries.length
+      ? rebaseVisibleRows(windowRows, resolvedComparisonSeries)
+      : null),
+    [rebaseVisible, windowRows, resolvedComparisonSeries],
+  );
+  const visibleData = rebased ? rebased.rows : windowRows;
+
+  // Вероятный диапазон прогноза: границы приходят вместе с прогнозом, на график кладём их отдельным слоем.
+  const bandByDate = useMemo(() => {
+    const map = new Map();
+    const values = forecastData?.forecast?.values;
+    if (!Array.isArray(values)) return map;
+    for (const item of values) {
+      const lo = Number(item?.lower_bound);
+      const hi = Number(item?.upper_bound);
+      if (item?.lower_bound != null && item?.upper_bound != null
+        && Number.isFinite(lo) && Number.isFinite(hi) && hi >= lo) {
+        map.set(item.date, [lo, hi]);
+      }
+    }
+    return map;
+  }, [forecastData]);
 
   const forecastEndDate = useMemo(() => {
     if (!showForecast) return null;
@@ -327,12 +432,25 @@ export default function IndicatorChart({
     () => [...visibleData].reverse().find((row) => row.forecast != null && row.actual == null),
     [visibleData],
   );
-  const { data: visualData, boundaryDate: forecastBoundaryDate } = useMemo(
-    () => showForecast && chartType !== 'bar'
-      ? buildForecastVisualSeries(visibleData)
-      : { data: visibleData, boundaryDate: null },
-    [visibleData, showForecast, chartType],
-  );
+  const { data: visualData, boundaryDate: forecastBoundaryDate } = useMemo(() => {
+    if (!(showForecast && chartType !== 'bar')) return { data: visibleData, boundaryDate: null };
+    const built = buildForecastVisualSeries(visibleData);
+    if (!bandByDate.size || rebased) return built;
+    let anchored = false;
+    const withBand = built.data.map((row) => {
+      const band = row.forecast != null && row.actual == null ? bandByDate.get(row.date) : null;
+      if (band) return { ...row, band };
+      // Опорная точка (последний факт): диапазон там нулевой и «вырастает» из неё.
+      if (!anchored && row.date === built.boundaryDate && row.actual != null) {
+        anchored = true;
+        return { ...row, band: [Number(row.actual), Number(row.actual)] };
+      }
+      return row;
+    });
+    return { data: withBand, boundaryDate: built.boundaryDate };
+  }, [visibleData, showForecast, chartType, bandByDate, rebased]);
+  const hasBand = visualData.some((row) => Array.isArray(row.band)
+    && row.band[0] !== row.band[1]);
 
   useEffect(() => { onChartDataRef.current?.(visibleData); }, [visibleData]);
 
@@ -344,9 +462,11 @@ export default function IndicatorChart({
     track(events.CHART_RANGE_CHANGE, { range: key, indicator: indicatorCode, indicatorCategory });
   };
 
-  const handleSlider = useCallback((e) => {
-    setOffset(maxOffset - Number(e.target.value));
-  }, [maxOffset, setOffset]);
+  // Рамка выбора под графиком: левая и правая ручки задают начало и конец окна, середина двигает его целиком.
+  const handleBrush = useCallback((start, end) => {
+    setWindowOverride(Math.max(minWindow, end - start));
+    setOffset(Math.max(0, dataLen - end));
+  }, [dataLen, minWindow, setOffset, setWindowOverride]);
 
   /* ── Wheel zoom (TradingView-style) ── */
   const handleWheel = useCallback((e) => {
@@ -357,7 +477,7 @@ export default function IndicatorChart({
     const zoomIn = e.deltaY < 0;
     const factor = zoomIn ? 1 / ZOOM_STEP : ZOOM_STEP;
     const current = windowOverride ?? presetWindow;
-    const next = Math.max(MIN_WINDOW, Math.min(dataLen, Math.round(current * factor)));
+    const next = Math.max(minWindow, Math.min(dataLen, Math.round(current * factor)));
     if (next === current) return;
 
     const rect = chartAreaRef.current?.getBoundingClientRect();
@@ -369,7 +489,7 @@ export default function IndicatorChart({
     }
 
     setWindowOverride(next);
-  }, [windowOverride, presetWindow, dataLen, setOffset, setWindowOverride]);
+  }, [windowOverride, presetWindow, dataLen, minWindow, setOffset, setWindowOverride]);
 
   useEffect(() => {
     const el = chartAreaRef.current;
@@ -393,7 +513,7 @@ export default function IndicatorChart({
       pointerId: e.pointerId,
       phase: 'deciding',
     };
-  }, [clampedOffset]);
+  }, [clampedOffset, setTouchMode, setIsHovering]);
 
   const handlePointerMove = useCallback((e) => {
     let d = dragRef.current;
@@ -422,7 +542,7 @@ export default function IndicatorChart({
     const shift = Math.round(deltaX / pixelsPerPoint);
     const newOffset = Math.max(0, Math.min(d.initOffset + shift, maxOffset));
     setOffset(newOffset);
-  }, [windowSize, maxOffset, setOffset]);
+  }, [windowSize, maxOffset, setOffset, setIsDragging, setIsHovering]);
 
   const handlePointerUp = useCallback((e) => {
     const d = dragRef.current;
@@ -445,7 +565,7 @@ export default function IndicatorChart({
     }
     dragRef.current = null;
     setIsDragging(false);
-  }, []);
+  }, [setIsDragging, setIsHovering]);
 
   // Тап вне плота закрывает подсказку (на сенсоре нет mouseleave).
   useEffect(() => {
@@ -457,18 +577,21 @@ export default function IndicatorChart({
     return () => document.removeEventListener('pointerdown', onOutside, true);
   }, [isHovering, touchMode]);
 
-  const { yDomain, yWidth, yTicks } = useMemo(() => {
-    if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
+  const { yDomain, yWidth, yTicks, yCompact } = useMemo(() => {
+    if (!visibleData.length) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined, yCompact: false };
     let min = Infinity; let max = -Infinity;
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
+      if (Array.isArray(row.band)) {
+        min = Math.min(min, row.band[0]); max = Math.max(max, row.band[1]);
+      }
       for (const series of resolvedComparisonSeries) {
         const value = row[series.dataKey];
         if (value != null) { min = Math.min(min, value); max = Math.max(max, value); }
       }
     }
-    if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined };
+    if (!isFinite(min)) return { yDomain: ['auto', 'auto'], yWidth: 55, yTicks: undefined, yCompact: false };
 
     const span = max - min || 1;
     const rough = span / 5;
@@ -484,10 +607,14 @@ export default function IndicatorChart({
     }
 
     const absMax = Math.max(Math.abs(niceMin), Math.abs(niceMax));
-    const sampleLabel = formatAxisTick(niceMin < 0 ? niceMin : absMax, digits);
-    const w = Math.max(45, Math.min(120, sampleLabel.length * 7.5 + 12));
-    return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks };
-  }, [visibleData, digits, resolvedComparisonSeries]);
+    // Крупные числа подписываем «24 млн», а не «24 000 000»: ось не съедает четверть ширины графика.
+    const compact = needsCompactAxis(absMax);
+    const sampleLabel = compact
+      ? formatAxisTickCompact(niceMin < 0 ? niceMin : absMax, digits, locale)
+      : formatAxisTick(niceMin < 0 ? niceMin : absMax, digits);
+    const w = Math.max(40, Math.min(120, sampleLabel.length * 7.5 + 12));
+    return { yDomain: [niceMin, niceMax], yWidth: w, yTicks: ticks, yCompact: compact };
+  }, [visibleData, digits, resolvedComparisonSeries, locale]);
 
   // Подписи оси X: бюджет от ширины + фактическая RU-строка («7 июля 2025»),
   // затем densest step без пересечения (см. pickChartAxisTicks).
@@ -507,7 +634,18 @@ export default function IndicatorChart({
             : 8);
     return chartAxisTickBudget(xAxisPlotWidth, labelSpec);
   }, [xAxisPlotWidth, dateFormat, visibleData, formatXAxisLabel]);
+  // Окно длиннее двух с половиной лет: подписи по годам («2022, 2023, 2024»), а не «авг 2022, июн 2023, апр 2024».
+  const yearTicks = useMemo(() => {
+    if (dateFormat === 'annual') return null;
+    const dates = visibleData.map((row) => row.date);
+    return spansManyYears(dates) ? yearAxisTicks(dates, xAxisPlotWidth) : null;
+  }, [visibleData, dateFormat, xAxisPlotWidth]);
+  const xTickFormat = useCallback(
+    (d) => (yearTicks ? String(d).slice(0, 4) : formatXAxisLabel(d)),
+    [yearTicks, formatXAxisLabel],
+  );
   const xTicks = useMemo(() => {
+    if (yearTicks) return yearTicks;
     const cadence = dateFormat === 'annual' || dateFormat === 'quarterly'
       ? dateFormat
       : null;
@@ -516,7 +654,7 @@ export default function IndicatorChart({
       plotWidthPx: xAxisPlotWidth,
       formatLabel: formatXAxisLabel,
     });
-  }, [visibleData, xTickBudget, dateFormat, xAxisPlotWidth, formatXAxisLabel]);
+  }, [yearTicks, visibleData, xTickBudget, dateFormat, xAxisPlotWidth, formatXAxisLabel]);
 
   const title = cpiChartTitle
     ?? (mode === 'cpi'
@@ -533,7 +671,7 @@ export default function IndicatorChart({
   }, [chartData]);
   const plotAriaLabel = lastActualRow
     ? t('chart.plotAria', {
-      title,
+      title: ariaTitle || title,
       value: valueWithUnit(lastActualRow.actual, digits, unit),
       date: formatDate(lastActualRow.date, dateFormat),
     })
@@ -543,12 +681,19 @@ export default function IndicatorChart({
     ? referenceLineY
     : 0;
 
-  const sliderValue = maxOffset - clampedOffset;
   const hasForecast = mode === 'inflation'
     ? inflation?.forecast?.length > 0
     : forecastData?.forecast?.values?.length > 0;
 
   const isZoomed = windowOverride != null;
+  // Подпись последней фактической точки: значение прямо у линии, без наведения.
+  const lastPointRow = useMemo(() => {
+    for (let i = visualData.length - 1; i >= 0; i -= 1) {
+      if (visualData[i].actual != null && Number.isFinite(Number(visualData[i].actual))) return visualData[i];
+    }
+    return null;
+  }, [visualData]);
+  const showBrush = dataLen >= minWindow * 2;
 
   if (!dataLen) {
     return (
@@ -575,11 +720,11 @@ export default function IndicatorChart({
         {/* ml-auto: при длинном заголовке контролы переносятся на новую строку,
             но всегда прижаты вправо (а не уезжают влево). Созвон 2026-06-16. */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
-          <ChipGroup label={t('chart.typeAria')} className="fe-chip-row--tight">
+          <ChipGroup label={t('chart.typeAria')} className="fe-seg">
             {[
-              { key: 'area', label: t('chart.type.area'), icon: AreaIcon },
-              { key: 'line', label: t('chart.type.line'), icon: LineIcon },
-              { key: 'bar', label: t('chart.type.bar'), icon: BarChart3 },
+              { key: 'area', label: t('w6e.type.area'), icon: AreaIcon },
+              { key: 'line', label: t('w6e.type.line'), icon: LineIcon },
+              { key: 'bar', label: t('w6e.type.bar'), icon: BarChart3 },
             ].map((opt) => {
               const IconComp = opt.icon;
               return (
@@ -587,11 +732,10 @@ export default function IndicatorChart({
                   key={opt.key}
                   active={chartType === opt.key}
                   onClick={() => setChartType(opt.key)}
-                  aria-label={opt.label}
-                  title={opt.label}
-                  className="fe-chip--icon"
+                  className="fe-chip--seg"
                 >
-                  <IconComp className="w-3.5 h-3.5" aria-hidden="true" />
+                  <IconComp className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                  <span>{opt.label}</span>
                 </Chip>
               );
             })}
@@ -610,7 +754,7 @@ export default function IndicatorChart({
             {rangeOptions.map(opt => (
               <Chip
                 key={opt.key}
-                active={range === opt.key && !isZoomed}
+                active={activeRange === opt.key && !isZoomed}
                 onClick={() => handleRangeChange(opt.key)}
               >
                 {opt.label}
@@ -619,6 +763,12 @@ export default function IndicatorChart({
           </ChipGroup>
         </div>
       </div>
+
+      {rebased && (
+        <p className="fe-chart-note" role="note">
+          {t('w6e.compare.baseStart', { date: formatDate(rebased.startDate, dateFormat === 'full' ? 'short' : dateFormat) })}
+        </p>
+      )}
 
       <div
         ref={chartAreaRef}
@@ -638,7 +788,7 @@ export default function IndicatorChart({
         style={{ touchAction: 'pan-y' }}
       >
         <ResponsiveContainer width="100%" height={chartPlotHeight(plotWidth)}>
-          <ComposedChart data={visualData} margin={{ top: 12, right: 36, bottom: 16, left: 0 }}>
+          <ComposedChart data={visualData} margin={{ top: 38, right: 14, bottom: 16, left: 0 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.15} />
@@ -653,7 +803,7 @@ export default function IndicatorChart({
             />
             <XAxis
               dataKey="date"
-              tickFormatter={formatXAxisLabel}
+              tickFormatter={xTickFormat}
               stroke="rgba(0,0,0,0.1)"
               tick={{ fill: CHART_THEME.axis, fontSize: 11, fontFamily: CHART_THEME.font }}
               tickLine={false}
@@ -661,7 +811,7 @@ export default function IndicatorChart({
               interval={0}
               tickMargin={10}
               height={42}
-              padding={{ left: 8, right: 24 }}
+              padding={{ left: 8, right: 10 }}
             />
             <YAxis
               stroke="rgba(0,0,0,0.1)"
@@ -670,7 +820,7 @@ export default function IndicatorChart({
               axisLine={false}
               domain={yDomain}
               ticks={yTicks}
-              tickFormatter={v => formatAxisTick(v, digits)}
+              tickFormatter={(v) => (yCompact ? formatAxisTickCompact(v, digits, locale) : formatAxisTick(v, digits))}
               width={yWidth}
             />
             <Tooltip
@@ -690,6 +840,9 @@ export default function IndicatorChart({
               )}
               cursor={isDragging || !isHovering ? false : { stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
               active={isHovering && !isDragging}
+              position={resolvedComparisonSeries.length ? undefined : { y: 0 }}
+              wrapperStyle={{ pointerEvents: 'none', zIndex: 20 }}
+              isAnimationActive={false}
             />
             {baselineY !== null && (
               <ReferenceLine y={baselineY} stroke="rgba(0,0,0,0.12)" strokeDasharray="6 3" />
@@ -750,6 +903,20 @@ export default function IndicatorChart({
               />
             )}
 
+            {showForecast && chartType !== 'bar' && hasBand && (
+              <Area
+                dataKey="band"
+                stroke="none"
+                fill={CHART_THEME.champagne}
+                fillOpacity={0.22}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+                connectNulls
+                legendType="none"
+              />
+            )}
+
             {showForecast && (
               chartType === 'bar' ? (
                 <Bar
@@ -764,9 +931,9 @@ export default function IndicatorChart({
                 <Line
                   dataKey="forecast"
                   stroke={CHART_THEME.champagne}
-                  strokeWidth={3.5}
+                  strokeWidth={2.75}
                   connectNulls
-                  strokeDasharray="10 5"
+                  strokeDasharray="7 5"
                   dot={(props) => props.payload?.date === forecastLast?.date
                     ? <circle cx={props.cx} cy={props.cy} r="5" fill={CHART_THEME.champagne} stroke="#fff" strokeWidth="2" />
                     : null}
@@ -787,36 +954,40 @@ export default function IndicatorChart({
                 isAnimationActive={false}
               />
             ))}
+            {lastPointRow && chartType !== 'bar' && !isDragging && (
+              <ReferenceDot
+                x={lastPointRow.date}
+                y={Number(lastPointRow.actual)}
+                r={4.5}
+                ifOverflow="visible"
+                shape={(props) => (
+                  <LastPointMarker
+                    cx={props.cx}
+                    cy={props.cy}
+                    text={formatValue(lastPointRow.actual, digits)}
+                    anchorEnd={Number(props.cx) > plotWidth * 0.45}
+                  />
+                )}
+              />
+            )}
           </ComposedChart>
         </ResponsiveContainer>
 
-        {isHovering && !isDragging && !touchMode && (
-          <div className="mt-1 flex justify-end pr-3">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-obsidian/70 backdrop-blur-sm border border-border-subtle/50 pointer-events-none opacity-60 transition-opacity">
-              <ZoomIn className="w-3 h-3 text-text-tertiary" />
-              <span className="text-xs text-text-secondary">{t('chart.zoomHint')}</span>
-            </div>
-          </div>
-        )}
-
       </div>
 
-      {maxOffset > 0 && (
-        <div className="px-2 mt-2">
-          <input
-            type="range"
-            min={0}
-            max={maxOffset}
-            value={sliderValue}
-            onChange={handleSlider}
-            aria-label={t('chart.windowAria')}
-            className="fe-range"
-          />
-          <div className="flex justify-between text-xs text-text-secondary" aria-hidden="true">
-            <span>{t('w3.chart.earlier')}</span>
-            <span>{t('w3.chart.later')}</span>
-          </div>
-        </div>
+      {showBrush && (
+        <ChartBrush
+          rows={chartData}
+          start={startIdx}
+          end={endIdx}
+          minWindow={minWindow}
+          onChange={handleBrush}
+          labels={{
+            group: t('chart.windowAria'),
+            from: t('w6e.brush.from'),
+            to: t('w6e.brush.to'),
+          }}
+        />
       )}
 
       {resolvedComparisonSeries.length > 0 && (
@@ -844,6 +1015,12 @@ export default function IndicatorChart({
             <span className="w-5 h-0.5 rounded-full" style={{ background: CHART_THEME.champagne, opacity: 0.8 }} />
             <span className="text-xs text-text-secondary">{t('common.forecast')}</span>
           </div>
+          {hasBand && (
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-5 rounded-sm" style={{ background: CHART_THEME.champagne, opacity: 0.28 }} />
+              <span className="text-xs text-text-secondary">{t('w6e.forecast.range')}</span>
+            </div>
+          )}
         </div>
       )}
       <ChartBrandCaption />

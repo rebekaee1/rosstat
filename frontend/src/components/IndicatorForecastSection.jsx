@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import ForecastTable from './ForecastTable';
 import Button from './Button';
-import { russiaCategoriesPath } from '../lib/sitePaths';
+import { comparePath, russiaCategoriesPath, russiaIndicatorPath } from '../lib/sitePaths';
 import '../styles/indicator-russia.css';
 import '../styles/x2-indicator.css';
 import { track, events } from '../lib/track';
@@ -11,6 +11,13 @@ import { useT } from '../i18n';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 
 const SOFT = { '--fe-duration': '0.35s', '--fe-rise': '10px' };
+
+// Страница без прогноза не заканчивается тупиком: у курса валюты рядом стоят другие курсы и нефть, у остальных сравнение.
+const RELATED_PAIRS = Object.freeze({
+  'usd-rub': ['eur-rub', 'cny-rub', 'brent'],
+  'eur-rub': ['usd-rub', 'cny-rub', 'brent'],
+  'cny-rub': ['usd-rub', 'eur-rub', 'brent'],
+});
 
 /**
  * `forecast_view` — цель «пользователь действительно увидел блок прогноза».
@@ -160,9 +167,21 @@ export default function IndicatorForecastSection({
         <p className="fe-note-card__title">{t('w3.forecast.emptyTitle')}</p>
         <p className="fe-note-card__text">{t('w3.forecast.emptyBody')}</p>
       </div>
-      <Button as={Link} to={russiaCategoriesPath()} variant="secondary" size="sm" className="fe-note-card__cta">
-        {t('w3.forecast.emptyCta')}
-      </Button>
+      <div className="fe-note-card__cta fe-note-card__actions">
+        {(RELATED_PAIRS[indicator?.code] || []).map((pair) => (
+          <Button key={pair} as={Link} to={russiaIndicatorPath(pair)} variant="secondary" size="sm">
+            {t(`w6e.pair.${pair}`)}
+          </Button>
+        ))}
+        {indicator?.code && (
+          <Button as={Link} to={`${comparePath()}?codes=${encodeURIComponent(indicator.code)}`} variant="secondary" size="sm">
+            {t('w6e.pair.compare')}
+          </Button>
+        )}
+        <Button as={Link} to={russiaCategoriesPath()} variant="ghost" size="sm">
+          {t('w3.forecast.emptyCta')}
+        </Button>
+      </div>
     </section>
   );
 }

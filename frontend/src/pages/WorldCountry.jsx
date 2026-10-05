@@ -2,7 +2,7 @@
 // Темы слева + сетка показателей; поиск не ломает сетку.
 import NotFound from './NotFound';
 import { useEffect, useMemo, useState, useDeferredValue } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   Search, BarChart3, ArrowUpRight, ChevronDown, Scale, Spline,
 } from 'lucide-react';
@@ -297,6 +297,8 @@ export default function WorldCountry() {
   // Название и флаг из каталога стран, который уже в кэше: человек видит страну сразу после нажатия.
   const cachedCountry = useCachedWorldCountry(slug);
   const previewName = countryPublicName(cachedCountry, locale);
+  // Переход по крошке с карточки показателя: название страны уже известно и стоит в крошках сразу, пока грузятся данные.
+  const crumbNameFromLink = useLocation().state?.crumbName;
   const notFound = isError && error?.response?.status === 404;
 
   const countryMeta = useMemo(() => {
@@ -473,7 +475,7 @@ export default function WorldCountry() {
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
-      <Breadcrumbs items={worldCountryTrail(countryName || previewName || '…', slug)} />
+      <Breadcrumbs items={worldCountryTrail(countryName || previewName || crumbNameFromLink || '…', slug)} />
 
       {isError && !notFound && (
         <ApiRetryBanner onRetry={refetch} isFetching={isFetching} className="mb-6">
