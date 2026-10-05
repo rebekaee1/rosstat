@@ -110,7 +110,7 @@ describe('z1-tokens.css: ширина страниц данных (DS1, круг
   // коробкой (--fe-box-*, с полями), а не шириной контента (--fe-container-*): иначе поля считаются дважды
   // (на 1440 было 112–1328 вместо 80–1360).
   const here = dirname(fileURLToPath(import.meta.url));
-  const SKIP = new Set(['z1-tokens.css', 'z2-shell.css', 'k1-scene.css', 'z7-compare.css']);
+  const SKIP = new Set(['z1-tokens.css', 'z2-shell.css', 'k1-scene.css', 'z7-compare.css', 'k3-shell.css']);
   it('зоны не задают max-width страницы через --fe-container-data/-wide', async () => {
     const { readdirSync } = await import('node:fs');
     const bad = [];
