@@ -456,3 +456,9 @@ def test_latest_trend_needs_three_points():
     empty = {}
     _apply(empty, [])
     assert empty == {}
+
+
+@pytest.mark.parametrize('q', ['usd', 'dollar rate', 'курс доллара', 'usd rub', 'US dollar exchange rate'])
+def test_dollar_requests_find_the_exchange_rate_first(search_client, q):
+    rows = get(search_client, q)['results']
+    assert rows and rows[0]['code'] == 'usd-rub'

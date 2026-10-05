@@ -125,7 +125,7 @@ function CountryKpiCard({ item, slug, hero, locale }) {
     >
       <span className="w2-kpi-name" title={fullName}>{kpiName}</span>
       <span className="w2-kpi-value">
-        <WorldCountUp value={item.value} format={format} />
+        <WorldCountUp value={item.value} format={format} fromZero={false} />
         {unit.short && <small>{unit.short}</small>}
       </span>
       <span className="w2-kpi-period">

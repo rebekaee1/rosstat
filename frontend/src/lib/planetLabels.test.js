@@ -162,6 +162,16 @@ describe('planet label visibility and placement', () => {
     expect(labels.map((label) => label.code)).toEqual(['FR']);
   });
 
+  it('keeps names out from under chips and buttons: slides sideways when that is enough, otherwise hides', () => {
+    const input = [candidate('DE')];
+    const nudged = layoutPlanetLabels(input, { ...viewport, keepOut: [{ left: 100, right: 175, top: 140, bottom: 175 }] });
+    expect(nudged).toHaveLength(1);
+    expect(nudged[0].labelX).toBeGreaterThan(200);
+    expect(nudged[0].box.left).toBeGreaterThanOrEqual(177);
+    expect(layoutPlanetLabels(input, { ...viewport, keepOut: [{ left: 100, right: 300, top: 140, bottom: 175 }] })).toEqual([]);
+    expect(layoutPlanetLabels(input, { ...viewport, keepOut: [{ left: 0, right: 500, top: 0, bottom: 100 }] })).toHaveLength(1);
+  });
+
   it('gives the selected country and then the hovered country collision priority', () => {
     const input = [candidate('RU', { area: 1 }), candidate('DE', { area: 0.001 }), candidate('FR', { area: 0.1 })];
     expect(layoutPlanetLabels(input, { ...viewport, selectedCode: 'DE', hoverCode: 'FR' }).map((label) => label.code)).toEqual(['DE']);

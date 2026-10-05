@@ -285,9 +285,21 @@ def _population_indicator(
         ind for ind in indicators
         if concept_for_indicator(ind) == concept
     ]
-    if len(matches) != 1:
+    if not matches:
         return None
-    return matches[0]
+    if len(matches) == 1:
+        return matches[0]
+    # Несколько источников населения (например, Евростат и МВФ у Германии): берём официальный
+    # национальный/европейский ряд, затем МВФ, при равенстве — с более длинной историей.
+    provider_rank = {"eurostat": 0, "imf": 1}
+    return sorted(
+        matches,
+        key=lambda ind: (
+            provider_rank.get(str(ind.provider or "").lower(), 2),
+            -(ind.points_count or 0),
+            str(ind.code),
+        ),
+    )[0]
 
 
 async def _load_population_indicator(
