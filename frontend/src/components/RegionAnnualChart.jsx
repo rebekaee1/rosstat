@@ -11,10 +11,12 @@ import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
   Tooltip, CartesianGrid,
 } from 'recharts';
-import { formatRegionValue, formatCompactTick, compactTickAxisWidth } from '../lib/regionsApi';
+import { formatRegionValue, axisScaleFor, formatScaledTick } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
 import { useLocale } from '../i18n';
-import { CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick } from '../lib/chartTheme';
+import {
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues, axisWidthForLabels,
+} from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import ChartBrandCaption from './ChartBrandCaption';
 
@@ -156,14 +158,18 @@ export default function RegionAnnualChart({
 
   // Ширина осей — по самой длинной подписи; на узком экране жёстче клэмп,
   // иначе dual-axis съедает половину plot-area (скрин Белгород/Россия).
-  const leftAxisWidth = useMemo(
-    () => compactTickAxisWidth(data.flatMap(d => [d.value, d.compare, d.forecast]), { narrow: isNarrow }),
-    [data, isNarrow],
-  );
-  const rightAxisWidth = useMemo(() => {
-    if (!dualAxis) return 0;
-    return compactTickAxisWidth(data.map(d => d.russia), { narrow: isNarrow });
-  }, [data, dualAxis, isNarrow]);
+  const leftValues = useMemo(() => data.flatMap(d => [d.value, d.compare, d.forecast]), [data]);
+  const rightValues = useMemo(() => (dualAxis ? data.map(d => d.russia) : []), [data, dualAxis]);
+  const leftScale = useMemo(() => axisScaleFor(leftValues), [leftValues]);
+  const rightScale = useMemo(() => axisScaleFor(rightValues), [rightValues]);
+  const leftAxisWidth = useMemo(() => axisWidthForLabels(
+    axisSampleValues(leftValues).map((v) => formatScaledTick(v, leftScale)),
+    { min: isNarrow ? 36 : 44, max: 96, perChar: 6.8, pad: 10 },
+  ), [leftValues, leftScale, isNarrow]);
+  const rightAxisWidth = useMemo(() => (dualAxis ? axisWidthForLabels(
+    axisSampleValues(rightValues).map((v) => formatScaledTick(v, rightScale)),
+    { min: isNarrow ? 36 : 44, max: 96, perChar: 6.8, pad: 10 },
+  ) : 0), [dualAxis, rightValues, rightScale, isNarrow]);
 
   const xTicks = useMemo(() => {
     const axisW = Math.max(
@@ -242,7 +248,7 @@ export default function RegionAnnualChart({
                 ...tickStyle,
                 fill: dualAxis ? CHART_THEME.ink : tickStyle.fill,
               }}
-              tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
+              tickFormatter={(v) => formatScaledTick(v, leftScale)}
               tickLine={false}
               axisLine={false}
               width={leftAxisWidth}
@@ -256,7 +262,7 @@ export default function RegionAnnualChart({
                   ...tickStyle,
                   fill: CHART_THEME.axis,
                 }}
-                tickFormatter={(v) => formatCompactTick(v, { narrow: isNarrow })}
+                tickFormatter={(v) => formatScaledTick(v, rightScale)}
                 tickLine={false}
                 axisLine={false}
                 width={rightAxisWidth}

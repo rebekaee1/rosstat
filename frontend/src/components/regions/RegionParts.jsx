@@ -6,7 +6,7 @@ import DeltaBadge from '../DeltaBadge';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { yearDelta } from '../../lib/regionsApi';
 import {
-  formatRegionCompact, formatRegionWithUnit, formatDeltaPercent, formatPointsDelta, isPercentUnit, plainIndicatorTitle,
+  compactParts, formatRegionWithUnit, formatDeltaPercent, formatPointsDelta, isPercentUnit, plainIndicatorTitle,
 } from '../../lib/regionUi';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
@@ -38,6 +38,17 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
   );
 }
 
+/** Значение: число жирным, единица обычным шрифтом и не переносится отдельно от числа. */
+export function RegionValue({ value, unit, locale }) {
+  const parts = compactParts(value, unit, locale);
+  return (
+    <>
+      {parts.num}
+      {parts.unit ? <>{'\u00A0'}<span className="font-normal text-text-secondary">{parts.unit}</span></> : null}
+    </>
+  );
+}
+
 export function RegionHeadlineCard({ item, to, index = 0 }) {
   const { locale, t } = useLocale();
   const empty = item.value == null;
@@ -50,8 +61,8 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
       style={{ '--fe-delay': `${Math.min(index, 5) * 0.04}s`, '--fe-rise': '8px' }}
     >
       <div className="line-clamp-2 min-h-[2.4em] text-[13px] leading-snug text-text-secondary">{label}</div>
-      <div className="fe-num mt-1.5 text-[1.15rem] font-semibold leading-tight tabular-nums text-text-primary">
-        {formatRegionCompact(item.value, item.unit, locale)}
+      <div className="fe-num mt-1.5 whitespace-nowrap text-[1.15rem] font-semibold leading-tight tabular-nums text-text-primary">
+        <RegionValue value={item.value} unit={item.unit} locale={locale} />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
         <span className="text-xs text-text-secondary">{item.period_label || item.year}</span>
@@ -76,7 +87,7 @@ export function RegionIndicatorRow({ item, to, title }) {
       </div>
       <div className="flex items-baseline justify-between gap-3 border-t border-border-subtle/60 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
         <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
-          {formatRegionCompact(item.value, item.unit, locale)}
+          <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">
           <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />
@@ -109,7 +120,7 @@ export function RegionSearchField({ value, onChange, placeholder, ariaLabel, cla
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="min-h-12 w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-[15px] text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-border-champagne focus:outline-none"
+        className="min-h-12 w-full rounded-xl border border-border-subtle bg-surface py-3 pl-10 pr-4 text-[15px] text-text-primary shadow-sm placeholder:text-text-tertiary focus:border-champagne-ink focus:outline-none focus:ring-[3px] focus:ring-champagne/25"
         aria-label={ariaLabel}
       />
     </div>

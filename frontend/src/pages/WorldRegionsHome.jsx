@@ -12,6 +12,8 @@ import {
 } from '../lib/worldSubnationalApi';
 import Button from '../components/Button';
 import { RegionSearchField, RegionSectionHeading, RegionMetricLine } from '../components/regions/RegionParts';
+import MapMetricTopics from '../components/regions/MapMetricTopics';
+import { pickPopularIndicators } from '../lib/mapMetricPicks';
 import { unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -91,7 +93,7 @@ function MetricSearch({ indicators, activeCode, activeName, onPick, onClear }) {
       <div className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 text-sm transition-colors ${
         isCustom
           ? 'border-transparent bg-champagne/15 text-champagne-ink'
-          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-border-champagne'
+          : 'border-border-subtle bg-surface text-text-secondary focus-within:border-champagne-ink focus-within:ring-[3px] focus-within:ring-champagne/25'
       }`}
       >
         <Search size={13} className="shrink-0" />
@@ -236,11 +238,11 @@ export default function WorldRegionsHome() {
   const geometry = MAPS[hub.data?.map_id] || usStatesMap;
   const periods = map.data?.periods || [];
   const indicators = useMemo(() => hub.data?.indicators || [], [hub.data?.indicators]);
-  const chipIndicators = useMemo(() => {
-    const def = defaultCode && indicators.find((i) => i.code === defaultCode);
-    const rest = indicators.filter((i) => i.code !== defaultCode);
-    return (def ? [def, ...rest] : rest).slice(0, 8);
-  }, [indicators, defaultCode]);
+  // Шесть понятных тем сверху; остальное — поиск и «Все показатели по темам».
+  const chipIndicators = useMemo(
+    () => pickPopularIndicators(indicators, defaultCode, 6),
+    [indicators, defaultCode],
+  );
   const presetCodes = new Set(chipIndicators.map((i) => i.code));
   const isCustomMetric = !!(activeCode && !presetCodes.has(activeCode));
   const customName = indicators.find((i) => i.code === activeCode)?.name || '';
@@ -438,6 +440,13 @@ export default function WorldRegionsHome() {
               onClear={() => setMetric(OVERVIEW)}
             />
           </div>
+          <MapMetricTopics
+            indicators={indicators}
+            sections={hub.data?.sections}
+            usTopics={countrySlug === 'united-states'}
+            activeCode={isOverview ? null : activeCode}
+            onPick={(i) => setMetric(i.code)}
+          />
 
           <div id="chart" data-block="world-regions-map" className="relative rounded-3xl border border-border-subtle bg-surface p-3 sm:p-5" ref={mapCardRef}>
             <div className="mb-3 flex flex-wrap items-start justify-between gap-2">

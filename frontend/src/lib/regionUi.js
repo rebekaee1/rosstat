@@ -14,6 +14,11 @@ export function unitLabel(unit, locale = 'ru') {
   if (!raw) return '';
   const short = shortUnit(raw);
   if (short === '% г/г') return locale === 'en' ? '% YoY' : '% за год';
+  const perPop = raw.toLowerCase().match(/^на\s*(\d[\d\s\u00a0]*)\s+(человек|жителей)/);
+  if (perPop) {
+    const n = perPop[1].replace(/\D/g, '');
+    return locale === 'en' ? `per ${Number(n).toLocaleString('en-US')} people` : `на ${n} чел.`;
+  }
   if (short) return short.replace(/^тыс /, 'тыс. ');
   const u = raw.toLowerCase();
   if (/процент|percent|%/.test(u)) return '%';
@@ -77,6 +82,16 @@ export function formatPointsDelta(value, prevValue, locale = 'ru') {
   return { diff, text: `${sign}${abs.toFixed(1).replace('.', dec)}${NBSP}${unit}` };
 }
 
+/**
+ * Неразрывные пробелы в числах внутри текста: «на 10 000 человек» не рвётся на «10 / 000»,
+ * «5 %» и «3 ₽» не отрываются от числа.
+ */
+export function glueNumbers(text) {
+  return String(text ?? '')
+    .replace(/(\d) (?=\d{3}(?!\d))/g, `$1${NBSP}`)
+    .replace(/(\d) (?=[%‰₽$€£¥])/g, `$1${NBSP}`);
+}
+
 const DEMOGRAPHIC_LOAD = /коэффициент[а-яё]*\s+демографической\s+нагрузки/i;
 
 /**
@@ -84,7 +99,7 @@ const DEMOGRAPHIC_LOAD = /коэффициент[а-яё]*\s+демографи�
  * Остальные названия не трогаем.
  */
 export function plainIndicatorTitle(name, locale = 'ru') {
-  const raw = String(name || '');
+  const raw = glueNumbers(String(name || ''));
   if (!DEMOGRAPHIC_LOAD.test(raw)) return raw;
   const en = locale === 'en';
   if (/моложе/i.test(raw)) {
@@ -93,12 +108,15 @@ export function plainIndicatorTitle(name, locale = 'ru') {
   if (/старше/i.test(raw)) {
     return en ? 'Older people per 1,000 working-age people' : 'Людей старшего возраста на 1000 человек трудоспособного возраста';
   }
+  if (/всего|total/i.test(raw)) {
+    return en ? 'Children and older people per 1,000 working-age people' : 'Детей и пожилых на 1000 человек трудоспособного возраста';
+  }
   return raw;
 }
 
 /** Название показателя без хвоста «, единица» и без лишних пробелов — для коротких подписей. */
 export function plainName(name) {
-  return String(name || '').replace(/\s+/g, ' ').trim();
+  return glueNumbers(String(name || '').replace(/\s+/g, ' ').trim());
 }
 
 const COMPACT_RULES_RU = {
@@ -116,21 +134,27 @@ const COMPACT_RULES_EN = {
   'thous. people': [[1e3, 'mln people', 1e3]],
 };
 
-/** Крупные величины в узких карточках: «8 118 831 млн ₽» → «8,1 трлн ₽», «13 150 тыс. чел.» → «13,2 млн чел.». */
-export function formatRegionCompact(value, unit, locale = 'ru') {
+/** Число и единица раздельно: число можно выделить жирным, единицу оставить обычной («0,4» + «на 1000 чел.»). */
+export function compactParts(value, unit, locale = 'ru') {
   const num = Number(value);
-  if (value == null || !Number.isFinite(num)) return '—';
+  if (value == null || !Number.isFinite(num)) return { num: '—', unit: '' };
   const label = unitLabel(unit, locale);
   const rules = (locale === 'en' ? COMPACT_RULES_EN : COMPACT_RULES_RU)[label];
   const abs = Math.abs(num);
   const hit = rules?.find(([threshold]) => abs >= threshold);
-  if (!hit) return formatRegionWithUnit(value, unit, locale);
+  if (!hit) return { num: formatRegionNumber(value, unit, locale), unit: label.replace(/ /g, NBSP) };
   const scaled = num / hit[2];
   const text = scaled.toLocaleString(numberLocale(locale), {
     minimumFractionDigits: 0,
     maximumFractionDigits: Math.abs(scaled) >= 100 ? 0 : 1,
   });
-  return `${text}${NBSP}${hit[1].replace(/ /g, NBSP)}`;
+  return { num: text, unit: hit[1].replace(/ /g, NBSP) };
+}
+
+/** Крупные величины в узких карточках: «8 118 831 млн ₽» → «8,1 трлн ₽», «13 150 тыс. чел.» → «13,2 млн чел.». */
+export function formatRegionCompact(value, unit, locale = 'ru') {
+  const parts = compactParts(value, unit, locale);
+  return parts.unit ? `${parts.num}${NBSP}${parts.unit}` : parts.num;
 }
 
 const NOISY_FIRST = /беженц|убежищ|вынужденн/i;
