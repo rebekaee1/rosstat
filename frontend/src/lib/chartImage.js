@@ -30,36 +30,66 @@ function resolveBackground(node) {
   return FALLBACK_BG;
 }
 
+/**
+ * Грань бренда: ромб 1:2,1 (как у знака сайта), две половины разного света и белый блик. Рисуется векторно.
+ * `size` — высота ромба в пикселях картинки.
+ */
+function drawFacet(ctx, cx, cy, size) {
+  const hh = size / 2;
+  const hw = size / 4.2;
+  ctx.save();
+  ctx.shadowColor = 'rgba(60, 48, 24, 0.35)';
+  ctx.shadowBlur = size * 0.35;
+  ctx.shadowOffsetY = size * 0.12;
+  // Левая половина светлее, правая темнее: так читается как огранённый камень.
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - hh);
+  ctx.lineTo(cx - hw, cy);
+  ctx.lineTo(cx, cy + hh);
+  ctx.closePath();
+  const left = ctx.createLinearGradient(cx - hw, cy - hh, cx, cy + hh);
+  left.addColorStop(0, '#FFF3CF');
+  left.addColorStop(1, '#D8B561');
+  ctx.fillStyle = left;
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - hh);
+  ctx.lineTo(cx + hw, cy);
+  ctx.lineTo(cx, cy + hh);
+  ctx.closePath();
+  const right = ctx.createLinearGradient(cx, cy - hh, cx + hw, cy + hh);
+  right.addColorStop(0, '#C9A24D');
+  right.addColorStop(1, '#8F6B24');
+  ctx.fillStyle = right;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx - hw * 0.45, cy - hh * 0.25);
+  ctx.lineTo(cx - hw * 0.1, cy - hh * 0.62);
+  ctx.lineTo(cx - hw * 0.02, cy - hh * 0.2);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
+ * Водяной знак: грань и адрес сайта в правом нижнем углу, прозрачность 0,35. Крупной диагональной плитки больше нет:
+ * знак не спорит с графиком и не похож на штамп.
+ */
 function drawWatermark(ctx, w, h) {
   ctx.save();
-  // Диагональная плитка — мягкая, не мешает читать график (тёмная под светлый фон).
-  ctx.globalAlpha = 0.05;
-  ctx.fillStyle = '#1A1A2E';
-  const fontPx = Math.max(18, Math.round(w / 36));
-  ctx.font = `600 ${fontPx}px Inter, system-ui, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.translate(w / 2, h / 2);
-  ctx.rotate(-Math.atan2(h, w));
-  const stepX = ctx.measureText(WATERMARK_TEXT).width + fontPx * 3;
-  const stepY = fontPx * 4;
-  const diag = Math.ceil(Math.sqrt(w * w + h * h));
-  for (let y = -diag; y < diag; y += stepY) {
-    for (let x = -diag; x < diag; x += stepX) {
-      ctx.fillText(WATERMARK_TEXT, x, y);
-    }
-  }
-  ctx.restore();
-
-  // Чёткая подпись-«копирайт» в правом нижнем углу — всегда читаемая (champagne-muted под светлый фон).
-  ctx.save();
-  ctx.globalAlpha = 0.9;
-  const tagPx = Math.max(14, Math.round(w / 64));
-  ctx.font = `600 ${tagPx}px Inter, system-ui, sans-serif`;
+  ctx.globalAlpha = 0.35;
+  const tagPx = Math.max(14, Math.round(w / 56));
+  ctx.font = `700 ${tagPx}px Manrope, Inter, system-ui, sans-serif`;
   ctx.textAlign = 'right';
-  ctx.textBaseline = 'bottom';
-  ctx.fillStyle = 'rgba(139, 115, 48, 0.95)';
-  ctx.fillText(WATERMARK_TEXT, w - tagPx, h - tagPx);
+  ctx.textBaseline = 'middle';
+  const x = w - tagPx;
+  const y = h - tagPx * 1.4;
+  ctx.fillStyle = '#6B5224';
+  ctx.fillText(WATERMARK_TEXT, x, y);
+  const textW = ctx.measureText(WATERMARK_TEXT).width;
+  drawFacet(ctx, x - textW - tagPx * 0.9, y, tagPx * 1.5);
   ctx.restore();
 }
 
@@ -84,43 +114,43 @@ function fitText(ctx, text, maxWidth) {
   return `${out.trimEnd()}…`;
 }
 
-// Знак бренда (как favicon.svg): буква F и золотая точка; рисуется векторно, без загрузки файла.
+// Знак бренда (как favicon.svg): буква F; грань на месте точки рисует drawFacet. Всё векторно, без загрузки файла.
 const MARK_F = 'M12 38V17Q12 5 25 5H38V13H26Q21 13 21 19V20H35V28H21V38Z';
-const MARK_DOT = 'M33 30H39V38H33Z';
 
 /**
- * Фирменная рамка вокруг снимка графика: знак и слово бренда сверху, название и подпись,
- * тонкая золотая линия, внизу источник и адрес сайта. Цвета фиксированные (картинка живёт вне сайта и темы).
+ * Фирменная картинка графика (K4.7): ивори-поле с тёплыми каустиками, график на стеклянной плите (блик сверху, мягкая тень),
+ * знак и слово бренда с гранью, название и подпись, внизу источник и адрес сайта. Линий и рамок нет: плиту отделяют
+ * светлота, блик и тень. Цвета фиксированные (картинка живёт вне сайта и темы).
  */
 function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site = WATERMARK_TEXT } = {}) {
   const unit = 2; // один css-пиксель в итоговой картинке: снимок сделан с pixelRatio 2
   const pad = 28 * unit;
+  const slab = 10 * unit; // толщина стеклянной плиты вокруг снимка
   const headH = (title ? 96 : 62) * unit;
   const footH = 52 * unit;
   const radius = 18 * unit;
-  const width = img.naturalWidth + pad * 2;
-  const height = img.naturalHeight + headH + footH + pad * 0.5;
+  const width = img.naturalWidth + pad * 2 + slab * 2;
+  const height = img.naturalHeight + headH + footH + slab * 2 + pad * 0.5;
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(width);
   canvas.height = Math.round(height);
   const ctx = canvas.getContext('2d');
 
-  const paper = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  paper.addColorStop(0, '#FBF8F1');
-  paper.addColorStop(1, '#F1EDE3');
-  ctx.fillStyle = paper;
+  // Поле: бумага ивори и три каустики (золото справа сверху, лёд слева, роза внизу).
+  ctx.fillStyle = '#F6F2EA';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const caustic = (x, y, r, color) => {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color);
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  };
+  caustic(canvas.width * 0.88, canvas.height * 0.02, canvas.width * 0.6, 'rgba(246, 231, 190, 0.75)');
+  caustic(canvas.width * 0.04, canvas.height * 0.45, canvas.width * 0.5, 'rgba(191, 224, 245, 0.45)');
+  caustic(canvas.width * 0.5, canvas.height * 1.02, canvas.width * 0.55, 'rgba(244, 198, 216, 0.28)');
 
-  // Тонкая золотая линия сверху.
-  const gold = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  gold.addColorStop(0, 'rgba(173,138,72,0)');
-  gold.addColorStop(0.2, '#C9A24D');
-  gold.addColorStop(0.8, '#AD8A48');
-  gold.addColorStop(1, 'rgba(173,138,72,0)');
-  ctx.fillStyle = gold;
-  ctx.fillRect(0, 0, canvas.width, 3 * unit);
-
-  // Знак и слово бренда.
+  // Знак и слово бренда: буква F и грань вместо золотой точки.
   const markSize = 30 * unit;
   ctx.save();
   ctx.translate(pad, 20 * unit);
@@ -128,10 +158,9 @@ function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site
   if (typeof Path2D === 'function') {
     ctx.fillStyle = '#202A3C';
     ctx.fill(new Path2D(MARK_F));
-    ctx.fillStyle = '#AD8A48';
-    ctx.fill(new Path2D(MARK_DOT));
   }
   ctx.restore();
+  drawFacet(ctx, pad + markSize * (36 / 48), 20 * unit + markSize * (34 / 48), markSize * 0.34);
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   const wordX = pad + markSize + 10 * unit;
@@ -152,39 +181,61 @@ function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site
   }
   if (subtitle) {
     ctx.font = `500 ${13 * unit}px Manrope, system-ui, sans-serif`;
-    ctx.fillStyle = '#59697F';
+    ctx.fillStyle = '#55627A';
     ctx.textAlign = 'right';
     ctx.fillText(fitText(ctx, subtitle, textMax * 0.5), canvas.width - pad, wordY);
     ctx.textAlign = 'left';
   }
 
-  // Снимок графика в скруглённой белой плашке.
-  const cardX = pad;
-  const cardY = headH;
+  // Стеклянная плита: полупрозрачная белая, мягкая тень снизу, блик по верхней кромке (заливкой, не линией).
+  const plateX = pad;
+  const plateY = headH;
+  const plateW = img.naturalWidth + slab * 2;
+  const plateH = img.naturalHeight + slab * 2;
   ctx.save();
-  ctx.shadowColor = 'rgba(32,42,60,0.18)';
-  ctx.shadowBlur = 24 * unit;
-  ctx.shadowOffsetY = 8 * unit;
-  ctx.fillStyle = '#FFFFFF';
-  roundedRectPath(ctx, cardX, cardY, img.naturalWidth, img.naturalHeight, radius);
+  ctx.shadowColor = 'rgba(60, 48, 24, 0.3)';
+  ctx.shadowBlur = 36 * unit;
+  ctx.shadowOffsetY = 14 * unit;
+  roundedRectPath(ctx, plateX, plateY, plateW, plateH, radius + slab * 0.6);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.62)';
   ctx.fill();
   ctx.restore();
+  ctx.save();
+  roundedRectPath(ctx, plateX, plateY, plateW, plateH, radius + slab * 0.6);
+  ctx.clip();
+  const sheen = ctx.createLinearGradient(plateX, plateY, plateX + plateW * 0.55, plateY + plateH * 0.55);
+  sheen.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+  sheen.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = sheen;
+  ctx.fillRect(plateX, plateY, plateW, plateH);
+  const glint = ctx.createLinearGradient(0, plateY, 0, plateY + 6 * unit);
+  glint.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+  glint.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = glint;
+  ctx.fillRect(plateX, plateY, plateW, 6 * unit);
+  ctx.restore();
+
+  // Снимок графика внутри плиты.
+  const cardX = plateX + slab;
+  const cardY = plateY + slab;
   ctx.save();
   roundedRectPath(ctx, cardX, cardY, img.naturalWidth, img.naturalHeight, radius);
   ctx.clip();
   ctx.drawImage(img, cardX, cardY);
   ctx.restore();
 
-  // Подвал: источник слева, адрес сайта справа.
-  const footY = headH + img.naturalHeight + footH / 2 + 2 * unit;
+  // Подвал: источник слева, грань и адрес сайта справа.
+  const footY = plateY + plateH + footH / 2 + 2 * unit;
   ctx.font = `500 ${13 * unit}px Manrope, system-ui, sans-serif`;
-  ctx.fillStyle = '#59697F';
+  ctx.fillStyle = '#55627A';
   ctx.textAlign = 'left';
   if (source) ctx.fillText(fitText(ctx, source, textMax * 0.62), pad, footY);
   ctx.textAlign = 'right';
   ctx.font = `700 ${13 * unit}px Manrope, system-ui, sans-serif`;
-  ctx.fillStyle = '#80642F';
+  ctx.fillStyle = '#7A5F2A';
   ctx.fillText(site, canvas.width - pad, footY);
+  const siteW = ctx.measureText(site).width;
+  drawFacet(ctx, canvas.width - pad - siteW - 12 * unit, footY, 17 * unit);
   return canvas;
 }
 

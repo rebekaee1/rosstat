@@ -20,7 +20,7 @@ import {
   loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
 } from '../lib/worldTopology';
 import {
-  buildWorldColorModel, WORLD_NO_DATA,
+  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR,
 } from '../lib/worldMapColors';
 import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
@@ -31,12 +31,13 @@ import '../styles/world.css';
 import SourceLink from './SourceLink';
 import Chip from './Chip';
 import '../styles/platform-pages.css';
+import '../styles/k4-charts.css';
 
 const WIDTH = 960;
 const HEIGHT = 480;
 const ZOOM_MAX = 7;
 const ZOOM_STEP = 1.55;
-const WORLD_OCEAN = '#E8EEF3';
+const WORLD_OCEAN = WORLD_OCEAN_COLOR;
 const WORLD_OUTSIDE = '#F4F5F2';
 const WORLD_GRATICULE = geoGraticule10();
 
@@ -173,6 +174,14 @@ function bandText(band, t) {
   return band.rank == null
     ? label
     : t('world.map.bandRank', { band: label, rank: band.rank });
+}
+
+/** Плавный градиент трубки: цвет каждой полосы стоит в её центре, края продолжают крайние цвета. */
+function tubeGradient(bins) {
+  if (!bins.length) return 'none';
+  const n = bins.length;
+  const stops = bins.map((bin, index) => `${bin.color} ${(((index + 0.5) / n) * 100).toFixed(2)}%`);
+  return `linear-gradient(90deg, ${bins[0].color} 0%, ${stops.join(', ')}, ${bins[n - 1].color} 100%)`;
 }
 
 function legendBinLabel(bin) {
@@ -379,7 +388,7 @@ export default function WorldMap({
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl bg-[#E8EEF3] shadow-[inset_0_1px_0_rgba(255,255,255,0.72),0_16px_40px_rgba(38,54,67,0.05)]">
+      <div className="k4-map-plate relative overflow-hidden rounded-2xl">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -394,16 +403,11 @@ export default function WorldMap({
           style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
         >
           <defs>
-            <pattern
-              id={noDataPatternId}
-              width="8"
-              height="8"
-              patternUnits="userSpaceOnUse"
-              patternTransform="rotate(35)"
-            >
-              <rect width="8" height="8" fill={WORLD_NO_DATA} />
-              <rect width="2" height="8" fill="rgba(122,132,130,0.16)" />
-            </pattern>
+            {/* Страны без данных: матовое стекло (иней), а не штриховка. */}
+            <linearGradient id={noDataPatternId} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.92} />
+              <stop offset="100%" stopColor={WORLD_NO_DATA} stopOpacity={1} />
+            </linearGradient>
           </defs>
           <rect width={WIDTH} height={HEIGHT} fill={WORLD_OCEAN} />
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
@@ -439,7 +443,7 @@ export default function WorldMap({
                   fill={hasValue
                     ? colorModel.colorFor(value)
                     : active ? `url(#${noDataPatternId})` : WORLD_OUTSIDE}
-                  stroke={active ? 'rgba(24,70,67,0.52)' : 'rgba(62,74,82,0.16)'}
+                  stroke={active ? 'rgba(88,74,46,0.42)' : 'rgba(88,74,46,0.14)'}
                   strokeWidth={active ? 0.9 : 0.45}
                   vectorEffect="non-scaling-stroke"
                   className={active
@@ -492,22 +496,22 @@ export default function WorldMap({
           </g>
         </svg>
 
-        <div className="absolute right-3 top-3 flex flex-col gap-1" data-no-export="true">
-          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
-            <Plus size={15} />
+        <div className="absolute right-3 top-3 flex flex-col gap-2" data-no-export="true">
+          <button type="button" onClick={() => zoomBy(ZOOM_STEP)} disabled={k >= ZOOM_MAX} aria-label={t('map.zoomIn')} className="fe-map-btn fe-press h-11 w-11 rounded-full text-text-secondary transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
+            <Plus size={16} />
           </button>
-          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
-            <Minus size={15} />
+          <button type="button" onClick={() => zoomBy(1 / ZOOM_STEP)} disabled={k <= 1} aria-label={t('map.zoomOut')} className="fe-map-btn fe-press h-11 w-11 rounded-full text-text-secondary transition-colors hover:text-champagne-ink disabled:opacity-35 fe-glass-2">
+            <Minus size={16} />
           </button>
           {k > 1 && (
-            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-9 w-9 rounded-lg text-text-secondary shadow-sm transition-colors hover:text-champagne-ink fe-glass-2">
-              <Maximize2 size={14} />
+            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-11 w-11 rounded-full text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2">
+              <Maximize2 size={15} />
             </button>
           )}
         </div>
 
         {hover && (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl px-3.5 py-3 text-xs shadow-xl backdrop-blur-sm fe-glass-pop">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-5rem)] rounded-xl px-3.5 py-3 text-xs fe-glass-pop">
             <div className="font-semibold text-text-primary">{hover.country.name}</div>
             <div className="mt-1 font-mono text-base font-semibold text-champagne">
               {hover.value != null ? formatWorldValue(hover.value) : t('common.noData')}
@@ -543,22 +547,31 @@ export default function WorldMap({
               {colorModel.kind === 'diverging' ? t('world.map.scaleZero') : t('world.map.scaleMedian')}
             </div>
           </div>
-          <div className="mx-auto grid max-w-[46rem] grid-cols-4 gap-1.5 sm:grid-cols-7">
-            {colorModel.bins.map((bin, index) => (
-              <div
-                key={`${bin.color}-${index}`}
-                className="min-w-0 text-center"
-                title={t(bin.labelKey)}
-              >
-                <div
-                  className="h-3.5 rounded-[4px] shadow-[inset_0_1px_0_rgba(255,255,255,0.32)] fe-glass-2"
-                  style={{ backgroundColor: bin.color }}
-                />
-                <div className="mt-1 break-words font-mono text-xs leading-tight tabular-nums text-text-secondary">
-                  {legendBinLabel(bin)}
-                </div>
+          {/* Шкала — стеклянная трубка: плавный градиент полос, блик сверху и бусины на границах; подписи полос под ней. */}
+          <div className="mx-auto max-w-[46rem]">
+            <div
+              className="k4-tube"
+              style={{ backgroundImage: tubeGradient(colorModel.bins) }}
+              aria-hidden="true"
+            >
+              <div className="k4-tube__beads">
+                {colorModel.bins.slice(1).map((bin, index) => <i key={`${bin.color}-${index}`} />)}
               </div>
-            ))}
+            </div>
+            <div className="mt-1.5 grid grid-cols-4 gap-1.5 sm:grid-cols-7">
+              {colorModel.bins.map((bin, index) => (
+                <div
+                  key={`${bin.color}-${index}`}
+                  className="min-w-0 text-center"
+                  title={t(bin.labelKey)}
+                >
+                  <div className="k4-bin" style={{ backgroundColor: bin.color }} aria-hidden="true" />
+                  <div className="mt-1 break-words font-mono text-xs leading-tight tabular-nums text-text-secondary">
+                    {legendBinLabel(bin)}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-text-secondary">
             <span className="font-medium text-text-primary">
@@ -583,13 +596,7 @@ export default function WorldMap({
               </span>
             )}
             <span className="inline-flex items-center gap-1.5">
-              <span
-                className="h-2.5 w-4 rounded-[3px] fe-glass-2"
-                style={{
-                  backgroundColor: WORLD_NO_DATA,
-                  backgroundImage: 'repeating-linear-gradient(35deg, transparent 0, transparent 3px, rgba(122,132,130,0.2) 3px, rgba(122,132,130,0.2) 5px)',
-                }}
-              />
+              <span className="h-2.5 w-4 rounded-[4px] k4-nodata" aria-hidden="true" />
               {t('world.map.noDataSwatch')}
             </span>
           </div>

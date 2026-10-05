@@ -541,39 +541,41 @@ export default function PlanetView({
                     autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
                 </Suspense></SceneBoundary>
                 <div className="planet-orb" aria-hidden="true" />
+                <div className="planet-caustic" aria-hidden="true" />
+                <div className="planet-glass-sphere" aria-hidden="true" />
                 {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('planet.loading')}</div>}
                 {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
-                  {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip' + (!coverage && concept.slug === conceptSlug ? ' is-active' : '')}
+                  {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
                     aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
                 </div>}
                 {playing && year != null && <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div>}
-                {hintVisible && <div className="planet-gesture-hint" role="note"><Hand size={18} aria-hidden="true" /><span>{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</span></div>}
+                {hintVisible && <div className="planet-gesture-hint fe-glass-2" role="note"><Hand size={18} aria-hidden="true" /><span>{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</span></div>}
                 {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
                   <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
                 {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
                 {zoomedView && <PlanetMiniMap viewBusRef={viewBus} lastViewRef={lastView} label={t('w6c.minimap')} />}
                 <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-                  <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')} data-tip={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')} data-tip={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')} data-tip={t('planet.reset')}><RotateCcw size={16} aria-hidden="true" /></button>
+                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')} data-tip={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
+                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')} data-tip={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
+                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')} data-tip={t('planet.reset')}><RotateCcw size={16} aria-hidden="true" /></button>
                 </div>
               </>}
               <div className="planet-stage-bottom">
                 {!isMap && <div className="planet-stage-actions">
-                  {water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
-                  {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
+                  {water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries fe-glass-active" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
+                  {canPlay && <button type="button" className={'planet-round ' + (playing ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
                     {playing ? <Pause size={17} aria-hidden="true" /> : <Play size={17} aria-hidden="true" />}</button>}
-                  {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
+                  {coverageAvailable && <button type="button" className={'planet-round ' + (coverage ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
                     onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={17} aria-hidden="true" /></button>}
-                  {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
+                  {shareable && <button type="button" className={'planet-round ' + (shared ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
                     {shared ? <Check size={17} aria-hidden="true" /> : <Share2 size={17} aria-hidden="true" />}</button>}
                 </div>}
-                {placeCard && !selectedCountry && <div className="planet-country-card planet-place-card is-selected" role="status">
+                {placeCard && !selectedCountry && <div className="planet-country-card planet-place-card fe-glass-2 is-selected" role="status">
                   <div className="planet-country-heading"><div><h3>{placeCard.name}</h3></div><button type="button" onClick={() => setPlaceCard(null)} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
                   <p className="planet-place-text"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('w6c.place.noData')}</p>
                   <div className="planet-country-actions"><a className="planet-open-country" href={placeMail}>{t('w6c.place.ask')}<ArrowUpRight size={15} aria-hidden="true" /></a></div>
                 </div>}
-                <div ref={countryCard} className={'planet-country-card' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
+                <div ref={countryCard} className={'planet-country-card fe-glass-2' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
                   {selectedCountry && <>
                     <div className="planet-country-heading"><div><CountryFlag code={selectedCountry.code} className="planet-flag-lg" /><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
                     {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{fmt(selectedValue)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('planet.noData')}</p>)}

@@ -66,35 +66,8 @@ function tracePath(path, context, geometry, minSpanDegrees) {
   for (const ring of outlineRings(geometry, minSpanDegrees)) path({ type: 'LineString', coordinates: ring });
 }
 
-// Страны без данных: светлый тёплый песок с мягкой косой штриховкой («скоро»), а не серая плашка, сливающаяся с океаном.
-const NO_DATA_FILL = '#EAE2CF';
-const NO_DATA_HATCH = '#B8A987';
-
-/** Soft diagonal hatching inside a country without data; tiny countries keep just the tint. */
-function hatchCountry(context, path, projection, entry, scale) {
-  const [[west, south], [east, north]] = entry.bounds || [[-180, -90], [180, 90]];
-  const left = west <= east ? projection([west, 0])[0] : 0;
-  const right = west <= east ? projection([east, 0])[0] : context.canvas.width;
-  const top = projection([0, Math.min(north, 89)])[1];
-  const bottom = projection([0, Math.max(south, -89)])[1];
-  if (right - left < 9 * scale || bottom - top < 9 * scale) return;
-  context.save();
-  context.beginPath();
-  path(entry.feature);
-  context.clip();
-  context.globalAlpha = 0.36;
-  context.strokeStyle = NO_DATA_HATCH;
-  context.lineWidth = 2.4 * scale;
-  context.lineCap = 'butt';
-  context.beginPath();
-  const height = bottom - top;
-  for (let x = left - height; x < right; x += 15 * scale) {
-    context.moveTo(x, bottom);
-    context.lineTo(x + height, top);
-  }
-  context.stroke();
-  context.restore();
-}
+// Страны без данных (K4.5): матовое стекло, без штриховки: светлый холодный «иней», который не сливается ни с океаном, ни со шкалой.
+const NO_DATA_FILL = '#EEF2F6';
 
 /** Geography is rendered independently of country coverage in the API. */
 function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WIDTH }) {
@@ -121,7 +94,6 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
       context.globalAlpha = hasValue ? 0.9 : 0.82;
       context.fillStyle = hasValue ? colorModel.colorFor(value) : NO_DATA_FILL;
       context.fill();
-      if (!hasValue && entry.code !== 'AQ') hatchCountry(context, path, projection, entry, scale);
     }
     // Borders are a hairline: a pale veil keeps them visible over dark forest, a thin graphite line draws them.
     tracePath(path, context, entry.feature.geometry, minSpanDegrees);

@@ -96,6 +96,17 @@
   background: linear-gradient(90deg, rgba(233, 205, 142, 0.5), rgba(188, 212, 236, 0.3));
 }
 
+/* Легенда графиков калькуляторов (components/ChartTouchHint.jsx, стили w5-tools.css): образец — лента, без пунктира. */
+.w5-legend .w5-legend__swatch {
+  height: 3px;
+  border-top: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--w5-swatch, currentColor) 55%, #fff), var(--w5-swatch, currentColor));
+  box-shadow: 0 3px 6px -3px color-mix(in srgb, var(--w5-swatch, currentColor) 70%, transparent);
+}
+.w5-legend .w5-legend__swatch--dashed {
+  background: linear-gradient(90deg, var(--w5-swatch, currentColor), color-mix(in srgb, var(--w5-swatch, currentColor) 25%, transparent));
+}
+
 /* ===== 5. Спарклайны карточек (поверх components/Sparkline.jsx) ===== */
 /* Лента 2,4 px: свойство CSS сильнее атрибута stroke-width в SVG, поэтому правим здесь, не трогая компонент. */
 .sparkline-svg path[fill='none'] {
@@ -143,11 +154,13 @@
   background: radial-gradient(circle at 34% 28%, #FFFFFF, rgba(255, 255, 255, 0.55));
   box-shadow: 0 1px 3px rgba(60, 48, 24, 0.35);
 }
-/* Полоса легенды карты мира: стеклянная капсула со своим цветом и бликом. */
+/* Метка полосы под трубкой: короткая стеклянная капля своего цвета. */
 .k4-bin {
-  height: 14px;
-  border-radius: 7px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -3px 5px -3px rgba(60, 48, 24, 0.28), 0 4px 8px -5px rgba(60, 48, 24, 0.35);
+  width: 60%;
+  height: 6px;
+  margin: 0 auto;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 3px 5px -3px rgba(60, 48, 24, 0.35);
 }
 /* «Нет данных»: матовое стекло без штриховки. */
 .k4-nodata {

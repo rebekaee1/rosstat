@@ -1,7 +1,9 @@
 /**
- * Единственная палитра карты мира: холодные синие тона на одном конце,
- * фирменные золотисто-коричневые на другом, светлый центр посередине.
- * Без оценочного смысла «хорошо/плохо».
+ * Единственная палитра карты мира и планеты (K4.6, вариант A «тёплая»): лёд на одном конце, спокойное золото к другому,
+ * глубокое золото (не коричневый) для самых больших значений. Опорные пять цветов:
+ *   #E4EDF6 лёд, #F0DDA8 светлое золото, #E9C97A, #C9A24D золото, #9A6A22 глубокое золото;
+ * между ними семь равных ступеней. Океан на плоской карте (#DCE8F3) чуть темнее самой светлой ступени, поэтому страны
+ * с наименьшими значениями не сливаются с водой. Без оценочного смысла «хорошо/плохо».
  *
  * Палитра одна для всех показателей и всех лет. Раньше шкала выбиралась по
  * данным выбранного года: если срез пересекал ноль, включалась отдельная
@@ -9,20 +11,32 @@
  * на том же показателе. Меняется только привязка центра (медиана или ноль),
  * цвета остаются те же.
  */
-export const WORLD_MAP_SCALE = [
-  '#315A7D',
-  '#648DAA',
-  '#AFC8D7',
-  '#EEE9DC',
-  '#E3C486',
-  '#C68D3D',
-  '#87591F',
-];
+const WORLD_SCALE_STOPS = ['#E4EDF6', '#F0DDA8', '#E9C97A', '#C9A24D', '#9A6A22'];
+
+function mixHex(a, b, f) {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16));
+  return `#${pa.map((v, i) => Math.round(v + (pb[i] - v) * f).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+}
+
+function buildScale(stops, steps) {
+  return Array.from({ length: steps }, (_, i) => {
+    const pos = (i / (steps - 1)) * (stops.length - 1);
+    const lo = Math.floor(pos);
+    const hi = Math.min(stops.length - 1, lo + 1);
+    return mixHex(stops[lo], stops[hi], pos - lo);
+  });
+}
+
+export const WORLD_MAP_SCALE = buildScale(WORLD_SCALE_STOPS, 7);
 
 export const WORLD_RELATIVE_SCALE = WORLD_MAP_SCALE;
 export const WORLD_DIVERGING_SCALE = WORLD_MAP_SCALE;
 
-export const WORLD_NO_DATA = '#E5E7E5';
+// «Нет данных»: матовое стекло (светлый иней), без штриховки.
+export const WORLD_NO_DATA = '#EEF2F6';
+// Океан плоской карты: лёд.
+export const WORLD_OCEAN_COLOR = '#DCE8F3';
 
 // Модуль остаётся без текстов: подписи полос живут в словарях, иначе
 // англоязычная версия карты показывала бы русскую легенду.
@@ -120,9 +134,8 @@ function relativeModel(values, { direction = null } = {}) {
       const band = bandFor(value);
       if (band < 0) return '#6F746F';
       const index = colorIndexFor(band);
-      if (index <= 2) return '#315A7D';
-      if (index >= 4) return '#87591F';
-      return '#6F685A';
+      if (index <= 2) return '#4B596F';
+      return '#7A5F2A';
     },
     describe: (value) => {
       const band = bandFor(value);
@@ -171,9 +184,8 @@ function divergingModel(values, { direction = null } = {}) {
       const band = bandFor(value);
       if (band < 0) return '#6F746F';
       const index = colorIndexFor(band);
-      if (index <= 2) return '#315A7D';
-      if (index >= 4) return '#87591F';
-      return '#6F685A';
+      if (index <= 2) return '#4B596F';
+      return '#7A5F2A';
     },
     describe: (value) => {
       const band = bandFor(value);
