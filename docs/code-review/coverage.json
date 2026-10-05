@@ -4300,8 +4300,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "3ceb4108526b0ee91865c292616c309f3513b273318019cb2a831b22e6b07224",
-      "bytes": 167171,
+      "sha256": "ba07d271f753fd34d529bb35d6b874b727fe0bdf85df315c363cede7029271d0",
+      "bytes": 167391,
       "lines": 3504,
       "code": true,
       "status": "reviewed",
@@ -10722,7 +10722,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "7755542dd730f30e1faeac2b93dd17c9d80215a5139ce487b94552a41b9b29bd",
+      "sha256": "90303b8bc036184753681040f179c6a71b188781ae148c0d08e9b79ce7ca3f86",
       "bytes": 9370716,
       "lines": 279796,
       "code": false,
@@ -20797,17 +20797,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "1c9ad2316180e14e7b1458b57f4ffb7a78918bf715cb075260195eb47fa3f47a",
+  "ledger_sha256": "a6fcbc83d0ada21771eae42f8d32b8d59810a8668d46e0834a58e3c6b4f0c1a1",
   "javascript_inventory_sha256": "e0f94eddbe66c39474b5c1b07812c81c3341139aa3d196c1b537ff4602fa77ef",
-  "baseline_commit": "49ecf9f6eef32fe5bbc4d286facff16bfeb8cd48",
+  "baseline_commit": "afc3519bf60596613a2b85417b5557ef6e210cf4",
   "branch": "integration/all-20261002",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "backend/app/services/seo_renderer.py",
+    "docs/mechanism-inventory.json"
   ]
 }

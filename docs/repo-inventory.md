@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1461  ·  **Строк:** 1 047 272  ·  **Токенов (≈):** 9 872 639
+**Файлов:** 1461  ·  **Строк:** 1 047 272  ·  **Токенов (≈):** 9 872 694
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `(root)` | 8 | 2 415 | 52 392 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 678 | 248 640 | 2 735 304 |
+| `backend` | 678 | 248 640 | 2 735 359 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
 | `docs` | 115 | 673 539 | 5 753 988 |
@@ -50,7 +50,7 @@
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `frontend/src/pages/AdminBI.jsx` | 2 964 | 42 044 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
-| `backend/app/services/seo_renderer.py` | 3 504 | 39 092 |
+| `backend/app/services/seo_renderer.py` | 3 504 | 39 147 |
 | `frontend/src/i18n/messages.ru.js` | 2 560 | 36 694 |
 | `CONTEXT.md` | 1 203 | 36 297 |
 | `frontend/src/i18n/messages.en.js` | 2 554 | 35 653 |

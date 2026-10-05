@@ -816,13 +816,13 @@ body.seo-fast .seo-lang{font-size:.8125rem}
 body.seo-fast .seo-page{overflow-wrap:break-word}
 body.seo-fast .seo-eyebrow{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#80642f}
 body.seo-fast .seo-page > nav[aria-label]{display:flex;flex-wrap:nowrap;align-items:center;gap:0;min-width:0;overflow:hidden;white-space:nowrap}
-body.seo-fast .seo-page > nav[aria-label] a{flex:0 1 auto;min-width:1.6rem;overflow:hidden;text-overflow:ellipsis}
+body.seo-fast .seo-page > nav[aria-label] a{flex:0 1 auto;min-width:3.2rem;overflow:hidden;text-overflow:ellipsis}body.seo-fast .seo-page > nav[aria-label] a:first-child{flex:0 0 auto}
 body.seo-fast .seo-page > nav[aria-label] .seo-crumb-sep{flex:0 0 auto;font-size:0}
 body.seo-fast .seo-page > nav[aria-label] .seo-crumb-sep::before{content:"›";margin:0 .4rem;font-size:.8125rem;opacity:.55}
 body.seo-fast .seo-page > nav[aria-label] .seo-crumb-cur{flex:0 1 auto;min-width:0;max-width:60%;overflow:hidden;text-overflow:ellipsis;color:#202a3c;font-weight:600}
 body.seo-fast .seo-page h2{margin:2rem 0 .75rem;font-size:1.25rem;font-weight:650;letter-spacing:-.02em;line-height:1.3;text-transform:none;color:#202a3c}
 body.seo-fast .seo-page th{font-size:.8125rem;font-weight:650;letter-spacing:0;text-transform:none;color:#526074}
-body.seo-fast .seo-page td:last-child,body.seo-fast .seo-page th:last-child{white-space:nowrap}
+body.seo-fast .seo-page td:last-child,body.seo-fast .seo-page th:last-child{white-space:nowrap}@media(max-width:640px){body.seo-fast .seo-page th,body.seo-fast .seo-page td{padding:.65rem .45rem}body.seo-fast .seo-page table{font-size:.8125rem}}
 body.seo-fast .seo-answer .seo-hero-value{margin:.5rem 0 .6rem}
 body.seo-fast .seo-answer-note{font-size:1rem;line-height:1.55}
 body.seo-fast .seo-tiles{margin:1rem 0}

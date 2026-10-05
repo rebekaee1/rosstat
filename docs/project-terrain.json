@@ -1,18 +1,15 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "49ecf9f6eef32fe5bbc4d286facff16bfeb8cd48",
+  "baseline_commit": "afc3519bf60596613a2b85417b5557ef6e210cf4",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
+    "backend/app/services/seo_renderer.py",
     "docs/code-review/coverage.json",
+    "docs/code-review/graph-omission-classification-2026-09-30.json",
+    "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1022,7 +1019,7 @@
     {"path": "backend/app/services/seo_region_compare.py", "kind": "code", "bytes": 11212, "lines": 266, "sha256": "6910f15dc29f89f5589c54f4fe1e093e76a63595aa9c156d410a131576996142", "symlink": false, "nodes": 7, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_regional.py", "kind": "code", "bytes": 94427, "lines": 2111, "sha256": "52c8346666711f23d8598369f3d8d4d4e7d5712197610b818b65972efafcb9bc", "symlink": false, "nodes": 33, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_regional_year.py", "kind": "code", "bytes": 23293, "lines": 536, "sha256": "5c21e1cf69c3db65c88380767188165e3e50da51c67e65477a3e811457abece5", "symlink": false, "nodes": 20, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/seo_renderer.py", "kind": "code", "bytes": 167171, "lines": 3504, "sha256": "3ceb4108526b0ee91865c292616c309f3513b273318019cb2a831b22e6b07224", "symlink": false, "nodes": 141, "extraction": "nodes", "layer": "services", "semantic_evidence": true, "semantic_current": false},
+    {"path": "backend/app/services/seo_renderer.py", "kind": "code", "bytes": 167391, "lines": 3504, "sha256": "ba07d271f753fd34d529bb35d6b874b727fe0bdf85df315c363cede7029271d0", "symlink": false, "nodes": 141, "extraction": "nodes", "layer": "services", "semantic_evidence": true, "semantic_current": false},
     {"path": "backend/app/services/seo_today.py", "kind": "code", "bytes": 28846, "lines": 635, "sha256": "f752085922d00a84dd35950d8001e85342355575d72e31afb22cad03a3fcb0ea", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_world.py", "kind": "code", "bytes": 85385, "lines": 2081, "sha256": "1e731bc68cc0207971bce6d6403a451f29ab92d1a6f1fab8caa73290c7f28a49", "symlink": false, "nodes": 62, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/seo_world_compare.py", "kind": "code", "bytes": 26940, "lines": 624, "sha256": "00e6901ac9009053b60ee44df5393282f0705f400862fa0d1f2681b1b2172e95", "symlink": false, "nodes": 22, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1516,7 +1513,7 @@
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 96468, "lines": 1058, "sha256": "97ca2770bb7147cea9f682928cde554b3d2a2bbfac10c54e213048cc7a5eafdc", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 16020, "lines": 90, "sha256": "abc2ec5bb5ef1abddbc80301cea44400a944e6ce7117373e360230c58f63d553", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 9370716, "lines": 279796, "sha256": "7755542dd730f30e1faeac2b93dd17c9d80215a5139ce487b94552a41b9b29bd", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 9370716, "lines": 279796, "sha256": "90303b8bc036184753681040f179c6a71b188781ae148c0d08e9b79ce7ca3f86", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 462896, "lines": 2575, "sha256": "d5abf2523ee8b3b8f01a71a1be1d3dc39f5df66d20c1c924d02df73592773e71", "symlink": false, "nodes": 70, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 51627, "lines": 455, "sha256": "b684a07257b86a66c40267ebcd3c46c542773642d92992367fe34733a90e2d7c", "symlink": false, "nodes": 13, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},

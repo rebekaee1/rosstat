@@ -1365,7 +1365,7 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "3ceb4108526b0ee91865c292616c309f3513b273318019cb2a831b22e6b07224",
+      "sha256": "ba07d271f753fd34d529bb35d6b874b727fe0bdf85df315c363cede7029271d0",
       "lines": 3504
     },
     {
