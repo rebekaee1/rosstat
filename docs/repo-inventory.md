@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1709  ·  **Строк:** 1 160 655  ·  **Токенов (≈):** 10 914 495
+**Файлов:** 1709  ·  **Строк:** 1 160 655  ·  **Токенов (≈):** 10 914 520
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 499 | 55 835 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 704 | 254 241 | 2 796 542 |
+| `backend` | 704 | 254 241 | 2 796 554 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 121 | 740 004 | 6 261 593 |
+| `docs` | 121 | 740 004 | 6 261 606 |
 | `frontend` | 752 | 141 741 | 1 539 339 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 102 | 20 849 | 246 682 |
@@ -64,7 +64,7 @@
 | `backend/app/services/og_image.py` | 1 964 | 21 160 |
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
 | `backend/app/models.py` | 1 597 | 20 690 |
-| `docs/data-contracts.md` | 564 | 20 220 |
+| `docs/data-contracts.md` | 564 | 20 233 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `backend/app/services/seo_world.py` | 2 094 | 19 389 |
 | `backend/app/services/analytics_marts.py` | 1 733 | 18 715 |
@@ -201,8 +201,8 @@
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
 | `backend/tests/test_seo_world_year.py` | 530 | 5 689 |
 | `docker-compose.yml` | 451 | 5 684 |
+| `backend/app/services/forecast_showcase.py` | 568 | 5 603 |
 | `frontend/src/styles/z2-shell.css` | 479 | 5 593 |
-| `backend/app/services/forecast_showcase.py` | 568 | 5 591 |
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
 | `backend/app/services/telegram_bot.py` | 529 | 5 553 |

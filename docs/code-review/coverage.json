@@ -3247,8 +3247,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "sha256": "00a4db18e98cb5d5df5a6a6d223eae7a3e0b7ff3283f593d4fd266afc896e79a",
-      "bytes": 24522,
+      "sha256": "4ab2c263257ad5e6192c42e93ef7159d270798e36ef29a013404173ed585a3ad",
+      "bytes": 24597,
       "lines": 568,
       "code": true,
       "status": "reviewed",
@@ -10553,8 +10553,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "41994f57bb6d4f354169bfa6c940be71995cb81313bbdcd2961f8728d2f4493d",
-      "bytes": 116667,
+      "sha256": "4e63a096df4b878756371fbbac66cd4cefd10ec3d5cd1ca2f6cc146b4e77d24c",
+      "bytes": 116754,
       "lines": 564,
       "code": false,
       "status": "reviewed",
@@ -11138,7 +11138,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "a5d7617907dc3356cd020cb77be8bcd80bbbfce3be33b375f4b270c3abffc8d2",
+      "sha256": "7f7ebcb367bbfa6ebf8a60268f673898fedaacf5464d02ef7978fc1fc8a8480d",
       "bytes": 9599013,
       "lines": 287149,
       "code": false,
@@ -24307,23 +24307,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "c9bc00823acc3fbe2e5ff8cbc98e12c993ef9bdaf93588d18d0def2f4f88ef2f",
+  "ledger_sha256": "79b59bf9963772de4f40b65c3cd906fc017aca2c5c5321b94b168e4a7c4ad9b7",
   "javascript_inventory_sha256": "6c1764088002b30a837728cc29f4bae69b63a7a81eebcc02ac5eb64e79a67cf0",
-  "baseline_commit": "204af55a46fcb4efa282c1ba6e59711b4658cae5",
+  "baseline_commit": "edc671ac0d7e22b42f838f2cb60aecb00bd8a7c4",
   "branch": "main",
   "unstaged_at_capture": [
-    "CONTEXT.md",
-    "docs/adr/0018-crystal-without-borders-design-system.md",
-    "docs/architecture.md",
-    "docs/backlog.md",
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/planet-view.md"
+    "docs/mechanism-inventory.json"
   ]
 }

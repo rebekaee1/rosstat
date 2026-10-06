@@ -34,7 +34,7 @@ MAX_HORIZON_MONTHS = 15
 HISTORY_POINTS = {"monthly": 36, "quarterly": 12, "annual": 8}
 
 CACHE_TTL_SECONDS = 1800
-CACHE_KEY_REST = "forecast-showcase:v2"  # v2: в ответе нет границ диапазона (только точечный прогноз)
+CACHE_KEY_REST = "forecast-showcase:v3"  # v3: единицы Russia-прогнозов на EN переведены; v2: в ответе нет границ диапазона (только точечный прогноз)
 
 # Темы витрины: порядок вкладок на странице.
 THEMES: tuple[dict[str, str], ...] = (
