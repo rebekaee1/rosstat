@@ -540,12 +540,4 @@
   .fe-dashboard .fe-country-row:hover { transform: none; }
 }
 html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opacity: 0; }
-
-/* Кадр граней героя (K1) на главной: кластер уходит в правое поле и чуть выше, чтобы не ложиться на «Год» и верх списка стран.
-   Переменные положения объявлены в k1-scene.css; здесь только их значения для главной (страница страны и телефон не затронуты). */
-@media (min-width: 768px) {
-  html:has(.fe-dashboard) .fe-scene-hero:not([data-fe-hero='country']) {
-    --fe-hero-frame-right: -10vw;
-    --fe-hero-frame-top: -2vw;
-  }
-}
+/* Положение кадра граней героя на главной (круг 5) задаёт только k1-scene.css: --fe-hero-frame-*; здесь переопределений нет. */
