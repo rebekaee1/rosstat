@@ -173,7 +173,7 @@ describe('Footer', () => {
     expect(img.getAttribute('alt')).toBe('');
     expect(img.getAttribute('width')).toBe('1920');
     expect(bg.querySelector('source').getAttribute('srcset')).toBe('/brand/footer-phone.webp');
-    expect(footer.querySelector('.fe-k2-foot-emblem img').getAttribute('src')).toBe('/brand/emblem-f.webp');
+    expect(footer.querySelector('.fe-k2-foot-emblem img').getAttribute('src')).toBe('/brand/emblem-f-phone.webp');
     for (const title of footer.querySelectorAll('.fe-foot-title')) {
       expect(title.querySelector('svg.fe-facet')).toBeTruthy();
     }

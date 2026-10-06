@@ -55,24 +55,29 @@ describe('LightScene', () => {
     expect(document.documentElement.classList.contains('fe-scene-on')).toBe(false);
   });
 
-  it('герой появляется на главной и в карточке страны, на остальных страницах его нет', async () => {
+  it('герой-кристаллы только у страны и 404; на главной их нет, там F внутри плиты (атрибут data-fe-f)', async () => {
     const home = scene('/');
     await settle();
-    const hero = home.container.parentElement.querySelector('.fe-scene-hero');
-    expect(hero).not.toBeNull();
-    expect(hero.getAttribute('data-fe-hero')).toBe('home');
-    const img = hero.querySelector('img');
-    // Размеры заданы (нет сдвига вёрстки), ленивая загрузка, без подписи.
-    expect(img.getAttribute('width')).toBe('780');
-    expect(img.getAttribute('height')).toBe('1044');
-    expect(img.getAttribute('loading')).toBe('lazy');
-    expect(img.getAttribute('alt')).toBe('');
-    expect(hero.querySelector('source').getAttribute('width')).toBe('1600');
+    expect(home.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
+    expect(home.container.parentElement.querySelector('.fe-scene__f')).toBeNull();
+    expect(document.documentElement.getAttribute('data-fe-f')).toBe('on');
     home.unmount();
+    expect(document.documentElement.hasAttribute('data-fe-f')).toBe(false);
 
     const country = scene('/germany');
     await settle();
-    expect(country.container.parentElement.querySelector('[data-fe-hero="country"]')).not.toBeNull();
+    const hero = country.container.parentElement.querySelector('[data-fe-hero="country"]');
+    expect(hero).not.toBeNull();
+    const img = hero.querySelector('img');
+    // Размеры заданы (нет сдвига вёрстки), ленивая загрузка, без подписи; кадр телефона убран (на телефоне кристаллов нет).
+    expect(img.getAttribute('src')).toBe('/brand/hero-desktop.webp');
+    expect(img.getAttribute('width')).toBe('1600');
+    expect(img.getAttribute('height')).toBe('893');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.getAttribute('alt')).toBe('');
+    expect(hero.querySelector('source')).toBeNull();
+    // На странице страны F видна только на телефоне.
+    expect(country.container.parentElement.querySelector('.fe-scene__f').getAttribute('data-fe-f-mode')).toBe('phone');
     country.unmount();
 
     const other = scene('/compare');
@@ -80,6 +85,32 @@ describe('LightScene', () => {
     expect(other.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
     expect(other.container.parentElement.querySelector('.fe-scene-leak--top')).toBeNull();
     expect(other.container.parentElement.querySelector('.fe-scene-leak--bottom')).not.toBeNull();
+    other.unmount();
+  });
+
+  it('круг 6: на остальных страницах одна стеклянная F с заданными размерами, на /about её нет (там водяной знак карточки)', async () => {
+    const page = scene('/compare');
+    await settle();
+    const fs = page.container.parentElement.querySelectorAll('.fe-scene__f');
+    expect(fs).toHaveLength(1);
+    expect(fs[0].getAttribute('data-fe-f-mode')).toBe('all');
+    expect(fs[0].getAttribute('aria-hidden')).toBe('true');
+    const img = fs[0].querySelector('img');
+    expect(img.getAttribute('src')).toBe('/brand/emblem-f-phone.webp');
+    expect(img.getAttribute('width')).toBe('888');
+    expect(img.getAttribute('height')).toBe('1200');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.getAttribute('alt')).toBe('');
+    const src = fs[0].querySelector('source');
+    expect(src.getAttribute('srcset')).toBe('/brand/emblem-f-2x.webp');
+    expect(src.getAttribute('width')).toBe('1149');
+    expect(src.getAttribute('height')).toBe('1552');
+    page.unmount();
+
+    const about = scene('/about');
+    await settle();
+    expect(about.container.parentElement.querySelector('.fe-scene__f')).toBeNull();
+    about.unmount();
   });
 
   it('на странице 404 (корень .z2-nf) герой получает вариант notfound без верхней утечки света', async () => {
@@ -112,12 +143,14 @@ describe('LightScene', () => {
     expect(root.querySelectorAll('.fe-scene__glint-slot[data-depth]')).toHaveLength(3);
   });
 
-  it('при экономии трафика (Save-Data) героя не монтирует', async () => {
+  it('при экономии трафика (Save-Data) героя и F не монтирует', async () => {
     Object.defineProperty(window.navigator, 'connection', { value: { saveData: true }, configurable: true });
     try {
-      const view = scene('/');
+      const view = scene('/germany');
       await settle();
       expect(view.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
+      expect(view.container.parentElement.querySelector('.fe-scene__f')).toBeNull();
+      expect(document.documentElement.hasAttribute('data-fe-f')).toBe(false);
     } finally {
       delete window.navigator.connection;
     }

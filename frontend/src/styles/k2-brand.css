@@ -71,7 +71,7 @@
 .fe-facet-arrow { display: block; flex: none; margin-top: 10px; overflow: visible; }
 
 /* ═══ Эмблема F-кристалл ═══════════════════════════════════════════════════ */
-.fe-emblem { display: inline-block; flex: none; width: var(--fe-emblem-size, 96px); height: var(--fe-emblem-size, 96px); perspective: 640px; }
+.fe-emblem { display: inline-block; flex: none; width: var(--fe-emblem-w, var(--fe-emblem-size, 96px)); height: var(--fe-emblem-size, 96px); perspective: 640px; }
 .fe-emblem img { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
 @keyframes fe-k2-emblem-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 .fe-emblem--spin img { animation: fe-k2-emblem-spin 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
@@ -225,9 +225,31 @@ footer.fe-footer.fe-k2-footer::after {
       linear-gradient(180deg, rgba(8, 14, 32, 0.78) 0%, rgba(8, 14, 32, 0.7) 62%, rgba(8, 14, 32, 0.35) 100%);
   }
 }
-/* Эмблема-водяной знак: opacity .06, справа внизу. */
-.fe-k2-foot-emblem { position: absolute; right: max(2%, 12px); bottom: -8%; z-index: 1; opacity: 0.06; pointer-events: none; }
-@media (max-width: 639px) { .fe-k2-foot-emblem { display: none; } }
+/* Эмблема-водяной знак (круг 6): одна стеклянная F, opacity .1, справа внизу; кадр 888x1200 при показе 380 px высотой (2x = 760). */
+.fe-k2-foot-emblem { position: absolute; right: max(2%, 12px); bottom: -8%; z-index: 1; opacity: 0.1; pointer-events: none; }
+@media (max-width: 639px) { .fe-k2-foot-emblem { width: 148px; height: 200px; right: 4%; bottom: -4%; } }
+
+/* Водяной знак на карточке (круг 6, «Что внутри» на /about): та же F за содержимым карточки во всю её высоту, opacity .1.
+   Слой z-index -1 лежит в стеке карточки (она .fe-panel с backdrop-filter): выше её стекла, ниже текста; за края карточки не выходит. */
+.fe-brand-wm { position: relative; isolation: isolate; }
+.fe-brand-wm::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: 16px;
+  top: 10px;
+  bottom: 10px;
+  aspect-ratio: 888 / 1200;
+  pointer-events: none;
+  background: url('/brand/emblem-f-phone.webp') center / contain no-repeat;
+  opacity: 0.1;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 40%);
+}
+:root[data-theme='dark'] .fe-brand-wm::before,
+:root.dark .fe-brand-wm::before,
+html[data-fe-lite='on'] .fe-brand-wm::before { display: none; }
+@media print { .fe-brand-wm::before { display: none; } }
 footer.fe-footer.fe-k2-footer > .fe-foot-wrap { position: relative; z-index: 2; }
 
 /* Заголовки колонок: холодный светлый #C4D2EE (круг 6; было золото), капс, грань 6 px; без линий. */

@@ -11,9 +11,15 @@ import '../styles/k1-scene.css';
  *
  *  1. `.fe-scene` (fixed): бумага, три каустики (золото, лёд, роза) с дрейфом 40 с, текстура граней (≥768 px),
  *     6 силуэтов граней в боковых полях (≥1600 px) с параллаксом 0,15 / 0,3. На телефоне только каустики.
- *  2. `.fe-scene-hero` (абсолютно в верху страницы, поверх страницы, multiply): кадр граней справа сверху, только на
- *     главной и в карточке страны; монтируется после загрузки страницы, чтобы не мешать LCP. Размеры заданы
- *     (aspect-ratio в CSS, width/height на img и source), сдвига вёрстки нет.
+ *  2. `.fe-scene-hero` (абсолютно в верху страницы, поверх страницы, multiply): кадр граней в пустой середине hero
+ *     карточки страны и справа от цифр на 404, только от 768 px; монтируется после загрузки страницы, чтобы не мешать
+ *     LCP. Размеры заданы (aspect-ratio в CSS, width/height на img и source), сдвига вёрстки нет.
+ *     Главная кристаллов героя больше не имеет (круг 6, зона B): её объект сцены, стеклянная F, стоит внутри плиты
+ *     планеты и рядом с заголовком на телефоне (`k7-home.css`; включается атрибутом `html[data-fe-f="on"]`,
+ *     который ставит эта сцена после загрузки страницы).
+ *  2б. `.fe-scene__f` (внутри fixed-слоя, под страницей): одна большая стеклянная F на каждой остальной странице
+ *     (показатель, рейтинг, прогнозы, валюты...), а на телефоне ещё и у страны и 404, где кристаллов героя нет.
+ *     Лежит за стеклом панелей: даёт ему что преломлять, но не лежит под заголовком (панели матовые).
  *  3. `.fe-scene-leak` (абсолютно, только ≥1024 px): «утечка света» за героем и за подвалом, режим screen.
  *
  * Бюджет, выключатели и режимы: `lib/sceneBudget.js`. Классы `.fe-glint`, `.fe-cursor-light`, `.fe-drift`
@@ -156,41 +162,83 @@ function afterLoadIdle(fn) {
   };
 }
 
-function HeroLayer({ kind }) {
+/** true после загрузки страницы и простоя браузера (чтобы тяжёлые кадры не мешали LCP); в режиме экономии всегда false. */
+function useDeferredMount(enabled) {
   const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    if (!enabled || mounted) return undefined;
+    if (readSceneMode().lite) return undefined;
+    return afterLoadIdle(() => setMounted(true));
+  }, [enabled, mounted]);
+  return enabled && mounted;
+}
+
+function HeroLayer({ kind }) {
   const [loaded, setLoaded] = useState(false);
+  const mounted = useDeferredMount(!!kind && kind !== 'home');
   // Кадр уже в кэше: onLoad не придёт, поэтому проверяем при подключении узла.
   const imgRef = useCallback((img) => {
     if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
   }, []);
 
-  useEffect(() => {
-    if (!kind || mounted) return undefined;
-    if (readSceneMode().lite) return undefined;
-    return afterLoadIdle(() => setMounted(true));
-  }, [kind, mounted]);
-
-  if (!kind || !mounted) return null;
+  if (!mounted) return null;
   return (
     <div className={`fe-scene-hero${loaded ? ' is-ready' : ''}`} data-fe-hero={kind} aria-hidden="true">
       <div className="fe-scene-hero__float fe-drift" style={{ '--fe-drift-dur': '12s', '--fe-drift-y': '6px', '--fe-drift-r': '0deg' }}>
-        <picture>
-          <source media="(min-width: 768px)" srcSet="/brand/hero-desktop.webp" width="1600" height="893" />
-          <img
-            ref={imgRef}
-            src="/brand/hero-phone.webp"
-            width="780"
-            height="1044"
-            alt=""
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            onLoad={() => setLoaded(true)}
-          />
-        </picture>
+        <img
+          ref={imgRef}
+          src="/brand/hero-desktop.webp"
+          width="1600"
+          height="893"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          onLoad={() => setLoaded(true)}
+        />
       </div>
     </div>
   );
+}
+
+/**
+ * Стеклянная F: один крупный объект сцены. `mode="all"` виден на любой ширине, `mode="phone"` только до 768 px
+ * (там, где на компьютере стоят кристаллы героя). Кадр: 1149x1552 с альфой для компьютера, 888x1200 для телефона.
+ */
+function SceneF({ mode }) {
+  const [loaded, setLoaded] = useState(false);
+  const mounted = useDeferredMount(!!mode);
+  const imgRef = useCallback((img) => {
+    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
+  }, []);
+  if (!mounted) return null;
+  return (
+    <div className={`fe-scene__f${loaded ? ' is-ready' : ''}`} data-fe-f-mode={mode} aria-hidden="true">
+      <picture>
+        <source media="(min-width: 768px)" srcSet="/brand/emblem-f-2x.webp" width="1149" height="1552" />
+        <img
+          ref={imgRef}
+          src="/brand/emblem-f-phone.webp"
+          width="888"
+          height="1200"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          onLoad={() => setLoaded(true)}
+        />
+      </picture>
+    </div>
+  );
+}
+
+/** Какой режим стеклянной F нужен странице (null: своя F или водяной знак уже есть). */
+function sceneFMode(kind, pathname) {
+  if (kind === 'home') return null;
+  const path = String(pathname || '/').replace(/\/+$/, '');
+  if (path === '/about') return null;
+  if (kind === 'country' || kind === 'notfound') return 'phone';
+  return 'all';
 }
 
 /** Параллакс слоёв `[data-depth]`: смещение с затуханием, только transform, один rAF на кадр прокрутки. */
@@ -276,7 +324,16 @@ export default function LightScene() {
   const isNotFound = useIsNotFoundPage(pathKind === 'country', pathname);
   const kind = isNotFound ? 'notfound' : pathKind;
 
+  const fMode = sceneFMode(kind, pathname);
+  const fReady = useDeferredMount(kind === 'home');
+
   useEffect(() => applySceneMode(), []);
+  // Главная: F внутри плиты планеты и рядом с заголовком рисуется из CSS и включается этим атрибутом (после load и простоя).
+  useEffect(() => {
+    const html = document.documentElement;
+    if (fReady) html.setAttribute('data-fe-f', 'on');
+    return () => html.removeAttribute('data-fe-f');
+  }, [fReady]);
   useLightPointer();
   useSceneParallax(rootRef);
 
@@ -306,6 +363,7 @@ export default function LightScene() {
         <div className="fe-scene__shards">
           {SHARDS.map((s) => <Shard key={s.id} shard={s} />)}
         </div>
+        <SceneF mode={fMode} />
       </div>
       <HeroLayer kind={kind} />
       {kind && kind !== 'notfound' ? <div className="fe-scene-leak fe-scene-leak--top" aria-hidden="true" /> : null}

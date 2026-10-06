@@ -4,7 +4,8 @@
  * Что здесь:
  *   1. Токены сцены (--fe-scene-*, --fe-glint-color, --fe-light-color), светлая и тёмная тема.
  *   2. Слой-небо `.fe-scene` (fixed): бумага, три каустики, текстура граней, силуэты граней в боковых полях.
- *   3. Герой `.fe-scene-hero` (главная и страна, поверх страницы, multiply) и утечка света `.fe-scene-leak` (≥1024 px).
+ *   3. Герой `.fe-scene-hero` (страна и 404, от 768 px, поверх страницы, multiply), стеклянная F `.fe-scene__f` (круг 6)
+ *      и утечка света `.fe-scene-leak` (≥1024 px).
  *   4. Общие приёмы света для всех зон: `.fe-glint`, `.fe-cursor-light`, `.fe-drift`.
  *   5. Бюджет: `.fe-cv-auto`, `.fe-cv-row`, `.fe-blur-cap`; выключатели движения и прозрачности.
  *   6. Переход между страницами «преломление» (View Transitions).
@@ -272,8 +273,8 @@ html.fe-scene-on #root {
  * Кристаллы лежат в кадре на x 67-94 %, y 0-89 %; маска слева и снизу оставляет их у края, а не по всему экрану.
  */
 .fe-scene-hero {
-  /* Главная (круг 5): кластер целиком внутри окна справа, правее текста карточки планеты (список стран и «Год» кончаются
-     около x 1330 на 1440), поэтому кадр небольшой и сдвинут на 1 vw за край только своей пустой частью. */
+  /* Базовые значения кадра (круг 5: кластер целиком в окне справа). С круга 6 главная кристаллов героя не имеет
+     (там стеклянная F), кадр показывают только страна и 404, у каждой свои значения ниже. */
   --fe-hero-frame-w: min(32vw, 480px);
   --fe-hero-frame-right: -1.2vw;
   --fe-hero-frame-top: -1vw;
@@ -319,18 +320,55 @@ html.fe-scene-on #root {
   height: 100%;
   object-fit: cover;
 }
+/* Телефон (круг 6): кристаллов героя нет вовсе (на снимке V19 они налезали на заголовок и «БЕСПЛАТНАЯ ПЛАТФОРМА»);
+   вместо них на страну и 404 встаёт стеклянная F (.fe-scene__f), на главной F стоит рядом с заголовком (k7-home.css).
+   Скрытая картинка с loading=lazy не загружается. */
 @media (max-width: 767px) {
-  .fe-scene-hero,
-  .fe-scene-hero[data-fe-hero="country"],
-  .fe-scene-hero[data-fe-hero="notfound"] {
-    --fe-hero-frame-w: 78vw;
-    --fe-hero-frame-right: -4vw;
-    --fe-hero-frame-top: 40px;
-    aspect-ratio: 780 / 1044;
-    /* Слева на кадре холодное облако: оно уходит маской, остаются грани справа от заголовка. */
-    -webkit-mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%), radial-gradient(ellipse 46% 54% at 66% 32%, #000 50%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 26%, #000 52%), linear-gradient(180deg, #000 52%, transparent 92%), radial-gradient(ellipse 46% 54% at 66% 32%, #000 50%, transparent 100%);
+  .fe-scene-hero { display: none; }
+}
+
+/* ===== 3б. Стеклянная F (круг 6, зона B) ===== */
+/*
+ * Один крупный объект сцены на странице без своего героя: большая F из холодного прозрачного стекла с тонкой золотой кромкой
+ * (кадр сгенерирован, вырезан по альфе, 1149x1552; на телефоне 888x1200). Стоит в fixed-слое под страницей: сквозь матовые
+ * панели виден мягкий силуэт, в зазорах чёткий; заголовки страниц лежат на панелях или над F, не на ней. Обычное смешение
+ * (normal), прозрачность .35-.5, маска растворяет левый и нижний края: прямых краёв кадра нет. Высота ограничена 760 px:
+ * кадр должен быть не ниже 2x от размера показа (принцип владельца 9).
+ */
+.fe-scene__f {
+  position: absolute;
+  right: clamp(8px, 3vw, 64px);
+  top: 14vh;
+  height: min(64vh, 760px);
+  aspect-ratio: 1149 / 1552;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%), linear-gradient(180deg, #000 62%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 22%), linear-gradient(180deg, #000 62%, transparent 100%);
+  mask-composite: intersect;
+}
+.fe-scene__f.is-ready { opacity: var(--fe-scene-f-opacity, 0.42); }
+.fe-scene__f picture,
+.fe-scene__f img { display: block; width: 100%; height: 100%; object-fit: contain; }
+@media (max-width: 767px) {
+  .fe-scene__f {
+    right: -3vw;
+    top: 24vh;
+    height: min(36vh, 300px);
+    aspect-ratio: 888 / 1200;
   }
+}
+@media (min-width: 768px) {
+  .fe-scene__f[data-fe-f-mode="phone"] { display: none; }
+}
+:root[data-theme="dark"] .fe-scene__f,
+:root.dark .fe-scene__f,
+html[data-fe-lite="on"] .fe-scene__f { display: none; }
+html[data-fe-motion="off"] .fe-scene__f { transition: none; }
+@media print {
+  .fe-scene__f { display: none; }
 }
 
 .fe-scene-leak {

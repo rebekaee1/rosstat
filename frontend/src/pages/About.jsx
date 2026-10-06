@@ -14,6 +14,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { toolTrail } from '../lib/breadcrumbs';
 import '../styles/w5-pages.css';
 import '../styles/k8-tools.css';
+import '../styles/k2-brand.css';
 
 const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 
@@ -64,7 +65,7 @@ export default function About() {
           </p>
         </InfoCard>
 
-        <InfoCard icon={Globe2} title={t('x4.about.inside.title')}>
+        <InfoCard icon={Globe2} title={t('x4.about.inside.title')} className="fe-brand-wm">
           <p>{t('x4.about.inside.body')}</p>
         </InfoCard>
 

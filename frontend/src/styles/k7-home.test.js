@@ -64,6 +64,27 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(hero).toMatch(/\.fe-hero-planet\s*\{\s*position:\s*sticky/);
   });
 
+  it('круг 6 (зона B): пиксельный арт forecast-glass убран, вместо него стеклянная F в плите планеты и у заголовка на телефоне', () => {
+    const indexCss = readFileSync(join(here, '..', 'index.css'), 'utf8');
+    expect(indexCss).not.toContain('forecast-glass');
+    expect(indexCss).not.toMatch(/\[data-block="home-hero"\]::before/);
+    // Плита: кадр 2x, обычное смешение, прозрачность .35-.5, маска; подключается только по атрибуту после load.
+    const plate = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \.fe-hero-planet \[data-block="home-workbench"\]::before \{[^}]*\}/)[0];
+    expect(plate).toContain("/brand/emblem-f-2x.webp");
+    expect(plate).toMatch(/aspect-ratio:\s*1149 \/ 1552/);
+    expect(plate).toMatch(/height:\s*min\([^;]*70svh, 760px\)/);
+    expect(plate).toMatch(/z-index:\s*-1/);
+    expect(plate).toMatch(/mask-image:/);
+    expect(plate).not.toMatch(/mix-blend-mode/);
+    const op = Number(/opacity:\s*([0-9.]+)/.exec(plate)[1]);
+    expect(op).toBeGreaterThanOrEqual(0.35);
+    expect(op).toBeLessThanOrEqual(0.5);
+    // Телефон: F справа от заголовка, ширина текста сужена на ширину F, поиск ниже.
+    const phone = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \.fe-hero-text::after \{[^}]*\}/)[0];
+    expect(phone).toContain("/brand/emblem-f-phone.webp");
+    expect(k7).toMatch(/h1 \+ p \{ max-width: calc\(100% - 128px\); \}/);
+  });
+
   it('у трёх панелей «Попробуйте сами» разные лампы, у плиток «Мир сейчас» четыре оттенка', () => {
     expect(k7).toMatch(/\.fe-tool:nth-child\(2\)\s*\{\s*--lamp:\s*var\(--k7-lamp-rose\)/);
     expect(k7).toMatch(/\.fe-tool:nth-child\(3\)\s*\{\s*--lamp:\s*var\(--k7-lamp-ice\)/);
