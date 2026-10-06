@@ -3091,120 +3091,120 @@
     "anonymous_functions": 34
   },
   "frontend/src/components/CurrencyDesk.jsx": {
-    "sha256": "3131408da59bee02c5587fe80c77206cde61a68f893c7b75732bca972504c7ce",
+    "sha256": "f5e32f7ba4d80d65de484c64c1b9579145156ee4e799de8e12eb5ff1a8cf43f8",
     "definitions": [
       {
         "name": "unitName",
-        "line": 42,
-        "end_line": 46,
+        "line": 44,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "coinOf",
-        "line": 49,
-        "end_line": 53,
+        "line": 51,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "shortDate",
-        "line": 55,
-        "end_line": 61,
+        "line": 57,
+        "end_line": 63,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rateDigits",
-        "line": 63,
-        "end_line": 69,
+        "line": 65,
+        "end_line": 71,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pctOf",
-        "line": 71,
-        "end_line": 74,
+        "line": 73,
+        "end_line": 76,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RowSpark",
-        "line": 77,
-        "end_line": 88,
+        "line": 79,
+        "end_line": 90,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RateTiles",
-        "line": 91,
-        "end_line": 137,
+        "line": 93,
+        "end_line": 139,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ConverterOut",
-        "line": 140,
-        "end_line": 169,
+        "line": 142,
+        "end_line": 171,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Converter",
-        "line": 171,
-        "end_line": 275,
+        "line": 173,
+        "end_line": 277,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Converter.swap",
-        "line": 189,
-        "end_line": 194,
+        "line": 191,
+        "end_line": 196,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Converter.optionOf",
-        "line": 195,
-        "end_line": 203,
+        "line": 197,
+        "end_line": 205,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ChartTip",
-        "line": 277,
-        "end_line": 287,
+        "line": 279,
+        "end_line": 289,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EndBead",
-        "line": 290,
-        "end_line": 299,
+        "line": 292,
+        "end_line": 301,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YearChart",
-        "line": 302,
-        "end_line": 415,
+        "line": 304,
+        "end_line": 417,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YearChart.monthOf",
-        "line": 328,
-        "end_line": 330,
+        "line": 330,
+        "end_line": 332,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "MarketBoard",
-        "line": 418,
-        "end_line": 451,
+        "line": 420,
+        "end_line": 453,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyRow",
-        "line": 453,
-        "end_line": 494,
+        "line": 455,
+        "end_line": 496,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "matchesQuery",
-        "line": 496,
-        "end_line": 507,
+        "line": 498,
+        "end_line": 509,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CurrencyDesk",
-        "line": 509,
-        "end_line": 604,
+        "line": 511,
+        "end_line": 606,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -3323,7 +3323,7 @@
         "names": [
           "default"
         ],
-        "line": 509
+        "line": 511
       }
     ],
     "anonymous_functions": 38
@@ -6449,7 +6449,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/components/LightScene.component.test.jsx": {
-    "sha256": "70776f14267030eab6d4d20796d4f868dd4bc527cb9529369e5807a4824abbe5",
+    "sha256": "c6d296cd2dd3415985f1b1a94fd0457416f65770393893318d9a196057b3f75a",
     "definitions": [
       {
         "name": "scene",
@@ -6516,7 +6516,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/components/LightScene.jsx": {
-    "sha256": "749def6d15c027979c701513b38e708a13c8b62c3dc0af02928d45e676722e1e",
+    "sha256": "b94a5b40b622265d96dda55802ca477186270a5b37951c8e39b3476c5979c9d5",
     "definitions": [
       {
         "name": "Shard",
@@ -6567,69 +6567,63 @@
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "HeroLayer",
-        "line": 176,
-        "end_line": 202,
-        "kind": "FunctionDeclaration"
-      },
-      {
         "name": "SceneF",
-        "line": 208,
-        "end_line": 233,
+        "line": 180,
+        "end_line": 205,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "sceneFMode",
-        "line": 236,
-        "end_line": 242,
+        "line": 208,
+        "end_line": 214,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useSceneParallax",
-        "line": 245,
-        "end_line": 287,
+        "line": 217,
+        "end_line": 259,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useSceneParallax.reset",
-        "line": 256,
-        "end_line": 260,
+        "line": 228,
+        "end_line": 232,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useSceneParallax.update",
-        "line": 261,
-        "end_line": 274,
+        "line": 233,
+        "end_line": 246,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useSceneParallax.schedule",
-        "line": 275,
-        "end_line": 275,
+        "line": 247,
+        "end_line": 247,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsNotFoundPage",
-        "line": 295,
-        "end_line": 318,
+        "line": 267,
+        "end_line": 290,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsNotFoundPage.check",
-        "line": 301,
-        "end_line": 304,
+        "line": 273,
+        "end_line": 276,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsNotFoundPage.schedule",
-        "line": 306,
-        "end_line": 306,
+        "line": 278,
+        "end_line": 278,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "LightScene",
-        "line": 320,
-        "end_line": 373,
+        "line": 292,
+        "end_line": 344,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -6664,10 +6658,10 @@
         "names": [
           "default"
         ],
-        "line": 320
+        "line": 292
       }
     ],
-    "anonymous_functions": 24
+    "anonymous_functions": 22
   },
   "frontend/src/components/LiveTicker.component.test.jsx": {
     "sha256": "d267967c187a4f9597b524f08b5245e902fe7571b3896559a661a1b5a575d4d9",
@@ -6775,7 +6769,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/LiveTicker.jsx": {
-    "sha256": "71ecbef828f2010baf9e5aecd19843a1b058ec13a4aaa88b90c9f9f6d8cd19a1",
+    "sha256": "490c118b91339d5dd11b44dbd7f50ac23527ce2bc094ec9d1d145d6f013206a2",
     "definitions": [
       {
         "name": "currenciesPath",
@@ -8087,42 +8081,42 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/PlanetLabels.jsx": {
-    "sha256": "88845d341cd6a75c6838880df81016aba1228a42066e733729cb33f30376d83c",
+    "sha256": "7c30dd78a8c79a5f619d86e6e2fb7a4b893ecb69db0d1f168ecbdfe4dba9e9be",
     "definitions": [
       {
         "name": "createLabelAtlas",
-        "line": 53,
-        "end_line": 111,
+        "line": 55,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createLabelAtlas.measureValue",
-        "line": 71,
-        "end_line": 74,
+        "line": 73,
+        "end_line": 76,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "createLabelResources",
-        "line": 113,
-        "end_line": 144,
+        "line": 117,
+        "end_line": 148,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createLabelResources.raycast",
-        "line": 141,
-        "end_line": 141,
+        "line": 145,
+        "end_line": 145,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "overlayKeepOut",
-        "line": 151,
-        "end_line": 165,
+        "line": 155,
+        "end_line": 169,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetLabels",
-        "line": 171,
-        "end_line": 265,
+        "line": 175,
+        "end_line": 269,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -8153,10 +8147,10 @@
         "names": [
           "default"
         ],
-        "line": 171
+        "line": 175
       }
     ],
-    "anonymous_functions": 13
+    "anonymous_functions": 14
   },
   "frontend/src/components/PlanetPlaceholder.component.test.jsx": {
     "sha256": "3ad30db90cc3ed7c398d0380c0dfce22ec25bad6dca275abcad662dbb9cb938d",
@@ -13516,7 +13510,7 @@
     "anonymous_functions": 19
   },
   "frontend/src/components/country/CountryIndicatorRow.jsx": {
-    "sha256": "76b910055d4912f895290289816a3eaffd5c8b91891c70449df478e08a4c0a1d",
+    "sha256": "5b5b9a6bdc714fb3b17b892ec4518ac38e5594e4d24c4abdedcfd1913e7e6c9d",
     "definitions": [
       {
         "name": "formatIndicatorDate",
@@ -17166,7 +17160,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "f36533a0bb8b514ef153a559e96ae1fff0fc8f39d527a176f87c3f9a304f369d",
+    "sha256": "2f2d1b3b6049853f21eb40590370906f914aa211e68c230fb8bf97d1af84640f",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -17264,7 +17258,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "cfeb47d6d9691ac8172aa14e8a8a34e7f73e3c91ed80b63d3a2c91bff0167ed8",
+    "sha256": "137129bdfa732b59000bc916d5d1d7ac0ea3ac23d1b978a8f168a10e71acaffe",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -34618,7 +34612,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/lib/tickerFormat.js": {
-    "sha256": "26fd7421a56e229c85cda24c5f47e3e8051e7d169ff9c4763859560854d72895",
+    "sha256": "116ade20235ffdb28228a929a35ddb3c9d9a2613c453654cfc590fad2977cc61",
     "definitions": [
       {
         "name": "tzFor",
@@ -34643,6 +34637,12 @@
         "line": 32,
         "end_line": 37,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "tickerSourceName",
+        "line": 41,
+        "end_line": 47,
+        "kind": "FunctionDeclaration"
       }
     ],
     "imports": [],
@@ -34664,6 +34664,12 @@
           "tickerSourceKind"
         ],
         "line": 32
+      },
+      {
+        "names": [
+          "tickerSourceName"
+        ],
+        "line": 41
       }
     ],
     "anonymous_functions": 0

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `82835512084a67e47dc864186cd26c703036d839`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `204af55a46fcb4efa282c1ba6e59711b4658cae5`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1866 |
-| Код, шаблоны и стили | 1482 |
-| Актуальные рецензии без пропусков guard | 1866 |
-| Именованные определения Python/JS: с аннотацией / всего | 11782 / 11782 |
+| Файлы в явно определённом scope | 1867 |
+| Код, шаблоны и стили | 1483 |
+| Актуальные рецензии без пропусков guard | 1867 |
+| Именованные определения Python/JS: с аннотацией / всего | 11786 / 11786 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -220,7 +220,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_simple_names.py](../backend/app/data/world_simple_names.py) | reviewed | 2/2 | актуально |
 | [backend/app/data/world_subnational/us.yaml](../backend/app/data/world_subnational/us.yaml) | reviewed | 0/0 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
-| [backend/app/main.py](../backend/app/main.py) | reviewed | 39/39 | актуально |
+| [backend/app/main.py](../backend/app/main.py) | reviewed | 40/40 | актуально |
 | [backend/app/models.py](../backend/app/models.py) | reviewed | 63/63 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
@@ -635,6 +635,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_key_rate_seo.py](../backend/tests/test_key_rate_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_labor_market_seo.py](../backend/tests/test_labor_market_seo.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_legacy_redirects.py](../backend/tests/test_legacy_redirects.py) | reviewed | 12/12 | актуально |
+| [backend/tests/test_locale_vary.py](../backend/tests/test_locale_vary.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_market_history_backfill.py](../backend/tests/test_market_history_backfill.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_metrika_reporting.py](../backend/tests/test_metrika_reporting.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_minfin_budget.py](../backend/tests/test_minfin_budget.py) | reviewed | 24/24 | актуально |
@@ -1173,7 +1174,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/K8.component.test.jsx](../frontend/src/components/K8.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/LegalToc.jsx](../frontend/src/components/LegalToc.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/LightScene.component.test.jsx](../frontend/src/components/LightScene.component.test.jsx) | reviewed | 7/7 | актуально |
-| [frontend/src/components/LightScene.jsx](../frontend/src/components/LightScene.jsx) | reviewed | 19/19 | актуально |
+| [frontend/src/components/LightScene.jsx](../frontend/src/components/LightScene.jsx) | reviewed | 18/18 | актуально |
 | [frontend/src/components/LiveTicker.component.test.jsx](../frontend/src/components/LiveTicker.component.test.jsx) | reviewed | 12/12 | актуально |
 | [frontend/src/components/LiveTicker.jsx](../frontend/src/components/LiveTicker.jsx) | reviewed | 12/12 | актуально |
 | [frontend/src/components/LiveTicker.test.js](../frontend/src/components/LiveTicker.test.js) | reviewed | 0/0 | актуально |
@@ -1579,7 +1580,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/sparkValues.test.js](../frontend/src/lib/sparkValues.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/tableSearch.js](../frontend/src/lib/tableSearch.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/tableSearch.test.js](../frontend/src/lib/tableSearch.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/tickerFormat.js](../frontend/src/lib/tickerFormat.js) | reviewed | 4/4 | актуально |
+| [frontend/src/lib/tickerFormat.js](../frontend/src/lib/tickerFormat.js) | reviewed | 5/5 | актуально |
 | [frontend/src/lib/tickerFormat.test.js](../frontend/src/lib/tickerFormat.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/tickerLane.js](../frontend/src/lib/tickerLane.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/tickerPoll.js](../frontend/src/lib/tickerPoll.js) | reviewed | 1/1 | актуально |

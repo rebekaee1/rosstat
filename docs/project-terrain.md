@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `82835512084a`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `204af55a46fc`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -14,13 +14,13 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 | Измерение | Число |
 |---|---:|
-| Файлы в инвентаризации | 1866 |
-| Переданы структурному экстрактору | 1601 |
-| Дали узлы графа | 1521 |
-| Узлы / связи между символами | 18557 / 58572 |
-| Связи между файлами (тип и уверенность сохраняются) | 13493 |
+| Файлы в инвентаризации | 1867 |
+| Переданы структурному экстрактору | 1602 |
+| Дали узлы графа | 1522 |
+| Узлы / связи между символами | 18566 / 58594 |
+| Связи между файлами (тип и уверенность сохраняются) | 13498 |
 
-Исходники, шаблоны и стили: **1482** файлов; узлы есть у **1433**, из них **109** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
+Исходники, шаблоны и стили: **1483** файлов; узлы есть у **1434**, из них **109** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
 Полная инвентаризация относится к Git-дереву. Наличие в списке не означает, что каждый файл прошёл содержательный аудит. `nodes` — экстрактор нашёл структуру; `no_nodes` — файл прочитан экстрактором, но сущностей не получено; `inventory_only` — учтён без разбора структуры. Бинарные материалы, конфиги и данные включены в инвентарь. Содержательное чтение XLSX/PDF, просмотр исторических изображений и классификация внешних материалов фиксируются отдельно в [реестре](code-review/materials-current.json) и приёмке; сам экстрактор не устанавливает визуальное содержание.
 
@@ -42,7 +42,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | Миграции БД | 40 | 39 | 38 | 0 |
 | Операционные скрипты | 121 | 114 | 114 | 3 |
 | Инфраструктура и конфигурация | 42 | 8 | 9 | 1 |
-| Тесты и fixtures | 587 | 558 | 558 | 0 |
+| Тесты и fixtures | 588 | 559 | 559 | 0 |
 | Документация и правила | 96 | 0 | 84 | 21 |
 | Исследования и артефакты | 60 | 1 | 1 | 0 |
 | Статические ресурсы | 136 | 9 | 4 | 0 |
@@ -51,8 +51,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 53592, "INFERRED": 4980}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2528, "missing_endpoint": 3414, "within_file": 24996}`.
+Метки связей: `{"EXTRACTED": 53609, "INFERRED": 4985}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2528, "missing_endpoint": 3415, "within_file": 25004}`.
 
 ## Слои файлов
 
@@ -62,7 +62,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | `.cursor` | 11 | 0 |
 | `.github` | 3 | 0 |
 | `.tours` | 1 | 0 |
-| `backend` | 733 | 648 |
+| `backend` | 734 | 649 |
 | `clickhouse` | 2 | 0 |
 | `deploy` | 13 | 5 |
 | `docs` | 137 | 78 |
@@ -126,10 +126,10 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/backlog.md](../docs/backlog.md) | 2560 | nodes |
 | [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | 131 | nodes |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | 161 | nodes |
-| [docs/data-contracts.md](../docs/data-contracts.md) | 558 | nodes |
+| [docs/data-contracts.md](../docs/data-contracts.md) | 564 | nodes |
 | [docs/data_sources.md](../docs/data_sources.md) | 642 | nodes |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | 82 | nodes |
-| [docs/design-system.md](../docs/design-system.md) | 307 | nodes |
+| [docs/design-system.md](../docs/design-system.md) | 309 | nodes |
 | [docs/design/README.md](../docs/design/README.md) | 109 | nodes |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | 58 | nodes |
 | [docs/design/art-prompts/forecast-glass-reconstruction.md](../docs/design/art-prompts/forecast-glass-reconstruction.md) | 54 | nodes |
@@ -144,7 +144,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | 107 | nodes |
 | [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 2654 | nodes |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | 449 | nodes |
-| [docs/planet-view.md](../docs/planet-view.md) | 526 | nodes |
+| [docs/planet-view.md](../docs/planet-view.md) | 527 | nodes |
 | [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | 52 | nodes |
 | [docs/project-knowledge-acceptance.md](../docs/project-knowledge-acceptance.md) | 84 | nodes |
 | [docs/research/capacity-measurement-2026-10-04.md](../docs/research/capacity-measurement-2026-10-04.md) | 69 | nodes |

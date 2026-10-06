@@ -192,11 +192,11 @@
 
 | Order | Class | Source |
 | --- | --- | --- |
-| 1 | app.main.RateLimitMiddleware | [backend/app/main.py:1630](../backend/app/main.py#L1630) |
-| 2 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:1631](../backend/app/main.py#L1631) |
-| 3 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:1632](../backend/app/main.py#L1632) |
-| 4 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:1633](../backend/app/main.py#L1633) |
-| 5 | app.main.LocaleMiddleware | [backend/app/main.py:1649](../backend/app/main.py#L1649) |
+| 1 | app.main.RateLimitMiddleware | [backend/app/main.py:1644](../backend/app/main.py#L1644) |
+| 2 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:1645](../backend/app/main.py#L1645) |
+| 3 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:1646](../backend/app/main.py#L1646) |
+| 4 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:1647](../backend/app/main.py#L1647) |
+| 5 | app.main.LocaleMiddleware | [backend/app/main.py:1663](../backend/app/main.py#L1663) |
 
 ## Table `session_replay_chunks`
 

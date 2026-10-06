@@ -14191,7 +14191,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/CurrencyDesk.jsx": {
-      "sha256": "3131408da59bee02c5587fe80c77206cde61a68f893c7b75732bca972504c7ce",
+      "sha256": "f5e32f7ba4d80d65de484c64c1b9579145156ee4e799de8e12eb5ff1a8cf43f8",
       "imports": [
         {
           "line": 3,
@@ -14565,344 +14565,336 @@
       "routes": [],
       "functions": [
         {
-          "line": 42,
-          "end_line": 46,
+          "line": 44,
+          "end_line": 48,
           "owner": "<module>",
           "name": "unitName",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 49,
-          "end_line": 53,
+          "line": 51,
+          "end_line": 55,
           "owner": "<module>",
           "name": "coinOf",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 55,
-          "end_line": 61,
+          "line": 57,
+          "end_line": 63,
           "owner": "<module>",
           "name": "shortDate",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 63,
-          "end_line": 69,
+          "line": 65,
+          "end_line": 71,
           "owner": "<module>",
           "name": "rateDigits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 71,
-          "end_line": 74,
+          "line": 73,
+          "end_line": 76,
           "owner": "<module>",
           "name": "pctOf",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 77,
-          "end_line": 88,
+          "line": 79,
+          "end_line": 90,
           "owner": "<module>",
           "name": "RowSpark",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 79,
-          "end_line": 79,
+          "line": 81,
+          "end_line": 81,
           "owner": "RowSpark",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(data?.data || []).map"
         },
         {
-          "line": 91,
-          "end_line": 137,
+          "line": 93,
+          "end_line": 139,
           "owner": "<module>",
           "name": "RateTiles",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 94,
-          "end_line": 94,
+          "line": 96,
+          "end_line": 96,
           "owner": "RateTiles",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "edges.find"
         },
         {
-          "line": 140,
-          "end_line": 169,
+          "line": 142,
+          "end_line": 171,
           "owner": "<module>",
           "name": "ConverterOut",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 171,
-          "end_line": 275,
+          "line": 173,
+          "end_line": 277,
           "owner": "<module>",
           "name": "Converter",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 175,
+          "line": 177,
+          "end_line": 177,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 182,
-          "end_line": 182,
+          "line": 184,
+          "end_line": 184,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "units.find"
         },
         {
-          "line": 187,
-          "end_line": 187,
+          "line": 189,
+          "end_line": 189,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "result.path.map"
         },
         {
-          "line": 189,
-          "end_line": 194,
+          "line": 191,
+          "end_line": 196,
           "owner": "Converter",
           "name": "swap",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 192,
-          "end_line": 192,
+          "line": 194,
+          "end_line": 194,
           "owner": "Converter.swap",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTurns"
         },
         {
-          "line": 195,
-          "end_line": 203,
+          "line": 197,
+          "end_line": 205,
           "owner": "Converter",
           "name": "optionOf",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 205,
-          "end_line": 205,
+          "line": 207,
+          "end_line": 207,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "units.filter"
         },
         {
-          "line": 219,
-          "end_line": 219,
+          "line": 221,
+          "end_line": 221,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 254,
-          "end_line": 263,
+          "line": 256,
+          "end_line": 265,
           "owner": "Converter",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "QUICK_AMOUNTS.map"
         },
         {
-          "line": 259,
-          "end_line": 259,
-          "owner": "Converter.<callback@254>",
+          "line": 261,
+          "end_line": 261,
+          "owner": "Converter.<callback@256>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 277,
-          "end_line": 287,
+          "line": 279,
+          "end_line": 289,
           "owner": "<module>",
           "name": "ChartTip",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 290,
-          "end_line": 299,
+          "line": 292,
+          "end_line": 301,
           "owner": "<module>",
           "name": "EndBead",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 302,
-          "end_line": 415,
+          "line": 304,
+          "end_line": 417,
           "owner": "<module>",
           "name": "YearChart",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 307,
-          "end_line": 307,
+          "line": 309,
+          "end_line": 309,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 327,
-          "end_line": 327,
+          "line": 329,
+          "end_line": 329,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[0, 1, 2, 3, 4].map"
         },
         {
-          "line": 328,
-          "end_line": 330,
+          "line": 330,
+          "end_line": 332,
           "owner": "YearChart",
           "name": "monthOf",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 367,
+          "end_line": 367,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 367,
+          "end_line": 367,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 371,
-          "end_line": 371,
+          "line": 373,
+          "end_line": 373,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 407,
-          "end_line": 407,
+          "line": 409,
+          "end_line": 409,
           "owner": "YearChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 418,
-          "end_line": 451,
+          "line": 420,
+          "end_line": 453,
           "owner": "<module>",
           "name": "MarketBoard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 421,
-          "end_line": 421,
+          "line": 423,
+          "end_line": 423,
           "owner": "MarketBoard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "MARKET_BOARD_CODES.filter"
         },
         {
-          "line": 427,
-          "end_line": 447,
+          "line": 429,
+          "end_line": 449,
           "owner": "MarketBoard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items.map"
         },
         {
-          "line": 453,
-          "end_line": 494,
+          "line": 455,
+          "end_line": 496,
           "owner": "<module>",
           "name": "CurrencyRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 471,
-          "end_line": 471,
+          "line": 473,
+          "end_line": 473,
           "owner": "CurrencyRow",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 496,
-          "end_line": 507,
+          "line": 498,
+          "end_line": 509,
           "owner": "<module>",
           "name": "matchesQuery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 500,
-          "end_line": 503,
+          "line": 502,
+          "end_line": 505,
           "owner": "matchesQuery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[pair.base, pair.quote].forEach"
         },
         {
-          "line": 506,
-          "end_line": 506,
+          "line": 508,
+          "end_line": 508,
           "owner": "matchesQuery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "needle.split(/\\s+/).filter(Boolean).every"
         },
         {
-          "line": 509,
-          "end_line": 604,
+          "line": 511,
+          "end_line": 606,
           "owner": "<module>",
           "name": "CurrencyDesk",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 518,
-          "end_line": 518,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 519,
-          "end_line": 519,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
           "line": 520,
-          "end_line": 524,
+          "end_line": 520,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 521,
+          "end_line": 521,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -14910,39 +14902,31 @@
         },
         {
           "line": 522,
-          "end_line": 522,
-          "owner": "CurrencyDesk.<callback@520>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "sorted.forEach"
-        },
-        {
-          "line": 525,
-          "end_line": 525,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "CURRENCY_TABS.filter"
-        },
-        {
-          "line": 528,
-          "end_line": 528,
+          "end_line": 526,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 530,
-          "end_line": 530,
+          "line": 524,
+          "end_line": 524,
+          "owner": "CurrencyDesk.<callback@522>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.forEach"
+        },
+        {
+          "line": 527,
+          "end_line": 527,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "units.find"
+          "callback_context": "CURRENCY_TABS.filter"
         },
         {
-          "line": 531,
-          "end_line": 531,
+          "line": 530,
+          "end_line": 530,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -14954,67 +14938,83 @@
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
+          "callback_context": "units.find"
+        },
+        {
+          "line": 533,
+          "end_line": 533,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 534,
+          "end_line": 534,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
           "callback_context": "MARKET_BOARD_CODES.some"
         },
         {
-          "line": 535,
-          "end_line": 535,
+          "line": 537,
+          "end_line": 537,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sorted.filter"
         },
         {
-          "line": 536,
-          "end_line": 536,
+          "line": 538,
+          "end_line": 538,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sorted.filter"
         },
         {
-          "line": 552,
-          "end_line": 562,
+          "line": 554,
+          "end_line": 564,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tabs.map"
         },
         {
-          "line": 558,
-          "end_line": 558,
-          "owner": "CurrencyDesk.<callback@552>",
+          "line": 560,
+          "end_line": 560,
+          "owner": "CurrencyDesk.<callback@554>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 570,
-          "end_line": 570,
+          "line": 572,
+          "end_line": 572,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 576,
-          "end_line": 576,
+          "line": 578,
+          "end_line": 578,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 589,
-          "end_line": 589,
+          "line": 591,
+          "end_line": 591,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 594,
-          "end_line": 596,
+          "line": 596,
+          "end_line": 598,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -15023,8 +15023,8 @@
       ],
       "hooks": [
         {
-          "line": 78,
-          "end_line": 78,
+          "line": 80,
+          "end_line": 80,
           "owner": "RowSpark",
           "callee": "useIndicatorData",
           "arguments": [
@@ -15033,30 +15033,16 @@
           ]
         },
         {
-          "line": 92,
-          "end_line": 92,
+          "line": 94,
+          "end_line": 94,
           "owner": "RateTiles",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 93,
-          "end_line": 93,
+          "line": 95,
+          "end_line": 95,
           "owner": "RateTiles",
-          "callee": "useLocale",
-          "arguments": []
-        },
-        {
-          "line": 141,
-          "end_line": 141,
-          "owner": "ConverterOut",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
-          "line": 142,
-          "end_line": 142,
-          "owner": "ConverterOut",
           "callee": "useLocale",
           "arguments": []
         },
@@ -15064,14 +15050,28 @@
           "line": 143,
           "end_line": 143,
           "owner": "ConverterOut",
+          "callee": "useT",
+          "arguments": []
+        },
+        {
+          "line": 144,
+          "end_line": 144,
+          "owner": "ConverterOut",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 145,
+          "end_line": 145,
+          "owner": "ConverterOut",
           "callee": "useRef",
           "arguments": [
             "null"
           ]
         },
         {
-          "line": 144,
-          "end_line": 144,
+          "line": 146,
+          "end_line": 146,
           "owner": "ConverterOut",
           "callee": "useGlintOnChange",
           "arguments": [
@@ -15080,43 +15080,34 @@
           ]
         },
         {
-          "line": 172,
-          "end_line": 172,
-          "owner": "Converter",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
-          "line": 173,
-          "end_line": 173,
-          "owner": "Converter",
-          "callee": "useLocale",
-          "arguments": []
-        },
-        {
           "line": 174,
           "end_line": 174,
           "owner": "Converter",
-          "callee": "useId",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 175,
           "end_line": 175,
           "owner": "Converter",
-          "callee": "useMemo",
-          "arguments": [
-            "() => convertibleUnits(edges)",
-            "[edges]"
-          ]
+          "callee": "useLocale",
+          "arguments": []
         },
         {
           "line": 176,
           "end_line": 176,
           "owner": "Converter",
-          "callee": "useState",
+          "callee": "useId",
+          "arguments": []
+        },
+        {
+          "line": 177,
+          "end_line": 177,
+          "owner": "Converter",
+          "callee": "useMemo",
           "arguments": [
-            "'100'"
+            "() => convertibleUnits(edges)",
+            "[edges]"
           ]
         },
         {
@@ -15125,26 +15116,35 @@
           "owner": "Converter",
           "callee": "useState",
           "arguments": [
+            "'100'"
+          ]
+        },
+        {
+          "line": 180,
+          "end_line": 180,
+          "owner": "Converter",
+          "callee": "useState",
+          "arguments": [
             "0"
           ]
         },
         {
-          "line": 303,
-          "end_line": 303,
+          "line": 305,
+          "end_line": 305,
           "owner": "YearChart",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 304,
-          "end_line": 304,
+          "line": 306,
+          "end_line": 306,
           "owner": "YearChart",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 305,
-          "end_line": 305,
+          "line": 307,
+          "end_line": 307,
           "owner": "YearChart",
           "callee": "useIndicatorData",
           "arguments": [
@@ -15153,8 +15153,8 @@
           ]
         },
         {
-          "line": 306,
-          "end_line": 306,
+          "line": 308,
+          "end_line": 308,
           "owner": "YearChart",
           "callee": "useChartGlassIds",
           "arguments": [
@@ -15162,8 +15162,8 @@
           ]
         },
         {
-          "line": 307,
-          "end_line": 307,
+          "line": 309,
+          "end_line": 309,
           "owner": "YearChart",
           "callee": "useMemo",
           "arguments": [
@@ -15172,57 +15172,39 @@
           ]
         },
         {
-          "line": 419,
-          "end_line": 419,
+          "line": 421,
+          "end_line": 421,
           "owner": "MarketBoard",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 420,
-          "end_line": 420,
+          "line": 422,
+          "end_line": 422,
           "owner": "MarketBoard",
           "callee": "useLocale",
           "arguments": []
         },
         {
-          "line": 454,
-          "end_line": 454,
+          "line": 456,
+          "end_line": 456,
           "owner": "CurrencyRow",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 455,
-          "end_line": 455,
+          "line": 457,
+          "end_line": 457,
           "owner": "CurrencyRow",
           "callee": "useLocale",
           "arguments": []
-        },
-        {
-          "line": 510,
-          "end_line": 510,
-          "owner": "CurrencyDesk",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
-          "line": 511,
-          "end_line": 511,
-          "owner": "CurrencyDesk",
-          "callee": "useState",
-          "arguments": [
-            "'rub'"
-          ]
         },
         {
           "line": 512,
           "end_line": 512,
           "owner": "CurrencyDesk",
-          "callee": "useState",
-          "arguments": [
-            "''"
-          ]
+          "callee": "useT",
+          "arguments": []
         },
         {
           "line": 513,
@@ -15230,7 +15212,7 @@
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
-            "'USD'"
+            "'rub'"
           ]
         },
         {
@@ -15239,19 +15221,37 @@
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
-            "'RUB'"
+            "''"
+          ]
+        },
+        {
+          "line": 515,
+          "end_line": 515,
+          "owner": "CurrencyDesk",
+          "callee": "useState",
+          "arguments": [
+            "'USD'"
           ]
         },
         {
           "line": 516,
           "end_line": 516,
           "owner": "CurrencyDesk",
-          "callee": "useMarketSnapshots",
-          "arguments": []
+          "callee": "useState",
+          "arguments": [
+            "'RUB'"
+          ]
         },
         {
           "line": 518,
           "end_line": 518,
+          "owner": "CurrencyDesk",
+          "callee": "useMarketSnapshots",
+          "arguments": []
+        },
+        {
+          "line": 520,
+          "end_line": 520,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -15260,8 +15260,8 @@
           ]
         },
         {
-          "line": 519,
-          "end_line": 519,
+          "line": 521,
+          "end_line": 521,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -15270,8 +15270,8 @@
           ]
         },
         {
-          "line": 520,
-          "end_line": 524,
+          "line": 522,
+          "end_line": 526,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -15280,8 +15280,8 @@
           ]
         },
         {
-          "line": 528,
-          "end_line": 528,
+          "line": 530,
+          "end_line": 530,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -15290,8 +15290,8 @@
           ]
         },
         {
-          "line": 531,
-          "end_line": 531,
+          "line": 533,
+          "end_line": 533,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -15305,96 +15305,96 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 213,
-          "end_line": 222,
+          "line": 215,
+          "end_line": 224,
           "owner": "Converter",
           "component": "input",
           "event": "onChange",
           "expression": "{(event) => setAmountText(event.target.value)}"
         },
         {
-          "line": 224,
-          "end_line": 232,
+          "line": 226,
+          "end_line": 234,
           "owner": "Converter",
           "component": "CurrencySelect",
           "event": "onChange",
           "expression": "{onFrom}"
         },
         {
-          "line": 233,
-          "end_line": 240,
+          "line": 235,
+          "end_line": 242,
           "owner": "Converter",
           "component": "button",
           "event": "onClick",
           "expression": "{swap}"
         },
         {
-          "line": 243,
-          "end_line": 251,
+          "line": 245,
+          "end_line": 253,
           "owner": "Converter",
           "component": "CurrencySelect",
           "event": "onChange",
           "expression": "{onTo}"
         },
         {
-          "line": 255,
-          "end_line": 260,
-          "owner": "Converter.<callback@254>",
+          "line": 257,
+          "end_line": 262,
+          "owner": "Converter.<callback@256>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setAmountText(value)}"
         },
         {
-          "line": 468,
-          "end_line": 472,
+          "line": 470,
+          "end_line": 474,
           "owner": "CurrencyRow",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.CATEGORY_TILE_CLICK, { indicator: ind.code, surface: 'currencies' })}"
         },
         {
-          "line": 541,
-          "end_line": 541,
+          "line": 543,
+          "end_line": 543,
           "owner": "CurrencyDesk",
           "component": "Converter",
           "event": "onFrom",
           "expression": "{setFrom}"
         },
         {
-          "line": 541,
-          "end_line": 541,
+          "line": 543,
+          "end_line": 543,
           "owner": "CurrencyDesk",
           "component": "Converter",
           "event": "onTo",
           "expression": "{setTo}"
         },
         {
-          "line": 553,
-          "end_line": 559,
-          "owner": "CurrencyDesk.<callback@552>",
+          "line": 555,
+          "end_line": 561,
+          "owner": "CurrencyDesk.<callback@554>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setTab(id); setQuery(''); }}"
         },
         {
-          "line": 567,
-          "end_line": 574,
+          "line": 569,
+          "end_line": 576,
           "owner": "CurrencyDesk",
           "component": "input",
           "event": "onChange",
           "expression": "{(event) => setQuery(event.target.value)}"
         },
         {
-          "line": 576,
-          "end_line": 576,
+          "line": 578,
+          "end_line": 578,
           "owner": "CurrencyDesk",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setQuery('')}"
         },
         {
-          "line": 589,
-          "end_line": 589,
+          "line": 591,
+          "end_line": 591,
           "owner": "CurrencyDesk",
           "component": "Button",
           "event": "onClick",
@@ -15456,8 +15456,19 @@
           "initializer": null
         },
         {
-          "line": 40,
-          "end_line": 40,
+          "line": 41,
+          "end_line": 41,
+          "owner": "<module>",
+          "name": "MARKET_UNITS_EN",
+          "kind": "ObjectExpression",
+          "entries": [
+            "'gold-rub-live'"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 42,
+          "end_line": 42,
           "owner": "<module>",
           "name": "MARKET_DIGITS",
           "kind": "ObjectExpression",
@@ -15469,8 +15480,8 @@
           "initializer": null
         },
         {
-          "line": 204,
-          "end_line": 204,
+          "line": 206,
+          "end_line": 206,
           "owner": "Converter",
           "name": "fromOptions",
           "kind": "CallExpression",
@@ -15478,8 +15489,8 @@
           "initializer": "units.map"
         },
         {
-          "line": 205,
-          "end_line": 205,
+          "line": 207,
+          "end_line": 207,
           "owner": "Converter",
           "name": "toOptions",
           "kind": "CallExpression",
@@ -30431,7 +30442,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/LightScene.component.test.jsx": {
-      "sha256": "70776f14267030eab6d4d20796d4f868dd4bc527cb9529369e5807a4824abbe5",
+      "sha256": "c6d296cd2dd3415985f1b1a94fd0457416f65770393893318d9a196057b3f75a",
       "imports": [
         {
           "line": 2,
@@ -30578,7 +30589,7 @@
         },
         {
           "line": 36,
-          "end_line": 158,
+          "end_line": 150,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -30610,47 +30621,47 @@
         },
         {
           "line": 58,
-          "end_line": 89,
+          "end_line": 81,
           "owner": "<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 91,
-          "end_line": 114,
+          "line": 83,
+          "end_line": 106,
           "owner": "<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 116,
-          "end_line": 133,
+          "line": 108,
+          "end_line": 125,
           "owner": "<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 135,
-          "end_line": 144,
+          "line": 127,
+          "end_line": 136,
           "owner": "<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 138,
-          "end_line": 138,
-          "owner": "<callback@36>.<callback@135>",
+          "line": 130,
+          "end_line": 130,
+          "owner": "<callback@36>.<callback@127>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...root.querySelectorAll('.fe-scene__spot')].map"
         },
         {
-          "line": 146,
-          "end_line": 157,
+          "line": 138,
+          "end_line": 149,
           "owner": "<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -30666,7 +30677,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/LightScene.jsx": {
-      "sha256": "749def6d15c027979c701513b38e708a13c8b62c3dc0af02928d45e676722e1e",
+      "sha256": "b94a5b40b622265d96dda55802ca477186270a5b37951c8e39b3476c5979c9d5",
       "imports": [
         {
           "line": 1,
@@ -30862,232 +30873,208 @@
           "callback_context": "afterLoadIdle"
         },
         {
-          "line": 176,
-          "end_line": 202,
-          "owner": "<module>",
-          "name": "HeroLayer",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
           "line": 180,
-          "end_line": 182,
-          "owner": "HeroLayer",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 197,
-          "end_line": 197,
-          "owner": "HeroLayer",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 208,
-          "end_line": 233,
+          "end_line": 205,
           "owner": "<module>",
           "name": "SceneF",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 211,
-          "end_line": 213,
+          "line": 183,
+          "end_line": 185,
           "owner": "SceneF",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 228,
-          "end_line": 228,
+          "line": 200,
+          "end_line": 200,
           "owner": "SceneF",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 236,
-          "end_line": 242,
+          "line": 208,
+          "end_line": 214,
           "owner": "<module>",
           "name": "sceneFMode",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 245,
-          "end_line": 287,
+          "line": 217,
+          "end_line": 259,
           "owner": "<module>",
           "name": "useSceneParallax",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 246,
-          "end_line": 286,
+          "line": 218,
+          "end_line": 258,
           "owner": "useSceneParallax",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 249,
-          "end_line": 252,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 221,
+          "end_line": 224,
+          "owner": "useSceneParallax.<callback@218>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from(root.querySelectorAll('[data-depth]')).map"
         },
         {
-          "line": 256,
-          "end_line": 260,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 228,
+          "end_line": 232,
+          "owner": "useSceneParallax.<callback@218>",
           "name": "reset",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 258,
-          "end_line": 258,
-          "owner": "useSceneParallax.<callback@246>.reset",
+          "line": 230,
+          "end_line": 230,
+          "owner": "useSceneParallax.<callback@218>.reset",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "nodes.forEach"
         },
         {
-          "line": 261,
-          "end_line": 274,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 233,
+          "end_line": 246,
+          "owner": "useSceneParallax.<callback@218>",
           "name": "update",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 269,
-          "end_line": 272,
-          "owner": "useSceneParallax.<callback@246>.update",
+          "line": 241,
+          "end_line": 244,
+          "owner": "useSceneParallax.<callback@218>.update",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "nodes.forEach"
         },
         {
-          "line": 275,
-          "end_line": 275,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 247,
+          "end_line": 247,
+          "owner": "useSceneParallax.<callback@218>",
           "name": "schedule",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 280,
-          "end_line": 285,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 252,
+          "end_line": 257,
+          "owner": "useSceneParallax.<callback@218>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 295,
-          "end_line": 318,
+          "line": 267,
+          "end_line": 290,
           "owner": "<module>",
           "name": "useIsNotFoundPage",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 297,
-          "end_line": 316,
+          "line": 269,
+          "end_line": 288,
           "owner": "useIsNotFoundPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 301,
-          "end_line": 304,
-          "owner": "useIsNotFoundPage.<callback@297>",
+          "line": 273,
+          "end_line": 276,
+          "owner": "useIsNotFoundPage.<callback@269>",
           "name": "check",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 306,
-          "end_line": 306,
-          "owner": "useIsNotFoundPage.<callback@297>",
+          "line": 278,
+          "end_line": 278,
+          "owner": "useIsNotFoundPage.<callback@269>",
           "name": "schedule",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 310,
-          "end_line": 310,
-          "owner": "useIsNotFoundPage.<callback@297>",
+          "line": 282,
+          "end_line": 282,
+          "owner": "useIsNotFoundPage.<callback@269>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "window.setTimeout"
         },
         {
-          "line": 311,
-          "end_line": 315,
-          "owner": "useIsNotFoundPage.<callback@297>",
+          "line": 283,
+          "end_line": 287,
+          "owner": "useIsNotFoundPage.<callback@269>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 320,
-          "end_line": 373,
+          "line": 292,
+          "end_line": 344,
           "owner": "<module>",
           "name": "LightScene",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 330,
-          "end_line": 330,
+          "line": 302,
+          "end_line": 302,
           "owner": "LightScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 332,
-          "end_line": 336,
+          "line": 304,
+          "end_line": 308,
           "owner": "LightScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 335,
-          "end_line": 335,
-          "owner": "LightScene.<callback@332>",
+          "line": 307,
+          "end_line": 307,
+          "owner": "LightScene.<callback@304>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 350,
-          "end_line": 357,
+          "line": 322,
+          "end_line": 329,
           "owner": "LightScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SPOTS.map"
         },
         {
-          "line": 361,
-          "end_line": 361,
+          "line": 333,
+          "end_line": 333,
           "owner": "LightScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "GLINTS.map"
         },
         {
-          "line": 364,
-          "end_line": 364,
+          "line": 336,
+          "end_line": 336,
           "owner": "LightScene",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -31115,36 +31102,8 @@
           ]
         },
         {
-          "line": 177,
-          "end_line": 177,
-          "owner": "HeroLayer",
-          "callee": "useState",
-          "arguments": [
-            "false"
-          ]
-        },
-        {
-          "line": 178,
-          "end_line": 178,
-          "owner": "HeroLayer",
-          "callee": "useDeferredMount",
-          "arguments": [
-            "!!kind && kind !== 'home'"
-          ]
-        },
-        {
-          "line": 180,
-          "end_line": 182,
-          "owner": "HeroLayer",
-          "callee": "useCallback",
-          "arguments": [
-            "(img) => {\n    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);\n  }",
-            "[]"
-          ]
-        },
-        {
-          "line": 209,
-          "end_line": 209,
+          "line": 181,
+          "end_line": 181,
           "owner": "SceneF",
           "callee": "useState",
           "arguments": [
@@ -31152,8 +31111,8 @@
           ]
         },
         {
-          "line": 210,
-          "end_line": 210,
+          "line": 182,
+          "end_line": 182,
           "owner": "SceneF",
           "callee": "useDeferredMount",
           "arguments": [
@@ -31161,8 +31120,8 @@
           ]
         },
         {
-          "line": 211,
-          "end_line": 213,
+          "line": 183,
+          "end_line": 185,
           "owner": "SceneF",
           "callee": "useCallback",
           "arguments": [
@@ -31171,8 +31130,8 @@
           ]
         },
         {
-          "line": 246,
-          "end_line": 286,
+          "line": 218,
+          "end_line": 258,
           "owner": "useSceneParallax",
           "callee": "useEffect",
           "arguments": [
@@ -31181,8 +31140,8 @@
           ]
         },
         {
-          "line": 296,
-          "end_line": 296,
+          "line": 268,
+          "end_line": 268,
           "owner": "useIsNotFoundPage",
           "callee": "useState",
           "arguments": [
@@ -31190,8 +31149,8 @@
           ]
         },
         {
-          "line": 297,
-          "end_line": 316,
+          "line": 269,
+          "end_line": 288,
           "owner": "useIsNotFoundPage",
           "callee": "useEffect",
           "arguments": [
@@ -31200,15 +31159,15 @@
           ]
         },
         {
-          "line": 321,
-          "end_line": 321,
+          "line": 293,
+          "end_line": 293,
           "owner": "LightScene",
           "callee": "useLocation",
           "arguments": []
         },
         {
-          "line": 322,
-          "end_line": 322,
+          "line": 294,
+          "end_line": 294,
           "owner": "LightScene",
           "callee": "useRef",
           "arguments": [
@@ -31216,8 +31175,8 @@
           ]
         },
         {
-          "line": 324,
-          "end_line": 324,
+          "line": 296,
+          "end_line": 296,
           "owner": "LightScene",
           "callee": "useIsNotFoundPage",
           "arguments": [
@@ -31226,8 +31185,8 @@
           ]
         },
         {
-          "line": 328,
-          "end_line": 328,
+          "line": 300,
+          "end_line": 300,
           "owner": "LightScene",
           "callee": "useDeferredMount",
           "arguments": [
@@ -31235,8 +31194,8 @@
           ]
         },
         {
-          "line": 330,
-          "end_line": 330,
+          "line": 302,
+          "end_line": 302,
           "owner": "LightScene",
           "callee": "useEffect",
           "arguments": [
@@ -31245,8 +31204,8 @@
           ]
         },
         {
-          "line": 332,
-          "end_line": 336,
+          "line": 304,
+          "end_line": 308,
           "owner": "LightScene",
           "callee": "useEffect",
           "arguments": [
@@ -31255,15 +31214,15 @@
           ]
         },
         {
-          "line": 337,
-          "end_line": 337,
+          "line": 309,
+          "end_line": 309,
           "owner": "LightScene",
           "callee": "useLightPointer",
           "arguments": []
         },
         {
-          "line": 338,
-          "end_line": 338,
+          "line": 310,
+          "end_line": 310,
           "owner": "LightScene",
           "callee": "useSceneParallax",
           "arguments": [
@@ -31296,9 +31255,9 @@
           ]
         },
         {
-          "line": 277,
-          "end_line": 277,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 249,
+          "end_line": 249,
+          "owner": "useSceneParallax.<callback@218>",
           "callee": "window.addEventListener",
           "arguments": [
             "'scroll'",
@@ -31307,9 +31266,9 @@
           ]
         },
         {
-          "line": 278,
-          "end_line": 278,
-          "owner": "useSceneParallax.<callback@246>",
+          "line": 250,
+          "end_line": 250,
+          "owner": "useSceneParallax.<callback@218>",
           "callee": "window.addEventListener",
           "arguments": [
             "'resize'",
@@ -31318,9 +31277,9 @@
           ]
         },
         {
-          "line": 281,
-          "end_line": 281,
-          "owner": "useSceneParallax.<callback@246>.<callback@280>",
+          "line": 253,
+          "end_line": 253,
+          "owner": "useSceneParallax.<callback@218>.<callback@252>",
           "callee": "window.removeEventListener",
           "arguments": [
             "'scroll'",
@@ -31328,9 +31287,9 @@
           ]
         },
         {
-          "line": 282,
-          "end_line": 282,
-          "owner": "useSceneParallax.<callback@246>.<callback@280>",
+          "line": 254,
+          "end_line": 254,
+          "owner": "useSceneParallax.<callback@218>.<callback@252>",
           "callee": "window.removeEventListener",
           "arguments": [
             "'resize'",
@@ -31340,16 +31299,8 @@
       ],
       "jsx_handlers": [
         {
-          "line": 188,
-          "end_line": 198,
-          "owner": "HeroLayer",
-          "component": "img",
-          "event": "onLoad",
-          "expression": "{() => setLoaded(true)}"
-        },
-        {
-          "line": 219,
-          "end_line": 229,
+          "line": 191,
+          "end_line": 201,
           "owner": "SceneF",
           "component": "img",
           "event": "onLoad",
@@ -31843,7 +31794,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/LiveTicker.jsx": {
-      "sha256": "71ecbef828f2010baf9e5aecd19843a1b058ec13a4aaa88b90c9f9f6d8cd19a1",
+      "sha256": "490c118b91339d5dd11b44dbd7f50ac23527ce2bc094ec9d1d145d6f013206a2",
       "imports": [
         {
           "line": 1,
@@ -31957,7 +31908,8 @@
           "bindings": [
             "formatAsOfHuman",
             "tickerSourceKind",
-            "tzFor"
+            "tzFor",
+            "tickerSourceName"
           ]
         },
         {
@@ -38493,7 +38445,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetLabels.jsx": {
-      "sha256": "88845d341cd6a75c6838880df81016aba1228a42066e733729cb33f30376d83c",
+      "sha256": "7c30dd78a8c79a5f619d86e6e2fb7a4b893ecb69db0d1f168ecbdfe4dba9e9be",
       "imports": [
         {
           "line": 1,
@@ -38533,6 +38485,7 @@
             "InstancedBufferAttribute",
             "InstancedMesh",
             "LinearFilter",
+            "LinearMipmapLinearFilter",
             "Matrix4",
             "NoColorSpace",
             "PlaneGeometry",
@@ -38572,8 +38525,8 @@
       "routes": [],
       "functions": [
         {
-          "line": 53,
-          "end_line": 111,
+          "line": 55,
+          "end_line": 115,
           "owner": "<module>",
           "name": "createLabelAtlas",
           "kind": "FunctionDeclaration",
@@ -38581,144 +38534,152 @@
         },
         {
           "line": 66,
-          "end_line": 69,
+          "end_line": 66,
+          "owner": "createLabelAtlas",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "[24, 22, 20, 18].map"
+        },
+        {
+          "line": 68,
+          "end_line": 71,
           "owner": "createLabelAtlas",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "packPlanetLabelAtlas"
         },
         {
-          "line": 71,
-          "end_line": 74,
+          "line": 73,
+          "end_line": 76,
           "owner": "createLabelAtlas",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 113,
-          "end_line": 144,
+          "line": 117,
+          "end_line": 148,
           "owner": "<module>",
           "name": "createLabelResources",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 141,
-          "end_line": 141,
+          "line": 145,
+          "end_line": 145,
           "owner": "createLabelResources",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 151,
-          "end_line": 165,
+          "line": 155,
+          "end_line": 169,
           "owner": "<module>",
           "name": "overlayKeepOut",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 156,
-          "end_line": 163,
+          "line": 160,
+          "end_line": 167,
           "owner": "overlayKeepOut",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "stage.querySelectorAll(OVERLAY_SELECTOR).forEach"
         },
         {
-          "line": 171,
-          "end_line": 265,
+          "line": 175,
+          "end_line": 269,
           "owner": "<module>",
           "name": "PlanetLabels",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 177,
+          "line": 179,
+          "end_line": 181,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 178,
-          "end_line": 178,
+          "line": 182,
+          "end_line": 182,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 180,
-          "end_line": 183,
+          "line": 184,
+          "end_line": 187,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 185,
-          "end_line": 189,
+          "line": 189,
+          "end_line": 193,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 188,
-          "end_line": 188,
-          "owner": "PlanetLabels.<callback@185>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 190,
+          "line": 192,
           "end_line": 192,
-          "owner": "PlanetLabels",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 193,
-          "end_line": 198,
-          "owner": "PlanetLabels",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 193,
-          "end_line": 198,
-          "owner": "PlanetLabels.<callback@193>",
+          "owner": "PlanetLabels.<callback@189>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 200,
-          "end_line": 262,
+          "line": 194,
+          "end_line": 196,
+          "owner": "PlanetLabels",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 197,
+          "end_line": 202,
+          "owner": "PlanetLabels",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 197,
+          "end_line": 202,
+          "owner": "PlanetLabels.<callback@197>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 204,
+          "end_line": 266,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useFrame"
         },
         {
-          "line": 209,
-          "end_line": 229,
-          "owner": "PlanetLabels.<callback@200>",
+          "line": 213,
+          "end_line": 233,
+          "owner": "PlanetLabels.<callback@204>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "current.items.map"
         },
         {
-          "line": 247,
-          "end_line": 258,
-          "owner": "PlanetLabels.<callback@200>",
+          "line": 251,
+          "end_line": 262,
+          "owner": "PlanetLabels.<callback@204>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "visible.forEach"
@@ -38726,15 +38687,15 @@
       ],
       "hooks": [
         {
-          "line": 172,
-          "end_line": 172,
+          "line": 176,
+          "end_line": 176,
           "owner": "PlanetLabels",
           "callee": "useThree",
           "arguments": []
         },
         {
-          "line": 175,
-          "end_line": 177,
+          "line": 179,
+          "end_line": 181,
           "owner": "PlanetLabels",
           "callee": "useMemo",
           "arguments": [
@@ -38743,8 +38704,8 @@
           ]
         },
         {
-          "line": 178,
-          "end_line": 178,
+          "line": 182,
+          "end_line": 182,
           "owner": "PlanetLabels",
           "callee": "useMemo",
           "arguments": [
@@ -38753,8 +38714,8 @@
           ]
         },
         {
-          "line": 179,
-          "end_line": 179,
+          "line": 183,
+          "end_line": 183,
           "owner": "PlanetLabels",
           "callee": "useRef",
           "arguments": [
@@ -38762,8 +38723,8 @@
           ]
         },
         {
-          "line": 180,
-          "end_line": 183,
+          "line": 184,
+          "end_line": 187,
           "owner": "PlanetLabels",
           "callee": "useMemo",
           "arguments": [
@@ -38772,8 +38733,8 @@
           ]
         },
         {
-          "line": 185,
-          "end_line": 189,
+          "line": 189,
+          "end_line": 193,
           "owner": "PlanetLabels",
           "callee": "useEffect",
           "arguments": [
@@ -38782,8 +38743,8 @@
           ]
         },
         {
-          "line": 190,
-          "end_line": 192,
+          "line": 194,
+          "end_line": 196,
           "owner": "PlanetLabels",
           "callee": "useEffect",
           "arguments": [
@@ -38792,8 +38753,8 @@
           ]
         },
         {
-          "line": 193,
-          "end_line": 198,
+          "line": 197,
+          "end_line": 202,
           "owner": "PlanetLabels",
           "callee": "useEffect",
           "arguments": [
@@ -38802,8 +38763,8 @@
           ]
         },
         {
-          "line": 200,
-          "end_line": 262,
+          "line": 204,
+          "end_line": 266,
           "owner": "PlanetLabels",
           "callee": "useFrame",
           "arguments": [
@@ -66992,7 +66953,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/country/CountryIndicatorRow.jsx": {
-      "sha256": "76b910055d4912f895290289816a3eaffd5c8b91891c70449df478e08a4c0a1d",
+      "sha256": "5b5b9a6bdc714fb3b17b892ec4518ac38e5594e4d24c4abdedcfd1913e7e6c9d",
       "imports": [
         {
           "line": 2,
@@ -80655,7 +80616,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "f36533a0bb8b514ef153a559e96ae1fff0fc8f39d527a176f87c3f9a304f369d",
+      "sha256": "2f2d1b3b6049853f21eb40590370906f914aa211e68c230fb8bf97d1af84640f",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -81046,7 +81007,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "cfeb47d6d9691ac8172aa14e8a8a34e7f73e3c91ed80b63d3a2c91bff0167ed8",
+      "sha256": "137129bdfa732b59000bc916d5d1d7ac0ea3ac23d1b978a8f168a10e71acaffe",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -125679,7 +125640,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/tickerFormat.js": {
-      "sha256": "26fd7421a56e229c85cda24c5f47e3e8051e7d169ff9c4763859560854d72895",
+      "sha256": "116ade20235ffdb28228a929a35ddb3c9d9a2613c453654cfc590fad2977cc61",
       "imports": [],
       "routes": [],
       "functions": [
@@ -125712,6 +125673,14 @@
           "end_line": 37,
           "owner": "<module>",
           "name": "tickerSourceKind",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 41,
+          "end_line": 47,
+          "owner": "<module>",
+          "name": "tickerSourceName",
           "kind": "FunctionDeclaration",
           "callback_context": null
         }
@@ -194401,13 +194370,13 @@
   "totals": {
     "imports": 3677,
     "routes": 89,
-    "functions": 11492,
-    "hooks": 2239,
+    "functions": 11491,
+    "hooks": 2236,
     "http": 91,
     "storage": 84,
     "events": 336,
-    "jsx_handlers": 993,
-    "registries": 563,
+    "jsx_handlers": 992,
+    "registries": 564,
     "mcp_tools": 7,
     "files": 685,
     "parse_errors": 0
