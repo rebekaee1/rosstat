@@ -41,8 +41,8 @@
   transition: opacity 0.2s ease;
 }
 /* Края ленты: вуаль цвета стекла (var(--k3-paper)), а не сплошная плашка. */
-.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, rgb(var(--k3-paper, 255 252 245) / 0.9), rgb(var(--k3-paper, 255 252 245) / 0)); }
-.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, rgb(var(--k3-paper, 255 252 245) / 0.9), rgb(var(--k3-paper, 255 252 245) / 0)); }
+.fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
+.fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__fade[data-on='true'] { opacity: 1; }
 /* «Все валюты» держится у правого края, пока лента длиннее экрана: ссылка никогда не режется посередине слова. */
 .fe-ticker__all {
@@ -51,7 +51,7 @@
   z-index: 2;
   font-size: 13px;
   font-weight: 650;
-  background-color: rgb(var(--k3-paper, 255 252 245) / 0.9);
+  background-color: rgb(var(--k3-paper, 250 252 255) / 0.9);
 }
 .fe-ticker__all::before {
   content: '';
@@ -60,10 +60,10 @@
   bottom: 0;
   left: -22px;
   width: 22px;
-  background: linear-gradient(90deg, rgb(var(--k3-paper, 255 252 245) / 0), rgb(var(--k3-paper, 255 252 245) / 0.9));
+  background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0), rgb(var(--k3-paper, 250 252 255) / 0.9));
   pointer-events: none;
 }
-.fe-ticker .fe-ticker__all:hover { background-color: color-mix(in srgb, var(--fe-ink, #1e2638) 7%, rgb(var(--k3-paper, 255 252 245) / 0.9)); }
+.fe-ticker .fe-ticker__all:hover { background-color: color-mix(in srgb, var(--fe-ink, #1e2638) 7%, rgb(var(--k3-paper, 250 252 255) / 0.9)); }
 
 /* ═══ Шапка ══════════════════════════════════════════════════════════════ */
 /* Капсула той же ширины, что страницы и лента, но не уже 1440 px: на экранах от 1536 px в неё должны влезть
@@ -240,7 +240,7 @@ nav.fe-navbar a.fe-nav-login:hover,
    Рамки нет: блик сверху и тень-парение; размытие 24 px (плотность 0,74, чтобы текст страницы под ней не мешал). */
 .fe-cookie-panel {
   border-radius: 28px;
-  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper, 255 252 245) / 0.74);
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper, 250 252 255) / 0.74);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
