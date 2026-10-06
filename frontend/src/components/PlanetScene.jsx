@@ -18,6 +18,7 @@ import {
   bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, zoomedDistance,
 } from '../lib/planetView';
 import { WORLD_FEATURES } from '../lib/worldTopology';
+import { WORLD_NO_DATA, WORLD_TOP_COLOR } from '../lib/worldMapColors';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
   movePlanetPointer, planetFitDistance, planetRenderBudget,
@@ -70,8 +71,8 @@ function tracePath(path, context, geometry, minSpanDegrees) {
   for (const ring of outlineRings(geometry, minSpanDegrees)) path({ type: 'LineString', coordinates: ring });
 }
 
-// Страны без данных (K4.5): матовое стекло, без штриховки: светлый холодный «иней», который не сливается ни с океаном, ни со шкалой.
-const NO_DATA_FILL = '#EEF2F6';
+// Страны без данных (круг 6): нейтральная суша #E6E3DC без штриховки; океан в шейдере #DCE8F3, шкала значений — лёд → синий.
+const NO_DATA_FILL = WORLD_NO_DATA;
 
 /** Geography is rendered independently of country coverage in the API. */
 function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WIDTH }) {
@@ -94,15 +95,16 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
       path(substantialPolygons(entry.feature.geometry, MIN_FILL_SPAN_DEGREES));
       const value = valueFor(valuesByCode, entry.dataCode);
       const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
-      // Страны с данными закрашены почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
-      context.globalAlpha = hasValue ? 0.9 : 0.82;
-      context.fillStyle = hasValue ? colorModel.colorFor(value) : NO_DATA_FILL;
+      // Суша закрашена почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
+      // Золото — только у страны на первом месте.
+      context.globalAlpha = 0.92;
+      context.fillStyle = !hasValue ? NO_DATA_FILL : colorModel.isTop?.(value) ? WORLD_TOP_COLOR : colorModel.colorFor(value);
       context.fill();
     }
-    // Borders are a hairline: a pale veil keeps them visible over dark forest, a thin graphite line draws them.
+    // Borders are a hairline: a pale veil keeps them visible over dark colours, a thin graphite line draws them.
     tracePath(path, context, entry.feature.geometry, minSpanDegrees);
     context.globalAlpha = 0.36;
-    context.strokeStyle = '#fffaf0';
+    context.strokeStyle = '#ffffff';
     context.lineWidth = 1.7 * scale;
     context.stroke();
     context.globalAlpha = mode === 'data' ? 0.34 : 0.46;
@@ -673,9 +675,10 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
         onPointerMove={pointerMove}
         onPointerOut={() => { hoverCode.current = null; setHover(null); onHover(null); gl.domElement.style.setProperty('cursor', 'grab'); }}
       >
-        <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} />
+        {/* toneMapped=false: палитра шара (океан #DCE8F3, суша #E6E3DC, шкала) показывается ровно теми цветами, без кривой ACES. */}
+        <shaderMaterial vertexShader={PLANET_VERTEX} fragmentShader={PLANET_FRAGMENT} uniforms={uniforms} toneMapped={false} />
       </mesh>
-      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues && !zoomed} selectedCode={selectedCode}
+      <PlanetLabels entries={entries} locale={locale} valuesByCode={valuesByCode} unit={unit} valueDigits={valueDigits} showValues={showValues} selectedCode={selectedCode}
         hoverCode={hoveredCode} compact={budget.sphereSegments[0] <= 64} selectionOnly={!zoomed} />
       <mesh raycast={() => null} renderOrder={1}>
         <sphereGeometry args={[1.035, 64, 40]} />
@@ -685,10 +688,10 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       {markerPosition && (
         <mesh position={markerPosition} quaternion={markerRotation} raycast={() => null}>
           <ringGeometry args={[0.01, 0.016, 32]} />
-          <meshBasicMaterial color="#fffaf0" toneMapped={false} />
+          <meshBasicMaterial color="#ffffff" toneMapped={false} />
           <mesh position={[0, 0, 0.001]} raycast={() => null}>
             <ringGeometry args={[0.0115, 0.014, 32]} />
-            <meshBasicMaterial color="#ad8a48" toneMapped={false} />
+            <meshBasicMaterial color="#1E3A6E" toneMapped={false} />
           </mesh>
         </mesh>
       )}

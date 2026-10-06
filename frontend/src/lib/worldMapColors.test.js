@@ -3,8 +3,43 @@ import {
   buildWorldColorModel,
   WORLD_DIVERGING_SCALE,
   WORLD_NO_DATA,
+  WORLD_OCEAN_COLOR,
   WORLD_RELATIVE_SCALE,
+  WORLD_TOP_COLOR,
 } from './worldMapColors';
+
+describe('round 6 palette', () => {
+  it('runs from ice #C9D7EA to deep blue #1E3A6E in seven steps, with no warm tone', () => {
+    expect(WORLD_RELATIVE_SCALE).toHaveLength(7);
+    expect(WORLD_RELATIVE_SCALE[0]).toBe('#C9D7EA');
+    expect(WORLD_RELATIVE_SCALE[6]).toBe('#1E3A6E');
+    for (const hex of WORLD_RELATIVE_SCALE) {
+      const [r, , b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      expect(b).toBeGreaterThan(r); // every step is bluer than red: nothing yellow or gold
+    }
+  });
+
+  it('keeps ocean #DCE8F3 and neutral no-data land #E6E3DC apart from the scale', () => {
+    expect(WORLD_OCEAN_COLOR).toBe('#DCE8F3');
+    expect(WORLD_NO_DATA).toBe('#E6E3DC');
+    expect(WORLD_RELATIVE_SCALE).not.toContain(WORLD_NO_DATA);
+    expect(WORLD_RELATIVE_SCALE).not.toContain(WORLD_OCEAN_COLOR);
+  });
+
+  it('gold belongs only to the country in first place, and flips with the order', () => {
+    expect(WORLD_TOP_COLOR).toBe('#C9A24D');
+    const values = { A: 1, B: 5, C: 9 };
+    const descending = buildWorldColorModel(values, { direction: 'desc' });
+    expect([1, 5, 9].map((value) => descending.isTop(value))).toEqual([false, false, true]);
+    const ascending = buildWorldColorModel(values, { direction: 'asc' });
+    expect([1, 5, 9].map((value) => ascending.isTop(value))).toEqual([true, false, false]);
+    // The scale itself holds no gold step, and one observation is not a «first place».
+    expect(descending.bins.map((bin) => bin.color)).not.toContain(WORLD_TOP_COLOR);
+    expect(buildWorldColorModel({ A: 3 }).isTop(3)).toBe(false);
+    expect(buildWorldColorModel({}).isTop(3)).toBe(false);
+    expect(descending.isTop(null)).toBe(false);
+  });
+});
 
 describe('buildWorldColorModel', () => {
   it('uses seven median-centred relative bands for one-directional values', () => {

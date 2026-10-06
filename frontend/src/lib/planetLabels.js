@@ -108,12 +108,15 @@ export function packPlanetLabelAtlas(labels, measure, {
         : [label.numberText, ...wrapPlanetLabel(label.unitText, measureValue, maxTextWidth)]
       : [];
     const valueWidth = Math.max(...valueLines.map(measureValue), 0);
+    const nameWidth = Math.ceil(Math.max(...nameLines.map(measure), 1)) + 2 * paddingX;
     const labelWidth = Math.ceil(Math.max(...nameLines.map(measure), valueWidth, 1)) + 2 * paddingX;
     const labelHeight = Math.ceil(nameLines.length * lineHeight
       + (valueLines.length ? lineGap + valueLines.length * valueLineHeight : 0) + 2 * paddingY + tailHeight);
+    // Name-only variant (the top part of the same rectangle): every country but the selected one is shown without its value.
+    const nameHeight = Math.ceil(nameLines.length * lineHeight + 2 * paddingY);
     return {
       ...label, lines: nameLines, nameLines, valueLine, valueLines,
-      index, width: labelWidth, height: labelHeight,
+      index, width: labelWidth, height: labelHeight, nameWidth, nameHeight,
       paddingX, paddingY, lineGap, lineHeight, valueLineHeight, tailHeight,
     };
   }).sort((a, b) => b.height - a.height || b.width - a.width || a.index - b.index);
@@ -166,6 +169,8 @@ export function layoutPlanetLabels(candidates, {
   selectionOnly = false,
   // Прямоугольники кнопок и чипов поверх шара (в тех же пикселях): подпись не заходит под них.
   keepOut = [],
+  // Подписи без плашки и острия: название стоит прямо на стране, а выбранная (над маркером) поднимается на anchorGap.
+  centered = false,
 } = {}) {
   if (!(width > 0 && height > 0)) return [];
   const selected = normalizePlanetCountryCode(selectedCode);
@@ -183,7 +188,7 @@ export function layoutPlanetLabels(candidates, {
     || b.area - a.area || a.code.localeCompare(b.code));
   const result = [];
   for (const candidate of visible) {
-    const bottom = candidate.y - anchorGap;
+    const bottom = centered && priority(candidate) === 0 ? candidate.y + candidate.height / 2 : candidate.y - anchorGap;
     let box = {
       left: candidate.x - candidate.width / 2,
       right: candidate.x + candidate.width / 2,

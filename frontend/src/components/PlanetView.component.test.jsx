@@ -725,15 +725,39 @@ describe('PlanetView interaction contract', () => {
     expect(scene.props.valuesByCode.get('MT')).toBeUndefined();
   });
 
-  it('shows the minimap only while the view is zoomed in', async () => {
+  it('turns the sphere layers off when zoomed in: no minimap, glass circle or shadow over the map', async () => {
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('planet-scene');
-    expect(container.querySelector('.planet-minimap')).toBeNull();
+    const stage = container.querySelector('.planet-stage');
+    expect(stage.classList.contains('is-zoomed')).toBe(false);
     act(() => scene.props.onView({ lon: 10, lat: 50, distance: 2 }));
-    expect(container.querySelector('.planet-stage .planet-minimap')).toBeTruthy();
-    expect(container.querySelector('.planet-minimap-frame').getAttribute('width')).not.toBe('0');
-    act(() => scene.props.onView({ lon: 10, lat: 50, distance: 3.4 }));
+    expect(stage.classList.contains('is-zoomed')).toBe(true);
+    // The minimap rectangle is gone for good (round 6): nothing in the zoomed view looks like a second map.
     expect(container.querySelector('.planet-minimap')).toBeNull();
+    act(() => scene.props.onView({ lon: 10, lat: 50, distance: 3.4 }));
+    expect(stage.classList.contains('is-zoomed')).toBe(false);
+  });
+
+  it('keeps one block of camera buttons and one bottom row; the card marks the stage so the CSS can hide both', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={new Map([['DE', 3.2], ['MT', 1.7]])} detailsByCode={new Map([['DE', germanyDetail]])} years={[2023, 2024, 2025]} year={2025} onYearChange={() => {}} shareable metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    const stage = container.querySelector('.planet-stage');
+    expect(stage.querySelectorAll('.planet-camera-controls').length).toBe(1);
+    expect(stage.querySelectorAll('.planet-stage-actions').length).toBe(1);
+    expect(stage.querySelector('.planet-stage-actions .planet-round')).toBeTruthy();
+    // Glossy round buttons with their own glass are gone: the blocks carry the glass, the buttons are flat.
+    expect(stage.querySelector('.planet-camera-controls button.fe-glass-2, .planet-round.fe-glass-2')).toBeNull();
+    expect(stage.classList.contains('has-card')).toBe(false);
+    fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
+    expect(stage.classList.contains('has-card')).toBe(true);
+  });
+
+  it('marks gold only for the country in first place in the legend', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.colorModel.isTop(3.2)).toBe(true);
+    expect(scene.props.colorModel.isTop(1.7)).toBe(false);
+    expect(container.querySelector('.planet-key-note--top').textContent).toBe('r6.planet.topNote');
   });
 
   it('selects the country from a shared link once the catalogue is here', async () => {

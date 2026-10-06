@@ -1,14 +1,40 @@
+import { useT } from '../i18n';
+import Spinner from './Spinner';
 import './PlanetView.css';
 
 const LIST_ROWS = [78, 64, 70, 58, 66, 52, 60, 56];
 
 /**
- * Картинка карточки планеты на время загрузки: те же размеры и та же раскладка, что у настоящей карточки, поэтому
- * страница не прыгает при подмене. Вместо пустой бледной плиты человек сразу видит раскрашенный шар (золото и синева,
- * как у настоящей карты), строку поиска страны с годом, полосу легенды и рейтинг стран из бегущих строк.
+ * Единое состояние загрузки шара (круг 6): матовая нейтральная сфера с тонкой сеткой меридианов, нарисованная CSS и SVG,
+ * без картинки и без цветных континентов. Её диаметр (--planet-sphere) равен диаметру настоящего шара, поэтому при подмене
+ * сцена проявляется поверх за 300 мс без скачка размера. Используется и в каркасе карточки, и внутри PlanetView.
+ */
+export function PlanetOrb() {
+  return (
+    <div className="planet-orb" aria-hidden="true">
+      <svg viewBox="0 0 100 100" focusable="false">
+        <ellipse cx="50" cy="50" rx="16" ry="50" />
+        <ellipse cx="50" cy="50" rx="33" ry="50" />
+        <ellipse cx="50" cy="50" rx="47" ry="50" />
+        <path d="M50 0V100" />
+        <path d="M0 50Q50 57 100 50" />
+        <path d="M6.7 25Q50 31 93.3 25" />
+        <path d="M6.7 75Q50 81 93.3 75" />
+        <path d="M25 6.7Q50 10 75 6.7" />
+        <path d="M25 93.3Q50 97 75 93.3" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Каркас карточки планеты на время загрузки: те же размеры и та же раскладка, что у настоящей карточки, поэтому
+ * страница не прыгает при подмене. Человек сразу видит нейтральный шар с подписью «Загружаем карту…», строку поиска страны
+ * с годом, полосу легенды и рейтинг стран из бегущих строк.
  * Лёгкий модуль без three и без данных: его можно показывать с первого кадра.
  */
 export default function PlanetPlaceholder() {
+  const t = useT();
   return (
     <div className="planet-host" aria-busy="true">
       <div className="planet-view planet-view--placeholder">
@@ -23,7 +49,8 @@ export default function PlanetPlaceholder() {
           </div>
           <div className="planet-geography">
             <div className="planet-stage" data-scene-ready="false">
-              <div className="planet-orb planet-orb--preview" aria-hidden="true" />
+              <PlanetOrb />
+              <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>
             </div>
             <div className="planet-key" aria-hidden="true">
               <div className="planet-key-head">

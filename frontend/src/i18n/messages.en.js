@@ -3273,4 +3273,7 @@ export default {
   // ===== K8 =====
   'k8.sticky.label': 'Result',
   'k8.sticky.aria': 'Calculation result: {value}. Press to go to the result',
+  // ===== R6 G =====
+  'r6.planet.loading': 'Loading the map…',
+  'r6.planet.topNote': 'Gold marks the country in first place',
 };

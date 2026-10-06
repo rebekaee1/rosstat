@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
-  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, Hand, Layers3, Minus, Pause, Play,
+  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, Layers3, Minus, Pause, Play,
   Plus, RotateCcw, Search, Share2, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
@@ -18,7 +18,7 @@ import {
 import { playbackYears, yearTag } from '../lib/planetView';
 import { splitUnit, uniformDigits } from '../lib/countryFlag';
 import CountryFlag from './CountryFlag';
-import PlanetMiniMap from './PlanetMiniMap';
+import { PlanetOrb } from './PlanetPlaceholder';
 import SourceLink from './SourceLink';
 import Spinner from './Spinner';
 import YearPicker from './YearPicker';
@@ -29,10 +29,10 @@ const WorldMap = lazy(() => import('./WorldMap'));
 // Адрес для просьбы добавить страну: тот же, что в подвале сайта.
 const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 const HINT_STORAGE_KEY = 'fe_planet_hint_seen';
-const HINT_MS = 9000;
+const HINT_MS = 6000;
 const PLAY_STEP_MS = 950;
-// Ближе этого расстояния камеры в углу шара показывается мини-карта вида.
-const MINIMAP_DISTANCE = 2.6;
+// Ближе этого расстояния камеры шар заполняет сцену и превращается в карту: стеклянная сфера, каустика и тень снимаются (класс is-zoomed).
+const ZOOMED_DISTANCE = 2.9;
 
 function PlanetLink({ href, children, ...props }) {
   const inRouter = useInRouterContext();
@@ -138,8 +138,6 @@ export default function PlanetView({
   const countryCard = useRef(null);
   const countryList = useRef(null);
   const focusCountryCard = useRef(false);
-  const lastView = useRef(null);
-  const viewBus = useRef(null);
   const playIndex = useRef(0);
   const playExpected = useRef(null);
   const lastPlayYear = useRef(year);
@@ -287,9 +285,7 @@ export default function PlanetView({
   const handleInteract = useCallback(() => setEngaged(true), []);
   const handleOcean = useCallback((value) => setWater(value), []);
   const handleView = useCallback((view) => {
-    lastView.current = view;
-    viewBus.current?.(view);
-    const near = view.distance < MINIMAP_DISTANCE;
+    const near = view.distance < ZOOMED_DISTANCE;
     setZoomedView((previous) => (previous === near ? previous : near));
   }, []);
   const selectedCountry = countryByCode.get(selectedCode) || null;
@@ -529,7 +525,7 @@ export default function PlanetView({
             </div>
           </div>
           <div className="planet-geography">
-            <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '') + (selectedCountry || placeCard ? ' has-card' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
+            <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '') + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView && !isMap ? ' is-zoomed' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
               {isMap ? <div className="planet-map-fallback">
                 <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
                 <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
@@ -540,35 +536,34 @@ export default function PlanetView({
                     interactive={!touchNavigation} touchNavigation={touchNavigation}
                     autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
                 </Suspense></SceneBoundary>
-                <div className="planet-orb" aria-hidden="true" />
+                <PlanetOrb />
                 <div className="planet-caustic" aria-hidden="true" />
                 <div className="planet-glass-sphere" aria-hidden="true" />
-                {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('planet.loading')}</div>}
+                {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>}
                 {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
                   {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
                     aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
                 </div>}
                 {playing && year != null && <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div>}
-                {hintVisible && <div className="planet-gesture-hint fe-glass-2" role="note"><Hand size={18} aria-hidden="true" /><span>{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</span></div>}
+                {hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
                 {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
                   <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
                 {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
-                {zoomedView && <PlanetMiniMap viewBusRef={viewBus} lastViewRef={lastView} label={t('w6c.minimap')} />}
                 <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')} data-tip={t('planet.zoomIn')}><Plus size={18} aria-hidden="true" /></button>
-                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')} data-tip={t('planet.zoomOut')}><Minus size={18} aria-hidden="true" /></button>
-                  <button type="button" className="fe-glass-2" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')} data-tip={t('planet.reset')}><RotateCcw size={16} aria-hidden="true" /></button>
+                  <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')} data-tip={t('planet.zoomIn')}><Plus size={17} aria-hidden="true" /></button>
+                  <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')} data-tip={t('planet.zoomOut')}><Minus size={17} aria-hidden="true" /></button>
+                  <button type="button" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')} data-tip={t('planet.reset')}><RotateCcw size={15} aria-hidden="true" /></button>
                 </div>
               </>}
               <div className="planet-stage-bottom">
-                {!isMap && <div className="planet-stage-actions">
-                  {water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries fe-glass-active" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
-                  {canPlay && <button type="button" className={'planet-round ' + (playing ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
-                    {playing ? <Pause size={17} aria-hidden="true" /> : <Play size={17} aria-hidden="true" />}</button>}
-                  {coverageAvailable && <button type="button" className={'planet-round ' + (coverage ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
-                    onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={17} aria-hidden="true" /></button>}
-                  {shareable && <button type="button" className={'planet-round ' + (shared ? 'fe-glass-active is-active' : 'fe-glass-2')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
-                    {shared ? <Check size={17} aria-hidden="true" /> : <Share2 size={17} aria-hidden="true" />}</button>}
+                {!isMap && water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
+                {!isMap && (canPlay || coverageAvailable || shareable) && <div className="planet-stage-actions">
+                  {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
+                    {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>}
+                  {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
+                    onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={16} aria-hidden="true" /></button>}
+                  {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
+                    {shared ? <Check size={16} aria-hidden="true" /> : <Share2 size={16} aria-hidden="true" />}</button>}
                 </div>}
                 {placeCard && !selectedCountry && <div className="planet-country-card planet-place-card fe-glass-2 is-selected" role="status">
                   <div className="planet-country-heading"><div><h3>{placeCard.name}</h3></div><button type="button" onClick={() => setPlaceCard(null)} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
@@ -603,6 +598,7 @@ export default function PlanetView({
                     <p className="planet-legend-scale">{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
                     <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
                     <p className="planet-key-note"><i aria-hidden="true" />{t('w6c.key.noData', { count: catalogCount })}</p>
+                    {colorModel.sampleSize > 1 && <p className="planet-key-note planet-key-note--top"><i aria-hidden="true" />{t('r6.planet.topNote')}</p>}
                   </div>
                 </details>
               </div>

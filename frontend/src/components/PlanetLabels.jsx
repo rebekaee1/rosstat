@@ -5,13 +5,17 @@ import {
   LinearFilter, Matrix4, NoColorSpace, PlaneGeometry, ShaderMaterial, Vector3,
 } from 'three';
 import { buildPlanetLabels, layoutPlanetLabels, packPlanetLabelAtlas } from '../lib/planetLabels';
+import { normalizePlanetCountryCode } from '../lib/planetGeometry';
 
 const MAX_LABELS = 16;
 const FONT_FAMILY = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 const ATLAS_WIDTH = 2048;
 const ATLAS_HEIGHT = 1024;
-// A small pointer under the chip, so the name visibly belongs to the country below it.
-const TAIL_HEIGHT = 9;
+// Round 6: no plate and no pointer. A name is plain graphite text with a 1 px light halo, standing on its country.
+const TAIL_HEIGHT = 0;
+const PADDING_X = 5;
+const PADDING_Y = 3;
+const HALO_WIDTH = 3;
 
 const VERTEX = `
   attribute vec4 labelUv;
@@ -32,18 +36,15 @@ const FRAGMENT = `
   uniform sampler2D labelMap;
   uniform vec3 ink;
   uniform vec3 paper;
-  uniform vec3 line;
-  uniform vec3 selectedLine;
+  uniform vec3 selectedInk;
   varying vec2 vLabelUv;
   varying float vLabelActive;
   void main() {
     vec4 mask = texture2D(labelMap, vLabelUv);
     if (mask.a < 0.035) discard;
-    // Gray glyphs encode ink coverage; red pixels encode only the panel border.
-    vec3 panel = mix(ink, paper, mask.g);
-    vec3 border = vLabelActive > 0.5 ? selectedLine : line;
-    panel = mix(panel, border, clamp(mask.r - mask.g, 0.0, 1.0));
-    gl_FragColor = vec4(panel, mask.a);
+    // The atlas holds black glyphs over a white halo: the grey level says how much is ink and how much is halo.
+    vec3 glyph = vLabelActive > 0.5 ? selectedInk : ink;
+    gl_FragColor = vec4(mix(glyph, paper, mask.g), mask.a);
     #include <colorspace_fragment>
   }
 `;
@@ -70,53 +71,36 @@ function createLabelAtlas(labels) {
       measureValue: (text) => {
         context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
         return context.measureText(text).width;
-      }, paddingX: 12, paddingY: 8, lineGap: 4, tailHeight: TAIL_HEIGHT,
+      }, paddingX: PADDING_X, paddingY: PADDING_Y, lineGap: 2, tailHeight: TAIL_HEIGHT,
     });
     fontPixels = candidateSize;
     if (items) break;
   }
   if (!items) return null;
   for (const label of items) {
-    const { x, y, width, height, nameLines, valueLines } = label;
-    const panelHeight = height - TAIL_HEIGHT;
-    context.beginPath();
-    context.roundRect(x + 1, y + 1, width - 2, panelHeight - 2, 10);
-    context.fillStyle = '#fff';
-    context.fill();
-    context.strokeStyle = '#f00';
-    context.lineWidth = 2;
-    context.stroke();
-    // Pointer: white wedge over the bottom border, outlined on its two slanted sides only.
-    const centre = x + width / 2;
-    const base = y + panelHeight - 1;
-    context.fillStyle = '#fff';
-    context.beginPath();
-    context.moveTo(centre - 7, base - 2);
-    context.lineTo(centre + 7, base - 2);
-    context.lineTo(centre, y + height - 1);
-    context.closePath();
-    context.fill();
-    context.beginPath();
-    context.moveTo(centre - 7, base);
-    context.lineTo(centre, y + height - 1);
-    context.lineTo(centre + 7, base);
-    context.stroke();
+    const { x, y, width, nameLines, valueLines, nameWidth, nameHeight } = label;
+    context.lineWidth = HALO_WIDTH;
+    context.strokeStyle = '#fff';
+    context.fillStyle = '#000';
     const nameSize = fontPixels * 5 / 6;
     context.font = `500 ${nameSize}px ${FONT_FAMILY}`;
-    context.fillStyle = '#151515';
     for (let index = 0; index < nameLines.length; index += 1) {
-      const baseline = y + 8 + index * (nameSize + 4) + (nameSize + 4) / 2;
+      const baseline = y + PADDING_Y + index * (nameSize + 4) + (nameSize + 4) / 2;
+      context.strokeText(nameLines[index], x + width / 2, baseline);
       context.fillText(nameLines[index], x + width / 2, baseline);
     }
     if (valueLines.length) {
       context.font = `600 ${fontPixels}px ${FONT_FAMILY}`;
-      context.fillStyle = '#000';
       for (let index = 0; index < valueLines.length; index += 1) {
-        const baseline = y + 8 + nameLines.length * (nameSize + 4) + 4 + index * (fontPixels + 4) + (fontPixels + 4) / 2;
+        const baseline = y + PADDING_Y + nameLines.length * (nameSize + 4) + 2 + index * (fontPixels + 4) + (fontPixels + 4) / 2;
+        context.strokeText(valueLines[index], x + width / 2, baseline);
         context.fillText(valueLines[index], x + width / 2, baseline);
       }
     }
-    label.uv = [x / ATLAS_WIDTH, 1 - (y + height) / ATLAS_HEIGHT, (x + width) / ATLAS_WIDTH, 1 - y / ATLAS_HEIGHT];
+    const top = 1 - y / ATLAS_HEIGHT;
+    label.uv = [x / ATLAS_WIDTH, 1 - (y + label.height) / ATLAS_HEIGHT, (x + width) / ATLAS_WIDTH, top];
+    const nameLeft = x + (width - nameWidth) / 2;
+    label.uvName = [nameLeft / ATLAS_WIDTH, 1 - (y + nameHeight) / ATLAS_HEIGHT, (nameLeft + nameWidth) / ATLAS_WIDTH, top];
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = NoColorSpace;
@@ -141,9 +125,8 @@ function createLabelResources(labels) {
       labelMap: { value: atlas.texture },
       ink: { value: new Color('#202A3C') },
       paper: { value: new Color('#FFFFFF') },
-      // Подписи на шаре без контура (K4.5): край панели — лишь чуть теплее самой панели, у выбранной страны — мягкое золото.
-      line: { value: new Color('#F2ECDD') },
-      selectedLine: { value: new Color('#E9CD8E') },
+      // Выбранная страна подписана глубоким синим: он же цвет кромки подсветки на шаре.
+      selectedInk: { value: new Color('#1E3A6E') },
     },
     transparent: true,
     // Explicit hemisphere and whole-label silhouette clipping keeps the glyphs
@@ -221,7 +204,11 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
     const fontPixels = compactLayout ? 13 : 14.5;
     const fontScale = fontPixels / current.fontPixels;
     const halfFrustum = Math.tan(camera.fov * Math.PI / 360);
+    const selectedKey = normalizePlanetCountryCode(selectedCode);
+    const hoverKey = normalizePlanetCountryCode(hoverCode);
     const candidates = current.items.map((label) => {
+      // The value is printed only for the selected (or hovered) country; every other name stands alone.
+      const full = showValues && label.valueLines.length > 0 && (label.code === selectedKey || label.code === hoverKey);
       scratch.point.set(...label.position);
       scratch.normal.copy(scratch.point).normalize();
       scratch.eye.copy(camera.position).sub(scratch.point).normalize();
@@ -235,8 +222,9 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
         depth: scratch.projected.z,
         facing,
         worldPerPixel: 2 * halfFrustum * -scratch.local.z / size.height,
-        width: label.width * fontScale,
-        height: label.height * fontScale,
+        full,
+        width: (full ? label.width : label.nameWidth) * fontScale,
+        height: (full ? label.height : label.nameHeight) * fontScale,
       };
     });
     const keepOut = overlayKeepOut(gl?.domElement);
@@ -250,8 +238,8 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
       width: size.width, height: size.height,
       cameraDistance: camera.position.length(), selectedCode, hoverCode,
       maxVisible: compactLayout ? 8 : MAX_LABELS,
-      valuesOnly: showValues,
       selectionOnly,
+      centered: true,
       globe,
       keepOut,
     });
@@ -265,7 +253,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
       scratch.matrix.makeScale(label.width * label.worldPerPixel, label.height * label.worldPerPixel, 1);
       scratch.matrix.setPosition(scratch.point);
       current.mesh.setMatrixAt(index, scratch.matrix);
-      current.uv.setXYZW(index, ...label.uv);
+      current.uv.setXYZW(index, ...(label.full ? label.uv : label.uvName));
       current.active.setX(index, label.active);
     });
     current.mesh.instanceMatrix.needsUpdate = true;

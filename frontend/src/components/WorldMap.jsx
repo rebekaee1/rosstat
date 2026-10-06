@@ -1,5 +1,5 @@
 import {
-  createElement, startTransition, useCallback, useEffect, useId, useMemo, useRef, useState,
+  createElement, startTransition, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import {
   geoGraticule10, geoMercator, geoNaturalEarth1, geoPath,
@@ -21,7 +21,7 @@ import {
   loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
 } from '../lib/worldTopology';
 import {
-  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR,
+  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_TOP_COLOR,
 } from '../lib/worldMapColors';
 import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
@@ -218,7 +218,6 @@ export default function WorldMap({
   const [detailShapes, setDetailShapes] = useState(null);
   const panRef = useRef(null);
   const svgRef = useRef(null);
-  const noDataPatternId = `world-no-data-${useId().replaceAll(':', '')}`;
   const countryByCode = useMemo(
     () => new Map(countries.map((country) => [country.code, country])),
     [countries],
@@ -409,13 +408,6 @@ export default function WorldMap({
           onDoubleClick={() => zoomBy(ZOOM_STEP)}
           style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
         >
-          <defs>
-            {/* Страны без данных: матовое стекло (иней), а не штриховка. */}
-            <linearGradient id={noDataPatternId} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity={0.92} />
-              <stop offset="100%" stopColor={WORLD_NO_DATA} stopOpacity={1} />
-            </linearGradient>
-          </defs>
           <rect width={WIDTH} height={HEIGHT} fill={WORLD_OCEAN} />
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
             <path
@@ -448,16 +440,16 @@ export default function WorldMap({
                   key={key}
                   d={d}
                   fill={hasValue
-                    ? colorModel.colorFor(value)
-                    : active ? `url(#${noDataPatternId})` : WORLD_OUTSIDE}
-                  stroke={active ? 'rgba(88,74,46,0.42)' : 'rgba(88,74,46,0.14)'}
+                    ? (colorModel.isTop?.(value) ? WORLD_TOP_COLOR : colorModel.colorFor(value))
+                    : active ? WORLD_NO_DATA : WORLD_OUTSIDE}
+                  stroke={active ? 'rgba(30,38,56,0.4)' : 'rgba(30,38,56,0.14)'}
                   strokeWidth={active ? 0.9 : 0.45}
                   vectorEffect="non-scaling-stroke"
                   className={active
                     ? 'cursor-pointer outline-none focus-visible:outline-none'
                     : 'outline-none'}
                   style={isHover ? {
-                    filter: 'brightness(0.92) drop-shadow(0 0 1.2px rgba(181,141,39,0.85))',
+                    filter: 'brightness(0.94) drop-shadow(0 0 1.2px rgba(44,74,138,0.85))',
                   } : undefined}
                   onClick={() => active && selectCountry(country)}
                   onMouseEnter={() => active && setHover({
@@ -491,13 +483,13 @@ export default function WorldMap({
             {hoverGeometry && (
               <path
                 d={path(hoverGeometry) || ''}
-                fill="rgba(181,141,39,0.22)"
-                stroke="#B58D27"
+                fill="rgba(44,74,138,0.14)"
+                stroke="#2C4A8A"
                 strokeWidth={1.35}
                 vectorEffect="non-scaling-stroke"
                 pointerEvents="none"
                 aria-hidden="true"
-                style={{ filter: 'drop-shadow(0 0 2px rgba(181,141,39,0.55))' }}
+                style={{ filter: 'drop-shadow(0 0 2px rgba(44,74,138,0.45))' }}
               />
             )}
           </g>
