@@ -1,5 +1,5 @@
 import {
-  CHART_AREA, CHART_AREA_COLOR, CHART_THEME, PRISM_STOPS, RIBBON_STOPS, SAPPHIRE_STOPS,
+  CHART_AREA, CHART_AREA_COLOR, CHART_THEME, RIBBON_STOPS, SAPPHIRE_STOPS,
 } from '../lib/chartTheme';
 
 /**
@@ -11,7 +11,6 @@ import {
  * sapphire    лента второго ряда (сапфир)
  * area/areaSapphire  заливка под лентой: 35 % у линии, к оси 0
  * forecast    линия прогноза: тёмное золото, прозрачность тает вдоль линии (без пунктира)
- * prism       коридор прогноза: золото, затем лёд (слева направо)
  * bar/barForecast    столбцы: градиент сверху вниз
  * width       ширина графика в px: горизонтальные градиенты привязываются к графику, а не к рамке линии (плоский ряд не пропадает)
  * bead        шарик последней точки: блик в левом верхнем углу
@@ -42,9 +41,6 @@ export default function ChartGlassDefs({ ids, forecastColor = CHART_THEME.champa
       <linearGradient id={ids.forecast} {...along}>
         <stop offset="0%" stopColor={forecastColor} stopOpacity={1} />
         <stop offset="100%" stopColor={forecastColor} stopOpacity={0.3} />
-      </linearGradient>
-      <linearGradient id={ids.prism} x1="0" y1="0" x2="1" y2="0">
-        {PRISM_STOPS.map((stop) => <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />)}
       </linearGradient>
       <linearGradient id={ids.bar} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={0.95} />

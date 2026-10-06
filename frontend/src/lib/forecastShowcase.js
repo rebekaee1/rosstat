@@ -35,8 +35,7 @@ export function changeMessageKey(change) {
 }
 
 /**
- * Геометрия мини-графика: линия факта, пунктир прогноза и коридор вокруг него.
- * Коридор начинается в точке последнего факта (там неопределённости нет).
+ * Геометрия мини-графика: линия факта и линия прогноза от точки последнего факта. Диапазона вокруг прогноза нет.
  */
 export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
   const p = { l: 6, r: 12, t: 12, b: 10, ...(pad || {}) };
@@ -51,11 +50,7 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
 
   const values = [];
   history.forEach((row) => values.push(row.value));
-  forecast.forEach((row) => {
-    values.push(row.value);
-    if (Number.isFinite(row.lower)) values.push(row.lower);
-    if (Number.isFinite(row.upper)) values.push(row.upper);
-  });
+  forecast.forEach((row) => values.push(row.value));
   let vMin = Math.min(...values);
   let vMax = Math.max(...values);
   if (vMax - vMin < 1e-9) {
@@ -81,21 +76,11 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
     .concat(forecast.map((row) => `L${round(x(row.date))} ${round(y(row.value))}`))
     .join(' ');
 
-  const upper = forecast.map((row) => `${round(x(row.date))} ${round(y(Number.isFinite(row.upper) ? row.upper : row.value))}`);
-  const lower = forecast
-    .map((row) => `${round(x(row.date))} ${round(y(Number.isFinite(row.lower) ? row.lower : row.value))}`)
-    .reverse();
-  const hasBand = forecast.some((row) => Number.isFinite(row.lower) && Number.isFinite(row.upper));
-  const bandPath = hasBand
-    ? `M${round(lastX)} ${round(lastY)} L${upper.join(' L')} L${lower.join(' L')} Z`
-    : '';
-
   return {
     width,
     height,
     histPath,
     forePath,
-    bandPath,
     splitX: round(lastX),
     zone: { x: round(lastX), width: round(width - lastX) },
     now: { x: round(lastX), y: round(lastY) },

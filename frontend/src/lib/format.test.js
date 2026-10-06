@@ -387,7 +387,7 @@ describe('adjustCpiDisplay', () => {
 });
 
 describe('adjustCpiForecastDisplay', () => {
-  it('normalizes CPI forecast values and bounds from index to display percent', () => {
+  it('normalizes CPI forecast values from index to display percent', () => {
     const response = {
       indicator: 'inflation-quarterly',
       forecast: {
@@ -396,8 +396,6 @@ describe('adjustCpiForecastDisplay', () => {
           {
             date: '2026-06-01',
             value: 101.42,
-            lower_bound: 100.9,
-            upper_bound: 101.9,
           },
         ],
       },
@@ -411,8 +409,6 @@ describe('adjustCpiForecastDisplay', () => {
           {
             date: '2026-06-01',
             value: 1.42,
-            lower_bound: 0.9,
-            upper_bound: 1.9,
           },
         ],
       },

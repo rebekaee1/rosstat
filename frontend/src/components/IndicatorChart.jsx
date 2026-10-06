@@ -140,10 +140,6 @@ function CustomTooltip({
   if (comparisons.length === 0 && (actual || forecast)) {
     const main = actual || forecast;
     const isForecast = !actual;
-    const band = payload.find((p) => p.dataKey === 'band');
-    const range = isForecast && Array.isArray(band?.value) && band.value.length === 2
-      ? band.value
-      : null;
     return (
       <div className="fe-chart-tip fe-chart-tooltip">
         <span className="fe-chart-tip__date">{formatDate(label, dateFormat)}</span>
@@ -158,14 +154,6 @@ function CustomTooltip({
         {isForecast && (
           <span className="fe-chart-tip__tag">
             {forecastTooltipLabel || t('common.forecast')}
-          </span>
-        )}
-        {range && (
-          <span className="fe-chart-tip__range">
-            {t('w6e.forecast.rangeTip', {
-              from: formatValue(range[0], valueDigits),
-              to: formatValue(range[1], valueDigits),
-            })}
           </span>
         )}
       </div>
@@ -456,22 +444,6 @@ export default function IndicatorChart({
   );
   const visibleData = rebased ? rebased.rows : windowRows;
 
-  // Вероятный диапазон прогноза: границы приходят вместе с прогнозом, на график кладём их отдельным слоем.
-  const bandByDate = useMemo(() => {
-    const map = new Map();
-    const values = forecastData?.forecast?.values;
-    if (!Array.isArray(values)) return map;
-    for (const item of values) {
-      const lo = Number(item?.lower_bound);
-      const hi = Number(item?.upper_bound);
-      if (item?.lower_bound != null && item?.upper_bound != null
-        && Number.isFinite(lo) && Number.isFinite(hi) && hi >= lo) {
-        map.set(item.date, [lo, hi]);
-      }
-    }
-    return map;
-  }, [forecastData]);
-
   const forecastEndDate = useMemo(() => {
     if (!showForecast) return null;
     for (let i = visibleData.length - 1; i >= 0; i--) {
@@ -487,23 +459,8 @@ export default function IndicatorChart({
   );
   const { data: visualData, boundaryDate: forecastBoundaryDate } = useMemo(() => {
     if (!(showForecast && chartType !== 'bar')) return { data: visibleData, boundaryDate: null };
-    const built = buildForecastVisualSeries(visibleData);
-    if (!bandByDate.size || rebased) return built;
-    let anchored = false;
-    const withBand = built.data.map((row) => {
-      const band = row.forecast != null && row.actual == null ? bandByDate.get(row.date) : null;
-      if (band) return { ...row, band };
-      // Опорная точка (последний факт): диапазон там нулевой и «вырастает» из неё.
-      if (!anchored && row.date === built.boundaryDate && row.actual != null) {
-        anchored = true;
-        return { ...row, band: [Number(row.actual), Number(row.actual)] };
-      }
-      return row;
-    });
-    return { data: withBand, boundaryDate: built.boundaryDate };
-  }, [visibleData, showForecast, chartType, bandByDate, rebased]);
-  const hasBand = visualData.some((row) => Array.isArray(row.band)
-    && row.band[0] !== row.band[1]);
+    return buildForecastVisualSeries(visibleData);
+  }, [visibleData, showForecast, chartType]);
 
   useEffect(() => { onChartDataRef.current?.(visibleData); }, [visibleData]);
 
@@ -636,9 +593,6 @@ export default function IndicatorChart({
     for (const row of visibleData) {
       if (row.actual != null) { min = Math.min(min, row.actual); max = Math.max(max, row.actual); }
       if (row.forecast != null) { min = Math.min(min, row.forecast); max = Math.max(max, row.forecast); }
-      if (Array.isArray(row.band)) {
-        min = Math.min(min, row.band[0]); max = Math.max(max, row.band[1]);
-      }
       for (const series of resolvedComparisonSeries) {
         const value = row[series.dataKey];
         if (value != null) { min = Math.min(min, value); max = Math.max(max, value); }
@@ -1000,22 +954,6 @@ export default function IndicatorChart({
               </>
             )}
 
-            {/* Коридор прогноза — «призма»: золото слева, лёд справа, края растушёваны (css k4-prism), без пунктира. */}
-            {showForecast && chartType !== 'bar' && hasBand && (
-              <Area
-                className="k4-prism"
-                dataKey="band"
-                stroke="none"
-                fill={`url(#${glass.prism})`}
-                dot={false}
-                activeDot={false}
-                isAnimationActive={false}
-                connectNulls
-                legendType="none"
-                tooltipType="none"
-              />
-            )}
-
             {showForecast && (
               chartType === 'bar' ? (
                 <Bar
@@ -1123,12 +1061,6 @@ export default function IndicatorChart({
             <span className="k4-swatch k4-swatch--forecast" aria-hidden="true" />
             <span className="text-xs text-text-secondary">{t('common.forecast')}</span>
           </div>
-          {hasBand && (
-            <div className="flex items-center gap-2">
-              <span className="k4-swatch k4-swatch--prism" aria-hidden="true" />
-              <span className="text-xs text-text-secondary">{t('w6e.forecast.range')}</span>
-            </div>
-          )}
         </div>
       )}
       <ChartBrandCaption />

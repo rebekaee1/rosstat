@@ -254,9 +254,9 @@
         "title": "Age structure of Russia's population"
       },
       "forecasts": {
-        "description": "Platform forecasts one year ahead for Russia and other countries: prices, GDP, unemployment, rates, wages. Built from official data, with the range in which the indicator is most likely to land.",
+        "description": "Platform forecasts one year ahead for Russia and other countries: prices, GDP, unemployment, rates, wages. Built from official data: the value now and the value expected in a year.",
         "h1": "Forecasts",
-        "intro": "These are the forecasts the platform builds itself from official data: for Russia and for countries where the forecast passed a test on past data. For each series you see the latest value, the value expected in a year, and the range it is most likely to fall in.",
+        "intro": "These are the forecasts the platform builds itself from official data: for Russia and for countries where the forecast passed a test on past data. For each series you see the latest value and the value expected in a year.",
         "path": "/forecasts",
         "slug": "forecasts",
         "title": "Economic forecasts one year ahead: inflation, GDP, unemployment"
@@ -270,9 +270,9 @@
         "title": "Forecast Economy — official macroeconomic indicators by country"
       },
       "methodology": {
-        "description": "How forecasts of economic indicators are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.",
+        "description": "How forecasts of economic indicators are built: series preparation, historical validation, statistical models, updates, and limitations.",
         "h1": "Forecast methodology",
-        "intro": "Every forecast on Forecast Economy is produced by a statistical model trained on the official historical series of the indicator. We do not fit results to expectations or add expert assumptions: the forecast is determined by the source data and the algorithm. Below is the full calculation path — from series preparation to the confidence interval — and the indicators we deliberately do not forecast.",
+        "intro": "Every forecast on Forecast Economy is produced by a statistical model trained on the official historical series of the indicator. We do not fit results to expectations or add expert assumptions: the forecast is determined by the source data and the algorithm. Below is the full calculation path — from series preparation to the final value — and the indicators we deliberately do not forecast.",
         "path": "/methodology",
         "slug": "methodology",
         "title": "Forecast methodology for economic indicators — Forecast Economy"
@@ -384,9 +384,9 @@
       "title": "Возрастная структура населения России"
     },
     "forecasts": {
-      "description": "Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным, с коридором, в котором показатель скорее всего окажется.",
+      "description": "Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным: сколько сейчас и какое значение ожидается через год.",
       "h1": "Прогнозы",
-      "intro": "Здесь собраны прогнозы, которые платформа считает сама по официальным данным: по России и по странам, где прогноз прошёл проверку на прошлых данных. Для каждого ряда видно, сколько сейчас, какое значение ожидается через год и в каком коридоре оно, скорее всего, окажется.",
+      "intro": "Здесь собраны прогнозы, которые платформа считает сама по официальным данным: по России и по странам, где прогноз прошёл проверку на прошлых данных. Для каждого ряда видно, сколько сейчас и какое значение ожидается через год.",
       "path": "/forecasts",
       "slug": "forecasts",
       "title": "Прогнозы экономики на год вперёд: инфляция, ВВП, безработица"
@@ -400,9 +400,9 @@
       "title": "Forecast Economy — макроэкономические индикаторы стран и России"
     },
     "methodology": {
-      "description": "Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, интервалы, обновление и ограничения.",
+      "description": "Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, обновление и ограничения.",
       "h1": "Методология прогнозирования",
-      "intro": "Каждый прогноз на Forecast Economy строится статистической моделью, обученной на официальном историческом ряде показателя. Мы не подгоняем результат под ожидания и не добавляем экспертных допущений: прогнозное значение определяют исходные данные и алгоритм. Ниже разобран весь путь расчёта — от подготовки ряда до доверительного интервала, а также перечислены показатели, которые мы сознательно не прогнозируем.",
+      "intro": "Каждый прогноз на Forecast Economy строится статистической моделью, обученной на официальном историческом ряде показателя. Мы не подгоняем результат под ожидания и не добавляем экспертных допущений: прогнозное значение определяют исходные данные и алгоритм. Ниже разобран весь путь расчёта — от подготовки ряда до итогового значения, а также перечислены показатели, которые мы сознательно не прогнозируем.",
       "path": "/methodology",
       "slug": "methodology",
       "title": "Методология прогнозирования экономических показателей — Forecast Economy"

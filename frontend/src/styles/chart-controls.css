@@ -191,7 +191,6 @@ a.fe-chip { text-decoration: none; }
 .fe-chart-tip__date { color: var(--color-text-secondary); font-size: 12px; }
 .fe-chart-tip__value { color: var(--color-text-primary); font-size: 14px; font-weight: 700; }
 .fe-chart-tip__tag { color: var(--color-champagne-ink, #80642f); font-size: 11px; font-weight: 600; }
-.fe-chart-tip__range { color: var(--color-text-secondary); font-size: 11px; }
 
 .fe-chart-note { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
 

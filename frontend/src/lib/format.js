@@ -668,8 +668,6 @@ export function adjustCpiForecastDisplay(forecastResp, code) {
       values: forecastResp.forecast.values.map(v => ({
         ...v,
         value: adjustCpiDisplay(v.value, code),
-        lower_bound: v.lower_bound == null ? v.lower_bound : adjustCpiDisplay(v.lower_bound, code),
-        upper_bound: v.upper_bound == null ? v.upper_bound : adjustCpiDisplay(v.upper_bound, code),
       })),
     },
   };

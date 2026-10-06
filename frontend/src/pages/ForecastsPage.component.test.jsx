@@ -36,12 +36,12 @@ const SHOWCASE = {
       source: 'Росстат',
       path: '/russia/indicator/cpi',
       last_actual: { date: '2026-08-01', value: 6.2 },
-      forecast_end: { date: '2027-08-01', value: 5.0, lower: 3.9, upper: 6.1 },
+      forecast_end: { date: '2027-08-01', value: 5.0 },
       change: { unit: 'points', value: -1.2, direction: 'down', horizon_months: 12 },
       history: series(9, 24, 5, 0.05),
       forecast: [
-        { date: '2026-09-01', value: 6.0, lower: 5.8, upper: 6.2 },
-        { date: '2027-08-01', value: 5.0, lower: 3.9, upper: 6.1 },
+        { date: '2026-09-01', value: 6.0 },
+        { date: '2027-08-01', value: 5.0 },
       ],
       updated: '2026-09-05',
       verified: false,
@@ -58,12 +58,12 @@ const SHOWCASE = {
       source: 'Бюро трудовой статистики США',
       path: '/united-states/indicator/us-unemployment-rate',
       last_actual: { date: '2026-08-01', value: 4.1 },
-      forecast_end: { date: '2027-08-01', value: 4.3, lower: 3.8, upper: 4.8 },
+      forecast_end: { date: '2027-08-01', value: 4.3 },
       change: { unit: 'points', value: 0.2, direction: 'up', horizon_months: 12 },
       history: series(9, 24, 4, 0.0),
       forecast: [
-        { date: '2026-09-01', value: 4.1, lower: 4.0, upper: 4.2 },
-        { date: '2027-08-01', value: 4.3, lower: 3.8, upper: 4.8 },
+        { date: '2026-09-01', value: 4.1 },
+        { date: '2027-08-01', value: 4.3 },
       ],
       updated: '2026-09-05',
       verified: true,
@@ -90,17 +90,33 @@ describe('ForecastsPage', () => {
     expect(russia.textContent).toContain('6,2');
     expect(russia.textContent).toContain('5,0');
     expect(russia.textContent).toContain('ниже на 1,2 пункта');
-    expect(russia.textContent).toContain('Коридор: от 3,9');
     expect(within(russia).getByRole('link', { name: /Открыть график/ }).getAttribute('href')).toBe('/russia/indicator/cpi');
-    // Мини-график читается скринридером и содержит факт, пунктир и коридор.
+    // Мини-график читается скринридером и содержит линию факта и линию прогноза, без диапазона.
     expect(within(russia).getByRole('img').getAttribute('aria-label')).toContain('через год');
     expect(russia.querySelector('.zb-fc__hist')).toBeTruthy();
     expect(russia.querySelector('.zb-fc__fore')).toBeTruthy();
-    expect(russia.querySelector('.zb-fc__band')).toBeTruthy();
+    expect(russia.querySelector('.zb-fc__band')).toBeNull();
 
     const us = cards[1];
     expect(us.textContent).toContain('выше на 0,2 пункта');
     expect(us.textContent).toContain('Проверен на истории');
+  });
+
+  it('диапазона прогноза нет нигде: ни в тексте, ни в легенде, ни на графике, даже если сервер прислал границы', async () => {
+    const withBounds = JSON.parse(JSON.stringify(SHOWCASE));
+    for (const item of withBounds.items) {
+      item.forecast_end = { ...item.forecast_end, lower: 1, upper: 99 };
+      item.forecast = item.forecast.map((row) => ({ ...row, lower: 1, upper: 99 }));
+    }
+    const { container } = renderForecasts(withBounds);
+    await screen.findAllByTestId('forecast-card');
+    expect(container.textContent).not.toMatch(/коридор|диапазон|интервал|доверитель/i);
+    expect(container.textContent).not.toContain('99');
+    expect(container.querySelector('.zb-fc__band')).toBeNull();
+    expect(container.querySelector('.zb-fc__key--range')).toBeNull();
+    // Графика высотой в рамку: границы 1 и 99 не растягивают ось (линия остаётся в пределах значений прогноза).
+    const nums = container.querySelector('.zb-fc__fore').getAttribute('d').match(/-?\d+(\.\d+)?/g).map(Number);
+    expect(Math.min(...nums)).toBeGreaterThanOrEqual(0);
   });
 
   it('метод остаётся второй ссылкой, границы витрины названы вслух', async () => {

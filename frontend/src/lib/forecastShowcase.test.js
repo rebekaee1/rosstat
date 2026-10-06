@@ -9,35 +9,37 @@ const item = {
     { date: '2026-08-01', value: 102 },
   ],
   forecast: [
-    { date: '2026-09-01', value: 103, lower: 102, upper: 104 },
-    { date: '2027-08-01', value: 108, lower: 104, upper: 112 },
+    { date: '2026-09-01', value: 103 },
+    { date: '2027-08-01', value: 108 },
   ],
 };
 
 describe('chartGeometry', () => {
-  it('держит все точки внутри рамки и стартует коридор в последнем факте', () => {
+  it('держит все точки внутри рамки, прогноз стартует в последнем факте', () => {
     const g = chartGeometry(item, { width: 320, height: 132 });
     expect(g).not.toBeNull();
-    const nums = `${g.histPath} ${g.forePath} ${g.bandPath}`.match(/-?\d+(\.\d+)?/g).map(Number);
+    const nums = `${g.histPath} ${g.forePath}`.match(/-?\d+(\.\d+)?/g).map(Number);
     expect(Math.min(...nums)).toBeGreaterThanOrEqual(0);
     expect(g.now.x).toBeLessThan(g.end.x);
-    expect(g.bandPath.startsWith(`M${g.now.x} ${g.now.y}`)).toBe(true);
+    expect(g.forePath.startsWith(`M${g.now.x} ${g.now.y}`)).toBe(true);
     expect(g.end.y).toBeLessThan(g.now.y); // прогноз выше факта: меньший y
   });
 
-  it('без границ коридора полосу не рисует, линия остаётся', () => {
-    const g = chartGeometry({
+  it('диапазона нет: даже если в данных есть границы, полосы нет и ось по ним не растягивается', () => {
+    const plain = chartGeometry(item);
+    const withBounds = chartGeometry({
       ...item,
-      forecast: item.forecast.map(({ date, value }) => ({ date, value })),
+      forecast: item.forecast.map((row) => ({ ...row, lower: row.value - 50, upper: row.value + 50 })),
     });
-    expect(g.bandPath).toBe('');
-    expect(g.forePath.startsWith('M')).toBe(true);
+    expect(withBounds.bandPath).toBeUndefined();
+    expect(withBounds).toEqual(plain);
+    expect(Object.keys(withBounds)).not.toContain('bandPath');
   });
 
   it('плоский ряд не делит на ноль', () => {
     const flat = {
       history: [{ date: '2026-01-01', value: 5 }, { date: '2026-02-01', value: 5 }],
-      forecast: [{ date: '2027-01-01', value: 5, lower: null, upper: null }],
+      forecast: [{ date: '2027-01-01', value: 5 }],
     };
     const g = chartGeometry(flat);
     expect(Number.isFinite(g.now.y)).toBe(true);

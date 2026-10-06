@@ -45,14 +45,12 @@ function ChangeIcon({ direction }) {
 }
 
 /**
- * Мини-график: линия факта, прогноз градиентом прозрачности (без пунктира), коридор-«призма» (тёплое слева,
- * холодное справа) и луч света на отметке «сейчас». Все линии и заливки задают градиенты SVG, фильтров нет.
+ * Мини-график: линия факта, прогноз градиентом прозрачности (без пунктира) и луч света на отметке «сейчас». Все линии и заливки задают градиенты SVG, фильтров нет.
  */
 function MiniChart({ item, label }) {
   const uid = useId().replace(/:/g, '');
   const geo = useMemo(() => chartGeometry(item), [item]);
   if (!geo) return null;
-  const bandId = `${uid}-band`;
   const foreId = `${uid}-fore`;
   const rayId = `${uid}-ray`;
   const glowId = `${uid}-glow`;
@@ -66,10 +64,6 @@ function MiniChart({ item, label }) {
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>
-          <linearGradient id={bandId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#E9CD8E" stopOpacity="0.52" />
-            <stop offset="1" stopColor="#BCD4EC" stopOpacity="0.32" />
-          </linearGradient>
           <linearGradient id={foreId} gradientUnits="userSpaceOnUse" x1={geo.now.x} x2={geo.end.x + 0.01} y1="0" y2="0">
             <stop offset="0" stopColor="#B08A3E" stopOpacity="1" />
             <stop offset="1" stopColor="#C9A24D" stopOpacity="0.4" />
@@ -86,9 +80,6 @@ function MiniChart({ item, label }) {
           </linearGradient>
         </defs>
         <rect className="zb-fc__zone" x={geo.zone.x} y="0" width={geo.zone.width} height={geo.height} rx="6" />
-        {geo.bandPath ? (
-          <path className="zb-fc__band" d={geo.bandPath} style={{ fill: `url(#${bandId})` }} />
-        ) : null}
         <rect className="zb-fc__ray-glow" x={geo.splitX - 8} y="0" width="16" height={geo.height} fill={`url(#${glowId})`} />
         <rect className="zb-fc__ray" x={geo.splitX - 0.9} y="2" width="1.8" height={geo.height - 4} rx="0.9" fill={`url(#${rayId})`} />
         <path className="zb-fc__hist" d={geo.histPath} />
@@ -126,11 +117,6 @@ function ForecastCard({ item, locale, t }) {
   const endText = valueText(item, item.forecast_end.value, locale);
   const n = formatValue(Math.abs(item.change.value), 1, locale);
   const changeText = t(changeMessageKey(item.change), { n });
-  const { lower, upper } = item.forecast_end;
-  const hasRange = Number.isFinite(lower) && Number.isFinite(upper);
-  const rangeText = hasRange
-    ? t('zb.fc.range', { low: valueText(item, lower, locale), high: valueText(item, upper, locale) })
-    : '';
   const chartLabel = t('zb.fc.chartAria', {
     title: item.title,
     now: nowText,
@@ -168,10 +154,9 @@ function ForecastCard({ item, locale, t }) {
 
       <MiniChart item={item} label={chartLabel} />
 
-      <p className="zb-fc__meta">
-        {rangeText ? <>{rangeText}. </> : null}
-        {item.unit ? <>{t('zb.fc.unit', { unit: item.unit })}</> : null}
-      </p>
+      {item.unit ? (
+        <p className="zb-fc__meta">{t('zb.fc.unit', { unit: item.unit })}</p>
+      ) : null}
 
       <div className="zb-fc__foot">
         <span>{t('zb.fc.source', { source: item.source })}</span>
@@ -276,7 +261,6 @@ export default function ForecastsPage() {
           <ul className="zb-fc__legend" aria-label={t('zb.fc.legendAria')}>
             <li><span className="zb-fc__key" aria-hidden="true" />{t('zb.fc.legendFact')}</li>
             <li><span className="zb-fc__key zb-fc__key--forecast" aria-hidden="true" />{t('zb.fc.legendForecast')}</li>
-            <li><span className="zb-fc__key zb-fc__key--range" aria-hidden="true" />{t('zb.fc.legendRange')}</li>
           </ul>
         </div>
       )}

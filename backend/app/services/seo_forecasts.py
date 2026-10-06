@@ -34,7 +34,6 @@ _COPY = {
         "now": "Сейчас",
         "year": "Через год",
         "change": "Изменение",
-        "range": "Коридор",
         "caption": "Прогноз на год вперёд, {theme}",
         "model": "Считает платформа по официальным данным.",
         "checked": "Для стран мира прогноз сначала проверен на прошлых данных.",
@@ -46,7 +45,6 @@ _COPY = {
         "now": "Now",
         "year": "In a year",
         "change": "Change",
-        "range": "Range",
         "caption": "One-year-ahead forecast, {theme}",
         "model": "Built by the platform from official data.",
         "checked": "For countries outside Russia the forecast is first tested on past data.",
@@ -63,25 +61,18 @@ def _value_text(value: float, unit: str, locale: str) -> str:
 
 
 def _item_row(item: dict, locale: str) -> str:
-    copy = _COPY[locale]
     last = item["last_actual"]
     end = item["forecast_end"]
     unit = item.get("unit") or ""
     now_day = date.fromisoformat(last["date"])
     end_day = date.fromisoformat(end["date"])
-    low, high = end.get("lower"), end.get("upper")
-    corridor = ""
-    if low is not None and high is not None:
-        corridor = f"{format_number_ru(round(float(low), 2), locale=locale)} – {format_number_ru(round(float(high), 2), locale=locale)}"
     return (
         f'<tr><th scope="row"><a href="{escape(item["path"])}">{escape(item["title"])}</a></th>'
         f'<td>{escape(_value_text(last["value"], unit, locale))}<br>'
         f'<small>{escape(format_month_year(now_day, locale))}</small></td>'
         f'<td>{escape(_value_text(end["value"], unit, locale))}<br>'
         f'<small>{escape(format_month_year(end_day, locale))}</small></td>'
-        f'<td>{escape(change_phrase(item["change"], locale))}'
-        + (f'<br><small>{escape(copy["range"])}: {escape(corridor)}</small>' if corridor else "")
-        + "</td></tr>"
+        f'<td>{escape(change_phrase(item["change"], locale))}</td></tr>'
     )
 
 

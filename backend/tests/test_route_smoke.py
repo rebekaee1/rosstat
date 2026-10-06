@@ -377,4 +377,7 @@ def test_forecast_route(route_client):
     fc = r.json()["forecast"]
     assert fc["model_name"] == "SARIMA-test"
     assert fc["values"][0]["value"] == 103.1
+    # В базе границы есть (102.0 и 104.0), в публичном ответе их нет: только точечный прогноз.
+    assert set(fc["values"][0]) == {"date", "value"}
+    assert "lower_bound" not in r.text and "upper_bound" not in r.text
     assert route_client.get("/api/v1/indicators/no-such/forecast").status_code == 404

@@ -141,7 +141,6 @@ export default function Methodology() {
             <p>{t('meth.read.p2')}</p>
             <p>{t('meth.update.modelBody')}</p>
             <p>{t('meth.update.derivedBody')}</p>
-            <p>{t('meth.p.uncertBody')}</p>
           </InfoMore>
         </InfoCard>
 

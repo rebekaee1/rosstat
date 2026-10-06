@@ -137,20 +137,9 @@ function buildCumulativeIndexForecast(forecastResp, lastActualValue) {
   const values = forecastResp?.forecast?.values;
   if (!values?.length || lastActualValue == null) return forecastResp;
   let acc = lastActualValue;
-  let accLow = lastActualValue;
-  let accUp = lastActualValue;
   const out = values.map((v) => {
     acc = acc * (Number(v.value) / 100);
-    const next = { ...v, value: +acc.toFixed(2) };
-    if (v.lower_bound != null) {
-      accLow = accLow * (Number(v.lower_bound) / 100);
-      next.lower_bound = +accLow.toFixed(2);
-    }
-    if (v.upper_bound != null) {
-      accUp = accUp * (Number(v.upper_bound) / 100);
-      next.upper_bound = +accUp.toFixed(2);
-    }
-    return next;
+    return { ...v, value: +acc.toFixed(2) };
   });
   return {
     ...forecastResp,

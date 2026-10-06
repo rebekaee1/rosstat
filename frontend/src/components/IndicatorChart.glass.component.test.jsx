@@ -82,12 +82,14 @@ describe('IndicatorChart: стеклянная лента (K4.1, K4.4)', () => {
     expect(forecast.getAttribute('stroke')).toMatch(/^url\(#k4-.+-forecast\)$/);
   });
 
-  it('прогноз: коридор-призма и луч света на границе факта и прогноза', () => {
+  it('прогноз: только линия и луч света на границе факта и прогноза, диапазона нет', () => {
     const { container } = renderChart();
-    const prism = container.querySelector('.k4-prism .recharts-area-area');
-    expect(prism).not.toBeNull();
-    expect(prism.getAttribute('fill')).toMatch(/^url\(#k4-.+-prism\)$/);
+    expect(container.querySelector('.k4-prism')).toBeNull();
+    expect(container.querySelector('[id$="-prism"]')).toBeNull();
+    expect(container.querySelector('.recharts-area-area[fill*="prism"]')).toBeNull();
+    expect(container.querySelector('.k4-forecast .recharts-curve')).not.toBeNull();
     expect(container.querySelector('.k4-beam')).not.toBeNull();
+    expect(container.textContent).not.toMatch(/диапазон|коридор|range/i);
   });
 
   it('сетка — чередующиеся полосы, а не линии с пунктиром', () => {

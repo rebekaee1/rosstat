@@ -78,9 +78,7 @@ async def state_forecast(
         "points": [
             {"date": point.date.isoformat(), "year": point.date.year,
              "month": point.date.month, "quarter": (point.date.month - 1) // 3 + 1,
-             "value": round(float(point.value), 4),
-             "lower_bound": round(float(point.lower_bound), 4) if point.lower_bound is not None else None,
-             "upper_bound": round(float(point.upper_bound), 4) if point.upper_bound is not None else None}
+             "value": round(float(point.value), 4)}
             for point in gate.result.points
         ],
     }
