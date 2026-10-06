@@ -53,6 +53,20 @@ describe('k5-pages.css', () => {
   });
 });
 
+describe('K5 круг 5: стекло плиты и лента сравнения', () => {
+  it('плита графика: альфа каждого слоя фона ≤ 0,6 (сквозь стекло видны лампы K1)', () => {
+    const m = /--k5-plate:\s*([^;]*);/.exec(k5);
+    expect(m).not.toBeNull();
+    const alphas = [...m[1].matchAll(/rgba\([^)]*,\s*([0-9.]+)\)/g)].map((x) => Number(x[1]));
+    expect(alphas.length).toBeGreaterThan(2);
+    for (const a of alphas) expect(a).toBeLessThanOrEqual(0.6);
+  });
+
+  it('жёлоб периода целиком внутри плиты на телефоне', () => {
+    expect(k5).toMatch(/\.z4-chart-wrap \.fe-brush \{ padding-inline: 14px; \}/);
+  });
+});
+
 describe('forecasts и compare без пунктира и рамок', () => {
   it('прогнозная линия мини-графика не штриховая, ключи легенды без border', () => {
     expect(zb).not.toMatch(/stroke-dasharray/);
