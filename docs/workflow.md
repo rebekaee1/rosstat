@@ -327,7 +327,9 @@ python scripts/seo-audit.py --target=https://forecasteconomy.com
 
 Файлы рядом с `docker-compose.yml` на сервере, не входящие в Git: `docker-compose.override.yml` (эталон —
 `scripts/test-server/docker-compose.override.yml`: урезанные лимиты, порт `127.0.0.1:80`, **`build.network: host`** — без него
-`pip`/`npm` из docker-сети таймаутят) и `.env` (добавки лимитов — `scripts/test-server/env.additions`; пароли и токены там свои).
+`pip`/`npm` из docker-сети таймаутят; с 05.10 ещё bind-mount `/root/nginx-test.conf` в frontend и `RUSTATS_API_RATE_LIMIT`/`RUSTATS_EMBED_RATE_LIMIT` = `6000` в backend)
+и `.env` (добавки лимитов — `scripts/test-server/env.additions`; пароли и токены там свои). **`deploy.sh` override на сервер не копирует:** изменение эталона в репозитории
+действует только после ручного копирования файла на сервер и `docker compose up -d`. Применён ли расширенный override на стенде, из репозитория не видно (на сервер при сверке 06.10 не заходили).
 
 ### Выкладка кода
 
@@ -336,8 +338,22 @@ scripts/test-server/deploy.sh            # текущий HEAD; REF и --no-buil
 ```
 
 Код едет без push: `git bundle` поверх SHA, который уже стоит на сервере (если он не предок цели — полный bundle), затем
-`git checkout --detach <SHA>`, `docker compose build backend frontend`, `docker compose up -d backend scheduler frontend`, ожидание
-`/api/v1/health/ready` и вывод адреса туннеля. Образ один на `backend` и `scheduler`. Обычный прогон — около минуты, со сборкой — 3–5.
+`git checkout --detach <SHA>`, **генерация `/root/nginx-test.conf`** (ниже), `docker compose build backend frontend`, `docker compose up -d backend scheduler frontend`, ожидание
+`/api/v1/health/ready`, **сброс SSR-кэша** и вывод адреса туннеля. Образ один на `backend` и `scheduler`. Обычный прогон — около минуты, со сборкой — 3–5.
+
+<a id="test-server-limits"></a>
+
+### Лимиты запросов стенда и конфиг nginx (05.10.2026)
+
+Все проверяющие (владелец, критики, агенты) приходят на стенд с одного внешнего адреса Cloudflare-туннеля. Боевые лимиты (`rate=5r/s`, `limit_conn perip 8`, API 120 запросов в минуту) отдавали им «429», поэтому стенд работает со своими значениями; **боевой `frontend/nginx.conf` и боевое окружение не меняются**.
+
+| Что | Как устроено на стенде |
+|---|---|
+| nginx | шаг 1b `deploy.sh`: `sed` над `frontend/nginx.conf` на сервере пишет `/root/nginx-test.conf`: каждое `rate=Nr/s` → `N00r/s` (×100), `burst=N` → `N0` (×10), `limit_conn perip N` → `N000` (8 → 8000); `ogconn` (картинки OG) не трогается, он защищает память. Файл **генерируется при каждой выкладке** (`grep -c limit_req_zone` в выводе проверяет, что зоны на месте) и монтируется в контейнер `frontend` как `/etc/nginx/conf.d/default.conf` через override |
+| API | `RUSTATS_API_RATE_LIMIT=6000`, `RUSTATS_EMBED_RATE_LIMIT=6000` в `backend` (читаются в `app/main.py::RateLimitMiddleware` при старте; боевые умолчания 120 и 600) |
+| SSR-кэш | после `up -d` `deploy.sh` сбрасывает ключи `fe:*:ssr:*` в Redis (как `scripts/deploy.sh` на проде): подпись ключа зависит только от хэша ассетов фронта, и правка рендера на backend без сброса отдавала бы старый HTML до 6 часов |
+
+Ограничения (выведены из кода, на стенде не проверены): при `--no-build` и неизменном compose-конфиге `up -d frontend` контейнер не пересоздаёт, и nginx не перечитает свежий `/root/nginx-test.conf`: после смены лимитов нужен `docker compose restart frontend` либо полный прогон со сборкой. Остальное в конфиге стенд повторяет боевое (фирменные `429/50x`, `/forecasts`, `/search` → 301).
 
 ### Данные: product-only восстановление
 

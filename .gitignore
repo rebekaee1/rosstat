@@ -111,3 +111,6 @@ docs/research/eurostat-underslice-*.txt
 # Полный локальный Graphify-граф; переносимая проекция хранится в docs/.
 .artifacts/project-terrain/
 docs/project-terrain.html
+
+# Ключ генерации изображений (OpenRouter): локальный файл владельца, не коммитить
+api_key.txt
