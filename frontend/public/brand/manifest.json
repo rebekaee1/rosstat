@@ -37,14 +37,6 @@
       "soft": "размытые кристаллы-боке под затемнением; подвал на телефоне 900-1050 CSS px высотой, кадр cover 1045 px",
       "shown_in": "Footer: <source max-width 639px>, object-position bottom"
     },
-    "brand/globe-placeholder.webp": {
-      "px": 600,
-      "max_display_px": 600,
-      "dpr": 2,
-      "used": true,
-      "shown_in": "PlanetView.css .planet-orb, шар на время загрузки (86 % высоты сцены)",
-      "pending": "зона G: удаляет (G1, одно состояние загрузки без картинки)"
-    },
     "brand/hero-desktop.webp": {
       "px": 1600,
       "max_display_px": 940,
