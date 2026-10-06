@@ -142,7 +142,7 @@
 }
 
 /* ── Секция графика: заголовок, прогноз, скачивание ─────────────────────── */
-.fe-chart-section { margin-bottom: 48px; scroll-margin-top: 96px; }
+.fe-chart-section { margin-bottom: 48px; scroll-margin-top: 0; }
 .fe-chart-head {
   display: flex;
   flex-wrap: wrap;

@@ -63,7 +63,7 @@
   background: linear-gradient(90deg, rgb(var(--k3-paper, 255 252 245) / 0), rgb(var(--k3-paper, 255 252 245) / 0.9));
   pointer-events: none;
 }
-.fe-ticker__all:hover { background-color: color-mix(in srgb, var(--z2-gold) 14%, rgb(var(--k3-paper, 255 252 245) / 0.9)); }
+.fe-ticker .fe-ticker__all:hover { background-color: color-mix(in srgb, var(--fe-ink, #1e2638) 7%, rgb(var(--k3-paper, 255 252 245) / 0.9)); }
 
 /* ═══ Шапка ══════════════════════════════════════════════════════════════ */
 /* Капсула той же ширины, что страницы и лента, но не уже 1440 px: на экранах от 1536 px в неё должны влезть
@@ -76,8 +76,8 @@ nav.fe-navbar .fe-navbar-links { gap: 16px; padding-left: 28px; }
   nav.fe-navbar .fe-navbar-links { gap: 24px; padding-left: 36px; }
 }
 
-/* Пункт меню: активный раздел отмечен «каплей света» под текстом (золотое сияние 28×6 px, не линия), текст золотой #7A5F2A.
-   Вес шрифта не меняется (текст не «прыгает»); при наведении капля проступает наполовину. Двигаются только transform и opacity. */
+/* Пункт меню (круг 6): активный раздел отмечен графитовой чертой 18×2 px под текстом (не золотой лужей света), текст графитовый.
+   Вес шрифта не меняется (текст не «прыгает»); при наведении черта проступает наполовину. Двигаются только transform и opacity. */
 nav.fe-navbar a.fe-nav-link {
   position: relative;
   padding-block: 8px;
@@ -90,21 +90,21 @@ nav.fe-navbar .fe-nav-tools-btn::after {
   display: block;
   position: absolute;
   left: 50%;
-  bottom: -7px;
-  width: 28px;
-  height: 6px;
-  margin: 0 0 0 -14px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(201, 162, 77, 0.95), rgba(201, 162, 77, 0.45) 55%, transparent);
+  bottom: -5px;
+  width: 18px;
+  height: 2px;
+  margin: 0 0 0 -9px;
+  border-radius: 2px;
+  background: var(--fe-ink, #1e2638);
   opacity: 0;
   transform: scaleX(0.4);
   pointer-events: none;
   transition: transform 0.3s var(--z2-ease), opacity 0.3s ease;
 }
-nav.fe-navbar a.fe-nav-link:hover::after { opacity: 0.7; transform: scaleX(0.75); }
+nav.fe-navbar a.fe-nav-link:hover::after { opacity: 0.35; transform: scaleX(0.7); }
 nav.fe-navbar a.fe-nav-link[aria-current='page']::after,
 nav.fe-navbar .fe-nav-tools-btn[aria-expanded='true']::after { opacity: 1; transform: scaleX(1); }
-nav.fe-navbar a.fe-nav-link[aria-current='page'] { color: var(--color-champagne-ink); }
+nav.fe-navbar a.fe-nav-link[aria-current='page'] { color: var(--color-text-primary); }
 /* Кнопка «Инструменты» получает ту же каплю, пока открыта. */
 nav.fe-navbar .fe-nav-tools-btn { position: relative; }
 
@@ -114,7 +114,7 @@ nav.fe-navbar .fe-nav-tools-btn { position: relative; }
   .fe-nav-search button > span { display: none; }
 }
 
-/* «Войти» читается как кнопка (L2: светлое стекло, блик и тень, без рамки); при наведении теплеет. «Регистрация» рядом золотая. */
+/* «Войти» читается как кнопка (плоский графитовый тон 5 %, без рамки и блика); при наведении плотнее. «Регистрация» рядом золотая. */
 nav.fe-navbar a.fe-nav-login,
 .fe-bsheet a.fe-nav-login {
   color: var(--color-text-primary);
@@ -125,8 +125,8 @@ nav.fe-navbar a.fe-nav-login,
 }
 nav.fe-navbar a.fe-nav-login:hover,
 .fe-bsheet a.fe-nav-login:hover {
-  background: var(--z2-gold-soft);
-  box-shadow: 0 6px 16px -10px var(--z2-gold);
+  background: rgb(30 38 56 / 0.09);
+  box-shadow: none;
 }
 
 /* Затемнение под открытым меню «Инструменты»: лёгкая тонировка без размытия (бюджет blur в кадре). */
@@ -134,7 +134,7 @@ nav.fe-navbar a.fe-nav-login:hover,
   background: rgba(20, 33, 61, 0.12);
 }
 
-/* Круглые кнопки шапки на телефоне: поиск, язык, меню одного размера (44 px, как требует палец). */
+/* Значки шапки на телефоне: поиск, язык, меню одного размера (44 px, как требует палец); плоские, без подложки-кружка (круг 6). */
 .fe-nav-round {
   display: inline-flex;
   align-items: center;
@@ -146,12 +146,11 @@ nav.fe-navbar a.fe-nav-login:hover,
   min-height: 44px;
   padding: 0;
   border-radius: 9999px;
-  background: var(--fe-glass-l2);
-  color: var(--color-text-secondary);
-  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: var(--fe-l2-shadow);
+  background: transparent;
+  color: var(--color-text-primary);
+  transition: transform 0.2s var(--fe-ease-reveal), background-color 0.2s ease, color 0.2s ease;
 }
-.fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { background: var(--z2-gold-soft); color: var(--color-text-primary); }
+.fe-nav-round:hover, .fe-nav-round[aria-expanded='true'] { background: rgb(30 38 56 / 0.06); color: var(--color-text-primary); }
 .fe-nav-round > svg:not([class*='chevron']) { width: 18px; height: 18px; }
 
 /* Выпадающие панели шапки: тёплое стекло (L1, плотнее для читаемости над страницей), блик сверху и тень, без кромки. */
@@ -177,7 +176,7 @@ nav.fe-navbar a.fe-nav-login:hover,
 .fe-nav-tool__text { display: flex; min-width: 0; flex-direction: column; gap: 1px; }
 .fe-nav-tool__name { font-size: 14.5px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); }
 .fe-nav-tool__note { font-size: 12.5px; line-height: 1.3; color: var(--color-text-secondary); }
-/* Золотой значок инструмента. */
+/* Значок инструмента (круг 6): ровная графитовая подложка 5 %, без золота и блика. */
 .fe-tool-ico {
   display: inline-grid;
   place-items: center;
@@ -185,9 +184,8 @@ nav.fe-navbar a.fe-nav-login:hover,
   width: 36px;
   height: 36px;
   border-radius: 11px;
-  background: linear-gradient(145deg, color-mix(in srgb, var(--z2-gold) 24%, #fff), color-mix(in srgb, var(--z2-gold) 10%, #fff));
-  color: var(--fe-gold-ink, var(--color-champagne-ink));
-  box-shadow: inset 0 1px 0 #fffc, 0 4px 10px -6px var(--z2-gold);
+  background: rgb(30 38 56 / 0.05);
+  color: var(--fe-ink, #1e2638);
 }
 .fe-tool-ico svg { width: 18px; height: 18px; }
 
@@ -275,7 +273,7 @@ nav.fe-navbar a.fe-nav-login:hover,
   border-radius: 9999px;
   color: var(--color-text-secondary);
 }
-.fe-cookie-compact__actions .fe-cookie-gear:hover:not(:disabled) { color: var(--z2-gold-ink); }
+.fe-cookie-compact__actions .fe-cookie-gear:hover:not(:disabled) { color: var(--color-text-primary); }
 .fe-cookie-gear svg { width: 18px; height: 18px; }
 .fe-cookie-gear__label {
   position: absolute;
@@ -469,8 +467,9 @@ footer.fe-footer .fe-foot-chip--soon { color: var(--color-text-tertiary); }
 .z2-preview-toggle { transition: opacity 0.25s ease, transform 0.25s var(--z2-ease); }
 .z2-preview-toggle[data-hidden='true'] { opacity: 0; pointer-events: none; transform: translateY(12px); }
 
-/* Ссылка на каталог стран приходит с якорем: заголовок не прячется под шапкой. */
-#countries { scroll-margin-top: 116px; }
+/* Ссылка на каталог стран приходит с якорем: заголовок не прячется под шапкой. Запас даёт `html { scroll-padding-top }`
+   (styles/k3-shell.css, круг 6): отдельный scroll-margin сложился бы с ним и оставил пустую полосу. */
+#countries { scroll-margin-top: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .z2-nf-planet, .z2-nf-surface, .z2-nf-orbit { animation: none; }
