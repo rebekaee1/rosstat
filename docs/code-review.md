@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `4afc1f26850641102496575e985c6bc5b00893c9`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `11f30f927a64e1c480c46792eb535aeb8d7748bd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1849 |
-| Код, шаблоны и стили | 1477 |
-| Актуальные рецензии без пропусков guard | 1849 |
-| Именованные определения Python/JS: с аннотацией / всего | 11737 / 11737 |
+| Файлы в явно определённом scope | 1854 |
+| Код, шаблоны и стили | 1478 |
+| Актуальные рецензии без пропусков guard | 1854 |
+| Именованные определения Python/JS: с аннотацией / всего | 11740 / 11740 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -827,6 +827,10 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0016-federated-public-search.md](../docs/adr/0016-federated-public-search.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0017-platform-growth-boundaries.md](../docs/adr/0017-platform-growth-boundaries.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0018-crystal-without-borders-design-system.md](../docs/adr/0018-crystal-without-borders-design-system.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/selector-brief.md](../docs/agent-briefs/selector-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/visitor-brief.md](../docs/agent-briefs/visitor-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/zone-brief.md](../docs/agent-briefs/zone-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-orchestration.md](../docs/agent-orchestration.md) | reviewed | 0/0 | актуально |
 | [docs/agent-recipes.md](../docs/agent-recipes.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/README.md](../docs/analytics_api_inventory/README.md) | reviewed | 0/0 | актуально |
 | [docs/analytics_api_inventory/frontend_instrumentation.md](../docs/analytics_api_inventory/frontend_instrumentation.md) | reviewed | 0/0 | актуально |
@@ -1818,6 +1822,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/db-roles.sh](../scripts/db-roles.sh) | reviewed | 0/0 | актуально |
 | [scripts/db-roles.sql](../scripts/db-roles.sql) | reviewed | 0/0 | актуально |
 | [scripts/deploy.sh](../scripts/deploy.sh) | reviewed | 0/0 | актуально |
+| [scripts/dev/generate-brand-image.py](../scripts/dev/generate-brand-image.py) | reviewed | 3/3 | актуально |
 | [scripts/docker-cleanup.sh](../scripts/docker-cleanup.sh) | reviewed | 0/0 | актуально |
 | [scripts/dual-host-release-gate.py](../scripts/dual-host-release-gate.py) | reviewed | 3/3 | актуально |
 | [scripts/e2e/acceptance-matrix.mjs](../scripts/e2e/acceptance-matrix.mjs) | reviewed | 3/3 | актуально |

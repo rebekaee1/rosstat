@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1849,
-    "code_files": 1477,
-    "current_reviews": 1849,
+    "files": 1854,
+    "code_files": 1478,
+    "current_reviews": 1854,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 114,
       "data_schema_reviewed": 5,
-      "reviewed": 1648
+      "reviewed": 1653
     },
-    "definitions": 11737,
-    "annotated_definitions": 11737,
+    "definitions": 11740,
+    "annotated_definitions": 11740,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -270,9 +270,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "380dfe58c456c70c959b73e5a8a7e34d009c87c179c346b26cf4fece492f007f",
-      "bytes": 9519,
-      "lines": 86,
+      "sha256": "6c9f96323d98830305ae1ef494b4150b03d54f5cc3fbf42ffae99deb68c374a5",
+      "bytes": 10394,
+      "lines": 87,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -283,9 +283,9 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "c57f23eea26034c385a1a27fed1bc8701f511a7c6433f162e9bd1d3071b05ea3",
-      "bytes": 219525,
-      "lines": 1242,
+      "sha256": "87280c9a16d41b15dd133c373fafcbbc46ed39b5cdcdba3d9018da524a9111c7",
+      "bytes": 220171,
+      "lines": 1244,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -309,9 +309,9 @@
     },
     {
       "path": "README.md",
-      "sha256": "a69bcc9152525f9e8950aa286a0b5d485d7057a6ba1996950fcc439bb2e6e70b",
-      "bytes": 24400,
-      "lines": 272,
+      "sha256": "e415995c8a00995ccde7f23d1ed54156600f48640e5ada68a1c417ab7013f44d",
+      "bytes": 24676,
+      "lines": 273,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10280,9 +10280,61 @@
     },
     {
       "path": "docs/adr/0018-crystal-without-borders-design-system.md",
-      "sha256": "f58a1097bc45903248ddf7c06a3e66bd261287ff0262845c15befa1da938af92",
-      "bytes": 11647,
-      "lines": 50,
+      "sha256": "e16ed5171a13962eef44156704f88cf70df79e2e04d3b043cfada959121ca545",
+      "bytes": 12906,
+      "lines": 52,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/selector-brief.md",
+      "sha256": "66cadd0d70f255b5a63527b464e56ba406b8646d76d9bd3986399ea80385c8d5",
+      "bytes": 4315,
+      "lines": 18,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/visitor-brief.md",
+      "sha256": "dc52894b388cca621fe805a2398e1bb51aa62c2cafaaed8c877b9367735cedfb",
+      "bytes": 6025,
+      "lines": 35,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/zone-brief.md",
+      "sha256": "a9680120cdf123acbb6be426538e3008c9ad893216d128fb3102ac7b78cf11e1",
+      "bytes": 5817,
+      "lines": 39,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-orchestration.md",
+      "sha256": "7359837ede4b07de199c4c917f9a42ad1fb12032976f9a6eda5f5c01992d1a0b",
+      "bytes": 39999,
+      "lines": 159,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10436,9 +10488,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "8481d01f0900ce76305b1a7ed988fe305790e841930880040c3f34e77e5f7189",
-      "bytes": 469914,
-      "lines": 2554,
+      "sha256": "7981103b1684f16b9c0d6f243b7d2581b97801aab258d85f1a2fbe0cdc69c840",
+      "bytes": 471059,
+      "lines": 2556,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10488,9 +10540,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "73e5675f5688f2ad3f967469f8c1e739347352e1e6ba4c2f895749b19312ad99",
-      "bytes": 109219,
-      "lines": 556,
+      "sha256": "f17ab795476ec183b860da1f32d8fdb1bf923426e646e9d6d9bec7480a676aff",
+      "bytes": 109795,
+      "lines": 557,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10527,9 +10579,9 @@
     },
     {
       "path": "docs/design-system.md",
-      "sha256": "cd92d48604d0afb93cc1e1039d176fb7bd7f935c6e7278d4929633ce490cd9bb",
-      "bytes": 47442,
-      "lines": 223,
+      "sha256": "475d63dc28a950ecdd9104a6396892f2674055b359616b0b3173909433febc6c",
+      "bytes": 55116,
+      "lines": 261,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -11021,7 +11073,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "3be940fceeaa57810ddfc952540c85298c0826f5cc4e3fe2ecbca507e23ee301",
+      "sha256": "f0ce8da613af37c501ceffee608d3c4f9bec0cb78053279fa5bda0bcd88962ec",
       "bytes": 2759943,
       "lines": 99613,
       "code": false,
@@ -23175,6 +23227,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/dev/generate-brand-image.py",
+      "sha256": "0675fe20aaad267da1b6e8758ad53c10e8622dfb00f698e4cee86087ceb5421d",
+      "bytes": 4199,
+      "lines": 81,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/docker-cleanup.sh",
       "sha256": "c6e4d353407bbd4299fea72706673597ab7063ca437727ea60604ae0f6f4f862",
       "bytes": 249,
@@ -24073,13 +24138,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "396cfb3f849c3bbdec77a9506cb677ab9729961b5be475adb36513ad95b849ea",
+  "ledger_sha256": "b216018291e5a6fea04413067f41594725da11131919062b6c9306604a12d2b4",
   "javascript_inventory_sha256": "688b7ef8f95980297aba7983d3bd491c048af9316764bfbf315c18322e06c5b2",
-  "baseline_commit": "4afc1f26850641102496575e985c6bc5b00893c9",
+  "baseline_commit": "11f30f927a64e1c480c46792eb535aeb8d7748bd",
   "branch": "worktree-agent-a626c65dc9e6286a6",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/indicator-index.json"
   ]
 }
