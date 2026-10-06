@@ -32,10 +32,10 @@ describe('k8-tools.css', () => {
     const glow = /--k8-well-glow:\s*0\s+0\s+(\d+)px\s+(\d+)px/.exec(k8);
     expect(glow).not.toBeNull();
     expect(Number(glow[1])).toBeGreaterThanOrEqual(8);
-    expect(k8).toMatch(/--k8-well-shadow:\s*inset 0 3px 8px rgba\(120, 90, 30, 0\.12\), inset 0 -1px 0 rgba\(255, 255, 255, 0\.85\)/);
+    expect(k8).toMatch(/--k8-well-shadow:\s*inset 0 3px 8px rgba\(30, 38, 56, 0\.12\), inset 0 -1px 0 rgba\(255, 255, 255, 0\.85\)/);
   });
 
-  it('у ползунка бусина 26 px (28 px на касании) и жёлоб с жидким золотом', () => {
+  it('у ползунка ручка 26 px (28 px на касании) и тонкий жёлоб с синей заливкой (круг 6)', () => {
     expect(k8).toMatch(/--k8-bead-size:\s*26px/);
     expect(k8).toMatch(/\(pointer: coarse\)[\s\S]*--k8-bead-size:\s*28px/);
     expect(k8).toMatch(/::-webkit-slider-runnable-track/);

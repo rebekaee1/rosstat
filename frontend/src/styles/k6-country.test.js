@@ -28,12 +28,12 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
     }
   });
 
-  it('медали: золото, лёд-серебро и бронза из плана K6.5', () => {
-    expect(k6).toContain('#E9C97A');
-    expect(k6).toContain('#C9D7EA');
-    expect(k6).toContain('#E0B08E');
-    expect(k6).toMatch(/\.w2-rank-pos\[data-medal='2'\]/);
-    expect(k6).toMatch(/\.w2-rank-pos\[data-medal='3'\]/);
+  it('круг 6: место первой тройки — цифра в графитовом круге, без гранёных медалей; золото только точкой у первого места', () => {
+    expect(k6).not.toContain('#E9C97A');
+    expect(k6).not.toContain('conic-gradient');
+    expect(k6).toMatch(/--k6-medal:\s*linear-gradient\(135deg, #2A3550, #1E2638\)/);
+    expect(k6).toMatch(/\.w2-rank-pos\[data-medal\]/);
+    expect(k6).toMatch(/\.w2-rank-pos\[data-medal='1'\]::after/);
   });
 
   it('золотая гравировка цифр «Главного»: градиент в тексте, единица 50 % размера', () => {

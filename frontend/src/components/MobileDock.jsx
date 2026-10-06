@@ -71,7 +71,7 @@ export default function MobileDock() {
                 aria-current={active ? 'page' : undefined}
                 tabIndex={visible ? undefined : -1}
               >
-                <span className="fe-dock__gem" aria-hidden="true"><Icon strokeWidth={1.9} /></span>
+                <span className="fe-dock__icon" aria-hidden="true"><Icon strokeWidth={1.9} /></span>
                 <span className="fe-dock__label">{t(labelKey)}</span>
               </Link>
             </li>
@@ -85,7 +85,7 @@ export default function MobileDock() {
             tabIndex={visible ? undefined : -1}
             onClick={() => window.dispatchEvent(new CustomEvent(OPEN_NAV_MENU_EVENT))}
           >
-            <span className="fe-dock__gem" aria-hidden="true"><Ellipsis strokeWidth={1.9} /></span>
+            <span className="fe-dock__icon" aria-hidden="true"><Ellipsis strokeWidth={1.9} /></span>
             <span className="fe-dock__label">{t('k3.dock.more')}</span>
           </button>
         </li>

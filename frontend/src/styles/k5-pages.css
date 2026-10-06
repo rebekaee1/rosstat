@@ -20,31 +20,34 @@
 
 /* ===== 1. Токены ===== */
 :root {
-  /* Золотая гравировка крупных цифр и слова-акцента: самая светлая точка #A07829 даёт ≥ 3:1 даже на золотом сиянии шапки. */
+  /* Золотая гравировка (круг 6): только одна цифра на странице (z4-hv__value, телефонная строка, «Сегодня»); самая светлая точка #A07829 даёт ≥ 3:1.
+     Слово-акцент в названии и остальные цифры — графит (--k5-ink-text). */
   --k5-gold-text: linear-gradient(135deg, #6B5224 0%, #876A2C 40%, #A07829 72%, #7E6128 100%);
+  --k5-ink-text: linear-gradient(135deg, #1E2638 0%, #2A3550 100%);
   /* L0 «дымка»: полоса выбора без собственной тени-парения. */
   --k5-haze: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.2));
-  --k5-haze-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 40px -32px rgba(60, 48, 24, 0.3);
+  --k5-haze-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 40px -32px rgba(30, 38, 56, 0.3);
   /* L2-карточка правой колонки: светлее фона, блик слева сверху, мягкая тень снизу. */
   --k5-card: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 62%), rgba(255, 255, 255, 0.4);
-  --k5-card-shadow: 0 14px 30px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
+  --k5-card-shadow: 0 14px 30px -22px rgba(30, 38, 56, 0.4), var(--fe-inset-glint);
   /* Плита графика (круг 5): настоящее стекло. Альфа фона 0,28-0,5 (≤ 0,6), диагональный блик, тёплый тон снизу:
-     сквозь плиту проступают лампы сцены K1. Подписи осей #55627A на таком фоне ≥ 5:1 (фон светлее #F6F2EA). */
+     сквозь плиту проступают лампы сцены K1. Подписи осей #55627A на таком фоне ≥ 5:1 (фон светлее #F4F5F7). */
   --k5-plate:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.26) 52%, rgba(255, 250, 236, 0.4));
+    linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.26) 52%, rgba(246, 249, 255, 0.4));
   --k5-plate-shadow:
     var(--fe-float-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 0 44px -20px rgba(255, 255, 255, 0.75),
     var(--fe-inset-glint-bottom);
   /* Торец плиты: 7 px света снизу (вместо линии). */
-  --k5-edge: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(233, 205, 142, 0.5));
+  --k5-edge: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(190, 206, 232, 0.5));
   /* Жёлоб сегмента: вдавленная дорожка. */
-  --k5-trough: rgba(236, 228, 208, 0.5);
-  --k5-trough-shadow: inset 0 2px 6px rgba(120, 95, 45, 0.16), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+  --k5-trough: rgba(214, 222, 236, 0.5);
+  --k5-trough-shadow: inset 0 2px 6px rgba(30, 38, 56, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
   /* Прилипающая шапка таблицы. */
-  --k5-sticky: rgba(251, 248, 241, 0.94);
-  --k5-hover-row: linear-gradient(90deg, rgba(233, 205, 142, 0.2), rgba(255, 255, 255, 0.72));
+  --k5-sticky: rgba(246, 248, 251, 0.94);
+  --k5-hover-row: linear-gradient(90deg, rgba(190, 206, 232, 0.28), rgba(255, 255, 255, 0.72));
   --k5-stripe: rgba(255, 255, 255, 0.3);
-  --k5-hero-warm: rgba(233, 205, 142, 0.26);
+  /* Круг 6: «тёплое» пятно шапки показателя холодное (тёплое на экране одно, у сцены). */
+  --k5-hero-warm: rgba(150, 178, 225, 0.2);
   --k5-hero-ice: rgba(191, 224, 245, 0.24);
 }
 :root[data-theme='dark'] {
@@ -68,20 +71,20 @@
 /* ===== 2. Шапка показателя ===== */
 :root:root .fe-data-header.z4-hero {
   background:
-    radial-gradient(80% 160% at 100% 0%, var(--k5-hero-warm), rgba(233, 205, 142, 0) 62%),
+    radial-gradient(80% 160% at 100% 0%, var(--k5-hero-warm), rgba(150, 178, 225, 0) 62%),
     radial-gradient(60% 130% at 0% 100%, var(--k5-hero-ice), rgba(191, 224, 245, 0) 64%),
     var(--fe-glass-l1-sheen),
     var(--fe-glass-l1);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 
-/* Слово-акцент в названии: последнее слово золотой гравировкой. Текст заголовка тот же. */
+/* Слово-акцент в названии (круг 6): последнее слово графитом, не золотом. Текст заголовка тот же. */
 .k5-accent {
-  color: var(--fe-gold-ink, #7A5F2A);
+  color: var(--fe-gold-ink, #1E3A6E);
 }
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   .k5-accent {
-    background: var(--k5-gold-text);
+    background: var(--k5-ink-text);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -89,12 +92,12 @@
   }
 }
 
-/* «Сейчас»: крупная золотая цифра с мягким отсветом (гравировка), единица мельче. */
+/* «Сейчас»: крупная золотая цифра (единственная золотая цифра страницы, круг 6) с мягким отсветом, единица мельче. */
 :root:root .z4-hv__value {
   font-size: clamp(3.4rem, 2.2rem + 3.6vw, 5.5rem);
   line-height: 1;
   letter-spacing: -0.045em;
-  filter: drop-shadow(0 6px 14px rgba(176, 138, 62, 0.35));
+  filter: drop-shadow(0 4px 10px rgba(176, 138, 62, 0.2));
 }
 :root:root .z4-hv__value--long { font-size: clamp(2.4rem, 1.7rem + 2.2vw, 3.8rem); }
 :root:root .z4-hv__unit { font-size: 0.3em; }
@@ -133,15 +136,15 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #FFF6DA, #C9A24D 55%, #8F6B24);
-  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.6);
+  background: #B08A3E;
+  box-shadow: none;
 }
 .k5-signal::after {
   content: '';
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201, 162, 77, 0.5), rgba(201, 162, 77, 0) 70%);
+  background: radial-gradient(circle, rgba(176, 138, 62, 0.4), rgba(176, 138, 62, 0) 70%);
   opacity: 0;
   animation: k5-signal 3.2s ease-out 0.6s 6 both;
 }
@@ -151,7 +154,9 @@
 }
 
 /* Метки в шапке: вторичная строка читается на тёплом свете. */
-:root:root .z4-hv__delta .fe-delta-badge { box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
+:root:root .z4-hv__delta .fe-delta-badge,
+:root:root .z4-hv__delta .fe-delta-badge.fe-tone--good,
+:root:root .z4-hv__delta .fe-delta-badge.fe-tone--bad { background: var(--fe-glass-l2); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 
 /* ===== 3. Полоса «Что показать / Показать как» ===== */
 @media (min-width: 768px) {
@@ -240,7 +245,7 @@
     border-radius: 0;
     box-shadow: none;
     background:
-      radial-gradient(68% 52% at 72% 64%, rgba(233, 205, 142, 0.17), rgba(233, 205, 142, 0) 72%),
+      radial-gradient(68% 52% at 72% 64%, rgba(150, 178, 225, 0.14), rgba(150, 178, 225, 0) 72%),
       linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3) 12%, rgba(255, 255, 255, 0.3) 88%, rgba(255, 255, 255, 0));
   }
   /* Период: чипы L2 лентой, края гаснут маской, ряд листается пальцем. */
@@ -332,7 +337,7 @@
 :root:root .k5-table thead tr { background: transparent; }
 :root:root .k5-table thead th {
   background: var(--k5-sticky);
-  box-shadow: 0 10px 14px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
+  box-shadow: 0 10px 14px -12px rgba(30, 38, 56, 0.4), var(--fe-inset-glint);
 }
 /* Шапка прилипает только в таблице со своей прокруткой (история показателя). */
 :root:root .fe-histtable thead th { position: sticky; top: 0; z-index: 2; }
@@ -355,8 +360,8 @@
 }
 .k5-seam::after {
   background:
-    linear-gradient(90deg, rgba(201, 162, 77, 0), rgba(201, 162, 77, 0.6) 50%, rgba(201, 162, 77, 0)) center / 100% 1px no-repeat,
-    radial-gradient(ellipse 46% 100% at 50% 50%, rgba(233, 205, 142, 0.5), rgba(233, 205, 142, 0.12) 55%, rgba(233, 205, 142, 0) 78%);
+    linear-gradient(90deg, rgba(176, 138, 62, 0), rgba(176, 138, 62, 0.5) 50%, rgba(176, 138, 62, 0)) center / 100% 1px no-repeat,
+    radial-gradient(ellipse 46% 100% at 50% 50%, rgba(120, 150, 210, 0.34), rgba(120, 150, 210, 0.1) 55%, rgba(120, 150, 210, 0) 78%);
 }
 .k5-seam::before {
   left: 50%;
@@ -365,8 +370,8 @@
   margin-left: -3.5px;
   transform: rotate(45deg) scale(0.9);
   z-index: 1;
-  background: linear-gradient(135deg, #F7EBC8, #B08A3E);
-  box-shadow: 0 0 10px 1px rgba(233, 205, 142, 0.8);
+  background: #B08A3E;
+  box-shadow: none;
   border-radius: 1px;
 }
 .k5-seam--top::before,
@@ -384,7 +389,7 @@
   align-items: center;
   gap: 8px;
 }
-.k5-shard { flex: none; filter: drop-shadow(0 10px 14px rgba(176, 138, 62, 0.3)); }
+.k5-shard { flex: none; filter: drop-shadow(0 10px 14px rgba(30, 38, 56, 0.24)); }
 
 /* ===== 9. Сравнение ===== */
 /* Плашка «Пример готового сравнения»: L2 без рамки, грань-ромб слева, «Изменить» золотом (кнопка primary). */
@@ -405,11 +410,10 @@
   margin-top: -4.5px;
   transform: rotate(45deg);
   border-radius: 1.5px;
-  background: linear-gradient(135deg, #F7EBC8, #B08A3E);
-  box-shadow: 0 0 10px rgba(201, 162, 77, 0.7);
+  background: #B08A3E;
 }
 
-/* Бейдж «США больше, чем Китай…»: линза с двумя бусинами цветов рядов. */
+/* Бейдж «США больше, чем Китай…»: плашка с двумя плоскими точками цветов рядов (круг 6: без глянца). */
 :root:root .fe-compare-gap {
   gap: 10px;
   padding: 7px 16px 7px 10px;
@@ -419,18 +423,18 @@
 .fe-compare-gap__beads { display: inline-flex; flex: none; align-items: center; }
 .fe-compare-gap__beads i {
   display: block;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0) 42%), var(--bead, #B08A3E);
-  box-shadow: 0 3px 7px -2px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent), inset 0 -2px 3px rgba(0, 0, 0, 0.18);
+  background: var(--bead, #B08A3E);
+  box-shadow: none;
 }
-.fe-compare-gap__beads i + i { margin-left: -5px; }
+.fe-compare-gap__beads i + i { margin-left: -2px; }
 
 /* Ленты рядов рисуют классы K4 (.k4-ribbon, .k4-gloss из styles/k4-charts.css): свечение, блик-штрих; бусину и заливку задаёт ComparePage. */
 
 /* Ленты сравнения: свечение плотнее, чтобы 3,5 px читались на светлой плите (круг 5). */
-.fe-compare-plot .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(176, 138, 62, 0.5)); }
+.fe-compare-plot .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 4px 6px rgba(176, 138, 62, 0.26)); }
 .fe-compare-plot .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(30, 42, 74, 0.42)); }
 
 /* Подписи концов линий: линза с флагом страны. */
@@ -444,10 +448,8 @@
   border-radius: 50%;
   font-size: 14px;
   line-height: 1;
-  background:
-    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.35) 55%),
-    color-mix(in srgb, var(--bead, #B08A3E) 24%, #fff);
-  box-shadow: 0 3px 8px -3px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--bead, #B08A3E) 16%, #fff);
+  box-shadow: 0 3px 8px -4px rgba(30, 38, 56, 0.4);
 }
 .fe-compare-end__flag--dot::before {
   content: '';
@@ -455,7 +457,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--bead, #B08A3E);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--bead, #B08A3E) 70%, transparent);
+  box-shadow: none;
 }
 .fe-compare-end__text {
   display: flex;
@@ -492,7 +494,7 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
     font-size: 40px;
-    filter: drop-shadow(0 5px 10px rgba(176, 138, 62, 0.3));
+    filter: drop-shadow(0 3px 8px rgba(176, 138, 62, 0.2));
   }
   :root:root .fe-today-stat__num--main .fe-today-stat__unit {
     -webkit-text-fill-color: var(--color-text-secondary);

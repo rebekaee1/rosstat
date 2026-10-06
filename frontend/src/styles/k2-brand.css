@@ -26,10 +26,20 @@
 @keyframes fe-k2-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
 .fe-facet--pulse { animation: fe-k2-pulse 2.4s ease-in-out infinite; }
 
-/* Медаль места: грань 28 px и цифра по центру (тёмная на золоте: контраст не ниже 5:1). */
-.fe-medal { position: relative; display: inline-grid; place-items: center; width: 28px; height: 28px; flex: none; }
+/* Место в рейтинге (круг 6): цифра в графитовом круге 28 px, светлый текст (контраст ≥ 12:1), блик сверху 1 px; без граней и цвета по месту. */
+.fe-medal {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2A3550, #1E2638);
+  box-shadow: 0 4px 10px -5px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
 .fe-medal > * { grid-area: 1 / 1; }
-.fe-medal__n { z-index: 1; color: #231B0B; font-size: 12px; font-weight: 750; line-height: 1; font-variant-numeric: tabular-nums; }
+.fe-medal__n { z-index: 1; color: var(--fe-on-active, #F3EFE6); font-size: 12px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
 
 /* ═══ Световой шов ═════════════════════════════════════════════════════════
    Луч 8 px с затуханием к краям (радиальный градиент, не линия) и грань 10 px по центру. */
@@ -46,17 +56,17 @@
 .fe-seam::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); }
 .fe-seam::before {
   height: 8px;
-  background: radial-gradient(52% 100% at 50% 50%, rgba(201, 162, 77, 0.55), rgba(201, 162, 77, 0.16) 58%, transparent 100%);
+  background: radial-gradient(52% 100% at 50% 50%, rgba(120, 150, 210, 0.42), rgba(120, 150, 210, 0.12) 58%, transparent 100%);
 }
 .fe-seam::after {
   left: 8%;
   right: 8%;
   height: 3px;
-  background: radial-gradient(50% 100% at 50% 50%, rgba(255, 243, 207, 0.95), rgba(233, 205, 140, 0.34) 62%, transparent 100%);
+  background: radial-gradient(50% 100% at 50% 50%, rgba(255, 255, 255, 0.95), rgba(214, 226, 246, 0.4) 62%, transparent 100%);
 }
 .fe-seam > .fe-facet { position: relative; z-index: 1; }
-.fe-seam--dark::before { background: radial-gradient(52% 100% at 50% 50%, rgba(232, 200, 119, 0.5), rgba(232, 200, 119, 0.12) 58%, transparent 100%); }
-.fe-seam--dark::after { background: radial-gradient(50% 100% at 50% 50%, rgba(255, 243, 207, 0.9), rgba(232, 200, 119, 0.3) 62%, transparent 100%); }
+.fe-seam--dark::before { background: radial-gradient(52% 100% at 50% 50%, rgba(150, 178, 232, 0.5), rgba(150, 178, 232, 0.12) 58%, transparent 100%); }
+.fe-seam--dark::after { background: radial-gradient(50% 100% at 50% 50%, rgba(240, 245, 255, 0.9), rgba(170, 192, 236, 0.3) 62%, transparent 100%); }
 
 .fe-facet-arrow { display: block; flex: none; margin-top: 10px; overflow: visible; }
 
@@ -67,8 +77,8 @@
 .fe-emblem--spin img { animation: fe-k2-emblem-spin 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
 
 /* Логотип-кристалл: мягкая цветная тень-парение под знаком (статичный drop-shadow, без перехода). */
-.fe-brand svg { overflow: visible; filter: drop-shadow(0 3px 3px rgba(176, 138, 62, 0.34)) drop-shadow(0 1px 1px rgba(32, 42, 60, 0.2)); }
-footer.fe-footer .fe-brand svg { filter: drop-shadow(0 3px 5px rgba(232, 200, 119, 0.3)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35)); }
+.fe-brand svg { overflow: visible; filter: drop-shadow(0 3px 3px rgba(30, 38, 56, 0.24)) drop-shadow(0 1px 1px rgba(32, 42, 60, 0.2)); }
+footer.fe-footer .fe-brand svg { filter: drop-shadow(0 3px 5px rgba(150, 178, 232, 0.3)) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35)); }
 
 /* Блик по золотому квадрату логотипа раз в 12 с (≈1 с проход). */
 @keyframes fe-k2-brand-glint { 0%, 90% { transform: translateX(-8px); } 100% { transform: translateX(14px); } }
@@ -94,16 +104,28 @@ svg.lucide[stroke-width='2'] { stroke-width: 1.75; }
   inset: -7px;
   z-index: -1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(201, 162, 77, 0.4), rgba(201, 162, 77, 0) 68%);
+  background: radial-gradient(circle, rgba(120, 150, 210, 0.3), rgba(120, 150, 210, 0) 68%);
   pointer-events: none;
 }
-.fe-coin { position: relative; display: inline-grid; place-items: center; width: var(--fe-coin-size, 44px); height: var(--fe-coin-size, 44px); flex: none; filter: drop-shadow(0 8px 8px rgba(60, 48, 24, 0.26)); }
+/* Иконка категории (круг 6): плоский круг L2 с графитовой иконкой, без камня, граней и блеска. */
+.fe-coin {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--fe-coin-size, 44px);
+  height: var(--fe-coin-size, 44px);
+  flex: none;
+  border-radius: 50%;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
+}
 .fe-coin > * { grid-area: 1 / 1; }
-.fe-coin__icon { z-index: 1; display: inline-flex; color: var(--fe-coin-ink, #231B0B); }
+.fe-coin__icon { z-index: 1; display: inline-flex; color: var(--fe-ink, #1E2638); }
 .fe-coin__icon svg { width: 46%; height: 46%; }
 
-/* ═══ Флаг в стеклянной капле ══════════════════════════════════════════════
-   Круг 36–44 px: флаг, блик сверху слева, нижняя тень; за каплей размытое пятно цвета флага. Кольца нет. */
+/* ═══ Флаг в круге ═════════════════════════════════════════════════════════
+   Круг 36–44 px (круг 6, зона P): плоский флаг в нейтральном круге с мягкой тенью; без блика и без цветного пятна за ним.
+   Класс .fe-flag--glass и разметка прежние (CountryFlag glass). Кольца нет. */
 .fe-flag.fe-flag--glass {
   position: relative;
   display: inline-block;
@@ -114,16 +136,7 @@ svg.lucide[stroke-width='2'] { stroke-width: 1.75; }
   line-height: 1;
   isolation: isolate;
 }
-.fe-flag--glass::before {
-  content: '';
-  position: absolute;
-  inset: 22% 4% -6%;
-  z-index: -1;
-  border-radius: 50%;
-  background: var(--fe-flag-glow, rgba(176, 138, 62, 0.5));
-  opacity: 0.45;
-  filter: blur(9px);
-}
+.fe-flag--glass::before { content: none; }
 .fe-flag__drop {
   position: relative;
   display: grid;
@@ -133,18 +146,9 @@ svg.lucide[stroke-width='2'] { stroke-width: 1.75; }
   overflow: hidden;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 10px 14px -8px rgba(60, 48, 24, 0.55), inset 0 -7px 12px -6px rgba(32, 22, 8, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: 0 6px 12px -8px rgba(30, 38, 56, 0.5);
 }
-.fe-flag__drop::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  background:
-    radial-gradient(60% 42% at 34% 18%, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0) 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 45%);
-}
+.fe-flag__drop::after { content: none; }
 .fe-flag__art { display: block; width: 100%; height: 100%; }
 .fe-flag__emoji { font-size: calc(var(--fe-flag-size, 40px) * 0.56); line-height: 1; }
 
@@ -172,10 +176,9 @@ footer.fe-footer.fe-k2-footer::before {
   left: 0;
   right: 0;
   height: 200px;
-  /* Круг 5: переход 200 px идёт по тёплому пути, без серо-синей середины: бумага → шампань → золото-янтарь → тёплая тень → сапфир.
-     Раньше сапфир накладывался прозрачным слоем на кремовую бумагу, и смесь давала серо-синий тон (≈ 65–80 px перед подвалом).
-     Стопы рассчитаны так, чтобы поверх бумаги #F6F2EA получались: (240,228,192) → (212,184,132) → (140,108,80) → (56,46,58) → #0E1A33; оттенок остаётся тёплым (24–44°) до тёмной зоны. */
-  background: linear-gradient(180deg, rgba(246, 242, 234, 0) 0%, rgba(228, 201, 110, 0.34) 22%, rgba(184, 137, 49, 0.55) 45%, rgba(110, 70, 37, 0.78) 66%, rgba(42, 31, 45, 0.93) 84%, #0E1A33 100%);
+  /* Круг 6: переход 200 px идёт по холодному пути (раньше «бумага → шампань → золото-янтарь» давала жёлтую полосу над подвалом):
+     светлый фон → холодная дымка → синий → сапфир подвала, без тёплых тонов. */
+  background: linear-gradient(180deg, rgba(244, 245, 247, 0) 0%, rgba(190, 206, 236, 0.3) 24%, rgba(110, 136, 190, 0.5) 48%, rgba(46, 70, 128, 0.74) 68%, rgba(20, 34, 72, 0.92) 85%, #0E1A33 100%);
   opacity: 1;
   pointer-events: none;
   z-index: 0;
@@ -188,7 +191,7 @@ footer.fe-footer.fe-k2-footer::after {
   left: 0;
   right: 0;
   height: 100px;
-  background: radial-gradient(70% 100% at 50% 0, rgba(240, 214, 150, 0.16), rgba(201, 162, 77, 0.05) 52%, transparent 80%);
+  background: radial-gradient(70% 100% at 50% 0, rgba(190, 210, 250, 0.16), rgba(150, 178, 232, 0.05) 52%, transparent 80%);
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 1;
@@ -227,12 +230,12 @@ footer.fe-footer.fe-k2-footer::after {
 @media (max-width: 639px) { .fe-k2-foot-emblem { display: none; } }
 footer.fe-footer.fe-k2-footer > .fe-foot-wrap { position: relative; z-index: 2; }
 
-/* Заголовки колонок: золото #E8C877, капс, грань 6 px; без линий. */
+/* Заголовки колонок: холодный светлый #C4D2EE (круг 6; было золото), капс, грань 6 px; без линий. */
 footer.fe-footer.fe-k2-footer .fe-foot-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #E8C877;
+  color: #C4D2EE;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -241,7 +244,7 @@ footer.fe-footer.fe-k2-footer .fe-foot-title {
 footer.fe-footer.fe-k2-footer .fe-foot-title--static { margin-bottom: 10px; }
 footer.fe-footer.fe-k2-footer .fe-foot-title .fe-foot-toggle { flex: 1; text-transform: uppercase; letter-spacing: inherit; }
 footer.fe-footer.fe-k2-footer .fe-foot-title a { color: inherit; }
-footer.fe-footer.fe-k2-footer .fe-foot-sources__label { display: inline-flex; align-items: center; gap: 8px; color: #E8C877; letter-spacing: 0.14em; }
+footer.fe-footer.fe-k2-footer .fe-foot-sources__label { display: inline-flex; align-items: center; gap: 8px; color: #C4D2EE; letter-spacing: 0.14em; }
 
 /* Колонки: воздух вместо линий. */
 @media (min-width: 640px) {
@@ -257,7 +260,7 @@ footer.fe-footer.fe-k2-footer .fe-foot-list a:hover,
 footer.fe-footer.fe-k2-footer .fe-foot-list button:hover,
 footer.fe-footer.fe-k2-footer .fe-foot-sources a:hover {
   color: #fff;
-  text-shadow: 0 0 14px rgba(233, 215, 166, 0.55);
+  text-shadow: 0 0 14px rgba(190, 210, 250, 0.5);
   text-decoration: none;
 }
 
@@ -282,9 +285,9 @@ footer.fe-footer.fe-k2-footer .fe-foot-legal p,
 footer.fe-footer.fe-k2-footer .fe-foot-meta,
 footer.fe-footer.fe-k2-footer .fe-foot-requisites p { color: #C7CBD6; font-size: 12px; line-height: 1.55; }
 footer.fe-footer.fe-k2-footer .fe-foot-requisites__summary { color: #C7CBD6; }
-footer.fe-footer.fe-k2-footer .fe-foot-updates__dot { box-shadow: 0 0 10px 2px rgba(232, 200, 119, 0.45); }
+footer.fe-footer.fe-k2-footer .fe-foot-updates__dot { box-shadow: 0 0 10px 2px rgba(176, 138, 62, 0.45); }
 footer.fe-footer.fe-k2-footer .fe-foot-chip { background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05)); box-shadow: 0 8px 16px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
-footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-shadow: none; color: #E8C877; }
+footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-shadow: none; color: #C4D2EE; }
 
 /* ═══ Страница 404: светлая сцена ═══════════════════════════════════════════ */
 .z2-nf-hero { position: relative; isolation: isolate; }
@@ -294,25 +297,25 @@ footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-
   inset: -12% -22% 30%;
   z-index: -1;
   background:
-    radial-gradient(46% 52% at 50% 36%, rgba(246, 231, 190, 0.8), rgba(246, 231, 190, 0) 72%);
+    radial-gradient(46% 52% at 50% 36%, rgba(206, 220, 246, 0.8), rgba(206, 220, 246, 0) 72%);
   pointer-events: none;
 }
 .z2-nf-code.fe-nf-code { align-items: center; gap: clamp(0px, 0.6vw, 8px); }
 
-/* Золотые «4» как толстое стекло: нижний слой даёт толщину, верхний — градиент, блик и проход света раз в 6 с. */
+/* Графитовые «4» (круг 6: были золотые) как толстое стекло: нижний слой даёт толщину, верхний — градиент, блик и проход света раз в 6 с. */
 .z2-nf-digit.fe-nf-digit {
   position: relative;
   z-index: 1;
   display: inline-block;
   background: none;
-  filter: drop-shadow(0 18px 20px rgba(120, 92, 38, 0.32));
+  filter: drop-shadow(0 18px 20px rgba(30, 38, 56, 0.3));
 }
 .fe-nf-digit::before,
 .fe-nf-digit::after {
   background:
     linear-gradient(105deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 60%) 160% 0 / 260% 100% no-repeat,
     linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 34%),
-    linear-gradient(180deg, #FFF3CF 0%, #EBCF8C 26%, #C9A24D 58%, #9C772B 100%);
+    linear-gradient(180deg, #8A9BC0 0%, #4A5C86 26%, #2A3550 58%, #1E2638 100%);
   -webkit-background-clip: text;
   background-clip: text;
   animation: fe-k2-digit-sheen 6s ease-in-out infinite;
@@ -348,7 +351,7 @@ footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-
   bottom: 7%;
   height: 13%;
   border-radius: 50%;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 226, 150, 0.7), rgba(201, 162, 77, 0.24) 58%, rgba(201, 162, 77, 0) 78%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(190, 210, 250, 0.6), rgba(120, 150, 210, 0.22) 58%, rgba(120, 150, 210, 0) 78%);
   filter: blur(5px);
 }
 .fe-nf-spark { position: absolute; inset: 7%; border-radius: 50%; pointer-events: none; animation: fe-k2-orbit 8s linear infinite; }
@@ -360,29 +363,29 @@ footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, #FFE9A8 45%, rgba(255, 226, 150, 0) 72%);
-  box-shadow: 0 0 14px 5px rgba(255, 226, 150, 0.7);
+  background: radial-gradient(circle, #fff 0%, #D6E2F8 45%, rgba(190, 210, 250, 0) 72%);
+  box-shadow: 0 0 14px 5px rgba(190, 210, 250, 0.7);
 }
 .fe-nf-spark::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(255, 226, 150, 0) 0deg, rgba(255, 226, 150, 0) 318deg, rgba(255, 226, 150, 0.5) 358deg, rgba(255, 226, 150, 0) 360deg);
+  background: conic-gradient(from 0deg, rgba(190, 210, 250, 0) 0deg, rgba(190, 210, 250, 0) 318deg, rgba(190, 210, 250, 0.5) 358deg, rgba(190, 210, 250, 0) 360deg);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
 }
 @keyframes fe-k2-orbit { to { transform: rotate(360deg); } }
 
-/* Кнопка «На главную»: заливка золотом по эталону (тёмный текст), мягкая золотая тень. */
+/* Кнопка «На главную»: глубокий синий со светлым текстом (круг 6; золотая заливка — только CTA регистрации). */
 .z2-nf .z2-nf-actions .z2-nf-home {
-  background: var(--fe-glass-active, linear-gradient(135deg, #C9A24D, #B08A3E));
-  color: var(--fe-on-gold, #231B0B);
-  box-shadow: var(--fe-shadow-active, 0 8px 22px -12px rgba(176, 138, 62, 0.55)), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: var(--fe-glass-primary, linear-gradient(135deg, #2C4A8A, #1E3A6E));
+  color: var(--fe-on-active, #F3EFE6);
+  box-shadow: 0 8px 22px -12px rgba(30, 58, 110, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .z2-nf .z2-nf-actions .z2-nf-home:hover:not(:disabled):not([aria-disabled='true']) {
-  background: var(--fe-glass-active-hover, linear-gradient(135deg, #D2AE5E, #BA9446));
-  color: var(--fe-on-gold, #231B0B);
+  background: var(--fe-glass-primary-hover, linear-gradient(135deg, #3558A0, #24447F));
+  color: var(--fe-on-active, #F3EFE6);
 }
 
 @media (prefers-reduced-motion: reduce) {

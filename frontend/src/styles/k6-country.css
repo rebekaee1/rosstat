@@ -2,8 +2,8 @@
  * K6. Страна, Россия, регионы, рейтинг (раунд 3 «Хрусталь без границ»).
  *
  * Что здесь (общее для зоны K6; основной вид страниц лежит в z5-country.css, z6-rating.css, w6d.css, world.css):
- *   1. Токены зоны (--k6-*), светлая и тёмная тема: золотая гравировка цифр, сапфир, оттенки медалей, жёлоб трубки.
- *   2. Гранёные медали первой тройки (золото #E9C97A, лёд-серебро #C9D7EA, бронза #E0B08E) для `.w2-rank-pos[data-medal]`.
+ *   1. Токены зоны (--k6-*), светлая и тёмная тема: графитовая гравировка цифр (круг 6; была золотая), сапфир, оттенки мест, жёлоб полосы.
+ *   2. Место первой тройки (круг 6): цифра в графитовом круге вместо гранёных медалей, для `.w2-rank-pos[data-medal]`.
  *   3. Рейтинг регионов (`.fe-rank*`, классы живут в w6f-pages.css зоны K8: здесь только усиленные селекторы поверх).
  *   4. Шторка «Все показатели по темам» (`.fe-sheet*`) и кнопка-триггер.
  *   5. Карточки категорий: размытие только у первых восьми.
@@ -16,14 +16,14 @@
 
 /* ===== 1. Токены ===== */
 :root {
-  /* Золотая гравировка крупных цифр: контраст самой светлой точки не ниже 3:1 на плите L1. */
-  --k6-engrave: linear-gradient(175deg, #6B5224 0%, #8A6823 42%, #9A7630 100%);
+  /* Гравировка крупных цифр (круг 6): графит #1E2638 → #2A3550, контраст не ниже 12:1 на плите L1; золото цифр снято. */
+  --k6-engrave: linear-gradient(175deg, #1E2638 0%, #26314A 60%, #2A3550 100%);
   --k6-engrave-lip: rgba(255, 255, 255, 0.85);
   /* Единица измерения у цифры: бронзовая, 4,7:1 на бумаге (в эталоне V17 была #8B7A55 с 3,7:1: чуть темнее, чтобы мелкий текст читался). */
-  --k6-unit: #6F5F3C;
+  --k6-unit: #55627A;
   /* Сапфировое стекло L3 для вторичных тёмных карточек страны (прогноз ВВП). */
   --k6-sapphire:
-    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.24), transparent 58%),
+    radial-gradient(120% 90% at 100% 0%, rgba(120, 156, 220, 0.24), transparent 58%),
     radial-gradient(90% 80% at 0% 100%, rgba(92, 134, 200, 0.2), transparent 62%),
     linear-gradient(160deg, rgba(31, 49, 90, 0.94), rgba(14, 26, 51, 0.96) 72%);
   /* Тон стекла у строк топ-3 (вместо полосы слева). */
@@ -35,28 +35,20 @@
   --k6-plate-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.24) 70%);
   --k6-row-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.3));
   --k6-row-glass-alt: linear-gradient(135deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.26));
-  --k6-glass-glint: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(176, 138, 62, 0.1);
-  /* Круг 4: лёгкий оттенок стекла, альфа не выше .35 (под ним остаётся белое стекло L1). */
-  --k6-tint-gold: rgba(233, 201, 122, 0.26);
-  --k6-tint-gold-hover: rgba(233, 201, 122, 0.35);
-  --k6-tint-silver: rgba(190, 206, 228, 0.28);
-  --k6-tint-silver-hover: rgba(190, 206, 228, 0.35);
-  --k6-tint-bronze: rgba(224, 176, 142, 0.26);
-  --k6-tint-bronze-hover: rgba(224, 176, 142, 0.35);
+  --k6-glass-glint: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(30, 38, 56, 0.06);
+  /* Круг 4: лёгкий оттенок стекла, альфа не выше .35 (под ним остаётся белое стекло L1). Круг 6: оттенки мест холодные. */
+  --k6-tint-gold: rgba(30, 58, 110, 0.1);
+  --k6-tint-gold-hover: rgba(30, 58, 110, 0.16);
+  --k6-tint-silver: rgba(30, 38, 56, 0.06);
+  --k6-tint-silver-hover: rgba(30, 38, 56, 0.1);
+  --k6-tint-bronze: rgba(30, 38, 56, 0.04);
+  --k6-tint-bronze-hover: rgba(30, 38, 56, 0.08);
   /* Жёлоб стеклянной трубки: внутренняя тень сверху, блик снизу. */
-  --k6-groove: rgba(88, 74, 46, 0.09);
-  --k6-groove-shade: rgba(60, 48, 24, 0.22);
+  --k6-groove: rgba(30, 38, 56, 0.08);
+  --k6-groove-shade: rgba(30, 38, 56, 0.14);
   --k6-groove-lip: rgba(255, 255, 255, 0.9);
-  /* Медали: заливка (грани как conic-градиент + блик), цвет цифры, тень-свечение. */
-  --k6-medal-gold:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.85), transparent 40%),
-    conic-gradient(from 200deg, #FFF3CF, #E9C97A 14%, #C9A24D 32%, #F6E2A0 50%, #DDB862 68%, #B8913F 84%, #FFF3CF);
-  --k6-medal-silver:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.9), transparent 40%),
-    conic-gradient(from 200deg, #FFFFFF, #C9D7EA 14%, #9CB0CA 32%, #EAF1F9 50%, #B9C9DD 68%, #8398B4 84%, #FFFFFF);
-  --k6-medal-bronze:
-    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.8), transparent 40%),
-    conic-gradient(from 200deg, #FCE6D0, #E0B08E 14%, #BE8450 32%, #F4CFAB 50%, #CE9867 68%, #A06A38 84%, #FCE6D0);
+  /* Место в рейтинге (круг 6): одна плоская графитовая заливка для всех трёх мест; гранёные медали сняты. */
+  --k6-medal: linear-gradient(135deg, #2A3550, #1E2638);
 }
 :root[data-theme='dark'], :root.dark {
   --k6-engrave: linear-gradient(175deg, #F3E4B8 0%, #E3C57D 50%, #C9A24D 100%);
@@ -99,7 +91,7 @@
   }
 }
 
-/* ===== 2. Гранёные медали ===== */
+/* ===== 2. Место: цифра в графитовом круге (круг 6; бывшие гранёные медали) ===== */
 :root .w2-rank-pos[data-medal],
 :root .fe-rank__place > [data-medal] {
   position: relative;
@@ -109,37 +101,34 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  color: #2A1D05;
+  color: var(--fe-on-active, #F3EFE6);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  background: var(--k6-medal-gold);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -3px 4px -2px rgba(120, 84, 20, 0.45),
-    0 7px 12px -6px rgba(176, 138, 62, 0.75);
+  background: var(--k6-medal);
+  box-shadow: 0 4px 10px -5px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
-:root .w2-rank-pos[data-medal='2'], :root .fe-rank__place > [data-medal='2'] {
-  color: #14203A;
-  background: var(--k6-medal-silver);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 4px -2px rgba(60, 80, 112, 0.4), 0 7px 12px -6px rgba(110, 132, 166, 0.7);
-}
-:root .w2-rank-pos[data-medal='3'], :root .fe-rank__place > [data-medal='3'] {
-  color: #2E1808;
-  background: var(--k6-medal-bronze);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -3px 4px -2px rgba(120, 70, 24, 0.42), 0 7px 12px -6px rgba(168, 112, 58, 0.7);
+/* Первое место: единственная золотая деталь, точка 6 px в углу круга. */
+:root .w2-rank-pos[data-medal='1']::after, :root .fe-rank__place > [data-medal='1']::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #B08A3E;
 }
 
 /* Медали поменьше: в карточках «Популярные рейтинги» и плитках. */
 :root .k6-medals-sm .w2-rank-pos[data-medal] { width: 22px; height: 22px; font-size: 11px; }
 
-/* Плитки «лучший / худший» в рейтинге регионов: у каждой свой свет (шампань и лёд), общей рамки нет. */
+/* Плитки «лучший / худший» в рейтинге регионов: у каждой свой холодный свет, общей рамки нет. */
 :root .k6-place { position: relative; overflow: hidden; }
 :root .k6-place--first {
-  background: radial-gradient(130% 120% at 0% 0%, rgba(246, 224, 150, 0.6), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1);
-  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px rgba(201, 162, 77, 0.4);
+  background: radial-gradient(130% 120% at 0% 0%, rgba(206, 220, 246, 0.6), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px rgba(30, 58, 110, 0.34);
 }
 :root .k6-place--last {
   background: radial-gradient(130% 120% at 0% 0%, rgba(188, 214, 240, 0.64), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1);
@@ -153,7 +142,7 @@
 .k6-seam {
   height: 8px;
   min-width: 24px;
-  background: radial-gradient(closest-side, rgba(176, 138, 62, 0.42), rgba(176, 138, 62, 0) 100%) center / 100% 100% no-repeat;
+  background: radial-gradient(closest-side, rgba(120, 150, 210, 0.4), rgba(120, 150, 210, 0) 100%) center / 100% 100% no-repeat;
 }
 .k6-seam-top { position: relative; }
 .k6-seam-top::before {
@@ -164,10 +153,10 @@
   top: -4px;
   height: 8px;
   pointer-events: none;
-  background: radial-gradient(closest-side, rgba(176, 138, 62, 0.36), rgba(176, 138, 62, 0) 100%) center / 100% 100% no-repeat;
+  background: radial-gradient(closest-side, rgba(120, 150, 210, 0.34), rgba(120, 150, 210, 0) 100%) center / 100% 100% no-repeat;
 }
 
-/* ===== 3. Рейтинг регионов: полки L1 и стеклянная трубка ===== */
+/* ===== 3. Рейтинг регионов: полки L1 и полоса на нейтральном жёлобе ===== */
 :root .fe-rank__list { display: grid; gap: 6px; }
 :root .fe-rank__row {
   min-height: 52px;
@@ -184,32 +173,50 @@
 @media (hover: hover) {
   :root .fe-rank__row:hover { background: var(--fe-glass-l2-hover); transform: translateY(-1px); }
 }
+/* Круг 6: вместо «жидкого золота» с бусиной на конце: графитово-синяя полоса 6 px на нейтральном жёлобе, без свечения и шарика. */
 :root .fe-rank__bar {
   position: relative;
-  height: 8px;
-  overflow: visible;
+  height: 6px;
+  overflow: hidden;
   border-radius: 999px;
   background: var(--k6-groove);
-  box-shadow: inset 0 2px 3px var(--k6-groove-shade), inset 0 -1px 0 var(--k6-groove-lip);
+  box-shadow: none;
 }
 :root .fe-rank__bar > span {
   position: relative;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 52%), linear-gradient(90deg, #EAD59A, #C9A24D);
-  box-shadow: 0 0 12px -2px rgba(201, 162, 77, 0.65);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2C4A8A, #1E3A6E);
+  box-shadow: none;
 }
-:root .fe-rank__bar > span::after {
-  content: '';
-  position: absolute;
-  right: -2px;
-  top: 50%;
-  width: 11px;
-  height: 11px;
-  margin-top: -5.5px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #FFFBE8, #F0D98F 45%, #C9A24D);
-  box-shadow: 0 0 9px 2px rgba(201, 162, 77, 0.55);
-}
+:root .fe-rank__bar > span::after { content: none; }
 :root .fe-rank__place { gap: 0; }
+
+/* Рейтинг стран (z6-rating.css, круг 6): столбец таблицы — графитово-синяя полоса 6 px на нейтральном жёлобе без свечения и шарика;
+   плитки «Первое / Последнее место» — холодный свет, у подписи плоская точка (золотая у первого места). */
+:root .z6-table-card .w6d-bar {
+  height: 6px;
+  overflow: hidden;
+  background: var(--k6-groove);
+  box-shadow: none;
+}
+:root .z6-table-card .w6d-bar > span {
+  background: linear-gradient(90deg, #2C4A8A, #1E3A6E);
+  background-size: calc(100% / max(var(--z6-s, 1), 0.08)) 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+}
+:root .z6-table-card .w6d-bar > span::after { content: none; }
+:root .z6-ribbon .w2-fact:not([data-place='last']) {
+  --k6-place-light: rgba(190, 206, 232, 0.5);
+  --k6-place-glow: rgba(30, 58, 110, 0.28);
+}
+:root .z6-ribbon .w2-fact-label::before {
+  width: 8px;
+  height: 8px;
+  background: #B08A3E;
+  box-shadow: none;
+}
+:root .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label::before { background: #7F96B8; box-shadow: none; }
 
 /* ===== 4. Шторка «Все показатели по темам» ===== */
 :root .fe-sheet__backdrop { background: rgba(20, 33, 61, 0.28); }
@@ -224,10 +231,12 @@
 }
 :root .fe-topic-row__main.is-active {
   background: var(--fe-glass-active);
-  color: var(--fe-on-gold, #231B0B);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  color: var(--fe-on-active, #F3EFE6);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 :root .fe-topic-row__main:hover:not(.is-active) { background: var(--fe-glass-l2); }
+/* Страница страны, чипы тем (z5-country.css): число у выбранной темы светлое на графитовой заливке (круг 6). */
+:root .z5-topics .z5-topic.is-active .z5-topic__count { color: rgba(243, 239, 230, 0.8); }
 
 /* ===== 5. Карточки категорий: стекло без blur, размытие только у первых шести (телефон: двух) ===== */
 :root .fe-category-card.fe-glass-lite:nth-child(-n + 6) {

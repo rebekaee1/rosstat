@@ -35,11 +35,12 @@ describe('FacetMark', () => {
     expect(container.querySelector('svg').getAttribute('class')).toContain('fe-facet--pulse');
   });
 
-  it('медаль: цифра места по центру, цвет по месту', () => {
+  it('место в рейтинге: цифра в графитовом круге, без гранёной медали (круг 6)', () => {
     const { container } = render(<><FacetMedal rank={1} /><FacetMedal rank={2} /><FacetMedal rank={3} /></>);
     const medals = [...container.querySelectorAll('.fe-medal')];
     expect(medals.map((m) => m.textContent)).toEqual(['1', '2', '3']);
-    expect(medals[0].querySelector('svg').getAttribute('width')).toBe('28');
+    expect(medals[0].querySelector('svg')).toBeNull();
+    expect(medals[0].getAttribute('data-rank')).toBe('1');
   });
 });
 
@@ -60,15 +61,14 @@ describe('LightSeam', () => {
 });
 
 describe('FacetCoin', () => {
-  it('шесть тонов по кругу; иконка в центре; декоративный svg', () => {
+  it('простой круг с иконкой (круг 6): без граней-камня, тон принимается и игнорируется', () => {
     expect(FACET_COIN_TONES).toHaveLength(6);
     const { container } = render(<><FacetCoin tone={0}><i data-testid="a" /></FacetCoin><FacetCoin tone={7} size={48} /></>);
     const coins = container.querySelectorAll('.fe-coin');
     expect(coins[0].querySelector('.fe-coin__icon [data-testid="a"]')).toBeTruthy();
-    expect(coins[0].querySelector('svg').getAttribute('aria-hidden')).toBe('true');
-    expect(coins[1].querySelector('svg').getAttribute('width')).toBe('48');
-    // тон 7 по кругу — второй (champagne): тёмная иконка на светлом камне
-    expect(coins[1].style.getPropertyValue('--fe-coin-ink')).toBe('#231B0B');
+    expect(coins[0].querySelector('.fe-coin__icon').getAttribute('aria-hidden')).toBe('true');
+    expect(coins[0].querySelector('svg')).toBeNull();
+    expect(coins[1].style.getPropertyValue('--fe-coin-size')).toBe('48px');
   });
 });
 
