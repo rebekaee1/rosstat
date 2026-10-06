@@ -6449,7 +6449,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/components/LightScene.component.test.jsx": {
-    "sha256": "4d50f504fc97908e15ddc0876c25e4c4c9c092637bb4d4dbdca6931dbc63b096",
+    "sha256": "ca80f350d61cbd5b2ab87a9ce2e30ffa919b2edc1641d6a2f0147e329b83211d",
     "definitions": [
       {
         "name": "scene",
@@ -6513,10 +6513,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 11
+    "anonymous_functions": 13
   },
   "frontend/src/components/LightScene.jsx": {
-    "sha256": "ca2bb570d3fe534b65c2a6cabcb373806d8fa1ea400f94a15265a0d676dcd252",
+    "sha256": "aed0d140f7bc78c593e26fd15cc570402d18def23ddbab1aaa5222dcfc5ce20a",
     "definitions": [
       {
         "name": "Shard",
@@ -6525,87 +6525,93 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "Glint",
+        "line": 81,
+        "end_line": 102,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "ShardDefs",
-        "line": 73,
-        "end_line": 92,
+        "line": 113,
+        "end_line": 132,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ShardDefs.stops",
-        "line": 74,
-        "end_line": 79,
+        "line": 114,
+        "end_line": 119,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "afterLoadIdle",
-        "line": 95,
-        "end_line": 117,
+        "line": 135,
+        "end_line": 157,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "afterLoadIdle.run",
-        "line": 100,
-        "end_line": 107,
+        "line": 140,
+        "end_line": 147,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "afterLoadIdle.onLoad",
-        "line": 108,
-        "end_line": 108,
+        "line": 148,
+        "end_line": 148,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "HeroLayer",
-        "line": 119,
-        "end_line": 154,
+        "line": 159,
+        "end_line": 194,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useSceneParallax",
-        "line": 157,
-        "end_line": 199,
+        "line": 197,
+        "end_line": 239,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useSceneParallax.reset",
-        "line": 168,
-        "end_line": 172,
+        "line": 208,
+        "end_line": 212,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useSceneParallax.update",
-        "line": 173,
-        "end_line": 186,
+        "line": 213,
+        "end_line": 226,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useSceneParallax.schedule",
-        "line": 187,
-        "end_line": 187,
+        "line": 227,
+        "end_line": 227,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsNotFoundPage",
-        "line": 206,
-        "end_line": 225,
+        "line": 247,
+        "end_line": 270,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useIsNotFoundPage.check",
-        "line": 211,
-        "end_line": 214,
+        "line": 253,
+        "end_line": 256,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useIsNotFoundPage.schedule",
-        "line": 215,
-        "end_line": 215,
+        "line": 258,
+        "end_line": 258,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "LightScene",
-        "line": 227,
-        "end_line": 257,
+        "line": 272,
+        "end_line": 315,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -6640,10 +6646,10 @@
         "names": [
           "default"
         ],
-        "line": 227
+        "line": 272
       }
     ],
-    "anonymous_functions": 17
+    "anonymous_functions": 20
   },
   "frontend/src/components/LiveTicker.component.test.jsx": {
     "sha256": "d267967c187a4f9597b524f08b5245e902fe7571b3896559a661a1b5a575d4d9",
@@ -7481,7 +7487,7 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/Navbar.jsx": {
-    "sha256": "472712c468088f98275c1f6383b2dd20f41086f2ada1699106ff8854d529f345",
+    "sha256": "c280c1b3fdf5ca5dd7a77bcf94e0b7bc307837ddf7db9494b6f5cd2770f1c360",
     "definitions": [
       {
         "name": "AuthCluster",
@@ -7504,7 +7510,7 @@
       {
         "name": "Navbar",
         "line": 164,
-        "end_line": 546,
+        "end_line": 547,
         "kind": "FunctionDeclaration"
       },
       {
@@ -7563,8 +7569,8 @@
       },
       {
         "name": "Navbar.renderLink",
-        "line": 455,
-        "end_line": 473,
+        "line": 456,
+        "end_line": 474,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -7673,7 +7679,7 @@
     "anonymous_functions": 35
   },
   "frontend/src/components/Navbar.menu.component.test.jsx": {
-    "sha256": "360adc31503f31c255a155d41ae5b9176f17839c6f2fdb1e3ad83347364c5327",
+    "sha256": "7176036126c52c758e4a3fa24f19b96e7e15b77c7532cd7a0972670cb47b12c1",
     "definitions": [
       {
         "name": "default",
@@ -7733,7 +7739,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 58
+    "anonymous_functions": 59
   },
   "frontend/src/components/NoiseOverlay.jsx": {
     "sha256": "abce9f058470582b2ddcc8d8d4d6e010295e53d26c56ba52e29815e3cf71177b",
@@ -8215,7 +8221,7 @@
     "anonymous_functions": 1
   },
   "frontend/src/components/PlanetScene.jsx": {
-    "sha256": "36d2e46e6a5cf53d3e2ac805b44d5e91dad1386316910d50d99af6ee508a2e70",
+    "sha256": "5cf5608935d1b5f1441ac5c0de9a4576bfbf68d0b5d823a775e38679be2b8cd7",
     "definitions": [
       {
         "name": "valueFor",
@@ -8225,212 +8231,212 @@
       },
       {
         "name": "tracePath",
-        "line": 64,
-        "end_line": 67,
+        "line": 68,
+        "end_line": 71,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintAtlas",
-        "line": 73,
-        "end_line": 111,
+        "line": 77,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "paintHighlight",
-        "line": 117,
-        "end_line": 142,
+        "line": 121,
+        "end_line": 146,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "usePlanetTextures",
-        "line": 145,
-        "end_line": 197,
+        "line": 149,
+        "end_line": 201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetControls",
-        "line": 199,
-        "end_line": 491,
+        "line": 203,
+        "end_line": 495,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetControls.lockTilt",
-        "line": 267,
-        "end_line": 272,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "PlanetControls.unlockTilt",
-        "line": 273,
+        "line": 271,
         "end_line": 276,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "PlanetControls.report",
+        "name": "PlanetControls.unlockTilt",
         "line": 277,
-        "end_line": 285,
+        "end_line": 280,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "PlanetControls.report",
+        "line": 281,
+        "end_line": 289,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onChange",
-        "line": 286,
-        "end_line": 295,
+        "line": 290,
+        "end_line": 299,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onStart",
-        "line": 297,
-        "end_line": 304,
+        "line": 301,
+        "end_line": 308,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.onEnd",
-        "line": 305,
-        "end_line": 305,
+        "line": 309,
+        "end_line": 309,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.stopGesture",
-        "line": 311,
-        "end_line": 311,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "PlanetControls.stopPinch",
         "line": 315,
         "end_line": 315,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "PlanetControls.onWheel",
+        "name": "PlanetControls.stopPinch",
         "line": 319,
-        "end_line": 329,
+        "end_line": 319,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "PlanetControls.onWheel",
+        "line": 323,
+        "end_line": 333,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.enter",
-        "line": 331,
-        "end_line": 331,
+        "line": 335,
+        "end_line": 335,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.leave",
-        "line": 332,
-        "end_line": 332,
+        "line": 336,
+        "end_line": 336,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetControls.zoomAt",
-        "line": 380,
-        "end_line": 387,
+        "line": 384,
+        "end_line": 391,
         "kind": "ObjectMethod"
       },
       {
         "name": "Earth",
-        "line": 493,
-        "end_line": 693,
+        "line": 497,
+        "end_line": 697,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Earth.down",
-        "line": 572,
-        "end_line": 578,
+        "line": 576,
+        "end_line": 582,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.additionalDown",
-        "line": 579,
-        "end_line": 588,
+        "line": 583,
+        "end_line": 592,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.move",
-        "line": 589,
-        "end_line": 591,
+        "line": 593,
+        "end_line": 595,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.end",
-        "line": 592,
-        "end_line": 596,
+        "line": 596,
+        "end_line": 600,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.hit",
-        "line": 619,
-        "end_line": 619,
+        "line": 623,
+        "end_line": 623,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.pointerMove",
-        "line": 620,
-        "end_line": 632,
+        "line": 624,
+        "end_line": 636,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Earth.pointerUp",
-        "line": 633,
-        "end_line": 653,
+        "line": 637,
+        "end_line": 657,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "SceneContents",
-        "line": 695,
-        "end_line": 706,
+        "line": 699,
+        "end_line": 710,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "SceneBoundary",
-        "line": 708,
-        "end_line": 713,
+        "line": 712,
+        "end_line": 717,
         "kind": "ClassDeclaration"
       },
       {
         "name": "SceneBoundary.getDerivedStateFromError",
-        "line": 710,
-        "end_line": 710,
+        "line": 714,
+        "end_line": 714,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.componentDidCatch",
-        "line": 711,
-        "end_line": 711,
+        "line": 715,
+        "end_line": 715,
         "kind": "ClassMethod"
       },
       {
         "name": "SceneBoundary.render",
-        "line": 712,
-        "end_line": 712,
+        "line": 716,
+        "end_line": 716,
         "kind": "ClassMethod"
       },
       {
         "name": "PlanetScene",
-        "line": 716,
-        "end_line": 815,
+        "line": 720,
+        "end_line": 819,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PlanetScene.refine",
-        "line": 736,
-        "end_line": 741,
+        "line": 740,
+        "end_line": 745,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PlanetScene.update",
-        "line": 769,
-        "end_line": 769,
+        "line": 773,
+        "end_line": 773,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ContextLifecycle",
-        "line": 817,
-        "end_line": 826,
+        "line": 821,
+        "end_line": 830,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ContextLifecycle.lost",
-        "line": 821,
-        "end_line": 821,
+        "line": 825,
+        "end_line": 825,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -8493,7 +8499,7 @@
         "names": [
           "default"
         ],
-        "line": 716
+        "line": 720
       }
     ],
     "anonymous_functions": 74
@@ -11778,120 +11784,120 @@
     "anonymous_functions": 20
   },
   "frontend/src/components/WorldMap.jsx": {
-    "sha256": "0794ed1ea2be7f60755752e31fb077a124321bcc250b31279a32428f4def1c18",
+    "sha256": "1d64f649d73e29290cbef9f81f9a94e304383b7649776d17ae5fa7ea08d2ef54",
     "definitions": [
       {
         "name": "resolveCountry",
-        "line": 63,
-        "end_line": 69,
+        "line": 64,
+        "end_line": 70,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "displayFeatureFor",
-        "line": 79,
-        "end_line": 81,
+        "line": 80,
+        "end_line": 82,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "shapeFor",
-        "line": 83,
-        "end_line": 89,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "getBaseDisplayFeatures",
-        "line": 93,
+        "line": 89,
         "end_line": 96,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "getBaseDisplayFeatures",
+        "line": 100,
+        "end_line": 103,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "whenIdleAfterLoad",
-        "line": 103,
-        "end_line": 126,
+        "line": 110,
+        "end_line": 133,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "whenIdleAfterLoad.run",
-        "line": 108,
-        "end_line": 115,
+        "line": 115,
+        "end_line": 122,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "yieldToMain",
-        "line": 129,
-        "end_line": 129,
+        "line": 136,
+        "end_line": 136,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "nowMs",
-        "line": 130,
-        "end_line": 130,
+        "line": 137,
+        "end_line": 137,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "mapInSlices",
-        "line": 136,
-        "end_line": 148,
+        "line": 143,
+        "end_line": 155,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "collectionValue",
-        "line": 150,
-        "end_line": 153,
+        "line": 157,
+        "end_line": 160,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatLegendValue",
-        "line": 155,
-        "end_line": 168,
+        "line": 162,
+        "end_line": 175,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatLegendValue.compact",
-        "line": 161,
-        "end_line": 163,
+        "line": 168,
+        "end_line": 170,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "bandText",
-        "line": 171,
-        "end_line": 177,
+        "line": 178,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tubeGradient",
-        "line": 180,
-        "end_line": 185,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "legendBinLabel",
         "line": 187,
         "end_line": 192,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "WorldMap",
+        "name": "legendBinLabel",
         "line": 194,
-        "end_line": 607,
+        "end_line": 199,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "WorldMap",
+        "line": 201,
+        "end_line": 614,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldMap.isActive",
-        "line": 225,
-        "end_line": 225,
+        "line": 232,
+        "end_line": 232,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useCountryOutline",
-        "line": 620,
-        "end_line": 654,
+        "line": 627,
+        "end_line": 661,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountrySilhouette",
-        "line": 661,
-        "end_line": 794,
+        "line": 668,
+        "end_line": 801,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -11913,68 +11919,72 @@
         "line": 10
       },
       {
-        "source": "../lib/format",
+        "source": "../lib/planetAtlas",
         "line": 11
       },
       {
-        "source": "../lib/worldApi",
+        "source": "../lib/format",
         "line": 12
       },
       {
-        "source": "../lib/worldMapGeometry",
+        "source": "../lib/worldApi",
         "line": 13
       },
       {
+        "source": "../lib/worldMapGeometry",
+        "line": 14
+      },
+      {
         "source": "../lib/worldMapPeriod",
-        "line": 16
+        "line": 17
       },
       {
         "source": "../lib/worldTopology",
-        "line": 19
+        "line": 20
       },
       {
         "source": "../lib/worldMapColors",
-        "line": 22
+        "line": 23
       },
       {
         "source": "../i18n",
-        "line": 25
-      },
-      {
-        "source": "../i18n/messages",
         "line": 26
       },
       {
-        "source": "../i18n/locale",
+        "source": "../i18n/messages",
         "line": 27
       },
       {
-        "source": "../i18n/viewModeLabels",
+        "source": "../i18n/locale",
         "line": 28
       },
       {
-        "source": "../lib/countryReference",
+        "source": "../i18n/viewModeLabels",
         "line": 29
       },
       {
-        "source": "../styles/world.css",
+        "source": "../lib/countryReference",
         "line": 30
       },
       {
-        "source": "./SourceLink",
+        "source": "../styles/world.css",
         "line": 31
       },
       {
-        "source": "./Chip",
+        "source": "./SourceLink",
         "line": 32
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "./Chip",
         "line": 33
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/platform-pages.css",
         "line": 34
+      },
+      {
+        "source": "../styles/k4-charts.css",
+        "line": 35
       }
     ],
     "exports": [
@@ -11982,13 +11992,13 @@
         "names": [
           "default"
         ],
-        "line": 194
+        "line": 201
       },
       {
         "names": [
           "CountrySilhouette"
         ],
-        "line": 661
+        "line": 668
       }
     ],
     "anonymous_functions": 65
@@ -28703,7 +28713,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/lib/planetAtlas.js": {
-    "sha256": "39915b45d9c50cf623a66eec3c4c1cb57fa53ca1f6585f6eab99ec9b53e19431",
+    "sha256": "629a7071e7f311c497291ee19169b53119a66415ee46d802df9bbaf13b87e2d7",
     "definitions": [
       {
         "name": "ringSpanDegrees",
@@ -28715,6 +28725,12 @@
         "name": "outlineRings",
         "line": 17,
         "end_line": 27,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "substantialPolygons",
+        "line": 35,
+        "end_line": 46,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28731,17 +28747,29 @@
           "outlineRings"
         ],
         "line": 17
+      },
+      {
+        "names": [
+          "substantialPolygons"
+        ],
+        "line": 35
       }
     ],
-    "anonymous_functions": 0
+    "anonymous_functions": 4
   },
   "frontend/src/lib/planetAtlas.test.js": {
-    "sha256": "14b43935a346701f6f45b30e67f9b8af0744ebbeecd046d5a8886b6f87aad37a",
+    "sha256": "078be645bac6d37fc6f2d0324b42f5153e2af81a6be77cdb48b2e6cac3dc9125",
     "definitions": [
       {
         "name": "square",
         "line": 4,
         "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "polygons",
+        "line": 76,
+        "end_line": 76,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -28756,7 +28784,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 6
+    "anonymous_functions": 11
   },
   "frontend/src/lib/planetGeometry.js": {
     "sha256": "a06825d75138ea4a957650717574846443509a77170bdfcc2259be039744fe4a",
@@ -41012,7 +41040,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "3ecf2ec06337b2440de893fdb9250a49bd4d6e671b3d9e10dafff71c81dc27b3",
+    "sha256": "3f107f8c3945427f8bdb9e1b76070e3d4387267c0bb4445afe3085d14c650cb9",
     "definitions": [
       {
         "name": "useViewportHeight",
@@ -41046,314 +41074,314 @@
       },
       {
         "name": "RibbonBead",
-        "line": 136,
-        "end_line": 145,
+        "line": 144,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "seriesFlag",
-        "line": 148,
-        "end_line": 152,
+        "line": 156,
+        "end_line": 160,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pearsonCorrelation",
-        "line": 173,
-        "end_line": 189,
+        "line": 181,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "aggregateToStep",
-        "line": 192,
-        "end_line": 215,
+        "line": 200,
+        "end_line": 223,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "aggregateToStep.keyFor",
-        "line": 194,
-        "end_line": 201,
+        "line": 202,
+        "end_line": 209,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "freqLabel",
-        "line": 226,
-        "end_line": 230,
+        "line": 234,
+        "end_line": 238,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareDateFormat",
-        "line": 233,
-        "end_line": 240,
+        "line": 241,
+        "end_line": 248,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseCodes",
-        "line": 243,
-        "end_line": 250,
+        "line": 251,
+        "end_line": 258,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseReps",
-        "line": 256,
-        "end_line": 267,
+        "line": 264,
+        "end_line": 275,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isRegionCode",
-        "line": 274,
-        "end_line": 276,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "isWorldCode",
-        "line": 278,
-        "end_line": 280,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "isSubnationalCode",
         "line": 282,
         "end_line": 284,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "fetchRegionSeries",
+        "name": "isWorldCode",
         "line": 286,
-        "end_line": 300,
+        "end_line": 288,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "isSubnationalCode",
+        "line": 290,
+        "end_line": 292,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "fetchRegionSeries",
+        "line": 294,
+        "end_line": 308,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchSubnationalSeries",
-        "line": 302,
-        "end_line": 329,
+        "line": 310,
+        "end_line": 337,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldSeries",
-        "line": 331,
-        "end_line": 355,
+        "line": 339,
+        "end_line": 363,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddCardHeader",
-        "line": 369,
-        "end_line": 384,
+        "line": 377,
+        "end_line": 392,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSheet",
-        "line": 391,
-        "end_line": 454,
+        "line": 399,
+        "end_line": 462,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSheet.onKey",
-        "line": 399,
-        "end_line": 399,
+        "line": 407,
+        "end_line": 407,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComboSelect",
-        "line": 462,
-        "end_line": 591,
+        "line": 470,
+        "end_line": 599,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSelect.getSearchItem",
-        "line": 487,
-        "end_line": 487,
+        "line": 495,
+        "end_line": 495,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CapNotice",
-        "line": 594,
-        "end_line": 606,
+        "line": 602,
+        "end_line": 614,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddRegionSeries",
-        "line": 614,
-        "end_line": 686,
+        "line": 622,
+        "end_line": 694,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddRegionSeries.handlePick",
-        "line": 644,
-        "end_line": 652,
+        "line": 652,
+        "end_line": 660,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AddSubnationalSeries",
-        "line": 688,
-        "end_line": 773,
+        "line": 696,
+        "end_line": 781,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddSubnationalSeries.handlePick",
-        "line": 731,
-        "end_line": 739,
+        "line": 739,
+        "end_line": 747,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "russiaLandingPool",
-        "line": 775,
-        "end_line": 794,
+        "line": 783,
+        "end_line": 802,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddIndicator",
-        "line": 796,
-        "end_line": 877,
+        "line": 804,
+        "end_line": 885,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddIndicator.getSearchItem",
-        "line": 813,
-        "end_line": 813,
+        "line": 821,
+        "end_line": 821,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AddWorldCountrySeries",
-        "line": 886,
-        "end_line": 963,
+        "line": 894,
+        "end_line": 971,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddWorldCountrySeries.pick",
-        "line": 937,
-        "end_line": 941,
+        "line": 945,
+        "end_line": 949,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BRANCH_BTN",
-        "line": 965,
-        "end_line": 970,
+        "line": 973,
+        "end_line": 978,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "PickerBack",
-        "line": 973,
-        "end_line": 984,
+        "line": 981,
+        "end_line": 992,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareSeriesPicker",
-        "line": 989,
-        "end_line": 1327,
+        "line": 997,
+        "end_line": 1335,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareSeriesPicker.resetCountry",
-        "line": 1090,
-        "end_line": 1095,
+        "line": 1098,
+        "end_line": 1103,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CompareSeriesPicker.selectCountry",
-        "line": 1097,
-        "end_line": 1102,
+        "line": 1105,
+        "end_line": 1110,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "UpsellModal",
-        "line": 1329,
-        "end_line": 1368,
+        "line": 1337,
+        "end_line": 1376,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareTooltip",
-        "line": 1370,
-        "end_line": 1390,
+        "line": 1378,
+        "end_line": 1398,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComparePage",
-        "line": 1392,
-        "end_line": 2798,
+        "line": 1400,
+        "end_line": 2806,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComparePage.queryFn",
-        "line": 1660,
-        "end_line": 1666,
+        "line": 1668,
+        "end_line": 1674,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retry",
-        "line": 1668,
-        "end_line": 1672,
+        "line": 1676,
+        "end_line": 1680,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retryFailed",
-        "line": 1861,
-        "end_line": 1861,
+        "line": 1869,
+        "end_line": 1869,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.formatLabel",
-        "line": 1881,
-        "end_line": 1881,
+        "line": 1889,
+        "end_line": 1889,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisFor",
-        "line": 1898,
-        "end_line": 1902,
+        "line": 1906,
+        "end_line": 1910,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.legendDetail",
-        "line": 1905,
-        "end_line": 1921,
+        "line": 1913,
+        "end_line": 1929,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisValues",
-        "line": 1926,
-        "end_line": 1933,
+        "line": 1934,
+        "end_line": 1941,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.calc",
-        "line": 1945,
-        "end_line": 1952,
+        "line": 1953,
+        "end_line": 1960,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleExport",
-        "line": 2056,
-        "end_line": 2072,
+        "line": 2064,
+        "end_line": 2080,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.openLimit",
-        "line": 2078,
-        "end_line": 2081,
+        "line": 2086,
+        "end_line": 2089,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.shortSeriesName",
-        "line": 2083,
-        "end_line": 2085,
+        "line": 2091,
+        "end_line": 2093,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleBrush",
-        "line": 2086,
-        "end_line": 2090,
+        "line": 2094,
+        "end_line": 2098,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.chooseScale",
-        "line": 2091,
-        "end_line": 2095,
+        "line": 2099,
+        "end_line": 2103,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.bigDigits",
-        "line": 2712,
-        "end_line": 2712,
+        "line": 2720,
+        "end_line": 2720,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -41564,7 +41592,7 @@
         "names": [
           "default"
         ],
-        "line": 1392
+        "line": 1400
       }
     ],
     "anonymous_functions": 246
@@ -45023,7 +45051,7 @@
     "anonymous_functions": 21
   },
   "frontend/src/pages/RussiaHome.jsx": {
-    "sha256": "f327b2d2bdfcab92d723e2ccadd6d835a124e427f93bb6d72fbf5f7e1a31b9b7",
+    "sha256": "537a32ba0723e0e63c16c001db6f3386e4ea231a2ad5d9c98711272870aacde2",
     "definitions": [
       {
         "name": "RussiaMapSkeleton",
@@ -46276,18 +46304,18 @@
     "anonymous_functions": 33
   },
   "frontend/src/pages/WorldIndicatorPage.jsx": {
-    "sha256": "26aa3d7184a61a44feedaafeae501ed16ed282a32add27ac7a7b7e49562da9d5",
+    "sha256": "e14fbaf42f2e2247edbeab4bd752285d75c31694f85189ee510ff4222d271553",
     "definitions": [
       {
         "name": "WorldIndicatorPage",
-        "line": 74,
-        "end_line": 796,
+        "line": 75,
+        "end_line": 798,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorPage.hideRu",
-        "line": 437,
-        "end_line": 439,
+        "line": 438,
+        "end_line": 440,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -46369,112 +46397,116 @@
         "line": 40
       },
       {
-        "source": "../components/ChartSectionSkeleton",
+        "source": "../components/brand/LightSeam",
         "line": 41
       },
       {
-        "source": "../components/ViewModesPanel",
+        "source": "../components/ChartSectionSkeleton",
         "line": 42
       },
       {
-        "source": "../components/WorldChartSection",
+        "source": "../components/ViewModesPanel",
         "line": 43
       },
       {
-        "source": "../components/VariantGroupPicker",
+        "source": "../components/WorldChartSection",
         "line": 44
       },
       {
-        "source": "../components/IndicatorMethodologyPanel",
+        "source": "../components/VariantGroupPicker",
         "line": 45
       },
       {
-        "source": "../components/SourceLink",
+        "source": "../components/IndicatorMethodologyPanel",
         "line": 46
       },
       {
-        "source": "../components/DataTable",
+        "source": "../components/SourceLink",
         "line": 47
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/DataTable",
         "line": 48
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 49
       },
       {
-        "source": "../components/DeltaBadge",
+        "source": "../components/LoadingNote",
         "line": 50
       },
       {
-        "source": "../components/WorldCountUp",
+        "source": "../components/DeltaBadge",
         "line": 51
       },
       {
-        "source": "../components/WorldStatTiles",
+        "source": "../components/WorldCountUp",
         "line": 52
       },
       {
-        "source": "../components/PopulationStats",
+        "source": "../components/WorldStatTiles",
         "line": 53
       },
       {
-        "source": "../lib/populationFacts",
+        "source": "../components/PopulationStats",
         "line": 54
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../lib/populationFacts",
         "line": 55
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/Breadcrumbs",
         "line": 56
       },
       {
-        "source": "../components/Button",
+        "source": "../components/Skeleton",
         "line": 57
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../components/Button",
         "line": 58
       },
       {
-        "source": "../styles/world.css",
+        "source": "../styles/platform-pages.css",
         "line": 59
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/world.css",
         "line": 60
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../styles/x2-indicator.css",
         "line": 61
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/breadcrumbs",
         "line": 62
       },
       {
-        "source": "../i18n",
-        "line": 66
+        "source": "../lib/sitePaths",
+        "line": 63
       },
       {
-        "source": "../i18n/viewModeLabels",
+        "source": "../i18n",
         "line": 67
       },
       {
-        "source": "../styles/w6e-indicator.css",
+        "source": "../i18n/viewModeLabels",
         "line": 68
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "../styles/w6e-indicator.css",
         "line": 69
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "../styles/z4-indicator.css",
         "line": 70
+      },
+      {
+        "source": "../styles/k5-pages.css",
+        "line": 71
       }
     ],
     "exports": [
@@ -46482,7 +46514,7 @@
         "names": [
           "default"
         ],
-        "line": 74
+        "line": 75
       }
     ],
     "anonymous_functions": 36
@@ -47632,7 +47664,7 @@
     "anonymous_functions": 39
   },
   "frontend/src/styles/k1-scene.test.js": {
-    "sha256": "d985a1e9956e614363459a592c648392c2b2f670764170553fd375b6a048f96b",
+    "sha256": "724e83bdc2df1514740bb67035542a134d0296aba5e3ae0220cda24dddb7d810",
     "definitions": [],
     "imports": [
       {
@@ -47653,10 +47685,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 12
+    "anonymous_functions": 14
   },
   "frontend/src/styles/k5-pages.test.js": {
-    "sha256": "6615ace5abf4e76e78a819637f50044afe365983e693ff1e459dd39452f96625",
+    "sha256": "956061f420f0410fbf1092dfc1c77d2168e0d5e82c0913dafdfb1107cac667b6",
     "definitions": [
       {
         "name": "read",
@@ -47690,10 +47722,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 13
+    "anonymous_functions": 17
   },
   "frontend/src/styles/k6-country.test.js": {
-    "sha256": "a3c27b6f812979675dbe4b3c3ccbe691e1caa5241fb81809f985c2323660a66f",
+    "sha256": "18e725449c1e94b486c319af36c369ae725e9f321dc46290754fa521f0fcaf3a",
     "definitions": [
       {
         "name": "read",
@@ -47721,10 +47753,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 14
+    "anonymous_functions": 16
   },
   "frontend/src/styles/k7-home.test.js": {
-    "sha256": "920518d379057ce85b0f203aa424996088f0430f801f3710e83a93493d2ed0f3",
+    "sha256": "0d0abdd1cc840753164a69c094734b1612402968c191eaa8d53929c3099cb63e",
     "definitions": [
       {
         "name": "read",

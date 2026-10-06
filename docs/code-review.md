@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `0ad80ce4c08d11cffed86fd6d325342a268ba2c2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `4afc1f26850641102496575e985c6bc5b00893c9`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 1849 |
 | Код, шаблоны и стили | 1477 |
 | Актуальные рецензии без пропусков guard | 1849 |
-| Именованные определения Python/JS: с аннотацией / всего | 11734 / 11734 |
+| Именованные определения Python/JS: с аннотацией / всего | 11737 / 11737 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1161,7 +1161,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/K8.component.test.jsx](../frontend/src/components/K8.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/LegalToc.jsx](../frontend/src/components/LegalToc.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/LightScene.component.test.jsx](../frontend/src/components/LightScene.component.test.jsx) | reviewed | 7/7 | актуально |
-| [frontend/src/components/LightScene.jsx](../frontend/src/components/LightScene.jsx) | reviewed | 15/15 | актуально |
+| [frontend/src/components/LightScene.jsx](../frontend/src/components/LightScene.jsx) | reviewed | 16/16 | актуально |
 | [frontend/src/components/LiveTicker.component.test.jsx](../frontend/src/components/LiveTicker.component.test.jsx) | reviewed | 12/12 | актуально |
 | [frontend/src/components/LiveTicker.jsx](../frontend/src/components/LiveTicker.jsx) | reviewed | 11/11 | актуально |
 | [frontend/src/components/LiveTicker.test.js](../frontend/src/components/LiveTicker.test.js) | reviewed | 0/0 | актуально |
@@ -1497,8 +1497,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/periodPhrase.js](../frontend/src/lib/periodPhrase.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/pickerLabels.js](../frontend/src/lib/pickerLabels.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/pickerLabels.test.js](../frontend/src/lib/pickerLabels.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/planetAtlas.js](../frontend/src/lib/planetAtlas.js) | reviewed | 2/2 | актуально |
-| [frontend/src/lib/planetAtlas.test.js](../frontend/src/lib/planetAtlas.test.js) | reviewed | 1/1 | актуально |
+| [frontend/src/lib/planetAtlas.js](../frontend/src/lib/planetAtlas.js) | reviewed | 3/3 | актуально |
+| [frontend/src/lib/planetAtlas.test.js](../frontend/src/lib/planetAtlas.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/planetGeometry.js](../frontend/src/lib/planetGeometry.js) | reviewed | 13/13 | актуально |
 | [frontend/src/lib/planetGeometry.test.js](../frontend/src/lib/planetGeometry.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/planetLabels.js](../frontend/src/lib/planetLabels.js) | reviewed | 10/10 | актуально |
