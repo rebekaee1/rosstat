@@ -61,28 +61,26 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(k7).not.toMatch(/fe-today__ladder/);
     expect(z3).not.toMatch(/fe-today__ladder|fe-today-bar/);
     expect(k7).not.toMatch(/--fe-hero-frame-right\s*:/);
-    expect(hero).toMatch(/\.fe-hero-planet\s*\{\s*position:\s*sticky/);
+    expect(hero).not.toMatch(/\.fe-hero-planet\s*\{\s*position:\s*sticky/);
+    expect(hero).toMatch(/grid-template-areas: "text planet" "today planet" "scope scope"/);
   });
 
-  it('круг 6 (зона B): пиксельный арт forecast-glass убран, вместо него стеклянная F в плите планеты и у заголовка на телефоне', () => {
+  it('круг 6 (зона B): пиксельный арт forecast-glass убран, гладкая стеклянная F стоит в карточке «Платформа в цифрах» и у заголовка на телефоне', () => {
     const indexCss = readFileSync(join(here, '..', 'index.css'), 'utf8');
     expect(indexCss).not.toContain('forecast-glass');
     expect(indexCss).not.toMatch(/\[data-block="home-hero"\]::before/);
-    // Плита: кадр 2x, обычное смешение, прозрачность .35-.5, маска; подключается только по атрибуту после load.
-    const plate = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \.fe-hero-planet \[data-block="home-workbench"\]::before \{[^}]*\}/)[0];
+    // Карточка на всю ширину: F справа, кадр 2x по альфе, подключается только по атрибуту после load; за списком рейтинга F нет.
+    expect(k7).not.toMatch(/home-workbench"\]::before/);
+    const plate = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \[data-block='home-data-scope'\] \.fe-scope__f \{[^}]*\}/)[0];
     expect(plate).toContain("/brand/emblem-f-2x.webp");
-    expect(plate).toMatch(/aspect-ratio:\s*1149 \/ 1552/);
-    expect(plate).toMatch(/height:\s*min\([^;]*70svh, 760px\)/);
-    expect(plate).toMatch(/z-index:\s*-1/);
-    expect(plate).toMatch(/mask-image:/);
+    expect(plate).toMatch(/aspect-ratio:\s*1300 \/ 1519/);
+    expect(plate).toMatch(/height:\s*min\(calc\(100% - 28px\), 320px\)/);
     expect(plate).not.toMatch(/mix-blend-mode/);
-    const op = Number(/opacity:\s*([0-9.]+)/.exec(plate)[1]);
-    expect(op).toBeGreaterThanOrEqual(0.35);
-    expect(op).toBeLessThanOrEqual(0.5);
+    expect(k7).toMatch(/\[data-block='home-data-scope'\]\.fe-scope \{ padding-right: clamp\(220px, 22vw, 320px\); \}/);
     // Телефон: F справа от заголовка, ширина текста сужена на ширину F, поиск ниже.
     const phone = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \.fe-hero-text::after \{[^}]*\}/)[0];
     expect(phone).toContain("/brand/emblem-f-phone.webp");
-    expect(k7).toMatch(/h1 \+ p \{ max-width: calc\(100% - 128px\); \}/);
+    expect(k7).toMatch(/h1 \+ p \{ max-width: calc\(100% - 136px\); \}/);
   });
 
   it('у трёх панелей «Попробуйте сами» разные лампы, у плиток «Мир сейчас» четыре оттенка', () => {

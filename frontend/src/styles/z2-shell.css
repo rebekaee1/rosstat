@@ -15,9 +15,11 @@
 /* ═══ Лента курсов ═══════════════════════════════════════════════════════ */
 /* Лента курсов: стекло L1 над страницей (фон, размытие, тень на самом блоке) и свет вместо нижней кромки: styles/k3-shell.css. */
 /* Ширина как у шапки и страниц: один контейнер на весь сайт. */
-.fe-ticker__inner { max-width: max(var(--fe-container-wide, 1440px), 1440px); }
+.fe-ticker__inner { max-width: min(max(var(--fe-container-wide, 1440px), 1440px), calc(100% - 2rem)); }
+@media (max-width: 1535px) { .fe-ticker__inner { max-width: var(--fe-container-wide, 1280px); } }
 .fe-ticker__scroller { position: relative; height: 100%; }
-.fe-ticker__track { padding-inline: 8px 4px; }
+/* Курсы разложены по всей ширине капсулы шапки (круг 6): первый курс стоит над логотипом, «Все валюты» у правого края кнопок. */
+.fe-ticker .fe-ticker__track { min-width: 100%; justify-content: space-between; margin-inline: 0; padding-inline: 14px; }
 .fe-ticker__cell { position: relative; font-size: 14px; }
 /* Между курсами: воздух и грань-ромб с мягким свечением (рисуется в styles/k3-shell.css), без линии. */
 .fe-ticker__name { font-size: 13px; font-weight: 500; line-height: 1.2; color: var(--color-text-secondary); }

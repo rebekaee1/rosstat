@@ -1,35 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FFF3CF"/>
-      <stop offset=".35" stop-color="#E9CD8E"/>
-      <stop offset=".7" stop-color="#C9A24D"/>
-      <stop offset="1" stop-color="#8F6B24"/>
+      <stop offset="0" stop-color="#E8F0FA"/>
+      <stop offset=".35" stop-color="#9DB6DD"/>
+      <stop offset=".7" stop-color="#4F78B8"/>
+      <stop offset="1" stop-color="#1E3A6E"/>
     </linearGradient>
     <linearGradient id="gl" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
-      <stop offset="1" stop-color="#FFF3CF" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#E8F0FA" stop-opacity=".3"/>
     </linearGradient>
     <linearGradient id="gd" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#fff" stop-opacity=".75"/>
-      <stop offset="1" stop-color="#E9CD8E" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#9DB6DD" stop-opacity=".28"/>
     </linearGradient>
     <linearGradient id="gs" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#E9CD8E" stop-opacity=".7"/>
-      <stop offset="1" stop-color="#8F6B24" stop-opacity=".5"/>
+      <stop offset="0" stop-color="#9DB6DD" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#1E3A6E" stop-opacity=".5"/>
     </linearGradient>
     <linearGradient id="gr" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#9CD3F0" stop-opacity=".0"/>
       <stop offset=".4" stop-color="#9CD3F0" stop-opacity=".35"/>
-      <stop offset=".7" stop-color="#F2B6D4" stop-opacity=".3"/>
-      <stop offset="1" stop-color="#F2B6D4" stop-opacity="0"/>
+      <stop offset=".7" stop-color="#A9BFE0" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#A9BFE0" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="gc" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#F3E4B8"/>
-      <stop offset="1" stop-color="#9C772B"/>
+      <stop offset="0" stop-color="#C9D7EA"/>
+      <stop offset="1" stop-color="#2C4A8A"/>
     </linearGradient>
   </defs>
-  <path d="M76 40 412 17 435 28 399 139H221V210H353L377 215 341 316H221V481L193 485 76 479Z" fill="#FFF8E6" fill-opacity=".5"/>
+  <path d="M76 40 412 17 435 28 399 139H221V210H353L377 215 341 316H221V481L193 485 76 479Z" fill="#F2F6FB" fill-opacity=".5"/>
   <path d="M84 52 120 78V446L84 470Z" fill="url(#gl)"/>
   <path d="M84 90 120 112V260L84 240Z" fill="url(#gr)"/>
   <path d="M120 78 190 104V418L120 446Z" fill="url(#gd)"/>
@@ -45,7 +45,7 @@
   <path d="M76 40 412 17 435 28 399 139H221V210H353L377 215 341 316H221V481L193 485 76 479Z" stroke="url(#g)" stroke-width="9" stroke-linejoin="round"/>
   <path d="M84 49 405 27M226 145H397M226 214H352M120 78V446" stroke="#fff" stroke-opacity=".75" stroke-width="2" stroke-linecap="round"/>
   <path d="M311 417 402 415V491L311 494Z" fill="url(#gc)"/>
-  <path d="M311 417 402 415 356 455Z" fill="#FFF3CF" fill-opacity=".75"/>
+  <path d="M311 417 402 415 356 455Z" fill="#E8F0FA" fill-opacity=".75"/>
   <path d="M311 417 356 455 311 494Z" fill="#fff" fill-opacity=".3"/>
   <path d="M402 415 356 455 402 491Z" fill="#6B4E17" fill-opacity=".3"/>
 </svg>

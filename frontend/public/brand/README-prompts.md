@@ -23,7 +23,20 @@ A single large capital letter F, a luxurious sculpted crystal object, centered, 
 - Требование «2400 px по длинной стороне» не выполнено: модель отдаёт максимум 2048 px на кадр, F занимает 1552 из них. Для показа выше 760 px нужен
   новый кадр (4K у модели через OpenRouter не принимается) либо векторная перерисовка.
 
+## Гладкая стеклянная F (замена гранёной): `emblem-f-2x.webp`, `emblem-f-phone.webp` (06.10.2026, по замечанию владельца)
+
+Гранёная блочная F из первого варианта заменена гладкой изогнутой стеклянной F, которая стояла на старом арте (`art/quicklinks/forecast-glass.webp`, 960 px) и нравилась владельцу.
+Кадр сгенерирован с образцом: `FE_REF_IMAGE=frontend/public/art/quicklinks/forecast-glass.webp python3 scripts/dev/generate-brand-image.py "<промпт>" f.png google/gemini-3-pro-image 1:1 2K` (2 кадра по 0,14 $, взят второй).
+
+```
+Recreate EXACTLY the same sculpted object shown in the reference image: a single large capital letter F made of smooth, flowing, transparent optical glass with thick curved, calligraphic, slightly slanted strokes, rounded organic bends, thin bright highlights along the edges, subtle cold blue-grey refractions. Keep the same shape, proportions, curvature and glass material as the reference. Render it much sharper and at high resolution, floating, centered, shown at the same slight three-quarter angle. Cool neutral palette: ice white, steel blue, graphite shadow, no gold, no warm tint. Background: perfectly flat uniform pure white (#FFFFFF), no gradient, no floor, no cast shadow, no reflection. The whole letter fits inside the frame with generous empty margin. No text, no logo, no watermark.
+```
+
+Постобработка (numpy, scipy): фон найден заливкой от краёв (минимум каналов не ниже 246), по маске объекта прозрачность стекла считается «деколью»
+(чем светлее пиксель, тем прозрачнее, но не меньше 0,30 внутри контура), цвет очищен от белой подложки; обрезка по рамке. Результат 1518x1774 → `emblem-f-2x.webp` 1300x1519
+(показ до 760 CSS px по высоте, 2x = 1520), `emblem-f-phone.webp` 856x1000. Иконки сайта (favicon.ico/png/svg, apple-touch, PWA, Яндекс) собраны из этой же F на глубоком синем квадрате.
+
 ## Прежние кадры
 
-Тексты промптов `hero-desktop.webp`, `facets.webp`, `light-leak.webp`, `footer-*.webp`, `404-shards.webp`, `ribbon.webp` не сохранены
+Тексты промптов `hero-desktop.webp`, `facets.webp`, `light-leak.webp`, `footer-*.webp`, `404-shards.webp`, `ribbon.webp` не сохранены (в круге 6 их золотые оттенки сдвинуты в холодные: оттенок 15–75° → 215°, насыщенность ×0,5–0,55)
 (см. `docs/design-system.md`, раздел 12); при перегенерации сохранять промпт здесь.

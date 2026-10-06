@@ -81,9 +81,9 @@ describe('Emblem', () => {
     expect(vec.getAttribute('width')).toBe('64');
     expect(vec.getAttribute('loading')).toBe('lazy');
     expect(photo.getAttribute('src')).toBe('/brand/emblem-f-phone.webp');
-    // Стеклянная F не квадратная (888x1200): size это высота, ширина считается по пропорции кадра.
+    // Стеклянная F не квадратная (856x1000): size это высота, ширина считается по пропорции кадра.
     expect(photo.getAttribute('height')).toBe('64');
-    expect(photo.getAttribute('width')).toBe('47');
+    expect(photo.getAttribute('width')).toBe('55');
     expect(photo.getAttribute('loading')).toBe('eager');
     expect(photo.closest('.fe-emblem').className).toContain('fe-emblem--spin');
   });

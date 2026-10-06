@@ -490,3 +490,10 @@
 
 /* Таблица на других страницах (Россия): тоже на всю свою колонку, без пустой правой половины. */
 :root .fe-histtable__valhead { white-space: nowrap; }
+
+/* Мобильная копия переключателей (`fe-pick-card--stack`, у неё `md:hidden`) на широком экране не показывается: правило десктопной
+   сетки выше (`display: grid`, специфичность выше утилиты Tailwind) делало её видимой, и фильтры рисовались дважды, наложенными. */
+@media (min-width: 768px) {
+  :root .z4-desk .fe-vm-body .fe-pick-card--stack,
+  :root:root .fe-vm-panel[data-open='true'] > .fe-vm-body .fe-pick-card--stack { display: none; }
+}

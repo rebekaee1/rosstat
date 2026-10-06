@@ -97,14 +97,14 @@ describe('LightScene', () => {
     expect(fs[0].getAttribute('aria-hidden')).toBe('true');
     const img = fs[0].querySelector('img');
     expect(img.getAttribute('src')).toBe('/brand/emblem-f-phone.webp');
-    expect(img.getAttribute('width')).toBe('888');
-    expect(img.getAttribute('height')).toBe('1200');
+    expect(img.getAttribute('width')).toBe('856');
+    expect(img.getAttribute('height')).toBe('1000');
     expect(img.getAttribute('loading')).toBe('lazy');
     expect(img.getAttribute('alt')).toBe('');
     const src = fs[0].querySelector('source');
     expect(src.getAttribute('srcset')).toBe('/brand/emblem-f-2x.webp');
-    expect(src.getAttribute('width')).toBe('1149');
-    expect(src.getAttribute('height')).toBe('1552');
+    expect(src.getAttribute('width')).toBe('1300');
+    expect(src.getAttribute('height')).toBe('1519');
     page.unmount();
 
     const about = scene('/about');

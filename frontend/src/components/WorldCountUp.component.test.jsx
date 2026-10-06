@@ -31,6 +31,22 @@ describe('WorldCountUp', () => {
     expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('42');
   });
 
+  it('never leaves zero on screen: hidden tab shows the value at once, and frames that stop coming still end on the value', () => {
+    vi.useFakeTimers();
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+    const hidden = render(<WorldCountUp value={321} format={format} />);
+    expect(hidden.container.querySelector('[aria-hidden="true"]').textContent).toBe('321');
+    hidden.unmount();
+    vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+    // кадры анимации не приходят вообще (вкладку свернули сразу после старта)
+    vi.stubGlobal('requestAnimationFrame', () => 1);
+    vi.stubGlobal('cancelAnimationFrame', () => {});
+    const stalled = render(<WorldCountUp value={321} format={format} />);
+    expect(stalled.container.querySelector('[aria-hidden="true"]').textContent).toBe('0');
+    act(() => { vi.advanceTimersByTime(1300); });
+    expect(stalled.container.querySelector('[aria-hidden="true"]').textContent).toBe('321');
+  });
+
   it('renders nothing visible for a missing value', () => {
     const { container } = render(<WorldCountUp value={null} format={format} />);
     expect(container.querySelector('[aria-hidden="true"]').textContent).toBe('');

@@ -4,6 +4,8 @@ const DURATION_MS = 650;
 const LATE_FIRST_FRAME_MS = 250;
 
 function calm() {
+  // Вкладка в фоне: кадры анимации не приходят, и «0» остался бы данными, поэтому счёта нет, сразу итог.
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return true;
   return typeof window !== 'undefined' && typeof window.matchMedia === 'function'
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
@@ -44,7 +46,9 @@ export default function WorldCountUp({ value, format, label, className, fromZero
       if (progress < 1) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    // Страховка: если кадры перестали приходить (вкладку свернули посреди счёта), итог показывается сам.
+    const safety = setTimeout(() => setFrameState({ target, format, text: format(target) }), DURATION_MS + 500);
+    return () => { cancelAnimationFrame(frame); clearTimeout(safety); };
   }, [target, format, fromZero]);
   const shown = frameState.target === target && frameState.format === format && frameState.text ? frameState.text : finalText;
   return (

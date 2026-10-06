@@ -4,6 +4,7 @@
 Запуск (из корня репозитория):
     python3 scripts/dev/generate-brand-image.py "<описание по-английски, без текста на картинке>" out.png \
         [модель] [соотношение сторон, например 16:9] [размер: 1K, 2K или 4K]
+    Образец: переменная FE_REF_IMAGE=путь к картинке, которую модель должна воспроизвести (в sidecar пишется её имя).
 
 Ключ читается из файла `api_key.txt` в корне рабочей папки проекта (ищется вверх по каталогам от скрипта; путь
 можно задать переменной окружения FE_OPENROUTER_KEY_FILE). Файл ключа не входит в Git (.gitignore,
@@ -43,7 +44,14 @@ def read_key() -> str:
 
 def generate(prompt: str, out: pathlib.Path, model: str, ratio: str | None, size: str | None = None) -> None:
     """Просит у модели одно изображение, пишет PNG и sidecar с описанием."""
-    body = {"model": model, "modalities": ["image", "text"], "messages": [{"role": "user", "content": prompt}]}
+    content: object = prompt
+    reference = os.environ.get("FE_REF_IMAGE")  # путь к картинке-образцу: модель воспроизводит объект с неё
+    if reference:
+        ref = pathlib.Path(reference)
+        mime = "image/webp" if ref.suffix == ".webp" else ("image/jpeg" if ref.suffix in (".jpg", ".jpeg") else "image/png")
+        encoded = base64.b64encode(ref.read_bytes()).decode()
+        content = [{"type": "text", "text": prompt}, {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{encoded}"}}]
+    body = {"model": model, "modalities": ["image", "text"], "messages": [{"role": "user", "content": content}]}
     config = {}
     if ratio:
         config["aspect_ratio"] = ratio

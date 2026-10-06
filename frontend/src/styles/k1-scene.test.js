@@ -78,7 +78,7 @@ describe('k1-scene.css', () => {
     expect(stripped).toMatch(/@media \(max-width: 767px\) \{\s*\.fe-scene-hero \{ display: none; \}/);
     expect(stripped).not.toContain('hero-phone');
     const f = stripped.match(/\.fe-scene__f \{[^}]*\}/)[0];
-    expect(f).toMatch(/aspect-ratio:\s*1149 \/ 1552/);
+    expect(f).toMatch(/aspect-ratio:\s*1300 \/ 1519/);
     expect(f).toMatch(/height:\s*min\(64vh, 760px\)/);
     expect(f).toMatch(/mask-image:/);
     expect(f).not.toMatch(/mix-blend-mode/);

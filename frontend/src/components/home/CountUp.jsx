@@ -25,6 +25,8 @@ export default function CountUp({
     const node = ref.current;
     if (!node || played.has(group) || !Number.isFinite(value) || value <= 0) return undefined;
     if (typeof window.requestAnimationFrame !== 'function') return undefined;
+    // Вкладка в фоне: кадры анимации не приходят, «0» остался бы данными. Счёта нет.
+    if (document.visibilityState === 'hidden') return undefined;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
     if (document.documentElement.getAttribute('data-fe-motion') === 'off') return undefined;
     const box = node.getBoundingClientRect();
@@ -44,8 +46,11 @@ export default function CountUp({
       }
     };
     frame = window.requestAnimationFrame(step);
+    // Страховка: что бы ни случилось с кадрами (вкладку свернули посреди счёта), итог появляется сам.
+    const safety = window.setTimeout(() => { node.textContent = text; }, COUNT_MS + 500);
     return () => {
       window.cancelAnimationFrame(frame);
+      window.clearTimeout(safety);
       node.textContent = text;
     };
   }, [value, text, format, group]);

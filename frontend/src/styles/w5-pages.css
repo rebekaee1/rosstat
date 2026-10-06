@@ -468,3 +468,7 @@
   border-width: 0 2px 2px 0;
   transform: rotate(40deg);
 }
+
+/* Адрес почты на странице «О проекте» виден текстом: его можно выделить и скопировать (ссылка mailto есть и на кнопке). */
+.x4-contact-mail { margin: 4px 0 2px; font-size: 1.05rem; font-weight: 650; }
+.x4-contact-mail a { color: var(--color-champagne-ink); text-decoration: underline; text-decoration-color: rgba(30, 58, 110, 0.3); text-underline-offset: 3px; user-select: all; }

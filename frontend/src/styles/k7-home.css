@@ -525,75 +525,95 @@
 html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opacity: 0; }
 /* ── 7. Стеклянная F (круг 6, зона B) ────────────────────────────────────── */
 /*
- * Объект сцены главной: большая F из холодного стекла с тонкой золотой кромкой (кадры /brand/emblem-f-2x.webp 1149x1552 и
- * /brand/emblem-f-phone.webp 888x1200, сгенерированы и вырезаны по альфе; prompt в public/brand/README-prompts.md).
- * Кристаллов героя на главной больше нет (раньше они налезали на заголовок, а арт forecast-glass был 960 px при показе 900).
+ * Объект сцены главной: гладкая стеклянная F (кадры /brand/emblem-f-2x.webp 1300x1519 и /brand/emblem-f-phone.webp 856x1000 с альфой;
+ * сгенерированы по образцу прежней forecast-glass, форма и стекло те же; prompt в public/brand/README-prompts.md).
  * Картинка подключается только когда сцена поставила html[data-fe-f="on"] (после load и простоя браузера), поэтому не мешает LCP.
- *  - от 1024 px: внутри плиты планеты, за шаром и списком стран (слой z-index -1 в стеке плиты: выше её стекла, ниже содержимого),
- *    высота около 70 % первого экрана, не выше 760 px (2x от размера показа), прозрачность .42, обычное смешение, маска растворяет
- *    левый и нижний края. Заголовок, эйбрау, лид и поиск стоят в левой колонке и под F не лежат;
+ *  - от 1024 px: стоит в карточке «Платформа в цифрах» (она на всю ширину под планетой и «Миром сейчас») справа, как предмет на витрине;
+ *    текст и числа лежат слева и под F не попадают (у карточки справа поле под F). За списком рейтинга F больше нет: подписи сливались;
  *  - до 1024 px: справа от заголовка, лида и эйбрау (их ширина сужена на ширину F), поиск ниже F.
  */
-.fe-dashboard .fe-hero-planet [data-block="home-workbench"] { isolation: isolate; }
 @media (min-width: 1024px) {
-  html[data-fe-f="on"] .fe-dashboard .fe-hero-planet [data-block="home-workbench"]::before {
-    content: '';
+  .fe-dashboard [data-block='home-data-scope'].fe-scope { padding-right: clamp(220px, 22vw, 320px); }
+  html[data-fe-f="on"] .fe-dashboard [data-block='home-data-scope'] .fe-scope__f {
     position: absolute;
-    z-index: -1;
-    right: 3%;
-    top: 16px;
-    height: min(calc(100% - 32px), 70svh, 760px);
-    aspect-ratio: 1149 / 1552;
+    z-index: 0;
+    right: clamp(16px, 3vw, 48px);
+    top: 14px;
+    height: min(calc(100% - 28px), 320px);
+    aspect-ratio: 1300 / 1519;
     pointer-events: none;
     background: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
-    opacity: 0.42;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 26%), linear-gradient(180deg, #000 66%, transparent 100%);
-    -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(90deg, transparent 0, #000 26%), linear-gradient(180deg, #000 66%, transparent 100%);
-    mask-composite: intersect;
     animation: fe-k7-f-in 0.8s ease both;
   }
 }
 @media (max-width: 1023px) {
   .fe-dashboard [data-block="home-hero"] .fe-hero-text > .fe-hero-eyebrow,
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1,
-  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 128px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 136px); }
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(28px, 8.2vw, 32px); }
   html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after {
     content: '';
     position: absolute;
     right: -4px;
     top: 4px;
-    width: 112px;
-    height: 152px;
+    width: 120px;
+    height: 140px;
     pointer-events: none;
     background: url('/brand/emblem-f-phone.webp') center / contain no-repeat;
-    opacity: 0.5;
     animation: fe-k7-f-in 0.8s ease both;
   }
 }
 @media (min-width: 640px) and (max-width: 1023px) {
   .fe-dashboard [data-block="home-hero"] .fe-hero-text > .fe-hero-eyebrow,
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1,
-  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 208px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 216px); }
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 5vw, 46px); }
-  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after { width: 180px; height: 243px; right: 0; }
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after { width: 190px; height: 222px; right: 0; }
 }
 @keyframes fe-k7-f-in { from { opacity: 0; } }
-:root[data-theme='dark'] .fe-dashboard [data-block="home-workbench"]::before,
-:root.dark .fe-dashboard [data-block="home-workbench"]::before,
+:root[data-theme='dark'] .fe-dashboard [data-block='home-data-scope'] .fe-scope__f,
+:root.dark .fe-dashboard [data-block='home-data-scope'] .fe-scope__f,
 :root[data-theme='dark'] .fe-dashboard .fe-hero-text::after,
 :root.dark .fe-dashboard .fe-hero-text::after,
 html[data-fe-lite='on'] .fe-dashboard .fe-hero-text::after,
-html[data-fe-lite='on'] .fe-dashboard [data-block="home-workbench"]::before { display: none; }
+html[data-fe-lite='on'] .fe-dashboard [data-block='home-data-scope'] .fe-scope__f { display: none; }
 @media (prefers-reduced-motion: reduce) {
   html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after,
-  html[data-fe-f="on"] .fe-dashboard [data-block="home-workbench"]::before { animation: none; }
+  html[data-fe-f="on"] .fe-dashboard [data-block='home-data-scope'] .fe-scope__f { animation: none; }
 }
 html[data-fe-motion='off'] .fe-dashboard .fe-hero-text::after,
-html[data-fe-motion='off'] .fe-dashboard [data-block="home-workbench"]::before { animation: none; }
+html[data-fe-motion='off'] .fe-dashboard [data-block='home-data-scope'] .fe-scope__f { animation: none; }
 @media print {
   .fe-dashboard .fe-hero-text::after,
-  .fe-dashboard [data-block="home-workbench"]::before { display: none; }
+  .fe-dashboard [data-block='home-data-scope'] .fe-scope__f { display: none; }
 }
 /* Положение кадра граней героя (страна и 404) задаёт только k1-scene.css: --fe-hero-frame-*; здесь переопределений нет. */
+
+/* ── 8. «Попробуйте сами»: ровная сетка и чистые панели (круг 6, правка по скринам владельца) ─────────────────────────────────────
+   Три карточки выстроены по одним линиям: подписи под заголовком занимают две строки у всех, поля начинаются на одной высоте,
+   результат прижат к низу тела карточки и одной высоты. Выпадающие списки без системной стрелки: своя стрелка на одном месте.
+   Панель результата плоская (светлая заливка без свечения и тени, раньше по её краям расплывались грязные пятна). */
+.fe-dashboard .fe-tool { gap: 16px; }
+.fe-dashboard .fe-tool__lead { min-height: calc(2 * 1.4 * 13px); }
+.fe-dashboard .fe-tool__body { display: flex; flex-direction: column; gap: 12px; align-content: normal; }
+.fe-dashboard .fe-tool__body > .fe-tool__result { margin-top: auto; }
+.fe-dashboard .fe-tool__result {
+  min-height: 124px;
+  background: rgb(30 58 110 / 0.05);
+  box-shadow: none;
+}
+.fe-dashboard .fe-tool__result--cta { min-height: 0; padding: 0; background: transparent; }
+.fe-dashboard .fe-tool__result--cta .fe-tool__cta { width: 100%; justify-content: center; }
+.fe-dashboard select.fe-tool__input {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0 40px 0 14px;
+  background-color: var(--k7-well-bg, rgb(255 255 255 / 0.7));
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%2355627A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6l4.5 4.5L12.5 6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.fe-dashboard select.fe-tool__input:disabled { cursor: default; opacity: 0.7; }

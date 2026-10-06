@@ -81,6 +81,7 @@ export default function HomeDataScope() {
       style={{ '--fe-delay': '0.08s' }}
       aria-labelledby="home-data-scope-title"
     >
+      <span className="fe-scope__f" aria-hidden="true" />
       <div className="relative">
         <h2 id="home-data-scope-title" className="fe-scope-title">
           {t('home.scope.title')}

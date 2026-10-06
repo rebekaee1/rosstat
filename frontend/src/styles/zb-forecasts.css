@@ -407,3 +407,6 @@ html[data-fe-lite='on'] .zb-fc__ribbon,
   .zb-fc__plot { animation: none; }
   .zb-fc__card { transition: none; }
 }
+
+/* Карточка прогноза целиком нажимается (круг 6): ссылка «Открыть график» растянута на всю карточку приёмом .fe-stretch (styles/z1-tokens.css). */
+.zb-fc__card.fe-stretch { cursor: pointer; }

@@ -13,9 +13,9 @@ const ATLAS_WIDTH = 2048;
 const ATLAS_HEIGHT = 1024;
 // Round 6: no plate and no pointer. A name is plain graphite text with a 1 px light halo, standing on its country.
 const TAIL_HEIGHT = 0;
-const PADDING_X = 5;
-const PADDING_Y = 3;
-const HALO_WIDTH = 3;
+const PADDING_X = 6;
+const PADDING_Y = 4;
+const HALO_WIDTH = 5;
 
 const VERTEX = `
   attribute vec4 labelUv;

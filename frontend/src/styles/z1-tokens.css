@@ -390,3 +390,15 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
   :is(a, button, [role='link'], [data-fe-float]):is(.fe-panel, .fe-glass, .fe-glass-lite, .fe-glass-key, .fe-dark-card, .fe-glass-dark, .fe-float):is(:hover, :active),
   .fe-lift:is(:hover, :active), .fe-float:is(:hover, :active) { transform: none; }
 }
+
+/* ── Карточка целиком как ссылка (круг 6) ─────────────────────────────────────────────────────────────────────────────────────
+   `.fe-stretch` на карточке, `.fe-stretch__link` на главной ссылке внутри: её область растягивается на всю карточку (::after), так что
+   нажимается любое место, а скринридер и клавиатура видят одну обычную ссылку. Наведение поднимает карточку, фокус даёт кольцо. */
+.fe-stretch { position: relative; transition: transform 0.2s var(--fe-ease-reveal, ease), box-shadow 0.25s ease; }
+.fe-stretch__link::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+@media (hover: hover) {
+  .fe-stretch:hover { transform: translateY(-2px); }
+}
+.fe-stretch:has(.fe-stretch__link:focus-visible) { box-shadow: var(--fe-focus-ring), var(--fe-float-shadow, 0 18px 40px -24px rgba(30, 38, 56, 0.4)); }
+.fe-stretch__link:focus-visible { outline: none; }
+@media (prefers-reduced-motion: reduce) { .fe-stretch:hover { transform: none; } }

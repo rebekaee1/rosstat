@@ -344,15 +344,15 @@
       "shown_in": "maskable-значок ОС 512 px"
     },
     "brand/emblem-f-2x.webp": {
-      "px": 1149,
-      "max_display_px": 563,
+      "px": 1300,
+      "max_display_px": 650,
       "dpr": 2,
       "used": true,
       "shown_in": "Emblem photo: стеклянная F, высота показа не более 760 CSS px (563 px по ширине), DPR 2"
     },
     "brand/emblem-f-phone.webp": {
-      "px": 888,
-      "max_display_px": 430,
+      "px": 856,
+      "max_display_px": 428,
       "dpr": 2,
       "used": true,
       "shown_in": "Emblem photo (телефон): стеклянная F рядом с заголовком, до 430 CSS px по ширине, DPR 2"

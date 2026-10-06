@@ -340,7 +340,7 @@ html.fe-scene-on #root {
   right: clamp(8px, 3vw, 64px);
   top: 14vh;
   height: min(64vh, 760px);
-  aspect-ratio: 1149 / 1552;
+  aspect-ratio: 1300 / 1519;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.7s ease;

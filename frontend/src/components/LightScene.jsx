@@ -203,7 +203,7 @@ function HeroLayer({ kind }) {
 
 /**
  * Стеклянная F: один крупный объект сцены. `mode="all"` виден на любой ширине, `mode="phone"` только до 768 px
- * (там, где на компьютере стоят кристаллы героя). Кадр: 1149x1552 с альфой для компьютера, 888x1200 для телефона.
+ * (там, где на компьютере стоят кристаллы героя). Кадр: 1300x1519 с альфой для компьютера, 856x1000 для телефона.
  */
 function SceneF({ mode }) {
   const [loaded, setLoaded] = useState(false);
@@ -215,12 +215,12 @@ function SceneF({ mode }) {
   return (
     <div className={`fe-scene__f${loaded ? ' is-ready' : ''}`} data-fe-f-mode={mode} aria-hidden="true">
       <picture>
-        <source media="(min-width: 768px)" srcSet="/brand/emblem-f-2x.webp" width="1149" height="1552" />
+        <source media="(min-width: 768px)" srcSet="/brand/emblem-f-2x.webp" width="1300" height="1519" />
         <img
           ref={imgRef}
           src="/brand/emblem-f-phone.webp"
-          width="888"
-          height="1200"
+          width="856"
+          height="1000"
           alt=""
           loading="lazy"
           decoding="async"

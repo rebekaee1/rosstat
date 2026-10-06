@@ -88,6 +88,9 @@ export default function About() {
 
         <InfoCard icon={Mail} title={t('x4.about.contact.title')} wide>
           <p>{t('x4.about.contact.body')}</p>
+          <p className="x4-contact-mail">
+            <a href={`mailto:${CONTACT_EMAIL}`} onClick={() => track(events.CONTACT_EMAIL)}>{CONTACT_EMAIL}</a>
+          </p>
           <div className="pt-1">
             <Button
               as="a"
