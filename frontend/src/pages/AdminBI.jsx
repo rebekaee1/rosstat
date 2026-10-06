@@ -1816,7 +1816,7 @@ function MetricTreeTab({ d }) {
       tooltip: { formatter: (p) => `${p.value[0]}: ${Number(p.value[1]).toLocaleString('ru-RU')} сессий` },
       visualMap: {
         min: 0, max: calMax, orient: 'horizontal', left: 'center', bottom: 0,
-        inRange: { color: ['#F4EFE3', GOLD, INK] }, textStyle: { fontSize: 10 },
+        inRange: { color: ['#F2F5FA', GOLD, INK] }, textStyle: { fontSize: 10 },
       },
       calendar: {
         range: year, cellSize: ['auto', 14], left: 40, right: 10, top: 24,

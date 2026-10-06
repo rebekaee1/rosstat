@@ -53,7 +53,7 @@
   --fe-focus: #B08A3E;
   /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
   --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #2A3550, #1E2638));
-  --fe-chip-active-ink: var(--fe-on-active, #F3EFE6);
+  --fe-chip-active-ink: var(--fe-on-active, #F2F5FA);
 }
 
 /* Explicit preference also supports future theme controls; embed keeps its own palette. */

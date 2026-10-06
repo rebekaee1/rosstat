@@ -186,7 +186,7 @@
 }
 .fe-dashboard .fe-hero-planet .planet-quick-chip.is-active,
 .fe-dashboard .fe-hero-planet .planet-round.is-active {
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   background: var(--fe-glass-active);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.2);
 }
@@ -219,7 +219,7 @@
 }
 .fe-dashboard .fe-hero-planet .planet-layer-switch button[aria-pressed='true'] {
   background: var(--fe-glass-active);
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.2);
 }
 
@@ -257,5 +257,5 @@
   background: var(--fe-glass-l2);
   box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
-.fe-dashboard .fe-hero-planet .planet-scale[open] summary { background: var(--fe-glass-active); color: var(--fe-on-active, #F3EFE6); }
+.fe-dashboard .fe-hero-planet .planet-scale[open] summary { background: var(--fe-glass-active); color: var(--fe-on-active, #F2F5FA); }
 .fe-dashboard .fe-hero-planet .planet-legend { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint); }

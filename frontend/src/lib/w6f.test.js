@@ -85,10 +85,10 @@ describe('карта регионов: пузыри и шкала', () => {
     expect(bubbleLayout(mapData)).toBe(layout);
   });
 
-  it('шкала мельче прежних пяти ступеней, крайние цвета тёплой шкалы K4.6: лёд и глубокое золото', () => {
+  it('шкала мельче прежних пяти ступеней, крайние цвета холодной шкалы круга 6: лёд и глубокий синий', () => {
     expect(MAP_SCALE.length).toBeGreaterThanOrEqual(8);
-    expect(MAP_SCALE[0]).toBe('#E4EDF6');
-    expect(MAP_SCALE[MAP_SCALE.length - 1]).toBe('#9A6A22');
+    expect(MAP_SCALE[0]).toBe('#C9D7EA');
+    expect(MAP_SCALE[MAP_SCALE.length - 1]).toBe('#1E3A6E');
     expect(new Set(MAP_SCALE).size).toBe(MAP_SCALE.length);
     const q = buildQuantiles([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     expect(new Set([1, 2, 3, 4, 5, 6, 7, 8, 9].map(q)).size).toBeGreaterThanOrEqual(8);

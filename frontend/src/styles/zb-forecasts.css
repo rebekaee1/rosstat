@@ -206,13 +206,11 @@
   flex: none;
   width: 7px;
   height: 7px;
-  transform: rotate(45deg);
-  border-radius: 1px;
-  background: linear-gradient(135deg, #F7EBC8, #B08A3E);
-  box-shadow: 0 0 6px rgba(201, 162, 77, 0.7);
+  border-radius: 50%;
+  background: #B08A3E;
 }
 
-/* «Сейчас → Через год»: две цифры и золотая стрелка-грань между ними. */
+/* «Сейчас → Через год»: две цифры и тонкая синяя стрелка между ними. */
 .zb-fc__nums {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -220,7 +218,7 @@
   gap: 0.6rem;
 }
 .zb-fc__nums--skel { grid-template-columns: 1fr 1fr; }
-.zb-fc__arrow { flex: none; width: 30px; height: 30px; filter: drop-shadow(0 4px 6px rgba(176, 138, 62, 0.4)); }
+.zb-fc__arrow { flex: none; width: 30px; height: 30px; }
 
 .zb-fc__num {
   min-width: 0;
@@ -248,7 +246,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 4px 8px rgba(176, 138, 62, 0.28));
 }
 
 .zb-fc__num-date {
@@ -299,7 +296,6 @@
   stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 4px 6px rgba(201, 162, 77, 0.35));
 }
 
 .zb-fc__zone {
@@ -316,8 +312,7 @@
   fill: #C9A24D;
   stroke: #FFF6DA;
   stroke-width: 1.6;
-  filter: drop-shadow(0 0 5px rgba(201, 162, 77, 0.85));
-}
+  }
 
 .zb-fc__dot-spark { fill: rgba(255, 255, 255, 0.85); }
 

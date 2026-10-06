@@ -21,7 +21,7 @@ router = APIRouter(tags=["pwa"], include_in_schema=False)
 # Публичный конфиг — под /api/v1/pwa.
 config_router = APIRouter(prefix="/pwa", tags=["pwa"])
 
-THEME = "#EEF0F4"
+THEME = "#F4F5F7"
 
 _COPY = {
     "ru": {

@@ -41,10 +41,11 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
     expect(z5).toMatch(/\.z5-key__value small\s*\{[^}]*font-size: clamp\(14px, 0\.5em, 24px\)/);
   });
 
-  it('«год назад»: стеклянная пилюля с бусиной-свечением, цвет по знаку без красного', () => {
+  it('«год назад»: стеклянная пилюля с плоской точкой, цвет по знаку без красного', () => {
     expect(z5).toMatch(/\.z5-key__ago\.fe-tone--good/);
     expect(z5).toMatch(/\.z5-key__ago\.fe-tone--bad/);
-    expect(z5).toMatch(/\.z5-key__ago > \[aria-hidden='true'\]\s*\{[^}]*radial-gradient/);
+    expect(z5).toMatch(/\.z5-key__ago > \[aria-hidden='true'\]\s*\{[^}]*background: var\(--k6-bead-b\)/);
+    expect(z5).not.toMatch(/\.z5-key__ago > \[aria-hidden='true'\]\s*\{[^}]*radial-gradient/);
     expect(z5).not.toMatch(/\.z5-key__ago[^{]*\{[^}]*#DC2626/i);
   });
 
@@ -55,7 +56,7 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
   });
 
   it('профиль страны: сапфир, силуэт заливается градиентом кристалла', () => {
-    expect(z5).toMatch(/fill: url\(#fe-k6-crystal\) #C9A24D/);
+    expect(z5).toMatch(/fill: url\(#fe-k6-crystal\) #A9BFE0/);
     expect(z5).toMatch(/\.z5-profile::before\s*\{[^}]*radial-gradient/);
     expect(z5).not.toMatch(/\.z5-profile[^{]*\{[^}]*linear-gradient\(rgba\(255, 255, 255, 0\.07\) 1px/);
   });

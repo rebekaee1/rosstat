@@ -94,19 +94,9 @@ function MiniChart({ item, label }) {
 
 /** Стрелка-грань между «Сейчас» и «Через год»: золотой ромб с шевроном, без контура. */
 function FacetArrow() {
-  const gid = useId().replace(/:/g, '');
   return (
     <svg className="zb-fc__arrow" viewBox="0 0 30 30" width="30" height="30" aria-hidden="true" focusable="false">
-      <defs>
-        <linearGradient id={`${gid}-d`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#F7EBC8" />
-          <stop offset="0.55" stopColor="#C9A24D" />
-          <stop offset="1" stopColor="#8F6B24" />
-        </linearGradient>
-      </defs>
-      <path d="M15 1.5 L28.5 15 L15 28.5 L1.5 15 Z" fill={`url(#${gid}-d)`} />
-      <path d="M15 1.5 L28.5 15 L15 15 L1.5 15 Z" fill="#fff" opacity="0.28" />
-      <path d="M12.2 10.6 L17.4 15 L12.2 19.4" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 15H24M17.5 8.5L24 15L17.5 21.5" fill="none" stroke="#7C9AC9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

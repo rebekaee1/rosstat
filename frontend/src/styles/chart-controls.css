@@ -81,16 +81,16 @@ a.fe-chip { text-decoration: none; }
   height: 20px;
   margin-top: -6px;
   border-radius: 9999px;
-  background: radial-gradient(circle at 34% 28%, #FFF6DA 0, #E9CD8E 22%, #C9A24D 58%, #A9812F 100%);
-  box-shadow: 0 5px 10px -4px rgba(60, 48, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: #fff;
+  box-shadow: 0 2px 8px -1px rgba(30, 38, 56, 0.4), 0 0 0 4px rgba(30, 58, 110, 0.1);
 }
 .fe-range::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border: 0;
   border-radius: 9999px;
-  background: radial-gradient(circle at 34% 28%, #FFF6DA 0, #E9CD8E 22%, #C9A24D 58%, #A9812F 100%);
-  box-shadow: 0 5px 10px -4px rgba(60, 48, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: #fff;
+  box-shadow: 0 2px 8px -1px rgba(30, 38, 56, 0.4), 0 0 0 4px rgba(30, 58, 110, 0.1);
 }
 .fe-range:focus-visible { outline: none; }
 .fe-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--color-champagne-ink, #80642f); outline-offset: 2px; }
@@ -222,8 +222,8 @@ a.fe-chip { text-decoration: none; }
   position: absolute;
   top: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(233, 205, 142, 0.3), rgba(201, 162, 77, 0.16));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 8px 16px -10px rgba(176, 138, 62, 0.6);
+  background: rgba(44, 74, 138, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
   cursor: grab;
 }
 .fe-brush[data-active='move'] .fe-brush__window { cursor: grabbing; }
@@ -249,8 +249,8 @@ a.fe-chip { text-decoration: none; }
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%, #FFF6DA 0, #E9CD8E 22%, #C9A24D 58%, #A9812F 100%);
-  box-shadow: 0 6px 12px -4px rgba(60, 48, 24, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  background: #fff;
+  box-shadow: 0 2px 8px -1px rgba(30, 38, 56, 0.4), 0 0 0 4px rgba(30, 58, 110, 0.1);
 }
 .fe-brush__handle:focus-visible > span { outline: 2px solid var(--color-champagne-ink, #80642f); outline-offset: 2px; }
 .fe-brush__handle:focus { outline: none; }

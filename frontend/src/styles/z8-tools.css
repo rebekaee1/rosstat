@@ -178,7 +178,7 @@
   border-radius: 999px;
   /* Плоская графитовая кнопка (круг 6; была золотая бусина с бликом). Каждое нажатие поворачивает стрелки на 180° (--k8-turn). */
   background: var(--k8-bead, linear-gradient(135deg, #2a3550, #1e2638));
-  color: var(--fe-on-active, #f3efe6);
+  color: var(--fe-on-active, #F2F5FA);
   cursor: pointer;
   box-shadow: var(--k8-bead-shadow, 0 4px 10px -3px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2));
   transition: transform 0.2s var(--z8-ease);
@@ -471,7 +471,7 @@
   transition: color 0.2s;
 }
 .fe-z8-seg__btn:hover { color: var(--color-text-primary); }
-.fe-z8-seg__btn.is-active { background: transparent; color: var(--fe-on-active, #f3efe6); box-shadow: none; }
+.fe-z8-seg__btn.is-active { background: transparent; color: var(--fe-on-active, #F2F5FA); box-shadow: none; }
 @media (pointer: coarse) { .fe-z8-seg__btn { min-height: 44px; } }
 .fe-z8-search {
   display: flex;
@@ -620,7 +620,7 @@
   transition: color 0.2s;
 }
 .fe-z8-tab:hover { color: var(--color-text-primary); }
-.fe-z8-tab.is-active { color: var(--fe-on-active, #f3efe6); background: transparent; box-shadow: none; }
+.fe-z8-tab.is-active { color: var(--fe-on-active, #F2F5FA); background: transparent; box-shadow: none; }
 .fe-z8-tab__icon { display: inline-flex; flex: none; }
 .fe-z8-tab__text { display: grid; min-width: 0; }
 .fe-z8-tab__title { font-size: 15px; font-weight: 650; line-height: 1.25; }

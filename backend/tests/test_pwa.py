@@ -26,7 +26,7 @@ def test_manifest_shape_ru_and_en():
         assert m["start_url"] == "/" and m["scope"] == "/" and m["id"] == "/"
         assert m["name"] == "Forecast Economy"
         assert len(m["short_name"]) <= 12
-        assert m["theme_color"] == m["background_color"] == "#EEF0F4"
+        assert m["theme_color"] == m["background_color"] == "#F4F5F7"
     assert ru["description"] != en["description"]
     assert ru["shortcuts"][0]["name"] == "Россия" and en["shortcuts"][0]["name"] == "Russia"
     # Каждый origin ссылается на СВОЙ манифест (getInstalledRelatedApps).

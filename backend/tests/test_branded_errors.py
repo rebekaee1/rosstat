@@ -41,7 +41,7 @@ def test_branded_429_and_5xx_are_wired_to_internal_static_pages():
 def test_branded_pages_exist_and_speak_both_languages_without_a_backend():
     for name in ("429.html", "50x.html", "404.html"):
         html = (PUBLIC / name).read_text(encoding="utf-8")
-        assert "#F6F1E6" in html, f"{name}: фон бумаги"
+        assert "#F4F5F7" in html, f"{name}: фон бумаги"
         assert 'fill="#AD8A48"' in html, f"{name}: логотип"
         assert 'class="ru"' in html and 'class="en"' in html, f"{name}: оба языка"
         assert "·" not in html

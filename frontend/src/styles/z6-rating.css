@@ -144,16 +144,14 @@
   grid-column: 1 / -1; display: flex; align-items: center; gap: 9px;
   color: var(--z6-gold-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
 }
-/* Бусина у подписи: светится (blur 8 px), не кольцо. */
+/* Точка у подписи: плоская, без свечения (круг 6). */
 .z6-ribbon .w2-fact-label::before {
   content: ''; width: 10px; height: 10px; border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #FFF3CF, #E9C97A 55%, #B08A3E);
-  box-shadow: 0 0 9px 1px rgba(201, 162, 77, 0.6);
+  background: #B08A3E;
 }
 .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label { color: #3F5A82; }
 .z6-ribbon .w2-fact[data-place='last'] .w2-fact-label::before {
-  background: radial-gradient(circle at 32% 28%, #F2F7FD, #C9D7EA 55%, #7F96B8);
-  box-shadow: 0 0 9px 1px rgba(127, 150, 184, 0.6);
+  background: #7C9AC9;
 }
 .z6-ribbon .w2-fact-name { font-size: 15px; }
 .z6-ribbon .w2-fact-value { justify-content: flex-end; font-size: 22px; font-weight: 700; }
@@ -242,8 +240,7 @@
 .z6-table-card .w6d-bar > span::after {
   content: ''; position: absolute; right: -2px; top: 50%; width: 12px; height: 12px; margin-top: -6px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #FFFBE8, #F0D98F 45%, #C9A24D);
-  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.55);
+  background: #1E3A6E;
 }
 @keyframes z6-bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 /* Ширина столбцов зависит от ширины самой таблицы, а не окна. */

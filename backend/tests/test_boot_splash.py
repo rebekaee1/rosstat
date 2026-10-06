@@ -104,10 +104,10 @@ def test_first_frame_is_paper_with_the_logo_not_a_white_or_grey_screen():
     """БД8: фон бумаги на самом html и в заставке, крупный логотип; чистые SSR-страницы не затронуты."""
     html = _spa_doc()
     css = html.split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
-    assert "html{background:#F6F1E6}" in css
-    assert "html.fe-boot{overflow:hidden;background:#F6F1E6}" in css
+    assert "html{background:#F4F5F7}" in css
+    assert "html.fe-boot{overflow:hidden;background:#F4F5F7}" in css
     splash_rule = [line for line in css.splitlines() if line.startswith("html.fe-boot .fe-boot-splash{")][0]
-    assert splash_rule.rstrip("}").endswith("#F6F1E6;color:#202A3C;font-family:Manrope,system-ui,sans-serif")
+    assert splash_rule.rstrip("}").endswith("#F4F5F7;color:#202A3C;font-family:Manrope,system-ui,sans-serif")
     assert "#EEF0F4" not in splash_rule
     # Логотип с золотым квадратом внутри заставки и крупнее прежнего.
     splash = html.split('<div class="fe-boot-splash"', 1)[1].split("</div>", 1)[0]

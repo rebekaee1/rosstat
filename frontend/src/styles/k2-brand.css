@@ -39,7 +39,7 @@
   box-shadow: 0 4px 10px -5px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .fe-medal > * { grid-area: 1 / 1; }
-.fe-medal__n { z-index: 1; color: var(--fe-on-active, #F3EFE6); font-size: 12px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.fe-medal__n { z-index: 1; color: var(--fe-on-active, #F2F5FA); font-size: 12px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
 
 /* ═══ Световой шов ═════════════════════════════════════════════════════════
    Луч 8 px с затуханием к краям (радиальный градиент, не линия) и грань 10 px по центру. */
@@ -155,7 +155,7 @@ svg.lucide[stroke-width='2'] { stroke-width: 1.75; }
 /* ═══ Подвал: сапфир, волна света, пилюли источников ═══════════════════════
    Селекторы длиннее правил shell.css и z2-shell.css (подвал там графитовый): класс .fe-k2-footer их перекрывает. */
 footer.fe-footer.fe-k2-footer {
-  --color-text-primary: #F3EFE6;
+  --color-text-primary: #F2F5FA;
   --color-text-secondary: #C7CBD6;
   --color-text-tertiary: #B7BFCF;
   position: relative;
@@ -402,12 +402,12 @@ footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-
 /* Кнопка «На главную»: глубокий синий со светлым текстом (круг 6; золотая заливка — только CTA регистрации). */
 .z2-nf .z2-nf-actions .z2-nf-home {
   background: var(--fe-glass-primary, linear-gradient(135deg, #2C4A8A, #1E3A6E));
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   box-shadow: 0 8px 22px -12px rgba(30, 58, 110, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .z2-nf .z2-nf-actions .z2-nf-home:hover:not(:disabled):not([aria-disabled='true']) {
   background: var(--fe-glass-primary-hover, linear-gradient(135deg, #3558A0, #24447F));
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
 }
 
 @media (prefers-reduced-motion: reduce) {

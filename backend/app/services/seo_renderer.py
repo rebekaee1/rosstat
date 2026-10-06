@@ -996,17 +996,17 @@ _SPA_SSR_HIDE_SCRIPT = (
 BOOT_FALLBACK_MS = 12000
 
 _BOOT_STYLE = """<style id="fe-boot-css">
-html{background:#F6F1E6}
+html{background:#F4F5F7}
 .fe-boot-splash{display:none}
-html.fe-boot{overflow:hidden;background:#F6F1E6}
+html.fe-boot{overflow:hidden;background:#F4F5F7}
 html.fe-boot #root{visibility:hidden}
 html.fe-boot .seo-boot-bar{display:none!important}
-html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(224,200,150,.34),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(173,138,72,.12),transparent 42%),#F6F1E6;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
+html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(124,154,201,.26),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(201,215,234,.42),transparent 42%),#F4F5F7;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
 html.fe-js .fe-boot-splash{display:none!important}
 .fe-boot-brand{display:inline-flex;align-items:center;gap:.7rem;font-size:2.1rem;font-weight:750;letter-spacing:-.06em;line-height:1}
 .fe-boot-brand svg{width:46px;height:52px}
 .fe-boot-brand i{font-style:normal;font-weight:400}
-.fe-boot-globe{width:132px;height:132px;color:#AD8A48}
+.fe-boot-globe{width:132px;height:132px;color:#5B7DB1}
 .fe-boot-globe .fe-g-ring{fill:rgba(255,255,255,.55);stroke:currentColor;stroke-width:1.4;stroke-dasharray:6 5;animation:feBootRing 7s linear infinite;transform-origin:60px 60px}
 .fe-boot-globe .fe-g-m{fill:none;stroke:currentColor;stroke-width:1.1;opacity:.55;transform-box:fill-box;transform-origin:center;animation:feBootSpin 3.2s ease-in-out infinite}
 .fe-boot-globe .fe-g-m:nth-of-type(2){animation-delay:-1.07s}
@@ -1015,7 +1015,7 @@ html.fe-js .fe-boot-splash{display:none!important}
 .fe-boot-globe .fe-g-dot{fill:#AD8A48;animation:feBootPulse 1.6s ease-in-out infinite}
 .fe-boot-cap{margin:-8px 0 0;font-size:13px;letter-spacing:.02em;color:#59697F}
 .fe-boot-skel{display:flex;flex-direction:column;gap:10px;width:100%;max-width:26rem;margin-top:6px}
-.fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(173,138,72,.12);animation:feBootShim 1.5s linear infinite}
+.fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(30,58,110,.08);animation:feBootShim 1.5s linear infinite}
 .fe-boot-skel b:nth-child(1){width:46%}
 .fe-boot-skel b:nth-child(2){height:84px;border-radius:18px}
 .fe-boot-skel b:nth-child(3){width:72%}
@@ -1755,7 +1755,7 @@ def compose_document(
 <meta name="keywords" content="{safe_keywords}">
 <meta name="author" content="Forecast Economy">
 <meta name="robots" content="{robots_content}">
-<meta name="theme-color" content="#EEF0F4">
+<meta name="theme-color" content="#F4F5F7">
 <meta name="color-scheme" content="light">
 {PWA_HEAD_META}
 {_yandex_verification_meta()}
@@ -2034,7 +2034,7 @@ def render_not_found_html(message: str | None = None, path: str | None = None) -
 {SEO_CRITICAL_CSS}
 <title>{escape(title)} — Forecast Economy</title>
 <meta name="robots" content="noindex, follow">
-<meta name="theme-color" content="#EEF0F4">
+<meta name="theme-color" content="#F4F5F7">
 <meta name="color-scheme" content="light">
 </head>
 <body class="seo-fast" data-no-ads>

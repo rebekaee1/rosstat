@@ -101,7 +101,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
@@ -231,7 +231,7 @@
 }
 :root .fe-topic-row__main.is-active {
   background: var(--fe-glass-active);
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 :root .fe-topic-row__main:hover:not(.is-active) { background: var(--fe-glass-l2); }

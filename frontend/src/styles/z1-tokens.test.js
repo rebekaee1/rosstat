@@ -154,7 +154,7 @@ describe('круг 6: холодная палитра, графит и сини�
     expect(tok).toMatch(/--fe-bg-warm:\s*#F4F5F7/);
     expect(tok).toMatch(/--fe-bg-warm-2:\s*#EEF1F5/);
     expect(tok).toMatch(/--fe-glass-active:\s*linear-gradient\(135deg, #2A3550, #1E2638\)/);
-    expect(tok).toMatch(/--fe-on-active:\s*#F3EFE6/);
+    expect(tok).toMatch(/--fe-on-active:\s*#F2F5FA/);
     expect(tok).toMatch(/--fe-on-gold:\s*var\(--fe-on-active\)/);
     expect(tok).toMatch(/--fe-glass-primary:\s*linear-gradient\(135deg, #2C4A8A, #1E3A6E\)/);
   });

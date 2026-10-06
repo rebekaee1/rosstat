@@ -53,7 +53,7 @@
   --k8-well-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.38), inset 0 -1px 0 rgba(216, 230, 250, 0.08);
   --k8-trough-bg: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.12)), rgba(255, 255, 255, 0.04);
   --k8-trough-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(216, 230, 250, 0.08);
-  --k8-engrave: linear-gradient(120deg, #f3efe6 0%, #c4d2ee 100%);
+  --k8-engrave: linear-gradient(120deg, #F2F5FA 0%, #c4d2ee 100%);
   --k8-engrave-light: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45));
   --k8-stone-bg:
     radial-gradient(120% 90% at 100% 0%, rgba(120, 156, 220, 0.24), transparent 62%),

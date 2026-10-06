@@ -231,9 +231,8 @@ input.map-timeline::-moz-range-thumb {
   width: 9px;
   height: 9px;
   margin-top: -4.5px;
-  border-radius: 2px;
+  border-radius: 50%;
   background: #B08A3E;
-  transform: rotate(45deg);
 }
 
 /* ===== 8. Тёмная тема: тот же материал, значения из токенов ===== */

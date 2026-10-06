@@ -47,9 +47,9 @@ describe('CountryMood и CrystalDefs', () => {
     const gradient = container.querySelector('linearGradient#fe-k6-crystal') || container.querySelector('#fe-k6-crystal');
     expect(gradient).toBeTruthy();
     const stops = [...gradient.querySelectorAll('stop')].map((stop) => stop.getAttribute('stop-color').toUpperCase());
-    expect(stops[0]).toBe('#F3E4B8');
-    expect(stops).toContain('#B08A3E');
-    expect(stops[stops.length - 1]).toBe('#7A5F2A');
+    expect(stops[0]).toBe('#E8F0FA');
+    expect(stops).toContain('#7C9AC9');
+    expect(stops[stops.length - 1]).toBe('#2C4A8A');
     expect(container.querySelector('svg').getAttribute('aria-hidden')).toBe('true');
   });
 });

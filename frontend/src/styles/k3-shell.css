@@ -33,7 +33,7 @@ nav.fe-navbar--glass[data-tone='dark'],
 .fe-dock[data-tone='dark'] {
   --k3-paper: 22 32 56;
   --k3-caption: #a8b9cf;
-  --color-text-primary: #f3efe6;
+  --color-text-primary: #F2F5FA;
   --color-text-secondary: #c3cad8;
   --color-text-tertiary: #a8b9cf;
   --color-champagne-ink: #c4d2ee;
@@ -167,7 +167,7 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   background: rgb(30 38 56 / 0.3);
   pointer-events: none;
 }
-.fe-ticker[data-tone='dark'] .fe-ticker__cell + .fe-ticker__cell::before { background: rgb(243 239 230 / 0.4); }
+.fe-ticker[data-tone='dark'] .fe-ticker__cell + .fe-ticker__cell::before { background: rgb(242 245 250 / 0.4); }
 /* Рост и падение: плоская точка 6 px (зелёная / серо-синяя), а не красная стрелка и не свечение; направление читает скринридер. */
 .fe-ticker__delta > [aria-hidden='true'] { display: none; }
 .fe-ticker__delta::before {

@@ -299,7 +299,7 @@
   padding: 0 20px;
   border-radius: 14px;
   background: var(--fe-glass-primary, linear-gradient(135deg, #2C4A8A, #1E3A6E));
-  color: var(--fe-on-active, #F3EFE6);
+  color: var(--fe-on-active, #F2F5FA);
   font-size: 15px;
   font-weight: 650;
   text-decoration: none;

@@ -137,7 +137,7 @@ function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site
   const ctx = canvas.getContext('2d');
 
   // Поле: бумага ивори и три каустики (золото справа сверху, лёд слева, роза внизу).
-  ctx.fillStyle = '#F6F2EA';
+  ctx.fillStyle = '#F4F5F7';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const caustic = (x, y, r, color) => {
     const g = ctx.createRadialGradient(x, y, 0, x, y, r);

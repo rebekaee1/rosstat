@@ -304,7 +304,7 @@ footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
 
 /* ═══ Подвал: графитовое стекло с золотой линией ═════════════════════════ */
 footer.fe-footer {
-  --color-text-primary: #f3efe6;
+  --color-text-primary: #F2F5FA;
   --color-text-secondary: #bcc4d3;
   --color-text-tertiary: #a2adc0;
   --color-border-subtle: rgba(255, 255, 255, 0.11);
@@ -337,7 +337,7 @@ footer.fe-footer::before {
   pointer-events: none;
 }
 footer.fe-footer :where(a, button, summary):focus-visible { outline: 2px solid #dcc189; outline-offset: 3px; }
-footer.fe-footer .fe-brand { color: #f6f2e9; }
+footer.fe-footer .fe-brand { color: #F2F5FA; }
 footer.fe-footer .fe-foot-wrap { padding-block: 28px; }
 @media (min-width: 640px) {
   footer.fe-footer .fe-foot-wrap { padding-block: 28px 18px; }
