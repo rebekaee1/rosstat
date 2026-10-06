@@ -5,7 +5,8 @@ import Spinner from './Spinner';
 /**
  * Единая кнопка. variant: primary | secondary | ghost; size: md (44 px на сенсорных, 40 px иначе) | sm.
  * `as` — любой компонент ссылки (например, Link) или 'a'; `loading` блокирует нажатие и показывает кольцо.
- * Цвета берутся из токенов: заливка primary — champagne-ink с белым текстом (контраст ≥ 5:1).
+ * Цвета берутся из токенов: заливка primary — глубокий синий `--fe-glass-primary` со светлым текстом (круг 6, контраст ≥ 8:1).
+ * Золотая заливка — только у CTA регистрации: добавьте класс `fe-cta-gold` (одна такая кнопка на страницу).
  */
 const Button = forwardRef(function Button({
   as: Tag = 'button', variant = 'primary', size = 'md', loading = false, disabled = false,

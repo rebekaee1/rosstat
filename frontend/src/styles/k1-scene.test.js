@@ -76,8 +76,12 @@ describe('k1-scene.css', () => {
     expect(phone).toMatch(/mask-image:[^;]*radial-gradient\(ellipse/);
   });
 
-  it('лёд тёплый и тихий: альфа не выше .24, на телефоне .14 и пятно не у левого края', () => {
-    expect(stripped).toMatch(/--fe-scene-ice:\s*rgba\(204, 222, 250, 0\.24\)/);
+  it('круг 6: тёплое пятно сцены одно (альфа ≤ .18), лёд и «роза» холодные, на телефоне лёд .14 и пятно не у левого края', () => {
+    const gold = /--fe-scene-gold:\s*rgba\(\d+, \d+, \d+, ([0-9.]+)\)/.exec(stripped);
+    expect(Number(gold[1])).toBeLessThanOrEqual(0.18);
+    expect(stripped).toMatch(/--fe-scene-ice:\s*rgba\(190, 212, 246, 0\.3\)/);
+    expect(stripped).toMatch(/--fe-scene-rose:\s*rgba\(178, 192, 238, 0\.2\)/);
+    expect(stripped).not.toMatch(/--fe-scene-spot-peach:\s*rgba\(244, 196, 164/);
     expect(stripped).toMatch(/\.fe-scene \{ --fe-scene-ice: rgba\(204, 222, 250, 0\.14\); \}/);
     expect(stripped).toMatch(/\.fe-scene__lamp--ice \{ left: 8vw;/);
   });

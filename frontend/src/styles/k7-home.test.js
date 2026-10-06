@@ -55,8 +55,8 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(k7).toMatch(/\.fe-country-grid > li:nth-child\(n \+ 17\)\s*\{[^}]*content-visibility:\s*auto/);
   });
 
-  it('круг 4: шкала места это трубка и камень, без столбиков; кадр героя и карточка планеты поправлены', () => {
-    expect(k7).toMatch(/\.fe-today__scale\s*\{[^}]*linear-gradient\(90deg, #B08A3E/);
+  it('круг 6: шкала места — тонкая полоса лёд → синий и плоская точка, без столбиков; кадр героя и карточка планеты поправлены', () => {
+    expect(k7).toMatch(/\.fe-today__scale\s*\{[^}]*height:\s*4px[^}]*linear-gradient\(90deg, #C9D7EA/);
     expect(k7).toMatch(/\.fe-today__gem\s*\{[^}]*left:\s*calc\(var\(--fe-rank-pos/);
     expect(k7).not.toMatch(/fe-today__ladder/);
     expect(z3).not.toMatch(/fe-today__ladder|fe-today-bar/);

@@ -1,31 +1,33 @@
 /* Главная в хрустале (раунд 3, зона K7): герой, «Мир сейчас», числа платформы, «Попробуйте сами», каталог стран.
    Подключается из HomeHero.jsx последним, поэтому перебивает shell.css и z3-home.css; все правила начинаются с `.fe-dashboard`.
    Что здесь есть:
-     1. Локальные токены света (колодец поля, золотая гравировка, лампы плиток), светлая и тёмная тема.
+     1. Локальные токены света (колодец поля, графитовая гравировка цифр, нейтральные лампы плиток), светлая и тёмная тема.
      2. Герой: поле поиска-«капля», быстрые ссылки L2.
-     3. «Мир сейчас»: четыре плитки L1 с тёплой «лампой» в углу, золотая гравировка цифр, стеклянные столбики.
-     4. Числа платформы: одна плита, световые щели вместо линий, значки-грани.
-     5. «Попробуйте сами»: три равные панели с разной лампой, результат-«камень», ползунок-трубка.
-     6. Каталог стран: карточки L1 без blur, флаг-капля, медали-грани, самоцветы-маркеры, световой шов.
+     3. «Мир сейчас»: четыре плитки L1 с нейтральной «лампой» в углу, графитовые цифры, тонкая шкала места.
+     4. Числа платформы: одна плита, световые щели вместо линий, плоские значки.
+     5. «Попробуйте сами»: три равные панели, результат на L2, тонкий ползунок.
+     6. Каталог стран: карточки L1 без blur, плоский флаг, точки мест, плоские точки-маркеры, световой шов.
+   Круг 6 (зона P): золото и глянцевые «камни» сняты; золото осталось только тонкой точкой и линией.
    Рамок, колец и контуров нет: форму задают свет и тень. Анимируются только transform, opacity и background-position.
    Бюджет blur: на главной остаются шапка, лента и плита планеты (K1/K3/K7.1); всё остальное здесь без backdrop-filter. */
 
 /* ── 1. Токены ───────────────────────────────────────────────────────────── */
 .fe-dashboard {
-  --k7-well-bg: linear-gradient(180deg, rgb(226 215 190 / 0.4), rgb(247 243 233 / 0.62));
-  --k7-well-shadow: inset 0 2px 5px rgb(120 95 45 / 0.16), inset 0 -1px 0 rgb(255 255 255 / 0.8);
+  --k7-well-bg: linear-gradient(180deg, rgb(214 222 236 / 0.4), rgb(244 246 250 / 0.62));
+  --k7-well-shadow: inset 0 2px 5px rgb(30 38 56 / 0.12), inset 0 -1px 0 rgb(255 255 255 / 0.8);
   --k7-stripe: rgb(255 255 255 / 0.36);
   --k7-stripe-hover: rgb(255 255 255 / 0.7);
-  --k7-haze: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(246 242 234 / 0.2));
+  --k7-haze: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(244 246 250 / 0.2));
   --k7-hi: rgb(255 255 255 / 0.95);
-  --k7-gold-text: linear-gradient(170deg, #B08A3E 0%, #8A6A2B 52%, #6B5224 100%);
-  --k7-engrave: drop-shadow(0 1px 0 rgb(255 255 255 / 0.7)) drop-shadow(0 6px 10px rgb(176 138 62 / 0.25));
-  --k7-lamp-gold: rgb(233 205 142 / 0.3);
-  --k7-lamp-rose: rgb(244 186 208 / 0.26);
-  --k7-lamp-ice: rgb(168 208 238 / 0.3);
-  --k7-lamp-mint: rgb(172 226 198 / 0.27);
-  --k7-gem: linear-gradient(135deg, #F7EBC4, #D9BC72 55%, #B08A3E);
-  --k7-gem-ink: #5B4519;
+  /* Круг 6: цифры графитовые (не золотой градиент); лампы плиток все нейтрально-холодные (имена прежние). */
+  --k7-gold-text: linear-gradient(170deg, #2A3550 0%, #1E2638 100%);
+  --k7-engrave: drop-shadow(0 1px 0 rgb(255 255 255 / 0.7));
+  --k7-lamp-gold: rgb(196 210 234 / 0.3);
+  --k7-lamp-rose: rgb(196 210 234 / 0.22);
+  --k7-lamp-ice: rgb(176 200 234 / 0.3);
+  --k7-lamp-mint: rgb(196 210 234 / 0.22);
+  --k7-gem: linear-gradient(135deg, #2A3550, #1E2638);
+  --k7-gem-ink: #F3EFE6;
   --z3-gold-text: var(--k7-gold-text);
 }
 :root[data-theme='dark'] .fe-dashboard,
@@ -36,16 +38,16 @@
   --k7-stripe-hover: rgb(255 255 255 / 0.1);
   --k7-haze: linear-gradient(180deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.02));
   --k7-hi: rgb(216 230 250 / 0.5);
-  --k7-gold-text: linear-gradient(170deg, #F3E4B8 0%, #D9BC72 55%, #B08A3E 100%);
+  --k7-gold-text: linear-gradient(170deg, #F3EFE6 0%, #C4D2EE 100%);
   --k7-engrave: drop-shadow(0 4px 10px rgb(0 0 0 / 0.4));
   --k7-lamp-gold: rgb(201 162 77 / 0.16);
   --k7-lamp-rose: rgb(190 110 150 / 0.13);
   --k7-lamp-ice: rgb(86 120 170 / 0.2);
   --k7-lamp-mint: rgb(80 160 130 / 0.14);
-  --k7-gem-ink: #2A1F08;
+  --k7-gem-ink: #F3EFE6;
 }
 
-/* Золотая гравировка: градиент по тексту и мягкий отсвет-тень (static filter, не анимируется). */
+/* Гравировка цифр (круг 6: графит): градиент по тексту и тонкий отсвет снизу (static filter, не анимируется). */
 /* У чисел платформы (dd) отсвет-тени нет: filter сделал бы dd контейнером для растянутой ссылки-плитки и сузил бы область нажатия. */
 .fe-dashboard .fe-today__num,
 .fe-dashboard .fe-tool__num,
@@ -87,7 +89,7 @@
     var(--fe-glass-l1);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
-/* Блик по верхней дуге внутри капли. */
+/* Блик по верхней дуге внутри капли (круг 6: снят, остаётся блик сверху 1 px от inset-glint). */
 .fe-dashboard .fe-hero-search > button::before {
   content: '';
   position: absolute;
@@ -99,27 +101,29 @@
   border-radius: 999px;
   pointer-events: none;
   background: linear-gradient(180deg, var(--k7-hi), rgb(255 255 255 / 0));
+  opacity: 0;
 }
 .fe-dashboard .fe-hero-search > button > * { position: relative; z-index: 1; }
-/* Лупа в тёплом свете: круглая линза со свечением. */
+/* Лупа (круг 6): плоский графитовый круг со светлой иконкой, без глянца и свечения. */
 .fe-dashboard .fe-hero-search > button > svg:first-child {
   flex: none;
   width: 38px;
   height: 38px;
   padding: 9px;
   border-radius: 50%;
-  color: var(--z3-gold-ink);
-  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.95), rgb(246 231 190 / 0.8) 55%, rgb(233 205 142 / 0.5));
-  box-shadow: 0 0 18px -2px rgb(201 162 77 / 0.5), inset 0 1px 0 rgb(255 255 255 / 0.9);
+  color: var(--fe-on-active, #F3EFE6);
+  background: var(--fe-glass-active);
+  box-shadow: 0 6px 14px -8px rgb(30 38 56 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
 .fe-dashboard .fe-hero-search > button:hover > svg:first-child,
 .fe-dashboard .fe-hero-search > button:focus-visible > svg:first-child {
-  box-shadow: 0 0 26px 2px rgb(201 162 77 / 0.75), inset 0 1px 0 rgb(255 255 255 / 0.9);
+  background: var(--fe-glass-active-hover);
+  box-shadow: 0 8px 18px -8px rgb(30 38 56 / 0.7), inset 0 1px 0 rgb(255 255 255 / 0.2);
 }
-/* Фокус: золотое свечение (blur 32) вместо контура. */
+/* Фокус: мягкое синее свечение (blur 32) вместо контура. */
 .fe-dashboard .fe-hero-search > button:focus-visible {
   outline: none;
-  box-shadow: var(--fe-focus-ring), 0 0 32px -4px rgb(201 162 77 / 0.6), var(--fe-float-shadow), var(--fe-inset-glint);
+  box-shadow: var(--fe-focus-ring), 0 0 32px -4px rgb(30 58 110 / 0.4), var(--fe-float-shadow), var(--fe-inset-glint);
 }
 
 /* Быстрые ссылки: линзы L2; на телефоне лента с затуханием у правого края. */
@@ -130,7 +134,7 @@
 }
 .fe-dashboard .fe-quick__chip:hover {
   background: var(--fe-glass-l2-hover);
-  box-shadow: 0 10px 20px -12px rgb(176 138 62 / 0.6), var(--fe-inset-glint);
+  box-shadow: 0 10px 20px -12px rgb(30 38 56 / 0.45), var(--fe-inset-glint);
 }
 .fe-dashboard .fe-quick__row { padding-bottom: 8px; }
 .fe-dashboard .fe-hero-text .fe-hero-eyebrow::before { height: 6px; width: 34px; background: radial-gradient(ellipse 50% 100% at 50% 50%, var(--z3-gold), transparent 75%); border-radius: 999px; }
@@ -169,37 +173,35 @@
   height: 26px;
   border-radius: 50%;
   font-size: 15px;
-  background: radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.4) 62%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), 0 6px 10px -6px rgb(60 48 24 / 0.5);
+  background: #fff;
+  box-shadow: 0 4px 8px -5px rgb(30 38 56 / 0.4);
 }
-/* Шкала места: гладкая стеклянная трубка с «жидким золотом» (темнее у первого места) и камень-самоцвет на позиции по рангу.
-   Полос и штрихов нет: форму задают градиент, блик и тень. Камень появляется через transform и opacity. */
+/* Шкала места (круг 6): тонкая полоса 4 px лёд → синий и плоская точка на позиции по рангу. Трубки с «жидким золотом» и камня-самоцвета больше нет.
+   Точка появляется через transform и opacity. */
 .fe-dashboard .fe-today__scale {
-  height: 14px;
-  margin: 0 9px;
+  height: 4px;
+  margin: 0 7px;
   border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0) 55%),
-    linear-gradient(90deg, #B08A3E 0%, #D9BC72 38%, #F3E4B8 100%);
-  box-shadow: inset 0 2px 3px rgb(255 255 255 / 0.5), inset 0 -3px 5px rgb(107 82 36 / 0.28), 0 8px 12px -8px rgb(60 48 24 / 0.45);
+  background: linear-gradient(90deg, #C9D7EA 0%, #2C4A8A 70%, #1E3A6E 100%);
+  box-shadow: none;
 }
 .fe-dashboard .fe-today__gem {
   position: absolute;
   top: 50%;
   left: calc(var(--fe-rank-pos, 0) * 100%);
-  width: 22px;
-  height: 22px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 32% 28%, #fff 0 12%, #FFF3CF 30%, #E9C97A 58%, #8F6B24);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -3px 4px rgb(107 82 36 / 0.3), 0 0 14px rgb(201 162 77 / 0.7), 0 7px 10px -4px rgb(107 82 36 / 0.6);
+  background: #1E2638;
+  box-shadow: 0 3px 8px -2px rgb(30 38 56 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.2);
   animation: fe-today-gem 0.6s var(--z3-ease) 0.2s both;
 }
 .fe-dashboard .fe-today__pulse {
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(circle at 32% 30%, #fff 0 12%, #F3E4B8 32%, #C9A24D 72%, #8F6B24);
-  box-shadow: 0 0 10px rgb(201 162 77 / 0.7);
+  width: 8px;
+  height: 8px;
+  background: #B08A3E;
+  box-shadow: none;
 }
 
 /* ── 4. Числа платформы: одна плита ────────────────────────────────────── */
@@ -233,34 +235,33 @@
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
   mask-image: linear-gradient(180deg, transparent, #000 25%, #000 75%, transparent);
 }
-/* Значки-грани: повёрнутый ромб с золотым градиентом, символ повёрнут обратно. Стоят над числом (справа от числа на узких колонках не помещались). */
+/* Значки (круг 6): плоский графитовый квадрат со скруглением и светлым символом, без поворота и без золотого градиента. Стоят над числом (справа от числа на узких колонках не помещались). */
 .fe-dashboard .fe-scope-stat__icon {
   top: 12px;
   left: 18px;
   right: auto;
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
   color: var(--k7-gem-ink);
   opacity: 1;
   background: var(--k7-gem);
-  transform: rotate(45deg);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), inset 0 -3px 4px rgb(107 82 36 / 0.25), 0 8px 12px -6px rgb(176 138 62 / 0.65);
+  box-shadow: 0 5px 10px -6px rgb(30 38 56 / 0.5), inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
-.fe-dashboard .fe-scope-stat__icon > svg { width: 13px; height: 13px; transform: rotate(-45deg); }
+.fe-dashboard .fe-scope-stat__icon > svg { width: 14px; height: 14px; }
 .fe-dashboard .fe-scope-update__dot {
-  width: 8px;
-  height: 8px;
-  background: radial-gradient(circle at 32% 30%, #fff 0 12%, #F3E4B8 32%, #C9A24D 72%, #8F6B24);
-  box-shadow: 0 0 8px rgb(201 162 77 / 0.7);
+  width: 6px;
+  height: 6px;
+  background: #B08A3E;
+  box-shadow: none;
 }
 
 /* ── 5. «Попробуйте сами»: три панели, у каждой своя лампа ───────────────── */
 .fe-dashboard .fe-tool {
   --lamp: var(--k7-lamp-gold);
-  --lamp-strong: rgb(201 162 77 / 0.45);
+  --lamp-strong: rgb(120 150 210 / 0.35);
   border-radius: 26px;
   background:
     radial-gradient(90% 70% at 0% 0%, var(--lamp), transparent 66%),
@@ -268,15 +269,15 @@
     var(--fe-glass-l1);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
-.fe-dashboard .fe-tools__grid > .fe-tool:nth-child(2) { --lamp: var(--k7-lamp-rose); --lamp-strong: rgb(226 140 176 / 0.4); }
-.fe-dashboard .fe-tools__grid > .fe-tool:nth-child(3) { --lamp: var(--k7-lamp-ice); --lamp-strong: rgb(120 172 218 / 0.42); }
+.fe-dashboard .fe-tools__grid > .fe-tool:nth-child(2) { --lamp: var(--k7-lamp-rose); --lamp-strong: rgb(120 150 210 / 0.3); }
+.fe-dashboard .fe-tools__grid > .fe-tool:nth-child(3) { --lamp: var(--k7-lamp-ice); --lamp-strong: rgb(120 172 218 / 0.38); }
 .fe-dashboard .fe-tool__icon {
   width: 40px;
   height: 40px;
   border-radius: 14px;
   color: var(--k7-gem-ink);
   background: var(--k7-gem);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), inset 0 -4px 6px rgb(107 82 36 / 0.22), 0 10px 14px -8px rgb(176 138 62 / 0.65);
+  box-shadow: 0 8px 14px -8px rgb(30 38 56 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
 /* Поля и выпадающие списки: колодцы. */
 .fe-dashboard .fe-tool__input {
@@ -286,14 +287,14 @@
 }
 .fe-dashboard .fe-tool__input:focus-visible {
   outline: none;
-  box-shadow: var(--k7-well-shadow), var(--fe-focus-ring), 0 0 22px -4px rgb(201 162 77 / 0.5);
+  box-shadow: var(--k7-well-shadow), var(--fe-focus-ring), 0 0 22px -4px rgb(30 58 110 / 0.35);
 }
 .fe-dashboard .fe-tool__input[aria-invalid='true'] { box-shadow: var(--k7-well-shadow), inset 0 -2px 0 var(--color-negative, #DC2626); }
 .fe-dashboard .fe-tool__swap {
   background: var(--fe-glass-l2);
   box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
-/* Результат: «камень» L2 с золотой цифрой; при пересчёте по нему проходит блик (элемент .fe-tool__sheen создаётся заново). */
+/* Результат (круг 6): панель L2 с графитовой цифрой, без «камня»; при пересчёте по ней проходит блик (элемент .fe-tool__sheen создаётся заново). */
 .fe-dashboard .fe-tool__result {
   position: relative;
   overflow: hidden;
@@ -304,7 +305,7 @@
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.95),
     inset 0 -12px 18px -14px var(--lamp-strong),
-    0 12px 22px -16px rgb(60 48 24 / 0.45);
+    0 12px 22px -16px rgb(30 38 56 / 0.4);
 }
 :root[data-theme='dark'] .fe-dashboard .fe-tool__result,
 :root.dark .fe-dashboard .fe-tool__result {
@@ -334,60 +335,58 @@
 }
 .fe-dashboard .fe-tool__seg-btn.is-active {
   background: var(--fe-glass-active);
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.45);
+  color: var(--fe-on-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
 .fe-dashboard .fe-tool__seg-btn:focus-visible { outline: none; box-shadow: var(--fe-focus-ring), var(--fe-shadow-l2); }
 .fe-dashboard .fe-tool__cta {
-  background: var(--fe-glass-active);
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.45);
+  background: var(--fe-glass-primary);
+  color: var(--fe-on-active);
+  box-shadow: 0 8px 22px -12px rgb(30 58 110 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.16);
 }
-/* Ползунок: стеклянная трубка, заполненная часть золотая, бусина-ручка с бликом. Позицию отдаёт --fe-range-p (из разметки). */
+/* Ползунок (круг 6): тонкий жёлоб 4 px, заполненная часть синяя, плоская ручка 22 px. Позицию отдаёт --fe-range-p (из разметки). */
 .fe-dashboard .fe-tool__range { --fe-range-p: 50%; }
 .fe-dashboard .fe-tool__range::-webkit-slider-runnable-track {
-  height: 12px;
+  height: 4px;
   border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 55%),
-    linear-gradient(90deg, #EBD28F, #C9A24D var(--fe-range-p), rgb(120 95 45 / 0.13) var(--fe-range-p));
-  box-shadow: inset 0 2px 4px rgb(120 95 45 / 0.28), inset 0 -1px 0 rgb(255 255 255 / 0.8);
+  background: linear-gradient(90deg, #2C4A8A, #1E3A6E var(--fe-range-p), rgb(30 38 56 / 0.1) var(--fe-range-p));
+  box-shadow: none;
 }
 .fe-dashboard .fe-tool__range::-moz-range-track {
-  height: 12px;
+  height: 4px;
   border-radius: 999px;
-  background: rgb(120 95 45 / 0.13);
-  box-shadow: inset 0 2px 4px rgb(120 95 45 / 0.28), inset 0 -1px 0 rgb(255 255 255 / 0.8);
+  background: rgb(30 38 56 / 0.1);
+  box-shadow: none;
 }
 .fe-dashboard .fe-tool__range::-moz-range-progress {
-  height: 12px;
+  height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #EBD28F, #C9A24D);
+  background: linear-gradient(90deg, #2C4A8A, #1E3A6E);
 }
 .fe-dashboard .fe-tool__range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 28px;
-  height: 28px;
-  margin-top: -8px;
+  width: 22px;
+  height: 22px;
+  margin-top: -9px;
   border: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #fff 0 12%, #F3E4B8 34%, #C9A24D 72%, #8F6B24);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 8px 14px -4px rgb(143 107 36 / 0.7);
+  background: var(--fe-glass-active);
+  box-shadow: 0 5px 10px -4px rgb(30 38 56 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.2);
 }
 .fe-dashboard .fe-tool__range::-moz-range-thumb {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #fff 0 12%, #F3E4B8 34%, #C9A24D 72%, #8F6B24);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 8px 14px -4px rgb(143 107 36 / 0.7);
+  background: var(--fe-glass-active);
+  box-shadow: 0 5px 10px -4px rgb(30 38 56 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.2);
 }
 .fe-dashboard .fe-tool__range:focus-visible { outline: none; box-shadow: var(--fe-focus-ring); }
 
 /* ── 6. Каталог стран ────────────────────────────────────────────────────── */
 .fe-dashboard .fe-k7-seam {
   height: 10px;
-  background: radial-gradient(ellipse 50% 100% at 50% 50%, rgb(255 255 255 / 0.95), rgb(233 205 142 / 0.55) 42%, transparent 74%);
+  background: radial-gradient(ellipse 50% 100% at 50% 50%, rgb(255 255 255 / 0.95), rgb(176 200 234 / 0.5) 42%, transparent 74%);
 }
 .fe-dashboard .fe-country-search__input {
   border-radius: 16px;
@@ -396,7 +395,7 @@
 }
 .fe-dashboard .fe-country-search__input:focus-visible {
   outline: none;
-  box-shadow: var(--k7-well-shadow), var(--fe-focus-ring), 0 0 22px -4px rgb(201 162 77 / 0.5);
+  box-shadow: var(--k7-well-shadow), var(--fe-focus-ring), 0 0 22px -4px rgb(30 58 110 / 0.35);
 }
 .fe-dashboard .fe-country-more {
   border-radius: 999px;
@@ -406,38 +405,38 @@
 .fe-dashboard .fe-country-more:hover { background: var(--fe-glass-l2-hover); }
 .fe-dashboard .fe-country-empty { border-radius: 20px; }
 
-/* Карточка страны: L1 без blur (их 15–55), тёплый отсвет региона в нижнем углу вместо золотой полосы слева. */
+/* Карточка страны: L1 без blur (их 15–55), лёгкий отсвет региона (10 %) в нижнем углу вместо золотой полосы слева. */
 .fe-dashboard .fe-country-row {
   border-radius: 20px;
   background:
-    radial-gradient(75% 90% at 100% 100%, color-mix(in srgb, var(--z3-region) 22%, transparent), transparent 64%),
+    radial-gradient(75% 90% at 100% 100%, color-mix(in srgb, var(--z3-region) 10%, transparent), transparent 64%),
     var(--fe-glass-l1-sheen),
     var(--fe-glass-l1);
   box-shadow:
-    0 1px 2px rgb(60 48 24 / 0.06),
-    0 14px 30px -20px rgb(60 48 24 / 0.36),
+    0 1px 2px rgb(30 38 56 / 0.06),
+    0 14px 30px -20px rgb(30 38 56 / 0.34),
     var(--fe-inset-glint),
     var(--fe-inset-glint-bottom);
 }
-/* Десять крупнейших экономик: тёплый золотой свет в верхнем углу (без полосы и без рамки). */
+/* Десять крупнейших экономик: холодный свет в верхнем углу (круг 6; был золотой), без полосы и без рамки. */
 .fe-dashboard .fe-country-row.is-top {
   background:
-    radial-gradient(60% 70% at 0% 0%, rgb(233 205 142 / 0.26), transparent 66%),
-    radial-gradient(75% 90% at 100% 100%, color-mix(in srgb, var(--z3-region) 22%, transparent), transparent 64%),
+    radial-gradient(60% 70% at 0% 0%, rgb(190 206 232 / 0.3), transparent 66%),
+    radial-gradient(75% 90% at 100% 100%, color-mix(in srgb, var(--z3-region) 10%, transparent), transparent 64%),
     var(--fe-glass-l1-sheen),
     var(--fe-glass-l1);
 }
 .fe-dashboard .fe-country-row:hover,
 .fe-dashboard .fe-country-row:focus-visible {
   box-shadow:
-    0 1px 2px rgb(60 48 24 / 0.06),
-    0 22px 38px -22px color-mix(in srgb, var(--z3-gold) 80%, rgb(60 48 24)),
+    0 1px 2px rgb(30 38 56 / 0.06),
+    0 22px 38px -22px rgb(30 38 56 / 0.4),
     var(--fe-inset-glint),
     var(--fe-inset-glint-bottom);
 }
 .fe-dashboard .fe-country-row:focus-visible { outline: none; box-shadow: var(--fe-focus-ring), var(--fe-float-shadow-hover), var(--fe-inset-glint); }
 
-/* Флаг-капля: стеклянная линза с бликом, цветное пятно региона за флагом и мягкая тень снизу. */
+/* Флаг (круг 6): плоский флаг в нейтральном круге с мягкой тенью; без блика и цветного пятна. */
 .fe-dashboard .fe-country-row__flag {
   position: relative;
   isolation: isolate;
@@ -445,56 +444,36 @@
   height: 44px;
   font-size: 24px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 24%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.45) 52%, color-mix(in srgb, var(--z3-region) 16%, transparent) 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.95),
-    inset 0 -8px 12px -8px color-mix(in srgb, var(--z3-region) 45%, transparent),
-    0 10px 16px -10px color-mix(in srgb, var(--z3-region) 70%, rgb(60 48 24));
+  background: #fff;
+  box-shadow: 0 6px 12px -8px rgb(30 38 56 / 0.45);
 }
-.fe-dashboard .fe-country-row__flag::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: -7px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle, color-mix(in srgb, var(--z3-region) 30%, transparent), transparent 70%);
-}
+.fe-dashboard .fe-country-row__flag::before { content: none; }
 .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__flag { width: 52px; height: 52px; font-size: 28px; }
-/* Медаль-грань на углу флага у трёх крупнейших экономик: золото, лёд-серебро, бронза. */
+/* Место у трёх крупнейших экономик (круг 6): плоская точка 8 px на углу флага вместо медали-грани; первое место — золотая точка, второе и третье — холодные серые. */
 .fe-dashboard .fe-country-row__medal {
   position: absolute;
-  right: -5px;
-  bottom: -5px;
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  transform: rotate(45deg);
-  background: linear-gradient(135deg, #FFF3CF, #E9C97A 55%, #B08A3E);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -3px 4px rgb(60 48 24 / 0.2), 0 6px 10px -4px rgb(176 138 62 / 0.7);
+  right: -2px;
+  bottom: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #B08A3E;
 }
-.fe-dashboard .fe-country-row__medal[data-rank='2'] {
-  background: linear-gradient(135deg, #F5F9FF, #C9D7EA 55%, #8FA4C2);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.95), inset 0 -3px 4px rgb(40 60 90 / 0.2), 0 6px 10px -4px rgb(110 140 180 / 0.7);
-}
-.fe-dashboard .fe-country-row__medal[data-rank='3'] {
-  background: linear-gradient(135deg, #FBE3CF, #E0B08E 55%, #A8703A);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -3px 4px rgb(80 40 10 / 0.22), 0 6px 10px -4px rgb(168 112 58 / 0.7);
-}
-/* ВВП золотом крупнее, три крупнейшие экономики ещё крупнее. */
+.fe-dashboard .fe-country-row__medal[data-rank='2'] { background: #8E9BB5; }
+.fe-dashboard .fe-country-row__medal[data-rank='3'] { background: #B7C0D2; }
+/* ВВП крупнее (графитом), три крупнейшие экономики ещё крупнее. */
 .fe-dashboard .fe-country-row__gdp-num { font-size: 22px; }
 .fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__gdp-num { font-size: 28px; }
-/* Инфляция и безработица: точки-самоцветы с мягким свечением вместо плоских кружков. */
+/* Инфляция и безработица (круг 6): плоские точки 8 px по смыслу (хорошо, внимание, плохо); самоцветов и свечения нет. */
 .fe-dashboard .fe-country-row__dot {
-  width: 10px;
-  height: 10px;
-  background: radial-gradient(circle at 32% 30%, #fff 0 14%, var(--k7-dot, #8A94A6) 42%, color-mix(in srgb, var(--k7-dot, #8A94A6) 60%, #1E2638) 100%);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--k7-dot, #8A94A6) 55%, transparent);
+  width: 8px;
+  height: 8px;
+  background: var(--k7-dot, #8A94A6);
+  box-shadow: none;
 }
-.fe-dashboard .fe-country-row__metric[data-tone='good'] .fe-country-row__dot { --k7-dot: #2F8F5B; background: radial-gradient(circle at 32% 30%, #fff 0 14%, #2F8F5B 42%, #1B5E3A 100%); }
-.fe-dashboard .fe-country-row__metric[data-tone='warn'] .fe-country-row__dot { --k7-dot: #D99A1F; background: radial-gradient(circle at 32% 30%, #fff 0 14%, #D99A1F 42%, #8F5E0C 100%); }
-.fe-dashboard .fe-country-row__metric[data-tone='bad'] .fe-country-row__dot { --k7-dot: #C2503F; background: radial-gradient(circle at 32% 30%, #fff 0 14%, #C2503F 42%, #7E2A1E 100%); }
+.fe-dashboard .fe-country-row__metric[data-tone='good'] .fe-country-row__dot { --k7-dot: #2F8F5B; }
+.fe-dashboard .fe-country-row__metric[data-tone='warn'] .fe-country-row__dot { --k7-dot: #C98A1A; }
+.fe-dashboard .fe-country-row__metric[data-tone='bad'] .fe-country-row__dot { --k7-dot: #C2503F; }
 .fe-dashboard .fe-country-row__chevron { color: var(--z3-gold-ink); }
 
 /* Длинный список: браузер не рисует карточки вне окна. Поля вокруг карточки (padding с обратным margin) оставляют место тени и подъёму,
@@ -506,7 +485,7 @@
   margin: -10px -14px -28px;
 }
 
-/* «Страны и показатели» и фильтры каталога: активный чип золотой (shell.css красил его в тёмный), остальные L2 из общего .fe-chip. */
+/* «Страны и показатели» и фильтры каталога: активный чип графитовый, остальные L2 из общего .fe-chip. */
 .fe-dashboard [data-block='home-map-controls'] .fe-chip.is-active,
 .fe-dashboard .fe-country-regions .fe-chip.is-active,
 .fe-dashboard .fe-country-sort .fe-chip.is-active {
@@ -522,6 +501,10 @@
 }
 .fe-dashboard .fe-popular__chip:hover { background: var(--fe-glass-l2-hover); }
 .fe-dashboard .fe-popular__chip--all { background: transparent; box-shadow: none; }
+
+/* Выбранная плитка показателя в рабочей зоне главной (w6d.css): подпись единицы светлая на графитовой заливке (круг 6; была тёмная на золоте). */
+:root .w6d-tile.is-active .w6d-tile__unit { color: rgba(243, 239, 230, 0.78); }
+:root .w6d-tile.is-active .w6d-tile__icon { background: rgba(255, 255, 255, 0.16); }
 
 /* Подъём при наведении: анимируется только transform; тень и фон меняются сразу (blur, тени и filter не анимируем: перерисовка на каждом кадре). */
 .fe-dashboard .fe-today__tile,

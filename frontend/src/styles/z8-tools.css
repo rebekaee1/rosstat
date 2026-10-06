@@ -9,7 +9,7 @@
 .fe-z8-select,
 .fe-w6g-embed-preview {
   --z8-gold: var(--fe-gold, var(--color-champagne, #AD8A48));
-  --z8-gold-soft: var(--fe-gold-soft, rgba(173, 138, 72, 0.14));
+  --z8-gold-soft: var(--fe-gold-soft, rgba(30, 58, 110, 0.1));
   --z8-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642F));
   --z8-gold-line: linear-gradient(90deg, transparent, var(--z8-gold), transparent);
   --z8-muted: var(--fe-text-muted, #4F5C72);
@@ -72,16 +72,16 @@
 @media (hover: hover) {
   .fe-z8-rate:hover { transform: translateY(calc(-1 * var(--z8-lift))); }
 }
-/* «Курс ЦБ»: золотое стекло. Свет задают заливка и тень, окантовки нет. */
+/* «Курс ЦБ» (круг 6): холодное стекло; золотая заливка снята. Свет задают заливка и тень, окантовки нет. */
 .fe-z8-rate--cb {
   background:
-    radial-gradient(120% 90% at 100% 0%, rgba(233, 205, 142, 0.55), transparent 62%),
-    linear-gradient(135deg, rgba(255, 246, 220, 0.72), rgba(233, 205, 142, 0.34) 70%, rgba(255, 255, 255, 0.4));
+    radial-gradient(120% 90% at 100% 0%, rgba(190, 206, 232, 0.5), transparent 62%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(214, 224, 242, 0.34) 70%, rgba(255, 255, 255, 0.4));
   box-shadow:
-    0 1px 2px rgba(60, 48, 24, 0.06),
-    0 22px 40px -24px rgba(176, 138, 62, 0.62),
+    0 1px 2px rgba(30, 38, 56, 0.06),
+    0 22px 40px -24px rgba(30, 38, 56, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 0 rgba(176, 138, 62, 0.16);
+    inset 0 -1px 0 rgba(30, 38, 56, 0.06);
 }
 .fe-z8-rate__label {
   display: flex;
@@ -98,8 +98,8 @@
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: radial-gradient(circle at 35% 30%, #f6e3ab, var(--z8-gold));
-  box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.55);
+  background: var(--z8-gold);
+  box-shadow: none;
 }
 .fe-z8-rate__value { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 0; }
 .fe-z8-rate__num {
@@ -112,8 +112,8 @@
   color: var(--color-text-primary);
 }
 .fe-z8-rate--cb .fe-z8-rate__num {
-  /* Золотая гравировка: крупная цифра градиентом #6B5224 → #B08A3E (контраст крупного текста ≥ 3:1). */
-  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  /* Графитовая цифра (круг 6; была золотая гравировка). */
+  background: var(--k8-engrave, linear-gradient(120deg, #1e2638, #2a3550));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -155,7 +155,7 @@
   border-radius: 16px;
   /* Поле «вырезано в стекле»: колодец (K8.1). Фокус даёт свечение, не кольцо. */
   background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
-  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(30, 38, 56, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-primary);
   font: inherit;
   font-size: 18px;
@@ -166,7 +166,7 @@
 .fe-z8-input:focus-visible {
   outline: none;
   background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
-  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(30, 58, 110, 0.3));
 }
 .fe-z8-input[aria-invalid='true'] { box-shadow: var(--k8-well-shadow), inset 0 -2px 0 var(--color-negative); }
 .fe-z8-swap {
@@ -176,15 +176,15 @@
   width: 48px;
   height: 48px;
   border-radius: 999px;
-  /* Золотая бусина: радиальный блик, нижняя тень. Каждое нажатие поворачивает стрелки на 180° (--k8-turn). */
-  background: var(--k8-bead, radial-gradient(circle at 32% 26%, #fff 0, #fbebc0 16%, #e3c06c 50%, #b08a3e 100%));
-  color: var(--fe-on-gold, #231b0b);
+  /* Плоская графитовая кнопка (круг 6; была золотая бусина с бликом). Каждое нажатие поворачивает стрелки на 180° (--k8-turn). */
+  background: var(--k8-bead, linear-gradient(135deg, #2a3550, #1e2638));
+  color: var(--fe-on-active, #f3efe6);
   cursor: pointer;
-  box-shadow: var(--k8-bead-shadow, 0 6px 12px -4px rgba(120, 90, 30, 0.55), inset 0 -3px 5px rgba(122, 95, 42, 0.35), inset 0 2px 2px rgba(255, 255, 255, 0.8));
+  box-shadow: var(--k8-bead-shadow, 0 4px 10px -3px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.2));
   transition: transform 0.2s var(--z8-ease);
 }
 @media (hover: hover) {
-  .fe-z8-swap:hover { transform: scale(1.06); box-shadow: var(--k8-bead-shadow), 0 0 18px 2px rgba(201, 162, 77, 0.5); }
+  .fe-z8-swap:hover { transform: scale(1.06); }
 }
 .fe-z8-swap:active { transform: scale(0.94); }
 .fe-z8-swap svg { transform: rotate(var(--k8-turn, 0deg)); transition: transform 0.4s var(--k8-spring, var(--z8-ease)); }
@@ -208,7 +208,7 @@
   .fe-z8-quick__btn:hover { color: var(--z8-gold-ink); transform: translateY(-2px); }
 }
 .fe-z8-quick__btn:active { transform: scale(0.97); }
-.fe-z8-quick__btn.is-active { background: var(--fe-glass-active); color: var(--fe-on-gold); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.fe-z8-quick__btn.is-active { background: var(--fe-glass-active); color: var(--fe-on-active); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16); }
 @media (pointer: coarse) { .fe-z8-quick__btn { min-height: 44px; } }
 .fe-z8-conv__out {
   /* Результат конвертера: L2 «камень» с золотой гравировкой; блик при пересчёте (класс .fe-glint в разметке). */
@@ -217,7 +217,7 @@
   padding: 16px 20px 14px;
   min-height: 112px;
   border-radius: 22px;
-  background: var(--k8-stone-bg, linear-gradient(130deg, rgba(255, 255, 255, 0.68), rgba(255, 250, 236, 0.46)));
+  background: var(--k8-stone-bg, linear-gradient(130deg, rgba(255, 255, 255, 0.68), rgba(246, 249, 255, 0.46)));
   box-shadow: var(--k8-stone-shadow, var(--fe-shadow-l2), var(--fe-inset-glint));
 }
 .fe-z8-conv__sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0; }
@@ -228,7 +228,7 @@
   line-height: 1.05;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
-  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  background: var(--k8-engrave, linear-gradient(120deg, #1e2638, #2a3550));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -253,7 +253,7 @@
   border-radius: 16px;
   /* Селект: тот же колодец, что у поля; список открывается стеклянной панелью L1. */
   background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
-  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(30, 38, 56, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-primary);
   font: inherit;
   font-size: 16px;
@@ -266,7 +266,7 @@
 .fe-z8-select__button:focus-visible {
   outline: none;
   background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
-  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(30, 58, 110, 0.3));
 }
 .fe-z8-select__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fe-z8-select__chev { flex: none; color: var(--color-text-secondary); transition: transform 0.2s var(--z8-ease); }
@@ -287,8 +287,8 @@
 }
 /* Значок валюты: стеклянный диск, блик в левом верхнем углу, тень снизу. Перекрывает фон из w6-g.css. */
 :root .fe-z8-coin {
-  background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 42%, rgba(233, 205, 142, 0.5) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.22), 0 5px 10px -5px rgba(90, 68, 24, 0.45);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(236, 241, 250, 0.7));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 5px 10px -5px rgba(30, 38, 56, 0.4);
 }
 .fe-z8-coin::after {
   content: '';
@@ -333,7 +333,7 @@
   box-shadow: var(--k8-well-shadow, none);
   color: var(--color-text-tertiary, #6b7788);
 }
-.fe-z8-select__search:focus-within { background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8)); box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 18px 2px rgba(201, 162, 77, 0.45)); }
+.fe-z8-select__search:focus-within { background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8)); box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 18px 2px rgba(30, 58, 110, 0.3)); }
 .fe-z8-select__search input {
   flex: 1;
   min-width: 0;
@@ -359,7 +359,7 @@
 }
 /* Под курсором или клавишей: L2 с бликом; выбранная: тёплая золотая заливка. Линий между строками нет. */
 .fe-z8-select__option.is-active { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.72)); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
-.fe-z8-select__option.is-current { font-weight: 700; color: var(--z8-gold-ink); background: linear-gradient(135deg, rgba(233, 205, 142, 0.5), rgba(201, 162, 77, 0.2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
+.fe-z8-select__option.is-current { font-weight: 700; color: var(--z8-gold-ink); background: rgba(30, 58, 110, 0.1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
 .fe-z8-select__optname { flex: 1; min-width: 0; }
 .fe-z8-select__empty { padding: 12px 10px; font-size: 14px; color: var(--z8-muted); }
 
@@ -438,7 +438,7 @@
   padding: 4px;
   border-radius: 999px;
   background: var(--k8-trough-bg, rgba(255, 255, 255, 0.4));
-  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(120, 90, 30, 0.2));
+  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(30, 38, 56, 0.2));
 }
 .fe-z8-seg::before {
   content: '';
@@ -448,8 +448,8 @@
   left: 4px;
   width: calc((100% - 8px) / var(--k8-n, 3));
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%), var(--fe-glass-active);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateX(calc(var(--k8-i, 0) * 100%));
   transition: transform 0.26s var(--k8-spring, ease), opacity 0.2s ease;
 }
@@ -471,7 +471,7 @@
   transition: color 0.2s;
 }
 .fe-z8-seg__btn:hover { color: var(--color-text-primary); }
-.fe-z8-seg__btn.is-active { background: transparent; color: var(--fe-on-gold, #231b0b); box-shadow: none; }
+.fe-z8-seg__btn.is-active { background: transparent; color: var(--fe-on-active, #f3efe6); box-shadow: none; }
 @media (pointer: coarse) { .fe-z8-seg__btn { min-height: 44px; } }
 .fe-z8-search {
   display: flex;
@@ -483,13 +483,13 @@
   padding: 0 14px;
   border-radius: 999px;
   background: var(--k8-well-bg, rgba(255, 255, 255, 0.45));
-  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(120, 90, 30, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
+  box-shadow: var(--k8-well-shadow, inset 0 3px 8px rgba(30, 38, 56, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.85));
   color: var(--color-text-tertiary, #6b7788);
 }
 .fe-z8-search:hover { background: var(--k8-well-bg-hover, rgba(255, 255, 255, 0.58)); }
 .fe-z8-search:focus-within {
   background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
-  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5));
+  box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(30, 58, 110, 0.3));
 }
 .fe-z8-search__input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--color-text-primary); font: inherit; font-size: 16px; }
 .fe-z8-search__clear {
@@ -545,9 +545,9 @@
   height: 52px;
   margin-top: 4px;
   border-radius: 18px;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), rgba(233, 205, 142, 0.55) 60%, rgba(201, 162, 77, 0.4));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(236, 241, 250, 0.7));
   color: var(--z8-gold-ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.2), 0 12px 22px -14px rgba(120, 90, 30, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 12px 22px -14px rgba(30, 38, 56, 0.4);
 }
 .fe-z8-calc__headtext { min-width: 0; }
 .fe-z8-calc__title {
@@ -588,9 +588,9 @@
   padding: 5px;
   border-radius: 22px;
   background: var(--k8-trough-bg, rgba(255, 255, 255, 0.4));
-  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(120, 90, 30, 0.2));
+  box-shadow: var(--k8-trough-shadow, inset 0 2px 4px rgba(30, 38, 56, 0.2));
 }
-/* Бегунок: золотое стекло шириной в одну вкладку; номер активной задаёт разметка (--k8-i). Едет только transform. */
+/* Бегунок: графитовая плашка шириной в одну вкладку; номер активной задаёт разметка (--k8-i). Едет только transform. */
 .fe-z8-tabs::before {
   content: '';
   position: absolute;
@@ -599,8 +599,8 @@
   left: 5px;
   width: calc((100% - 10px - 12px) / 3);
   border-radius: 17px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 55%), var(--fe-glass-active);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--fe-glass-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateX(calc(var(--k8-i, 0) * (100% + 6px)));
   transition: transform 0.26s var(--k8-spring, ease);
 }
@@ -620,13 +620,13 @@
   transition: color 0.2s;
 }
 .fe-z8-tab:hover { color: var(--color-text-primary); }
-.fe-z8-tab.is-active { color: var(--fe-on-gold, #231b0b); background: transparent; box-shadow: none; }
+.fe-z8-tab.is-active { color: var(--fe-on-active, #f3efe6); background: transparent; box-shadow: none; }
 .fe-z8-tab__icon { display: inline-flex; flex: none; }
 .fe-z8-tab__text { display: grid; min-width: 0; }
 .fe-z8-tab__title { font-size: 15px; font-weight: 650; line-height: 1.25; }
 .fe-z8-tab__full { display: none; }
 .fe-z8-tab__for { display: none; font-size: 12px; line-height: 1.25; font-weight: 500; color: var(--color-text-secondary); }
-.fe-z8-tab.is-active .fe-z8-tab__for { color: #3a2b0c; }
+.fe-z8-tab.is-active .fe-z8-tab__for { color: rgba(243, 239, 230, 0.8); }
 @media (max-width: 479px) {
   .fe-z8-tab { flex-direction: column; gap: 2px; padding: 6px 4px; }
   .fe-z8-tab__text { justify-items: center; text-align: center; }
@@ -670,7 +670,7 @@
   .fe-z8-calc__out > section, .fe-z8-calc__out > div[aria-busy='true'] { padding: 20px 18px; }
 }
 
-/* --- итог: «камень» L2 (.fe-k8-stone в k8-tools.css), золотая гравировка, блик-проход при пересчёте --- */
+/* --- итог: панель L2 (.fe-k8-stone в k8-tools.css), графитовая цифра, блик-проход при пересчёте --- */
 .fe-z8-result { position: relative; overflow: hidden; }
 .fe-z8-result::after {
   content: '';
@@ -679,17 +679,17 @@
   right: -60px;
   width: 280px;
   height: 220px;
-  background: radial-gradient(closest-side, rgba(201, 162, 77, 0.18), transparent);
+  background: radial-gradient(closest-side, rgba(120, 150, 210, 0.16), transparent);
   pointer-events: none;
 }
 .fe-z8-result > * { position: relative; z-index: 1; }
 .fe-z8-calc .calc-result-number { transition: color 0.5s ease; }
 .fe-z8-calc .w5-tile { transition: transform 0.24s var(--z8-ease); }
 @media (hover: hover) { .fe-z8-calc .w5-tile:hover { transform: translateY(calc(-1 * var(--z8-lift))); } }
-.fe-z8-calc .w5-tile--accent { background: linear-gradient(160deg, rgba(233, 205, 142, 0.5), rgba(255, 255, 255, 0.5)); }
+.fe-z8-calc .w5-tile--accent { background: linear-gradient(160deg, rgba(190, 206, 232, 0.4), rgba(255, 255, 255, 0.5)); }
 .fe-z8-calc .w5-tile__value { font-size: clamp(18px, 2vw, 24px); }
 
-/* --- боковая подсказка: светлое золотое стекло L2 (раньше тёмная плита с контуром) --- */
+/* --- боковая подсказка: светлое холодное стекло L2 (раньше тёмная плита с контуром) --- */
 .fe-z8-hint { position: relative; }
 .fe-z8-calc .fe-z8-hint {
   padding: 22px 24px;
@@ -716,7 +716,7 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  background: var(--k8-engrave, linear-gradient(120deg, #6b5224, #b08a3e));
+  background: var(--k8-engrave, linear-gradient(120deg, #1e2638, #2a3550));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -794,7 +794,7 @@
   transition: background-color 0.2s, color 0.2s;
 }
 .fe-z8-meth__toc a:hover { color: var(--color-text-primary); background: rgba(255, 255, 255, 0.5); }
-.fe-z8-meth__toc a.is-active { color: var(--z8-gold-ink); background: linear-gradient(135deg, rgba(233, 205, 142, 0.5), rgba(201, 162, 77, 0.2)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
+.fe-z8-meth__toc a.is-active { color: var(--z8-gold-ink); background: rgba(30, 58, 110, 0.1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8); }
 .fe-z8-meth__toc a.is-active::before {
   content: '';
   position: absolute;
@@ -844,8 +844,8 @@
   height: 44px;
   padding: 0 6px;
   border-radius: 14px;
-  background: radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.55) 42%, rgba(233, 205, 142, 0.5) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -3px 6px rgba(176, 138, 62, 0.2), 0 6px 12px -6px rgba(90, 68, 24, 0.45);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(236, 241, 250, 0.7));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 12px -6px rgba(30, 38, 56, 0.4);
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;

@@ -6,7 +6,7 @@
 // Страницы не пишут hex/rgba в разметке графика — берут отсюда.
 //
 // Контраст подписей осей: #55627A на белой карточке графика 6,1:1, на фоне страницы
-// (#F6F2EA) 5,4:1 — оба выше порога 4,5:1 для текста.
+// (#F4F5F7) 5,6:1 — оба выше порога 4,5:1 для текста.
 export const CHART_THEME = Object.freeze({
   ink: '#202A3C',
   // Основное золото линий и заливок (не для мелкого текста: контраст на белом 3,2:1).
@@ -14,10 +14,10 @@ export const CHART_THEME = Object.freeze({
   goldBright: '#C9A24D',
   champagne: '#AD8A48',
   // Тёмный оттенок акцента для ТЕКСТА (на белом 6,0:1); champagne и gold — только для линий и заливок.
-  champagneInk: '#7A5F2A',
+  champagneInk: '#1E3A6E',
   blue: '#6B8299',
   ice: '#CAD8E5',
-  pearl: '#F6F2EA',
+  pearl: '#F4F5F7',
   surface: '#FFFFFF',
   grid: 'rgba(32,42,60,0.09)',
   axis: '#55627A',
@@ -34,8 +34,8 @@ export const CHART_THEME = Object.freeze({
   font: 'Manrope, system-ui, sans-serif',
   // Оси читаются: 12 px (было 11).
   tickSize: 12,
-  // Чередующиеся полосы сетки (3 % тёплого тона, края размыты в k4-charts.css) вместо пунктирных линий.
-  gridBand: 'rgba(88,74,46,0.03)',
+  // Чередующиеся полосы сетки (3 % холодного графита, края размыты в k4-charts.css) вместо пунктирных линий.
+  gridBand: 'rgba(30,38,56,0.03)',
   // До 10 различимых цветов для рядов «Сравнения»; первый — золото, второй — графит.
   series: Object.freeze([
     '#B08A3E', '#202A3C', '#5E86A8', '#4F8A7B', '#8E6FA0',
@@ -51,10 +51,10 @@ export const CHART_LINE = Object.freeze({
   strokeLinejoin: 'round',
 });
 
-/** Заливка под линией: у линии 35 % светлого золота, к оси 0 (K4.1). */
-export const CHART_AREA = Object.freeze({ top: 0.35, bottom: 0 });
+/** Заливка под линией: у линии 16 % светлого золота (круг 6: не жёлтая заливка, а лёгкий оттенок), к оси 0 (K4.1). */
+export const CHART_AREA = Object.freeze({ top: 0.16, bottom: 0 });
 
-/** Цвет заливки под лентой: светлое золото (rgba(233,205,142,.35) → 0). */
+/** Цвет заливки под лентой: светлое золото (rgba(233,205,142,.16) → 0). */
 export const CHART_AREA_COLOR = CHART_THEME.goldLight;
 
 /** Остановки градиентов ленты по длине линии (`x1=0 → x2=1`). */
@@ -111,7 +111,7 @@ export function axisTick(overrides = {}) {
 export const GRID_PROPS = Object.freeze({
   stroke: 'rgba(32,42,60,0.025)',
   vertical: false,
-  horizontalFill: Object.freeze([CHART_THEME.gridBand, 'rgba(88,74,46,0)']),
+  horizontalFill: Object.freeze([CHART_THEME.gridBand, 'rgba(30,38,56,0)']),
 });
 
 /** Свойства линии оси (`axisLine`) и подписи вдоль неё. */
@@ -142,7 +142,7 @@ export const TOOLTIP_STYLES = Object.freeze({
     backdropFilter: 'blur(14px) saturate(1.25)',
     border: 0,
     borderRadius: 14,
-    boxShadow: '0 14px 34px -20px rgba(60,48,24,0.5), inset 0 1px 0 rgba(255,255,255,0.85)',
+    boxShadow: '0 14px 34px -20px rgba(30,38,56,0.5), inset 0 1px 0 rgba(255,255,255,0.85)',
     padding: '10px 12px',
   }),
   labelStyle: Object.freeze({ color: CHART_THEME.axis, fontWeight: 600, marginBottom: 4 }),
@@ -161,7 +161,7 @@ export const ECHART_BASE = Object.freeze({
     borderWidth: 0,
     padding: [10, 12],
     textStyle: Object.freeze({ color: CHART_THEME.ink, fontFamily: CHART_THEME.font, fontSize: 13 }),
-    extraCssText: 'border-radius:14px;box-shadow:0 14px 34px -20px rgba(60,48,24,.5),inset 0 1px 0 rgba(255,255,255,.85);backdrop-filter:blur(14px) saturate(1.25);',
+    extraCssText: 'border-radius:14px;box-shadow:0 14px 34px -20px rgba(30,38,56,.5),inset 0 1px 0 rgba(255,255,255,.85);backdrop-filter:blur(14px) saturate(1.25);',
   }),
 });
 

@@ -60,7 +60,7 @@ describe('chartTheme', () => {
   it('лента: градиент золото-светлое → золото → тёмное, заливка 35 % → 0, второй ряд сапфир', () => {
     expect(RIBBON_STOPS.map((s) => s.color)).toEqual(['#E9CD8E', '#C9A24D', '#A9812F']);
     expect(SAPPHIRE_STOPS.map((s) => s.color)).toEqual(['#5C86C8', '#1E2A4A']);
-    expect(CHART_AREA.top).toBe(0.35);
+    expect(CHART_AREA.top).toBe(0.16);
     expect(CHART_AREA.bottom).toBe(0);
   });
 

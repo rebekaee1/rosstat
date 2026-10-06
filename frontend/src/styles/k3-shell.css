@@ -38,7 +38,7 @@ nav.fe-navbar--glass[data-tone='dark'],
   --color-text-primary: #f3efe6;
   --color-text-secondary: #c3cad8;
   --color-text-tertiary: #a8b9cf;
-  --color-champagne-ink: #e0c27a;
+  --color-champagne-ink: #c4d2ee;
   --fe-glass-l2: rgba(255, 255, 255, 0.12);
   --fe-glass-l2-hover: rgba(255, 255, 255, 0.2);
   --fe-pop-bg: rgba(26, 38, 64, 0.94);
@@ -66,7 +66,7 @@ nav.fe-navbar--glass::after {
   border-radius: inherit;
   pointer-events: none;
   background: rgb(var(--k3-paper) / 0.34);
-  box-shadow: 0 34px 56px -26px rgba(60, 48, 24, 0.5);
+  box-shadow: 0 34px 56px -26px rgba(30, 38, 56, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -100,8 +100,21 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 }
 .fe-nav-cluster .fe-nav-round:hover,
 .fe-nav-cluster .fe-nav-round[aria-expanded='true'] {
-  background: var(--z2-gold-soft);
+  background: var(--fe-glass-l2-hover);
   box-shadow: none;
+}
+
+/* CTA регистрации (круг 6): единственная золотая заливка страницы; остальные primary — синие (index.css). Только в шапке и шторке меню. */
+nav.fe-navbar--glass .fe-button-primary,
+.fe-bsheet .fe-button-primary {
+  background: var(--fe-glass-gold);
+  color: var(--fe-on-gold-cta);
+  box-shadow: 0 8px 22px -12px rgba(176, 138, 62, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+nav.fe-navbar--glass .fe-button-primary:hover,
+.fe-bsheet .fe-button-primary:hover {
+  background: var(--fe-glass-gold-hover);
+  box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* ═══ Лента курсов ════════════════════════════════════════════════════════ */
@@ -110,9 +123,9 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.72);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
-  box-shadow: 0 14px 28px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
+  box-shadow: 0 14px 28px -22px rgba(30, 38, 56, 0.42), var(--fe-inset-glint);
 }
-/* Свет вместо нижней кромки: тёплое сияние по центру, затухающее к краям. */
+/* Свет вместо нижней кромки: холодное сияние по центру, затухающее к краям. */
 .fe-ticker::after {
   content: '';
   position: absolute;
@@ -121,7 +134,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   bottom: 0;
   height: 10px;
   pointer-events: none;
-  background: radial-gradient(60% 100% at 50% 100%, rgba(255, 233, 180, 0.6), transparent);
+  background: radial-gradient(60% 100% at 50% 100%, rgba(190, 210, 250, 0.55), transparent);
 }
 .fe-ticker__cell + .fe-ticker__cell::before {
   /* Между курсами не линия, а грань-ромб 5×8 px с мягким свечением. */
@@ -206,13 +219,13 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   line-height: 1;
 }
 .fe-mega__flag.fe-mega__tile { font-size: 17px; }
-.fe-mega__tile--gem { background: linear-gradient(145deg, rgb(255 255 255 / 0.9), rgb(246 231 190 / 0.6)); }
+/* Круг 6: плитка-«гемма» меню снята (была кремово-золотая заливка); класс остался в разметке без отдельного вида. */
 .fe-locale-flag {
   background: rgb(var(--k3-paper) / 0.7);
   box-shadow: var(--fe-l2-shadow);
 }
 .fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
-.fe-locale-item.is-active { background: rgb(201 162 77 / 0.16); }
+.fe-locale-item.is-active { background: rgb(30 58 110 / 0.1); }
 
 /* ═══ Нижняя док-панель телефона ══════════════════════════════════════════ */
 .fe-dock {
@@ -272,7 +285,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   -webkit-tap-highlight-color: transparent;
 }
 .fe-dock__label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fe-dock__gem {
+.fe-dock__icon {
   position: relative;
   display: grid;
   place-items: center;
@@ -281,23 +294,15 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   border-radius: 13px;
   transition: transform 0.2s var(--k3-ease);
 }
-.fe-dock__gem svg { width: 21px; height: 21px; }
-/* Активный раздел: золотая гемма с внутренним светом и грань-бликом по диагонали. */
-.fe-dock__item.is-active { color: var(--color-champagne-ink); }
-.fe-dock__item.is-active .fe-dock__gem {
+.fe-dock__icon svg { width: 21px; height: 21px; }
+/* Активный раздел (круг 6): плоская графитовая плашка со светлой иконкой и бликом сверху 1 px; золотой «геммы» с диагональным бликом больше нет. */
+.fe-dock__item.is-active { color: var(--color-text-primary); }
+.fe-dock__item.is-active .fe-dock__icon {
   background: var(--fe-glass-active);
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  color: var(--fe-on-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
-.fe-dock__item.is-active .fe-dock__gem::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent 52%);
-}
-.fe-dock__item:active .fe-dock__gem { transform: scale(0.94); }
+.fe-dock__item:active .fe-dock__icon { transform: scale(0.94); }
 
 /* ═══ Шторка снизу (меню телефона и планшета) ══════════════════════════════ */
 .fe-bsheet-scrim {
@@ -334,12 +339,12 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
    мягкое золотое свечение (размытие 28 px, без кольца), а пункты внутри подсвечиваются свечением и тёплой подложкой. */
 .fe-bsheet:focus, .fe-bsheet:focus-visible { outline: none; }
 .fe-bsheet:focus-visible {
-  box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), 0 -10px 28px -4px rgba(201, 162, 77, 0.5), var(--fe-inset-glint);
+  box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), 0 -10px 28px -4px rgba(30, 58, 110, 0.35), var(--fe-inset-glint);
 }
 .fe-bsheet :is(a, button, summary, [tabindex]):focus-visible {
   outline: none;
-  background: rgb(201 162 77 / 0.16);
-  box-shadow: 0 0 16px 2px rgba(176, 138, 62, 0.5);
+  background: rgb(30 58 110 / 0.1);
+  box-shadow: 0 0 16px 2px rgba(30, 58, 110, 0.3);
 }
 @media (min-width: 640px) { .fe-bsheet { max-width: 720px; } }
 @media (min-width: 900px) { .fe-bsheet { max-width: 880px; } }
@@ -355,13 +360,12 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   cursor: grab;
   touch-action: none;
 }
-/* Ручка-капля: золотая «капля света», тянется вниз. */
+/* Ручка шторки (круг 6): тихая нейтральная полоса вместо золотой «капли света». */
 .fe-bsheet__handle {
   width: 48px;
   height: 6px;
   border-radius: 9999px;
-  background: linear-gradient(90deg, rgba(176, 138, 62, 0.35), rgba(201, 162, 77, 0.95) 50%, rgba(176, 138, 62, 0.35));
-  box-shadow: 0 2px 10px rgba(201, 162, 77, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: linear-gradient(90deg, rgba(30, 38, 56, 0.16), rgba(30, 38, 56, 0.34) 50%, rgba(30, 38, 56, 0.16));
 }
 .fe-bsheet__body { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
 .fe-bsheet__foot { flex: none; }
@@ -393,7 +397,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link--nested { min-height: 56px; }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link:active { background: var(--fe-glass-l2-hover); }
-.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] { background: rgb(201 162 77 / 0.16); }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] { background: rgb(30 58 110 / 0.08); }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link[aria-current='page'] .fe-mnav-label { color: var(--color-champagne-ink); }
 @media (hover: hover) {
   .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link:hover { background: var(--fe-glass-l2-hover); }
@@ -405,15 +409,15 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   width: 40px;
   height: 40px;
   border-radius: 14px;
-  background: linear-gradient(145deg, rgb(255 255 255 / 0.92), rgb(246 231 190 / 0.55));
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.92), rgb(214 226 246 / 0.55));
   box-shadow: var(--fe-l2-shadow);
 }
 .fe-bsheet .fe-mnav-tile .fe-mnav-icon { margin-top: 0; color: var(--color-champagne-ink); }
 .fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile {
   background: var(--fe-glass-active);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
-.fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-gold); }
+.fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-active); }
 .fe-bsheet .fe-mnav-chevron { margin-right: 4px; }
 /* Вход и регистрация: закреплены внизу, над ними мягкий свет вместо линии. */
 .fe-bsheet .fe-mnav-foot a { display: flex; align-items: center; justify-content: center; min-height: 48px; }
@@ -460,7 +464,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 /* ═══ Движение и печать ══════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   nav.fe-navbar--glass::after, nav.fe-navbar--glass .fe-brand,
-  .fe-ticker, .fe-dock, .fe-dock__gem, .fe-cookie-wrap { transition: none; }
+  .fe-ticker, .fe-dock, .fe-dock__icon, .fe-cookie-wrap { transition: none; }
   .fe-bsheet, .fe-bsheet-scrim, .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { animation: none; }
   nav.fe-navbar--glass[data-scrolled='true'], nav.fe-navbar--glass[data-compact='true'] { transform: none; }
   .fe-ticker[data-hidden='true'] { transform: none; opacity: 1; pointer-events: auto; }

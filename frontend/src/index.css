@@ -2,20 +2,21 @@
 @import "./styles/z1-tokens.css";
 
 @theme {
-  /* Раунд 2 (Z1): тёплая «бумага» вместо серо-голубого фона; золото остаётся постоянным акцентом. */
-  --color-obsidian: #F6F2EA;
-  --color-obsidian-light: #F0EBE0;
-  --color-obsidian-lighter: #E8E2D4;
-  --color-slate-dark: #D4CCB9;
+  /* Круг 6 (зона P): холодно-нейтральный светлый фон; золото `champagne` остаётся тонкой линией и точкой,
+     а текст-акцент `champagne-ink` (ссылки, подписи) — глубокий синий. Имена прежние, чтобы не трогать 160 мест в JSX. */
+  --color-obsidian: #F4F5F7;
+  --color-obsidian-light: #EEF1F5;
+  --color-obsidian-lighter: #E6EAF0;
+  --color-slate-dark: #CED5E0;
   --color-champagne: #AD8A48;
   --color-champagne-muted: #8A6B35;
-  --color-champagne-ink: #7A5F2A;
+  --color-champagne-ink: #1E3A6E;
   --color-ivory: #202A3C;
   --color-ivory-muted: #465369;
-  --color-surface: #FFFEFC;
-  --color-surface-hover: #FAF7F0;
-  --color-border-subtle: rgba(88, 74, 46, 0.14);
-  --color-border-champagne: rgba(176, 138, 62, 0.32);
+  --color-surface: #FDFDFE;
+  --color-surface-hover: #F2F4F8;
+  --color-border-subtle: rgba(30, 38, 56, 0.12);
+  --color-border-champagne: rgba(30, 58, 110, 0.28);
   --color-text-primary: #202A3C;
   /* Вторичный текст темнее прежнего: 6,4:1 на фоне страницы, 7,1:1 на карточке. */
   --color-text-secondary: #4B596F;
@@ -24,7 +25,7 @@
   --color-positive: #16A34A;
   --color-negative: #DC2626;
   /* Предупреждения (API и т.д.) — тёплый тон под champagne, не «дефолтный» amber */
-  --color-warn-surface: #faf7f0;
+  --color-warn-surface: #F7F5F0;
   --color-warn-text: #2c2618;
   --color-warn-muted: rgba(44, 38, 24, 0.72);
   --font-sans: "Manrope", system-ui, sans-serif;
@@ -38,21 +39,21 @@
 /* Shared visual foundation. Layout/chart components consume these same tokens. */
 :root {
   color-scheme: light;
-  --fe-ambient: #E4D3AC70;
+  --fe-ambient: #C8D4E870;
   /* Стекло полупрозрачное (альфа ≤ 0,6): сквозь него видно сияние фона. Блик по краю: --fe-glass-border (значение, не рамка). */
-  --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.58), rgba(255, 253, 248, 0.42));
-  --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.46), rgba(255, 252, 245, 0.32));
+  --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.58), rgba(250, 252, 255, 0.42));
+  --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.46), rgba(248, 251, 255, 0.32));
   --fe-glass-border: rgba(255, 255, 255, 0.8);
-  --fe-nav-surface: rgba(248, 245, 238, 0.8);
+  --fe-nav-surface: rgba(244, 246, 250, 0.8);
   /* Двойная тень: тонкий контактный слой и широкий мягкий, оба тёплые (токен --fe-card-shadow в z1-tokens.css). */
   --fe-shadow: var(--fe-card-shadow);
-  --fe-button-bg: #F7F1E3;
-  --fe-button-border: #D9C79B;
+  --fe-button-bg: #EEF1F6;
+  --fe-button-border: #C5CEDD;
   --fe-art-opacity: 0.76;
   --fe-focus: #B08A3E;
   /* Единая заливка выбранного чипа: переключатели режима, частоты, диапазона. */
-  --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #C9A24D, #B08A3E));
-  --fe-chip-active-ink: var(--fe-on-gold, #231B0B);
+  --fe-chip-active-bg: var(--fe-glass-active, linear-gradient(135deg, #2A3550, #1E2638));
+  --fe-chip-active-ink: var(--fe-on-active, #F3EFE6);
 }
 
 /* Explicit preference also supports future theme controls; embed keeps its own palette. */
@@ -98,8 +99,11 @@
   --fe-divider-line: rgba(188, 208, 235, 0.12);
   --fe-glow-gold-bg: rgba(208, 180, 125, 0.1);
   --fe-glow-ice-bg: rgba(95, 128, 168, 0.16);
+  --fe-glow-cool-bg: rgba(95, 128, 168, 0.12);
   --fe-shadow: var(--fe-card-shadow);
   --fe-bg-warm: #151D2B;
+  --fe-glass-active: linear-gradient(135deg, #3A5A9A, #2C4A8A);
+  --fe-glass-active-hover: linear-gradient(135deg, #456AAE, #34559C);
   --fe-text-muted: #BBC8D9;
   --fe-button-bg: #403A2E;
   --fe-button-border: #9D865650;
@@ -206,16 +210,16 @@
   transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease, background 0.2s ease;
 }
 .fe-button-primary {
-  background: var(--fe-glass-active);
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: var(--fe-glass-primary);
+  color: var(--fe-on-active);
+  box-shadow: 0 8px 22px -12px rgba(30, 58, 110, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .fe-button-secondary {
   background: var(--fe-glass-l2);
   box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
 }
-.fe-button-primary:hover { background: var(--fe-glass-active-hover); box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
-.fe-button-secondary:hover { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
+.fe-button-primary:hover { background: var(--fe-glass-primary-hover); box-shadow: 0 12px 26px -12px rgba(30, 58, 110, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+.fe-button-secondary:hover { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(30, 38, 56, 0.4), var(--fe-inset-glint); }
 .fe-button-primary:active, .fe-button-secondary:active { transform: scale(0.98); transition-duration: 0.12s; }
 
 .fe-brand {
@@ -391,7 +395,7 @@ html {
 }
 
 ::selection {
-  background-color: rgba(173, 138, 72, 0.2);
+  background-color: rgba(30, 58, 110, 0.18);
   color: var(--color-text-primary);
 }
 
@@ -405,9 +409,9 @@ body {
   /* Слой L0: бумага и сияния (золото сверху справа, лёд слева, тёплое пятно внизу). На компьютере они закреплены за окном,
      поэтому стеклянные панели при прокрутке «плывут» над светом, а не тащат его за собой. */
   background-image:
-    radial-gradient(ellipse 62% 58% at 94% -4%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%),
-    radial-gradient(ellipse 52% 52% at -6% 22%, var(--fe-glow-ice-bg, rgba(202, 216, 229, 0.35)), transparent 72%),
-    radial-gradient(ellipse 58% 46% at 72% 104%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.14)), transparent 70%);
+    radial-gradient(ellipse 62% 58% at 94% -4%, var(--fe-glow-gold-bg, rgba(201, 162, 77, 0.1)), transparent 70%),
+    radial-gradient(ellipse 52% 52% at -6% 22%, var(--fe-glow-ice-bg, rgba(196, 214, 238, 0.4)), transparent 72%),
+    radial-gradient(ellipse 58% 46% at 72% 104%, var(--fe-glow-cool-bg, rgba(150, 178, 225, 0.2)), transparent 70%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: var(--color-text-primary);
@@ -527,7 +531,7 @@ nav.glass-surface-soft {
   height: 18px;
   border-radius: 9999px;
   background: var(--fe-glass-active);
-  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 2px 6px rgba(30, 38, 56, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: transform 0.12s ease;
 }
 .map-timeline::-webkit-slider-thumb:hover {
@@ -538,7 +542,7 @@ nav.glass-surface-soft {
   height: 18px;
   border-radius: 9999px;
   background: var(--fe-glass-active);
-  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 2px 6px rgba(30, 38, 56, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .scrollbar-hide {
@@ -612,7 +616,7 @@ nav.glass-surface-soft {
 
 /* ── Кнопка, чип, фокус, предохранитель анимаций (2026-10-04) ───────────────── */
 :root {
-  --color-accent-solid: #7a5f2a;      /* champagne-ink: белый текст на нём ≥ 6,5:1 */
+  --color-accent-solid: #1e3a6e;      /* глубокий синий: белый текст на нём ≥ 10:1 */
   --color-on-accent: #ffffff;
   --fe-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   --fe-dur-fast: 120ms;
@@ -636,16 +640,19 @@ nav.glass-surface-soft {
   white-space: nowrap;
 }
 .fe-btn--sm { min-height: 34px; padding: 0 12px; font-size: 13px; }
-/* Primary: золотая заливка с бликом, тёмный текст (контраст ≥ 6:1), тень цвета золота. */
+/* Primary: глубокий синий, светлый текст (контраст ≥ 8:1), блик сверху 1 px. Золото — только у .fe-cta-gold (CTA регистрации). */
 .fe-btn--primary {
-  background: var(--fe-glass-active);
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  background: var(--fe-glass-primary);
+  color: var(--fe-on-active);
+  box-shadow: 0 8px 22px -12px rgba(30, 58, 110, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 .fe-btn--primary:hover:not(:disabled):not([aria-disabled='true']) {
-  background: var(--fe-glass-active-hover);
-  box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--fe-glass-primary-hover);
+  box-shadow: 0 12px 26px -12px rgba(30, 58, 110, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
+/* Единственная золотая заливка страницы: поверх .fe-btn--primary (CTA регистрации). */
+.fe-btn--primary.fe-cta-gold { background: var(--fe-glass-gold); color: var(--fe-on-gold-cta); box-shadow: 0 8px 22px -12px rgba(176, 138, 62, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45); }
+.fe-btn--primary.fe-cta-gold:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-gold-hover); box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
 /* Парение только при настоящем наведении мышью; на касании «залипает». */
 @media (hover: hover) {
   .fe-btn:hover:not(:disabled):not([aria-disabled='true']):not(:active) { transform: translateY(var(--fe-lift, -2px)); }
@@ -653,13 +660,14 @@ nav.glass-surface-soft {
 .fe-btn:active:not(:disabled):not([aria-disabled='true']) { transform: scale(0.98); transition-duration: 0.12s; }
 /* Secondary: слой L2, без рамки. */
 .fe-btn--secondary { background: var(--fe-glass-l2); color: var(--color-text-primary); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
-.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint); }
+.fe-btn--secondary:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2-hover); box-shadow: 0 10px 24px -12px rgba(30, 38, 56, 0.4), var(--fe-inset-glint); }
 .fe-btn--ghost { background: transparent; color: var(--color-champagne-ink); }
 .fe-btn--ghost:hover:not(:disabled):not([aria-disabled='true']) { background: var(--fe-glass-l2); box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint); }
 .fe-btn:disabled, .fe-btn[aria-disabled='true'] { opacity: 0.5; cursor: default; }
 .fe-btn[aria-busy='true'] { cursor: progress; }
 .fe-btn__spinner { --fe-spinner-size: 14px; }
-.fe-btn--primary .fe-btn__spinner { border-color: rgba(35, 27, 11, 0.3); border-top-color: var(--fe-on-gold); }
+.fe-btn--primary .fe-btn__spinner { border-color: rgba(243, 239, 230, 0.3); border-top-color: var(--fe-on-active); }
+.fe-btn--primary.fe-cta-gold .fe-btn__spinner { border-color: rgba(35, 27, 11, 0.3); border-top-color: var(--fe-on-gold-cta); }
 .fe-chip {
   display: inline-flex;
   align-items: center;
@@ -683,16 +691,16 @@ nav.glass-surface-soft {
     background: var(--fe-glass-l2-hover);
     color: var(--color-text-primary);
     transform: translateY(var(--fe-lift, -2px));
-    box-shadow: 0 10px 24px -12px rgba(60, 48, 24, 0.4), var(--fe-inset-glint);
+    box-shadow: 0 10px 24px -12px rgba(30, 38, 56, 0.4), var(--fe-inset-glint);
   }
 }
 .fe-chip:active:not(:disabled) { transform: scale(0.98); transition-duration: 0.12s; }
-/* Активный чип: золотая заливка вместо контура. */
+/* Активный чип: графитовая заливка вместо контура, светлый текст, блик сверху 1 px. */
 .fe-chip.is-active {
   background: var(--fe-chip-active-bg);
   color: var(--fe-chip-active-ink);
   font-weight: 600;
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
 /* Подпись чипа: до двух строк по словам, лишнее скрывается с многоточием, а не рвётся посреди слова; полное имя в title. */
 .fe-chip__label {
@@ -768,22 +776,28 @@ nav.glass-surface-soft {
 .fe-tone--good { color: #166534; }
 .fe-tone--bad { color: #b91c1c; }
 .fe-tone--neutral, .fe-tone--flat { color: var(--color-text-secondary); }
-/* Плашка изменения: цвет смысла, мягкая заливка того же цвета, стрелка ▲▼. Без плашки — класс fe-delta-badge--plain. */
+/* Плашка изменения (круг 6): нейтральное стекло L2, текст графитовый; смысл (хорошо / плохо) несёт только маркер ▲▼ своего цвета,
+   а не заливка всей плашки. Без плашки — класс fe-delta-badge--plain (там цвет смысла остаётся у текста). */
 .fe-delta-badge {
+  --fe-delta-ink: currentColor;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 2px 9px 2px 7px;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 12%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  background: var(--fe-glass-l2);
+  color: var(--color-text-primary);
+  box-shadow: var(--fe-inset-glint), 0 3px 8px -6px rgba(30, 38, 56, 0.3);
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   line-height: 1.35;
   white-space: nowrap;
 }
-.fe-delta-badge > [aria-hidden='true'] { font-size: 0.72em; line-height: 1; }
-.fe-delta-badge--plain { padding: 0; background: none; box-shadow: none; }
+.fe-delta-badge.fe-tone--good { --fe-delta-ink: #166534; }
+.fe-delta-badge.fe-tone--bad { --fe-delta-ink: #b91c1c; }
+.fe-delta-badge.fe-tone--neutral, .fe-delta-badge.fe-tone--flat { --fe-delta-ink: var(--color-text-secondary); }
+.fe-delta-badge > [aria-hidden='true'] { color: var(--fe-delta-ink); font-size: 0.72em; line-height: 1; }
+.fe-delta-badge--plain { padding: 0; background: none; box-shadow: none; color: var(--fe-delta-ink); }
 
 /* ── Общие примитивы движения (2026-10-04) ─────────────────────────────────
    .fe-reveal   — появление блока средствами CSS: без JS, без вспышки «невидимо до старта твина»,
@@ -853,9 +867,9 @@ nav.glass-surface-soft {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-/* Тёплый бежево-золотой каркас с мягким бликом (1,6 с): виден на ivory-фоне и на белой карточке. */
+/* Холодный серо-голубой каркас с мягким бликом (1,6 с): виден на светлом фоне и на белой карточке. */
 .skeleton {
-  background-color: color-mix(in srgb, var(--fe-gold, #B08A3E) 11%, var(--color-obsidian-light));
+  background-color: color-mix(in srgb, #8E9BB5 14%, var(--color-obsidian-light));
   background-image: var(--fe-shimmer, linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.7) 50%, transparent 68%));
   background-size: 200% 100%;
   background-repeat: no-repeat;
@@ -880,24 +894,24 @@ nav.glass-surface-soft {
   height: 20px;
   border-radius: 50%;
   background: var(--fe-glass-active);
-  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 2px 6px rgba(30, 38, 56, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
   cursor: grab;
 }
 .calc-slider::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 6px rgba(173,138,72,0.12), 0 1px 4px rgba(0,0,0,0.12);
+  box-shadow: 0 0 0 6px rgba(30,38,56,0.1), 0 1px 4px rgba(0,0,0,0.12);
 }
 .calc-slider::-webkit-slider-thumb:active {
   cursor: grabbing;
   transform: scale(1.1);
-  box-shadow: 0 0 0 8px rgba(173,138,72,0.18), 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 0 0 8px rgba(30,38,56,0.14), 0 2px 6px rgba(0,0,0,0.15);
 }
 .calc-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
   background: var(--fe-glass-active);
-  box-shadow: 0 2px 6px rgba(32, 42, 60, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 2px 6px rgba(30, 38, 56, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   cursor: grab;
 }
 .calc-slider::-moz-range-track {
@@ -906,10 +920,10 @@ nav.glass-surface-soft {
   border-radius: 9999px;
 }
 .calc-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(173,138,72,0.45);
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(30,58,110,0.4);
 }
 .calc-slider:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(173,138,72,0.45);
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(30,58,110,0.4);
 }
 
 /* ── Sparkline animations ──────────────────────────────────── */
@@ -963,7 +977,7 @@ nav.glass-surface-soft {
 }
 .prose a:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(173, 138, 72, 0.45);
+  box-shadow: 0 0 0 2px var(--color-obsidian), 0 0 0 4px rgba(30, 58, 110, 0.4);
 }
 
 /* Keep consent controls stationary so an early tap cannot miss the button. */

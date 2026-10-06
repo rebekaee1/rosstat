@@ -52,12 +52,13 @@ export default function FacetMark({ size = 10, tall = false, tone = 'gold', puls
   );
 }
 
-/** Медаль места в рейтинге: грань 28 px, цвет по месту (1 — золото, 2 — серебро, 3 — бронза), цифра по центру. */
+/**
+ * Место в рейтинге: цифра в графитовом круге 28 px (круг 6, зона P). Прежняя гранёная медаль золото/серебро/бронза снята
+ * как «игровая» (принцип владельца 2): место читается цифрой, а не цветом камня. `data-rank` оставлен для стилей.
+ */
 export function FacetMedal({ rank, className }) {
-  const tone = rank === 1 ? 'gold' : rank === 2 ? 'silver' : 'bronze';
   return (
     <span className={cn('fe-medal', className)} data-rank={rank}>
-      <FacetMark size={28} tone={tone} />
       <span className="fe-medal__n">{rank}</span>
     </span>
   );
