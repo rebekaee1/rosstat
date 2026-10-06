@@ -27,7 +27,7 @@ national response и публикация кэша после commit. Контр
 **Содержательная дельта frontend/docs 30 сентября:** [`отчёт`](docs/code-review/frontend-docs-delta-2026-09-30.md): локальный код, история и ограничения полноты.
 **Рабочий процесс, локальный dev, прод-деплой:** [`docs/workflow.md`](docs/workflow.md).
 **Источники данных:** [`docs/data_sources.md`](docs/data_sources.md) (per-indicator карта `URL/endpoint/sheet/row`); parser internals — в docstrings `backend/app/services/*_parser.py`.
-**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0017).
+**Архитектурные решения:** [`docs/adr/`](docs/adr/) (ADR-0001..0018). **Внешний вид интерфейса:** [`docs/design-system.md`](docs/design-system.md) («хрусталь без границ», [ADR-0018](docs/adr/0018-crystal-without-borders-design-system.md)).
 **Backlog работ:** [`docs/backlog.md`](docs/backlog.md).
 **Поиск по всем контурам:** [`docs/search.md`](docs/search.md): глобальная
 палитра стран/регионов/рядов, локальные селекторы, таблицы и телеметрия.
@@ -232,7 +232,8 @@ rosstat/
 │   ├── seo-audit.py
 │   └── analytics-smoke.py
 ├── docs/
-│   ├── adr/                # архитектурные решения (ADR-0001..0017)
+│   ├── adr/                # архитектурные решения (ADR-0001..0018)
+│   ├── design-system.md    # дизайн-система «хрусталь без границ»
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
 │   ├── data_sources.md     # карта «индикатор → файл/endpoint» (118 source)
 │   ├── missed_data_audit.md  # reference: ещё не извлечённые поля в source-файлах

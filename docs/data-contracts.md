@@ -404,6 +404,71 @@ viewport exposure. Исторические параметры старых со
 каждый input edit не собирается. [Instrumentation](analytics_api_inventory/frontend_instrumentation.md),
 [ADR-0016](adr/0016-federated-public-search.md), [история](research/search-history-2026-09-30.md).
 
+## 8. Платформенные контракты раундов 2–4 интерфейса (локально 2026-10-05, не выпущено)
+
+Дизайн-раунды добавили несколько публичных контрактов вместе с внешним видом ([design-system](design-system.md), [ADR-0018](adr/0018-crystal-without-borders-design-system.md)).
+Проверено по коду и тестам backend/frontend; на боевом сервере и на живых данных не наблюдалось.
+
+<a id="forecasts-showcase"></a>
+
+### Витрина прогнозов: `GET /api/v1/forecasts/showcase` и страница `/forecasts`
+
+- **Назначение.** Показать только то, что платформа прогнозирует сама: Россия (`forecasts`/`forecast_values`: инфляция за 12 месяцев тем же расчётом, что `/indicators/cpi/inflation`, `gdp-real`, `unemployment`, `mortgage-rate`, `wages-nominal`)
+  и мир (`world_forecasts` v2 со статусом `passed`, для Евростата ещё при подтверждённом свежем наборе данных; темы цены, безработица, реальный ВВП; до 4 стран на тему, крупные экономики первыми).
+  **Проекции МВФ не хранятся и не пересказываются** (`world_forecast_policy`); ключевая ставка и курсы не прогнозируются.
+- **Ответ.** `{generated_at, locale, themes:[{id,name}], items:[...]}`. Тема: `inflation | gdp | unemployment | rates | wages` (в ответе остаются только присутствующие). Элемент: `id, scope (russia|world), theme, kind (inflation12|level|percent), title, country{…}, unit, frequency, source, path, last_actual{date,value}, forecast_end{date,value,lower,upper}, change{unit,value,direction,horizon_months}, history[], forecast[], updated, verified`.
+  Элемент попадает в витрину, только если между последним фактом и концом прогноза 9–15 месяцев (честное «через год») и изменение вычислимо (`forecast_showcase.horizon_ok`, `compute_change`).
+- **Кэш и язык.** Redis namespace `world`, ключ `forecast-showcase:v1:{locale}`; TTL 30 мин (пустая витрина — 2 мин); HTTP `Cache-Control: public, max-age=60, s-maxage=300, stale-while-revalidate=600`, `Vary: Host` (язык по хосту). SSR-страница кэшируется 15 мин в `ssr-world`.
+- **Страница.** `/forecasts` — платформенная страница (`site_paths.forecasts()`, зарезервированный первый сегмент: nginx исключает `forecasts` из слага страны во всех location страны и регионов; backend `/seo/page/forecasts`, `seo_forecasts.py`; SPA `ForecastsPage`).
+  Без JS и для роботов HTML содержит таблицу значений. Пустая база — честный текст «появятся здесь». Пункт меню «Прогнозы» ведёт сюда.
+- **Состояние:** локально; ранжирование и содержимое на боевых данных не проверялись (нет БД у исполнителя).
+
+<a id="ticker-rates-basis"></a>
+
+### Лента курсов и основа курса: `source_kind`, `source_label`, `as_of`, `/ticker/rates/{pair}`
+
+- `GET /api/v1/ticker/live?lane=russia|world` — каждый снимок получает `source_kind` (`market` для MOEX/Binance, `central_bank` для Банка России, `ecb`, иначе `official`), `source_label` («Биржа», «ЦБ», «ЕЦБ» или «Exchange», «Central bank», «ECB» по языку хоста; для прочих — название источника) и `as_of` (момент котировки либо календарная дата дневного ряда).
+  Поля **добавляются при выдаче**, Redis их не хранит (старые снимки их не имеют). Ответ несёт `lane` (неизвестная лента → `world`) и `Vary: Host`. Состав ленты зависит только от языка хоста; золото в $/oz в английской ленте не публикуется (лицензия IBA на дневной ряд LBMA).
+- `GET /api/v1/ticker/rates/{usd-rub|eur-rub|cny-rub}` → `{pair, central_bank, market}`; каждый объект `{price, change_pct, source, source_kind, source_label, as_of}`. `central_bank` — последняя точка официального ряда Банка России в базе, `market` — живая биржевая котировка из Redis или `null`
+  (биржа закрыта или недоступна; если воркер подставил курс ЦБ под видом рынка, он отбрасывается). Другая пара → 404. Источники не склеиваются: каждое число идёт со своим типом источника и датой. **Потребители на 2026-10-06:** `/ticker/rates` и поля `source_kind`/`source_label`/`as_of` клиент не использует; `LiveTicker.jsx` сам определяет «биржа»/«ЦБ» по `snapshot.source` (`tickerSourceKind`, ключи `shell.ticker.source.*`), страница курса и конвертер считают по ЦБ из каталога показателей.
+
+<a id="country-ssr-key-figures"></a>
+
+### Страница страны: «Главное» в HTML и предзагрузка `#fe-country-bootstrap`
+
+- SSR страницы страны (`seo_world.render_world_country_html`, `seo_country_figures.py`) добавляет `<section id="key-figures"><h2>Главное</h2>` (EN «Key figures») перед картинкой и таблицей «Ключевые показатели»: до четырёх строк (инфляция за год, безработица, ВВП, при наличии баланс бюджета/госдолг), с «Год назад: …», периодом и ссылкой на показатель; формулировки зеркалят `frontend/src/lib/countryKeyFigures.js` (масштаб «млрд/трлн €», «II кв.», «с поправкой на инфляцию»).
+- В `<head>` — `<script type="application/json" id="fe-country-bootstrap">` (экранирование `<`, `>`, `&`): `{v:1, slug, locale, country:{code,slug,name,name_en,region,region_en}, overview:[{concept_slug,name,name_en,unit,indicator_code,frequency,date,value,points:[[date,value],...]}]}`;
+  точки — окно мини-графика (последние 120 месяцев / 40 кварталов / 12 лет), порядка 2 КБ, порог теста 30 КБ.
+- **Клиент.** `lib/countryBootstrap.js` проверяет версию, страну и язык; `CountryKeyFigures` берёт точки из предзагрузки и не запрашивает ряд, пока карточка каталога и предзагрузка относятся к одному ряду, дате и значению; иначе обычный запрос. Ряд в query client не кладётся (ключ `world-indicator-data` общий со страницей показателя, где нужна вся история). Предзагрузка чужой страны не подставляется.
+- **Источник и кэш.** «Главное» берётся из Redis-каталога `world / country:v18:{slug}:{locale}` (`world.country_detail_cache_key()`), при промахе — тот же расчёт `build_country_overview()`; HTML живёт в `ssr-world` до 6 ч, поэтому снимок может отставать от каталога (клиент это ловит сверкой). Сбой блока не ломает страницу (логируется).
+  Словарь названий концептов в `seo_country_figures.py` зеркалит `home.concept.*` фронта: при добавлении концептов в «Главное» дополнять оба.
+
+<a id="not-found-shell"></a>
+
+### 404 в оболочке приложения и фирменные ошибки nginx
+
+- Неизвестный адрес: backend (`seo_renderer.render_not_found_html`, `compose_document(… not_found=True)`) отдаёт документ приложения со статусом **404**, `noindex, follow` (без canonical и hreflang) и `window.__feNotFound=true`. Клиент (`App.jsx::ServerNotFoundGate`) один раз читает флаг при загрузке модуля и **на исходном pathname** рисует `NotFound` вместо таблицы маршрутов (внутренняя навигация флаг не наследует). Если бандл не загрузился, остаётся прежняя самодостаточная страница; ботам без JS бандл не нужен.
+  Ассеты 404 прогреваются в `/seo/not-found` (кэш ассетов 15 с на процесс).
+- nginx отдаёт свои страницы ошибок: `429` (лимиты) и `500/502/503/504` (upstream недоступен) — статические `public/429.html`, `50x.html` и короткий JSON `429.json`/`50x.json` для путей `/api/` (`map $request_uri $branded_error_ext`); заголовки `Cache-Control: no-store`, `Retry-After` 30/20, `X-Robots-Tag: noindex`.
+  Ответы самого backend (его 500 с телом) проходят как есть. `/search?q=…` → 301 на главную с тем же `q` (главная читает параметр).
+
+<a id="rate-limit-config"></a>
+
+### Лимиты API и тестовый стенд
+
+- `RateLimitMiddleware` (`backend/app/main.py`): `LIMIT = int(RUSTATS_API_RATE_LIMIT, по умолчанию 120)` запросов в минуту на адрес для `/api/*`, `EMBED_LIMIT = int(RUSTATS_EMBED_RATE_LIMIT, по умолчанию 600)` для `/api/v1/embed/*`; окно 60 с, Redis-счётчик (атомарный INCR+EXPIRE), fail-open при недоступном Redis с алертом при ≥ 30 пропусков за минуту.
+  Переменные читаются при импорте модуля (нужен перезапуск backend). **Боевые значения не менялись**; их задаёт окружение, а не код.
+- Тестовый стенд (не боевой): `scripts/test-server/docker-compose.override.yml` ставит оба лимита в `6000`; `scripts/test-server/deploy.sh` генерирует `/root/nginx-test.conf` из `frontend/nginx.conf` (rate ×100, burst ×10, `limit_conn perip` 8 → 8000, `ogconn` не трогается) — см. [workflow](workflow.md#тестовый-сервер-демо-стенд-за-cloudflare).
+
+<a id="search-fields-headline"></a>
+
+### Поиск и страница страны: `headline` и `simple_name`
+
+- **`headline`** — главное число строки результата и карточки: `{kind:"year_over_year", value, unit:"%", date}`. Для России — сохранённый ряд `cpi-yoy` (и food/nonfood/services); для мира считается строго к точке на 12 месяцев раньше (нет точки — нет числа); бразильский `ipca-yoy` и китайский `cn-cpi-all` приводятся к «за год» (`search_latest.headline`, `world_price_headline`). `latest` остаётся мелко.
+- **`simple_name`** — понятное имя ряда (`app/data/world_simple_names.py`): «Цены», «Безработица», «ВВП без инфляции», «Госдолг», «Баланс бюджета», «ВВП на душу», «Население»; `null`, если смысл ряда не сверен с концептом. Присутствует в карточке показателя мира и в списке показателей страны.
+- **Потребители на 2026-10-06:** ни `headline`, ни `simple_name` в `frontend/src` не читаются (клиентский поиск и страница страны берут `latest`, `spark` и свои названия): поля готовы на стороне API, интерфейс их ещё не показывает. Версии кэша каталога (`country:v18`, `ind:v22` в `api/world.py`) при добавлении полей не поднимались: до TTL 600 с ответы из кэша приходят без них.
+- Ранжирование: запрос из одной буквы отправляет региональные ряды и ряды штатов в конец независимо от счёта; при равном счёте годовая инфляция страны выше индекса цен (`search._result_sort_key`).
+
 ## Транзакции, кэш и проверка при изменении контракта
 
 | Изменение | Точка commit / инвалидирование | Минимальная проверка |
