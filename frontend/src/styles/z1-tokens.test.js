@@ -128,8 +128,8 @@ describe('z1-tokens.css: ширина страниц данных (DS1, круг
 });
 
 describe('index.css: базовая палитра и типографика раунда 2', () => {
-  it('фон страницы тёплый, а вторичный текст темнее прежнего', () => {
-    expect(indexCss).toMatch(/--color-obsidian:\s*#F6F2EA/);
+  it('фон страницы холодно-нейтральный (круг 6), а вторичный текст темнее прежнего', () => {
+    expect(indexCss).toMatch(/--color-obsidian:\s*#F4F5F7/);
     expect(indexCss).toMatch(/--color-text-secondary:\s*#4B596F/);
     expect(indexCss).not.toMatch(/--color-obsidian:\s*#EEF0F4/);
   });
@@ -141,5 +141,64 @@ describe('index.css: базовая палитра и типографика р�
 
   it('home page shell и .fe-data-page берут ширину из токенов', () => {
     expect(indexCss).toMatch(/\.fe-page-shell \{[^}]*max-width:\s*var\(--fe-box-wide/);
+  });
+});
+
+// Круг 6, зона P: палитра «не жёлтая» (принципы владельца 2 и 3). Страж держит токены и список «игровых» приёмов, которые сняты.
+describe('круг 6: холодная палитра, графит и синий, золото тонким акцентом', () => {
+  const read = (name) => readFileSync(join(here, name), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const css = Object.fromEntries(['k2-brand.css', 'k3-shell.css', 'k4-charts.css', 'k6-country.css', 'k7-home.css', 'k8-tools.css'].map((n) => [n, read(n)]));
+  const tok = tokens.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  it('фон — холодный #F4F5F7 / #EEF1F5; активное состояние — графит со светлым текстом, а не золото', () => {
+    expect(tok).toMatch(/--fe-bg-warm:\s*#F4F5F7/);
+    expect(tok).toMatch(/--fe-bg-warm-2:\s*#EEF1F5/);
+    expect(tok).toMatch(/--fe-glass-active:\s*linear-gradient\(135deg, #2A3550, #1E2638\)/);
+    expect(tok).toMatch(/--fe-on-active:\s*#F3EFE6/);
+    expect(tok).toMatch(/--fe-on-gold:\s*var\(--fe-on-active\)/);
+    expect(tok).toMatch(/--fe-glass-primary:\s*linear-gradient\(135deg, #2C4A8A, #1E3A6E\)/);
+  });
+
+  it('цифры-герои графитовые; золотой градиент только у класса .fe-gold-text', () => {
+    expect(tok).toMatch(/--fe-gold-gradient-text:\s*linear-gradient\(120deg, #1E2638/);
+    expect(tok).toMatch(/\.fe-gold-text\s*\{\s*background:\s*var\(--fe-gold-gradient-true\)/);
+    expect(css['k7-home.css']).toMatch(/--k7-gold-text:\s*linear-gradient\(170deg, #2A3550/);
+    expect(css['k6-country.css']).toMatch(/--k6-engrave:\s*linear-gradient\(175deg, #1E2638/);
+  });
+
+  it('золото сцены — единственное тёплое пятно (альфа ≤ .18), остальные сияния холодные', () => {
+    expect(tok).toMatch(/--fe-glow-gold-bg:\s*rgba\(201, 162, 77, 0\.1\)/);
+    expect(tok).toMatch(/--fe-glow-ice-bg:\s*rgba\(196, 214, 238/);
+  });
+
+  it('«игровое» снято: бусины графика, камни, медали, гемма дока, флаги-капли, лампы плиток', () => {
+    // бусина на конце линии: плоская точка 6 px, грани и блик скрыты
+    expect(css['k4-charts.css']).toMatch(/\.k4-lastpoint > circle:nth-of-type\(2\)\s*\{\s*r:\s*3px/);
+    expect(css['k4-charts.css']).toMatch(/\.k4-lastpoint > path,\s*\.k4-lastpoint > circle:nth-of-type\(3\)\s*\{\s*display:\s*none/);
+    // легенда карты: тонкая шкала 4 px, без блика и бусин-делений
+    expect(css['k4-charts.css']).toMatch(/\.k4-tube\s*\{[^}]*height:\s*4px/);
+    expect(css['k4-charts.css']).toMatch(/\.k4-tube__beads\s*\{\s*display:\s*none/);
+    // медаль — цифра в графитовом круге; гранёных conic-градиентов нет
+    expect(css['k2-brand.css']).toMatch(/\.fe-medal\s*\{[^}]*border-radius:\s*50%[^}]*#2A3550/);
+    expect(css['k6-country.css']).not.toContain('conic-gradient');
+    // флаг без блика и цветного пятна
+    expect(css['k2-brand.css']).toMatch(/\.fe-flag--glass::before\s*\{\s*content:\s*none/);
+    expect(css['k2-brand.css']).toMatch(/\.fe-flag__drop::after\s*\{\s*content:\s*none/);
+    // док: геммы нет, активный пункт — графитовая плашка
+    expect(css['k3-shell.css']).not.toMatch(/fe-dock__gem|fe-mega__tile--gem\s*\{/);
+    expect(css['k3-shell.css']).toMatch(/\.fe-dock__item\.is-active \.fe-dock__icon\s*\{\s*background:\s*var\(--fe-glass-active\)/);
+    // лампы плиток «Мир сейчас» нейтральные: ни одной золотой и розовой
+    expect(css['k7-home.css']).toMatch(/--k7-lamp-gold:\s*rgb\(196 210 234/);
+    expect(css['k7-home.css']).not.toMatch(/--k7-lamp-(gold|rose|mint):\s*rgb\((233|244|172) /);
+    // у кнопок, чипов и ручек нет радиального глянца «circle at 3x%»
+    for (const name of ['k3-shell.css', 'k4-charts.css', 'k7-home.css', 'k8-tools.css']) {
+      expect(css[name], name).not.toMatch(/radial-gradient\(circle at 3\d%/);
+    }
+  });
+
+  it('золотая заливка — только CTA регистрации (.fe-cta-gold и кнопка в шапке), остальные primary синие', () => {
+    expect(indexCss).toMatch(/\.fe-btn--primary\s*\{[^}]*var\(--fe-glass-primary\)/);
+    expect(css['k3-shell.css']).toMatch(/nav\.fe-navbar--glass \.fe-button-primary,[\s\S]*?background:\s*var\(--fe-glass-gold\)/);
+    expect(css['k8-tools.css']).not.toMatch(/glass-gold/);
   });
 });

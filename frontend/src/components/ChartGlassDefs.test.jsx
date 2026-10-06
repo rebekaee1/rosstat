@@ -47,7 +47,7 @@ describe('ChartGlassDefs', () => {
     const { container } = render(<Probe onIds={(v) => { ids = v; }} />);
     const area = container.querySelector(`[id="${ids.area}"]`);
     const stops = [...area.querySelectorAll('stop')];
-    expect(Number(stops[0].getAttribute('stop-opacity'))).toBeCloseTo(0.35);
+    expect(Number(stops[0].getAttribute('stop-opacity'))).toBeCloseTo(0.16);
     expect(Number(stops[1].getAttribute('stop-opacity'))).toBe(0);
     expect(ids.prism).toBeUndefined();
     expect(container.querySelector('[id$="-prism"]')).toBeNull();

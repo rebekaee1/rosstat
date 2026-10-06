@@ -7,7 +7,7 @@
  *   --fe-gold            основное золото: линии, кромки, заливки (не для мелкого текста: контраст 3:1)
  *   --fe-gold-soft       мягкая золотая подложка (полупрозрачная): фон активного, плашки, подсветка
  *   --fe-gold-ink        золото для ТЕКСТА на светлом фоне (контраст 5,4:1 на бумаге)
- *   --fe-bg-warm         «бумага»: фон страницы (слоновая кость)
+ *   --fe-bg-warm         фон страницы: холодно-нейтральный светлый (круг 6; прежняя тёплая бумага #F6F2EA снята)
  *   --fe-dark-surface    графит для тёмных стеклянных карточек (страны, подвал, герои)
  *   --fe-text-muted      вторичный текст (контраст ≥ 5,7:1 на бумаге)
  *   --fe-container-*     ширина КОНТЕНТА (без полей): данные 1280 → 1600 → 1760 → 1920, текст 760
@@ -22,17 +22,17 @@
  * разница светлоты слоёв, блик сверху и мягкая тень снизу. Слои и их токены:
  *   L1 панель        --fe-glass-l1 (+ --fe-glass-l1-sheen, --fe-blur-l1, --fe-float-shadow, --fe-inset-glint*)
  *   L2 элемент       --fe-glass-l2 (+ --fe-blur-l2, --fe-shadow-l2): чипы, кнопки, поля, плитки (blur только у .fe-glass-pop и L1)
- *   L2 активный      --fe-glass-active (золотая заливка), --fe-on-gold (текст на ней)
+ *   L2 активный      --fe-glass-active (графит), --fe-on-active (светлый текст на нём; --fe-on-gold — прежнее имя, тот же цвет); primary — --fe-glass-primary (синий); золото — только --fe-glass-gold у CTA
  *   L3 тёмный        --fe-dark-glass: профиль страны, подвал
  * Классы для зон (рамок не имеют, border: 0):
  *   .fe-glass          слой L1 с blur: единичная панель, тулбар, меню, плашка
  *   .fe-glass-pop      слой L1 плотнее (альфа .88) и с blur: выпадающие списки, меню, диалоги, подсказки
  *   .fe-glass-lite     слой L1 без blur: повторяющиеся карточки списков (вид тот же, дешевле)
  *   .fe-glass-2        слой L2 без blur: элемент внутри панели (плитка, поле, сегмент)
- *   .fe-glass-active   активное состояние L2: золотая заливка, не контур
+ *   .fe-glass-active   активное состояние L2: графитовая заливка, не контур
  *   .fe-glass-dark     слой L3: тёмный хрусталь с золотым сиянием в углу
  *   .fe-float          парение при наведении мышью: подъём на 2 px, тень растёт; нажатие scale(.98)
- *   .fe-divider        единственный разрешённый разделитель: линия 1 px rgba(88,74,46,.10) (как hr); .fe-divider-b снизу, .fe-divide-y между строками списка
+ *   .fe-divider        единственный разрешённый разделитель: линия 1 px rgba(30,38,56,.10) (как hr); .fe-divider-b снизу, .fe-divide-y между строками списка
  *   .fe-shadow-2       только тень и блик L2: для плашек со своим тоном фона (тонированные подсказки)
  *   --fe-l1-bg, --fe-l2-shadow, --fe-pop-bg   готовые значения для background/box-shadow в CSS зон (не классы)
  * Пока backdrop-filter не поддерживается, альфа L1 поднимается до 0,86, L2 до 0,9 (см. @supports ниже).
@@ -42,12 +42,22 @@
   /* ── Палитра ─────────────────────────────────────────────────────────── */
   --fe-gold: #B08A3E;
   --fe-gold-bright: #C9A24D;
-  --fe-gold-soft: rgba(176, 138, 62, 0.16);
-  --fe-gold-ink: #7A5F2A;
+  /* Круг 6: имя прежнее, значение холодное (светло-синий тон наведения/выбора); тёплая золотая подложка снята (принцип 3). */
+  --fe-gold-soft: rgba(30, 58, 110, 0.1);
+  /* Круг 6: цвет текста-акцента (ссылки, единицы, шевроны) — глубокий синий; имя прежнее (45 мест в зонах). Золото остаётся у линий и точек. */
+  --fe-gold-ink: #1E3A6E;
   --fe-gold-line: rgba(176, 138, 62, 0.55);
-  --fe-gold-gradient-text: linear-gradient(120deg, #6B5224 0%, #B08A3E 100%);
-  --fe-bg-warm: #F6F2EA;
-  --fe-bg-warm-2: #F0EBE0;
+  /* Круг 6 (зона P): цифры-герои графитовые; золотой градиент — только у .fe-gold-text (одна цифра на странице). */
+  --fe-gold-gradient-text: linear-gradient(120deg, #1E2638 0%, #2A3550 100%);
+  --fe-gold-gradient-true: linear-gradient(120deg, #6B5224 0%, #B08A3E 100%);
+  /* Холодно-нейтральный светлый фон вместо тёплой бумаги (принцип владельца 3). */
+  --fe-bg-warm: #F4F5F7;
+  --fe-bg-warm-2: #EEF1F5;
+  /* Основа активных состояний: графит и глубокий синий. */
+  --fe-ink: #1E2638;
+  --fe-ink-2: #2A3550;
+  --fe-blue: #1E3A6E;
+  --fe-blue-2: #2C4A8A;
   --fe-text-muted: #526077;
 
   /* Тёмный стеклянный акцент (DS3): карточки-карты стран, подвал, редкие герои. Страница в целом остаётся светлой. */
@@ -84,36 +94,48 @@
   --fe-l1-bg: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
   --fe-l2-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   --fe-glass-l2-hover: rgba(255, 255, 255, 0.72);
-  --fe-glass-active: linear-gradient(135deg, #C9A24D, #B08A3E);
-  --fe-glass-active-hover: linear-gradient(135deg, #D2AE5E, #BA9446);
-  --fe-on-gold: #231B0B;
+  /* Активное состояние L2: графит (чип, сегмент, вкладка). Блик сверху 1 px, без глянца. */
+  --fe-glass-active: linear-gradient(135deg, #2A3550, #1E2638);
+  --fe-glass-active-hover: linear-gradient(135deg, #34426A, #263149);
+  /* Кнопка primary: глубокий синий. */
+  --fe-glass-primary: linear-gradient(135deg, #2C4A8A, #1E3A6E);
+  --fe-glass-primary-hover: linear-gradient(135deg, #3558A0, #24447F);
+  --fe-on-active: #F3EFE6;
+  /* Старое имя: текст на активной заливке. Теперь светлый (заливка графитовая); файлы других зон читают его как раньше. */
+  --fe-on-gold: var(--fe-on-active);
+  /* Единственная золотая заливка страницы: CTA регистрации. Текст на ней тёмный. */
+  --fe-glass-gold: linear-gradient(135deg, #C9A24D, #B08A3E);
+  --fe-glass-gold-hover: linear-gradient(135deg, #D2AE5E, #BA9446);
+  --fe-on-gold-cta: #231B0B;
   --fe-blur-l1: 18px;
   --fe-blur-l2: 12px;
   --fe-inset-glint: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --fe-inset-glint-bottom: inset 0 -1px 0 rgba(176, 138, 62, 0.1);
-  --fe-float-shadow: 0 1px 2px rgba(60, 48, 24, 0.06), 0 24px 56px -28px rgba(60, 48, 24, 0.38);
-  --fe-float-shadow-hover: 0 1px 2px rgba(60, 48, 24, 0.06), 0 32px 64px -28px rgba(60, 48, 24, 0.45);
-  --fe-shadow-l2: 0 6px 18px -12px rgba(60, 48, 24, 0.35);
-  --fe-shadow-active: 0 8px 22px -12px rgba(176, 138, 62, 0.55);
-  --fe-divider-line: rgba(88, 74, 46, 0.1);
+  --fe-inset-glint-bottom: inset 0 -1px 0 rgba(30, 38, 56, 0.06);
+  --fe-float-shadow: 0 1px 2px rgba(30, 38, 56, 0.06), 0 24px 56px -28px rgba(30, 38, 56, 0.36);
+  --fe-float-shadow-hover: 0 1px 2px rgba(30, 38, 56, 0.06), 0 32px 64px -28px rgba(30, 38, 56, 0.44);
+  --fe-shadow-l2: 0 6px 18px -12px rgba(30, 38, 56, 0.34);
+  --fe-shadow-active: 0 8px 22px -12px rgba(30, 38, 56, 0.6);
+  --fe-divider-line: rgba(30, 38, 56, 0.1);
   --fe-focus-ring: 0 0 0 3px rgba(176, 138, 62, 0.35);
   --fe-dark-glass:
-    radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 58%),
+    radial-gradient(120% 90% at 100% 0%, rgba(120, 156, 220, 0.2), transparent 58%),
     linear-gradient(160deg, rgba(42, 53, 80, 0.86), rgba(30, 38, 56, 0.92) 72%);
   --fe-dark-shadow: 0 24px 52px -30px rgba(18, 24, 38, 0.7);
   --fe-dark-glint: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   /* Сияние фона страницы: золото и лёд (слой L0 в body). */
-  --fe-glow-gold-bg: rgba(201, 162, 77, 0.14);
-  --fe-glow-ice-bg: rgba(202, 216, 229, 0.35);
+  /* Одно тёплое сияние ≤ .18; остальные холодные (круг 6). */
+  --fe-glow-gold-bg: rgba(201, 162, 77, 0.1);
+  --fe-glow-ice-bg: rgba(196, 214, 238, 0.4);
+  --fe-glow-cool-bg: rgba(150, 178, 225, 0.2);
 
   /* Старое имя: тень-парение с бликом. */
   --fe-card-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
   /* Золотое свечение при наведении: только тень, без кольца 0 0 0 1px. */
   --fe-glow-gold:
-    0 1px 2px rgba(60, 48, 24, 0.06),
-    0 20px 40px -22px rgba(176, 138, 62, 0.55);
+    0 1px 2px rgba(30, 38, 56, 0.06),
+    0 20px 40px -22px rgba(30, 38, 56, 0.5);
   /* Радиальное золотое свечение 6–8 % за героями. */
-  --fe-glow-bg: radial-gradient(ellipse 60% 70% at 85% 0%, rgba(201, 162, 77, 0.1), transparent 70%);
+  --fe-glow-bg: radial-gradient(ellipse 60% 70% at 85% 0%, rgba(120, 156, 220, 0.1), transparent 70%);
   --fe-shimmer: linear-gradient(100deg, transparent 32%, rgba(255, 255, 255, 0.72) 50%, transparent 68%);
   --fe-shimmer-dur: 1.6s;
 }
@@ -170,8 +192,9 @@
 .fe-unit--tight { margin-inline-start: 0.1em; }
 
 /* Цифры-герои градиентом золота. Контраст крупного текста ≥ 3:1 (самая светлая точка 3,2:1 на белом). */
+/* Золото цифр: только на одной цифре страницы (круг 6); остальные цифры-герои графитовые (--fe-gold-gradient-text). */
 .fe-gold-text {
-  background: var(--fe-gold-gradient-text);
+  background: var(--fe-gold-gradient-true);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -235,13 +258,21 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 
-/* L2 активный: золотая заливка вместо контура. */
+/* L2 активный: графитовая заливка вместо контура, светлый текст, блик сверху 1 px. */
 .fe-glass-active {
   background: var(--fe-glass-active);
   border: 0;
-  color: var(--fe-on-gold);
-  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  color: var(--fe-on-active);
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
 }
+/* Единственная золотая заливка страницы (CTA регистрации). */
+.fe-cta-gold {
+  background: var(--fe-glass-gold);
+  border: 0;
+  color: var(--fe-on-gold-cta);
+  box-shadow: 0 8px 22px -12px rgba(176, 138, 62, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.fe-cta-gold:hover:not(:disabled) { background: var(--fe-glass-gold-hover); }
 
 /* L3: тёмный хрусталь. Внутри переопределены цветовые токены, поэтому text-text-*, divider и surface работают сами. */
 .fe-glass-dark,
@@ -289,10 +320,10 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
     --fe-glass-l1-soft: rgba(255, 255, 255, 0.78);
     --fe-glass-l2: rgba(255, 255, 255, 0.9);
     --fe-pop-bg: rgba(255, 255, 255, 0.96);
-    --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(255, 253, 248, 0.84));
-    --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.84), rgba(255, 252, 245, 0.76));
+    --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(250, 252, 255, 0.84));
+    --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.84), rgba(248, 251, 255, 0.76));
     --fe-dark-glass:
-      radial-gradient(120% 90% at 100% 0%, rgba(201, 162, 77, 0.2), transparent 58%),
+      radial-gradient(120% 90% at 100% 0%, rgba(120, 156, 220, 0.2), transparent 58%),
       linear-gradient(160deg, #2A3550, #1E2638 72%);
   }
 }
