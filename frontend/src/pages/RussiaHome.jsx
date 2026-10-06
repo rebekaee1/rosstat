@@ -205,7 +205,7 @@ export default function RussiaHome() {
     <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-24 pt-24 sm:px-6">
       <Breadcrumbs items={crumbs} />
 
-      <section className="fe-panel relative mb-6 overflow-hidden rounded-[1.5rem] p-4 sm:mb-8 sm:rounded-[2rem] sm:p-8">
+      <section className="fe-panel z5-ru-hero relative mb-6 overflow-hidden rounded-[1.5rem] p-4 sm:mb-8 sm:rounded-[2rem] sm:p-8">
         <div className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(201,162,77,0.2),transparent)]" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">

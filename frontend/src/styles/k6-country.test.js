@@ -86,6 +86,28 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
     expect(z5).toMatch(/\.z5-hero__lead \{[^}]*max-width: 58%/);
   });
 
+  it('круг 5: крупные стёкла (герой, подложка, плитки, плиты) прозрачнее .6 и с внутренним бликом', () => {
+    const light = k6.split(':root[data-theme')[0];
+    for (const name of ['hero', 'tray', 'tile', 'plate', 'row']) {
+      const m = light.match(new RegExp(`--k6-${name}-glass:\\s*linear-gradient\\(([^;]*)\\);`));
+      expect(m, name).toBeTruthy();
+      for (const alpha of m[1].matchAll(/rgba\(255, 255, 255, ([0-9.]+)\)/g)) {
+        expect(Number(alpha[1]), `${name} ${alpha[0]}`).toBeLessThanOrEqual(0.52);
+      }
+    }
+    expect(light).toMatch(/--k6-row-glass-alt:\s*linear-gradient\(135deg, rgba\(255, 255, 255, 0\.38\), rgba\(255, 255, 255, 0\.26\)\)/);
+    expect(k6).toContain('--k6-glass-glint: inset 0 1px 0');
+    expect(z5).toMatch(/\.fe-data-header\.z5-hero \{[^}]*var\(--k6-hero-glass/);
+    expect(z5).toMatch(/\.z5-key-grid, \.z5-ru-main \{[^}]*var\(--k6-tray-glass/);
+    expect(z5).toMatch(/\.z5-key \{[^}]*var\(--k6-tile-glass/);
+  });
+
+  it('круг 5: без backdrop-filter стёкла плотнеют, а плиты рейтинга на телефоне без blur', () => {
+    expect(k6).toMatch(/@supports not \(\(backdrop-filter: blur\(1px\)\)[\s\S]*--k6-hero-glass: linear-gradient\(160deg, rgba\(255, 255, 255, 0\.9\)/);
+    expect(z6).toMatch(/\.z6-ribbon \.w2-fact \{[^}]*backdrop-filter: blur/);
+    expect(z6).toMatch(/max-width: 767px\)\s*\{\s*\.z6-ribbon \.w2-fact \{[^}]*backdrop-filter: none/);
+  });
+
   it('кольца вокруг активных элементов заменены свечением с размытием', () => {
     for (const css of [z5, z6, world, w6d, k6]) {
       expect(css).not.toMatch(/box-shadow\s*:[^;]*0\s+0\s+0\s+[0-9.]+px/);
