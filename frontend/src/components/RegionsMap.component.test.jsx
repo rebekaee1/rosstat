@@ -44,20 +44,20 @@ describe('RegionsMap', () => {
     expect(outline.getAttribute('d')).toBe(fillPath.getAttribute('d'));
     expect(outline.getAttribute('d')).toBe(target.path);
     expect(outline.getAttribute('fill')).toBe('none');
-    expect(outline.getAttribute('stroke')).toBe('#AD8A48');
+    expect(outline.getAttribute('stroke')).toBe('#3D5F9E');
   });
 
-  it('dark compact: шампань-заливка, тонкие обводки, светлый hover-stroke', () => {
+  it('dark compact: ледяная заливка, тонкие обводки, светлый hover-stroke', () => {
     const target = mapData.regions[0];
     const { container } = renderMap({ variant: 'compact', theme: 'dark' });
     const svg = container.querySelector('svg');
     expect(svg?.getAttribute('viewBox')).toBe('8 6 984 526');
     const fillPath = container.querySelector(`svg path[data-region-slug="${target.slug}"]`);
-    expect(fillPath.getAttribute('fill')).toBe('#D8C177');
+    expect(fillPath.getAttribute('fill')).toBe('#B9CCE8');
     expect(fillPath.getAttribute('stroke-width')).toBe('0.35');
     fireEvent.mouseMove(fillPath);
     const outline = container.querySelector(`svg path[data-hover-outline="${target.slug}"]`);
-    expect(outline.getAttribute('stroke')).toBe('#F3E6B0');
+    expect(outline.getAttribute('stroke')).toBe('#FFFFFF');
   });
 
   it('brandMark сидит в обёртке SVG, не уезжает к легенде', () => {

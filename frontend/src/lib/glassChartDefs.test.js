@@ -20,6 +20,6 @@ describe('glassChartDefs', () => {
 
   it('разметка берёт цвета из темы: светлое золото первым, тёмное золото последним', () => {
     const markup = glassDefsMarkup();
-    expect(markup.indexOf('#E9CD8E')).toBeLessThan(markup.indexOf('#A9812F'));
+    expect(markup.indexOf('#9DB6DD')).toBeLessThan(markup.indexOf('#1E3A6E'));
   });
 });

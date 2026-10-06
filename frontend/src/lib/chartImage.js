@@ -38,7 +38,7 @@ function drawFacet(ctx, cx, cy, size) {
   const hh = size / 2;
   const hw = size / 4.2;
   ctx.save();
-  ctx.shadowColor = 'rgba(60, 48, 24, 0.35)';
+  ctx.shadowColor = 'rgba(30, 38, 56, 0.35)';
   ctx.shadowBlur = size * 0.35;
   ctx.shadowOffsetY = size * 0.12;
   // Левая половина светлее, правая темнее: так читается как огранённый камень.
@@ -48,8 +48,8 @@ function drawFacet(ctx, cx, cy, size) {
   ctx.lineTo(cx, cy + hh);
   ctx.closePath();
   const left = ctx.createLinearGradient(cx - hw, cy - hh, cx, cy + hh);
-  left.addColorStop(0, '#FFF3CF');
-  left.addColorStop(1, '#D8B561');
+  left.addColorStop(0, '#E8F0FA');
+  left.addColorStop(1, '#9DB6DD');
   ctx.fillStyle = left;
   ctx.fill();
   ctx.shadowColor = 'transparent';
@@ -59,8 +59,8 @@ function drawFacet(ctx, cx, cy, size) {
   ctx.lineTo(cx, cy + hh);
   ctx.closePath();
   const right = ctx.createLinearGradient(cx, cy - hh, cx + hw, cy + hh);
-  right.addColorStop(0, '#C9A24D');
-  right.addColorStop(1, '#8F6B24');
+  right.addColorStop(0, '#4F78B8');
+  right.addColorStop(1, '#1E3A6E');
   ctx.fillStyle = right;
   ctx.fill();
   ctx.beginPath();
@@ -86,7 +86,7 @@ function drawWatermark(ctx, w, h) {
   ctx.textBaseline = 'middle';
   const x = w - tagPx;
   const y = h - tagPx * 1.4;
-  ctx.fillStyle = '#6B5224';
+  ctx.fillStyle = '#1E3A6E';
   ctx.fillText(WATERMARK_TEXT, x, y);
   const textW = ctx.measureText(WATERMARK_TEXT).width;
   drawFacet(ctx, x - textW - tagPx * 0.9, y, tagPx * 1.5);
@@ -146,9 +146,9 @@ function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
-  caustic(canvas.width * 0.88, canvas.height * 0.02, canvas.width * 0.6, 'rgba(246, 231, 190, 0.75)');
+  caustic(canvas.width * 0.88, canvas.height * 0.02, canvas.width * 0.6, 'rgba(201, 215, 234, 0.75)');
   caustic(canvas.width * 0.04, canvas.height * 0.45, canvas.width * 0.5, 'rgba(191, 224, 245, 0.45)');
-  caustic(canvas.width * 0.5, canvas.height * 1.02, canvas.width * 0.55, 'rgba(244, 198, 216, 0.28)');
+  caustic(canvas.width * 0.5, canvas.height * 1.02, canvas.width * 0.55, 'rgba(124, 154, 201, 0.22)');
 
   // Знак и слово бренда: буква F и грань вместо золотой точки.
   const markSize = 30 * unit;
@@ -193,7 +193,7 @@ function composeFramedCanvas(img, { title = '', subtitle = '', source = '', site
   const plateW = img.naturalWidth + slab * 2;
   const plateH = img.naturalHeight + slab * 2;
   ctx.save();
-  ctx.shadowColor = 'rgba(60, 48, 24, 0.3)';
+  ctx.shadowColor = 'rgba(30, 38, 56, 0.3)';
   ctx.shadowBlur = 36 * unit;
   ctx.shadowOffsetY = 14 * unit;
   roundedRectPath(ctx, plateX, plateY, plateW, plateH, radius + slab * 0.6);

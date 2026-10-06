@@ -31,8 +31,8 @@ import '../lib/glassChartDefs';
 
 // Основная линия: «стеклянная лента» 3 px (K4.1). Сплошной цвет нужен подсказке, легенде и шарику; сама линия — градиент ribbon.
 const LINE = CHART_THEME.gold ?? CHART_THEME.line ?? '#B08A3E';
-// Прогноз: тот же ряд продолжается линией более тёмного золота, которая тает по прозрачности вдоль, чтобы факт и прогноз не сливались.
-const FORECAST = CHART_THEME.champagneInk ?? '#80642F';
+// Прогноз: тот же ряд продолжается золотой линией, которая тает по прозрачности вдоль, чтобы факт и прогноз не сливались.
+const FORECAST = CHART_THEME.forecast;
 // Ряд сравнения по умолчанию — сапфир (светлый → тёмный); чужие цвета рисуются как заданы.
 const SAPPHIRE_LINES = new Set([CHART_THEME.sapphire, CHART_THEME.blue]);
 
@@ -145,7 +145,7 @@ function CustomTooltip({
         <span className="fe-chart-tip__date">{formatDate(label, dateFormat)}</span>
         <span
           className="fe-chart-tip__value"
-          style={isForecast ? { color: CHART_THEME.champagneInk } : undefined}
+          style={isForecast ? { color: CHART_THEME.forecastInk } : undefined}
         >
           {numericTooltipOnly
             ? formatValue(main.value, valueDigits)

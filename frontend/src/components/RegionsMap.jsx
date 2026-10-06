@@ -26,11 +26,11 @@ import '../styles/w6f-pages.css';
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;
 
-/** Тёмный режим витрины (hero /russia): шампань как у CountrySilhouette. */
-const DARK_FILL = '#D8C177';
+/** Тёмный режим витрины (hero /russia): ледяной хрусталь как у CountrySilhouette (круг 6: шампань снята). */
+const DARK_FILL = '#B9CCE8';
 const DARK_NO_DATA = '#3A3B44';
-const DARK_STROKE = 'rgba(255,243,197,0.38)';
-const DARK_HOVER_STROKE = '#F3E6B0';
+const DARK_STROKE = 'rgba(255,255,255,0.4)';
+const DARK_HOVER_STROKE = '#FFFFFF';
 const LIGHT_STROKE = 'rgba(26,26,46,0.18)';
 const LIGHT_HOVER_STROKE = CHART_THEME.champagne;
 /** Плотный кадр без полей — геометрия почти вписана в исходный viewBox. */
@@ -431,7 +431,7 @@ export default function RegionsMap({
           >
             <span className="font-medium">{nameBySlug[hover.slug]}</span>
             {hoverValue != null && (
-              <span className="ml-1.5 font-mono text-[#D8C177]">
+              <span className="ml-1.5 font-mono text-[#BFD2F0]">
                 {formatRegionValue(hoverValue)}{unit ? `\u00A0${unit}` : ''}
               </span>
             )}

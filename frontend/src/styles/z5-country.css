@@ -49,7 +49,7 @@
 .z5-profile-skel {
   display: block;
   border-radius: 14px;
-  background: linear-gradient(100deg, rgba(176, 138, 62, 0.07) 20%, rgba(176, 138, 62, 0.18) 40%, rgba(176, 138, 62, 0.07) 60%) 0 0 / 220% 100%;
+  background: linear-gradient(100deg, rgba(44, 74, 138, 0.06) 20%, rgba(44, 74, 138, 0.13) 40%, rgba(44, 74, 138, 0.06) 60%) 0 0 / 220% 100%;
   animation: z5-shimmer 1.6s linear infinite;
 }
 .z5-spark-skel { height: 100%; min-height: 48px; }
@@ -57,7 +57,7 @@
 .z5-key--skel { min-height: 214px; }
 :root .z5-key.z5-key--skel {
   border-radius: 22px;
-  background: linear-gradient(100deg, rgba(176, 138, 62, 0.07) 20%, rgba(176, 138, 62, 0.18) 40%, rgba(176, 138, 62, 0.07) 60%) 0 0 / 220% 100%;
+  background: linear-gradient(100deg, rgba(44, 74, 138, 0.06) 20%, rgba(44, 74, 138, 0.13) 40%, rgba(44, 74, 138, 0.06) 60%) 0 0 / 220% 100%;
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
@@ -754,11 +754,11 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
     radial-gradient(120% 90% at 100% 0%, var(--k6-stone), transparent 64%),
     var(--k6-tile-glass, var(--fe-l1-bg));
 }
-:root .z5-ru-key[data-stone='inflation'] { --k6-stone: rgba(244, 198, 216, 0.66); }
-:root .z5-ru-key[data-stone='rate'] { --k6-stone: rgba(233, 205, 142, 0.7); }
-:root .z5-ru-key[data-stone='usd'] { --k6-stone: rgba(191, 224, 245, 0.7); }
-:root .z5-ru-key[data-stone='gdp'] { --k6-stone: rgba(190, 230, 208, 0.64); }
-:root .z5-ru-key[data-stone='unemployment'] { --k6-stone: rgba(214, 208, 240, 0.66); }
+:root .z5-ru-key[data-stone='inflation'] { --k6-stone: rgba(201, 215, 234, 0.7); }
+:root .z5-ru-key[data-stone='rate'] { --k6-stone: rgba(201, 215, 234, 0.7); }
+:root .z5-ru-key[data-stone='usd'] { --k6-stone: rgba(201, 215, 234, 0.7); }
+:root .z5-ru-key[data-stone='gdp'] { --k6-stone: rgba(201, 215, 234, 0.7); }
+:root .z5-ru-key[data-stone='unemployment'] { --k6-stone: rgba(201, 215, 234, 0.7); }
 :root .z5-ru-key .z5-key__value { font-size: clamp(1.7rem, 1.3rem + 0.9vw, 2.2rem); }
 @supports (font-size: 1cqi) {
   @media (min-width: 640px) {

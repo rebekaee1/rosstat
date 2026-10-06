@@ -49,7 +49,7 @@
   stroke-width: 3px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 5px 8px rgba(176, 138, 62, 0.22));
+  filter: drop-shadow(0 5px 8px rgba(44, 74, 138, 0.22));
 }
 /* Второй и следующие ряды (Line после первого) остаются своего цвета, только толще и со свечением. */
 .k4-glass .recharts-line ~ .recharts-line .recharts-line-curve {
@@ -63,7 +63,7 @@
 .fe-chart-plot.z4-plot.fe-chart-draw { animation-duration: 0.9s; animation-delay: 0.06s; }
 
 /* Свечение под лентой: мягкая тёплая тень, не кольцо. Фильтр статичный. */
-.k4-ribbon .recharts-area-curve, .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(176, 138, 62, 0.22)); }
+.k4-ribbon .recharts-area-curve, .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(44, 74, 138, 0.22)); }
 .k4-ribbon--sapphire .recharts-area-curve, .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 6px 10px rgba(30, 42, 74, 0.3)); }
 .k4-ribbon--plain .recharts-area-curve, .k4-ribbon--plain .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(32, 42, 60, 0.18)); }
 /* Блик-штрих: белая линия 1 px поверх ленты, на 1 px выше. */
@@ -81,10 +81,10 @@
 .k4-lastpoint__tag { filter: drop-shadow(0 6px 8px rgba(30, 38, 56, 0.24)); }
 /* Круг 6 (зона P): никаких «бусин». Разметка рисует гало, шарик с гранями и блик (IndicatorChart, CurrencyDesk); здесь
    остаётся плоская точка 6 px цвета линии без граней, блика и тени, вокруг неё тихое гало. */
-.k4-lastpoint > circle:nth-of-type(2) { r: 3px; fill: #B08A3E; }
+.k4-lastpoint > circle:nth-of-type(2) { r: 3px; fill: #2C4A8A; }
 .k4-lastpoint > path,
 .k4-lastpoint > circle:nth-of-type(3) { display: none; }
-.k4-lastpoint__halo { r: 8px; fill: #B08A3E; fill-opacity: 0.2; }
+.k4-lastpoint__halo { r: 8px; fill: #2C4A8A; fill-opacity: 0.2; }
 @media (prefers-reduced-motion: no-preference) {
   /* Три вдоха: гало растёт и гаснет, потом остаётся тихим кругом. */
   .k4-lastpoint__halo { animation: k4-halo-pulse 1.5s ease-out 0.9s 3 backwards; }
@@ -114,7 +114,7 @@
   left: 6px;
   width: 3px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #E9CD8E, #B08A3E);
+  background: linear-gradient(180deg, #9DB6DD, #2C4A8A);
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .fe-chart-tooltip { background: rgba(255, 255, 255, 0.94); }
@@ -129,14 +129,14 @@
   border-radius: 2px;
 }
 .k4-swatch--ribbon {
-  background: linear-gradient(90deg, #E9CD8E, #C9A24D 52%, #A9812F);
-  box-shadow: 0 3px 6px -2px rgba(176, 138, 62, 0.3);
+  background: linear-gradient(90deg, #9DB6DD, #4F78B8 52%, #1E3A6E);
+  box-shadow: 0 3px 6px -2px rgba(44, 74, 138, 0.3);
 }
 .k4-swatch--sapphire {
-  background: linear-gradient(90deg, #5C86C8, #1E2A4A);
-  box-shadow: 0 3px 6px -2px rgba(30, 42, 74, 0.4);
+  background: linear-gradient(90deg, #8A96AD, #1E2638);
+  box-shadow: 0 3px 6px -2px rgba(30, 38, 56, 0.4);
 }
-.k4-swatch--forecast { background: linear-gradient(90deg, #1E3A6E, rgba(30, 58, 110, 0.3)); }
+.k4-swatch--forecast { background: linear-gradient(90deg, #B08A3E, rgba(176, 138, 62, 0.3)); }
 
 /* Легенда графиков калькуляторов (components/ChartTouchHint.jsx, стили w5-tools.css): образец — лента, без пунктира. */
 .w5-legend .w5-legend__swatch {
@@ -153,13 +153,13 @@
 /* Лента 2,4 px: свойство CSS сильнее атрибута stroke-width в SVG, поэтому правим здесь, не трогая компонент. */
 .sparkline-svg path[fill='none'] {
   stroke-width: 2.4px;
-  filter: drop-shadow(0 3px 4px rgba(176, 138, 62, 0.2));
+  filter: drop-shadow(0 3px 4px rgba(44, 74, 138, 0.2));
 }
 /* Золотая заливка к нулю и золотая лента по длине: поверх цветов компонента (цвет тренда остаётся у бусины на конце). */
-.sparkline-svg linearGradient:nth-of-type(1) stop:first-child { stop-color: #E9CD8E; stop-opacity: 0.38; }
-.sparkline-svg linearGradient:nth-of-type(1) stop:last-child { stop-color: #E9CD8E; stop-opacity: 0; }
-.sparkline-svg linearGradient:nth-of-type(2) stop:first-child { stop-color: #E9CD8E; stop-opacity: 0.6; }
-.sparkline-svg linearGradient:nth-of-type(2) stop:last-child { stop-color: #B08A3E; stop-opacity: 1; }
+.sparkline-svg linearGradient:nth-of-type(1) stop:first-child { stop-color: #9DB6DD; stop-opacity: 0.38; }
+.sparkline-svg linearGradient:nth-of-type(1) stop:last-child { stop-color: #9DB6DD; stop-opacity: 0; }
+.sparkline-svg linearGradient:nth-of-type(2) stop:first-child { stop-color: #9DB6DD; stop-opacity: 0.6; }
+.sparkline-svg linearGradient:nth-of-type(2) stop:last-child { stop-color: #2C4A8A; stop-opacity: 1; }
 /* Точка на конце: плоская, без тени (круг 6: никаких бусин и камней). */
 .sparkline-svg circle:last-of-type { filter: none; }
 
@@ -232,7 +232,7 @@ input.map-timeline::-moz-range-thumb {
   height: 9px;
   margin-top: -4.5px;
   border-radius: 50%;
-  background: #B08A3E;
+  background: #2C4A8A;
 }
 
 /* ===== 8. Тёмная тема: тот же материал, значения из токенов ===== */
