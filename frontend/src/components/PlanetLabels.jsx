@@ -2,20 +2,22 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import {
   CanvasTexture, Color, InstancedBufferAttribute, InstancedMesh,
-  LinearFilter, Matrix4, NoColorSpace, PlaneGeometry, ShaderMaterial, Vector3,
+  LinearFilter, LinearMipmapLinearFilter, Matrix4, NoColorSpace, PlaneGeometry, ShaderMaterial, Vector3,
 } from 'three';
 import { buildPlanetLabels, layoutPlanetLabels, packPlanetLabelAtlas } from '../lib/planetLabels';
 import { normalizePlanetCountryCode } from '../lib/planetGeometry';
 
 const MAX_LABELS = 16;
 const FONT_FAMILY = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-const ATLAS_WIDTH = 2048;
-const ATLAS_HEIGHT = 1024;
+// Атлас рисуется в двойном разрешении (шрифт 48 px вместо 24): на экране подпись 13–14,5 px при DPR 2–3, мелкий атлас растягивался и размывал буквы.
+const ATLAS_SCALE = 2;
+const ATLAS_WIDTH = 2048 * ATLAS_SCALE;
+const ATLAS_HEIGHT = 1024 * ATLAS_SCALE;
 // Round 6: no plate and no pointer. A name is plain graphite text with a 1 px light halo, standing on its country.
 const TAIL_HEIGHT = 0;
-const PADDING_X = 6;
-const PADDING_Y = 4;
-const HALO_WIDTH = 5;
+const PADDING_X = 6 * ATLAS_SCALE;
+const PADDING_Y = 4 * ATLAS_SCALE;
+const HALO_WIDTH = 5 * ATLAS_SCALE;
 
 const VERTEX = `
   attribute vec4 labelUv;
@@ -60,18 +62,19 @@ function createLabelAtlas(labels) {
   context.textBaseline = 'middle';
   context.lineJoin = 'round';
   let items = null;
-  let fontPixels = 24;
-  for (const candidateSize of [24, 22, 20, 18]) {
+  let fontPixels = 24 * ATLAS_SCALE;
+  for (const candidateSize of [24, 22, 20, 18].map((size) => size * ATLAS_SCALE)) {
     const nameSize = candidateSize * 5 / 6;
     items = packPlanetLabelAtlas(labels, (text) => {
       context.font = `500 ${nameSize}px ${FONT_FAMILY}`;
       return context.measureText(text).width;
     }, {
-      lineHeight: nameSize + 4, valueLineHeight: candidateSize + 4,
+      lineHeight: nameSize + 4 * ATLAS_SCALE, valueLineHeight: candidateSize + 4 * ATLAS_SCALE,
       measureValue: (text) => {
         context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
         return context.measureText(text).width;
-      }, paddingX: PADDING_X, paddingY: PADDING_Y, lineGap: 2, tailHeight: TAIL_HEIGHT,
+      }, width: ATLAS_WIDTH, height: ATLAS_HEIGHT, maxTextWidth: 220 * ATLAS_SCALE,
+      paddingX: PADDING_X, paddingY: PADDING_Y, lineGap: 2 * ATLAS_SCALE, tailHeight: TAIL_HEIGHT,
     });
     fontPixels = candidateSize;
     if (items) break;
@@ -85,14 +88,14 @@ function createLabelAtlas(labels) {
     const nameSize = fontPixels * 5 / 6;
     context.font = `500 ${nameSize}px ${FONT_FAMILY}`;
     for (let index = 0; index < nameLines.length; index += 1) {
-      const baseline = y + PADDING_Y + index * (nameSize + 4) + (nameSize + 4) / 2;
+      const baseline = y + PADDING_Y + index * (nameSize + 4 * ATLAS_SCALE) + (nameSize + 4 * ATLAS_SCALE) / 2;
       context.strokeText(nameLines[index], x + width / 2, baseline);
       context.fillText(nameLines[index], x + width / 2, baseline);
     }
     if (valueLines.length) {
       context.font = `600 ${fontPixels}px ${FONT_FAMILY}`;
       for (let index = 0; index < valueLines.length; index += 1) {
-        const baseline = y + PADDING_Y + nameLines.length * (nameSize + 4) + 2 + index * (fontPixels + 4) + (fontPixels + 4) / 2;
+        const baseline = y + PADDING_Y + nameLines.length * (nameSize + 4 * ATLAS_SCALE) + 2 * ATLAS_SCALE + index * (fontPixels + 4 * ATLAS_SCALE) + (fontPixels + 4 * ATLAS_SCALE) / 2;
         context.strokeText(valueLines[index], x + width / 2, baseline);
         context.fillText(valueLines[index], x + width / 2, baseline);
       }
@@ -104,9 +107,10 @@ function createLabelAtlas(labels) {
   }
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = NoColorSpace;
-  texture.minFilter = LinearFilter;
+  texture.minFilter = LinearMipmapLinearFilter;
   texture.magFilter = LinearFilter;
-  texture.generateMipmaps = false;
+  texture.generateMipmaps = true;
+  texture.anisotropy = 4;
   return { texture, items, fontPixels };
 }
 

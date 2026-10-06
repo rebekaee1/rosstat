@@ -510,6 +510,15 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 
 /* ═══ Круг 4 ═══════════════════════════════════════════════════════════════ */
 :root { --k3-ticker-h: 36px; }
+/* Компьютер (круг 6): лента 40 px вместо 36, чтобы вторая строка («биржа», «ЦБ») не упиралась в верх шапки; шапка и страница опущены на те же 4 px. */
+@media (min-width: 768px) {
+  :root { --k3-ticker-h: 40px; }
+  .fe-ticker { height: var(--k3-ticker-h); }
+  nav.fe-navbar--glass { top: var(--k3-ticker-h); }
+  main#main-content { padding-top: 4px; }
+  .fe-ticker .fe-ticker__quote { line-height: 1.05; }
+  .fe-ticker .fe-ticker__caption { margin-top: 0; line-height: 1.1; }
+}
 
 /* G3.1: на экранах уже 1536 px капсула шапки той же ширины, что контент страниц (--fe-container-wide: 80–1360 на 1440), а не 16–1424.
    От 1536 px действует прежняя ширина: там полные подписи пунктов и им нужна капсула до 1440 px. */

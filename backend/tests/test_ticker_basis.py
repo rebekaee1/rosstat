@@ -78,7 +78,7 @@ def test_live_endpoint_adds_labels_to_old_snapshots(auth_env, monkeypatch):
     with TestClient(auth_env["app"]) as tc:
         ru = tc.get("/api/v1/ticker/live?lane=russia")
         en = tc.get("/api/v1/ticker/live?lane=russia", headers={"X-FE-Locale": "en"})
-    assert ru.headers["vary"] == "Host"
+    assert ru.headers["vary"] == "Host, x-fe-locale"
     snap = ru.json()["snapshots"][0]
     assert ru.json()["lane"] == "russia"
     assert snap["source_kind"] == "market" and snap["source_label"] == "Биржа"

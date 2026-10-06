@@ -1500,6 +1500,7 @@ export default {
   'world.freq.weekly': 'еженедельно',
   'world.freq.monthly': 'ежемесячно',
   'world.freq.quarterly': 'ежеквартально',
+  'z5.freq.also': 'также',
   'world.freq.annual': 'ежегодно',
   'world.freq.long.daily': 'день',
   'world.freq.long.weekly': 'неделя',

@@ -375,10 +375,14 @@ async def _russia_items(db, locale: str) -> list[dict[str, Any]]:
                 ).all()
                 actual = [(d, float(v)) for d, v in reversed(hist)]
                 kind = spec["kind"]
-                unit = (
-                    spec.get("unit_en" if locale == "en" else "unit_ru")
-                    or (ind.unit or "").strip()
-                )
+                unit = spec.get("unit_en" if locale == "en" else "unit_ru")
+                if not unit:
+                    unit = (ind.unit or "").strip()
+                    if locale == "en" and unit:
+                        # «млрд руб.», «руб.» без перевода давали кириллицу на английской витрине
+                        from app.services.display import public_unit_en
+
+                        unit = public_unit_en(unit, unit_storage=unit)
                 updated = forecast.created_at.date() if forecast.created_at else None
             item = build_item(
                 item_id=spec["id"],

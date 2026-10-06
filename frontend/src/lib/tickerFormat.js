@@ -36,3 +36,12 @@ export function tickerSourceKind(source) {
   return null;
 }
 
+
+/** Имя источника для подсказки курса: на английской версии «ЕЦБ» и «Банк России» не остаются кириллицей. */
+export function tickerSourceName(source, locale) {
+  if (locale !== 'en' || !source) return source;
+  const text = String(source);
+  if (/^ЕЦБ$/i.test(text)) return 'ECB';
+  if (/Банк России|^ЦБ$/i.test(text)) return 'Bank of Russia';
+  return text;
+}

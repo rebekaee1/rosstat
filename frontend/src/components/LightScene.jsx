@@ -11,7 +11,7 @@ import '../styles/k1-scene.css';
  *
  *  1. `.fe-scene` (fixed): бумага, три каустики (золото, лёд, роза) с дрейфом 40 с, текстура граней (≥768 px),
  *     6 силуэтов граней в боковых полях (≥1600 px) с параллаксом 0,15 / 0,3. На телефоне только каустики.
- *  2. `.fe-scene-hero` (абсолютно в верху страницы, поверх страницы, multiply): кадр граней в пустой середине hero
+ *  2. [снят в круге 6, слой не рендерится] `.fe-scene-hero` (абсолютно в верху страницы, поверх страницы, multiply): кадр граней в пустой середине hero
  *     карточки страны и справа от цифр на 404, только от 768 px; монтируется после загрузки страницы, чтобы не мешать
  *     LCP. Размеры заданы (aspect-ratio в CSS, width/height на img и source), сдвига вёрстки нет.
  *     Главная кристаллов героя больше не имеет (круг 6, зона B): её объект сцены, стеклянная F, стоит внутри плиты
@@ -171,34 +171,6 @@ function useDeferredMount(enabled) {
     return afterLoadIdle(() => setMounted(true));
   }, [enabled, mounted]);
   return enabled && mounted;
-}
-
-function HeroLayer({ kind }) {
-  const [loaded, setLoaded] = useState(false);
-  const mounted = useDeferredMount(!!kind && kind !== 'home');
-  // Кадр уже в кэше: onLoad не придёт, поэтому проверяем при подключении узла.
-  const imgRef = useCallback((img) => {
-    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
-  }, []);
-
-  if (!mounted) return null;
-  return (
-    <div className={`fe-scene-hero${loaded ? ' is-ready' : ''}`} data-fe-hero={kind} aria-hidden="true">
-      <div className="fe-scene-hero__float fe-drift" style={{ '--fe-drift-dur': '12s', '--fe-drift-y': '6px', '--fe-drift-r': '0deg' }}>
-        <img
-          ref={imgRef}
-          src="/brand/hero-desktop.webp"
-          width="1600"
-          height="893"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          onLoad={() => setLoaded(true)}
-        />
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -365,7 +337,6 @@ export default function LightScene() {
         </div>
         <SceneF mode={fMode} />
       </div>
-      <HeroLayer kind={kind} />
       {kind && kind !== 'notfound' ? <div className="fe-scene-leak fe-scene-leak--top" aria-hidden="true" /> : null}
       <div className="fe-scene-leak fe-scene-leak--bottom" aria-hidden="true" />
     </>

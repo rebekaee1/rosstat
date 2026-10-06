@@ -1499,6 +1499,7 @@ export default {
   'world.freq.weekly': 'weekly',
   'world.freq.monthly': 'monthly',
   'world.freq.quarterly': 'quarterly',
+  'z5.freq.also': 'also',
   'world.freq.annual': 'annual',
   'world.freq.long.daily': 'day',
   'world.freq.long.weekly': 'week',

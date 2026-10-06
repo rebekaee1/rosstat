@@ -65,7 +65,7 @@ export function FreqBadges({ item, t }) {
     (f) => `${officialFreqs.includes(f) ? '' : '~'}${toLabel(f)}`,
   );
   const title = restLabels.length
-    ? `${primaryIsAggregated ? '~' : ''}${toLabel(primary)}; также: ${restLabels.join(', ')}`
+    ? `${primaryIsAggregated ? '~' : ''}${toLabel(primary)}; ${t('z5.freq.also')}: ${restLabels.join(', ')}`
     : undefined;
   const Icon = FREQ_ICON[primary] || CalendarDays;
 

@@ -205,7 +205,7 @@ def test_showcase_api_returns_only_real_forecasts(auth_env):
     with TestClient(auth_env["app"]) as tc:
         response = tc.get("/api/v1/forecasts/showcase")
     assert response.status_code == 200
-    assert response.headers["vary"] == "Host"
+    assert response.headers["vary"] == "Host, x-fe-locale"
     body = response.json()
     ids = {item["id"]: item for item in body["items"]}
     assert set(ids) == {"russia-unemployment", "united-states-unemployment"}

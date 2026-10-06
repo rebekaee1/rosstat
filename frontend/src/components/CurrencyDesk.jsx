@@ -37,6 +37,8 @@ const QUICK_AMOUNTS = ['1', '100', '1000', '10000'];
 const MARKET_LABEL_KEYS = { 'gold-rub-live': 'w6b.ticker.gold', brent: 'w6b.ticker.brent', 'btc-usd': 'w6b.ticker.btc' };
 const MARKET_LINKS = { 'gold-rub-live': 'gold-price', brent: 'brent', 'btc-usd': 'btc-usd' };
 const MARKET_UNITS = { 'gold-rub-live': '₽/г', brent: '$', 'btc-usd': '$' };
+// На английской версии «₽/г» читается как «RUB/g»: рубль и грамм без кириллицы.
+const MARKET_UNITS_EN = { 'gold-rub-live': 'RUB/g' };
 const MARKET_DIGITS = { 'gold-rub-live': 0, brent: 2, 'btc-usd': 0 };
 
 function unitName(unit, locale) {
@@ -439,7 +441,7 @@ function MarketBoard({ market }) {
                 )}
                 <span className="fe-z8-board__price">
                   <span className="fe-z8-board__num">{formatValue(snap.price, MARKET_DIGITS[code], locale)}</span>
-                  <span className="fe-z8-board__unit">{MARKET_UNITS[code]}</span>
+                  <span className="fe-z8-board__unit">{locale === 'en' ? (MARKET_UNITS_EN[code] || MARKET_UNITS[code]) : MARKET_UNITS[code]}</span>
                 </span>
               </Link>
             </li>

@@ -1514,6 +1514,16 @@ def _preview_query_redirect(request: Request) -> Response | None:
     )
 
 
+def _merge_vary(response, token: str) -> None:
+    """Добавляет `token` в Vary, не затирая уже выставленные значения (Host, Cookie, ...)."""
+    current = response.headers.get("vary", "")
+    parts = [p.strip() for p in current.split(",") if p.strip()]
+    if "*" in parts or token.lower() in (p.lower() for p in parts):
+        return
+    parts.append(token)
+    response.headers["Vary"] = ", ".join(parts)
+
+
 class LocaleMiddleware(BaseHTTPMiddleware):
     """Bind request locale. A production host wins over header and preview."""
 
@@ -1560,6 +1570,10 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
             response.headers.setdefault("Content-Language", locale)
+            # Язык ответа зависит от заголовка X-FE-Locale (предпросмотр EN до cutover): без Vary браузерный кэш (max-age=60 у
+            # публичных JSON) отдавал русский ответ на английскую страницу и наоборот.
+            if request.url.path.startswith("/api/"):
+                _merge_vary(response, LOCALE_HEADER)
             return response
         finally:
             reset_preview_locale(preview_token)

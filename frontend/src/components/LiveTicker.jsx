@@ -6,7 +6,7 @@ import { cn } from '../lib/format';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
-import { formatAsOfHuman, tickerSourceKind, tzFor } from '../lib/tickerFormat';
+import { formatAsOfHuman, tickerSourceKind, tzFor, tickerSourceName } from '../lib/tickerFormat';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
 import { useLocale, useT } from '../i18n';
@@ -122,7 +122,7 @@ function TickerCell({ snapshot, nowMs }) {
     })
     : null;
 
-  const titleParts = [t('ticker.source', { source: snapshot.source })];
+  const titleParts = [t('ticker.source', { source: tickerSourceName(snapshot.source, locale) })];
   // Подпись «биржа» или «ЦБ» стоит мелко под ценой (от 768 px), а полное название источника остаётся в подсказке.
   if (sourceKind) titleParts.unshift(t(`shell.ticker.source.${sourceKind}`));
   if (!isIntraday) {

@@ -55,7 +55,7 @@ describe('LightScene', () => {
     expect(document.documentElement.classList.contains('fe-scene-on')).toBe(false);
   });
 
-  it('герой-кристаллы только у страны и 404; на главной их нет, там F внутри плиты (атрибут data-fe-f)', async () => {
+  it('героя-кристаллов нет нигде (сняты в круге 6); на главной F внутри плиты (атрибут data-fe-f)', async () => {
     const home = scene('/');
     await settle();
     expect(home.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
@@ -66,16 +66,8 @@ describe('LightScene', () => {
 
     const country = scene('/germany');
     await settle();
-    const hero = country.container.parentElement.querySelector('[data-fe-hero="country"]');
-    expect(hero).not.toBeNull();
-    const img = hero.querySelector('img');
-    // Размеры заданы (нет сдвига вёрстки), ленивая загрузка, без подписи; кадр телефона убран (на телефоне кристаллов нет).
-    expect(img.getAttribute('src')).toBe('/brand/hero-desktop.webp');
-    expect(img.getAttribute('width')).toBe('1600');
-    expect(img.getAttribute('height')).toBe('893');
-    expect(img.getAttribute('loading')).toBe('lazy');
-    expect(img.getAttribute('alt')).toBe('');
-    expect(hero.querySelector('source')).toBeNull();
+    // Кристаллы героя (ромбы справа вверху) сняты с круга 6: перекрывали заголовок и карточку профиля, смысла в них не было.
+    expect(country.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
     // На странице страны F видна только на телефоне.
     expect(country.container.parentElement.querySelector('.fe-scene__f').getAttribute('data-fe-f-mode')).toBe('phone');
     country.unmount();
@@ -113,7 +105,7 @@ describe('LightScene', () => {
     about.unmount();
   });
 
-  it('на странице 404 (корень .z2-nf) герой получает вариант notfound без верхней утечки света', async () => {
+  it('на странице 404 (корень .z2-nf) верхней утечки света нет и кристаллов героя тоже', async () => {
     const nf = document.createElement('div');
     nf.className = 'z2-nf';
     document.body.appendChild(nf);
@@ -123,7 +115,7 @@ describe('LightScene', () => {
         await settle(120);
         await settle(120);
         const root = view.container.parentElement;
-        expect(root.querySelector('.fe-scene-hero')?.getAttribute('data-fe-hero')).toBe('notfound');
+        expect(root.querySelector('.fe-scene-hero')).toBeNull();
         expect(root.querySelector('.fe-scene-leak--top')).toBeNull();
         view.unmount();
       }

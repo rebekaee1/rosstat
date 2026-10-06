@@ -41,8 +41,8 @@
       "px": 1600,
       "max_display_px": 940,
       "dpr": 2,
-      "used": true,
-      "shown_in": "LightScene <source >= 768 px>: главная min(32vw,480), страна min(44vw,940), 404 min(36vw,560)",
+      "used": false,
+      "shown_in": "не показывается: кристаллы героя сняты (круг 6), файл можно удалить после проверки ссылок",
       "pending": "зона B: замена на кадры стеклянной F >= 2400 px"
     },
     "brand/light-leak.webp": {
