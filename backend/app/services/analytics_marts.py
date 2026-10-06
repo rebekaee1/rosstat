@@ -1293,6 +1293,131 @@ async def mart_embed_distribution(_db: AsyncSession | None = None, period: Perio
 
 
 # ---------------------------------------------------------------------------
+# Витрина: установки приложения (PWA)
+# ---------------------------------------------------------------------------
+
+# Установка = pwa_installed (событие браузера appinstalled; на Android ему
+# предшествует pwa_install_native_accepted). Считаем ЛЮДЕЙ (visitor), а не сумму
+# событий, иначе одна установка на Android была бы двумя.
+PWA_INSTALL_EVENTS = ("pwa_installed", "pwa_install_native_accepted")
+PWA_DISMISS_EVENTS = ("pwa_install_prompt_dismiss", "pwa_install_native_dismissed")
+PWA_LAUNCH_EVENT = "pwa_app_launch"  # запуск из значка, раз за сессию (lib/pwa.js)
+_PWA_EVENTS = (
+    "pwa_install_prompt_view", "pwa_install_prompt_accept", "pwa_ios_hint_view",
+    "pwa_install_entry_click", PWA_LAUNCH_EVENT, *PWA_INSTALL_EVENTS, *PWA_DISMISS_EVENTS,
+)
+
+
+async def mart_pwa_installs(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    """«Установки приложения»: показы приглашения, установки (люди), отказы и
+    запуски из значка — за период и по МСК-дням.
+
+    Источник — frontend_events (первичный, без rollup: строк с pwa_* на порядки
+    меньше потока, запросы идут по индексу event_name+время). Роботы и
+    собственная активность владельца/админов исключены так же, как в воронке
+    (server_sessions.is_bot/is_internal + admin_identity). Только счётчики,
+    идентификаторов посетителей витрина не отдаёт.
+    """
+    from app.services.analytics_period import msk_day_expr
+
+    p = as_period(period)
+    admin_users, admin_visitors = await admin_identity(db)
+    vkey = func.coalesce(FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash)
+    excluded_visitors = select(ServerSession.visitor_id_hash).where(
+        ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+        or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True)))
+    base = [
+        FrontendEvent.event_name.in_(_PWA_EVENTS),
+        FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end,
+        or_(FrontendEvent.visitor_id_hash.is_(None),
+            FrontendEvent.visitor_id_hash.notin_(excluded_visitors)),
+    ]
+    if admin_users:
+        base.append(or_(FrontendEvent.user_id.is_(None), FrontendEvent.user_id.notin_(admin_users)))
+    if admin_visitors:
+        base.append(or_(FrontendEvent.visitor_id_hash.is_(None),
+                        FrontendEvent.visitor_id_hash.notin_(admin_visitors)))
+
+    day_expr = msk_day_expr(FrontendEvent.occurred_at, db.bind.dialect.name)
+    daily_rows = (await db.execute(
+        select(day_expr, FrontendEvent.event_name, func.count(),
+               func.count(func.distinct(vkey)),
+               func.count(func.distinct(FrontendEvent.session_id_hash)))
+        .where(*base).group_by(day_expr, FrontendEvent.event_name)
+    )).all()
+    total_rows = (await db.execute(
+        select(FrontendEvent.event_name, func.count(),
+               func.count(func.distinct(vkey)),
+               func.count(func.distinct(FrontendEvent.session_id_hash)))
+        .where(*base).group_by(FrontendEvent.event_name)
+    )).all()
+    # Люди с установкой: пары (день, посетитель) — строк столько же, сколько установок.
+    install_rows = (await db.execute(
+        select(day_expr, vkey).where(
+            *base, FrontendEvent.event_name.in_(PWA_INSTALL_EVENTS)).distinct()
+    )).all()
+
+    ev_total = {name: (int(c or 0), int(v or 0), int(s or 0)) for name, c, v, s in total_rows}
+
+    def tot(name: str, i: int = 0) -> int:
+        return ev_total.get(name, (0, 0, 0))[i]
+
+    installed_by_day: dict[str, set] = defaultdict(set)
+    installed_all: set = set()
+    for d, vk in install_rows:
+        installed_by_day[str(d)[:10]].add(vk)
+        installed_all.add(vk)
+
+    per_day: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for d, name, cnt, vis, sess in daily_rows:
+        row = per_day[str(d)[:10]]
+        if name == "pwa_install_prompt_view":
+            row["prompt_views"] += int(cnt or 0)
+        elif name in PWA_DISMISS_EVENTS:
+            row["dismissals"] += int(cnt or 0)
+        elif name == PWA_LAUNCH_EVENT:
+            row["launch_visitors"] += int(vis or 0)
+            row["launch_sessions"] += int(sess or 0)
+
+    daily = []
+    day = p.start_date
+    while day <= p.end_date and len(daily) < 366:
+        key = day.isoformat()
+        row = per_day.get(key, {})
+        daily.append({
+            "date": key,
+            "prompt_views": row.get("prompt_views", 0),
+            "installs": len(installed_by_day.get(key, ())),
+            "dismissals": row.get("dismissals", 0),
+            "launch_visitors": row.get("launch_visitors", 0),
+            "launch_sessions": row.get("launch_sessions", 0),
+        })
+        day += timedelta(days=1)
+
+    viewers = tot("pwa_install_prompt_view", 1)
+    installs = len(installed_all)
+    return {
+        "period": p.to_meta(),
+        "totals": {
+            "prompt_views": tot("pwa_install_prompt_view"),
+            "prompt_viewers": viewers,
+            "ios_hint_views": tot("pwa_ios_hint_view"),
+            "entry_clicks": tot("pwa_install_entry_click"),
+            "prompt_accepts": tot("pwa_install_prompt_accept"),
+            "native_accepted": tot("pwa_install_native_accepted"),
+            "installed_events": tot("pwa_installed"),
+            "installs": installs,
+            "dismissals": sum(tot(n) for n in PWA_DISMISS_EVENTS),
+            "launch_visitors": tot(PWA_LAUNCH_EVENT, 1),
+            "launch_sessions": tot(PWA_LAUNCH_EVENT, 2),
+            # Установки из меню браузера идут без показа окна — потолок 100%.
+            "conversion_pct": round(min(100.0, 100.0 * installs / viewers), 1) if viewers else None,
+        },
+        "daily": daily,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Витрина: «Люди» — досье посетителей со скорингом
 # ---------------------------------------------------------------------------
 

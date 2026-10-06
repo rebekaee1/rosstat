@@ -18,7 +18,7 @@ EXPECTED_SECTIONS = {
     "kpi_daily", "acquisition", "funnel", "retention", "pages", "demand",
     "onsite_search", "navigation", "behavior_issues", "events",
     "hypotheses", "dataset", "users", "audience", "activity_heatmap",
-    "content_structure",
+    "content_structure", "pwa",
 }
 
 
@@ -63,6 +63,9 @@ def test_bi_dashboard_for_admin(auth_client):
     assert sum(r["registrations"] for r in data["kpi_daily"]) == 1
     assert data["retention"]["unique_visitors"] == 0
     assert isinstance(data["acquisition"]["ad_campaigns"], list)
+    # Установки приложения: пустая БД → нули, ряд по дням на всё окно.
+    assert data["pwa"]["totals"]["installs"] == 0
+    assert len(data["pwa"]["daily"]) == 7
 
 
 def test_login_response_carries_is_admin(auth_client):

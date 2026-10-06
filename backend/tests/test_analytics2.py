@@ -480,6 +480,62 @@ def test_mart_experiments_conversion_by_variant():
     _run_with_db(scenario)
 
 
+def test_mart_pwa_installs_counts_people_not_events():
+    """«Установки приложения»: Android даёт native_accepted + pwa_installed —
+    это один человек; боты и владелец исключены; запуски — люди и сессии."""
+    from app.models import FrontendEvent, ServerSession
+    from app.services.analytics_marts import mart_pwa_installs
+
+    now = datetime.utcnow().replace(microsecond=0)
+
+    async def scenario(maker):
+        async with maker() as db:
+            def ev(name, vid, sess):
+                return FrontendEvent(event_name=name, occurred_at=now, visitor_id_hash=vid,
+                                     session_id_hash=sess, authed=False)
+            db.add_all([
+                ev("pwa_install_prompt_view", "a", "sa"), ev("pwa_install_prompt_view", "b", "sb"),
+                ev("pwa_install_prompt_view", "c", "sc"), ev("pwa_install_prompt_view", "bot", "sbot"),
+                ev("pwa_install_native_accepted", "a", "sa"), ev("pwa_installed", "a", "sa"),
+                ev("pwa_install_prompt_dismiss", "b", "sb"),
+                ev("pwa_install_native_dismissed", "c", "sc"),
+                ev("pwa_app_launch", "a", "sa2"), ev("pwa_app_launch", "a", "sa3"),
+                ev("pwa_app_launch", "b", "sb2"),
+                ev("pwa_installed", "bot", "sbot"), ev("pwa_app_launch", "bot", "sbot"),
+                ev("scroll_depth", "a", "sa"),
+                ServerSession(day=(now + timedelta(hours=3)).date(),
+                              visitor_id_hash="bot", started_at=now, ended_at=now, is_bot=True),
+            ])
+            await db.commit()
+            res = await mart_pwa_installs(db, 7)
+            t = res["totals"]
+            assert t["prompt_views"] == 3 and t["prompt_viewers"] == 3
+            assert t["installs"] == 1  # a: два события, один человек; bot исключён
+            assert t["native_accepted"] == 1 and t["installed_events"] == 1
+            assert t["dismissals"] == 2
+            assert t["launch_visitors"] == 2 and t["launch_sessions"] == 3
+            assert t["conversion_pct"] == 33.3
+            assert len(res["daily"]) == 7
+            today = res["daily"][-1]
+            assert today["installs"] == 1 and today["prompt_views"] == 3
+            assert today["launch_visitors"] == 2 and today["dismissals"] == 2
+
+    _run_with_db(scenario)
+
+
+def test_mart_pwa_installs_empty_db():
+    from app.services.analytics_marts import mart_pwa_installs
+
+    async def scenario(maker):
+        async with maker() as db:
+            res = await mart_pwa_installs(db, 30)
+            assert res["totals"]["installs"] == 0
+            assert res["totals"]["conversion_pct"] is None
+            assert len(res["daily"]) == 30 and all(d["installs"] == 0 for d in res["daily"])
+
+    _run_with_db(scenario)
+
+
 def test_bi_targets_status():
     from app.data.bi_targets import next_milestone, status_for
 

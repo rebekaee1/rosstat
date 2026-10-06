@@ -599,6 +599,52 @@ function TransitionMatrix({ transitions }) {
 
 /* ---------- Вкладки ---------- */
 
+// «Приложение»: установки сайта как приложения (PWA). Витрина mart_pwa_installs:
+// считает людей, а не события (на Android согласие и appinstalled — один человек),
+// без роботов и своей активности.
+function PwaCard({ d }) {
+  const pwa = d.pwa;
+  const t = pwa?.totals || {};
+  const daily = pwa?.daily || [];
+  const hasData = Boolean(
+    t.prompt_views || t.installs || t.dismissals || t.launch_visitors || t.ios_hint_views || t.entry_clicks,
+  );
+  return (
+    <Card title="Приложение: установки и запуски" icon={LayoutGrid} source="own" window={pwa?.period}
+      insight="Сколько людей поставили сайт как приложение и сколько раз его открывали с домашнего экрана. Конверсия: установившие среди тех, кому показали приглашение."
+      hint="Считаются люди, а не события: на Android «согласие в системном окне» и «установлено» — один человек. Запуск из иконки — один раз за сессию (режим standalone). Боты и своя активность исключены. На iPhone события установки нет: Safari не сообщает о ней, видны только запуски из значка и показы подсказки.">
+      {!pwa ? <Empty note="Появится после пересчёта дашборда." /> : !hasData ? (
+        <Empty note="Событий установки за период нет." />
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <Kpi label="Установили" value={fmtInt(t.installs)} sub="человек" series={daily.map((r) => ({ v: r.installs }))} color={GREEN} />
+            <Kpi label="Показы приглашения" value={fmtInt(t.prompt_views)} sub={`${fmtInt(t.prompt_viewers)} чел.`} series={daily.map((r) => ({ v: r.prompt_views }))} />
+            <Kpi label="Конверсия показ → установка" value={fmtPct(t.conversion_pct)} sub={`отказов: ${fmtInt(t.dismissals)}`} color={BLUE} />
+            <Kpi label="Запуски из иконки" value={fmtInt(t.launch_visitors)} sub={`человек, ${fmtInt(t.launch_sessions)} сессий`} series={daily.map((r) => ({ v: r.launch_visitors }))} color={PURPLE} />
+            <Kpi label="iPhone и подвал" value={fmtInt((t.ios_hint_views || 0) + (t.entry_clicks || 0))} sub={`подсказка ${fmtInt(t.ios_hint_views)}, клик в подвале ${fmtInt(t.entry_clicks)}`} color={INK} />
+          </div>
+          <div className="mt-4">
+            <ResponsiveContainer width="100%" height={190}>
+              <ComposedChart data={daily} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.06)" />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis yAxisId="l" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.5)' }} width={30} allowDecimals={false} />
+                <YAxis yAxisId="r" orientation="right" tick={{ fontSize: 11, fill: 'rgba(26,26,46,0.35)' }} width={34} allowDecimals={false} />
+                <Tooltip {...TT_STYLE} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar yAxisId="l" dataKey="installs" name="Установили" fill={GREEN} radius={[3, 3, 0, 0]} maxBarSize={26} />
+                <Bar yAxisId="l" dataKey="launch_visitors" name="Запуски из иконки (чел.)" fill={PURPLE} fillOpacity={0.6} radius={[3, 3, 0, 0]} maxBarSize={26} />
+                <Line yAxisId="r" type="monotone" dataKey="prompt_views" name="Показы приглашения (правая шкала)" stroke={GOLD} strokeWidth={1.6} dot={false} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </>
+      )}
+    </Card>
+  );
+}
+
 function OverviewTab({ d }) {
   const kpi = useMemo(() => d.kpi_daily || [], [d.kpi_daily]);
   const totals = useMemo(() => {
@@ -689,6 +735,8 @@ function OverviewTab({ d }) {
           </ResponsiveContainer>
         </Card>
       </div>
+
+      <PwaCard d={d} />
     </div>
   );
 }

@@ -1183,6 +1183,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         mart_page_quadrants,
         mart_partner_revenue,
         mart_people,
+        mart_pwa_installs,
         mart_reliability,
         mart_segments,
     )
@@ -1205,6 +1206,9 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         "page_quadrants": await mart_page_quadrants(db, p),
         "feature_adoption": await mart_feature_adoption(db, p),
         "embed_distribution": await mart_embed_distribution(db, p),
+        "pwa": await _soft_mart(
+            "pwa", mart_pwa_installs(db, p),
+            {"totals": {}, "daily": [], "error": "слой недоступен"}),
         "experiments": await _soft_mart(
             "experiments", mart_experiments(db, p),
             {"experiments": [], "note": "слой недоступен"}),
