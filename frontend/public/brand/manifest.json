@@ -1,371 +1,369 @@
 {
- "_about": "Реестр растров public/brand, public/art, public/icons (раунд 6, зона I). Читается стражем src/styles/no-lowres.test.js и scripts/dev/check-raster-dpr.py. Правило: px >= max_display_px * dpr. dpr: 2 по умолчанию, 3 для картинок на телефоне и мелких; ниже 2 разрешено только с полем soft (причина) и не ниже 0.75. pending: файл ждёт замены или удаления другой зоной (не валит тест, но виден в таблице как «нет»). used=false: файл в src не подключён (мастер для нарезки или брак). Новый растр без записи здесь роняет тест.",
- "files": {
-  "brand/404-shards.webp": {
-   "px": 1200,
-   "max_display_px": 400,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "NotFound: .fe-nf-globe__img, ширина clamp(168px, 38vw, 400px)"
-  },
-  "brand/emblem-f.svg": {
-   "vector": true,
-   "used": true,
-   "shown_in": "Emblem variant=vector (вектор, любой размер)"
-  },
-  "brand/emblem-f.webp": {
-   "px": 512,
-   "max_display_px": 380,
-   "dpr": 2,
-   "used": true,
-   "shown_in": "Emblem variant=photo: водяной знак подвала 380 CSS px",
-   "pending": "зона B: новая стеклянная F >= 2x (также «О проекте» крупнее 256 px)"
-  },
-  "brand/facets.webp": {
-   "px": 1600,
-   "max_display_px": 1920,
-   "dpr": 0.8,
-   "used": true,
-   "soft": "фон-текстура граней на всю ширину, opacity 0.06 + multiply + маска; контуров нет, растяжение до 1.2x не читается",
-   "shown_in": "k1-scene.css .fe-scene__texture (cover, >= 768 px)"
-  },
-  "brand/footer-desktop.webp": {
-   "px": 1920,
-   "max_display_px": 1920,
-   "dpr": 1,
-   "used": true,
-   "soft": "мягкий боке-фон подвала под затемнением 0.5-0.8, резких деталей нет; на 2x плотность 1.0 пикселя на CSS px",
-   "shown_in": "Footer: <picture> cover на всю ширину, высота подвала около 460 px"
-  },
-  "brand/footer-phone.webp": {
-   "px": 780,
-   "max_display_px": 800,
-   "dpr": 0.95,
-   "used": true,
-   "soft": "размытые кристаллы-боке под затемнением; подвал на телефоне 900-1050 CSS px высотой, кадр cover 1045 px",
-   "shown_in": "Footer: <source max-width 639px>, object-position bottom"
-  },
-  "brand/globe-placeholder.webp": {
-   "px": 600,
-   "max_display_px": 600,
-   "dpr": 2,
-   "used": true,
-   "shown_in": "PlanetView.css .planet-orb, шар на время загрузки (86 % высоты сцены)",
-   "pending": "зона G: удаляет (G1, одно состояние загрузки без картинки)"
-  },
-  "brand/hero-desktop.webp": {
-   "px": 1600,
-   "max_display_px": 940,
-   "dpr": 2,
-   "used": true,
-   "shown_in": "LightScene <source >= 768 px>: главная min(32vw,480), страна min(44vw,940), 404 min(36vw,560)",
-   "pending": "зона B: замена на кадры стеклянной F >= 2400 px"
-  },
-  "brand/hero-phone.webp": {
-   "px": 780,
-   "max_display_px": 335,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "LightScene <img>: ширина 78vw (iPhone Pro Max 430 -> 335 CSS px), DPR 3 -> 1005 px",
-   "pending": "зона B: замена на кадры стеклянной F (нужно >= 1005 px)"
-  },
-  "brand/light-leak.webp": {
-   "px": 1200,
-   "max_display_px": 1400,
-   "dpr": 0.85,
-   "used": true,
-   "soft": "утечка света: screen-смешение, opacity 0.2, радиальная маска; мягкое свечение без деталей",
-   "shown_in": "k1-scene.css .fe-scene-leak, min(80vw,1400px), >= 1024 px"
-  },
-  "brand/ribbon.webp": {
-   "px": 1114,
-   "max_display_px": 557,
-   "dpr": 2,
-   "used": true,
-   "shown_in": "ForecastsPage .zb-fc__ribbon-img, max-width 557 (= 1114 / 2), >= 1100 px"
-  },
-  "art/quicklinks/agriculture-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/agriculture.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/commodity-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/commodity-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/commodity-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/commodity.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/education-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/education.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/energy-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/energy.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/environment-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/environment.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/finance-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/finance-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/finance-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/finance.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/forecast-glass-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/forecast-glass-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/forecast-glass-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/forecast-glass.webp": {
-   "px": 960,
-   "max_display_px": 900,
-   "dpr": 2,
-   "used": true,
-   "shown_in": "index.css .fe-dashboard [data-block=\"home-hero\"]::before, растянут примерно до 900 px",
-   "pending": "зона B: удаляет ::before; после слияния поставить used=false (останется мастером для -640/-320)"
-  },
-  "art/quicklinks/health-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/health.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/housing-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/housing.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/ict-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/ict.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/industry-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/industry-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/industry-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/industry.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/justice-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/justice.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/population-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/population-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/population-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/population.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/science-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/science-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/science-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/science.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/tourism-320.webp": {
-   "px": 320,
-   "max_display_px": 210,
-   "dpr": 1,
-   "used": true,
-   "fallback_of": "art/quicklinks/tourism-640.webp",
-   "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
-  },
-  "art/quicklinks/tourism-640.webp": {
-   "px": 640,
-   "max_display_px": 210,
-   "dpr": 3,
-   "used": true,
-   "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
-  },
-  "art/quicklinks/tourism.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "art/quicklinks/trade-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART",
-   "defect": "то же, что у trade.webp"
-  },
-  "art/quicklinks/trade.webp": {
-   "px": 960,
-   "used": false,
-   "defect": "альфа-маска крупными ступеньками и тёмный ореол; кадр не показывать (CATEGORY_ART.trade -> tourism)"
-  },
-  "art/quicklinks/transport-320.webp": {
-   "px": 320,
-   "used": false,
-   "note": "не показывается: категории нет в CATEGORY_ART"
-  },
-  "art/quicklinks/transport.webp": {
-   "px": 960,
-   "used": false,
-   "master": true,
-   "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
-  },
-  "icons/icon-192.png": {
-   "px": 192,
-   "max_display_px": 192,
-   "dpr": 1,
-   "used": true,
-   "external": true,
-   "shown_in": "PwaInstallCard 44 CSS px (DPR 3 -> 132 px); значок установки ОС 192 px"
-  },
-  "icons/icon-512.png": {
-   "px": 512,
-   "max_display_px": 512,
-   "dpr": 1,
-   "used": true,
-   "external": true,
-   "shown_in": "значок установки и заставка ОС 512 px"
-  },
-  "icons/icon-maskable-512.png": {
-   "px": 512,
-   "max_display_px": 512,
-   "dpr": 1,
-   "used": true,
-   "external": true,
-   "shown_in": "maskable-значок ОС 512 px"
+  "_about": "Реестр растров public/brand, public/art, public/icons (раунд 6, зона I). Читается стражем src/styles/no-lowres.test.js и scripts/dev/check-raster-dpr.py. Правило: px >= max_display_px * dpr. dpr: 2 по умолчанию, 3 для картинок на телефоне и мелких; ниже 2 разрешено только с полем soft (причина) и не ниже 0.75. pending: файл ждёт замены или удаления другой зоной (не валит тест, но виден в таблице как «нет»). used=false: файл в src не подключён (мастер для нарезки или брак). Новый растр без записи здесь роняет тест.",
+  "files": {
+    "brand/404-shards.webp": {
+      "px": 1200,
+      "max_display_px": 400,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "NotFound: .fe-nf-globe__img, ширина clamp(168px, 38vw, 400px)"
+    },
+    "brand/emblem-f.svg": {
+      "vector": true,
+      "used": true,
+      "shown_in": "Emblem variant=vector (вектор, любой размер)"
+    },
+    "brand/facets.webp": {
+      "px": 1600,
+      "max_display_px": 1920,
+      "dpr": 0.8,
+      "used": true,
+      "soft": "фон-текстура граней на всю ширину, opacity 0.06 + multiply + маска; контуров нет, растяжение до 1.2x не читается",
+      "shown_in": "k1-scene.css .fe-scene__texture (cover, >= 768 px)"
+    },
+    "brand/footer-desktop.webp": {
+      "px": 1920,
+      "max_display_px": 1920,
+      "dpr": 1,
+      "used": true,
+      "soft": "мягкий боке-фон подвала под затемнением 0.5-0.8, резких деталей нет; на 2x плотность 1.0 пикселя на CSS px",
+      "shown_in": "Footer: <picture> cover на всю ширину, высота подвала около 460 px"
+    },
+    "brand/footer-phone.webp": {
+      "px": 780,
+      "max_display_px": 800,
+      "dpr": 0.95,
+      "used": true,
+      "soft": "размытые кристаллы-боке под затемнением; подвал на телефоне 900-1050 CSS px высотой, кадр cover 1045 px",
+      "shown_in": "Footer: <source max-width 639px>, object-position bottom"
+    },
+    "brand/globe-placeholder.webp": {
+      "px": 600,
+      "max_display_px": 600,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "PlanetView.css .planet-orb, шар на время загрузки (86 % высоты сцены)",
+      "pending": "зона G: удаляет (G1, одно состояние загрузки без картинки)"
+    },
+    "brand/hero-desktop.webp": {
+      "px": 1600,
+      "max_display_px": 940,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "LightScene <source >= 768 px>: главная min(32vw,480), страна min(44vw,940), 404 min(36vw,560)",
+      "pending": "зона B: замена на кадры стеклянной F >= 2400 px"
+    },
+    "brand/light-leak.webp": {
+      "px": 1200,
+      "max_display_px": 1400,
+      "dpr": 0.85,
+      "used": true,
+      "soft": "утечка света: screen-смешение, opacity 0.2, радиальная маска; мягкое свечение без деталей",
+      "shown_in": "k1-scene.css .fe-scene-leak, min(80vw,1400px), >= 1024 px"
+    },
+    "brand/ribbon.webp": {
+      "px": 1114,
+      "max_display_px": 557,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "ForecastsPage .zb-fc__ribbon-img, max-width 557 (= 1114 / 2), >= 1100 px"
+    },
+    "art/quicklinks/agriculture-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/agriculture.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/commodity-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/commodity-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/commodity-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/commodity.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/education-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/education.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/energy-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/energy.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/environment-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/environment.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/finance-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/finance-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/finance-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/finance.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/forecast-glass-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/forecast-glass-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/forecast-glass-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/forecast-glass.webp": {
+      "px": 960,
+      "max_display_px": 900,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "index.css .fe-dashboard [data-block=\"home-hero\"]::before, растянут примерно до 900 px",
+      "pending": "зона B: удаляет ::before; после слияния поставить used=false (останется мастером для -640/-320)"
+    },
+    "art/quicklinks/health-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/health.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/housing-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/housing.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/ict-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/ict.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/industry-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/industry-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/industry-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/industry.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/justice-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/justice.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/population-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/population-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/population-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/population.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/science-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/science-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/science-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/science.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/tourism-320.webp": {
+      "px": 320,
+      "max_display_px": 210,
+      "dpr": 1,
+      "used": true,
+      "fallback_of": "art/quicklinks/tourism-640.webp",
+      "shown_in": "CategoryBlock srcSet 320w: кадр для DPR 1; DPR 2-3 берёт -640"
+    },
+    "art/quicklinks/tourism-640.webp": {
+      "px": 640,
+      "max_display_px": 210,
+      "dpr": 3,
+      "used": true,
+      "shown_in": "CategoryBlock srcSet 640w, .fe-category-art 210 CSS px (DPR 2-3)"
+    },
+    "art/quicklinks/tourism.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "art/quicklinks/trade-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART",
+      "defect": "то же, что у trade.webp"
+    },
+    "art/quicklinks/trade.webp": {
+      "px": 960,
+      "used": false,
+      "defect": "альфа-маска крупными ступеньками и тёмный ореол; кадр не показывать (CATEGORY_ART.trade -> tourism)"
+    },
+    "art/quicklinks/transport-320.webp": {
+      "px": 320,
+      "used": false,
+      "note": "не показывается: категории нет в CATEGORY_ART"
+    },
+    "art/quicklinks/transport.webp": {
+      "px": 960,
+      "used": false,
+      "master": true,
+      "note": "мастер 960x640 для нарезки -640/-320; сам не показывается"
+    },
+    "icons/icon-192.png": {
+      "px": 192,
+      "max_display_px": 192,
+      "dpr": 1,
+      "used": true,
+      "external": true,
+      "shown_in": "PwaInstallCard 44 CSS px (DPR 3 -> 132 px); значок установки ОС 192 px"
+    },
+    "icons/icon-512.png": {
+      "px": 512,
+      "max_display_px": 512,
+      "dpr": 1,
+      "used": true,
+      "external": true,
+      "shown_in": "значок установки и заставка ОС 512 px"
+    },
+    "icons/icon-maskable-512.png": {
+      "px": 512,
+      "max_display_px": 512,
+      "dpr": 1,
+      "used": true,
+      "external": true,
+      "shown_in": "maskable-значок ОС 512 px"
+    },
+    "brand/emblem-f-2x.webp": {
+      "px": 1149,
+      "max_display_px": 563,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "Emblem photo: стеклянная F, высота показа не более 760 CSS px (563 px по ширине), DPR 2"
+    },
+    "brand/emblem-f-phone.webp": {
+      "px": 888,
+      "max_display_px": 430,
+      "dpr": 2,
+      "used": true,
+      "shown_in": "Emblem photo (телефон): стеклянная F рядом с заголовком, до 430 CSS px по ширине, DPR 2"
+    }
   }
- }
 }
