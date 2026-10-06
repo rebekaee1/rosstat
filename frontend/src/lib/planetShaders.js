@@ -37,12 +37,23 @@ export const PLANET_FRAGMENT = `
     return abs(m - 0.5) / max(fwidth(m), 0.0005);
   }
 
+  // sRGB 0..1 to linear light. The argument is always clamped to 0..1 first, so pow() never sees a negative base.
+  vec3 srgbToLinear(vec3 c) {
+    c = clamp(c, 0.0, 1.0);
+    return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(0.04045, c));
+  }
+
+  // Round 6 palette of the data globe, sRGB: ocean #DCE8F3 and land without data #E6E3DC.
+  const vec3 OCEAN_SRGB = vec3(0.8627, 0.9098, 0.9529);
+  const vec3 LAND_SRGB = vec3(0.9020, 0.8902, 0.8627);
+  // Selection and hover: a thin blue light along the border (#2C4A8A, #3558A0), not a frame.
+  const vec3 SELECT_SRGB = vec3(0.1725, 0.2902, 0.5412);
+  const vec3 HOVER_SRGB = vec3(0.2078, 0.3451, 0.6275);
+
   // The atlas is stored with premultiplied alpha (filtering stays correct and thin lines never turn black),
   // in sRGB values. Straighten, then decode to linear light.
   vec3 atlasToLinear(vec4 atlas) {
-    vec3 c = atlas.rgb / max(atlas.a, 0.004);
-    c = clamp(c, 0.0, 1.0);
-    return mix(c / 12.92, pow((c + 0.055) / 1.055, vec3(2.4)), step(0.04045, c));
+    return srgbToLinear(atlas.rgb / max(atlas.a, 0.004));
   }
 
   // A light five-tap blur of the selection masks turns the staircase of a magnified texture into a smooth edge.
@@ -76,6 +87,10 @@ export const PLANET_FRAGMENT = `
     vec3 land = mix(dayColor, vec3(luminance), 0.08);
     // The source composite is flat; a little saturation makes land and forest readable against the sea.
     land = mix(vec3(dot(land, vec3(0.2126, 0.7152, 0.0722))), land, 1.16);
+    // Saturation above 1 extrapolates: a texel with a channel near zero (deep forest, dark water at a coast, 0.2 % of the
+    // 4096 map) goes NEGATIVE, and pow() of a negative base is undefined (NaN on Metal and ANGLE): that texel drew
+    // a hard black speck along the Caucasus, Caspian, Aral and US east coasts (round 6). Clamp before pow().
+    land = max(land, vec3(0.0));
     land = pow(land, vec3(0.74)) * vec3(1.04, 1.015, 0.97);
     // A calm sea with depth: open water is a deeper blue, the shelf near the coast is pale turquoise.
     vec3 deepSea = vec3(0.30, 0.50, 0.68);
@@ -92,45 +107,46 @@ export const PLANET_FRAGMENT = `
     vec3 sea = mix(midSea, deepSea, smoothstep(0.55, 1.0, farWater) * 0.9);
     sea = mix(sea, vec3(0.74, 0.88, 0.89), shallow * 0.62);
     vec3 surface = mix(land, sea, water);
-    surface *= 0.9 + max(sunlight, 0.0) * 0.16;
-    // «Данные»: подложка уходит в спокойный светлый тон, чтобы раскраска стран читалась как шкала,
-    // а не терялась в бежевой пустыне. Рельеф остаётся лёгкой тенью.
+    // "Data": the photograph gives way to a calm flat palette (ocean #DCE8F3, land without data #E6E3DC);
+    // only a trace of relief stays, so the scale of the country colours reads as one thing.
     float gray = dot(surface, vec3(0.2126, 0.7152, 0.0722));
-    vec3 pale = vec3(0.86, 0.885, 0.91) + (gray - 0.5) * 0.14;
-    surface = mix(surface, mix(pale, sea, water), dataWash * 0.82);
-    // A soft glint of the light on open water gives the ocean a surface.
+    vec3 flatLand = srgbToLinear(LAND_SRGB) * clamp(0.97 + (gray - 0.5) * 0.22, 0.86, 1.02);
+    vec3 flatSurface = mix(flatLand, srgbToLinear(OCEAN_SRGB), water);
+    surface = mix(surface, flatSurface, dataWash);
+    surface *= 0.885 + max(sunlight, 0.0) * 0.12;
+    // A soft glint of the light on open water gives the ocean a surface (faint in data mode: no gloss).
     vec3 toCamera = normalize(cameraPosition - normal);
     float glint = pow(max(dot(reflect(-sunDirection, normal), toCamera), 0.0), 26.0);
-    surface += vec3(0.62, 0.72, 0.80) * glint * 0.30 * water;
+    surface += vec3(0.62, 0.72, 0.80) * glint * (0.30 - 0.22 * dataWash) * water;
     // Limb: a little shade for volume, then a thin veil of pale-blue air along the edge.
     float facing = max(dot(normal, normalize(cameraPosition)), 0.0);
     surface *= mix(0.84, 1.0, smoothstep(0.0, 0.5, facing));
-    float rim = pow(1.0 - facing, 2.6);
+    float rim = pow(max(1.0 - facing, 0.0), 2.6);
     surface = mix(surface, vec3(0.66, 0.80, 0.93), rim * 0.34 * (1.0 - dataWash * 0.45));
     vec3 color = surface;
     vec4 atlas = texture2D(atlasMap, vUv);
     color = color * (1.0 - atlas.a) + atlasToLinear(atlas) * atlas.a;
 
-    // Interaction: a faint gold tint inside the country and a thin gold line on its border.
+    // Interaction: a faint blue tint inside the country and a thin blue light on its border.
     vec3 hl = softMask(vUv);
     float insideSelected = smoothstep(0.35, 0.65, hl.r);
     float insideHovered = smoothstep(0.35, 0.65, hl.g) * (1.0 - insideSelected);
-    vec3 goldSelected = vec3(0.40, 0.22, 0.025);
-    vec3 goldHovered = vec3(0.59, 0.37, 0.10);
-    color = mix(color, goldSelected, insideSelected * 0.16);
-    color = mix(color, goldHovered, insideHovered * 0.09);
+    vec3 blueSelected = srgbToLinear(SELECT_SRGB);
+    vec3 blueHovered = srgbToLinear(HOVER_SRGB);
+    color = mix(color, blueSelected, insideSelected * 0.10);
+    color = mix(color, blueHovered, insideHovered * 0.07);
     float dSel = edgeDistance(hl.r);
     float dHov = edgeDistance(hl.g);
     // Edge-ness is 1 on the border and 0 in flat areas, so soft halos never end in a hard step.
     float edgeSel = smoothstep(0.0, 0.3, 2.0 * min(hl.r, 1.0 - hl.r));
     float edgeHov = smoothstep(0.0, 0.3, 2.0 * min(hl.g, 1.0 - hl.g));
-    float haloSel = (1.0 - smoothstep(0.7, 3.0, dSel)) * edgeSel * 0.30;
-    float haloHov = (1.0 - smoothstep(0.7, 2.4, dHov)) * edgeHov * 0.22;
-    color = mix(color, vec3(1.0, 0.97, 0.92), max(haloSel, haloHov));
+    float haloSel = (1.0 - smoothstep(0.7, 3.0, dSel)) * edgeSel * 0.34;
+    float haloHov = (1.0 - smoothstep(0.7, 2.4, dHov)) * edgeHov * 0.24;
+    color = mix(color, vec3(0.90, 0.95, 1.0), max(haloSel, haloHov));
     float lineHov = 1.0 - smoothstep(0.45, 1.25, dHov);
-    color = mix(color, goldHovered, lineHov * edgeHov * 0.85);
+    color = mix(color, blueHovered, lineHov * edgeHov * 0.8);
     float lineSel = 1.0 - smoothstep(0.55, 1.35, dSel);
-    color = mix(color, goldSelected, lineSel * edgeSel);
+    color = mix(color, blueSelected, lineSel * edgeSel);
 
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
