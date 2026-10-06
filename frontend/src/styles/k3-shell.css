@@ -321,14 +321,25 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
   max-height: min(86dvh, 760px);
   margin-inline: auto;
   border-radius: 28px 28px 0 0;
-  /* Плотность .9: нижняя часть листа не просвечивает текстом страницы (приёмка: было .78). */
-  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.9);
+  /* Плотность .92: нижняя часть листа не просвечивает текстом страницы (приёмка: было .78, потом .9), размытие 28 px остаётся. */
+  background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.92);
   -webkit-backdrop-filter: blur(28px) saturate(1.3);
   backdrop-filter: blur(28px) saturate(1.3);
   box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), var(--fe-inset-glint);
   overscroll-behavior: contain;
   outline: none;
   animation: fe-k3-sheet-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+/* Фокус: контур 2 px читался рамкой по верхнему краю листа. Лист получает фокус программно (диалог), поэтому вместо контура
+   мягкое золотое свечение (размытие 28 px, без кольца), а пункты внутри подсвечиваются свечением и тёплой подложкой. */
+.fe-bsheet:focus, .fe-bsheet:focus-visible { outline: none; }
+.fe-bsheet:focus-visible {
+  box-shadow: 0 -24px 60px -28px rgba(20, 33, 61, 0.45), 0 -10px 28px -4px rgba(201, 162, 77, 0.5), var(--fe-inset-glint);
+}
+.fe-bsheet :is(a, button, summary, [tabindex]):focus-visible {
+  outline: none;
+  background: rgb(201 162 77 / 0.16);
+  box-shadow: 0 0 16px 2px rgba(176, 138, 62, 0.5);
 }
 @media (min-width: 640px) { .fe-bsheet { max-width: 720px; } }
 @media (min-width: 900px) { .fe-bsheet { max-width: 880px; } }
