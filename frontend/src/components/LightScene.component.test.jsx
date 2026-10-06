@@ -27,9 +27,9 @@ afterEach(() => {
   cleanup();
 });
 
-async function settle() {
+async function settle(ms = 20) {
   await act(async () => {
-    await new Promise((r) => setTimeout(r, 20));
+    await new Promise((r) => setTimeout(r, ms));
   });
 }
 
@@ -82,18 +82,34 @@ describe('LightScene', () => {
     expect(other.container.parentElement.querySelector('.fe-scene-leak--bottom')).not.toBeNull();
   });
 
-  it('на странице 404 (адрес из одного сегмента, корень .z2-nf) героя страны нет', async () => {
+  it('на странице 404 (корень .z2-nf) герой получает вариант notfound без верхней утечки света', async () => {
     const nf = document.createElement('div');
     nf.className = 'z2-nf';
     document.body.appendChild(nf);
     try {
-      const view = scene('/no-such-country');
-      await settle();
-      expect(view.container.parentElement.querySelector('.fe-scene-hero')).toBeNull();
-      expect(view.container.parentElement.querySelector('.fe-scene-leak--top')).toBeNull();
+      for (const path of ['/no-such-country', '/a/b/c']) {
+        const view = scene(path);
+        await settle(120);
+        await settle(120);
+        const root = view.container.parentElement;
+        expect(root.querySelector('.fe-scene-hero')?.getAttribute('data-fe-hero')).toBe('notfound');
+        expect(root.querySelector('.fe-scene-leak--top')).toBeNull();
+        view.unmount();
+      }
     } finally {
       nf.remove();
     }
+  });
+
+  it('под страницей четыре цветных пятна и три блика-грани (круг 5)', () => {
+    const { container } = scene('/about');
+    const root = container.querySelector('.fe-scene');
+    expect([...root.querySelectorAll('.fe-scene__spot')].map((n) => n.className.match(/--(\w+)/)[1]).sort())
+      .toEqual(['gold', 'ice', 'peach', 'sapphire']);
+    expect(root.querySelectorAll('.fe-scene__glint')).toHaveLength(3);
+    // Пятна и блики плавают через .fe-drift и ходят с параллаксом.
+    expect(root.querySelectorAll('.fe-scene__spot.fe-drift')).toHaveLength(4);
+    expect(root.querySelectorAll('.fe-scene__glint-slot[data-depth]')).toHaveLength(3);
   });
 
   it('при экономии трафика (Save-Data) героя не монтирует', async () => {
