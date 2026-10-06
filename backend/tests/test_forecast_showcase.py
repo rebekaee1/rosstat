@@ -44,7 +44,7 @@ def test_build_item_keeps_history_and_future_only():
     actual = _rows(2023, 9, 36, 100.0, 0.2)
     last = actual[-1][0]
     forecast = [
-        (d, v, v - 1.0, v + 1.0)
+        (d, v)
         for d, v in _rows(last.year + (last.month // 12), last.month % 12 + 1, 12, actual[-1][1] + 0.2, 0.2)
     ]
     item = fs.build_item(
@@ -59,12 +59,14 @@ def test_build_item_keeps_history_and_future_only():
     assert item["forecast"][0]["date"] > item["last_actual"]["date"]
     assert item["change"]["horizon_months"] == 12
     assert item["change"]["unit"] == "percent" and item["change"]["direction"] == "up"
-    assert item["forecast_end"]["lower"] < item["forecast_end"]["value"] < item["forecast_end"]["upper"]
+    # Только точечный прогноз: никаких границ диапазона ни в конце, ни по точкам.
+    assert set(item["forecast_end"]) == {"date", "value"}
+    assert all(set(row) == {"date", "value"} for row in item["forecast"])
 
 
 def test_build_item_rejects_series_without_a_year_horizon():
     actual = _rows(2025, 1, 12, 5.0, 0.0)
-    forecast = [(date(2026, 1, 1), 5.0, None, None), (date(2026, 2, 1), 5.1, None, None)]
+    forecast = [(date(2026, 1, 1), 5.0), (date(2026, 2, 1), 5.1)]
     assert fs.build_item(
         item_id="x", scope="russia", theme="rates", kind="percent", title="T",
         country={"slug": "russia", "code": "RU", "name": "Россия"},
@@ -211,7 +213,12 @@ def test_showcase_api_returns_only_real_forecasts(auth_env):
     assert ru["scope"] == "russia" and ru["verified"] is False
     assert ru["path"] == "/russia/indicator/unemployment"
     assert ru["change"]["unit"] == "points" and ru["change"]["direction"] == "down"
-    assert ru["forecast_end"]["lower"] < ru["forecast_end"]["value"] < ru["forecast_end"]["upper"]
+    # В базе границы есть, в публичном ответе их нет: только точечный прогноз.
+    assert set(ru["forecast_end"]) == {"date", "value"}
+    for item in body["items"]:
+        assert all(set(row) == {"date", "value"} for row in item["forecast"])
+    assert "lower" not in response.text and "upper" not in response.text
+    assert "lower_bound" not in response.text and "upper_bound" not in response.text
     us = ids["united-states-unemployment"]
     assert us["scope"] == "world" and us["verified"] is True
     assert us["path"] == "/united-states/indicator/us-unemployment-rate"
@@ -260,6 +267,9 @@ def test_forecasts_page_is_server_rendered_from_the_same_data(auth_env):
     # Вторая ссылка про метод остаётся на странице.
     assert 'href="/methodology#read"' in html
     assert "·" not in html.split("<main", 1)[1]
+    # Диапазона прогноза нет ни в таблицах, ни в описании: только точечное значение.
+    low = html.lower()
+    assert "коридор" not in low and "диапазон" not in low and "интервал" not in low
 
 
 def test_forecasts_page_without_data_is_still_an_honest_text_page(auth_env):
@@ -281,6 +291,8 @@ def test_forecasts_page_english(auth_env):
     assert "<h1>Forecasts</h1>" in html
     assert "Russia: unemployment rate" in html
     assert "percentage points" in html
+    low = html.lower()
+    assert "range" not in low and "corridor" not in low and "confidence interval" not in low
 
 
 def test_forecasts_is_a_platform_path_not_a_country_slug():

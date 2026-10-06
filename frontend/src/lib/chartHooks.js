@@ -112,7 +112,7 @@ export function useTouchTooltip(containerRef) {
 }
 
 /**
- * Набор идентификаторов градиентов одного графика (лента, сапфир, заливка, прогноз, коридор, столбцы, шарик).
+ * Набор идентификаторов градиентов одного графика (лента, сапфир, заливка, прогноз, столбцы, шарик).
  * У каждого графика на странице свои id: два графика рядом не берут чужие градиенты.
  */
 export function useChartGlassIds(prefix = 'fe-glass') {
@@ -124,7 +124,6 @@ export function useChartGlassIds(prefix = 'fe-glass') {
     area: `${base}-area`,
     areaSapphire: `${base}-area-sapphire`,
     forecast: `${base}-forecast`,
-    prism: `${base}-prism`,
     bar: `${base}-bar`,
     barForecast: `${base}-bar-forecast`,
     beam: `${base}-beam`,

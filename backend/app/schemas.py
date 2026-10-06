@@ -95,8 +95,6 @@ class DataResponse(BaseModel):
 class ForecastValueOut(BaseModel):
     date: date
     value: float
-    lower_bound: float | None = None
-    upper_bound: float | None = None
 
     model_config = {"from_attributes": True}
 
@@ -125,8 +123,6 @@ class InflationPoint(BaseModel):
 class InflationForecastPoint(BaseModel):
     date: date
     value: float
-    lower_bound: float | None = None
-    upper_bound: float | None = None
 
 
 class InflationResponse(BaseModel):

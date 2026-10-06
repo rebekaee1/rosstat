@@ -122,8 +122,6 @@ async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
         values=[ForecastValueOut(
             date=v.date,
             value=float(v.value),
-            lower_bound=float(v.lower_bound) if v.lower_bound is not None else None,
-            upper_bound=float(v.upper_bound) if v.upper_bound is not None else None,
         ) for v in values],
     )
 
@@ -197,8 +195,6 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
             forecast_points.append(InflationForecastPoint(
                 date=v.date,
                 value=round(float(v.value), 4),
-                lower_bound=round(float(v.lower_bound), 4) if v.lower_bound is not None else None,
-                upper_bound=round(float(v.upper_bound), 4) if v.upper_bound is not None else None,
             ))
     else:
         # Fallback: compute from monthly CPI forecast
@@ -225,8 +221,6 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
 
             if fc_values:
                 fc_factors = [float(fv.value) / 100.0 for fv in fc_values]
-                fc_lowers = [float(fv.lower_bound) / 100.0 if fv.lower_bound is not None else None for fv in fc_values]
-                fc_uppers = [float(fv.upper_bound) / 100.0 if fv.upper_bound is not None else None for fv in fc_values]
 
                 for m in range(len(fc_factors)):
                     n_actual = 12 - (m + 1)
@@ -235,21 +229,9 @@ async def get_inflation(code: str, db: AsyncSession = Depends(get_db)):
                     fc_part = fc_factors[:m + 1]
                     cum = math.prod(actual_part + fc_part) * 100 - 100
 
-                    lower = None
-                    if all(x is not None for x in fc_lowers[:m + 1]):
-                        lower_part = fc_lowers[:m + 1]
-                        lower = round(math.prod(actual_part + lower_part) * 100 - 100, 4)
-
-                    upper = None
-                    if all(x is not None for x in fc_uppers[:m + 1]):
-                        upper_part = fc_uppers[:m + 1]
-                        upper = round(math.prod(actual_part + upper_part) * 100 - 100, 4)
-
                     forecast_points.append(InflationForecastPoint(
                         date=fc_values[m].date,
                         value=round(cum, 4),
-                        lower_bound=lower,
-                        upper_bound=upper,
                     ))
 
     response = InflationResponse(

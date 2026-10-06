@@ -34,7 +34,7 @@ MAX_HORIZON_MONTHS = 15
 HISTORY_POINTS = {"monthly": 36, "quarterly": 12, "annual": 8}
 
 CACHE_TTL_SECONDS = 1800
-CACHE_KEY_REST = "forecast-showcase:v1"
+CACHE_KEY_REST = "forecast-showcase:v2"  # v2: в ответе нет границ диапазона (только точечный прогноз)
 
 # Темы витрины: порядок вкладок на странице.
 THEMES: tuple[dict[str, str], ...] = (
@@ -209,17 +209,6 @@ def _point(day: date, value: float) -> dict[str, Any]:
     return {"date": day.isoformat(), "value": round(float(value), 4)}
 
 
-def _forecast_point(
-    day: date, value: float, lower: float | None, upper: float | None,
-) -> dict[str, Any]:
-    return {
-        "date": day.isoformat(),
-        "value": round(float(value), 4),
-        "lower": None if lower is None else round(float(lower), 4),
-        "upper": None if upper is None else round(float(upper), 4),
-    }
-
-
 def build_item(
     *,
     item_id: str,
@@ -233,7 +222,7 @@ def build_item(
     source: str,
     path: str,
     actual: Sequence[tuple[date, float]],
-    forecast: Sequence[tuple[date, float, float | None, float | None]],
+    forecast: Sequence[tuple[date, float]],
     updated: date | None,
     verified: bool,
 ) -> dict[str, Any] | None:
@@ -244,7 +233,7 @@ def build_item(
     future = [row for row in forecast if row[0] > last_day]
     if not future:
         return None
-    end_day, end_value, end_lo, end_hi = future[-1]
+    end_day, end_value = future[-1]
     if not horizon_ok(last_day, end_day):
         return None
     change = compute_change(kind, last_value, end_value)
@@ -263,10 +252,10 @@ def build_item(
         "source": source,
         "path": path,
         "last_actual": _point(last_day, last_value),
-        "forecast_end": _forecast_point(end_day, end_value, end_lo, end_hi),
+        "forecast_end": _point(end_day, end_value),
         "change": change,
         "history": [_point(d, v) for d, v in tail_points(actual, frequency)],
-        "forecast": [_forecast_point(*row) for row in future],
+        "forecast": [_point(d, v) for d, v in future],
         "updated": updated.isoformat() if updated else None,
         "verified": verified,
     }
@@ -341,8 +330,6 @@ async def _russia_items(db, locale: str) -> list[dict[str, Any]]:
                     (
                         date.fromisoformat(str(p["date"])),
                         float(p["value"]),
-                        None if p.get("lower_bound") is None else float(p["lower_bound"]),
-                        None if p.get("upper_bound") is None else float(p["upper_bound"]),
                     )
                     for p in data.get("forecast") or []
                 ]
@@ -375,8 +362,6 @@ async def _russia_items(db, locale: str) -> list[dict[str, Any]]:
                     (
                         r.date,
                         float(r.value),
-                        None if r.lower_bound is None else float(r.lower_bound),
-                        None if r.upper_bound is None else float(r.upper_bound),
                     )
                     for r in rows
                 ]
@@ -516,8 +501,6 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
                     (
                         v.date,
                         float(v.value),
-                        None if v.lower_bound is None else float(v.lower_bound),
-                        None if v.upper_bound is None else float(v.upper_bound),
                     )
                     for v in values
                 ]

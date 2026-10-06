@@ -42,20 +42,20 @@ describe('ChartGlassDefs', () => {
     expect(colors[0]).toBe(CHART_THEME.goldLight);
   });
 
-  it('заливка под лентой уходит в ноль у оси, коридор идёт слева направо', () => {
+  it('заливка под лентой уходит в ноль у оси; градиента диапазона прогноза нет', () => {
     let ids;
     const { container } = render(<Probe onIds={(v) => { ids = v; }} />);
     const area = container.querySelector(`[id="${ids.area}"]`);
     const stops = [...area.querySelectorAll('stop')];
     expect(Number(stops[0].getAttribute('stop-opacity'))).toBeCloseTo(0.35);
     expect(Number(stops[1].getAttribute('stop-opacity'))).toBe(0);
-    const prism = container.querySelector(`[id="${ids.prism}"]`);
-    expect(prism.getAttribute('x2')).toBe('1');
+    expect(ids.prism).toBeUndefined();
+    expect(container.querySelector('[id$="-prism"]')).toBeNull();
   });
 
   it('с известной шириной градиенты ленты привязаны к графику (userSpaceOnUse): плоская линия не пропадает', () => {
     const ids = {
-      ribbon: 'r', sapphire: 's', area: 'a', areaSapphire: 'as', forecast: 'f', prism: 'p', bar: 'b', barForecast: 'bf', bead: 'bd',
+      ribbon: 'r', sapphire: 's', area: 'a', areaSapphire: 'as', forecast: 'f', bar: 'b', barForecast: 'bf', bead: 'bd',
     };
     const { container } = render(<svg><defs><ChartGlassDefs ids={ids} width={640} /></defs></svg>);
     for (const id of ['r', 's', 'f']) {

@@ -2304,13 +2304,8 @@ async def indicator_data(
                 ),
                 "derived_from": derived_from,
                 "points": [
-                    {
-                        "date": d.isoformat(),
-                        "value": v,
-                        "lower_bound": lo,
-                        "upper_bound": hi,
-                    }
-                    for d, v, lo, hi in forecast_points
+                    {"date": d.isoformat(), "value": v}
+                    for d, v, _lo, _hi in forecast_points
                 ],
             }
             break

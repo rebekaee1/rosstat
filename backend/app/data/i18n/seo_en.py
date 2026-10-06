@@ -341,7 +341,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
         title="Forecast methodology for economic indicators — Forecast Economy",
         description=(
             "How forecasts of economic indicators are built: series preparation, "
-            "historical validation, statistical models, intervals, updates, and "
+            "historical validation, statistical models, updates, and "
             "limitations."
         ),
         h1="Forecast methodology",
@@ -351,11 +351,11 @@ PAGE_META_EN: dict[str, PageSeo] = {
             "We do not fit results to expectations or add expert assumptions: "
             "the forecast is determined by the source data and the algorithm. "
             "Below is the full calculation path — from series preparation to the "
-            "confidence interval — and the indicators we deliberately do not forecast."
+            "final value — and the indicators we deliberately do not forecast."
         ),
         keywords=(
             "forecast methodology, how forecasts are calculated, economic indicator forecast, "
-            "statistical forecast, confidence interval, ARIMA, "
+            "statistical forecast, ARIMA, "
             "inflation forecast methodology, GDP forecast, time series extrapolation"
         ),
         links=(
@@ -372,8 +372,8 @@ PAGE_META_EN: dict[str, PageSeo] = {
                 "the U.S. Bureau of Labor Statistics, the Federal Reserve, and other "
                 "national statistical offices and central banks. "
                 "The forecast is produced from the series history by a fixed algorithm "
-                "and can be reproduced from published data. Alongside the central "
-                "estimate we show a confidence interval that widens with the forecast horizon.",
+                "and can be reproduced from published data. The further "
+                "the horizon, the lower the accuracy of the forecast.",
             ),
             SeoBlock(
                 "Calculation steps",
@@ -384,8 +384,7 @@ PAGE_META_EN: dict[str, PageSeo] = {
                 "several training windows; for series with a yearly cycle, models that account "
                 "for repeating seasonality. "
                 "Window estimates are combined with weights inverse to their dispersion, "
-                "the forecast is mapped back to original units, and a confidence interval "
-                "is built around it.",
+                "the forecast is mapped back to original units.",
             ),
             SeoBlock(
                 "Model by indicator type",
@@ -496,15 +495,14 @@ PAGE_META_EN: dict[str, PageSeo] = {
         title="Economic forecasts one year ahead: inflation, GDP, unemployment",
         description=(
             "Platform forecasts one year ahead for Russia and other countries: prices, GDP, "
-            "unemployment, rates, wages. Built from official data, with the range in which "
-            "the indicator is most likely to land."
+            "unemployment, rates, wages. Built from official data: the value now and the value "
+            "expected in a year."
         ),
         h1="Forecasts",
         intro=(
             "These are the forecasts the platform builds itself from official data: for Russia "
             "and for countries where the forecast passed a test on past data. For each series "
-            "you see the latest value, the value expected in a year, and the range it is "
-            "most likely to fall in."
+            "you see the latest value and the value expected in a year."
         ),
         keywords=(
             "inflation forecast, GDP forecast, unemployment forecast, Russia economic forecast, "
@@ -520,9 +518,8 @@ PAGE_META_EN: dict[str, PageSeo] = {
         blocks=(
             SeoBlock(
                 "How to read a forecast",
-                "The solid line is the actual data, the dashed line is the forecast, and the band "
-                "around it is the range the value falls into 19 times out of 20 according to the "
-                "model. A forecast rests on the past and may differ from reality; it is reference "
+                "The dark line is the actual data and the fading gold line is the forecast: one "
+                "expected value for each date. A forecast rests on the past and may differ from reality; it is reference "
                 "information, not investment advice.",
             ),
             SeoBlock(

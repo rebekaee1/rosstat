@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, PRISM_STOPS, RIBBON_STOPS,
+  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, RIBBON_STOPS,
   SAPPHIRE_STOPS, TOOLTIP_STYLES,
   areaGradientStops, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, lastPointTag, niceAxis,
 } from './chartTheme';
@@ -62,7 +62,6 @@ describe('chartTheme', () => {
     expect(SAPPHIRE_STOPS.map((s) => s.color)).toEqual(['#5C86C8', '#1E2A4A']);
     expect(CHART_AREA.top).toBe(0.35);
     expect(CHART_AREA.bottom).toBe(0);
-    expect(PRISM_STOPS).toHaveLength(2);
   });
 
   it('axisTick takes font and colour from the theme and allows overrides', () => {

@@ -1892,10 +1892,6 @@ export default {
   'meth.p.reproBody':
     'The forecast is obtained from the series history by a fixed algorithm. With the same '
     + 'data the result is always the same and does not depend on who ran the calculation or when.',
-  'meth.p.uncertTitle': 'Uncertainty bands',
-  'meth.p.uncertBody':
-    'Alongside the central value we show a range in which the indicator is likely to fall. '
-    + 'As the horizon lengthens the band widens, and that is visible on the chart.',
   'meth.p.limitsTitle': 'Limits of applicability',
   'meth.p.limitsBody':
     'Where a statistical forecast is unreliable by nature — exchange quotes, intraday FX, '
@@ -1984,12 +1980,11 @@ export default {
     + 'toggle on the card stays inactive.',
   'meth.readTitle': 'How to read the forecast on the chart',
   'meth.read.p1':
-    'The solid line is the source fact series. The dashed line is the forecast. The translucent '
-    + 'band around the dashed line is the most likely range of future values, which widens '
-    + 'further into the future.',
+    'The solid line is the source fact series. The gold line to the right of the “now” mark '
+    + 'is the forecast: one value for each date.',
   'meth.read.p2':
-    'The same forecast values are repeated in the table under the chart together with the '
-    + 'range bounds. They can be downloaded and used in your own calculations.',
+    'The same forecast values are repeated in the table under the chart. '
+    + 'They can be downloaded and used in your own calculations.',
   'meth.disclaimerTitle': 'Limitations and liability',
   'meth.disclaimer.p1':
     'The forecast rests on stable patterns in the past and may diverge from the outcome under '
@@ -2537,7 +2532,7 @@ export default {
   'x4.meth.step.3.title': 'Pick a model',
   'x4.meth.step.4.title': 'Build the forecast',
   'x4.meth.forecast.title': 'Forecasts',
-  'x4.meth.forecast.body': 'On a chart the solid line is fact and the dashed line is the forecast. A range shows where the indicator is most likely to land. When new data is published, the forecast updates itself.',
+  'x4.meth.forecast.body': 'On a chart the solid line is fact and the gold line to the right of the “now” mark is the forecast. When new data is published, the forecast updates itself.',
   'x4.meth.world.title': 'Other countries',
   'x4.meth.world.body': 'For other countries we first test the forecast on past data and show it only where it proved itself.',
   'x4.meth.skip.title': 'What we do not do',
@@ -2773,8 +2768,6 @@ export default {
   'w6e.brush.from': 'Period start',
   'w6e.brush.to': 'Period end',
   'w6e.compare.baseStart': 'Period start = 100 ({date})',
-  'w6e.forecast.range': 'Likely range',
-  'w6e.forecast.rangeTip': 'range {from} to {to}',
   'w6e.pickVariant': 'Choose an option',
   'w6e.mode.values': 'Values',
   'w6e.mode.index': 'Growth since start (= 100)',
@@ -3244,10 +3237,8 @@ export default {
   'zb.fc.legendAria': 'How to read the chart',
   'zb.fc.legendFact': 'Actual',
   'zb.fc.legendForecast': 'Forecast',
-  'zb.fc.legendRange': 'Range',
   'zb.fc.now': 'Now',
   'zb.fc.inYear': 'In a year',
-  'zb.fc.range': 'Range: {low} to {high}',
   'zb.fc.unit': 'Unit: {unit}.',
   'zb.fc.source': 'Data source: {source}',
   'zb.fc.open': 'Open the chart',
@@ -3260,7 +3251,7 @@ export default {
   'zb.fc.empty': 'Forecasts will appear here as soon as new data pass the checks.',
   'zb.fc.notesAria': 'Notes on forecasts',
   'zb.fc.read.title': 'How to read a forecast',
-  'zb.fc.read.body': 'The solid line is the actual data, the dashed line is the forecast, and the band around it is the range: according to the model the value falls inside it 19 times out of 20. A forecast rests on the past and may differ from reality. It is reference information, not investment advice.',
+  'zb.fc.read.body': 'The dark line is the actual data and the fading gold line is the forecast: one expected value for each date. A forecast rests on the past and may differ from reality. It is reference information, not investment advice.',
   'zb.fc.notHere.title': 'What is not here',
   'zb.fc.notHere.body': 'We do not forecast exchange rates, the key rate, stocks or commodity prices: for those we show history only. We do not repeat or replace forecasts from international organizations.',
   'zb.change.points.up': 'up {n} percentage points',

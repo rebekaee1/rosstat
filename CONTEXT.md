@@ -313,6 +313,8 @@ Phase 4 (ставки) НЕ использует viewModeFamilies: `credit-rate-
 
 Прогноз индикатора на N шагов. Хранится в `Forecast` (метаданные + `is_current`) + `ForecastValue` (точки `(date, value, lower_bound, upper_bound)`).
 
+**Диапазона прогноза пользователь не видит (решение владельца, 2026-10-06).** Прогноз показывается только точечно: линия прогноза и значение через год. Колонки `lower_bound`/`upper_bound` остаются во внутренних расчётах и в БД (клэмпинг, снимки стратегий), но публичные API (`/forecasts/{code}`, `/forecasts/{code}/inflation`, `/forecasts/showcase`, world `points`, субнациональный прогноз), графики, таблицы, SSR и тексты их не отдают и не выводят: ни «коридора», ни «интервала», ни полосы вокруг линии. Новых мест с диапазоном не добавляем.
+
 **Реестр стратегий** (`backend/app/services/forecast_strategies/registry.py`) — диспетчеризует прогноз-генерацию по полю `Indicator.model_config_json.forecast_strategy`:
 
 | Имя | Когда применяется | Что делает |
