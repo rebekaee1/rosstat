@@ -260,8 +260,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "sha256": "0b0a326dd35c74bd1283f3a54f5a201b037c3e465220932f5de462887e97a6e2",
-      "lines": 266
+      "sha256": "f04252970e339ff419c9e62c51e2b795ca13928f414f26abb846e701d810f453",
+      "lines": 248
     },
     {
       "path": "backend/app/api/indicators.py",
@@ -280,7 +280,7 @@
     },
     {
       "path": "backend/app/api/pwa.py",
-      "sha256": "520e3f25ba0bd95c36b424377772f500fd371fc0ada2e1bf6ab27a88aa3b1c23",
+      "sha256": "d8264d17128c0465d9148e170f4cd644a4b5b72384aa11d979b07e5541bfedae",
       "lines": 155
     },
     {
@@ -325,8 +325,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "sha256": "e62fbfbb61b700506d2304d37e71ff8f10b7f0ddb4f37a9ee9df0156d0fd3f29",
-      "lines": 2543
+      "sha256": "b9790eefb5ffa0b111139057dd8f80aa100075a9a108bdac66efc428d884f555",
+      "lines": 2538
     },
     {
       "path": "backend/app/api/world_subnational.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "5af011961b85f3f5832647c6520880c19680bfb9d3c358ce5cdcb7daa79a85d5",
-      "lines": 1617
+      "sha256": "70bf72dbb19a087fcb3ef36ae07ff78961bdb38c4afa7874e9030f74097b96b3",
+      "lines": 1614
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "sha256": "a29a177d285ed54e21c862ebf200cadfa9eec44137e462d7d3cd081ff5f72749",
-      "lines": 180
+      "sha256": "c62fffc289bad2c4401ccdf690a2e862c090c56b07acbcc42ab7811f53423a9a",
+      "lines": 176
     },
     {
       "path": "backend/app/security/__init__.py",
@@ -685,8 +685,8 @@
     },
     {
       "path": "backend/app/services/admin_bi.py",
-      "sha256": "8526861e23ddbf415d5996b2e4b3e7428d8f484b6cad325ebddf8aa61ff95c44",
-      "lines": 1315
+      "sha256": "d63359153495e884eecaf088ab0d78dc91930db18a15af22e80c0859c9f06919",
+      "lines": 1319
     },
     {
       "path": "backend/app/services/alerting.py",
@@ -715,8 +715,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "sha256": "badaaeda6d29134715f1871c8c18d522edbb8f377c63b0d0e6a59048c1648fe2",
-      "lines": 1608
+      "sha256": "f6c546c0f16a75f87c43e25d7611d9df4162b4f3064bc9f8f8ddcc7b9fe82eb6",
+      "lines": 1733
     },
     {
       "path": "backend/app/services/analytics_period.py",
@@ -960,8 +960,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "sha256": "fbc801e44efcbe801a2b09e118c5f3abc0376bae3a24d0ca053b14cd7b672136",
-      "lines": 581
+      "sha256": "ae0c75245e659c32091504f9f1818150e50bb3318d5bd1acd05ccd73bd05837a",
+      "lines": 564
     },
     {
       "path": "backend/app/services/forecast_strategies/__init__.py",
@@ -1365,8 +1365,8 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "df953ece04b3b0995c69fc42f59cc57d80cffe9bcef4c767a3c001fcb2f9c755",
-      "lines": 656
+      "sha256": "6ed5c3a5db6c2877449da3f3195f2fdd25a20743ec3d15c781d3dbd4b9ca84e1",
+      "lines": 652
     },
     {
       "path": "backend/app/services/seo_country_figures.py",
@@ -1385,8 +1385,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "sha256": "8a13bcf9c559221c39662fbe09232456be61d07d7c91ea5f2ea47025b1a8ee88",
-      "lines": 136
+      "sha256": "208ce5e8c56863e7dc5d7d079d8ad413b5051a7a6efbf57da1ece33f9f4a52ec",
+      "lines": 127
     },
     {
       "path": "backend/app/services/seo_i18n.py",
@@ -1415,7 +1415,7 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "d82b3c1873a8e0494db3cb3f787482beced664bbd424eacd36283afe3cf7edeb",
+      "sha256": "c6a9681e2ff78eab008c27fac8f7c0ae51765ee445d38040de81891f0ab257a4",
       "lines": 3983
     },
     {
@@ -1745,8 +1745,8 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "sha256": "5ea5f02add55d6a0a35533a5214c8794c8f342426e36389c6719406abad6b1f6",
-      "lines": 86
+      "sha256": "3ead6dc0e5a2addb866e5a815ef8c579675e14a3dd3169f7c2db084ebf6e587b",
+      "lines": 84
     },
     {
       "path": "backend/app/services/world_subnational_ingest.py",
@@ -1815,8 +1815,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "sha256": "87d77311b5ef0d973641eeeb3a3ccf5ea8eaac28993dd720e769c9477b777a87",
-      "lines": 349
+      "sha256": "87ec34eb3930d4c7abc145553875a25400ef855bbc2bae5a78b6daede83295b9",
+      "lines": 367
     },
     {
       "path": "backend/app/tasks/scheduler.py",
@@ -8712,7 +8712,7 @@
         "response_model": "ForecastResponse"
       },
       "handler_line": 63,
-      "handler_end_line": 132,
+      "handler_end_line": 130,
       "parameters": [
         {
           "name": "code",
@@ -8729,8 +8729,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 133,
+      "end_line": 133,
       "owner": "get_inflation",
       "conditions": [],
       "handler": "app.api.forecasts.get_inflation",
@@ -8743,8 +8743,8 @@
       "options": {
         "response_model": "InflationResponse"
       },
-      "handler_line": 136,
-      "handler_end_line": 266,
+      "handler_line": 134,
+      "handler_end_line": 248,
       "parameters": [
         {
           "name": "code",
@@ -12603,7 +12603,7 @@
       ],
       "options": {},
       "handler_line": 2159,
-      "handler_end_line": 2364,
+      "handler_end_line": 2359,
       "parameters": [
         {
           "name": "slug",
@@ -12645,8 +12645,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2367,
-      "end_line": 2367,
+      "line": 2362,
+      "end_line": 2362,
       "owner": "search_world",
       "conditions": [],
       "handler": "app.api.world.search_world",
@@ -12657,8 +12657,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2368,
-      "handler_end_line": 2543,
+      "handler_line": 2363,
+      "handler_end_line": 2538,
       "parameters": [
         {
           "name": "q",
@@ -28630,8 +28630,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 131,
-      "end_line": 131,
+      "line": 129,
+      "end_line": 129,
       "owner": "get_forecast",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -28639,8 +28639,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 246,
+      "end_line": 246,
       "owner": "get_inflation",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -30571,8 +30571,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1487,
-      "end_line": 1487,
+      "line": 1612,
+      "end_line": 1612,
       "owner": "mart_ch_slices_of_day",
       "conditions": [],
       "name": "clickhouse_enabled",
@@ -32372,8 +32372,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 286,
+      "end_line": 286,
       "owner": "behavior_retention_job",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -32390,8 +32390,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 268,
+      "end_line": 268,
       "owner": "webmaster_queries_daily_job",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -32399,8 +32399,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 319,
+      "end_line": 319,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -32408,8 +32408,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 319,
+      "end_line": 319,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -32417,8 +32417,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 345,
+      "end_line": 345,
       "owner": "analytics_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -32426,8 +32426,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 236,
+      "end_line": 236,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "analytics_enabled",
@@ -32435,8 +32435,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 236,
+      "end_line": 236,
       "owner": "acquisition_daily_job",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -32444,8 +32444,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 288,
-      "end_line": 288,
+      "line": 302,
+      "end_line": 302,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -32453,8 +32453,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 288,
-      "end_line": 288,
+      "line": 302,
+      "end_line": 302,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -60242,7 +60242,7 @@
     {
       "path": "backend/app/data/i18n/seo_en.py",
       "line": 268,
-      "end_line": 723,
+      "end_line": 720,
       "owner": "<module>",
       "conditions": [],
       "name": "PAGE_META_EN",
@@ -60282,10 +60282,10 @@
         },
         {
           "key": "'methodology'",
-          "expression": "PageSeo(slug='methodology', path='/methodology', title='Forecast methodology for economic indicators — Forecast Economy', description='How forecasts of economic indicators are built: series preparation, historical validation, statistical models, intervals, updates, and limitations.', h1='Forecast me",
+          "expression": "PageSeo(slug='methodology', path='/methodology', title='Forecast methodology for economic indicators — Forecast Economy', description='How forecasts of economic indicators are built: series preparation, historical validation, statistical models, updates, and limitations.', h1='Forecast methodology',",
           "expression_truncated": true,
-          "expression_chars": 4032,
-          "ast_sha256": "92fdf3dabf5d7a0aaa3ccb7f6a126d971bac1528286b43581601111b8966f316"
+          "expression_chars": 3911,
+          "ast_sha256": "9b27492be83dd8ddaeafd9ef900d426f8bd49b9031ef75161dc4a92abd54e5af"
         },
         {
           "key": "'privacy'",
@@ -60310,10 +60310,10 @@
         },
         {
           "key": "'forecasts'",
-          "expression": "PageSeo(slug='forecasts', path='/forecasts', title='Economic forecasts one year ahead: inflation, GDP, unemployment', description='Platform forecasts one year ahead for Russia and other countries: prices, GDP, unemployment, rates, wages. Built from official data, with the range in which the indicato",
+          "expression": "PageSeo(slug='forecasts', path='/forecasts', title='Economic forecasts one year ahead: inflation, GDP, unemployment', description='Platform forecasts one year ahead for Russia and other countries: prices, GDP, unemployment, rates, wages. Built from official data: the value now and the value expected",
           "expression_truncated": true,
-          "expression_chars": 1604,
-          "ast_sha256": "a18ab87cc08456105e0cfd86e38c3aee941dd58bc3471b864b120a8245fc91c3"
+          "expression_chars": 1490,
+          "ast_sha256": "e65f75bdd94bcb37db802af6bfef0277742aae843909bad3e7c19952fd8ac52e"
         },
         {
           "key": "'calculator'",
@@ -60374,14 +60374,14 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — official macroeconomic indicators by country', description='Official macroeconomic indicators from national statistical offices, central banks, Eurostat, and the IMF: charts, tables, comparisons, and forecasts.', h1='Country economies in one place', intro='Forecast Economy collects macroeconomic indicators for countries from national statistical agencies, central banks, Eurostat, and the IMF. Data come only from official primary sources and are shown as charts, tables, comparisons, and forecasts. Viewing is open to everyone; downloads require free registration.', keywords='country macroeconomic indicators, country statistics, GDP, inflation, unemployment, interest rates, Eurostat, IMF, Bureau of Labor Statistics, Federal Reserve, official statistics, economic forecasts', links=((paths.country('united-states'), 'United States'), (paths.indicator('united-states', 'us-cpi-all'), 'Consumer Price Index'), (paths.indicator('united-states', 'us-unemployment-rate'), 'Unemployment rate'), ('/world/rating/gdp-usd', 'Country rankings'), ('/compare', 'Compare indicators'), ('/about', 'About')), blocks=(SeoBlock('About the platform', 'The platform provides country indicators from official national and international sources. Cards show history, view modes, tables, and comparable series; forecasts appear only where the model has passed a quality check.'), SeoBlock('Data sources', 'Official primary sources only: Eurostat, the IMF, the U.S. Bureau of Labor Statistics, the Bureau of Economic Analysis, the Federal Reserve, and national statistical offices and central banks.'))), 'about': PageSeo(slug='about', path='/about', title='About Forecast Economy', description='Analytics platform for official economic data by country: charts, tables, comparisons, and forecasts from national statistical offices, central banks, Eurostat, and the IMF.', h1='About Forecast Economy', intro='Forecast Economy is an analytics project for",
       "expression_truncated": true,
-      "expression_chars": 15531,
-      "ast_sha256": "43d438a65ece7a0909877dadb46d20202357cb32d79b1d9a164ca12d27088970",
+      "expression_chars": 15296,
+      "ast_sha256": "a0c9d532510395ef17c33103d9fcc72522d2a150fc4c8ca62998e838a5a1dab0",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 731,
-      "end_line": 738,
+      "line": 728,
+      "end_line": 735,
       "owner": "<module>",
       "conditions": [],
       "name": "HOME_TEMPLATES_EN",
@@ -60447,8 +60447,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 745,
-      "end_line": 749,
+      "line": 742,
+      "end_line": 746,
       "owner": "<module>",
       "conditions": [],
       "name": "PAGE_TEMPLATES_EN",
@@ -60490,8 +60490,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 759,
-      "end_line": 933,
+      "line": 756,
+      "end_line": 930,
       "owner": "<module>",
       "conditions": [],
       "name": "WORLD_TEMPLATES_EN",
@@ -61221,8 +61221,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 950,
-      "end_line": 991,
+      "line": 947,
+      "end_line": 988,
       "owner": "<module>",
       "conditions": [],
       "name": "TODAY_SPECS_EN",
@@ -61320,8 +61320,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 993,
-      "end_line": 1079,
+      "line": 990,
+      "end_line": 1076,
       "owner": "<module>",
       "conditions": [],
       "name": "TODAY_TEMPLATES_EN",
@@ -61715,8 +61715,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1085,
-      "end_line": 1140,
+      "line": 1082,
+      "end_line": 1137,
       "owner": "<module>",
       "conditions": [],
       "name": "CALENDAR_TEMPLATES_EN",
@@ -61934,8 +61934,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1147,
-      "end_line": 1441,
+      "line": 1144,
+      "end_line": 1438,
       "owner": "<module>",
       "conditions": [],
       "name": "REGIONAL_TEMPLATES_EN",
@@ -63177,8 +63177,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1447,
-      "end_line": 1538,
+      "line": 1444,
+      "end_line": 1535,
       "owner": "<module>",
       "conditions": [],
       "name": "YEAR_TEMPLATES_EN",
@@ -63748,8 +63748,8 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "line": 1544,
-      "end_line": 1617,
+      "line": 1541,
+      "end_line": 1614,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_TEMPLATES_EN",
@@ -72202,6 +72202,57 @@
       "expression_truncated": false,
       "expression_chars": 471,
       "ast_sha256": "5f44254bffdc8913ee0c7aa5cb932eeaed188d61b2f4f5364493b3ded451a48f",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1302,
+      "end_line": 1302,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "PWA_INSTALL_EVENTS",
+      "symbol": "app.services.analytics_marts.PWA_INSTALL_EVENTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('pwa_installed', 'pwa_install_native_accepted')",
+      "expression_truncated": false,
+      "expression_chars": 48,
+      "ast_sha256": "1c6774c56b253246cf754f7307ef8c2e130d24a1845015269089fe61d68630bd",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1303,
+      "end_line": 1303,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "PWA_DISMISS_EVENTS",
+      "symbol": "app.services.analytics_marts.PWA_DISMISS_EVENTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('pwa_install_prompt_dismiss', 'pwa_install_native_dismissed')",
+      "expression_truncated": false,
+      "expression_chars": 62,
+      "ast_sha256": "6bdb5a8127f3da3b05791bbafce210350336145d61460099e9364825eb76403b",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1305,
+      "end_line": 1308,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_PWA_EVENTS",
+      "symbol": "app.services.analytics_marts._PWA_EVENTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('pwa_install_prompt_view', 'pwa_install_prompt_accept', 'pwa_ios_hint_view', 'pwa_install_entry_click', PWA_LAUNCH_EVENT, *PWA_INSTALL_EVENTS, *PWA_DISMISS_EVENTS)",
+      "expression_truncated": false,
+      "expression_chars": 164,
+      "ast_sha256": "bd80c7ff3657dcb4a8bee696fb29e4d3bb1b2232e35fd0daa7bc02367636bec5",
       "runtime_expansion": false
     },
     {
@@ -86444,7 +86495,7 @@
     {
       "path": "backend/app/services/seo_content.py",
       "line": 260,
-      "end_line": 649,
+      "end_line": 645,
       "owner": "<module>",
       "conditions": [],
       "name": "PAGE_META",
@@ -86484,10 +86535,10 @@
         },
         {
           "key": "'methodology'",
-          "expression": "PageSeo(slug='methodology', path='/methodology', title='Методология прогнозирования экономических показателей — Forecast Economy', description='Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, интервалы, обнов",
+          "expression": "PageSeo(slug='methodology', path='/methodology', title='Методология прогнозирования экономических показателей — Forecast Economy', description='Как рассчитываются прогнозы экономических показателей России и других стран: подготовка ряда, историческая проверка, статистические модели, обновление и огр",
           "expression_truncated": true,
-          "expression_chars": 4156,
-          "ast_sha256": "ee323f94f5f6c163413027f4e603af7996180d68165759836aa81245adf5fc68"
+          "expression_chars": 4014,
+          "ast_sha256": "e6ee2418d4ef0b9de13fb13745967cf2babc8a057a8e84c7c479678626ff3ec9"
         },
         {
           "key": "'privacy'",
@@ -86512,10 +86563,10 @@
         },
         {
           "key": "'forecasts'",
-          "expression": "PageSeo(slug='forecasts', path='/forecasts', title='Прогнозы экономики на год вперёд: инфляция, ВВП, безработица', description='Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным, с коридором, в котором показатель скорее ",
+          "expression": "PageSeo(slug='forecasts', path='/forecasts', title='Прогнозы экономики на год вперёд: инфляция, ВВП, безработица', description='Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным: сколько сейчас и какое значение ожидается",
           "expression_truncated": true,
-          "expression_chars": 1586,
-          "ast_sha256": "49298b9c46f82c55ba4e4ed7d12a2f5e967800011a2806a13027b9430fdbfb08"
+          "expression_chars": 1487,
+          "ast_sha256": "aa9f12f511748ba7d648514edcd0b175eba5f66129cbd0d8ad770aaaadd6e414"
         },
         {
           "key": "'calculator'",
@@ -86576,14 +86627,14 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — макроэкономические индикаторы стран и России', description='Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.', h1='Экономика стран — в одном месте', intro='Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.', keywords='макроэкономические показатели стран, статистика по странам, экономика России, макроэкономика России, ВВП России, инфляция в России, ИПЦ, ключевая ставка ЦБ, курс доллара, курс евро, курсы валют ЦБ, Росстат данные, Банк России, Евростат, прогноз инфляции, экономические данные России, статистика России, статистика стран', links=((paths.today(), 'Экономика сегодня: курсы, ставка, инфляция'), (paths.russia_indicator('cpi'), 'Индекс потребительских цен'), (paths.region_hub(), 'Регионы России'), (paths.world_rating('gdp-usd'), 'Рейтинг стран'), (paths.demographics(), 'Возрастная структура населения'), ('/calculator', 'Калькулятор инфляции'), ('/compare', 'Сравнение индикаторов'), (paths.calendar(), 'Календарь публикаций')), blocks=(SeoBlock('О платформе', 'Официальные показатели по странам мира, по России и её регионам, а также по штатам США. К каждому показателю — график, таблица и вся история; прогноз показываем только там, где ему можно доверять.'), SeoBlock('Источники данных', 'Только официальные первоисточники: Евростат, МВФ, национальные статистические ведомства подключённых стран, Бюро экономического анализа США, Бюро трудовой статистики США, Росстат, Банк России и Минфин России.'))), 'about': PageSeo(slug='about', path='/about', title='О пр",
       "expression_truncated": true,
-      "expression_chars": 16272,
-      "ast_sha256": "5314870c8dcb38d60100c46108517d43d413ec9000863f658bcbc110865c333a",
+      "expression_chars": 16031,
+      "ast_sha256": "c1d85f9064ef3340c178ece686f029af35ffab7f03f4d1403a415878a558060a",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "line": 651,
-      "end_line": 656,
+      "line": 647,
+      "end_line": 652,
       "owner": "<module>",
       "conditions": [],
       "name": "GLOBAL_INDICATOR_BLOCKS",
@@ -87149,7 +87200,7 @@
     {
       "path": "backend/app/services/seo_forecasts.py",
       "line": 31,
-      "end_line": 56,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "_COPY",
@@ -87162,23 +87213,23 @@
       "entries": [
         {
           "key": "'ru'",
-          "expression": "{'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'range': 'Коридор', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данны",
+          "expression": "{'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данных: {source}.', 'upda",
           "expression_truncated": true,
-          "expression_chars": 347,
-          "ast_sha256": "2a32db10f7cbb058c4ebd4fc1a1bf701188ca2a28abaa8ba04232dfa0d0fafa6"
+          "expression_chars": 327,
+          "ast_sha256": "5143a8b96dd446cd1bd6b678ed5d8485b29737754939ee7a35fd969d216bbf51"
         },
         {
           "key": "'en'",
-          "expression": "{'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'range': 'Range', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data so",
+          "expression": "{'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data source: {source}.', ",
           "expression_truncated": true,
-          "expression_chars": 351,
-          "ast_sha256": "4b1d97c1f921722d1fee507cdbc7a7e644899b861c1b5c11575e186b319c0455"
+          "expression_chars": 333,
+          "ast_sha256": "10331342596124390cb2fe2693fd700de4e0b76ae5b4a766136cd92e9321f87f"
         }
       ],
-      "expression": "{'ru': {'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'range': 'Коридор', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данных: {source}.', 'updated': 'Прогноз от {date}.'}, 'en': {'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'range': 'Range', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data source: {source}.', 'updated': 'Forecast of {date}.'}}",
+      "expression": "{'ru': {'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данных: {source}.', 'updated': 'Прогноз от {date}.'}, 'en': {'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data source: {source}.', 'updated': 'Forecast of {date}.'}}",
       "expression_truncated": false,
-      "expression_chars": 714,
-      "ast_sha256": "c8ac3c1c0d0f60abefa221687e18435db627b4189bc9a611ab5ee56760304be1",
+      "expression_chars": 676,
+      "ast_sha256": "48c3446bd49e5cc33d18eb5deda187988cdb7ff0925e5953088cc97d2b0bbf0c",
       "runtime_expansion": false
     },
     {
@@ -102972,8 +103023,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 131,
-      "end_line": 131,
+      "line": 129,
+      "end_line": 129,
       "owner": "get_forecast",
       "conditions": [],
       "operation": "cache_set",
@@ -102986,8 +103037,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 139,
-      "end_line": 139,
+      "line": 137,
+      "end_line": 137,
       "owner": "get_inflation",
       "conditions": [],
       "operation": "cache_get",
@@ -103000,8 +103051,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 141,
+      "end_line": 141,
       "owner": "get_inflation",
       "conditions": [],
       "operation": "execute",
@@ -103014,8 +103065,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 155,
-      "end_line": 159,
+      "line": 153,
+      "end_line": 157,
       "owner": "get_inflation",
       "conditions": [],
       "operation": "execute",
@@ -103028,8 +103079,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 174,
-      "end_line": 183,
+      "line": 172,
+      "end_line": 181,
       "owner": "get_inflation",
       "conditions": [],
       "operation": "execute",
@@ -103042,8 +103093,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 261,
-      "end_line": 265,
+      "line": 243,
+      "end_line": 247,
       "owner": "get_inflation",
       "conditions": [],
       "operation": "cache_set",
@@ -103088,8 +103139,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 191,
-      "end_line": 195,
+      "line": 189,
+      "end_line": 193,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -103104,8 +103155,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 205,
-      "end_line": 214,
+      "line": 201,
+      "end_line": 210,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -103120,8 +103171,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 219,
-      "end_line": 223,
+      "line": 215,
+      "end_line": 219,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -105983,8 +106034,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2500,
-      "end_line": 2500,
+      "line": 2495,
+      "end_line": 2495,
       "owner": "search_world",
       "conditions": [],
       "operation": "set",
@@ -106379,8 +106430,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2363,
-      "end_line": 2363,
+      "line": 2358,
+      "end_line": 2358,
       "owner": "indicator_data",
       "conditions": [],
       "operation": "cache_set",
@@ -106393,8 +106444,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2506,
-      "end_line": 2506,
+      "line": 2501,
+      "end_line": 2501,
       "owner": "search_world",
       "conditions": [],
       "operation": "add",
@@ -106818,8 +106869,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2440,
-      "end_line": 2448,
+      "line": 2435,
+      "end_line": 2443,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -107020,8 +107071,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2456,
+      "end_line": 2456,
       "owner": "search_world",
       "conditions": [],
       "operation": "execute",
@@ -107034,8 +107085,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2519,
-      "end_line": 2521,
+      "line": 2514,
+      "end_line": 2516,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -107066,8 +107117,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2470,
-      "end_line": 2475,
+      "line": 2465,
+      "end_line": 2470,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -107082,8 +107133,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2481,
-      "end_line": 2492,
+      "line": 2476,
+      "end_line": 2487,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -108783,8 +108834,8 @@
     },
     {
       "path": "backend/app/services/admin_bi.py",
-      "line": 1300,
-      "end_line": 1305,
+      "line": 1304,
+      "end_line": 1309,
       "owner": "_merge_metrika_live_today",
       "conditions": [
         "not ref.get('visits_total')"
@@ -108799,8 +108850,8 @@
     },
     {
       "path": "backend/app/services/admin_bi.py",
-      "line": 1309,
-      "end_line": 1315,
+      "line": 1313,
+      "end_line": 1319,
       "owner": "_merge_metrika_live_today",
       "conditions": [
         "not acq.get('sources')"
@@ -110215,8 +110266,22 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1449,
-      "end_line": 1449,
+      "line": 1366,
+      "end_line": 1366,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.analytics_marts.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1574,
+      "end_line": 1574,
       "owner": "mart_experiments",
       "conditions": [],
       "operation": "set",
@@ -110229,8 +110294,36 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
+      "line": 1368,
+      "end_line": 1368,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "installed_by_day[str(d)[:10]]",
+      "symbol": "app.services.analytics_marts.installed_by_day[str(d)[:10]].add",
+      "expression": "installed_by_day[str(d)[:10]].add(vk)",
+      "expression_truncated": false,
+      "expression_chars": 37,
+      "ast_sha256": "eaf0be8d56da660d39726d1807ea624f98dd01e1541852634782bec8b4073bf9"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
       "line": 1369,
       "end_line": 1369,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "installed_all",
+      "symbol": "app.services.analytics_marts.installed_all.add",
+      "expression": "installed_all.add(vk)",
+      "expression_truncated": false,
+      "expression_chars": 21,
+      "ast_sha256": "a0608036d392e5ee3828c98d585f07533305ef6a30b524104aadb9dec8ca42d6"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1494,
+      "end_line": 1494,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -110245,8 +110338,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1448,
-      "end_line": 1448,
+      "line": 1573,
+      "end_line": 1573,
       "owner": "mart_experiments",
       "conditions": [],
       "operation": "set",
@@ -110385,8 +110478,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1446,
-      "end_line": 1446,
+      "line": 1571,
+      "end_line": 1571,
       "owner": "mart_experiments",
       "conditions": [
         "exp and var"
@@ -110751,8 +110844,50 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1305,
-      "end_line": 1321,
+      "line": 1342,
+      "end_line": 1347,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.analytics_marts.db.execute",
+      "expression": "db.execute(select(day_expr, FrontendEvent.event_name, func.count(), func.count(func.distinct(vkey)), func.count(func.distinct(FrontendEvent.session_id_hash))).where(*base).group_by(day_expr, FrontendEvent.event_name))",
+      "expression_truncated": false,
+      "expression_chars": 217,
+      "ast_sha256": "87d266c1ab0e0d2276354ece4bc718147aa957290f72a609dee8305cd4c447cb"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1348,
+      "end_line": 1353,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.analytics_marts.db.execute",
+      "expression": "db.execute(select(FrontendEvent.event_name, func.count(), func.count(func.distinct(vkey)), func.count(func.distinct(FrontendEvent.session_id_hash))).where(*base).group_by(FrontendEvent.event_name))",
+      "expression_truncated": false,
+      "expression_chars": 197,
+      "ast_sha256": "ff15bd5d6b13468ac37f5d5a655404ae2e98b6b18b29dfb801f14f0c43f1ea0b"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1355,
+      "end_line": 1358,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.analytics_marts.db.execute",
+      "expression": "db.execute(select(day_expr, vkey).where(*base, FrontendEvent.event_name.in_(PWA_INSTALL_EVENTS)).distinct())",
+      "expression_truncated": false,
+      "expression_chars": 108,
+      "ast_sha256": "1f80e0662a94abd9729b03767670b6ddbbbe3b1c89641b52941a04582fb5fca1"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1430,
+      "end_line": 1446,
       "owner": "mart_people",
       "conditions": [],
       "operation": "execute",
@@ -110765,8 +110900,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1427,
-      "end_line": 1435,
+      "line": 1552,
+      "end_line": 1560,
       "owner": "mart_experiments",
       "conditions": [],
       "operation": "execute",
@@ -110779,8 +110914,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1448,
-      "end_line": 1448,
+      "line": 1573,
+      "end_line": 1573,
       "owner": "mart_experiments",
       "conditions": [],
       "operation": "set",
@@ -110793,8 +110928,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1461,
-      "end_line": 1461,
+      "line": 1586,
+      "end_line": 1586,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids",
@@ -110810,8 +110945,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1508,
-      "end_line": 1512,
+      "line": 1633,
+      "end_line": 1637,
       "owner": "mart_ad_costs",
       "conditions": [],
       "operation": "execute",
@@ -110824,8 +110959,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1541,
-      "end_line": 1550,
+      "line": 1666,
+      "end_line": 1675,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "operation": "execute",
@@ -110898,8 +111033,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1330,
-      "end_line": 1342,
+      "line": 1455,
+      "end_line": 1467,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -110914,8 +111049,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1349,
-      "end_line": 1351,
+      "line": 1474,
+      "end_line": 1476,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -110930,8 +111065,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1360,
-      "end_line": 1368,
+      "line": 1485,
+      "end_line": 1493,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -110946,8 +111081,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1451,
-      "end_line": 1458,
+      "line": 1576,
+      "end_line": 1583,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -113148,8 +113283,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 439,
+      "end_line": 439,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -113162,8 +113297,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 479,
-      "end_line": 479,
+      "line": 464,
+      "end_line": 464,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -113176,8 +113311,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 456,
-      "end_line": 456,
+      "line": 441,
+      "end_line": 441,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -113190,8 +113325,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 488,
-      "end_line": 488,
+      "line": 473,
+      "end_line": 473,
       "owner": "_world_items",
       "conditions": [],
       "operation": "add",
@@ -113204,8 +113339,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 310,
+      "end_line": 310,
       "owner": "_russia_items",
       "conditions": [],
       "operation": "execute",
@@ -113218,8 +113353,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 466,
-      "end_line": 477,
+      "line": 451,
+      "end_line": 462,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
@@ -113232,8 +113367,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 354,
-      "end_line": 363,
+      "line": 341,
+      "end_line": 350,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -113248,8 +113383,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 384,
-      "end_line": 389,
+      "line": 369,
+      "end_line": 374,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -113264,8 +113399,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 507,
-      "end_line": 512,
+      "line": 492,
+      "end_line": 497,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
@@ -113278,8 +113413,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 368,
-      "end_line": 372,
+      "line": 355,
+      "end_line": 359,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -113294,8 +113429,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 499,
-      "end_line": 503,
+      "line": 484,
+      "end_line": 488,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
@@ -125069,8 +125204,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 291,
+      "end_line": 291,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "execute",
@@ -125083,8 +125218,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 278,
-      "end_line": 278,
+      "line": 292,
+      "end_line": 292,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "commit",
@@ -125097,8 +125232,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 356,
+      "end_line": 356,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -125125,8 +125260,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 362,
+      "end_line": 362,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -125195,8 +125330,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 365,
+      "end_line": 365,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "rollback",
@@ -125209,8 +125344,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 367,
+      "end_line": 367,
       "owner": "analytics_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -125237,8 +125372,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 291,
+      "end_line": 291,
       "owner": "behavior_retention_job",
       "conditions": [],
       "operation": "delete",
@@ -135846,8 +135981,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 156,
+      "end_line": 156,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -135873,8 +136008,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 141,
+      "end_line": 141,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -135882,8 +136017,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 156,
+      "end_line": 156,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -135891,8 +136026,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 192,
+      "end_line": 192,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -135920,8 +136055,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 141,
+      "end_line": 141,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -135929,8 +136064,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 141,
+      "end_line": 141,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -135938,8 +136073,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 192,
+      "end_line": 192,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -135949,8 +136084,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 218,
+      "end_line": 218,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -135979,8 +136114,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 155,
+      "end_line": 155,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -135988,8 +136123,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 179,
+      "end_line": 179,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast.created_at",
@@ -135997,8 +136132,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 222,
-      "end_line": 222,
+      "line": 218,
+      "end_line": 218,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -136056,8 +136191,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 154,
+      "end_line": 154,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -136065,8 +136200,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 155,
+      "end_line": 155,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -136074,8 +136209,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 176,
+      "end_line": 176,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast.is_current",
@@ -136083,8 +136218,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 179,
+      "end_line": 179,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -136092,8 +136227,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 191,
+      "end_line": 191,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -136103,8 +136238,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 208,
+      "end_line": 208,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136143,8 +136278,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 175,
+      "end_line": 175,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast.indicator_id",
@@ -136152,8 +136287,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 176,
+      "end_line": 176,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -136161,8 +136296,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 177,
+      "end_line": 177,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast.model_name.like",
@@ -136170,8 +136305,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 190,
+      "end_line": 190,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -136181,8 +136316,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 191,
+      "end_line": 191,
       "owner": "get_inflation",
       "conditions": [
         "infl_forecast"
@@ -136192,8 +136327,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 205,
+      "end_line": 205,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136203,8 +136338,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 212,
-      "end_line": 212,
+      "line": 208,
+      "end_line": 208,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136214,8 +136349,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 217,
+      "end_line": 217,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -136264,6 +136399,15 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
+      "line": 173,
+      "end_line": 173,
+      "owner": "get_inflation",
+      "conditions": [],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/api/forecasts.py",
       "line": 175,
       "end_line": 175,
       "owner": "get_inflation",
@@ -136277,22 +136421,13 @@
       "end_line": 177,
       "owner": "get_inflation",
       "conditions": [],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/api/forecasts.py",
-      "line": 179,
-      "end_line": 179,
-      "owner": "get_inflation",
-      "conditions": [],
       "symbol": "app.models.Forecast.model_name",
       "expression": "Forecast.model_name"
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 204,
+      "end_line": 204,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136302,8 +136437,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 209,
-      "end_line": 209,
+      "line": 205,
+      "end_line": 205,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136313,8 +136448,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 216,
+      "end_line": 216,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -136325,8 +136460,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 221,
-      "end_line": 221,
+      "line": 217,
+      "end_line": 217,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)",
@@ -136357,8 +136492,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 177,
+      "end_line": 177,
       "owner": "get_inflation",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -136366,30 +136501,30 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
+      "line": 202,
+      "end_line": 202,
+      "owner": "get_inflation",
+      "conditions": [
+        "not (infl_forecast)"
+      ],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/api/forecasts.py",
+      "line": 204,
+      "end_line": 204,
+      "owner": "get_inflation",
+      "conditions": [
+        "not (infl_forecast)"
+      ],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/api/forecasts.py",
       "line": 206,
       "end_line": 206,
-      "owner": "get_inflation",
-      "conditions": [
-        "not (infl_forecast)"
-      ],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/api/forecasts.py",
-      "line": 208,
-      "end_line": 208,
-      "owner": "get_inflation",
-      "conditions": [
-        "not (infl_forecast)"
-      ],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/api/forecasts.py",
-      "line": 210,
-      "end_line": 210,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136408,8 +136543,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 206,
+      "end_line": 206,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -136419,8 +136554,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 210,
-      "end_line": 210,
+      "line": 206,
+      "end_line": 206,
       "owner": "get_inflation",
       "conditions": [
         "not (infl_forecast)"
@@ -144292,8 +144427,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2393,
-      "end_line": 2393,
+      "line": 2388,
+      "end_line": 2388,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.ilike",
@@ -144301,8 +144436,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2398,
-      "end_line": 2398,
+      "line": 2393,
+      "end_line": 2393,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.seo_keywords.ilike",
@@ -144438,8 +144573,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2393,
-      "end_line": 2393,
+      "line": 2388,
+      "end_line": 2388,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -144447,8 +144582,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2395,
-      "end_line": 2395,
+      "line": 2390,
+      "end_line": 2390,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru.ilike",
@@ -144456,8 +144591,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2396,
-      "end_line": 2396,
+      "line": 2391,
+      "end_line": 2391,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_en.ilike",
@@ -144465,8 +144600,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2398,
-      "end_line": 2398,
+      "line": 2393,
+      "end_line": 2393,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.seo_keywords",
@@ -144474,8 +144609,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2400,
-      "end_line": 2400,
+      "line": 2395,
+      "end_line": 2395,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru.ilike",
@@ -144483,8 +144618,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2401,
-      "end_line": 2401,
+      "line": 2396,
+      "end_line": 2396,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en.ilike",
@@ -144492,8 +144627,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2402,
-      "end_line": 2402,
+      "line": 2397,
+      "end_line": 2397,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug.ilike",
@@ -144501,8 +144636,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2403,
-      "end_line": 2403,
+      "line": 2398,
+      "end_line": 2398,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code.ilike",
@@ -144510,8 +144645,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2410,
-      "end_line": 2410,
+      "line": 2405,
+      "end_line": 2405,
       "owner": "search_world.relevance",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -144519,8 +144654,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2434,
-      "end_line": 2434,
+      "line": 2429,
+      "end_line": 2429,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -144528,8 +144663,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2516,
-      "end_line": 2516,
+      "line": 2511,
+      "end_line": 2511,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -144615,6 +144750,33 @@
     },
     {
       "path": "backend/app/api/world.py",
+      "line": 2388,
+      "end_line": 2388,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2390,
+      "end_line": 2390,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2391,
+      "end_line": 2391,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_en",
+      "expression": "WorldIndicator.name_en"
+    },
+    {
+      "path": "backend/app/api/world.py",
       "line": 2393,
       "end_line": 2393,
       "owner": "search_world",
@@ -144628,8 +144790,8 @@
       "end_line": 2395,
       "owner": "search_world",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.name_ru",
-      "expression": "WorldIndicator.name_ru"
+      "symbol": "app.models.WorldCountry.name_ru",
+      "expression": "WorldCountry.name_ru"
     },
     {
       "path": "backend/app/api/world.py",
@@ -144637,40 +144799,13 @@
       "end_line": 2396,
       "owner": "search_world",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.name_en",
-      "expression": "WorldIndicator.name_en"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2398,
-      "end_line": 2398,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2400,
-      "end_line": 2400,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.name_ru",
-      "expression": "WorldCountry.name_ru"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2401,
-      "end_line": 2401,
-      "owner": "search_world",
-      "conditions": [],
       "symbol": "app.models.WorldCountry.name_en",
       "expression": "WorldCountry.name_en"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2402,
-      "end_line": 2402,
+      "line": 2397,
+      "end_line": 2397,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -144678,8 +144813,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2403,
-      "end_line": 2403,
+      "line": 2398,
+      "end_line": 2398,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -144687,8 +144822,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2433,
-      "end_line": 2433,
+      "line": 2428,
+      "end_line": 2428,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -144696,8 +144831,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2434,
-      "end_line": 2434,
+      "line": 2429,
+      "end_line": 2429,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -144705,8 +144840,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2453,
-      "end_line": 2453,
+      "line": 2448,
+      "end_line": 2448,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -144716,8 +144851,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2462,
-      "end_line": 2462,
+      "line": 2457,
+      "end_line": 2457,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -144725,8 +144860,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2501,
-      "end_line": 2501,
+      "line": 2496,
+      "end_line": 2496,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -144803,12 +144938,30 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2395,
-      "end_line": 2395,
+      "line": 2390,
+      "end_line": 2390,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2391,
+      "end_line": 2391,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2395,
+      "end_line": 2395,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/api/world.py",
@@ -144816,13 +144969,13 @@
       "end_line": 2396,
       "owner": "search_world",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2400,
-      "end_line": 2400,
+      "line": 2397,
+      "end_line": 2397,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -144830,8 +144983,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2401,
-      "end_line": 2401,
+      "line": 2398,
+      "end_line": 2398,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -144839,26 +144992,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2402,
-      "end_line": 2402,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2403,
-      "end_line": 2403,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2434,
-      "end_line": 2434,
+      "line": 2429,
+      "end_line": 2429,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -144866,8 +145001,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2453,
-      "end_line": 2453,
+      "line": 2448,
+      "end_line": 2448,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -144877,8 +145012,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2459,
-      "end_line": 2459,
+      "line": 2454,
+      "end_line": 2454,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -145072,8 +145207,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2459,
-      "end_line": 2459,
+      "line": 2454,
+      "end_line": 2454,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -145539,8 +145674,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2446,
-      "end_line": 2446,
+      "line": 2441,
+      "end_line": 2441,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -145897,8 +146032,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2441,
-      "end_line": 2441,
+      "line": 2436,
+      "end_line": 2436,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -145908,8 +146043,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2443,
-      "end_line": 2443,
+      "line": 2438,
+      "end_line": 2438,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -145919,8 +146054,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2444,
-      "end_line": 2444,
+      "line": 2439,
+      "end_line": 2439,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -145930,8 +146065,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2446,
-      "end_line": 2446,
+      "line": 2441,
+      "end_line": 2441,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -146373,6 +146508,39 @@
     },
     {
       "path": "backend/app/api/world.py",
+      "line": 2436,
+      "end_line": 2436,
+      "owner": "search_world",
+      "conditions": [
+        "country"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2438,
+      "end_line": 2438,
+      "owner": "search_world",
+      "conditions": [
+        "country"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2439,
+      "end_line": 2439,
+      "owner": "search_world",
+      "conditions": [
+        "country"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
       "line": 2441,
       "end_line": 2441,
       "owner": "search_world",
@@ -146384,41 +146552,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2443,
-      "end_line": 2443,
-      "owner": "search_world",
-      "conditions": [
-        "country"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2444,
-      "end_line": 2444,
-      "owner": "search_world",
-      "conditions": [
-        "country"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2446,
-      "end_line": 2446,
-      "owner": "search_world",
-      "conditions": [
-        "country"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2515,
+      "end_line": 2515,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -146876,8 +147011,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2472,
-      "end_line": 2472,
+      "line": 2467,
+      "end_line": 2467,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -146887,8 +147022,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2515,
+      "end_line": 2515,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -146898,8 +147033,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2515,
+      "end_line": 2515,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -147259,8 +147394,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2471,
-      "end_line": 2471,
+      "line": 2466,
+      "end_line": 2466,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -147270,8 +147405,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2472,
-      "end_line": 2472,
+      "line": 2467,
+      "end_line": 2467,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -147281,8 +147416,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2515,
+      "end_line": 2515,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -147523,8 +147658,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2472,
-      "end_line": 2472,
+      "line": 2467,
+      "end_line": 2467,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -147647,8 +147782,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2490,
-      "end_line": 2490,
+      "line": 2485,
+      "end_line": 2485,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147690,8 +147825,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2490,
-      "end_line": 2490,
+      "line": 2485,
+      "end_line": 2485,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147702,8 +147837,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147714,8 +147849,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2485,
-      "end_line": 2485,
+      "line": 2480,
+      "end_line": 2480,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147726,8 +147861,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2482,
-      "end_line": 2482,
+      "line": 2477,
+      "end_line": 2477,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147738,8 +147873,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147750,8 +147885,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2485,
-      "end_line": 2485,
+      "line": 2480,
+      "end_line": 2480,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147762,8 +147897,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -147774,8 +147909,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2485,
-      "end_line": 2485,
+      "line": 2480,
+      "end_line": 2480,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -155977,8 +156112,107 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
+      "line": 1325,
+      "end_line": 1325,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1325,
+      "end_line": 1325,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1341,
+      "end_line": 1341,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1325,
+      "end_line": 1325,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1325,
+      "end_line": 1325,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
       "line": 1327,
       "end_line": 1327,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1327,
+      "end_line": 1327,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.day",
+      "expression": "ServerSession.day"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1330,
+      "end_line": 1330,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1331,
+      "end_line": 1331,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1331,
+      "end_line": 1331,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1341,
+      "end_line": 1341,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1452,
+      "end_line": 1452,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.BehaviorSession",
@@ -156008,6 +156242,96 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
+      "line": 1326,
+      "end_line": 1326,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.visitor_id_hash",
+      "expression": "ServerSession.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1327,
+      "end_line": 1327,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1327,
+      "end_line": 1327,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_bot.is_",
+      "expression": "ServerSession.is_bot.is_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_internal.is_",
+      "expression": "ServerSession.is_internal.is_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1330,
+      "end_line": 1330,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1331,
+      "end_line": 1331,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1331,
+      "end_line": 1331,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1332,
+      "end_line": 1332,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash.is_",
+      "expression": "FrontendEvent.visitor_id_hash.is_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1333,
+      "end_line": 1333,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash.notin_",
+      "expression": "FrontendEvent.visitor_id_hash.notin_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
       "line": 792,
       "end_line": 792,
       "owner": "mart_reliability",
@@ -156023,6 +156347,104 @@
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.ingested_at",
       "expression": "BehaviorEvent.ingested_at"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1326,
+      "end_line": 1326,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_bot",
+      "expression": "ServerSession.is_bot"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession.is_internal",
+      "expression": "ServerSession.is_internal"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1330,
+      "end_line": 1330,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1332,
+      "end_line": 1332,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1333,
+      "end_line": 1333,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent.user_id.is_",
+      "expression": "FrontendEvent.user_id.is_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent.user_id.notin_",
+      "expression": "FrontendEvent.user_id.notin_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1338,
+      "end_line": 1338,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash.is_",
+      "expression": "FrontendEvent.visitor_id_hash.is_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1339,
+      "end_line": 1339,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash.notin_",
+      "expression": "FrontendEvent.visitor_id_hash.notin_"
     },
     {
       "path": "backend/app/services/analytics_marts.py",
@@ -156440,8 +156862,106 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1511,
-      "end_line": 1511,
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1328,
+      "end_line": 1328,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.ServerSession",
+      "expression": "ServerSession"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1332,
+      "end_line": 1332,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1333,
+      "end_line": 1333,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1338,
+      "end_line": 1338,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1339,
+      "end_line": 1339,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent.visitor_id_hash",
+      "expression": "FrontendEvent.visitor_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1346,
+      "end_line": 1346,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1352,
+      "end_line": 1352,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1636,
+      "end_line": 1636,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.campaign",
@@ -156449,8 +156969,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1518,
-      "end_line": 1518,
+      "line": 1643,
+      "end_line": 1643,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal.day",
@@ -156458,8 +156978,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1518,
-      "end_line": 1518,
+      "line": 1643,
+      "end_line": 1643,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal.day",
@@ -156467,8 +156987,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1519,
-      "end_line": 1519,
+      "line": 1644,
+      "end_line": 1644,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal.tier",
@@ -156476,8 +156996,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1549,
-      "end_line": 1549,
+      "line": 1674,
+      "end_line": 1674,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.day",
@@ -157124,8 +157644,70 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1341,
-      "end_line": 1341,
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1336,
+      "end_line": 1336,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_users"
+      ],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1338,
+      "end_line": 1338,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1339,
+      "end_line": 1339,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "admin_visitors"
+      ],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1346,
+      "end_line": 1346,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1352,
+      "end_line": 1352,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1466,
+      "end_line": 1466,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157135,8 +157717,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1366,
-      "end_line": 1366,
+      "line": 1491,
+      "end_line": 1491,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157146,8 +157728,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1366,
-      "end_line": 1366,
+      "line": 1491,
+      "end_line": 1491,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157157,8 +157739,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1367,
-      "end_line": 1367,
+      "line": 1492,
+      "end_line": 1492,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157168,8 +157750,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1367,
-      "end_line": 1367,
+      "line": 1492,
+      "end_line": 1492,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157179,8 +157761,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1555,
+      "end_line": 1555,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -157188,8 +157770,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1431,
-      "end_line": 1431,
+      "line": 1556,
+      "end_line": 1556,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -157197,8 +157779,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1432,
-      "end_line": 1432,
+      "line": 1557,
+      "end_line": 1557,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -157206,8 +157788,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1433,
-      "end_line": 1433,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.visitor_id_hash.isnot",
@@ -157215,8 +157797,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1511,
-      "end_line": 1511,
+      "line": 1636,
+      "end_line": 1636,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -157224,8 +157806,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1518,
-      "end_line": 1518,
+      "line": 1643,
+      "end_line": 1643,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -157233,8 +157815,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1518,
-      "end_line": 1518,
+      "line": 1643,
+      "end_line": 1643,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -157242,8 +157824,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1519,
-      "end_line": 1519,
+      "line": 1644,
+      "end_line": 1644,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -157251,8 +157833,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1549,
-      "end_line": 1549,
+      "line": 1674,
+      "end_line": 1674,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -157699,8 +158281,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1341,
-      "end_line": 1341,
+      "line": 1466,
+      "end_line": 1466,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157710,8 +158292,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1350,
-      "end_line": 1350,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157721,8 +158303,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1366,
-      "end_line": 1366,
+      "line": 1491,
+      "end_line": 1491,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157732,8 +158314,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1366,
-      "end_line": 1366,
+      "line": 1491,
+      "end_line": 1491,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157743,8 +158325,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1367,
-      "end_line": 1367,
+      "line": 1492,
+      "end_line": 1492,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157754,8 +158336,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1367,
-      "end_line": 1367,
+      "line": 1492,
+      "end_line": 1492,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -157765,8 +158347,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1553,
+      "end_line": 1553,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.visitor_id_hash",
@@ -157774,8 +158356,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1553,
+      "end_line": 1553,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -157783,8 +158365,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1555,
+      "end_line": 1555,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -157792,8 +158374,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1431,
-      "end_line": 1431,
+      "line": 1556,
+      "end_line": 1556,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -157801,8 +158383,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1432,
-      "end_line": 1432,
+      "line": 1557,
+      "end_line": 1557,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -157810,8 +158392,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1433,
-      "end_line": 1433,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.visitor_id_hash",
@@ -157819,8 +158401,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1517,
-      "end_line": 1517,
+      "line": 1642,
+      "end_line": 1642,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal.count",
@@ -158381,8 +158963,17 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1350,
-      "end_line": 1350,
+      "line": 1357,
+      "end_line": 1357,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name.in_",
+      "expression": "FrontendEvent.event_name.in_"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1475,
+      "end_line": 1475,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -158392,8 +158983,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1350,
-      "end_line": 1350,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -158403,8 +158994,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1553,
+      "end_line": 1553,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -158412,8 +159003,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1428,
-      "end_line": 1428,
+      "line": 1553,
+      "end_line": 1553,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -158421,8 +159012,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1433,
-      "end_line": 1433,
+      "line": 1558,
+      "end_line": 1558,
       "owner": "mart_experiments",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -158430,8 +159021,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1510,
-      "end_line": 1510,
+      "line": 1635,
+      "end_line": 1635,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.day",
@@ -158439,8 +159030,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1510,
-      "end_line": 1510,
+      "line": 1635,
+      "end_line": 1635,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.day",
@@ -158448,8 +159039,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1517,
-      "end_line": 1517,
+      "line": 1642,
+      "end_line": 1642,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DailyGoal",
@@ -158457,8 +159048,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.day",
@@ -158466,8 +159057,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.day",
@@ -159066,8 +159657,35 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1318,
-      "end_line": 1318,
+      "line": 1343,
+      "end_line": 1343,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1349,
+      "end_line": 1349,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1357,
+      "end_line": 1357,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1443,
+      "end_line": 1443,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -159075,8 +159693,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1340,
-      "end_line": 1340,
+      "line": 1465,
+      "end_line": 1465,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159086,8 +159704,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1350,
-      "end_line": 1350,
+      "line": 1475,
+      "end_line": 1475,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159097,8 +159715,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1363,
-      "end_line": 1363,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159108,8 +159726,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1363,
-      "end_line": 1363,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159119,8 +159737,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1454,
-      "end_line": 1454,
+      "line": 1579,
+      "end_line": 1579,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159130,8 +159748,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1455,
-      "end_line": 1455,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159141,8 +159759,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1456,
-      "end_line": 1456,
+      "line": 1581,
+      "end_line": 1581,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159152,8 +159770,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.campaign",
@@ -159161,8 +159779,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1510,
-      "end_line": 1510,
+      "line": 1635,
+      "end_line": 1635,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -159170,8 +159788,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1510,
-      "end_line": 1510,
+      "line": 1635,
+      "end_line": 1635,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -159179,8 +159797,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1543,
-      "end_line": 1543,
+      "line": 1668,
+      "end_line": 1668,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.day",
@@ -159188,8 +159806,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1544,
-      "end_line": 1544,
+      "line": 1669,
+      "end_line": 1669,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.shows",
@@ -159197,8 +159815,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1545,
-      "end_line": 1545,
+      "line": 1670,
+      "end_line": 1670,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.hits",
@@ -159206,8 +159824,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1546,
-      "end_line": 1546,
+      "line": 1671,
+      "end_line": 1671,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue.revenue_rub",
@@ -159215,8 +159833,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -159224,8 +159842,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1673,
+      "end_line": 1673,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -159737,8 +160355,35 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1318,
-      "end_line": 1318,
+      "line": 1343,
+      "end_line": 1343,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1349,
+      "end_line": 1349,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1357,
+      "end_line": 1357,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1443,
+      "end_line": 1443,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -159746,8 +160391,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1340,
-      "end_line": 1340,
+      "line": 1465,
+      "end_line": 1465,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159757,8 +160402,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1361,
-      "end_line": 1361,
+      "line": 1486,
+      "end_line": 1486,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159768,8 +160413,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1361,
-      "end_line": 1361,
+      "line": 1486,
+      "end_line": 1486,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159779,8 +160424,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1362,
-      "end_line": 1362,
+      "line": 1487,
+      "end_line": 1487,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159790,8 +160435,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1362,
-      "end_line": 1362,
+      "line": 1487,
+      "end_line": 1487,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159801,8 +160446,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1363,
-      "end_line": 1363,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159812,8 +160457,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1363,
-      "end_line": 1363,
+      "line": 1488,
+      "end_line": 1488,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159823,8 +160468,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1364,
-      "end_line": 1364,
+      "line": 1489,
+      "end_line": 1489,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159834,8 +160479,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1490,
+      "end_line": 1490,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -159845,8 +160490,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1452,
-      "end_line": 1452,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159856,8 +160501,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1452,
-      "end_line": 1452,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159867,8 +160512,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1454,
-      "end_line": 1454,
+      "line": 1579,
+      "end_line": 1579,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159878,8 +160523,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1455,
-      "end_line": 1455,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159889,8 +160534,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1456,
-      "end_line": 1456,
+      "line": 1581,
+      "end_line": 1581,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -159900,8 +160545,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -159909,8 +160554,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.cost_rub",
@@ -159918,8 +160563,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost.clicks",
@@ -159927,8 +160572,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1543,
-      "end_line": 1543,
+      "line": 1668,
+      "end_line": 1668,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -159936,8 +160581,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1544,
-      "end_line": 1544,
+      "line": 1669,
+      "end_line": 1669,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -159945,8 +160590,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1545,
-      "end_line": 1545,
+      "line": 1670,
+      "end_line": 1670,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -159954,8 +160599,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1546,
-      "end_line": 1546,
+      "line": 1671,
+      "end_line": 1671,
       "owner": "mart_partner_revenue",
       "conditions": [],
       "symbol": "app.models.PartnerRevenue",
@@ -160239,8 +160884,26 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1332,
-      "end_line": 1332,
+      "line": 1345,
+      "end_line": 1345,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1351,
+      "end_line": 1351,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.session_id_hash",
+      "expression": "FrontendEvent.session_id_hash"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1457,
+      "end_line": 1457,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160250,8 +160913,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1333,
-      "end_line": 1333,
+      "line": 1458,
+      "end_line": 1458,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160261,8 +160924,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1334,
-      "end_line": 1334,
+      "line": 1459,
+      "end_line": 1459,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160272,8 +160935,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1335,
-      "end_line": 1335,
+      "line": 1460,
+      "end_line": 1460,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160283,8 +160946,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1336,
-      "end_line": 1336,
+      "line": 1461,
+      "end_line": 1461,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160294,8 +160957,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1337,
-      "end_line": 1337,
+      "line": 1462,
+      "end_line": 1462,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160305,8 +160968,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1338,
-      "end_line": 1338,
+      "line": 1463,
+      "end_line": 1463,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160316,8 +160979,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1339,
-      "end_line": 1339,
+      "line": 1464,
+      "end_line": 1464,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160327,8 +160990,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1340,
-      "end_line": 1340,
+      "line": 1465,
+      "end_line": 1465,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160338,8 +161001,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1361,
-      "end_line": 1361,
+      "line": 1486,
+      "end_line": 1486,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160349,8 +161012,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1361,
-      "end_line": 1361,
+      "line": 1486,
+      "end_line": 1486,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160360,8 +161023,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1362,
-      "end_line": 1362,
+      "line": 1487,
+      "end_line": 1487,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160371,8 +161034,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1362,
-      "end_line": 1362,
+      "line": 1487,
+      "end_line": 1487,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160382,8 +161045,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1364,
-      "end_line": 1364,
+      "line": 1489,
+      "end_line": 1489,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160393,8 +161056,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1490,
+      "end_line": 1490,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160404,8 +161067,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1452,
-      "end_line": 1452,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -160415,8 +161078,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1452,
-      "end_line": 1452,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -160426,8 +161089,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1456,
-      "end_line": 1456,
+      "line": 1581,
+      "end_line": 1581,
       "owner": "mart_experiments",
       "conditions": [
         "all_vids"
@@ -160437,8 +161100,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -160446,8 +161109,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1509,
-      "end_line": 1509,
+      "line": 1634,
+      "end_line": 1634,
       "owner": "mart_ad_costs",
       "conditions": [],
       "symbol": "app.models.DirectCost",
@@ -160625,8 +161288,26 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1316,
-      "end_line": 1316,
+      "line": 1345,
+      "end_line": 1345,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1351,
+      "end_line": 1351,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1441,
+      "end_line": 1441,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -160634,8 +161315,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1316,
-      "end_line": 1316,
+      "line": 1441,
+      "end_line": 1441,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.day",
@@ -160643,8 +161324,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot.is_",
@@ -160652,8 +161333,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal.is_",
@@ -160661,8 +161342,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1331,
-      "end_line": 1331,
+      "line": 1456,
+      "end_line": 1456,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160672,8 +161353,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1332,
-      "end_line": 1332,
+      "line": 1457,
+      "end_line": 1457,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160683,8 +161364,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1333,
-      "end_line": 1333,
+      "line": 1458,
+      "end_line": 1458,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160694,8 +161375,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1334,
-      "end_line": 1334,
+      "line": 1459,
+      "end_line": 1459,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160705,8 +161386,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1335,
-      "end_line": 1335,
+      "line": 1460,
+      "end_line": 1460,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160716,8 +161397,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1336,
-      "end_line": 1336,
+      "line": 1461,
+      "end_line": 1461,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160727,8 +161408,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1337,
-      "end_line": 1337,
+      "line": 1462,
+      "end_line": 1462,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160738,8 +161419,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1338,
-      "end_line": 1338,
+      "line": 1463,
+      "end_line": 1463,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160749,8 +161430,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1339,
-      "end_line": 1339,
+      "line": 1464,
+      "end_line": 1464,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160760,8 +161441,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1364,
-      "end_line": 1364,
+      "line": 1489,
+      "end_line": 1489,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160771,8 +161452,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1490,
+      "end_line": 1490,
       "owner": "mart_people",
       "conditions": [
         "visitor_ids"
@@ -160991,8 +161672,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1307,
-      "end_line": 1307,
+      "line": 1432,
+      "end_line": 1432,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.visitor_id_hash",
@@ -161000,8 +161681,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1316,
-      "end_line": 1316,
+      "line": 1441,
+      "end_line": 1441,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161009,8 +161690,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1316,
-      "end_line": 1316,
+      "line": 1441,
+      "end_line": 1441,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161018,8 +161699,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_bot",
@@ -161027,8 +161708,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.is_internal",
@@ -161189,8 +161870,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1307,
-      "end_line": 1307,
+      "line": 1432,
+      "end_line": 1432,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161198,8 +161879,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161207,8 +161888,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1317,
-      "end_line": 1317,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161288,8 +161969,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1434,
+      "end_line": 1434,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.pageviews",
@@ -161297,8 +161978,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1310,
-      "end_line": 1310,
+      "line": 1435,
+      "end_line": 1435,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.active_ms",
@@ -161306,8 +161987,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1311,
-      "end_line": 1311,
+      "line": 1436,
+      "end_line": 1436,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.micro_goals",
@@ -161315,8 +161996,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1312,
-      "end_line": 1312,
+      "line": 1437,
+      "end_line": 1437,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.macro_goals",
@@ -161324,8 +162005,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1313,
-      "end_line": 1313,
+      "line": 1438,
+      "end_line": 1438,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.ended_at",
@@ -161333,8 +162014,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1314,
-      "end_line": 1314,
+      "line": 1439,
+      "end_line": 1439,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession.started_at",
@@ -161351,8 +162032,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1309,
-      "end_line": 1309,
+      "line": 1434,
+      "end_line": 1434,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161360,8 +162041,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1310,
-      "end_line": 1310,
+      "line": 1435,
+      "end_line": 1435,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161369,8 +162050,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1311,
-      "end_line": 1311,
+      "line": 1436,
+      "end_line": 1436,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161378,8 +162059,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1312,
-      "end_line": 1312,
+      "line": 1437,
+      "end_line": 1437,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161387,8 +162068,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1313,
-      "end_line": 1313,
+      "line": 1438,
+      "end_line": 1438,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -161396,8 +162077,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1314,
-      "end_line": 1314,
+      "line": 1439,
+      "end_line": 1439,
       "owner": "mart_people",
       "conditions": [],
       "symbol": "app.models.ServerSession",
@@ -169724,8 +170405,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 445,
+      "end_line": 445,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -169735,8 +170416,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 447,
+      "end_line": 447,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -169746,8 +170427,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 445,
+      "end_line": 445,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -169757,8 +170438,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 447,
+      "end_line": 447,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -169768,8 +170449,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 445,
+      "end_line": 445,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -169779,8 +170460,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 447,
+      "end_line": 447,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -169790,8 +170471,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 310,
+      "end_line": 310,
       "owner": "_russia_items",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -169799,8 +170480,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at.desc",
@@ -169808,8 +170489,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 310,
+      "end_line": 310,
       "owner": "_russia_items",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -169817,8 +170498,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 310,
+      "end_line": 310,
       "owner": "_russia_items",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -169826,8 +170507,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 456,
+      "end_line": 456,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.is_current",
@@ -169835,8 +170516,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 458,
+      "end_line": 458,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -169844,8 +170525,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at",
@@ -169853,8 +170534,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 358,
+      "end_line": 358,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -169864,8 +170545,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 456,
+      "end_line": 456,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -169873,8 +170554,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 457,
+      "end_line": 457,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.gate_status.in_",
@@ -169882,8 +170563,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 458,
+      "end_line": 458,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -169891,8 +170572,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 476,
-      "end_line": 476,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -169900,8 +170581,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 487,
+      "end_line": 487,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue.date",
@@ -169909,8 +170590,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 348,
+      "end_line": 348,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -169920,8 +170601,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 358,
+      "end_line": 358,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -169931,8 +170612,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 372,
+      "end_line": 372,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -169942,8 +170623,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -169951,8 +170632,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 457,
+      "end_line": 457,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.gate_status",
@@ -169960,8 +170641,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 487,
+      "end_line": 487,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue",
@@ -169969,8 +170650,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 495,
+      "end_line": 495,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date.desc",
@@ -169978,8 +170659,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 358,
-      "end_line": 358,
+      "line": 345,
+      "end_line": 345,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -169989,8 +170670,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 348,
+      "end_line": 348,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170000,8 +170681,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 372,
+      "end_line": 372,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170011,8 +170692,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -170020,8 +170701,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -170029,8 +170710,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 457,
+      "end_line": 457,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -170038,8 +170719,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 495,
+      "end_line": 495,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -170047,8 +170728,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 344,
+      "end_line": 344,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170058,95 +170739,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 358,
-      "end_line": 358,
-      "owner": "_russia_items",
-      "conditions": [
-        "not (spec['kind'] == 'inflation12')"
-      ],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 370,
-      "end_line": 370,
-      "owner": "_russia_items",
-      "conditions": [
-        "not (spec['kind'] == 'inflation12')"
-      ],
-      "symbol": "app.models.ForecastValue.forecast_id",
-      "expression": "ForecastValue.forecast_id"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 386,
-      "end_line": 386,
-      "owner": "_russia_items",
-      "conditions": [
-        "not (spec['kind'] == 'inflation12')"
-      ],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 468,
-      "end_line": 468,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldForecastValue.forecast_id",
-      "expression": "WorldForecastValue.forecast_id"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 509,
-      "end_line": 509,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 510,
-      "end_line": 510,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 345,
+      "end_line": 345,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170162,13 +170756,100 @@
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
       ],
+      "symbol": "app.models.ForecastValue.forecast_id",
+      "expression": "ForecastValue.forecast_id"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 371,
+      "end_line": 371,
+      "owner": "_russia_items",
+      "conditions": [
+        "not (spec['kind'] == 'inflation12')"
+      ],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 453,
+      "end_line": 453,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 454,
+      "end_line": 454,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 486,
+      "end_line": 486,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldForecastValue.forecast_id",
+      "expression": "WorldForecastValue.forecast_id"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 494,
+      "end_line": 494,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 495,
+      "end_line": 495,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 342,
+      "end_line": 342,
+      "owner": "_russia_items",
+      "conditions": [
+        "not (spec['kind'] == 'inflation12')"
+      ],
       "symbol": "app.models.Forecast",
       "expression": "Forecast"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 344,
+      "end_line": 344,
+      "owner": "_russia_items",
+      "conditions": [
+        "not (spec['kind'] == 'inflation12')"
+      ],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 346,
+      "end_line": 346,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170178,8 +170859,19 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 369,
-      "end_line": 369,
+      "line": 356,
+      "end_line": 356,
+      "owner": "_russia_items",
+      "conditions": [
+        "not (spec['kind'] == 'inflation12')"
+      ],
+      "symbol": "app.models.ForecastValue",
+      "expression": "ForecastValue"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 357,
+      "end_line": 357,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170195,24 +170887,13 @@
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
       ],
-      "symbol": "app.models.ForecastValue",
-      "expression": "ForecastValue"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 385,
-      "end_line": 385,
-      "owner": "_russia_items",
-      "conditions": [
-        "not (spec['kind'] == 'inflation12')"
-      ],
       "symbol": "app.models.IndicatorData.date",
       "expression": "IndicatorData.date"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 370,
+      "end_line": 370,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170222,8 +170903,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 386,
-      "end_line": 386,
+      "line": 371,
+      "end_line": 371,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170233,8 +170914,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 468,
-      "end_line": 468,
+      "line": 453,
+      "end_line": 453,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.world_indicator_id",
@@ -170242,8 +170923,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 468,
-      "end_line": 468,
+      "line": 453,
+      "end_line": 453,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.id",
@@ -170251,8 +170932,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 485,
+      "end_line": 485,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue",
@@ -170260,8 +170941,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 486,
+      "end_line": 486,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue",
@@ -170269,8 +170950,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 493,
+      "end_line": 493,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -170278,8 +170959,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 493,
+      "end_line": 493,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -170287,8 +170968,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 494,
+      "end_line": 494,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -170296,8 +170977,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 346,
+      "end_line": 346,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170307,8 +170988,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 370,
+      "end_line": 370,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170318,8 +170999,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 370,
+      "end_line": 370,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -170329,8 +171010,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 452,
+      "end_line": 452,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -170338,8 +171019,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 452,
+      "end_line": 452,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -170347,8 +171028,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 452,
+      "end_line": 452,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -170356,8 +171037,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 468,
-      "end_line": 468,
+      "line": 453,
+      "end_line": 453,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -170365,8 +171046,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 468,
-      "end_line": 468,
+      "line": 453,
+      "end_line": 453,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -170374,8 +171055,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 493,
+      "end_line": 493,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -170383,8 +171064,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 493,
+      "end_line": 493,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -170392,8 +171073,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 346,
+      "end_line": 346,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -208462,8 +209143,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 291,
+      "end_line": 291,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent.occurred_at",
@@ -208480,8 +209161,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 291,
+      "end_line": 291,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -208489,8 +209170,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 291,
+      "end_line": 291,
       "owner": "behavior_retention_job",
       "conditions": [],
       "symbol": "app.models.BehaviorEvent",
@@ -220181,7 +220862,7 @@
     {
       "path": "backend/app/api/forecasts.py",
       "line": 63,
-      "end_line": 132,
+      "end_line": 130,
       "owner": "<module>",
       "conditions": [],
       "name": "get_forecast",
@@ -220189,8 +220870,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 136,
-      "end_line": 266,
+      "line": 134,
+      "end_line": 248,
       "owner": "<module>",
       "conditions": [],
       "name": "get_inflation",
@@ -222387,7 +223068,7 @@
     {
       "path": "backend/app/api/world.py",
       "line": 2159,
-      "end_line": 2364,
+      "end_line": 2359,
       "owner": "<module>",
       "conditions": [],
       "name": "indicator_data",
@@ -222395,8 +223076,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2368,
-      "end_line": 2543,
+      "line": 2363,
+      "end_line": 2538,
       "owner": "<module>",
       "conditions": [],
       "name": "search_world",
@@ -222413,8 +223094,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2410,
-      "end_line": 2430,
+      "line": 2405,
+      "end_line": 2425,
       "owner": "search_world",
       "conditions": [],
       "name": "relevance",
@@ -226167,7 +226848,7 @@
     {
       "path": "backend/app/schemas.py",
       "line": 95,
-      "end_line": 101,
+      "end_line": 99,
       "owner": "<module>",
       "conditions": [],
       "name": "ForecastValueOut",
@@ -226175,8 +226856,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 104,
-      "end_line": 110,
+      "line": 102,
+      "end_line": 108,
       "owner": "<module>",
       "conditions": [],
       "name": "ForecastOut",
@@ -226184,8 +226865,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 113,
-      "end_line": 115,
+      "line": 111,
+      "end_line": 113,
       "owner": "<module>",
       "conditions": [],
       "name": "ForecastResponse",
@@ -226193,8 +226874,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 120,
-      "end_line": 122,
+      "line": 118,
+      "end_line": 120,
       "owner": "<module>",
       "conditions": [],
       "name": "InflationPoint",
@@ -226202,8 +226883,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 125,
-      "end_line": 129,
+      "line": 123,
+      "end_line": 125,
       "owner": "<module>",
       "conditions": [],
       "name": "InflationForecastPoint",
@@ -226211,8 +226892,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 132,
-      "end_line": 136,
+      "line": 128,
+      "end_line": 132,
       "owner": "<module>",
       "conditions": [],
       "name": "InflationResponse",
@@ -226220,8 +226901,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 141,
-      "end_line": 165,
+      "line": 137,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "CalendarEventOut",
@@ -226229,8 +226910,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 168,
-      "end_line": 170,
+      "line": 164,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "CalendarResponse",
@@ -226238,8 +226919,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 175,
-      "end_line": 180,
+      "line": 171,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "SystemStatus",
@@ -226689,7 +227370,7 @@
     {
       "path": "backend/app/services/admin_bi.py",
       "line": 1126,
-      "end_line": 1249,
+      "end_line": 1253,
       "owner": "<module>",
       "conditions": [],
       "name": "build_bi_dashboard",
@@ -226697,8 +227378,8 @@
     },
     {
       "path": "backend/app/services/admin_bi.py",
-      "line": 1252,
-      "end_line": 1315,
+      "line": 1256,
+      "end_line": 1319,
       "owner": "<module>",
       "conditions": [],
       "name": "_merge_metrika_live_today",
@@ -227552,8 +228233,17 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1299,
-      "end_line": 1414,
+      "line": 1311,
+      "end_line": 1417,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "mart_pwa_installs",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1424,
+      "end_line": 1539,
       "owner": "<module>",
       "conditions": [],
       "name": "mart_people",
@@ -227561,8 +228251,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1421,
-      "end_line": 1475,
+      "line": 1546,
+      "end_line": 1600,
       "owner": "<module>",
       "conditions": [],
       "name": "mart_experiments",
@@ -227570,8 +228260,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1482,
-      "end_line": 1499,
+      "line": 1607,
+      "end_line": 1624,
       "owner": "<module>",
       "conditions": [],
       "name": "mart_ch_slices_of_day",
@@ -227579,8 +228269,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1506,
-      "end_line": 1532,
+      "line": 1631,
+      "end_line": 1657,
       "owner": "<module>",
       "conditions": [],
       "name": "mart_ad_costs",
@@ -227588,8 +228278,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1535,
-      "end_line": 1578,
+      "line": 1660,
+      "end_line": 1703,
       "owner": "<module>",
       "conditions": [],
       "name": "mart_partner_revenue",
@@ -227597,8 +228287,8 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
-      "line": 1585,
-      "end_line": 1608,
+      "line": 1710,
+      "end_line": 1733,
       "owner": "<module>",
       "conditions": [],
       "name": "build_marts_daily_context",
@@ -227629,6 +228319,15 @@
       "owner": "mart_collection_quality",
       "conditions": [],
       "name": "share",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1362,
+      "end_line": 1363,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "name": "tot",
       "kind": "FunctionDef"
     },
     {
@@ -231738,16 +232437,7 @@
     {
       "path": "backend/app/services/forecast_showcase.py",
       "line": 212,
-      "end_line": 220,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_forecast_point",
-      "kind": "FunctionDef"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 223,
-      "end_line": 272,
+      "end_line": 261,
       "owner": "<module>",
       "conditions": [],
       "name": "build_item",
@@ -231755,8 +232445,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 275,
-      "end_line": 293,
+      "line": 264,
+      "end_line": 282,
       "owner": "<module>",
       "conditions": [],
       "name": "pick_world_candidates",
@@ -231764,8 +232454,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 296,
-      "end_line": 302,
+      "line": 285,
+      "end_line": 291,
       "owner": "<module>",
       "conditions": [],
       "name": "empty_payload",
@@ -231773,8 +232463,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 310,
-      "end_line": 418,
+      "line": 299,
+      "end_line": 403,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_items",
@@ -231782,8 +232472,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 421,
-      "end_line": 434,
+      "line": 406,
+      "end_line": 419,
       "owner": "<module>",
       "conditions": [],
       "name": "_theme_for_world",
@@ -231791,8 +232481,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 437,
-      "end_line": 547,
+      "line": 422,
+      "end_line": 530,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_items",
@@ -231800,8 +232490,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 550,
-      "end_line": 562,
+      "line": 533,
+      "end_line": 545,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_unit",
@@ -231809,8 +232499,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 565,
-      "end_line": 569,
+      "line": 548,
+      "end_line": 552,
       "owner": "<module>",
       "conditions": [],
       "name": "_theme_order",
@@ -231818,8 +232508,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 572,
-      "end_line": 581,
+      "line": 555,
+      "end_line": 564,
       "owner": "<module>",
       "conditions": [],
       "name": "build_showcase",
@@ -231827,8 +232517,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 287,
-      "end_line": 291,
+      "line": 276,
+      "end_line": 280,
       "owner": "pick_world_candidates",
       "conditions": [],
       "name": "rank",
@@ -238480,8 +239170,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 59,
-      "end_line": 62,
+      "line": 57,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "_value_text",
@@ -238489,8 +239179,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 65,
-      "end_line": 85,
+      "line": 63,
+      "end_line": 76,
       "owner": "<module>",
       "conditions": [],
       "name": "_item_row",
@@ -238498,8 +239188,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 88,
-      "end_line": 109,
+      "line": 79,
+      "end_line": 100,
       "owner": "<module>",
       "conditions": [],
       "name": "_sections",
@@ -238507,8 +239197,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 112,
-      "end_line": 136,
+      "line": 103,
+      "end_line": 127,
       "owner": "<module>",
       "conditions": [],
       "name": "render_forecasts_html",
@@ -249447,7 +250137,7 @@
     {
       "path": "backend/app/services/world_subnational_forecast.py",
       "line": 24,
-      "end_line": 86,
+      "end_line": 84,
       "owner": "<module>",
       "conditions": [],
       "name": "state_forecast",
@@ -250779,7 +251469,16 @@
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
       "line": 170,
-      "end_line": 214,
+      "end_line": 181,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_pwa_install_lines",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/analytics_scheduler.py",
+      "line": 184,
+      "end_line": 228,
       "owner": "<module>",
       "conditions": [],
       "name": "_metrika_goal_lines",
@@ -250787,8 +251486,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 217,
-      "end_line": 229,
+      "line": 231,
+      "end_line": 243,
       "owner": "<module>",
       "conditions": [],
       "name": "acquisition_daily_job",
@@ -250796,8 +251495,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 232,
-      "end_line": 244,
+      "line": 246,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "partner_revenue_daily_job",
@@ -250805,8 +251504,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 247,
-      "end_line": 261,
+      "line": 261,
+      "end_line": 275,
       "owner": "<module>",
       "conditions": [],
       "name": "webmaster_queries_daily_job",
@@ -250814,8 +251513,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 264,
-      "end_line": 279,
+      "line": 278,
+      "end_line": 293,
       "owner": "<module>",
       "conditions": [],
       "name": "behavior_retention_job",
@@ -250823,8 +251522,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 285,
-      "end_line": 323,
+      "line": 299,
+      "end_line": 341,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_daily_digest_job",
@@ -250832,8 +251531,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 326,
-      "end_line": 349,
+      "line": 344,
+      "end_line": 367,
       "owner": "<module>",
       "conditions": [],
       "name": "analytics_daily_job",
@@ -250850,8 +251549,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 182,
-      "end_line": 192,
+      "line": 196,
+      "end_line": 206,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_totals",
@@ -250859,8 +251558,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 194,
-      "end_line": 195,
+      "line": 208,
+      "end_line": 209,
       "owner": "_metrika_goal_lines",
       "conditions": [],
       "name": "_int",
@@ -250868,8 +251567,8 @@
     },
     {
       "path": "backend/app/tasks/analytics_scheduler.py",
-      "line": 312,
-      "end_line": 314,
+      "line": 330,
+      "end_line": 332,
       "owner": "telegram_daily_digest_job",
       "conditions": [],
       "name": "_inventory_block",
@@ -260715,7 +261414,7 @@
     {
       "path": "backend/app/schemas.py",
       "line": 95,
-      "end_line": 101,
+      "end_line": 99,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.ForecastValueOut",
@@ -260742,33 +261441,13 @@
           "name": "value",
           "annotation": "float",
           "default": null
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 98,
-          "end_line": 98,
-          "owner": "ForecastValueOut",
-          "conditions": [],
-          "name": "lower_bound",
-          "annotation": "float | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 99,
-          "end_line": 99,
-          "owner": "ForecastValueOut",
-          "conditions": [],
-          "name": "upper_bound",
-          "annotation": "float | None",
-          "default": "None"
         }
       ]
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 104,
-      "end_line": 110,
+      "line": 102,
+      "end_line": 108,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.ForecastOut",
@@ -260778,8 +261457,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 105,
-          "end_line": 105,
+          "line": 103,
+          "end_line": 103,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "model_name",
@@ -260788,8 +261467,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 106,
-          "end_line": 106,
+          "line": 104,
+          "end_line": 104,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "aic",
@@ -260798,8 +261477,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 107,
-          "end_line": 107,
+          "line": 105,
+          "end_line": 105,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "bic",
@@ -260808,8 +261487,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 108,
-          "end_line": 108,
+          "line": 106,
+          "end_line": 106,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "created_at",
@@ -260818,8 +261497,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 109,
-          "end_line": 109,
+          "line": 107,
+          "end_line": 107,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "values",
@@ -260828,8 +261507,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 110,
-          "end_line": 110,
+          "line": 108,
+          "end_line": 108,
           "owner": "ForecastOut",
           "conditions": [],
           "name": "replaces_partial_actual",
@@ -260840,8 +261519,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 113,
-      "end_line": 115,
+      "line": 111,
+      "end_line": 113,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.ForecastResponse",
@@ -260851,8 +261530,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 114,
-          "end_line": 114,
+          "line": 112,
+          "end_line": 112,
           "owner": "ForecastResponse",
           "conditions": [],
           "name": "indicator",
@@ -260861,8 +261540,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 115,
-          "end_line": 115,
+          "line": 113,
+          "end_line": 113,
           "owner": "ForecastResponse",
           "conditions": [],
           "name": "forecast",
@@ -260873,8 +261552,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 120,
-      "end_line": 122,
+      "line": 118,
+      "end_line": 120,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.InflationPoint",
@@ -260884,8 +261563,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 121,
-          "end_line": 121,
+          "line": 119,
+          "end_line": 119,
           "owner": "InflationPoint",
           "conditions": [],
           "name": "date",
@@ -260894,8 +261573,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 122,
-          "end_line": 122,
+          "line": 120,
+          "end_line": 120,
           "owner": "InflationPoint",
           "conditions": [],
           "name": "value",
@@ -260906,8 +261585,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 125,
-      "end_line": 129,
+      "line": 123,
+      "end_line": 125,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.InflationForecastPoint",
@@ -260917,8 +261596,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 126,
-          "end_line": 126,
+          "line": 124,
+          "end_line": 124,
           "owner": "InflationForecastPoint",
           "conditions": [],
           "name": "date",
@@ -260927,40 +261606,20 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 127,
-          "end_line": 127,
+          "line": 125,
+          "end_line": 125,
           "owner": "InflationForecastPoint",
           "conditions": [],
           "name": "value",
           "annotation": "float",
           "default": null
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 128,
-          "end_line": 128,
-          "owner": "InflationForecastPoint",
-          "conditions": [],
-          "name": "lower_bound",
-          "annotation": "float | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 129,
-          "end_line": 129,
-          "owner": "InflationForecastPoint",
-          "conditions": [],
-          "name": "upper_bound",
-          "annotation": "float | None",
-          "default": "None"
         }
       ]
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 132,
-      "end_line": 136,
+      "line": 128,
+      "end_line": 132,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.InflationResponse",
@@ -260970,8 +261629,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 133,
-          "end_line": 133,
+          "line": 129,
+          "end_line": 129,
           "owner": "InflationResponse",
           "conditions": [],
           "name": "indicator",
@@ -260980,8 +261639,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 134,
-          "end_line": 134,
+          "line": 130,
+          "end_line": 130,
           "owner": "InflationResponse",
           "conditions": [],
           "name": "model_name",
@@ -260990,8 +261649,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 135,
-          "end_line": 135,
+          "line": 131,
+          "end_line": 131,
           "owner": "InflationResponse",
           "conditions": [],
           "name": "actuals",
@@ -261000,8 +261659,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 136,
-          "end_line": 136,
+          "line": 132,
+          "end_line": 132,
           "owner": "InflationResponse",
           "conditions": [],
           "name": "forecast",
@@ -261012,8 +261671,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 141,
-      "end_line": 165,
+      "line": 137,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.CalendarEventOut",
@@ -261023,8 +261682,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 142,
-          "end_line": 142,
+          "line": 138,
+          "end_line": 138,
           "owner": "CalendarEventOut",
           "conditions": [],
           "name": "id",
@@ -261033,8 +261692,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 143,
-          "end_line": 143,
+          "line": 139,
+          "end_line": 139,
           "owner": "CalendarEventOut",
           "conditions": [],
           "name": "title",
@@ -261043,11 +261702,51 @@
         },
         {
           "path": "backend/app/schemas.py",
+          "line": 140,
+          "end_line": 140,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "title_en",
+          "annotation": "str | None",
+          "default": "None"
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 141,
+          "end_line": 141,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "event_type",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 142,
+          "end_line": 142,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "source",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 143,
+          "end_line": 143,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "scheduled_date",
+          "annotation": "date",
+          "default": null
+        },
+        {
+          "path": "backend/app/schemas.py",
           "line": 144,
           "end_line": 144,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "title_en",
+          "name": "scheduled_time",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261057,54 +261756,14 @@
           "end_line": 145,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "event_type",
-          "annotation": "str",
-          "default": null
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 146,
-          "end_line": 146,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "source",
-          "annotation": "str",
-          "default": null
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 147,
-          "end_line": 147,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "scheduled_date",
-          "annotation": "date",
-          "default": null
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 148,
-          "end_line": 148,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "scheduled_time",
-          "annotation": "str | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 149,
-          "end_line": 149,
-          "owner": "CalendarEventOut",
-          "conditions": [],
           "name": "is_estimated",
           "annotation": "bool",
           "default": "False"
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 150,
-          "end_line": 150,
+          "line": 146,
+          "end_line": 146,
           "owner": "CalendarEventOut",
           "conditions": [],
           "name": "date_confidence",
@@ -261113,11 +261772,51 @@
         },
         {
           "path": "backend/app/schemas.py",
+          "line": 147,
+          "end_line": 147,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "reference_period",
+          "annotation": "str | None",
+          "default": "None"
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 148,
+          "end_line": 148,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "importance",
+          "annotation": "int",
+          "default": "2"
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 149,
+          "end_line": 149,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "status",
+          "annotation": "str",
+          "default": "'scheduled'"
+        },
+        {
+          "path": "backend/app/schemas.py",
+          "line": 150,
+          "end_line": 150,
+          "owner": "CalendarEventOut",
+          "conditions": [],
+          "name": "previous_value",
+          "annotation": "str | None",
+          "default": "None"
+        },
+        {
+          "path": "backend/app/schemas.py",
           "line": 151,
           "end_line": 151,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "reference_period",
+          "name": "forecast_value",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261127,9 +261826,9 @@
           "end_line": 152,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "importance",
-          "annotation": "int",
-          "default": "2"
+          "name": "actual_value",
+          "annotation": "str | None",
+          "default": "None"
         },
         {
           "path": "backend/app/schemas.py",
@@ -261137,9 +261836,9 @@
           "end_line": 153,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "status",
-          "annotation": "str",
-          "default": "'scheduled'"
+          "name": "description",
+          "annotation": "str | None",
+          "default": "None"
         },
         {
           "path": "backend/app/schemas.py",
@@ -261147,7 +261846,7 @@
           "end_line": 154,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "previous_value",
+          "name": "source_url",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261157,7 +261856,7 @@
           "end_line": 155,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "forecast_value",
+          "name": "event_key",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261167,7 +261866,7 @@
           "end_line": 156,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "actual_value",
+          "name": "source_event_uid",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261177,7 +261876,7 @@
           "end_line": 157,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "description",
+          "name": "source_hash",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261187,7 +261886,7 @@
           "end_line": 158,
           "owner": "CalendarEventOut",
           "conditions": [],
-          "name": "source_url",
+          "name": "indicator_code",
           "annotation": "str | None",
           "default": "None"
         },
@@ -261195,46 +261894,6 @@
           "path": "backend/app/schemas.py",
           "line": 159,
           "end_line": 159,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "event_key",
-          "annotation": "str | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 160,
-          "end_line": 160,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "source_event_uid",
-          "annotation": "str | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 161,
-          "end_line": 161,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "source_hash",
-          "annotation": "str | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 162,
-          "end_line": 162,
-          "owner": "CalendarEventOut",
-          "conditions": [],
-          "name": "indicator_code",
-          "annotation": "str | None",
-          "default": "None"
-        },
-        {
-          "path": "backend/app/schemas.py",
-          "line": 163,
-          "end_line": 163,
           "owner": "CalendarEventOut",
           "conditions": [],
           "name": "indicator_name",
@@ -261245,8 +261904,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 168,
-      "end_line": 170,
+      "line": 164,
+      "end_line": 166,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.CalendarResponse",
@@ -261256,8 +261915,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 169,
-          "end_line": 169,
+          "line": 165,
+          "end_line": 165,
           "owner": "CalendarResponse",
           "conditions": [],
           "name": "events",
@@ -261266,8 +261925,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 170,
-          "end_line": 170,
+          "line": 166,
+          "end_line": 166,
           "owner": "CalendarResponse",
           "conditions": [],
           "name": "total",
@@ -261278,8 +261937,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "line": 175,
-      "end_line": 180,
+      "line": 171,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "app.schemas.SystemStatus",
@@ -261289,8 +261948,8 @@
       "fields": [
         {
           "path": "backend/app/schemas.py",
-          "line": 176,
-          "end_line": 176,
+          "line": 172,
+          "end_line": 172,
           "owner": "SystemStatus",
           "conditions": [],
           "name": "status",
@@ -261299,8 +261958,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 177,
-          "end_line": 177,
+          "line": 173,
+          "end_line": 173,
           "owner": "SystemStatus",
           "conditions": [],
           "name": "indicators_count",
@@ -261309,8 +261968,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 178,
-          "end_line": 178,
+          "line": 174,
+          "end_line": 174,
           "owner": "SystemStatus",
           "conditions": [],
           "name": "total_data_points",
@@ -261319,8 +261978,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 179,
-          "end_line": 179,
+          "line": 175,
+          "end_line": 175,
           "owner": "SystemStatus",
           "conditions": [],
           "name": "last_fetch",
@@ -261329,8 +261988,8 @@
         },
         {
           "path": "backend/app/schemas.py",
-          "line": 180,
-          "end_line": 180,
+          "line": 176,
+          "end_line": 176,
           "owner": "SystemStatus",
           "conditions": [],
           "name": "last_forecast",
@@ -265374,6 +266033,22 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
+      "line": 1307,
+      "end_line": 1307,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.analytics_marts.PWA_INSTALL_EVENTS"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1307,
+      "end_line": 1307,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.analytics_marts.PWA_DISMISS_EVENTS"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
       "line": 126,
       "end_line": 126,
       "owner": "visit_device",
@@ -265403,6 +266078,24 @@
       "owner": "mart_metric_tree",
       "conditions": [],
       "symbol": "app.data.bi_targets.NORTH_STAR_MILESTONES"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1330,
+      "end_line": 1330,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.services.analytics_marts._PWA_EVENTS"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1376,
+      "end_line": 1376,
+      "owner": "mart_pwa_installs",
+      "conditions": [
+        "not (name == 'pwa_install_prompt_view')"
+      ],
+      "symbol": "app.services.analytics_marts.PWA_DISMISS_EVENTS"
     },
     {
       "path": "backend/app/services/analytics_marts.py",
@@ -265470,11 +266163,27 @@
     },
     {
       "path": "backend/app/services/analytics_marts.py",
+      "line": 1410,
+      "end_line": 1410,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.services.analytics_marts.PWA_DISMISS_EVENTS"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
       "line": 515,
       "end_line": 515,
       "owner": "mart_metric_tree",
       "conditions": [],
       "symbol": "app.data.bi_targets.TARGETS"
+    },
+    {
+      "path": "backend/app/services/analytics_marts.py",
+      "line": 1357,
+      "end_line": 1357,
+      "owner": "mart_pwa_installs",
+      "conditions": [],
+      "symbol": "app.services.analytics_marts.PWA_INSTALL_EVENTS"
     },
     {
       "path": "backend/app/services/analytics_period.py",
@@ -266880,40 +267589,40 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 307,
+      "end_line": 307,
       "owner": "_russia_items",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.RUSSIA_ITEMS"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 434,
+      "end_line": 434,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.WORLD_THEMES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 413,
+      "end_line": 413,
       "owner": "_theme_for_world",
       "conditions": [],
       "symbol": "app.services.forecast_showcase._YOY_NATIONAL_PRICE_CODES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 566,
-      "end_line": 566,
+      "line": 549,
+      "end_line": 549,
       "owner": "_theme_order",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.THEMES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 569,
-      "end_line": 569,
+      "line": 552,
+      "end_line": 552,
       "owner": "_theme_order",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.THEMES"
@@ -266928,56 +267637,56 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 289,
+      "end_line": 289,
       "owner": "empty_payload",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.THEMES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 436,
+      "end_line": 436,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 289,
-      "end_line": 289,
+      "line": 278,
+      "end_line": 278,
       "owner": "pick_world_candidates.rank",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.PRIORITY_SLUGS"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 280,
+      "end_line": 280,
       "owner": "pick_world_candidates.rank",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.PRIORITY_SLUGS"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 490,
+      "end_line": 490,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.HISTORY_POINTS"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 457,
+      "end_line": 457,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.services.world_forecaster.PUBLISHED_GATE_STATUSES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 373,
+      "end_line": 373,
       "owner": "_russia_items",
       "conditions": [
         "not (spec['kind'] == 'inflation12')"
@@ -270595,16 +271304,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 66,
-      "end_line": 66,
-      "owner": "_item_row",
-      "conditions": [],
-      "symbol": "app.services.seo_forecasts._COPY"
-    },
-    {
-      "path": "backend/app/services/seo_forecasts.py",
-      "line": 89,
-      "end_line": 89,
+      "line": 80,
+      "end_line": 80,
       "owner": "_sections",
       "conditions": [],
       "symbol": "app.services.seo_forecasts._COPY"
@@ -277244,7 +277945,7 @@
         "response_model": "ForecastResponse"
       },
       "handler_line": 63,
-      "handler_end_line": 132,
+      "handler_end_line": 130,
       "parameters": [
         {
           "name": "code",
@@ -277286,8 +277987,8 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 133,
+      "end_line": 133,
       "owner": "get_inflation",
       "conditions": [],
       "handler": "app.api.forecasts.get_inflation",
@@ -277300,8 +278001,8 @@
       "options": {
         "response_model": "InflationResponse"
       },
-      "handler_line": 136,
-      "handler_end_line": 266,
+      "handler_line": 134,
+      "handler_end_line": 248,
       "parameters": [
         {
           "name": "code",
@@ -282010,7 +282711,7 @@
       ],
       "options": {},
       "handler_line": 2159,
-      "handler_end_line": 2364,
+      "handler_end_line": 2359,
       "parameters": [
         {
           "name": "slug",
@@ -282077,8 +282778,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2367,
-      "end_line": 2367,
+      "line": 2362,
+      "end_line": 2362,
       "owner": "search_world",
       "conditions": [],
       "handler": "app.api.world.search_world",
@@ -282089,8 +282790,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2368,
-      "handler_end_line": 2543,
+      "handler_line": 2363,
+      "handler_end_line": 2538,
       "parameters": [
         {
           "name": "q",
