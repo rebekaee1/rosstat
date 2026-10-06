@@ -150,10 +150,11 @@
 .planet-quick-chip.is-active { color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255,255,255,.2); }
 .planet-play-year { position: absolute; z-index: 3; left: 50%; top: 62px; transform: translateX(-50%); padding: 4px 18px; border-radius: 999px; background: var(--planet-glass-strong); box-shadow: var(--planet-glass-shadow), var(--fe-inset-glint); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.02em; pointer-events: none; }
 .planet-stage:not(:has(.planet-quick)) .planet-play-year { top: 14px; }
-/* Подсказка-жест (круг 6): одна тонкая строка текста сверху шара, без плашки и значка, один раз; цвет — графит с белой тенью в 1 px. */
+/* Подсказка-жест (круг 6): одна строка сверху шара на лёгкой стеклянной подложке (на суше голый текст нечитаем), один раз. */
 .planet-gesture-hint {
   position: absolute; z-index: 3; left: 50%; top: 14px; transform: translateX(-50%); max-width: calc(100% - 120px); text-align: center;
-  color: var(--planet-ink); font-size: 13px; font-weight: 500; line-height: 1.3; text-shadow: 0 1px 0 rgba(255,255,255,.9); pointer-events: none;
+  padding: 5px 14px; border-radius: 999px; background: rgba(255,255,255,.72); box-shadow: 0 4px 12px -8px rgba(30,38,56,.35);
+  color: var(--planet-ink); font-size: 13px; font-weight: 500; line-height: 1.3; pointer-events: none;
   animation: planet-hint-in-centered 420ms ease-out both;
 }
 .planet-stage:has(.planet-quick) .planet-gesture-hint { top: 62px; }

@@ -69,14 +69,14 @@ function MiniChart({ item, label }) {
             <stop offset="1" stopColor="#C9A24D" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id={rayId} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#E9CD8E" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#FFF6DA" stopOpacity="0.95" />
-            <stop offset="1" stopColor="#E9CD8E" stopOpacity="0" />
+            <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.95" />
+            <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
           </linearGradient>
           <linearGradient id={glowId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#F3E4B8" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#F3E4B8" stopOpacity="0.5" />
-            <stop offset="1" stopColor="#F3E4B8" stopOpacity="0" />
+            <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#C9D7EA" stopOpacity="0.5" />
+            <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
           </linearGradient>
         </defs>
         <rect className="zb-fc__zone" x={geo.zone.x} y="0" width={geo.zone.width} height={geo.height} rx="6" />

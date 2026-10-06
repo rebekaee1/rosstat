@@ -242,7 +242,7 @@
 }
 
 .zb-fc__num--end .zb-fc__num-value {
-  background: linear-gradient(135deg, #6B5224, #A07829 78%);
+  background: linear-gradient(135deg, #1E2638, #2C4A8A 78%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -299,7 +299,7 @@
 }
 
 .zb-fc__zone {
-  fill: rgba(201, 162, 77, 0.06);
+  fill: rgba(124, 154, 201, 0.12);
 }
 
 .zb-fc__dot-now {

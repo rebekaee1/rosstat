@@ -1,18 +1,17 @@
 import { useRef, useEffect, useState, useId } from 'react';
-import { CHART_THEME } from '../lib/chartTheme';
 import { SkeletonBox } from './Skeleton';
 import '../styles/k4-charts.css';
 import '../lib/glassChartDefs';
 
 const COLOR_POSITIVE = '#16A34A';
 const COLOR_NEGATIVE = '#DC2626';
-const COLOR_GOLD = CHART_THEME.gold;
-// «Ровно» с известным смыслом — не серый, а приглушённое золото: спарклайн всегда в палитре бренда.
-const COLOR_FLAT = '#B9A474';
+const COLOR_NEUTRAL = '#3D5F9E';
+// «Ровно» с известным смыслом — не серый, а холодный синий: спарклайн всегда в палитре бренда.
+const COLOR_FLAT = '#7C9AC9';
 
 function resolveColor(trend, sentiment) {
-  // Смысл неизвестен — золото, без оценки «хорошо/плохо».
-  if (sentiment === 'neutral') return COLOR_GOLD;
+  // Смысл неизвестен — глубокий синий (круг 6: золото снято, «слишком жёлтый»), без оценки «хорошо/плохо».
+  if (sentiment === 'neutral') return COLOR_NEUTRAL;
 
   if (trend === 'flat') return COLOR_FLAT;
 

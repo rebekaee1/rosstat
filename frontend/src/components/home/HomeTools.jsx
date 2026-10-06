@@ -245,13 +245,13 @@ function CompareTool() {
         <label className="fe-tool__field" htmlFor={`${id}-a`}>
           <span className="fe-tool__label">{t('z3.tools.cmp.first')}</span>
           <select id={`${id}-a`} className="fe-tool__input" value={firstValue} onChange={(event) => setFirst(event.target.value)} disabled={countries.length < 2}>
-            {countries.length ? countries.map((country) => <option key={country.slug} value={country.slug}>{country.name}</option>) : <option value={firstValue}>{firstValue}</option>}
+            {countries.length ? countries.map((country) => <option key={country.slug} value={country.slug}>{country.name}</option>) : <option value={firstValue}>…</option>}
           </select>
         </label>
         <label className="fe-tool__field" htmlFor={`${id}-b`}>
           <span className="fe-tool__label">{t('z3.tools.cmp.second')}</span>
           <select id={`${id}-b`} className="fe-tool__input" value={secondValue} onChange={(event) => setSecond(event.target.value)} disabled={countries.length < 2}>
-            {countries.length ? countries.map((country) => <option key={country.slug} value={country.slug}>{country.name}</option>) : <option value={secondValue}>{secondValue}</option>}
+            {countries.length ? countries.map((country) => <option key={country.slug} value={country.slug}>{country.name}</option>) : <option value={secondValue}>…</option>}
           </select>
         </label>
       </div>
