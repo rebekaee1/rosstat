@@ -121,6 +121,16 @@ describe('geographic planet names', () => {
     expect(pointed[0].width).toBe(plain[0].width);
   });
 
+  it('also reports the name-only rectangle, so every country but the selected one can be drawn without its value', () => {
+    const [packed] = packPlanetLabelAtlas([{ text: 'Германия', hasValue: true, valueText: '3 855 млрд $' }], (text) => text.length * 5, {
+      lineHeight: 20, measureValue: (text) => text.length * 10, valueLineHeight: 28, paddingX: 5, paddingY: 3, lineGap: 2,
+    });
+    expect(packed.nameWidth).toBe(8 * 5 + 10);
+    expect(packed.nameHeight).toBe(20 + 6);
+    expect(packed.width).toBeGreaterThan(packed.nameWidth);
+    expect(packed.height).toBe(20 + 2 + 28 + 6);
+  });
+
   it('allocates a separate primary value line and enough chip padding without truncating units', () => {
     const valueText = '12 345,6 млрд долларов США (цены 2017)';
     const [packed] = packPlanetLabelAtlas([{ text: 'Германия', hasValue: true, valueText }], (text) => text.length * 5, {
@@ -209,6 +219,13 @@ describe('planet label visibility and placement', () => {
     expect(label.box.bottom).toBe(label.y - 12);
     expect(label.labelY).toBe(label.y - 12 - label.height / 2);
     expect(layoutPlanetLabels([candidate('DE', { x: 5 })], viewport)).toEqual([]);
+  });
+
+  it('stands a plain name on its country when centred, and lifts only the selected one above its marker', () => {
+    const [plain] = layoutPlanetLabels([candidate('DE')], { ...viewport, centered: true });
+    expect(plain.labelY).toBe(plain.y);
+    const [chosen] = layoutPlanetLabels([candidate('DE')], { ...viewport, centered: true, selectedCode: 'DE' });
+    expect(chosen.box.bottom).toBe(chosen.y - 12);
   });
 
   it('keeps complete text inside the globe silhouette, including its corners', () => {

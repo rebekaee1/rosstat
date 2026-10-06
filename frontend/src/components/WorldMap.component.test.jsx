@@ -192,7 +192,7 @@ describe('WorldMap tooltip', () => {
     fireEvent.mouseOver(countryPath);
     await waitFor(() => {
       const highlights = [...container.querySelectorAll('path[aria-hidden="true"]')]
-        .filter((node) => (node.getAttribute('fill') || '').includes('181,141,39'));
+        .filter((node) => (node.getAttribute('fill') || '').includes('44,74,138'));
       expect(highlights.length).toBeGreaterThan(0);
       expect(highlights[0].getAttribute('d')).toBeTruthy();
     });

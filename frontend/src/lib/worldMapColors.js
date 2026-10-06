@@ -1,9 +1,9 @@
 /**
- * Единственная палитра карты мира и планеты (K4.6, вариант A «тёплая»): лёд на одном конце, спокойное золото к другому,
- * глубокое золото (не коричневый) для самых больших значений. Опорные пять цветов:
- *   #E4EDF6 лёд, #F0DDA8 светлое золото, #E9C97A, #C9A24D золото, #9A6A22 глубокое золото;
- * между ними семь равных ступеней. Океан на плоской карте (#DCE8F3) чуть темнее самой светлой ступени, поэтому страны
- * с наименьшими значениями не сливаются с водой. Без оценочного смысла «хорошо/плохо».
+ * Единственная палитра карты мира и планеты (круг 6, зона G; прежняя «тёплая» золотая шкала снята по принципу владельца
+ * «не слишком жёлтый»): холодный лёд #C9D7EA на малых значениях → глубокий синий #1E3A6E на больших, семь равных ступеней
+ * (опорные цвета: лёд, средний синий #7C9AC9, глубокий синий). Страна без данных — нейтральная суша #E6E3DC (не синяя и не
+ * золотая, не сливается ни со шкалой, ни с океаном), океан — #DCE8F3. Золото `#C9A24D` есть только у страны на первом
+ * месте (`isTop`), это не ступень шкалы и в легенду-полосу не входит. Без оценочного смысла «хорошо/плохо».
  *
  * Палитра одна для всех показателей и всех лет. Раньше шкала выбиралась по
  * данным выбранного года: если срез пересекал ноль, включалась отдельная
@@ -11,7 +11,7 @@
  * на том же показателе. Меняется только привязка центра (медиана или ноль),
  * цвета остаются те же.
  */
-const WORLD_SCALE_STOPS = ['#E4EDF6', '#F0DDA8', '#E9C97A', '#C9A24D', '#9A6A22'];
+const WORLD_SCALE_STOPS = ['#C9D7EA', '#7C9AC9', '#1E3A6E'];
 
 function mixHex(a, b, f) {
   const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
@@ -33,10 +33,12 @@ export const WORLD_MAP_SCALE = buildScale(WORLD_SCALE_STOPS, 7);
 export const WORLD_RELATIVE_SCALE = WORLD_MAP_SCALE;
 export const WORLD_DIVERGING_SCALE = WORLD_MAP_SCALE;
 
-// «Нет данных»: матовое стекло (светлый иней), без штриховки.
-export const WORLD_NO_DATA = '#EEF2F6';
-// Океан плоской карты: лёд.
+// «Нет данных»: нейтральная суша без штриховки.
+export const WORLD_NO_DATA = '#E6E3DC';
+// Океан карты и шара: холодный лёд.
 export const WORLD_OCEAN_COLOR = '#DCE8F3';
+// Страна на первом месте списка — единственное золото на карте.
+export const WORLD_TOP_COLOR = '#C9A24D';
 
 // Модуль остаётся без текстов: подписи полос живут в словарях, иначе
 // англоязычная версия карты показывала бы русскую легенду.
@@ -103,6 +105,13 @@ function shiftForDirection(band, direction, size) {
   return direction === 'asc' ? size - 1 - band : band;
 }
 
+/** Лучшее значение списка: наибольшее, а при порядке «по возрастанию» — наименьшее; одно значение «первого места» не делает. */
+function topChecker(values, direction) {
+  if (values.length < 2) return () => false;
+  const best = direction === 'asc' ? values[0] : values[values.length - 1];
+  return (rawValue) => numericValue(rawValue) === best;
+}
+
 function relativeModel(values, { direction = null } = {}) {
   const size = WORLD_RELATIVE_SCALE.length;
   const colorIndexFor = (band) => shiftForDirection(band, direction, size);
@@ -117,6 +126,7 @@ function relativeModel(values, { direction = null } = {}) {
   };
   return {
     kind: 'relative',
+    isTop: topChecker(values, direction),
     scale: WORLD_RELATIVE_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -135,7 +145,7 @@ function relativeModel(values, { direction = null } = {}) {
       if (band < 0) return '#6F746F';
       const index = colorIndexFor(band);
       if (index <= 2) return '#4B596F';
-      return '#7A5F2A';
+      return '#1E3A6E';
     },
     describe: (value) => {
       const band = bandFor(value);
@@ -164,6 +174,7 @@ function divergingModel(values, { direction = null } = {}) {
   };
   return {
     kind: 'diverging',
+    isTop: topChecker(values, direction),
     scale: WORLD_DIVERGING_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -185,7 +196,7 @@ function divergingModel(values, { direction = null } = {}) {
       if (band < 0) return '#6F746F';
       const index = colorIndexFor(band);
       if (index <= 2) return '#4B596F';
-      return '#7A5F2A';
+      return '#1E3A6E';
     },
     describe: (value) => {
       const band = bandFor(value);
@@ -210,6 +221,7 @@ export function buildWorldColorModel(valuesByCode, { mode = 'relative', directio
   if (!values.length) {
     return {
       kind: 'empty',
+      isTop: () => false,
       scale: WORLD_RELATIVE_SCALE,
       median: null,
       sampleSize: 0,
