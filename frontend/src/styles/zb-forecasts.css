@@ -26,7 +26,8 @@
   .zb-fc__ribbon-img {
     display: block;
     width: 100%;
-    max-width: 640px;
+    /* 557 = 1114 / 2: файл 1114 px остаётся резким на DPR 2 (страж styles/no-lowres.test.js). */
+    max-width: 557px;
     height: auto;
     margin-inline: auto;
     aspect-ratio: 1114 / 631;

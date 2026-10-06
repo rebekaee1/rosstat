@@ -49,12 +49,16 @@ const CATEGORY_ICONS = {
 };
 
 // Shared approved illustrations. They describe a topic, never a data value.
+// «Торговля» показывает стеклянный глобус (`tourism`: «страны, поездки, международная торговля»): прежний кадр
+// `trade` с контейнерами имеет рваную альфу-маску крупными ступеньками и не показывается (round 6 I).
 const CATEGORY_ART = {
   prices: 'commodity', rates: 'finance', currencies: 'finance', finance: 'finance',
   indices: 'forecast-glass', commodities: 'commodity', labor: 'population',
-  gdp: 'industry', population: 'population', trade: 'trade',
+  gdp: 'industry', population: 'population', trade: 'tourism',
   business: 'industry', science: 'science',
 };
+// Картинка показывается 210 CSS px (`.fe-category-art`): 320 px хватает только для DPR 1, 640 px — для DPR 2–3.
+const CATEGORY_ART_SIZES = '210px';
 
 export default function CategoryBlock({
   category,
@@ -102,6 +106,8 @@ export default function CategoryBlock({
         <img
           className="fe-category-art"
           src={`/art/quicklinks/${CATEGORY_ART[category.slug]}-320.webp`}
+          srcSet={`/art/quicklinks/${CATEGORY_ART[category.slug]}-320.webp 320w, /art/quicklinks/${CATEGORY_ART[category.slug]}-640.webp 640w`}
+          sizes={CATEGORY_ART_SIZES}
           alt=""
           width="320"
           height="213"
