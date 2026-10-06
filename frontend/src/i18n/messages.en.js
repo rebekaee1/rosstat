@@ -1289,11 +1289,11 @@ export default {
   'apiInterest.error': 'Could not send the request. Please try again later.',
   // Installing the site as an app (PWA): invitation card, iPhone hint, footer entry.
   'pwa.card.aria': 'Install the app',
-  'pwa.card.title': 'Install the app',
+  'pwa.card.title': 'Install Forecast Economy',
   'pwa.card.body': 'Opens from your home screen like a regular app: faster and without the address bar.',
   'pwa.card.install': 'Install',
   'pwa.card.later': 'Not now',
-  'pwa.ios.title': 'Add to your Home Screen',
+  'pwa.ios.title': 'Add Forecast Economy to your Home Screen',
   'pwa.ios.body': 'It opens like an app, without the address bar. Three taps:',
   'pwa.ios.step.share': 'Share',
   'pwa.ios.step.add': 'Add to Home Screen',

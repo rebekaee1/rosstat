@@ -15,6 +15,18 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   const t = useT();
   const [playing, setPlaying] = useState(false);
   const trackTimer = useRef(null);
+  // Ползунок ведёт своё значение сам и не ждёт родителя: год лежит в адресе (?period=), роутер обновляет его с задержкой, и
+  // управляемый input откатывал бегунок назад на каждом шаге, так что отмотать годы было нельзя. Пока человек двигает бегунок,
+  // старые значения родителя бегунок не трогают; когда он замолчал на 0,45 с, он сверяется с годом из адреса.
+  const [local, setLocal] = useState(year);
+  const lastInput = useRef(0);
+  const syncTimer = useRef(null);
+  useEffect(() => {
+    const idle = Date.now() - lastInput.current;
+    if (idle > 450) { setLocal(year); return undefined; }
+    syncTimer.current = setTimeout(() => setLocal(year), 450 - idle + 20);
+    return () => clearTimeout(syncTimer.current);
+  }, [year]);
 
   const list = useMemo(
     () => (Array.isArray(years) ? years.filter((y) => y != null) : []),
@@ -57,6 +69,8 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
     if (!ready) return;
     setPlaying(false);
     const y = Number(e.target.value);
+    lastInput.current = Date.now();
+    setLocal(y);
     setYearBoth(y);
     if (trackTimer.current) clearTimeout(trackTimer.current);
     trackTimer.current = setTimeout(() => emit('scrub', y), 600);
@@ -68,7 +82,8 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
 
   if (!ready) return null;
 
-  const pct = max === min ? 100 : ((year - min) / (max - min)) * 100;
+  const shown = local != null ? local : year;
+  const pct = max === min ? 100 : ((shown - min) / (max - min)) * 100;
 
   return (
     <div className="mt-3 flex items-center gap-3">
@@ -87,7 +102,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
           min={min}
           max={max}
           step={1}
-          value={year}
+          value={shown}
           onChange={handleSlider}
           aria-label={t('map.timeline.yearOnMap')}
           className="map-timeline w-full"
@@ -100,7 +115,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
       </div>
 
       <div className="w-16 shrink-0 text-right">
-        <span key={year} className="fe-map-year fe-num whitespace-nowrap text-xl font-bold text-champagne-ink" data-testid="map-timeline-year">{year}</span>
+        <span key={shown} className="fe-map-year fe-num whitespace-nowrap text-xl font-bold text-champagne-ink" data-testid="map-timeline-year">{shown}</span>
         <span className="-mt-0.5 block text-xs text-text-secondary">{t('common.year').toLowerCase()}</span>
       </div>
     </div>

@@ -53,7 +53,7 @@ def build_manifest(locale: str, origin: str) -> dict:
     return {
         "id": "/",
         "name": "Forecast Economy",
-        "short_name": "Forecast",
+        "short_name": "Forecast Economy",
         "description": copy["description"],
         "lang": lang,
         "dir": "ltr",

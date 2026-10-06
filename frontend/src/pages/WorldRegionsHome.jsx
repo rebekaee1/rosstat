@@ -194,7 +194,9 @@ export default function WorldRegionsHome() {
   const isOverview = mapCode === OVERVIEW;
   const defaultCode = hub.data?.default_indicator;
   const activeCode = isOverview ? null : (isMapRoute ? mapCode : defaultCode);
-  const period = isMapRoute ? (params.get('period') || undefined) : undefined;
+  // Год на карте (?period=) читается и на хабе страны (/regions, вкладка «Карта»), и на /region/map/:code: раньше на хабе параметр
+  // игнорировался, и ползунок лет не двигал карту штатов.
+  const period = isOverview ? undefined : (params.get('period') || undefined);
   const map = useWorldRegionsMap(
     countrySlug === RUSSIA ? undefined : countrySlug,
     activeCode,

@@ -77,7 +77,7 @@ logger = logging.getLogger(__name__)
 PWA_HEAD_META = (
     '<meta name="mobile-web-app-capable" content="yes">\n'
     '<meta name="apple-mobile-web-app-capable" content="yes">\n'
-    '<meta name="apple-mobile-web-app-title" content="Forecast">\n'
+    '<meta name="apple-mobile-web-app-title" content="Forecast Economy">\n'
     '<meta name="apple-mobile-web-app-status-bar-style" content="default">'
 )
 
@@ -769,7 +769,7 @@ html.fe-js #root > .seo-platform-nav{
 position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important
 }
 @font-face{font-family:Manrope;src:url('/fonts/manrope-latin-cyrillic.woff2') format('woff2');font-weight:200 800;font-display:swap}
-body.seo-fast{background:radial-gradient(ellipse at 90% 3%,rgba(233,223,205,.5),transparent 38%),#eef0f4;color:#202a3c;font-family:Manrope,system-ui,sans-serif}
+body.seo-fast{background:radial-gradient(ellipse at 90% 3%,rgba(124,154,201,.2),transparent 40%),#f4f5f7;color:#202a3c;font-family:Manrope,system-ui,sans-serif}
 body.seo-fast .seo-page{max-width:72rem;padding:2rem 1.5rem 3rem}
 body.seo-fast .seo-topbar{background:rgba(238,240,244,.86);border-bottom:1px solid rgba(255,255,255,.85);backdrop-filter:blur(22px)}
 body.seo-fast .seo-topbar-in{max-width:72rem;gap:1.4rem;padding:1rem 1.5rem}
@@ -815,7 +815,7 @@ body.seo-fast .seo-menu-check{position:absolute;width:1px;height:1px;margin:0;op
 body.seo-fast .seo-menu-btn{order:3;display:inline-flex;align-items:center;gap:.55rem;min-height:44px;margin-left:auto;padding:0 .95rem;border:1px solid rgba(68,87,115,.16);border-radius:14px;background:rgba(255,255,255,.7);color:#202a3c;font-size:.9rem;font-weight:650;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
 body.seo-fast .seo-topbar-in:has(.seo-lang) .seo-menu-btn{margin-left:0}
 body.seo-fast .seo-menu-ico{display:block;width:16px;height:2px;border-radius:2px;background:currentColor;box-shadow:0 5px 0 currentColor,0 -5px 0 currentColor}
-body.seo-fast .seo-menu-check:focus-visible + .seo-menu-btn{outline:2px solid #80642f;outline-offset:3px}
+body.seo-fast .seo-menu-check:focus-visible + .seo-menu-btn{outline:2px solid #2c4a8a;outline-offset:3px}
 body.seo-fast .seo-menu-check:checked + .seo-menu-btn{border-color:#ad8a48;background:#f6f3ec}
 body.seo-fast .seo-lang{order:2;margin-left:auto;padding:.5rem .25rem;font-size:.875rem;color:#526074}
 body.seo-fast .seo-topnav{order:4;display:none;width:100%;max-width:none;grid-template-columns:1fr 1fr;gap:.4rem;margin:0;padding:.25rem 0 .2rem;overflow:visible;white-space:normal;font-size:.95rem}
@@ -866,15 +866,15 @@ body.seo-fast .seo-more summary{display:flex;align-items:center;gap:.6rem;min-he
 body.seo-fast .seo-more summary::-webkit-details-marker{display:none}
 body.seo-fast .seo-more summary::after{content:"";width:8px;height:8px;margin-left:auto;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
 body.seo-fast .seo-more[open] summary::after{transform:rotate(-135deg)}
-body.seo-fast .seo-more summary:focus-visible{outline:2px solid #80642f;outline-offset:3px}
+body.seo-fast .seo-more summary:focus-visible{outline:2px solid #2c4a8a;outline-offset:3px}
 body.seo-fast .seo-more > .seo-table-scroll{margin-top:.6rem}
 body.seo-fast .seo-note-more p{margin:.6rem 0 0;font-size:.9rem}
 body.seo-fast .seo-chart figcaption{justify-content:flex-start;text-align:left}
 body.seo-fast .seo-cta{margin-top:2rem}
 body.seo-fast .seo-cta-in{max-width:72rem;margin:0 auto;border:1px solid #fff;border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.88),rgba(255,255,255,.5));box-shadow:0 16px 45px -33px rgba(38,52,78,.3),inset 0 1px 0 rgba(255,255,255,.7);color:#202a3c}
 body.seo-fast .seo-cta p,body.seo-fast .seo-cta strong{color:#202a3c}
-body.seo-fast .seo-cta a.seo-btn{min-height:44px;display:inline-flex;align-items:center;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c}
-body.seo-fast .seo-cta a.seo-btn:hover{border-color:#ad8a48;background:#fff;color:#202a3c}
+body.seo-fast .seo-cta a.seo-btn{min-height:46px;display:inline-flex;align-items:center;border:0;border-radius:999px;padding:0 1.4rem;background:linear-gradient(135deg,#2c4a8a,#1e3a6e);color:#fff;font-weight:650}
+body.seo-fast .seo-cta a.seo-btn:hover{background:linear-gradient(135deg,#3558a0,#24447f);color:#fff}
 body.seo-fast .seo-foot{max-width:none;margin:2rem 0 0;padding:0;font-size:.8125rem;color:#526074}
 body.seo-fast .seo-foot-in{max-width:72rem;margin:0 auto;padding:1.5rem 1.25rem calc(2.25rem + env(safe-area-inset-bottom,0px));border:1px solid rgba(255,255,255,.9);border-bottom:0;border-radius:32px 32px 0 0;background:linear-gradient(130deg,rgba(255,255,255,.72),rgba(255,255,255,.4))}
 body.seo-fast .seo-foot-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.25rem;margin:0 0 1.25rem}
@@ -891,7 +891,7 @@ body.seo-fast .seo-lang-seg{order:2;position:relative;margin-left:auto}
 body.seo-fast .seo-lang-seg summary{display:inline-flex;align-items:center;justify-content:center;gap:.25rem;min-width:44px;min-height:44px;border-radius:14px;color:#526074;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;user-select:none}
 body.seo-fast .seo-lang-seg summary::-webkit-details-marker{display:none}
 body.seo-fast .seo-lang-seg summary:hover,body.seo-fast .seo-lang-seg[open] summary{color:#80642f}
-body.seo-fast .seo-lang-seg summary:focus-visible{outline:2px solid #80642f;outline-offset:2px}
+body.seo-fast .seo-lang-seg summary:focus-visible{outline:2px solid #2c4a8a;outline-offset:2px}
 body.seo-fast .seo-lang-code{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid rgba(128,100,47,.4);border-radius:999px;background:rgba(173,138,72,.1);color:#202a3c;font-size:9.5px;font-weight:700;letter-spacing:.02em;line-height:1}
 body.seo-fast .seo-lang-seg summary svg{width:12px;height:12px;transition:transform .15s}
 body.seo-fast .seo-lang-seg[open] summary svg{transform:rotate(180deg)}
@@ -927,7 +927,7 @@ body.seo-fast .seo-404-back:hover{border-color:#ad8a48}
 body.seo-fast .seo-404-lead{max-width:34rem;margin:0 0 1.25rem;font-size:1.05rem}
 body.seo-fast .seo-search{display:flex;gap:.5rem;margin:0 0 1.75rem}
 body.seo-fast .seo-search input{flex:1;min-width:0;min-height:48px;padding:0 1rem;text-overflow:ellipsis;border:1px solid rgba(68,87,115,.2);border-radius:14px;background:rgba(255,255,255,.85);color:#202a3c;font:inherit;font-size:16px}
-body.seo-fast .seo-search input:focus-visible{outline:2px solid #80642f;outline-offset:2px}
+body.seo-fast .seo-search input:focus-visible{outline:2px solid #2c4a8a;outline-offset:2px}
 body.seo-fast .seo-search button{min-height:48px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font:inherit;font-size:.95rem;font-weight:650;cursor:pointer}
 body.seo-fast .seo-search button:hover{border-color:#ad8a48}
 body.seo-fast .seo-404-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.75rem 0 1.5rem;padding:0;list-style:none}
@@ -946,15 +946,15 @@ body.seo-fast .seo-search-btn ~ .seo-lang,body.seo-fast .seo-search-btn ~ .seo-m
 body.seo-fast .seo-404-home{display:inline-flex;align-items:center;min-height:44px;padding:0 1.25rem;border:1px solid #d3c4a3;border-radius:14px;background:#f6f3ec;color:#202a3c;font-weight:650;text-decoration:none!important}
 body.seo-fast .seo-404-home:hover{border-color:#ad8a48;color:#202a3c}
 /* ── Бегущая строка курсов: стеклянная капсула бренда (скрипт /seo-ticker.js, данные /api/v1/ticker/live) ── */
-body.seo-fast .seo-ticker{position:relative;height:38px;background:linear-gradient(180deg,rgba(255,252,246,.94),rgba(250,247,240,.82));border-bottom:1px solid rgba(173,138,72,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 30px -24px rgba(38,52,78,.4);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+body.seo-fast .seo-ticker{position:relative;height:38px;background:linear-gradient(180deg,rgba(250,252,255,.94),rgba(246,249,253,.82));box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 30px -24px rgba(38,52,78,.4);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
 body.seo-fast .seo-tk-view{height:100%;max-width:72rem;margin:0 auto;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
 body.seo-fast .seo-tk-track{display:flex;width:max-content;height:100%;animation:seo-tk-run var(--seo-tk-run,60s) linear infinite;will-change:transform}
 body.seo-fast .seo-tk-view:hover .seo-tk-track,body.seo-fast .seo-tk-view:focus-within .seo-tk-track,body.seo-fast .seo-tk-view:active .seo-tk-track{animation-play-state:paused}
 body.seo-fast .seo-tk-set{display:flex;align-items:center;flex:0 0 auto}
 body.seo-fast .seo-tk{display:inline-flex;align-items:center;gap:.45rem;height:100%;padding:0 .2rem 0 .9rem;white-space:nowrap;color:#202a3c;text-decoration:none;font-size:.8125rem}
-body.seo-fast .seo-tk::after{content:"";flex:0 0 auto;width:4px;height:4px;margin-left:.7rem;border-radius:1px;background:#ad8a48;opacity:.5}
+body.seo-fast .seo-tk::after{content:"";flex:0 0 auto;width:4px;height:4px;margin-left:.7rem;border-radius:50%;background:#7c9ac9;opacity:.6}
 body.seo-fast .seo-tk:hover{color:#80642f}
-body.seo-fast .seo-tk:focus-visible{outline:2px solid #80642f;outline-offset:-3px;border-radius:8px}
+body.seo-fast .seo-tk:focus-visible{outline:2px solid #2c4a8a;outline-offset:-3px;border-radius:8px}
 body.seo-fast .seo-tk-l{color:#59697f;font-size:.75rem;font-weight:500}
 body.seo-fast .seo-tk-v{font-size:.875rem;font-weight:650;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 body.seo-fast .seo-tk-s{color:#59697f;font-size:.75rem}
@@ -967,6 +967,29 @@ body.seo-fast .seo-tk-down{color:#c02626;background:rgba(220,38,38,.08);border-c
 @media(prefers-reduced-motion:reduce){body.seo-fast .seo-tk-track{animation:none}body.seo-fast .seo-tk-view{overflow-x:auto}body.seo-fast .seo-tk-set + .seo-tk-set{display:none}}
 @media print{body.seo-fast .seo-ticker{display:none}}
 @media(prefers-reduced-motion:reduce){body.seo-fast *{transition:none!important}}
+
+/* ── Мост на платформу (круг 6): быстрая ссылка должна вести дальше, а не заканчиваться. ──
+   Кнопка в первом экране, плитки итогов нажимаются целиком, снизу плавающая плашка с одним действием. Движутся только transform и opacity. */
+body.seo-fast{padding-bottom:5.5rem}
+body.seo-fast .seo-bridge-hero{display:inline-flex;align-items:center;gap:.65rem;min-height:50px;margin-top:1.1rem;padding:0 1.5rem;border-radius:999px;background:linear-gradient(135deg,#2c4a8a,#1e3a6e);color:#fff!important;font-weight:650;font-size:1rem;text-decoration:none!important;box-shadow:0 16px 28px -18px rgba(30,58,110,.8),inset 0 1px 0 rgba(255,255,255,.22);transition:transform .2s ease,box-shadow .25s ease}
+body.seo-fast .seo-bridge-hero svg{width:18px;height:18px;transition:transform .2s ease}
+body.seo-fast .seo-bridge-hero:hover,body.seo-fast .seo-bridge-hero:focus-visible{transform:translateY(-2px);box-shadow:0 20px 32px -18px rgba(30,58,110,.9),inset 0 1px 0 rgba(255,255,255,.28)}
+body.seo-fast .seo-bridge-hero:hover svg{transform:translateX(3px)}
+body.seo-fast .seo-bridge-hint{margin:.55rem 0 0;font-size:.875rem;color:#526074}
+body.seo-fast a.seo-tile{display:block;position:relative;color:inherit;text-decoration:none!important;transition:transform .2s ease,box-shadow .25s ease}
+body.seo-fast a.seo-tile::after{content:"";position:absolute;top:.9rem;right:.95rem;width:9px;height:9px;border-top:2px solid #7c9ac9;border-right:2px solid #7c9ac9;transform:rotate(45deg);opacity:.55;transition:transform .2s ease,opacity .2s ease}
+body.seo-fast a.seo-tile:hover,body.seo-fast a.seo-tile:focus-visible{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(30,58,110,.55)}
+body.seo-fast a.seo-tile:hover::after{opacity:1;transform:translate(2px,-2px) rotate(45deg)}
+body.seo-fast .seo-bridge-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:center;padding:.7rem 1rem calc(.7rem + env(safe-area-inset-bottom,0px));pointer-events:none;opacity:0;transform:translateY(16px);animation:seoBridgeIn .45s ease 1.4s forwards}
+body.seo-fast .seo-bridge-in{display:flex;align-items:center;gap:.9rem;width:100%;max-width:44rem;padding:.55rem .6rem .55rem 1.2rem;border-radius:999px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 18px 40px -22px rgba(30,38,56,.55),inset 0 1px 0 #fff;pointer-events:auto}
+body.seo-fast .seo-bridge-text{flex:1;min-width:0;font-size:.9rem;line-height:1.3;color:#202a3c}
+body.seo-fast .seo-bridge-text b{display:block;font-size:.95rem}
+body.seo-fast .seo-bridge-go{flex:none;display:inline-flex;align-items:center;gap:.4rem;min-height:46px;padding:0 1.2rem;border-radius:999px;background:linear-gradient(135deg,#2c4a8a,#1e3a6e);color:#fff!important;font-weight:650;text-decoration:none!important;white-space:nowrap}
+body.seo-fast .seo-bridge-short{display:none}
+@media(max-width:520px){body.seo-fast .seo-bridge-text span{display:none}body.seo-fast .seo-bridge-long{display:none}body.seo-fast .seo-bridge-short{display:inline}body.seo-fast .seo-bridge-hero{display:flex;width:100%;justify-content:space-between;padding:0 1.3rem}}
+@keyframes seoBridgeIn{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){body.seo-fast .seo-bridge-bar{animation:none;opacity:1;transform:none}body.seo-fast .seo-bridge-hero,body.seo-fast a.seo-tile{transition:none}}
+@media print{body.seo-fast .seo-bridge-bar,body.seo-fast .seo-bridge-hero{display:none}}
 
 </style>"""
 
@@ -1488,7 +1511,72 @@ def _prepare_quicklink_body(body: str, canonical_path: str) -> str:
         first["loading"] = "eager"
         first["fetchpriority"] = "high"
         first["decoding"] = "async"
+    _add_platform_bridge(soup, parent)
     return str(soup)
+
+
+_BRIDGE_ARROW = (
+    '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" '
+    'stroke-linejoin="round" aria-hidden="true"><path d="M4 10h11M10.5 5l5 5-5 5"/></svg>'
+)
+
+
+def _add_platform_bridge(soup: BeautifulSoup, parent: str) -> None:
+    """Быстрая ссылка ведёт на платформу: кнопка в первом экране, нажимаемые плитки, плавающая плашка.
+
+    Человек из поиска смотрит одно значение; всё остальное (график по годам, сравнение со странами, прогноз) живёт на странице
+    показателя `parent`. Любое касание плитки или кнопки приводит туда сразу. Для страниц без своей карточки показателя
+    цель — главная платформы.
+    """
+    from app.services.locale import get_locale
+
+    en = get_locale() == "en"
+    deep = bool(parent) and parent != "/" and ("/indicator/" in parent or "/region/" in parent)
+    target = parent if deep else "/"
+    if deep:
+        hero_text = "Open the interactive chart" if en else "Открыть интерактивный график"
+        hero_short = "Open the chart" if en else "Открыть график"
+        hint = (
+            "Drag through the years, compare countries, see the forecast. Free."
+            if en else "Листайте по годам, сравнивайте со странами, смотрите прогноз. Бесплатно."
+        )
+        bar_title = "Full history and comparison" if en else "Вся история и сравнение"
+        bar_text = "on the platform, free" if en else "на платформе, бесплатно"
+    else:
+        hero_text = "Open the platform" if en else "Открыть платформу"
+        hero_short = hero_text
+        hint = (
+            "Charts, rankings, comparison and forecasts for dozens of countries. Free."
+            if en else "Графики, рейтинги, сравнения и прогнозы по десяткам стран. Бесплатно."
+        )
+        bar_title = "Charts, rankings, forecasts" if en else "Графики, рейтинги, прогнозы"
+        bar_text = "on the platform, free" if en else "на платформе, бесплатно"
+    bar_go = "Open" if en else "Открыть"
+
+    hero = soup.select_one(".seo-answer")
+    if hero is not None and not hero.select_one(".seo-bridge-hero"):
+        link = BeautifulSoup(
+            f'<a class="seo-bridge-hero" href="{escape(target)}"><span class="seo-bridge-long">{escape(hero_text)}</span>'
+            f'<span class="seo-bridge-short">{escape(hero_short)}</span>{_BRIDGE_ARROW}</a>'
+            f'<p class="seo-bridge-hint">{escape(hint)}</p>',
+            "html.parser",
+        )
+        hero.append(link)
+
+    if deep:
+        # Плитки итогов нажимаются целиком: тап по любой цифре приводит на карточку показателя.
+        for tile in soup.select("div.seo-tile"):
+            tile.name = "a"
+            tile["href"] = target
+
+    if not soup.select_one(".seo-bridge-bar"):
+        bar = BeautifulSoup(
+            '<aside class="seo-bridge-bar" aria-label="' + escape(bar_title) + '"><div class="seo-bridge-in">'
+            f'<div class="seo-bridge-text"><b>{escape(bar_title)}</b><span>{escape(bar_text)}</span></div>'
+            f'<a class="seo-bridge-go" href="{escape(target)}">{escape(bar_go)}{_BRIDGE_ARROW}</a></div></aside>',
+            "html.parser",
+        )
+        soup.append(bar)
 
 
 def _preview_body_urls(body: str, locale: str) -> str:

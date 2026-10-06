@@ -18,6 +18,21 @@ describe('MapTimeline', () => {
     expect(onYearChange).toHaveBeenCalledWith(2022);
   });
 
+  it('бегунок не откатывается, пока родитель (адрес) не успел обновить год: можно отматывать несколько лет подряд', () => {
+    const onYearChange = vi.fn(); // родитель год не меняет, как роутер с задержкой
+    renderPage(
+      <MapTimeline years={[2018, 2019, 2020, 2021, 2022]} year={2022} onYearChange={onYearChange} metric="wage" />,
+      { path: '/', route: '/' },
+    );
+    const slider = screen.getByRole('slider');
+    fireEvent.change(slider, { target: { value: '2021' } });
+    expect(slider.value).toBe('2021');
+    fireEvent.change(slider, { target: { value: '2019' } });
+    expect(slider.value).toBe('2019');
+    expect(screen.getByTestId('map-timeline-year').textContent).toBe('2019');
+    expect(onYearChange).toHaveBeenLastCalledWith(2019);
+  });
+
   it('не рисуется, если лет меньше двух', () => {
     const { container } = renderPage(
       <MapTimeline years={[2020]} year={2020} onYearChange={() => {}} metric="wage" />,
