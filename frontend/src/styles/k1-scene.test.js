@@ -72,8 +72,19 @@ describe('k1-scene.css', () => {
     const base = stripped.match(/\.fe-scene-hero \{[^}]*\}/)[0];
     expect(base).toMatch(/mask-image:[^;]*radial-gradient\(ellipse/);
     expect(base).toMatch(/mask-composite:\s*intersect, intersect/);
-    const phone = stripped.match(/@media \(max-width: 767px\) \{\s*\.fe-scene-hero,[\s\S]*?\n\}/)[0];
-    expect(phone).toMatch(/mask-image:[^;]*radial-gradient\(ellipse/);
+  });
+
+  it('круг 6: на телефоне кристаллов героя нет, вместо них стеклянная F; кадр hero-phone убран', () => {
+    expect(stripped).toMatch(/@media \(max-width: 767px\) \{\s*\.fe-scene-hero \{ display: none; \}/);
+    expect(stripped).not.toContain('hero-phone');
+    const f = stripped.match(/\.fe-scene__f \{[^}]*\}/)[0];
+    expect(f).toMatch(/aspect-ratio:\s*1149 \/ 1552/);
+    expect(f).toMatch(/height:\s*min\(64vh, 760px\)/);
+    expect(f).toMatch(/mask-image:/);
+    expect(f).not.toMatch(/mix-blend-mode/);
+    expect(stripped).toMatch(/\.fe-scene__f\.is-ready \{ opacity: var\(--fe-scene-f-opacity, 0\.42\)/);
+    expect(stripped).toMatch(/\.fe-scene__f\[data-fe-f-mode="phone"\] \{ display: none; \}/);
+    expect(stripped).toMatch(/html\[data-fe-lite="on"\] \.fe-scene__f/);
   });
 
   it('круг 6: тёплое пятно сцены одно (альфа ≤ .18), лёд и «роза» холодные, на телефоне лёд .14 и пятно не у левого края', () => {
@@ -98,7 +109,7 @@ describe('k1-scene.css', () => {
     expect(stripped).toMatch(/\.fe-scene \.fe-scene__spot \{ animation: none;/);
   });
 
-  it('круг 5: главная держит кластер целиком в окне, у 404 свой вариант кадра', () => {
+  it('круг 5: базовый кадр целиком в окне, у 404 свой вариант кадра', () => {
     const base = stripped.match(/\.fe-scene-hero \{[^}]*\}/)[0];
     expect(base).toMatch(/--fe-hero-frame-w:\s*min\(32vw, 480px\)/);
     expect(base).toMatch(/--fe-hero-frame-right:\s*-1\.2vw/);

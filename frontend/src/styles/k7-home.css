@@ -523,4 +523,77 @@
   .fe-dashboard .fe-country-row:hover { transform: none; }
 }
 html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opacity: 0; }
-/* Положение кадра граней героя на главной (круг 5) задаёт только k1-scene.css: --fe-hero-frame-*; здесь переопределений нет. */
+/* ── 7. Стеклянная F (круг 6, зона B) ────────────────────────────────────── */
+/*
+ * Объект сцены главной: большая F из холодного стекла с тонкой золотой кромкой (кадры /brand/emblem-f-2x.webp 1149x1552 и
+ * /brand/emblem-f-phone.webp 888x1200, сгенерированы и вырезаны по альфе; prompt в public/brand/README-prompts.md).
+ * Кристаллов героя на главной больше нет (раньше они налезали на заголовок, а арт forecast-glass был 960 px при показе 900).
+ * Картинка подключается только когда сцена поставила html[data-fe-f="on"] (после load и простоя браузера), поэтому не мешает LCP.
+ *  - от 1024 px: внутри плиты планеты, за шаром и списком стран (слой z-index -1 в стеке плиты: выше её стекла, ниже содержимого),
+ *    высота около 70 % первого экрана, не выше 760 px (2x от размера показа), прозрачность .42, обычное смешение, маска растворяет
+ *    левый и нижний края. Заголовок, эйбрау, лид и поиск стоят в левой колонке и под F не лежат;
+ *  - до 1024 px: справа от заголовка, лида и эйбрау (их ширина сужена на ширину F), поиск ниже F.
+ */
+.fe-dashboard .fe-hero-planet [data-block="home-workbench"] { isolation: isolate; }
+@media (min-width: 1024px) {
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-planet [data-block="home-workbench"]::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    right: 3%;
+    top: 16px;
+    height: min(calc(100% - 32px), 70svh, 760px);
+    aspect-ratio: 1149 / 1552;
+    pointer-events: none;
+    background: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
+    opacity: 0.42;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 26%), linear-gradient(180deg, #000 66%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent 0, #000 26%), linear-gradient(180deg, #000 66%, transparent 100%);
+    mask-composite: intersect;
+    animation: fe-k7-f-in 0.8s ease both;
+  }
+}
+@media (max-width: 1023px) {
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text > .fe-hero-eyebrow,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 128px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(28px, 8.2vw, 32px); }
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 4px;
+    width: 112px;
+    height: 152px;
+    pointer-events: none;
+    background: url('/brand/emblem-f-phone.webp') center / contain no-repeat;
+    opacity: 0.5;
+    animation: fe-k7-f-in 0.8s ease both;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text > .fe-hero-eyebrow,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 208px); }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 { font-size: clamp(36px, 5vw, 46px); }
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after { width: 180px; height: 243px; right: 0; }
+}
+@keyframes fe-k7-f-in { from { opacity: 0; } }
+:root[data-theme='dark'] .fe-dashboard [data-block="home-workbench"]::before,
+:root.dark .fe-dashboard [data-block="home-workbench"]::before,
+:root[data-theme='dark'] .fe-dashboard .fe-hero-text::after,
+:root.dark .fe-dashboard .fe-hero-text::after,
+html[data-fe-lite='on'] .fe-dashboard .fe-hero-text::after,
+html[data-fe-lite='on'] .fe-dashboard [data-block="home-workbench"]::before { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after,
+  html[data-fe-f="on"] .fe-dashboard [data-block="home-workbench"]::before { animation: none; }
+}
+html[data-fe-motion='off'] .fe-dashboard .fe-hero-text::after,
+html[data-fe-motion='off'] .fe-dashboard [data-block="home-workbench"]::before { animation: none; }
+@media print {
+  .fe-dashboard .fe-hero-text::after,
+  .fe-dashboard [data-block="home-workbench"]::before { display: none; }
+}
+/* Положение кадра граней героя (страна и 404) задаёт только k1-scene.css: --fe-hero-frame-*; здесь переопределений нет. */

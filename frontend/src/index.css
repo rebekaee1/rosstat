@@ -275,17 +275,6 @@
   margin-bottom: 32px;
   padding-block: 20px 28px;
 }
-.fe-dashboard [data-block="home-hero"]::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  pointer-events: none;
-  inset: -50px -30px -10px 38%;
-  background: url('/art/quicklinks/forecast-glass.webp') center / cover no-repeat;
-  mask-image: linear-gradient(90deg, transparent, #0008 30%, #000A 80%, transparent), linear-gradient(0deg, transparent, #000 16%, #000 84%, transparent);
-  mask-composite: intersect;
-  opacity: var(--fe-art-opacity);
-}
 .fe-dashboard [data-block="home-hero"] h1 {
   max-width: 760px;
   font-size: clamp(34px, 4.3vw, 64px);
@@ -359,7 +348,6 @@
 @media (max-width: 639px) {
   .fe-dashboard { padding-top: 82px; }
   .fe-dashboard [data-block="home-hero"] { padding-top: 10px; margin-bottom: 18px; }
-  .fe-dashboard [data-block="home-hero"]::before { display: none; }
   .fe-dashboard [data-block="home-data-scope"] { padding: 20px; }
   .fe-dashboard [data-block="home-workbench"] { padding: 14px; border-radius: 22px; }
   .fe-dashboard [data-block="home-map-controls"] { padding: 4px 2px 14px; margin-bottom: 14px; }
