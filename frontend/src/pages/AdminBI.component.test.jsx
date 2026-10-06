@@ -50,3 +50,47 @@ describe('AdminBI фоновая сборка', () => {
     expect(screen.queryByText(/Считаем витрины/)).toBeNull();
   }, 10000);
 });
+
+describe('AdminBI блок «Приложение»', () => {
+  const snapshot = (pwa) => ({
+    generated_at: '2026-10-06T00:00:00',
+    period: { label: '7 дней', from: '2026-09-30', to: '2026-10-06' },
+    cache_meta: { built_at: '2026-10-06T00:00:00', age_sec: 10, stale: false, refreshing: false },
+    metric_tree: { north_star: {}, drivers: [] },
+    ...(pwa ? { pwa } : {}),
+  });
+
+  it('показывает установки, конверсию и запуски из иконки', async () => {
+    mockApiGet([
+      ['/auth/me', { user: { id: 1, email: 'admin@x.ru', is_admin: true } }],
+      [/\/admin\/bi\/dashboard/, snapshot({
+        period: { label: '7 дней', from: '2026-09-30', to: '2026-10-06' },
+        totals: {
+          prompt_views: 40, prompt_viewers: 30, ios_hint_views: 5, entry_clicks: 2,
+          prompt_accepts: 6, native_accepted: 4, installed_events: 4, installs: 3,
+          dismissals: 12, launch_visitors: 7, launch_sessions: 9, conversion_pct: 10,
+        },
+        daily: [
+          { date: '2026-10-05', prompt_views: 20, installs: 1, dismissals: 6, launch_visitors: 3, launch_sessions: 4 },
+          { date: '2026-10-06', prompt_views: 20, installs: 2, dismissals: 6, launch_visitors: 4, launch_sessions: 5 },
+        ],
+      })],
+    ]);
+    renderPage(<AdminBI />, { path: '/admin/bi', route: '/admin/bi' });
+    expect(await screen.findByText('Приложение: установки и запуски')).toBeTruthy();
+    expect(screen.getByText('Установили')).toBeTruthy();
+    expect(screen.getByText('10%')).toBeTruthy();
+    expect(screen.getByText('Запуски из иконки')).toBeTruthy();
+    expect(screen.getByText(/отказов: 12/)).toBeTruthy();
+  });
+
+  it('старый снимок без витрины pwa не ломает страницу', async () => {
+    mockApiGet([
+      ['/auth/me', { user: { id: 1, email: 'admin@x.ru', is_admin: true } }],
+      [/\/admin\/bi\/dashboard/, snapshot(null)],
+    ]);
+    renderPage(<AdminBI />, { path: '/admin/bi', route: '/admin/bi' });
+    expect(await screen.findByText('Приложение: установки и запуски')).toBeTruthy();
+    expect(screen.getByText(/Появится после пересчёта/)).toBeTruthy();
+  });
+});

@@ -417,6 +417,7 @@ def test_digest_is_sent_without_inventory_block_on_failure(monkeypatch, failure)
     monkeypatch.setattr(sched.settings, "analytics_enabled", False, raising=False)
     monkeypatch.setattr(sched, "_user_stats_lines", no_lines)
     monkeypatch.setattr(sched, "_search_demand_lines", no_lines)
+    monkeypatch.setattr(sched, "_pwa_install_lines", no_lines)
     monkeypatch.setattr(sched, "analytics_session", fake_session)
     monkeypatch.setattr(sched, "send_telegram_digest", fake_digest)
     monkeypatch.setattr(inventory, "build_inventory", broken_inventory)
@@ -425,3 +426,26 @@ def test_digest_is_sent_without_inventory_block_on_failure(monkeypatch, failure)
     assert len(sent) == 1
     assert "дайджест за" in sent[0] and "строка дайджеста" in sent[0]
     assert "Датасет" not in sent[0]
+
+
+def test_digest_pwa_line_format(monkeypatch):
+    """Одна строка про приложение: установки (люди) и запуски из значка."""
+    from contextlib import asynccontextmanager
+    from datetime import date
+
+    import app.services.analytics_marts as marts
+    import app.tasks.analytics_scheduler as sched
+
+    @asynccontextmanager
+    async def fake_session():
+        yield object()
+
+    async def fake_mart(db, period):
+        assert period.start_date == period.end_date == date(2026, 10, 5)
+        return {"totals": {"installs": 3, "launch_visitors": 7}}
+
+    monkeypatch.setattr(sched, "analytics_session", fake_session)
+    monkeypatch.setattr(marts, "mart_pwa_installs", fake_mart)
+    lines = asyncio.run(sched._pwa_install_lines(date(2026, 10, 5)))
+    assert len(lines) == 1
+    assert "Установок приложения вчера: 3 (запусков из иконки: 7)" in lines[0]

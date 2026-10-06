@@ -167,6 +167,20 @@ async def _search_demand_lines(report_date: date) -> list[str]:
     return lines
 
 
+async def _pwa_install_lines(report_date: date) -> list[str]:
+    """Одна строка про приложение за день (витрина mart_pwa_installs, МСК-сутки)."""
+    from app.services.analytics_marts import mart_pwa_installs
+    from app.services.analytics_period import resolve_period
+
+    async with analytics_session() as db:
+        data = await mart_pwa_installs(db, resolve_period("custom", report_date, report_date))
+    totals = data["totals"]
+    return [
+        f"📲 Установок приложения вчера: {totals['installs']} "
+        f"(запусков из иконки: {totals['launch_visitors']})"
+    ]
+
+
 async def _metrika_goal_lines(report_date: date) -> list[str]:
     """Достижения всех целей счётчика за указанный день (для дайджеста CTA).
 
@@ -298,6 +312,10 @@ async def telegram_daily_digest_job() -> None:
         parts += await _search_demand_lines(yesterday)
     except Exception:
         logger.warning("Telegram digest: search demand failed", exc_info=True)
+    try:
+        parts += await _pwa_install_lines(yesterday)
+    except Exception:
+        logger.warning("Telegram digest: PWA installs failed", exc_info=True)
     if settings.analytics_enabled and settings.yandex_metrika_read_token:
         try:
             parts += await _metrika_goal_lines(yesterday)

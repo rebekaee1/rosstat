@@ -203,7 +203,7 @@ ym(107136069, 'init', {
 | `pwa_install_prompt_dismiss` | `PwaInstallPrompt` | «Не сейчас» или крестик, откладывает показ 3/7/14/30 дней | `platform`, `dismiss_count` |
 | `pwa_install_native_accepted` / `pwa_install_native_dismissed` | `lib/pwa.js` | выбор в системном окне установки (Android) | `platform` |
 | `pwa_installed` | `lib/pwa.js` | событие браузера `appinstalled` | `platform` |
-| `pwa_app_launch` | `lib/pwa.js` | запуск из установленного приложения, раз за сессию | `platform` |
+| `pwa_app_launch` | `lib/pwa.js` | запуск из установленного приложения, раз за сессию (в BI: «запуски из иконки», витрина `mart_pwa_installs`; отдельного `pwa_standalone_launch` нет) | `platform` |
 | `pwa_install_entry_click` | `PwaInstallEntry` (подвал) | клик «Установить приложение» | `platform` |
 | `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
 | `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |
