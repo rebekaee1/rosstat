@@ -2167,7 +2167,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v11:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v12:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)

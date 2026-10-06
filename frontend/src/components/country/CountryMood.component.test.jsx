@@ -5,17 +5,17 @@ import { moodColors } from '../../lib/countryMood';
 
 describe('moodColors', () => {
   it('даёт два цвета флага по ISO-коду в любом регистре', () => {
-    expect(moodColors('de')).toEqual(['#C9A24D', '#FFCE00']);
-    expect(moodColors('FR')).toEqual(['#0055A4', '#B08A3E']);
+    expect(moodColors('de')).toEqual(['#7C9AC9', '#2C4A8A']);
+    expect(moodColors('FR')).toEqual(['#0055A4', '#2C4A8A']);
     expect(moodColors('US')).toHaveLength(2);
   });
 
-  it('неизвестная страна получает золото бренда, а не пустоту', () => {
-    expect(moodColors('ZZ')).toEqual(['#C9A24D', '#B08A3E']);
-    expect(moodColors(undefined)).toEqual(['#C9A24D', '#B08A3E']);
+  it('неизвестная страна получает синий бренда, а не пустоту', () => {
+    expect(moodColors('ZZ')).toEqual(['#7C9AC9', '#2C4A8A']);
+    expect(moodColors(undefined)).toEqual(['#7C9AC9', '#2C4A8A']);
   });
 
-  it('красных и розовых пятен нет: они уходят в тёплое золото бренда', () => {
+  it('красных и розовых пятен нет: они уходят в холодный синий бренда', () => {
     for (const code of ['AL', 'AT', 'DK', 'JP', 'PL', 'CH', 'TR', 'GE', 'LV', 'CA', 'ES', 'US', 'DE']) {
       for (const color of moodColors(code)) {
         const n = parseInt(color.slice(1), 16);
@@ -38,8 +38,8 @@ describe('CountryMood и CrystalDefs', () => {
     const { getByTestId } = render(<CountryMood code="DE" />);
     const mood = getByTestId('country-mood');
     expect(mood.getAttribute('aria-hidden')).toBe('true');
-    expect(mood.style.getPropertyValue('--mood-a')).toBe('#C9A24D');
-    expect(mood.style.getPropertyValue('--mood-b')).toBe('#FFCE00');
+    expect(mood.style.getPropertyValue('--mood-a')).toBe('#7C9AC9');
+    expect(mood.style.getPropertyValue('--mood-b')).toBe('#2C4A8A');
   });
 
   it('градиент кристалла объявлен с id, на который ссылается CSS силуэта', () => {

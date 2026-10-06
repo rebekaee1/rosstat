@@ -62,7 +62,7 @@ def _public_annual_values(
 @router.get("/{code}/forecast", response_model=ForecastResponse)
 async def get_forecast(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    cache_key = await versioned_key(code, "forecast:partial-v2")
+    cache_key = await versioned_key(code, "forecast:partial-v3")
     cached = await cache_get(cache_key)
     if cached:
         return cached

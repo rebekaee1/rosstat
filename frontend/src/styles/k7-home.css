@@ -525,7 +525,7 @@
 html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opacity: 0; }
 /* ── 7. Стеклянная F (круг 6, зона B) ────────────────────────────────────── */
 /*
- * Объект сцены главной: гладкая стеклянная F (кадры /brand/emblem-f-2x.webp 1300x1519 и /brand/emblem-f-phone.webp 856x1000 с альфой;
+ * Объект сцены главной: гладкая стеклянная F (кадры /brand/emblem-f-2x.webp 1300x1519 для крупных сцен и /brand/emblem-f-phone.webp 856x1000 для главной, с альфой;
  * сгенерированы по образцу прежней forecast-glass, форма и стекло те же; prompt в public/brand/README-prompts.md).
  * Картинка подключается только когда сцена поставила html[data-fe-f="on"] (после load и простоя браузера), поэтому не мешает LCP.
  *  - от 1024 px: стоит в карточке «Платформа в цифрах» (она на всю ширину под планетой и «Миром сейчас») справа, как предмет на витрине;
@@ -542,7 +542,7 @@ html[data-fe-motion='off'] .fe-dashboard .fe-tool__sheen { animation: none; opac
     height: min(calc(100% - 28px), 320px);
     aspect-ratio: 1300 / 1519;
     pointer-events: none;
-    background: url('/brand/emblem-f-2x.webp') center / contain no-repeat;
+    background: url('/brand/emblem-f-phone.webp') center / contain no-repeat;
     animation: fe-k7-f-in 0.8s ease both;
   }
 }

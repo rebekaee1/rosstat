@@ -671,7 +671,7 @@ def _default_keywords() -> str:
 # Inline critical CSS для SSR-контента (.seo-page): без него при hard refresh
 # виден «голый» HTML до гидратации React — Tailwind bundle не стилизует .seo-page.
 SEO_CRITICAL_CSS = """<style id="seo-critical">
-html{background:#EEF0F4;color-scheme:light}
+html{background:#F4F5F7;color-scheme:light}
 body{margin:0;background:#F8F9FC;color:#1A1A2E;font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 .seo-page{box-sizing:border-box;width:100%;max-width:56rem;margin:0 auto;padding:2rem 1rem 3rem}
 .seo-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.3em;color:#B8942F;font-weight:600;margin:0 0 .75rem}
@@ -805,7 +805,7 @@ body.seo-fast .seo-cta a.seo-btn:hover{background:#fff;color:#263044}
 
 /* ── Единый вид чистых SSR-страниц: стеклянная капсула, плитки, сворачивание ──
    Только body.seo-fast (include_app=False). Токены как у приложения:
-   жемчуг #EEF0F4, золото #AD8A48, карточки 24px, контролы 12–14px. */
+   фон #F4F5F7, золото #AD8A48, карточки 24px, контролы 12–14px. */
 body.seo-fast .seo-topbar{position:sticky;top:.6rem;z-index:30;width:calc(100% - 2rem);max-width:72rem;margin:.6rem auto 0;border:1px solid rgba(255,255,255,.92);border-radius:24px;background:linear-gradient(130deg,rgba(255,255,255,.9),rgba(255,255,255,.62));-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 16px 45px -33px rgba(38,52,78,.4),inset 0 1px 0 rgba(255,255,255,.7)}
 body.seo-fast .seo-topbar-in{max-width:none;margin:0;padding:.55rem .8rem .55rem 1rem;gap:.4rem .75rem;flex-wrap:wrap;align-items:center}
 body.seo-fast .seo-brand{order:1;font-size:1.3rem}

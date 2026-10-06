@@ -89,7 +89,7 @@
   right: -12%;
   width: min(60%, 640px);
   aspect-ratio: 1;
-  background: radial-gradient(closest-side, var(--fe-glow-gold, rgba(201, 162, 77, 0.17)), transparent 72%);
+  background: radial-gradient(closest-side, var(--fe-glow-gold, rgba(124, 154, 201, 0.17)), transparent 72%);
   pointer-events: none;
 }
 .z5-hero > * { position: relative; }

@@ -96,7 +96,7 @@ def test_pure_ssr_pages_have_no_splash():
 def test_html_background_and_light_scheme_prevent_black_flash():
     from app.services.seo_renderer import SEO_CRITICAL_CSS, render_not_found_html
 
-    assert "html{background:#EEF0F4;color-scheme:light}" in SEO_CRITICAL_CSS
+    assert "html{background:#F4F5F7;color-scheme:light}" in SEO_CRITICAL_CSS
     assert '<meta name="color-scheme" content="light">' in render_not_found_html()
 
 

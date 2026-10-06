@@ -72,7 +72,7 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     // Карточка на всю ширину: F справа, кадр 2x по альфе, подключается только по атрибуту после load; за списком рейтинга F нет.
     expect(k7).not.toMatch(/home-workbench"\]::before/);
     const plate = k7.match(/html\[data-fe-f="on"\] \.fe-dashboard \[data-block='home-data-scope'\] \.fe-scope__f \{[^}]*\}/)[0];
-    expect(plate).toContain("/brand/emblem-f-2x.webp");
+    expect(plate).toContain("/brand/emblem-f-phone.webp");
     expect(plate).toMatch(/aspect-ratio:\s*1300 \/ 1519/);
     expect(plate).toMatch(/height:\s*min\(calc\(100% - 28px\), 320px\)/);
     expect(plate).not.toMatch(/mix-blend-mode/);
