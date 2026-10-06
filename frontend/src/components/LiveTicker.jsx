@@ -287,14 +287,37 @@ export default function LiveTicker() {
   const { deep, dir } = useScrollDirection();
   const hidden = deep && dir === 'down';
   const overFooter = useFooterTone().ticker;
+  // --fe-ticker-h: высота ленты (36 px, на телефоне 28): вместе с --fe-header-h (Navbar) задаёт `html { scroll-padding-top }`.
+  const rootRef = useRef(null);
+  const hasQuotes = snapshots.length > 0;
+  useEffect(() => {
+    const node = rootRef.current;
+    if (!node || typeof document === 'undefined') return undefined;
+    const root = document.documentElement;
+    const apply = () => {
+      const h = Math.ceil(node.offsetHeight);
+      if (h > 0) root.style.setProperty('--fe-ticker-h', `${h}px`);
+    };
+    apply();
+    let observer = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(apply);
+      observer.observe(node);
+    }
+    return () => {
+      observer?.disconnect();
+      root.style.removeProperty('--fe-ticker-h');
+    };
+  }, [hasQuotes]);
   if (snapshots.length === 0) {
     return (
-      <div className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9" />
+      <div ref={rootRef} className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9" />
     );
   }
 
   return (
     <div
+      ref={rootRef}
       className="fe-ticker fixed top-0 inset-x-0 z-[110] h-9 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
       data-hidden={hidden ? 'true' : 'false'}
       data-tone={overFooter ? 'dark' : undefined}

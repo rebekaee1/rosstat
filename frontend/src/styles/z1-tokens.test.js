@@ -184,9 +184,10 @@ describe('круг 6: холодная палитра, графит и сини�
     // флаг без блика и цветного пятна
     expect(css['k2-brand.css']).toMatch(/\.fe-flag--glass::before\s*\{\s*content:\s*none/);
     expect(css['k2-brand.css']).toMatch(/\.fe-flag__drop::after\s*\{\s*content:\s*none/);
-    // док: геммы нет, активный пункт — графитовая плашка
+    // док (круг 6, S): геммы нет, активный пункт — светлый текст и линия 2 px сверху, без плашки
     expect(css['k3-shell.css']).not.toMatch(/fe-dock__gem|fe-mega__tile--gem\s*\{/);
-    expect(css['k3-shell.css']).toMatch(/\.fe-dock__item\.is-active \.fe-dock__icon\s*\{\s*background:\s*var\(--fe-glass-active\)/);
+    expect(css['k3-shell.css']).toMatch(/\.fe-dock__item\.is-active::before\s*\{[^}]*height:\s*2px/);
+    expect(css['k3-shell.css']).not.toMatch(/\.fe-dock__item\.is-active \.fe-dock__icon\s*\{/);
     // лампы плиток «Мир сейчас» нейтральные: ни одной золотой и розовой
     expect(css['k7-home.css']).toMatch(/--k7-lamp-gold:\s*rgb\(196 210 234/);
     expect(css['k7-home.css']).not.toMatch(/--k7-lamp-(gold|rose|mint):\s*rgb\((233|244|172) /);

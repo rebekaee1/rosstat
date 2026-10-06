@@ -84,7 +84,7 @@
   margin-bottom: 20px;
   padding: 24px;
   border-radius: 24px;
-  scroll-margin-top: 116px;
+  scroll-margin-top: 0;
 }
 @media (min-width: 768px) { .w5-section { padding: 32px; } }
 .w5-section__title {
@@ -182,7 +182,7 @@
 
 /* ── Юридические страницы ────────────────────────────────────────────────── */
 .w5-legal > :where(p, ul, ol, h2, h3, div) { max-width: 70ch; }
-.w5-legal h2 { scroll-margin-top: 116px; }
+.w5-legal h2 { scroll-margin-top: 0; }
 .w5-toc {
   margin: 0 0 24px;
   border-radius: 16px;
@@ -354,7 +354,7 @@
   padding: 20px;
   border-radius: 24px;
   background: var(--fe-l1-bg);
-  scroll-margin-top: 116px; box-shadow: var(--fe-card-shadow);
+  scroll-margin-top: 0; box-shadow: var(--fe-card-shadow);
 }
 @media (min-width: 768px) { .x4-card { padding: 24px; } }
 .x4-card--wide { grid-column: 1 / -1; }

@@ -214,6 +214,32 @@ export default function Navbar() {
 
   useEffect(() => () => window.clearTimeout(megaTimer.current), []);
 
+  // --fe-header-h: высота шапки в покое (+ 6 px опускания при прокрутке). Вместе с --fe-ticker-h (её ставит LiveTicker) читается
+  // `html { scroll-padding-top }` в k3-shell.css: якоря и scrollIntoView останавливают заголовок секции ниже шапки.
+  // Сжатую шапку телефона (data-compact) не меряем: запас считается по полному размеру, иначе заголовок мог бы оказаться под ней.
+  useEffect(() => {
+    const node = navRef.current;
+    if (!node || typeof document === 'undefined') return undefined;
+    const root = document.documentElement;
+    const apply = () => {
+      if (node.dataset.compact === 'true') return;
+      const h = Math.ceil(node.offsetHeight);
+      if (h > 0) root.style.setProperty('--fe-header-h', `${h + 6}px`);
+    };
+    apply();
+    let observer = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(apply);
+      observer.observe(node);
+    }
+    window.addEventListener('resize', apply);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', apply);
+      root.style.removeProperty('--fe-header-h');
+    };
+  }, []);
+
   const panelOpen = mobileOpen || calcOpen || megaOpen;
   useEffect(() => {
     if (!panelOpen) return undefined;

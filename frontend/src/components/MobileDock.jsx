@@ -17,7 +17,7 @@ const ITEMS = [
 ];
 
 /**
- * Нижняя док-панель телефона: пять главных разделов под большим пальцем (стеклянная L1-капсула 64 px).
+ * Нижняя док-панель телефона: пять главных разделов под большим пальцем (графитовое стекло, капсула 64 px).
  * Появляется после первой прокрутки, прячется, пока страница едет вниз, и возвращается при движении вверх или остановке.
  * Только на телефоне (до 768 px, CSS); на /admin/* не показывается. Резерв места под ней задаёт `--fe-dock-h`
  * на корне документа (подвал и cookie-значок читают её), пока панель на экране.
@@ -71,7 +71,7 @@ export default function MobileDock() {
                 aria-current={active ? 'page' : undefined}
                 tabIndex={visible ? undefined : -1}
               >
-                <span className="fe-dock__icon" aria-hidden="true"><Icon strokeWidth={1.9} /></span>
+                <span className="fe-dock__icon" aria-hidden="true"><Icon strokeWidth={1.5} /></span>
                 <span className="fe-dock__label">{t(labelKey)}</span>
               </Link>
             </li>
@@ -85,7 +85,7 @@ export default function MobileDock() {
             tabIndex={visible ? undefined : -1}
             onClick={() => window.dispatchEvent(new CustomEvent(OPEN_NAV_MENU_EVENT))}
           >
-            <span className="fe-dock__icon" aria-hidden="true"><Ellipsis strokeWidth={1.9} /></span>
+            <span className="fe-dock__icon" aria-hidden="true"><Ellipsis strokeWidth={1.5} /></span>
             <span className="fe-dock__label">{t('k3.dock.more')}</span>
           </button>
         </li>
