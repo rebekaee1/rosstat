@@ -8,6 +8,7 @@ import {
   Globe2, Map as MapIcon, Maximize2, Minus, Plus,
 } from 'lucide-react';
 import { valueExtent } from '../lib/regionsMapColors';
+import { substantialPolygons } from '../lib/planetAtlas';
 import { formatValue } from '../lib/format';
 import { formatWorldValue } from '../lib/worldApi';
 import {
@@ -80,11 +81,17 @@ function displayFeatureFor(geometry) {
   return displayWorldGeometry(geometry, ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)]);
 }
 
+// Суша мельче градуса не рисуется: у каждой такой кромки обводка 0,9 px шире самого острова и даёт чёрную точку
+// («пыль» у Эгейского и Адриатического морей, на востоке США, в Азовском и Каспийском морях). Крупнейшая часть страны
+// остаётся всегда, поэтому Мальта и Сингапур на месте. Наведение берёт полную геометрию.
+const MIN_DRAW_SPAN_DEGREES = 1;
+
 function shapeFor(geometry, index, path) {
+  const shape = geometry.geometry ? substantialPolygons(geometry.geometry, MIN_DRAW_SPAN_DEGREES) : null;
   return {
     key: `${geometry.id ?? 'x'}-${index}`,
     code: ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)],
-    d: path(geometry) || '',
+    d: path(shape && shape !== geometry.geometry ? { ...geometry, geometry: shape } : geometry) || '',
   };
 }
 

@@ -25,3 +25,22 @@ export function outlineRings(geometry, minSpanDegrees = 0) {
   }
   return rings;
 }
+
+/**
+ * Geometry without dust. Fill and stroke of a ring only a pixel or two wide read as a black or dark-gold speck
+ * (Greek and Croatian islets, Chesapeake bays, Azov and Caspian rocks, Caribbean cays), and they come in swarms in the 50m atlas.
+ * Keeps polygons whose outer ring spans at least `minSpanDegrees`, always keeps the largest one (so Malta, Singapore
+ * or Luxembourg stay painted) and drops small holes. Returns a geometry of the same kind, or the input if it has no polygons.
+ */
+export function substantialPolygons(geometry, minSpanDegrees = 0) {
+  const polygons = geometry?.type === 'Polygon' ? [geometry.coordinates]
+    : geometry?.type === 'MultiPolygon' ? geometry.coordinates : null;
+  if (!polygons || !polygons.length) return geometry;
+  const sized = polygons.map((rings) => ({ rings, span: ringSpanDegrees(rings[0] || []) }));
+  let largest = sized[0];
+  for (const item of sized) if (item.span > largest.span) largest = item;
+  const kept = sized
+    .filter((item) => item === largest || item.span >= minSpanDegrees)
+    .map((item) => item.rings.filter((ring, index) => index === 0 || ringSpanDegrees(ring) >= minSpanDegrees));
+  return kept.length === 1 ? { type: 'Polygon', coordinates: kept[0] } : { type: 'MultiPolygon', coordinates: kept };
+}
