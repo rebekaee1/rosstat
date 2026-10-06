@@ -260,7 +260,7 @@
     },
     {
       "path": "backend/app/api/forecasts.py",
-      "sha256": "f04252970e339ff419c9e62c51e2b795ca13928f414f26abb846e701d810f453",
+      "sha256": "987150a8e6eccc4cce05105beb4534787935841319774a1dc353665fed84d00b",
       "lines": 248
     },
     {
@@ -325,7 +325,7 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "sha256": "b9790eefb5ffa0b111139057dd8f80aa100075a9a108bdac66efc428d884f555",
+      "sha256": "471a2d839db66890ae436432d64208223bd4321807c538d438c23ee6d6860a12",
       "lines": 2538
     },
     {
@@ -1415,7 +1415,7 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "c6a9681e2ff78eab008c27fac8f7c0ae51765ee445d38040de81891f0ab257a4",
+      "sha256": "47b0720c9606499f03a59a05e74d46862f50b4dad2643a0028b25c0f2cdebf8f",
       "lines": 3983
     },
     {
@@ -102960,10 +102960,10 @@
       "operation": "versioned_key",
       "receiver": null,
       "symbol": "app.core.cache.versioned_key",
-      "expression": "versioned_key(code, 'forecast:partial-v2')",
+      "expression": "versioned_key(code, 'forecast:partial-v3')",
       "expression_truncated": false,
       "expression_chars": 42,
-      "ast_sha256": "a2280480f446db1c09a063e298a280ca687d79d0655a75914c2cf920fa6b9de3"
+      "ast_sha256": "235cc207ff2b02949dde3321213afdcf0d592ae9fb052e3a1302bdece0397d19"
     },
     {
       "path": "backend/app/api/forecasts.py",
@@ -106393,10 +106393,10 @@
       "operation": "versioned_key",
       "receiver": null,
       "symbol": "app.core.cache.versioned_key",
-      "expression": "versioned_key('world', f'data:v11:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:{date_from}:{date_to}:{get_locale()}')",
+      "expression": "versioned_key('world', f'data:v12:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:{date_from}:{date_to}:{get_locale()}')",
       "expression_truncated": false,
       "expression_chars": 165,
-      "ast_sha256": "9be74f82023d1780c7979d1061bb3c99e81b50326e245bd3036dac6a9921ecf7"
+      "ast_sha256": "fe470bfcdbf06d6a4984425fbabf28e36ea7f66e3f39e5889cbd436df0ec611c"
     },
     {
       "path": "backend/app/api/world.py",
