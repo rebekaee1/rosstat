@@ -81,4 +81,23 @@ describe('k1-scene.css', () => {
     expect(stripped).toMatch(/\.fe-scene \{ --fe-scene-ice: rgba\(204, 222, 250, 0\.14\); \}/);
     expect(stripped).toMatch(/\.fe-scene__lamp--ice \{ left: 8vw;/);
   });
+
+  it('круг 5: пятна и блики без blur и backdrop-filter, гаснут при Save-Data и не плавают на телефоне', () => {
+    expect(stripped).not.toMatch(/backdrop-filter\s*:\s*blur/);
+    for (const name of ['gold', 'sapphire', 'ice', 'peach']) {
+      const rule = stripped.match(new RegExp(`\\.fe-scene__spot--${name} \\{[^}]*\\}`))[0];
+      expect(rule).toMatch(/transparent 82%/);
+    }
+    expect(stripped).toMatch(/\.fe-scene__spot \{[^}]*mask-image:\s*radial-gradient\(closest-side/);
+    expect(stripped).toMatch(/html\[data-fe-lite="on"\] \.fe-scene__spots/);
+    expect(stripped).toMatch(/html\[data-fe-lite="on"\] \.fe-scene__glints/);
+    expect(stripped).toMatch(/\.fe-scene \.fe-scene__spot \{ animation: none;/);
+  });
+
+  it('круг 5: главная держит кластер целиком в окне, у 404 свой вариант кадра', () => {
+    const base = stripped.match(/\.fe-scene-hero \{[^}]*\}/)[0];
+    expect(base).toMatch(/--fe-hero-frame-w:\s*min\(32vw, 480px\)/);
+    expect(base).toMatch(/--fe-hero-frame-right:\s*-1\.2vw/);
+    expect(stripped).toMatch(/\.fe-scene-hero\[data-fe-hero="notfound"\] \{[^}]*--fe-hero-frame-right: 3vw/);
+  });
 });

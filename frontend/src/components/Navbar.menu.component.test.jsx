@@ -324,5 +324,15 @@ describe('Navbar K3: капсула, сжатие на телефоне, «Ещ�
     // Меню закрылось, чтобы настройки не оказались под шторкой.
     expect(document.getElementById('fe-nav-mobile-menu')).toBeNull();
   });
+
+  it('открытая шторка не снимает сжатие шапки: за затемнением она остаётся на месте, а не съезжает «второй шапкой»', async () => {
+    renderNav();
+    const nav = screen.getByRole('navigation');
+    await scrollTo(300);
+    expect(nav.getAttribute('data-compact')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    expect(document.getElementById('fe-nav-mobile-menu')).toBeTruthy();
+    expect(nav.getAttribute('data-compact')).toBe('true');
+  });
 });
 

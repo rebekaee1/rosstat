@@ -77,6 +77,10 @@
   position: relative;
   overflow: hidden;
   padding: clamp(18px, 2.6vw, 36px);
+  /* Круг 5: плита героя — настоящее стекло. Альфа ≤ .52 с градиентом (плотнее у заголовка, прозрачнее у «Главного»),
+     внутренний блик сверху; blur 18 (телефон 12) из .fe-data-header остаётся: сквозь стекло проступают лампы сцены K1. */
+  background: var(--fe-glow-bg, none), var(--k6-hero-glass, var(--fe-l1-bg));
+  box-shadow: var(--fe-float-shadow), var(--k6-glass-glint, var(--fe-inset-glint));
 }
 .z5-hero::before {
   content: '';
@@ -343,6 +347,16 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 @media (min-width: 1100px) {
   .z5-key-grid--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+/* Общая подложка «Главного»: один широкий лоток-стекло под плитками (без blur: он внутри размытого героя). */
+.z5-key-grid, .z5-ru-main {
+  padding: 12px;
+  border-radius: 28px;
+  background: var(--k6-tray-glass, none);
+  box-shadow: var(--k6-glass-glint, none);
+}
+@media (max-width: 639px) {
+  .z5-key-grid, .z5-ru-main { padding: 8px; border-radius: 24px; gap: 10px; }
+}
 :root .z5-key {
   /* Цветное свечение снизу по знаку изменения: рост — изумруд, падение — бронза, неясно — золото. */
   --k6-glow: rgba(176, 138, 62, 0.3);
@@ -355,7 +369,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   overflow: hidden;
   border-radius: 22px;
   container: z5key / inline-size;
-  background: var(--fe-l1-bg);
+  background: var(--k6-tile-glass, var(--fe-l1-bg));
   box-shadow: var(--fe-card-shadow), 0 26px 30px -24px var(--k6-glow);
   color: var(--color-text-primary);
   text-decoration: none;
@@ -628,13 +642,13 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   min-height: 140px;
   padding: 14px 16px 12px;
   border-radius: 18px;
-  background: var(--fe-glass-l2);
+  background: var(--k6-row-glass, var(--fe-glass-l2));
   color: inherit;
   text-decoration: none;
   transition: transform 0.25s cubic-bezier(0.22, 0.7, 0.2, 1), box-shadow 0.25s; box-shadow: var(--fe-l2-shadow);
 }
-/* Тон чередуется (плотнее, реже): строки читаются рядами без единой линии. */
-.z5-rows > .z5-row:nth-child(even) { background: var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42)); }
+/* Тон чередуется (плотнее, реже): строки читаются рядами без единой линии. Альфа ≤ .52, градиент: lite-стекло без blur. */
+.z5-rows > .z5-row:nth-child(even) { background: var(--k6-row-glass-alt, var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42))); }
 .z5-rows--nested > .z5-row { background: var(--fe-glass-l2-hover, rgba(255, 255, 255, 0.72)); }
 @media (hover: hover) {
   .z5-row:hover,
@@ -702,7 +716,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   flex-wrap: wrap;
   gap: 4px 8px;
   margin-top: auto;
-  color: var(--color-text-tertiary);
+  color: var(--fe-text-muted, var(--color-text-secondary));
   font-size: 12px;
   line-height: 1.4;
 }
@@ -739,7 +753,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   background:
     linear-gradient(118deg, transparent 54%, rgba(255, 255, 255, 0.36) 54.4%, rgba(255, 255, 255, 0) 76%),
     radial-gradient(120% 90% at 100% 0%, var(--k6-stone), transparent 64%),
-    var(--fe-l1-bg);
+    var(--k6-tile-glass, var(--fe-l1-bg));
 }
 :root .z5-ru-key[data-stone='inflation'] { --k6-stone: rgba(244, 198, 216, 0.66); }
 :root .z5-ru-key[data-stone='rate'] { --k6-stone: rgba(233, 205, 142, 0.7); }
@@ -779,7 +793,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   text-decoration: none;
   transition: box-shadow 0.2s, transform 0.2s; box-shadow: var(--fe-l2-shadow);
 }
-.z5-ru-rows > .z5-ru-row:nth-child(even) { background: var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42)); }
+.z5-ru-rows > .z5-ru-row:nth-child(even) { background: var(--k6-row-glass-alt, var(--fe-glass-l1-soft, rgba(255, 255, 255, 0.42))); }
 @media (hover: hover) {
   .z5-ru-row:hover,
   .z5-ru-rows > .z5-ru-row:nth-child(even):hover {
@@ -884,6 +898,10 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 }
 
 /* ── Россия: карточка территории в шапке — тот же сапфир L3, что у профиля страны (K6.1) ───────── */
+:root .z5-ru-hero {
+  background: var(--fe-glow-bg, none), var(--k6-hero-glass, var(--fe-l1-bg));
+  box-shadow: var(--fe-float-shadow), var(--k6-glass-glint, var(--fe-inset-glint));
+}
 :root .z5-ru-territory {
   border-radius: 24px;
   background: var(--k6-sapphire, var(--fe-dark-glass));

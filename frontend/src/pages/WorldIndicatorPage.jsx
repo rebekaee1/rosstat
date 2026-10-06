@@ -38,6 +38,7 @@ import { prepareVariantGroup } from '../lib/viewModeShortLabels';
 import WorldViewModePicker from '../components/WorldViewModePicker';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
 import AccentTitle from '../components/K5Accent';
+import LightSeam from '../components/brand/LightSeam';
 import ChartSectionSkeleton from '../components/ChartSectionSkeleton';
 import { ViewModesPanel } from '../components/ViewModesPanel';
 import WorldChartSection from '../components/WorldChartSection';
@@ -768,7 +769,8 @@ export default function WorldIndicatorPage() {
                       )}
                     </dl>
                   </details>
-                  <div className="mt-6 flex flex-wrap gap-2 pt-4 fe-divider">
+                  <LightSeam />
+                  <div className="flex flex-wrap gap-2 pt-4">
                     <Link
                       to={countryPath(slug)}
                       className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"

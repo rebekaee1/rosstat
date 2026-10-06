@@ -333,7 +333,8 @@ export default function Navbar() {
         ref={navRef}
         style={{ '--fe-duration': '0.3s', '--fe-rise': '-8px' }}
         data-scrolled={scrolled ? 'true' : 'false'}
-        data-compact={compact && !menuOpen ? 'true' : 'false'}
+        // Сжатое состояние не снимается, пока открыта шторка: иначе шапка под затемнением съезжала вниз и торчала «второй шапкой».
+        data-compact={compact ? 'true' : 'false'}
         data-tone={overFooter ? 'dark' : undefined}
         className={cn(
           // .fe-reveal: шапка видна сразу (в SSR и без JS), лишь мягко опускается на 8px.

@@ -40,7 +40,7 @@ import { compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle'
 import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
-  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, RIBBON_STOPS, SAPPHIRE_STOPS, CHART_AREA, axisTick, axisSampleValues,
+  CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, CHART_AREA, axisTick, axisSampleValues,
   axisWidthForLabels, chartHeightForWidth, niceAxis,
 } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip, useChartGlassIds } from '../lib/chartHooks';
@@ -129,7 +129,15 @@ const RANGE_OPTIONS = [
 const PALETTE = Object.freeze([
   CHART_THEME.series[0], CHART_THEME.sapphire, ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
 ]);
-const RIBBON_GRADIENTS = Object.freeze([RIBBON_STOPS, SAPPHIRE_STOPS]);
+// Ленты сравнения чуть насыщеннее общих (круг 5): на экране линия 3,5 px с бледным краем читалась как 2 px.
+const RIBBON_GRADIENTS = Object.freeze([
+  Object.freeze([
+    { offset: '0%', color: '#E2BC66' }, { offset: '50%', color: '#C99B3C' }, { offset: '100%', color: '#A9812F' },
+  ]),
+  Object.freeze([
+    { offset: '0%', color: '#5F8BCB' }, { offset: '50%', color: '#3A5FA3' }, { offset: '100%', color: '#1E2A4A' },
+  ]),
+]);
 const RIBBON_COUNT = RIBBON_GRADIENTS.length;
 
 /** Бусина на конце ленты: гало, шарик с градиентом (id), белый блик. Рисуется поверх линии, мыши не мешает. */
@@ -2491,7 +2499,7 @@ export default function ComparePage() {
                       name={labels[i] || t('z2.compare.seriesFallback')}
                       className={i === 0 ? 'k4-ribbon' : i === 1 ? 'k4-ribbon k4-ribbon--sapphire' : 'k4-ribbon k4-ribbon--plain'}
                       stroke={i < RIBBON_COUNT ? `url(#${glass.ribbon}-${i})` : s.color}
-                      strokeWidth={3}
+                      strokeWidth={3.5}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       dot={false}
@@ -2508,8 +2516,8 @@ export default function ComparePage() {
                       yAxisId={axisFor(i)}
                       type="monotone"
                       dataKey={s.key}
-                      stroke="rgba(255,255,255,0.72)"
-                      strokeWidth={1}
+                      stroke="rgba(255,255,255,0.9)"
+                      strokeWidth={1.4}
                       strokeLinecap="round"
                       dot={false}
                       activeDot={false}

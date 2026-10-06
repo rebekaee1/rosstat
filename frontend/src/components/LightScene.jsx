@@ -70,6 +70,46 @@ function Shard({ shard }) {
   );
 }
 
+// Блики-грани «под стеклом» (круг 5): три небольшие грани, закреплённые в разных местах окна (не только в боковых полях).
+// Лежат под страницей и видны сквозь стекло и в зазорах между панелями; на телефоне скрыты. Координаты в долях окна.
+const GLINTS = [
+  { id: 'g1', left: '21vw', top: '66vh', w: 46, depth: 0.3, rot: 18, dur: 13, delay: -3, tone: 'champagne' },
+  { id: 'g2', left: '57vw', top: '24vh', w: 58, depth: 0.15, rot: -14, dur: 11, delay: -8, tone: 'ice' },
+  { id: 'g3', left: '81vw', top: '74vh', w: 52, depth: 0.3, rot: 9, dur: 14, delay: -5, tone: 'champagne' },
+];
+
+function Glint({ glint }) {
+  const { id, left, top, w, depth, rot, dur, delay, tone } = glint;
+  const p = SHARD_POINTS;
+  return (
+    <div className="fe-scene__par fe-scene__glint-slot" data-depth={depth} data-fe-glint-shard={id} style={{ left, top, '--w': `${w}px` }}>
+      <svg
+        className="fe-scene__glint fe-drift"
+        viewBox="0 0 100 168"
+        width={w}
+        height={Math.round(w * 1.68)}
+        focusable="false"
+        style={{ '--r': `${rot}deg`, '--fe-drift-dur': `${dur}s`, '--fe-drift-delay': `${delay}s`, '--fe-drift-y': '10px' }}
+      >
+        <polygon points={`${p.top} ${p.right} ${p.center}`} fill={`url(#fe-k1-${tone}-hi)`} />
+        <polygon points={`${p.top} ${p.left} ${p.center}`} fill={`url(#fe-k1-${tone}-mid)`} />
+        <polygon points={`${p.right} ${p.bottom} ${p.center}`} fill={`url(#fe-k1-${tone}-lo)`} />
+        <polygon points={`${p.left} ${p.bottom} ${p.center}`} fill={`url(#fe-k1-${tone}-mid)`} />
+        <polygon points="50,10 68,52 50,64" fill="#FFFFFF" fillOpacity="0.6" />
+      </svg>
+    </div>
+  );
+}
+
+// Цветные пятна на разной высоте окна (круг 5): под стеклом на любом месте страницы есть что-то золотое, ледяное,
+// сапфировое или тёплое. Градиенты без blur-фильтра, дрейф через .fe-drift (только transform).
+const SPOTS = [
+  { id: 'gold', depth: 0.3, dur: 15, delay: -4 },
+  { id: 'sapphire', depth: 0.15, dur: 18, delay: -9 },
+  { id: 'ice', depth: 0.3, dur: 14, delay: -2 },
+  { id: 'peach', depth: 0.15, dur: 16, delay: -11 },
+];
+
 function ShardDefs() {
   const stops = (a, b) => (
     <>
@@ -199,29 +239,34 @@ function useSceneParallax(rootRef) {
 }
 
 /**
- * Любой неизвестный адрес из одного сегмента (`/abc`) похож на карточку страны, но это 404. На странице 404 корень
- * `.z2-nf`: пока он в документе, героя страны не рисуем (иначе на 404 появлялся кадр граней с резкими краями).
- * Проверка идёт на rAF и после мутаций DOM, пока адрес похож на страну.
+ * Страница 404: корень `.z2-nf`. Пока он в документе, герой получает вариант `notfound` (кристаллы справа от цифр,
+ * без прямых краёв); без этой проверки адрес из одного сегмента (`/abc`) выглядел бы как карточка страны.
+ * Проверка идёт по короткому таймеру после мутаций DOM. Для адресов, похожих на страну, следим всё время (профиль может не
+ * загрузиться и смениться на 404), для остальных только первые 6 секунд после перехода.
  */
-function useIsNotFoundPage(active, pathname) {
+function useIsNotFoundPage(countryLike, pathname) {
   const [notFound, setNotFound] = useState(false);
   useEffect(() => {
-    if (!active || typeof document === 'undefined') return undefined;
+    if (typeof document === 'undefined') return undefined;
     let frame = 0;
+    let stopTimer = 0;
     const check = () => {
       frame = 0;
       setNotFound(!!document.querySelector('.z2-nf'));
     };
-    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(check); };
+    // Короткий таймер, а не rAF: в фоновой вкладке rAF стоит, а проверка должна отработать.
+    const schedule = () => { if (!frame) frame = window.setTimeout(check, 40); };
     schedule();
     const mo = typeof MutationObserver === 'function' ? new MutationObserver(schedule) : null;
     if (mo) mo.observe(document.body, { childList: true, subtree: true });
+    if (!countryLike && mo) stopTimer = window.setTimeout(() => mo.disconnect(), 6000);
     return () => {
       if (mo) mo.disconnect();
-      if (frame) window.cancelAnimationFrame(frame);
+      if (frame) window.clearTimeout(frame);
+      if (stopTimer) window.clearTimeout(stopTimer);
     };
-  }, [active, pathname]);
-  return active && notFound;
+  }, [countryLike, pathname]);
+  return notFound;
 }
 
 export default function LightScene() {
@@ -229,7 +274,7 @@ export default function LightScene() {
   const rootRef = useRef(null);
   const pathKind = heroKindForPath(pathname, isReservedFirstSegment);
   const isNotFound = useIsNotFoundPage(pathKind === 'country', pathname);
-  const kind = isNotFound ? null : pathKind;
+  const kind = isNotFound ? 'notfound' : pathKind;
 
   useEffect(() => applySceneMode(), []);
   useLightPointer();
@@ -244,13 +289,26 @@ export default function LightScene() {
           <div className="fe-scene__lamp fe-scene__lamp--ice" />
           <div className="fe-scene__lamp fe-scene__lamp--rose" />
         </div>
+        <div className="fe-scene__spots">
+          {SPOTS.map((sp) => (
+            <div key={sp.id} className="fe-scene__par" data-depth={sp.depth}>
+              <div
+                className={`fe-scene__spot fe-scene__spot--${sp.id} fe-drift`}
+                style={{ '--fe-drift-dur': `${sp.dur}s`, '--fe-drift-delay': `${sp.delay}s`, '--fe-drift-y': '3vh', '--fe-drift-r': '0deg' }}
+              />
+            </div>
+          ))}
+        </div>
         <div className="fe-scene__texture" />
+        <div className="fe-scene__glints">
+          {GLINTS.map((g) => <Glint key={g.id} glint={g} />)}
+        </div>
         <div className="fe-scene__shards">
           {SHARDS.map((s) => <Shard key={s.id} shard={s} />)}
         </div>
       </div>
       <HeroLayer kind={kind} />
-      {kind ? <div className="fe-scene-leak fe-scene-leak--top" aria-hidden="true" /> : null}
+      {kind && kind !== 'notfound' ? <div className="fe-scene-leak fe-scene-leak--top" aria-hidden="true" /> : null}
       <div className="fe-scene-leak fe-scene-leak--bottom" aria-hidden="true" />
     </>
   );

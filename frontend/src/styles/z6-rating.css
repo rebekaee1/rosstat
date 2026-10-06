@@ -127,10 +127,13 @@
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 4px 14px;
   padding: 14px 20px 16px; overflow: hidden;
   border-radius: 22px;
+  /* Круг 5: настоящее стекло — свой свет в углу + градиент альфа ≤ .5 (без второго слоя блика поверх L1) и blur; на телефоне blur снят (бюджет 6). */
   background:
     radial-gradient(130% 120% at 0% 0%, var(--k6-place-light), transparent 62%),
-    var(--fe-glass-l1-sheen), var(--fe-glass-l1);
-  box-shadow: var(--fe-card-shadow), 0 26px 30px -24px var(--k6-place-glow);
+    var(--k6-plate-glass, var(--fe-glass-l1));
+  box-shadow: var(--fe-float-shadow), var(--k6-glass-glint, var(--fe-inset-glint)), 0 26px 30px -24px var(--k6-place-glow);
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
+  backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25);
   transition: transform 0.2s var(--fe-ease-reveal), box-shadow 0.2s ease;
 }
 .z6-ribbon .w2-fact[data-place='last'] {
@@ -154,6 +157,9 @@
 }
 .z6-ribbon .w2-fact-name { font-size: 15px; }
 .z6-ribbon .w2-fact-value { justify-content: flex-end; font-size: 22px; font-weight: 700; }
+@media (max-width: 767px) {
+  .z6-ribbon .w2-fact { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
 @container z6ribbon (max-width: 540px) {
   .z6-ribbon .w2-facts-grid { grid-template-columns: minmax(0, 1fr); }
   .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); }
@@ -257,7 +263,7 @@
 .z6-split .w6d-shifts { margin: 0; }
 .w6d-shifts--compact {
   padding: 16px 16px 14px; border-radius: 24px;
-  background: var(--fe-l1-bg); box-shadow: var(--fe-card-shadow);
+  background: var(--k6-plate-glass, var(--fe-l1-bg)); box-shadow: var(--fe-card-shadow);
 }
 .w6d-shifts--compact .w6d-block-title { margin-bottom: 4px; font-size: 18px; line-height: 1.25; }
 .w6d-shifts--compact .w6d-shifts__lead { margin: 0 0 12px; }

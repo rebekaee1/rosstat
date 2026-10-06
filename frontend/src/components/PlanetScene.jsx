@@ -13,7 +13,7 @@ import {
   bindPlanetCountries, loadPlanetFeatures, lonLatToSphere,
   normalizePlanetCountryCode, pickPlanetCountry, planetNeedsFineFeatures, sphereToLonLat,
 } from '../lib/planetGeometry';
-import { outlineRings } from '../lib/planetAtlas';
+import { outlineRings, substantialPolygons } from '../lib/planetAtlas';
 import {
   bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, zoomedDistance,
 } from '../lib/planetView';
@@ -59,6 +59,10 @@ const ATLAS_DETAIL_WIDTH = 4096;
 // the border line is as wide as such a ring, so it would be a black speck (Greenland fjord islets,
 // Azov and Caspian islands, lakes, atolls). The threshold is in degrees, so it holds for the 4096 atlas too.
 const MIN_OUTLINE_SPAN = 8;
+// Land smaller than this (about 0.7 degrees, 4 px at 2048) is not painted either: in the 50m atlas the Aegean, the Adriatic,
+// the US east coast and the Azov and Caspian seas hold swarms of rings a pixel wide, and each of them is a speck of dust on the
+// sphere (round 5). The largest part of every country is always painted, so Malta or Singapore stay.
+const MIN_FILL_SPAN_DEGREES = 0.7;
 
 /** Outline only the rings big enough to carry it; the fill keeps every tiny island. */
 function tracePath(path, context, geometry, minSpanDegrees) {
@@ -87,7 +91,7 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
   for (const entry of entries) {
     if (mode === 'data') {
       context.beginPath();
-      path(entry.feature);
+      path(substantialPolygons(entry.feature.geometry, MIN_FILL_SPAN_DEGREES));
       const value = valueFor(valuesByCode, entry.dataCode);
       const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
       // Страны с данными закрашены почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.

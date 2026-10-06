@@ -26,8 +26,15 @@
   --k5-haze: linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.2));
   --k5-haze-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 40px -32px rgba(60, 48, 24, 0.3);
   /* L2-карточка правой колонки: светлее фона, блик слева сверху, мягкая тень снизу. */
-  --k5-card: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 62%), var(--fe-glass-l2);
+  --k5-card: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 62%), rgba(255, 255, 255, 0.4);
   --k5-card-shadow: 0 14px 30px -22px rgba(60, 48, 24, 0.42), var(--fe-inset-glint);
+  /* Плита графика (круг 5): настоящее стекло. Альфа фона 0,28-0,5 (≤ 0,6), диагональный блик, тёплый тон снизу:
+     сквозь плиту проступают лампы сцены K1. Подписи осей #55627A на таком фоне ≥ 5:1 (фон светлее #F6F2EA). */
+  --k5-plate:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.26) 52%, rgba(255, 250, 236, 0.4));
+  --k5-plate-shadow:
+    var(--fe-float-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 0 44px -20px rgba(255, 255, 255, 0.75),
+    var(--fe-inset-glint-bottom);
   /* Торец плиты: 7 px света снизу (вместо линии). */
   --k5-edge: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(233, 205, 142, 0.5));
   /* Жёлоб сегмента: вдавленная дорожка. */
@@ -45,6 +52,8 @@
   --k5-haze: linear-gradient(180deg, rgba(216, 230, 250, 0.07), rgba(216, 230, 250, 0.03));
   --k5-haze-shadow: inset 0 1px 0 rgba(216, 230, 250, 0.1), 0 18px 40px -32px rgba(0, 0, 0, 0.55);
   --k5-card: linear-gradient(135deg, rgba(216, 230, 250, 0.09), rgba(216, 230, 250, 0) 62%), var(--fe-glass-l2);
+  --k5-plate: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
+  --k5-plate-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
   --k5-card-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.6), var(--fe-inset-glint);
   --k5-edge: linear-gradient(180deg, rgba(216, 230, 250, 0), rgba(216, 230, 250, 0.16) 60%, rgba(208, 180, 125, 0.32));
   --k5-trough: rgba(10, 16, 26, 0.35);
@@ -203,6 +212,13 @@
   pointer-events: none;
 }
 
+/* Плита графика: стекло с лампами сцены, без почти непрозрачной кремовой заливки. Blur даёт .fe-panel (T1). */
+:root:root .z4-chart-wrap .fe-chart-card,
+:root:root .fe-compare-card {
+  background: var(--k5-plate);
+  box-shadow: var(--k5-plate-shadow);
+}
+
 /* На компьютере плот выше: график заполняет колонку рядом с тремя карточками справа, под ним не остаётся пустоты. */
 @supports (height: 1svh) {
   @media (min-width: 1100px) {
@@ -216,6 +232,16 @@
   :root:root .z4-chart-wrap .fe-chart-card {
     padding: 12px 8px 14px;
     border-radius: 22px;
+  }
+  /* Ползунок периода целиком внутри плиты: ручка 20 px выступает за жёлоб на 10 px, поля 2 px + 8 px её обрезали. */
+  :root:root .z4-chart-wrap .fe-brush { padding-inline: 14px; }
+  /* Окно графика без жёсткой боковой кромки: подложка гаснет к краям (вместо светлого прямоугольника). */
+  :root:root .z4-chart-wrap .fe-chart-plot {
+    border-radius: 0;
+    box-shadow: none;
+    background:
+      radial-gradient(68% 52% at 72% 64%, rgba(233, 205, 142, 0.17), rgba(233, 205, 142, 0) 72%),
+      linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3) 12%, rgba(255, 255, 255, 0.3) 88%, rgba(255, 255, 255, 0));
   }
   /* Период: чипы L2 лентой, края гаснут маской, ряд листается пальцем. */
   :root:root .z4-chart-wrap .fe-chart-toolbar .fe-chip-row--tight {
@@ -402,6 +428,10 @@
 .fe-compare-gap__beads i + i { margin-left: -5px; }
 
 /* Ленты рядов рисуют классы K4 (.k4-ribbon, .k4-gloss из styles/k4-charts.css): свечение, блик-штрих; бусину и заливку задаёт ComparePage. */
+
+/* Ленты сравнения: свечение плотнее, чтобы 3,5 px читались на светлой плите (круг 5). */
+.fe-compare-plot .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(176, 138, 62, 0.5)); }
+.fe-compare-plot .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(30, 42, 74, 0.42)); }
 
 /* Подписи концов линий: линза с флагом страны. */
 .fe-compare-end__flag {

@@ -32,6 +32,11 @@
      «муть» (около #E6EAEC); при альфе .24 и сдвиге к сиреневому остаётся жемчужный свет без серого оттенка. */
   --fe-scene-ice: rgba(204, 222, 250, 0.24);
   --fe-scene-rose: rgba(244, 198, 216, 0.2);
+  /* Пятна на разной высоте окна (круг 5): золото, сапфир, лёд, тёплый персик. */
+  --fe-scene-spot-gold: rgba(232, 196, 118, 0.22);
+  --fe-scene-spot-sapphire: rgba(96, 124, 200, 0.09);
+  --fe-scene-spot-ice: rgba(204, 222, 250, 0.2);
+  --fe-scene-spot-peach: rgba(244, 196, 164, 0.16);
   --fe-scene-texture-opacity: 0.06;
   --fe-scene-hero-opacity: 0.85;
   --fe-scene-leak-opacity: 0.2;
@@ -45,6 +50,10 @@
   --fe-scene-gold: rgba(201, 162, 77, 0.2);
   --fe-scene-ice: rgba(86, 120, 170, 0.24);
   --fe-scene-rose: rgba(150, 90, 130, 0.11);
+  --fe-scene-spot-gold: rgba(201, 162, 77, 0.14);
+  --fe-scene-spot-sapphire: rgba(86, 120, 190, 0.16);
+  --fe-scene-spot-ice: rgba(86, 120, 170, 0.12);
+  --fe-scene-spot-peach: rgba(190, 120, 100, 0.08);
   --fe-scene-texture-opacity: 0;
   --fe-scene-hero-opacity: 0;
   --fe-glint-color: rgba(216, 230, 250, 0.24);
@@ -135,6 +144,73 @@ html.fe-scene-on #root {
   to { transform: translate3d(var(--fe-sky-dx, -3vw), var(--fe-sky-dy, 2vh), 0) scale(1.07); }
 }
 
+/* Пятна на разной высоте окна (круг 5). Слой фиксирован, поэтому под стеклянными карточками на любой высоте прокрутки
+   есть цветное пятно; параллакс 0,15/0,3 даёт им разный ход. Градиент гаснет в ноль на 82 % и закрыт радиальной маской:
+   краёв нет. Без blur, без backdrop-filter, дрейф только transform (.fe-drift). Вес: 0 КБ (чистый CSS). */
+.fe-scene__spot {
+  position: absolute;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0, #000 45%, transparent 98%);
+  mask-image: radial-gradient(closest-side, #000 0, #000 45%, transparent 98%);
+}
+.fe-scene__spot--gold {
+  left: -6vw;
+  bottom: 4vh;
+  width: 58vw;
+  height: 52vh;
+  background: radial-gradient(closest-side, var(--fe-scene-spot-gold) 0%, color-mix(in srgb, var(--fe-scene-spot-gold) 45%, transparent) 42%, transparent 82%);
+}
+.fe-scene__spot--sapphire {
+  right: -12vw;
+  top: 34vh;
+  width: 62vw;
+  height: 58vh;
+  background: radial-gradient(closest-side, var(--fe-scene-spot-sapphire) 0%, color-mix(in srgb, var(--fe-scene-spot-sapphire) 45%, transparent) 42%, transparent 82%);
+}
+.fe-scene__spot--ice {
+  left: 30vw;
+  top: -14vh;
+  width: 56vw;
+  height: 48vh;
+  background: radial-gradient(closest-side, var(--fe-scene-spot-ice) 0%, color-mix(in srgb, var(--fe-scene-spot-ice) 45%, transparent) 42%, transparent 82%);
+}
+.fe-scene__spot--peach {
+  left: -12vw;
+  top: 42vh;
+  width: 54vw;
+  height: 50vh;
+  background: radial-gradient(closest-side, var(--fe-scene-spot-peach) 0%, color-mix(in srgb, var(--fe-scene-spot-peach) 45%, transparent) 42%, transparent 82%);
+}
+/* Телефон: пятна стоят (не больше одной анимации в кадре) и только два, чтобы не грузить слабые экраны. */
+@media (max-width: 767px) {
+  .fe-scene .fe-scene__spot { animation: none; will-change: auto; }
+  .fe-scene__spot--sapphire,
+  .fe-scene__spot--ice { display: none; }
+}
+
+/* Блики-грани под стеклом: три небольшие грани в разных местах окна, только компьютер. */
+.fe-scene__glints {
+  display: none;
+}
+@media (min-width: 768px) {
+  .fe-scene__glints {
+    display: block;
+    position: absolute;
+    inset: 0;
+  }
+  .fe-scene__glint-slot {
+    position: absolute;
+    inset: auto;
+    opacity: 0.5;
+  }
+  .fe-scene__glint {
+    display: block;
+    width: var(--w, 52px);
+    height: auto;
+    transform: rotate(var(--r, 0deg));
+    filter: blur(1px);
+  }
+}
+
 /* Текстура граней: тише в центре, только компьютер. Картинка грузится только там, где показывается. */
 .fe-scene__texture {
   display: none;
@@ -193,9 +269,11 @@ html.fe-scene-on #root {
  * Кристаллы лежат в кадре на x 67-94 %, y 0-89 %; маска слева и снизу оставляет их у края, а не по всему экрану.
  */
 .fe-scene-hero {
-  --fe-hero-frame-w: min(52vw, 1100px);
-  --fe-hero-frame-right: -7vw;
-  --fe-hero-frame-top: 0px;
+  /* Главная (круг 5): кластер целиком внутри окна справа, правее текста карточки планеты (список стран и «Год» кончаются
+     около x 1330 на 1440), поэтому кадр небольшой и сдвинут на 1 vw за край только своей пустой частью. */
+  --fe-hero-frame-w: min(32vw, 480px);
+  --fe-hero-frame-right: -1.2vw;
+  --fe-hero-frame-top: -1vw;
   position: absolute;
   top: var(--fe-hero-frame-top);
   right: var(--fe-hero-frame-right);
@@ -219,6 +297,12 @@ html.fe-scene-on #root {
   --fe-hero-frame-right: 34.8vw;
   --fe-hero-frame-top: 8vw;
 }
+/* 404 (круг 5): кристаллы справа от цифр, целиком в окне, без прямых краёв (маска и растворение кадра те же). */
+.fe-scene-hero[data-fe-hero="notfound"] {
+  --fe-hero-frame-w: min(36vw, 560px);
+  --fe-hero-frame-right: 3vw;
+  --fe-hero-frame-top: 6vw;
+}
 .fe-scene-hero.is-ready {
   opacity: var(--fe-scene-hero-opacity);
 }
@@ -234,7 +318,8 @@ html.fe-scene-on #root {
 }
 @media (max-width: 767px) {
   .fe-scene-hero,
-  .fe-scene-hero[data-fe-hero="country"] {
+  .fe-scene-hero[data-fe-hero="country"],
+  .fe-scene-hero[data-fe-hero="notfound"] {
     --fe-hero-frame-w: 78vw;
     --fe-hero-frame-right: -4vw;
     --fe-hero-frame-top: 40px;
@@ -398,6 +483,8 @@ html[data-fe-motion="off"] .fe-scene-hero { transition: none; }
 /* Экономия: ни картинок, ни наложений (Save-Data, reduced-transparency). Остаётся цветной фон. */
 :root[data-theme="dark"] .fe-scene-hero,
 :root.dark .fe-scene-hero,
+html[data-fe-lite="on"] .fe-scene__spots,
+html[data-fe-lite="on"] .fe-scene__glints,
 html[data-fe-lite="on"] .fe-scene__texture,
 html[data-fe-lite="on"] .fe-scene__shards,
 html[data-fe-lite="on"] .fe-scene-hero,

@@ -60,7 +60,7 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(k7).toMatch(/\.fe-today__gem\s*\{[^}]*left:\s*calc\(var\(--fe-rank-pos/);
     expect(k7).not.toMatch(/fe-today__ladder/);
     expect(z3).not.toMatch(/fe-today__ladder|fe-today-bar/);
-    expect(k7).toMatch(/--fe-hero-frame-right:\s*-10vw/);
+    expect(k7).not.toMatch(/--fe-hero-frame-right\s*:/);
     expect(hero).toMatch(/\.fe-hero-planet\s*\{\s*position:\s*sticky/);
   });
 
