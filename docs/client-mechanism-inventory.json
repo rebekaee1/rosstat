@@ -33232,7 +33232,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/MapTimeline.component.test.jsx": {
-      "sha256": "dbe36455450737fd2da70930fc12c12ee264664075a15bafab0d90e3b519af96",
+      "sha256": "d8bd58623cd93e8ee7e1a4a1ed652b954cb12eab5724829f96c157755d9b03c0",
       "imports": [
         {
           "line": 1,
@@ -33291,7 +33291,7 @@
       "functions": [
         {
           "line": 6,
-          "end_line": 28,
+          "end_line": 43,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -33307,16 +33307,24 @@
         },
         {
           "line": 21,
-          "end_line": 27,
+          "end_line": 34,
           "owner": "<callback@6>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 23,
-          "end_line": 23,
-          "owner": "<callback@6>.<callback@21>",
+          "line": 36,
+          "end_line": 42,
+          "owner": "<callback@6>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 38,
+          "end_line": 38,
+          "owner": "<callback@6>.<callback@36>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -33336,9 +33344,17 @@
           "expression": "{onYearChange}"
         },
         {
-          "line": 23,
-          "end_line": 23,
+          "line": 24,
+          "end_line": 24,
           "owner": "<callback@6>.<callback@21>",
+          "component": "MapTimeline",
+          "event": "onYearChange",
+          "expression": "{onYearChange}"
+        },
+        {
+          "line": 38,
+          "end_line": 38,
+          "owner": "<callback@6>.<callback@36>",
           "component": "MapTimeline",
           "event": "onYearChange",
           "expression": "{() => {}}"
@@ -33348,7 +33364,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/MapTimeline.jsx": {
-      "sha256": "9f6f7561e81c2514164e5c898e3db671c0b2a6ee689af737a01d42f076c04f29",
+      "sha256": "f09ff21e9e3b781c07b34dfa19a698f72b2de4fb4f2b0128bfde907df1f78f37",
       "imports": [
         {
           "line": 4,
@@ -33445,104 +33461,128 @@
       "functions": [
         {
           "line": 14,
-          "end_line": 108,
+          "end_line": 123,
           "owner": "<module>",
           "name": "MapTimeline",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 20,
-          "end_line": 20,
+          "line": 24,
+          "end_line": 29,
+          "owner": "MapTimeline",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useEffect"
+        },
+        {
+          "line": 27,
+          "end_line": 27,
+          "owner": "MapTimeline.<callback@24>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "setTimeout"
+        },
+        {
+          "line": 28,
+          "end_line": 28,
+          "owner": "MapTimeline.<callback@24>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 32,
+          "end_line": 32,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 20,
-          "end_line": 20,
-          "owner": "MapTimeline.<callback@20>",
+          "line": 32,
+          "end_line": 32,
+          "owner": "MapTimeline.<callback@32>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "years.filter"
         },
         {
-          "line": 28,
-          "end_line": 30,
+          "line": 40,
+          "end_line": 42,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 32,
-          "end_line": 34,
-          "owner": "MapTimeline",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 36,
+          "line": 44,
           "end_line": 46,
+          "owner": "MapTimeline",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 48,
+          "end_line": 58,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 40,
-          "end_line": 44,
-          "owner": "MapTimeline.<callback@36>",
+          "line": 52,
+          "end_line": 56,
+          "owner": "MapTimeline.<callback@48>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 45,
-          "end_line": 45,
-          "owner": "MapTimeline.<callback@36>",
+          "line": 57,
+          "end_line": 57,
+          "owner": "MapTimeline.<callback@48>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 48,
-          "end_line": 54,
+          "line": 60,
+          "end_line": 66,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 56,
-          "end_line": 63,
+          "line": 68,
+          "end_line": 77,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 62,
-          "end_line": 62,
-          "owner": "MapTimeline.<callback@56>",
+          "line": 76,
+          "end_line": 76,
+          "owner": "MapTimeline.<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setTimeout"
         },
         {
-          "line": 65,
-          "end_line": 67,
+          "line": 79,
+          "end_line": 81,
           "owner": "MapTimeline",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 65,
-          "end_line": 67,
-          "owner": "MapTimeline.<callback@65>",
+          "line": 79,
+          "end_line": 81,
+          "owner": "MapTimeline.<callback@79>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -33575,8 +33615,45 @@
           ]
         },
         {
-          "line": 19,
+          "line": 21,
+          "end_line": 21,
+          "owner": "MapTimeline",
+          "callee": "useState",
+          "arguments": [
+            "year"
+          ]
+        },
+        {
+          "line": 22,
           "end_line": 22,
+          "owner": "MapTimeline",
+          "callee": "useRef",
+          "arguments": [
+            "0"
+          ]
+        },
+        {
+          "line": 23,
+          "end_line": 23,
+          "owner": "MapTimeline",
+          "callee": "useRef",
+          "arguments": [
+            "null"
+          ]
+        },
+        {
+          "line": 24,
+          "end_line": 29,
+          "owner": "MapTimeline",
+          "callee": "useEffect",
+          "arguments": [
+            "() => {\n    const idle = Date.now() - lastInput.current;\n    if (idle > 450) { setLocal(year); return undefined; }\n    syncTimer.current = setTimeout(() => setLocal(year), 450 - idle + 20);\n    return () => clearTimeout(syncTimer.current);\n  }",
+            "[year]"
+          ]
+        },
+        {
+          "line": 31,
+          "end_line": 34,
           "owner": "MapTimeline",
           "callee": "useMemo",
           "arguments": [
@@ -33585,8 +33662,8 @@
           ]
         },
         {
-          "line": 28,
-          "end_line": 30,
+          "line": 40,
+          "end_line": 42,
           "owner": "MapTimeline",
           "callee": "useCallback",
           "arguments": [
@@ -33595,8 +33672,8 @@
           ]
         },
         {
-          "line": 32,
-          "end_line": 34,
+          "line": 44,
+          "end_line": 46,
           "owner": "MapTimeline",
           "callee": "useCallback",
           "arguments": [
@@ -33605,8 +33682,8 @@
           ]
         },
         {
-          "line": 36,
-          "end_line": 46,
+          "line": 48,
+          "end_line": 58,
           "owner": "MapTimeline",
           "callee": "useEffect",
           "arguments": [
@@ -33615,8 +33692,8 @@
           ]
         },
         {
-          "line": 48,
-          "end_line": 54,
+          "line": 60,
+          "end_line": 66,
           "owner": "MapTimeline",
           "callee": "useCallback",
           "arguments": [
@@ -33625,18 +33702,18 @@
           ]
         },
         {
-          "line": 56,
-          "end_line": 63,
+          "line": 68,
+          "end_line": 77,
           "owner": "MapTimeline",
           "callee": "useCallback",
           "arguments": [
-            "(e) => {\n    if (!ready) return;\n    setPlaying(false);\n    const y = Number(e.target.value);\n    setYearBoth(y);\n    if (trackTimer.current) clearTimeout(trackTimer.current);\n    trackTimer.current = setTimeout(() => emit('scrub', y), 600);\n  }",
+            "(e) => {\n    if (!ready) return;\n    setPlaying(false);\n    const y = Number(e.target.value);\n    lastInput.current = Date.now();\n    setLocal(y);\n    setYearBoth(y);\n    if (trackTimer.current) clearTimeout(trackTimer.current);\n    trackTimer.current = setTimeout(() => emit('scrub', y), 600);\n  }",
             "[ready, setYearBoth, emit]"
           ]
         },
         {
-          "line": 65,
-          "end_line": 67,
+          "line": 79,
+          "end_line": 81,
           "owner": "MapTimeline",
           "callee": "useEffect",
           "arguments": [
@@ -33650,16 +33727,16 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 75,
-          "end_line": 80,
+          "line": 90,
+          "end_line": 95,
           "owner": "MapTimeline",
           "component": "Button",
           "event": "onClick",
           "expression": "{togglePlay}"
         },
         {
-          "line": 85,
-          "end_line": 95,
+          "line": 100,
+          "end_line": 110,
           "owner": "MapTimeline",
           "component": "input",
           "event": "onChange",
@@ -80616,7 +80693,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "2f2d1b3b6049853f21eb40590370906f914aa211e68c230fb8bf97d1af84640f",
+      "sha256": "62032a597322dadb9896c22afebbdffa234ff38ff5f2cafe56fe605e4ed341b0",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -81007,7 +81084,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "137129bdfa732b59000bc916d5d1d7ac0ea3ac23d1b978a8f168a10e71acaffe",
+      "sha256": "e0fbc0e296bda4853c307f3b3b9e51eec70f01c2e9f5f2956af4c175ce36f5e7",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -190246,7 +190323,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/WorldRegionsHome.jsx": {
-      "sha256": "4322f9d57bae85ca913e2ab07b4d456f9b9728de3bfd4b57d17efa0d6d991174",
+      "sha256": "d33ced4b862641db963f371847548ac603cc4460cc1a90b4391de3bc8e3e16b8",
       "imports": [
         {
           "line": 3,
@@ -190837,59 +190914,51 @@
         },
         {
           "line": 180,
-          "end_line": 548,
+          "end_line": 550,
           "owner": "<module>",
           "name": "WorldRegionsHome",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 217,
-          "end_line": 226,
+          "line": 219,
+          "end_line": 228,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 228,
-          "end_line": 236,
+          "line": 230,
+          "end_line": 238,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 238,
-          "end_line": 242,
+          "line": 240,
+          "end_line": 244,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 246,
-          "end_line": 246,
+          "line": 248,
+          "end_line": 248,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 249,
-          "end_line": 249,
+          "line": 251,
+          "end_line": 251,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
-        },
-        {
-          "line": 252,
-          "end_line": 252,
-          "owner": "WorldRegionsHome",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "chipIndicators.map"
         },
         {
           "line": 254,
@@ -190897,195 +190966,203 @@
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
+          "callback_context": "chipIndicators.map"
+        },
+        {
+          "line": 256,
+          "end_line": 256,
+          "owner": "WorldRegionsHome",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
           "callback_context": "indicators.find"
         },
         {
-          "line": 262,
-          "end_line": 269,
+          "line": 264,
+          "end_line": 271,
           "owner": "WorldRegionsHome",
           "name": "setView",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 271,
-          "end_line": 275,
+          "line": 273,
+          "end_line": 277,
           "owner": "WorldRegionsHome",
           "name": "setMetric",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 277,
-          "end_line": 282,
+          "line": 279,
+          "end_line": 284,
           "owner": "WorldRegionsHome",
           "name": "setPeriod",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 284,
-          "end_line": 287,
+          "line": 286,
+          "end_line": 289,
           "owner": "WorldRegionsHome",
           "name": "setMapYear",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 289,
-          "end_line": 303,
+          "line": 291,
+          "end_line": 305,
           "owner": "WorldRegionsHome",
           "name": "handlePng",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 300,
-          "end_line": 300,
+          "line": 302,
+          "end_line": 302,
           "owner": "WorldRegionsHome.handlePng",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "exportNodeToPng(mapCardRef.current, {\n      filename: `${countrySlug}-map_${activeCode || 'overview'}.png`,\n      watermark: false,\n    }).catch"
         },
         {
-          "line": 305,
-          "end_line": 305,
+          "line": 307,
+          "end_line": 307,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 306,
-          "end_line": 310,
+          "line": 308,
+          "end_line": 312,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 309,
-          "end_line": 309,
-          "owner": "WorldRegionsHome.<callback@306>",
+          "line": 311,
+          "end_line": 311,
+          "owner": "WorldRegionsHome.<callback@308>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 320,
-          "end_line": 320,
+          "line": 322,
+          "end_line": 322,
           "owner": "WorldRegionsHome",
           "name": "chipCls",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 345,
-          "end_line": 345,
+          "line": 347,
+          "end_line": 347,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 358,
+          "end_line": 358,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 367,
-          "end_line": 367,
+          "line": 369,
+          "end_line": 369,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 370,
-          "end_line": 370,
+          "line": 372,
+          "end_line": 372,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Array.from({ length: 8 }).map"
         },
         {
-          "line": 380,
-          "end_line": 380,
+          "line": 382,
+          "end_line": 382,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 394,
-          "end_line": 402,
+          "line": 396,
+          "end_line": 404,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filteredRegions.map"
         },
         {
-          "line": 409,
-          "end_line": 409,
+          "line": 411,
+          "end_line": 411,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 425,
-          "end_line": 425,
+          "line": 427,
+          "end_line": 427,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 431,
-          "end_line": 445,
+          "line": 433,
+          "end_line": 447,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chipIndicators.map"
         },
         {
-          "line": 439,
-          "end_line": 439,
-          "owner": "WorldRegionsHome.<callback@431>",
+          "line": 441,
+          "end_line": 441,
+          "owner": "WorldRegionsHome.<callback@433>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 451,
-          "end_line": 451,
+          "line": 453,
+          "end_line": 453,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 452,
-          "end_line": 452,
+          "line": 454,
+          "end_line": 454,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 460,
-          "end_line": 460,
+          "line": 462,
+          "end_line": 462,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 514,
-          "end_line": 519,
+          "line": 516,
+          "end_line": 521,
           "owner": "WorldRegionsHome",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -191245,8 +191322,8 @@
           ]
         },
         {
-          "line": 198,
-          "end_line": 202,
+          "line": 200,
+          "end_line": 204,
           "owner": "WorldRegionsHome",
           "callee": "useWorldRegionsMap",
           "arguments": [
@@ -191256,8 +191333,8 @@
           ]
         },
         {
-          "line": 212,
-          "end_line": 215,
+          "line": 214,
+          "end_line": 217,
           "owner": "WorldRegionsHome",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -191265,8 +191342,8 @@
           ]
         },
         {
-          "line": 217,
-          "end_line": 226,
+          "line": 219,
+          "end_line": 228,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191275,8 +191352,8 @@
           ]
         },
         {
-          "line": 228,
-          "end_line": 236,
+          "line": 230,
+          "end_line": 238,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191285,8 +191362,8 @@
           ]
         },
         {
-          "line": 238,
-          "end_line": 242,
+          "line": 240,
+          "end_line": 244,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191295,8 +191372,8 @@
           ]
         },
         {
-          "line": 246,
-          "end_line": 246,
+          "line": 248,
+          "end_line": 248,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191305,8 +191382,8 @@
           ]
         },
         {
-          "line": 248,
-          "end_line": 251,
+          "line": 250,
+          "end_line": 253,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191315,8 +191392,8 @@
           ]
         },
         {
-          "line": 305,
-          "end_line": 305,
+          "line": 307,
+          "end_line": 307,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191325,8 +191402,8 @@
           ]
         },
         {
-          "line": 306,
-          "end_line": 310,
+          "line": 308,
+          "end_line": 312,
           "owner": "WorldRegionsHome",
           "callee": "useMemo",
           "arguments": [
@@ -191335,8 +191412,8 @@
           ]
         },
         {
-          "line": 311,
-          "end_line": 311,
+          "line": 313,
+          "end_line": 313,
           "owner": "WorldRegionsHome",
           "callee": "useSearchTracking",
           "arguments": [
@@ -191350,8 +191427,8 @@
       "storage": [],
       "events": [
         {
-          "line": 293,
-          "end_line": 293,
+          "line": 295,
+          "end_line": 295,
           "owner": "WorldRegionsHome.handlePng",
           "callee": "window.dispatchEvent",
           "arguments": [
@@ -191425,120 +191502,120 @@
           "expression": "{() => setResultLimit((current) => current + 50)}"
         },
         {
-          "line": 326,
-          "end_line": 326,
+          "line": 328,
+          "end_line": 328,
           "owner": "WorldRegionsHome",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{hub.refetch}"
         },
         {
-          "line": 341,
-          "end_line": 349,
+          "line": 343,
+          "end_line": 351,
           "owner": "WorldRegionsHome",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setView('list')}"
         },
         {
-          "line": 352,
-          "end_line": 360,
+          "line": 354,
+          "end_line": 362,
           "owner": "WorldRegionsHome",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setView('map')}"
         },
         {
-          "line": 367,
-          "end_line": 367,
+          "line": 369,
+          "end_line": 369,
           "owner": "WorldRegionsHome",
           "component": "LoadingNote",
           "event": "onRefresh",
           "expression": "{() => hub.refetch()}"
         },
         {
-          "line": 377,
-          "end_line": 383,
+          "line": 379,
+          "end_line": 385,
           "owner": "WorldRegionsHome",
           "component": "RegionSearchField",
           "event": "onChange",
           "expression": "{(e) => setQuery(e.target.value)}"
         },
         {
-          "line": 409,
-          "end_line": 409,
+          "line": 411,
+          "end_line": 411,
           "owner": "WorldRegionsHome",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setQuery('')}"
         },
         {
-          "line": 421,
-          "end_line": 428,
+          "line": 423,
+          "end_line": 430,
           "owner": "WorldRegionsHome",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setMetric(OVERVIEW)}"
         },
         {
-          "line": 434,
-          "end_line": 441,
-          "owner": "WorldRegionsHome.<callback@431>",
+          "line": 436,
+          "end_line": 443,
+          "owner": "WorldRegionsHome.<callback@433>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setMetric(ind.code)}"
         },
         {
-          "line": 447,
-          "end_line": 453,
+          "line": 449,
+          "end_line": 455,
           "owner": "WorldRegionsHome",
           "component": "MetricSearch",
           "event": "onPick",
           "expression": "{(i) => setMetric(i.code)}"
         },
         {
-          "line": 447,
-          "end_line": 453,
+          "line": 449,
+          "end_line": 455,
           "owner": "WorldRegionsHome",
           "component": "MetricSearch",
           "event": "onClear",
           "expression": "{() => setMetric(OVERVIEW)}"
         },
         {
-          "line": 455,
-          "end_line": 461,
+          "line": 457,
+          "end_line": 463,
           "owner": "WorldRegionsHome",
           "component": "MapMetricTopics",
           "event": "onPick",
           "expression": "{(i) => setMetric(i.code)}"
         },
         {
-          "line": 481,
-          "end_line": 488,
+          "line": 483,
+          "end_line": 490,
           "owner": "WorldRegionsHome",
           "component": "button",
           "event": "onClick",
           "expression": "{handlePng}"
         },
         {
-          "line": 494,
-          "end_line": 494,
+          "line": 496,
+          "end_line": 496,
           "owner": "WorldRegionsHome",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{map.refetch}"
         },
         {
-          "line": 505,
-          "end_line": 520,
+          "line": 507,
+          "end_line": 522,
           "owner": "WorldRegionsHome",
           "component": "RegionsMap",
           "event": "onSelect",
           "expression": "{(slug) => {\n                  track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeCode || 'overview', world: true });\n                  navigate(activeCode\n                    ? countryRegionIndicatorPath(countrySlug, slug, activeCode)\n                    : countryRegionPath(countrySlug, slug));\n                }}"
         },
         {
-          "line": 524,
-          "end_line": 530,
+          "line": 526,
+          "end_line": 532,
           "owner": "WorldRegionsHome",
           "component": "MapTimeline",
           "event": "onYearChange",
@@ -194370,12 +194447,12 @@
   "totals": {
     "imports": 3677,
     "routes": 89,
-    "functions": 11491,
-    "hooks": 2236,
+    "functions": 11495,
+    "hooks": 2240,
     "http": 91,
     "storage": 84,
     "events": 336,
-    "jsx_handlers": 992,
+    "jsx_handlers": 993,
     "registries": 564,
     "mcp_tools": 7,
     "files": 685,

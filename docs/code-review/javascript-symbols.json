@@ -7090,7 +7090,7 @@
     "anonymous_functions": 7
   },
   "frontend/src/components/MapTimeline.component.test.jsx": {
-    "sha256": "dbe36455450737fd2da70930fc12c12ee264664075a15bafab0d90e3b519af96",
+    "sha256": "d8bd58623cd93e8ee7e1a4a1ed652b954cb12eab5724829f96c157755d9b03c0",
     "definitions": [],
     "imports": [
       {
@@ -7111,15 +7111,15 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 4
+    "anonymous_functions": 5
   },
   "frontend/src/components/MapTimeline.jsx": {
-    "sha256": "9f6f7561e81c2514164e5c898e3db671c0b2a6ee689af737a01d42f076c04f29",
+    "sha256": "f09ff21e9e3b781c07b34dfa19a698f72b2de4fb4f2b0128bfde907df1f78f37",
     "definitions": [
       {
         "name": "MapTimeline",
         "line": 14,
-        "end_line": 108,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -7161,7 +7161,7 @@
         "line": 14
       }
     ],
-    "anonymous_functions": 12
+    "anonymous_functions": 15
   },
   "frontend/src/components/MathFormula.jsx": {
     "sha256": "a3bb82e9a1d951b810dc25f7fb7c1e4c421676667935484b0264c57f96abafe9",
@@ -17160,7 +17160,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "2f2d1b3b6049853f21eb40590370906f914aa211e68c230fb8bf97d1af84640f",
+    "sha256": "62032a597322dadb9896c22afebbdffa234ff38ff5f2cafe56fe605e4ed341b0",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -17258,7 +17258,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "137129bdfa732b59000bc916d5d1d7ac0ea3ac23d1b978a8f168a10e71acaffe",
+    "sha256": "e0fbc0e296bda4853c307f3b3b9e51eec70f01c2e9f5f2956af4c175ce36f5e7",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -47604,7 +47604,7 @@
     "anonymous_functions": 24
   },
   "frontend/src/pages/WorldRegionsHome.jsx": {
-    "sha256": "4322f9d57bae85ca913e2ab07b4d456f9b9728de3bfd4b57d17efa0d6d991174",
+    "sha256": "d33ced4b862641db963f371847548ac603cc4460cc1a90b4391de3bc8e3e16b8",
     "definitions": [
       {
         "name": "normalize",
@@ -47639,49 +47639,49 @@
       {
         "name": "WorldRegionsHome",
         "line": 180,
-        "end_line": 548,
+        "end_line": 550,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldRegionsHome.setView",
-        "line": 262,
-        "end_line": 269,
+        "line": 264,
+        "end_line": 271,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.setMetric",
-        "line": 271,
-        "end_line": 275,
+        "line": 273,
+        "end_line": 277,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.setPeriod",
-        "line": 277,
-        "end_line": 282,
+        "line": 279,
+        "end_line": 284,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.setMapYear",
-        "line": 284,
-        "end_line": 287,
+        "line": 286,
+        "end_line": 289,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.handlePng",
-        "line": 289,
-        "end_line": 303,
+        "line": 291,
+        "end_line": 305,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.getSearchItem",
-        "line": 309,
-        "end_line": 309,
+        "line": 311,
+        "end_line": 311,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "WorldRegionsHome.chipCls",
-        "line": 320,
-        "end_line": 320,
+        "line": 322,
+        "end_line": 322,
         "kind": "ArrowFunctionExpression"
       }
     ],

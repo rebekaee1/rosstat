@@ -204,6 +204,7 @@ ym(107136069, 'init', {
 | `pwa_install_native_accepted` / `pwa_install_native_dismissed` | `lib/pwa.js` | выбор в системном окне установки (Android) | `platform` |
 | `pwa_installed` | `lib/pwa.js` | событие браузера `appinstalled`. Установкой в BI считается **уникальный посетитель** с `pwa_installed` или `pwa_install_native_accepted` (на Android это два события одного человека = одна установка); витрина `mart_pwa_installs`, плитка «Приложение: установки и запуски» (ключ `pwa` в `/api/v1/admin/bi/dashboard`) и строка про установки в Telegram-дайджесте (с 2026-10-06, не выпущено) | `platform` |
 | `pwa_app_launch` | `lib/pwa.js` | запуск из установленного приложения, раз за сессию (в BI: «запуски из иконки», витрина `mart_pwa_installs`; отдельного `pwa_standalone_launch` нет) | `platform` |
+| (нет события) | быстрые SSR-страницы (`seo_renderer._add_platform_bridge`) | кнопка «Открыть интерактивный график», плитки и плавающая плашка — обычные ссылки на карточку показателя (с `24a40bcd`); отдельного события нет, учитывается ли переход в `behavior-standalone`/Метрике как просмотр следующей страницы, не проверялось | — |
 | `pwa_install_entry_click` | `PwaInstallEntry` (подвал) | клик «Установить приложение» | `platform` |
 | `header_login_click` / `header_register_click` | `Navbar` | CTA в шапке | — |
 | `signup` / `login_success` / `oauth_start` | auth-флоу (ADR-0007) | регистрация/вход | `method` |

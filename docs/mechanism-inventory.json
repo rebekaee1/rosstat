@@ -280,7 +280,7 @@
     },
     {
       "path": "backend/app/api/pwa.py",
-      "sha256": "d8264d17128c0465d9148e170f4cd644a4b5b72384aa11d979b07e5541bfedae",
+      "sha256": "3b18d3001aa2bfa4568a4f6371a4798d8946396a27a6bdc2815f52ed724b62a1",
       "lines": 155
     },
     {
@@ -1415,8 +1415,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "47b0720c9606499f03a59a05e74d46862f50b4dad2643a0028b25c0f2cdebf8f",
-      "lines": 3983
+      "sha256": "a6e6d92289e0f31c89b584382d4297b8e71202af91d5885b8b9cee3304ec0952",
+      "lines": 4071
     },
     {
       "path": "backend/app/services/seo_today.py",
@@ -31814,8 +31814,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1416,
-      "end_line": 1416,
+      "line": 1439,
+      "end_line": 1439,
       "owner": "_yandex_verification_meta",
       "conditions": [],
       "name": "google_site_verification",
@@ -31823,8 +31823,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1421,
-      "end_line": 1421,
+      "line": 1444,
+      "end_line": 1444,
       "owner": "_yandex_verification_meta",
       "conditions": [],
       "name": "bing_site_verification",
@@ -31832,8 +31832,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1337,
-      "end_line": 1337,
+      "line": 1360,
+      "end_line": 1360,
       "owner": "_locale_cluster",
       "conditions": [],
       "name": "apex_locale_en",
@@ -31868,8 +31868,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1419,
-      "end_line": 1419,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "_yandex_verification_meta",
       "conditions": [
         "settings.google_site_verification"
@@ -31879,8 +31879,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1424,
-      "end_line": 1424,
+      "line": 1447,
+      "end_line": 1447,
       "owner": "_yandex_verification_meta",
       "conditions": [
         "settings.bing_site_verification"
@@ -88191,8 +88191,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1290,
-      "end_line": 1297,
+      "line": 1313,
+      "end_line": 1320,
       "owner": "<module>",
       "conditions": [],
       "name": "FREQUENCY_LABELS_RU",
@@ -88258,8 +88258,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1299,
-      "end_line": 1306,
+      "line": 1322,
+      "end_line": 1329,
       "owner": "<module>",
       "conditions": [],
       "name": "FREQUENCY_LABELS_EN",
@@ -88325,8 +88325,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1308,
-      "end_line": 1308,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "name": "FLAGSHIP_CODES",
@@ -88342,8 +88342,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1404,
-      "end_line": 1407,
+      "line": 1427,
+      "end_line": 1430,
       "owner": "<module>",
       "conditions": [],
       "name": "YANDEX_VERIFICATION_CODES",
@@ -88359,8 +88359,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1806,
-      "end_line": 1818,
+      "line": 1894,
+      "end_line": 1906,
       "owner": "<module>",
       "conditions": [],
       "name": "_NF_GUESS_RULES",
@@ -88376,8 +88376,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2060,
-      "end_line": 2070,
+      "line": 2148,
+      "end_line": 2158,
       "owner": "<module>",
       "conditions": [],
       "name": "AUTOLINK_TERMS",
@@ -88393,8 +88393,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2233,
-      "end_line": 2244,
+      "line": 2321,
+      "end_line": 2332,
       "owner": "<module>",
       "conditions": [],
       "name": "HOME_FLAGSHIP_CODES_EN",
@@ -88410,8 +88410,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3723,
-      "end_line": 3730,
+      "line": 3811,
+      "end_line": 3818,
       "owner": "<module>",
       "conditions": [],
       "name": "_SSR_VS_COUNTRY_LABELS",
@@ -117960,8 +117960,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1826,
-      "end_line": 1826,
+      "line": 1914,
+      "end_line": 1914,
       "owner": "_not_found_guesses",
       "conditions": [],
       "operation": "set",
@@ -117974,8 +117974,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2075,
-      "end_line": 2075,
+      "line": 2163,
+      "end_line": 2163,
       "owner": "_autolink",
       "conditions": [],
       "operation": "set",
@@ -117988,8 +117988,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2327,
-      "end_line": 2329,
+      "line": 2415,
+      "end_line": 2417,
       "owner": "render_home_html",
       "conditions": [],
       "operation": "cache_get",
@@ -118002,8 +118002,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2480,
-      "end_line": 2480,
+      "line": 2568,
+      "end_line": 2568,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "operation": "execute",
@@ -118016,8 +118016,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2505,
-      "end_line": 2505,
+      "line": 2593,
+      "end_line": 2593,
       "owner": "_active_indicators",
       "conditions": [],
       "operation": "execute",
@@ -118030,8 +118030,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "operation": "execute",
@@ -118044,8 +118044,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2947,
-      "end_line": 2953,
+      "line": 3035,
+      "end_line": 3041,
       "owner": "indicator_data_years",
       "conditions": [],
       "operation": "execute",
@@ -118058,8 +118058,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2961,
-      "end_line": 2965,
+      "line": 3049,
+      "end_line": 3053,
       "owner": "yearly_last_points",
       "conditions": [],
       "operation": "execute",
@@ -118072,8 +118072,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3294,
-      "end_line": 3296,
+      "line": 3382,
+      "end_line": 3384,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -118086,8 +118086,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3310,
-      "end_line": 3317,
+      "line": 3398,
+      "end_line": 3405,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "operation": "execute",
@@ -118100,8 +118100,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3687,
-      "end_line": 3692,
+      "line": 3775,
+      "end_line": 3780,
       "owner": "_latest_rows",
       "conditions": [],
       "operation": "execute",
@@ -118114,8 +118114,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3697,
-      "end_line": 3703,
+      "line": 3785,
+      "end_line": 3791,
       "owner": "_indicator_stats",
       "conditions": [],
       "operation": "execute",
@@ -118128,8 +118128,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3711,
-      "end_line": 3719,
+      "line": 3799,
+      "end_line": 3807,
       "owner": "_related_indicators",
       "conditions": [],
       "operation": "execute",
@@ -118142,8 +118142,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2081,
-      "end_line": 2081,
+      "line": 2169,
+      "end_line": 2169,
       "owner": "_autolink._wrap",
       "conditions": [],
       "operation": "add",
@@ -118156,8 +118156,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2312,
-      "end_line": 2312,
+      "line": 2400,
+      "end_line": 2400,
       "owner": "render_home_html",
       "conditions": [],
       "operation": "cache_get",
@@ -118170,8 +118170,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2761,
-      "end_line": 2771,
+      "line": 2849,
+      "end_line": 2859,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -118186,8 +118186,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1455,
-      "end_line": 1455,
+      "line": 1478,
+      "end_line": 1478,
       "owner": "_responsive_charts",
       "conditions": [
         "route.startswith('/og/') and route.endswith('.png')",
@@ -118203,8 +118203,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1600,
-      "end_line": 1600,
+      "line": 1688,
+      "end_line": 1688,
       "owner": "_complete_structured",
       "conditions": [
         "kind == 'ImageObject'",
@@ -118221,8 +118221,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2328,
-      "end_line": 2328,
+      "line": 2416,
+      "end_line": 2416,
       "owner": "render_home_html",
       "conditions": [],
       "operation": "versioned_key",
@@ -118235,8 +118235,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2700,
-      "end_line": 2702,
+      "line": 2788,
+      "end_line": 2790,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -118251,8 +118251,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2739,
-      "end_line": 2743,
+      "line": 2827,
+      "end_line": 2831,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -118268,8 +118268,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3303,
+      "line": 3389,
+      "end_line": 3391,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -118284,8 +118284,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2261,
-      "end_line": 2261,
+      "line": 2349,
+      "end_line": 2349,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "operation": "execute",
@@ -183779,8 +183779,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2472,
-      "end_line": 2472,
+      "line": 2560,
+      "end_line": 2560,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183797,8 +183797,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2122,
-      "end_line": 2122,
+      "line": 2210,
+      "end_line": 2210,
       "owner": "_indicator_blocks_from_db",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183806,8 +183806,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -183815,8 +183815,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2946,
-      "end_line": 2946,
+      "line": 3034,
+      "end_line": 3034,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -183824,8 +183824,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3646,
-      "end_line": 3646,
+      "line": 3734,
+      "end_line": 3734,
       "owner": "_indicator_alt_freq_links",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183833,8 +183833,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3707,
-      "end_line": 3707,
+      "line": 3795,
+      "end_line": 3795,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183842,8 +183842,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3768,
-      "end_line": 3768,
+      "line": 3856,
+      "end_line": 3856,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183869,8 +183869,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2256,
-      "end_line": 2256,
+      "line": 2344,
+      "end_line": 2344,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -183878,8 +183878,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2257,
-      "end_line": 2257,
+      "line": 2345,
+      "end_line": 2345,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.in_",
@@ -183887,8 +183887,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2258,
-      "end_line": 2258,
+      "line": 2346,
+      "end_line": 2346,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -183896,8 +183896,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2477,
-      "end_line": 2477,
+      "line": 2565,
+      "end_line": 2565,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -183905,8 +183905,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2478,
-      "end_line": 2478,
+      "line": 2566,
+      "end_line": 2566,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -183914,8 +183914,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183923,8 +183923,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2946,
-      "end_line": 2946,
+      "line": 3034,
+      "end_line": 3034,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -183932,8 +183932,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2254,
-      "end_line": 2254,
+      "line": 2342,
+      "end_line": 2342,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -183941,8 +183941,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2256,
-      "end_line": 2256,
+      "line": 2344,
+      "end_line": 2344,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -183950,8 +183950,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2257,
-      "end_line": 2257,
+      "line": 2345,
+      "end_line": 2345,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -183959,8 +183959,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2258,
-      "end_line": 2258,
+      "line": 2346,
+      "end_line": 2346,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -183968,8 +183968,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2476,
-      "end_line": 2476,
+      "line": 2564,
+      "end_line": 2564,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -183977,8 +183977,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2477,
-      "end_line": 2477,
+      "line": 2565,
+      "end_line": 2565,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -183986,8 +183986,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2478,
-      "end_line": 2478,
+      "line": 2566,
+      "end_line": 2566,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -183995,8 +183995,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2500,
-      "end_line": 2500,
+      "line": 2588,
+      "end_line": 2588,
       "owner": "_active_indicators",
       "conditions": [
         "listed_only"
@@ -184006,8 +184006,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2502,
-      "end_line": 2502,
+      "line": 2590,
+      "end_line": 2590,
       "owner": "_active_indicators",
       "conditions": [
         "category"
@@ -184017,8 +184017,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2964,
-      "end_line": 2964,
+      "line": 3052,
+      "end_line": 3052,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184026,8 +184026,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3316,
-      "end_line": 3316,
+      "line": 3404,
+      "end_line": 3404,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184035,8 +184035,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2254,
-      "end_line": 2254,
+      "line": 2342,
+      "end_line": 2342,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -184044,8 +184044,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2254,
-      "end_line": 2254,
+      "line": 2342,
+      "end_line": 2342,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -184053,8 +184053,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2257,
-      "end_line": 2257,
+      "line": 2345,
+      "end_line": 2345,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184062,8 +184062,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2258,
-      "end_line": 2258,
+      "line": 2346,
+      "end_line": 2346,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184071,8 +184071,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2477,
-      "end_line": 2477,
+      "line": 2565,
+      "end_line": 2565,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184080,8 +184080,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2478,
-      "end_line": 2478,
+      "line": 2566,
+      "end_line": 2566,
       "owner": "_indicators_by_codes",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184089,8 +184089,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -184098,8 +184098,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2500,
-      "end_line": 2500,
+      "line": 2588,
+      "end_line": 2588,
       "owner": "_active_indicators",
       "conditions": [
         "listed_only"
@@ -184109,8 +184109,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2502,
-      "end_line": 2502,
+      "line": 2590,
+      "end_line": 2590,
       "owner": "_active_indicators",
       "conditions": [
         "category"
@@ -184120,8 +184120,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -184129,8 +184129,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -184138,8 +184138,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2964,
-      "end_line": 2964,
+      "line": 3052,
+      "end_line": 3052,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184147,8 +184147,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -184156,8 +184156,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -184165,8 +184165,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3316,
-      "end_line": 3316,
+      "line": 3404,
+      "end_line": 3404,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184174,8 +184174,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3702,
-      "end_line": 3702,
+      "line": 3790,
+      "end_line": 3790,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -184183,8 +184183,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3714,
-      "end_line": 3714,
+      "line": 3802,
+      "end_line": 3802,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -184192,8 +184192,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3715,
-      "end_line": 3715,
+      "line": 3803,
+      "end_line": 3803,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed.is_",
@@ -184201,8 +184201,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3716,
-      "end_line": 3716,
+      "line": 3804,
+      "end_line": 3804,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.category",
@@ -184210,8 +184210,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3717,
-      "end_line": 3717,
+      "line": 3805,
+      "end_line": 3805,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -184219,8 +184219,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -184228,8 +184228,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_en",
@@ -184237,8 +184237,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -184246,8 +184246,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2254,
-      "end_line": 2254,
+      "line": 2342,
+      "end_line": 2342,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -184255,8 +184255,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2254,
-      "end_line": 2254,
+      "line": 2342,
+      "end_line": 2342,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184264,8 +184264,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2549,
+      "end_line": 2549,
       "owner": "_last_data_refresh",
       "conditions": [],
       "symbol": "app.models.FetchLog.status.in_",
@@ -184273,8 +184273,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184282,8 +184282,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -184291,8 +184291,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2500,
-      "end_line": 2500,
+      "line": 2588,
+      "end_line": 2588,
       "owner": "_active_indicators",
       "conditions": [
         "listed_only"
@@ -184302,8 +184302,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184311,8 +184311,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184320,8 +184320,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -184329,8 +184329,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184338,8 +184338,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184347,8 +184347,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -184356,8 +184356,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3702,
-      "end_line": 3702,
+      "line": 3790,
+      "end_line": 3790,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184365,8 +184365,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3712,
-      "end_line": 3712,
+      "line": 3800,
+      "end_line": 3800,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184374,8 +184374,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3714,
-      "end_line": 3714,
+      "line": 3802,
+      "end_line": 3802,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -184383,8 +184383,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3715,
-      "end_line": 3715,
+      "line": 3803,
+      "end_line": 3803,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed",
@@ -184392,8 +184392,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3716,
-      "end_line": 3716,
+      "line": 3804,
+      "end_line": 3804,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184401,8 +184401,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3717,
-      "end_line": 3717,
+      "line": 3805,
+      "end_line": 3805,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184410,8 +184410,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184419,8 +184419,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184428,8 +184428,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2341,
+      "end_line": 2341,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -184437,8 +184437,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2549,
+      "end_line": 2549,
       "owner": "_last_data_refresh",
       "conditions": [],
       "symbol": "app.models.FetchLog.status",
@@ -184446,8 +184446,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2498,
-      "end_line": 2498,
+      "line": 2586,
+      "end_line": 2586,
       "owner": "_active_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184455,8 +184455,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2661,
-      "end_line": 2661,
+      "line": 2749,
+      "end_line": 2749,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184464,8 +184464,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184475,8 +184475,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184486,8 +184486,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2741,
-      "end_line": 2741,
+      "line": 2829,
+      "end_line": 2829,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184498,8 +184498,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2741,
-      "end_line": 2741,
+      "line": 2829,
+      "end_line": 2829,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184510,8 +184510,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2963,
-      "end_line": 2963,
+      "line": 3051,
+      "end_line": 3051,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -184519,8 +184519,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3295,
-      "end_line": 3295,
+      "line": 3383,
+      "end_line": 3383,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184528,8 +184528,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3313,
-      "end_line": 3313,
+      "line": 3401,
+      "end_line": 3401,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -184537,8 +184537,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3690,
-      "end_line": 3690,
+      "line": 3778,
+      "end_line": 3778,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184546,8 +184546,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3699,
-      "end_line": 3699,
+      "line": 3787,
+      "end_line": 3787,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -184555,8 +184555,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3700,
-      "end_line": 3700,
+      "line": 3788,
+      "end_line": 3788,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184564,8 +184564,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3701,
-      "end_line": 3701,
+      "line": 3789,
+      "end_line": 3789,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184573,8 +184573,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3714,
-      "end_line": 3714,
+      "line": 3802,
+      "end_line": 3802,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184582,8 +184582,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3715,
-      "end_line": 3715,
+      "line": 3803,
+      "end_line": 3803,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -184591,8 +184591,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2549,
+      "end_line": 2549,
       "owner": "_last_data_refresh",
       "conditions": [],
       "symbol": "app.models.FetchLog.completed_at",
@@ -184600,8 +184600,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2549,
+      "end_line": 2549,
       "owner": "_last_data_refresh",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -184609,8 +184609,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184620,8 +184620,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184631,8 +184631,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184642,8 +184642,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2740,
-      "end_line": 2740,
+      "line": 2828,
+      "end_line": 2828,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184654,8 +184654,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2741,
-      "end_line": 2741,
+      "line": 2829,
+      "end_line": 2829,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184666,8 +184666,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2741,
-      "end_line": 2741,
+      "line": 2829,
+      "end_line": 2829,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184678,8 +184678,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2951,
-      "end_line": 2951,
+      "line": 3039,
+      "end_line": 3039,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -184687,8 +184687,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2962,
-      "end_line": 2962,
+      "line": 3050,
+      "end_line": 3050,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184696,8 +184696,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2962,
-      "end_line": 2962,
+      "line": 3050,
+      "end_line": 3050,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData.value",
@@ -184705,8 +184705,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2963,
-      "end_line": 2963,
+      "line": 3051,
+      "end_line": 3051,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184714,8 +184714,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3390,
+      "end_line": 3390,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184725,8 +184725,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3390,
+      "end_line": 3390,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184736,8 +184736,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3311,
-      "end_line": 3311,
+      "line": 3399,
+      "end_line": 3399,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184745,8 +184745,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3313,
-      "end_line": 3313,
+      "line": 3401,
+      "end_line": 3401,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184754,8 +184754,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3314,
-      "end_line": 3314,
+      "line": 3402,
+      "end_line": 3402,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -184763,8 +184763,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3690,
-      "end_line": 3690,
+      "line": 3778,
+      "end_line": 3778,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184772,8 +184772,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3699,
-      "end_line": 3699,
+      "line": 3787,
+      "end_line": 3787,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184781,8 +184781,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3700,
-      "end_line": 3700,
+      "line": 3788,
+      "end_line": 3788,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184790,8 +184790,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3701,
-      "end_line": 3701,
+      "line": 3789,
+      "end_line": 3789,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184799,8 +184799,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2461,
-      "end_line": 2461,
+      "line": 2549,
+      "end_line": 2549,
       "owner": "_last_data_refresh",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -184808,8 +184808,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2701,
-      "end_line": 2701,
+      "line": 2789,
+      "end_line": 2789,
       "owner": "render_indicator_html._mode_view",
       "conditions": [
         "d_code != code"
@@ -184819,8 +184819,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2741,
-      "end_line": 2741,
+      "line": 2829,
+      "end_line": 2829,
       "owner": "render_indicator_html",
       "conditions": [
         "view_mode and body_indicator.id == data_indicator.id",
@@ -184831,8 +184831,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2951,
-      "end_line": 2951,
+      "line": 3039,
+      "end_line": 3039,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184840,8 +184840,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2962,
-      "end_line": 2962,
+      "line": 3050,
+      "end_line": 3050,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184849,8 +184849,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2962,
-      "end_line": 2962,
+      "line": 3050,
+      "end_line": 3050,
       "owner": "yearly_last_points",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184858,8 +184858,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3301,
-      "end_line": 3301,
+      "line": 3389,
+      "end_line": 3389,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184869,8 +184869,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3390,
+      "end_line": 3390,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184880,8 +184880,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3390,
+      "end_line": 3390,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184891,8 +184891,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3314,
-      "end_line": 3314,
+      "line": 3402,
+      "end_line": 3402,
       "owner": "render_indicator_year_html",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184900,8 +184900,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3689,
-      "end_line": 3689,
+      "line": 3777,
+      "end_line": 3777,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -184909,8 +184909,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2768,
-      "end_line": 2768,
+      "line": 2856,
+      "end_line": 2856,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -184920,8 +184920,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2769,
-      "end_line": 2769,
+      "line": 2857,
+      "end_line": 2857,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -184931,8 +184931,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3302,
-      "end_line": 3302,
+      "line": 3390,
+      "end_line": 3390,
       "owner": "render_indicator_year_html",
       "conditions": [
         "data_code != parent_code"
@@ -184942,8 +184942,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3688,
-      "end_line": 3688,
+      "line": 3776,
+      "end_line": 3776,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184951,8 +184951,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3689,
-      "end_line": 3689,
+      "line": 3777,
+      "end_line": 3777,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -184960,8 +184960,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2768,
-      "end_line": 2768,
+      "line": 2856,
+      "end_line": 2856,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -184971,8 +184971,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2769,
-      "end_line": 2769,
+      "line": 2857,
+      "end_line": 2857,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -184982,8 +184982,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2949,
-      "end_line": 2949,
+      "line": 3037,
+      "end_line": 3037,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -184991,8 +184991,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2766,
-      "end_line": 2766,
+      "line": 2854,
+      "end_line": 2854,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -185002,8 +185002,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2949,
-      "end_line": 2949,
+      "line": 3037,
+      "end_line": 3037,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -185011,8 +185011,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2766,
-      "end_line": 2766,
+      "line": 2854,
+      "end_line": 2854,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -185022,8 +185022,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2948,
-      "end_line": 2948,
+      "line": 3036,
+      "end_line": 3036,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -185031,8 +185031,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2948,
-      "end_line": 2948,
+      "line": 3036,
+      "end_line": 3036,
       "owner": "indicator_data_years",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -185040,8 +185040,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2763,
-      "end_line": 2763,
+      "line": 2851,
+      "end_line": 2851,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -185051,8 +185051,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2764,
-      "end_line": 2764,
+      "line": 2852,
+      "end_line": 2852,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -185062,8 +185062,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2763,
-      "end_line": 2763,
+      "line": 2851,
+      "end_line": 2851,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -185073,8 +185073,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2764,
-      "end_line": 2764,
+      "line": 2852,
+      "end_line": 2852,
       "owner": "render_indicator_html",
       "conditions": [
         "(indicator.frequency or '').startswith('month')"
@@ -240250,8 +240250,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1042,
-      "end_line": 1062,
+      "line": 1065,
+      "end_line": 1085,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_boot_splash",
@@ -240259,8 +240259,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1080,
-      "end_line": 1147,
+      "line": 1103,
+      "end_line": 1170,
       "owner": "<module>",
       "conditions": [],
       "name": "_foot_nav",
@@ -240268,8 +240268,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1178,
-      "end_line": 1190,
+      "line": 1201,
+      "end_line": 1213,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_ticker",
@@ -240277,8 +240277,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1235,
-      "end_line": 1246,
+      "line": 1258,
+      "end_line": 1269,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_boot_bar",
@@ -240286,8 +240286,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1249,
-      "end_line": 1256,
+      "line": 1272,
+      "end_line": 1279,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_chrome_header",
@@ -240295,8 +240295,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1259,
-      "end_line": 1273,
+      "line": 1282,
+      "end_line": 1296,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_chrome_footer",
@@ -240304,8 +240304,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1276,
-      "end_line": 1287,
+      "line": 1299,
+      "end_line": 1310,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_platform_deep_links",
@@ -240313,8 +240313,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1312,
-      "end_line": 1354,
+      "line": 1335,
+      "end_line": 1377,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_cluster",
@@ -240322,8 +240322,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1357,
-      "end_line": 1378,
+      "line": 1380,
+      "end_line": 1401,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_return_anchor",
@@ -240331,8 +240331,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1381,
-      "end_line": 1399,
+      "line": 1404,
+      "end_line": 1422,
       "owner": "<module>",
       "conditions": [],
       "name": "_hreflang_head",
@@ -240340,8 +240340,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1410,
-      "end_line": 1426,
+      "line": 1433,
+      "end_line": 1449,
       "owner": "<module>",
       "conditions": [],
       "name": "_yandex_verification_meta",
@@ -240349,8 +240349,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1429,
-      "end_line": 1432,
+      "line": 1452,
+      "end_line": 1455,
       "owner": "<module>",
       "conditions": [],
       "name": "_responsive_chart_images",
@@ -240358,8 +240358,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1435,
-      "end_line": 1462,
+      "line": 1458,
+      "end_line": 1485,
       "owner": "<module>",
       "conditions": [],
       "name": "_responsive_charts",
@@ -240367,8 +240367,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1465,
-      "end_line": 1491,
+      "line": 1488,
+      "end_line": 1515,
       "owner": "<module>",
       "conditions": [],
       "name": "_prepare_quicklink_body",
@@ -240376,8 +240376,17 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1494,
-      "end_line": 1537,
+      "line": 1524,
+      "end_line": 1579,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_add_platform_bridge",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 1582,
+      "end_line": 1625,
       "owner": "<module>",
       "conditions": [],
       "name": "_preview_body_urls",
@@ -240385,8 +240394,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1540,
-      "end_line": 1557,
+      "line": 1628,
+      "end_line": 1645,
       "owner": "<module>",
       "conditions": [],
       "name": "_dataset_description",
@@ -240394,8 +240403,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1560,
-      "end_line": 1601,
+      "line": 1648,
+      "end_line": 1689,
       "owner": "<module>",
       "conditions": [],
       "name": "_complete_structured",
@@ -240403,8 +240412,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1604,
-      "end_line": 1640,
+      "line": 1692,
+      "end_line": 1728,
       "owner": "<module>",
       "conditions": [],
       "name": "build_document",
@@ -240412,8 +240421,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1643,
-      "end_line": 1786,
+      "line": 1731,
+      "end_line": 1874,
       "owner": "<module>",
       "conditions": [],
       "name": "compose_document",
@@ -240421,8 +240430,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1821,
-      "end_line": 1853,
+      "line": 1909,
+      "end_line": 1941,
       "owner": "<module>",
       "conditions": [],
       "name": "_not_found_guesses",
@@ -240430,8 +240439,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1856,
-      "end_line": 1887,
+      "line": 1944,
+      "end_line": 1975,
       "owner": "<module>",
       "conditions": [],
       "name": "_not_found_lang_toggle",
@@ -240439,8 +240448,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1890,
-      "end_line": 2047,
+      "line": 1978,
+      "end_line": 2135,
       "owner": "<module>",
       "conditions": [],
       "name": "render_not_found_html",
@@ -240448,8 +240457,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2050,
-      "end_line": 2054,
+      "line": 2138,
+      "end_line": 2142,
       "owner": "<module>",
       "conditions": [],
       "name": "_strip_preloads",
@@ -240457,8 +240466,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2073,
-      "end_line": 2087,
+      "line": 2161,
+      "end_line": 2175,
       "owner": "<module>",
       "conditions": [],
       "name": "_autolink",
@@ -240466,8 +240475,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2090,
-      "end_line": 2095,
+      "line": 2178,
+      "end_line": 2183,
       "owner": "<module>",
       "conditions": [],
       "name": "_blocks_html",
@@ -240475,8 +240484,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2098,
-      "end_line": 2119,
+      "line": 2186,
+      "end_line": 2207,
       "owner": "<module>",
       "conditions": [],
       "name": "_faq_json_ld",
@@ -240484,8 +240493,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2122,
-      "end_line": 2135,
+      "line": 2210,
+      "end_line": 2223,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_blocks_from_db",
@@ -240493,8 +240502,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2138,
-      "end_line": 2160,
+      "line": 2226,
+      "end_line": 2248,
       "owner": "<module>",
       "conditions": [],
       "name": "_page_trail",
@@ -240502,8 +240511,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2163,
-      "end_line": 2183,
+      "line": 2251,
+      "end_line": 2271,
       "owner": "<module>",
       "conditions": [],
       "name": "_page_body",
@@ -240511,8 +240520,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2186,
-      "end_line": 2215,
+      "line": 2274,
+      "end_line": 2303,
       "owner": "<module>",
       "conditions": [],
       "name": "render_page_html",
@@ -240520,8 +240529,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2218,
-      "end_line": 2226,
+      "line": 2306,
+      "end_line": 2314,
       "owner": "<module>",
       "conditions": [],
       "name": "_home_country_links",
@@ -240529,8 +240538,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2248,
-      "end_line": 2270,
+      "line": 2336,
+      "end_line": 2358,
       "owner": "<module>",
       "conditions": [],
       "name": "_home_flagship_links_en",
@@ -240538,8 +240547,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2273,
-      "end_line": 2450,
+      "line": 2361,
+      "end_line": 2538,
       "owner": "<module>",
       "conditions": [],
       "name": "render_home_html",
@@ -240547,8 +240556,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2453,
-      "end_line": 2466,
+      "line": 2541,
+      "end_line": 2554,
       "owner": "<module>",
       "conditions": [],
       "name": "_last_data_refresh",
@@ -240556,8 +240565,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2469,
-      "end_line": 2482,
+      "line": 2557,
+      "end_line": 2570,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicators_by_codes",
@@ -240565,8 +240574,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2485,
-      "end_line": 2506,
+      "line": 2573,
+      "end_line": 2594,
       "owner": "<module>",
       "conditions": [],
       "name": "_active_indicators",
@@ -240574,8 +240583,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2509,
-      "end_line": 2564,
+      "line": 2597,
+      "end_line": 2652,
       "owner": "<module>",
       "conditions": [],
       "name": "render_categories_hub_html",
@@ -240583,8 +240592,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2567,
-      "end_line": 2624,
+      "line": 2655,
+      "end_line": 2712,
       "owner": "<module>",
       "conditions": [],
       "name": "render_category_html",
@@ -240592,8 +240601,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2627,
-      "end_line": 2637,
+      "line": 2715,
+      "end_line": 2725,
       "owner": "<module>",
       "conditions": [],
       "name": "_related_categories",
@@ -240601,8 +240610,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2640,
-      "end_line": 2941,
+      "line": 2728,
+      "end_line": 3029,
       "owner": "<module>",
       "conditions": [],
       "name": "render_indicator_html",
@@ -240610,8 +240619,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2944,
-      "end_line": 2954,
+      "line": 3032,
+      "end_line": 3042,
       "owner": "<module>",
       "conditions": [],
       "name": "indicator_data_years",
@@ -240619,8 +240628,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2957,
-      "end_line": 2971,
+      "line": 3045,
+      "end_line": 3059,
       "owner": "<module>",
       "conditions": [],
       "name": "yearly_last_points",
@@ -240628,8 +240637,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2974,
-      "end_line": 2992,
+      "line": 3062,
+      "end_line": 3080,
       "owner": "<module>",
       "conditions": [],
       "name": "neighbor_year_window",
@@ -240637,8 +240646,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2995,
-      "end_line": 3045,
+      "line": 3083,
+      "end_line": 3133,
       "owner": "<module>",
       "conditions": [],
       "name": "year_change_lines",
@@ -240646,8 +240655,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3048,
-      "end_line": 3176,
+      "line": 3136,
+      "end_line": 3264,
       "owner": "<module>",
       "conditions": [],
       "name": "year_history_position_lines",
@@ -240655,8 +240664,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3179,
-      "end_line": 3269,
+      "line": 3267,
+      "end_line": 3357,
       "owner": "<module>",
       "conditions": [],
       "name": "_year_page_title_desc",
@@ -240664,8 +240673,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3272,
-      "end_line": 3643,
+      "line": 3360,
+      "end_line": 3731,
       "owner": "<module>",
       "conditions": [],
       "name": "render_indicator_year_html",
@@ -240673,8 +240682,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3646,
-      "end_line": 3672,
+      "line": 3734,
+      "end_line": 3760,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_alt_freq_links",
@@ -240682,8 +240691,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3675,
-      "end_line": 3683,
+      "line": 3763,
+      "end_line": 3771,
       "owner": "<module>",
       "conditions": [],
       "name": "_category_for_api",
@@ -240691,8 +240700,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3686,
-      "end_line": 3693,
+      "line": 3774,
+      "end_line": 3781,
       "owner": "<module>",
       "conditions": [],
       "name": "_latest_rows",
@@ -240700,8 +240709,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3696,
-      "end_line": 3704,
+      "line": 3784,
+      "end_line": 3792,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_stats",
@@ -240709,8 +240718,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3707,
-      "end_line": 3720,
+      "line": 3795,
+      "end_line": 3808,
       "owner": "<module>",
       "conditions": [],
       "name": "_related_indicators",
@@ -240718,8 +240727,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3733,
-      "end_line": 3764,
+      "line": 3821,
+      "end_line": 3852,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_world_compare_ssr_section",
@@ -240727,8 +240736,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3767,
-      "end_line": 3983,
+      "line": 3855,
+      "end_line": 4071,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_body",
@@ -240745,8 +240754,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1507,
-      "end_line": 1519,
+      "line": 1595,
+      "end_line": 1607,
       "owner": "_preview_body_urls",
       "conditions": [],
       "name": "preview_url",
@@ -240754,8 +240763,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1842,
-      "end_line": 1844,
+      "line": 1930,
+      "end_line": 1932,
       "owner": "_not_found_guesses",
       "conditions": [],
       "name": "_hit",
@@ -240763,8 +240772,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1871,
-      "end_line": 1876,
+      "line": 1959,
+      "end_line": 1964,
       "owner": "_not_found_lang_toggle",
       "conditions": [],
       "name": "_row",
@@ -240772,8 +240781,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2695,
-      "end_line": 2716,
+      "line": 2783,
+      "end_line": 2804,
       "owner": "render_indicator_html",
       "conditions": [],
       "name": "_mode_view",
@@ -240781,8 +240790,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3103,
-      "end_line": 3114,
+      "line": 3191,
+      "end_line": 3202,
       "owner": "year_history_position_lines",
       "conditions": [],
       "name": "_gap_ago",
@@ -240790,8 +240799,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2080,
-      "end_line": 2082,
+      "line": 2168,
+      "end_line": 2170,
       "owner": "_autolink",
       "conditions": [],
       "name": "_wrap",
@@ -240799,8 +240808,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3498,
-      "end_line": 3499,
+      "line": 3586,
+      "end_line": 3587,
       "owner": "render_indicator_year_html",
       "conditions": [
         "not (single_point)"
@@ -271645,24 +271654,24 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1847,
-      "end_line": 1847,
+      "line": 1935,
+      "end_line": 1935,
       "owner": "_not_found_guesses",
       "conditions": [],
       "symbol": "app.services.seo_renderer._NF_GUESS_RULES"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2076,
-      "end_line": 2076,
+      "line": 2164,
+      "end_line": 2164,
       "owner": "_autolink",
       "conditions": [],
       "symbol": "app.services.seo_renderer.AUTOLINK_TERMS"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2263,
-      "end_line": 2263,
+      "line": 2351,
+      "end_line": 2351,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN"
@@ -271677,8 +271686,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3917,
-      "end_line": 3917,
+      "line": 4005,
+      "end_line": 4005,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.services.seo_content.GLOBAL_INDICATOR_BLOCKS"
@@ -271693,32 +271702,32 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1413,
-      "end_line": 1413,
+      "line": 1436,
+      "end_line": 1436,
       "owner": "_yandex_verification_meta",
       "conditions": [],
       "symbol": "app.services.seo_renderer.YANDEX_VERIFICATION_CODES"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2257,
-      "end_line": 2257,
+      "line": 2345,
+      "end_line": 2345,
       "owner": "_home_flagship_links_en",
       "conditions": [],
       "symbol": "app.services.seo_renderer.HOME_FLAGSHIP_CODES_EN"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2277,
-      "end_line": 2277,
+      "line": 2365,
+      "end_line": 2365,
       "owner": "render_home_html",
       "conditions": [],
       "symbol": "app.services.seo_renderer.FLAGSHIP_CODES"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2296,
-      "end_line": 2296,
+      "line": 2384,
+      "end_line": 2384,
       "owner": "render_home_html",
       "conditions": [
         "page is None"
@@ -271727,16 +271736,16 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2684,
-      "end_line": 2684,
+      "line": 2772,
+      "end_line": 2772,
       "owner": "render_indicator_html",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3680,
-      "end_line": 3680,
+      "line": 3768,
+      "end_line": 3768,
       "owner": "_category_for_api",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
@@ -271753,32 +271762,32 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 1308,
-      "end_line": 1308,
+      "line": 1331,
+      "end_line": 1331,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2608,
+      "end_line": 2608,
       "owner": "render_categories_hub_html",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3755,
-      "end_line": 3755,
+      "line": 3843,
+      "end_line": 3843,
       "owner": "_russia_world_compare_ssr_section",
       "conditions": [],
       "symbol": "app.services.seo_renderer._SSR_VS_COUNTRY_LABELS"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2175,
-      "end_line": 2175,
+      "line": 2263,
+      "end_line": 2263,
       "owner": "_page_body",
       "conditions": [
         "not (page.links)"
@@ -271787,8 +271796,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 2635,
-      "end_line": 2635,
+      "line": 2723,
+      "end_line": 2723,
       "owner": "_related_categories",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
