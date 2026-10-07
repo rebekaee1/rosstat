@@ -2084,9 +2084,9 @@ Relationships: `[]`
 | app.services.goal_taxonomy._ENGAGEMENT | Set | sequence/source expression | [backend/app/services/goal_taxonomy.py:91](../backend/app/services/goal_taxonomy.py#L91) |
 | app.services.goal_taxonomy._TECHNICAL | Set | sequence/source expression | [backend/app/services/goal_taxonomy.py:156](../backend/app/services/goal_taxonomy.py#L156) |
 | app.services.goal_taxonomy._WEIGHT_OVERRIDES | Dict | 'signup', 'newsletter_opt_in', 'feedback_submit', 'api_interest_submit', 'pwa_installed', 'login_success', 'download_csv', 'download_excel', 'chart_image_download', 'regions_map_gif_download', 'oauth_start', 'header_register_click', 'forecast_view', 'search_select' | [backend/app/services/goal_taxonomy.py:182](../backend/app/services/goal_taxonomy.py#L182) |
-| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:26](../backend/app/services/http_client.py#L26) |
-| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:33](../backend/app/services/http_client.py#L33) |
-| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:34](../backend/app/services/http_client.py#L34) |
+| app.services.http_client._RETRY_STRATEGY | Call | computed source expression | [backend/app/services/http_client.py:39](../backend/app/services/http_client.py#L39) |
+| app.services.http_client._PROXY_FALLBACK_STATUSES | Call | computed source expression | [backend/app/services/http_client.py:47](../backend/app/services/http_client.py#L47) |
+| app.services.http_client._PROXY_FALLBACK_EXC | Tuple | sequence/source expression | [backend/app/services/http_client.py:48](../backend/app/services/http_client.py#L48) |
 | app.services.identity.consents.NEWSLETTER_KINDS | Tuple | sequence/source expression | [backend/app/services/identity/consents.py:5](../backend/app/services/identity/consents.py#L5) |
 | app.services.imf_weo_adapter.WEO_SERIES | Dict | WEO_NGDPD, WEO_NGDPDPC, WEO_GGXCNL_NGDP, WEO_GGXWDG_NGDP, WEO_LP, WEO_LUR, WEO_PCPIPCH | [backend/app/services/imf_weo_adapter.py:88](../backend/app/services/imf_weo_adapter.py#L88) |
 | app.services.imf_weo_adapter.WEO_METHODOLOGY_BY_CODE | Dict | WEO_NGDPD, WEO_NGDPDPC, WEO_GGXCNL_NGDP, WEO_GGXWDG_NGDP, WEO_LP, WEO_LUR, WEO_PCPIPCH | [backend/app/services/imf_weo_adapter.py:223](../backend/app/services/imf_weo_adapter.py#L223) |

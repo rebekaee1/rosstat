@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `1404a0e5817aaf7dd9be5454d61d1d16464e499f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `d383285df0d448e3fddbd82ce4ad32f97ca93edd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 1869 |
 | Код, шаблоны и стили | 1485 |
 | Актуальные рецензии без пропусков guard | 1869 |
-| Именованные определения Python/JS: с аннотацией / всего | 11797 / 11797 |
+| Именованные определения Python/JS: с аннотацией / всего | 11818 / 11818 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -308,7 +308,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/geoip.py](../backend/app/services/geoip.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/goal_taxonomy.py](../backend/app/services/goal_taxonomy.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/gsc_client.py](../backend/app/services/gsc_client.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 11/11 | актуально |
+| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 17/17 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/identity/__init__.py](../backend/app/services/identity/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/services/identity/consents.py](../backend/app/services/identity/consents.py) | reviewed | 1/1 | актуально |
@@ -624,7 +624,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_hero_yoy.py](../backend/tests/test_hero_yoy.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_household_finance_seo.py](../backend/tests/test_household_finance_seo.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_housing_historical_backfill.py](../backend/tests/test_housing_historical_backfill.py) | reviewed | 8/8 | актуально |
-| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_http_client.py](../backend/tests/test_http_client.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_i18n_parity.py](../backend/tests/test_i18n_parity.py) | reviewed | 100/100 | актуально |
 | [backend/tests/test_imf_weo_adapter.py](../backend/tests/test_imf_weo_adapter.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_index_policy.py](../backend/tests/test_index_policy.py) | reviewed | 11/11 | актуально |

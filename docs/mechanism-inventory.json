@@ -1075,8 +1075,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "e79639144aedb84be27dab363ce4ba87cce7b5f5d20c9682360e05ef9d8f03a0",
-      "lines": 207
+      "sha256": "fff3be63813423d88503944bb2e3ec68d915735d0afeed99a8c25e1097c61c08",
+      "lines": 299
     },
     {
       "path": "backend/app/services/i18n_display.py",
@@ -31027,8 +31027,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 61,
-      "end_line": 61,
+      "line": 127,
+      "end_line": 127,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -31036,8 +31036,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 66,
-      "end_line": 66,
+      "line": 132,
+      "end_line": 132,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -31045,8 +31045,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 140,
+      "end_line": 140,
       "owner": "resolve_etl_socks_url",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -79240,8 +79240,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 26,
-      "end_line": 31,
+      "line": 39,
+      "end_line": 45,
       "owner": "<module>",
       "conditions": [],
       "name": "_RETRY_STRATEGY",
@@ -79249,16 +79249,16 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "Retry(total=3, backoff_factor=2, status_forcelist=[408, 500, 502, 504], allowed_methods=['GET', 'POST'])",
+      "expression": "Retry(total=3, connect=1, backoff_factor=2, status_forcelist=[408, 500, 502, 504], allowed_methods=['GET', 'POST'])",
       "expression_truncated": false,
-      "expression_chars": 104,
-      "ast_sha256": "7468344909aea25ce8c44e9a1c22d9203fac5ef6f7a3ebfaa09cd529898c0e5c",
+      "expression_chars": 115,
+      "ast_sha256": "ad0a389b4a94424df2233175b9c3e6e4f89e6ebefc00ef4b2abe13e3064a24dc",
       "runtime_expansion": true
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 33,
-      "end_line": 33,
+      "line": 47,
+      "end_line": 47,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_STATUSES",
@@ -79274,8 +79274,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 34,
-      "end_line": 38,
+      "line": 48,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_EXC",
@@ -113771,8 +113771,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 202,
-      "end_line": 206,
+      "line": 294,
+      "end_line": 298,
       "owner": "create_session",
       "conditions": [],
       "operation": "update",
@@ -233383,8 +233383,53 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 41,
-      "end_line": 50,
+      "line": 64,
+      "end_line": 65,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_host",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 68,
+      "end_line": 77,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_host_down_remaining",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 80,
+      "end_line": 82,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_mark_host_down",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 85,
+      "end_line": 87,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_mark_host_up",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 90,
+      "end_line": 93,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_reset_host_breaker",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 96,
+      "end_line": 116,
       "owner": "<module>",
       "conditions": [],
       "name": "_TimeoutAdapter",
@@ -233392,8 +233437,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 53,
-      "end_line": 67,
+      "line": 119,
+      "end_line": 133,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_proxy_url",
@@ -233401,8 +233446,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 70,
-      "end_line": 75,
+      "line": 136,
+      "end_line": 141,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_socks_url",
@@ -233410,8 +233455,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 78,
-      "end_line": 79,
+      "line": 144,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "name": "_proxy_dict",
@@ -233419,8 +233464,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 82,
-      "end_line": 167,
+      "line": 148,
+      "end_line": 259,
       "owner": "<module>",
       "conditions": [],
       "name": "ProxyFallbackSession",
@@ -233428,8 +233473,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 170,
-      "end_line": 207,
+      "line": 262,
+      "end_line": 299,
       "owner": "<module>",
       "conditions": [],
       "name": "create_session",
@@ -233437,8 +233482,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 44,
-      "end_line": 46,
+      "line": 104,
+      "end_line": 106,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "__init__",
@@ -233446,8 +233491,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 48,
-      "end_line": 50,
+      "line": 108,
+      "end_line": 116,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "send",
@@ -233455,8 +233500,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 85,
-      "end_line": 92,
+      "line": 151,
+      "end_line": 158,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "__init__",
@@ -233464,8 +233509,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 94,
-      "end_line": 99,
+      "line": 160,
+      "end_line": 165,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_fallback_urls",
@@ -233473,11 +233518,20 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 101,
-      "end_line": 167,
+      "line": 167,
+      "end_line": 191,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "request",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 193,
+      "end_line": 259,
+      "owner": "ProxyFallbackSession",
+      "conditions": [],
+      "name": "_request_hop",
       "kind": "FunctionDef"
     },
     {
@@ -267887,32 +267941,32 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 109,
-      "end_line": 109,
-      "owner": "ProxyFallbackSession.request",
+      "line": 201,
+      "end_line": 201,
+      "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 131,
-      "end_line": 131,
-      "owner": "ProxyFallbackSession.request",
+      "line": 223,
+      "end_line": 223,
+      "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 152,
-      "end_line": 152,
-      "owner": "ProxyFallbackSession.request",
+      "line": 244,
+      "end_line": 244,
+      "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 199,
-      "end_line": 199,
+      "line": 291,
+      "end_line": 291,
       "owner": "create_session",
       "conditions": [],
       "symbol": "app.services.http_client._RETRY_STRATEGY"
