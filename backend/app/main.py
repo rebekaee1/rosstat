@@ -242,6 +242,12 @@ scheduler = AsyncIOScheduler(
     job_defaults={"coalesce": True, "max_instances": 1, "misfire_grace_time": 3600}
 )
 
+# Утренние отчёты за вчера (дайджест 09:00, Пульс 09:05): опоздавший отчёт
+# ценнее пропущенного. 07.10.2026 event loop стоял 09:00–10:05 (синхронный
+# fetch Росстата), Пульс опоздал на 3629 с при допуске 3600 — и пропал.
+# Снапшот Пульса (23:57) сюда не входит: после полуночи date.today() сменится.
+DAILY_REPORT_MISFIRE_GRACE_S = 6 * 3600
+
 
 # О-13/F07: lease-блокировка задач (владелец, heartbeat, группы взаимоисключения)
 # живёт в app.services.job_lease; здесь — реэкспорт для расписания и тестов.
@@ -974,6 +980,7 @@ async def lifespan(app: FastAPI):
                 id="telegram_daily_digest",
                 name="Telegram daily digest (users + Metrika goals)",
                 replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
             )
             logger.info(
                 "Telegram digest enabled: daily at %02d:%02d MSK",
@@ -1000,6 +1007,7 @@ async def lifespan(app: FastAPI):
                 id="pulse_report",
                 name="Pulse LLM report to owner (OpenRouter → Telegram)",
                 replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
             )
             logger.info(
                 "Pulse enabled: snapshot 23:57, report %02d:%02d MSK",

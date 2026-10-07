@@ -1147,6 +1147,14 @@ Legacy `WeeklySpec` / `typical_day` builders в `calendar_seed.py` оставл�
 
 **Правило:** синхронный сетевой клиент (clickhouse_connect, requests, openpyxl-разбор) из корутины — только через `run_in_executor`/`to_thread`. Пакетное чтение аналитики — выборка колонок + `db.stream(...yield_per)`, не `select(Model).scalars().all()`. При «таймаутах Redis» сначала смотреть `memory.events`/`memory.pressure` cgroup scheduler и дыры в его логе.
 
+### Scheduler event-loop block: синхронный fetch Росстата съел утренние отчёты (2026-10-07)
+
+07.10.2026 утренние Telegram-дайджест (09:00) и Пульс (09:05) не пришли. В 08:38–10:05 МСК `RosstatIndParser` (`capital-investment`, затем `construction-work`) качал `ind_MM-YYYY.xlsx`, rosstat.gov.ru не отвечал: 6 кандидатов × (ретраи по 90 с + fallback через socks5h) ≈ час на индикатор. Вызов `requests` шёл прямо в `async _fetch_and_parse` — весь `AsyncIOScheduler` стоял. В 10:05 обе задачи ушли в misfire (допуск 3600 с; Пульс опоздал на 3629 с), за ними посыпались таймауты Redis/Postgres у остальных job — следствие той же остановки, не отказ хранилищ.
+
+**Фикс (2026-10-08):** сетевой fetch и разбор в `rosstat_ind/demo/science/fixedassets` — через `asyncio.to_thread`; страж `backend/tests/test_parser_fetch_off_event_loop.py` (AST: в `async _fetch_and_parse` нет прямых `create_session`/`resolve_mediabank_file`/`_fetch_*`/`session.get`). `misfire_grace_time` 6 ч для `telegram_daily_digest` и `pulse_report` (`main.py::DAILY_REPORT_MISFIRE_GRACE_S`); снапшот Пульса 23:57 оставлен на часе — после полуночи `date.today()` указывал бы на следующий день.
+
+**Правило:** см. предыдущий раздел — синхронный сетевой клиент из корутины только через `to_thread`. Признак в логе: одна-две строки в 1,5 мин (`urllib3 Retrying … ConnectTimeout`) и тишина остальных job, затем лавина «Execution of job … skipped/missed».
+
 ### Sitemap-index lastmod trap: исправленный шард Яндекс не перечитывает (2026-09-29)
 
 Ошибки Вебмастера по sitemap (до 91k на хост) — `<lastmod>` раньше 1970 у годовых страниц 1929–1969 (справочник Яндекса: «неверная дата»). Код исправлен 2026-09-26 (`SITEMAP_LASTMOD_MIN`), но `lastmod` шарда в индексе считался как max(lastmod URL) — у исторических шардов он не сдвинулся, и робот не перечитывал исправленные файлы. API v4 отдаёт только `errors_count`, тип ошибки виден лишь в интерфейсе.

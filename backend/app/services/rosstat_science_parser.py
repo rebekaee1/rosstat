@@ -17,6 +17,7 @@ Fallback: прямые probe-имена, если страница раздел�
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import math
 import re
@@ -273,6 +274,22 @@ SCIENCE_CONFIG = {
 }
 
 
+def _download(
+    catalog_urls: list[str], name_patterns: list[str], fallback: list[str]
+) -> tuple[bytes, str]:
+    session = create_session()
+    try:
+        session.verify = settings.rosstat_ca_cert
+        return resolve_mediabank_file(
+            catalog_urls=catalog_urls,
+            name_patterns=name_patterns,
+            fallback_filenames=fallback,
+            session=session,
+        )
+    finally:
+        session.close()
+
+
 class RosstatScienceParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_science"
 
@@ -302,17 +319,10 @@ class RosstatScienceParser(BaseParser):
         if not name_patterns and fallback:
             name_patterns = [re.escape(fallback[0])]
 
-        session = create_session()
-        try:
-            session.verify = settings.rosstat_ca_cert
-            content, used_url = resolve_mediabank_file(
-                catalog_urls=catalog_urls,
-                name_patterns=name_patterns,
-                fallback_filenames=fallback,
-                session=session,
-            )
-        finally:
-            session.close()
+        # Сетевой fetch — в потоке, чтобы не блокировать event loop планировщика.
+        content, used_url = await asyncio.to_thread(
+            _download, catalog_urls, name_patterns, fallback
+        )
 
         parser_kind = sci_cfg.get("parser", "nauka_total")
         if parser_kind == "kadry":

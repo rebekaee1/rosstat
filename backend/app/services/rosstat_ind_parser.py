@@ -15,6 +15,7 @@ Structure:
 
 from __future__ import annotations
 
+import asyncio
 import io
 import logging
 import math
@@ -197,6 +198,15 @@ def _fetch_latest_ind(session) -> tuple[bytes, str]:
     raise ValueError(f"ind XLSX not found (tried {candidates})")
 
 
+def _download_latest_ind() -> tuple[bytes, str]:
+    session = create_session()
+    try:
+        session.verify = settings.rosstat_ca_cert
+        return _fetch_latest_ind(session)
+    finally:
+        session.close()
+
+
 SHEET_MAP = {
     "retail-trade": "1.12 ",
     "housing-commissioned": "1.8 ",
@@ -220,13 +230,9 @@ class RosstatIndParser(BaseParser):
         if not sheet_name:
             raise ValueError(f"No sheet mapping for indicator {code}")
 
-        session = create_session()
-        try:
-            session.verify = settings.rosstat_ca_cert
-            content, url = _fetch_latest_ind(session)
-        finally:
-            session.close()
-
+        # В потоке: синхронный requests в event loop 07.10.2026 остановил весь
+        # планировщик на час (Росстат недоступен, 6 кандидатов × ретраи).
+        content, url = await asyncio.to_thread(_download_latest_ind)
         return parse_ind_sheet(content, sheet_name), url
 
     def _validate(self, points: list, cfg: dict) -> list:

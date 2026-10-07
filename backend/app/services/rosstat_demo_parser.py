@@ -16,6 +16,7 @@ Internals: только секция «Все население» в demo21 (г
 
 from __future__ import annotations
 
+import asyncio
 import io
 import logging
 import math
@@ -370,6 +371,47 @@ def _fetch_demo21(session) -> tuple[dict[str, list[DataPoint]], str]:
     return series, url
 
 
+def _fetch_and_parse_sync(code: str, cfg: dict) -> tuple[list, str]:
+    file_type = cfg.get("demo_file", "demo21")
+
+    session = create_session()
+    try:
+        session.verify = settings.rosstat_ca_cert
+
+        if file_type == "demo21":
+            result, used_url = _fetch_demo21(session)
+            series_key = cfg.get("demo_series", code)
+            return result.get(series_key, []), used_url
+
+        if file_type == "demo14":
+            content, used_url = resolve_mediabank_file(
+                catalog_urls=[DEMOGRAPHY_CATALOG_URL],
+                name_patterns=[r"(?i)demo14\.xlsx", r"(?i)demo_14\.xlsx"],
+                fallback_filenames=["demo14.xlsx"],
+                session=session,
+            )
+            result = parse_demo14_xlsx(content)
+            series_key = cfg.get("demo_series", code)
+            return result.get(series_key, []), used_url
+
+        if file_type == "pensioners":
+            current_year = datetime.now().year
+            fallback = [
+                f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)
+            ]
+            content, used_url = resolve_mediabank_file(
+                catalog_urls=[DEMOGRAPHY_CATALOG_URL],
+                name_patterns=[r"(?i)Sp_2\.1_(\d{4})\.xlsx"],
+                fallback_filenames=fallback,
+                session=session,
+            )
+            return parse_pensioners_xlsx(content), used_url
+
+        raise ValueError(f"Unknown demo_file type: {file_type}")
+    finally:
+        session.close()
+
+
 class RosstatDemoParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_demo"
 
@@ -380,45 +422,8 @@ class RosstatDemoParser(BaseParser):
         cfg: dict,
         fetch_log: FetchLog,
     ) -> tuple[list, str]:
-        code = indicator.code
-        file_type = cfg.get("demo_file", "demo21")
-
-        session = create_session()
-        try:
-            session.verify = settings.rosstat_ca_cert
-
-            if file_type == "demo21":
-                result, used_url = _fetch_demo21(session)
-                series_key = cfg.get("demo_series", code)
-                return result.get(series_key, []), used_url
-
-            if file_type == "demo14":
-                content, used_url = resolve_mediabank_file(
-                    catalog_urls=[DEMOGRAPHY_CATALOG_URL],
-                    name_patterns=[r"(?i)demo14\.xlsx", r"(?i)demo_14\.xlsx"],
-                    fallback_filenames=["demo14.xlsx"],
-                    session=session,
-                )
-                result = parse_demo14_xlsx(content)
-                series_key = cfg.get("demo_series", code)
-                return result.get(series_key, []), used_url
-
-            if file_type == "pensioners":
-                current_year = datetime.now().year
-                fallback = [
-                    f"Sp_2.1_{y}.xlsx" for y in range(current_year + 1, current_year - 7, -1)
-                ]
-                content, used_url = resolve_mediabank_file(
-                    catalog_urls=[DEMOGRAPHY_CATALOG_URL],
-                    name_patterns=[r"(?i)Sp_2\.1_(\d{4})\.xlsx"],
-                    fallback_filenames=fallback,
-                    session=session,
-                )
-                return parse_pensioners_xlsx(content), used_url
-
-            raise ValueError(f"Unknown demo_file type: {file_type}")
-        finally:
-            session.close()
+        # Сетевой fetch — в потоке, чтобы не блокировать event loop планировщика.
+        return await asyncio.to_thread(_fetch_and_parse_sync, indicator.code, cfg)
 
     def _validate(self, points: list, cfg: dict) -> list:
         """demo-парсер исторически фильтровал NaN до bulk_upsert вместо validate_points()."""

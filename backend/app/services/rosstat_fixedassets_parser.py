@@ -9,6 +9,7 @@ Structure: Sheet "1" (не «Содержание»), row = [year, percentage]
 
 from __future__ import annotations
 
+import asyncio
 import io
 import logging
 import math
@@ -74,6 +75,20 @@ def parse_depreciation_xlsx(content: bytes) -> list[DataPoint]:
     return sorted(points, key=lambda p: p.date)
 
 
+def _download(fallback: list[str]) -> tuple[bytes, str]:
+    session = create_session()
+    try:
+        session.verify = settings.rosstat_ca_cert
+        return resolve_mediabank_file(
+            catalog_urls=[FIXED_ASSETS_CATALOG_URL],
+            name_patterns=[r"(?i)St_izn_of_(\d{4})\.xlsx"],
+            fallback_filenames=fallback,
+            session=session,
+        )
+    finally:
+        session.close()
+
+
 class RosstatFixedAssetsParser(BaseParser):
     parser_type: ClassVar[str] = "rosstat_fixed_assets"
 
@@ -90,17 +105,8 @@ class RosstatFixedAssetsParser(BaseParser):
             for year in range(current_year + 1, current_year - 7, -1)
         ]
 
-        session = create_session()
-        try:
-            session.verify = settings.rosstat_ca_cert
-            content, used_url = resolve_mediabank_file(
-                catalog_urls=[FIXED_ASSETS_CATALOG_URL],
-                name_patterns=[r"(?i)St_izn_of_(\d{4})\.xlsx"],
-                fallback_filenames=fallback,
-                session=session,
-            )
-        finally:
-            session.close()
+        # Сетевой fetch — в потоке, чтобы не блокировать event loop планировщика.
+        content, used_url = await asyncio.to_thread(_download, fallback)
 
         return parse_depreciation_xlsx(content), used_url
 
