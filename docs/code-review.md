@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `24a40bcdef090a5cb6c87bf1a4f7a2edbda86d9d`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `1404a0e5817aaf7dd9be5454d61d1d16464e499f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1868 |
-| Код, шаблоны и стили | 1484 |
-| Актуальные рецензии без пропусков guard | 1868 |
-| Именованные определения Python/JS: с аннотацией / всего | 11791 / 11791 |
+| Файлы в явно определённом scope | 1869 |
+| Код, шаблоны и стили | 1485 |
+| Актуальные рецензии без пропусков guard | 1869 |
+| Именованные определения Python/JS: с аннотацией / всего | 11797 / 11797 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -342,16 +342,16 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/regional_storage.py](../backend/app/services/regional_storage.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/rosstat_cpi_parser.py](../backend/app/services/rosstat_cpi_parser.py) | reviewed | 4/4 | актуально |
-| [backend/app/services/rosstat_demo_parser.py](../backend/app/services/rosstat_demo_parser.py) | reviewed | 12/12 | актуально |
-| [backend/app/services/rosstat_fixedassets_parser.py](../backend/app/services/rosstat_fixedassets_parser.py) | reviewed | 5/5 | актуально |
+| [backend/app/services/rosstat_demo_parser.py](../backend/app/services/rosstat_demo_parser.py) | reviewed | 13/13 | актуально |
+| [backend/app/services/rosstat_fixedassets_parser.py](../backend/app/services/rosstat_fixedassets_parser.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/rosstat_gdp_parser.py](../backend/app/services/rosstat_gdp_parser.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/rosstat_housing_parser.py](../backend/app/services/rosstat_housing_parser.py) | reviewed | 15/15 | актуально |
-| [backend/app/services/rosstat_ind_parser.py](../backend/app/services/rosstat_ind_parser.py) | reviewed | 11/11 | актуально |
+| [backend/app/services/rosstat_ind_parser.py](../backend/app/services/rosstat_ind_parser.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/rosstat_ipi_parser.py](../backend/app/services/rosstat_ipi_parser.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/rosstat_labor_parser.py](../backend/app/services/rosstat_labor_parser.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/rosstat_population_parser.py](../backend/app/services/rosstat_population_parser.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/rosstat_ppi_parser.py](../backend/app/services/rosstat_ppi_parser.py) | reviewed | 13/13 | актуально |
-| [backend/app/services/rosstat_science_parser.py](../backend/app/services/rosstat_science_parser.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/rosstat_science_parser.py](../backend/app/services/rosstat_science_parser.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/rosstat_sdds_fetcher.py](../backend/app/services/rosstat_sdds_fetcher.py) | reviewed | 11/11 | актуально |
 | [backend/app/services/rosstat_weekly_inflation_parser.py](../backend/app/services/rosstat_weekly_inflation_parser.py) | reviewed | 25/25 | актуально |
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 10/10 | актуально |
@@ -650,6 +650,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_og_glass.py](../backend/tests/test_og_glass.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_og_hub_portrait.py](../backend/tests/test_og_hub_portrait.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_page_meta_export.py](../backend/tests/test_page_meta_export.py) | reviewed | 2/2 | актуально |
+| [backend/tests/test_parser_fetch_off_event_loop.py](../backend/tests/test_parser_fetch_off_event_loop.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_parser_fixtures.py](../backend/tests/test_parser_fixtures.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_parser_hooks.py](../backend/tests/test_parser_hooks.py) | reviewed | 2/2 | актуально |
 | [backend/tests/test_parser_publication.py](../backend/tests/test_parser_publication.py) | reviewed | 61/61 | актуально |
