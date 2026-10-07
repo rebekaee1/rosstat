@@ -116,3 +116,131 @@ def test_no_proxy_fallback_when_direct_ok(monkeypatch):
     assert resp.status_code == 200
     assert len(calls) == 1
     assert calls[0] in (None, {})
+
+
+# --- 2026-10-08: connect timeout + host breaker (Росстат лежал 07.10, ETL шёл 9 ч) ---
+
+import pytest
+
+from app.services import http_client
+
+
+@pytest.fixture(autouse=True)
+def _clean_breaker():
+    http_client._reset_host_breaker()
+    yield
+    http_client._reset_host_breaker()
+
+
+def _capture_send_timeout(adapter, **kwargs):
+    seen = {}
+
+    def fake_send(self, request, **kw):
+        seen.update(kw)
+        r = MagicMock(spec=requests.Response)
+        r.status_code = 200
+        return r
+
+    req = requests.Request("GET", "https://example.com/").prepare()
+    with patch.object(requests.adapters.HTTPAdapter, "send", fake_send):
+        adapter.send(req, **kwargs)
+    return seen["timeout"]
+
+
+def test_adapter_applies_default_when_requests_passes_none():
+    adapter = _TimeoutAdapter(timeout=60)
+    assert _capture_send_timeout(adapter, timeout=None) == (http_client.CONNECT_TIMEOUT_DIRECT, 60)
+
+
+def test_adapter_caps_connect_but_keeps_read_timeout():
+    adapter = _TimeoutAdapter(timeout=60)
+    assert _capture_send_timeout(adapter, timeout=90) == (http_client.CONNECT_TIMEOUT_DIRECT, 90)
+    assert _capture_send_timeout(
+        adapter, timeout=90, proxies={"https": "socks5h://tor:9050"}
+    ) == (http_client.CONNECT_TIMEOUT_PROXY, 90)
+    assert _capture_send_timeout(adapter, timeout=(3, 7)) == (3, 7)
+
+
+def _session_with_socks(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "etl_http_proxy_url", "off")
+    monkeypatch.setattr(settings, "etl_socks_proxy_url", "socks5h://tor:9050")
+    return create_session(retry=Retry(total=0, raise_on_status=False))
+
+
+def test_host_breaker_fails_fast_after_all_hops_fail(monkeypatch):
+    s = _session_with_socks(monkeypatch)
+    calls = []
+
+    def dead(self, method, url, **kwargs):
+        calls.append(url)
+        raise requests.ConnectTimeout("dead")
+
+    with patch.object(requests.Session, "request", dead):
+        with pytest.raises(requests.ConnectTimeout):
+            s.get("https://rosstat.gov.ru/a.xlsx")
+        assert len(calls) == 2  # direct + socks
+        with pytest.raises(requests.ConnectionError, match="unreachable"):
+            s.get("https://rosstat.gov.ru/b.xlsx")
+        assert len(calls) == 2  # второй запрос в сеть не ходил
+
+
+def test_host_breaker_is_per_host_and_expires(monkeypatch):
+    s = _session_with_socks(monkeypatch)
+    now = [1000.0]
+    monkeypatch.setattr(http_client.time, "monotonic", lambda: now[0])
+    ok = MagicMock(spec=requests.Response)
+    ok.status_code = 200
+
+    def route(self, method, url, **kwargs):
+        if "rosstat" in url:
+            raise requests.ConnectTimeout("dead")
+        return ok
+
+    with patch.object(requests.Session, "request", route):
+        with pytest.raises(requests.ConnectTimeout):
+            s.get("https://rosstat.gov.ru/a")
+        assert s.get("https://cbr.ru/x").status_code == 200
+        with pytest.raises(requests.ConnectionError, match="unreachable"):
+            s.get("https://rosstat.gov.ru/b")
+        now[0] += http_client.HOST_BREAKER_COOLDOWN_S + 1
+        with pytest.raises(requests.ConnectTimeout):  # снова пробует сеть
+            s.get("https://rosstat.gov.ru/c")
+
+
+def test_host_breaker_ignores_read_timeout_and_http_errors(monkeypatch):
+    s = _session_with_socks(monkeypatch)
+    nf = MagicMock(spec=requests.Response)
+    nf.status_code = 404
+
+    def slow(self, method, url, **kwargs):
+        if url.endswith("/slow"):
+            raise requests.ReadTimeout("slow body")
+        return nf
+
+    with patch.object(requests.Session, "request", slow):
+        with pytest.raises(requests.ReadTimeout):
+            s.get("https://rosstat.gov.ru/slow")
+        assert s.get("https://rosstat.gov.ru/missing").status_code == 404
+
+
+def test_host_breaker_ignores_ssl_errors(monkeypatch):
+    s = _session_with_socks(monkeypatch)
+    ok = MagicMock(spec=requests.Response)
+    ok.status_code = 200
+
+    def ssl_then_ok(self, method, url, **kwargs):
+        if url.endswith("/bad-ca"):
+            raise requests.exceptions.SSLError("cert")
+        return ok
+
+    with patch.object(requests.Session, "request", ssl_then_ok):
+        with pytest.raises(requests.exceptions.SSLError):
+            s.get("https://rosstat.gov.ru/bad-ca")
+        assert s.get("https://rosstat.gov.ru/ok").status_code == 200
+
+
+def test_default_retry_limits_connect_attempts():
+    assert http_client._RETRY_STRATEGY.connect == 1
+    assert http_client._RETRY_STRATEGY.total == 3
