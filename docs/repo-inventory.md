@@ -7,19 +7,19 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1711  ·  **Строк:** 1 161 341  ·  **Токенов (≈):** 10 923 076
+**Файлов:** 1711  ·  **Строк:** 1 161 346  ·  **Токенов (≈):** 10 923 432
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 511 | 56 551 |
+| `(root)` | 8 | 2 511 | 56 559 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 706 | 254 678 | 2 801 456 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 121 | 740 209 | 6 264 078 |
+| `docs` | 121 | 740 214 | 6 264 426 |
 | `frontend` | 752 | 141 773 | 1 539 805 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 102 | 20 849 | 246 682 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 2 654 | 117 699 |
 | `backend/app/data/indicator_seo.py` | 9 073 | 116 019 |
-| `docs/backlog.md` | 2 575 | 80 768 |
+| `docs/backlog.md` | 2 578 | 80 861 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 12 920 | 76 276 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `backend/seed_data.py` | 5 661 | 58 541 |
@@ -53,7 +53,7 @@
 | `frontend/src/pages/AdminBI.jsx` | 3 024 | 42 899 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
-| `CONTEXT.md` | 1 258 | 39 618 |
+| `CONTEXT.md` | 1 258 | 39 626 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
 | `frontend/src/pages/ComparePage.jsx` | 2 806 | 30 093 |
@@ -83,7 +83,7 @@
 | `docs/architecture.md` | 446 | 14 087 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 185 | 13 612 |
 | `backend/tests/test_seo_growth_pages.py` | 1 406 | 13 545 |
-| `docs/data_sources.md` | 644 | 13 125 |
+| `docs/data_sources.md` | 646 | 13 380 |
 | `backend/app/services/search_intent.py` | 910 | 13 034 |
 | `backend/app/services/admin_bi.py` | 1 319 | 12 894 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
