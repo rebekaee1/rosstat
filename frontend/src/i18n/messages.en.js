@@ -3372,4 +3372,6 @@ export default {
   'c10k.compare.addOnly': 'Add: {name}',
   'c10k.compare.baseExplain': 'Period start = 100: on the first date of the period every series is set to 100, so you can see by what percent it grew or fell. 150 means “one and a half times the start”.',
   'c10k.compare.showValues': 'Show values',
+  // ===== Round 10: search =====
+  'c10s.search.keepTyping': 'Keep typing: one letter is too little to search.',
 };

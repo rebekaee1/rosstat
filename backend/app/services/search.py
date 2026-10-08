@@ -1071,11 +1071,14 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     запроса региональные ряды идут в конец независимо от счёта.
     """
     single_letter = _is_single_letter_query(raw)
+    # Страна названа, регион нет («ВВП США»): ряды самой страны идут перед рядами её штатов и областей. Иначе сто
+    # строк «ВРП Алабамы, Аляски…» с равным счётом заполняют выдачу, и национального ВВП в ней нет совсем.
+    country_scope = bool(getattr(intent, "countries", None)) and not intent.regions
 
     def key(item: dict):
         regional_indicator = item["kind"] in _REGIONAL_INDICATOR_KINDS
         return (
-            1 if single_letter and not intent.regions and regional_indicator else 0,
+            1 if (single_letter or country_scope) and not intent.regions and regional_indicator else 0,
             -item["score"],
             # При равном счёте годовая инфляция страны выше индекса цен и месячного прироста.
             0 if _annual_inflation_row(item) else 1,

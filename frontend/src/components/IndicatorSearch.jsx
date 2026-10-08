@@ -31,6 +31,8 @@ import '../styles/k8-tools.css';
 // suggestions remain small, and typed results preserve geography and slices.
 const SEARCH_TRACK_DEBOUNCE_MS = 900;
 const SEARCH_MIN_LEN = 2;
+/** Через сколько мс без событий ввода составной ввод считается завершённым, даже если compositionend не пришёл. */
+const COMPOSITION_GUARD_MS = 1200;
 
 const KIND_ICON = { country: Landmark, region: MapPin, subnational_region: MapPin, rating: BarChart3 };
 const TOPIC_ICON = {
@@ -80,6 +82,16 @@ function RotatingHint({ lead, items }) {
   );
 }
 
+/**
+ * ⌘K / Ctrl+K на любой раскладке. При русской раскладке `event.key` у этой клавиши «л», поэтому сочетание не срабатывало;
+ * физическую клавишу (`code`) берём только когда `key` не латинская буква (Dvorak и подобные остаются на `key`).
+ */
+function isKKey(event) {
+  const key = String(event.key || '');
+  if (key === 'k' || key === 'K') return true;
+  return event.code === 'KeyK' && !/^[a-z]$/i.test(key);
+}
+
 export default function IndicatorSearch({
   className, variant = 'icon', inlinePlaceholder, examples, initialQuery,
 }) {
@@ -95,7 +107,20 @@ export default function IndicatorSearch({
   const [open, setOpen] = useState(Boolean(seed));
   const arm = useCallback(() => setShouldLoad(true), []);
   const [query, setQuery] = useState(seed);
+  // Составной ввод (IME, подсказки клавиатуры): пока он идёт, запрос не уходит. Круг 10 (П1): если браузер потерял
+  // compositionend, «Ищем…» раньше висело вечно и стрелки/Enter молчали; теперь составной ввод гаснет сам через
+  // COMPOSITION_GUARD_MS без событий ввода.
   const [isComposing, setIsComposing] = useState(false);
+  const composeGuardRef = useRef(0);
+  const stopComposing = useCallback(() => {
+    clearTimeout(composeGuardRef.current);
+    setIsComposing(false);
+  }, []);
+  const guardComposing = useCallback(() => {
+    clearTimeout(composeGuardRef.current);
+    composeGuardRef.current = setTimeout(() => setIsComposing(false), COMPOSITION_GUARD_MS);
+  }, []);
+  useEffect(() => () => clearTimeout(composeGuardRef.current), []);
   const [hi, setHi] = useState(0); // highlighted result index
   // После выбора панель не исчезает, пока страница не открылась: полоса «Открываем: …» вместо тишины.
   const [opening, setOpening] = useState(null);
@@ -199,13 +224,13 @@ export default function IndicatorSearch({
       track(events.SEARCH_ABANDON, { q: q.slice(0, 256), results: resultsCountRef.current, context: 'global', interaction_id: interactionRef.current });
     }
     setOpen(false);
+    stopComposing();
     setQuery('');
-    setIsComposing(false);
     setHi(0);
     setOpening(null);
     setAutoOpen(null);
     setExpandedKey('');
-  }, []);
+  }, [stopComposing]);
 
   // Открыть страницу: панель остаётся с полосой «Открываем: …», пока адрес не сменился (или 12 секунд).
   const openTarget = useCallback((item, { label = '', position = null } = {}) => {
@@ -291,7 +316,7 @@ export default function IndicatorSearch({
         if (!trigger || trigger.getClientRects().length === 0 || getComputedStyle(trigger).visibility === 'hidden') return;
       }
       const isMod = e.metaKey || e.ctrlKey;
-      if (isMod && (e.key === 'k' || e.key === 'K')) {
+      if (isMod && isKKey(e)) {
         e.preventDefault();
         arm();
         if (open) close();
@@ -556,9 +581,16 @@ export default function IndicatorSearch({
                 ref={inputRef}
                 type="search"
                 value={query}
-                onChange={(e) => onQueryChange(e.target.value)}
-                onCompositionStart={() => setIsComposing(true)}
-                onCompositionEnd={(e) => { onQueryChange(e.currentTarget.value); setIsComposing(false); }}
+                onChange={(e) => { if (isComposing) guardComposing(); onQueryChange(e.target.value); }}
+                onCompositionStart={() => { setIsComposing(true); guardComposing(); }}
+                onCompositionUpdate={guardComposing}
+                onCompositionEnd={(e) => { onQueryChange(e.currentTarget.value); stopComposing(); }}
+                onBlur={stopComposing}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                enterKeyHint="search"
                 onKeyDown={handleListKey}
                 placeholder={t('search.placeholder')}
                 className="min-h-12 min-w-0 flex-1 bg-transparent outline-none text-base text-text-primary placeholder:text-text-tertiary"
@@ -651,7 +683,8 @@ export default function IndicatorSearch({
                         {t('search.error')}
                         <button type="button" onClick={() => globalSearch.refetch()} className={cn(FOCUS_RING, 'block mt-3 min-h-11 text-champagne-ink font-medium')}>{t('common.retry')}</button>
                       </>
-                    ) : globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
+                    ) : globalSearch.data?.reason === 'unsupported_query' && [...qTrim].length <= 2 ? t('c10s.search.keepTyping')
+                      : globalSearch.data?.reason === 'unsupported_query' ? t('search.unsupportedQuery')
                       : globalSearch.data?.reason === 'unsupported_period' ? t('search.unsupportedPeriod')
                         : globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
                           : (

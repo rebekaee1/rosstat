@@ -66,3 +66,30 @@ def test_a_named_region_keeps_its_indicators_in_front():
     rows = [_row("russia", "cpi", 41), _row("region_indicator", "region:moskva:pop", 90)]
     ordered = sorted(rows, key=_result_sort_key(intent, "ru", "м"))
     assert ordered[0]["key"] == "region:moskva:pop"
+
+
+def test_named_country_puts_its_own_rows_before_the_states_of_that_country():
+    """Круг 10 (звонок 23): «ВВП США» открывалась ста строками штатов, национального ВВП в выдаче не было."""
+    intent = SimpleNamespace(regions=frozenset(), countries=frozenset({"united-states"}))
+    rows = [
+        _row("subnational_indicator", "sub:al:gdp", 84, "united-states"),
+        _row("subnational_indicator", "sub:ak:gdp", 84, "united-states"),
+        _row("world", "world:us:gdp-nominal", 80, "united-states"),
+        _row("world", "world:us:industry", 77, "united-states"),
+    ]
+    ordered = sorted(rows, key=_result_sort_key(intent, "ru", "ввп сша"))
+    assert [r["key"] for r in ordered][:2] == ["world:us:gdp-nominal", "world:us:industry"]
+
+
+def test_without_a_named_country_states_keep_the_plain_score_order():
+    intent = SimpleNamespace(regions=frozenset(), countries=frozenset())
+    rows = [_row("world", "w", 70, "united-states"), _row("subnational_indicator", "s", 84, "united-states")]
+    ordered = sorted(rows, key=_result_sort_key(intent, "ru", "ввп"))
+    assert ordered[0]["key"] == "s"
+
+
+def test_a_named_state_still_leads_with_its_own_indicators():
+    intent = SimpleNamespace(regions=frozenset({"california"}), countries=frozenset({"united-states"}))
+    rows = [_row("world", "w", 70, "united-states"), _row("subnational_indicator", "s", 84, "united-states")]
+    ordered = sorted(rows, key=_result_sort_key(intent, "ru", "ввп калифорния"))
+    assert ordered[0]["key"] == "s"

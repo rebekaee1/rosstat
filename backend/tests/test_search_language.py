@@ -95,3 +95,65 @@ def test_inverse_frequency_bonus_is_bounded_title_evidence():
     unrelated = relevance_bonus(terms, names=('School enrollment',), frequencies=frequencies, count=3)
     assert exact_subject > unrelated == 0
     assert exact_subject < 70  # cannot overpower one required title match
+
+
+@pytest.mark.parametrize('query, expected', [
+    # Круг 10 (звонок 23): разговорные русские вопросы не должны давать пустую выдачу.
+    ('что такое инфляция', 'cpi'),
+    ('что такое ввп', 'gdp'),
+    ('расскажи про инфляцию', 'cpi'),
+    ('почему растёт инфляция', 'cpi'),
+    ('сколько стоит доллар', 'usd-rub'),
+    ('сколько стоит евро', 'eur-rub'),
+    ('сколько стоит биткоин', 'btc-usd'),
+    ('динамика курса доллара', 'usd-rub'),
+    ('что с курсом доллара', 'usd-rub'),
+    ('курс доллара сегодня', 'usd-rub'),
+    ('инфляция сегодня', 'cpi'),
+])
+def test_conversational_russian_questions_keep_one_economic_subject(query, expected):
+    intent = parse_intent(query, [])
+    assert intent.error is None
+    subjects = [group[0] for group in intent.terms if not group[0].startswith('search-')]
+    assert subjects == [expected]
+    assert ('search-subject-price',) not in intent.terms or expected not in ('usd-rub', 'eur-rub', 'btc-usd')
+
+
+def test_price_of_a_commodity_still_requires_the_price_word():
+    intent = parse_intent('цена на золото', [])
+    assert ('search-subject-price',) in intent.terms
+
+
+def test_english_today_is_still_an_unsupported_day_request():
+    assert parse_intent('usd rub today', []).error == 'unsupported_period'
+
+
+@pytest.mark.parametrize('query', ['ставка ФРС', 'Ставка ФРС', 'ключевая ставка ФРС', 'fed funds rate', 'ставка федрезерва'])
+def test_fed_rate_phrases_reach_the_us_policy_rate(query):
+    intent = parse_intent(query, [])
+    assert intent.error is None
+    assert [group[0] for group in intent.terms] == ['us-policy-rate']
+    names = ('Эффективная ставка по федеральным фондам', 'Federal Funds Effective Rate')
+    assert match_score(intent, code='us-policy-rate', names=names, metadata='') is not None
+    assert match_score(intent, code='key-rate', names=('Ключевая ставка ЦБ РФ', 'Key rate'), metadata='') is None
+
+
+def test_key_rate_of_another_country_is_found_by_its_policy_rate_code():
+    intent = parse_intent('ключевая ставка', [])
+    names = ('Эффективная ставка по федеральным фондам', 'Federal Funds Effective Rate')
+    assert match_score(intent, code='us-policy-rate', names=names, metadata='') is not None
+    assert match_score(intent, code='key-rate', names=('Ключевая ставка ЦБ РФ', 'Key rate'), metadata='') > match_score(
+        intent, code='us-policy-rate', names=names, metadata='')
+
+
+@pytest.mark.parametrize('query, expected', [
+    ('нефть брент', 'brent'),
+    ('цена нефти брент', 'brent'),
+    ('брент', 'brent'),
+    ('курс йены', 'usd-jpy'),
+    ('йена', 'usd-jpy'),
+])
+def test_everyday_russian_names_of_quotes_resolve_to_the_registered_series(query, expected):
+    intent = parse_intent(query, [])
+    assert intent.error is None
+    assert [group[0] for group in intent.terms if not group[0].startswith('search-')] == [expected]
