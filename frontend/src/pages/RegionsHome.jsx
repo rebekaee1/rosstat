@@ -834,11 +834,9 @@ export default function RegionsHome() {
               <div className="min-w-0 flex-1">
                 {activeMapCode && paint.indicator ? (
                   <>
-                    {activePreset && (
-                      <div className="font-display text-lg font-bold leading-tight text-text-primary">{t(activePreset.labelKey)}</div>
-                    )}
+                    {/* Название темы («Зарплата») уже стоит на выбранной вкладке выше: повторять его заголовком карточки не нужно (круг 8, Y3). */}
                     <div className={activePreset
-                      ? 'mt-0.5 line-clamp-2 text-xs leading-snug text-text-secondary'
+                      ? 'line-clamp-2 font-display text-base font-bold leading-snug text-text-primary'
                       : 'text-sm font-medium leading-snug text-text-primary'}
                     >
                       {paint.indicator.name}

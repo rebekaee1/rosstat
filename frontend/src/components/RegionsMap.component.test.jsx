@@ -73,7 +73,8 @@ describe('RegionsMap', () => {
 
   it('живая карта с полями: Чукотка и Камчатка не упираются в рамку', () => {
     const { container } = renderMap();
-    expect(container.querySelector('svg').getAttribute('viewBox')).toBe('-8 -8 1016 554');
+    // Слева запас шире (16): маркер Севастополя стоит у самой границы и раньше обрезался (круг 8, Y3).
+    expect(container.querySelector('svg').getAttribute('viewBox')).toBe('-16 -8 1024 554');
   });
 
   it('кнопки «+» и «−» стоят в строке под картой, а не поверх неё; водяной знак — там же, мелко', () => {

@@ -2,7 +2,7 @@
 // Год — controlled с родителя (URL ?year= + раскраска карты); play/pause
 // живут внутри. Движение ползунка и запуск — в аналитику (region_map_timeline).
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Play, Pause, RotateCcw } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import Button from './Button';
@@ -87,13 +87,18 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
 
   return (
     <div className="mt-3 flex items-center gap-3">
+      {/* В конце ряда кнопка остаётся «играть» (треугольник) и подписана словами: круговая стрелка «повторить» читалась как загадка. */}
       <Button
         onClick={togglePlay}
-        aria-label={playing ? t('map.timeline.pause') : t('map.timeline.play')}
-        title={playing ? t('map.timeline.pause') : t('map.timeline.play')}
-        className="h-10 w-10 shrink-0 rounded-full! px-0! pointer-coarse:h-11 pointer-coarse:w-11"
+        aria-label={playing ? t('map.timeline.pause') : (atEnd ? t('c8y.map.replay') : t('map.timeline.play'))}
+        title={playing ? t('map.timeline.pause') : (atEnd ? t('c8y.map.replay') : t('map.timeline.play'))}
+        className={atEnd && !playing
+          ? 'h-10 shrink-0 gap-1.5 rounded-full! px-3.5! pointer-coarse:h-11'
+          : 'h-10 w-10 shrink-0 rounded-full! px-0! pointer-coarse:h-11 pointer-coarse:w-11'}
+        data-testid="map-timeline-play"
       >
-        {playing ? <Pause size={15} aria-hidden="true" /> : atEnd ? <RotateCcw size={14} aria-hidden="true" /> : <Play size={15} className="translate-x-[1px]" aria-hidden="true" />}
+        {playing ? <Pause size={15} aria-hidden="true" /> : <Play size={15} className={atEnd ? undefined : 'translate-x-[1px]'} aria-hidden="true" />}
+        {atEnd && !playing ? <span className="whitespace-nowrap text-[13px] font-semibold">{t('c8y.map.replay')}</span> : null}
       </Button>
 
       <div className="min-w-0 flex-1">

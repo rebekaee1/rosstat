@@ -11,7 +11,7 @@ import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { homeConceptLabel } from '../../lib/homeWorkbench';
 import {
-  figureDigits, humanizeQualifier, scaleMoneyUnit, yearAgoPoint,
+  compactMoneyAmount, figureDigits, humanizeQualifier, scaleMoneyUnit, yearAgoPoint,
 } from '../../lib/countryKeyFigures';
 import { preloadedFigurePoints } from '../../lib/countryBootstrap';
 import { indicatorPath } from '../../lib/sitePaths';
@@ -67,6 +67,9 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
   const present = (raw) => {
     const s = scaleMoneyUnit(raw, unitText, locale);
     if (s) return { text: formatWorldValue(s.value, figureDigits(s.value), locale), unit: s.unit };
+    // Сумма в «евро» без масштаба («56 459 257 590») тоже сокращается до «56,5 млрд €» (круг 8, Y5).
+    const plain = compactMoneyAmount(raw, unit.short, locale);
+    if (plain) return { text: formatWorldValue(plain.value, figureDigits(plain.value), locale), unit: plain.unit };
     return { text: formatWorldValue(raw, kpiDigits(raw), locale), unit: unit.short };
   };
   const main = present(item.value);

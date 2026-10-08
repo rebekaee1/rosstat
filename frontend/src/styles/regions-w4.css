@@ -144,3 +144,10 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   display: inline-flex; align-items: center; justify-content: center; flex: none;
   width: 44px; height: 44px; border-radius: 12px; color: var(--color-text-secondary);
 }
+
+/* ── Круг 8 (Y3): переключатель «Контуры / Пузыри» ─────────────────────────────────────────────────
+   Активный сегмент графитовый, как у остальных переключателей страницы (было бежевое золото). */
+:root .fe-map-shape button[aria-pressed='true'] {
+  background: var(--fe-glass-active, linear-gradient(135deg, #2A3550, #1E2638));
+  color: var(--fe-on-active, #F2F5FA);
+}
