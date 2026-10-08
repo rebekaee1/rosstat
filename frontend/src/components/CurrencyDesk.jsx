@@ -15,8 +15,9 @@ import { useIndicatorData } from '../lib/hooks';
 import { cn, formatDate, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { russiaIndicatorPath } from '../lib/sitePaths';
-import { CHART_THEME, GRID_PROPS, axisTick } from '../lib/chartTheme';
-import { useChartGlassIds } from '../lib/chartHooks';
+import { CHART_THEME, GRID_PROPS, axisTick, niceAxis } from '../lib/chartTheme';
+import { useChartGlassIds, useElementWidth } from '../lib/chartHooks';
+import EdgeAwareTick from './ChartAxisTick';
 import ChartGlassDefs from './ChartGlassDefs';
 import EmptyState from './brand/EmptyState';
 import {
@@ -32,6 +33,7 @@ import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
 import '../styles/k4-charts.css';
 import '../styles/k8-tools.css';
+import '../styles/c8-currency.css';
 
 const QUICK_AMOUNTS = ['1', '100', '1000', '10000'];
 const MARKET_LABEL_KEYS = { 'gold-rub-live': 'w6b.ticker.gold', brent: 'w6b.ticker.brent', 'btc-usd': 'w6b.ticker.btc' };
@@ -288,14 +290,13 @@ function ChartTip({ active, payload, unit, locale }) {
   );
 }
 
-/** Бусина на конце ленты: гало, гранёный шарик (градиент bead из ChartGlassDefs) и белый блик. */
-function EndBead({ cx, cy, beadId }) {
+/** Точка на конце ленты: плоский круг и тихое гало (стили .k4-lastpoint делают её 6 px). */
+function EndBead({ cx, cy }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
   return (
     <g pointerEvents="none" className="k4-lastpoint">
-      <circle className="k4-lastpoint__halo" cx={cx} cy={cy} r={11} fill={CHART_THEME.goldBright} fillOpacity={0.28} />
-      <circle cx={cx} cy={cy} r={6.5} fill={`url(#${beadId})`} />
-      <circle cx={cx - 2} cy={cy - 2.2} r={1.3} fill="#fff" fillOpacity={0.9} />
+      <circle className="k4-lastpoint__halo" cx={cx} cy={cy} r={8} fill={CHART_THEME.gold} fillOpacity={0.2} />
+      <circle cx={cx} cy={cy} r={3} fill={CHART_THEME.gold} />
     </g>
   );
 }
@@ -306,6 +307,7 @@ function YearChart({ pair }) {
   const { locale } = useLocale();
   const { data, isLoading } = useIndicatorData(pair?.code, { limit: 400 });
   const glass = useChartGlassIds('k8cur');
+  const [setPlotNode, plotWidth] = useElementWidth();
   const series = useMemo(() => yearSeries(data?.data, { invert: pair?.invert }), [data, pair?.invert]);
   if (!pair) return null;
   const quote = UNITS[pair.quote];
@@ -326,10 +328,23 @@ function YearChart({ pair }) {
   const pct = first ? ((last - first) / first) * 100 : null;
   const delta = pct != null ? formatDeltaWithUnit(pct, '%', { pct: true, locale, digits: 1 }) : null;
   const lastIndex = series.length - 1;
-  const ticks = [0, 1, 2, 3, 4].map((i) => series[Math.round((lastIndex * i) / 4)].date);
+  // Круг 8 (C4): пять подписей по году (три на узком графике); у крайних и у января стоит год, чтобы «окт … окт» не двоилось.
+  const tickSlots = plotWidth > 0 && plotWidth < 340 ? [0, 2, 4] : [0, 1, 2, 3, 4];
+  const ticks = tickSlots.map((i) => series[Math.round((lastIndex * i) / 4)].date);
   const monthOf = (date) => new Date(`${date}T12:00:00Z`).toLocaleDateString(
     locale === 'en' ? 'en-US' : 'ru-RU', { month: 'short', timeZone: 'UTC' },
   ).replace('.', '');
+  const tickLabel = (date) => {
+    const edge = date === ticks[0] || date === ticks[ticks.length - 1];
+    const jan = String(date).slice(5, 7) === '01';
+    return edge || jan ? `${monthOf(date)} ${String(date).slice(0, 4)}` : monthOf(date);
+  };
+  // Круглые деления оси Y: 70, 75, 80… вместо границ вида 83,73 (круг 8, C4).
+  const yAxis = niceAxis(series.map((p) => p.value), 5);
+  const yTicks = yAxis?.ticks;
+  const yStep = yTicks && yTicks.length > 1 ? Math.abs(yTicks[1] - yTicks[0]) : 0;
+  const yDigits = yStep >= 1 ? 0 : yStep >= 0.1 ? 1 : yStep >= 0.01 ? 2 : 4;
+  const yWidthPx = Math.max(40, Math.min(70, Math.round(String(yTicks ? formatValue(yTicks[yTicks.length - 1], yDigits, locale) : '88,30').length * 8 + 12)));
 
   return (
     <section className="fe-panel fe-z8-chart" data-block="currency-year-chart" aria-label={title}>
@@ -348,7 +363,7 @@ function YearChart({ pair }) {
           </p>
         )}
       </header>
-      <div className="fe-z8-chart__plot k4-glass k4-glass-plot" role="img" aria-label={title}>
+      <div ref={setPlotNode} className="fe-z8-chart__plot k4-glass k4-glass-plot" role="img" aria-label={title}>
         <div className="fe-z8-chart__abs">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
@@ -360,19 +375,20 @@ function YearChart({ pair }) {
               interval={0}
               tickLine={false}
               axisLine={false}
-              tick={axisTick({ fontSize: 12 })}
-              tickFormatter={monthOf}
+              height={30}
+              tick={<EdgeAwareTick format={tickLabel} minX={yWidthPx} maxX={plotWidth > 0 ? plotWidth - 8 : Infinity} />}
             />
             <YAxis
-              domain={[(min) => min * 0.985, (max) => max * 1.015]}
-              tickCount={4}
+              domain={yAxis ? yAxis.domain : [(min) => min * 0.985, (max) => max * 1.015]}
+              ticks={yTicks}
+              tickCount={5}
               tickLine={false}
               axisLine={false}
-              width={52}
+              width={yWidthPx}
               tick={axisTick({ fontSize: 12 })}
-              tickFormatter={(v) => formatValue(v, rateDigits(v) > 2 ? 3 : rateDigits(v), locale)}
+              tickFormatter={(v) => formatValue(v, yTicks ? yDigits : (rateDigits(v) > 2 ? 3 : rateDigits(v)), locale)}
             />
-            <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1.5, strokeOpacity: 0.55 }} />
+            <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeOpacity: 0.55 }} />
             <Area
               className="k4-ribbon"
               type="monotone"
@@ -383,7 +399,7 @@ function YearChart({ pair }) {
               strokeLinejoin="round"
               fill={`url(#${glass.area})`}
               dot={false}
-              activeDot={{ r: 5, fill: CHART_THEME.goldBright, stroke: '#FFFFFF', strokeWidth: 2 }}
+              activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive
               animationDuration={900}
             />
@@ -406,7 +422,7 @@ function YearChart({ pair }) {
               y={series[lastIndex].value}
               r={4.5}
               ifOverflow="visible"
-              shape={(props) => <EndBead cx={props.cx} cy={props.cy} beadId={glass.bead} />}
+              shape={(props) => <EndBead cx={props.cx} cy={props.cy} />}
             />
           </ComposedChart>
         </ResponsiveContainer>

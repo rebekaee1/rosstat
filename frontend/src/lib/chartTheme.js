@@ -47,6 +47,34 @@ export const CHART_THEME = Object.freeze({
   ]),
 });
 
+/**
+ * Круг 8 (C1): цвета рядов «Сравнения». Один источник на линию, легенду, точку на конце, заливку, подсказку и карточки.
+ * Первый ряд — глубокий синий, второй — бирюза (заметно светлее и в другой тон: синий и графит почти не различались),
+ * дальше цвета общей палитры без повторов. Золото в рядах не участвует.
+ */
+export const COMPARE_COLORS = Object.freeze([
+  '#2C4A8A', '#238F9B', ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
+]);
+
+/** Смешивает цвет #RRGGBB с белым: amount 0 — исходный цвет, 1 — белый. */
+export function mixWithWhite(hex, amount = 0.3) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const k = Math.max(0, Math.min(1, amount));
+  const ch = (v) => Math.round(v + (255 - v) * k).toString(16).padStart(2, '0');
+  return `#${ch((n >> 16) & 255)}${ch((n >> 8) & 255)}${ch(n & 255)}`.toUpperCase();
+}
+
+/** Градиент ленты по длине линии из одного цвета ряда: светлее слева, на правом конце ровно цвет ряда (там точка и подпись). */
+export function ribbonStopsFor(color) {
+  return [
+    { offset: '0%', color: mixWithWhite(color, 0.42) },
+    { offset: '55%', color: mixWithWhite(color, 0.14) },
+    { offset: '100%', color },
+  ];
+}
+
 /** Основная линия: «стеклянная лента» 3 px со скруглёнными концами; сам цвет — градиент ribbon из ChartGlassDefs. */
 export const CHART_LINE = Object.freeze({
   stroke: CHART_THEME.gold,

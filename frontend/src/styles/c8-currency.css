@@ -1,0 +1,42 @@
+/* Круг 8, зона Z2: курсы валют. Подключается из components/CurrencyDesk.jsx после z8-tools.css и переопределяет его по специфичности
+   (файл z8-tools.css принадлежит другой зоне). Свет и тень, никаких рамок. */
+
+/* ---------- Конвертер ---------- */
+/* Сумма всегда на своей строке, ниже «Из ⇄ В». В одну строку из четырёх колонок поля валюты сжимались до «U ˅», «R ˅». */
+.fe-z8-cur .fe-z8-conv__row { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+.fe-z8-cur .fe-z8-conv__row > .fe-z8-conv__amount { grid-column: 1 / -1; }
+.fe-z8-cur .fe-z8-select { min-width: 0; }
+.fe-z8-cur .fe-z8-select__button { min-width: 0; overflow: hidden; }
+.fe-z8-cur .fe-z8-select__name { min-width: 3ch; }
+
+/* Узкий телефон: «Из», кнопка «поменять местами», «В» друг под другом. Кнопка стоит между полями и ничего не перекрывает. */
+@media (max-width: 479px) {
+  .fe-z8-cur .fe-z8-conv__row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .fe-z8-cur .fe-z8-conv__row > .fe-z8-swap {
+    justify-self: center;
+    width: 40px;
+    height: 40px;
+    margin: -2px 0;
+  }
+  .fe-z8-cur .fe-z8-conv__row > .fe-z8-swap svg { transform: rotate(calc(var(--k8-turn, 0deg) + 90deg)); }
+}
+@media (pointer: coarse) {
+  .fe-z8-cur .fe-z8-swap { min-width: 44px; min-height: 44px; }
+}
+
+/* ---------- Строки курсов ---------- */
+/* Двухколоночная раскладка (планшет в портрете): мини-график уже, чтобы «Доллар США к рублю» не шёл в три строки. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .fe-z8-cur .fe-trow.fe-w6g-currency-row { grid-template-columns: auto minmax(0, 1fr) 72px minmax(80px, auto); }
+}
+
+/* ---------- Правая колонка ---------- */
+@media (min-width: 1024px) {
+  /* «Золото, нефть, биткоин» отделено от графика и едет за списком слева, а не оставляет пустое поле под собой. */
+  .fe-z8-cur__board {
+    align-self: start;
+    margin-top: 12px;
+    position: sticky;
+    top: calc(var(--fe-shell-top, 112px) + 16px);
+  }
+}

@@ -20,6 +20,7 @@ import {
 } from '../lib/chartAxis';
 import ChartBrandCaption from './ChartBrandCaption';
 import ChartGlassDefs from './ChartGlassDefs';
+import EdgeAwareTick from './ChartAxisTick';
 import ChartBrush from './ChartBrush';
 import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
 import Chip from './Chip';
@@ -222,10 +223,14 @@ function CustomTooltip({
  * Точка последнего наблюдения с подписью значения плашкой: число читается без наведения.
  * Плашка стоит с той стороны линии, где пусто: над точкой у растущего ряда, под ней у падающего.
  */
-function LastPointMarker({ cx, cy, text, anchorEnd, below, beadId }) {
+function LastPointMarker({
+  cx, cy, text, anchorEnd, below: belowWanted, beadId, plotBottom = Infinity,
+}) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
   const width = pointLabelWidth(text);
   const height = 22;
+  // Круг 8 (C3): плашка под точкой не должна заходить на подписи оси X («0,2025»): у нижнего края уходит над точку.
+  const below = belowWanted && cy + 14 + height + 4 <= plotBottom;
   const x = anchorEnd ? cx - width + 12 : cx - 12;
   const y = below ? cy + 14 : cy - 14 - height;
   return (
@@ -512,7 +517,11 @@ export default function IndicatorChart({
   const handlePointerDown = useCallback((e) => {
     const isTouch = e.pointerType === 'touch';
     setTouchMode(isTouch);
-    if (isTouch) setIsHovering(true);
+    if (isTouch) {
+      // Круг 8 (C3): палец показывает подсказку и не двигает период; период двигают ручки под графиком.
+      setIsHovering(true);
+      return;
+    }
     const rect = chartAreaRef.current?.getBoundingClientRect();
     if (!rect) return;
     dragRef.current = {
@@ -818,7 +827,7 @@ export default function IndicatorChart({
               dataKey="date"
               tickFormatter={xTickFormat}
               stroke="rgba(88,74,46,0.12)"
-              tick={{ fill: CHART_THEME.axis, fontSize: CHART_THEME.tickSize, fontFamily: CHART_THEME.font }}
+              tick={<EdgeAwareTick format={xTickFormat} minX={yWidth} maxX={plotWidth > 0 ? plotWidth - 14 : Infinity} />}
               tickLine={false}
               ticks={xTicks}
               interval={0}
@@ -851,7 +860,7 @@ export default function IndicatorChart({
                   actualSeriesLabel={actualSeriesLabel}
                 />
               )}
-              cursor={isDragging || !isHovering ? false : { stroke: CHART_THEME.cursor, strokeWidth: 1.5 }}
+              cursor={isDragging || !isHovering ? false : { stroke: CHART_THEME.cursor, strokeWidth: 1 }}
               active={isHovering && !isDragging}
               position={resolvedComparisonSeries.length ? undefined : { y: 0 }}
               wrapperStyle={{ pointerEvents: 'none', zIndex: 20 }}
@@ -1012,6 +1021,7 @@ export default function IndicatorChart({
                     anchorEnd={Number(props.cx) > plotWidth * 0.45}
                     below={lastPointBelow}
                     beadId={glass.bead}
+                    plotBottom={(chartAreaRef.current?.clientHeight || 0) > 0 ? chartAreaRef.current.clientHeight - 16 - 42 : Infinity}
                   />
                 )}
               />
