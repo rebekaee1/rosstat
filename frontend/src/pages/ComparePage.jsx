@@ -1499,10 +1499,8 @@ export default function ComparePage() {
     codes.some((code) => !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)),
   ].filter(Boolean).length;
   const worldCompareItems = useMemo(() => worldCompareCatalog?.items || [], [worldCompareCatalog]);
-  const hasWorldCode = useCallback(
-    (code) => worldCompareItems.some((item) => item.code === code),
-    [worldCompareItems],
-  );
+  const worldCodeSet = useMemo(() => new Set(worldCompareItems.map((item) => item.code)), [worldCompareItems]);
+  const hasWorldCode = useCallback((code) => worldCodeSet.has(code), [worldCodeSet]);
   const compatibilityNote = activeCompatibilityNote(codes);
   const worldMetaByCode = useMemo(
     () => new Map((worldCompareCatalog?.items || []).map((item) => [item.code, {
