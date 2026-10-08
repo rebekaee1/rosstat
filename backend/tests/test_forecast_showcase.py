@@ -463,3 +463,87 @@ def test_eurostat_forecast_appears_when_source_state_is_ok(auth_env):
     assert item["change"]["unit"] == "percent" and item["change"]["direction"] == "up"
     assert item["unit"] == "индекс 2015=100" and item["verified"] is True
 
+
+
+# --- прогрев кэша ------------------------------------------------------------
+
+
+def test_warm_showcase_cache_builds_both_locales_and_skips_when_cached(monkeypatch):
+    """Старт собирает витрину ru и en в кэш; повторный старт без force ничего не пересобирает."""
+    import app.api.forecast_showcase as api
+
+    store: dict[str, dict] = {}
+    built: list[str] = []
+
+    class _Session:
+        async def __aenter__(self):
+            return object()
+
+        async def __aexit__(self, *exc):
+            return False
+
+    async def fake_build(db, locale):
+        built.append(locale)
+        return {"locale": locale, "items": [{"id": locale}], "themes": []}
+
+    async def fake_key(ns, rest):
+        return f"{ns}:{rest}"
+
+    async def fake_get(key):
+        return store.get(key)
+
+    async def fake_set(key, value, ttl=None):
+        store[key] = value
+
+    import app.database as database
+
+    monkeypatch.setattr(database, "async_session", lambda: _Session())
+    monkeypatch.setattr(api, "build_showcase", fake_build)
+    monkeypatch.setattr(api, "versioned_key", fake_key)
+    monkeypatch.setattr(api, "cache_get", fake_get)
+    monkeypatch.setattr(api, "cache_set", fake_set)
+
+    assert asyncio.run(api.warm_showcase_cache()) == {"ru": 1, "en": 1}
+    assert built == ["ru", "en"]
+    assert len(store) == 2
+
+    built.clear()
+    assert asyncio.run(api.warm_showcase_cache()) == {"ru": 1, "en": 1}
+    assert built == []  # ключ уже лежит в кэше
+
+    assert asyncio.run(api.warm_showcase_cache(force=True)) == {"ru": 1, "en": 1}
+    assert built == ["ru", "en"]
+
+
+def test_warm_showcase_cache_survives_one_failing_locale(monkeypatch):
+    import app.api.forecast_showcase as api
+    import app.database as database
+
+    class _Session:
+        async def __aenter__(self):
+            return object()
+
+        async def __aexit__(self, *exc):
+            return False
+
+    async def fake_build(db, locale):
+        if locale == "ru":
+            raise RuntimeError("db down")
+        return {"locale": locale, "items": [{"id": 1}, {"id": 2}], "themes": []}
+
+    async def fake_key(ns, rest):
+        return f"{ns}:{rest}"
+
+    async def fake_get(key):
+        return None
+
+    async def fake_set(key, value, ttl=None):
+        return None
+
+    monkeypatch.setattr(database, "async_session", lambda: _Session())
+    monkeypatch.setattr(api, "build_showcase", fake_build)
+    monkeypatch.setattr(api, "versioned_key", fake_key)
+    monkeypatch.setattr(api, "cache_get", fake_get)
+    monkeypatch.setattr(api, "cache_set", fake_set)
+
+    assert asyncio.run(api.warm_showcase_cache(force=True)) == {"en": 2}

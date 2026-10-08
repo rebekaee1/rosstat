@@ -92,6 +92,7 @@ from app.services.world_forecast_pipeline import world_forecast_source_ready
 from app.services.world_rank_values import (
     apply_rank_series,
     latest_rank_point,
+    YOY_KIND_PASSTHROUGH,
     rank_yoy_kind,
     ranking_display_name,
     ranking_period_method,
@@ -216,6 +217,34 @@ def _indicator_name_en(ind: WorldIndicator) -> str:
     return append_en_slice_to_title(base, ind.slice_json)
 
 
+def _is_percent_passthrough(indicator: WorldIndicator) -> bool:
+    """Ряд уже в процентах за год (IMF PCPIPCH, IPCA-12m), хотя понятие hicp-index — индекс."""
+    return rank_yoy_kind(indicator) == YOY_KIND_PASSTHROUGH
+
+
+def _passthrough_unit_en(indicator: WorldIndicator) -> str:
+    """Английская подпись уже процентного ряда («annual change, %»), без слова «index»."""
+    from app.services.display import localize_unit
+
+    ru = (indicator.unit_ru or indicator.unit or "").strip()
+    label = localize_unit(ru, locale="en") if ru else ""
+    if label and not any("а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in label):
+        return label
+    return ranking_public_unit("yoy", "", locale="en")
+
+
+def _concept_unit_for_indicator(concept, indicator: WorldIndicator) -> str:
+    """Единица ряда в ответах данных: витринная единица понятия, но не для уже процентного ряда.
+
+    У понятия hicp-index единица «индекс 2015=100» верна для Евростата. Ряд МВФ
+    `PCPIPCH` (инфляция за год, %) того же понятия не должен подписываться индексом:
+    раньше из-за этого заголовок гласил «0,05 (индекс 2015 = 100)» вместо процентов.
+    """
+    if concept is None or _is_percent_passthrough(indicator):
+        return _indicator_public_unit(indicator)
+    return concept_public_unit(concept)
+
+
 def _indicator_public_unit(indicator: WorldIndicator) -> str:
     """Locale-facing unit for world indicator rows."""
     ru = (indicator.unit_ru or indicator.unit or "").strip()
@@ -233,8 +262,10 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
             else concept.measure
         )
         if measure_class(indicator.unit, indicator.unit_ru) == expected:
-            # Только когда класс меры совпадает с витринным: IMF PCPIPCH
-            # (% за год) не подписываем как индекс 2015=100.
+            # IMF PCPIPCH: класс меры «PC» совпадает с провайдерским, но это
+            # проценты за год, а не индекс 2015=100 (единица самого понятия).
+            if _is_percent_passthrough(indicator):
+                return _passthrough_unit_en(indicator)
             return concept_public_unit(concept) or ru
     from app.data.eurostat_units_ru import unit_label_en_for_code
     from app.services.display import public_unit_en
@@ -2326,11 +2357,7 @@ async def indicator_data(
             ]
 
     concept = concept_for_indicator(source)
-    unit = (
-        concept_public_unit(concept)
-        if concept is not None
-        else _indicator_public_unit(source)
-    )
+    unit = _concept_unit_for_indicator(concept, source)
     mode_unit = mode_unit_for(parsed, unit, signed)
     payload = {
         "mode": parsed.id,

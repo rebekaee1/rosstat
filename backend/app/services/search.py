@@ -220,7 +220,17 @@ def _world_unit(row, locale: str) -> str:
     if concept:
         expected = (concept.provider_measures or {}).get(str(row.provider or "").lower(), concept.measure)
         if measure_class(row.unit, row.unit_ru) == expected:
-            return concept_public_unit(concept) or ru
+            # IMF PCPIPCH (инфляция за год, %) относится к понятию «индекс цен»,
+            # но сама уже в процентах: подпись понятия «index 2015=100» ей не подходит.
+            from app.services.world_rank_values import YOY_KIND_PASSTHROUGH, rank_yoy_kind
+
+            if rank_yoy_kind(row) != YOY_KIND_PASSTHROUGH:
+                return concept_public_unit(concept) or ru
+            from app.services.display import localize_unit
+
+            label = localize_unit(ru, locale="en") if ru else ""
+            if label and not any("а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in label):
+                return label
     label = (unit_label_en_for_code(row.unit) or "").strip()
     vague = {"rate", "number", "average", "person", "persons", "index", "ratio", "score", "total", "value", "unit", "percentage"}
     return label if label and label.lower() not in vague else public_unit_en(row.unit_ru, unit_storage=row.unit)

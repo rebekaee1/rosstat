@@ -141,6 +141,89 @@ async def _hero_yoy_pct(db: AsyncSession, ind_id: int, frequency: str, current_v
     )
 
 
+# Индексы цен Росстата (месяц к предыдущему, около 100) не годятся как «первая цифра»:
+# «99,92» или «−0,08 %» без базы не говорят читателю, какая инфляция. Годовой ряд
+# лежит в скрытом от каталога derived-ряду (`is_listed=false`), поэтому фронтенд,
+# читающий листинг, его не видел и молча падал на месячный индекс (круг 08.10.2026,
+# карточка «Инфляция» на /russia показывала −0,08 % с подписью «за год»).
+_HERO_FROM_YOY_SIBLING: dict[str, str] = {
+    "cpi": "cpi-yoy",
+    "cpi-food": "cpi-food-yoy",
+    "cpi-nonfood": "cpi-nonfood-yoy",
+    "cpi-services": "cpi-services-yoy",
+}
+
+
+def _hero_from_yoy_sibling(
+    base_date: date | None,
+    sibling_rows: list[tuple[date, float]],
+):
+    """Hero «Год к году» из готового годового ряда-близнеца.
+
+    `sibling_rows` — две последние точки близнеца, новые первыми. Берётся только
+    точка того же периода, что и текущая точка базового ряда: у базового ряда август,
+    у годового июль — это разные месяцы, честнее «нет числа». `hero_change` — разница
+    с предыдущим периодом в процентных пунктах (как у остальных hero-карточек)."""
+    if base_date is None or not sibling_rows or sibling_rows[0][0] != base_date:
+        return None, None, None, None
+    value = round(float(sibling_rows[0][1]), 2)
+    change = None
+    if len(sibling_rows) > 1:
+        change = round(float(sibling_rows[0][1]) - float(sibling_rows[1][1]), 2)
+    return value, "%", "Год к году", change
+
+
+async def _yoy_sibling_heroes(
+    db: AsyncSession,
+    indicators: list[Indicator],
+    by_ind: dict[int, list],
+) -> dict[int, tuple]:
+    """Hero для базовых рядов цен из их годовых близнецов (по одному запросу на всех)."""
+    wanted = {
+        ind.id: _HERO_FROM_YOY_SIBLING[ind.code]
+        for ind in indicators
+        if ind.code in _HERO_FROM_YOY_SIBLING and by_ind.get(ind.id)
+    }
+    if not wanted:
+        return {}
+    siblings = (await db.execute(
+        select(Indicator.id, Indicator.code).where(Indicator.code.in_(set(wanted.values())))
+    )).all()
+    sibling_id_by_code = {code: sid for sid, code in siblings}
+    if not sibling_id_by_code:
+        return {}
+    ranked = (
+        select(
+            IndicatorData.indicator_id,
+            IndicatorData.date,
+            IndicatorData.value,
+            func.row_number()
+            .over(partition_by=IndicatorData.indicator_id, order_by=desc(IndicatorData.date))
+            .label("rn"),
+        )
+        .where(IndicatorData.indicator_id.in_(sibling_id_by_code.values()))
+        .subquery()
+    )
+    rows = (await db.execute(
+        select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
+        .where(ranked.c.rn <= 2)
+        .order_by(ranked.c.indicator_id, desc(ranked.c.date))
+    )).all()
+    tail: dict[int, list[tuple[date, float]]] = {}
+    for sid, d, v in rows:
+        if v is not None:
+            tail.setdefault(sid, []).append((d, float(v)))
+    out: dict[int, tuple] = {}
+    for ind_id, sibling_code in wanted.items():
+        sid = sibling_id_by_code.get(sibling_code)
+        if sid is None:
+            continue
+        hero = _hero_from_yoy_sibling(by_ind[ind_id][0].date, tail.get(sid, []))
+        if hero[0] is not None:
+            out[ind_id] = hero
+    return out
+
+
 def _hero_view(indicator) -> str | None:
     mcfg = indicator.model_config_json or {}
     return mcfg.get("hero_view")
@@ -242,6 +325,10 @@ async def list_indicators(
                 freq_by_id[iid], ind_rows[0][1], ind_rows,
                 cand_by_ind.get(iid, []),
             )
+
+    # Базовые ряды цен без собственного hero берут годовое изменение из derived-близнеца.
+    for ind_id, hero in (await _yoy_sibling_heroes(db, indicators, by_ind)).items():
+        hero_data.setdefault(ind_id, hero)
 
     out = []
     for ind in indicators:

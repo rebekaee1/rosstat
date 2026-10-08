@@ -182,3 +182,79 @@ def test_listing_batch_hero_matches_detail(monkeypatch):
             os.unlink(db_path)
         except OSError:
             pass
+
+
+def test_hero_from_yoy_sibling_requires_same_period():
+    from app.api.indicators import _hero_from_yoy_sibling
+
+    tail = [(date(2026, 8, 1), 6.34), (date(2026, 7, 1), 6.0)]
+    assert _hero_from_yoy_sibling(date(2026, 8, 1), tail) == (6.34, "%", "Год к году", 0.34)
+    # Годовой ряд отстаёт на месяц: чужой период не подставляем.
+    assert _hero_from_yoy_sibling(date(2026, 9, 1), tail) == (None, None, None, None)
+    assert _hero_from_yoy_sibling(date(2026, 8, 1), []) == (None, None, None, None)
+    # Одна точка: число есть, ускорения нет.
+    assert _hero_from_yoy_sibling(date(2026, 8, 1), tail[:1]) == (6.34, "%", "Год к году", None)
+
+
+def test_listing_cpi_hero_comes_from_unlisted_yoy_sibling(monkeypatch):
+    """Листинг отдаёт у `cpi` годовое изменение из скрытого `cpi-yoy`, а не месячный индекс."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    import app.api.indicators as api_ind
+    from app.models import Base, Indicator, IndicatorData
+
+    async def _no_cache_get(key):
+        return None
+
+    async def _no_cache_set(key, value, ttl=None):
+        return None
+
+    monkeypatch.setattr(api_ind, "cache_get", _no_cache_get)
+    monkeypatch.setattr(api_ind, "cache_set", _no_cache_set)
+
+    fd, db_path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    try:
+        sync_engine = create_engine(f"sqlite:///{db_path}")
+        Base.metadata.create_all(sync_engine)
+        sync_engine.dispose()
+        engine = create_async_engine(f"sqlite+aiosqlite:///{db_path}")
+        Session = async_sessionmaker(engine, expire_on_commit=False)
+
+        async def add(db, code, listed, points):
+            ind = Indicator(
+                code=code, name=code, unit="%", frequency="monthly",
+                parser_type="manual", is_active=True, is_listed=listed,
+            )
+            db.add(ind)
+            await db.flush()
+            for d, v in points:
+                db.add(IndicatorData(indicator_id=ind.id, date=d, value=v))
+
+        async def run():
+            async with Session() as db:
+                await add(db, "cpi", True, [(date(2026, 8, 1), 99.92), (date(2026, 7, 1), 100.54)])
+                await add(db, "cpi-yoy", False, [(date(2026, 8, 1), 6.34), (date(2026, 7, 1), 6.0)])
+                # у еды годовой ряд отстаёт на месяц: hero не подменяется чужим периодом
+                await add(db, "cpi-food", True, [(date(2026, 8, 1), 99.74), (date(2026, 7, 1), 100.1)])
+                await add(db, "cpi-food-yoy", False, [(date(2026, 7, 1), 7.0), (date(2026, 6, 1), 7.1)])
+                await db.commit()
+                listing = await api_ind.list_indicators(
+                    db=db, category=None, include_inactive=False, include_unlisted=False,
+                )
+            await engine.dispose()
+            return {s.code: s for s in listing}
+
+        by_code = asyncio.run(run())
+        assert set(by_code) == {"cpi", "cpi-food"}  # близнец в каталог не попал
+        cpi = by_code["cpi"]
+        assert (cpi.hero_value, cpi.hero_unit, cpi.hero_change) == (6.34, "%", 0.34)
+        assert cpi.hero_label
+        assert cpi.current_value == 99.92  # сам ряд не тронут
+        assert by_code["cpi-food"].hero_value is None
+    finally:
+        try:
+            os.unlink(db_path)
+        except OSError:
+            pass

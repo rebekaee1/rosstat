@@ -30,6 +30,11 @@ router = APIRouter(prefix="/forecasts", tags=["forecasts"])
 _CACHE_CONTROL = "public, max-age=60, s-maxage=300, stale-while-revalidate=600"
 
 
+async def _store_payload(key: str, payload: dict) -> None:
+    # Пустую витрину кэшируем коротко: данные могут появиться после загрузки.
+    await cache_set(key, payload, CACHE_TTL_SECONDS if payload["items"] else 120)
+
+
 async def showcase_payload(db: AsyncSession, locale: str | None = None) -> dict:
     """Витрина из Redis или сборка с нуля (используют API и серверный рендер)."""
     loc = locale or get_locale()
@@ -38,9 +43,51 @@ async def showcase_payload(db: AsyncSession, locale: str | None = None) -> dict:
     if isinstance(cached, dict) and cached.get("items") is not None:
         return cached
     payload = await build_showcase(db, loc)
-    # Пустую витрину кэшируем коротко: данные могут появиться после загрузки.
-    await cache_set(key, payload, CACHE_TTL_SECONDS if payload["items"] else 120)
+    await _store_payload(key, payload)
     return payload
+
+
+# Прогрев: холодная сборка витрины дорогая (на загруженной машине дольше 25 с),
+# а первый посетитель после истечения ключа (30 минут) или после загрузки данных
+# (смена версии `world`) ждал её сам и видел «Загружаем данные…». Прогрев
+# запускается при старте и по расписанию чаще срока жизни ключа.
+WARM_LOCALES: tuple[str, ...] = ("ru", "en")
+
+
+async def warm_showcase_cache(*, force: bool = False) -> dict[str, int]:
+    """Собрать витрину обоих языков заранее. Возвращает {язык: число карточек}.
+
+    `force=False` ничего не пересобирает, если ключ текущей версии уже лежит в
+    кэше (старт процесса); по расписанию вызывается с `force=True`, чтобы ключ
+    не успевал истечь. Ошибка одного языка не мешает другому."""
+    from app.database import async_session
+    from app.services.locale import reset_locale, set_locale
+
+    warmed: dict[str, int] = {}
+    for loc in WARM_LOCALES:
+        token = set_locale(loc)
+        try:
+            key = await versioned_key("world", f"{CACHE_KEY_REST}:{loc}")
+            if not force:
+                cached = await cache_get(key)
+                if isinstance(cached, dict) and cached.get("items") is not None:
+                    warmed[loc] = len(cached["items"])
+                    continue
+            async with async_session() as db:
+                payload = await build_showcase(db, loc)
+            await _store_payload(key, payload)
+            warmed[loc] = len(payload["items"])
+        except Exception:
+            logger.warning("forecast showcase warm-up failed (%s)", loc, exc_info=True)
+        finally:
+            reset_locale(token)
+    return warmed
+
+
+async def forecast_showcase_warm_job() -> None:
+    """Задача планировщика: держит витрину прогнозов в кэше горячей."""
+    warmed = await warm_showcase_cache(force=True)
+    logger.info("Forecast showcase warm-up: %s", warmed)
 
 
 @router.get("/showcase")
