@@ -169,4 +169,46 @@ describe('ForecastsPage', () => {
     await screen.findAllByTestId('forecast-card');
     expect(container.textContent).not.toMatch(/API|SDMX|MASE|gate|парсер/i);
   });
+
+  it('круг 8: единица стоит рядом с числами, на мини-графике подписаны начало, «сейчас» и конец', async () => {
+    const level = JSON.parse(JSON.stringify(SHOWCASE));
+    level.items[0] = {
+      ...level.items[0],
+      id: 'germany-inflation',
+      kind: 'level',
+      unit: 'индекс 2015=100',
+      title: 'Германия: потребительские цены',
+      last_actual: { date: '2026-08-01', value: 136.34 },
+      forecast_end: { date: '2027-08-01', value: 140.08 },
+    };
+    const { container } = renderForecasts(level);
+    const cards = await screen.findAllByTestId('forecast-card');
+    const card = cards[0];
+    expect(card.querySelector('.zb-fc__unit').textContent).toBe('индекс 2015=100');
+    // Две отметки значений и три подписи под графиком; прогноз по-прежнему одна линия без диапазона.
+    expect(card.querySelectorAll('.zb-fc__tag')).toHaveLength(2);
+    const axis = card.querySelector('.zb-fc__axis');
+    expect(axis.querySelector('.zb-fc__axis-now').textContent).toBe('Сейчас');
+    expect(axis.querySelector('.zb-fc__axis-start').textContent).not.toBe('');
+    expect(axis.querySelector('.zb-fc__axis-end').textContent).not.toBe('');
+    expect(container.querySelector('.zb-fc__dot-spark')).toBeNull();
+    expect(container.querySelector('.zb-fc__meta')).toBeNull();
+    // Бейдж стоит над названием и не сдвигает значения соседних карточек.
+    const head = card.querySelector('.zb-fc__card-head');
+    expect(head.firstElementChild.className).toContain('zb-fc__badge');
+    expect(head.lastElementChild.tagName).toBe('H3');
+  });
+
+  it('круг 8: запрос витрины ждёт не дольше 10 с и не уходит в тихие повторы перехватчика', async () => {
+    const spy = mockApiGet([
+      ['/auth/me', { user: null }],
+      ['/forecasts/showcase', SHOWCASE],
+    ]);
+    renderPage(<ForecastsPage />, { path: '/forecasts', route: '/forecasts' });
+    await screen.findAllByTestId('forecast-card');
+    const call = spy.mock.calls.find(([url]) => url === '/forecasts/showcase');
+    expect(call[1].timeout).toBe(10000);
+    expect(call[1].__retryCount).toBeGreaterThanOrEqual(3);
+  });
 });
+

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { changeMessageKey, chartGeometry, digitsFor, percentSign } from './forecastShowcase';
+import { changeMessageKey, chartGeometry, digitsFor, percentSign, unitCaption } from './forecastShowcase';
 
 const item = {
   kind: 'level',
@@ -70,5 +70,23 @@ describe('подписи чисел', () => {
     expect(changeMessageKey({ unit: 'percent', direction: 'up' })).toBe('zb.change.percent.up');
     expect(changeMessageKey({ unit: 'percent', direction: 'flat' })).toBe('zb.change.flat');
     expect(changeMessageKey(null)).toBe('zb.change.flat');
+  });
+});
+
+describe('круг 8: подписи у чисел и у мини-графика', () => {
+  it('единица под числами: короткая как есть, длинная сокращается, одиночный % пуст', () => {
+    expect(unitCaption('индекс 2015=100')).toBe('индекс 2015=100');
+    expect(unitCaption('% за 12 месяцев')).toBe('% за 12 месяцев');
+    expect(unitCaption('в постоянных ценах 2015 года, млн евро')).toBe('млн евро');
+    expect(unitCaption('%')).toBe('');
+    expect(unitCaption(undefined)).toBe('');
+  });
+
+  it('геометрия отдаёт начало ряда (значение и дату) для подписи у левого края', () => {
+    const g = chartGeometry(item);
+    expect(g.start.date).toBe('2026-06-01');
+    expect(g.start.value).toBe(100);
+    expect(g.start.x).toBeLessThan(g.now.x);
+    expect(Object.keys(g)).not.toContain('bandPath');
   });
 });

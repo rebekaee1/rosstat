@@ -118,3 +118,21 @@ describe('email fallback from unavailable Google signup', () => {
     expect(document.activeElement).toBe(screen.getByLabelText('common.email'));
   });
 });
+
+describe('круг 8: согласие на регистрации', () => {
+  it('условия и политика открываются в новой вкладке: заполненная форма не теряется', () => {
+    render(
+      <MemoryRouter initialEntries={['/register']}>
+        <Routes>
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    for (const key of ['w7p.reg.legalTerms', 'w7p.reg.legalPrivacy']) {
+      const link = screen.getByRole('link', { name: key });
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel')).toContain('noopener');
+    }
+  });
+});
+

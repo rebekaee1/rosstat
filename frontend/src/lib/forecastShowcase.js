@@ -28,6 +28,19 @@ export function percentSign(unit) {
   return String(unit || '').trim().startsWith('%') ? ' %' : '';
 }
 
+/**
+ * Подпись единицы под числами карточки (D4). Короткая единица остаётся как есть («индекс 2015=100», «% за 12 месяцев»);
+ * длинная («в постоянных ценах 2015 года, млн евро») сокращается до последней части после запятой («млн евро»).
+ * Пустая единица или одиночный «%» (знак процента уже стоит у числа) дают пустую строку.
+ */
+export function unitCaption(unit) {
+  const text = String(unit || '').trim();
+  if (!text || text === '%') return '';
+  if (text.length <= 24) return text;
+  const parts = text.split(',').map((part) => part.trim()).filter(Boolean);
+  return parts.length > 1 ? parts[parts.length - 1] : text;
+}
+
 /** Ключ i18n для фразы про изменение: `zb.change.points.up`, `zb.change.percent.down`, `zb.change.flat`. */
 export function changeMessageKey(change) {
   if (!change || change.direction === 'flat') return 'zb.change.flat';
@@ -64,6 +77,7 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
   const x = (iso) => p.l + ((toTime(iso) - tMin) / span) * (width - p.l - p.r);
   const y = (v) => p.t + (1 - (v - vMin) / (vMax - vMin)) * (height - p.t - p.b);
 
+  const first = history[0];
   const last = history[history.length - 1];
   const lastX = x(last.date);
   const lastY = y(last.value);
@@ -83,6 +97,7 @@ export function chartGeometry(item, { width = 320, height = 132, pad } = {}) {
     forePath,
     splitX: round(lastX),
     zone: { x: round(lastX), width: round(width - lastX) },
+    start: { x: round(x(first.date)), y: round(y(first.value)), date: first.date, value: first.value },
     now: { x: round(lastX), y: round(lastY) },
     end: { x: round(x(end.date)), y: round(y(end.value)) },
   };

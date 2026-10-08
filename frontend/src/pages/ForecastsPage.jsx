@@ -12,25 +12,37 @@ import {
   chartGeometry,
   digitsFor,
   percentSign,
+  unitCaption,
 } from '../lib/forecastShowcase';
 import { useLocale, useT } from '../i18n';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import Chip from '../components/Chip';
 import ChipGroup from '../components/ChipGroup';
+import LoadingNote from '../components/LoadingNote';
 import { SkeletonBox } from '../components/Skeleton';
 import '../styles/zb-forecasts.css';
 import '../styles/k5-pages.css';
 
 const FREQUENCY_FORMAT = { monthly: 'full', quarterly: 'quarterly', annual: 'annual' };
 
+// Витрина кэшируется на сервере, но холодная сборка бывает долгой. Ждём не дольше 10 с и не повторяем запрос
+// молча несколько раз (общий перехватчик api.js делал бы до трёх повторов, это минуты скелета): вместо этого
+// страница показывает ошибку с кнопкой «Повторить» (ApiRetryBanner сам делает один тихий повтор).
+// `__retryCount` равен лимиту повторов в lib/api.js, поэтому перехватчик сразу отдаёт ошибку.
+const SHOWCASE_TIMEOUT_MS = 10000;
+const NO_AUTO_RETRY = 3;
+
 function useForecastShowcase() {
   const { locale } = useLocale();
   return useQuery({
     queryKey: ['forecast-showcase', locale],
-    queryFn: ({ signal }) => api.get('/forecasts/showcase', { signal }).then((r) => r.data),
+    queryFn: ({ signal }) => api
+      .get('/forecasts/showcase', { signal, timeout: SHOWCASE_TIMEOUT_MS, __retryCount: NO_AUTO_RETRY })
+      .then((r) => r.data),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+    retry: false,
   });
 }
 
@@ -45,49 +57,75 @@ function ChangeIcon({ direction }) {
 }
 
 /**
- * Мини-график: линия факта, прогноз градиентом прозрачности (без пунктира) и луч света на отметке «сейчас». Все линии и заливки задают градиенты SVG, фильтров нет.
+ * Мини-график: линия факта, прогноз градиентом прозрачности (без пунктира) и луч света на отметке «сейчас».
+ * Все линии и заливки задают градиенты SVG, фильтров нет. Подписи значений и дат — обычный текст поверх рисунка
+ * (не внутри SVG, чтобы шрифт не растягивался вместе с графиком): значение в начале и в конце линии, под графиком
+ * дата начала, слово «Сейчас» у перехода к прогнозу и дата конца. Диапазона и коридора нет: одна линия прогноза.
  */
-function MiniChart({ item, label }) {
+function MiniChart({ item, label, startText, endText, startDate, endDate, nowLabel }) {
   const uid = useId().replace(/:/g, '');
   const geo = useMemo(() => chartGeometry(item), [item]);
   if (!geo) return null;
   const foreId = `${uid}-fore`;
   const rayId = `${uid}-ray`;
   const glowId = `${uid}-glow`;
+  const pct = (value, total) => `${Math.round((value / total) * 1000) / 10}%`;
+  // Подпись над точкой, если под ней мало места, иначе под точкой: так текст не ложится на линию рядом.
+  const place = (point) => (point.y / geo.height > 0.45 ? 'above' : 'below');
   return (
-    <div className="zb-fc__plot">
-      <svg
-        className="zb-fc__svg"
-        viewBox={`0 0 ${geo.width} ${geo.height}`}
-        role="img"
-        aria-label={label}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <linearGradient id={foreId} gradientUnits="userSpaceOnUse" x1={geo.now.x} x2={geo.end.x + 0.01} y1="0" y2="0">
-            <stop offset="0" stopColor="#B08A3E" stopOpacity="1" />
-            <stop offset="1" stopColor="#C9A24D" stopOpacity="0.4" />
-          </linearGradient>
-          <linearGradient id={rayId} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.95" />
-            <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
-          </linearGradient>
-          <linearGradient id={glowId} x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#C9D7EA" stopOpacity="0.5" />
-            <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <rect className="zb-fc__zone" x={geo.zone.x} y="0" width={geo.zone.width} height={geo.height} rx="6" />
-        <rect className="zb-fc__ray-glow" x={geo.splitX - 8} y="0" width="16" height={geo.height} fill={`url(#${glowId})`} />
-        <rect className="zb-fc__ray" x={geo.splitX - 0.9} y="2" width="1.8" height={geo.height - 4} rx="0.9" fill={`url(#${rayId})`} />
-        <path className="zb-fc__hist" d={geo.histPath} />
-        <path className="zb-fc__fore" d={geo.forePath} stroke={`url(#${foreId})`} />
-        <circle className="zb-fc__dot-now" cx={geo.now.x} cy={geo.now.y} r="4.5" />
-        <circle className="zb-fc__dot-end" cx={geo.end.x} cy={geo.end.y} r="5.5" />
-        <circle className="zb-fc__dot-spark" cx={geo.end.x - 1.8} cy={geo.end.y - 1.8} r="1.7" />
-      </svg>
+    <div className="zb-fc__chart">
+      <div className="zb-fc__plot">
+        <svg
+          className="zb-fc__svg"
+          viewBox={`0 0 ${geo.width} ${geo.height}`}
+          role="img"
+          aria-label={label}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <linearGradient id={foreId} gradientUnits="userSpaceOnUse" x1={geo.now.x} x2={geo.end.x + 0.01} y1="0" y2="0">
+              <stop offset="0" stopColor="#B08A3E" stopOpacity="1" />
+              <stop offset="1" stopColor="#C9A24D" stopOpacity="0.4" />
+            </linearGradient>
+            <linearGradient id={rayId} x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
+              <stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.95" />
+              <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id={glowId} x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stopColor="#C9D7EA" stopOpacity="0" />
+              <stop offset="0.5" stopColor="#C9D7EA" stopOpacity="0.5" />
+              <stop offset="1" stopColor="#C9D7EA" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <rect className="zb-fc__zone" x={geo.zone.x} y="0" width={geo.zone.width} height={geo.height} rx="6" />
+          <rect className="zb-fc__ray-glow" x={geo.splitX - 8} y="0" width="16" height={geo.height} fill={`url(#${glowId})`} />
+          <rect className="zb-fc__ray" x={geo.splitX - 0.9} y="2" width="1.8" height={geo.height - 4} rx="0.9" fill={`url(#${rayId})`} />
+          <path className="zb-fc__hist" d={geo.histPath} />
+          <path className="zb-fc__fore" d={geo.forePath} stroke={`url(#${foreId})`} />
+          <circle className="zb-fc__dot-now" cx={geo.now.x} cy={geo.now.y} r="4.5" />
+          <circle className="zb-fc__dot-end" cx={geo.end.x} cy={geo.end.y} r="4.5" />
+        </svg>
+        <span
+          className="zb-fc__tag zb-fc__tag--start"
+          data-place={place(geo.start)}
+          style={{ left: pct(geo.start.x, geo.width), top: pct(geo.start.y, geo.height) }}
+        >
+          {startText}
+        </span>
+        <span
+          className="zb-fc__tag zb-fc__tag--end"
+          data-place={place(geo.end)}
+          style={{ left: pct(geo.end.x, geo.width), top: pct(geo.end.y, geo.height) }}
+        >
+          {endText}
+        </span>
+      </div>
+      <div className="zb-fc__axis" aria-hidden="true">
+        <span className="zb-fc__axis-start">{startDate}</span>
+        <span className="zb-fc__axis-now" style={{ left: pct(geo.splitX, geo.width) }}>{nowLabel}</span>
+        <span className="zb-fc__axis-end">{endDate}</span>
+      </div>
     </div>
   );
 }
@@ -103,10 +141,15 @@ function FacetArrow() {
 
 function ForecastCard({ item, locale, t }) {
   const dateFormat = FREQUENCY_FORMAT[item.frequency] || 'short';
+  // На оси подписей даты короче: месяц сокращён, чтобы три подписи уместились в строку на телефоне.
+  const axisFormat = dateFormat === 'full' ? 'short' : dateFormat;
   const nowText = valueText(item, item.last_actual.value, locale);
   const endText = valueText(item, item.forecast_end.value, locale);
+  const first = item.history?.[0];
+  const startText = first ? valueText(item, first.value, locale) : '';
   const n = formatValue(Math.abs(item.change.value), 1, locale);
   const changeText = t(changeMessageKey(item.change), { n });
+  const unit = unitCaption(item.unit);
   const chartLabel = t('zb.fc.chartAria', {
     title: item.title,
     now: nowText,
@@ -117,10 +160,10 @@ function ForecastCard({ item, locale, t }) {
   return (
     <article className="fe-glass-lite zb-fc__card fe-stretch fe-glint fe-reveal" data-testid="forecast-card" data-theme-id={item.theme}>
       <div className="zb-fc__card-head">
-        <h3 className="zb-fc__card-title">{item.title}</h3>
         <span className="zb-fc__badge" data-verified={item.verified ? 'true' : 'false'}>
           {item.verified ? t('zb.fc.badge.checked') : t('zb.fc.badge.official')}
         </span>
+        <h3 className="zb-fc__card-title">{item.title}</h3>
       </div>
 
       <div className="zb-fc__nums">
@@ -137,16 +180,25 @@ function ForecastCard({ item, locale, t }) {
         </div>
       </div>
 
-      <span className={cn('zb-fc__change', `is-${item.change.direction}`)}>
-        <ChangeIcon direction={item.change.direction} />
-        {changeText}
-      </span>
+      <div className="zb-fc__sub">
+        <span className={cn('zb-fc__change', `is-${item.change.direction}`)}>
+          <ChangeIcon direction={item.change.direction} />
+          {changeText}
+        </span>
+        {unit ? (
+          <span className="zb-fc__unit" title={t('zb.fc.unit', { unit: item.unit })}>{unit}</span>
+        ) : null}
+      </div>
 
-      <MiniChart item={item} label={chartLabel} />
-
-      {item.unit ? (
-        <p className="zb-fc__meta">{t('zb.fc.unit', { unit: item.unit })}</p>
-      ) : null}
+      <MiniChart
+        item={item}
+        label={chartLabel}
+        startText={startText}
+        endText={endText}
+        startDate={first ? formatDate(first.date, axisFormat, locale) : ''}
+        endDate={formatDate(item.forecast_end.date, axisFormat, locale)}
+        nowLabel={t('zb.fc.now')}
+      />
 
       <div className="zb-fc__foot">
         <span>{t('zb.fc.source', { source: item.source })}</span>
@@ -255,7 +307,12 @@ export default function ForecastsPage() {
         </div>
       )}
 
-      {isLoading && <CardsSkeleton label={t('zb.fc.loadingAria')} />}
+      {isLoading && (
+        <>
+          <LoadingNote onRefresh={() => refetch()} className="mb-4" />
+          <CardsSkeleton label={t('zb.fc.loadingAria')} />
+        </>
+      )}
 
       {!isLoading && !isError && visible.length > 0 && (
         <div className="zb-fc__grid">
