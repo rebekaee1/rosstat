@@ -3,7 +3,9 @@ import {
   activeCompatibilityNote,
   compareCompatibility,
   compareCompatibilityWithTwins,
+  macroTwinCode,
   macroTwinConcept,
+  normalizeCompareCodes,
   parseSubnationalCompareCode,
   parseWorldCompareCode,
   sanitizeCompareCodes,
@@ -141,5 +143,58 @@ describe('двойники российских показателей (круг
     expect(macroTwinConcept('cpi')).toBe('hicp-index');
     expect(macroTwinConcept('unemployment')).toBe('unemployment-rate');
     expect(macroTwinConcept('key-rate')).toBeNull();
+  });
+});
+
+describe('порядок выбора не важен (круг 10, Ср1)', () => {
+  const has = (code) => code.startsWith('w:russia:');
+
+  it('сначала США, потом ВВП России: берётся двойник из общего набора стран', () => {
+    expect(compareCompatibility(['w:united-states:gdp-usd'], 'weo-gdp-usd').allowed).toBe(false);
+    const result = compareCompatibilityWithTwins(['w:united-states:gdp-usd'], 'weo-gdp-usd', has);
+    expect(result.allowed).toBe(true);
+    expect(result.addCode).toBe('w:russia:gdp-usd');
+    expect(result.swapNoteKey).toBe('c9d.compare.twinSwapped');
+  });
+
+  it('ВВП России в рублях рядом с США: добавляется ВВП в долларах, и об этом сказано отдельным текстом', () => {
+    const result = compareCompatibilityWithTwins(['w:united-states:gdp-usd'], 'gdp-nominal', has);
+    expect(result.allowed).toBe(true);
+    expect(result.addCode).toBe('w:russia:gdp-usd');
+    expect(result.swapNoteKey).toBe('c10k.compare.twinRubToUsd');
+  });
+
+  it('сначала ВВП России, потом США: российский ряд заменяется двойником', () => {
+    const result = compareCompatibilityWithTwins(['gdp-nominal'], 'w:united-states:gdp-usd', has);
+    expect(result.allowed).toBe(true);
+    expect(result.replaceWith).toEqual(['w:russia:gdp-usd']);
+    expect(result.swapNoteKey).toBe('c10k.compare.twinRubToUsd');
+  });
+
+  it('оба порядка дают один и тот же набор', () => {
+    const forward = normalizeCompareCodes(['w:united-states:gdp-usd', 'gdp-nominal'], has);
+    const backward = normalizeCompareCodes(['gdp-nominal', 'w:united-states:gdp-usd'], has);
+    expect(new Set(forward)).toEqual(new Set(['w:united-states:gdp-usd', 'w:russia:gdp-usd']));
+    expect(new Set(backward)).toEqual(new Set(forward));
+  });
+
+  it('двойник уже на графике: повторно не добавляется', () => {
+    const result = compareCompatibilityWithTwins(['w:russia:gdp-usd', 'w:united-states:gdp-usd'], 'weo-gdp-usd', has);
+    expect(result.allowed).toBe(false);
+    expect(result.reasonKey).toBe('compare.compat.alreadyAdded');
+  });
+
+  it('показатель без двойника по-прежнему не сочетается с рядами стран', () => {
+    expect(compareCompatibilityWithTwins(['w:united-states:gdp-usd'], 'key-rate', has).allowed).toBe(false);
+    expect(compareCompatibilityWithTwins(['w:united-states:gdp-usd'], 'weo-gdp-usd', () => false).allowed).toBe(false);
+    expect(normalizeCompareCodes(['key-rate', 'w:united-states:gdp-usd'], has)).toEqual(['key-rate']);
+  });
+
+  it('двойники ВВП на душу, баланса бюджета и госдолга названы', () => {
+    expect(macroTwinConcept('weo-gdp-per-capita-usd')).toBe('gdp-per-capita-usd');
+    expect(macroTwinConcept('weo-budget-balance-gdp')).toBe('budget-balance-gdp');
+    expect(macroTwinConcept('weo-government-debt-gdp')).toBe('government-debt-gdp');
+    expect(macroTwinCode('gdp-nominal')).toBe('w:russia:gdp-usd');
+    expect(macroTwinCode('key-rate')).toBeNull();
   });
 });

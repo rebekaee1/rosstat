@@ -138,7 +138,7 @@ describe('ComparePage: раунд 2', () => {
         return Promise.resolve({
           data: {
             ...base,
-            data: Array.from({ length: 20 }, (_, i) => ({ date: `${2005 + i}-01-01`, value: 100 + i * 5 })),
+            data: Array.from({ length: 40 }, (_, i) => ({ date: `${1985 + i}-01-01`, value: 100 + i * 5 })),
           },
         });
       }
@@ -152,9 +152,9 @@ describe('ComparePage: раунд 2', () => {
       return found;
     });
     const caption = container.querySelector('.fe-compare-card__caption');
-    expect(caption.textContent).toMatch(/Период: 5 лет/);
+    expect(caption.textContent).toMatch(/Период: 25 лет/);
     fireEvent.keyDown(sliders[0], { key: 'ArrowLeft' });
-    await waitFor(() => expect(container.querySelector('.fe-compare-card__caption').textContent).not.toMatch(/Период: 5 лет/));
+    await waitFor(() => expect(container.querySelector('.fe-compare-card__caption').textContent).not.toMatch(/Период: 25 лет/));
     expect(container.querySelector('.fe-compare-card__caption').textContent).toMatch(/Период: .*–/);
   });
 

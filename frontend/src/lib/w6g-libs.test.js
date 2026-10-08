@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from './comparePresets';
 import { compareEndName, compareLabels, conceptShortLabel, joinList, unitHint } from './compareTitle';
-import { orderCountryOptions } from './countryOrder';
+import { GDP_COUNTRY_ORDER, gdpRank, orderCountriesByGdp, orderCountryOptions } from './countryOrder';
 import { scalesDiffer } from './useCountryComparison';
 import {
   buildEdges, convert, convertibleUnits, currencyWindows, formatConverted, pairTab, pairTitle,
@@ -139,6 +139,28 @@ describe('порядок стран и разные масштабы', () => {
     const ordered = orderCountryOptions(options).map((o) => o.code);
     expect(ordered.slice(0, 6)).toEqual(['average', 'ru', 'us', 'cn', 'de', 'in']);
     expect(ordered.slice(6)).toEqual(['a', 'avg', 'zz']);
+  });
+
+  it('английская версия: страны по размеру ВВП, Россия не первая, «average» остаётся первым', () => {
+    const options = [
+      { code: 'ru', country_slug: 'russia' },
+      { code: 'ca', country_slug: 'canada' },
+      { code: 'avg', country_slug: 'zz-unknown' },
+      { code: 'de', country_slug: 'germany' },
+      { code: 'average' },
+      { code: 'us', country_slug: 'united-states' },
+    ];
+    expect(orderCountryOptions(options, 'en').map((o) => o.code)).toEqual(['average', 'us', 'de', 'ru', 'ca', 'avg']);
+    // Русская версия не меняется: Россия первой.
+    expect(orderCountryOptions(options, 'ru').map((o) => o.code).slice(0, 3)).toEqual(['average', 'ru', 'us']);
+  });
+
+  it('порядок по ВВП: список без повторов, неизвестные страны в конце', () => {
+    expect(new Set(GDP_COUNTRY_ORDER).size).toBe(GDP_COUNTRY_ORDER.length);
+    expect(gdpRank('united-states')).toBe(0);
+    expect(gdpRank('atlantis')).toBe(GDP_COUNTRY_ORDER.length);
+    const ordered = orderCountriesByGdp([{ key: 'poland' }, { key: 'atlantis' }, { key: 'china' }], (c) => c.key);
+    expect(ordered.map((c) => c.key)).toEqual(['china', 'poland', 'atlantis']);
   });
 
   it('масштабы различаются больше чем вдвое: нужен совет «показать в процентах»', () => {

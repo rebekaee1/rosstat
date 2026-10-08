@@ -39,11 +39,12 @@ export function CountryComparePicker({
   onOpen,
 }) {
   const t = useT();
+  const { locale } = useLocale();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const inputRef = useRef(null);
   const selected = new Set(selectedIds);
-  const filtered = query.trim() ? filterSearchCountries(options, query) : orderCountryOptions(options);
+  const filtered = query.trim() ? filterSearchCountries(options, query) : orderCountryOptions(options, locale);
   useSearchTracking('world-chart-countries', open ? query : '', filtered.length);
   return (
     <div className="relative min-w-0 flex-1">
@@ -162,6 +163,7 @@ export default function CountryComparePanel({
   baseLabel = '',
   baseColor = '#202A3C',
   suggestPercent = false,
+  baseNote = true,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -279,6 +281,16 @@ export default function CountryComparePanel({
           <span>{t('w6e.compare.suggest')}</span>
           <Button variant="secondary" size="sm" onClick={() => onScale('index')}>
             {t('w6e.compare.suggestCta')}
+          </Button>
+        </div>
+      )}
+
+      {/* Круг 10 (Ср2): что значит «старт периода = 100» словами, и настоящие числа возвращаются видимой кнопкой, а не подсказкой. */}
+      {baseNote && comparisonScale === 'index' && loadedComparisonSeries.length > 0 && (
+        <div className="fe-compare-suggest" role="note" data-testid="compare-base-explain">
+          <span>{t('c10k.compare.baseExplain')}</span>
+          <Button variant="secondary" size="sm" onClick={() => onScale('values')}>
+            {t('c10k.compare.showValues')}
           </Button>
         </div>
       )}

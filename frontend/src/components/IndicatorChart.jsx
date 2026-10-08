@@ -301,6 +301,7 @@ export default function IndicatorChart({
   comparisonSeries = null,
   actualSeriesLabel = '',
   rebaseVisible = false,
+  rebaseRange = '',
   ariaTitle = '',
   chartTitleBuilder = null,
 }) {
@@ -375,6 +376,26 @@ export default function IndicatorChart({
     setRange(defaultRange);
     setWindowOverride(null);
     setOffset(0);
+  }
+
+  // Круг 10 (Ср2): «старт периода = 100» считается от начала видимого окна, и на коротком окне («с 2016») сравнение теряет историю.
+  // Пока включено сравнение от общей базы, окно по умолчанию длиннее (`rebaseRange`, например 25 лет; нет такого пункта — «Всё»),
+  // а при выходе из сравнения возвращается прежнее. Поведение включается только по необязательному свойству.
+  const [prevRebase, setPrevRebase] = useState(rebaseVisible);
+  const [rangeBeforeRebase, setRangeBeforeRebase] = useState(null);
+  if (prevRebase !== rebaseVisible) {
+    setPrevRebase(rebaseVisible);
+    if (rebaseRange && rebaseVisible) {
+      setRangeBeforeRebase(range);
+      setRange(rangeOptions.some((r) => r.key === rebaseRange) ? rebaseRange : 'all');
+      setWindowOverride(null);
+      setOffset(0);
+    } else if (rebaseRange && rangeBeforeRebase) {
+      setRange(rangeBeforeRebase);
+      setRangeBeforeRebase(null);
+      setWindowOverride(null);
+      setOffset(0);
+    }
   }
 
   const chartData = useMemo(() => {

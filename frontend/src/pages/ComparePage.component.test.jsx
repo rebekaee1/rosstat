@@ -224,7 +224,8 @@ describe('ComparePage', () => {
       const countryOrder = [...picker.querySelectorAll('button')]
         .map((button) => button.textContent.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '').trim())
         .filter((label) => ['United States', 'Canada', 'Russia'].includes(label));
-      expect(countryOrder).toEqual(['United States', 'Canada', 'Russia']);
+      // Круг 10 (Ср3): порядок по размеру ВВП, Россия на своём месте, а не первой.
+      expect(countryOrder).toEqual(['United States', 'Russia', 'Canada']);
     });
     fireEvent.click(await screen.findByRole('button', { name: 'Russia' }));
     expect(screen.getByRole('button', { name: /Macro indicators/ })).toBeTruthy();

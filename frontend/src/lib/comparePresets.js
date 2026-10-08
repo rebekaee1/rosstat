@@ -33,23 +33,31 @@ export const COMPARE_PRESETS = [
   // за год, поэтому турецкий ряд сразу берётся как «% к прошлому году».
   {
     id: 'ru-tr-inflation',
+    ruOnly: true,
     labelKey: 'c9d.compare.preset.ruTrInflation',
     codes: ['w:russia:hicp-index', 'w:turkey:hicp-index'],
     reps: { 'w:turkey:hicp-index': 'yoy' },
   },
   {
     id: 'ru-tr-gdp',
+    ruOnly: true,
     labelKey: 'c9d.compare.preset.ruTrGdp',
     codes: ['w:russia:gdp-usd', 'w:turkey:gdp-usd'],
     reps: {},
   },
   {
     id: 'ru-tr-unemployment',
+    ruOnly: true,
     labelKey: 'c9d.compare.preset.ruTrUnemployment',
     codes: ['w:russia:unemployment-rate', 'w:turkey:unemployment-rate'],
     reps: {},
   },
 ];
+
+/** Готовые пары для показа: в английской версии пары с Россией не предлагаются (круг 10, Ср3). */
+export function comparePresetsFor(locale) {
+  return COMPARE_PRESETS.filter((preset) => !(locale === 'en' && preset.ruOnly));
+}
 
 export const DEFAULT_COMPARE_PRESET = COMPARE_PRESETS[0];
 

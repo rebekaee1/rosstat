@@ -347,6 +347,7 @@ export default function IndicatorChartSection({
             actualSeriesLabel={chartComparisonSeries.length ? t('nav.russia') : ''}
             comparisonSeries={chartComparisonSeries.length ? chartComparisonSeries : null}
             rebaseVisible={windowRebase}
+            rebaseRange="25y"
           />
         </div>
       )}

@@ -243,6 +243,7 @@ export default function WorldChartSection({
           loadedComparisonSeries={loadedComparisonSeries}
           baseLabel={country?.name || ''}
           suggestPercent={suggestPercent && !showScaleNudge}
+          baseNote={!autoPercentActive}
         />
       </div>
 
@@ -282,6 +283,7 @@ export default function WorldChartSection({
               actualSeriesLabel={country?.name}
               comparisonSeries={loadedComparisonSeries}
               rebaseVisible={windowRebase}
+              rebaseRange="25y"
             />
           </div>
         )}

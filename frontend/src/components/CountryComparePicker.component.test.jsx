@@ -191,6 +191,54 @@ describe('CountryComparePicker', () => {
     expect(onScale).toHaveBeenCalledWith('index');
   });
 
+  it('круг 10: в режиме «старт периода = 100» объяснение и видимая кнопка «Показать значения»', () => {
+    const onScale = vi.fn();
+    const props = {
+      pickerOptions: OPTIONS,
+      activeComparisonIds: ['peer:germany:de-hicp'],
+      selectedComparisons: [{ id: 'peer:germany:de-hicp', label: 'Германия', color: '#397C8C' }],
+      comparisonQueries: [],
+      comparisonScale: 'index',
+      onToggle: vi.fn(),
+      onOpen: vi.fn(),
+      onScale,
+      conceptSlug: 'gdp-usd',
+      countrySlug: 'australia',
+      compareCodes: ['w:germany:gdp-usd'],
+      rebased: null,
+      loadedComparisonSeries: [{ data: [{ date: '2024-01-01', value: 1 }] }],
+    };
+    const { unmount } = renderPicker(<CountryComparePanel {...props} />);
+    const note = screen.getByTestId('compare-base-explain');
+    expect(note.textContent).toMatch(/Старт периода = 100/);
+    expect(note.textContent).toMatch(/150/);
+    fireEvent.click(screen.getByRole('button', { name: 'Показать значения' }));
+    expect(onScale).toHaveBeenCalledWith('values');
+    unmount();
+    // Когда страница сама включила проценты, то же сказано плашкой над графиком: второго пояснения нет.
+    renderPicker(<CountryComparePanel {...props} baseNote={false} />);
+    expect(screen.queryByTestId('compare-base-explain')).toBeNull();
+  });
+
+  it('круг 10: английская версия — Russia в списке стран не первая, по размеру ВВП', () => {
+    const options = [
+      { code: 'peer:russia', country_name: 'Russia', country_slug: 'russia' },
+      { code: 'peer:germany', country_name: 'Germany', country_slug: 'germany' },
+      { code: 'peer:canada', country_name: 'Canada', country_slug: 'canada' },
+      { code: 'peer:united-states', country_name: 'United States', country_slug: 'united-states' },
+    ];
+    render(
+      <LocaleProvider locale="en">
+        <MemoryRouter>
+          <CountryComparePicker options={options} selectedIds={[]} onToggle={vi.fn()} onOpen={vi.fn()} />
+        </MemoryRouter>
+      </LocaleProvider>,
+    );
+    fireEvent.focus(screen.getByRole('searchbox'));
+    const names = [...document.querySelectorAll('.fe-dialog-panel button')].map((b) => b.textContent.replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '').trim());
+    expect(names).toEqual(['United States', 'Germany', 'Russia', 'Canada']);
+  });
+
   it('sends inflation comparisons to the rate ranking instead of raw index levels', () => {
     renderPicker(
       <CountryComparePanel
