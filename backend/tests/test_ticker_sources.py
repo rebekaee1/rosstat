@@ -194,3 +194,29 @@ def test_ticker_lanes_keep_ecb_crosses_on_world_strip():
     )
     assert "usd-rub-live" in TICKER_SET_RUSSIA
     assert "eur-usd" not in TICKER_SET_RUSSIA
+
+
+def test_add_freshness_unifies_date_and_flags_old_daily_values():
+    """Лента: живые и дневные значения получают дату одним форматом и признак давности."""
+    from datetime import datetime, timezone
+
+    from app.api.ticker import STALE_AFTER_DAYS, add_freshness
+
+    now = datetime(2026, 10, 8, 11, 50, tzinfo=timezone.utc)
+
+    live = {"fetched_at": "2026-10-08T11:49:31.317807+00:00", "as_of": "2026-10-08T11:49:31.317807+00:00"}
+    add_freshness(live, now)
+    assert (live["as_of_day"], live["age_days"], live["stale"]) == ("2026-10-08", 0, False)
+
+    # Нефть из примера круга: значение от 29 сентября, девять суток.
+    brent = {"as_of_date": "2026-09-29", "as_of": "2026-09-29", "fetched_at": "2026-10-08T11:49:31+00:00"}
+    add_freshness(brent, now)
+    assert (brent["as_of_day"], brent["age_days"], brent["stale"]) == ("2026-09-29", 9, True)
+
+    edge = {"as_of_date": "2026-10-05"}
+    add_freshness(edge, now)
+    assert edge["age_days"] == STALE_AFTER_DAYS and edge["stale"] is False
+
+    broken = {"as_of": "не дата"}
+    add_freshness(broken, now)
+    assert broken["as_of_day"] is None and broken["stale"] is False

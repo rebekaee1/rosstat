@@ -195,10 +195,10 @@ _UNIT_EN = {
     "млн канадских долларов (цены 2017)": "million CAD (2017 prices)",
     "канадских долларов за 1 доллар США": "CAD per USD",
     "млн австралийских долларов": "million AUD",
-    "млн австралийских долларов (цепные объёмы)": "million AUD (chain-linked volumes)",
+    "млн австралийских долларов (цепные объёмы)": "million AUD (constant prices)",
     "долларов США за 1 австралийский доллар": "USD per AUD",
     "млн фунтов стерлингов": "million GBP",
-    "млн фунтов стерлингов (цепные объёмы)": "million GBP (chain-linked volumes)",
+    "млн фунтов стерлингов (цепные объёмы)": "million GBP (constant prices)",
     "долларов США за 1 фунт стерлингов": "USD per GBP",
     "долларов США за 1 евро": "USD per EUR",
     "млрд долларов США": "billion USD",
@@ -281,6 +281,22 @@ def period_label(
         loc = get_locale()
     table = _PERIOD_LABEL_EN if loc == "en" else _PERIOD_LABEL
     return table.get((frequency or "").lower(), "")
+
+
+_CHAIN_LINKED_YEAR_RE = re.compile(
+    r"chain[- ]linked volumes,?\s*(?:reference year\s*)?(\d{4})", re.IGNORECASE,
+)
+_CHAIN_LINKED_RE = re.compile(r"chain[- ]linked volumes", re.IGNORECASE)
+
+
+def plain_unit_en(label: str | None) -> str:
+    """Английская подпись единицы без статистического жаргона.
+
+    Официальный справочник Евростата называет реальный объём «chain-linked volumes,
+    reference year 2015». Читателю это говорит «в ценах 2015 года»: так подпись и
+    выходит в поиске и на страницах показателей."""
+    out = _CHAIN_LINKED_YEAR_RE.sub(r"in \1 prices", label or "")
+    return _CHAIN_LINKED_RE.sub("constant prices", out).strip()
 
 
 def localize_unit(unit: str | None, *, locale: str | None = None) -> str:

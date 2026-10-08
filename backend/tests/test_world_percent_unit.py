@@ -63,3 +63,27 @@ def test_eurostat_index_keeps_concept_unit():
         assert data_unit == expected
         if locale == "en":
             assert page_unit == expected
+
+
+def test_rating_catalog_lists_gdp_before_eu_relative_gdp():
+    """Поиск «gdp» берёт первое из равных: «ВВП: рейтинг стран» не должен идти после «% от среднего по ЕС»."""
+    from app.api.world import _rating_catalog_concepts, _rating_concepts
+
+    order = [concept.slug for concept in _rating_catalog_concepts()]
+    assert sorted(order) == sorted(concept.slug for concept in _rating_concepts())
+    assert order.index("gdp-usd") < order.index("gdp-per-capita-eu")
+    assert order.index("gdp-per-capita-usd") < order.index("gdp-per-capita-eu")
+
+
+def test_plain_unit_en_drops_chain_linked_jargon():
+    from app.services.display import plain_unit_en
+
+    assert plain_unit_en("Million-euro, chain-linked volumes, reference year 2015") == (
+        "Million-euro, in 2015 prices"
+    )
+    assert plain_unit_en("Million euro, chain-linked volumes, reference year 2010 (at 2010 exchange rates)") == (
+        "Million euro, in 2010 prices (at 2010 exchange rates)"
+    )
+    assert plain_unit_en("Chain-linked volumes") == "constant prices"
+    assert plain_unit_en("Percentage") == "Percentage"
+    assert plain_unit_en(None) == ""

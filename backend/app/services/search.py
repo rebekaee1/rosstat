@@ -231,7 +231,9 @@ def _world_unit(row, locale: str) -> str:
             label = localize_unit(ru, locale="en") if ru else ""
             if label and not any("а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in label):
                 return label
-    label = (unit_label_en_for_code(row.unit) or "").strip()
+    from app.services.display import plain_unit_en
+
+    label = plain_unit_en(unit_label_en_for_code(row.unit))
     vague = {"rate", "number", "average", "person", "persons", "index", "ratio", "score", "total", "value", "unit", "percentage"}
     return label if label and label.lower() not in vague else public_unit_en(row.unit_ru, unit_storage=row.unit)
 

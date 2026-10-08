@@ -93,7 +93,7 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         measure="CLV15_MEUR",
         required_slice={"na_item": "B1GQ", "s_adj": "SCA"},
         name_en="Gross domestic product at constant prices, quarterly",
-        unit_en="chain-linked volumes, 2015, million euro",
+        unit_en="in 2015 prices, million euro",
     ),
     # Единицы национальные — рейтинг ждёт пересчёта в доллары США.
     WorldConcept(
@@ -105,7 +105,7 @@ WORLD_CONCEPTS: tuple[WorldConcept, ...] = (
         required_slice={"na_item": "B1GQ"},
         frequency_policy="official_only",
         name_en="Gross domestic product at constant prices, annual",
-        unit_en="chain-linked volumes, 2015, million euro",
+        unit_en="in 2015 prices, million euro",
     ),
     WorldConcept(
         slug="budget-balance-gdp",

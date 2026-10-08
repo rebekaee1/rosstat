@@ -268,9 +268,9 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
                 return _passthrough_unit_en(indicator)
             return concept_public_unit(concept) or ru
     from app.data.eurostat_units_ru import unit_label_en_for_code
-    from app.services.display import public_unit_en
+    from app.services.display import plain_unit_en, public_unit_en
 
-    en_label = (unit_label_en_for_code(indicator.unit) or "").strip()
+    en_label = plain_unit_en(unit_label_en_for_code(indicator.unit))
     vague = {
         "rate", "number", "average", "person", "persons", "index", "ratio",
         "score", "total", "value", "unit", "percentage",
@@ -659,6 +659,29 @@ def _rating_concepts():
     ]
 
 
+# Порядок понятий в `/world/rating/concepts`: главное первым. Клиентский поиск
+# при равной оценке оставляет порядок списка, и по запросу «gdp» первой строкой
+# вставал «ВВП на душу, % от среднего по ЕС», а не «ВВП: рейтинг стран»
+# (круг 08.10.2026, v6 №16). Незнакомое понятие уходит в конец, в прежнем порядке.
+_RATING_CATALOG_ORDER: tuple[str, ...] = (
+    "gdp-usd",
+    "gdp-per-capita-usd",
+    "gdp-per-capita-eu",
+    "hicp-index",
+    "unemployment-rate",
+    "population",
+    "activity-rate",
+    "government-debt-gdp",
+    "budget-balance-gdp",
+    "long-term-interest-rate",
+)
+
+
+def _rating_catalog_concepts():
+    rank = {slug: index for index, slug in enumerate(_RATING_CATALOG_ORDER)}
+    return sorted(_rating_concepts(), key=lambda concept: rank.get(concept.slug, len(rank)))
+
+
 def _locale_safe_copy(text: str | None) -> str | None:
     """EN payload must not carry Russian description/methodology."""
     if not text:
@@ -1022,7 +1045,7 @@ async def world_rating_concepts():
         ranking_value_mode,
     )
 
-    concepts = _rating_concepts()
+    concepts = _rating_catalog_concepts()
     # Для каталога рейтинга базы неизвестны до members; цены всегда yoy.
     payload_concepts = []
     for concept in concepts:
