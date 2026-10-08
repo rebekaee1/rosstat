@@ -145,3 +145,47 @@ def test_prenonblocking_shell_css_is_not_duplicated_and_gets_a_noscript_fallback
     plain = _nonblocking_stylesheets('<link rel="stylesheet" href="/assets/main-y.css">')
     assert 'media="print" data-fe-css="1"' in plain
     assert '<noscript><link rel="stylesheet" href="/assets/main-y.css"></noscript>' in plain
+
+
+def test_splash_has_card_progress_and_facts_by_host_language():
+    """Круг 8: заставка не пустая: полоса света, стеклянная карточка с картой, строки фактов на языке хоста."""
+    from app.services.locale import reset_locale, set_locale
+    from app.services.seo_renderer import _BOOT_FACTS
+
+    ru = _spa_doc()
+    ru_splash = ru.split('<div class="fe-boot-splash"', 1)[1].split('<div id="root">', 1)[0]
+    for cls in ("fe-boot-bgf", "fe-boot-bar", "fe-boot-card", "fe-boot-map", "fe-boot-tile", "fe-boot-facts"):
+        assert cls in ru_splash
+    for fact in _BOOT_FACTS["ru"]:
+        assert fact in ru_splash
+    assert _BOOT_FACTS["en"][0] not in ru_splash
+
+    token = set_locale("en")
+    try:
+        en_splash = _spa_doc().split('<div class="fe-boot-splash"', 1)[1].split('<div id="root">', 1)[0]
+    finally:
+        reset_locale(token)
+    for fact in _BOOT_FACTS["en"]:
+        assert fact in en_splash
+    assert _BOOT_FACTS["ru"][0] not in en_splash
+
+
+def test_splash_css_keeps_owner_principles_and_motion_budget():
+    """Без рамок, blur-фильтров и золотых заливок; кадры анимаций двигают только transform и opacity; reduced-motion учтён."""
+    css = _spa_doc().split('<style id="fe-boot-css">', 1)[1].split("</style>", 1)[0]
+    assert not re.search(r"(?<![-\w])(border(?!-radius)|outline)[-\w]*\s*:", css)
+    assert "backdrop-filter" not in css and "filter:" not in css
+    for body in re.findall(r"@keyframes \w+\{(.*)\}(?=\n@|\n@media|$)", css, flags=re.M):
+        assert not re.search(r"\b(top|left|right|bottom|width|height|margin|background|box-shadow)\s*:", body)
+    assert "prefers-reduced-motion:reduce" in css
+
+
+def test_shell_splash_mirrors_facts_in_both_languages():
+    from app.services.seo_renderer import _BOOT_FACTS
+
+    shell = (Path(__file__).resolve().parents[2] / "frontend" / "index.html").read_text(encoding="utf-8")
+    for lang in ("ru", "en"):
+        for fact in _BOOT_FACTS[lang]:
+            assert fact in shell
+    assert 'classList.add("fe-boot-en")' in shell
+    assert 'fill="#AD8A48"' in shell

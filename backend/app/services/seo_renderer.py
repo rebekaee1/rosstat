@@ -1024,8 +1024,11 @@ html{background:#F4F5F7}
 html.fe-boot{overflow:hidden;background:#F4F5F7}
 html.fe-boot #root{visibility:hidden}
 html.fe-boot .seo-boot-bar{display:none!important}
-html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:26px;box-sizing:border-box;padding:calc(env(safe-area-inset-top,0px) + 14vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(124,154,201,.26),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(201,215,234,.42),transparent 42%),#F4F5F7;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
+html.fe-boot .fe-boot-splash{display:flex;position:fixed;inset:0;z-index:2147483000;flex-direction:column;align-items:center;gap:22px;box-sizing:border-box;overflow:hidden;padding:calc(env(safe-area-inset-top,0px) + 9vh) 20px 24px;background:radial-gradient(ellipse at 88% 0%,rgba(124,154,201,.26),transparent 46%),radial-gradient(ellipse at 6% 100%,rgba(201,215,234,.42),transparent 42%),#F4F5F7;color:#202A3C;font-family:Manrope,system-ui,sans-serif}
 html.fe-js .fe-boot-splash{display:none!important}
+.fe-boot-splash::before{content:"";position:absolute;inset:-12%;background:radial-gradient(circle at 26% 20%,rgba(124,154,201,.2),transparent 38%),radial-gradient(circle at 80% 70%,rgba(168,190,222,.32),transparent 42%),radial-gradient(circle at 50% 34%,rgba(255,255,255,.75),transparent 32%);animation:feBootDrift 18s ease-in-out infinite alternate}
+.fe-boot-splash>*{position:relative;z-index:1}
+.fe-boot-splash>.fe-boot-bgf{position:absolute;z-index:0;right:-14vw;bottom:-9vh;width:52vh;height:68vh;max-width:92vw;animation:feBootFloat 14s ease-in-out infinite alternate}
 .fe-boot-brand{display:inline-flex;align-items:center;gap:.7rem;font-size:2.1rem;font-weight:750;letter-spacing:-.06em;line-height:1}
 .fe-boot-brand svg{width:46px;height:52px}
 .fe-boot-brand i{font-style:normal;font-weight:400}
@@ -1036,17 +1039,47 @@ html.fe-js .fe-boot-splash{display:none!important}
 .fe-boot-globe .fe-g-m:nth-of-type(3){animation-delay:-2.13s}
 .fe-boot-globe .fe-g-p{fill:none;stroke:currentColor;stroke-width:1;opacity:.35}
 .fe-boot-globe .fe-g-dot{fill:#AD8A48;animation:feBootPulse 1.6s ease-in-out infinite}
-.fe-boot-cap{margin:-8px 0 0;font-size:13px;letter-spacing:.02em;color:#59697F}
-.fe-boot-skel{display:flex;flex-direction:column;gap:10px;width:100%;max-width:26rem;margin-top:6px}
-.fe-boot-skel b{display:block;height:14px;border-radius:8px;background:linear-gradient(100deg,rgba(255,255,255,.35) 30%,rgba(255,255,255,.95) 50%,rgba(255,255,255,.35) 70%) 0 0/220% 100%,rgba(30,58,110,.08);animation:feBootShim 1.5s linear infinite}
-.fe-boot-skel b:nth-child(1){width:46%}
-.fe-boot-skel b:nth-child(2){height:84px;border-radius:18px}
-.fe-boot-skel b:nth-child(3){width:72%}
+.fe-boot-cap{margin:-10px 0 0;font-size:13px;letter-spacing:.02em;color:#59697F}
+.fe-boot-bar{display:block;width:min(220px,58vw);height:2px;margin-top:-8px;border-radius:2px;overflow:hidden;background:rgba(30,58,110,.1)}
+.fe-boot-bar i{display:block;width:42%;height:100%;border-radius:2px;background:linear-gradient(90deg,transparent,#7C9AC9 35%,#FFF 50%,#5B7DB1 65%,transparent);animation:feBootBar 1.9s cubic-bezier(.45,0,.25,1) infinite}
+.fe-boot-card{overflow:hidden;width:100%;max-width:22rem;box-sizing:border-box;padding:12px 14px 14px;border-radius:22px;background:linear-gradient(165deg,rgba(255,255,255,.9),rgba(255,255,255,.52));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 22px 44px -22px rgba(30,58,110,.34),0 2px 8px rgba(30,58,110,.06);animation:feBootRise .8s cubic-bezier(.2,.7,.2,1) .1s both}
+.fe-boot-card::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.8) 50%,transparent 62%);transform:translateX(-120%);animation:feBootSheen 4.4s ease-in-out 1s infinite;pointer-events:none}
+.fe-boot-map{display:block;width:100%;height:auto}
+.fe-boot-map .m-g{fill:none;stroke:#5B7DB1;stroke-width:.5;opacity:.18}
+.fe-boot-map .m-l{fill:rgba(91,125,177,.1);stroke:#5B7DB1;stroke-width:.8;stroke-linejoin:round;opacity:.66}
+.fe-boot-map .m-d{fill:#2C4A8A}
+.fe-boot-map .m-r{fill:none;stroke:#2C4A8A;stroke-width:.8;transform-box:fill-box;transform-origin:center;animation:feBootPing 2.4s ease-out infinite}
+.fe-boot-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.fe-boot-tile{display:flex;flex-direction:column;gap:7px;padding:9px 9px 8px;border-radius:14px;background:linear-gradient(170deg,rgba(255,255,255,.92),rgba(232,238,248,.58));box-shadow:inset 0 1px 0 #FFF,0 8px 16px -10px rgba(30,58,110,.3);animation:feBootRise .7s cubic-bezier(.2,.7,.2,1) .35s both}
+.fe-boot-tile:nth-child(2){animation-delay:.5s}
+.fe-boot-tile:nth-child(3){animation-delay:.65s}
+.fe-boot-tile b{display:block;height:5px;width:46%;border-radius:3px;background:rgba(30,58,110,.12)}
+.fe-boot-tile em{display:block;height:11px;width:68%;border-radius:4px;background:rgba(30,58,110,.2);animation:feBootBlink 2.2s ease-in-out infinite}
+.fe-boot-tile:nth-child(2) em{animation-delay:-.7s}
+.fe-boot-tile:nth-child(3) em{animation-delay:-1.4s}
+.fe-boot-tile svg{display:block;width:100%;height:16px}
+.fe-boot-tile path{fill:none;stroke:#5B7DB1;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.fe-boot-rule{display:block;width:28px;height:2px;margin-bottom:-8px;border-radius:1px;background:#AD8A48;opacity:.85}
+.fe-boot-facts{display:grid;justify-items:center;align-items:start;width:100%;max-width:20rem;margin:0;text-align:center;font-size:13.5px;line-height:1.4;letter-spacing:.01em;color:#4A5B74;text-wrap:balance}
+.fe-boot-facts span{grid-area:1/1;opacity:0;animation:feBootFact 12s linear infinite}
+.fe-boot-facts span:nth-child(2){animation-delay:3s}
+.fe-boot-facts span:nth-child(3){animation-delay:6s}
+.fe-boot-facts span:nth-child(4){animation-delay:9s}
 @keyframes feBootRing{to{transform:rotate(360deg)}}
 @keyframes feBootSpin{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.06)}}
 @keyframes feBootPulse{0%,100%{opacity:.35}50%{opacity:1}}
-@keyframes feBootShim{to{background-position:-220% 0,0 0}}
-@media(prefers-reduced-motion:reduce){.fe-boot-splash *{animation:none!important}}
+@keyframes feBootDrift{from{transform:translate3d(-2.5%,1.5%,0)}to{transform:translate3d(2.5%,-1.5%,0)}}
+@keyframes feBootFloat{from{transform:translate3d(0,0,0) rotate(-.8deg)}to{transform:translate3d(0,-1.8vh,0) rotate(.8deg)}}
+@keyframes feBootBar{from{transform:translateX(-110%)}to{transform:translateX(260%)}}
+@keyframes feBootRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes feBootSheen{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes feBootPing{from{opacity:.7;transform:scale(.4)}to{opacity:0;transform:scale(3.2)}}
+@keyframes feBootBlink{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes feBootFact{0%{opacity:0;transform:translateY(5px)}5%,22%{opacity:1;transform:none}27%,100%{opacity:0;transform:translateY(-4px)}}
+@media(min-width:720px){.fe-boot-splash>.fe-boot-bgf{right:6vw;bottom:-6vh}}
+@media(max-height:720px){.fe-boot-tiles{display:none}}
+@media(max-height:600px){.fe-boot-card,.fe-boot-rule{display:none}.fe-boot-globe{width:96px;height:96px}}
+@media(prefers-reduced-motion:reduce){.fe-boot-splash *,.fe-boot-splash::before{animation:none!important}.fe-boot-facts span:first-child{opacity:1}.fe-boot-facts span:nth-child(n+2){display:none}.fe-boot-bar i{width:100%;opacity:.55}}
 </style>"""
 
 _BOOT_SCRIPT = (
@@ -1062,26 +1095,107 @@ _BOOT_SCRIPT = (
 )
 
 
+# Подписи заставки по языку хоста (русский на ru., английский на корневом домене). Числа только те, что стоят
+# в тексте главной как постоянная формулировка; живых счётчиков в заставке нет (там нет данных и запросов).
+_BOOT_FACTS = {
+    "ru": (
+        "Официальные данные национальных источников",
+        "Сотни тысяч показателей по странам и регионам России",
+        "Страны мира и 85 регионов России в одном месте",
+        "Прогноз показываем только там, где ему можно доверять",
+    ),
+    "en": (
+        "Official data from national sources",
+        "Hundreds of thousands of indicators for countries and Russian regions",
+        "Countries worldwide and 85 regions of Russia in one place",
+        "We show a forecast only where it can be trusted",
+    ),
+}
+
+# Разметка без подписей: порядок и классы совпадают с блоком в frontend/index.html (держать в синхроне).
+_BOOT_BGF = (
+    '<svg class="fe-boot-bgf" viewBox="0 0 100 130" focusable="false"><defs><linearGradient id="feBootF" gradientUn'
+    'its="userSpaceOnUse" x1="10" y1="4" x2="90" y2="126"><stop offset="0" stop-color="#FFF"/><stop offset=".55" st'
+    'op-color="#DDE7F5"/><stop offset="1" stop-color="#A9BFE0"/></linearGradient></defs><g fill="url(#feBootF)"><re'
+    'ct x="10" y="4" width="26" height="122" rx="13"/><rect x="10" y="4" width="80" height="26" rx="13"/><rect x="1'
+    '0" y="52" width="58" height="24" rx="12"/></g><g fill="#FFF" opacity=".6"><rect x="15" y="16" width="4" height'
+    '="94" rx="2"/><rect x="28" y="9" width="56" height="3.5" rx="1.75"/><rect x="28" y="56" width="32" height="3" '
+    'rx="1.5"/></g></svg>'
+)
+_BOOT_LOGO = (
+    '<span class="fe-boot-brand"><svg viewBox="0 0 40 44"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H'
+    '17V38Z" fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg><span>forecast<i>economy</i></sp'
+    'an></span>'
+)
+_BOOT_GLOBE = (
+    '<svg class="fe-boot-globe" viewBox="0 0 120 120"><circle class="fe-g-ring" cx="60" cy="60" r="56"/><ellipse cl'
+    'ass="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><ellips'
+    'e class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/><path class="fe-g-p" d="M8 60H112M14 36H106M14 84H106"/><cir'
+    'cle class="fe-g-dot" cx="60" cy="60" r="3"/></svg>'
+)
+_BOOT_CARD = (
+    '<div class="fe-boot-card"><svg class="fe-boot-map" viewBox="0 0 240 110" focusable="false"><path class="m-g" d'
+    '="M0 28H240M0 55H240M0 82H240"/><path class="m-l" d="M6.7 10.2Q10 7.1 18.3 7.5Q26.7 7.9 33.3 6.7Q40 5.5 46.7 5'
+    '.9Q53.3 6.3 56.7 9.8Q60 13.4 55.7 15.3Q51.3 17.3 55 19.6Q58.7 22 60 19.6Q61.3 17.3 65.7 16.5Q70 15.7 71 20.8Q7'
+    '2 25.9 69.3 27.5Q66.7 29.1 64.7 31.8Q62.7 34.6 61 36.9Q59.3 39.3 59.7 41.2Q60 43.2 58.7 41.2Q57.3 39.3 55.3 39'
+    '.7Q53.3 40.1 51 41.2Q48.7 42.4 48.7 44.8Q48.7 47.1 51 46.8Q53.3 46.4 54.3 48.3Q55.3 50.3 56.7 52.6Q58 55 59.7 '
+    '55.8Q61.3 56.6 60 56.6Q58.7 56.6 57.3 55Q56 53.4 54 52.2Q52 51.1 47.7 49.1Q43.3 47.1 41.7 45.6Q40 44 38.7 41.2'
+    'Q37.3 38.5 36.3 38.1Q35.3 37.7 33 34.6Q30.7 31.4 30.7 28.3Q30.7 25.1 27 21.2Q23.3 17.3 18.3 16.5Q13.3 15.7 8.3'
+    ' 17.7Q3.3 19.6 3.3 16.5Q3.3 13.4 6.7 10.2ZM80 15.7Q83.3 15.7 91.7 11.8Q100 7.9 100 4.7Q100 1.6 91.7 0.8Q83.3 0'
+    ' 76.7 0Q70 0 67.7 1.6Q65.3 3.1 70 5.5Q74.7 7.9 75.7 11.8Q76.7 15.7 80 15.7ZM63.3 55Q65.3 53.4 68.7 54.2Q72 55 '
+    '75.3 57Q78.7 58.9 79.3 60.9Q80 62.9 85 65.2Q90 67.6 88.7 70.7Q87.3 73.9 86.7 77Q86 80.1 83.7 81.7Q81.3 83.3 79'
+    '.3 86.4Q77.3 89.6 76 91.1Q74.7 92.7 72.3 94.3Q70 95.9 69 99Q68 102.1 67.3 104.5Q66.7 106.9 65.3 104.5Q64 102.1'
+    ' 64.3 98.2Q64.7 94.3 65.3 90.4Q66 86.4 66.3 81.7Q66.7 77 64.7 75.4Q62.7 73.9 61 70.3Q59.3 66.8 59.7 64Q60 61.3'
+    ' 60.7 58.9Q61.3 56.6 63.3 55ZM107.3 31.4Q107.3 29.1 109.7 28.7Q112 28.3 111.3 26.7Q110.7 25.1 112.7 24Q114.7 2'
+    '2.8 116.7 21.6Q118.7 20.4 119 19.2Q119.3 18.1 120 17.7Q120.7 17.3 118.7 16.9Q116.7 16.5 116.7 15.3Q116.7 14.1 '
+    '119.7 11.8Q122.7 9.4 126.3 8.2Q130 7.1 132.7 7.5Q135.3 7.9 138 9Q140.7 10.2 141.7 9.8Q142.7 9.4 148 9Q153.3 8.'
+    '6 156.7 7.1Q160 5.5 166.7 4.3Q173.3 3.1 180 2.8Q186.7 2.4 196.7 4.3Q206.7 6.3 213.3 7.1Q220 7.9 226.7 8.6Q233.'
+    '3 9.4 232 11Q230.7 12.6 225.3 13.4Q220 14.1 218.7 18.1Q217.3 22 212.7 22Q208 22 207.3 24.4Q206.7 26.7 203.7 28'
+    '.3Q200.7 29.9 200 32.6Q199.3 35.4 198 34.2Q196.7 33 195.3 32.2Q194 31.4 194.3 32.6Q194.7 33.8 193.7 34.6Q192.7'
+    ' 35.4 193.7 37.3Q194.7 39.3 194.3 41.2Q194 43.2 190.3 44.8Q186.7 46.4 186 48.3Q185.3 50.3 185.7 52.2Q186 54.2 '
+    '184.7 55Q183.3 55.8 181.7 54.2Q180 52.6 180 54.6Q180 56.6 181 59.3Q182 62.1 180.3 59.3Q178.7 56.6 178.7 53.4Q1'
+    '78.7 50.3 177.3 49.9Q176 49.5 175.3 47.5Q174.7 45.6 173.3 45.6Q172 45.6 169.3 48.3Q166.7 51.1 165.7 53.8Q164.7'
+    ' 56.6 163.3 53Q162 49.5 161.7 47.9Q161.3 46.4 159.7 45.2Q158 44 154.7 43.2Q151.3 42.4 151 42.8Q150.7 43.2 151.'
+    '3 44.4Q152 45.6 150 47.9Q148 50.3 145 51.9Q142 53.4 140.7 49.9Q139.3 46.4 138 43.2Q136.7 40.1 136.3 39.3Q136 3'
+    '8.5 136.7 36.5Q137.3 34.6 134.7 34.2Q132 33.8 131.3 32.6Q130.7 31.4 129.7 32.2Q128.7 33 128.3 33.4Q128 33.8 12'
+    '7 32.2Q126 30.6 124.3 29.1Q122.7 27.5 122 27.9Q121.3 28.3 122.7 29.5Q124 30.6 124 31.8Q124 33 122.7 33Q121.3 3'
+    '3 120.3 30.6Q119.3 28.3 117.3 28.7Q115.3 29.1 114.3 30.6Q113.3 32.2 111.3 33.4Q109.3 34.6 108.3 34.2Q107.3 33.'
+    '8 107.3 31.4ZM104.3 42.8Q106.7 39.3 108 36.9Q109.3 34.6 114.7 34.2Q120 33.8 120.3 35.4Q120.7 36.9 123.7 37.7Q1'
+    '26.7 38.5 130.7 38.5Q134.7 38.5 135.3 39.7Q136 40.9 137.3 44Q138.7 47.1 140.3 50.3Q142 53.4 144.7 53.4Q147.3 5'
+    '3.4 144.3 58.5Q141.3 63.6 140.7 67.2Q140 70.7 138.3 74.6Q136.7 78.6 136 80.9Q135.3 83.3 133.3 86.4Q131.3 89.6 '
+    '129 90Q126.7 90.4 126 88.4Q125.3 86.4 123.3 81.3Q121.3 76.2 121.7 72.7Q122 69.1 120.7 66.4Q119.3 63.6 119.3 61'
+    '.7Q119.3 59.7 116.3 59.3Q113.3 58.9 110.7 59.3Q108 59.7 106.3 58.1Q104.7 56.6 103.3 54.2Q102 51.9 102 49.1Q102'
+    ' 46.4 104.3 42.8ZM192 78.6Q194.7 77 197.3 74.6Q200 72.3 202.3 72.3Q204.7 72.3 206.3 71.9Q208 71.5 209.3 74.6Q2'
+    '10.7 77.8 213 80.5Q215.3 83.3 214.3 87.6Q213.3 91.9 210.3 92.3Q207.3 92.7 205.3 91.5Q203.3 90.4 196.7 90Q190 8'
+    '9.6 189.7 84.9Q189.3 80.1 192 78.6ZM112 23.2Q114 22.8 114.3 22Q114.7 21.2 113.3 19.6Q112 18.1 111 17.7Q110 17.'
+    '3 109.7 18.9Q109.3 20.4 110.3 20.4Q111.3 20.4 110.7 22Q110 23.6 112 23.2ZM201.7 37.3Q203.3 36.1 205.3 35Q207.3'
+    ' 33.8 207.7 31.4Q208 29.1 207.3 29.9Q206.7 30.6 205 33Q203.3 35.4 202 36.1Q200.7 36.9 200.3 37.7Q200 38.5 201.'
+    '7 37.3Z"/><circle class="m-d" cx="138.4" cy="19" r="2"/><circle class="m-r" cx="138.4" cy="19" r="3"/></svg><d'
+    'iv class="fe-boot-tiles"><div class="fe-boot-tile"><b></b><em></em><svg viewBox="0 0 60 16"><path d="M1 13C10 '
+    '12 14 8 22 9S36 5 44 4 54 2 59 2"/></svg></div><div class="fe-boot-tile"><b></b><em></em><svg viewBox="0 0 60 '
+    '16"><path d="M1 9C9 6 15 12 24 9S38 5 46 8 55 7 59 6"/></svg></div><div class="fe-boot-tile"><b></b><em></em><'
+    'svg viewBox="0 0 60 16"><path d="M1 4C10 5 16 3 24 7S36 13 44 11 54 9 59 12"/></svg></div></div></div>'
+)
+
+
 def _ssr_boot_splash() -> str:
     """Заставка для человека, пока грузится приложение (скрыта без html.fe-boot)."""
     from app.services.locale import get_locale
 
-    caption = "Loading…" if get_locale() == "en" else "Загружаем…"
+    locale = "en" if get_locale() == "en" else "ru"
+    caption = "Loading…" if locale == "en" else "Загружаем…"
+    facts = "".join(f"<span>{text}</span>" for text in _BOOT_FACTS[locale])
     return (
         '<div class="fe-boot-splash" aria-hidden="true">'
-        '<span class="fe-boot-brand"><svg viewBox="0 0 40 44"><path d="M8 38V17Q8 5 21 5H34V13H22Q17 13 17 19V20H31V28H17V38Z" '
-        'fill="currentColor"/><path d="M29 30H35V38H29Z" fill="#AD8A48"/></svg>'
-        '<span>forecast<i>economy</i></span></span>'
-        '<svg class="fe-boot-globe" viewBox="0 0 120 120">'
-        '<circle class="fe-g-ring" cx="60" cy="60" r="56"/>'
-        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
-        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
-        '<ellipse class="fe-g-m" cx="60" cy="60" rx="56" ry="56"/>'
-        '<path class="fe-g-p" d="M8 60H112M14 36H106M14 84H106"/>'
-        '<circle class="fe-g-dot" cx="60" cy="60" r="3"/></svg>'
-        f'<p class="fe-boot-cap">{caption}</p>'
-        '<div class="fe-boot-skel"><b></b><b></b><b></b></div>'
-        '</div>'
+        + _BOOT_BGF
+        + _BOOT_LOGO
+        + _BOOT_GLOBE
+        + f'<p class="fe-boot-cap">{caption}</p>'
+        + '<span class="fe-boot-bar"><i></i></span>'
+        + _BOOT_CARD
+        + '<i class="fe-boot-rule"></i>'
+        + f'<p class="fe-boot-facts">{facts}</p>'
+        + '</div>'
     )
 
 # Брендовый «хром» чистых SSR-страниц (include_app=False): единая шапка с
