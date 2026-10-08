@@ -211,12 +211,16 @@ export default function DemographicsPage() {
     path: demoSeo?.path,
   });
 
-  // Равные шаги по оси времени: годы, кратные 5 (а при короткой истории кратные 2).
+  // Равные шаги по оси времени: годы, кратные 5 (а при короткой истории кратные 2). Первый и последний год
+  // подписаны всегда: раньше последняя подпись была «2020», хотя данные идут до 2023, и казалось, что график обрывается.
   const yearTicks = (() => {
     const years = series.map((row) => row.year);
     if (years.length < 2) return undefined;
     const step = years.length > 12 ? 5 : 2;
-    const ticks = years.filter((y) => y % step === 0);
+    const first = years[0];
+    const last = years[years.length - 1];
+    const middle = years.filter((y) => y % step === 0 && y - first >= 3 && last - y >= 3);
+    const ticks = [first, ...middle, last];
     return ticks.length >= 2 ? ticks : undefined;
   })();
 
@@ -384,6 +388,10 @@ export default function DemographicsPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+        )}
+
+        {!isLoading && series.length > 0 && chartType === 'stacked' && (
+          <p className="mt-3 text-center text-xs text-text-secondary" data-testid="demo-stack-note">{t('c9e.demo.stackNote')}</p>
         )}
 
         {!isLoading && series.length > 0 && (

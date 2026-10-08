@@ -147,23 +147,23 @@ describe('RussiaHome: компактные разделы', () => {
     change: 1,
   }));
 
-  it('сначала пять строк, остальное по кнопке «Показать ещё», и обратно', async () => {
+  it('сначала шесть строк (две колонки без пустой ячейки), остальное по кнопке «Показать ещё», и обратно', async () => {
     mount(wages);
     const section = await screen.findByTestId('russia-section');
-    expect(within(section).getAllByRole('link')).toHaveLength(5);
-    const more = within(section).getByRole('button', { name: /Показать ещё 4/ });
+    expect(within(section).getAllByRole('link')).toHaveLength(6);
+    const more = within(section).getByRole('button', { name: /Показать ещё 3/ });
     expect(more.getAttribute('aria-expanded')).toBe('false');
     fireEvent.click(more);
     expect(within(section).getAllByRole('link')).toHaveLength(9);
     const less = within(section).getByRole('button', { name: /Свернуть/ });
     fireEvent.click(less);
-    expect(within(section).getAllByRole('link')).toHaveLength(5);
+    expect(within(section).getAllByRole('link')).toHaveLength(6);
   });
 
-  it('раздел из шести строк кнопки не требует', async () => {
-    mount(wages.slice(0, 6));
+  it('раздел из семи строк кнопки не требует', async () => {
+    mount(wages.slice(0, 7));
     const section = await screen.findByTestId('russia-section');
-    expect(within(section).getAllByRole('link')).toHaveLength(6);
+    expect(within(section).getAllByRole('link')).toHaveLength(7);
     expect(within(section).queryByRole('button')).toBeNull();
   });
 
