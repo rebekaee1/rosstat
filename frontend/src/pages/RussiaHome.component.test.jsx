@@ -87,7 +87,7 @@ describe('RussiaHome hero и обзорные чипы', () => {
     expect(card.className).toContain('fe-glass-dark');
     expect(card.className).toContain('z5-ru-territory');
     expect(card.textContent).toContain('Профиль территории');
-    expect(card.textContent).toContain('85 субъектов');
+    expect(card.textContent).toContain('85 регионов');
     // Код страны «RU» человеку ничего не говорит: в карточке только название.
     expect(card.textContent).not.toMatch(/\bRU\b/);
 

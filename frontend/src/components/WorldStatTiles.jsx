@@ -1,5 +1,5 @@
 import { formatDate, formatValue } from '../lib/format';
-import { glueDate, periodPhrase } from '../lib/periodPhrase';
+import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
@@ -169,7 +169,7 @@ export default function WorldStatTiles({
           key="growth"
           index={tiles.length}
           label={t('w6e.tile.growth', { n: growth.years, word: yearsWord(growth.years) })}
-          note={t('w6e.tile.growthNote', { date: dateText(growth.from.date) })}
+          note={sincePhrase(t, growth.from.date, dateFormat, locale)}
         >
           {formatPercentChange(growth.pct, locale, growthDigits(growth.pct)) || t('w6e.delta.flat')}
         </StatTile>,

@@ -3,7 +3,7 @@ import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { periodPhrase } from '../lib/periodPhrase';
+import { periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import { bestGrowth, growthOverYears, unitKind } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
@@ -174,7 +174,7 @@ export default function IndicatorTelemetryGrid({
             value={yearGrowth.pct}
             unit="%"
             valueDigits={Math.abs(yearGrowth.pct) >= 100 ? 0 : 1}
-            meta={t('w6e.tile.growthNote', { date: formatDate(yearGrowth.from.date, dateFmt, locale) })}
+            meta={sincePhrase(t, yearGrowth.from.date, dateFmt, locale)}
             delay={2}
           />
         )}
@@ -184,7 +184,7 @@ export default function IndicatorTelemetryGrid({
             value={longGrowth.pct}
             unit="%"
             valueDigits={Math.abs(longGrowth.pct) >= 100 ? 0 : 1}
-            meta={t('w6e.tile.growthNote', { date: formatDate(longGrowth.from.date, dateFmt, locale) })}
+            meta={sincePhrase(t, longGrowth.from.date, dateFmt, locale)}
             delay={3}
           />
         )}

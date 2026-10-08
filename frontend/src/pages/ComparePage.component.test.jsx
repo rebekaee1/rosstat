@@ -90,7 +90,7 @@ describe('ComparePage', () => {
     mockCompareApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=cpi,key-rate' });
     const note = await screen.findByTestId('compare-limit-note');
-    expect(note.textContent).toContain('Для трёх и больше показателей нужна бесплатная регистрация');
+    expect(note.textContent).toContain('Для трёх и\u00a0больше показателей нужна бесплатная\u00a0регистрация');
   });
 
   it('AddIndicator dual-write: compare_search и search_query(compare-macro)', async () => {

@@ -62,7 +62,7 @@ describe('Dashboard', () => {
     renderPage(<Dashboard />, { path: '/', route: '/' });
 
     const h1 = await screen.findByRole('heading', { level: 1 });
-    expect(h1.textContent).toBe('Экономика стран\u00a0— в одном месте');
+    expect(h1.textContent).toBe('Экономика стран\u00a0— в\u00a0одном месте');
     expect(h1.textContent).not.toMatch(/рабочей среде/);
     // Карта России снята с hero (переехала на /russia). Поиск — inline под заголовком.
     expect(screen.queryByLabelText('Россия')).toBeNull();
@@ -92,7 +92,7 @@ describe('Dashboard', () => {
 
     renderPage(<Dashboard />, { path: '/', route: '/' });
 
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Экономика стран\u00a0— в одном месте');
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Экономика стран\u00a0— в\u00a0одном месте');
     expect(screen.getByText('Бесплатная платформа')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Открыть поиск' })).toBeTruthy();
     // Примеры запросов под полем: одно касание до выдачи.
