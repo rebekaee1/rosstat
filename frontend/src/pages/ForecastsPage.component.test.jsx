@@ -99,7 +99,7 @@ describe('ForecastsPage', () => {
 
     const us = cards[1];
     expect(us.textContent).toContain('выше на 0,2 пункта');
-    expect(us.textContent).toContain('Проверен на истории');
+    expect(us.textContent).toContain('Проверен на прошлых данных');
   });
 
   it('диапазона прогноза нет нигде: ни в тексте, ни в легенде, ни на графике, даже если сервер прислал границы', async () => {

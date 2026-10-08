@@ -18,3 +18,15 @@ export function periodPhrase(t, dateStr, dateFmt, locale) {
   if (dateFmt === 'annual') return t('w3.tele.forYear', { date });
   return t('w3.tele.forPeriod', { date });
 }
+
+/**
+ * «с августа 2016»: после «с» месяц стоит в родительном падеже. Формат 'full' (именительный «август 2016»)
+ * заменяем на 'fullGen'; дневные, квартальные и годовые подписи падежа не имеют.
+ * `t` — функция перевода (ключ w6e.tile.growthNote).
+ */
+export function sincePhrase(t, dateStr, dateFmt, locale) {
+  if (!dateStr) return undefined;
+  const date = glueDate(formatDate(dateStr, dateFmt === 'full' ? 'fullGen' : dateFmt, locale));
+  if (date === '—') return undefined;
+  return t('w6e.tile.growthNote', { date });
+}
