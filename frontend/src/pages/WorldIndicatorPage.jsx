@@ -689,7 +689,7 @@ export default function WorldIndicatorPage() {
 
           </div>
 
-          <div className="z4-lower">
+          <div className="z4-lower" data-lower="wide">
             <section className="z4-lower__table">
               <DataTable
                 key={`${code}-${activeMode}`}
@@ -719,11 +719,6 @@ export default function WorldIndicatorPage() {
               )}
 
               <div className="z4-lower__side">
-                <IndicatorMethodologyPanel
-                  indicator={methodologyIndicator}
-                  content={methodologyContent}
-                  sourcePath={indicator.source_url || indicatorPath(slug, code)}
-                />
                 <div className="z4-about rounded-3xl p-5 sm:p-6 fe-glass-lite">
                   <h3 className="mb-4 text-base font-semibold text-text-primary">
                     {t('world.indicator.aboutSeries')}
@@ -800,6 +795,13 @@ export default function WorldIndicatorPage() {
                 </div>
               </div>
 
+            </div>
+            <div className="z4-lower__method">
+              <IndicatorMethodologyPanel
+                indicator={methodologyIndicator}
+                content={methodologyContent}
+                sourcePath={indicator.source_url || indicatorPath(slug, code)}
+              />
             </div>
           </div>
         </>

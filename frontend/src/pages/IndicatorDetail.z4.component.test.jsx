@@ -60,6 +60,9 @@ describe('IndicatorDetail: раскладка первого экрана', () =
 
     const lower = container.querySelector('.z4-lower');
     expect(lower.querySelector('.z4-lower__table .fe-histtable')).toBeTruthy();
-    expect(lower.querySelector('.z4-lower__aside [data-block="methodology"]')).toBeTruthy();
+    expect(lower.querySelector('.z4-lower__method [data-block="methodology"]')).toBeTruthy();
+    // С1: прогноз живёт в правой колонке, методология отдельным рядом; без прогноза раскладка «stack».
+    expect(['wide', 'stack']).toContain(lower.getAttribute('data-lower'));
+    expect(lower.querySelector('.z4-lower__aside [data-block="methodology"]')).toBeNull();
   });
 });
