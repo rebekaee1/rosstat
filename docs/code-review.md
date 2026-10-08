@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `122862425aeb4c4c1ada9f27a53d2a966418e117`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `ab67a04201cfcebd8023184fe5b1d9f4d63552f4`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1884 |
+| Файлы в явно определённом scope | 1887 |
 | Код, шаблоны и стили | 1500 |
-| Актуальные рецензии без пропусков guard | 1884 |
-| Именованные определения Python/JS: с аннотацией / всего | 11937 / 11937 |
+| Актуальные рецензии без пропусков guard | 1887 |
+| Именованные определения Python/JS: с аннотацией / всего | 11940 / 11940 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -552,7 +552,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_auto_loan_rate.py](../backend/tests/test_auto_loan_rate.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_backup_readiness.py](../backend/tests/test_backup_readiness.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_bank_credit_seo.py](../backend/tests/test_bank_credit_seo.py) | reviewed | 5/5 | актуально |
-| [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 11/11 | актуально |
+| [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_branded_errors.py](../backend/tests/test_branded_errors.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_breadcrumbs.py](../backend/tests/test_breadcrumbs.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_brent_seo.py](../backend/tests/test_brent_seo.py) | reviewed | 3/3 | актуально |
@@ -918,12 +918,14 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/china-official-sources.xlsx](../docs/research/china-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/competitor-roschart-2026-10-04.md](../docs/research/competitor-roschart-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/competitor-tradingeconomics-2026-10-04.md](../docs/research/competitor-tradingeconomics-2026-10-04.md) | reviewed | 0/0 | актуально |
+| [docs/research/data-comparison-2026-10-05.md](../docs/research/data-comparison-2026-10-05.md) | reviewed | 0/0 | актуально |
 | [docs/research/de-intl-api-probes.json](../docs/research/de-intl-api-probes.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/france-official-sources.xlsx](../docs/research/france-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/germany-official-sources.xlsx](../docs/research/germany-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/india-official-sources.xlsx](../docs/research/india-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/intl-official-sources.xlsx](../docs/research/intl-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/japan-official-sources.xlsx](../docs/research/japan-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/our-state-2026-10-05.md](../docs/research/our-state-2026-10-05.md) | reviewed | 0/0 | актуально |
 | [docs/research/russia-fpsr-official-sources.xlsx](../docs/research/russia-fpsr-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/search-acceptance-2026-09-30.md](../docs/research/search-acceptance-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/search-accuracy-2026-10-04.md](../docs/research/search-accuracy-2026-10-04.md) | reviewed | 0/0 | актуально |
@@ -934,6 +936,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/research/search-monte-carlo-2026-09-30.md](../docs/research/search-monte-carlo-2026-09-30.md) | reviewed | 0/0 | актуально |
 | [docs/research/session-replay-review-2026-10-04.md](../docs/research/session-replay-review-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/south-korea-official-sources.xlsx](../docs/research/south-korea-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
+| [docs/research/tech-benchmark-2026-10-05.md](../docs/research/tech-benchmark-2026-10-05.md) | reviewed | 0/0 | актуально |
 | [docs/research/turkey-official-sources.xlsx](../docs/research/turkey-official-sources.xlsx) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/research/ui-brainstorm-planet-2026-10-04.md](../docs/research/ui-brainstorm-planet-2026-10-04.md) | reviewed | 0/0 | актуально |
 | [docs/research/ui-brainstorm-scenarios-2026-10-04.md](../docs/research/ui-brainstorm-scenarios-2026-10-04.md) | reviewed | 0/0 | актуально |
