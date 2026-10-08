@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { LocaleProvider } from '../i18n';
 import { OPEN_NAV_MENU_EVENT } from '../lib/navItems';
 import MobileDock from './MobileDock';
+import { setStickyActive } from '../lib/stickyLayer';
 
 async function scrollTo(y) {
   Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
@@ -28,6 +29,7 @@ afterEach(() => {
   document.documentElement.style.removeProperty('--fe-dock-h');
   document.documentElement.style.removeProperty('--fe-dock-reserve');
   delete document.documentElement.dataset.feDock;
+  act(() => { setStickyActive(false); });
   document.querySelectorAll('footer.fe-footer').forEach((n) => n.remove());
 });
 
@@ -81,13 +83,44 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     expect(dock.getAttribute('data-tone')).toBe('dark');
   });
 
-  it('после остановки прокрутки панель появляется и без движения вверх', async () => {
+  it('круг 9, S1: короткая пауза (700 мс) панель не возвращает, долгая (2,5 с) возвращает', async () => {
     renderDock();
     const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
     await scrollTo(400);
     expect(dock.getAttribute('data-visible')).toBe('false');
-    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 800); }); });
+    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 900); }); });
+    expect(dock.getAttribute('data-visible')).toBe('false');
+    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 1800); }); });
     expect(dock.getAttribute('data-visible')).toBe('true');
+  });
+
+  it('круг 9, S1: над подвалом долгая пауза панель не возвращает (она закрывала бы ссылки), движение вверх возвращает', async () => {
+    const footer = document.createElement('footer');
+    footer.className = 'fe-footer';
+    footer.getBoundingClientRect = () => ({ top: window.innerHeight - 200, bottom: window.innerHeight + 900 });
+    document.body.appendChild(footer);
+    renderDock();
+    const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
+    await scrollTo(400);
+    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 2700); }); });
+    expect(dock.getAttribute('data-visible')).toBe('false');
+    await scrollTo(300);
+    expect(dock.getAttribute('data-visible')).toBe('true');
+  });
+
+  it('круг 9, S1: пока на экране плашка «Результат», панель спрятана и не держит место внизу', async () => {
+    renderDock();
+    const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
+    await scrollTo(400);
+    await scrollTo(300);
+    expect(dock.getAttribute('data-visible')).toBe('true');
+    act(() => { setStickyActive(true); });
+    expect(dock.getAttribute('data-visible')).toBe('false');
+    expect(document.documentElement.style.getPropertyValue('--fe-dock-h')).toBe('0px');
+    expect(document.documentElement.dataset.feSticky).toBe('on');
+    act(() => { setStickyActive(false); });
+    expect(dock.getAttribute('data-visible')).toBe('true');
+    expect(document.documentElement.dataset.feSticky).toBeUndefined();
   });
 
   it('текущий раздел отмечен: на сравнении активно «Сравнение»', () => {

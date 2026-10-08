@@ -9,16 +9,19 @@ import { useSyncExternalStore } from 'react';
  *   deep      сдвиг больше 96 px (есть смысл сжимать шапку, прятать ленту, показывать док-панель)
  *   dir       'down' | 'up': последнее заметное направление (порог 6 px, чтобы дрожь пальца не считалась)
  *   idle      прокрутка остановилась (700 мс без событий)
+ *   rest      человек остановился надолго (2,5 с без событий): док-панель возвращается и без движения вверх (круг 9, S1)
  */
 const SCROLLED_AT = 24;
 const DEEP_AT = 96;
 const MIN_DELTA = 6;
 const IDLE_MS = 700;
+const REST_MS = 2500;
 
-let state = { scrolled: false, deep: false, dir: 'up', idle: true };
+let state = { scrolled: false, deep: false, dir: 'up', idle: true, rest: true };
 let lastY = 0;
 let frame = 0;
 let idleTimer = 0;
+let restTimer = 0;
 let listening = false;
 const subscribers = new Set();
 
@@ -30,6 +33,7 @@ function commit(next) {
     && next.deep === state.deep
     && next.dir === state.dir
     && next.idle === state.idle
+    && next.rest === state.rest
   ) return;
   state = next;
   subscribers.forEach((notify) => notify());
@@ -45,7 +49,7 @@ function measure(idle) {
     dir = y > lastY ? 'down' : 'up';
     lastY = y;
   }
-  commit({ scrolled: y > SCROLLED_AT, deep: y > DEEP_AT, dir, idle });
+  commit({ scrolled: y > SCROLLED_AT, deep: y > DEEP_AT, dir, idle, rest: idle ? state.rest : false });
 }
 
 function onScroll() {
@@ -54,7 +58,9 @@ function onScroll() {
     frame = 0;
     measure(false);
     window.clearTimeout(idleTimer);
+    window.clearTimeout(restTimer);
     idleTimer = window.setTimeout(() => commit({ ...state, idle: true }), IDLE_MS);
+    restTimer = window.setTimeout(() => commit({ ...state, idle: true, rest: true }), REST_MS);
   });
 }
 
@@ -63,7 +69,7 @@ function subscribe(notify) {
   if (!listening && typeof window !== 'undefined') {
     listening = true;
     lastY = readY();
-    state = { scrolled: false, deep: false, dir: 'up', idle: true };
+    state = { scrolled: false, deep: false, dir: 'up', idle: true, rest: true };
     measure(true);
     window.addEventListener('scroll', onScroll, { passive: true });
   }
@@ -74,6 +80,7 @@ function subscribe(notify) {
       window.removeEventListener('scroll', onScroll);
       window.cancelAnimationFrame(frame);
       window.clearTimeout(idleTimer);
+      window.clearTimeout(restTimer);
       frame = 0;
     }
   };

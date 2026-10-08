@@ -290,8 +290,9 @@
   position: fixed;
   left: 12px;
   right: 12px;
-  /* Над док-панелью K3: --fe-dock-h = 76 px, пока док на экране (0, когда спрятан); safe-area док считает сам, мы добавляем её здесь. */
-  bottom: calc(var(--fe-dock-h, 0px) + 8px + env(safe-area-inset-bottom, 0px));
+  /* Над док-панелью K3: --fe-dock-h = 76 px, пока док на экране (0, когда спрятан); safe-area док считает сам, мы добавляем её здесь.
+     Круг 9, S1: пока плашка на экране, панель спрятана (html[data-fe-sticky]), поэтому они не стоят стопкой; плашка поднимается только над плашкой cookie. */
+  bottom: calc(var(--fe-dock-h, 0px) + 8px + var(--fe-cookie-h, 0px) + env(safe-area-inset-bottom, 0px));
   z-index: 60;
   display: flex;
   align-items: center;
@@ -332,12 +333,20 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  gap: 6px;
+  min-width: 36px;
   height: 36px;
+  padding: 0 10px 0 14px;
   border-radius: 999px;
   background: var(--fe-glass-active);
   color: var(--fe-on-active);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.fe-k8-sticky__go-label { font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap; }
+/* Совсем узкий экран (320 px): подпись «К результату» не помещается рядом с числом, остаётся стрелка. */
+@media (max-width: 359px) {
+  .fe-k8-sticky__go { padding: 0; width: 36px; }
+  .fe-k8-sticky__go-label { display: none; }
 }
 .fe-k8-sticky:active { transform: scale(0.98); }
 @keyframes k8-sticky-in {

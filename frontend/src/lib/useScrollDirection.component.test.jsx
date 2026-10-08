@@ -18,7 +18,7 @@ afterEach(() => {
 describe('useScrollDirection', () => {
   it('наверху страницы: не прокручено, направление вверх, прокрутка стоит', () => {
     const { result } = renderHook(() => useScrollDirection());
-    expect(result.current).toEqual({ scrolled: false, deep: false, dir: 'up', idle: true });
+    expect(result.current).toEqual({ scrolled: false, deep: false, dir: 'up', idle: true, rest: true });
   });
 
   it('вниз: scrolled с 24 px, deep с 96 px, направление down, пока идёт прокрутка', async () => {
@@ -53,5 +53,15 @@ describe('useScrollDirection', () => {
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 800); }); });
     expect(result.current.idle).toBe(true);
     expect(result.current.dir).toBe('down');
+  });
+
+  it('круг 9, S1: «долгая пауза» (rest) наступает через 2,5 с, а не через 700 мс', async () => {
+    const { result } = renderHook(() => useScrollDirection());
+    await scrollTo(200);
+    expect(result.current.rest).toBe(false);
+    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 800); }); });
+    expect(result.current).toMatchObject({ idle: true, rest: false });
+    await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 1900); }); });
+    expect(result.current.rest).toBe(true);
   });
 });

@@ -89,7 +89,9 @@
   --fe-glass-l1-soft: rgba(255, 255, 255, 0.42);
   --fe-glass-l1-sheen: linear-gradient(130deg, rgba(255, 255, 255, 0.55), transparent 55%);
   --fe-glass-l2: rgba(255, 255, 255, 0.55);
-  --fe-pop-bg: rgba(255, 255, 255, 0.88);
+  /* Круг 9, S4: всплывающие списки и меню плотные (.97, как список языков): сквозь них не просвечивают пилюли и цифры страницы.
+     Раньше .88 при неработающем размытии (вложенный blur внутри панелей с backdrop-filter не видит страницу) читалось «прозрачным». */
+  --fe-pop-bg: rgba(255, 255, 255, 0.97);
   /* Готовые значения для background/box-shadow: слой L1 (без blur: для повторяющихся карточек) и тень L2. */
   --fe-l1-bg: var(--fe-glass-l1-sheen), var(--fe-glass-l1);
   --fe-l2-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
@@ -255,6 +257,8 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
   background: var(--fe-glass-l1-sheen), var(--fe-pop-bg);
   border: 0;
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+  /* Круг 9, S4: у Safari размытие работало только с префиксом, поэтому список оставался прозрачным без размытия. */
+  -webkit-backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 
@@ -319,7 +323,7 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
     --fe-glass-l1: rgba(255, 255, 255, 0.86);
     --fe-glass-l1-soft: rgba(255, 255, 255, 0.78);
     --fe-glass-l2: rgba(255, 255, 255, 0.9);
-    --fe-pop-bg: rgba(255, 255, 255, 0.96);
+    --fe-pop-bg: rgba(255, 255, 255, 0.98);
     --fe-glass: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(250, 252, 255, 0.84));
     --fe-glass-soft: linear-gradient(130deg, rgba(255, 255, 255, 0.84), rgba(248, 251, 255, 0.76));
     --fe-dark-glass:
@@ -409,15 +413,27 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
      --fe-shell-top     нижний край шапки от верха окна (лента + шапка); sticky-заголовки таблиц и панелей держат top: var(--fe-shell-top)
      --fe-page-top      с какой высоты начинается содержимое страницы (низ шапки + 16 px воздуха)
      --fe-dock-h        сколько занимает нижняя панель телефона сейчас (0, пока спрятана)
-     --fe-bottom-clear  чем плавающие кнопки страницы поднимаются над доком и плашкой cookie: bottom: calc(var(--fe-bottom-clear) + 8px) */
+     --fe-bottom-clear  чем плавающие кнопки страницы поднимаются над доком, плашкой «Результат» и плашкой cookie: bottom: calc(var(--fe-bottom-clear) + 8px)
+   Круг 9, зона A:
+     --fe-sticky-h        сколько места внизу занимает плашка «Результат» калькулятора сейчас (52px, пока видна; ставит lib/stickyLayer.js);
+                          пока она видна, на корне стоит html[data-fe-sticky], а нижняя панель телефона спрятана
+     --fe-sticky-reserve  постоянный запас под плашку на телефоне и планшете (64px; 0 от 1024 px): нижний отступ формы калькулятора берёт его
+                          через класс .fe-sticky-clear, чтобы последний бегунок можно было поднять выше плашки */
 :root {
   --fe-dock-h: 0px;
   --fe-dock-reserve: 0px;
   --fe-cookie-h: 0px;
+  --fe-sticky-h: 0px;
+  --fe-sticky-reserve: 0px;
   --fe-shell-top: calc(var(--fe-ticker-h, 40px) + var(--fe-header-h, 76px));
   --fe-page-top: calc(var(--fe-shell-top) + 16px);
-  --fe-bottom-clear: calc(var(--fe-dock-h) + var(--fe-cookie-h) + env(safe-area-inset-bottom, 0px));
+  --fe-bottom-clear: calc(var(--fe-dock-h) + var(--fe-cookie-h) + var(--fe-sticky-h) + env(safe-area-inset-bottom, 0px));
 }
+@media (max-width: 1023px) {
+  :root { --fe-sticky-reserve: 64px; }
+}
+/* Класс-хук для страниц с плашкой «Результат»: нижний отступ формы (последнее поле не остаётся под плашкой и панелью). */
+.fe-sticky-clear { padding-bottom: calc(var(--fe-sticky-reserve, 0px) + 16px); }
 
 /* ── Круг 8, S9: панели с таблицами и числами плотные ───────────────────────────────────────────────────────────────────────────
    Строки таблицы и крупные числа лежат на панели не прозрачнее .9: стеклянная F и пятна сцены под ней не режут текст. Правило по

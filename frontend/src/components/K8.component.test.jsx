@@ -92,6 +92,58 @@ describe('CalcStickyResult: результат липнет снизу', () => {
     expect(screen.queryByTestId('calc-sticky-result')).toBeNull();
   });
 
+  it('круг 9, S1: результат, ушедший ВЫШЕ окна, плашку не вызывает; ниже окна — вызывает и прячет панель (html[data-fe-sticky])', () => {
+    // Телефон: ширина окна меньше 1024 px (от 1024 плашка скрыта стилями и панель не трогается).
+    vi.stubGlobal('matchMedia', (query) => ({
+      matches: query === '(max-width: 1023px)', media: query, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {},
+    }));
+    setup();
+    const rootBounds = { top: 0, bottom: 800 };
+    act(() => observer.callback([{ isIntersecting: false, boundingClientRect: { top: -400 }, rootBounds }]));
+    expect(screen.queryByTestId('calc-sticky-result')).toBeNull();
+    expect(document.documentElement.dataset.feSticky).toBeUndefined();
+    act(() => observer.callback([{ isIntersecting: false, boundingClientRect: { top: 1200 }, rootBounds }]));
+    expect(screen.getByTestId('calc-sticky-result').textContent).toContain('К результату');
+    expect(document.documentElement.dataset.feSticky).toBe('on');
+    expect(document.documentElement.style.getPropertyValue('--fe-sticky-h')).toBe('52px');
+    act(() => observer.callback([{ isIntersecting: true, boundingClientRect: { top: 300 }, rootBounds }]));
+    expect(document.documentElement.dataset.feSticky).toBeUndefined();
+  });
+
+  it('круг 9, S1: пока поле ввода в фокусе, плашка спрятана, после ухода из поля возвращается', () => {
+    setup();
+    act(() => observer.callback([{ isIntersecting: false }]));
+    expect(screen.getByTestId('calc-sticky-result')).toBeTruthy();
+    const field = document.createElement('input');
+    field.type = 'text';
+    document.body.appendChild(field);
+    act(() => { field.focus(); });
+    expect(screen.queryByTestId('calc-sticky-result')).toBeNull();
+    act(() => { field.blur(); });
+    expect(screen.getByTestId('calc-sticky-result')).toBeTruthy();
+    field.remove();
+  });
+
+  it('круг 9, S1: бегунок в руках прячет плашку и возвращает её не сразу после отпускания', () => {
+    vi.useFakeTimers();
+    try {
+      setup();
+      act(() => observer.callback([{ isIntersecting: false }]));
+      const range = document.createElement('input');
+      range.type = 'range';
+      document.body.appendChild(range);
+      act(() => { fireEvent.pointerDown(range); });
+      expect(screen.queryByTestId('calc-sticky-result')).toBeNull();
+      act(() => { fireEvent.pointerUp(range); });
+      expect(screen.queryByTestId('calc-sticky-result')).toBeNull();
+      act(() => { vi.advanceTimersByTime(1000); });
+      expect(screen.getByTestId('calc-sticky-result')).toBeTruthy();
+      range.remove();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('по нажатию прокручивает к результату', () => {
     const { target } = setup({ label: 'Платёж' });
     act(() => observer.callback([{ isIntersecting: false }]));

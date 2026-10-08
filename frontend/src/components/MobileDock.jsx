@@ -7,6 +7,7 @@ import { FORECASTS_TO, OPEN_NAV_MENU_EVENT, WORLD_RATING_TO, resolveActiveNavId 
 import { comparePath } from '../lib/sitePaths';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
+import { useStickyActive } from '../lib/stickyLayer';
 import '../styles/k3-shell.css';
 
 const ITEMS = [
@@ -18,17 +19,20 @@ const ITEMS = [
 
 /**
  * Нижняя док-панель телефона: пять главных разделов под большим пальцем (светлое стекло L2, капсула 64 px по ширине содержимого, подписи графитом; круг 8).
- * Появляется после первой прокрутки, прячется, пока страница едет вниз, и возвращается при движении вверх или остановке.
+ * Появляется после первой прокрутки, прячется, пока страница едет вниз, и возвращается при движении вверх (или после долгой остановки,
+ * 2,5 с, но не над подвалом: там она закрывала бы ссылки). Круг 9, S1: короткая пауза панель больше не возвращает (раньше 700 мс:
+ * она выскакивала на каждом чтении), а пока на экране плашка «Результат» калькулятора, панель спрятана (html[data-fe-sticky]).
  * Только на телефоне (до 768 px, CSS); на /admin/* не показывается. Резерв места под ней задаёт `--fe-dock-h`
  * на корне документа (подвал и cookie-значок читают её), пока панель на экране.
  */
 export default function MobileDock() {
   const t = useT();
   const { pathname, hash } = useLocation();
-  const { deep, dir, idle } = useScrollDirection();
+  const { deep, dir, rest } = useScrollDirection();
+  const stickyShown = useStickyActive();
   const hidden = pathname.startsWith('/admin');
   const overFooter = useFooterTone().dock;
-  const visible = !hidden && deep && (dir === 'up' || idle);
+  const visible = !hidden && deep && !stickyShown && (dir === 'up' || (rest && !overFooter));
   const activeId = pathname === '/' && hash === '#countries' ? 'countries' : resolveActiveNavId(pathname);
 
   // --fe-dock-reserve: место под панелью, пока она смонтирована (main и подвал на телефоне добавляют его к нижнему отступу);
