@@ -46,11 +46,11 @@ import logging
 from datetime import date
 from typing import ClassVar
 
-import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
 
@@ -59,15 +59,23 @@ _UA = "ForecastEconomy/1.0 (+https://forecasteconomy.com)"
 
 
 def _fetch_exr_csv(currency: str) -> str:
+    """CSV ЕЦБ через общую ETL-сессию: прямой ход, затем HTTP/SOCKS-прокси ETL.
+
+    Раньше здесь был голый httpx без запасных ходов: если сеть сервера не пускала
+    к ЕЦБ напрямую, загрузка молча падала в `fetch_log`, а карточки EUR/USD, GBP/USD
+    и USD/CNY оставались на дате последней удачной выгрузки (стенд 08.10.2026
+    показывал «на 2 октября»). Курсы ЦБ РФ идут через ту же сессию.
+    """
     url = f"{_BASE_URL}/D.{currency}.EUR.SP00.A"
-    with httpx.Client(
-        timeout=60.0,
-        headers={"User-Agent": _UA},
-        follow_redirects=True,
-    ) as client:
-        response = client.get(url, params={"format": "csvdata"})
+    session = create_session()
+    try:
+        response = session.get(
+            url, params={"format": "csvdata"}, headers={"User-Agent": _UA}, timeout=60,
+        )
         response.raise_for_status()
         return response.text
+    finally:
+        session.close()
 
 
 def _parse_exr_csv(text: str, *, backfill_from: date | None = None) -> list[tuple[date, float]]:

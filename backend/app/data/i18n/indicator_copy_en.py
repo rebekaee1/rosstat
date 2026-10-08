@@ -71,6 +71,18 @@ INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
         "methodology": "Official CNY/RUB rate set daily by the Bank of Russia from foreign-exchange market outcomes. Each point is the rate for that date in rubles per yuan. Daily values and averages over week, month, quarter and year are computed from the same series for trend comparison.",
         "unit": "RUB",
     },
+    "try-rub": {
+        "name": "TRY/RUB exchange rate",
+        "description": "Official Turkish lira to Russian ruble exchange rate set by the Bank of Russia. Quoted as rubles per one lira and updated every business day.",
+        "methodology": "Official TRY/RUB rate set daily by the Bank of Russia from foreign-exchange market outcomes. The Bank of Russia publishes the rate for ten lira; on this site it is converted to rubles per one lira. Each point is the rate for that date. Daily values and averages over week, month, quarter and year are computed from the same series for trend comparison.",
+        "unit": "RUB",
+    },
+    "kzt-rub": {
+        "name": "KZT/RUB exchange rate",
+        "description": "Official Kazakhstani tenge to Russian ruble exchange rate set by the Bank of Russia. Quoted as rubles per one tenge and updated every business day.",
+        "methodology": "Official KZT/RUB rate set daily by the Bank of Russia from foreign-exchange market outcomes. The Bank of Russia publishes the rate for one hundred tenge; on this site it is converted to rubles per one tenge and stored to four decimal places. Each point is the rate for that date. Daily values and averages over week, month, quarter and year are computed from the same series for trend comparison.",
+        "unit": "RUB",
+    },
     "ruonia": {
         "name": "RUONIA",
         "description": "RUONIA (Ruble Overnight Index Average) is the indicative volume-weighted average rate on overnight ruble interbank loans and deposits.",

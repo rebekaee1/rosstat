@@ -46,13 +46,16 @@ def test_country_html_has_key_figures_text_ru(world_seo_client):  # noqa: F811
         "Безработица</strong></a>: <strong>4,7~% экономически активного населения</strong>, "
         "июнь 2025. Год назад: 3,5~%."
     ) in section
-    # Годовой ВВП в «трлн €» с пометкой про инфляцию; 3,25 округляется вверх, как в приложении.
+    # ВВП в долларах (оценка МВФ) идёт вторым, до безработицы: порядок цены, ВВП, безработица, население
+    # (круг 08.10.2026; ВВП в постоянных ценах евро ушёл за первые четыре карточки).
     assert _nb(
-        "ВВП, год</strong></a>: <strong>3,3~трлн €</strong>, 2025, с поправкой на инфляцию. "
-        "Год назад: 3,2~трлн €."
+        "ВВП</strong></a>: <strong>5,0~трлн $</strong>, 2026. Год назад: 4,7~трлн $."
     ) in section
+    order = [section.index(word) for word in ("Инфляция", "ВВП", "Безработица", "Население")]
+    assert order == sorted(order)
+    assert "ВВП, год" not in section
     # Ссылки ведут на страницы показателей страны.
-    assert 'href="/germany/indicator/de-nama_10_gdp-b1gq-clv15-meur"' in section
+    assert 'href="/germany/indicator/de-weo-ngdpd"' in section
     # Правила репозитория: без средней точки в серверном тексте.
     assert MIDDLE_DOT not in section
     # Секция идёт раньше картинки и ключевой таблицы: поисковик видит её сразу.
@@ -65,7 +68,7 @@ def test_country_html_key_figures_en(world_seo_client):  # noqa: F811
     assert "<h2>Key figures</h2>" in section
     assert _nb("Inflation</strong></a>: <strong>11.4~% year over year</strong>, June 2025.") in section
     assert _nb("A year ago: 3.5~%.") in section
-    assert _nb("3.3~trillion €</strong>, 2025, adjusted for inflation.") in section
+    assert _nb("5.0~trillion $</strong>, 2026. A year ago: 4.7~trillion $.") in section
     assert not re.search(r"[А-Яа-яЁё]", section)
 
 
@@ -112,7 +115,7 @@ def test_country_html_uses_redis_catalog_when_cached(world_seo_client, monkeypat
     real_cache_get = cache_mod.cache_get
 
     async def _cache_get(key, *args, **kwargs):
-        if ":country:v18:germany:" in str(key):
+        if ":country:v19:germany:" in str(key):
             return catalog
         return await real_cache_get(key, *args, **kwargs)
 

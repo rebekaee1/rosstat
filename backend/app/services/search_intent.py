@@ -34,6 +34,13 @@ CONCEPTS = (
     (("золото", "золота", "gold"), ("gold", "золот")),
     (("курс доллара к рублю", "курс доллара", "доллар", "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
     (("курс юаня к рублю", "курс юаня", "юань", "юаня", "cny rub", "cnyrub"), ("cny-rub", "cny rub", "юан")),
+    (("курс турецкой лиры к рублю", "турецкой лиры к рублю", "курс лиры к рублю", "лиры к рублю", "лира к рублю", "курс лиры",
+        "курс турецкой лиры", "турецкая лира", "турецкой лиры", "турецких лир", "лира", "лиры", "лиру", "лире", "лирой",
+        "turkish lira to ruble", "turkish lira to rouble", "lira to ruble", "lira to rouble", "try rub", "tryrub", "turkish lira", "lira"),
+        ("try-rub", "try rub", "лир")),
+    (("курс казахстанского тенге к рублю", "казахстанского тенге к рублю", "курс тенге к рублю", "тенге к рублю", "курс тенге",
+        "курс казахстанского тенге", "казахстанский тенге", "тенге", "kazakhstani tenge to ruble", "tenge to ruble", "tenge to rouble",
+        "kzt rub", "kztrub", "kzt", "tenge", "kazakhstani tenge"), ("kzt-rub", "kzt rub", "тенге")),
     (("курс доллара к иене", "usd jpy", "usdjpy"), ("usd-jpy", "usd jpy", "dollar yen")),
     (("курс евро к доллару", "eur usd", "eurusd"), ("eur-usd", "eur usd")),
     (("индекс доллара", "dollar index", "dxy"), ("usd-index", "dollar index", "индекс доллара")),
@@ -87,7 +94,7 @@ _CONTROL_WORDS = frozenset(token for aliases, alternatives in CONCEPTS
         and not (alternatives[0] == "search-unit-chained-prices" and token in ("prices", "цены", "ценах")))
 _CURRENCY_KEYS = frozenset(("search-unit-usd", "search-unit-cad", "search-unit-aud", "search-unit-gbp",
     "search-unit-cny", "search-unit-eur", "search-unit-jpy", "search-unit-rub"))
-_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "usd-jpy", "eur-usd", "eur-rub"))
+_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "try-rub", "kzt-rub", "usd-jpy", "eur-usd", "eur-rub"))
 _DENOMINATOR_COUNTS = {"1000": 1000, "1 000": 1000, "thousand": 1000, "one thousand": 1000,
     "тысячу": 1000, "тысячи": 1000, "10000": 10000, "10 000": 10000, "ten thousand": 10000,
     "десять тысяч": 10000, "100000": 100000, "100 000": 100000, "hundred thousand": 100000,
@@ -813,7 +820,11 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         candidate = normalize(query.translate(table))
         if candidate != query:
             parsed = parse_intent(candidate, geometry, allow_layout=False)
-            if parsed.countries or parsed.regions or any(term in CONCEPTS_ALTERNATIVES for term in parsed.terms):
+            # Раскладку меняем только когда распознан КАЖДЫЙ перевёрнутый запрос: страна, регион и
+            # известные понятия, без остатка. Иначе мусор («геккон штадфешщт» → «utrrjy inflation»)
+            # попадал в строку «Ищем также» вместе с одним случайно понятным словом.
+            recognised = (parsed.countries or parsed.regions or parsed.terms) and not parsed.error
+            if recognised and all(term in CONCEPTS_ALTERNATIVES for term in parsed.terms):
                 return SearchIntent(result.query, parsed.content, parsed.terms, parsed.countries,
                     parsed.regions, parsed.year, parsed.month, parsed.error, parsed.corrected or candidate, parsed.literal)
     return result

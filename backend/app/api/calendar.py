@@ -162,25 +162,39 @@ async def upcoming_events(
     db: AsyncSession = Depends(get_db),
     limit: int = Query(10, ge=1, le=50),
     importance_min: int = Query(1, ge=1, le=3),
+    indicator_code: Optional[str] = Query(
+        None, pattern=r"^[a-z0-9][a-z0-9-]{0,79}$",
+        description="Только события этого показателя (например key-rate: «Следующее заседание»)",
+    ),
+    event_type: Optional[str] = Query(None, description="Comma-separated event types, e.g. rate_decision"),
 ):
     cache_key = (
         f"fe:calendar:upcoming:sourcebound-v2:{get_locale()}:{limit}:{importance_min}"
+        + (f":{indicator_code}" if indicator_code else "")
+        + (f":{event_type}" if event_type else "")
     )
     cached = await cache_get(cache_key)
     if cached:
         return cached
 
     today = today_msk()
+    conditions = [
+        EconomicEvent.scheduled_date >= today,
+        EconomicEvent.importance >= importance_min,
+        EconomicEvent.actual_value.is_(None),
+        EconomicEvent.status != "released",
+        *_public_calendar_conditions(),
+    ]
+    if indicator_code:
+        conditions.append(Indicator.code == indicator_code)
+    if event_type:
+        types = [t.strip() for t in event_type.split(",") if t.strip()]
+        if types:
+            conditions.append(EconomicEvent.event_type.in_(types))
     stmt = (
         select(EconomicEvent, Indicator)
         .outerjoin(Indicator, EconomicEvent.indicator_id == Indicator.id)
-        .where(
-            EconomicEvent.scheduled_date >= today,
-            EconomicEvent.importance >= importance_min,
-            EconomicEvent.actual_value.is_(None),
-            EconomicEvent.status != "released",
-            *_public_calendar_conditions(),
-        )
+        .where(*conditions)
         .order_by(EconomicEvent.scheduled_date, EconomicEvent.importance.desc())
         .limit(limit)
     )

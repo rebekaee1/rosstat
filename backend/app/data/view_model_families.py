@@ -717,6 +717,8 @@ _FAMILY_DEFS: list[FamilyDef] = [
     FamilyDef("usd-rub", "Курс доллара США", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("eur-rub", "Курс евро", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("cny-rub", "Курс юаня", "T1", "руб.", "Валюты", "daily"),
+    FamilyDef("try-rub", "Курс турецкой лиры", "T1", "руб.", "Валюты", "daily"),
+    FamilyDef("kzt-rub", "Курс тенге", "T1", "руб.", "Валюты", "daily"),
     FamilyDef("brent", "Нефть Brent", "T1", "USD/баррель", "Товарные рынки", "daily"),
     FamilyDef("gold-price", "Цена золота (ЦБ)", "T1", "руб./г", "Товарные рынки", "daily"),
     # Месячные бенчмарки Pink Sheet Всемирного банка (не дневные Yahoo-фьючерсы).

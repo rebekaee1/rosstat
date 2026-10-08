@@ -24,6 +24,7 @@ from app.data.world_concept_national import national_codes_for_concept
 from app.data.world_concepts import concept_for_indicator, concept_public_unit
 from app.data.eurostat_listing import normalize_frequency
 from app.data.eurostat_titles_ru import listing_category_ru
+from app.data.world_indicator_titles_ru import title_override_for_code
 from app.models import (
     Indicator, IndicatorData, Region, RegionDataPoint, RegionIndicator,
     RegionMonthlyPoint, SubnationalDataPoint, SubnationalIndicator,
@@ -49,6 +50,9 @@ _INTENT_CONCEPTS = {
     "cpi": "hicp-index", "unemployment": "unemployment-rate", "population": "population",
     "gdp-per-capita": "gdp-per-capita-usd", "gdp": "gdp-volume-quarterly",
 }
+_INFLATION_WORD = re.compile(r"инфляц|inflation")
+# Запас над индексом цен (у индекса +20 за точное совпадение кода): годовая инфляция первая.
+_ANNUAL_INFLATION_LEAD = 50
 _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
 }
@@ -181,8 +185,30 @@ def _unit_metadata(*units, native_currency: str | None = None) -> str:
     return facets
 
 
+# Запрос «только страна» («Turkey», «Турция»): после самой страны человеку нужны её главные
+# цифры, а не ряды в порядке кода (рождаемость по возрасту матери). Четыре понятия, как на
+# странице страны: цены, ВВП, безработица, население.
+_COUNTRY_HEADLINE_CONCEPTS = ("hicp-index", "gdp-usd", "unemployment-rate", "population")
+_COUNTRY_HEADLINE_CODE_PATTERNS = (
+    "%-weo-ngdpd", "%-weo-lur", "%-weo-lp", "%-weo-pcpipch",
+    "%-prc_hicp_minr-total-%", "%-prc_hicp_minr-cp00-%", "%-prc_hicp_midx-total-%", "%-prc_hicp_midx-cp00-%",
+    "%-une_rt_m-total-sa-t-pc-act", "%-demo_pjan-total-t-nr",
+)
+
+
+def _country_only(intent: SearchIntent) -> bool:
+    return not intent.terms and bool(intent.countries) and not intent.regions
+
+
 def _world_preference(intent: SearchIntent):
     """Catalogue headline identities, not a popularity prior."""
+    if _country_only(intent):
+        clauses = [WorldIndicator.code.like(pattern) for pattern in _COUNTRY_HEADLINE_CODE_PATTERNS]
+        for slug in _COUNTRY_HEADLINE_CONCEPTS:
+            codes = national_codes_for_concept(slug)
+            if codes:
+                clauses.append(WorldIndicator.code.in_(codes))
+        return or_(*clauses)
     concept = _intent_concept(intent)
     clauses = []
     if concept:
@@ -195,7 +221,23 @@ def _world_preference(intent: SearchIntent):
     return or_(*clauses) if clauses else literal(False)
 
 
+def _country_headline_bonus(row) -> int:
+    """Главный ряд страны для запроса «только страна»: национальный ряд, затем официальный Евростата, затем оценка МВФ."""
+    for slug in _COUNTRY_HEADLINE_CONCEPTS:
+        if row.code in national_codes_for_concept(slug):
+            return 160
+    try:
+        resolved = concept_for_indicator(row)
+    except ValueError:
+        return 0
+    if resolved is None or resolved.slug not in _COUNTRY_HEADLINE_CONCEPTS:
+        return 0
+    return 130 if str(getattr(row, "provider", "") or "").lower() == "imf" else 140
+
+
 def _world_bonus(row, intent: SearchIntent) -> int:
+    if _country_only(intent):
+        return _country_headline_bonus(row)
     concept = _intent_concept(intent)
     if not concept:
         return 0
@@ -621,7 +663,11 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
     for row in rows:
         market_country = None
         if intent.countries and "russia" not in intent.countries:
-            if not any(row.code == base or row.code.startswith(base + "-") for base in market_bases):
+            # Запрос «только страна» не должен выкладывать все скрытые режимы
+            # рыночного ряда (средние по неделям, годовые изменения): достаточно
+            # самого ряда. С уточнением («Турция лира среднее за месяц») режимы нужны.
+            sibling_modes = bool(intent.terms)
+            if not any(row.code == base or (sibling_modes and row.code.startswith(base + "-")) for base in market_bases):
                 # A registered global commodity may carry its origin in the
                 # actual native title. Country membership cannot come from SEO,
                 # storage in Russia, a code prefix or arbitrary category text.
@@ -651,8 +697,18 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
         if len(content_terms) == 1:
             headline = _RUSSIA_HEADLINES.get(content_terms[0][0])
             parent = urlsplit(russia_search_path(row.code, intent)).path.rsplit("/", 1)[-1]
-            if headline and (row.code == headline or russia_family_base(row.code) == headline or parent == headline):
+            family_headline = bool(headline and (row.code == headline or russia_family_base(row.code) == headline or parent == headline))
+            if family_headline:
                 score += 180
+            # «Инфляция» читают как рост цен за год (6,34 %), а не как индекс к прошлому
+            # месяцу (99,92 %): годовой ряд поднимается выше индекса. Запрос «ИПЦ» или
+            # «индекс потребительских цен» просит именно индекс, там порядок прежний.
+            if (content_terms[0][0] == "cpi" and row.code == "cpi-yoy"
+                    and (_INFLATION_WORD.search(intent.query) or _INFLATION_WORD.search(intent.content))):
+                score += _ANNUAL_INFLATION_LEAD + (0 if family_headline else 180)
+        if market_country and _country_only(intent) and row.code in market_bases:
+            # «Турция»: курс лиры (официальный курс ЦБ) идёт вместе с главными цифрами страны.
+            score += 120
         base = russia_search_path(row.code, intent)
         if intent.month is not None and urlsplit(base).query:
             continue
@@ -671,7 +727,14 @@ async def _russia(db: AsyncSession, intent: SearchIntent, locale: str) -> list[d
             origin = next((country for country in origin_countries if country.slug == market_country), None)
             country_name = (origin.name_en if locale == "en" else origin.name_ru) if origin else (("United States" if locale == "en" else "США") if market_issuer == "united-states" else ("Global markets" if locale == "en" else "Мировой рынок"))
         else:
-            country_name = ("United States" if locale == "en" else "США") if market_country == "united-states" else ("Russia" if locale == "en" else "Россия")
+            quoted_origin = next((country for country in origin_countries if country.slug == market_country), None)
+            if market_country == "united-states":
+                country_name = "United States" if locale == "en" else "США"
+            elif quoted_origin is not None:
+                # Официальный курс валюты страны к рублю (Турция → лира): страна ряда названа в запросе.
+                country_name = quoted_origin.name_en if locale == "en" else quoted_origin.name_ru
+            else:
+                country_name = "Russia" if locale == "en" else "Россия"
         db.info.setdefault("fe_search_native_units", {})[f"ru:{row.code}"] = (row.unit, en["unit"])
         output.append({"key": f"ru:{row.code}", "kind": "russia", "code": row.code,
             "name": (en if locale == "en" else ru)["name"], "name_ru": ru["name"], "name_en": en["name"],
@@ -758,7 +821,7 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         path, navigation = _period_path(base, intent, world=True)
         db.info.setdefault("fe_search_native_units", {})[f"world:{country.slug}:{row.code}"] = (row.unit, row.unit_ru)
         output.append({"key": f"world:{country.slug}:{row.code}", "kind": "world", "code": row.code,
-            "name": row.name_en or row.name_ru if locale == "en" else row.name_ru,
+            "name": row.name_en or row.name_ru if locale == "en" else (title_override_for_code(row.code) or row.name_ru),
             "name_ru": row.name_ru, "name_en": row.name_en,
             "country_slug": country.slug, "country_name": country.name_en if locale == "en" else country.name_ru,
             "category": localize_category_name(listing_category_ru(row.dataset_id, row.category_ru, provider=row.provider), locale=locale),
@@ -1038,6 +1101,7 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
         "usd-jpy": (frozenset(("united-states", "japan")), "japan"),
         "usd-rub": (frozenset(("united-states", "russia")), "russia"),
         "cny-rub": (frozenset(("china", "russia")), "russia"),
+        "try-rub": (frozenset(("turkey", "russia")), "russia"),
     }
     for term in intent.terms:
         quoted = fx_quoted_countries.get(term[0])

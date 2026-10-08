@@ -395,7 +395,7 @@ async def _world_compare_for_russia(db: AsyncSession, code: str) -> dict | None:
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
     _validate_code(code)
-    detail_key = await versioned_key(code, f"detail:v2:{get_locale()}")
+    detail_key = await versioned_key(code, f"detail:v3:{get_locale()}")
     cached = await cache_get(detail_key)
     if cached:
         return cached
@@ -435,6 +435,12 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         hero_value, hero_unit, hero_label, hero_change = await _hero_yoy_pct(
             db, indicator.id, indicator.frequency, current_val,
         )
+    if hero_value is None and recent:
+        # Базовые ряды цен: годовое изменение из derived-близнеца, как в каталоге
+        # (карточка «Сейчас» на странице ИПЦ читала индекс 99,92 вместо 6,34 % за год).
+        sibling = (await _yoy_sibling_heroes(db, [indicator], {indicator.id: recent})).get(indicator.id)
+        if sibling:
+            hero_value, hero_unit, hero_label, hero_change = sibling
 
     fields = public_indicator_seo(
         indicator.code,
