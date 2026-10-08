@@ -3,7 +3,7 @@
 import { useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Area, CartesianGrid, ComposedChart, Line, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area, CartesianGrid, ComposedChart, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts';
 import { ArrowRightLeft, Info, Search, X } from 'lucide-react';
 import Button from './Button';
@@ -14,6 +14,7 @@ import { SkeletonBox } from './Skeleton';
 import { useIndicatorData } from '../lib/hooks';
 import { cn, formatDate, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
+import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import { CHART_THEME, GRID_PROPS, axisTick, niceAxis } from '../lib/chartTheme';
 import { useChartGlassIds, useElementWidth } from '../lib/chartHooks';
@@ -382,7 +383,7 @@ function YearChart({ pair }) {
         </div>
         {delta && !delta.flat && (
           <p className="fe-z8-chart__delta">
-            <DeltaBadge delta={pct}>{delta.text}</DeltaBadge>
+            <DeltaBadge delta={pct} polarity={indicatorPolarity(pair.code)}>{delta.text}</DeltaBadge>
             <span>{t('z8.cur.perYear')}</span>
           </p>
         )}
@@ -417,8 +418,8 @@ function YearChart({ pair }) {
               className="k4-ribbon"
               type="monotone"
               dataKey="value"
-              stroke={`url(#${glass.ribbon})`}
-              strokeWidth={3}
+              stroke={CHART_THEME.gold}
+              strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
               fill={`url(#${glass.area})`}
@@ -426,20 +427,6 @@ function YearChart({ pair }) {
               activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive
               animationDuration={900}
-            />
-            {/* Белый блик-штрих 1 px поверх ленты (css k4-gloss). */}
-            <Line
-              className="k4-gloss"
-              type="monotone"
-              dataKey="value"
-              stroke="rgba(255,255,255,0.72)"
-              strokeWidth={1}
-              strokeLinecap="round"
-              dot={false}
-              activeDot={false}
-              isAnimationActive={false}
-              legendType="none"
-              tooltipType="none"
             />
             <ReferenceDot
               x={series[lastIndex].date}
@@ -475,7 +462,7 @@ function MarketBoard({ market }) {
               <Link to={russiaIndicatorPath(MARKET_LINKS[code])} className="fe-z8-board__row fe-press">
                 <span className="fe-z8-board__name">{t(MARKET_LABEL_KEYS[code])}</span>
                 {showPct && (
-                  <DeltaBadge delta={pct} className="fe-z8-board__delta">
+                  <DeltaBadge delta={pct} polarity="market" className="fe-z8-board__delta">
                     {formatDeltaWithUnit(pct, '%', { pct: true, locale, digits: 1 }).text}
                   </DeltaBadge>
                 )}
@@ -518,7 +505,7 @@ function CurrencyRow({ ind, index }) {
         <h3 className="fe-trow__title">{title}</h3>
         <span className="fe-trow__meta">
           {delta && !delta.flat && !stale && (
-            <DeltaBadge delta={pct}>{delta.text}</DeltaBadge>
+            <DeltaBadge delta={pct} polarity={indicatorPolarity(ind.name, ind.name_en, ind.code)}>{delta.text}</DeltaBadge>
           )}
           {basis && (
             <span className={cn('fe-trow__date', stale && 'is-stale')}>

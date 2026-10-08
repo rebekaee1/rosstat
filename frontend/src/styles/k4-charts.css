@@ -2,7 +2,7 @@
  * K4. Графики, карты и планета в хрустале (раунд 3 «Хрусталь без границ»).
  *
  * Что здесь:
- *   1. Лента графика: свечение под золотой и сапфировой линией, блик-штрих, линия прогноза, луч «сейчас».
+ *   1. Линия графика: один сплошной цвет, без свечения и блика (круг 10, Г1); линия прогноза; граница «сейчас».
  *   2. Шарик последней точки и стеклянная плашка со значением (пульс три раза).
  *   3. Подсказка графика: стекло L2 без рамки с золотой вертикалью.
  *   4. Образцы цвета в легенде графика (лента, сапфир, прогноз).
@@ -47,38 +47,35 @@
 
 /* ===== 0b. Общая «стеклянная лента» одним классом (круг 4) ===== */
 /* Для графиков Recharts других зон (валюты, сравнение, калькуляторы): достаточно повесить .k4-glass на обёртку графика.
-   Градиенты лежат в скрытом SVG, который создаёт lib/glassChartDefs.js (его подключает Sparkline.jsx и IndicatorChart.jsx),
-   правила CSS подменяют цвет и толщину линии, добавляют свечение. Блик-штрих и сапфир второго ряда даёт только
-   полноценный вариант (IndicatorChart, ChartGlassDefs). */
+   Цвета лежат в скрытом SVG, который создаёт lib/glassChartDefs.js (его подключает Sparkline.jsx и IndicatorChart.jsx),
+   правила CSS подменяют цвет и толщину линии. Круг 10 (Г1): цвет один на всю длину, без свечения. Раньше сюда же попадал
+   блик-штрих (.k4-gloss) и становился второй лентой рядом с первой: отсюда «двойная линия». */
 .k4-glass .recharts-area-curve,
 .k4-glass .recharts-line-curve {
   stroke: url(#fe-glass-ribbon);
-  stroke-width: 3px;
+  stroke-width: 2.5px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 5px 8px rgba(44, 74, 138, 0.22));
+  filter: none;
 }
-/* Второй и следующие ряды (Line после первого) остаются своего цвета, только толще и со свечением. */
-.k4-glass .recharts-line ~ .recharts-line .recharts-line-curve {
-  stroke: url(#fe-glass-sapphire);
-  filter: drop-shadow(0 6px 10px rgba(30, 42, 74, 0.3));
-}
+.k4-glass .recharts-line ~ .recharts-line .recharts-line-curve { stroke: url(#fe-glass-sapphire); }
 .k4-glass .recharts-area-area { fill: url(#fe-glass-area); }
 
-/* ===== 1. Лента ===== */
+/* ===== 1. Линия ===== */
 /* Рисование слева направо 900 мс (механизм .fe-chart-draw из indicator-russia.css; здесь только длительность). */
 .fe-chart-plot.z4-plot.fe-chart-draw { animation-duration: 0.9s; animation-delay: 0.06s; }
 
-/* Свечение под лентой: мягкая тёплая тень, не кольцо. Фильтр статичный. */
-.k4-ribbon .recharts-area-curve, .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(44, 74, 138, 0.22)); }
-.k4-ribbon--sapphire .recharts-area-curve, .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 6px 10px rgba(30, 42, 74, 0.3)); }
-.k4-ribbon--plain .recharts-area-curve, .k4-ribbon--plain .recharts-line-curve { filter: drop-shadow(0 5px 8px rgba(32, 42, 60, 0.18)); }
-/* Блик-штрих: белая линия 1 px поверх ленты, на 1 px выше. */
-.k4-gloss { transform: translateY(-1px); pointer-events: none; }
-/* Прогноз: линия того же ряда, прозрачность тает вдоль (градиент в ChartGlassDefs). */
-.k4-forecast .recharts-area-curve, .k4-forecast .recharts-line-curve { filter: drop-shadow(0 6px 10px rgba(30, 58, 110, 0.2)); }
-/* Луч «сейчас»: размытое свечение рядом с тонкой линией. */
-.k4-beam__glow { filter: blur(4px); }
+/* Круг 10 (Г1): под линией нет смещённой размытой тени (она читалась как вторая линия ниже первой), а блик-штрих
+   (.k4-gloss, белая линия рядом с основной) спрятан везде, в том числе на странице сравнения, где его рисует ComparePage.jsx. */
+.k4-ribbon .recharts-area-curve, .k4-ribbon .recharts-line-curve,
+.k4-ribbon--sapphire .recharts-area-curve, .k4-ribbon--sapphire .recharts-line-curve,
+.k4-ribbon--plain .recharts-area-curve, .k4-ribbon--plain .recharts-line-curve,
+.k4-forecast .recharts-area-curve, .k4-forecast .recharts-line-curve { filter: none; }
+/* Страница сравнения (z7-compare.css, k5-pages.css) вешает на ленты свои тени: перебиваем их по специфичности. */
+:root:root:root .fe-compare-plot .k4-ribbon .recharts-line-curve,
+:root:root:root .fe-compare-plot .k4-ribbon--sapphire .recharts-line-curve,
+:root:root:root .fe-compare-plot .k4-ribbon--plain .recharts-line-curve { filter: none; }
+.k4-gloss { display: none; }
 
 /* ===== 2. Последняя точка ===== */
 .k4-lastpoint__halo {
@@ -135,15 +132,10 @@
   height: 3px;
   border-radius: 2px;
 }
-.k4-swatch--ribbon {
-  background: linear-gradient(90deg, #9DB6DD, #4F78B8 52%, #1E3A6E);
-  box-shadow: 0 3px 6px -2px rgba(44, 74, 138, 0.3);
-}
-.k4-swatch--sapphire {
-  background: linear-gradient(90deg, #8A96AD, #1E2638);
-  box-shadow: 0 3px 6px -2px rgba(30, 38, 56, 0.4);
-}
-.k4-swatch--forecast { background: linear-gradient(90deg, #B08A3E, rgba(176, 138, 62, 0.3)); }
+/* Образцы того же цвета, что и линия на графике (круг 10, Г1: без градиента). */
+.k4-swatch--ribbon { background: #2C4A8A; }
+.k4-swatch--sapphire { background: #46526B; }
+.k4-swatch--forecast { background: #B08A3E; }
 
 /* Легенда графиков калькуляторов (components/ChartTouchHint.jsx, стили w5-tools.css): образец — лента, без пунктира. */
 .w5-legend .w5-legend__swatch {
@@ -157,15 +149,16 @@
 }
 
 /* ===== 5. Спарклайны карточек (поверх components/Sparkline.jsx) ===== */
-/* Лента 2,4 px: свойство CSS сильнее атрибута stroke-width в SVG, поэтому правим здесь, не трогая компонент. */
+/* Линия 2,2 px: свойство CSS сильнее атрибута stroke-width в SVG, поэтому правим здесь, не трогая компонент.
+   Круг 10 (Г1): без тени и без разных оттенков по длине. */
 .sparkline-svg path[fill='none'] {
-  stroke-width: 2.4px;
-  filter: drop-shadow(0 3px 4px rgba(44, 74, 138, 0.2));
+  stroke-width: 2.2px;
+  filter: none;
 }
-/* Золотая заливка к нулю и золотая лента по длине: поверх цветов компонента (цвет тренда остаётся у бусины на конце). */
-.sparkline-svg linearGradient:nth-of-type(1) stop:first-child { stop-color: #9DB6DD; stop-opacity: 0.38; }
-.sparkline-svg linearGradient:nth-of-type(1) stop:last-child { stop-color: #9DB6DD; stop-opacity: 0; }
-.sparkline-svg linearGradient:nth-of-type(2) stop:first-child { stop-color: #9DB6DD; stop-opacity: 0.6; }
+/* Линия и заливка под ней одного цвета (поверх цветов компонента; цвет тренда остаётся у точки на конце). */
+.sparkline-svg linearGradient:nth-of-type(1) stop:first-child { stop-color: #2C4A8A; stop-opacity: 0.22; }
+.sparkline-svg linearGradient:nth-of-type(1) stop:last-child { stop-color: #2C4A8A; stop-opacity: 0; }
+.sparkline-svg linearGradient:nth-of-type(2) stop:first-child { stop-color: #2C4A8A; stop-opacity: 1; }
 .sparkline-svg linearGradient:nth-of-type(2) stop:last-child { stop-color: #2C4A8A; stop-opacity: 1; }
 /* Точка на конце: плоская, без тени (круг 6: никаких бусин и камней). */
 .sparkline-svg circle:last-of-type { filter: none; }

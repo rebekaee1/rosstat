@@ -18,8 +18,10 @@ describe('glassChartDefs', () => {
     expect(svg.getAttribute('width')).toBe('0');
   });
 
-  it('разметка берёт цвета из темы: светлое золото первым, тёмное золото последним', () => {
+  it('разметка берёт цвета из темы: линия и заливка одного цвета, без светлого-тёмного градиента', () => {
     const markup = glassDefsMarkup();
-    expect(markup.indexOf('#9DB6DD')).toBeLessThan(markup.indexOf('#1E3A6E'));
+    expect(markup).toContain('#2C4A8A');
+    expect(markup).not.toContain('#9DB6DD');
+    expect(markup).not.toContain('#1E3A6E');
   });
 });

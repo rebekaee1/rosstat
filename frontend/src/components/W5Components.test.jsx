@@ -116,12 +116,15 @@ describe('PasswordField', () => {
 });
 
 describe('embedChangeColor', () => {
-  it('рост инфляции или безработицы не зелёный, неизвестный смысл нейтрален', () => {
+  it('рост инфляции или безработицы не зелёный, неизвестный смысл нейтрален, у котировок цвет по знаку', () => {
     const colors = THEME_COLORS.light;
     expect(embedChangeColor(0.5, 'light', colors, 'Инфляция')).toBe('#b91c1c');
     expect(embedChangeColor(-0.5, 'light', colors, 'Уровень безработицы')).toBe('#15803d');
     expect(embedChangeColor(1.2, 'light', colors, 'ВВП')).toBe('#15803d');
-    expect(embedChangeColor(1.2, 'light', colors, 'Золото')).toBe(colors.textSecondary);
+    expect(embedChangeColor(1.2, 'light', colors, 'Золото')).toBe('#15803d');
+    expect(embedChangeColor(-2.8, 'light', colors, 'Биткоин (BTC/USD)')).toBe('#b91c1c');
+    expect(embedChangeColor(1.2, 'light', colors, 'Население')).toBe('#15803d');
+    expect(embedChangeColor(1.2, 'light', colors, 'Число отделений')).toBe(colors.textSecondary);
     expect(embedChangeColor(0, 'light', colors, 'ВВП')).toBe(colors.textSecondary);
   });
 });

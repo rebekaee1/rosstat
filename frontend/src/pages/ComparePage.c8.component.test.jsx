@@ -4,7 +4,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import ComparePage from './ComparePage';
 import { renderPage, mockApiGet } from '../test/renderPage';
-import { COMPARE_COLORS, mixWithWhite, ribbonStopsFor } from '../lib/chartTheme';
+import { COMPARE_COLORS, ribbonStopsFor } from '../lib/chartTheme';
 
 vi.mock('../lib/track', async (importOriginal) => {
   const actual = await importOriginal();
@@ -68,11 +68,11 @@ describe('палитра сравнения', () => {
     expect(COMPARE_COLORS.slice(0, 2).every((c) => !/^#(E|D|C|B|A)/i.test(c))).toBe(true);
   });
 
-  it('лента строится из цвета ряда и у правого конца равна ему', () => {
+  it('лента строится из цвета ряда и одного цвета по всей длине (круг 10, Г1: без «двойной линии»)', () => {
     COMPARE_COLORS.slice(0, 2).forEach((color) => {
       const stops = ribbonStopsFor(color);
       expect(stops[stops.length - 1].color).toBe(color);
-      expect(stops[0].color).toBe(mixWithWhite(color, 0.42));
+      expect(stops[0].color).toBe(color);
     });
   });
 });

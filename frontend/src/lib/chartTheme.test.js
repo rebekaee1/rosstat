@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_AREA, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, RIBBON_STOPS,
+  CHART_AREA, CHART_AREA_COLOR, CHART_HEIGHTS, CHART_LINE, CHART_MOTION, CHART_THEME, GRID_PROPS, RIBBON_STOPS,
   SAPPHIRE_STOPS, TOOLTIP_STYLES,
   areaGradientStops, axisSampleValues, axisTick, axisWidthForLabels, chartHeightForWidth, lastPointTag, niceAxis,
 } from './chartTheme';
@@ -57,10 +57,11 @@ describe('chartTheme', () => {
     expect(alpha).toBeLessThanOrEqual(0.035);
   });
 
-  it('лента: градиент золото-светлое → золото → тёмное, заливка 35 % → 0, второй ряд сапфир', () => {
-    expect(RIBBON_STOPS.map((s) => s.color)).toEqual(['#9DB6DD', '#4F78B8', '#1E3A6E']);
-    expect(SAPPHIRE_STOPS.map((s) => s.color)).toEqual(['#8A96AD', '#1E2638']);
-    expect(CHART_AREA.top).toBe(0.16);
+  it('лента: один цвет по всей длине (линия и область одного цвета), заливка 20 % → 0, второй ряд сапфир', () => {
+    expect(RIBBON_STOPS.map((s) => s.color)).toEqual([CHART_THEME.gold, CHART_THEME.gold]);
+    expect(SAPPHIRE_STOPS.map((s) => s.color)).toEqual([CHART_THEME.sapphire, CHART_THEME.sapphire]);
+    expect(CHART_AREA_COLOR).toBe(CHART_THEME.gold);
+    expect(CHART_AREA.top).toBe(0.2);
     expect(CHART_AREA.bottom).toBe(0);
   });
 
