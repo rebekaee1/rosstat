@@ -159,3 +159,15 @@ describe('buildWorldColorModel', () => {
     expect(model.colorFor(1)).toBe(WORLD_RELATIVE_SCALE[0]);
   });
 });
+
+describe('highlightTop (круг 9, H7)', () => {
+  it('у показателя, где первое место означает худшее, золото первого места отключается и легенда его не обещает', () => {
+    const on = buildWorldColorModel({ A: 1, B: 5, C: 9 }, { direction: 'desc' });
+    const off = buildWorldColorModel({ A: 1, B: 5, C: 9 }, { direction: 'desc', highlightTop: false });
+    expect(on.isTop(9)).toBe(true);
+    expect(on.hasTop).toBe(true);
+    expect(off.isTop(9)).toBe(false);
+    expect(off.hasTop).toBe(false);
+    expect(off.colorFor(9)).toBe(on.colorFor(9));
+  });
+});

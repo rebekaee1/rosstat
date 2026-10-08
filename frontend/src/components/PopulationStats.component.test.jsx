@@ -257,6 +257,22 @@ describe('витрина калькуляторов, главная, было/с
     expect(href).toContain('rep=w:united-states:hicp-index:yoy,w:germany:hicp-index:yoy');
   });
 
+  it('круг 9 (H8): на русском сайте в «Сравните две страны» первой стоит Россия, и она выбирается из списка', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, []],
+      ['/world/countries', { countries: [
+        { code: 'RU', slug: 'russia', name: 'Россия', name_en: 'Russia' },
+        { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States' },
+        { code: 'CN', slug: 'china', name: 'Китай', name_en: 'China' },
+      ], total: 3 }],
+      [/^\/world\/compare\/snapshot\//, { items: [] }],
+    ]);
+    renderPage(<HomeTools />, { path: '/', route: '/' });
+    const go = await screen.findByRole('link', { name: 'Показать график' });
+    expect(decodeURIComponent(go.getAttribute('href'))).toBe('/compare?codes=w:russia:gdp-usd,w:china:gdp-usd');
+  });
+
   it('было / стало: высота столбика пропорциональна сумме, меньший не пропадает', () => {
     const { container } = render(
       <CalcBeforeAfter

@@ -106,13 +106,13 @@ function shiftForDirection(band, direction, size) {
 }
 
 /** Лучшее значение списка: наибольшее, а при порядке «по возрастанию» — наименьшее; одно значение «первого места» не делает. */
-function topChecker(values, direction) {
-  if (values.length < 2) return () => false;
+function topChecker(values, direction, enabled = true) {
+  if (!enabled || values.length < 2) return () => false;
   const best = direction === 'asc' ? values[0] : values[values.length - 1];
   return (rawValue) => numericValue(rawValue) === best;
 }
 
-function relativeModel(values, { direction = null } = {}) {
+function relativeModel(values, { direction = null, highlightTop = true } = {}) {
   const size = WORLD_RELATIVE_SCALE.length;
   const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const thresholds = WORLD_RELATIVE_SCALE
@@ -126,7 +126,8 @@ function relativeModel(values, { direction = null } = {}) {
   };
   return {
     kind: 'relative',
-    isTop: topChecker(values, direction),
+    isTop: topChecker(values, direction, highlightTop),
+    hasTop: highlightTop && values.length > 1,
     scale: WORLD_RELATIVE_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -155,7 +156,7 @@ function relativeModel(values, { direction = null } = {}) {
   };
 }
 
-function divergingModel(values, { direction = null } = {}) {
+function divergingModel(values, { direction = null, highlightTop = true } = {}) {
   const size = WORLD_DIVERGING_SCALE.length;
   const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const maxAbs = Math.max(...values.map(Math.abs), 1);
@@ -174,7 +175,8 @@ function divergingModel(values, { direction = null } = {}) {
   };
   return {
     kind: 'diverging',
-    isTop: topChecker(values, direction),
+    isTop: topChecker(values, direction, highlightTop),
+    hasTop: highlightTop && values.length > 1,
     scale: WORLD_DIVERGING_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -216,12 +218,13 @@ function divergingModel(values, { direction = null } = {}) {
  * у минимальных. Так переключение порядка в таблице переворачивает раскраску
  * карты: лидер нового порядка всегда акцентный, антилидер — бледный.
  */
-export function buildWorldColorModel(valuesByCode, { mode = 'relative', direction = null } = {}) {
+export function buildWorldColorModel(valuesByCode, { mode = 'relative', direction = null, highlightTop = true } = {}) {
   const values = numericValues(valuesByCode);
   if (!values.length) {
     return {
       kind: 'empty',
       isTop: () => false,
+      hasTop: false,
       scale: WORLD_RELATIVE_SCALE,
       median: null,
       sampleSize: 0,
@@ -231,6 +234,6 @@ export function buildWorldColorModel(valuesByCode, { mode = 'relative', directio
       describe: () => null,
     };
   }
-  const options = { direction };
+  const options = { direction, highlightTop };
   return mode === 'diverging' ? divergingModel(values, options) : relativeModel(values, options);
 }

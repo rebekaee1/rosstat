@@ -58,8 +58,11 @@ describe('HomeToday: «Мир сейчас»', () => {
     expect(prices.textContent).toContain('34,9');
     expect(prices.textContent).toContain('Турция');
     expect(prices.textContent).toContain('рост цен за год');
-    expect(prices.textContent).not.toContain('2025');
-    expect(prices.textContent).toContain('Место 1 из 4');
+    // Круг 9 (H7): у самой высокой инфляции не «место 1», а «самая высокая из 4»; рядом с подписью стоит период наблюдения.
+    expect(prices.textContent).toContain('2025');
+    expect(prices.querySelector('.fe-today__period')).toBeTruthy();
+    expect(prices.textContent).toContain('Самая высокая из 4 стран с данными');
+    expect(prices.textContent).not.toContain('Место 1');
     expect(prices.textContent).toContain('\u{1F1F9}\u{1F1F7}');
     // Шкала места: трубка и один камень; Турция первая, камень в самом начале.
     const scale = prices.querySelector('.fe-today__scale');

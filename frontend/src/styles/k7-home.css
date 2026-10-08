@@ -698,3 +698,15 @@ html[data-fe-motion='off'] .fe-dashboard [data-block='home-data-scope'] .fe-scop
   }
   .fe-dashboard .fe-quick__row { padding-right: 56px; scroll-padding-inline: 0 56px; overscroll-behavior-x: contain; }
 }
+
+/* ===== Круг 9, зона B ===================================================================================================== */
+/* H6. «Мир сейчас»: строка места не выходит за карточку. Раньше у grid-строки была колонка по содержимому, и подпись «Место 1 из 55 среди стран с данными»
+   с запретом переноса растягивала колонку шире карточки: полоса шла за край, а текст резался. Теперь колонка ровно в ширину карточки, подпись переносится. */
+.fe-dashboard .fe-today__rank { grid-template-columns: minmax(0, 1fr); }
+.fe-dashboard .fe-today__rank-text { min-width: 0; white-space: normal; line-height: 1.3; text-wrap: balance; }
+.fe-dashboard .fe-today__period { display: block; white-space: nowrap; }
+/* H8. «Попробуйте сами»: у карточки-ссылки кнопка идёт сразу под полями, а не прижата к низу между пустотами выровненных по высоте карточек. */
+.fe-dashboard .fe-tool__body > .fe-tool__result--cta { margin-top: 12px; }
+/* H9. Названия стран в каталоге переносятся по пробелам, а не посреди слова («Испа-ния»): без автоматических дефисов, разрыв внутри слова только когда слово длиннее колонки. */
+.fe-dashboard .fe-country-row__name,
+.fe-dashboard .fe-country-row__main { hyphens: none; -webkit-hyphens: none; overflow-wrap: break-word; }

@@ -456,3 +456,42 @@
 .planet-globe-veil.is-leaving { opacity: 0; }
 .planet-globe-veil .planet-globe-veil__map { flex: none; width: 100%; margin: 0; opacity: .5; }
 .planet-globe-veil__note { display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--planet-muted); font-size: 13px; }
+
+/* ===== Круг 9, зона B ======================================================================================================
+   H3. Карточка выбранной страны не сдвигает блок и не закрывает шар. На карте она лежит внутри её окна: если окно карты шире 560 px,
+   то одной строкой на нижнем краю (страна, число, место, кнопки), поверх воды у нижнего края, без сдвига строк ниже; в узком окне
+   (телефон, узкая колонка) карточка стоит под картой внутри окна и ничего не закрывает. На шаре та же карточка ниже ростом:
+   без строки об источнике (она есть в легенде и на странице страны).
+   H9. Названия стран переносятся только по пробелам: «Испа-ния», «Велико-британия» больше не рвутся дефисом.
+   H2. Список стран справа у карты уже (карта крупнее) и гаснет у нижнего края: последняя строка не обрезана «на полуслове». */
+.planet-map-stage { container: pmap / inline-size; }
+.planet-shell--map .planet-map-stage .planet-stage-bottom { position: static; align-items: stretch; gap: 8px; padding: 8px; }
+.planet-shell--map .planet-map-stage .planet-country-card { max-width: none; margin: 0; }
+.planet-stage-bottom .planet-country-meta { display: none; }
+@container pmap (min-width: 560px) {
+  .planet-shell--map .planet-map-stage .planet-stage-bottom { position: absolute; z-index: 4; left: 10px; right: 10px; bottom: 10px; padding: 0; }
+  .planet-shell--map .planet-map-stage .planet-country-card {
+    grid-template-columns: minmax(0, 1fr) auto auto auto; column-gap: 14px; align-items: center; padding: 6px 54px 6px 14px;
+  }
+  .planet-shell--map .planet-map-stage .planet-country-heading { grid-column: 1; grid-row: 1; min-height: 40px; }
+  .planet-shell--map .planet-map-stage .planet-country-heading > button { position: absolute; top: 50%; right: 6px; margin: 0; transform: translateY(-50%); }
+  .planet-shell--map .planet-map-stage .planet-value-line { grid-column: 2; grid-row: 1; min-height: 0; }
+  .planet-shell--map .planet-map-stage .planet-value-line strong { font-size: 22px; }
+  .planet-shell--map .planet-map-stage .planet-rank { grid-column: 3; grid-row: 1; }
+  .planet-shell--map .planet-map-stage .planet-no-data { grid-column: 2 / 4; grid-row: 1; margin: 0; }
+  .planet-shell--map .planet-map-stage .planet-country-actions { grid-column: 4; grid-row: 1; margin-top: 0; }
+  .planet-shell--map .planet-map-stage .planet-country-actions > button,
+  .planet-shell--map .planet-map-stage .planet-country-actions > a { min-width: 0; min-height: 40px; padding: 6px 12px; white-space: nowrap; }
+  .planet-shell--map .planet-map-stage .planet-comparison-limit { grid-column: 1 / -1; grid-row: 2; }
+}
+/* Список у карты на компьютере уже: карта крупнее (список остаётся читаемым: ранг, название, число). */
+@container planet (min-width: 701px) {
+  .planet-shell--map { grid-template-columns: minmax(0, 1fr) 284px; }
+}
+/* Нижний край списка гаснет: последняя строка не режется посреди слова, а плавно уходит в тень. */
+.planet-country-list { -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(180deg, #000 calc(100% - 28px), transparent); padding-bottom: 12px; }
+@container planet (max-width: 700px) {
+  .planet-country-list { -webkit-mask-image: none; mask-image: none; padding-bottom: 0; }
+}
+.planet-list-name { hyphens: none; overflow-wrap: break-word; }
+.planet-home-button { color: var(--planet-accent-ink); }

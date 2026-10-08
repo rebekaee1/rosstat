@@ -284,3 +284,30 @@ describe('buildSearchView: раунд 2 (Z8)', () => {
     if (prices) expect(result.moreGroups[0].id).toBe('prices');
   });
 });
+
+describe('buildSearchView: круг 9', () => {
+  const country = { key: 'country:turkey', kind: 'country', name: 'Турция', country_slug: 'turkey', path: '/world/turkey' };
+
+  it('Q1: запрос, назвавший только страну, ставит страну первой секцией, а не после случайных рядов', () => {
+    const rows = [
+      row('tr-gdp', 'ВВП', { country_slug: 'turkey', country_name: 'Турция' }),
+      row('tr-un', 'Безработица', { country_slug: 'turkey', country_name: 'Турция' }),
+      country,
+    ];
+    const only = view(rows, 'турция', { intent: { countries: ['turkey'], regions: [] } });
+    expect(only.sections[0].id).toBe('countries');
+    expect(only.sections[0].rows[0].quick.map((chip) => chip.query)).toEqual(['Инфляция Турция', 'ВВП Турция', 'Безработица Турция']);
+    // «Турция инфляция» — вопрос про показатель: показатели первыми, как и раньше.
+    const asked = view(rows, 'турция безработица', { intent: { countries: ['turkey'], regions: [] } });
+    expect(asked.sections[0].id).toBe('indicators');
+  });
+
+  it('Q5: годовая инфляция узнаётся по коду ряда, даже если в названии нет слова «инфляция»', () => {
+    const rows = [
+      row('cpi', 'Индекс потребительских цен', { code: 'cpi', unit: '%', frequency: 'monthly' }),
+      row('yoy', 'Потребительские цены к прошлому году', { code: 'cpi-yoy', unit: '%', frequency: 'monthly' }),
+    ];
+    const result = view(rows, 'инфляция', { intent: { countries: [], regions: [] } });
+    expect(result.flat.find((r) => r.type !== 'rating').item.key).toBe('yoy');
+  });
+});

@@ -194,3 +194,13 @@ export function groupByTopic(rows, topicOf) {
     .map(([id, list]) => ({ id, rows: list }))
     .sort((a, b) => (a.id === 'chart') - (b.id === 'chart') || b.rows.length - a.rows.length);
 }
+
+/**
+ * Круг 9 (Q2): исправленный запрос показываем человеку только если он читается: слово не смешивает кириллицу и латиницу
+ * (так выглядит неудачный разбор перевёрнутой раскладки). Остальную проверку («распознаны все слова») делает сервер.
+ */
+export function isReadableCorrection(text) {
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  if (!words.length) return false;
+  return words.every((word) => !(/[A-Za-z]/.test(word) && /[А-Яа-яЁё]/.test(word)));
+}

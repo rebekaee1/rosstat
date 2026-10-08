@@ -38,6 +38,8 @@ export function splitUnit(unit) {
   const text = String(unit ?? '').trim();
   if (!text) return { short: '', long: '' };
   if (/^%|,\s*%$/.test(text)) return { short: '%', long: text === '%' ? '' : text };
+  // Круг 9 (Q3): «Процент к предыдущему месяцу», «изменение за год в процентах» тоже процент: знак стоит у числа, пояснение под ним.
+  if (/%|процент|percent/i.test(text) && !/индекс|index|\d{4}\s*=\s*100/i.test(text)) return { short: '%', long: text };
   if (text.length <= 14) return { short: text, long: '' };
   return { short: '', long: text };
 }

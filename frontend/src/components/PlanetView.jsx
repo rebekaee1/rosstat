@@ -4,7 +4,7 @@ import {
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
   ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, HelpCircle, Layers3, Map as MapIcon, Minus, Pause, Play,
-  Plus, RotateCcw, Search, Share2, X,
+  LocateFixed, Plus, RotateCcw, Search, Share2, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
@@ -32,7 +32,8 @@ const WorldMap = lazy(() => import('./WorldMap'));
 // Адрес для просьбы добавить страну: тот же, что в подвале сайта.
 const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
 const HINT_STORAGE_KEY = 'fe_planet_hint_seen';
-const HINT_MS = 6000;
+// Круг 9 (P12): подсказка жеста показывается три секунды, а не шесть: она не должна висеть над шаром.
+const HINT_MS = 3000;
 const PLAY_STEP_MS = 950;
 // Ближе этого расстояния камеры шар заполняет сцену и превращается в карту: стеклянная сфера, каустика и тень снимаются (класс is-zoomed).
 const ZOOMED_DISTANCE = 2.9;
@@ -102,6 +103,10 @@ export default function PlanetView({
   startFocus = null,
   // Справка о показателе (знак «i» у названия в легенде): её даёт страница.
   conceptNote = null,
+  // Круг 9 (P12): код «своей» страны (Россия на русском сайте, США на английском): кнопка «К России» подводит к ней карту и шар.
+  homeCountryCode = '',
+  // Круг 9 (H7): золото первого места не нужно там, где первое место означает худшее (самая высокая инфляция): страница отключает его.
+  highlightTop = true,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -220,7 +225,7 @@ export default function PlanetView({
     for (const country of availableCountries) result.set(country.code, valueForCountry(country));
     return result;
   }, [valuesByCode, availableCountries, valueForCountry]);
-  const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection }), [displayValues, colorMode, colorDirection]);
+  const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection, highlightTop }), [displayValues, colorMode, colorDirection, highlightTop]);
   const extent = useMemo(() => valueExtent(displayValues), [displayValues]);
   // Одна точность на весь экран: карточка, список, подсказки и подписи на шаре показывают число одинаково.
   const digits = useMemo(() => uniformDigits(displayValues.values()), [displayValues]);
@@ -450,6 +455,11 @@ export default function PlanetView({
     };
   }, [benchmarkSeries, coverage]);
   const compactList = !listExpanded && rankedCountries.length > COMPACT_LIST_ROWS + 1;
+  // Кнопка «К России» / «К США» у шара: только если своя страна есть в каталоге. На плоской карте мир виден целиком, а контур России с Чукоткой
+  // за линией перемены дат занимает всю ширину карты, поэтому подводить там некуда.
+  const homeCountry = homeCountryCode ? (countryByCode.get(homeCountryCode) || countryByCode.get(countryAlias(homeCountryCode))) : null;
+  const homeLabelKey = { RU: 'c9b.planet.toRussia', US: 'c9b.planet.toUsa' }[homeCountryCode];
+  const homeLabel = !isMap && homeCountry && homeLabelKey ? t(homeLabelKey) : '';
   const zoomInLabel = t(isMap ? 'map.zoomIn' : 'planet.zoomIn');
   const zoomOutLabel = t(isMap ? 'map.zoomOut' : 'planet.zoomOut');
   const resetLabel = t(isMap ? 'map.zoomReset' : 'planet.reset');
@@ -514,18 +524,19 @@ export default function PlanetView({
   // Кнопки масштаба и действия (играть, слои, поделиться): у шара лежат поверх сцены, у карты в одной строке под ней, чтобы не закрывать страны.
   const cameraControls = (
     <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-      <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} title={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
-      <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} title={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
-      <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} title={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
+      {homeLabel && <button type="button" className="planet-home-button" onClick={() => commandCamera('focus', homeCountry.code)} aria-label={homeLabel} data-tip={homeLabel}><LocateFixed size={16} aria-hidden="true" /></button>}
     </div>
   );
   const stageActions = (canPlay || coverageAvailable || shareable) ? (
     <div className="planet-stage-actions">
-      {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
+      {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} data-tip={playTitle} onClick={togglePlay}>
         {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>}
-      {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
+      {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
         onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={16} aria-hidden="true" /></button>}
-      {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
+      {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} data-tip={shareTitle} onClick={shareView}>
         {shared ? <Check size={16} aria-hidden="true" /> : <Share2 size={16} aria-hidden="true" />}</button>}
     </div>
   ) : null;
@@ -592,7 +603,7 @@ export default function PlanetView({
   const mapLegend = hasMetric ? (
     <p className="planet-map-legend">
       <span><i style={{ backgroundColor: WORLD_NO_DATA }} aria-hidden="true" />{t('c8w.map.noData')}</span>
-      {colorModel.sampleSize > 1 && <span><i style={{ backgroundColor: WORLD_TOP_COLOR }} aria-hidden="true" />{t('c8w.map.top')}</span>}
+      {colorModel.hasTop && <span><i style={{ backgroundColor: WORLD_TOP_COLOR }} aria-hidden="true" />{t('c8w.map.top')}</span>}
     </p>
   ) : null;
 
@@ -663,10 +674,11 @@ export default function PlanetView({
                 {worldMapElement}
                 {playYearBadge}
                 {hoverLabel}
+                {/* Круг 9 (H3): карточка выбранной страны лежит на нижнем краю самой карты (на компьютере) и не сдвигает блок вниз. */}
+                <div className="planet-stage-bottom">{placeCardBlock}{countryCardBlock}</div>
               </div>
               {mapLegend}
               <div className="planet-map-tools">{cameraControls}{stageActions}</div>
-              <div className="planet-stage-bottom">{placeCardBlock}{countryCardBlock}</div>
             </div> : <div ref={stageRef} className={'planet-stage' + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView ? ' is-zoomed' : '')} data-scene-ready={sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} data-planet-surface="globe" onPointerMove={trackPointer}>
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
@@ -700,7 +712,7 @@ export default function PlanetView({
                     <p className="planet-legend-scale">{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
                     <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
                     <p className="planet-key-note"><i aria-hidden="true" />{t('w6c.key.noData', { count: catalogCount })}</p>
-                    {colorModel.sampleSize > 1 && <p className="planet-key-note planet-key-note--top"><i aria-hidden="true" />{t('r6.planet.topNote')}</p>}
+                    {colorModel.hasTop && <p className="planet-key-note planet-key-note--top"><i aria-hidden="true" />{t('r6.planet.topNote')}</p>}
                   </div>
                 </details>
               </div>
