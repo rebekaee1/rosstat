@@ -131,6 +131,8 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 | `brent` | `DCOILBRENTEU` | EIA | Europe Brent Spot Price FOB, USD/bbl; с 1987-05-20. Ранее Yahoo `BZ=F`. |
 | `natural-gas` | `DHHNGSP` | EIA | Henry Hub Natural Gas Spot Price, USD/млн БТЕ; с 1997-01-07. Ранее Yahoo `NG=F`. |
 
+> **Brent приходит раз в неделю (сверено 08.10.2026).** Спот Brent EIA публикует недельным выпуском (страница `RBRTEd.htm`: «Release Date 10/7/2026, Next Release Date 10/15/2026», данные по вторник включительно; книга `RBRTED.xls`, лист `Data 1`), поэтому в ленте курсов и на карточке нефть честно отстаёт на 1–9 суток; порог «давнее значение» для `brent` в `api/ticker.py` — 12 суток (`STALE_AFTER_DAYS_BY_CODE`), для остальных рядов ленты 3. Загрузка EIA и зеркала FRED идёт через ETL-сессию `create_session()` (с 08.10.2026, раньше голый `httpx`). Живого источника нефти в обход EIA платформа не берёт: решение P0 запрещает биржевую нефть в ленте. Подпись в ленте — «Brent». Контракт — [data-contracts](data-contracts.md#c10-data-2026-10-08).
+
 Официального свободного дневного ряда цены золота (USD/унция) на FRED/ЕЦБ/LBMA без лицензии нет: `gold-usd` не заведён. Месячный ряд золота есть в Pink Sheet (`Gold`, $/troy oz) — отдельная задача, в оперативный срез главной не ставится.
 
 ## MOEX ISS — биржевые индексы daily (MoexIndexParser, `parser_type=moex_index_daily`)
