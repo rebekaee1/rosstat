@@ -7,11 +7,23 @@ const css = read('..', 'components', 'PlanetView.css');
 const hero = read('planet-hero.css');
 
 describe('карта по умолчанию: раскладка окна сцены', () => {
-  it('карта стоит в том же окне, что и шар: у неё нет своей высоты, а сцена не «схлопывается»', () => {
-    expect(css).not.toMatch(/\.planet-stage--map\s*\{[^}]*height:\s*auto/);
-    expect(css).not.toMatch(/\.planet-stage--map\s*\{[^}]*min-height/);
+  it('карта стоит в окне с собственными пропорциями: высоту задаёт ширина, пустых полос сверху и снизу нет', () => {
+    // Окно карты повторяет viewBox 960 × 424 (Антарктида не рисуется); число сверено с WorldMap (тест WorldMap.component.test.jsx).
+    expect(css).toMatch(/\.planet-map-plate\s*\{[^}]*aspect-ratio:\s*960 \/ 424/);
+    expect(css).toMatch(/\.planet-stage--map\s*\{[^}]*height:\s*auto/);
+    expect(css).toMatch(/\.planet-map-svg\s*\{[^}]*position:\s*absolute;\s*inset:\s*0/);
+    // Шар по-прежнему живёт в окне высоты --planet-scene-height.
     expect(css).toMatch(/\.planet-stage\s*\{[^}]*height:\s*var\(--planet-scene-height\)/);
-    expect(css).toMatch(/\.planet-map-stage\s*\{[^}]*position:\s*absolute;\s*inset:\s*0/);
+  });
+
+  it('кнопки масштаба и действия стоят одной строкой под картой, карточка страны ниже и не закрывает карту', () => {
+    expect(css).toMatch(/\.planet-map-tools\s*\{[^}]*display:\s*flex/);
+    expect(css).toMatch(/\.planet-map-tools \.planet-camera-controls\s*\{[^}]*position:\s*static/);
+    expect(css).toMatch(/\.planet-shell--map \.planet-stage-bottom\s*\{[^}]*position:\s*static/);
+  });
+
+  it('колонка списка на карте по высоте левой колонки, а не круглого шара', () => {
+    expect(css).toMatch(/\.planet-shell--map \.planet-info\s*\{[^}]*contain:\s*size/);
   });
 
   it('подложка карты не голая и без рамок: океан со светом сверху, тень-блик вместо линии', () => {

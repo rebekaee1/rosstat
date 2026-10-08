@@ -34,8 +34,15 @@ import Chip from './Chip';
 import '../styles/platform-pages.css';
 import '../styles/k4-charts.css';
 
+// Окно карты: ширина 960, высота по очертаниям суши без Антарктиды (чтобы в рамке не было пустых полос сверху и снизу).
+// Отношение 424/960 записано и в CSS (`.planet-map-plate`, `--planet-map-ratio`); тест `WorldMap.component.test.jsx` сверяет их.
 const WIDTH = 960;
-const HEIGHT = 480;
+const HEIGHT = 424;
+const FIT_PAD = 4;
+export const MAP_VIEWBOX = Object.freeze({ width: WIDTH, height: HEIGHT });
+// Антарктида (ISO 010) не рисуется: она занимала пятую часть рамки и увод щипком в «пустую Антарктику» тоже шёл оттуда.
+const ANTARCTICA_ID = '010';
+const isNotAntarctica = (geometry) => numericId(geometry.id) !== ANTARCTICA_ID;
 const ZOOM_MAX = 7;
 const ZOOM_STEP = 1.55;
 const WORLD_OCEAN = WORLD_OCEAN_COLOR;
@@ -98,7 +105,7 @@ function shapeFor(geometry, index, path) {
 // 110m-контуры для первого кадра: считаются один раз на модуль.
 let baseDisplayFeatures = null;
 function getBaseDisplayFeatures() {
-  if (!baseDisplayFeatures) baseDisplayFeatures = WORLD_FEATURES.map(displayFeatureFor);
+  if (!baseDisplayFeatures) baseDisplayFeatures = WORLD_FEATURES.filter(isNotAntarctica).map(displayFeatureFor);
   return baseDisplayFeatures;
 }
 
@@ -272,7 +279,7 @@ export default function WorldMap({
     const cancel = whenIdleAfterLoad(() => {
       loadWorldFeatures('detailed').then(async (byId) => {
         if (!active || !byId) return;
-        const next = await mapInSlices([...byId.values()], displayFeatureFor, isActive);
+        const next = await mapInSlices([...byId.values()].filter(isNotAntarctica), displayFeatureFor, isActive);
         if (next) startTransition(() => setDetailFeatures(next));
       });
     });
@@ -307,7 +314,7 @@ export default function WorldMap({
     // Вписываем по 110m: рамка совпадает с 50m (разница масштаба ~0.02%),
     // зато проекция не пересчитывается и карта не «дёргается» при апгрейде.
     return geoNaturalEarth1().fitExtent(
-      [[24, 24], [WIDTH - 24, HEIGHT - 24]],
+      [[FIT_PAD, FIT_PAD], [WIDTH - FIT_PAD, HEIGHT - FIT_PAD]],
       {
         type: 'FeatureCollection',
         features: baseFeatures,

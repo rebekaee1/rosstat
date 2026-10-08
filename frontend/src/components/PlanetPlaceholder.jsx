@@ -42,7 +42,7 @@ export default function PlanetPlaceholder() {
   return (
     <div className="planet-host" aria-busy="true">
       <div className="planet-view planet-view--placeholder">
-        <div className="planet-shell has-key">
+        <div className={'planet-shell has-key' + (flat ? ' planet-shell--map' : '')}>
           <div className="planet-viewbar" aria-hidden="true"><span className="planet-ph-view skeleton" /></div>
           <div className="planet-toolbar" aria-hidden="true">
             <div className="planet-search">
@@ -53,10 +53,24 @@ export default function PlanetPlaceholder() {
             </div>
           </div>
           <div className="planet-geography">
-            <div className="planet-stage" data-scene-ready="false">
-              {flat ? <div className="planet-map-ph" aria-hidden="true" /> : <PlanetOrb />}
-              <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>
-            </div>
+            {flat ? (
+              <div className="planet-stage planet-stage--map" data-scene-ready="false">
+                <div className="planet-quick planet-ph-quick" aria-hidden="true">
+                  {[84, 132, 98, 76].map((width) => <span key={width} className="skeleton planet-ph-chip" style={{ width }} />)}
+                </div>
+                <div className="planet-map-stage">
+                  <div className="planet-map-plate planet-map-plate--loading">
+                    <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>
+                  </div>
+                </div>
+                <div className="planet-map-tools" aria-hidden="true"><span className="skeleton planet-ph-pill" style={{ width: 118 }} /></div>
+              </div>
+            ) : (
+              <div className="planet-stage" data-scene-ready="false">
+                <PlanetOrb />
+                <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>
+              </div>
+            )}
             <div className="planet-key" aria-hidden="true">
               <div className="planet-key-head">
                 <span className="skeleton planet-ph-line" style={{ width: '34%' }} />

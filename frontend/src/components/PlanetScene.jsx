@@ -30,7 +30,8 @@ import {
 } from '../lib/planetShaders';
 
 // Запасная стартовая сторона (Атлантика: Америка, Европа, Африка); обычно её заменяет bestStartFocus по данным.
-const DEFAULT_FOCUS = [-25, 24];
+// Запасной стартовый вид, пока данных ещё нет: Европа и Азия (там больше всего окрашенных стран), а не пустая Атлантика с Африкой.
+const DEFAULT_FOCUS = [30, 38];
 const MIN_DISTANCE = 1.45;
 const MAX_DISTANCE = 4.8;
 // Closer than this the 2048 px day map starts to blur; the 4096 px map is fetched once, on demand.
@@ -496,7 +497,7 @@ function PlanetControls({
   return null;
 }
 
-function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady, zoomed, controlApi }) {
+function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady, onInteract, zoomed, controlApi }) {
   const { invalidate, gl } = useThree();
   const pointerState = useRef(createPlanetPointerState());
   const completedTap = useRef(null);
@@ -581,6 +582,8 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       hoverCode.current = null;
       setHover(null);
       onHover(null);
+      // Любое касание шара останавливает самовращение (раньше только перетаскивание: шар «уезжал» из-под пальца).
+      onInteract?.();
     };
     const additionalDown = (event) => {
       const state = pointerState.current;
@@ -614,7 +617,7 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       pointerState.current = createPlanetPointerState();
       completedTap.current = null;
     };
-  }, [gl, onHover]);
+  }, [gl, onHover, onInteract]);
 
   useEffect(() => {
     hoverCode.current = null;

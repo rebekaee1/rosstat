@@ -16,7 +16,11 @@ describe('PlanetPlaceholder', () => {
     expect(shell.querySelector('.planet-toolbar .planet-search-field')).toBeTruthy();
     expect(shell.querySelector('.planet-toolbar .planet-year')).toBeTruthy();
     // По умолчанию окно сцены занимает ровная подложка карты, а не шар; подпись загрузки на месте.
-    expect(shell.querySelector('.planet-geography .planet-stage .planet-map-ph')).toBeTruthy();
+    // Окно карты с её пропорциями (как у настоящей карты): ряд чипов, плита, строка кнопок. Страница при подмене не прыгает.
+    expect(shell.classList.contains('planet-shell--map')).toBe(true);
+    expect(shell.querySelector('.planet-geography .planet-stage--map .planet-quick .planet-ph-chip')).toBeTruthy();
+    expect(shell.querySelector('.planet-geography .planet-stage--map .planet-map-stage .planet-map-plate')).toBeTruthy();
+    expect(shell.querySelector('.planet-geography .planet-stage--map .planet-map-tools')).toBeTruthy();
     expect(shell.querySelector('.planet-orb')).toBeNull();
     expect(shell.querySelector('.planet-geography .planet-stage .planet-loading').textContent).toBe('r6.planet.loading');
     expect(shell.querySelector('.planet-geography .planet-key .planet-key-bar')).toBeTruthy();
@@ -28,7 +32,7 @@ describe('PlanetPlaceholder', () => {
     window.localStorage.setItem('fe_planet_view', 'globe');
     const { container } = render(<PlanetPlaceholder />);
     expect(container.querySelector('.planet-stage .planet-orb svg ellipse')).toBeTruthy();
-    expect(container.querySelector('.planet-map-ph')).toBeNull();
+    expect(container.querySelector('.planet-map-plate')).toBeNull();
   });
 
   it('служебные каркасы спрятаны от скринридера; единственный текст — подпись загрузки', () => {

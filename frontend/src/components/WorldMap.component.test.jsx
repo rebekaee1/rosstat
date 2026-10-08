@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import WorldMap, { CountrySilhouette } from './WorldMap';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import WorldMap, { CountrySilhouette, MAP_VIEWBOX } from './WorldMap';
 import { LocaleProvider } from '../i18n';
 
 function renderMap(ui) {
@@ -245,6 +247,20 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
   });
 
+  it('окно карты без Антарктиды: пропорции viewBox совпадают с `aspect-ratio` окна в CSS (нет пустых полос сверху и снизу)', () => {
+    const { container } = renderMap(embedded());
+    const svg = container.querySelector('svg');
+    expect(svg.getAttribute('viewBox')).toBe(`0 0 ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`);
+    const css = readFileSync(resolve(import.meta.dirname, 'PlanetView.css'), 'utf8');
+    const [, w, h] = css.match(/\.planet-map-plate\s*\{[^}]*aspect-ratio:\s*(\d+) \/ (\d+)/);
+    expect([Number(w), Number(h)]).toEqual([MAP_VIEWBOX.width, MAP_VIEWBOX.height]);
+    // Контуры всех стран лежат в окне: Антарктида (она вытянула бы окно вниз) не рисуется.
+    const lowest = Math.max(...[...container.querySelectorAll('svg path[d]')]
+      .filter((node) => node.getAttribute('fill') && node.getAttribute('fill') !== 'none')
+      .flatMap((node) => [...node.getAttribute('d').matchAll(/[ML](-?[\d.]+),(-?[\d.]+)/g)].map((m) => Number(m[2]))));
+    expect(lowest).toBeLessThanOrEqual(MAP_VIEWBOX.height + 2);
+  });
+
   it('красит страны переданной моделью цвета и сообщает о наведении и выборе', () => {
     const onHover = vi.fn();
     const onSelect = vi.fn();
@@ -292,7 +308,7 @@ describe('WorldMap embedded in the planet stage', () => {
     const onSelect = vi.fn();
     const { container } = renderMap(embedded({ onSelect }));
     const svg = container.querySelector('svg');
-    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 480, right: 960, bottom: 480 });
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 424, right: 960, bottom: 424 });
     svg.setPointerCapture = () => {};
     fireEvent.pointerDown(svg, { pointerId: 1, clientX: 450, clientY: 240 });
     fireEvent.pointerDown(svg, { pointerId: 2, clientX: 510, clientY: 240 });
@@ -313,7 +329,7 @@ describe('WorldMap embedded in the planet stage', () => {
   it('одним пальцем двигает приближенную карту и не двигает карту целиком', () => {
     const { container, rerender } = renderMap(embedded());
     const svg = container.querySelector('svg');
-    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 480, right: 960, bottom: 480 });
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 424, right: 960, bottom: 424 });
     svg.setPointerCapture = () => {};
     fireEvent.pointerDown(svg, { pointerId: 1, clientX: 400, clientY: 200 });
     fireEvent.pointerMove(svg, { pointerId: 1, clientX: 300, clientY: 150 });
