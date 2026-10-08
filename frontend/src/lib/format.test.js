@@ -36,6 +36,11 @@ describe('format', () => {
     expect(formatDate('2024-01-15', 'full', 'ru')).toContain('январ');
   });
 
+  it('formatDate dayShort — «13 авг» без года для подписей оси по дням', () => {
+    expect(formatDate('2026-08-13', 'dayShort', 'ru')).toBe('13 авг');
+    expect(formatDate('2026-08-13', 'dayShort', 'en')).toBe('13 Aug');
+  });
+
   it('formatDate fullGen puts the month in genitive (RU) for "с января 2016", "до августа 2026"', () => {
     expect(formatDate('2016-01-01', 'fullGen', 'ru')).toBe('января 2016');
     expect(formatDate('2026-08-01', 'fullGen', 'ru')).toBe('августа 2026');

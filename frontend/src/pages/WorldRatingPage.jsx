@@ -660,6 +660,10 @@ export default function WorldRatingPage() {
             <p className="max-w-3xl leading-6">{t('world.rating.intro')}</p>
           </details>
         </div>
+        {/* Круг 9 (W3): у инфляции три честных числа (месяц, декабрь к декабрю, среднее за год); рейтинг называет, какое из них перед глазами. */}
+        {activeConcept === 'hicp-index' ? (
+          <p className="w6d-subtitle z6-head__note" data-testid="rating-inflation-note">{t('c9c.rating.inflationNote')}</p>
+        ) : null}
       </header>
 
       {error && (

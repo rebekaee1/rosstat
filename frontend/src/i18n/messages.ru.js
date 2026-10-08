@@ -3307,4 +3307,5 @@ export default {
   'c9c.table.onlyChanges': 'Только изменения',
   'c9c.tele.maxWindow': 'Максимум за {n} лет',
   'c9c.tele.avgWindow': 'Среднее за {n} лет',
+  'c9c.rating.inflationNote': 'Для каждого года показано последнее значение: декабрь к декабрю. Свежий месяц есть на странице страны.',
 };

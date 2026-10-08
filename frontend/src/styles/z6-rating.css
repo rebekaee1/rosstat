@@ -24,6 +24,8 @@
 .z6-head h1 { font-size: clamp(1.75rem, 1.25rem + 1.3vw, 2.5rem); line-height: 1.08; }
 .z6-head__sub { position: relative; display: flex; flex-wrap: wrap; align-items: center; column-gap: 18px; }
 .z6-head__sub .w6d-subtitle { margin: 4px 0 0; }
+/* Круг 9 (W3): строка о том, какое из чисел инфляции перед глазами. */
+.z6-head__note { margin: 6px 0 0; max-width: 46rem; font-size: 13px; line-height: 1.45; color: var(--z6-muted); }
 .z6-head__sub .w2-details { margin-top: 2px; }
 @media (min-width: 640px) {
   .z6-head__sub .w2-details > p {
@@ -220,8 +222,7 @@
 .z6-table-card tbody td:not(.w6d-col-bar) { padding-inline: 12px; }
 .z6-table-card tbody td:first-child { padding-left: 16px; }
 /* Круг 9 (R1): строка рейтинга видна всегда. Раньше она появлялась анимацией от opacity:0 с задержкой и fill-mode both:
-   если анимация не стартовала (фоновая вкладка, загруженная машина), оставалась «дыра с рангом и именем в DOM». */
-.z6-row { scroll-margin-top: calc(var(--z6-sticky-top) + 56px); }
+   если анимация не стартовала (фоновая вкладка, загруженная машина), оставалась «дыра с рангом и именем в DOM». Теперь у строки анимации нет. */
 .z6-row td:nth-child(2) a { font-size: 15px; }
 /* Цифры крупнее: у остальных строк спокойные, у тройки лидеров выразительные. */
 .z6-val { font-size: 16px; letter-spacing: -0.01em; }
@@ -304,7 +305,7 @@
 .z6-split .w6d-years { margin: 4px 0 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .z6-table-card .w6d-bar > span, .z6-row:nth-child(-n + 12) .w6d-bar > span, .z6-quick-ghost { animation: none; }
+  .z6-row, .z6-table-card .w6d-bar > span, .z6-row:nth-child(-n + 12) .w6d-bar > span, .z6-quick-ghost { animation: none; }
   .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-ribbon .w2-fact, .w6d-shifts--compact .w6d-shift, .z6-table-card tbody td { transition: none; }
   .z6-toolbar .w6d-quick:hover, .z6-toolbar .w6d-picker__all:hover { transform: none; }
 }

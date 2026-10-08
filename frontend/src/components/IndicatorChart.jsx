@@ -634,7 +634,13 @@ export default function IndicatorChart({
 
   // Подписи оси X: бюджет от ширины + фактическая RU-строка («7 июля 2025»),
   // затем densest step без пересечения (см. pickChartAxisTicks).
-  const axisDateFormat = dateFormat === 'full' ? 'short' : dateFormat;
+  // По дням и неделям на коротком окне подписи оси «13 авг» (год понятен), а не «13 августа 2026» поверх друг друга (круг 9, Y9).
+  const windowDays = visibleData.length > 1
+    ? (Date.parse(visibleData[visibleData.length - 1].date) - Date.parse(visibleData[0].date)) / 86400000
+    : 0;
+  const axisDateFormat = dateFormat === 'full'
+    ? 'short'
+    : ((dateFormat === 'day' || dateFormat === 'weekly') && windowDays > 0 && windowDays <= 550 ? 'dayShort' : (dateFormat === 'day' || dateFormat === 'weekly' ? 'short' : dateFormat));
   const formatXAxisLabel = useCallback(
     (d) => formatDate(d, axisDateFormat),
     [axisDateFormat],
@@ -1007,7 +1013,7 @@ export default function IndicatorChart({
                 />
               );
             })}
-            {lastPointRow && chartType !== 'bar' && !isDragging && (
+            {lastPointRow && chartType !== 'bar' && !isDragging && !isHovering && (
               <ReferenceDot
                 x={lastPointRow.date}
                 y={Number(lastPointRow.actual)}

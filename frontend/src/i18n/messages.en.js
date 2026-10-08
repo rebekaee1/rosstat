@@ -3302,4 +3302,5 @@ export default {
   'c9c.table.onlyChanges': 'Changes only',
   'c9c.tele.maxWindow': 'Peak over {n} years',
   'c9c.tele.avgWindow': 'Average over {n} years',
+  'c9c.rating.inflationNote': 'Each year shows its last reading, December against the previous December. The latest month is on the country page.',
 };
