@@ -39,6 +39,7 @@
   font-variant-numeric: tabular-nums;
 }
 :root .fe-hero-line__unit { color: var(--color-text-secondary); font-size: 0.62em; font-weight: 600; letter-spacing: 0; }
+:root .fe-hero-line__unit--long { display: inline-block; white-space: nowrap; }  /* единица-«индекс 2015 = 100» не рвётся посреди скобки (круг 8, D2) */
 :root .fe-hero-line__when,
 :root .fe-hero-line__extra { color: var(--color-text-secondary); }
 :root .fe-hero-line-skeleton { width: min(18rem, 80%); height: 28px; margin-bottom: 6px; border-radius: 10px; }

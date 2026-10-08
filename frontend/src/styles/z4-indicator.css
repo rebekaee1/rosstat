@@ -497,3 +497,12 @@
   :root .z4-desk .fe-vm-body .fe-pick-card--stack,
   :root:root .fe-vm-panel[data-open='true'] > .fe-vm-body .fe-pick-card--stack { display: none; }
 }
+
+
+/* ===== Круг 8, зона Z3: каталог США («Все темы») ===== */
+/* Подтемы столбиком одной ширины, как и темы выше: раньше «таблетки» разной ширины лежали вразброс, числа стояли на разных линиях. */
+:root .z5-topics .z5-more__chips { flex-direction: column; flex-wrap: nowrap; gap: 6px; }
+:root .z5-topics .z5-topic--chip { width: 100%; min-height: 40px; padding: 6px 14px; border-radius: 14px; font-size: 13.5px; }
+:root .z5-topics .z5-topic__count { min-width: 3ch; text-align: right; }
+/* У активной строки графит: счётчик светлый (тёмно-коричневый на графите не читался). */
+:root .z5-topics .z5-topic.is-active .z5-topic__count { color: rgba(242, 245, 250, 0.82); }

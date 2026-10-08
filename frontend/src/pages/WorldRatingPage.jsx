@@ -47,7 +47,6 @@ import Chip from '../components/Chip';
 import ChipGroup from '../components/ChipGroup';
 import CountryFlag from '../components/CountryFlag';
 import WorldCountUp from '../components/WorldCountUp';
-import YearPicker from '../components/YearPicker';
 import '../styles/world.css';
 import '../styles/w6d.css';
 import '../styles/z6-rating.css';
@@ -55,7 +54,7 @@ import '../styles/k6-country.css';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { ratingHeading } from '../lib/ratingConcepts';
 import {
-  countrySeries, rankShifts, shareOf, yearOverYear,
+  barScaleOf, countrySeries, rankShifts, shareOf, yearOverYear,
 } from '../lib/ratingInsights';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
@@ -624,17 +623,12 @@ export default function WorldRatingPage() {
   const first = ranked[0] || null;
   const last = ranked.length > 1 ? ranked[ranked.length - 1] : null;
   const factUnit = sharedUnit || localizeWorldUnit(first?.unit || concept.unit, locale);
-  const barMax = useMemo(() => {
-    let max = 0;
-    let positive = true;
-    for (const item of ranked) {
-      const value = Number(item.value);
-      if (!Number.isFinite(value)) continue;
-      if (value < 0) positive = false;
-      if (value > max) max = value;
-    }
-    return { max, positive };
-  }, [ranked]);
+  // Шкала полосок: у ВВП и населения разница в тысячи раз, поэтому там полоска идёт по логарифму, иначе почти у всех стран «точка».
+  const barMax = useMemo(() => barScaleOf(ranked.map((item) => item.value)), [ranked]);
+  const barShare = useCallback(
+    (value) => shareOf(value, barMax.max, barMax.positive, { scale: barMax.scale, min: barMax.min }),
+    [barMax],
+  );
   // Ориентир по странам: медиана поясняется словами, а не термином.
   const benchmark = mapSeriesQ.data?.benchmark_by_year?.[String(activeYear)];
   const medianNote = useMemo(() => {
@@ -740,23 +734,9 @@ export default function WorldRatingPage() {
                     </h2>
                     {periodNote && <p className="z6-table__sub">{periodNote}</p>}
                   </div>
-                  <div className="flex min-w-0 flex-wrap items-end gap-2.5">
-                    <div className="block min-w-[7.5rem]">
-                      <span className="mb-1 block text-xs text-text-secondary">
-                        {t('common.year')}
-                      </span>
-                      <YearPicker
-                        years={years}
-                        value={activeYear || null}
-                        onChange={setSelectedYear}
-                        label={t('common.year')}
-                        disabled={!years.length}
-                        align="start"
-                        className="w-32 [--fe-year-h:40px] pointer-coarse:[--fe-year-h:44px]"
-                      />
-                    </div>
+                  <div className="z6-controls flex min-w-0 flex-wrap items-end gap-2.5">
                     <div className="min-w-0">
-                      <p className="mb-1 text-xs text-text-secondary">
+                      <p className="z6-controls__label mb-1 text-xs text-text-secondary">
                         {t('world.rating.sortOrder')}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
@@ -844,7 +824,7 @@ export default function WorldRatingPage() {
                     </p>
                     <ol className={`w2-rank-list${switching ? ' w6d-switching' : ''}`}>
                       {visibleRows.map((item) => {
-                        const share = shareOf(item.value, barMax.max, barMax.positive);
+                        const share = barShare(item.value);
                         return (
                           <li key={item.country_code} className="w2-rank-item">
                             <Link
@@ -963,8 +943,8 @@ export default function WorldRatingPage() {
                                 {fmtValue(item.value)}
                               </td>
                               <td className="w6d-col-bar px-2 py-3" aria-hidden="true">
-                                <span className="w6d-bar" style={{ '--z6-s': (shareOf(item.value, barMax.max, barMax.positive) / 100).toFixed(3) }}>
-                                  <span style={{ width: `${shareOf(item.value, barMax.max, barMax.positive)}%` }} />
+                                <span className="w6d-bar" style={{ '--z6-s': (barShare(item.value) / 100).toFixed(3) }}>
+                                  <span style={{ width: `${barShare(item.value)}%` }} />
                                 </span>
                               </td>
                               <td className="px-4 py-3 text-right">
