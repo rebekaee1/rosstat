@@ -6,9 +6,12 @@ import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { tableRowMatches } from '../lib/tableSearch';
 import { formatDeltaWithUnit } from '../lib/deltaText';
-import { formatPercentChange, growthDigits, unitKind } from '../lib/indicatorSummary';
+import {
+  formatPercentChange, growthDigits, isPercentChangeUnit, unitKind,
+} from '../lib/indicatorSummary';
 import { useLocale } from '../i18n';
 import Button from './Button';
+import Chip from './Chip';
 import Spinner from './Spinner';
 import { EmptyShard } from './K5Accent';
 import '../styles/chart-controls.css';
@@ -29,6 +32,8 @@ export default function DataTable({
   const resolvedTitle = title ?? t('table.historicalDefault');
   const [page, setPage] = useState(0);
   const [sortAsc, setSortAsc] = useState(false);
+  // null — выбор не сделан: ступенчатый ряд (ставка «14,00» каждый день) по умолчанию показывает только дни перемен.
+  const [onlyChangesChoice, setOnlyChangesChoice] = useState(null);
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
 
@@ -48,8 +53,26 @@ export default function DataTable({
     return () => clearTimeout(timer);
   }, [searchInput, search, data, dateFormat, unit, valueDigits]);
 
+  // Даты, на которые значение изменилось (и первая точка): остальные строки повторяют предыдущую.
+  const { changedDates, repeats } = useMemo(() => {
+    const asc = [...(data || [])]
+      .filter((r) => r && r.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const set = new Set();
+    let prev = null;
+    asc.forEach((row, i) => {
+      const v = Number(row.value);
+      if (i === 0 || !Number.isFinite(v) || !Number.isFinite(prev) || v !== prev) set.add(row.date);
+      prev = v;
+    });
+    return { changedDates: set, repeats: asc.length - set.size };
+  }, [data]);
+  const stepLike = (data || []).length >= 40 && repeats / (data || []).length > 0.6;
+  const onlyChanges = repeats > 0 && (onlyChangesChoice ?? stepLike);
+
   const filtered = useMemo(() => {
     let rows = [...(data || [])];
+    if (onlyChanges) rows = rows.filter((r) => changedDates.has(r.date));
     if (search) {
       rows = rows.filter(r => tableRowMatches(r, search, { dateFormat, unit, valueDigits }));
     }
@@ -58,7 +81,7 @@ export default function DataTable({
       : new Date(b.date) - new Date(a.date)
     );
     return rows;
-  }, [data, search, sortAsc, dateFormat, unit, valueDigits]);
+  }, [data, search, sortAsc, dateFormat, unit, valueDigits, onlyChanges, changedDates]);
 
   // Изменение к прошлому периоду и самые высокое и низкое значения считаем по всему ряду, а не по странице.
   const { changes, maxDate, minDate } = useMemo(() => {
@@ -94,6 +117,8 @@ export default function DataTable({
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
   const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
   const tableUnit = unitSuffix(unit);
+  // Ряд уже «изменение за год, %»: в строках стоит короткий «%», полная единица один раз в заголовке (круг 9, W10).
+  const rowUnit = isPercentChangeUnit(unit) ? '%' : unit;
   // Длинная единица («индекс, старт = 100») не сжимает заголовок столбца до шести строк: она остаётся в подсказке и в блоке «О показателе».
   const longUnit = String(tableUnit || '').trim().length > 16;
 
@@ -107,6 +132,15 @@ export default function DataTable({
         <h3 className="min-w-0 text-base font-semibold text-text-primary">
           {resolvedTitle}
         </h3>
+        {repeats > 0 ? (
+          <Chip
+            active={onlyChanges}
+            onClick={() => setOnlyChangesChoice(!onlyChanges)}
+            className="fe-histtable__only"
+          >
+            {t('c9c.table.onlyChanges')}
+          </Chip>
+        ) : null}
         <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-tertiary" />
           <input
@@ -188,7 +222,7 @@ export default function DataTable({
                   </td>
                   <td className="px-5 py-2.5 text-right text-sm font-semibold tabular-nums text-text-primary">
                     {showUnitInValues
-                      ? valueWithUnit(row.value, valueDigits, unit)
+                      ? valueWithUnit(row.value, valueDigits, rowUnit)
                       : formatValue(row.value, valueDigits)}
                   </td>
                   <td className="fe-histtable__chg px-5 py-2.5 text-right text-sm">

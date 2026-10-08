@@ -3299,4 +3299,7 @@ export default {
   'c9c.key.inflationAvgImf': 'average for {period}, IMF estimate',
   'c9c.archive.title': 'Archive: series with no new data',
   'c9c.rows.more': 'Show more indicators ({n})',
+  'c9c.table.onlyChanges': 'Changes only',
+  'c9c.tele.maxWindow': 'Peak over {n} years',
+  'c9c.tele.avgWindow': 'Average over {n} years',
 };

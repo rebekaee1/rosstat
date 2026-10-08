@@ -47,7 +47,7 @@ import GenericIndicatorView from '../components/GenericIndicatorView';
 import { useLocale, useT } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import { resolveViewModeContent } from '../i18n/resolveViewModeCopy';
-import { cpiCanonicalTarget } from '../lib/cpiViewModeResolve';
+import { cpiCanonicalTarget, cpiInflationGranularity } from '../lib/cpiViewModeResolve';
 import { HOUSING_CODES, housingCanonicalTarget } from '../lib/housingViewModeResolve';
 import { PPI_CODES, ppiCanonicalTarget } from '../lib/ppiViewModeResolve';
 import { CBR_TERM_SLICE_CODES } from '../lib/cbrTermSliceRateResolve';
@@ -253,7 +253,7 @@ export default function IndicatorDetail() {
     isUnemploymentFamily,
     isUnemploymentCanonical,
     safeViewMode, chartMode, shouldSubtract100,
-    dataPoints: baseDataPoints, momDataPoints, inflationResp,
+    dataPoints: baseDataPoints, momDataPoints, inflationResp, inflationRespMonthly,
     quarterlyDataPoints, annualDataPoints, weeklyDataPoints,
     yoyDataPoints, qoqDataPoints, periodMonthlyDataPoints, periodWeeklyDataPoints,
     displayForecastData, quarterlyForecastData, annualForecastResp,
@@ -511,9 +511,15 @@ export default function IndicatorDetail() {
   const s = viewStats;
 
   // Главное число в шапке (компьютер): тот же ряд и та же единица, что нарисованы на графике.
-  const heroPoints = useMemo(() => (chartMode === 'inflation'
-    ? (inflationResp?.actuals || [])
-    : chartSeriesForViewMode({
+  // «К соответствующему периоду пред. года, по кварталам/годам»: график рисует точки на конец периода, а «Сейчас» —
+  // последнее месячное значение (6,34 % за август), и сравнивается оно с прошлым месяцем (круг 9, Y10).
+  const groupedInflation = chartMode === 'inflation' && Boolean(cpiInflationGranularity(safeViewMode))
+    && (inflationRespMonthly?.actuals?.length ?? 0) > 0;
+  const heroPoints = useMemo(() => (groupedInflation
+    ? inflationRespMonthly.actuals
+    : chartMode === 'inflation'
+      ? (inflationResp?.actuals || [])
+      : chartSeriesForViewMode({
       chartMode,
       isUnemploymentFamily,
       dataPoints,
@@ -526,7 +532,7 @@ export default function IndicatorDetail() {
       periodWeeklyDataPoints,
       periodMonthlyDataPoints,
     })), [
-    chartMode, inflationResp, isUnemploymentFamily, dataPoints, momDataPoints, quarterlyDataPoints,
+    groupedInflation, inflationRespMonthly, chartMode, inflationResp, isUnemploymentFamily, dataPoints, momDataPoints, quarterlyDataPoints,
     annualDataPoints, weeklyDataPoints, yoyDataPoints, qoqDataPoints, periodWeeklyDataPoints, periodMonthlyDataPoints,
   ]);
   const heroUnit = chartMode === 'index'
@@ -542,7 +548,10 @@ export default function IndicatorDetail() {
   const heroDateFormat = resolveDateFormat({
     chartMode, frequency: effectiveIndicator?.frequency, safeViewMode,
   });
-  const heroFreq = effectiveIndicator?.frequency;
+  // Частота точек в режиме, а не исходного ряда: «по кварталам» сравнивается с прошлым кварталом, «по годам» с прошлым годом.
+  const heroFreq = chartMode === 'quarterly' || chartMode === 'qoq' ? 'quarterly'
+    : chartMode === 'annual' ? 'annual'
+      : effectiveIndicator?.frequency;
   const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
     : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
       : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
@@ -751,6 +760,7 @@ export default function IndicatorDetail() {
         cpiPrevDate={cpiPrevDate}
         adj={adj}
         firstDate={dataPoints?.[0]?.date}
+        windowPoints={heroPoints}
         loading={
           loadingInd
           || (chartMode === 'inflation' && loadingInflation)

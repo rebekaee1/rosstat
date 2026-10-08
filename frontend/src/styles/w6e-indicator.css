@@ -124,11 +124,9 @@
 @media (min-width: 768px) {
   :root .fe-histtable { max-width: 62%; min-width: 30rem; }
 }
-@media (min-width: 768px) {
-  /* Шапка закреплена: у таблицы своя высота и прокрутка, иначе «прилипать» ей не к чему. */
-  :root .fe-histtable__scroll { max-height: 34rem; overflow-y: auto; }
-}
-:root .fe-histtable thead th { position: sticky; top: 0; z-index: 1; background: var(--color-surface, #fff); }
+/* Круг 9 (Y9): вложенной прокрутки нет — таблица идёт страницами по 20 строк, колесо мыши листает страницу, а не таблицу. */
+:root .fe-histtable thead th { background: var(--color-surface, #fff); }
+:root .fe-histtable__only { min-height: 36px; padding-inline: 14px; font-size: 13px; }
 :root .fe-histtable tr.is-max td { background: rgba(77, 138, 100, 0.1); }
 :root .fe-histtable tr.is-min td { background: rgba(200, 107, 91, 0.1); }
 :root .fe-histtable__chg { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }

@@ -3304,4 +3304,7 @@ export default {
   'c9c.key.inflationAvgImf': 'в среднем за {period}, оценка МВФ',
   'c9c.archive.title': 'В архиве: ряды без новых данных',
   'c9c.rows.more': 'Показать ещё показатели ({n})',
+  'c9c.table.onlyChanges': 'Только изменения',
+  'c9c.tele.maxWindow': 'Максимум за {n} лет',
+  'c9c.tele.avgWindow': 'Среднее за {n} лет',
 };

@@ -1,10 +1,12 @@
 import { formatDate, resolveDateFormat, chartValueDigits } from '../lib/format';
-import { dataModeForUrlMode } from '../lib/cpiViewModeResolve';
+import { cpiInflationGranularity, dataModeForUrlMode } from '../lib/cpiViewModeResolve';
 import { dataModeForHousingUrlMode } from '../lib/housingViewModeResolve';
 import { dataModeForPpiUrlMode } from '../lib/ppiViewModeResolve';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { periodPhrase, sincePhrase } from '../lib/periodPhrase';
-import { bestGrowth, growthOverYears, unitKind } from '../lib/indicatorSummary';
+import {
+  bestGrowth, growthOverYears, unitKind, windowStats,
+} from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
 import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
@@ -30,6 +32,7 @@ export default function IndicatorTelemetryGrid({
   loading,
   firstDate,
   points = null,
+  windowPoints = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -90,7 +93,11 @@ export default function IndicatorTelemetryGrid({
                     : dataMode === 'cpi' && isPriceCategory ? t('indicator.telemetry.monthGrowth')
                       : t('indicator.telemetry.current');
 
-  const previousLabel = dataMode === 'weekly' || safeViewMode === 'step-weekly'
+  // «К соотв. периоду пред. года» по кварталам/годам: предыдущая точка это прошлый квартал или прошлый год, а не месяц (круг 9, Y10).
+  const bucket = isPriceCategory ? cpiInflationGranularity(safeViewMode) : null;
+  const previousLabel = bucket === 'quarter' ? t('indicator.telemetry.prevQuarter')
+    : bucket === 'year' ? t('indicator.telemetry.prevYear')
+    : dataMode === 'weekly' || safeViewMode === 'step-weekly'
     || safeViewMode === 'period-weekly'
     ? t('indicator.telemetry.prevWeek')
     : safeViewMode === 'qoq' ? t('indicator.telemetry.prevQuarter')
@@ -107,7 +114,9 @@ export default function IndicatorTelemetryGrid({
                 : isPriceCategory ? t('indicator.telemetry.prevMonth')
                   : t('indicator.telemetry.prev');
 
-  const deltaSuffix = safeViewMode === 'qoq' ? t('w3.tele.delta.prevQuarter')
+  const deltaSuffix = bucket === 'quarter' ? t('w3.tele.delta.prevQuarter')
+    : bucket === 'year' ? t('w3.tele.delta.prevYear')
+    : safeViewMode === 'qoq' ? t('w3.tele.delta.prevQuarter')
     : safeViewMode === 'mom' ? t('w3.tele.delta.prevMonth')
       : safeViewMode === 'yoy' ? t('w3.tele.delta.prevYear')
         : safeViewMode === 'quarterly' ? t('w3.tele.delta.prevQuarter')
@@ -144,6 +153,10 @@ export default function IndicatorTelemetryGrid({
   const yearsWord = (n) => (locale === 'en'
     ? t(`w2.span.years.${n === 1 ? 'one' : 'many'}`)
     : pluralRu(n, [t('w2.span.years.one'), t('w2.span.years.few'), t('w2.span.years.many')]));
+
+  // Максимум и среднее за всю историю (в России это 1990-е, «2 508 %») ничего не говорят: у ряда длиннее десяти лет берём последние десять.
+  const win = !growthMode && Array.isArray(windowPoints) ? windowStats(windowPoints, 10) : null;
+  const windowed = win && win.years >= 10 ? win : null;
 
   return (
     <section className="fe-tele-section">
@@ -188,25 +201,25 @@ export default function IndicatorTelemetryGrid({
             delay={3}
           />
         )}
-        {!growthMode && (s?.highest || stats?.highest) && (
+        {!growthMode && (windowed || s?.highest || stats?.highest) && (
           <TelemetryCard
-            label={t('w3.tele.max')}
-            value={s?.highest?.value ?? adj(stats?.highest?.value)}
+            label={windowed ? t('c9c.tele.maxWindow', { n: windowed.years }) : t('w3.tele.max')}
+            value={windowed ? windowed.highest.value : (s?.highest?.value ?? adj(stats?.highest?.value))}
             unit={displayUnit}
             valueDigits={valueDigits}
-            meta={periodPhrase(t, s?.highest?.date ?? stats?.highest?.date, dateFmt, locale)
-              ? t('w3.tele.peakOn', { date: formatDate(s?.highest?.date ?? stats?.highest?.date, dateFmt, locale) })
+            meta={periodPhrase(t, windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale)
+              ? t('w3.tele.peakOn', { date: formatDate(windowed ? windowed.highest.date : (s?.highest?.date ?? stats?.highest?.date), dateFmt, locale) })
               : undefined}
             delay={2}
           />
         )}
-        {!growthMode && (s?.average != null || stats?.average != null) && (
+        {!growthMode && (windowed || s?.average != null || stats?.average != null) && (
           <TelemetryCard
-            label={t('w3.tele.avg')}
-            value={s?.average ?? adj(stats?.average)}
+            label={windowed ? t('c9c.tele.avgWindow', { n: windowed.years }) : t('w3.tele.avg')}
+            value={windowed ? windowed.average : (s?.average ?? adj(stats?.average))}
             unit={displayUnit}
             valueDigits={valueDigits}
-            meta={firstYear ? t('w3.tele.dataSince', { year: firstYear }) : undefined}
+            meta={windowed ? undefined : (firstYear ? t('w3.tele.dataSince', { year: firstYear }) : undefined)}
             delay={3}
           />
         )}

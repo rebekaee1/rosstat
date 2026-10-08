@@ -88,4 +88,28 @@ describe('DataTable', () => {
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '2024' } });
     await waitFor(() => expect(screen.getByText('1 / 3')).toBeTruthy());
   });
+
+  it('ряд «изменение за год, %» не повторяет единицу в каждой строке: в строках «%», полная единица в заголовке (круг 9, W10)', () => {
+    renderTable(<DataTable data={[{ date: '2026-01-01', value: 31.54 }]} unit="изменение за год, %" valueDigits={2} />);
+    expect(screen.getByText('31,54 %')).toBeTruthy();
+    expect(screen.queryByText(/изменение за год, %$/, { selector: 'td' })).toBeNull();
+  });
+
+  it('ступенчатый ряд по умолчанию показывает только дни перемен, переключатель возвращает все строки', () => {
+    const rows = Array.from({ length: 60 }, (_, index) => ({
+      date: new Date(Date.UTC(2026, 0, 1 + index)).toISOString().slice(0, 10),
+      value: index < 30 ? 14 : 15,
+    }));
+    renderTable(<DataTable data={rows} dateFormat="day" unit="%" />);
+    // Две перемены: первая точка и скачок с 14 на 15.
+    expect(document.querySelectorAll('tbody tr')).toHaveLength(2);
+    fireEvent.click(screen.getByRole('button', { name: 'Только изменения' }));
+    expect(screen.getByText('1 / 3')).toBeTruthy();
+  });
+
+  it('у ряда без повторов переключателя «Только изменения» нет', () => {
+    const rows = Array.from({ length: 5 }, (_, index) => ({ date: `2026-0${index + 1}-01`, value: index }));
+    renderTable(<DataTable data={rows} unit="%" />);
+    expect(screen.queryByRole('button', { name: 'Только изменения' })).toBeNull();
+  });
 });
