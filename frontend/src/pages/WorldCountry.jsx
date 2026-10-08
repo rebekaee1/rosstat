@@ -2,7 +2,7 @@
 // Темы слева + сетка показателей; поиск не ломает сетку.
 import NotFound from './NotFound';
 import {
-  useEffect, useMemo, useRef, useState, useDeferredValue,
+  Suspense, lazy, useEffect, useMemo, useRef, useState, useDeferredValue,
 } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
@@ -37,6 +37,7 @@ import { groupUsSections } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions } from '../lib/searchSynonyms';
 import { CountrySilhouette } from '../components/WorldMap';
+import { hasCountryStatesMap } from '../lib/countryStatesMap';
 import {
   breadcrumbJsonLd,
   worldCountryTrail,
@@ -60,6 +61,11 @@ import '../styles/z1-polish.css';
 import '../styles/z5-country.css';
 import '../styles/k6-country.css';
 import usePageLoading from '../lib/usePageLoading';
+import '../styles/c10m-map.css';
+
+// Круг 10 (К5): карта штатов (геометрия ~170 КБ) грузится только на странице США.
+const CountryStatesMap = lazy(() => import('../components/country/CountryStatesMap'));
+const StatesMapSkeleton = () => <div className="c10m-states-map c10m-states-map--skeleton" aria-hidden="true" />;
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
 const TOPIC_PRIORITY = [
@@ -232,11 +238,17 @@ export default function WorldCountry() {
   );
 
   // «Сравнить с Россией»: первый главный показатель страны, который есть и у России (честная сопоставимость).
+  // Круг 10 (Эн1): на английском сайте Россия не в центре внимания, парой для сравнения предлагаются США (у них тот же каталог показателей,
+  // отдельной проверки сопоставимости не нужно), а на странице самих США кнопки нет.
   const heroOverview = useMemo(() => orderKeyFigures(data?.overview || preload?.overview || []), [data, preload]);
-  const russiaCompareHref = useMemo(() => {
-    const pick = heroOverview.find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug]);
-    return pick ? `/compare?codes=w:${slug}:${pick.concept_slug},w:russia:${pick.concept_slug}` : '';
-  }, [heroOverview, slug]);
+  const partnerSlug = locale === 'en' ? 'united-states' : 'russia';
+  const partnerCompareHref = useMemo(() => {
+    if (slug === partnerSlug) return '';
+    const pick = partnerSlug === 'russia'
+      ? heroOverview.find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug])
+      : heroOverview[0];
+    return pick ? `/compare?codes=w:${slug}:${pick.concept_slug},w:${partnerSlug}:${pick.concept_slug}` : '';
+  }, [heroOverview, slug, partnerSlug]);
 
   const isUsCatalog = slug === 'united-states';
   const usTopics = useMemo(
@@ -333,15 +345,15 @@ export default function WorldCountry() {
         {t('world.country.compareCta')}
         <ArrowUpRight size={14} aria-hidden="true" />
       </Button>
-      {slug !== 'russia' && russiaCompareHref ? (
+      {partnerCompareHref ? (
         <Button
           as={Link}
-          to={russiaCompareHref}
+          to={partnerCompareHref}
           variant="secondary"
           className="w-full sm:w-auto"
         >
           <Scale size={15} aria-hidden="true" />
-          {t('w6b.country.compareRussia')}
+          {t(partnerSlug === 'russia' ? 'w6b.country.compareRussia' : 'c10m.country.compareUsa')}
         </Button>
       ) : null}
     </div>
@@ -445,6 +457,11 @@ export default function WorldCountry() {
                   slug={slug}
                   area={data.area}
                   population={data.population}
+                  mapSlot={data.country?.has_regions && hasCountryStatesMap(slug) ? (
+                    <Suspense fallback={<StatesMapSkeleton />}>
+                      <CountryStatesMap slug={slug} countryName={countryName} />
+                    </Suspense>
+                  ) : null}
                   className="z5-profile"
                   badge={(
                     <span className="z5-flag-badge">

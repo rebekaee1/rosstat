@@ -3374,4 +3374,7 @@ export default {
   'c10k.compare.showValues': 'Show values',
   // ===== Round 10: search =====
   'c10s.search.keepTyping': 'Keep typing: one letter is too little to search.',
+  // ===== Круг 10, зона «карта и главная» =====
+  'c10m.states.hint': 'Click a state to open its figures',
+  'c10m.country.compareUsa': 'Compare with the United States',
 };

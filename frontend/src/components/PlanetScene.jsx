@@ -18,7 +18,7 @@ import {
   bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, zoomedDistance,
 } from '../lib/planetView';
 import { WORLD_FEATURES } from '../lib/worldTopology';
-import { WORLD_NO_DATA, WORLD_TOP_COLOR } from '../lib/worldMapColors';
+import { WORLD_NO_DATA } from '../lib/worldMapColors';
 import {
   beginPlanetPointer, createPlanetPointerState, endPlanetPointer,
   movePlanetPointer, planetFitDistance, planetRenderBudget,
@@ -97,9 +97,9 @@ function paintAtlas(entries, { mode, valuesByCode, colorModel, width = ATLAS_WID
       const value = valueFor(valuesByCode, entry.dataCode);
       const hasValue = value != null && value !== '' && Number.isFinite(Number(value));
       // Суша закрашена почти непрозрачно: шкала читается с первого взгляда, а не «просвечивает» рельефом.
-      // Золото — только у страны на первом месте.
+      // Круг 10 (К1): золота нет, страна на первом месте — просто самая тёмная ступень шкалы.
       context.globalAlpha = 0.92;
-      context.fillStyle = !hasValue ? NO_DATA_FILL : colorModel.isTop?.(value) ? WORLD_TOP_COLOR : colorModel.colorFor(value);
+      context.fillStyle = !hasValue ? NO_DATA_FILL : colorModel.colorFor(value);
       context.fill();
     }
     // Borders are a hairline: a pale veil keeps them visible over dark colours, a thin graphite line draws them.

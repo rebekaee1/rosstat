@@ -10,7 +10,7 @@ import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { formatWorldValue, localizeWorldUnit } from '../lib/worldApi';
 import {
-  WORLD_NO_DATA, WORLD_TOP_COLOR, buildWorldColorModel,
+  WORLD_NO_DATA, buildWorldColorModel,
 } from '../lib/worldMapColors';
 import { valueExtent } from '../lib/regionsMapColors';
 import { comparePath, countryPath } from '../lib/sitePaths';
@@ -105,8 +105,6 @@ export default function PlanetView({
   conceptNote = null,
   // Круг 9 (P12): код «своей» страны (Россия на русском сайте, США на английском): кнопка «К России» подводит к ней карту и шар.
   homeCountryCode = '',
-  // Круг 9 (H7): золото первого места не нужно там, где первое место означает худшее (самая высокая инфляция): страница отключает его.
-  highlightTop = true,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -225,7 +223,7 @@ export default function PlanetView({
     for (const country of availableCountries) result.set(country.code, valueForCountry(country));
     return result;
   }, [valuesByCode, availableCountries, valueForCountry]);
-  const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection, highlightTop }), [displayValues, colorMode, colorDirection, highlightTop]);
+  const colorModel = useMemo(() => buildWorldColorModel(displayValues, { mode: colorMode, direction: colorDirection }), [displayValues, colorMode, colorDirection]);
   const extent = useMemo(() => valueExtent(displayValues), [displayValues]);
   // Одна точность на весь экран: карточка, список, подсказки и подписи на шаре показывают число одинаково.
   const digits = useMemo(() => uniformDigits(displayValues.values()), [displayValues]);
@@ -599,11 +597,10 @@ export default function PlanetView({
       {sceneStatus === 'loading' && <div className="planet-globe-veil__note" role="status"><Spinner size={16} />{t('c8w.globe.loading')}</div>}
     </div>
   ) : null;
-  // Подпись к цветам карты: серый «нет данных» и золото первого места (шкала цвета лежит в легенде ниже).
+  // Подпись к цветам карты: серый «нет данных» (шкала цвета лежит в легенде ниже; золота первого места с круга 10 нет).
   const mapLegend = hasMetric ? (
     <p className="planet-map-legend">
       <span><i style={{ backgroundColor: WORLD_NO_DATA }} aria-hidden="true" />{t('c8w.map.noData')}</span>
-      {colorModel.hasTop && <span><i style={{ backgroundColor: WORLD_TOP_COLOR }} aria-hidden="true" />{t('c8w.map.top')}</span>}
     </p>
   ) : null;
 
@@ -712,7 +709,6 @@ export default function PlanetView({
                     <p className="planet-legend-scale">{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>
                     <div className="planet-legend-bins">{colorModel.bins.map((bin, index) => <div key={index}><i style={{ backgroundColor: bin.color }} aria-hidden="true" /><span>{t(bin.labelKey)}</span><strong>{legendBinRange(bin, locale)} {displayUnit}</strong></div>)}</div>
                     <p className="planet-key-note"><i aria-hidden="true" />{t('w6c.key.noData', { count: catalogCount })}</p>
-                    {colorModel.hasTop && <p className="planet-key-note planet-key-note--top"><i aria-hidden="true" />{t('r6.planet.topNote')}</p>}
                   </div>
                 </details>
               </div>

@@ -21,7 +21,7 @@ import {
   loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
 } from '../lib/worldTopology';
 import {
-  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_TOP_COLOR,
+  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_SELECT_FILL, WORLD_SELECT_HALO, WORLD_SELECT_INK,
 } from '../lib/worldMapColors';
 import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
@@ -590,7 +590,7 @@ export default function WorldMap({
     onHover?.(null);
   };
   const fillFor = (item) => {
-    if (item.hasValue) return colorModel.isTop?.(item.value) ? WORLD_TOP_COLOR : colorModel.colorFor(item.value);
+    if (item.hasValue) return colorModel.colorFor(item.value);
     return item.active ? WORLD_NO_DATA : WORLD_OUTSIDE;
   };
   const labelFor = (item) => {
@@ -676,16 +676,28 @@ export default function WorldMap({
         />
       )}
       {selectedGeometry && (
-        <path
-          d={path(selectedGeometry) || ''}
-          fill="rgba(30,58,110,0.16)"
-          stroke="#1E3A6E"
-          strokeWidth={1.8}
-          vectorEffect="non-scaling-stroke"
-          pointerEvents="none"
-          aria-hidden="true"
-          data-selected-outline="true"
-        />
+        // Круг 10 (К2): выбранная страна видна на любой ступени шкалы: светлая заливка-«льдина», белое гало и тёмная кромка.
+        // Раньше был тонкий контур цвета самой тёмной ступени (#1E3A6E) и почти прозрачная заливка: на тёмных странах его не было видно.
+        <g pointerEvents="none" aria-hidden="true">
+          <path
+            d={path(selectedGeometry) || ''}
+            fill={WORLD_SELECT_FILL}
+            stroke={WORLD_SELECT_HALO}
+            strokeWidth={4.4}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            data-selected-halo="true"
+          />
+          <path
+            d={path(selectedGeometry) || ''}
+            fill="none"
+            stroke={WORLD_SELECT_INK}
+            strokeWidth={1.8}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            data-selected-outline="true"
+          />
+        </g>
       )}
       {markers.map((marker) => {
         const item = describe(marker.code);
@@ -707,9 +719,9 @@ export default function WorldMap({
               cx={marker.x}
               cy={marker.y}
               r={MARKER_RADIUS_PX * unitsPerPx}
-              fill={fillFor(item)}
-              stroke={selected || isHover ? '#1E3A6E' : 'rgba(30,38,56,0.65)'}
-              strokeWidth={selected || isHover ? 1.8 : 1}
+              fill={selected ? WORLD_SELECT_HALO : fillFor(item)}
+              stroke={selected || isHover ? WORLD_SELECT_INK : 'rgba(30,38,56,0.65)'}
+              strokeWidth={selected || isHover ? 2.2 : 1}
               vectorEffect="non-scaling-stroke"
             />
           </g>
@@ -956,16 +968,27 @@ export function CountrySilhouette({
   slug = '',
   className = '',
   badge = null,
+  // Круг 10 (К5): вместо силуэта страны можно положить свою карту (карта штатов США в профиле), остальное в карточке то же.
+  mapSlot = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
   const geometry = useCountryOutline(code);
   const reference = countryReference(code, locale);
-  const countryPath = useMemo(() => {
+  // Круг 10 (К4): рамка рисунка по самому контуру страны, а не фиксированные 360 × 200. Раньше узкая или вытянутая страна занимала
+  // середину пустой рамки и на плите выглядела маленьким пятном; теперь контур заполняет отведённое место по длинной стороне.
+  const outline = useMemo(() => {
     if (!geometry) return null;
-    const projection = geoMercator().fitExtent([[20, 16], [340, 184]], geometry);
-    return geoPath(projection)(geometry);
+    const projection = geoMercator().fitExtent([[0, 0], [360, 200]], geometry);
+    const draw = geoPath(projection);
+    const d = draw(geometry);
+    if (!d) return null;
+    const [[x0, y0], [x1, y1]] = draw.bounds(geometry);
+    if (![x0, y0, x1, y1].every(Number.isFinite) || x1 <= x0 || y1 <= y0) return { d, viewBox: '0 0 360 200' };
+    const pad = 5;
+    return { d, viewBox: `${(x0 - pad).toFixed(1)} ${(y0 - pad).toFixed(1)} ${(x1 - x0 + pad * 2).toFixed(1)} ${(y1 - y0 + pad * 2).toFixed(1)}` };
   }, [geometry]);
+  const countryPath = outline?.d || null;
   const areaUnitRaw = (area?.unit || '').trim();
   // Между числом и единицей обычный пробел: длинная строка из числа с неразрывными пробелами и единицы
   // не должна рваться по буквам, перенос идёт по границе слов.
@@ -1016,7 +1039,7 @@ export function CountrySilhouette({
       kind: 'population',
     });
   }
-  if (!countryPath && !areaValue && !populationValue && !reference) return null;
+  if (!mapSlot && !countryPath && !areaValue && !populationValue && !reference) return null;
   return (
     <section className={`w2-profile${className ? ` ${className}` : ''}`} aria-label={t('world.map.outlineAria', { name })}>
       <div className="w2-profile-head">
@@ -1025,8 +1048,9 @@ export function CountrySilhouette({
         {region && <span className="w2-profile-region">{region}</span>}
       </div>
       {/* Круг 9 (W7): нет контура — карточка всё равно с фактами (столица, валюта, население), без картинки. */}
-      {countryPath ? (
-        <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
+      {mapSlot || null}
+      {!mapSlot && countryPath ? (
+        <svg viewBox={outline.viewBox} className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
           <path
             d={countryPath}
             className="w2-profile-shape"
