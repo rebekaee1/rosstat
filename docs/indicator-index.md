@@ -27,13 +27,13 @@
 
 ## Сводка
 
-- Всего кодов: **947**
+- Всего кодов: **975**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
 - unresolved (нет ui_stack): **3**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=899, `housing`=8, `null`=3, `ppi`=5
+По стекам: `cpi`=32, `generic`=927, `housing`=8, `null`=3, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
@@ -654,6 +654,20 @@
 | `key-rate-yoy` | Финансы | monthly | `generic` | — | — | — |
 | `key-rate-yoy-quarter` | Финансы | quarterly | `generic` | — | — | — |
 | `key-rate-yoy-year` | Финансы | annual | `generic` | — | — | — |
+| `kzt-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `kzt-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `kzt-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kzt-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `kzt-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `kzt-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `kzt-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kzt-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `kzt-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `kzt-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `kzt-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `kzt-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `kzt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kzt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `labor-force` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `labor-force-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -884,6 +898,20 @@
 | `trade-balance-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `trade-balance-yoy-abs` | Торговля | quarterly | `generic` | — | — | both, shadowed |
 | `trade-balance-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
+| `try-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `try-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `try-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `try-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `try-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `try-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `try-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `try-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `try-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `try-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `try-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `try-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `try-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `try-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `unemployment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | shadowed |
 | `unemployment-annual` | Рынок труда | monthly | `generic` | — | — | — |
 | `unemployment-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
@@ -1001,7 +1029,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **123** · с полной матрицей: **108** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 109, 'orphan': 3}.
+Корней-семейств: **125** · с полной матрицей: **110** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 111, 'orphan': 3}.
 
 ## Систематические пробелы по типам
 
@@ -1013,7 +1041,7 @@
 | bespoke/CPI | index | month | 4 | `yoy:quarter`, `yoy:year` |
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
-| generic/T1 | rate | day | 21 | — |
+| generic/T1 | rate | day | 23 | — |
 | generic/T10 | annual-count | year | 13 | — |
 | generic/T10a | annual-signed | year | 11 | — |
 | generic/T12 | ratio-index | month | 2 | — |
