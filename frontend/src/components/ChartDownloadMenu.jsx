@@ -85,7 +85,7 @@ export function ChartSaveButton({ onPng, imageBlocked = false, className }) {
     <Button
       variant="secondary"
       size="sm"
-      className={cn('z4-png-btn gap-1.5', className)}
+      className={cn('z4-png-btn gap-1.5', imageBlocked && 'z4-png-btn--locked', className)}
       aria-label={t('z4.png.aria')}
       title={imageBlocked ? t('download.chartBlocked') : t('z4.png.title')}
       data-no-export="true"

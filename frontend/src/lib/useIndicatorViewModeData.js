@@ -600,6 +600,8 @@ export default function useIndicatorViewModeData({ code, viewMode }) {
 
     dataPoints,
     inflationResp: inflationRespView,
+    // Помесячный ряд до разбивки на кварталы/годы: из него берётся «Сейчас» (август 2026), а не декабрь прошлого года.
+    inflationRespMonthly: inflationResp,
     quarterlyDataPoints,
     annualDataPoints,
     weeklyDataPoints,

@@ -951,7 +951,6 @@ export function CountrySilhouette({
     const projection = geoMercator().fitExtent([[20, 16], [340, 184]], geometry);
     return geoPath(projection)(geometry);
   }, [geometry]);
-  if (!countryPath) return null;
   const areaUnitRaw = (area?.unit || '').trim();
   // Между числом и единицей обычный пробел: длинная строка из числа с неразрывными пробелами и единицы
   // не должна рваться по буквам, перенос идёт по границе слов.
@@ -1002,6 +1001,7 @@ export function CountrySilhouette({
       kind: 'population',
     });
   }
+  if (!countryPath && !areaValue && !populationValue && !reference) return null;
   return (
     <section className={`w2-profile${className ? ` ${className}` : ''}`} aria-label={t('world.map.outlineAria', { name })}>
       <div className="w2-profile-head">
@@ -1009,13 +1009,16 @@ export function CountrySilhouette({
         {badge}
         {region && <span className="w2-profile-region">{region}</span>}
       </div>
-      <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
-        <path
-          d={countryPath}
-          className="w2-profile-shape"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
+      {/* Круг 9 (W7): нет контура — карточка всё равно с фактами (столица, валюта, население), без картинки. */}
+      {countryPath ? (
+        <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
+          <path
+            d={countryPath}
+            className="w2-profile-shape"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+      ) : null}
       {(areaValue || populationValue || reference) && (
         <dl className="w2-profile-facts">
           {areaValue && (

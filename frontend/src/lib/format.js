@@ -399,6 +399,8 @@ export function formatDate(dateStr, format = 'short', locale) {
     return `${day} ${MONTHS_DAY[loc][month]} ${year}`;
   }
   if (format === 'full') return `${MONTHS_FULL[loc][month]} ${year}`;
+  // «13 авг»: подпись оси по дням в окне до года-полутора, где год и так понятен (круг 9, Y9).
+  if (format === 'dayShort') return `${day} ${MONTHS_SHORT[loc][month]}`;
   // «января 2016» — месяц в родительном падеже: «с января 2016 по август 2026», «до августа 2026».
   if (format === 'fullGen') return `${MONTHS_DAY[loc][month]} ${year}`;
   return `${MONTHS_SHORT[loc][month]} ${year}`;

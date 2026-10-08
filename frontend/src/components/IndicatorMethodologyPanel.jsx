@@ -59,7 +59,7 @@ export default function IndicatorMethodologyPanel({ indicator, content, sourcePa
             textClassName="fe-info-card__source-text"
           >
             <Database className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span className="min-w-0 truncate">{sourceLabel}</span>
+            <span className="min-w-0 whitespace-normal break-words text-left leading-snug">{sourceLabel}</span>
             {externalHref ? <ExternalLink className="ml-auto h-3 w-3 shrink-0 opacity-60" aria-hidden="true" /> : null}
           </SourceLink>
         </div>

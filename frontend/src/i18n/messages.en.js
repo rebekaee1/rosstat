@@ -3313,4 +3313,14 @@ export default {
   'c9e.cal.legendMore': 'How to read the calendar',
   'c9e.demo.stackNote': 'The layers are stacked: the top edge shows the whole population.',
   'c9e.reg.compareWith': 'Compare with another region',
+  // ===== Round 9: zone C (country page, ranking, indicators) =====
+  'c9c.key.inflationYoy': 'year over year, {period}',
+  'c9c.key.inflationAvg': 'average for {period}',
+  'c9c.key.inflationAvgImf': 'average for {period}, IMF estimate',
+  'c9c.archive.title': 'Archive: series with no new data',
+  'c9c.rows.more': 'Show more indicators ({n})',
+  'c9c.table.onlyChanges': 'Changes only',
+  'c9c.tele.maxWindow': 'Peak over {n} years',
+  'c9c.tele.avgWindow': 'Average over {n} years',
+  'c9c.rating.inflationNote': 'Each year shows its last reading, December against the previous December. The latest month is on the country page.',
 };

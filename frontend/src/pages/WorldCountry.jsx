@@ -2,7 +2,7 @@
 // Темы слева + сетка показателей; поиск не ломает сетку.
 import NotFound from './NotFound';
 import {
-  useEffect, useMemo, useState, useDeferredValue,
+  useEffect, useMemo, useRef, useState, useDeferredValue,
 } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
@@ -28,10 +28,10 @@ import { SkeletonBox } from '../components/Skeleton';
 import LoadingNote from '../components/LoadingNote';
 import MobileNavSelect from '../components/MobileNavSelect';
 import UsCatalogNav from '../components/UsCatalogNav';
-import CountryKeyFigures, { KEY_FIGURES_MAX } from '../components/country/CountryKeyFigures';
+import CountryKeyFigures from '../components/country/CountryKeyFigures';
 import { CountryMood, CrystalDefs } from '../components/country/CountryMood';
 import CountryTopicNav, { GdpForecastCard, SimilarCountries } from '../components/country/CountryTopicNav';
-import { IndicatorRow, IndicatorRows } from '../components/country/CountryIndicatorRow';
+import { IndicatorRow, IndicatorRows, ROWS_FIRST } from '../components/country/CountryIndicatorRow';
 import { SparkBudgetContext, createSparkBudget } from '../components/country/sparkBudget';
 import { groupUsSections } from '../lib/usCatalogTopics';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -50,7 +50,9 @@ import {
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { countryPublicName, HOME_MAP_RUSSIA_CONCEPT_CODES } from '../lib/homeWorkbench';
-import { indicatorsCountText, similarCountries, topicDisplayName } from '../lib/countryKeyFigures';
+import {
+  indicatorsCountText, isPinnedTopic, orderKeyFigures, similarCountries, topicDisplayName,
+} from '../lib/countryKeyFigures';
 import { readCountryBootstrap } from '../lib/countryBootstrap';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
@@ -61,7 +63,7 @@ import usePageLoading from '../lib/usePageLoading';
 
 /** Главные темы идут первыми: человек ждёт «Экономику» и «Население», а не алфавитный «Бизнес». */
 const TOPIC_PRIORITY = [
-  'Национальные счета', 'Цены', 'Рынок труда', 'Население', 'Государственные финансы',
+  'Национальные счета', 'Цены', 'Финансы', 'Рынок труда', 'Население', 'Государственные финансы',
   'Внешняя торговля', 'Бизнес и инвестиции',
 ];
 function topicRank(category) {
@@ -73,7 +75,7 @@ function topicRank(category) {
 const THIN_TOPIC = 5;
 
 /** Сколько мини-графиков в строках списка загружается за один визит: сайт не должен «душить» себя запросами. */
-const SPARK_BUDGET = 36;
+const SPARK_BUDGET = 72;
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -195,7 +197,10 @@ export default function WorldCountry() {
     return slug === 'united-states'
       ? mapped
       : [...mapped].sort((a, b) => (
-        Number(a.count < THIN_TOPIC) - Number(b.count < THIN_TOPIC) || topicRank(a) - topicRank(b)
+        // ВВП, цены и деньги закреплены сверху даже при трёх показателях (круг 9, W1); тонкие остальные темы уходят в конец.
+        Number(!isPinnedTopic(a)) - Number(!isPinnedTopic(b))
+        || Number(!isPinnedTopic(a) && a.count < THIN_TOPIC) - Number(!isPinnedTopic(b) && b.count < THIN_TOPIC)
+        || topicRank(a) - topicRank(b)
       ));
   }, [data, slug]);
 
@@ -227,7 +232,7 @@ export default function WorldCountry() {
   );
 
   // «Сравнить с Россией»: первый главный показатель страны, который есть и у России (честная сопоставимость).
-  const heroOverview = useMemo(() => data?.overview || preload?.overview || [], [data, preload]);
+  const heroOverview = useMemo(() => orderKeyFigures(data?.overview || preload?.overview || []), [data, preload]);
   const russiaCompareHref = useMemo(() => {
     const pick = heroOverview.find((item) => HOME_MAP_RUSSIA_CONCEPT_CODES[item.concept_slug]);
     return pick ? `/compare?codes=w:${slug}:${pick.concept_slug},w:russia:${pick.concept_slug}` : '';
@@ -250,7 +255,10 @@ export default function WorldCountry() {
     ? activeCategory
     : ((isUsCatalog ? usTopics[0]?.sections[0] : filteredCategories[0])?.name || '');
   const activeUsTopic = usTopics.find((topic) => topic.sections.some((cat) => cat.name === resolvedActiveCategory));
+  // Тема, выбранная нажатием: пока идёт плавная прокрутка (и у конца страницы, куда короткая тема не доезжает), подсветка держится на ней (круг 9, W8).
+  const pickedRef = useRef({ name: '', until: 0 });
   const selectCategory = (name) => {
+    pickedRef.current = { name, until: Date.now() + 700 };
     setActiveCategory(name);
   };
   const selectUsTopic = (id) => {
@@ -268,7 +276,7 @@ export default function WorldCountry() {
     }).filter((cat) => cat.indicators.length > 0) : filteredCategories)
     : (isMobileSingle || (isUsCatalog && denseCatalog)
       ? filteredCategories.filter((cat) => cat.name === resolvedActiveCategory)
-      : filteredCategories).map((cat) => (isMobileSingle || denseCatalog
+      : filteredCategories).map((cat) => (isUsCatalog && (isMobileSingle || denseCatalog)
       ? {
         ...cat,
         indicators: cat.indicators.slice(
@@ -284,6 +292,15 @@ export default function WorldCountry() {
     const syncActive = () => {
       frame = 0;
       const sections = document.querySelectorAll('[data-world-country-category]');
+      const picked = pickedRef.current;
+      if (picked.name) {
+        const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+        if (Date.now() < picked.until || atBottom) {
+          setActiveCategory((previous) => previous === picked.name ? previous : picked.name);
+          return;
+        }
+        pickedRef.current = { name: '', until: 0 };
+      }
       let current = sections[0]?.dataset.worldCountryCategory;
       for (const section of sections) {
         if (section.getBoundingClientRect().top > 150) break;
@@ -388,7 +405,7 @@ export default function WorldCountry() {
           <h2 className="w2-main-title z5-main-title" aria-hidden="true">{t('w6b.country.main')}</h2>
           {preload ? (
             <CountryKeyFigures
-              items={preload.overview.slice(0, KEY_FIGURES_MAX)}
+              items={preload.overview}
               slug={slug}
               locale={locale}
               preload={preload}
@@ -441,7 +458,7 @@ export default function WorldCountry() {
 
             <h2 className="w2-main-title z5-main-title">{t('w6b.country.main')}</h2>
             <CountryKeyFigures
-              items={(data.overview || []).slice(0, KEY_FIGURES_MAX)}
+              items={data.overview || []}
               slug={slug}
               locale={locale}
               preload={preload}
@@ -576,6 +593,7 @@ export default function WorldCountry() {
                       sectionName={isUsCatalog ? cat.name_ru : undefined}
                       locale={locale}
                       collapse={!isUsCatalog && !searching}
+                      firstRows={!isUsCatalog && !searching ? ROWS_FIRST : undefined}
                     />
                   </div>
                   {!searching && (isMobileSingle || denseCatalog) && cat.count > cat.indicators.length && (

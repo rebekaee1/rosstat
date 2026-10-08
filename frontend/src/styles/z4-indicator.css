@@ -378,8 +378,9 @@
 .z4-chart-head .fe-chart-actions { gap: 8px; }
 .z4-dl { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 @media (max-width: 479.98px) {
-  .z4-png-btn__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .z4-png-btn:not(.z4-png-btn--locked) .z4-png-btn__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .z4-png-btn { min-width: 44px; justify-content: center; }
+  /* Круг 9 (W11): кнопка с замком (гость) остаётся с подписью, иначе это просто «картинка с замком» без слов. */
 }
 
 @media (min-width: 1100px) {

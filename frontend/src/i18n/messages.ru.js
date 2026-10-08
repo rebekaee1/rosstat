@@ -3318,4 +3318,14 @@ export default {
   'c9e.cal.legendMore': 'Как читать календарь',
   'c9e.demo.stackNote': 'Слои сложены: верхняя граница показывает всё население.',
   'c9e.reg.compareWith': 'Сравнить с другим регионом',
+  // ===== Круг 9: зона C (страница страны, рейтинг, показатели) =====
+  'c9c.key.inflationYoy': 'год к году, {period}',
+  'c9c.key.inflationAvg': 'в среднем за {period}',
+  'c9c.key.inflationAvgImf': 'в среднем за {period}, оценка МВФ',
+  'c9c.archive.title': 'В архиве: ряды без новых данных',
+  'c9c.rows.more': 'Показать ещё показатели ({n})',
+  'c9c.table.onlyChanges': 'Только изменения',
+  'c9c.tele.maxWindow': 'Максимум за {n} лет',
+  'c9c.tele.avgWindow': 'Среднее за {n} лет',
+  'c9c.rating.inflationNote': 'Для каждого года показано последнее значение: декабрь к декабрю. Свежий месяц есть на странице страны.',
 };
