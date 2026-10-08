@@ -277,7 +277,7 @@ export default function RussiaHome() {
       )}
 
       {isLoading && (
-        <div role="status" aria-busy="true" aria-label={t('common.loading')}>
+        <div className="min-h-[70svh]" role="status" aria-busy="true" aria-label={t('common.loading')}>
           <LoadingNote onRefresh={() => refetch()} className="mb-4" />
           <SkeletonBox className="mb-4 h-[78px] w-full rounded-xl lg:hidden" />
           <div className="grid min-w-0 gap-6 lg:grid-cols-[250px_minmax(0,1fr)]">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, CheckCircle2, Clock3, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, CalendarPlus, CheckCircle2, Clock3, ExternalLink } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { isExternalHref } from '../../lib/sourceLink';
@@ -11,6 +11,8 @@ import {
 import { useLocale, useT } from '../../i18n';
 import { plainEventTitle, plainEventText, localizeReferencePeriod, pluralForm } from '../../lib/calendarText';
 import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
+import { buildEventIcs, downloadIcs } from '../../lib/calendarIcs';
+import { getSiteOrigin } from '../../lib/siteOrigin';
 import '../../styles/ui-detail-nav-calendar.css';
 
 const SOURCE_STYLES = {
@@ -126,6 +128,16 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
   const title = plainEventTitle(event.title, locale);
   const period = localizeReferencePeriod(event.reference_period, locale);
   const hasValues = event.previous_value != null || event.forecast_value != null || event.actual_value != null;
+
+  // «В календарь телефона»: файл .ics собирается здесь же, без регистрации. Прошедшим событиям он не нужен.
+  const addToCalendar = () => {
+    const ics = buildEventIcs(event, {
+      title,
+      description: event.description ? plainEventText(event.description, locale) : '',
+      url: `${getSiteOrigin()}${calendarPath()}`,
+    });
+    downloadIcs(ics, `${event.scheduled_date || 'event'}-${event.indicator_code || 'calendar'}.ics`);
+  };
 
   const linkedIndicators = Array.isArray(event.indicators) && event.indicators.length > 0
     ? event.indicators
@@ -259,6 +271,20 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
                 </li>
               ))}
             </ul>
+          )}
+          {!isPast && event.scheduled_date && (
+            <button
+              type="button"
+              onClick={addToCalendar}
+              className={cn(
+                FOCUS_RING_SURFACE,
+                'fe-press inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted fe-glass-2 sm:min-h-9',
+              )}
+              data-testid="calendar-add-ics"
+            >
+              <CalendarPlus className="h-4 w-4 shrink-0" aria-hidden="true" />
+              {t('c9e.cal.addToCalendar')}
+            </button>
           )}
           <SourceLink
             href={event.source_url}

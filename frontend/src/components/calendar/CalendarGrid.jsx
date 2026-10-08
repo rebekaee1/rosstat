@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import Button from '../Button';
@@ -231,7 +231,14 @@ export default function CalendarGrid({
           <span className="inline-flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" /> {t('calendar.source.minfin')}</span>
           <span className="fe-cal-legend__count">{t('calendar.eventsCount', { n: oneOffCount })}</span>
         </div>
-        <p className="fe-cal-legend__hint">{t('w3.cal.legendHint')}</p>
+        {/* Справка по цветам и жирным числам занимала три строки под сеткой: теперь она сворачивается. */}
+        <details className="fe-acc fe-cal-legend__more">
+          <summary className="fe-tap-inline gap-1 text-sm text-champagne-ink">
+            {t('c9e.cal.legendMore')}
+            <ChevronDown size={14} className="fe-acc__chev" aria-hidden="true" />
+          </summary>
+          <p className="fe-cal-legend__hint">{t('w3.cal.legendHint')}</p>
+        </details>
       </div>
     </div>
   );

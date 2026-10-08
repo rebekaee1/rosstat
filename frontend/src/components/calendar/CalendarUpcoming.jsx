@@ -2,6 +2,7 @@ import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { useLocale, useT } from '../../i18n';
 import { plainEventTitle } from '../../lib/calendarText';
+import { groupSimilarEvents } from '../../lib/calendarGrouping';
 
 const SOURCE_DOT = {
   cbr: 'bg-blue-500',
@@ -16,7 +17,8 @@ const SOURCE_DOT = {
 export default function CalendarUpcoming({ events = [], onPick, limit = 5 }) {
   const t = useT();
   const { locale } = useLocale();
-  const items = events.slice(0, limit);
+  // ИПЦ и его составляющие приходят отдельными событиями с одним названием: склеиваем в одну строку.
+  const items = groupSimilarEvents(events).slice(0, limit);
   if (items.length === 0) return null;
   return (
     <section className="fe-cal-upcoming hidden md:block" aria-label={t('w6f.cal.upcoming')} data-testid="calendar-upcoming">
@@ -34,7 +36,12 @@ export default function CalendarUpcoming({ events = [], onPick, limit = 5 }) {
               >
                 <span className={cn('fe-cal-upcoming__dot', SOURCE_DOT[ev.source] || 'bg-text-tertiary')} aria-hidden="true" />
                 <span className="fe-cal-upcoming__main">
-                  <span className="fe-cal-upcoming__name">{plainEventTitle(ev.title, locale)}</span>
+                  <span className="fe-cal-upcoming__name">
+                    {plainEventTitle(ev.title, locale)}
+                    {ev.indicators?.length > 1 ? (
+                      <span className="ml-1.5 font-normal text-text-tertiary">{t('c9e.cal.moreParts', { n: ev.indicators.length - 1 })}</span>
+                    ) : null}
+                  </span>
                   <span className="fe-cal-upcoming__when">
                     {dayLabel}
                     {ev.scheduled_time ? `, ${ev.scheduled_time} ${t('calendar.hero.msk')}` : ''}

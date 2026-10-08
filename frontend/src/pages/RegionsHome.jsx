@@ -830,13 +830,13 @@ export default function RegionsHome() {
           )}
 
           <div id="chart" data-block="regions-map" className="relative rounded-3xl p-3 sm:p-5 fe-glass-lite" ref={mapCardRef}>
-            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div className="mb-3 flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 {activeMapCode && paint.indicator ? (
                   <>
                     {/* Название темы («Зарплата») уже стоит на выбранной вкладке выше: повторять его заголовком карточки не нужно (круг 8, Y3). */}
-                    <div className={activePreset
-                      ? 'line-clamp-2 font-display text-base font-bold leading-snug text-text-primary'
+                    <div title={paint.indicator.name} className={activePreset
+                      ? 'line-clamp-3 font-display text-base font-bold leading-snug text-text-primary sm:line-clamp-2'
                       : 'text-sm font-medium leading-snug text-text-primary'}
                     >
                       {paint.indicator.name}

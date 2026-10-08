@@ -12,15 +12,25 @@ import { isCpiIndex } from './format';
 
 const NAME_COLLATOR = new Intl.Collator('ru');
 
+/** Главные показатели страны: в своей категории стоят первыми, остальное — по алфавиту (иначе «Индекс доступности жилья» шёл перед ИПЦ). */
+const PRIORITY_CODES = ['cpi', 'key-rate', 'usd-rub', 'eur-rub', 'cny-rub'];
+const priorityOf = (item) => {
+  const i = PRIORITY_CODES.indexOf(item?.code);
+  return i < 0 ? PRIORITY_CODES.length : i;
+};
+
 /**
  * Порядок плитки внутри секции: ряды с текущим значением — выше (как в
- * листинге страны WorldCountry), внутри группы — по имени.
+ * листинге страны WorldCountry), затем главные показатели (ИПЦ, ключевая ставка,
+ * курсы), внутри группы — по имени.
  */
 export function sortRussiaTiles(items) {
   return [...(items || [])].sort((a, b) => {
     const aHas = a?.current_value != null ? 0 : 1;
     const bHas = b?.current_value != null ? 0 : 1;
     if (aHas !== bHas) return aHas - bHas;
+    const byPriority = priorityOf(a) - priorityOf(b);
+    if (byPriority !== 0) return byPriority;
     return NAME_COLLATOR.compare(a?.name || a?.code || '', b?.name || b?.code || '');
   });
 }
@@ -211,5 +221,5 @@ export function russiaMainFive(indicators) {
   return out;
 }
 
-/** Сколько строк категории видно сразу, остальное по кнопке «Показать ещё». */
-export const RUSSIA_CATEGORY_PREVIEW = 5;
+/** Сколько строк категории видно сразу, остальное по кнопке «Показать ещё». Чётное число: плитки идут в две колонки без пустой ячейки. */
+export const RUSSIA_CATEGORY_PREVIEW = 6;

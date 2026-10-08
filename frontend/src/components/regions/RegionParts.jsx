@@ -44,23 +44,28 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
 }
 
 /**
- * Крошечный указатель направления «было → стало» (прошлый год и последний): короткая линия с точкой.
- * Это не история ряда, а наглядный знак роста или падения; полный график открывается по нажатию на строку.
+ * Указатель направления «было → стало» (прошлый год и последний): стрелка вверх, вниз или ровная.
+ * Это не история ряда и не график из двух точек, а знак роста или падения; полный график открывается по нажатию на строку.
  */
 export function TrendTick({ value, prevValue, polarity = 'neutral' }) {
   const a = Number(prevValue);
   const b = Number(value);
   if (value == null || prevValue == null || !Number.isFinite(a) || !Number.isFinite(b)) return null;
   const same = Math.abs(b - a) < 1e-9;
-  const y1 = same ? 10 : (b > a ? 15 : 5);
-  const y2 = same ? 10 : (b > a ? 5 : 15);
-  const good = (b > a && polarity === 'up-good') || (b < a && polarity === 'up-bad');
-  const bad = (b > a && polarity === 'up-bad') || (b < a && polarity === 'up-good');
-  const color = good ? '#15803d' : bad ? '#b91c1c' : '#AD8A48';
+  const up = b > a;
+  const good = (up && polarity === 'up-good') || (!up && !same && polarity === 'up-bad');
+  const bad = (up && polarity === 'up-bad') || (!up && !same && polarity === 'up-good');
+  const color = good ? '#15803d' : bad ? '#b91c1c' : '#5B6575';
+  // Стрелка под углом: вверх-вправо, вниз-вправо или горизонтально; наконечник — два коротких штриха.
+  const y1 = same ? 10 : (up ? 15 : 5);
+  const y2 = same ? 10 : (up ? 5 : 15);
+  const head = same
+    ? 'M33 6 L39 10 L33 14'
+    : up ? 'M31 5 L39 5 L39 13' : 'M31 15 L39 15 L39 7';
   return (
     <svg className="fe-trend-tick" viewBox="0 0 44 20" width="44" height="20" aria-hidden="true" focusable="false">
-      <line x1="3" y1={y1} x2="39" y2={y2} stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <circle cx="39" cy={y2} r="2.6" fill={color} />
+      <line x1="5" y1={y1} x2="38" y2={y2} stroke={color} strokeWidth="2" strokeLinecap="round" />
+      <path d={head} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

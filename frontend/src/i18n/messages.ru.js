@@ -3311,4 +3311,11 @@ export default {
   'c9a.pwa.how': 'Как?',
   'c9a.ticker.staleFrom': 'данные от {date}',
   'c9a.locale.switching': 'Переключаем язык…',
+  // ===== Круг 9: Россия, регионы, календарь (E) =====
+  'c9e.rank.valueTitle': 'Этот показатель в регионе: график и таблица',
+  'c9e.cal.addToCalendar': 'В календарь телефона',
+  'c9e.cal.moreParts': 'ещё {n}',
+  'c9e.cal.legendMore': 'Как читать календарь',
+  'c9e.demo.stackNote': 'Слои сложены: верхняя граница показывает всё население.',
+  'c9e.reg.compareWith': 'Сравнить с другим регионом',
 };

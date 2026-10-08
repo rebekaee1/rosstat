@@ -6,7 +6,7 @@
 // их полигоны на мелком масштабе не разглядеть.
 // Зум (+/−/сброс) и панорамирование перетаскиванием — правка созвона
 // «На правки 13» (мелкие республики Кавказа не разглядеть без приближения).
-import { useMemo, useState, useCallback, useRef } from 'react';
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus, Minus, Maximize2, X, ArrowRight, GitCompare } from 'lucide-react';
 import mapData from '../lib/regionsMap.json';
@@ -87,6 +87,7 @@ export default function RegionsMap({
   const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
   const panRef = useRef(null); // { startX, startY, tx, ty, moved }
   const svgRef = useRef(null);
+  const pickCardRef = useRef(null);
 
   const viewBox = (compact && mapDataProp == null) ? COMPACT_VIEWBOX : geometry.viewBox;
   const drawBox = compact ? viewBox : paddedViewBox(viewBox);
@@ -94,6 +95,8 @@ export default function RegionsMap({
     () => viewBox.split(' ').map(Number),
     [viewBox],
   );
+
+  const aspect = vbH > 0 ? Number((vbW / vbH).toFixed(3)) : 1.9;
 
   // Квантильная шкала по ТЕКУЩЕМУ срезу (год на ползунке): цвет отражает
   // относительную позицию региона среди других В ЭТОМ ГОДУ.
@@ -143,6 +146,71 @@ export default function RegionsMap({
       });
     });
   }, [vbW, vbH, clampView]);
+
+  // Приближение вокруг точки экрана (щипок двумя пальцами, колесо с Ctrl или щипок на трекпаде).
+  // Точка переводится из пикселей в координаты рисунка с учётом полей viewBox, чтобы карта не «уезжала» из-под пальцев.
+  const zoomAround = useCallback((factor, clientX, clientY) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const box = svg.getBoundingClientRect();
+    if (!box.width || !box.height) return;
+    const [x0, y0, dw, dh] = drawBox.split(' ').map(Number);
+    const fx = x0 + ((clientX - box.left) / box.width) * dw;
+    const fy = y0 + ((clientY - box.top) / box.height) * dh;
+    setView((prev) => {
+      const k = Math.max(1, Math.min(ZOOM_MAX, prev.k * factor));
+      return clampView({
+        k,
+        tx: fx - (k / prev.k) * (fx - prev.tx),
+        ty: fy - (k / prev.k) * (fy - prev.ty),
+      });
+    });
+  }, [drawBox, clampView]);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || compact) return undefined;
+    let pinch = null; // { dist }
+    const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+    const onTouchStart = (e) => {
+      if (e.touches.length !== 2) { pinch = null; return; }
+      // Два пальца: страницу не прокручиваем и не масштабируем, приближаем карту.
+      e.preventDefault();
+      panRef.current = null;
+      pinch = { dist: dist(e.touches[0], e.touches[1]) };
+    };
+    const onTouchMove = (e) => {
+      if (!pinch || e.touches.length !== 2) return;
+      e.preventDefault();
+      const d = dist(e.touches[0], e.touches[1]);
+      if (!pinch.dist || !d) return;
+      const factor = d / pinch.dist;
+      pinch.dist = d;
+      zoomAround(
+        factor,
+        (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      );
+    };
+    const onTouchEnd = (e) => { if (e.touches.length < 2) pinch = null; };
+    const onWheel = (e) => {
+      if (!e.ctrlKey && !e.metaKey) return; // обычное колесо прокручивает страницу
+      e.preventDefault();
+      zoomAround(Math.exp(-e.deltaY * 0.01), e.clientX, e.clientY);
+    };
+    svg.addEventListener('touchstart', onTouchStart, { passive: false });
+    svg.addEventListener('touchmove', onTouchMove, { passive: false });
+    svg.addEventListener('touchend', onTouchEnd);
+    svg.addEventListener('touchcancel', onTouchEnd);
+    svg.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      svg.removeEventListener('touchstart', onTouchStart);
+      svg.removeEventListener('touchmove', onTouchMove);
+      svg.removeEventListener('touchend', onTouchEnd);
+      svg.removeEventListener('touchcancel', onTouchEnd);
+      svg.removeEventListener('wheel', onWheel);
+    };
+  }, [compact, zoomAround]);
 
   const openRegion = useCallback((slug) => {
     if (onSelect) onSelect(slug);
@@ -194,6 +262,17 @@ export default function RegionsMap({
     setTimeout(() => { panRef.current = null; }, 0);
   }, []);
 
+  // Карточка выбранного региона появляется под картой и на невысоком экране оказывалась за нижней кромкой:
+  // подводим её в видимую часть (минимальным сдвигом, без прыжка, если она уже видна).
+  useEffect(() => {
+    if (compact || !picked) return;
+    const el = pickCardRef.current;
+    if (!el || typeof el.scrollIntoView !== 'function') return;
+    const reduce = typeof window !== 'undefined' && window.matchMedia
+      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+  }, [picked, compact]);
+
   // Место выбранного региона среди всех, у кого есть значение (1 — самое высокое значение).
   const rank = useMemo(() => {
     if (!picked || !valuesBySlug) return null;
@@ -227,7 +306,7 @@ export default function RegionsMap({
         <svg
           ref={svgRef}
           viewBox={drawBox}
-          className={`w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
+          className={`${compact ? '' : 'fe-map-svg '}w-full h-auto ${k > 1 ? 'cursor-grab active:cursor-grabbing' : ''}`}
           role="group"
           aria-label={ariaLabel || t('regions.mapAria')}
           onPointerDown={compact ? undefined : onPointerDown}
@@ -235,7 +314,7 @@ export default function RegionsMap({
           onPointerUp={compact ? undefined : onPointerUp}
           onPointerCancel={compact ? undefined : onPointerUp}
           onClick={(e) => { if (e.target === e.currentTarget) setPicked(null); }}
-          style={{ touchAction: k > 1 && !compact ? 'none' : 'pan-y' }}
+          style={{ touchAction: k > 1 && !compact ? 'none' : 'pan-y', '--fe-map-aspect': aspect }}
         >
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>
             {/* Подложка-«шов»: обводка своим цветом фиксированной (не /k) толщины —
@@ -456,7 +535,7 @@ export default function RegionsMap({
       </div>
 
       {!compact && picked && (
-        <div className="fe-map-pick" role="status" data-no-export="true">
+        <div className="fe-map-pick" role="status" data-no-export="true" ref={pickCardRef}>
           <div className="fe-map-pick__text">
             <div className="fe-map-pick__name">{nameBySlug[picked] || picked}</div>
             {valuesBySlug?.get(picked) != null && (

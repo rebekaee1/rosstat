@@ -179,7 +179,7 @@ export default function TodayHub() {
   });
 
   return (
-    <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-20">
+    <div className="fe-data-page max-w-6xl mx-auto px-4 pt-24 pb-20">
       <Breadcrumbs items={todayTrail()} />
 
       <p className="fe-today-eyebrow">

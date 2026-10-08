@@ -47,9 +47,19 @@ describe('sortRussiaTiles', () => {
     const sorted = sortRussiaTiles([noValueRow, CPI_FOOD, CPI, UNEMPLOYMENT, BRENT]);
     // Ряд без значения — в самом конце; внутри группы с значениями — по имени.
     expect(sorted[sorted.length - 1].code).toBe('key-rate');
-    const names = sorted.slice(0, -1).map((i) => i.name);
+    // Главный показатель (ИПЦ) стоит первым, остальные со значением идут по имени.
+    expect(sorted[0].code).toBe('cpi');
+    const names = sorted.slice(1, -1).map((i) => i.name);
     const sortedNames = [...names].sort((a, b) => a.localeCompare(b, 'ru'));
     expect(names).toEqual(sortedNames);
+  });
+
+  it('главные коды идут перед алфавитом, но после рядов без значения не поднимаются', () => {
+    const housing = { code: 'housing-affordability', name: 'Индекс доступности жилья', current_value: 1 };
+    const cpiRow = { code: 'cpi', name: 'Индекс потребительских цен', current_value: 2 };
+    const emptyCpi = { code: 'cpi', name: 'Я', current_value: null };
+    expect(sortRussiaTiles([housing, cpiRow]).map((i) => i.code)).toEqual(['cpi', 'housing-affordability']);
+    expect(sortRussiaTiles([emptyCpi, housing])[0].code).toBe('housing-affordability');
   });
 
   it('не мутирует входной список', () => {

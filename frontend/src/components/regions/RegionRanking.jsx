@@ -9,7 +9,7 @@ import ApiRetryBanner from '../ApiRetryBanner';
 import { useRegionsCatalog, useRegionsHeatmap } from '../../lib/regionsApi';
 import { formatRegionNumber, unitLabel } from '../../lib/regionUi';
 import { filterSearchOptions } from '../../lib/searchSynonyms';
-import { regionIndicatorPath, regionRatingHubPath, regionRatingPath } from '../../lib/sitePaths';
+import { regionIndicatorPath, regionPath, regionRatingHubPath, regionRatingPath } from '../../lib/sitePaths';
 import { track, events } from '../../lib/track';
 import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
@@ -187,18 +187,23 @@ export default function RegionRanking({ metrics, initialCode }) {
 
           <ol className="fe-rank__list">
             {shown.map((row) => (
-              <li key={row.slug}>
-                <Link to={regionIndicatorPath(row.slug, code)} className="fe-rank__row fe-press">
-                  <span className="fe-rank__place fe-num">
-                    {achievement && row.rank <= 3
-                      ? <span data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
-                      : row.rank}
-                  </span>
-                  <span className="fe-rank__name">{row.name}</span>
-                  <span className="fe-rank__bar" aria-hidden="true">
-                    <span style={{ width: `${Math.max(3, (Math.abs(row.num) / maxAbs) * 100)}%` }} />
-                  </span>
-                  <span className="fe-rank__value fe-num">{formatRegionNumber(row.num, unit, locale)}</span>
+              <li key={row.slug} className="fe-rank__row">
+                <span className="fe-rank__place fe-num">
+                  {achievement && row.rank <= 3
+                    ? <span data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
+                    : row.rank}
+                </span>
+                {/* Название ведёт на страницу региона, число — на этот показатель в регионе (раньше всё вело на показатель). */}
+                <Link to={regionPath(row.slug)} className="fe-rank__name fe-rank__link fe-press">{row.name}</Link>
+                <span className="fe-rank__bar" aria-hidden="true">
+                  <span style={{ width: `${Math.max(3, (Math.abs(row.num) / maxAbs) * 100)}%` }} />
+                </span>
+                <Link
+                  to={regionIndicatorPath(row.slug, code)}
+                  title={t('c9e.rank.valueTitle')}
+                  className="fe-rank__value fe-rank__link fe-num fe-press"
+                >
+                  {formatRegionNumber(row.num, unit, locale)}
                 </Link>
               </li>
             ))}
