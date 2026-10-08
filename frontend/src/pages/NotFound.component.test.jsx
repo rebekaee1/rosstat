@@ -63,4 +63,15 @@ describe('NotFound', () => {
     expect(first.textContent).toBe('Прогнозы');
     expect(first.getAttribute('href')).toBe('/forecasts');
   });
+
+  it('круг 8: подсказка «Возможно, вы искали» со стрелкой, картинка глобуса грузится первой', async () => {
+    mockApiGet([['/auth/me', { user: null }], [/^\/indicators/, []]]);
+    const { container } = renderPage(<NotFound />, { path: '*', route: '/currency-rates' });
+    await screen.findByRole('heading', { level: 1 });
+    const strong = container.querySelector('.w6f-nf-chip--strong');
+    expect(strong).toBeTruthy();
+    expect(strong.querySelector('svg')).toBeTruthy();
+    expect(container.querySelector('img.fe-nf-globe__img').getAttribute('fetchpriority')).toBe('high');
+  });
 });
+

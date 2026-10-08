@@ -25,7 +25,18 @@
   transition: transform 0.2s var(--fe-ease-reveal), color 0.15s; box-shadow: var(--fe-l2-shadow);
 }
 .w6f-nf-chip:hover { color: var(--color-champagne-ink); }
-.w6f-nf-chip--strong { background: rgba(173, 138, 72, 0.14); }
+/* Подсказка «Возможно, вы искали»: холодная плитка с цветом ссылки и стрелкой (круг 8: была бежевой, смысл не читался). */
+.w6f-nf-chip--strong {
+  background: var(--fe-glass-l2, rgba(255, 255, 255, 0.7));
+  color: var(--fe-gold-ink, #1e3a6e);
+  box-shadow: var(--fe-shadow-l2, var(--fe-l2-shadow)), var(--fe-inset-glint, none);
+}
+.w6f-nf-chip--strong:hover { color: var(--color-text-primary); }
+
+/* 404: пока картинка глобуса грузится, на её месте мягкий светлый диск, а не пустое голубое пятно. */
+.z2-nf .fe-nf-globe {
+  background: radial-gradient(closest-side, rgba(214, 226, 246, 0.85), rgba(214, 226, 246, 0.35) 62%, rgba(214, 226, 246, 0) 78%);
+}
 
 /* ── Календарь: две колонки на планшете, название события в клетке ──────── */
 .fe-cal-layout { display: flex; flex-direction: column; }

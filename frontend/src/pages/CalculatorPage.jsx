@@ -858,12 +858,12 @@ export default function CalculatorPage() {
               before={{
                 label: String(reversed ? dispFrom : dispFrom),
                 value: reversed ? result.purchasing : amount,
-                text: reversed ? money(result.purchasing) : amountText,
+                text: money(reversed ? result.purchasing : amount),
               }}
               after={{
                 label: String(dispTo),
                 value: reversed ? amount : result.equivalent,
-                text: reversed ? amountText : money(result.equivalent),
+                text: money(reversed ? amount : result.equivalent),
               }}
             />
             <div className="mb-6" />

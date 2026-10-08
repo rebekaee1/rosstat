@@ -140,8 +140,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  padding: 1.25rem 1.25rem 1.1rem;
+  gap: 0.7rem;
+  padding: 1.1rem 1.25rem 0.8rem;
   border-radius: 1.5rem;
   transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 220ms ease;
 }
@@ -155,7 +155,7 @@
   bottom: 0;
   height: 7px;
   border-radius: 7px 7px 0 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(233, 205, 142, 0.5));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.85) 60%, rgba(196, 214, 238, 0.6));
   pointer-events: none;
 }
 
@@ -166,11 +166,12 @@
   }
 }
 
+/* Бейдж над названием: название получает всю ширину карточки и не сдвигает числа соседей. */
 .zb-fc__card-head {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.45rem;
 }
 
 .zb-fc__card-title {
@@ -180,6 +181,11 @@
   line-height: 1.3;
   color: var(--color-text-primary);
   text-wrap: balance;
+}
+
+/* Когда карточки стоят в несколько колонок, название занимает две строки у всех: значения соседей на одной линии. */
+@media (min-width: 44rem) {
+  .zb-fc__card-title { min-height: 2.6em; }
 }
 
 .zb-fc__badge {
@@ -194,7 +200,7 @@
   white-space: nowrap;
 }
 
-/* «Проверен на истории»: печать-грань, золотой ромб перед словами. */
+/* «Проверен на истории»: печать-грань, золотая точка перед словами. */
 .zb-fc__badge[data-verified='true'] {
   display: inline-flex;
   align-items: center;
@@ -254,11 +260,18 @@
   color: var(--color-text-tertiary);
 }
 
+/* Изменение и единица в одной строке: число сразу «с единицей» (индекс, млн евро, проценты). */
+.zb-fc__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+}
+
 .zb-fc__change {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  align-self: flex-start;
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
   font-size: 0.875rem;
@@ -267,6 +280,16 @@
   box-shadow: var(--fe-shadow-l2), var(--fe-inset-glint);
   color: var(--color-text-primary);
 }
+
+.zb-fc__unit {
+  min-width: 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
+/* Мини-график с подписями: рисунок, значения у начала и конца линии, строка дат под ним. */
+.zb-fc__chart { position: relative; }
 
 .zb-fc__plot {
   position: relative;
@@ -309,22 +332,44 @@
 }
 
 .zb-fc__dot-end {
-  fill: #C9A24D;
-  stroke: #FFF6DA;
-  stroke-width: 1.6;
-  }
-
-.zb-fc__dot-spark { fill: rgba(255, 255, 255, 0.85); }
-
-.zb-fc__meta {
-  margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  fill: #B08A3E;
 }
 
-.zb-fc__meta b {
-  font-weight: 600;
+/* Значения у начала и конца линии: обычный текст со светлым ореолом вместо плашки, чтобы линия под ним читалась. */
+.zb-fc__tag {
+  position: absolute;
+  z-index: 1;
+  font-size: 0.75rem;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 5px #fff, 0 0 2px #fff;
+  pointer-events: none;
+}
+.zb-fc__tag--start[data-place='above'] { transform: translate(0, -170%); }
+.zb-fc__tag--start[data-place='below'] { transform: translate(0, 90%); }
+.zb-fc__tag--end[data-place='above'] { transform: translate(-100%, -170%); }
+.zb-fc__tag--end[data-place='below'] { transform: translate(-100%, 90%); }
+
+/* Строка дат: начало ряда, «Сейчас» у перехода к прогнозу, конец прогноза. */
+.zb-fc__axis {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  min-height: 1.1rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+.zb-fc__axis-now {
+  position: absolute;
+  top: 0;
+  transform: translateX(-100%);
+  padding-right: 0.4rem;
+  font-weight: 650;
   color: var(--color-text-primary);
 }
 
@@ -335,7 +380,7 @@
   justify-content: space-between;
   gap: 0.5rem 1rem;
   margin-top: auto;
-  padding-top: 0.75rem;
+  padding-top: 0.25rem;
   font-size: 0.8125rem;
   color: var(--color-text-secondary);
 }
@@ -343,7 +388,7 @@
 .zb-fc__open {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 36px;
   gap: 0.35rem;
   font-weight: 600;
   color: var(--zb-gold-ink);

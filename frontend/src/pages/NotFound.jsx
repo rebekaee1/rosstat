@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BarChart3, Calculator, CalendarDays, Coins, Flag, Globe2, Home, Landmark, Map as MapIcon, Scale } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BarChart3, Calculator, CalendarDays, Coins, Flag, Globe2, Home, Landmark, Map as MapIcon, Scale } from 'lucide-react';
 import Button from '../components/Button';
 import IndicatorSearch from '../components/IndicatorSearch';
 import FacetMark from '../components/brand/FacetMark';
@@ -57,7 +57,7 @@ export default function NotFound() {
   });
 
   return (
-    <div className="fe-data-page z2-nf mx-auto px-4 pb-24 pt-28">
+    <div className="fe-data-page z2-nf mx-auto px-4 pb-16 pt-28">
       <div className="z2-nf-hero fe-reveal">
         <div className="z2-nf-code fe-nf-code" aria-hidden="true">
           <span className="z2-nf-digit fe-nf-digit" data-d="4">4</span>
@@ -70,6 +70,7 @@ export default function NotFound() {
               height="1200"
               alt=""
               decoding="async"
+              fetchPriority="high"
               draggable="false"
             />
             <span className="fe-nf-spark" />
@@ -106,7 +107,10 @@ export default function NotFound() {
           <ul className="w6f-nf-chips">
             {guesses.map((g) => (
               <li key={g.to}>
-                <Link to={g.to} className="w6f-nf-chip w6f-nf-chip--strong fe-press">{t(g.labelKey)}</Link>
+                <Link to={g.to} className="w6f-nf-chip w6f-nf-chip--strong fe-press">
+                  {t(g.labelKey)}
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
               </li>
             ))}
           </ul>

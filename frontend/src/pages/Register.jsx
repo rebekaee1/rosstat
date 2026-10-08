@@ -164,9 +164,10 @@ export default function Register() {
           />
           <span>
             {t('w7p.reg.legalBefore')}{' '}
-            <Link to="/terms" className="fe-link">{t('w7p.reg.legalTerms')}</Link>{' '}
+            {/* Условия открываются в новой вкладке: заполненная форма остаётся на месте (круг 8, F5). */}
+            <Link to="/terms" target="_blank" rel="noopener noreferrer" className="fe-link">{t('w7p.reg.legalTerms')}</Link>{' '}
             {t('w7p.reg.legalMid')}{' '}
-            <Link to="/privacy" className="fe-link">{t('w7p.reg.legalPrivacy')}</Link>
+            <Link to="/privacy" target="_blank" rel="noopener noreferrer" className="fe-link">{t('w7p.reg.legalPrivacy')}</Link>
             {t('w7p.reg.legalAfter')}
           </span>
         </label>
