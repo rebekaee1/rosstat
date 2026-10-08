@@ -8169,6 +8169,188 @@
     "unit": "%",
     "variantAxis": null
   },
+  "kzt-rub": {
+    "base": "kzt-rub",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "На конец периода",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "kzt-rub",
+        "forecastable": true,
+        "frequency": "daily",
+        "group": "level",
+        "isNative": true,
+        "label": "По дням",
+        "mode": "level",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-eop-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "level",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "eop-week",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-eop-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "level",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "eop-month",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-eop-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-eop-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-avg-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "avg-week",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-avg-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "avg-month",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "руб."
+      },
+      {
+        "code": "kzt-rub-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "kzt-rub-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "kzt-rub-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "kzt-rub-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "kzt-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "kzt-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Курс тенге",
+    "template": "T1",
+    "unit": "руб.",
+    "variantAxis": null
+  },
   "labor-force": {
     "base": "labor-force",
     "defaultMode": "level",
@@ -11459,6 +11641,188 @@
     "name": "Торговый баланс (месячный ряд)",
     "template": "T6",
     "unit": "млн $",
+    "variantAxis": null
+  },
+  "try-rub": {
+    "base": "try-rub",
+    "defaultMode": "level",
+    "groups": [
+      {
+        "id": "level",
+        "label": "На конец периода",
+        "leaf": false
+      },
+      {
+        "id": "avg",
+        "label": "Средняя за период",
+        "leaf": false
+      },
+      {
+        "id": "pop",
+        "label": "К прошлому периоду",
+        "leaf": false
+      },
+      {
+        "id": "yoy",
+        "label": "К соотв. периоду пред. года",
+        "leaf": false
+      }
+    ],
+    "modes": [
+      {
+        "code": "try-rub",
+        "forecastable": true,
+        "frequency": "daily",
+        "group": "level",
+        "isNative": true,
+        "label": "По дням",
+        "mode": "level",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-eop-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "level",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "eop-week",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-eop-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "level",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "eop-month",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-eop-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "level",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "eop-quarter",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-eop-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "level",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "eop-year",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-avg-week",
+        "forecastable": false,
+        "frequency": "weekly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По неделям",
+        "mode": "avg-week",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-avg-month",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "avg-month",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-avg-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "avg",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "avg-quarter",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-avg-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "avg",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "avg-year",
+        "unit": "руб."
+      },
+      {
+        "code": "try-rub-mom",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "pop",
+        "isNative": false,
+        "label": "М/м",
+        "mode": "mom",
+        "unit": "%"
+      },
+      {
+        "code": "try-rub-qoq",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "pop",
+        "isNative": false,
+        "label": "Кв/Кв",
+        "mode": "qoq",
+        "unit": "%"
+      },
+      {
+        "code": "try-rub-yoy",
+        "forecastable": false,
+        "frequency": "monthly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По месяцам",
+        "mode": "yoy",
+        "unit": "%"
+      },
+      {
+        "code": "try-rub-yoy-quarter",
+        "forecastable": false,
+        "frequency": "quarterly",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По кварталам",
+        "mode": "yoy-quarter",
+        "unit": "%"
+      },
+      {
+        "code": "try-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "yoy",
+        "isNative": false,
+        "label": "По годам",
+        "mode": "yoy-year",
+        "unit": "%"
+      },
+      {
+        "code": "try-rub-yoy-year",
+        "forecastable": false,
+        "frequency": "annual",
+        "group": "pop",
+        "isNative": false,
+        "label": "Г/г",
+        "mode": "pop-gg",
+        "unit": "%"
+      }
+    ],
+    "name": "Курс турецкой лиры",
+    "template": "T1",
+    "unit": "руб.",
     "variantAxis": null
   },
   "unemployment": {

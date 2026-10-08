@@ -10,7 +10,7 @@ export const RUSSIA = 'russia';
 
 const CURRENCY_BASE_CODES = Object.freeze([
   'btc-usd', 'cny-eur', 'cny-rub', 'eth-usd', 'eur-rub', 'eur-usd',
-  'gbp-eur', 'gbp-usd', 'sol-usd', 'usd-cny', 'usd-rub',
+  'gbp-eur', 'gbp-usd', 'kzt-rub', 'sol-usd', 'try-rub', 'usd-cny', 'usd-rub',
 ]);
 
 export function isCurrencyIndicator(indicatorCode) {
