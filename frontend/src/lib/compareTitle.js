@@ -76,3 +76,19 @@ export function unitHint(unit, locale = 'ru') {
   if (words) return words[locale === 'en' ? 'en' : 'ru'];
   return unitSuffix(unit);
 }
+
+/**
+ * Имя ряда для подписи у конца линии: целиком, если помещается, иначе до скобки, запятой или тире,
+ * а если и так длинно, то по границе слова с многоточием (не посреди слова: «Индекс пот…»).
+ */
+export function compareEndName(name, max = 26) {
+  const text = String(name ?? '').trim();
+  if (text.length <= max) return text;
+  const head = text.split(/\s*(?:\(|,| — | – )/)[0].trim();
+  const base = head && head.length >= 6 ? head : text;
+  if (base.length <= max) return base;
+  const cut = base.slice(0, max + 1);
+  const space = cut.lastIndexOf(' ');
+  const words = space >= Math.floor(max / 2) ? cut.slice(0, space) : base.slice(0, max);
+  return `${words.replace(/[\s,;:.-]+$/, '')}…`;
+}

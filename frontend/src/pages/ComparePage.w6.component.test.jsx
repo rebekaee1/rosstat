@@ -106,6 +106,9 @@ describe('ComparePage: открывается живым сравнением', 
       'Безработица: Германия и Франция',
       'Инфляция: Германия и Франция',
       'Население: Индия и Китай',
+      'Россия и Турция: инфляция',
+      'Россия и Турция: ВВП',
+      'Россия и Турция: безработица',
     ]);
     expect(within(group).getByRole('button', { name: 'ВВП: США и Китай' }).getAttribute('aria-pressed')).toBe('true');
     fireEvent.click(within(group).getByRole('button', { name: 'Безработица: Германия и Франция' }));
@@ -118,10 +121,13 @@ describe('ComparePage: открывается живым сравнением', 
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     await screen.findByRole('heading', { level: 2, name: /США и Китай/ });
     fireEvent.click(screen.getByRole('button', { name: 'Изменить' }));
-    expect(await screen.findByText('Страна')).toBeTruthy();
     expect(screen.queryByTestId('compare-demo')).toBeNull();
-    // Пример стал обычным сравнением: ряды можно убрать.
+    // Пример стал обычным сравнением: ряды можно убрать. Гость сразу видит лимит и выход из него (круг 9, C2).
     expect(screen.getAllByRole('button', { name: 'Убрать' }).length).toBe(2);
+    expect(await screen.findByTestId('compare-cap-notice')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('compare-cap-clear'));
+    expect(await screen.findByText('Страна')).toBeTruthy();
+    expect(screen.queryAllByRole('button', { name: 'Убрать' }).length).toBe(0);
   });
 
   it('подписи настроек человеческие и стоят после графика', async () => {

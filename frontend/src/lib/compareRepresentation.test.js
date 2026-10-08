@@ -3,7 +3,7 @@ import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
   isIndexableBase, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
-  worldCompareRepresentationsFor, worldCompareTransformFor,
+  worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
 } from './compareRepresentation';
 
 describe('compareRepresentation — resolver', () => {
@@ -247,5 +247,23 @@ describe('compareRepresentation — resolveStepOverride (третий слой)'
   it('квартальный первичный ряд с alternate monthly (exports) — Шаг=Месяц берёт настоящий месячный ряд', () => {
     const exports = { code: 'exports', alternate_frequencies: { monthly: 'exports-monthly' } };
     expect(resolveStepOverride(exports, REP_LEVEL, 'month')).toBe('exports-monthly');
+  });
+});
+
+
+describe('defaultWorldRepresentation (круг 9, C1)', () => {
+  const turkey = { conceptSlug: 'hicp-index', unit: 'индекс 2015=100', peerMode: 'yoy-monthly' };
+  const russia = { conceptSlug: 'hicp-index', unit: 'изменение за год, %' };
+  const germany = { conceptSlug: 'hicp-index', unit: 'индекс 2015=100', peerMode: 'yoy-monthly' };
+
+  it('индекс цен уровнем рядом с рядом в процентах сразу берётся как % к прошлому году', () => {
+    expect(defaultWorldRepresentation(turkey, [russia])).toBe(REP_YOY);
+  });
+
+  it('два индекса или один ряд: остаётся уровень', () => {
+    expect(defaultWorldRepresentation(turkey, [germany])).toBe(REP_LEVEL);
+    expect(defaultWorldRepresentation(turkey, [])).toBe(REP_LEVEL);
+    expect(defaultWorldRepresentation(russia, [turkey])).toBe(REP_LEVEL);
+    expect(defaultWorldRepresentation(undefined, [russia])).toBe(REP_LEVEL);
   });
 });

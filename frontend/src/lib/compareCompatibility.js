@@ -14,6 +14,20 @@ const BRIDGES = {
   },
 };
 
+// Российский показатель с главной витрины (`cpi`, `unemployment`…) и тот же показатель в общем наборе стран
+// (`w:russia:{понятие}`): с рядами других стран сравнивается только второй.
+const MACRO_TWINS = {
+  cpi: 'hicp-index',
+  'cpi-yoy': 'hicp-index',
+  unemployment: 'unemployment-rate',
+  population: 'population',
+};
+
+/** Понятие общего набора стран, которому соответствует российский показатель; нет двойника: null. */
+export function macroTwinConcept(code) {
+  return MACRO_TWINS[code] || null;
+}
+
 export function parseWorldCompareCode(code) {
   const [kind, countrySlug, conceptSlug, ...rest] = String(code || '').split(':');
   if (kind !== 'w' || !countrySlug || !conceptSlug || rest.length) return null;
@@ -143,6 +157,33 @@ export function compareCompatibility(existingCodes, candidateCode) {
     note: bridge.noteKey,
     noteKey: bridge.noteKey,
     conceptSlug,
+  };
+}
+
+/**
+ * То же, что compareCompatibility, но если выбранный российский показатель можно заменить на «двойника» в общем
+ * наборе стран (ИПЦ России -> инфляция России рядом с инфляцией Турции), набор не отвергается, а перестраивается:
+ * `replaceWith` — новый список уже выбранных кодов. `hasCode(code)` говорит, есть ли ряд в каталоге.
+ */
+export function compareCompatibilityWithTwins(existingCodes, candidateCode, hasCode = () => true) {
+  const base = compareCompatibility(existingCodes, candidateCode);
+  if (base.allowed) return base;
+  const candidate = parseWorldCompareCode(candidateCode);
+  const existing = (existingCodes || []).filter(Boolean);
+  if (!candidate || !existing.length || base.reasonKey === 'compare.compat.alreadyAdded') return base;
+  const swapped = existing.map((code) => {
+    if (parseWorldCompareCode(code) || parseSubnationalCompareCode(code) || String(code).startsWith(REGION_PREFIX)) return code;
+    const concept = macroTwinConcept(code);
+    const twin = concept ? `${WORLD_PREFIX}russia:${concept}` : null;
+    return twin && concept === candidate.conceptSlug && hasCode(twin) ? twin : code;
+  });
+  const replaced = swapped.some((code, i) => code !== existing[i]);
+  const unique = swapped.filter((code, i) => swapped.indexOf(code) === i);
+  if (!replaced) return base;
+  const retry = compareCompatibility(unique, candidateCode);
+  if (!retry.allowed) return base;
+  return {
+    allowed: true, note: null, noteKey: null, replaceWith: unique, swapNoteKey: 'c9d.compare.twinSwapped',
   };
 }
 

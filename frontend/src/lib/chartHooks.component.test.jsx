@@ -71,6 +71,20 @@ describe('useTouchTooltip', () => {
   });
 });
 
+describe('useTouchTooltip: прокрутка страницы (круг 9, C5)', () => {
+  it('on touch: a real scroll of the page closes the tooltip, a tiny jitter does not', () => {
+    mockMedia((q) => q === '(pointer: coarse)');
+    render(<TooltipProbe />);
+    fireEvent.pointerDown(screen.getByTestId('chart'));
+    expect(screen.getByTestId('active').textContent).toBe('{}');
+    act(() => { window.scrollY = 10; fireEvent.scroll(window); });
+    expect(screen.getByTestId('active').textContent).toBe('{}');
+    act(() => { window.scrollY = 120; fireEvent.scroll(window); });
+    expect(screen.getByTestId('active').textContent).toBe('{"active":false}');
+    window.scrollY = 0;
+  });
+});
+
 describe('usePrefersReducedMotion', () => {
   function Reduced() {
     return <output data-testid="reduced">{String(usePrefersReducedMotion())}</output>;
