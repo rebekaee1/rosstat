@@ -29,6 +29,30 @@ TITLE_BY_CODE: dict[str, str] = {
     "jp-m3": "Денежный агрегат М3",
 }
 
+# Переопределения по фрагменту кода (один и тот же ряд у разных стран): код страны стоит
+# в начале, поэтому ищем «-фрагмент» внутри кода. Для названий, которые у разных рядов
+# одного набора слипаются в одно слово (две карточки «Процентные ставки, %» у Турции) или
+# называют не то, что показывают (годовая оценка МВФ подписана как изменение за год).
+# Смысл рядов сверен по значениям: MF-DDI-RT совпадает со ставкой на один день набора
+# irt_st_m (irt-dtd) в каждой точке; MF-3MI-RT — трёхмесячная ставка денежного рынка.
+TITLE_BY_CODE_FRAGMENT: tuple[tuple[str, str], ...] = (
+    ("-ei_mfir_m-mf-ddi-rt-", "Ставка денежного рынка на один день, %"),
+    ("-ei_mfir_m-mf-3mi-rt-", "Ставка денежного рынка на три месяца, %"),
+    ("-weo-pcpipch", "Инфляция в среднем за год, оценка МВФ"),
+)
+
+
+def title_override_for_code(code: str | None) -> str | None:
+    """Русское имя по фрагменту кода (см. TITLE_BY_CODE_FRAGMENT) или None."""
+    code_key = (code or "").strip().lower()
+    if not code_key:
+        return None
+    for fragment, title in TITLE_BY_CODE_FRAGMENT:
+        if fragment in code_key:
+            return title
+    return None
+
+
 # Латинский жаргон классификаторов → русская формулировка или удаление.
 _LATIN_CLEANUPS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\be[\u2011\u2010\-]?commerce\b", re.I), "электронной торговли"),
@@ -68,6 +92,8 @@ def public_indicator_name(name_ru: str | None, code: str | None = None) -> str:
     code_key = (code or "").strip().lower()
     if code_key and code_key in TITLE_BY_CODE:
         base = TITLE_BY_CODE[code_key]
+    elif title_override_for_code(code_key):
+        base = title_override_for_code(code_key) or ""
     else:
         base = name_ru or ""
     cleaned = _apply_latin_cleanups(base)

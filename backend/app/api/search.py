@@ -22,9 +22,16 @@ router = APIRouter(tags=["search"])
 _RESULT_TTL_SECONDS = 600
 
 
+# Ревизия кэша меняется, когда меняется порядок или состав выдачи при том же публичном
+# `version` ответа (клиент сверяет `version`, поэтому его не трогаем): без этого после выкладки
+# 10 минут отдавались бы ответы прежнего ранжирования. 2026-10-08: страна первой, курс лиры,
+# годовая инфляция выше индекса, значение и график у 24 строк.
+_CACHE_REVISION = "r2"
+
+
 def _cache_key(q: str, limit: int) -> str:
     digest = hashlib.sha1(normalize(q).encode("utf-8")).hexdigest()[:20]
-    return f"fe:search:{SEARCH_VERSION}:{get_locale()}:{limit}:{digest}"
+    return f"fe:search:{SEARCH_VERSION}:{_CACHE_REVISION}:{get_locale()}:{limit}:{digest}"
 
 
 @router.get("/search")

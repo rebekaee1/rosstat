@@ -15,7 +15,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Indicator, IndicatorData, WorldDataPoint
 
 # Rows that get a value and a mini chart: what a person sees without pressing "more".
-ENRICHED_ROWS = 8
+# The client may reorder rows after the response (country first, groups), so enrich more
+# than the first screen: a row that moves up must not lose its number and chart.
+ENRICHED_ROWS = 24
 # Points per mini chart: about a year of monthly data, enough to show a direction.
 SPARK_POINTS = 12
 _MIN_SPARK_POINTS = 3

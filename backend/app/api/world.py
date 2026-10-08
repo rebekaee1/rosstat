@@ -1717,7 +1717,7 @@ async def build_country_overview(
         # Имя чипа — как в рейтинге: для цен это «изменение за год», а не
         # «гармонизированный индекс» (национальные CPI США/Канады — не HICP,
         # а значение чипа — темп, не индекс).
-        overview.append({
+        chip = {
             "concept_slug": concept.slug,
             "name": ranking_display_name(mode, concept.slug, concept_public_name(concept)),
             "name_en": ranking_display_name(
@@ -1728,13 +1728,54 @@ async def build_country_overview(
             "frequency": normalize_frequency(indicator.frequency),
             "date": latest[0].isoformat(),
             "value": round(latest[1], 4),
-        })
+        }
+        basis = _price_chip_basis(concept.slug, indicator)
+        if basis:
+            # Как посчитано число цен: у страны их несколько честных (месяц к тому же
+            # месяцу прошлого года, среднее за год по оценке МВФ, декабрь к декабрю в
+            # рейтинге). Подпись к числу берётся отсюда, а не угадывается по частоте.
+            chip.update(basis)
+        overview.append(chip)
+    # Порядок первых четырёх карточек: цены, ВВП в долларах, безработица, население.
+    # Остальное — как в каталоге понятий (сортировка устойчивая).
+    overview.sort(key=lambda item: _OVERVIEW_PRIORITY.index(item["concept_slug"])
+                  if item["concept_slug"] in _OVERVIEW_PRIORITY else len(_OVERVIEW_PRIORITY))
     return overview
+
+
+# Что страница страны показывает в «Главном» первым: это то, что спрашивают о стране.
+# ВВП в постоянных ценах евро (понятие каталога раньше стояло третьим) идёт после этих четырёх.
+_OVERVIEW_PRIORITY = ("hicp-index", "gdp-usd", "unemployment-rate", "population")
+
+_PRICE_BASIS = {
+    "year_on_year_month": (
+        "к тому же месяцу прошлого года",
+        "versus the same month a year earlier",
+    ),
+    "annual_average": (
+        "в среднем за год, оценка МВФ",
+        "annual average, IMF estimate",
+    ),
+}
+
+
+def _price_chip_basis(concept_slug: str, indicator: WorldIndicator) -> dict | None:
+    """Способ счёта числа цен в чипе: `basis` (код) и подписи `basis_label`/`basis_label_en`."""
+    if concept_slug != "hicp-index":
+        return None
+    if str(getattr(indicator, "provider", "") or "").lower() == "imf":
+        key = "annual_average"
+    elif normalize_frequency(indicator.frequency) == "monthly":
+        key = "year_on_year_month"
+    else:
+        return None
+    label_ru, label_en = _PRICE_BASIS[key]
+    return {"basis": key, "basis_label": label_ru, "basis_label_en": label_en}
 
 
 async def country_detail_cache_key(slug: str) -> str:
     """Ключ Redis каталога страны (тот же читает серверный HTML страны)."""
-    return await versioned_key("world", f"country:v18:{slug}:{get_locale()}")
+    return await versioned_key("world", f"country:v19:{slug}:{get_locale()}")
 
 
 @router.get("/countries/{slug}")
@@ -1977,7 +2018,7 @@ async def _card_context(
 @router.get("/indicators/{slug}/{code}")
 async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key(
-        "world", f"ind:v22:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{get_locale()}"
+        "world", f"ind:v23:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{get_locale()}"
     )
     cached = await cache_get(cache_key)
     if cached:
