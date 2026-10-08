@@ -28,6 +28,13 @@
 /* Полосы сетки: края размыты, чтобы не читались как серые прямоугольники. */
 .fe-chart-plot .recharts-cartesian-gridstripes-horizontal,
 .k4-glass-plot .recharts-cartesian-gridstripes-horizontal { filter: blur(6px); }
+/* Круг 8 (C3): долгое нажатие на график не выделяет подписи осей и не вызывает лупу системы; подсказка идёт по касанию. */
+.k4-glass-plot, .fe-chart-plot {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
 :root[data-theme="dark"] .fe-chart-plot,
 :root.dark .fe-chart-plot,
 :root[data-theme="dark"] .k4-glass-plot,
@@ -264,16 +271,14 @@ input.map-timeline::-moz-range-thumb {
   background: var(--fe-glass-active);
   box-shadow: 0 4px 8px -3px rgba(30, 38, 56, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
-:root .fe-brush {
-  background: rgba(30, 38, 56, 0.06);
-  box-shadow: inset 0 1px 3px rgba(30, 38, 56, 0.12);
-}
+/* Круг 8: сама обёртка ползунка без фона (раньше поверх жёлоба рисовалась вторая прямоугольная плита с острыми углами). */
+:root .fe-brush { background: none; box-shadow: none; }
 :root .fe-brush__shade { background: rgba(244, 245, 247, 0.66); }
 :root .fe-brush__handle > span {
-  width: 18px;
-  height: 18px;
-  background: var(--fe-glass-active);
-  box-shadow: 0 4px 8px -3px rgba(30, 38, 56, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  width: 6px;
+  height: 26px;
+  background: #2C4A8A;
+  box-shadow: 0 3px 8px -2px rgba(30, 38, 56, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 :root .fe-brush__window {
   background: linear-gradient(180deg, rgba(120, 150, 210, 0.22), rgba(120, 150, 210, 0.1));

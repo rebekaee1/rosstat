@@ -41,8 +41,9 @@ import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, CHART_AREA, axisTick, axisSampleValues,
-  axisWidthForLabels, chartHeightForWidth, niceAxis,
+  axisWidthForLabels, chartHeightForWidth, niceAxis, COMPARE_COLORS, ribbonStopsFor,
 } from '../lib/chartTheme';
+import { compareTooltipRows } from '../lib/compareTooltip';
 import { useElementWidth, useTouchTooltip, useChartGlassIds } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -123,31 +124,23 @@ const RANGE_OPTIONS = [
   { key: 'all', labelKey: 'compare.range.all', months: null },
 ];
 
-// До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js).
-// K5.3 / круг 4: первая линия — золотая стеклянная лента, вторая — сапфировая (цвета и стопы из общей темы K4:
-// lib/chartTheme.js), дальше прежние цвета темы простыми линиями.
-const PALETTE = Object.freeze([
-  CHART_THEME.series[0], CHART_THEME.sapphire, ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
-]);
-// Ленты сравнения чуть насыщеннее общих (круг 5): на экране линия 3,5 px с бледным краем читалась как 2 px.
-const RIBBON_GRADIENTS = Object.freeze([
-  Object.freeze([
-    { offset: '0%', color: '#E2BC66' }, { offset: '50%', color: '#C99B3C' }, { offset: '100%', color: '#A9812F' },
-  ]),
-  Object.freeze([
-    { offset: '0%', color: '#5F8BCB' }, { offset: '50%', color: '#3A5FA3' }, { offset: '100%', color: '#1E2A4A' },
-  ]),
-]);
-const RIBBON_COUNT = RIBBON_GRADIENTS.length;
+// До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js::COMPARE_COLORS).
+// Круг 8 (C1): цвет ряда один на линию, легенду, точку на конце, заливку, подсказку и карточки итогов.
+// Первые два ряда рисуются лентой-градиентом, построенным из того же цвета (светлее слева, цвет ряда у правого конца).
+const PALETTE = COMPARE_COLORS;
+const RIBBON_COUNT = 2;
+const RIBBON_GRADIENTS = Object.freeze(
+  PALETTE.slice(0, RIBBON_COUNT).map((color) => Object.freeze(ribbonStopsFor(color))),
+);
+const AREA_OPACITY = Object.freeze([CHART_AREA.top, 0.14]);
 
-/** Бусина на конце ленты: гало, шарик с градиентом (id), белый блик. Рисуется поверх линии, мыши не мешает. */
-function RibbonBead({ cx, cy, fill, color }) {
+/** Точка на конце линии: плоский круг 6 px цвета ряда и тихое гало (как .k4-lastpoint). Рисуется поверх линии, мыши не мешает. */
+function EndPoint({ cx, cy, color }) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
   return (
     <g pointerEvents="none" className="fe-compare-bead">
-      <circle cx={cx} cy={cy} r={11} fill={color} fillOpacity={0.22} />
-      <circle cx={cx} cy={cy} r={6.5} fill={fill} />
-      <circle cx={cx - 2} cy={cy - 2.2} r={1.4} fill="#fff" fillOpacity={0.9} />
+      <circle cx={cx} cy={cy} r={8} fill={color} fillOpacity={0.2} />
+      <circle cx={cx} cy={cy} r={3.5} fill={color} />
     </g>
   );
 }
@@ -1379,10 +1372,12 @@ function CompareTooltip({
   active, payload, label, dateFormat = 'short', colors = null,
 }) {
   if (!active || !payload?.length) return null;
+  const rows = compareTooltipRows(payload, colors);
+  if (!rows.length) return null;
   return (
     <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl px-4 py-3 shadow-2xl">
       <p className="mb-2 text-xs text-text-secondary">{formatDate(label, dateFormat)}</p>
-      {payload.filter((p) => p.value != null).map((p) => (
+      {rows.map((p) => (
         <div key={p.dataKey} className="mb-1 flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-2">
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colors?.[p.dataKey] || p.color }} />
@@ -1400,7 +1395,6 @@ function CompareTooltip({
 export default function ComparePage() {
   const t = useT();
   const glass = useChartGlassIds('k5c');
-  const beadSapphireId = `${glass.bead}-sapphire`;
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [range, setRange] = useState('5y');
@@ -2016,6 +2010,8 @@ export default function ComparePage() {
   // Перетаскивание графика мышью/пальцем — как на карточке индикатора.
   // Тащим вправо → окно уходит в прошлое (panOffset растёт), влево → к свежим.
   const handlePointerDown = useCallback((e) => {
+    // Круг 8 (C3): пальцем график не двигает период, а показывает подсказку; период двигают ручки под графиком.
+    if (e.pointerType === 'touch') return;
     if (maxPan <= 0) return;
     const rect = chartAreaRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -2175,7 +2171,7 @@ export default function ComparePage() {
             {!isAuthed && (
               <>
                 {' '}
-                <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="inline-flex min-h-11 items-center font-medium text-champagne-ink hover:underline">
+                <button type="button" onClick={() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }} className="relative inline font-medium text-champagne-ink hover:underline after:absolute after:-inset-x-2 after:-inset-y-3 after:content-['']">
                   {t('w6a.compare.register')}
                 </button>
               </>
@@ -2201,14 +2197,14 @@ export default function ComparePage() {
                   <div className="flex items-start gap-2">
                     <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
                     <span title={s.name || undefined} className="min-w-0 flex-1 break-words text-sm leading-snug text-text-primary">{shortSeriesName(s) || (s.loading
-                      ? <span className="skeleton mt-0.5 block h-4 w-3/4 rounded-md" role="status" aria-busy="true" aria-label={t('compare.loadingSeries')} />
+                      ? <span className="block text-text-secondary" role="status" aria-busy="true">{t('compare.loadingSeries')}</span>
                       : t('z2.compare.seriesFallback'))}</span>
                     <button type="button" onClick={() => removeCode(s.code)} className="-my-1 -mr-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-text-secondary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11" aria-label={t('common.remove')}>
                       <X className="h-4 w-4" aria-hidden="true" />
                     </button>
                   </div>
                   {reps.length > 1 && (
-                    <div className="mt-2 flex flex-wrap gap-1.5 pl-[1.125rem]">
+                    <div className="fe-compare-reps mt-2 flex gap-1.5 pl-[1.125rem]">
                       {reps.map((o) => (
                         <Chip
                           key={o.id}
@@ -2414,24 +2410,12 @@ export default function ComparePage() {
                         {stops.map((stop) => <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />)}
                       </linearGradient>
                     ))}
-                    <linearGradient id={glass.area} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={CHART_AREA.top} />
-                      <stop offset="100%" stopColor={CHART_THEME.goldLight} stopOpacity={CHART_AREA.bottom} />
-                    </linearGradient>
-                    <linearGradient id={glass.areaSapphire} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0.22} />
-                      <stop offset="100%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0} />
-                    </linearGradient>
-                    <radialGradient id={glass.bead} cx="34%" cy="28%" r="78%">
-                      <stop offset="0%" stopColor="#FFF6DA" />
-                      <stop offset="38%" stopColor={CHART_THEME.goldBright} />
-                      <stop offset="100%" stopColor={CHART_THEME.goldDeep} />
-                    </radialGradient>
-                    <radialGradient id={beadSapphireId} cx="34%" cy="28%" r="78%">
-                      <stop offset="0%" stopColor="#DCE8FA" />
-                      <stop offset="38%" stopColor={CHART_THEME.sapphireLight} />
-                      <stop offset="100%" stopColor={CHART_THEME.sapphireDeep} />
-                    </radialGradient>
+                    {PALETTE.slice(0, RIBBON_COUNT).map((color, gi) => (
+                      <linearGradient key={`area-${gi}`} id={gi === 0 ? glass.area : glass.areaSapphire} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={color} stopOpacity={AREA_OPACITY[gi]} />
+                        <stop offset="100%" stopColor={color} stopOpacity={0} />
+                      </linearGradient>
+                    ))}
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis
@@ -2473,7 +2457,7 @@ export default function ComparePage() {
                     cursor={HOVER_CURSOR}
                     {...touchTip.tooltipProps}
                   />
-                  {/* Мягкая заливка под лентами первых двух рядов: 35 % светлого золота / 22 % сапфира у линии, к оси 0. */}
+                  {/* Мягкая заливка под лентами первых двух рядов: тот же цвет ряда, 16 % / 14 % у линии, к оси 0. */}
                   {series.slice(0, RIBBON_COUNT).map((s, i) => (
                     <Area
                       key={`${s.key}-area`}
@@ -2527,7 +2511,7 @@ export default function ComparePage() {
                       tooltipType="none"
                     />
                   ))}
-                  {/* Бусина на конце каждой линии (при перетаскивании окна прячется, как у карточки показателя). */}
+                  {/* Плоская точка на конце каждой линии (при перетаскивании окна прячется, как у карточки показателя). */}
                   {!isDragging && endDots.map((dot) => (
                     <ReferenceDot
                       key={dot.key}
@@ -2537,12 +2521,7 @@ export default function ComparePage() {
                       r={5}
                       ifOverflow="visible"
                       shape={(props) => (
-                        <RibbonBead
-                          cx={props.cx}
-                          cy={props.cy}
-                          color={dot.color}
-                          fill={dot.index === 0 ? `url(#${glass.bead})` : dot.index === 1 ? `url(#${beadSapphireId})` : dot.color}
-                        />
+                        <EndPoint cx={props.cx} cy={props.cy} color={dot.color} />
                       )}
                     />
                   ))}

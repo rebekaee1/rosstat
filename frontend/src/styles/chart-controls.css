@@ -194,16 +194,16 @@ a.fe-chip { text-decoration: none; }
 
 .fe-chart-note { margin: 0 0 6px; color: var(--color-text-secondary); font-size: 13px; line-height: 1.4; }
 
-/* Рамка выбора периода под графиком (K4.2): жёлоб с внутренней тенью, копия ряда золотой лентой, окно — золотое стекло,
-   ручки-бусины 20 px без рамок. */
+/* Рамка выбора периода под графиком (K4.2, круг 8): жёлоб с внутренней тенью, копия ряда синей линией, окно — холодное стекло.
+   Ручки плоские: тонкая вертикальная пластинка 6 px, зона нажатия остаётся 44 px (круг 8, C5: без больших тёмных кругов). */
 .fe-brush { margin-top: 6px; padding: 0 2px; }
 .fe-brush__track {
   position: relative;
   height: 44px;
   overflow: visible;
   border-radius: 14px;
-  background: rgba(88, 74, 46, 0.06);
-  box-shadow: inset 0 3px 8px rgba(120, 90, 30, 0.14), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+  background: rgba(30, 38, 56, 0.05);
+  box-shadow: inset 0 2px 6px rgba(30, 38, 56, 0.1), inset 0 -1px 0 rgba(255, 255, 255, 0.85);
   touch-action: none;
   cursor: pointer;
   user-select: none;
@@ -215,7 +215,7 @@ a.fe-chip { text-decoration: none; }
   top: 0;
   bottom: 0;
   border-radius: 14px;
-  background: rgba(246, 242, 234, 0.66);
+  background: rgba(244, 245, 247, 0.66);
   pointer-events: none;
 }
 .fe-brush__window {
@@ -246,16 +246,16 @@ a.fe-chip { text-decoration: none; }
 }
 .fe-brush__handle > span {
   display: block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 8px -1px rgba(30, 38, 56, 0.4), 0 0 0 4px rgba(30, 58, 110, 0.1);
+  width: 6px;
+  height: 26px;
+  border-radius: 3px;
+  background: #2C4A8A;
+  box-shadow: 0 3px 8px -2px rgba(30, 38, 56, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .fe-brush__handle:focus-visible > span { outline: 2px solid var(--color-champagne-ink, #80642f); outline-offset: 2px; }
 .fe-brush__handle:focus { outline: none; }
 @media (prefers-reduced-motion: no-preference) {
   .fe-brush__handle > span { transition: transform 0.12s ease; }
   .fe-brush[data-active='start'] .fe-brush__handle--start > span,
-  .fe-brush[data-active='end'] .fe-brush__handle--end > span { transform: scale(1.14); }
+  .fe-brush[data-active='end'] .fe-brush__handle--end > span { transform: scaleY(1.14); }
 }

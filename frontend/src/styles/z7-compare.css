@@ -412,3 +412,26 @@
 }
 .fe-z7-unavailable__title { font-size: 17px; font-weight: 700; line-height: 1.25; }
 .fe-z7-unavailable__text { margin-top: 4px; font-size: 14px; line-height: 1.45; color: var(--color-text-secondary); }
+
+/* ===== Круг 8, зона Z2: сравнение ===== */
+/* Свечение под лентами берёт цвет ряда (синий и бирюза), а не золото первого ряда: линия, легенда, точка и свечение одного тона. */
+:root:root .fe-compare-plot .k4-ribbon .recharts-line-curve { filter: drop-shadow(0 4px 6px rgba(44, 74, 138, 0.26)); }
+:root:root .fe-compare-plot .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 4px 6px rgba(35, 143, 155, 0.3)); }
+
+/* Варианты показа под названием ряда («К прошлому году» и другие) идут одной строкой, на телефоне листаются, без сироты на второй строке. */
+.fe-compare-reps {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.fe-compare-reps::-webkit-scrollbar { display: none; }
+.fe-compare-reps > * { flex: none; }
+@media (min-width: 640px) {
+  .fe-compare-reps { flex-wrap: wrap; overflow: visible; }
+}
+
+/* Строка про лимит рядов: обычный межстрочный интервал; ссылка стоит в тексте, а зона нажатия расширена невидимым слоем. */
+.fe-compare-page [data-testid='compare-limit-note'] { line-height: 1.45; }
+
+/* Подпись конца линии не ловит выделение текста при долгом нажатии на график. */
+.fe-compare-plot, .fe-compare-end { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
