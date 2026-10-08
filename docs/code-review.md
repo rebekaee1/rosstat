@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `430283ad52442fac54f9db01344e5272b7ff2387`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `2675984b56bfcc86f78c2787b5f1792eb362db5a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 1869 |
-| Код, шаблоны и стили | 1485 |
-| Актуальные рецензии без пропусков guard | 1869 |
+| Файлы в явно определённом scope | 1870 |
+| Код, шаблоны и стили | 1486 |
+| Актуальные рецензии без пропусков guard | 1870 |
 | Именованные определения Python/JS: с аннотацией / всего | 11818 / 11818 |
 | Файлы, требующие внимания | 0 |
 
@@ -1869,6 +1869,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/metrika-baseline-snapshot.py](../scripts/metrika-baseline-snapshot.py) | reviewed | 8/8 | актуально |
 | [scripts/metrika-goals-audit.py](../scripts/metrika-goals-audit.py) | reviewed | 2/2 | актуально |
 | [scripts/metrika_daily_report.py](../scripts/metrika_daily_report.py) | reviewed | 56/56 | актуально |
+| [scripts/minfin-sync-from-mac.sh](../scripts/minfin-sync-from-mac.sh) | reviewed | 0/0 | актуально |
 | [scripts/pg-backup.sh](../scripts/pg-backup.sh) | reviewed | 0/0 | актуально |
 | [scripts/project-terrain-template.html](../scripts/project-terrain-template.html) | reviewed | 0/0 | актуально |
 | [scripts/read-project-workbooks.py](../scripts/read-project-workbooks.py) | reviewed | 7/7 | актуально |

@@ -19,14 +19,14 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 1869,
-    "code_files": 1485,
-    "current_reviews": 1869,
+    "files": 1870,
+    "code_files": 1486,
+    "current_reviews": 1870,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 1661
+      "reviewed": 1662
     },
     "definitions": 11818,
     "annotated_definitions": 11818,
@@ -283,8 +283,8 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "58dfcb58de6fdf522718d34b22c125e0aa87d1adb922fed736b4df019f8f63e9",
-      "bytes": 226874,
+      "sha256": "f786dcddd84f1d3b3aac42f6f7bc2fedeb3004d3de6f416c55de43700b408af1",
+      "bytes": 227100,
       "lines": 1258,
       "code": false,
       "status": "reviewed",
@@ -10527,9 +10527,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "923b66147ff43355dfe5d6c0ed7404354ea654cf518d62ec35eeaacf4b33f7c6",
-      "bytes": 478244,
-      "lines": 2578,
+      "sha256": "d1eddfdb98e1c04f286c28dc01f81424de054f489288f26cc9b0dfe32544ea79",
+      "bytes": 478542,
+      "lines": 2580,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10592,8 +10592,8 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "35aa0b238e60ee2db873fffa3c7cce35f727ebe315d0c8f6181009b9280cea24",
-      "bytes": 73055,
+      "sha256": "8014e9e169882fd392e3379523c045adff78d3a00acfb29e70759f8413e34599",
+      "bytes": 74403,
       "lines": 646,
       "code": false,
       "status": "reviewed",
@@ -11112,9 +11112,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "d8585e413eb2b50ffc66b65c0de64fd81fc4df7aa5eb4dab9e0c720f436eca82",
-      "bytes": 2761170,
-      "lines": 99663,
+      "sha256": "8ccd3a4cfdce5dbfe43c03c5c464672ae56db603dbec9d965502d5e210062441",
+      "bytes": 2761660,
+      "lines": 99683,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -23838,6 +23838,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/minfin-sync-from-mac.sh",
+      "sha256": "bdce3f32ce028bc18348cbd191ee6e13efd737fbaa75f72c9f0b5fd489fe4381",
+      "bytes": 6089,
+      "lines": 103,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/pg-backup.sh",
       "sha256": "41562a64bd7dc46de0f352616a78cc9229c590be1ab12b6512f3d8f28e5c6000",
       "bytes": 7036,
@@ -24333,9 +24346,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9c5c74a1de54236935a0b7406c4ecdcd4213866058c2397e87f7d5d1e5d157c0",
+  "ledger_sha256": "535702f459ca5645e7280ea6370dfb15812fc30191d8ab8c858831f61a1fe1dd",
   "javascript_inventory_sha256": "9ac9a9cee609b0f60705921081d89495d32272799415c78679075f0573fef31b",
-  "baseline_commit": "430283ad52442fac54f9db01344e5272b7ff2387",
-  "branch": "main",
+  "baseline_commit": "2675984b56bfcc86f78c2787b5f1792eb362db5a",
+  "branch": "",
   "unstaged_at_capture": []
 }
