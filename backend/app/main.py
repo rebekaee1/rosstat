@@ -424,6 +424,18 @@ async def _startup_data_catch_up() -> None:
     except Exception as e:
         logger.warning("Startup forecast catch-up aborted: %s", e)
     await _catch_up_static_sitemaps()
+    await _warm_forecast_showcase()
+
+
+async def _warm_forecast_showcase() -> None:
+    """Startup: витрина «Прогнозов» в кэш до первого посетителя (холодная сборка долгая)."""
+    try:
+        from app.api.forecast_showcase import warm_showcase_cache
+
+        warmed = await warm_showcase_cache(force=False)
+        logger.info("Startup forecast showcase warm-up: %s", warmed)
+    except Exception as e:
+        logger.warning("Startup forecast showcase warm-up aborted: %s", e)
 
 
 async def _catch_up_static_sitemaps() -> None:
@@ -1158,6 +1170,17 @@ async def lifespan(app: FastAPI):
             trigger=CronTrigger(hour=9, minute=10, timezone="Europe/Moscow"),
             id="gsc_search_queries",
             name="Google Search Console search analytics sync",
+            replace_existing=True,
+        )
+
+        # Витрина прогнозов: ключ живёт 30 минут и сбрасывается загрузкой данных,
+        # поэтому пересобираем каждые 20 минут в фоне, а не на глазах у посетителя.
+        from app.api.forecast_showcase import forecast_showcase_warm_job
+        scheduler.add_job(
+            locked_job(forecast_showcase_warm_job, "forecast_showcase_warm", ttl_seconds=900),
+            trigger=IntervalTrigger(minutes=20),
+            id="forecast_showcase_warm",
+            name="Forecast showcase cache warm-up (every 20 min)",
             replace_existing=True,
         )
 

@@ -92,6 +92,7 @@ from app.services.world_forecast_pipeline import world_forecast_source_ready
 from app.services.world_rank_values import (
     apply_rank_series,
     latest_rank_point,
+    YOY_KIND_PASSTHROUGH,
     rank_yoy_kind,
     ranking_display_name,
     ranking_period_method,
@@ -216,6 +217,34 @@ def _indicator_name_en(ind: WorldIndicator) -> str:
     return append_en_slice_to_title(base, ind.slice_json)
 
 
+def _is_percent_passthrough(indicator: WorldIndicator) -> bool:
+    """Ряд уже в процентах за год (IMF PCPIPCH, IPCA-12m), хотя понятие hicp-index — индекс."""
+    return rank_yoy_kind(indicator) == YOY_KIND_PASSTHROUGH
+
+
+def _passthrough_unit_en(indicator: WorldIndicator) -> str:
+    """Английская подпись уже процентного ряда («annual change, %»), без слова «index»."""
+    from app.services.display import localize_unit
+
+    ru = (indicator.unit_ru or indicator.unit or "").strip()
+    label = localize_unit(ru, locale="en") if ru else ""
+    if label and not any("а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in label):
+        return label
+    return ranking_public_unit("yoy", "", locale="en")
+
+
+def _concept_unit_for_indicator(concept, indicator: WorldIndicator) -> str:
+    """Единица ряда в ответах данных: витринная единица понятия, но не для уже процентного ряда.
+
+    У понятия hicp-index единица «индекс 2015=100» верна для Евростата. Ряд МВФ
+    `PCPIPCH` (инфляция за год, %) того же понятия не должен подписываться индексом:
+    раньше из-за этого заголовок гласил «0,05 (индекс 2015 = 100)» вместо процентов.
+    """
+    if concept is None or _is_percent_passthrough(indicator):
+        return _indicator_public_unit(indicator)
+    return concept_public_unit(concept)
+
+
 def _indicator_public_unit(indicator: WorldIndicator) -> str:
     """Locale-facing unit for world indicator rows."""
     ru = (indicator.unit_ru or indicator.unit or "").strip()
@@ -233,13 +262,15 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
             else concept.measure
         )
         if measure_class(indicator.unit, indicator.unit_ru) == expected:
-            # Только когда класс меры совпадает с витринным: IMF PCPIPCH
-            # (% за год) не подписываем как индекс 2015=100.
+            # IMF PCPIPCH: класс меры «PC» совпадает с провайдерским, но это
+            # проценты за год, а не индекс 2015=100 (единица самого понятия).
+            if _is_percent_passthrough(indicator):
+                return _passthrough_unit_en(indicator)
             return concept_public_unit(concept) or ru
     from app.data.eurostat_units_ru import unit_label_en_for_code
-    from app.services.display import public_unit_en
+    from app.services.display import plain_unit_en, public_unit_en
 
-    en_label = (unit_label_en_for_code(indicator.unit) or "").strip()
+    en_label = plain_unit_en(unit_label_en_for_code(indicator.unit))
     vague = {
         "rate", "number", "average", "person", "persons", "index", "ratio",
         "score", "total", "value", "unit", "percentage",
@@ -628,6 +659,29 @@ def _rating_concepts():
     ]
 
 
+# Порядок понятий в `/world/rating/concepts`: главное первым. Клиентский поиск
+# при равной оценке оставляет порядок списка, и по запросу «gdp» первой строкой
+# вставал «ВВП на душу, % от среднего по ЕС», а не «ВВП: рейтинг стран»
+# (круг 08.10.2026, v6 №16). Незнакомое понятие уходит в конец, в прежнем порядке.
+_RATING_CATALOG_ORDER: tuple[str, ...] = (
+    "gdp-usd",
+    "gdp-per-capita-usd",
+    "gdp-per-capita-eu",
+    "hicp-index",
+    "unemployment-rate",
+    "population",
+    "activity-rate",
+    "government-debt-gdp",
+    "budget-balance-gdp",
+    "long-term-interest-rate",
+)
+
+
+def _rating_catalog_concepts():
+    rank = {slug: index for index, slug in enumerate(_RATING_CATALOG_ORDER)}
+    return sorted(_rating_concepts(), key=lambda concept: rank.get(concept.slug, len(rank)))
+
+
 def _locale_safe_copy(text: str | None) -> str | None:
     """EN payload must not carry Russian description/methodology."""
     if not text:
@@ -991,7 +1045,7 @@ async def world_rating_concepts():
         ranking_value_mode,
     )
 
-    concepts = _rating_concepts()
+    concepts = _rating_catalog_concepts()
     # Для каталога рейтинга базы неизвестны до members; цены всегда yoy.
     payload_concepts = []
     for concept in concepts:
@@ -2326,11 +2380,7 @@ async def indicator_data(
             ]
 
     concept = concept_for_indicator(source)
-    unit = (
-        concept_public_unit(concept)
-        if concept is not None
-        else _indicator_public_unit(source)
-    )
+    unit = _concept_unit_for_indicator(concept, source)
     mode_unit = mode_unit_for(parsed, unit, signed)
     payload = {
         "mode": parsed.id,

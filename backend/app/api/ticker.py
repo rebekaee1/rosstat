@@ -21,7 +21,10 @@ Response shape:
       "source": "MOEX",
       "source_kind": "market",          // market | central_bank | ecb | official
       "source_label": "Биржа",          // «Биржа» / «ЦБ» / «ЕЦБ» по языку хоста
-      "as_of": "2026-05-22T08:40:26+00:00"
+      "as_of": "2026-05-22T08:40:26+00:00",
+      "as_of_day": "2026-05-22",        // дата значения одним форматом для живых и дневных рядов
+      "age_days": 0,                    // сколько суток значению на момент ответа
+      "stale": false                    // true, если значение старше STALE_AFTER_DAYS суток
     },
     {
       "code": "brent",
@@ -44,7 +47,7 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -86,6 +89,49 @@ TICKER_SETS = {
 }
 # Совместимость: старый импорт ждал плоский список российского набора.
 TICKER_CODES = list(TICKER_SET_RUSSIA)
+
+
+# Значение старше этого числа суток лента подписывает «не обновлялось». Нефть
+# и золото — дневные ряды с задержкой публикации в пару дней, поэтому порог не 1.
+STALE_AFTER_DAYS = 3
+
+
+def _as_of_day(snap: dict) -> date | None:
+    """Дата значения (UTC) из `as_of_date`, `as_of` или `fetched_at`, если её можно разобрать."""
+    for key in ("as_of_date", "as_of", "fetched_at"):
+        raw = snap.get(key)
+        if not raw:
+            continue
+        text = str(raw).strip()
+        try:
+            if len(text) <= 10:
+                return date.fromisoformat(text)
+            parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+            if parsed.tzinfo is not None:
+                parsed = parsed.astimezone(timezone.utc)
+            return parsed.date()
+        except ValueError:
+            continue
+    return None
+
+
+def add_freshness(snap: dict, now: datetime) -> None:
+    """Добавить в снимок единый формат даты и признак давности (поля только дописываются).
+
+    Живые котировки несут время, дневные ряды (нефть, золото ЦБ) только дату:
+    клиент подписывал их по-разному, а девятидневное значение нефти выглядело живым.
+    `as_of_day` — дата одним форматом, `age_days` — целые сутки до `now`,
+    `stale` — старше `STALE_AFTER_DAYS`."""
+    day = _as_of_day(snap)
+    if day is None:
+        snap["as_of_day"] = None
+        snap["age_days"] = None
+        snap["stale"] = False
+        return
+    age = max((now.astimezone(timezone.utc).date() - day).days, 0)
+    snap["as_of_day"] = day.isoformat()
+    snap["age_days"] = age
+    snap["stale"] = age > STALE_AFTER_DAYS
 
 
 # Рублёвые пары, у которых есть и биржевая котировка (лента), и официальный курс ЦБ (страница, конвертер).
@@ -206,14 +252,16 @@ async def get_live_ticker(response: Response, lane: str = "world") -> dict:
     # Лента показывает «Биржа» или «ЦБ», страница курса и конвертер берут официальный курс ЦБ на дату:
     # эти числа разные по смыслу, и API называет каждое своим именем, а не склеивает.
     locale = "en" if get_locale() == "en" else "ru"
+    now = datetime.now(timezone.utc)
     for snap in snapshots:
         kind = snap.get("source_kind") or source_kind(snap.get("source"))
         snap["source_kind"] = kind
         snap["source_label"] = source_label(kind, snap.get("source"), locale)
         snap.setdefault("as_of", snap.get("as_of_date") or snap.get("fetched_at"))
+        add_freshness(snap, now)
 
     return {
         "lane": lane if lane in TICKER_SETS else "world",
         "snapshots": snapshots,
-        "server_time": datetime.now(timezone.utc).isoformat(),
+        "server_time": now.isoformat(),
     }
