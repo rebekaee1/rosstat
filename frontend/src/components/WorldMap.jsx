@@ -973,11 +973,20 @@ export function CountrySilhouette({
   const { locale } = useLocale();
   const geometry = useCountryOutline(code);
   const reference = countryReference(code, locale);
-  const countryPath = useMemo(() => {
+  // Круг 10 (К4): рамка рисунка по самому контуру страны, а не фиксированные 360 × 200. Раньше узкая или вытянутая страна занимала
+  // середину пустой рамки и на плите выглядела маленьким пятном; теперь контур заполняет отведённое место по длинной стороне.
+  const outline = useMemo(() => {
     if (!geometry) return null;
-    const projection = geoMercator().fitExtent([[20, 16], [340, 184]], geometry);
-    return geoPath(projection)(geometry);
+    const projection = geoMercator().fitExtent([[0, 0], [360, 200]], geometry);
+    const draw = geoPath(projection);
+    const d = draw(geometry);
+    if (!d) return null;
+    const [[x0, y0], [x1, y1]] = draw.bounds(geometry);
+    if (![x0, y0, x1, y1].every(Number.isFinite) || x1 <= x0 || y1 <= y0) return { d, viewBox: '0 0 360 200' };
+    const pad = 5;
+    return { d, viewBox: `${(x0 - pad).toFixed(1)} ${(y0 - pad).toFixed(1)} ${(x1 - x0 + pad * 2).toFixed(1)} ${(y1 - y0 + pad * 2).toFixed(1)}` };
   }, [geometry]);
+  const countryPath = outline?.d || null;
   const areaUnitRaw = (area?.unit || '').trim();
   // Между числом и единицей обычный пробел: длинная строка из числа с неразрывными пробелами и единицы
   // не должна рваться по буквам, перенос идёт по границе слов.
@@ -1038,7 +1047,7 @@ export function CountrySilhouette({
       </div>
       {/* Круг 9 (W7): нет контура — карточка всё равно с фактами (столица, валюта, население), без картинки. */}
       {countryPath ? (
-        <svg viewBox="0 0 360 200" className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
+        <svg viewBox={outline.viewBox} className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
           <path
             d={countryPath}
             className="w2-profile-shape"

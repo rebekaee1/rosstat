@@ -173,7 +173,7 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   .z5-hero__grid { flex-direction: row; align-items: stretch; gap: 36px; }
   /* G6.1: заголовок и лид не шире 58 % плиты, пока профиль грузится и колонка пуста: текст не ложится на кристаллы героя (K1). */
   .z5-hero__lead { flex: 1 1 0; max-width: 58%; display: flex; flex-direction: column; justify-content: center; }
-  .z5-hero__profile { flex: 0 0 min(470px, 40%); }
+  .z5-hero__profile { flex: 0 0 min(520px, 44%); }
 }
 .w2-main-title.z5-main-title {
   margin: 26px 0 0;
@@ -312,30 +312,31 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   color: #BFD2F0;
   text-decoration-color: rgba(191, 210, 240, 0.5);
 }
-/* Планшет: карта слева, факты справа. */
+/* Планшет: карта слева, факты справа. Круг 10 (К4): карта шире (46 % карточки вместо 38 %) и выше (220 px вместо 170): раньше силуэт
+   страны был размером с ноготь на широкой плите и читался «плевком»; рамка рисунка теперь по контуру страны (см. CountrySilhouette). */
 @media (min-width: 640px) {
   :root .fe-data-header .w2-profile.z5-profile {
-    grid-template-columns: minmax(150px, 38%) minmax(0, 1fr);
+    grid-template-columns: minmax(200px, 46%) minmax(0, 1fr);
     grid-template-areas: 'head head' 'map facts' 'source source';
   }
-  :root .fe-data-header .z5-profile .w2-profile-map { max-width: none; max-height: 170px; margin: 0; }
+  :root .fe-data-header .z5-profile .w2-profile-map { max-width: none; max-height: 220px; margin: 0; }
+  :root .fe-data-header .z5-profile .w2-profile-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-/* Компьютер: факты строками «подпись — значение», разделяет их воздух 14 px, а не линия. */
+/* Компьютер: карточка занимает колонку целиком (чуть шире прежней), карта идёт полосой во всю её ширину, факты ниже двумя колонками
+   «подпись над значением»; воздух 14 px вместо линий. */
 @media (min-width: 1024px) {
-  :root .fe-data-header .w2-profile.z5-profile { padding: 18px 20px 16px; }
-  :root .fe-data-header .z5-profile .w2-profile-facts { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  :root .fe-data-header .z5-profile .w2-profile-facts > div {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
+  :root .fe-data-header .w2-profile.z5-profile {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'map' 'facts' 'source';
+    padding: 18px 22px 16px;
   }
-  :root .fe-data-header .z5-profile .w2-profile-facts dd { margin: 0; text-align: right; }
+  :root .fe-data-header .z5-profile .w2-profile-map { max-height: 230px; margin: 2px 0; }
+  :root .fe-data-header .z5-profile .w2-profile-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 18px; }
 }
-/* Телефон: профиль компактно, карта 150 px сверху, факты 2x2. */
+/* Телефон: профиль компактно, карта до 190 px сверху (раньше 150), факты 2x2. */
 @media (max-width: 639px) {
   :root .fe-data-header .w2-profile.z5-profile { padding: 14px 16px 12px; row-gap: 10px; }
-  :root .fe-data-header .z5-profile .w2-profile-map { max-height: 150px; }
+  :root .fe-data-header .z5-profile .w2-profile-map { max-height: 190px; }
   :root .fe-data-header .z5-profile .w2-profile-facts { gap: 12px 14px; }
 }
 
