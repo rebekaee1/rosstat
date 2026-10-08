@@ -6,7 +6,7 @@ import { cn } from '../lib/format';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
-import { formatAsOfHuman, tickerSourceKind, tzFor, tickerSourceName } from '../lib/tickerFormat';
+import { formatAsOfHuman, tzFor, tickerSourceName } from '../lib/tickerFormat';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
 import { useLocale, useT } from '../i18n';
@@ -22,14 +22,16 @@ import '../styles/k3-shell.css';
 const TICKER_META = {
   // Единые знаки: курсы — два знака после запятой, биткоин и золото — целые.
   // nameKey — человеческое имя вместо кода пары («Доллар», а не USD/RUB); cur — в чём цена.
+  // Круг 10, Л3: английская лента называет валюты общепринятыми кодами (EUR, GBP, CNY), не дробью «USD/CNY»;
+  // pair — из чего собрана подсказка «1 EUR = 1,1225 USD». Brent называется Brent: «нефть» — это и Urals, и WTI.
   'usd-rub-live':  { nameKey: 'w6b.ticker.usd', cur: 'rub', linkTo: russiaIndicatorPath('usd-rub'), decimals: 2 },
   'eur-rub-live':  { nameKey: 'w6b.ticker.eur', cur: 'rub', linkTo: russiaIndicatorPath('eur-rub'), decimals: 2 },
   'cny-rub-live':  { nameKey: 'w6b.ticker.cny', cur: 'rub', linkTo: russiaIndicatorPath('cny-rub'), decimals: 2 },
-  'eur-usd':       { nameKey: 'w6b.ticker.eur', cur: 'usd', linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
-  'gbp-usd':       { nameKey: 'w6b.ticker.gbp', cur: 'usd', linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
-  'usd-cny':       { nameKey: 'w7p.ticker.usdcny', cur: 'cny', pairLabel: true, linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
+  'eur-usd':       { nameKey: 'c10t.ticker.eur', cur: 'usd', pair: ['EUR', 'USD'], linkTo: russiaIndicatorPath('eur-usd'), decimals: 2 },
+  'gbp-usd':       { nameKey: 'c10t.ticker.gbp', cur: 'usd', pair: ['GBP', 'USD'], linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
+  'usd-cny':       { nameKey: 'c10t.ticker.cny', cur: 'cny', pair: ['USD', 'CNY'], linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
   'btc-usd':       { nameKey: 'w6b.ticker.btc', cur: 'usd', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
-  'brent':         { nameKey: 'w6b.ticker.brent', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
+  'brent':         { nameKey: 'c10t.ticker.brent', noteKey: 'c10t.ticker.brentNote', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
   'gold-rub-live': { nameKey: 'w6b.ticker.gold', cur: 'rub', perGram: true, linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
 };
 
@@ -134,7 +136,6 @@ function TickerCell({ snapshot, nowMs }) {
   const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
   // Выходной день не делает дневной курс «устаревшим»: дату пишем, только когда значению больше четырёх суток.
   const asOfHuman = formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: 4 });
-  const sourceKind = tickerSourceKind(snapshot.source);
   const asOfTitle = formatAsOfTitle(asOfRaw, locale);
   const asOfClock = fetchedMs !== null
     ? new Date(fetchedMs).toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', {
@@ -144,9 +145,16 @@ function TickerCell({ snapshot, nowMs }) {
     })
     : null;
 
+  // Круг 10, Л1: источник («Московская биржа», «Банк России») виден только при наведении, а не второй строкой под ценой.
   const titleParts = [t('ticker.source', { source: tickerSourceName(snapshot.source, locale) })];
-  // Подпись «биржа» или «ЦБ» стоит мелко под ценой (от 768 px), а полное название источника остаётся в подсказке.
-  if (sourceKind) titleParts.unshift(t(`shell.ticker.source.${sourceKind}`));
+  if (meta.pair && hasPrice) {
+    titleParts.unshift(t('c10t.ticker.rate', {
+      from: meta.pair[0],
+      value: formatPrice(snapshot.price, 4, locale),
+      to: meta.pair[1],
+    }));
+  }
+  if (meta.noteKey) titleParts.push(t(meta.noteKey));
   if (!isIntraday) {
     if (asOfTitle) titleParts.push(t('ticker.valueAsOf', { date: asOfTitle }));
   } else {
@@ -182,29 +190,23 @@ function TickerCell({ snapshot, nowMs }) {
     isStale && 'opacity-60',
   );
 
-  // У пары «доллар к юаню» по-английски подпись «USD/CNY» сама говорит, что это за число: знак ¥ рядом
-  // читался как «доллар к иене».
-  const sign = (meta.pairLabel && locale === 'en') ? '' : (CURRENCY_SIGN[meta.cur] || '');
+  const sign = CURRENCY_SIGN[meta.cur] || '';
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
   const showPct = !longStale && pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
-  // Подпись под ценой: «данные от 29 сент.» у давнего значения, иначе источник — «биржа» или «ЦБ».
-  const staleLabel = longStale && staleDate ? t('c9a.ticker.staleFrom', { date: staleDate }) : undefined;
-  const caption = staleLabel
-    ? staleLabel
-    : (asOfHuman
-      ? t('shell.ticker.asOf', { date: asOfHuman })
-      : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null));
+  // Дата значения стоит в той же строке, что и цена, и только у значения старше выходных (как было до круга 9): «на 29 сент.».
+  // Давнее значение серое и без процента, а полная дата лежит в подсказке.
+  const asOfText = longStale ? staleDate : asOfHuman;
   const body = (
     <>
-      <span className="fe-ticker__name" data-asof={staleLabel}>{t(meta.nameKey)}</span>
+      <span className="fe-ticker__name">{t(meta.nameKey)}</span>
       <span className="fe-ticker__quote">
         <span className="fe-ticker__price tabular-nums">
           {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}
           <span>{hasPrice ? formatPrice(snapshot.price, meta.decimals, locale) : '\u2014'}</span>
           {!signFirst && hasPrice && sign ? <span className="fe-ticker__sign">{`\u00a0${sign}${meta.perGram ? t('w6b.ticker.perGram') : ''}`}</span> : null}
         </span>
-        {caption ? <span className="fe-ticker__caption">{caption}</span> : null}
+        {asOfText ? <span className="fe-ticker__asof">{t('shell.ticker.asOf', { date: asOfText })}</span> : null}
       </span>
       {showPct ? (
         <span className="fe-ticker__delta tabular-nums" data-dir={pct > 0 ? 'up' : 'down'}>

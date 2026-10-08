@@ -33,12 +33,12 @@ import logging
 from datetime import date
 from typing import ClassVar
 
-import httpx
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
+from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +48,20 @@ _EIA_BRENT_XLS = "https://www.eia.gov/dnav/pet/hist_xls/RBRTED.xls"
 
 
 def _fetch_eia_brent() -> list[tuple[date, float]]:
-    """EIA's own daily Brent workbook, with its published observation dates."""
-    with httpx.Client(timeout=60.0, follow_redirects=True) as client:
-        response = client.get(_EIA_BRENT_XLS)
+    """EIA's own daily Brent workbook, with its published observation dates.
+
+    Идёт через общую ETL-сессию (прямой ход, затем HTTP/SOCKS-прокси ETL). Раньше здесь был голый
+    httpx: если сеть сервера не пускала к eia.gov напрямую, загрузка молча падала, затем так же
+    падало зеркало FRED, и нефть в карточке и в ленте оставалась на дате последней удачной выгрузки.
+    """
+    session = create_session()
+    try:
+        response = session.get(_EIA_BRENT_XLS, headers={"User-Agent": _UA}, timeout=60)
         response.raise_for_status()
-    table = pd.read_excel(io.BytesIO(response.content), sheet_name="Data 1", header=None)
+        content = response.content
+    finally:
+        session.close()
+    table = pd.read_excel(io.BytesIO(content), sheet_name="Data 1", header=None)
     return _parse_eia_brent_table(table)
 
 
@@ -71,14 +80,15 @@ def _parse_eia_brent_table(table: pd.DataFrame) -> list[tuple[date, float]]:
 
 
 def _fetch_fred_csv(series_id: str) -> str:
-    with httpx.Client(
-        timeout=60.0,
-        headers={"User-Agent": _UA},
-        follow_redirects=True,
-    ) as client:
-        response = client.get(_BASE_URL, params={"id": series_id})
+    session = create_session()
+    try:
+        response = session.get(
+            _BASE_URL, params={"id": series_id}, headers={"User-Agent": _UA}, timeout=60,
+        )
         response.raise_for_status()
         return response.text
+    finally:
+        session.close()
 
 
 def _parse_fred_csv(text: str, *, backfill_from: date | None = None) -> list[tuple[date, float]]:

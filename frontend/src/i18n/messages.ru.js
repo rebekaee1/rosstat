@@ -3358,4 +3358,11 @@ export default {
   'c9d.calc.scope': 'Считаем для страны: {country}, {currency}',
   'c9d.slider.typeValue': 'Ввести число: {label}',
   'c9d.compound.currencyAria': 'Валюта расчёта',
+  // ===== Круг 10: лента курсов (Л) =====
+  'c10t.ticker.brent': 'Brent',
+  'c10t.ticker.brentNote': 'Цена нефти Brent за день; официальные данные выходят раз в неделю',
+  'c10t.ticker.eur': 'EUR',
+  'c10t.ticker.gbp': 'GBP',
+  'c10t.ticker.cny': 'CNY',
+  'c10t.ticker.rate': '1 {from} = {value} {to}',
 };

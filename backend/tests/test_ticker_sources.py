@@ -220,3 +220,51 @@ def test_add_freshness_unifies_date_and_flags_old_daily_values():
     broken = {"as_of": "не дата"}
     add_freshness(broken, now)
     assert broken["as_of_day"] is None and broken["stale"] is False
+
+
+def test_brent_weekly_release_is_not_flagged_stale_within_its_cycle():
+    """Brent приходит из EIA раз в неделю: девять суток от даты значения — норма, пропущенный выпуск — нет."""
+    from datetime import datetime, timezone
+
+    from app.api.ticker import add_freshness
+
+    now = datetime(2026, 10, 8, 18, 0, tzinfo=timezone.utc)
+
+    brent = {"code": "brent", "as_of_date": "2026-09-29"}
+    add_freshness(brent, now)
+    assert (brent["age_days"], brent["stale"]) == (9, False)
+
+    missed = {"code": "brent", "as_of_date": "2026-09-24"}
+    add_freshness(missed, now)
+    assert (missed["age_days"], missed["stale"]) == (14, True)
+
+    # Курс ЕЦБ дневной: порог по умолчанию остаётся три дня.
+    ecb = {"code": "eur-usd", "as_of_date": "2026-10-02"}
+    add_freshness(ecb, now)
+    assert (ecb["age_days"], ecb["stale"]) == (6, True)
+
+
+def test_eia_and_fred_downloads_use_shared_etl_session(monkeypatch):
+    """EIA и FRED качаются через общую ETL-сессию (прямой ход, затем прокси), а не голым клиентом."""
+    from app.services import fred_parser
+
+    calls = []
+
+    class _Resp:
+        text = "observation_date,X\n2026-10-01,1.0\n"
+        content = b""
+
+        def raise_for_status(self):
+            return None
+
+    class _Session:
+        def get(self, url, **kwargs):
+            calls.append(url)
+            return _Resp()
+
+        def close(self):
+            calls.append("closed")
+
+    monkeypatch.setattr(fred_parser, "create_session", lambda *a, **k: _Session())
+    assert fred_parser._fetch_fred_csv("X").startswith("observation_date")
+    assert calls[0].startswith("https://fred.stlouisfed.org/") and calls[-1] == "closed"

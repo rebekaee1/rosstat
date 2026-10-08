@@ -105,29 +105,32 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(text).not.toMatch(/-\d,\d %/);
   });
 
-  it('«биржа» и «ЦБ» стоят мелко под ценой, полное название источника остаётся в подсказке; чужую дату пишет словами', async () => {
+  it('круг 10, Л1: лента в одну строку, «биржи» и «ЦБ» под ценой нет, источник лежит в подсказке; давняя дата стоит рядом с ценой', async () => {
     mockSnapshots();
     renderTicker({ locale: 'ru', route: '/' });
     await screen.findByText('84,41');
-    // Доллар с биржи подписан «биржа», евро с сегодняшней датой — «ЦБ».
-    const caption = screen.getByText('shell.ticker.source.market');
-    expect(caption.className).toContain('fe-ticker__caption');
-    expect(caption.previousElementSibling.textContent).toContain('84,41');
-    expect(screen.getByText('shell.ticker.source.cb').className).toContain('fe-ticker__caption');
+    // Второй строки с подписью источника нет ни у биржевой котировки, ни у курса ЦБ.
+    expect(document.querySelector('.fe-ticker__caption')).toBeNull();
+    expect(screen.queryByText('shell.ticker.source.market')).toBeNull();
+    expect(screen.queryByText('shell.ticker.source.cb')).toBeNull();
+    // Источник и значение «на дату» видны при наведении.
     const usd = screen.getByText('84,41').closest('a');
-    expect(usd.getAttribute('title')).toContain('shell.ticker.source.market');
+    expect(usd.getAttribute('title')).toContain('ticker.source');
+    expect(usd.querySelector('.fe-ticker__asof')).toBeNull();
     // Нет «04.10»-подобных технических дат.
     expect(document.body.textContent).not.toMatch(/\b\d{2}\.\d{2}\b/);
-    // Круг 8, D5 и волна 2: устаревший ряд Brent (старше трёх суток) приглушён (data-stale) и подписан короткой датой («на 29 сент.») вместо источника;
-    // слов «не обновлялось» нет, дата на телефоне стоит в строке имени (data-asof).
+    // Давний ряд Brent (старше трёх суток) приглушён (data-stale) и подписан короткой датой («на 29 сент.») в той же строке, что и цена.
     expect(screen.queryByText('c8s.ticker.stale')).toBeNull();
     const stale = document.querySelectorAll('[data-stale="true"]');
     expect(stale).toHaveLength(1);
-    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('c9a.ticker.staleFrom');
-    expect(stale[0].querySelector('.fe-ticker__name').getAttribute('data-asof')).toBe('c9a.ticker.staleFrom');
+    const asof = stale[0].querySelector('.fe-ticker__asof');
+    expect(asof.textContent).toBe('shell.ticker.asOf');
+    expect(asof.previousElementSibling.textContent).toContain('78,50');
+    expect(stale[0].querySelector('.fe-ticker__name').textContent).toBe('c10t.ticker.brent');
+    expect(stale[0].querySelector('.fe-ticker__name').hasAttribute('data-asof')).toBe(false);
   });
 
-  it('круг 9, S5: давнее значение по полям сервера (stale, as_of_day) без процента и с серой подписью «данные от …»', async () => {
+  it('круг 9, S5: давнее значение по полям сервера (stale, as_of_day) без процента и с серой датой', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -143,7 +146,7 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(stale).toHaveLength(1);
     expect(stale[0].querySelector('.fe-ticker__delta')).toBeNull();
     expect(stale[0].textContent).not.toMatch(/0,9/);
-    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('c9a.ticker.staleFrom');
+    expect(stale[0].querySelector('.fe-ticker__asof').textContent).toBe('shell.ticker.asOf');
     const fresh = screen.getByText('94,32').closest('a');
     expect(fresh.getAttribute('data-stale')).toBeNull();
     expect(fresh.querySelector('.fe-ticker__delta').textContent).toContain('+0,4');
@@ -253,18 +256,29 @@ describe('LiveTicker: понятные подписи, единые знаки �
     Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
   });
 
-  it('EN: пара доллар к юаню подписана «USD/CNY» без знака юаня, чтобы не читалась как доллар к иене', async () => {
+  it('круг 10, Л3: EN-лента называет валюты кодами EUR, GBP, CNY и Brent, а не дробью «USD/CNY»; пара расшифрована в подсказке', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         snapshots: [
-          { code: 'usd-cny', price: 6.7, change_pct: 0, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ECB' },
+          { code: 'eur-usd', price: 1.1225, change_pct: 0.3, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ЕЦБ' },
+          { code: 'gbp-usd', price: 1.3201, change_pct: -0.2, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ЕЦБ' },
+          { code: 'usd-cny', price: 6.7046, change_pct: 0, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'ЕЦБ' },
+          { code: 'brent', price: 125.44, change_pct: 1.2, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, source: 'EIA' },
         ],
       }),
     }));
     renderTicker({ locale: 'en', route: '/' });
     expect(await screen.findByText('6.70')).toBeTruthy();
-    expect(screen.getByText('w7p.ticker.usdcny')).toBeTruthy();
-    expect(document.body.textContent).not.toContain('\u00A5');
+    const names = [...document.querySelectorAll('.fe-ticker__name')].map((n) => n.textContent);
+    expect(names).toEqual(['c10t.ticker.eur', 'c10t.ticker.gbp', 'c10t.ticker.cny', 'c10t.ticker.brent']);
+    expect(screen.queryByText('w7p.ticker.usdcny')).toBeNull();
+    const text = document.body.textContent;
+    expect(text).toContain('$1.12');
+    expect(text).toContain('\u00A56.70');
+    expect(text).not.toMatch(/USD\/CNY/);
+    const cny = screen.getByText('6.70').closest('a');
+    expect(cny.getAttribute('title')).toContain('c10t.ticker.rate');
+    expect(screen.getByText('125.44').closest('a').getAttribute('title')).toContain('c10t.ticker.brentNote');
   });
 });

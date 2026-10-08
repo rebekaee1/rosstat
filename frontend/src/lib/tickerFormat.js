@@ -37,11 +37,17 @@ export function tickerSourceKind(source) {
 }
 
 
-/** Имя источника для подсказки курса: на английской версии «ЕЦБ» и «Банк России» не остаются кириллицей. */
+/**
+ * Имя источника для подсказки курса (круг 10, Л1): источник виден при наведении, поэтому «MOEX» и «EIA» называем словами,
+ * а «ЕЦБ» и «Банк России» на английской версии не остаются кириллицей. Незнакомый источник остаётся как есть.
+ */
 export function tickerSourceName(source, locale) {
-  if (locale !== 'en' || !source) return source;
-  const text = String(source);
-  if (/^ЕЦБ$/i.test(text)) return 'ECB';
-  if (/Банк России|^ЦБ$/i.test(text)) return 'Bank of Russia';
+  if (!source) return source;
+  const text = String(source).trim();
+  const en = locale === 'en';
+  if (/moex|мосбирж/i.test(text)) return en ? 'Moscow Exchange' : 'Московская биржа';
+  if (/^(ЕЦБ|ECB)$/i.test(text)) return en ? 'European Central Bank' : 'Европейский центральный банк';
+  if (/cbr|банк россии|^цб( рф)?$/i.test(text)) return en ? 'Bank of Russia' : 'Банк России';
+  if (/^eia$/i.test(text)) return en ? 'U.S. Energy Information Administration (EIA)' : 'Управление энергетической информации США (EIA)';
   return text;
 }

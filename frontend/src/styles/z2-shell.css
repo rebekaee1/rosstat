@@ -23,14 +23,12 @@
 .fe-ticker__cell { position: relative; font-size: 14px; }
 /* Между курсами: воздух и грань-ромб с мягким свечением (рисуется в styles/k3-shell.css), без линии. */
 .fe-ticker__name { font-size: 13px; font-weight: 500; line-height: 1.2; color: var(--color-text-secondary); }
-.fe-ticker__quote { display: flex; flex-direction: column; justify-content: center; line-height: 1.1; }
+.fe-ticker__quote { display: flex; align-items: baseline; gap: 6px; line-height: 1.1; white-space: nowrap; }
 .fe-ticker__price { font-size: 14px; font-weight: 650; color: var(--color-text-primary); }
 .fe-ticker__sign { font-weight: 500; color: var(--color-text-secondary); }
-/* «биржа» или «ЦБ» мелко под ценой; на телефоне строки не хватает, источник остаётся в подсказке. */
-.fe-ticker__caption { display: none; margin-top: 1px; font-size: 11px; font-weight: 500; line-height: 1; color: var(--k3-caption, #55627a); }
-@media (min-width: 768px) {
-  .fe-ticker__caption { display: block; }
-}
+/* Лента в одну строку (круг 10, Л1): имя, цена, дата давнего значения («на 29 сент.») и изменение стоят в ряд; источник («биржа», «ЦБ»)
+   виден только в подсказке при наведении, второй строки под ценой нет. */
+.fe-ticker__asof { font-size: 11px; font-weight: 500; line-height: 1; color: var(--k3-caption, #55627a); }
 .fe-ticker__delta { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-secondary); }
 .fe-ticker__fade {
   position: absolute;

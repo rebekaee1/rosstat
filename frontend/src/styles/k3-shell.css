@@ -222,19 +222,16 @@ nav.fe-navbar--glass .fe-button-primary,
   background: var(--k3-up);
 }
 .fe-ticker__delta[data-dir='down']::before { background: var(--k3-down); }
-/* Давнее дневное значение (круг 8, D5; круг 9, S5): без процента изменения и с серой подписью «данные от 29 сент.»; цена серая, а не графитовая,
-   но читаемая (прозрачность 0,6 делала и цифру нечитаемой, и процент оставался красным). */
+/* Давнее дневное значение (круг 8, D5; круг 9, S5; круг 10, Л1): без процента изменения и с серой датой «на 29 сент.» в той же строке; цена серая,
+   а не графитовая, но читаемая (прозрачность 0,6 делала и цифру нечитаемой, и процент оставался красным). */
 .fe-ticker__cell[data-stale='true'] .fe-ticker__price { color: var(--color-text-secondary); font-weight: 550; }
-.fe-ticker__cell[data-stale='true'] .fe-ticker__caption { color: var(--k3-caption, #55627a); font-style: normal; }
-/* Телефон: подписи под ценой нет (строки не хватает), поэтому короткая дата давнего значения встаёт в строку имени: «Нефть · на 29 сент.». */
-@media (max-width: 767px) {
-  .fe-ticker__name[data-asof]::after { content: ' · ' attr(data-asof); }
-}
+.fe-ticker__cell[data-stale='true'] .fe-ticker__asof { color: var(--k3-caption, #55627a); font-style: normal; }
 /* «Все валюты»: графитовый текст, без синего и золотого. */
 .fe-ticker .fe-ticker__all { color: var(--fe-ink, #1e2638); }
 .fe-ticker[data-tone='dark'] .fe-ticker__all { color: var(--color-text-primary); }
 
-/* Телефон: две пары на экране и свайп; третья проступает из-под затухающего края, слова не режутся. */
+/* Телефон: лента в одну строку (круг 10, Л1): имя, цена и изменение рядом; курсов видно два-три, дальше свайп, следующий проступает
+   из-под затухающего края, слова не режутся. */
 @media (max-width: 767px) {
   .fe-ticker {
     transition: transform 0.28s var(--k3-ease), opacity 0.2s ease;
@@ -256,20 +253,12 @@ nav.fe-navbar--glass .fe-button-primary,
   }
   .fe-ticker .fe-ticker__fade { width: 44px; }
   .fe-ticker__cell {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-areas: 'name name' 'quote delta';
-    align-content: center;
-    justify-content: start;
-    column-gap: 8px;
-    row-gap: 0;
-    min-width: calc((100vw - 52px) / 2);
-    padding-inline: 12px;
+    column-gap: 6px;
+    padding-inline: 10px;
     scroll-snap-align: start;
   }
-  .fe-ticker .fe-ticker__name { grid-area: name; font-size: 11px; line-height: 1.15; color: var(--k3-caption); }
-  .fe-ticker .fe-ticker__quote { grid-area: quote; }
-  .fe-ticker .fe-ticker__delta { grid-area: delta; align-self: end; font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  .fe-ticker .fe-ticker__name { font-size: 11px; line-height: 1.15; color: var(--k3-caption); }
+  .fe-ticker .fe-ticker__delta { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
   /* «Все валюты» на телефоне не липнет к краю, а стоит последней ячейкой: ничего не накрывает и не просвечивает (приёмка F3.1). */
   .fe-ticker .fe-ticker__all { position: static; background: none; }
   .fe-ticker .fe-ticker__all::before { display: none; }
@@ -623,7 +612,7 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 
 /* ═══ Круг 4 ═══════════════════════════════════════════════════════════════ */
 :root { --k3-ticker-h: 36px; }
-/* Компьютер (круг 6): лента 40 px вместо 36, чтобы вторая строка («биржа», «ЦБ») не упиралась в верх шапки; шапка и страница опущены на те же 4 px. */
+/* Компьютер (круг 6): лента 40 px вместо 36 (под вторую строку подписи; с круга 10 строка одна, высота оставлена, чтобы шапка и страница не сдвигались); шапка и страница опущены на те же 4 px. */
 @media (min-width: 768px) {
   :root { --k3-ticker-h: 40px; }
   .fe-ticker { height: var(--k3-ticker-h); }
@@ -634,8 +623,7 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
   main#main-content { padding-top: max(4px, calc(var(--fe-page-top) - 96px)); }
   /* Страницы с pt-20 (80 px) получают те же 96 px, что и остальные. */
   main#main-content > .fe-data-page.pt-20 { padding-top: 6rem; }
-  .fe-ticker .fe-ticker__quote { line-height: 1.05; }
-  .fe-ticker .fe-ticker__caption { margin-top: 0; line-height: 1.1; }
+  .fe-ticker .fe-ticker__quote { line-height: 1.1; }
 }
 
 /* G3.1: на экранах уже 1536 px капсула шапки той же ширины, что контент страниц (--fe-container-wide: 80–1360 на 1440), а не 16–1424.
@@ -645,7 +633,7 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 }
 
 /* Телефон: лента курсов 32 px вместо 36 (лента + шапка 64 = 92 px вместо 100). От высоты ленты зависят верх шапки (top),
-   верхний отступ main и сдвиг сжатой шапки; все три читают --k3-ticker-h. Две строки в ячейке (подпись 10 px над ценой 13 px). */
+   верхний отступ main и сдвиг сжатой шапки; все три читают --k3-ticker-h. Круг 10: в ячейке одна строка (имя 10,5 px, цена 13 px). */
 @media (max-width: 767px) {
   :root { --k3-ticker-h: 32px; }
   .fe-ticker { height: var(--k3-ticker-h); }
@@ -653,7 +641,7 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
   nav.fe-navbar--glass[data-compact='true'] { transform: translateY(calc(6px - var(--k3-ticker-h))); }
   main#main-content { padding-top: var(--k3-ticker-h); }
   .fe-ticker .fe-ticker__cell { min-height: 0; padding-block: 0; }
-  /* Круг 8, S3: лента 32 px (было 28): подпись валюты 10,5 px и цена 13 px умещаются в две строки, не налезая друг на друга. */
+  /* Круг 8, S3: лента 32 px (было 28); с круга 10 имя 10,5 px, цена 13 px и изменение стоят в одну строку. */
   .fe-ticker .fe-ticker__name { font-size: 10.5px; line-height: 1.1; white-space: nowrap; }
   .fe-ticker .fe-ticker__price { font-size: 13px; line-height: 1.1; white-space: nowrap; }
   .fe-ticker .fe-ticker__delta { font-size: 11.5px; line-height: 1.1; white-space: nowrap; }

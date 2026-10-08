@@ -3353,4 +3353,11 @@ export default {
   'c9d.calc.scope': 'Calculating for: {country}, {currency}',
   'c9d.slider.typeValue': 'Enter a number: {label}',
   'c9d.compound.currencyAria': 'Calculation currency',
+  // ===== Round 10: rate ticker (T) =====
+  'c10t.ticker.brent': 'Brent',
+  'c10t.ticker.brentNote': 'Daily Brent crude price; official data is released once a week',
+  'c10t.ticker.eur': 'EUR',
+  'c10t.ticker.gbp': 'GBP',
+  'c10t.ticker.cny': 'CNY',
+  'c10t.ticker.rate': '1 {from} = {value} {to}',
 };

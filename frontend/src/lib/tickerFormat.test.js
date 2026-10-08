@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatAsOfHuman, tickerSourceKind } from './tickerFormat';
+import { formatAsOfHuman, tickerSourceKind, tickerSourceName } from './tickerFormat';
 
 const NOON_MSK = new Date('2026-10-04T09:00:00Z'); // 12:00 по Москве, 4 октября
 
@@ -45,5 +45,24 @@ describe('tickerSourceKind', () => {
     expect(tickerSourceKind('EIA')).toBeNull();
     expect(tickerSourceKind('Binance')).toBeNull();
     expect(tickerSourceKind(undefined)).toBeNull();
+  });
+});
+
+describe('tickerSourceName: источник для подсказки', () => {
+  it('по-русски называет биржу, ЦБ и EIA словами', () => {
+    expect(tickerSourceName('MOEX', 'ru')).toBe('Московская биржа');
+    expect(tickerSourceName('ЦБ РФ', 'ru')).toBe('Банк России');
+    expect(tickerSourceName('Банк России', 'ru')).toBe('Банк России');
+    expect(tickerSourceName('ЕЦБ', 'ru')).toBe('Европейский центральный банк');
+    expect(tickerSourceName('EIA', 'ru')).toContain('EIA');
+    expect(tickerSourceName('Binance', 'ru')).toBe('Binance');
+  });
+
+  it('по-английски кириллицы нет', () => {
+    expect(tickerSourceName('MOEX', 'en')).toBe('Moscow Exchange');
+    expect(tickerSourceName('ЕЦБ', 'en')).toBe('European Central Bank');
+    expect(tickerSourceName('Банк России', 'en')).toBe('Bank of Russia');
+    expect(tickerSourceName('ЦБ РФ', 'en')).toBe('Bank of Russia');
+    expect(tickerSourceName(undefined, 'en')).toBeUndefined();
   });
 });

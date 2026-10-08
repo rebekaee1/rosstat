@@ -95,6 +95,13 @@ TICKER_CODES = list(TICKER_SET_RUSSIA)
 # и золото — дневные ряды с задержкой публикации в пару дней, поэтому порог не 1.
 STALE_AFTER_DAYS = 3
 
+# Brent приходит из EIA раз в неделю (сверено 08.10.2026: «Release Date 10/7/2026, Next Release Date
+# 10/15/2026», данные по вторник включительно), а вечерний ETL подбирает выпуск ещё через сутки. Значение
+# честно живёт до 9–10 суток, и порог в три дня весь цикл подписывал его «давним»: цена серела, процент
+# изменения пропадал, лента выглядела застывшей. Порог 12 суток помечает нефть как давнюю, только если
+# выпуск действительно пропущен.
+STALE_AFTER_DAYS_BY_CODE = {"brent": 12}
+
 
 def _as_of_day(snap: dict) -> date | None:
     """Дата значения (UTC) из `as_of_date`, `as_of` или `fetched_at`, если её можно разобрать."""
@@ -131,7 +138,7 @@ def add_freshness(snap: dict, now: datetime) -> None:
     age = max((now.astimezone(timezone.utc).date() - day).days, 0)
     snap["as_of_day"] = day.isoformat()
     snap["age_days"] = age
-    snap["stale"] = age > STALE_AFTER_DAYS
+    snap["stale"] = age > STALE_AFTER_DAYS_BY_CODE.get(str(snap.get("code") or ""), STALE_AFTER_DAYS)
 
 
 # Рублёвые пары, у которых есть и биржевая котировка (лента), и официальный курс ЦБ (страница, конвертер).
