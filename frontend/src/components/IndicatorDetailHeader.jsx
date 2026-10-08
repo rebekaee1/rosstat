@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import { displayCategoryLabel, findCategoryByApiLabel } from '../lib/categories';
 import { indicatorDetailHeaderMobileLines } from '../lib/indicatorVariants';
@@ -13,7 +13,6 @@ import {
   russiaIndicatorYearTrail,
 } from '../lib/breadcrumbs';
 import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
-import { russiaCategoryPath } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import AccentTitle from './K5Accent';
@@ -66,14 +65,10 @@ export default function IndicatorDetailHeader({
   const effectiveFrequency = displayFrequency ?? indicator?.frequency;
   const apiCategory = indicator?.category_ru || indicator?.category;
   const shownCategory = displayCategoryLabel(code, apiCategory);
-  const categoryFixed = shownCategory !== apiCategory;
   const category = findCategoryByApiLabel(shownCategory);
   const categoryCrumbName = locale === 'en'
     ? (category?.nameEn || category?.name)
     : category?.name;
-  const categoryLinkName = locale === 'en'
-    ? (category?.nameEn || category?.name || indicator?.category)
-    : (categoryFixed ? category?.name : indicator?.category);
   // Пока настоящее название не пришло, в крошках серая заглушка: ни внутренний код, ни раздел (страна, категория) не показываются.
   const nameKnown = Boolean(indicator?.name);
   const title = indicator?.name || '';
@@ -126,13 +121,6 @@ export default function IndicatorDetailHeader({
                   <Activity className="h-3.5 w-3.5 text-champagne-ink" aria-hidden="true" />
                   {freqLabel}
                 </span>
-              ) : null}
-              {category ? (
-                <Link to={russiaCategoryPath(category.slug)} className="fe-ind-cat">
-                  {categoryLinkName}
-                </Link>
-              ) : indicator?.category ? (
-                <span className="fe-ind-cat">{indicator.category}</span>
               ) : null}
             </div>
 

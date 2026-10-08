@@ -37,7 +37,10 @@ export function WorldHeroLine({ summary, place, dateFormat }) {
   const when = estimate
     ? t('w6e.hero.estimate', { date: glueDate(formatDate(last.date, dateFormat, locale)) })
     : periodPhrase(t, last.date, dateFormat, locale);
-  const yearChange = kind === 'index' ? formatPercentChange(yearPct, locale, growthDigits(yearPct)) : null;
+  // Рост «за год» дописываем только настоящему индексу. У процентного ряда это была бы «проценты от процентов»
+  // (из 58,5 % в 34,9 % выходило «−40,4 % за год»): тут важна разница в пунктах, и шапка её не пишет.
+  const percentValue = /%/.test(String(shown.unit || ''));
+  const yearChange = kind === 'index' && !percentValue ? formatPercentChange(yearPct, locale, growthDigits(yearPct)) : null;
   return (
     <p className="fe-hero-line" data-testid="indicator-hero">
       {place ? <span className="fe-hero-line__place">{place}:</span> : null}

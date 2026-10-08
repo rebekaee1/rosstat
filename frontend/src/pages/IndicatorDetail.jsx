@@ -790,6 +790,7 @@ export default function IndicatorDetail() {
         qoqDataPoints={qoqDataPoints}
         periodMonthlyDataPoints={periodMonthlyDataPoints}
         periodWeeklyDataPoints={periodWeeklyDataPoints}
+        loading={Boolean(loadingInd || chartLoading || loadingData || loadingInflation)}
       />
         </div>
         <div className="z4-lower__aside">

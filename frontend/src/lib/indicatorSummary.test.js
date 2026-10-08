@@ -7,6 +7,8 @@ import {
   isEstimateDate,
   rankAmongCountries,
   tidyDigits,
+  isPercentChangeUnit,
+  preferPercentUnit,
   unitKind,
   windowStats,
 } from './indicatorSummary';
@@ -108,7 +110,7 @@ describe('formatTileValue', () => {
 
   it('малые числа не трогает, а у тысяч убирает дробную часть', () => {
     expect(formatTileValue(2.3, '%', { dataDigits: 1, locale: 'ru' }).text).toBe('2,3');
-    expect(formatTileValue(1469.05, '$', { dataDigits: 2, locale: 'ru' }).text).toMatch(/^1\s469$/);
+    expect(formatTileValue(1469.05, '$', { dataDigits: 2, locale: 'ru' }).text).toMatch(/^1\s469,05$/);
   });
 
   it('пустое значение — тире', () => {
@@ -128,10 +130,12 @@ describe('formatPercentChange', () => {
 });
 
 describe('tidyDigits', () => {
-  it('тысячи без дробной части', () => {
-    expect(tidyDigits(12345.6, 2)).toBe(0);
-    expect(tidyDigits(150.5, 2)).toBe(1);
+  it('знаков столько, сколько в данных ряда: шапка и таблица показывают одно и то же число', () => {
+    expect(tidyDigits(12345, 0)).toBe(0);
+    expect(tidyDigits(113.96, 2)).toBe(2);
+    expect(tidyDigits(150.5, 1)).toBe(1);
     expect(tidyDigits(5.25, 2)).toBe(2);
+    expect(tidyDigits(5.25, 5)).toBe(2);
   });
 });
 
@@ -150,5 +154,20 @@ describe('rankAmongCountries', () => {
   });
   it('молчит, если стран мало', () => {
     expect(rankAmongCountries(items.slice(0, 2), 'US', 30)).toBeNull();
+  });
+});
+
+describe('проценты изменения не считаются индексом (круг 8, D2)', () => {
+  it('«изменение за год, %» уже темп', () => {
+    expect(isPercentChangeUnit('изменение за год, %')).toBe(true);
+    expect(isPercentChangeUnit('annual change, %')).toBe(true);
+    expect(isPercentChangeUnit('индекс 2015=100')).toBe(false);
+    expect(unitKind('изменение за год, %')).toBe('rate');
+    expect(unitKind('индекс 2015=100')).toBe('index');
+  });
+  it('единица из описания показателя перебивает «индекс», пришедший с данными', () => {
+    expect(preferPercentUnit('индекс 2015=100', 'изменение за год, %')).toBe('изменение за год, %');
+    expect(preferPercentUnit('индекс 2015=100', 'индекс 2015=100')).toBe('индекс 2015=100');
+    expect(preferPercentUnit('%', 'изменение за год, %')).toBe('%');
   });
 });

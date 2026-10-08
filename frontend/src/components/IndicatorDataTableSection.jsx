@@ -30,6 +30,7 @@ export default function IndicatorDataTableSection({
   qoqDataPoints,
   periodMonthlyDataPoints,
   periodWeeklyDataPoints,
+  loading = false,
 }) {
   const { locale } = useLocale();
   // Страница года (/…/indicator/{code}/2024): таблица показывает только этот год, а не всю историю.
@@ -63,6 +64,7 @@ export default function IndicatorDataTableSection({
     <section>
       <DataTable
         key={`${indicator?.code}-${chartMode}`}
+        loading={loading}
         data={data}
         title={yearFilter ? `${tableTitle}, ${yearFilter}` : tableTitle}
         dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}

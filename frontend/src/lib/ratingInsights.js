@@ -88,9 +88,40 @@ export function rankShifts(valuesByYear, years, activeYear, direction = 'desc', 
   return null;
 }
 
-/** Доли значений для полоски: от нуля до максимума, только при неотрицательных значениях. */
-export function shareOf(value, max, positive = true) {
+/**
+ * Доли значений для полоски: от нуля до максимума, только при неотрицательных значениях.
+ * При `opts.scale === 'log'` полоска идёт по логарифму между наименьшим положительным значением (`opts.min`) и максимумом:
+ * у ВВП и населения разница между странами в тысячи раз, и на линейной шкале у всех, кроме двух-трёх стран, была бы «точка».
+ */
+export function shareOf(value, max, positive = true, opts = {}) {
   const v = Number(value);
   if (!positive || !Number.isFinite(v) || !(max > 0) || v < 0) return 0;
+  if (opts.scale === 'log' && v > 0 && opts.min > 0 && max > opts.min) {
+    const part = (Math.log(v) - Math.log(opts.min)) / (Math.log(max) - Math.log(opts.min));
+    return Math.max(6, Math.min(100, 6 + part * 94));
+  }
   return Math.max(2, Math.min(100, (v / max) * 100));
+}
+
+/** Шкала полосок рейтинга по всем значениям: максимум, наименьшее положительное, есть ли отрицательные и линейная или логарифмическая. */
+export function barScaleOf(values) {
+  let max = 0;
+  let min = Infinity;
+  let positive = true;
+  const all = [];
+  for (const raw of values || []) {
+    const value = Number(raw);
+    if (!Number.isFinite(value)) continue;
+    if (value < 0) positive = false;
+    if (value > max) max = value;
+    if (value > 0) {
+      if (value < min) min = value;
+      all.push(value);
+    }
+  }
+  all.sort((a, b) => a - b);
+  const median = all.length ? all[Math.floor(all.length / 2)] : 0;
+  // Размах больше чем в 20 раз между максимумом и «типичной» страной: линейная шкала сжимает почти всех в точку.
+  const scale = median > 0 && max / median > 20 ? 'log' : 'linear';
+  return { max, min: Number.isFinite(min) ? min : 0, positive, scale };
 }

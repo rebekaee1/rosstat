@@ -30,7 +30,9 @@ import {
 } from '../lib/worldViewModes';
 import { formatDate, chartValueDigits, resolveDateFormat } from '../lib/format';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { buildIndicatorSummary, rankAmongCountries } from '../lib/indicatorSummary';
+import {
+  buildIndicatorSummary, isPercentChangeUnit, preferPercentUnit, rankAmongCountries,
+} from '../lib/indicatorSummary';
 import { deriveWorldMode } from '../lib/worldDerive';
 import { downloadCSV, downloadExcel } from '../lib/excel';
 import { track, events } from '../lib/track';
@@ -38,7 +40,6 @@ import { prepareVariantGroup } from '../lib/viewModeShortLabels';
 import WorldViewModePicker from '../components/WorldViewModePicker';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
 import AccentTitle from '../components/K5Accent';
-import LightSeam from '../components/brand/LightSeam';
 import ChartSectionSkeleton from '../components/ChartSectionSkeleton';
 import { ViewModesPanel } from '../components/ViewModesPanel';
 import WorldChartSection from '../components/WorldChartSection';
@@ -133,8 +134,13 @@ export default function WorldIndicatorPage() {
   const modes = useMemo(() => {
     const level = allModes.find((m) => m.type === 'level');
     // У ряда, который уже сам индекс («2015 = 100»), второй «Индекс» от старта ничем не отличается от «Значений».
-    const levelIsIndex = /индекс|index|=\s*100/i.test(level?.unit || metaQ.data?.indicator?.unit || '');
+    const levelUnit = preferPercentUnit(level?.unit || metaQ.data?.indicator?.unit || '', metaQ.data?.indicator?.unit);
+    const levelIsIndex = /индекс|index|=\s*100/i.test(levelUnit);
+    // Ряд, который уже сам «изменение за год, %» (инфляция МВФ): «год к году», «к прошлому периоду» и «индекс от старта»
+    // от процента ничего осмысленного не дают (в Турции выходило «−67 %» от инфляции), поэтому этих режимов нет.
+    const levelIsPercentChange = isPercentChangeUnit(levelUnit);
     return allModes.filter((m) => !(m.type === 'index' && levelIsIndex)
+      && !(levelIsPercentChange && (m.type === 'index' || m.type === 'yoy' || m.type === 'step'))
       && !failedModes.has(`${code}|${m.id}`));
   }, [allModes, failedModes, code, metaQ.data?.indicator?.unit]);
 
@@ -292,8 +298,13 @@ export default function WorldIndicatorPage() {
   const dataFetching = needsFallback ? levelQ.isFetching : dataQ.isFetching;
   const empty = !dataLoading && !dataError && isEmptySeries(points);
   const last = points.length ? points[points.length - 1] : null;
-  let rawUnit = dataQ.data?.unit || dataQ.data?.unit_ru
-    || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '';
+  // Единица из ответа с данными; если она называет процентный ряд «индексом», верим описанию показателя (Китай, Турция: инфляция МВФ).
+  let rawUnit = preferPercentUnit(
+    dataQ.data?.unit || dataQ.data?.unit_ru || modeMeta?.unit || indicator?.unit || indicator?.unit_ru || '',
+    modeMeta?.unit,
+    indicator?.unit,
+    indicator?.unit_ru,
+  );
   if (derived) {
     rawUnit = derived.unit === 'percent' ? '%'
       : derived.unit === 'index' ? t('w6e.unit.indexStart')
@@ -688,6 +699,7 @@ export default function WorldIndicatorPage() {
                 unit={displayUnit}
                 valueDigits={chartValueDigits(displayUnit)}
                 showUnitInValues={false}
+                loading={dataLoading || (dataQ.isFetching && points.length === 0)}
               />
             </section>
             <div className="z4-lower__aside">
@@ -769,8 +781,7 @@ export default function WorldIndicatorPage() {
                       )}
                     </dl>
                   </details>
-                  <LightSeam />
-                  <div className="flex flex-wrap gap-2 pt-4">
+                  <div className="flex flex-wrap gap-2 pt-3">
                     <Link
                       to={countryPath(slug)}
                       className="fe-tap-inline gap-1 rounded-full px-3 py-1.5 text-[13px] text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2"
