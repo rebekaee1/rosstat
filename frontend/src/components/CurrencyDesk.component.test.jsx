@@ -1,5 +1,5 @@
 // Волна 6, G: раздел курсов: конвертер, вкладки, поиск валюты, пояснение про разные курсы; верх страницы курса.
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import CurrencyDesk from './CurrencyDesk';
 import CurrencyTelemetry from './CurrencyTelemetry';
@@ -11,7 +11,15 @@ vi.mock('../lib/track', async (importOriginal) => {
   return { ...actual, track: vi.fn() };
 });
 
-afterEach(() => vi.restoreAllMocks());
+// Дата фиксирована: пометка «не обновлялся» зависит от сегодняшнего дня, а данные в тесте со своими датами.
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date('2026-10-05T12:00:00Z'));
+});
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
 
 /** Список валюты: открыть по подписи и выбрать вариант по названию. */
 function pick(label, optionName) {
@@ -224,5 +232,39 @@ describe('CurrencyNext', () => {
     ]);
     expect(screen.getByText('Нефть Brent')).toBeTruthy();
     expect(screen.getByText('Евро к рублю')).toBeTruthy();
+  });
+});
+
+describe('CurrencyDesk: новые валюты из ответа API (круг 9)', () => {
+  const WITH_LIRA = [
+    ...INDICATORS,
+    { code: 'try-rub', name: 'Курс турецкой лиры', name_en: 'TRY/RUB Exchange Rate', current_value: 2.19, current_date: '2026-10-03', change: 0.01, frequency: 'daily', is_active: true },
+    { code: 'kzt-rub', name: 'Курс тенге', name_en: 'KZT/RUB Exchange Rate', current_value: 0.16, current_date: '2026-09-20', change: 0, frequency: 'daily', is_active: true },
+  ];
+
+  it('лира и тенге появляются в списке, в поиске и в конвертере без правки кода', async () => {
+    mockApis();
+    const { container } = renderPage(<CurrencyDesk indicators={WITH_LIRA} />);
+    const titles = [...container.querySelectorAll('.fe-w6g-currency-row .fe-trow__title')].map((n) => n.textContent);
+    expect(titles).toContain('Турецкая лира к рублю');
+    expect(titles).toContain('Казахский тенге к рублю');
+    fireEvent.change(screen.getByPlaceholderText('Найти валюту'), { target: { value: 'лира' } });
+    expect([...container.querySelectorAll('.fe-trow__title')].map((n) => n.textContent)).toEqual(['Турецкая лира к рублю']);
+    fireEvent.change(screen.getByPlaceholderText('Найти валюту'), { target: { value: '' } });
+    pick('Из', 'Турецкая лира');
+    const out = screen.getByTestId('converter-result');
+    expect(out.textContent).toContain('219');
+    expect(out.textContent).toContain('Рубль');
+  });
+
+  it('курс старше трёх суток подписан «не обновлялся», без процента изменения', () => {
+    mockApis();
+    const { container } = renderPage(<CurrencyDesk indicators={WITH_LIRA} />);
+    const rows = [...container.querySelectorAll('.fe-w6g-currency-row')];
+    const kzt = rows.find((row) => row.textContent.includes('тенге'));
+    expect(kzt.textContent).toContain('не обновлялся с 20 сент.');
+    expect(kzt.querySelector('.fe-trow__date').classList.contains('is-stale')).toBe(true);
+    const lira = rows.find((row) => row.textContent.includes('лира'));
+    expect(lira.textContent).toContain('курс ЦБ на 3 окт.');
   });
 });

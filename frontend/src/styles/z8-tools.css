@@ -533,6 +533,11 @@
 @media (min-width: 1700px) {
   .fe-z8-calc { max-width: var(--fe-box-wide, 85rem); }
 }
+/* Круг 9 (S1): на телефоне низ страницы поднят над доком, плашкой cookie и плашкой «Результат» (44 px + отступ), чтобы последняя
+   карточка и футер не прятались под ними. --fe-bottom-clear задаёт оболочка (z1-tokens.css). */
+@media (max-width: 767px) {
+  .fe-z8-calc { padding-bottom: calc(var(--fe-bottom-clear, 0px) + 4.5rem); }
+}
 
 /* --- шапка --- */
 .fe-z8-calc__head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 4px; }
@@ -649,9 +654,18 @@
 @media (min-width: 1700px) {
   .fe-z8-calc__grid { grid-template-columns: minmax(420px, 560px) minmax(0, 1fr); gap: 36px; }
 }
-/* Форма держится в поле зрения, пока читаешь график; на низких экранах не липнет, чтобы не обрезаться. */
-@media (min-width: 1024px) and (min-height: 880px) {
-  .fe-z8-calc__side { position: sticky; top: 104px; }
+/* Форма держится в поле зрения, пока читаешь график; на очень низких экранах не липнет, чтобы не обрезаться.
+   Круг 9 (K6): порог снижен с 880 до 720 px высоты: на 1440 × 800 левая колонка раньше оставалась пустой при прокрутке. */
+@media (min-width: 1024px) and (min-height: 720px) {
+  .fe-z8-calc__side { position: sticky; top: 88px; }
+}
+/* Страна под заголовком: заголовок страницы остаётся общим, а здесь видно, для какой страны и в какой валюте считаем. */
+.fe-z8-calc__scope {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-champagne-ink, #1E3A6E);
 }
 
 .fe-z8-card { border-radius: 26px; }

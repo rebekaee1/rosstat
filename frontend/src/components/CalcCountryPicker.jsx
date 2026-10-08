@@ -32,6 +32,9 @@ export default function CalcCountryPicker({
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  // Круг 9 (Q4): на компьютере курсор сразу в поле поиска. На телефоне поле не фокусируем: клавиатура закрыла бы список.
+  const finePointer = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    && window.matchMedia('(pointer: fine)').matches;
 
   const russia = useMemo(
     () => ({ slug: RUSSIA_SLUG, name: russiaLabel || t('calc.country.russia') }),
@@ -115,6 +118,7 @@ export default function CalcCountryPicker({
               onChange={(event) => setQuery(event.target.value)}
               placeholder={t('calc.country.search')}
               aria-label={t('calc.country.searchAria')}
+              autoFocus={finePointer}
               className="min-h-9 min-w-0 flex-1 bg-transparent text-base text-text-primary outline-none placeholder:text-text-tertiary md:text-sm"
             />
             {query && (

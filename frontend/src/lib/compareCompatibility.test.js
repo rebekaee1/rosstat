@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   activeCompatibilityNote,
   compareCompatibility,
+  compareCompatibilityWithTwins,
+  macroTwinConcept,
   parseSubnationalCompareCode,
   parseWorldCompareCode,
   sanitizeCompareCodes,
@@ -108,5 +110,36 @@ describe('compareCompatibility', () => {
       ['s:united-states:california:unemployment-rate'],
       'unemployment',
     ).allowed).toBe(false);
+  });
+});
+
+describe('двойники российских показателей (круг 9, C1)', () => {
+  const has = (code) => ['w:russia:hicp-index', 'w:russia:unemployment-rate'].includes(code);
+
+  it('ИПЦ России заменяется на инфляцию России, когда рядом ставят ту же инфляцию Турции', () => {
+    expect(compareCompatibility(['cpi'], 'w:turkey:hicp-index').allowed).toBe(false);
+    const result = compareCompatibilityWithTwins(['cpi'], 'w:turkey:hicp-index', has);
+    expect(result.allowed).toBe(true);
+    expect(result.replaceWith).toEqual(['w:russia:hicp-index']);
+    expect(result.swapNoteKey).toBe('c9d.compare.twinSwapped');
+  });
+
+  it('другой показатель или нет двойника в каталоге: отказ прежний', () => {
+    expect(compareCompatibilityWithTwins(['cpi'], 'w:turkey:gdp-usd', has).allowed).toBe(false);
+    expect(compareCompatibilityWithTwins(['cpi'], 'w:turkey:hicp-index', () => false).allowed).toBe(false);
+    expect(compareCompatibilityWithTwins(['key-rate'], 'w:turkey:hicp-index', has).allowed).toBe(false);
+  });
+
+  it('обычное сочетание проходит без замены; повтор остаётся повтором', () => {
+    const ok = compareCompatibilityWithTwins(['w:russia:hicp-index'], 'w:turkey:hicp-index', has);
+    expect(ok.allowed).toBe(true);
+    expect(ok.replaceWith).toBeUndefined();
+    expect(compareCompatibilityWithTwins(['cpi'], 'cpi', has).reasonKey).toBe('compare.compat.alreadyAdded');
+  });
+
+  it('двойник называет понятие общего набора', () => {
+    expect(macroTwinConcept('cpi')).toBe('hicp-index');
+    expect(macroTwinConcept('unemployment')).toBe('unemployment-rate');
+    expect(macroTwinConcept('key-rate')).toBeNull();
   });
 });

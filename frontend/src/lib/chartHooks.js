@@ -67,7 +67,7 @@ export function useCoarsePointer() {
  * Подсказка графика по касанию. На сенсорных экранах Recharts показывает подсказку по
  * эмулированным мышиным событиям и не прячет её, пока не придёт «уход мыши» — часто никогда.
  * Здесь подсказка открыта, пока палец внутри графика (касание = показать), и закрывается
- * касанием вне графика или клавишей Escape. На компьютере ничего не меняется (active не задан).
+ * касанием вне графика, прокруткой страницы (больше 24 px) или клавишей Escape. На компьютере ничего не меняется (active не задан).
  *
  * Использование: `const touch = useTouchTooltip(containerRef);`
  *   <div ref={containerRef} onPointerDownCapture={touch.onPointerDownCapture}> ... <Tooltip {...touch.tooltipProps} />
@@ -90,11 +90,18 @@ export function useTouchTooltip(containerRef) {
       setOpenState(false);
     };
     const onKey = (event) => { if (event.key === 'Escape') setOpenState(false); };
+    // Круг 9 (C5): страница прокрутилась под подсказкой — она осталась бы висеть на старой дате и закрывать линию.
+    const startY = typeof window !== 'undefined' ? window.scrollY : 0;
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - startY) > 24) setOpenState(false);
+    };
     document.addEventListener('pointerdown', onOutside, true);
     document.addEventListener('keydown', onKey);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       document.removeEventListener('pointerdown', onOutside, true);
       document.removeEventListener('keydown', onKey);
+      window.removeEventListener('scroll', onScroll);
     };
   }, [coarse, open, containerRef, setOpenState]);
 

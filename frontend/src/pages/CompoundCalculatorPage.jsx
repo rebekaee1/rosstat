@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
@@ -13,7 +13,9 @@ import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
-import { formatRubles, fmtPct, decimalText, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
+import { fmtPct, decimalText, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
+import { RUB, currencyForCountry, currencyInPhrase, formatMoney } from '../lib/countryCurrency';
+import Chip from '../components/Chip';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -47,6 +49,16 @@ const FAQ_KEYS = [
   { q: 'calc.compound.faq.q5', a: 'calc.compound.faq.a5' },
 ];
 
+// Круг 9 (K5): «для любой валюты» — выбор знака валюты. Сам расчёт от валюты не зависит (проценты и срок одни и те же).
+const CURRENCY_CHOICES = [
+  { id: 'RUB', currency: RUB },
+  { id: 'USD', currency: currencyForCountry('united-states') },
+  { id: 'EUR', currency: currencyForCountry('germany') },
+  { id: 'GBP', currency: currencyForCountry('united-kingdom') },
+  { id: 'CNY', currency: currencyForCountry('china') },
+  { id: 'TRY', currency: currencyForCountry('turkey') },
+];
+
 export default function CompoundCalculatorPage() {
   const t = useT();
   const { locale } = useLocale();
@@ -61,6 +73,9 @@ export default function CompoundCalculatorPage() {
   const [rate, setRate] = useState(12);
   const [years, setYears] = useState(10);
   const [inflation, setInflation] = useState(6);
+  const [currencyId, setCurrencyId] = useState('RUB');
+  const currency = (CURRENCY_CHOICES.find((choice) => choice.id === currencyId) || CURRENCY_CHOICES[0]).currency;
+  const money = useCallback((n) => formatMoney(n, currency, locale), [currency, locale]);
 
   const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
 
@@ -89,7 +104,7 @@ export default function CompoundCalculatorPage() {
     return () => clearTimeout(t);
   }, [initial, monthly, rate, years, inflation]);
 
-  const rubleTick = (v) => `${formatCompactTick(v)}\u00A0₽`;
+  const rubleTick = (v) => `${formatCompactTick(v)}\u00A0${currency.symbol}`;
 
   const result = useMemo(() => {
     const n = years * 12;
@@ -141,21 +156,28 @@ export default function CompoundCalculatorPage() {
       <div className="fe-z8-calc__grid">
       <div className="fe-z8-calc__side">
       <section style={revealStyle(2)} className="fe-reveal fe-panel fe-z8-card p-6 md:p-7 space-y-6">
+        <div className="flex flex-wrap gap-1.5" role="group" aria-label={t('c9d.compound.currencyAria')} data-testid="compound-currency">
+          {CURRENCY_CHOICES.map((choice) => (
+            <Chip key={choice.id} active={choice.id === currencyId} onClick={() => setCurrencyId(choice.id)}>
+              {`${choice.currency.symbol} ${choice.id}`}
+            </Chip>
+          ))}
+        </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-6">
           <CalcMoneyField
-            label={t('calc.compound.initial')} unitName={t('calc.ui.unitRubles')}
-            value={initial} onChange={setInitial} prefix="₽" placeholder="100 000" size="md" allowZero
+            label={t('calc.compound.initial')} unitName={currencyInPhrase(currency, locale)}
+            value={initial} onChange={setInitial} prefix={currency.symbol} placeholder="100 000" size="md" allowZero
           />
           <CalcMoneyField
-            label={t('calc.compound.monthly')} unitName={t('calc.ui.unitRubles')}
-            value={monthly} onChange={setMonthly} prefix="₽" placeholder="10 000" size="md" allowZero
+            label={t('calc.compound.monthly')} unitName={currencyInPhrase(currency, locale)}
+            value={monthly} onChange={setMonthly} prefix={currency.symbol} placeholder="10 000" size="md" allowZero
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-x-6 gap-y-5">
-          <CalcSlider label={t('calc.compound.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          <CalcSlider label={t('calc.compound.term')} value={years} onChange={setYears} min={1} max={40} display={yearsLabel(years)} />
-          <CalcSlider label={t('calc.compound.inflation')} value={inflation} onChange={setInflation} min={0} max={20} step={0.5} suffix="%" />
+          <CalcSlider label={t('calc.compound.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" editable />
+          <CalcSlider label={t('calc.compound.term')} value={years} onChange={setYears} min={1} max={40} display={yearsLabel(years)} editable suffix={` ${t('calc.compound.yearsUnit')}`} />
+          <CalcSlider label={t('calc.compound.inflation')} value={inflation} onChange={setInflation} min={0} max={20} step={0.5} suffix="%" editable />
         </div>
       </section>
 
@@ -164,7 +186,7 @@ export default function CompoundCalculatorPage() {
           <span className="fe-z8-hint__label">{t('z8.calc.hint.label')}</span>
           <p className="fe-z8-hint__big">{`×${decimalText(result.invested ? result.balance / result.invested : 1, 1)}`}</p>
           <p className="fe-z8-hint__line">{t('z8.calc.hint.compound', { years: yearsLabel(years) })}</p>
-          <p className="fe-z8-hint__sub">{t('z8.calc.hint.compoundSub', { amount: formatRubles(result.gain) })}</p>
+          <p className="fe-z8-hint__sub">{t('z8.calc.hint.compoundSub', { amount: money(result.gain) })}</p>
         </aside>
       )}
       </div>
@@ -178,13 +200,13 @@ export default function CompoundCalculatorPage() {
             })}</p>
             <CalcAnimatedNumber
               value={Math.round(result.balance)}
-              format={formatRubles}
+              format={money}
               className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
             />
             <CalcStatGrid>
-              <CalcStatTile index={0} label={t('calc.compound.invested')} value={formatRubles(result.invested)} />
-              <CalcStatTile index={1} label={t('calc.compound.gain')} value={formatRubles(result.gain)} accent />
-              <CalcStatTile index={2} label={t('calc.compound.real')} value={formatRubles(result.real)} />
+              <CalcStatTile index={0} label={t('calc.compound.invested')} value={money(result.invested)} />
+              <CalcStatTile index={1} label={t('calc.compound.gain')} value={money(result.gain)} accent />
+              <CalcStatTile index={2} label={t('calc.compound.real')} value={money(result.real)} />
               {result.doubling && result.doubling < 100 && (
                 <CalcStatTile index={3} label={t('calc.compound.doubling')} value={`≈ ${decimalText(result.doubling, 1)} ${t('calc.compound.yearsUnit')}`} />
               )}
@@ -215,7 +237,7 @@ export default function CompoundCalculatorPage() {
                     {...TOOLTIP_STYLES}
                     {...touchTip.tooltipProps}
                     formatter={(v, name) => [
-                      formatRubles(v),
+                      money(v),
                       name === 'balance' ? t('calc.compound.capital') : name === 'invested' ? t('calc.compound.invested') : t('calc.compound.real'),
                     ]}
                     labelFormatter={(v) => t('calc.yearN', { n: v })}
@@ -251,7 +273,7 @@ export default function CompoundCalculatorPage() {
               <p className="text-[13px] leading-relaxed text-text-secondary">
                 {t('calc.compound.insight.inflation', {
                   rate: fmtPct(inflation),
-                  amount: formatRubles(result.balance - result.real),
+                  amount: money(result.balance - result.real),
                 })}
               </p>
             </div>
@@ -264,7 +286,7 @@ export default function CompoundCalculatorPage() {
       <CalcStickyResult
         targetRef={resultRef}
         active={Boolean(result)}
-        value={result ? formatRubles(Math.round(result.balance)) : ''}
+        value={result ? money(Math.round(result.balance)) : ''}
       />
 
       <div className="fe-z8-calc__lower">

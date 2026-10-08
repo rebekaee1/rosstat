@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
@@ -10,7 +10,8 @@ import api from '../lib/api';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import { formatCompactTick } from '../lib/regionsApi';
-import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
+import { CHART_THEME, COMPARE_COLORS, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
+import { formatDate } from '../lib/format';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
 import { revealStyle } from '../lib/calcUi';
 import { formatRubles, fmtPct, loanYearOrdinal, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
@@ -47,6 +48,10 @@ const FAQ_KEYS = [
   { q: 'calc.mortgage.faq.q5', a: 'calc.mortgage.faq.a5' },
 ];
 
+// Круг 9 (K3 цвета): тело кредита — глубокий синий бренда, переплата — бирюзовая; серо-чёрный в диаграмме не нужен.
+const PRINCIPAL_COLOR = COMPARE_COLORS[0];
+const OVERPAY_COLOR = COMPARE_COLORS[1];
+
 export default function MortgageCalculatorPage() {
   const t = useT();
   const { locale } = useLocale();
@@ -61,8 +66,10 @@ export default function MortgageCalculatorPage() {
   const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
   const [price, setPrice] = useState(8000000);
   const [downPct, setDownPct] = useState(20);
-  const [rate, setRate] = useState(18);
+  // Ставка: пока человек её не менял, берётся средняя по ипотеке сейчас (ниже), а если данных нет, 18 %.
+  const [userRate, setUserRate] = useState(null);
   const [years, setYears] = useState(20);
+  const changeRate = useCallback((value) => { setUserRate(value); }, []);
 
   const mortgageSeo = getPageSeo('calculator-mortgage', locale);
   useDocumentMeta({
@@ -81,6 +88,21 @@ export default function MortgageCalculatorPage() {
     staleTime: 60 * 60 * 1000,
     retry: 1,
   });
+
+  // Круг 9 (K5): ставка по умолчанию — средняя по ипотеке сейчас, а не выдуманные 18 %. Пока человек ставку не трогал,
+  // подставляем её сам; потом остаётся строка «Средняя сейчас … Подставить».
+  const { data: avgMortgage } = useQuery({
+    queryKey: ['mortgage-rate-latest'],
+    queryFn: () => api.get('/indicators/mortgage-rate/data?limit=1').then((r) => {
+      const p = r.data?.data?.[0];
+      return p?.value != null ? { value: Number(p.value), date: p.date || null } : null;
+    }),
+    staleTime: 60 * 60 * 1000,
+    retry: 1,
+  });
+  const avgRate = avgMortgage && Number.isFinite(avgMortgage.value) && avgMortgage.value > 0
+    ? Math.round(avgMortgage.value * 10) / 10 : null;
+  const rate = userRate ?? avgRate ?? 18;
 
   // Отчёт об использовании — с паузой, чтобы не спамить слайдерами.
   useEffect(() => {
@@ -184,10 +206,27 @@ export default function MortgageCalculatorPage() {
             label={t('calc.mortgage.down')}
             value={downPct} onChange={setDownPct} min={0} max={90}
             display={`${downPct}% — ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
+            editable suffix="%" extra={`— ${result ? formatCompactTick(result.down) : 0}\u00A0₽`}
           />
-          <CalcSlider label={t('calc.mortgage.rate')} value={rate} onChange={setRate} min={0.1} max={30} step={0.1} suffix="%" />
-          <CalcSlider label={t('calc.mortgage.term')} value={years} onChange={setYears} min={1} max={30} display={yearsLabel(years)} />
+          <CalcSlider label={t('calc.mortgage.rate')} value={rate} onChange={changeRate} min={0.1} max={30} step={0.1} suffix="%" editable />
+          <CalcSlider label={t('calc.mortgage.term')} value={years} onChange={setYears} min={1} max={30} display={yearsLabel(years)} editable suffix={` ${t('calc.compound.yearsUnit')}`} />
         </div>
+        {avgRate != null && (
+          <p className="fe-z8-note" data-testid="mortgage-avg-rate">
+            {t('c9d.mortgage.avgRate', {
+              rate: String(avgRate).replace('.', locale === 'en' ? '.' : ','),
+              date: avgMortgage.date ? formatDate(avgMortgage.date, 'short') : '',
+            })}
+            {Math.abs(rate - avgRate) > 0.05 && (
+              <>
+                {' '}
+                <button type="button" className="font-medium text-champagne-ink hover:underline" onClick={() => changeRate(avgRate)}>
+                  {t('c9d.mortgage.useAvg')}
+                </button>
+              </>
+            )}
+          </p>
+        )}
       </section>
 
       {result && (
@@ -204,7 +243,7 @@ export default function MortgageCalculatorPage() {
       {result && (
         <>
           <section ref={resultRef} style={revealStyle(3)} className="fe-reveal fe-z8-result fe-k8-stone fe-glint rounded-[2rem] p-6 md:p-8 mb-6 min-h-[19rem]" aria-live="polite">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
+            <div className="grid grid-cols-1 2xl:grid-cols-[1fr_auto] gap-6 items-center">
               <div>
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
                 <CalcAnimatedNumber
@@ -219,7 +258,7 @@ export default function MortgageCalculatorPage() {
                 </CalcStatGrid>
               </div>
 
-              <div className="flex flex-col items-center shrink-0 mx-auto lg:mx-0">
+              <div className="flex flex-col items-center shrink-0 mx-auto 2xl:mx-0">
                 <div ref={pieBoxRef} onPointerDownCapture={pieTouch.onPointerDownCapture} className="relative w-[168px] h-[168px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -233,8 +272,8 @@ export default function MortgageCalculatorPage() {
                         paddingAngle={2} startAngle={90} endAngle={-270}
                         stroke="none" isAnimationActive={false}
                       >
-                        <Cell fill={CHART_THEME.champagne} />
-                        <Cell fill={CHART_THEME.ink} fillOpacity={0.85} />
+                        <Cell fill={PRINCIPAL_COLOR} />
+                        <Cell fill={OVERPAY_COLOR} />
                       </Pie>
                       <Tooltip
                         {...TOOLTIP_STYLES}
@@ -252,10 +291,10 @@ export default function MortgageCalculatorPage() {
                 </div>
                 <div className="flex gap-4 mt-3 text-xs">
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: CHART_THEME.champagne }} />{t('calc.mortgage.credit')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: PRINCIPAL_COLOR }} />{t('calc.mortgage.credit')}
                   </span>
                   <span className="flex items-center gap-1.5 text-text-secondary">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: CHART_THEME.ink, opacity: 0.85 }} />{t('calc.mortgage.overpay')}
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: OVERPAY_COLOR }} />{t('calc.mortgage.overpay')}
                   </span>
                 </div>
               </div>
@@ -275,8 +314,8 @@ export default function MortgageCalculatorPage() {
                       <stop offset="100%" stopColor={CHART_THEME.champagne} stopOpacity={0.01} />
                     </linearGradient>
                     <linearGradient id="mortInt" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={CHART_THEME.ink} stopOpacity={0.12} />
-                      <stop offset="100%" stopColor={CHART_THEME.ink} stopOpacity={0.01} />
+                      <stop offset="0%" stopColor={OVERPAY_COLOR} stopOpacity={0.14} />
+                      <stop offset="100%" stopColor={OVERPAY_COLOR} stopOpacity={0.01} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid {...GRID_PROPS} />
@@ -293,14 +332,14 @@ export default function MortgageCalculatorPage() {
                     labelFormatter={(v) => t('calc.yearN', { n: v })}
                   />
                   <Area dataKey="balance" name="balance" stroke={CHART_THEME.champagne} strokeWidth={2} fill="url(#mortBal)" dot={false} isAnimationActive={false} />
-                  <Area dataKey="interest" name="interest" stroke={CHART_THEME.ink} strokeWidth={1.4} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
+                  <Area dataKey="interest" name="interest" stroke={OVERPAY_COLOR} strokeWidth={1.8} fill="url(#mortInt)" dot={false} isAnimationActive={false} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
             <ChartLegend
               items={[
                 { color: CHART_THEME.champagne, label: t('calc.mortgage.balance') },
-                { color: CHART_THEME.ink, label: t('calc.mortgage.interestAccum') },
+                { color: OVERPAY_COLOR, label: t('calc.mortgage.interestAccum') },
               ]}
             />
             <ChartTouchHint visible={touchHint.visible} />
@@ -335,7 +374,7 @@ export default function MortgageCalculatorPage() {
                   className="h-full transition-all duration-300"
                   style={{
                     width: `${(yearBreakdown.interestPaid / (yearBreakdown.interestPaid + yearBreakdown.principalPaid || 1)) * 100}%`,
-                    backgroundColor: CHART_THEME.ink, opacity: 0.85,
+                    backgroundColor: OVERPAY_COLOR,
                   }}
                   title={t('calc.mortgage.interest')}
                 />

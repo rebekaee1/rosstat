@@ -122,7 +122,7 @@ describe('ComparePage: раунд 2', () => {
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     await screen.findByTestId('compare-gap');
     fireEvent.click(screen.getByRole('button', { name: 'Изменить' }));
-    fireEvent.click(await screen.findByRole('button', { name: 'Германия' }));
+    // Круг 9 (C2): лимит виден сразу, выбирать страну, чтобы упереться в него, не нужно.
     const notice = await screen.findByTestId('compare-cap-notice');
     expect(notice.textContent).toMatch(/Уберите один показатель или зарегистрируйтесь/);
     fireEvent.click(within(notice).getByRole('button', { name: /Зарегистрироваться/ }));

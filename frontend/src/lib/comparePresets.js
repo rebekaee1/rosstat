@@ -29,6 +29,26 @@ export const COMPARE_PRESETS = [
     codes: ['w:india:population', 'w:china:population'],
     reps: {},
   },
+  // Круг 9 (P2): готовые пары «Россия и другая страна». У Турции индекс цен приходит уровнем, у России уже в процентах
+  // за год, поэтому турецкий ряд сразу берётся как «% к прошлому году».
+  {
+    id: 'ru-tr-inflation',
+    labelKey: 'c9d.compare.preset.ruTrInflation',
+    codes: ['w:russia:hicp-index', 'w:turkey:hicp-index'],
+    reps: { 'w:turkey:hicp-index': 'yoy' },
+  },
+  {
+    id: 'ru-tr-gdp',
+    labelKey: 'c9d.compare.preset.ruTrGdp',
+    codes: ['w:russia:gdp-usd', 'w:turkey:gdp-usd'],
+    reps: {},
+  },
+  {
+    id: 'ru-tr-unemployment',
+    labelKey: 'c9d.compare.preset.ruTrUnemployment',
+    codes: ['w:russia:unemployment-rate', 'w:turkey:unemployment-rate'],
+    reps: {},
+  },
 ];
 
 export const DEFAULT_COMPARE_PRESET = COMPARE_PRESETS[0];

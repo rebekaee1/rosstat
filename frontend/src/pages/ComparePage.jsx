@@ -36,7 +36,7 @@ import { scalesDiffer } from '../lib/useCountryComparison';
 import ChartBrush from '../components/ChartBrush';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
 import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from '../lib/comparePresets';
-import { compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle';
+import { compareEndName, compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle';
 import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
@@ -55,11 +55,11 @@ import useScrollDepth from '../lib/useScrollDepth';
 import {
   compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
   applyCompareTransform, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
-  worldCompareRepresentationsFor, worldCompareTransformFor,
+  worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
 } from '../lib/compareRepresentation';
 import {
   activeCompatibilityNote,
-  compareCompatibility,
+  compareCompatibilityWithTwins,
   parseSubnationalCompareCode,
   parseWorldCompareCode,
   sanitizeCompareCodes,
@@ -102,6 +102,11 @@ function scrollToCompareChart() {
     // 88 px: шапка и лента курсов не закрывают заголовок графика.
     window.scrollTo({ top: Math.max(0, window.scrollY + top - 88), behavior: reduce ? 'auto' : 'smooth' });
   }
+}
+
+/** Подпись единицы: у «индекса» её суффикс пуст, и подпись превращалась в «Значения, .» — тогда пишем само слово. */
+function unitLabel(unit) {
+  return unitSuffix(unit) || String(unit ?? '').trim();
 }
 
 /** Сила связи двух рядов словами (число — только в «Как посчитано»). */
@@ -592,11 +597,16 @@ function ComboSelect({
 }
 
 /** Лимит рядов достигнут: говорим, что сделать, и даём кнопку для гостя (поле при этом серое). */
-function CapNotice({ text, onLimit }) {
+function CapNotice({ text, onLimit, onClear }) {
   const t = useT();
   return (
     <div className="fe-z7-cap" role="status" data-testid="compare-cap-notice">
       <p>{text}</p>
+      {onClear && (
+        <button type="button" onClick={onClear} className="fe-z7-cap__btn" data-testid="compare-cap-clear">
+          {t('c9d.compare.startOver')}
+        </button>
+      )}
       {onLimit && (
         <button type="button" onClick={onLimit} className="fe-z7-cap__btn">
           {t('w6a.compare.register')}
@@ -795,7 +805,7 @@ function russiaLandingPool(indicators, worldItems, locale) {
 }
 
 function AddIndicator({
-  indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder, onLimit,
+  indicators, selected, onAdd, atCap, capHint, compatibilityFor, placeholder, onLimit, onClear,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -848,10 +858,10 @@ function AddIndicator({
         />
         <ChevronDown className="w-4 h-4 shrink-0 text-text-tertiary" />
       </div>
-      {atCap && <div className="mt-2"><CapNotice text={capHint} onLimit={onLimit} /></div>}
+      {atCap && <div className="mt-2"><CapNotice text={capHint} onLimit={onLimit} onClear={onClear} /></div>}
       {openList && !atCap && results.length === 0 && (
         <div className="absolute z-40 mt-2 w-full rounded-xl px-4 py-3 text-sm text-text-tertiary shadow-2xl fe-glass-pop">
-          {t('compare.nothingFound')}
+          {query.trim() ? t('compare.nothingFound') : t('c9d.compare.nothingLeft')}
         </div>
       )}
       {openList && !atCap && results.length > 0 && (
@@ -885,7 +895,7 @@ const POPULAR_CONCEPTS = ['gdp-usd', 'hicp-index', 'unemployment-rate', 'populat
  * Код ряда — `w:{slug}:{concept}`. Выбор в списке сразу ставит ряд на график, без второго нажатия.
  */
 function AddWorldCountrySeries({
-  items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor, onLimit,
+  items, countrySlug, selected, onAdd, atCap, capHint, compatibilityFor, onLimit, onClear,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -953,11 +963,16 @@ function AddWorldCountrySeries({
         disabled={atCap || conceptItems.length === 0}
         trackContext="compare-world-concept"
       />
-      {atCap && <CapNotice text={capHint} onLimit={onLimit} />}
+      {atCap && <CapNotice text={capHint} onLimit={onLimit} onClear={onClear} />}
       {emptyKey && (
         <p className="text-xs leading-relaxed text-text-secondary">
           {t(emptyKey)}
         </p>
+      )}
+      {emptyKey === 'y1.compare.noMatch' && onClear && (
+        <button type="button" onClick={onClear} className="fe-z7-cap__btn justify-self-start" data-testid="compare-nomatch-clear">
+          {t('c9d.compare.startOver')}
+        </button>
       )}
     </div>
   );
@@ -989,7 +1004,7 @@ function PickerBack({ label, onClick }) {
  */
 function CompareSeriesPicker({
   indicators, worldItems, selected, onAdd, atCap, capHint, compatibilityFor,
-  status = '', catalogLoading = false, onLimit,
+  status = '', catalogLoading = false, onLimit, onClear,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -1119,7 +1134,11 @@ function CompareSeriesPicker({
         )}
       </div>
 
-      {!countryKey && (
+      {!countryKey && atCap && (
+        <CapNotice text={capHint} onLimit={onLimit} onClear={onClear} />
+      )}
+
+      {!countryKey && !atCap && (
         <CompareCountryStep
           countries={filteredCountries}
           query={countryQuery}
@@ -1154,6 +1173,7 @@ function CompareSeriesPicker({
                 compatibilityFor={compatibilityFor}
                 placeholder={t('compare.conceptSearch')}
                 onLimit={onLimit}
+                onClear={onClear}
               />
             </div>
           </div>
@@ -1199,13 +1219,14 @@ function CompareSeriesPicker({
           </div>
           <div className="rounded-xl p-3 fe-glass-2">
             <AddIndicator
-              indicators={indicators}
+              indicators={russiaLandingPool(indicators, worldItems, locale)}
               selected={selected}
               onAdd={onAdd}
               atCap={atCap}
               capHint={capHint}
               compatibilityFor={compatibilityFor}
               onLimit={onLimit}
+              onClear={onClear}
             />
           </div>
         </div>
@@ -1292,6 +1313,7 @@ function CompareSeriesPicker({
               capHint={capHint}
               compatibilityFor={compatibilityFor}
               onLimit={onLimit}
+              onClear={onClear}
             />
           </div>
         </div>
@@ -1383,8 +1405,8 @@ function CompareTooltip({
             <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colors?.[p.dataKey] || p.color }} />
             <span className="max-w-[160px] truncate text-xs text-text-secondary">{p.name}</span>
           </div>
-          <span className="shrink-0 text-sm font-semibold tabular-nums text-text-primary">
-            {formatValueWithUnit(p.value, p.payload?.[`${p.dataKey}_unit`] || '%')}
+          <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
+            {formatValueWithUnit(p.value, p.payload?.[`${p.dataKey}_unit`] || '%').replace(/ (?=[^\s]+$)/, '\u00A0')}
           </span>
         </div>
       ))}
@@ -1409,7 +1431,6 @@ export default function ComparePage() {
   const [status, setStatus] = useState('');
   const [pickerOpen, setPickerOpen] = useState(false);
   const coarsePointer = useMediaQuery('(pointer: coarse)');
-  const phoneView = useMediaQuery('(max-width: 767px)');
   // Панорама окна: сдвиг в точках от правого края ряда («кружочек» как на
   // карточке индикатора — созвон «На правки 13»).
   const [panOffset, setPanOffset] = useState(0);
@@ -1478,12 +1499,15 @@ export default function ComparePage() {
     codes.some((code) => !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)),
   ].filter(Boolean).length;
   const worldCompareItems = useMemo(() => worldCompareCatalog?.items || [], [worldCompareCatalog]);
+  const worldCodeSet = useMemo(() => new Set(worldCompareItems.map((item) => item.code)), [worldCompareItems]);
+  const hasWorldCode = useCallback((code) => worldCodeSet.has(code), [worldCodeSet]);
   const compatibilityNote = activeCompatibilityNote(codes);
   const worldMetaByCode = useMemo(
     () => new Map((worldCompareCatalog?.items || []).map((item) => [item.code, {
       frequency: item.frequency,
       conceptSlug: item.concept_slug,
       unit: item.unit,
+      peerMode: item.peer_mode,
     }])),
     [worldCompareCatalog],
   );
@@ -1561,22 +1585,35 @@ export default function ComparePage() {
       }
       return;
     }
-    const compatibility = compareCompatibility(current, code);
+    const compatibility = compareCompatibilityWithTwins(current, code, hasWorldCode);
     if (!compatibility.allowed) {
       setCompatibilityMessage(compatText(t, compatibility) || '');
       return;
     }
     setCompatibilityMessage('');
-    const next = [...current, code];
+    // Российский показатель заменён своим «двойником» в общем наборе стран: так он сравним с рядом другой страны.
+    const next = [...(compatibility.replaceWith || current), code];
     writeCodes(next);
     const name = shortNameForCode(code) || t('z2.compare.seriesFallback');
-    setStatus(t(next.length >= cap && !isAuthed ? 'w6g.compare.addedLimit' : 'w6g.compare.added', { name }));
-    // Выбор остаётся раскрытым: после первого ряда сразу можно добавить второй.
-    setPickerOpen(true);
+    const statusKey = compatibility.replaceWith
+      ? 'c9d.compare.twinSwapped'
+      : next.length >= cap && !isAuthed ? 'w6g.compare.addedLimit' : 'w6g.compare.added';
+    setStatus(t(statusKey, { name }));
+    // Круг 9 (C3): после второго ряда выбор сворачивается, и график виден сразу, а не через два экрана.
+    setPickerOpen(next.length < 2 && next.length < cap);
     track(events.COMPARE_ADD, { code, count: next.length });
-    // Телефон: график остаётся ниже выбора. Подкручиваем к нему, чтобы результат был виден сразу.
-    if (phoneView) window.setTimeout(scrollToCompareChart, 140);
-  }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode, phoneView]);
+    // График остаётся ниже выбора: подкручиваем к нему на любом экране, если он не в поле зрения.
+    window.setTimeout(scrollToCompareChart, 140);
+  }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode, hasWorldCode]);
+
+  // «Начать заново»: убрать все ряды и открыть выбор (гость упёрся в лимит или набор не сочетается).
+  const clearAll = useCallback(() => {
+    writeCodes([]);
+    setStatus('');
+    setCompatibilityMessage('');
+    setPickerOpen(true);
+    track(events.COMPARE_CHANGE, { cleared: true });
+  }, [writeCodes]);
 
   const removeCode = useCallback((code) => {
     writeCodes(codes.filter((c) => c !== code));
@@ -1604,7 +1641,11 @@ export default function ComparePage() {
   const resolved = useMemo(() => codes.map((code) => {
     if (isWorldCode(code)) {
       const meta = worldMetaByCode.get(code);
-      const requestedRep = repByCode[code] || REP_LEVEL;
+      // Индекс цен уровнем рядом с рядом в процентах за год сразу показываем в процентах (круг 9, C1).
+      const requestedRep = repByCode[code] || defaultWorldRepresentation(
+        meta,
+        codes.filter((other) => other !== code).map((other) => worldMetaByCode.get(other)),
+      );
       const options = worldCompareRepresentationsFor(meta);
       const repId = options.some((item) => item.id === requestedRep)
         ? requestedRep
@@ -1888,10 +1929,14 @@ export default function ComparePage() {
     const cadence = compareDateFmt === 'annual' || compareDateFmt === 'quarterly'
       ? compareDateFmt
       : null;
+    // Круг 9 (C4): подпись оси считаем по 7,4 px на знак и берём ширину с запасом 12 %, чтобы соседние подписи
+    // («июн 2022» и «ноя 2022») не слипались; при самой узкой оси остаётся одна подпись.
+    const sampleChars = typeof labelSpec === 'string' ? labelSpec.length : Number(labelSpec) || 8;
+    const budget = chartAxisTickBudget(axisW * 0.88, Math.max(41, Math.ceil(sampleChars * 7.4) + 8));
     return pickChartAxisTicks(
       chartRows,
-      chartAxisTickBudget(axisW, labelSpec),
-      { cadence, plotWidthPx: axisW, formatLabel },
+      axisW < 180 ? 2 : budget,
+      { cadence, plotWidthPx: axisW * 0.88, formatLabel },
     );
   }, [chartRows, plotWidth, compareDateFmt]);
 
@@ -1911,7 +1956,7 @@ export default function ComparePage() {
     else if (indexed) parts.push(t('compare.start100'));
     else {
       const short = splitUnit(s.unit).short;
-      if (short && short.length <= 14) parts.push(unitSuffix(short));
+      if (short && short.length <= 14) parts.push(unitLabel(short));
       // Частота — только если у рядов она разная: иначе это лишнее слово в каждой подписи.
       if (new Set(series.map((x) => x.ind?.frequency).filter(Boolean)).size > 1 && s.ind?.frequency) {
         parts.push(freqLabel(s.ind.frequency, t));
@@ -1974,7 +2019,7 @@ export default function ComparePage() {
         if (y != null) {
           raw.push({
             key: s.key, y, color: s.color, value: v, flag: seriesFlag(s),
-            name: labels[i] || t('z2.compare.seriesFallback'),
+            name: compareEndName(labels[i] || t('z2.compare.seriesFallback'), endLabelWidth >= 136 ? 26 : 22),
           });
         }
         break;
@@ -1996,7 +2041,7 @@ export default function ComparePage() {
   const unitsCaption = (() => {
     if (indexed || distinctUnits.length !== 1) return '';
     const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];
-    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: unitSuffix(unit) }) : '';
+    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: unitLabel(unit) }) : '';
   })();
   // Разрыв двух величин словами: «США больше, чем Китай, в 1,6 раза».
   const gap = (() => {
@@ -2147,6 +2192,11 @@ export default function ComparePage() {
                 {t(preset.labelKey)}
               </Chip>
             ))}
+            {!isDemo && codes.length > 0 && (
+              <Chip onClick={clearAll} aria-pressed={undefined} data-testid="compare-clear">
+                {t('c9d.compare.startOver')}
+              </Chip>
+            )}
           </div>
         </div>
 
@@ -2229,6 +2279,13 @@ export default function ComparePage() {
           </div>
         )}
 
+        {/* Выбор свернулся после второго ряда: что именно добавлено (и что заменено) остаётся видно. */}
+        {!showPicker && status && (
+          <p role="status" data-testid="compare-status" className="mb-3 text-[13px] leading-snug text-champagne-ink">
+            {status}
+          </p>
+        )}
+
         {!isDemo && codes.length > 0 && (
           <Button
             variant="secondary"
@@ -2250,7 +2307,8 @@ export default function ComparePage() {
               onAdd={addCode}
               atCap={atCap}
               capHint={capHint}
-              compatibilityFor={(code) => compareCompatibility(isDemo ? [] : codes, code)}
+              compatibilityFor={(code) => compareCompatibilityWithTwins(isDemo ? [] : codes, code, hasWorldCode)}
+              onClear={clearAll}
               status={status}
               catalogLoading={worldCatalogLoading}
               onLimit={isAuthed ? undefined : openLimit}
@@ -2732,6 +2790,11 @@ export default function ComparePage() {
                   {(lastValue.tail || changeValue.tail) && (
                     <p className="mt-2 text-xs leading-snug text-text-secondary">
                       {lastValue.tail || changeValue.tail}
+                    </p>
+                  )}
+                  {indexed && baseDate && (
+                    <p className="mt-1 text-xs leading-snug text-text-tertiary">
+                      {t('c9d.compare.indexBase', { date: formatDate(baseDate, compareDateFmt) })}
                     </p>
                   )}
                   {/п\.\s?п\.|p\.p\./.test(changeValue.unitShort || '') && (

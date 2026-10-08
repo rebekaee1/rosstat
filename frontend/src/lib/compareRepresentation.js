@@ -126,6 +126,22 @@ export function worldCompareRepresentationsFor(meta) {
   return options;
 }
 
+const PERCENT_UNIT = /%|процент|percent/i;
+
+/**
+ * Представление по умолчанию для мирового ряда. Индекс цен, который приходит уровнем (Турция, Германия), нельзя
+ * честно сравнивать с рядом, уже выраженным в процентах за год (Россия): тогда уровень сразу показываем
+ * как «% к прошлому году». Иначе остаётся уровень.
+ */
+export function defaultWorldRepresentation(meta, siblingMetas = []) {
+  if (!meta || meta.peerMode !== 'yoy-monthly') return REP_LEVEL;
+  const hasPercentSibling = siblingMetas.some((other) => other
+    && other !== meta
+    && other.conceptSlug === meta.conceptSlug
+    && PERCENT_UNIT.test(String(other.unit || '')));
+  return hasPercentSibling && !PERCENT_UNIT.test(String(meta.unit || '')) ? REP_YOY : REP_LEVEL;
+}
+
 export function worldCompareTransformFor(repId, frequency) {
   if (repId === REP_POP) return `world-pop-${frequency}`;
   if (repId === REP_YOY) return `world-yoy-${frequency}`;

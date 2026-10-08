@@ -131,4 +131,28 @@ describe('CalcSlider', () => {
     fireEvent.change(screen.getByLabelText('Rate'), { target: { value: '14' } });
     expect(onChange).toHaveBeenCalledWith(14);
   });
+
+  it('круг 9 (K5): число вводится рядом с бегунком; вне границ значение прижимается к ним', () => {
+    const onChange = vi.fn();
+    render(
+      <LocaleProvider>
+        <CalcSlider label="Ставка, % годовых" value={12.5} min={0.1} max={30} step={0.1} suffix="%" editable onChange={onChange} />
+      </LocaleProvider>,
+    );
+    const field = screen.getByLabelText('Ввести число: Ставка, % годовых');
+    expect(field.value).toBe('12,5');
+    expect(screen.getByLabelText('Ставка, % годовых').getAttribute('aria-valuetext')).toBe('12,5%');
+    // Допустимое число уходит в расчёт сразу, с запятой как разделителем.
+    fireEvent.change(field, { target: { value: '9,8' } });
+    expect(onChange).toHaveBeenLastCalledWith(9.8);
+    // Слишком большое не ломает расчёт: при выходе из поля встаёт на максимум.
+    fireEvent.change(field, { target: { value: '99' } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    fireEvent.blur(field);
+    expect(onChange).toHaveBeenLastCalledWith(30);
+    // Буквы игнорируются: значение не меняется.
+    fireEvent.change(field, { target: { value: 'ааа' } });
+    fireEvent.blur(field);
+    expect(onChange).toHaveBeenCalledTimes(2);
+  });
 });

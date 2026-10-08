@@ -30,3 +30,15 @@
 .calc-field-input[aria-invalid='true']:focus-visible {
   box-shadow: var(--k8-well-shadow, none), var(--k8-well-glow, 0 0 22px 2px rgba(201, 162, 77, 0.5)), inset 0 -2px 0 var(--color-negative);
 }
+
+/* Круг 9 (K5): число рядом с бегунком вводится руками. Колодец (.fe-k8-well) даёт форму, здесь только размеры. */
+.calc-slider-input {
+  box-sizing: border-box;
+  width: 5.25rem;
+  min-height: 40px;
+  padding: 4px 10px;
+  line-height: 1.2;
+}
+@media (pointer: coarse) {
+  .calc-slider-input { min-height: 44px; }
+}
