@@ -400,6 +400,10 @@ python scripts/build-indicator-index.py --check
 | 4 | Контент по режиму (`cnyRubViewModeContent`) | Да |
 | 5 | SEO blocks ×8 | Да |
 
+### Курсы лиры и тенге (`try-rub`, `kzt-rub`) — daily ЦБ без variant, T1 `FamilyDef` (08.10.2026, локально)
+
+Новые валюты ЦБ добавляются без нового ключа фронтенда: `cbr_fx_parser.CURRENCY_MAP` (код ЦБ и номинал) → строка `seed_data.py` (`forecast_steps: 0`, максимальная история) → `FamilyDef` в `data/view_model_families.py` → `python3 scripts/export-view-models.py` (зеркало `viewModelFamilies.generated.json`) → `site_paths._CURRENCY_BASE_CODES` и зеркало `frontend/src/lib/sitePaths.js` → SEO-блоки `indicator_seo.py` (`_FX_RATE_BLOCK_SPECS`, восемь блоков «О показателе») и EN-тексты `indicator_copy_en.py` → слова поиска (`search_intent.py`, `search_language.py`) → `python3 scripts/build-indicator-index.py`. Имя, знак и флаг валюты клиент берёт из `Intl` по коду пары (`lib/currencyRates.js::unitMeta`), конвертер и поиск «Из/В» подхватывают пару сами. Подробности и непройденные валюты — [data_sources](data_sources.md), [контракт](data-contracts.md#c9-data-2026-10-08).
+
 ### Биткоин (`btc-usd`) — уровень C, daily без variant
 
 | # | Блок | Статус |

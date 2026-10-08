@@ -85,10 +85,10 @@ unknown commit outcome, DB0 outage и 4-vCPU capacity остаются отде�
 | [`docs/workflow.md`](docs/workflow.md) | Модель работы, локальный dev, прод-деплой, smoke C |
 | [`docs/search.md`](docs/search.md) | Поисковое намерение, федеративное discovery, области локальных полей, покрытие, состояния и границы исторической телеметрии |
 | [`docs/enterprise_resilience.md`](docs/enterprise_resilience.md) | Rate-limit, CSP, asset-hash trap, бэкапы, чеклист канарейки |
-| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 118 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
+| [`docs/data_sources.md`](docs/data_sources.md) | Точная карта «индикатор → файл/endpoint» для всех 120 source-индикаторов. Single source of truth — обязательно обновлять при правке источника |
 | `backend/app/services/*_parser.py` docstrings | Parser internals (CBR / Минфин / Rosstat): source URL, лист, row/col mapping, `model_config_json` schema, traps. Канонично живёт рядом с кодом |
 | [`docs/analytics_api_inventory/`](docs/analytics_api_inventory/) | Инвентарь Yandex API (Metrika, Webmaster) + статус реализации |
-| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 829 derived через `DERIVED_SPECS` (44 ручных + 785 generic) + 28 чистых ops |
+| [`docs/adr/0001`](docs/adr/0001-derived-indicators-engine-shape.md) | Engine shape: 855 derived через `DERIVED_SPECS` (44 ручных + 811 generic) + 28 чистых ops |
 | [`docs/adr/0002`](docs/adr/0002-derived-always-reflects-source.md) | Инвариант: derived всегда отражает source (`bulk_upsert` идемпотентен) |
 | [`docs/adr/0003`](docs/adr/0003-seo-single-source-server-rendered.md) | SEO single-source: backend SSR через `__spa-index.html` + Vite asset discovery |
 | [`docs/adr/0004`](docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md) | Rosstat русский canonical, SDDS English deprecated. Pilot: gdp-nominal end-to-end 2026-05-10 |
@@ -225,7 +225,7 @@ ADR и истории, проверку producer/consumer и актуализа�
   - `seo_blocks` — JSON-массив `{title, body}` дополнительных секций под графиком.
   - `is_listed` — boolean: показывать ли карточку индикатора в листинге категории. По умолчанию `true`. `false` — карточка скрыта из листинга, но ряд должен оставаться достижим через generic sibling, variant, frequency switcher или bespoke resolve (anti-orphan); один из вариантов — `VariantGroupPicker` внутри родительского индикатора (например, `cpi-food-quarterly` скрыт, виден только при выборе «Состав индекса → продовольственные → квартально» на странице `cpi`).
 
-Хранится в таблице `Indicator`. **Текущее количество (2026-08-29):** 947 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 118 source-индикаторов (через 34 парсер-типа) и 829 derived (через `DERIVED_SPECS`: 44 ручных + 785 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
+Хранится в таблице `Indicator`. **Текущее количество (2026-10-08):** 975 рядов в seed; точное число — в `seed_data.py` и `/api/v1/system/status`. Из них 120 source-индикаторов (через 34 парсер-типа) и 855 derived (через `DERIVED_SPECS`: 44 ручных + 811 сгенерированных generic view-mode-семьями, см. `view_model_families.py`).
 
 ### DataPoint
 
@@ -270,7 +270,7 @@ ADR и истории, проверку producer/consumer и актуализа�
 - `quarterly_avg`, `rolling_avg` — для unemployment.
 - `wages_real` — особая, 2 источника (`wages-nominal`, `cpi`).
 
-Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **829 entries** (44 ручных + 785 из `view_model_families.iter_derived_specs()`). Ручное ядро:
+Реестр спецификаций (`calculation_engine.DERIVED_SPECS`) — **855 entries** (44 ручных + 785 из `view_model_families.iter_derived_specs()`). Ручное ядро:
 
 - **CPI семейство:** `inflation-quarterly` ← `cpi`, `inflation-annual` ← `cpi`, и аналоги для `cpi-food/nonfood/services` (8 spec'ов).
 - **PPI:** `ppi-yoy`, `ppi-annual`.
@@ -1217,7 +1217,7 @@ OpenRouter, ключ в репозитории не хранится). От 24.0
 - **Лента курсов и основа курса.** Каждый снимок `/api/v1/ticker/live` несёт `source_kind` (`market | central_bank | ecb | official`), `source_label` («Биржа», «ЦБ», «ЕЦБ» по языку хоста), `as_of`, ответ — `lane`, `Vary: Host, X-FE-Locale` (с `204af55a` все ответы `/api/` несут `Vary: X-FE-Locale`, [контракт](docs/data-contracts.md#api-vary-locale));
   новый `GET /api/v1/ticker/rates/{usd-rub|eur-rub|cny-rub}` отдаёт два числа с честными подписями (`central_bank` — курс ЦБ на дату, `market` — биржа или `null`); если биржа недоступна и воркер подставил ЦБ, он больше не выдаётся как рынок. **Клиент этих полей и `/ticker/rates` пока не использует** (`LiveTicker` определяет «биржа»/«ЦБ» по `snapshot.source`).
 - **Страница страны: «Главное» в серверном HTML и предзагрузке.** SSR добавляет секцию `#key-figures` («Главное», до четырёх строк человеческим текстом) и в `<head>` `<script type="application/json" id="fe-country-bootstrap">` (`v:1`, страна, `overview` с точками мини-графика).
-  Клиент (`lib/countryBootstrap.js`) использует предзагрузку, пока дата и значение совпадают с каталогом, иначе идёт в сеть. Источник — Redis-каталог страны `world / country:v18:{slug}:{locale}`; кэш HTML `ssr-world` 6 ч.
+  Клиент (`lib/countryBootstrap.js`) использует предзагрузку, пока дата и значение совпадают с каталогом, иначе идёт в сеть. Источник — Redis-каталог страны `world / country:v19:{slug}:{locale}` (до 08.10.2026 версия `v18`; `ind:v22` → `ind:v23`, карточка `/indicators/{code}` `detail:v2` → `detail:v3`, выдача поиска получила ревизию `r2`); кэш HTML `ssr-world` 6 ч.
 - **404 в общей оболочке.** Неизвестный адрес получает от backend документ приложения со статусом 404 и флагом `window.__feNotFound=true`; клиент (`ServerNotFoundGate` в `App.jsx`) на этом pathname рисует `NotFound`, а не маршруты. Без бандла остаётся прежняя самодостаточная страница.
   nginx отдаёт фирменные статические `429.html/.json` и `50x.html/.json` (JSON для `/api/`); `/search?q=…` — 301 на главную с тем же `q`.
 - **Лимиты API.** `RateLimitMiddleware` читает `RUSTATS_API_RATE_LIMIT` (по умолчанию 120 запросов в минуту на адрес) и `RUSTATS_EMBED_RATE_LIMIT` (600) из окружения; боевые значения прежние. Тестовый стенд поднимает оба до 6000 и генерирует свой nginx-конфиг
