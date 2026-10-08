@@ -16,7 +16,8 @@
   --z6-gold-ink: var(--fe-gold-ink, var(--color-champagne-ink, #80642f));
   --z6-muted: var(--fe-text-muted, var(--color-text-secondary, #59697f));
   --z6-shadow: var(--fe-card-shadow, 0 1px 2px rgba(32, 42, 60, 0.04), 0 16px 34px -22px rgba(32, 42, 60, 0.28));
-  --z6-sticky-top: 96px;
+  /* Липкая шапка таблицы встаёт под оболочкой (лента + шапка), высоту даёт Z0 (`--fe-shell-top`). */
+  --z6-sticky-top: calc(var(--fe-shell-top, 88px) + 8px);
 }
 
 /* ── Заголовок: компактнее, пояснение «Подробнее» раскрывается поверх, а не сдвигает рейтинг ── */
@@ -107,9 +108,12 @@
 .z6-planet { min-width: 0; display: grid; gap: 10px; }
 .z6-planet .planet-info { display: none; }
 .z6-planet .planet-shell {
-  grid-template-columns: minmax(0, 1fr);
+  /* Колонка «Карта | Шар» остаётся в первой строке справа, а сама сцена берёт обе колонки: раньше переключатель
+     создавал вторую неявную колонку шириной с него, и справа от карты оставалась пустая полоса (круг 8, I2). */
+  grid-template-columns: minmax(0, 1fr) auto;
   box-shadow: var(--z6-shadow);
 }
+.z6-planet .planet-geography { grid-column: 1 / -1; }
 .z6-planet .planet-toolbar { padding: 12px 14px; }
 
 /* ── Первое и последнее место: две L1-плиты, у каждой свой свет (шампань и лёд), общей рамки нет ── */
@@ -158,10 +162,17 @@
 @media (max-width: 767px) {
   .z6-ribbon .w2-fact { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
+/* Узко (телефон): две плиты рядом и вдвое ниже, а не две огромные друг под другом (круг 8, I4). */
 @container z6ribbon (max-width: 540px) {
+  .z6-ribbon .w2-facts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 14px 12px; border-radius: 18px; }
+  .z6-ribbon .w2-fact-label { font-size: 11px; letter-spacing: 0.05em; gap: 7px; }
+  .z6-ribbon .w2-fact-name { font-size: 14px; }
+  .z6-ribbon .w2-fact-value { justify-content: flex-start; font-size: 19px; }
+  .z6-ribbon .w2-fact-value small { font-size: 12px; }
+}
+@container z6ribbon (max-width: 300px) {
   .z6-ribbon .w2-facts-grid { grid-template-columns: minmax(0, 1fr); }
-  .z6-ribbon .w2-fact { grid-template-columns: minmax(0, 1fr); }
-  .z6-ribbon .w2-fact-value { justify-content: flex-start; }
 }
 
 /* ── Таблица: полки вместо клеток ──
@@ -184,8 +195,8 @@
 .z6-table-card thead { position: sticky; top: var(--z6-sticky-top); z-index: 10; }
 /* Липкая шапка: плотная L1-полоса без blur (не лишний слой) — под ней проезжают строки. */
 .z6-table-card thead th {
-  padding-block: 12px; background: var(--fe-pop-bg, rgba(250, 247, 240, 0.92));
-  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.9)), 0 12px 16px -14px rgba(60, 48, 24, 0.42);
+  padding-block: 12px; background: linear-gradient(var(--fe-pop-bg, rgba(255, 255, 255, 0.88)), var(--fe-pop-bg, rgba(255, 255, 255, 0.88))), var(--color-surface, #FDFDFE);
+  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.9)), 0 12px 16px -14px rgba(30, 38, 56, 0.3);
   color: var(--z6-muted); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
 }
 .z6-table-card thead th:first-child { border-radius: 14px 0 0 14px; }
@@ -195,7 +206,7 @@
 .z6-table-card tbody td {
   height: 52px; padding-block: 8px; vertical-align: middle;
   background: var(--fe-glass-l1, rgba(255, 255, 255, 0.52));
-  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.8)), 0 12px 16px -14px rgba(60, 48, 24, 0.4);
+  box-shadow: var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.8)), 0 12px 16px -14px rgba(30, 38, 56, 0.28);
   transition: background-color 0.18s ease;
 }
 .z6-table-card tbody td:first-child { border-radius: 16px 0 0 16px; padding-left: 16px; }
@@ -224,8 +235,8 @@
 /* Столбец-трубка: жёлоб с внутренней тенью, «жидкое золото» с бликом и свечением на конце (K6.5). */
 .z6-table-card .w6d-bar {
   height: 10px; overflow: visible;
-  background: var(--k6-groove, rgba(88, 74, 46, 0.09));
-  box-shadow: inset 0 2px 3px var(--k6-groove-shade, rgba(60, 48, 24, 0.2)), inset 0 -1px 0 var(--k6-groove-lip, rgba(255, 255, 255, 0.9));
+  background: var(--k6-groove, rgba(30, 38, 56, 0.07));
+  box-shadow: inset 0 2px 3px var(--k6-groove-shade, rgba(30, 38, 56, 0.16)), inset 0 -1px 0 var(--k6-groove-lip, rgba(255, 255, 255, 0.9));
 }
 .z6-table-card .w6d-bar > span {
   position: relative; opacity: 1; transform-origin: left center;
@@ -287,3 +298,36 @@
   .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-ribbon .w2-fact, .w6d-shifts--compact .w6d-shift, .z6-table-card tbody td { transition: none; }
   .z6-toolbar .w6d-quick:hover, .z6-toolbar .w6d-picker__all:hover { transform: none; }
 }
+
+
+/* ===== Круг 8, зона Z3: рейтинг ===== */
+
+/* Выбор показателя на телефоне: одна прокручиваемая строка с затуханием по краям, а не три ряда (I4). */
+@media (max-width: 639px) {
+  .z6-toolbar .w6d-picker__bar {
+    flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+    margin-inline: -1rem; padding: 4px 1rem 10px;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent 100%);
+  }
+  .z6-toolbar .w6d-picker__bar::-webkit-scrollbar { display: none; }
+  .z6-toolbar .w6d-picker__quick { display: contents; }
+  .z6-toolbar .w6d-quick, .z6-toolbar .w6d-picker__all, .z6-toolbar .z6-picker__trailing { flex: none; white-space: nowrap; }
+  .z6-toolbar .z6-picker__trailing { margin-left: 4px; }
+  .z6-toolbar .w6d-picker__label { margin-bottom: 2px; }
+  /* Порядок и «Добавить показатель» там же: одна строка, без подписей-сирот над каждым элементом. */
+  .z6-controls { flex: 1 1 100%; flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; margin-inline: -1rem; padding: 2px 1rem 8px; }
+  .z6-controls::-webkit-scrollbar { display: none; }
+  .z6-controls > * { flex: none; }
+  .z6-controls .z6-controls__label { display: none; }
+}
+
+/* Первые три места: один тон выделения вместо золотого, серого и бронзового (I3); цифра места не прячется под точкой. */
+.z6-row[data-top] {
+  --k6-tint-gold: rgba(30, 58, 110, 0.09); --k6-tint-silver: rgba(30, 58, 110, 0.09); --k6-tint-bronze: rgba(30, 58, 110, 0.09);
+  --k6-tint-gold-hover: rgba(30, 58, 110, 0.15); --k6-tint-silver-hover: rgba(30, 58, 110, 0.15); --k6-tint-bronze-hover: rgba(30, 58, 110, 0.15);
+}
+.z6-row .w2-rank-pos[data-medal='1']::after { top: -3px; right: -8px; width: 5px; height: 5px; }
+/* Число изменения: правый край у всех строк один, знак и стрелка не «гуляют». */
+.z6-table-card .w6d-delta { justify-content: flex-end; min-width: 5.6em; }
+.z6-table-card tbody td.z6-val, .z6-table-card thead th { font-variant-numeric: tabular-nums; }

@@ -123,9 +123,22 @@
 :root .fe-note-card__title { text-wrap: balance; }
 :root .fe-note-card__text { margin-top: 4px; }
 :root .fe-note-card__cta { grid-column: 1 / -1; justify-self: start; }
-@media (min-width: 640px) {
+/* Три колонки (иконка, текст, кнопки) только там, где плашка на всю ширину страницы. С 1024 px она живёт в узкой правой колонке
+   (`.z4-lower__aside`): там иконка стоит над текстом, всё в одну колонку, ссылки идут в потоке под текстом (круг 8, I1). */
+@media (min-width: 640px) and (max-width: 1023px) {
   :root .fe-note-card { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
   :root .fe-note-card__cta { grid-column: auto; justify-self: end; }
+}
+:root .fe-note-card {
+  background: linear-gradient(135deg, rgba(196, 210, 234, 0.3), transparent 75%), var(--fe-l1-bg);
+}
+:root .fe-note-card__icon { background: rgba(30, 58, 110, 0.1); color: var(--fe-blue, #1E3A6E); }
+@media (min-width: 1024px) {
+  :root .z4-lower__aside .fe-note-card { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 18px 20px; }
+  :root .z4-lower__aside .fe-note-card__body { min-width: 0; }
+  :root .z4-lower__aside .fe-note-card__title,
+  :root .z4-lower__aside .fe-note-card__text { overflow-wrap: break-word; word-break: normal; hyphens: auto; }
+  :root .z4-lower__aside .fe-note-card__cta { grid-column: 1; justify-self: start; }
 }
 
 /* ── «Как это считается» вместо одинокого «?» ─────────────────────────── */
@@ -254,3 +267,25 @@
 
 /* Список показателей страны: число и дата — на одной базовой линии, не прыгают от длины названия. */
 :root .fe-ind-row__value { font-variant-numeric: tabular-nums; }
+
+
+/* ===== Круг 8, зона Z3: плашка регистрации, карточка «О показателе», шапка ===== */
+
+/* Плашка «Скачивайте данные бесплатно» — телефонная. `.fe-nudge-m { display: grid }` без слоя перебивал `sm:hidden`
+   Tailwind, и на планшете и компьютере она растягивалась на всю ширину страницы с огромной кнопкой над подвалом. */
+@media (min-width: 640px) {
+  :root aside.fe-nudge-m { display: none; }
+}
+:root aside.fe-nudge-m {
+  margin-bottom: 32px;
+  background: linear-gradient(135deg, rgba(196, 210, 234, 0.3), transparent 75%), var(--fe-l1-bg);
+}
+:root aside.fe-nudge-m .fe-nudge-m__icon { background: rgba(30, 58, 110, 0.1); color: var(--fe-blue, #1E3A6E); }
+:root aside.fe-nudge-m .fe-nudge-m__cta { width: 100%; max-width: 22.5rem; justify-self: start; }
+/* Значок-кнопка в углу (планшет, компьютер) не стоит на панели телефона. */
+:root .fe-nudge-desk { bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--fe-dock-h, 0px)); }
+
+/* График на телефоне стоит в тех же полях, что и остальные блоки страницы (раньше плита выступала на 8 px с каждой стороны). */
+@media (max-width: 767.98px) {
+  :root:root:root .k5-chart-host { margin-inline: 0; }
+}

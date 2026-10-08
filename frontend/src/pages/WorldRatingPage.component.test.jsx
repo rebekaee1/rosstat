@@ -145,7 +145,8 @@ describe('WorldRatingPage', () => {
     expect(screen.queryByText('Всего стран')).toBeNull();
     expect(screen.queryByText('Доступно лет')).toBeNull();
     const table = document.querySelector('#rating-table');
-    expect(within(table).getByRole('button', { name: 'Год: 2025' })).toBeTruthy();
+    // Год выбирается один раз, в панели над картой: второго «Год 2025» над таблицей нет (круг 8, I3).
+    expect(within(table).queryByRole('button', { name: 'Год: 2025' })).toBeNull();
     expect(within(table).getByRole('button', { name: 'По убыванию' })).toBeTruthy();
 
     // Первый клик по заголовку доп-колонки — смысловое направление её
@@ -770,17 +771,15 @@ it('сохраняет год из быстрой ссылки и переклю
   expect((await planetProps()).years).toEqual([2024, 2025]);
   expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 4100 }]);
   const table = () => within(document.querySelector('#rating-table'));
-  expect(table().getByRole('button', { name: 'Год: 2024' })).toBeTruthy();
+  expect(table().queryByRole('button', { name: 'Год: 2024' })).toBeNull();
   expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd\/2024$/);
   expect(document.querySelector('meta[property="og:image"]').content).toMatch(/\/2024\.png$/);
   const changeYear = (await planetProps()).onYearChange;
   act(() => changeYear(2025));
   await waitFor(async () => expect((await planetProps())?.year).toBe(2025));
-  expect(table().getByRole('button', { name: 'Год: 2025' })).toBeTruthy();
   expect((await planetProps()).rankingItems).toMatchObject([{ country_code: 'DE', value: 4900 }]);
   expect(document.querySelector('link[rel=canonical]').href).toMatch(/\/world\/rating\/gdp-usd$/);
-  fireEvent.click(table().getByRole('button', { name: 'Год: 2025' }));
-  fireEvent.click(table().getByRole('option', { name: '2024' }));
+  act(() => changeYear(2024));
   await waitFor(async () => expect((await planetProps())?.year).toBe(2024));
   expect(screen.queryByTestId('map-timeline-stub')).toBeNull();
 });

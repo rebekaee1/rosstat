@@ -18,6 +18,7 @@ import { usePwaCardVisible } from '../lib/pwa';
 import '../styles/indicator-russia.css';
 import '../styles/shell.css';
 import '../styles/z1-polish.css';
+import '../styles/x2-indicator.css';
 
 // Не показываем на этих маршрутах: там целевое действие и так на виду.
 // Главная — отдельный кейс: плавающая кнопка наезжает на блок «Инструменты».

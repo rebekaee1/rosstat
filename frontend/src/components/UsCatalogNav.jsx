@@ -4,6 +4,7 @@ import { compactCount, indicatorsCountText } from '../lib/countryKeyFigures';
 import { useLocale, useT } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/z5-country.css';
+import '../styles/z4-indicator.css';
 
 /** Two-level navigation shared only by US country and state catalogs. */
 export default function UsCatalogNav({

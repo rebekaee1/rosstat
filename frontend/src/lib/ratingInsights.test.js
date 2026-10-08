@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  countrySeries, rankMap, rankShifts, shareOf, valueAt, yearOverYear,
+  barScaleOf, countrySeries, rankMap, rankShifts, shareOf, valueAt, yearOverYear,
 } from './ratingInsights';
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
@@ -76,5 +76,26 @@ describe('ratingInsights', () => {
     expect(shareOf(5, 100, false)).toBe(0);
     expect(shareOf(-1, 100)).toBe(0);
     expect(shareOf(200, 100)).toBe(100);
+  });
+
+  it('barScaleOf picks the log scale when one country dwarfs the median', () => {
+    const gdp = barScaleOf([30767, 19626, 5048, 4435, 2000, 427, 300, 100, 80, 60, 40, 9]);
+    expect(gdp.scale).toBe('log');
+    expect(gdp.min).toBe(9);
+    const rate = barScaleOf([3.1, 4.5, 6, 8, 12, 15]);
+    expect(rate.scale).toBe('linear');
+    expect(barScaleOf([-1, 4, 5]).positive).toBe(false);
+  });
+
+  it('shareOf on the log scale keeps small countries visible and ordered', () => {
+    const opts = { scale: 'log', min: 9 };
+    const big = shareOf(30767, 30767, true, opts);
+    const mid = shareOf(427, 30767, true, opts);
+    const small = shareOf(9, 30767, true, opts);
+    expect(big).toBe(100);
+    expect(small).toBe(6);
+    expect(mid).toBeGreaterThan(small);
+    expect(mid).toBeLessThan(big);
+    expect(mid).toBeGreaterThan(40);
   });
 });

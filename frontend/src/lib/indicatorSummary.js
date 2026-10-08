@@ -15,6 +15,27 @@ export const PERIODS_PER_YEAR = Object.freeze({
   daily: 365, weekly: 52, monthly: 12, quarterly: 4, annual: 1,
 });
 
+/** Единица вида «изменение за год, %», «annual change, %»: сам ряд уже в процентах изменения, пересчитывать его в рост незачем. */
+export function isPercentChangeUnit(unit) {
+  const u = String(unit ?? '').toLowerCase();
+  if (!/%|процент|percent/.test(u)) return false;
+  return /изменени|рост|за\s+год|per\s+year|annual|year[-\s]?on[-\s]?year|yoy|change|growth/.test(u);
+}
+
+/**
+ * Единица ряда для показа. Если в ответе с данными стоит «индекс 2015 = 100», а в описании показателя процентная единица
+ * («изменение за год, %»), верим описанию: значения процентные, индексом они не бывают (Китай «0,05 индекс», Турция «34,88 индекс»).
+ */
+export function preferPercentUnit(dataUnit, ...fallbacks) {
+  const own = String(dataUnit ?? '');
+  if (own && !/индекс|index|=\s*100/i.test(own)) return own;
+  for (const candidate of fallbacks) {
+    const text = String(candidate ?? '');
+    if (text && isPercentChangeUnit(text) && !/индекс|index|=\s*100/i.test(text)) return text;
+  }
+  return own;
+}
+
 /**
  * 'rate'  — проценты, пункты, «на 1000 жителей» и любые изменения (сами уже темп);
  * 'index' — индексы с базовым годом («2015 = 100»);
@@ -23,6 +44,8 @@ export const PERIODS_PER_YEAR = Object.freeze({
 export function unitKind(unit, modeType) {
   if (modeType === 'yoy' || modeType === 'step' || modeType === 'yoyabs') return 'rate';
   const u = String(unit ?? '').toLowerCase();
+  // «изменение за год, %» уже темп: слово «индекс» рядом (старая подпись понятия «индекс 2015 = 100») не делает ряд индексом.
+  if (isPercentChangeUnit(u)) return 'rate';
   if (/индекс|index|=\s*100/.test(u)) return 'index';
   if (/%|п\.\s?п\.|\bpp\b|на\s+1\s?000|per\s+1,?000|‰|промилле/.test(u)) return 'rate';
   return 'level';
@@ -161,13 +184,14 @@ export function dataDigitsOf(points, fallback = 2) {
   return Math.min(2, max);
 }
 
-/** Знаков после запятой для обычного (не укрупнённого) числа: тысячи без дробной части, остальное — как в данных. */
+/**
+ * Знаков после запятой для обычного (не укрупнённого) числа: ровно как в данных ряда.
+ * Раньше у чисел от 100 знаков было не больше одного, и шапка писала «114,0», а таблица под ней «113,96»: выглядело как два разных числа.
+ */
 export function tidyDigits(value, dataDigits = 2) {
   const abs = Math.abs(Number(value));
   if (!Number.isFinite(abs)) return dataDigits;
-  if (abs >= 1000) return 0;
-  if (abs >= 100) return Math.min(dataDigits, 1);
-  return dataDigits;
+  return Math.max(0, Math.min(2, dataDigits));
 }
 
 /**
