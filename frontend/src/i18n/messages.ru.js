@@ -3358,4 +3358,6 @@ export default {
   'c9d.calc.scope': 'Считаем для страны: {country}, {currency}',
   'c9d.slider.typeValue': 'Ввести число: {label}',
   'c9d.compound.currencyAria': 'Валюта расчёта',
+  // ===== Круг 10, зона «карта и главная» =====
+  'c10m.states.hint': 'Нажмите на штат, чтобы открыть его показатели',
 };

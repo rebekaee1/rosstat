@@ -3353,4 +3353,6 @@ export default {
   'c9d.calc.scope': 'Calculating for: {country}, {currency}',
   'c9d.slider.typeValue': 'Enter a number: {label}',
   'c9d.compound.currencyAria': 'Calculation currency',
+  // ===== Круг 10, зона «карта и главная» =====
+  'c10m.states.hint': 'Click a state to open its figures',
 };

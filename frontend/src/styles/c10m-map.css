@@ -1,0 +1,27 @@
+/* Круг 10, зона «карта и главная» (звонок «На правки 23»). Только новые правила; существующие файлы стилей правятся там, где живёт их блок. */
+
+/* К5. Карта штатов в профиле страны США: тёмная компактная карта в карточке профиля (как карта регионов у России).
+   Высота не больше трети экрана и 250 px: профиль целиком помещается на одном экране, карта «большая, но не больше экрана». */
+.c10m-states-map { grid-area: map; min-width: 0; margin: 2px 0; }
+.c10m-states-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(250px, 34svh);
+  margin-inline: auto;
+  overflow: visible;
+}
+.c10m-states-map__hint {
+  margin: 6px 0 0;
+  text-align: center;
+  color: rgba(190, 210, 255, 0.7);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.c10m-states-map--skeleton {
+  aspect-ratio: 960 / 600;
+  max-height: min(250px, 34svh);
+  margin-inline: auto;
+  border-radius: 18px;
+  background: radial-gradient(70% 80% at 50% 45%, rgba(190, 210, 255, 0.14), rgba(190, 210, 255, 0.04));
+}

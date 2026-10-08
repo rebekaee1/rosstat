@@ -28,10 +28,12 @@
 .fe-map-frame svg :is([role='button'], path, circle, g):focus,
 .fe-map-frame svg :is([role='button'], path, circle, g):focus-visible,
 .fe-map-frame svg:focus-visible { outline: none; }
-/* На компьютере высота карты не больше ~54 % экрана: шкала и ползунок года остаются рядом с картой, а не ниже сгиба.
-   Ограничиваем ширину по пропорции карты, чтобы поля не появлялись сверху и снизу. */
-@media (min-width: 1024px) {
-  .fe-map-frame > .fe-map-svg { max-width: calc(54svh * var(--fe-map-aspect, 1.9)); margin-inline: auto; }
+/* Круг 10 (К5, К6, звонок «На правки 23»): карты регионов России и штатов США были «слишком здоровые», не помещались в один экран.
+   Высота карты не больше ~46 % экрана (было 54 %): карта целиком, шкала, год на ползунке и подпись остаются в одном экране, а не ниже сгиба.
+   Нижняя граница 300 px: на низком окне (телефон боком) карта остаётся читаемой. Ограничиваем ширину по пропорции карты,
+   чтобы поля не появлялись сверху и снизу. Правило действует и на планшете (с 768 px), где карта раньше шла во всю ширину. */
+@media (min-width: 768px) {
+  .fe-map-frame > .fe-map-svg { max-width: calc(max(46svh, 300px) * var(--fe-map-aspect, 1.9)); margin-inline: auto; }
 }
 .fe-map-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 8px; margin-top: 4px; }
 .fe-map-tools {

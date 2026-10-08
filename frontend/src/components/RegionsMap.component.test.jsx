@@ -33,6 +33,23 @@ describe('RegionsMap', () => {
     expect(fills.has(neutral.getAttribute('fill'))).toBe(false);
   });
 
+  it('К5 (круг 10): пока грузится новый год, краски прошлого держатся (fillValuesBySlug), а не уходят в «нет данных»', () => {
+    const previous = new Map(mapData.regions.slice(0, 6).map((r, i) => [r.slug, (i + 1) * 10]));
+    const target = mapData.regions[0];
+    const settled = renderMap({ valuesBySlug: previous });
+    const settledFill = settled.container.querySelector(`svg path[data-region-slug="${target.slug}"]`).getAttribute('fill');
+    settled.unmount();
+    // Значения нового года ещё нет (пустая карта), прошлые идут только для цвета.
+    const loading = renderMap({ valuesBySlug: new Map(), fillValuesBySlug: previous });
+    const loadingFill = loading.container.querySelector(`svg path[data-region-slug="${target.slug}"]`).getAttribute('fill');
+    expect(loadingFill).toBe(settledFill);
+    loading.unmount();
+    // Без прошлых красок регион, как и раньше, нейтральный.
+    const blank = renderMap({ valuesBySlug: new Map() });
+    const blankFill = blank.container.querySelector(`svg path[data-region-slug="${target.slug}"]`).getAttribute('fill');
+    expect(blankFill).not.toBe(settledFill);
+  });
+
   it('hover-outline использует тот же path d, что и fill региона', () => {
     const target = mapData.regions[0];
     const { container } = renderMap();

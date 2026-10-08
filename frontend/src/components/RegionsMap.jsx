@@ -48,6 +48,7 @@ function paddedViewBox(box) {
 
 export default function RegionsMap({
   valuesBySlug = null,      // Map slug -> value (для choropleth) или null
+  fillValuesBySlug = null,  // Круг 10: значения только для раскраски (прошлый год, пока грузится новый); подсказки, место и шкала берут valuesBySlug
   unit = '',
   nameBySlug = {},          // slug -> имя региона (для тултипа)
   onSelect = null,          // клик по региону; по умолчанию — переход на профиль
@@ -100,9 +101,12 @@ export default function RegionsMap({
 
   // Квантильная шкала по ТЕКУЩЕМУ срезу (год на ползунке): цвет отражает
   // относительную позицию региона среди других В ЭТОМ ГОДУ.
+  // Пока новый год грузится, страница передаёт прошлый только для цвета: карта плавно меняет оттенок, а не гаснет в «нет данных» и не
+  // возвращается (раньше это был переход через белое, круг 10, К5).
+  const colorSource = fillValuesBySlug && fillValuesBySlug.size ? fillValuesBySlug : valuesBySlug;
   const colorBySlug = useMemo(
-    () => colorsBySlug(valuesBySlug, { direction: colorDirection }),
-    [valuesBySlug, colorDirection],
+    () => colorsBySlug(colorSource, { direction: colorDirection }),
+    [colorSource, colorDirection],
   );
   const extent = useMemo(() => valueExtent(valuesBySlug), [valuesBySlug]);
   const fallbackFill = dark

@@ -227,6 +227,16 @@ export default function WorldRegionsHome() {
     return m;
   }, [map.data, map.isPlaceholderData]);
 
+  // Только для цвета: пока подгружается другой год того же показателя, карта держит краски прошлого года (его `map.data` и есть
+  // «предыдущие данные» запроса), а не уходит в «нет данных» и обратно. Значения для подсказок и карточек остаются пустыми (valuesBySlug выше).
+  const fillBySlug = useMemo(() => {
+    const m = new Map();
+    for (const row of map.data?.values || []) {
+      if (row.value != null) m.set(row.slug, row.value);
+    }
+    return m;
+  }, [map.data]);
+
   const metricBySlug = useMemo(() => {
     const o = {};
     if (map.isPlaceholderData) return o;
@@ -508,6 +518,7 @@ export default function WorldRegionsHome() {
                 mapData={geometry}
                 ariaLabel={t('world.regions.mapAria', { country: countryName })}
                 valuesBySlug={activeCode ? valuesBySlug : null}
+                fillValuesBySlug={activeCode && map.isPlaceholderData ? fillBySlug : null}
                 transitionMs={activeCode ? 650 : 150}
                 unit={map.data?.indicator?.unit || ''}
                 nameBySlug={nameBySlug}

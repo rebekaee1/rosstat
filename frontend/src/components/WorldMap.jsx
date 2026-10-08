@@ -968,6 +968,8 @@ export function CountrySilhouette({
   slug = '',
   className = '',
   badge = null,
+  // Круг 10 (К5): вместо силуэта страны можно положить свою карту (карта штатов США в профиле), остальное в карточке то же.
+  mapSlot = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -1037,7 +1039,7 @@ export function CountrySilhouette({
       kind: 'population',
     });
   }
-  if (!countryPath && !areaValue && !populationValue && !reference) return null;
+  if (!mapSlot && !countryPath && !areaValue && !populationValue && !reference) return null;
   return (
     <section className={`w2-profile${className ? ` ${className}` : ''}`} aria-label={t('world.map.outlineAria', { name })}>
       <div className="w2-profile-head">
@@ -1046,7 +1048,8 @@ export function CountrySilhouette({
         {region && <span className="w2-profile-region">{region}</span>}
       </div>
       {/* Круг 9 (W7): нет контура — карточка всё равно с фактами (столица, валюта, население), без картинки. */}
-      {countryPath ? (
+      {mapSlot || null}
+      {!mapSlot && countryPath ? (
         <svg viewBox={outline.viewBox} className="w2-profile-map" role="img" aria-label={t('world.map.countryMapAria', { name })}>
           <path
             d={countryPath}
