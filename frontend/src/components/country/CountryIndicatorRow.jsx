@@ -6,15 +6,16 @@ import { Link } from 'react-router-dom';
 import {
   Calendar, CalendarDays, CalendarRange, ChevronDown, Clock3, Info,
 } from 'lucide-react';
+import Button from '../Button';
 import {
   useWorldIndicatorData, formatWorldValue, localizeWorldUnit, pluralRu,
 } from '../../lib/worldApi';
 import { indicatorPublicName } from '../../lib/worldViewModes';
-import { formatDate, formatValue } from '../../lib/format';
+import { formatCount, formatDate, formatValue } from '../../lib/format';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { shortUsIndicatorName } from '../../lib/usCatalogTopics';
-import { dropRepeatedUnit, groupNearDuplicates } from '../../lib/countryIndicatorGroups';
+import { dropRepeatedUnit, groupMemberLabel, groupNearDuplicates } from '../../lib/countryIndicatorGroups';
 import {
   compactMoneyAmount, describeChange, figureDigits, splitTechnicalNote,
 } from '../../lib/countryKeyFigures';
@@ -84,26 +85,29 @@ export function FreqBadges({ item, t }) {
 
 const SPARK_DELAY_MS = 320;
 
+/**
+ * Показывает, можно ли грузить мини-график строки: `seen` — строка постояла на экране и бюджет запросов ещё есть,
+ * `skipped` — бюджет за визит исчерпан (слот скрывается, а не мерцает вечным скелетом).
+ */
 function useSeenOnce(ref, allowed) {
-  const [seen, setSeen] = useState(false);
+  const [state, setState] = useState('idle');
   const budget = useContext(SparkBudgetContext);
   useEffect(() => {
-    if (!allowed || seen || !ref.current || typeof IntersectionObserver === 'undefined') return undefined;
+    if (!allowed || state !== 'idle' || !ref.current || typeof IntersectionObserver === 'undefined') return undefined;
     let timer = 0;
     const observer = new IntersectionObserver(([entry]) => {
       window.clearTimeout(timer);
       if (!entry.isIntersecting) return;
       // Быструю прокрутку не нагружаем запросами: ждём, пока строка постоит на экране.
       timer = window.setTimeout(() => {
-        if (budget && !budget.claim()) return;
-        setSeen(true);
+        setState(budget && !budget.claim() ? 'skipped' : 'seen');
         observer.disconnect();
       }, SPARK_DELAY_MS);
     }, { rootMargin: '120px 0px' });
     observer.observe(ref.current);
     return () => { window.clearTimeout(timer); observer.disconnect(); };
-  }, [allowed, seen, ref, budget]);
-  return seen;
+  }, [allowed, state, ref, budget]);
+  return state;
 }
 
 function RowSpark({ slug, item, spark }) {
@@ -127,11 +131,14 @@ function changeUnit(unitText, short) {
   return short;
 }
 
-export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true }) {
+export function IndicatorRow({
+  item, slug, to, sectionName, sparkEnabled = true, titleOverride = '',
+}) {
   const t = useT();
   const { locale } = useLocale();
   const ref = useRef(null);
-  const seen = useSeenOnce(ref, sparkEnabled);
+  const seenState = useSeenOnce(ref, sparkEnabled);
+  const seen = seenState === 'seen';
   const unitFull = localizeWorldUnit(item.unit, locale);
   const rawName = dropRepeatedUnit(
     shortUsIndicatorName(indicatorPublicName(item, locale), sectionName, locale),
@@ -163,7 +170,7 @@ export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true 
       className="z5-row fe-press group"
     >
       <div className="z5-row__name">
-        <span className="z5-row__title">{tech.name}</span>
+        <span className="z5-row__title" title={titleOverride ? tech.name : undefined}>{titleOverride || tech.name}</span>
         {tech.note ? (
           <span className="z5-row__info" title={tech.note} aria-label={tech.note}>
             <Info size={13} aria-hidden="true" />
@@ -175,7 +182,7 @@ export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true 
           <span className="z5-row__num">{valueText}</span>
           {valueUnit ? <small>{valueUnit}</small> : null}
         </div>
-        {sparkEnabled ? (
+        {sparkEnabled && seenState !== 'skipped' ? (
           <div className="z5-row__spark" aria-hidden="true">
             {seen
               ? <RowSpark slug={slug} item={item} spark={40} />
@@ -197,41 +204,136 @@ export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true 
   );
 }
 
-/** Несколько близких показателей («Число родившихся» в трёх разрезах) одной свёрнутой строкой. */
-function IndicatorGroup({ group, slug, sectionName, sparkEnabled }) {
+/** Сколько вложенных строк группа показывает сразу: в группе «Занятые по стажу…» их сотни. */
+const GROUP_FIRST = 12;
+
+/** Несколько близких показателей («Число родившихся» в трёх разрезах) одной свёрнутой строкой; строки рисуются при раскрытии. */
+function IndicatorGroup({ group, slug, sectionName, sparkEnabled, locale }) {
   const t = useT();
-  const { locale } = useLocale();
   const n = group.items.length;
+  const [opened, setOpened] = useState(false);
+  const [shown, setShown] = useState(GROUP_FIRST);
   const word = locale === 'en'
     ? t('w6b.country.cuts_many')
     : pluralRu(n, [t('w6b.country.cuts_one'), t('w6b.country.cuts_few'), t('w6b.country.cuts_many')]);
+  const visible = group.items.slice(0, shown);
   return (
-    <details className="fe-ind-group z5-group">
+    <details
+      className="fe-ind-group z5-group"
+      onToggle={(event) => { if (event.currentTarget.open) setOpened(true); }}
+    >
       <summary className="fe-ind-group__summary">
         <span className="fe-ind-group__name">{group.base}</span>
         <span className="fe-ind-group__count">{n} {word}</span>
         <ChevronDown size={16} aria-hidden="true" className="fe-ind-group__chevron" />
       </summary>
-      <div className="z5-rows z5-rows--nested">
-        {group.items.map((ind) => (
-          <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={sectionName} sparkEnabled={sparkEnabled} />
-        ))}
-      </div>
+      {opened ? (
+        <>
+          <div className="z5-rows z5-rows--nested">
+            {visible.map((ind) => (
+              <IndicatorRow
+                key={ind.code}
+                item={ind}
+                slug={slug}
+                sectionName={sectionName}
+                sparkEnabled={sparkEnabled}
+                titleOverride={groupMemberLabel(
+                  indicatorPublicName(ind, locale),
+                  group.base,
+                  localizeWorldUnit(ind.unit, locale),
+                )}
+              />
+            ))}
+          </div>
+          {n > shown ? (
+            <Button variant="secondary" onClick={() => setShown((value) => value + 48)} className="mt-3 rounded-full! px-5">
+              {t('c9c.rows.more', { n: formatCount(n - shown, locale) })}
+            </Button>
+          ) : null}
+        </>
+      ) : null}
     </details>
   );
 }
 
-/** Строки категории: почти-дубли свёрнуты, остальные показатели идут как есть. */
+/** Ряды, по которым давно нет новых данных, лежат в конце одной свёрнутой строкой «В архиве». */
+function ArchivedGroup({ items, slug, sectionName, locale }) {
+  const t = useT();
+  const [opened, setOpened] = useState(false);
+  return (
+    <details
+      className="fe-ind-group z5-group z5-group--archive"
+      onToggle={(event) => { if (event.currentTarget.open) setOpened(true); }}
+    >
+      <summary className="fe-ind-group__summary">
+        <span className="fe-ind-group__name">{t('c9c.archive.title')}</span>
+        <span className="fe-ind-group__count">{formatCount(items.length, locale)}</span>
+        <ChevronDown size={16} aria-hidden="true" className="fe-ind-group__chevron" />
+      </summary>
+      {opened ? (
+        <div className="z5-rows z5-rows--nested">
+          {items.map((ind) => (
+            <IndicatorRow key={ind.code} item={ind} slug={slug} sectionName={sectionName} sparkEnabled={false} />
+          ))}
+        </div>
+      ) : null}
+    </details>
+  );
+}
+
+/** Первые строки темы, если их много: «Рынок труда» не раскрывается стеной в тысячи карточек. */
+export const ROWS_FIRST = 8;
+const ROWS_STEP = 24;
+
+/** Строки категории: почти-дубли свёрнуты, архивные ряды в конце, длинная тема открывается порциями. */
 export function IndicatorRows({
-  items, slug, sectionName, locale, collapse, sparkEnabled = true,
+  items, slug, sectionName, locale, collapse, sparkEnabled = true, firstRows = Infinity,
 }) {
+  const t = useT();
+  const { active, archived } = useMemo(() => {
+    const list = Array.isArray(items) ? items : [];
+    return collapse
+      ? { active: list.filter((item) => !item.archived), archived: list.filter((item) => item.archived) }
+      : { active: list, archived: [] };
+  }, [items, collapse]);
   const rows = useMemo(
     () => (collapse
-      ? groupNearDuplicates(items, (item) => indicatorPublicName(item, locale))
-      : items.map((item) => ({ kind: 'single', item }))),
-    [items, locale, collapse],
+      ? groupNearDuplicates(active, (item) => indicatorPublicName(item, locale))
+      : active.map((item) => ({ kind: 'single', item }))),
+    [active, locale, collapse],
   );
-  return rows.map((row) => (row.kind === 'group'
-    ? <IndicatorGroup key={`g-${row.items[0].code}`} group={row} slug={slug} sectionName={sectionName} sparkEnabled={sparkEnabled} />
-    : <IndicatorRow key={row.item.code} item={row.item} slug={slug} sectionName={sectionName} sparkEnabled={sparkEnabled} />));
+  const [limit, setLimit] = useState(firstRows);
+  // Лишняя кнопка «Показать ещё 1» не нужна: небольшой хвост показываем сразу.
+  const shownCount = rows.length <= limit + 2 ? rows.length : limit;
+  const shownRows = rows.slice(0, shownCount);
+  const hiddenIndicators = rows.slice(shownCount)
+    .reduce((sum, row) => sum + (row.kind === 'group' ? row.items.length : 1), 0);
+  return (
+    <>
+      {shownRows.map((row) => (row.kind === 'group'
+        ? (
+          <IndicatorGroup
+            key={`g-${row.items[0].code}`}
+            group={row}
+            slug={slug}
+            sectionName={sectionName}
+            sparkEnabled={sparkEnabled}
+            locale={locale}
+          />
+        )
+        : <IndicatorRow key={row.item.code} item={row.item} slug={slug} sectionName={sectionName} sparkEnabled={sparkEnabled} />))}
+      {hiddenIndicators > 0 ? (
+        <Button
+          variant="secondary"
+          onClick={() => setLimit(shownCount + ROWS_STEP)}
+          className="z5-rows__more rounded-full! px-5"
+        >
+          {t('c9c.rows.more', { n: formatCount(hiddenIndicators, locale) })}
+        </Button>
+      ) : null}
+      {archived.length > 0 && hiddenIndicators === 0 ? (
+        <ArchivedGroup items={archived} slug={slug} sectionName={sectionName} locale={locale} />
+      ) : null}
+    </>
+  );
 }

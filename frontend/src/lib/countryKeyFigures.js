@@ -187,7 +187,8 @@ export function describeChange({ change, unit, frequency, locale = 'ru', t }) {
   const key = ['daily', 'weekly', 'monthly', 'quarterly', 'annual'].includes(frequency)
     ? `z5.chg.vs.${frequency}`
     : 'z5.chg.vs.default';
-  return `${line}, ${t(key)}`;
+  // По-русски «на 0,7 пункта ниже, чем в прошлом месяце» (запятая перед «чем»), по-английски запятой нет.
+  return locale === 'en' ? `${line} ${t(key)}` : `${line}, ${t(key)}`;
 }
 
 /**
@@ -230,7 +231,7 @@ export function compactCount(n, locale = 'ru') {
 /** Понятные названия тем вместо бухгалтерских («Национальные счета» -> «ВВП и рост»). */
 const FRIENDLY_TOPICS = Object.freeze({
   'Национальные счета': { ru: 'ВВП и рост', en: 'GDP and growth' },
-  'Государственные финансы': { ru: 'Деньги и бюджет', en: 'Money and budget' },
+  'Государственные финансы': { ru: 'Деньги и бюджет', en: 'Government finance' },
 });
 
 /** Главные темы получают золотую точку. */
@@ -264,4 +265,48 @@ export function indicatorsCountText(n, locale, t) {
   const value = Number(n) || 0;
   const form = locale === 'en' ? (value === 1 ? 'one' : 'many') : plural(value, 'one', 'few', 'many');
   return `${formatCount(value, locale)} ${t(`w3.count.indicators.${form}`)}`;
+}
+
+/**
+ * Порядок «Главного» страны: сначала то, ради чего открывают страну (цены, ставка, курс), затем ВВП в долларах,
+ * безработица и население; остальное идёт в порядке сервера. Понятия, которых у страны нет, просто пропускаются.
+ * ВВП в постоянных ценах евро (Евростат) уступает ВВП в текущих долларах: так число сопоставимо с другими странами.
+ */
+export const KEY_FIGURE_ORDER = Object.freeze([
+  'hicp-index', 'policy-rate', 'exchange-rate', 'gdp-usd', 'unemployment-rate', 'population',
+]);
+
+export function orderKeyFigures(items) {
+  const list = Array.isArray(items) ? items : [];
+  const rank = (item) => {
+    const index = KEY_FIGURE_ORDER.indexOf(item?.concept_slug);
+    return index === -1 ? KEY_FIGURE_ORDER.length : index;
+  };
+  // Сортировка устойчивая: внутри «остального» порядок сервера сохраняется.
+  return list.map((item, index) => ({ item, index }))
+    .sort((a, b) => rank(a.item) - rank(b.item) || a.index - b.index)
+    .map((entry) => entry.item);
+}
+
+/** Темы, которые закреплены сверху независимо от числа показателей: ВВП, цены, деньги и ставки. */
+export const PINNED_TOPIC_NAMES = Object.freeze(['Национальные счета', 'Цены', 'Финансы']);
+
+export function isPinnedTopic(category) {
+  return PINNED_TOPIC_NAMES.includes(category?.name_ru || category?.name);
+}
+
+/**
+ * Подпись периода у цифры инфляции: «год к году, август 2026» или «в среднем за 2025, оценка МВФ».
+ * Три разных числа инфляции одной страны (последний месяц, декабрь к декабрю, среднее за год) честны, но без периода выглядят ошибкой.
+ * @returns {string} пусто, если это не инфляция или тип счёта неизвестен
+ */
+export function inflationCaption({ item, period, t }) {
+  if (item?.concept_slug !== 'hicp-index') return '';
+  const yearOverYear = /за год|year[- ]over[- ]year|yoy/i.test(String(item.unit || ''));
+  if (item.frequency === 'annual') {
+    return /weo/i.test(String(item.indicator_code || ''))
+      ? t('c9c.key.inflationAvgImf', { period })
+      : t('c9c.key.inflationAvg', { period });
+  }
+  return yearOverYear ? t('c9c.key.inflationYoy', { period }) : '';
 }

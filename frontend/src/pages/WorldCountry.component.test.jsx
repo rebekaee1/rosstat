@@ -204,10 +204,14 @@ describe('WorldCountry category navigation', () => {
 
     expect(await screen.findByRole('heading', { name: 'Общество' })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Цены' })).toBeTruthy();
-    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(41);
-    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели/ }));
-    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(161);
-    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели/ }));
+    // Тема из 220 показателей открывается порциями: 8 строк, потом по 24.
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(9);
+    fireEvent.click(screen.getByRole('button', { name: /Показать ещё показатели \(212\)/ }));
+    expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(33);
+    for (let i = 0; i < 8; i += 1) {
+      const more = screen.queryByRole('button', { name: /Показать ещё показатели/ });
+      if (more) fireEvent.click(more);
+    }
     expect(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]')).toHaveLength(221);
 
     fireEvent.click(within(document.querySelector('aside')).getByRole('button', { name: /Цены/ }));
@@ -476,7 +480,7 @@ describe('WorldCountry key figures', () => {
     expect(order).toEqual(['Национальные счета', 'Население', 'Бизнес и инвестиции']);
   });
 
-  it('moves a thin topic behind the full ones so the first screen is not poor', async () => {
+  it('закреплённые темы (ВВП, цены) идут первыми даже из одного показателя, остальные тонкие уходят в конец', async () => {
     vi.spyOn(window, 'matchMedia').mockImplementation((media) => ({
       matches: media.includes('min-width'), media, addEventListener() {}, removeEventListener() {},
     }));
@@ -487,13 +491,14 @@ describe('WorldCountry key figures', () => {
       ...GERMANY,
       categories: [
         { name: 'Национальные счета', indicators: [{ code: 'de-n', name: 'ВВП', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
+        { name: 'Государственные финансы', indicators: [{ code: 'de-g', name: 'Госдолг', frequency: 'annual', last_value: 1, last_date: '2025-01-01' }] },
         { name: 'Рынок труда', indicators: many('lab') },
         { name: 'Цены', indicators: many('pr') },
       ],
     });
     await screen.findByRole('heading', { name: 'Цены' });
     const order = Array.from(document.querySelectorAll('[data-world-country-category]')).map((node) => node.dataset.worldCountryCategory);
-    expect(order).toEqual(['Цены', 'Рынок труда', 'Национальные счета']);
+    expect(order).toEqual(['Национальные счета', 'Цены', 'Рынок труда', 'Государственные финансы']);
   });
 });
 
@@ -606,6 +611,22 @@ describe('WorldCountry: волна 6, профиль и список показ�
     await waitFor(() => expect(screen.getAllByText('график недоступен')).toHaveLength(2));
   });
 
+  it('«Главное»: инфляция первая и с периодом, ВВП в долларах раньше ВВП в постоянных ценах евро (круг 9, W2–W3)', async () => {
+    const tr = [
+      { concept_slug: 'gdp-volume-annual', name: 'Валовой внутренний продукт в постоянных ценах, год', unit: 'в постоянных ценах 2015 года, млн евро', indicator_code: 'tr-gdp-eur', frequency: 'annual', date: '2025-01-01', value: 1229623.6 },
+      { concept_slug: 'unemployment-rate', name: 'Уровень безработицы', unit: '% экономически активного населения', indicator_code: 'tr-une', frequency: 'monthly', date: '2026-07-01', value: 8.1 },
+      { concept_slug: 'hicp-index', name: 'Изменение потребительских цен за год', unit: 'изменение за год, %', indicator_code: 'tr-hicp', frequency: 'monthly', date: '2026-08-01', value: 31.54 },
+      { concept_slug: 'gdp-usd', name: 'Валовой внутренний продукт в текущих ценах', unit: 'млрд $', indicator_code: 'tr-weo-ngdpd', frequency: 'annual', date: '2025-01-01', value: 1597.3 },
+      { concept_slug: 'population', name: 'Численность населения', unit: 'человек', indicator_code: 'tr-pop', frequency: 'annual', date: '2025-01-01', value: 85664944 },
+    ];
+    renderCountry('germany', { ...GERMANY, overview: tr });
+    await screen.findByRole('heading', { name: 'Главное' });
+    const names = [...document.querySelectorAll('.w2-kpi-name')].map((el) => el.textContent);
+    expect(names).toEqual(['Инфляция', 'ВВП', 'Безработица', 'Население']);
+    const periods = [...document.querySelectorAll('.w2-kpi-period')].map((el) => el.textContent);
+    expect(periods[0]).toBe('год к году, август 2026');
+  });
+
   it('кнопка «Сравнить с Россией» ведёт на сравнение двух стран по сопоставимому показателю', async () => {
     renderCountry('germany', { ...GERMANY, overview: OVERVIEW });
     const link = await screen.findByRole('link', { name: /Сравнить с Россией/ });
@@ -647,6 +668,50 @@ describe('WorldCountry: волна 6, профиль и список показ�
     // Одиночный показатель: «, человек» в названии убрано, единица осталась подписью под ним.
     const single = screen.getByRole('link', { name: /Число умерших/ });
     expect(single.textContent).not.toMatch(/Число умерших, человек/);
+  });
+
+  it('ряды без новых данных (archived) лежат в конце свёрнутой строкой «В архиве»', async () => {
+    renderCountry('germany', {
+      ...GERMANY,
+      categories: [{
+        name: 'Финансы',
+        indicators: [
+          { code: 'de-old', name: 'Процентные ставки, 2008', frequency: 'monthly', last_value: 17.72, last_date: '2008-04-01', archived: true },
+          { code: 'de-new', name: 'Процентные ставки', frequency: 'monthly', last_value: 39.04, last_date: '2026-08-01' },
+        ],
+      }],
+    });
+    await screen.findByRole('heading', { name: 'Финансы' });
+    const links = Array.from(document.querySelectorAll('[data-world-country-category] a[href*="/indicator/"]'));
+    expect(links.map((a) => a.getAttribute('href'))).toEqual(['/germany/indicator/de-new']);
+    const archive = document.querySelector('.z5-group--archive');
+    expect(archive).toBeTruthy();
+    expect(archive.hasAttribute('open')).toBe(false);
+    expect(archive.textContent).toContain('В архиве');
+  });
+
+  it('ряды «Занятые по … , мужчины/женщины» склеиваются в группу, а в группе видно только отличие', async () => {
+    renderCountry('turkey', {
+      ...GERMANY,
+      categories: [{
+        name: 'Рынок труда',
+        indicators: [
+          { code: 'tr-m', name: 'Занятые по стажу на работе и виду деятельности, тысяч человек, мужчины', unit: 'тысяч человек', frequency: 'quarterly', last_value: 1, last_date: '2026-04-01' },
+          { code: 'tr-f', name: 'Занятые по стажу на работе и виду деятельности, тысяч человек, женщины', unit: 'тысяч человек', frequency: 'quarterly', last_value: 2, last_date: '2026-04-01' },
+          { code: 'tr-u', name: 'Уровень безработицы', frequency: 'monthly', last_value: 8.1, last_date: '2026-07-01' },
+        ],
+      }],
+    });
+    await screen.findByRole('heading', { name: 'Рынок труда' });
+    const group = document.querySelector('.fe-ind-group');
+    expect(group.querySelector('.fe-ind-group__name').textContent).toBe('Занятые по стажу на работе и виду деятельности');
+    expect(group.querySelector('.fe-ind-group__count').textContent).toBe('2 разреза');
+    // Строки группы рисуются при раскрытии.
+    expect(group.querySelector('a')).toBeNull();
+    group.open = true;
+    fireEvent(group, new Event('toggle'));
+    const rows = Array.from(group.querySelectorAll('.z5-row__title')).map((node) => node.textContent);
+    expect(rows).toEqual(['Мужчины', 'Женщины']);
   });
 
   it('EN: заголовок «The economy of the United States»', async () => {

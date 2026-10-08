@@ -11,7 +11,7 @@ import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { homeConceptLabel } from '../../lib/homeWorkbench';
 import {
-  compactMoneyAmount, figureDigits, humanizeQualifier, scaleMoneyUnit, yearAgoPoint,
+  compactMoneyAmount, figureDigits, humanizeQualifier, inflationCaption, orderKeyFigures, scaleMoneyUnit, yearAgoPoint,
 } from '../../lib/countryKeyFigures';
 import { preloadedFigurePoints } from '../../lib/countryBootstrap';
 import { indicatorPath } from '../../lib/sitePaths';
@@ -83,7 +83,9 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
     : '';
   const qualifier = scaled?.qualifier ? humanizeQualifier(scaled.qualifier, t) : '';
   const period = formatPeriod(item.date, frequency, locale);
-  const caption = longUnit || qualifier ? `${period}, ${longUnit || qualifier}` : period;
+  // Инфляция всегда с видом и периодом: «год к году, август 2026» (круг 9, W3).
+  const caption = inflationCaption({ item, period, t })
+    || (longUnit || qualifier ? `${period}, ${longUnit || qualifier}` : period);
 
   const ago = useMemo(() => yearAgoPoint(allPoints, frequency), [allPoints, frequency]);
   const agoText = ago ? present(ago.value) : null;
@@ -125,7 +127,7 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
 
 export default function CountryKeyFigures({ items, slug, locale, preload = null }) {
   const t = useT();
-  const list = (items || []).slice(0, KEY_FIGURES_MAX);
+  const list = orderKeyFigures(items).slice(0, KEY_FIGURES_MAX);
   return (
     <div id="chart" className={`z5-key-grid z5-key-grid--n${list.length || 3} scroll-mt-28`}>
       {list.map((item, index) => (

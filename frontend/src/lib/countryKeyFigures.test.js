@@ -8,7 +8,10 @@ import {
   describeChange,
   humanizeQualifier,
   indicatorsCountText,
+  inflationCaption,
   isMainTopic,
+  isPinnedTopic,
+  orderKeyFigures,
   scaleMoneyUnit,
   similarCountries,
   splitTechnicalNote,
@@ -97,7 +100,7 @@ describe('describeChange', () => {
 
   it('английский вариант без жаргона', () => {
     expect(describeChange({ change: -0.7, unit: '%', frequency: 'monthly', locale: 'en', t: tEn }))
-      .toBe('0.7 points lower, than last month');
+      .toBe('0.7 points lower than last month');
   });
 });
 
@@ -173,5 +176,50 @@ describe('круг 8, Y5: сумма без масштаба', () => {
   it('typographicMinus заменяет только ведущий дефис перед цифрой', () => {
     expect(typographicMinus('-0,08')).toBe('−0,08');
     expect(typographicMinus('5-6')).toBe('5-6');
+  });
+});
+
+describe('orderKeyFigures', () => {
+  const item = (slug) => ({ concept_slug: slug });
+  it('инфляция, затем ВВП в долларах, безработица, население; остальное в порядке сервера', () => {
+    const list = ['gdp-volume-quarterly', 'unemployment-rate', 'hicp-index', 'budget-balance-gdp', 'gdp-usd', 'population'].map(item);
+    expect(orderKeyFigures(list).map((x) => x.concept_slug)).toEqual([
+      'hicp-index', 'gdp-usd', 'unemployment-rate', 'population', 'gdp-volume-quarterly', 'budget-balance-gdp',
+    ]);
+  });
+
+  it('ставка и курс, когда они есть, идут сразу после инфляции', () => {
+    const list = ['gdp-usd', 'exchange-rate', 'policy-rate', 'hicp-index'].map(item);
+    expect(orderKeyFigures(list).map((x) => x.concept_slug)).toEqual(['hicp-index', 'policy-rate', 'exchange-rate', 'gdp-usd']);
+  });
+
+  it('не падает на пустом вводе', () => {
+    expect(orderKeyFigures(undefined)).toEqual([]);
+  });
+});
+
+describe('isPinnedTopic', () => {
+  it('ВВП, цены и деньги закреплены, рынок труда нет', () => {
+    expect(isPinnedTopic({ name: 'Национальные счета' })).toBe(true);
+    expect(isPinnedTopic({ name: 'Цены' })).toBe(true);
+    expect(isPinnedTopic({ name: 'Финансы' })).toBe(true);
+    expect(isPinnedTopic({ name: 'Рынок труда' })).toBe(false);
+  });
+});
+
+describe('inflationCaption', () => {
+  const yoy = { concept_slug: 'hicp-index', unit: 'изменение за год, %', frequency: 'monthly', indicator_code: 'tr-prc_hicp_minr-total-i15' };
+  it('месячный ряд: «год к году» и месяц', () => {
+    expect(inflationCaption({ item: yoy, period: 'август 2026', t: tRu })).toBe('год к году, август 2026');
+    expect(inflationCaption({ item: yoy, period: 'August 2026', t: tEn })).toBe('year over year, August 2026');
+  });
+
+  it('годовая оценка МВФ: «в среднем за год, оценка МВФ»', () => {
+    const imf = { concept_slug: 'hicp-index', unit: '%', frequency: 'annual', indicator_code: 'tr-weo-pcpipch' };
+    expect(inflationCaption({ item: imf, period: '2025', t: tRu })).toBe('в среднем за 2025, оценка МВФ');
+  });
+
+  it('не инфляция: пусто', () => {
+    expect(inflationCaption({ item: { concept_slug: 'population' }, period: '2025', t: tRu })).toBe('');
   });
 });

@@ -3293,4 +3293,10 @@ export default {
   'c8w.map.noData': 'No data',
   'c8w.map.top': 'First place in the ranking',
   'c8w.globe.loading': 'Loading the globe…',
+  // ===== Round 9: zone C (country page, ranking, indicators) =====
+  'c9c.key.inflationYoy': 'year over year, {period}',
+  'c9c.key.inflationAvg': 'average for {period}',
+  'c9c.key.inflationAvgImf': 'average for {period}, IMF estimate',
+  'c9c.archive.title': 'Archive: series with no new data',
+  'c9c.rows.more': 'Show more indicators ({n})',
 };

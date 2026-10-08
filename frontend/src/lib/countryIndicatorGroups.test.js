@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { dropRepeatedUnit, groupNearDuplicates, indicatorBaseName } from './countryIndicatorGroups';
+import {
+  dropRepeatedUnit, groupBaseName, groupMemberLabel, groupNearDuplicates, indicatorBaseName,
+} from './countryIndicatorGroups';
 
 const name = (item) => item.name;
 
@@ -46,5 +48,43 @@ describe('groupNearDuplicates', () => {
   it('короткое общее начало не склеивает разные показатели', () => {
     const rows = groupNearDuplicates([{ name: 'ВВП по расходам' }, { name: 'ВВП по доходам' }], name);
     expect(rows.every((row) => row.kind === 'single')).toBe(true);
+  });
+});
+
+describe('groupBaseName (круг 9, W1)', () => {
+  it('короткое начало («Занятые») заменяется названием до первой запятой', () => {
+    expect(groupBaseName('Занятые по стажу на работе и виду деятельности, тысяч человек, мужчины'))
+      .toBe('Занятые по стажу на работе и виду деятельности');
+  });
+
+  it('длинное начало работает как раньше, короткое без запятой не склеивается', () => {
+    expect(groupBaseName('Число родившихся по возрасту матери')).toBe('Число родившихся');
+    expect(groupBaseName('ВВП по расходам')).toBe('');
+  });
+});
+
+describe('groupNearDuplicates: «Занятые по …»', () => {
+  const rows = groupNearDuplicates([
+    { code: 'a', name: 'Занятые по стажу на работе и виду деятельности, тысяч человек, мужчины' },
+    { code: 'b', name: 'Занятые по стажу на работе и виду деятельности, тысяч человек, женщины' },
+    { code: 'c', name: 'Занятые по занятию и уровню образования, тысяч человек, 20–64 лет' },
+    { code: 'd', name: 'Занятые по занятию и уровню образования, тысяч человек, мужчины' },
+  ], name);
+
+  it('два разреза рынка труда дают две группы, а не одну огромную', () => {
+    expect(rows.map((row) => row.kind)).toEqual(['group', 'group']);
+    expect(rows.map((row) => row.items.length)).toEqual([2, 2]);
+  });
+});
+
+describe('groupMemberLabel', () => {
+  const base = 'Занятые по стажу на работе и виду деятельности';
+  it('оставляет только отличие и убирает единицу', () => {
+    expect(groupMemberLabel(`${base}, тысяч человек, мужчины`, base, 'тысяч человек')).toBe('Мужчины');
+    expect(groupMemberLabel(`${base}, тысяч человек, 15–24 лет`, base, 'тысяч человек')).toBe('15–24 лет');
+  });
+
+  it('если отличий нет, возвращает полное название', () => {
+    expect(groupMemberLabel(`${base}, тысяч человек`, base, 'тысяч человек')).toBe(`${base}, тысяч человек`);
   });
 });

@@ -53,7 +53,13 @@
   animation: z5-shimmer 1.6s linear infinite;
 }
 .z5-spark-skel { height: 100%; min-height: 48px; }
-.z5-spark-skel--row { min-height: 36px; height: 36px; border-radius: 10px; }
+.z5-spark-skel--row {
+  min-height: 36px;
+  height: 36px;
+  border-radius: 0;
+  /* Круг 9 (W4): вместо серой «пилюли» тонкий контур будущей линии графика (заливка, вырезанная в форму ломаной). */
+  clip-path: polygon(0% 70%, 15% 55%, 30% 62%, 45% 40%, 60% 48%, 78% 22%, 100% 30%, 100% 42%, 78% 34%, 60% 60%, 45% 52%, 30% 74%, 15% 67%, 0% 82%);
+}
 .z5-key--skel { min-height: 214px; }
 :root .z5-key.z5-key--skel {
   border-radius: 22px;
@@ -628,6 +634,9 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
 }
 .z5-rows--nested { margin-top: 12px; }
+/* Круг 9 (W1): «Показать ещё» занимает всю строку сетки, а не одну клетку. */
+.z5-rows > .z5-rows__more { grid-column: 1 / -1; justify-self: start; }
+.z5-group--archive .fe-ind-group__name { color: var(--color-text-secondary); font-weight: 500; }
 .fe-ind-group.z5-group { grid-column: 1 / -1; }
 .z5-row {
   position: relative;
@@ -680,8 +689,8 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   font-weight: 550;
   line-height: 1.35;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow-wrap: anywhere;
+  -webkit-line-clamp: 3;
+  overflow-wrap: break-word;
   transition: color 0.2s;
 }
 .z5-row:hover .z5-row__title { color: var(--fe-gold-ink, #7a5c1e); }

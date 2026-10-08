@@ -3298,4 +3298,10 @@ export default {
   'c8w.map.noData': 'Нет данных',
   'c8w.map.top': 'Первое место в рейтинге',
   'c8w.globe.loading': 'Загружаем шар…',
+  // ===== Круг 9: зона C (страница страны, рейтинг, показатели) =====
+  'c9c.key.inflationYoy': 'год к году, {period}',
+  'c9c.key.inflationAvg': 'в среднем за {period}',
+  'c9c.key.inflationAvgImf': 'в среднем за {period}, оценка МВФ',
+  'c9c.archive.title': 'В архиве: ряды без новых данных',
+  'c9c.rows.more': 'Показать ещё показатели ({n})',
 };
