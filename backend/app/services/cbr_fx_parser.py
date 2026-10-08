@@ -1,7 +1,13 @@
 """ETL: курсы валют ЦБ РФ (XML_dynamic) → IndicatorData.
 
-Три индикатора: usd-rub, eur-rub, cny-rub.
+Пять индикаторов: usd-rub, eur-rub, cny-rub, try-rub, kzt-rub.
 Источник: https://www.cbr.ru/scripts/XML_dynamic.asp
+
+Коды валют (параметр VAL_NM_RQ) сверены 2026-10-08 с официальным справочником
+Банка России `XML_valFull.asp` и ежедневной ведомостью `XML_daily.asp`:
+  R01700J — турецкая лира (ISO TRY, номинал 10, с 2005-01-01),
+  R01335  — тенге (ISO KZT, номинал 100, с 1998-01-01).
+Номинал делит `parse_fx_xml`, поэтому в ряду всегда рубли за одну единицу.
 """
 
 from __future__ import annotations
@@ -26,6 +32,8 @@ CURRENCY_MAP: dict[str, str] = {
     "usd-rub": "R01235",
     "eur-rub": "R01239",
     "cny-rub": "R01375",
+    "try-rub": "R01700J",
+    "kzt-rub": "R01335",
 }
 
 DEFAULT_BACKFILL_FROM = date(2015, 1, 1)

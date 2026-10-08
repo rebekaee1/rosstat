@@ -232,6 +232,8 @@ MEASURE_RULES = {
     "usd-rub": ((r"usd|dollar|доллар", r"rub|ruble|rouble|руб"), (r"dollar index|индекс доллара|effective exchange|эффективн.*курс",)),
     "usd-jpy": ((r"usd|dollar|доллар", r"jpy|yen|иен|йен"), (r"dollar index|индекс доллара|effective exchange|эффективн.*курс",)),
     "cny-rub": ((r"cny|yuan|юан", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
+    "try-rub": ((r"try|lira|лир", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
+    "kzt-rub": ((r"kzt|tenge|тенге", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
     "eur-rub": ((r"eur|euro|евро", r"rub|ruble|rouble|руб"), (r"effective exchange|эффективн.*курс",)),
     "eur-usd": ((r"eur|euro|евро", r"usd|dollar|доллар"), (r"dollar index|индекс доллара|effective exchange|эффективн.*курс",)),
     "credit-stock-households": ((r"credit|loan|кредит|заем", r"consumer|household|individual|физическ|населен"),

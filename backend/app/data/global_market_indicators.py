@@ -45,9 +45,19 @@ COUNTRY_MARKET_INDICATOR_CODES: dict[str, tuple[str, ...]] = {
 }
 
 
+# Страна → официальный курс её валюты к рублю (Банк России). Эти ряды НЕ мировые
+# рыночные (`GLOBAL_MARKET_INDICATOR_BASES` их не содержит: в крошках остаётся
+# «Россия»), но со страницы страны на них нужен прямой выход: человек, который
+# смотрит Турцию, ищет и курс лиры. Казахстана в каталоге стран пока нет —
+# курс тенге живёт только в разделе валют.
+COUNTRY_CURRENCY_RATE_CODES: dict[str, tuple[str, ...]] = {
+    "turkey": ("try-rub",),
+}
+
+
 def market_indicator_codes_for_country(slug: str | None) -> tuple[str, ...]:
     """Коды рыночных рядов, связанные со страной. Неизвестная страна → ()."""
     if not slug:
         return ()
     codes = COUNTRY_MARKET_INDICATOR_CODES.get(slug, ())
-    return tuple(code for code in codes if code in GLOBAL_MARKET_INDICATOR_BASES)
+    return tuple(code for code in codes if code in GLOBAL_MARKET_INDICATOR_BASES) + COUNTRY_CURRENCY_RATE_CODES.get(slug, ())
