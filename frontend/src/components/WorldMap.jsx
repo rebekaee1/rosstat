@@ -524,14 +524,29 @@ export default function WorldMap({
     if (!command || handledCommand.current === command.id) return;
     handledCommand.current = command.id;
     pendingFocus.current = null;
-    if (command.type === 'zoomIn') zoomBy(ZOOM_STEP);
-    else if (command.type === 'zoomOut') zoomBy(1 / ZOOM_STEP);
+    if (command.type === 'zoomIn') {
+      // Круг 9 (H2): при выбранной стране «+» приближает к ней, а не к середине всей карты (середина мира у большинства стран пустая вода).
+      const target = embedded && selectedCode ? findGeometry(selectedCode) : null;
+      const box = target ? path.bounds(target) : null;
+      const size = box ? Math.max(box[1][0] - box[0][0], box[1][1] - box[0][1]) : Infinity;
+      if (box && box.flat(2).every(Number.isFinite) && size < WIDTH / 2) {
+        const current = viewRef.current;
+        const k = Math.max(1, Math.min(ZOOM_MAX, current.k * ZOOM_STEP));
+        setView(clampView({
+          k,
+          tx: WIDTH / 2 - k * ((box[0][0] + box[1][0]) / 2),
+          ty: HEIGHT / 2 - k * ((box[0][1] + box[1][1]) / 2),
+        }));
+      } else {
+        zoomBy(ZOOM_STEP);
+      }
+    } else if (command.type === 'zoomOut') zoomBy(1 / ZOOM_STEP);
     else if (command.type === 'reset') setView(RESET_VIEW);
     else if (command.type === 'focus' && command.countryCode && !focusCountry(command.countryCode)) {
       // Контура ещё нет (подробный атлас догружается): повторим, когда он появится.
       pendingFocus.current = command.countryCode;
     }
-  }, [command, focusCountry, zoomBy]);
+  }, [command, focusCountry, zoomBy, embedded, selectedCode, findGeometry, path, clampView]);
   useEffect(() => {
     if (pendingFocus.current && focusCountry(pendingFocus.current)) pendingFocus.current = null;
   }, [focusCountry]);

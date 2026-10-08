@@ -264,6 +264,8 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   conceptNote={<WorldMapConceptNote conceptSlug={concept} />}
                   initialCountry={shared?.country || ''}
                   startFocus={locale === 'en' ? HOME_START_FOCUS_EN : HOME_START_FOCUS_RU}
+                  homeCountryCode={locale === 'en' ? 'US' : 'RU'}
+                  highlightTop={concept !== 'hicp-index'}
                 />
               </Suspense>
               </ErrorBoundary>

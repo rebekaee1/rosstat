@@ -822,7 +822,7 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     expect(container.querySelector('.planet-shell').classList.contains('has-key')).toBe(true);
   });
 
-  it('lays the map out in flow: chips above, plate with its own proportions, one tools row below, selected-country card under the tools', async () => {
+  it('lays the map out in flow: chips above, plate with its own proportions, one tools row below, selected-country card inside the map window', async () => {
     const quick = [{ slug: 'a', label: 'ВВП' }, { slug: 'b', label: 'Безработица' }];
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail }} metricName="Безработица" unit="%"
       quickConcepts={quick} conceptSlug="a" shareable years={[2024, 2025]} year={2025} onYearChange={() => {}} onSelect={() => {}} />);
@@ -830,17 +830,17 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     const stage = container.querySelector('.planet-stage--map');
     expect(container.querySelector('.planet-shell').classList.contains('planet-shell--map')).toBe(true);
     const order = [...stage.children].map((node) => node.className.split(' ')[0]);
-    expect(order).toEqual(['planet-quick', 'planet-map-stage', 'planet-map-legend', 'planet-map-tools', 'planet-stage-bottom']);
+    expect(order).toEqual(['planet-quick', 'planet-map-stage', 'planet-map-legend', 'planet-map-tools']);
     // Кнопки масштаба и действия лежат под картой, а не поверх неё.
     const tools = stage.querySelector('.planet-map-tools');
     expect(tools.querySelector('.planet-camera-controls')).toBeTruthy();
     expect(tools.querySelector('.planet-stage-actions')).toBeTruthy();
     expect(stage.querySelector('.planet-map-stage .planet-camera-controls')).toBeNull();
-    // Карточка страны ниже строки кнопок, карту не закрывает.
+    // Круг 9 (H3): карточка страны лежит внутри окна карты (на нижнем краю или под картой в узком окне), а не добавляет строку ниже кнопок.
     fireEvent.click(screen.getByText('Select on map'));
-    const card = stage.querySelector('.planet-stage-bottom .planet-country-card.is-selected');
+    const card = stage.querySelector('.planet-map-stage .planet-stage-bottom .planet-country-card.is-selected');
     expect(card).toBeTruthy();
-    expect(stage.querySelector('.planet-map-stage .planet-country-card')).toBeNull();
+    expect(stage.querySelector(':scope > .planet-stage-bottom')).toBeNull();
     expect(card.textContent).toContain('Германия');
   });
 
@@ -1119,5 +1119,48 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     await screen.findByText('planet.unavailable');
     expect(container.querySelector('.planet-globe-veil')).toBeNull();
     expect(container.querySelector('.planet-stage--map [data-testid="fallback-map"]')).toBeTruthy();
+  });
+});
+
+describe('PlanetView: круг 9, зона B', () => {
+  const withRussia = [
+    { code: 'RU', slug: 'russia', name: 'Россия', name_en: 'Russia' },
+    { code: 'US', slug: 'united-states', name: 'США', name_en: 'United States' },
+  ];
+
+  it('P12: у шара есть кнопка «К России», она подводит камеру к своей стране; на плоской карте её нет', async () => {
+    const { container, rerender } = render(<PlanetView countries={withRussia} valuesByCode={{ RU: 2.2, US: 4.1 }} homeCountryCode="RU" metricName="Безработица" unit="%" />);
+    const home = await screen.findByRole('button', { name: 'c9b.planet.toRussia' });
+    fireEvent.click(home);
+    await waitFor(() => expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'RU' }));
+    // Без своей страны в каталоге кнопки нет.
+    rerender(<PlanetView countries={[withRussia[1]]} valuesByCode={{ US: 4.1 }} homeCountryCode="RU" metricName="Безработица" unit="%" />);
+    expect(screen.queryByRole('button', { name: 'c9b.planet.toRussia' })).toBeNull();
+    expect(container.querySelector('.planet-home-button')).toBeNull();
+  });
+
+  it('P12: на плоской карте мир виден целиком, кнопка «К России» не рисуется', async () => {
+    window.localStorage.setItem('fe_planet_view', 'map');
+    render(<PlanetView countries={withRussia} valuesByCode={{ RU: 2.2, US: 4.1 }} homeCountryCode="RU" metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(screen.queryByRole('button', { name: 'c9b.planet.toRussia' })).toBeNull();
+  });
+
+  it('H7: highlightTop=false не обещает золото первого места в подписи под картой', async () => {
+    window.localStorage.setItem('fe_planet_view', 'map');
+    const { container, rerender } = render(<PlanetView countries={withRussia} valuesByCode={{ RU: 5.6, US: 4.1 }} metricName="Инфляция" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(container.querySelector('.planet-map-legend').textContent).toContain('c8w.map.top');
+    rerender(<PlanetView countries={withRussia} valuesByCode={{ RU: 5.6, US: 4.1 }} metricName="Инфляция" unit="%" highlightTop={false} />);
+    expect(container.querySelector('.planet-map-legend').textContent).not.toContain('c8w.map.top');
+  });
+
+  it('H3: кнопки управления не имеют собственных title: нативная подсказка не зависает после ухода курсора', async () => {
+    const { container } = render(<PlanetView countries={withRussia} valuesByCode={{ RU: 2.2, US: 4.1 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    for (const button of container.querySelectorAll('.planet-camera-controls button')) {
+      expect(button.getAttribute('title')).toBeNull();
+      expect(button.getAttribute('aria-label')).toBeTruthy();
+    }
   });
 });

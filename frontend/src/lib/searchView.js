@@ -96,6 +96,8 @@ export function matchRatingConcept(text, concepts) {
 const INFLATION_NAME = /inflation|инфляц|annual rate of change|изменение (?:потребительских )?цен за год|за 12 месяцев|12-month/i;
 const ANNUAL_NAME = /annual|year|за год|годов|12-month|за 12 месяцев/i;
 const INDEX_UNIT = /index|индекс|\d{4}\s*=\s*100/i;
+// Круг 9 (Q5): годовая инфляция узнаётся и по коду ряда (`cpi-yoy`, `*-inflation-yoy`), даже если в названии нет слова «инфляция».
+const YEAR_OVER_YEAR_CODE = /(?:^|[-_])(?:cpi|inflation|hicp)[-_](?:yoy|annual)|(?:^|[-_])yoy(?:$|[-_])/i;
 
 /**
  * Для запроса про инфляцию первой встаёт строка с понятными процентами (лучше годовая), а не индекс
@@ -108,13 +110,13 @@ function promoteHeadline(rows, query, nameOf, intent) {
   const isReady = (item) => {
     const unit = String(item.unit || '');
     if (wanted && !wanted.has(item.country_slug)) return false;
-    return /%|процент|percent/i.test(unit) && !INDEX_UNIT.test(unit) && INFLATION_NAME.test(nameOf(item));
+    return /%|процент|percent/i.test(unit) && !INDEX_UNIT.test(unit)
+      && (INFLATION_NAME.test(nameOf(item)) || YEAR_OVER_YEAR_CODE.test(String(item.code || '')));
   };
   const window = rows.slice(0, 12);
-  const at = window.findIndex((item) => isReady(item) && ANNUAL_NAME.test(nameOf(item)))
-    >= 0
-    ? window.findIndex((item) => isReady(item) && ANNUAL_NAME.test(nameOf(item)))
-    : window.findIndex(isReady);
+  const isAnnual = (item) => ANNUAL_NAME.test(nameOf(item)) || YEAR_OVER_YEAR_CODE.test(String(item.code || ''));
+  const annualAt = window.findIndex((item) => isReady(item) && isAnnual(item));
+  const at = annualAt >= 0 ? annualAt : window.findIndex(isReady);
   if (at <= 0) return rows;
   return [rows[at], ...rows.slice(0, at), ...rows.slice(at + 1)];
 }
@@ -335,7 +337,19 @@ export function buildSearchView(rows, {
   const seriesRows = units.map(toRow);
   // Запрос про курс («usd», «курс доллара»): курсы выше рейтингов и стран.
   const currencyQuery = currencyCodes.length > 0 && series.some((item) => currencyCodes.includes(item.code));
-  const geoFirst = !currencyQuery && (noExplicitGeo || !seriesRows.length);
+  // Круг 9 (Q1): запрос «Turkey» или «Турция» назвал только страну (одно слово без года и месяца, либо полное название): страна первой секцией,
+  // а не после случайных рядов, которые сервер нашёл по вхождению слова.
+  const queryTokens = normalizeSearchQuery(query).split(' ').filter(Boolean);
+  const namesOnlyCountry = Boolean(intent?.countries?.length) && !intent?.year && !intent?.month && countryRows.length > 0
+    && (queryTokens.length === 1 || entities.some((item) => item.kind === 'country'
+      && [nameOf(item), item.name, item.name_en].some((value) => normalizeSearchQuery(value) === normalizeSearchQuery(query))));
+  const geoFirst = !currencyQuery && (noExplicitGeo || !seriesRows.length || namesOnlyCountry);
+  // Круг 9 (P6): у найденной страны три быстрые кнопки; нажатие ставит в поле запрос «Инфляция Турция» и показывает ответ.
+  if (namesOnlyCountry && countryRows[0]?.item.kind === 'country') {
+    const place = String(countryRows[0].item.name || '').trim();
+    countryRows[0].quick = place ? ['inflation', 'gdp', 'unemployment']
+      .map((id) => ({ id, label: t(`c9b.search.quick.${id}`), query: `${t(`c9b.search.quick.${id}`)} ${place}` })) : [];
+  }
   const order = geoFirst
     ? [['countries', countryRows], ['ratings', ratingRows], ['indicators', seriesRows]]
     : [['indicators', seriesRows], ['ratings', ratingRows], ['countries', countryRows]];

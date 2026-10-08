@@ -219,7 +219,7 @@ it('раунд 2: «Ещё варианты» раскрываются груп�
   expect(titles.some((text) => /Ещё варианты: Инфляция и цены/.test(text))).toBe(true);
 });
 
-it('раунд 2: годовой процент читается «34,9 % за 2025», индекс без базы уходит в «Подробнее»', () => {
+it('раунд 2 и круг 9: годовой процент читается «34,9 % за 2025», число индекса без базы видно сразу с подписью «Значение индекса»', () => {
   searchState.data = { version: 'v2', intent: { countries: ['turkey'], regions: [] }, results: [
     row('tr-cpi', 'Инфляция', { country_slug: 'turkey', country_name: 'Турция', frequency: 'annual', unit: '%', latest: { value: 34.9, date: '2025-12-31' } }),
     row('tr-idx', 'Индекс потребительских цен', { country_slug: 'turkey', country_name: 'Турция', frequency: 'monthly', unit: 'индекс 2015 = 100', latest: { value: 1645.7, date: '2026-08-01' } }),
@@ -229,10 +229,9 @@ it('раунд 2: годовой процент читается «34,9 % за 2
   const rows = screen.getAllByRole('option');
   expect(rows[0].textContent).toMatch(/34,9\s%\sза 2025/);
   const indexRow = rows.find((r) => /Индекс потребительских цен/.test(r.textContent));
-  expect(indexRow.textContent).not.toMatch(/1\s?645/);
-  const details = document.querySelector('.fe-z8-sr-more');
-  expect(details.querySelector('summary').textContent).toBe('Подробнее');
-  expect(details.textContent).toMatch(/Значение индекса: .*1\s?645,7/);
+  expect(indexRow.textContent).toMatch(/Значение индекса/);
+  expect(indexRow.textContent).toMatch(/1\s?645,7/);
+  expect(document.querySelector('.fe-z8-sr-more')).toBeNull();
 });
 
 it('раунд 2: подсказка в поле стоит неподвижно, потом раз в 3 секунды плавно меняется (200 мс на затухание)', () => {
@@ -271,4 +270,44 @@ it('раунд 2: подпись «Открываем: …» без чисел',
   const opening = await screen.findByTestId('search-opening');
   expect(opening.textContent).toContain('Открываем: Инфляция в Турции');
   expect(opening.textContent).not.toMatch(/34/);
+});
+
+it('круг 9 (Q4): поле поиска получает фокус сразу при открытии, без ожидания таймера (на iOS иначе нет клавиатуры)', () => {
+  const input = mount();
+  expect(document.activeElement).toBe(input);
+});
+
+it('круг 9 (Q4): символ, набранный на «кнопке-строке», попадает в поле поиска', () => {
+  render(<MemoryRouter><IndicatorSearch variant="inline" /><Probe /></MemoryRouter>);
+  fireEvent.keyDown(screen.getByRole('button', { name: 'Открыть поиск' }), { key: 'т' });
+  expect(screen.getByRole('combobox').value).toBe('т');
+});
+
+it('круг 9 (Q2): «Показываем результаты для…» только когда есть результаты и исправление читается', () => {
+  const results = [row('de-cpi', 'Инфляция')];
+  searchState.data = { version: 'v2', corrected_query: 'Turkey inflation', results };
+  const input = mount();
+  type(input, 'utrrjy inflation');
+  expect(screen.getByText('Показываем результаты для: Turkey inflation')).toBeTruthy();
+  // Пустая выдача: строки исправления нет.
+  searchState.data = { version: 'v2', corrected_query: 'Turkey inflation', results: [] };
+  type(input, 'utrrjy inflation 2');
+  expect(screen.queryByText(/Показываем результаты для/)).toBeNull();
+  // Исправление с мешаниной кириллицы и латиницы внутри слова не показывается.
+  searchState.data = { version: 'v2', corrected_query: 'Tурция inflation', results };
+  type(input, 'utrrjy inflation 3');
+  expect(screen.queryByText(/Показываем результаты для/)).toBeNull();
+});
+
+it('круг 9 (P7): выбранный запрос попадает в «Недавнее» пустого поля', async () => {
+  window.localStorage.clear();
+  searchState.data = { version: 'v2', results: [row('de-cpi', 'Инфляция', { path: '/germany/indicator/de-cpi' })] };
+  const input = mount();
+  type(input, 'инфляция германия');
+  fireEvent.click(screen.getAllByRole('option')[0]);
+  await waitFor(() => expect(screen.getByTestId('loc').textContent).toBe('/germany/indicator/de-cpi'));
+  cleanup();
+  mount();
+  expect(screen.getByText('Недавнее')).toBeTruthy();
+  expect(screen.getAllByRole('option')[0].textContent).toBe('инфляция германия');
 });

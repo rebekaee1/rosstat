@@ -82,3 +82,41 @@ export function dedupeSearchRows(rows, nameOf, detailOf) {
   }
   return out;
 }
+
+const VARIANT_HINTS = [
+  [/пред\S*\s+месяц|previous\s+month|month[- ]on[- ]month|m\/m/i, 'c9b.search.variant.month'],
+  [/за\s+год|year[- ]on[- ]year|annual\s+rate|годов|за\s+12\s+месяцев|12-month|y\/y/i, 'c9b.search.variant.year'],
+  [/индекс|index/i, 'c9b.search.variant.index'],
+];
+
+/**
+ * Круг 9 (Q3): разные ряды получают на экране одно и то же название («Инфляция в Турции»), и человек видит дубли. Здесь строки с
+ * одинаковым видимым названием и подписью разводятся по смыслу сырого названия («к пред. месяцу», «за год», «индекс»); те, у кого
+ * различителя нет или он повторяется, считаются повтором и убираются (остаётся самый релевантный, порядок сервера).
+ * @returns {{ rows: object[], variants: Map<string, string> }} variants: ключ строки → подпись различителя
+ */
+export function separateVisibleTwins(rows, { titleOf, detailOf, nameOf, t }) {
+  const groups = new Map();
+  for (const row of rows) {
+    const signature = `${titleOf(row)}|${detailOf(row)}`;
+    if (!groups.has(signature)) groups.set(signature, []);
+    groups.get(signature).push(row);
+  }
+  const drop = new Set();
+  const variants = new Map();
+  for (const members of groups.values()) {
+    if (members.length < 2) continue;
+    const seenHints = new Set();
+    for (const row of members) {
+      const text = `${nameOf(row)} ${row.unit || ''}`;
+      const hint = VARIANT_HINTS.find(([pattern]) => pattern.test(text))?.[1] || '';
+      if (seenHints.has(hint)) { drop.add(row); continue; }
+      seenHints.add(hint);
+      if (hint) variants.set(row.key, t(hint));
+    }
+    // Различитель нужен, только когда в группе осталось больше одной строки; единственная строка называется как раньше.
+    const kept = members.filter((row) => !drop.has(row));
+    if (kept.length < 2) for (const row of kept) variants.delete(row.key);
+  }
+  return { rows: rows.filter((row) => !drop.has(row)), variants };
+}

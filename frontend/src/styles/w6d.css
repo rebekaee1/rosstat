@@ -156,6 +156,7 @@
 @media (hover: hover) { .w6d-sr-chip:hover { background: var(--fe-glass-l2-hover); } }
 .w6d-sr-value { display: flex; align-items: center; gap: 10px; margin-top: 4px; color: var(--color-text-primary); }
 .w6d-sr-value strong { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.w6d-sr-value__label { color: var(--color-text-secondary); font-size: 13px; }
 .w6d-sr-value small { color: var(--color-text-secondary); font-size: 12px; }
 .w6d-sr-value .w6d-spark { color: var(--color-champagne-ink); }
 .w6d-open-progress {
@@ -169,7 +170,13 @@
 }
 @keyframes w6d-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
 @media (prefers-reduced-motion: reduce) { .w6d-open-progress__bar::after { animation: none; width: 100%; opacity: 0.6; } }
-.fe-search-field input:placeholder-shown { caret-color: transparent; }
+/* Круг 9 (Q4, Q6): мигающий курсор в пустом поле виден (раньше его гасили, и казалось, что фокуса нет); у поиска один крестик, родной убран. */
+.fe-search-field input[type='search']::-webkit-search-cancel-button,
+.fe-search-field input[type='search']::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+/* Подсказка про клавиши только там, где вообще есть мышь: планшет с мышью «⌘K» не видит нужным. */
+@media (any-pointer: coarse) { .fe-search-trigger-kbd { display: none !important; } }
+/* Название результата на телефоне до трёх строк: обрезанное «Индекс потребительских цен: товары и ус…» не читается. */
+@media (max-width: 639px) { .w6d-sr-name { -webkit-line-clamp: 3; line-clamp: 3; } }
 
 .w6d-sr-name { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
 .fe-search-row__tile .w6d-sr-globe {

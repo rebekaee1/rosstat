@@ -316,6 +316,17 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(transform(container)).toBe('translate(0 0) scale(1)');
   });
 
+  it('«+» при выбранной стране приближает к ней и ставит её в центр окна (круг 9, H2)', () => {
+    const { container, rerender } = renderMap(embedded({ selectedCode: 'DE' }));
+    rerender(<LocaleProvider>{embedded({ selectedCode: 'DE', command: { id: 1, type: 'zoomIn' } })}</LocaleProvider>);
+    const match = transform(container).match(/translate\((-?[\d.]+) (-?[\d.]+)\) scale\(([\d.]+)\)/);
+    expect(Number(match[3])).toBeCloseTo(1.55, 2);
+    // Германия лежит правее и выше середины карты: сдвиг не нулевой (без выбранной страны «+» держит середину карты).
+    const { container: plain, rerender: replain } = renderMap(embedded());
+    replain(<LocaleProvider>{embedded({ command: { id: 1, type: 'zoomIn' } })}</LocaleProvider>);
+    expect(transform(container)).not.toBe(transform(plain));
+  });
+
   it('не повторяет уже выполненную команду при обычной перерисовке', () => {
     const { container, rerender } = renderMap(embedded({ command: { id: 1, type: 'zoomIn' } }));
     expect(transform(container)).toMatch(/scale\(1\.55\)/);
@@ -389,4 +400,43 @@ describe('WorldMap embedded in the planet stage', () => {
     // Подробный атлас ещё не догружен: сначала вид общий, затем карта сама подводится к стране.
     await waitFor(() => expect(Number(transform(container).match(/scale\(([\d.]+)\)/)[1])).toBeGreaterThanOrEqual(3), { timeout: 20000 });
   }, 30000);
+});
+
+describe('WorldMap: заливка России (круг 9, H1)', () => {
+  // Данные повторяют ответ стенда `map-series/gdp-usd` за 2025 год: Россия в каталоге и в срезе с обычным значением.
+  const catalog = [
+    { code: 'RU', slug: 'russia', name: 'Россия' },
+    { code: 'US', slug: 'united-states', name: 'США' },
+    { code: 'CN', slug: 'china', name: 'Китай' },
+    { code: 'TR', slug: 'turkey', name: 'Турция' },
+    { code: 'CA', slug: 'canada', name: 'Канада' },
+  ];
+  const values = new Map([['US', 30767], ['CN', 19626], ['RU', 2575], ['CA', 2300], ['TR', 1360]]);
+  const fillOf = (container, name) => {
+    const node = [...container.querySelectorAll('path[role="button"]')]
+      .find((path) => (path.getAttribute('aria-label') || '').startsWith(`${name}:`));
+    return node ? node.getAttribute('fill') : null;
+  };
+
+  it('Россия с числом в срезе красится шкалой с первого кадра, а не цветом «нет данных» или «вне каталога»', () => {
+    const { container } = renderMap(
+      <WorldMap embedded countries={catalog} valuesByCode={values} unit="млрд $" />,
+    );
+    const russia = fillOf(container, 'Россия');
+    expect(russia).toBeTruthy();
+    expect(russia).not.toBe('#E6E3DC');
+    expect(russia).not.toBe('#F4F5F2');
+    // Кроме России на карте есть ровно один контур с кодом RU: контур кликабелен и подписан значением.
+    const russiaPaths = [...container.querySelectorAll('path[role="button"]')]
+      .filter((path) => (path.getAttribute('aria-label') || '').startsWith('Россия:'));
+    expect(russiaPaths).toHaveLength(1);
+    expect(russiaPaths[0].getAttribute('aria-label')).toContain('2');
+  });
+
+  it('Россия без числа в срезе остаётся нейтральной, но кликабельной (не «вне каталога»)', () => {
+    const { container } = renderMap(
+      <WorldMap embedded countries={catalog} valuesByCode={new Map([['US', 30767], ['CN', 19626]])} unit="млрд $" />,
+    );
+    expect(fillOf(container, 'Россия')).toBe('#E6E3DC');
+  });
 });

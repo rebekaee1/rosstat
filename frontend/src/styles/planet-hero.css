@@ -172,7 +172,7 @@
 .fe-dashboard .fe-hero-planet .planet-shell--map .planet-map-stage { margin: 0; }
 .fe-dashboard .fe-hero-planet .planet-shell--map .planet-map-tools { padding: 10px 2px 4px; }
 .fe-dashboard .fe-hero-planet .planet-shell--map .planet-map-legend { padding: 9px 2px 0; }
-.fe-dashboard .fe-hero-planet .planet-shell--map .planet-stage-bottom { padding: 6px 0 4px; }
+/* Круг 9: карточка страны лежит внутри окна карты (правила в PlanetView.css, блок «Круг 9, зона B»). */
 
 .fe-dashboard .fe-hero-planet .planet-quick-chip,
 .fe-dashboard .fe-hero-planet .planet-camera-controls,
@@ -273,3 +273,18 @@
 }
 .fe-dashboard .fe-hero-planet .planet-scale[open] summary { background: var(--fe-glass-active); color: var(--fe-on-active, #F2F5FA); }
 .fe-dashboard .fe-hero-planet .planet-legend { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint); }
+
+/* ===== Круг 9, зона B ===================================================================================================== */
+/* Двухколоночная сетка от 1280: колонка текста чуть уже, чтобы карта справа была крупнее (H2). */
+@media (min-width: 1280px) {
+  .fe-hero-grid { grid-template-columns: clamp(380px, 30%, 500px) minmax(0, 1fr); }
+}
+/* H6. Карточка планеты ниже левой колонки на 300 px оставляла справа пустое место рядом с «Миром сейчас». Пока человек листает левую колонку,
+   планета остаётся рядом с ней (в пределах своей области сетки, до полосы «Платформа в цифрах»). Только когда карточка помещается в экран. */
+@media (min-width: 1280px) and (min-height: 780px) {
+  .fe-dashboard .fe-hero-planet { align-self: start; position: sticky; top: 104px; }
+}
+/* H4. Шар на телефоне не выше 55 % экрана: под ним остаётся место для прокрутки страницы пальцем. */
+@container planet (max-width: 440px) {
+  .fe-dashboard .fe-hero-planet .planet-view { --planet-scene-height: min(92cqw, 340px, 55svh); }
+}

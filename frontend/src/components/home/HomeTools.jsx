@@ -216,16 +216,17 @@ function CompareTool() {
   const countries = useMemo(() => {
     const collator = new Intl.Collator(locale === 'en' ? 'en' : 'ru');
     return (countriesQ.data?.countries || [])
-      .filter((country) => country?.slug && country.slug !== 'russia')
+      .filter((country) => country?.slug)
       .map((country) => ({ slug: country.slug, name: countryPublicName(country, locale) }))
       .sort((a, b) => collator.compare(a.name, b.name));
   }, [countriesQ.data, locale]);
-  const [first, setFirst] = useState('united-states');
+  // Круг 9 (H8): на русском сайте первой стоит Россия (ряд Росстата в мировом сравнении есть); на английском остаётся пара США и Китай.
+  const [first, setFirst] = useState(locale === 'en' ? 'united-states' : 'russia');
   const [second, setSecond] = useState('china');
   const [concept, setConcept] = useState('gdp-usd');
   const has = (slug) => countries.some((country) => country.slug === slug);
   // Пока каталог не пришёл, держим стартовую пару; если пары в каталоге нет, берём первые две страны.
-  const firstValue = has(first) ? first : countries[0]?.slug || first;
+  const firstValue = has(first) ? first : has('united-states') ? 'united-states' : countries[0]?.slug || first;
   const secondValue = has(second) ? second : countries.find((country) => country.slug !== firstValue)?.slug || second;
   const picked = COMPARE_CONCEPTS.find((item) => item.slug === concept) || COMPARE_CONCEPTS[0];
   const codes = [firstValue, secondValue].map((slug) => `w:${slug}:${picked.slug}`);

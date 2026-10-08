@@ -70,7 +70,7 @@ export default function HomeHero({ planet = null }) {
               </>
             ) : t('home.hero.subtitle')}
           </p>
-          <div className="fe-hero-search relative z-20 mt-5 max-w-xl">
+          <div className="fe-hero-search relative z-20 mt-5 max-w-xl sm:max-w-none xl:max-w-xl">
             <IndicatorSearch variant="inline" examples={examples} initialQuery={seededQuery} />
           </div>
           {planet ? (

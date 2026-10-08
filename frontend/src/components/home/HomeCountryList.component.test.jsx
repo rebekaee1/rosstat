@@ -93,6 +93,22 @@ describe('HomeCountryList — каталог стран', () => {
     expect(screen.getByRole('link', { name: /Германия/ })).toBeTruthy();
   });
 
+  it('круг 9 (H9): набранное название ищется среди всех стран, фильтр региона его не скрывает', async () => {
+    renderCatalog();
+    await screen.findByRole('link', { name: /Германия/ });
+    // Выбран регион «Африка», а человек ищет Австрию: она в «Европе», но находится.
+    fireEvent.click(screen.getByRole('button', { name: 'Африка' }));
+    expect(screen.queryByRole('link', { name: /Австрия/ })).toBeNull();
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Найти страну' }), { target: { value: 'австр' } });
+    expect(screen.getByRole('link', { name: /Австрия/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Африка' }).getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('button', { name: 'Все' }).getAttribute('aria-pressed')).toBe('true');
+    // Очистили поиск: прежний фильтр региона снова действует.
+    fireEvent.change(screen.getByRole('searchbox', { name: 'Найти страну' }), { target: { value: '' } });
+    expect(screen.queryByRole('link', { name: /Австрия/ })).toBeNull();
+    expect(screen.getByRole('link', { name: /ЮАР/ })).toBeTruthy();
+  });
+
   it('длинный список свёрнут до первых строк и раскрывается кнопкой «Показать все страны»', async () => {
     renderCatalog(manyCountries(30));
     await screen.findAllByRole('link');

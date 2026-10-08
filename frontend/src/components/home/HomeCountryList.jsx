@@ -190,7 +190,8 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
 
   const needle = normalize(query);
   const filtered = useMemo(() => ordered.filter((entry) => {
-    if (region !== 'all' && entry.regionId !== region) return false;
+    // Круг 9 (H9): набранное название ищется среди стран каталога без учёта региона. Раньше фильтр «Азия» молча скрывал Турцию (в каталоге она «Европа»).
+    if (region !== 'all' && !needle && entry.regionId !== region) return false;
     if (!needle) return true;
     return normalize(entry.name).includes(needle)
       || normalize(entry.country.name_en).includes(needle)
@@ -267,9 +268,9 @@ export default function HomeCountryList({ russiaSeriesCount = 0 }) {
           nowrap
           className="fe-fade-x fe-country-regions"
         >
-          <Chip active={region === 'all'} onClick={() => pickRegion('all')}>{t('shell3.catalog.all')}</Chip>
+          <Chip active={region === 'all' || Boolean(needle)} onClick={() => pickRegion('all')}>{t('shell3.catalog.all')}</Chip>
           {groups.map((group) => (
-            <Chip key={group.id} active={region === group.id} onClick={() => pickRegion(group.id)}>
+            <Chip key={group.id} active={region === group.id && !needle} onClick={() => pickRegion(group.id)}>
               {regionLabel(group)}
             </Chip>
           ))}

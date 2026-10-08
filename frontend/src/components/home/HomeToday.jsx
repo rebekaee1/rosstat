@@ -7,6 +7,7 @@ import { formatValue } from '../../lib/format';
 import { countryPublicName, mapSelectHref } from '../../lib/homeWorkbench';
 import { countryFlag } from '../../lib/countryFlag';
 import { worldRatingPath } from '../../lib/sitePaths';
+import { formatWorldPeriod } from '../../lib/worldMapPeriod';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 import { SkeletonBox } from '../Skeleton';
@@ -40,7 +41,15 @@ function TodayTile({ tile, href, countriesByCode }) {
   const label = t(`z3.today.${tile.id}.label`, { country: tile.country || '' });
   // Год общей строкой в заголовке блока («за последний доступный год»), а не в каждой карточке: годы у стран разные, и «2025» рядом с «2026» читалось как ошибка.
   const caption = t(`z3.today.${tile.id}.caption`);
-  const rank = t('z3.today.rank', { rank: tile.ladder.rank, total: tile.ladder.total });
+  // Круг 9 (H7): у «худшей» страны (самые высокие цены) и «лучшей» (самая низкая безработица) слово «место 1» читалось как награда или как итог рейтинга.
+  // Подпись говорит прямо: «самая высокая из 55», «самая низкая из 55». Для ВВП остаётся «Место 1 из 55».
+  const rank = tile.ladder.rank === 1 && tile.id === 'prices'
+    ? t('c9b.today.rankHighest', { total: tile.ladder.total })
+    : tile.ladder.rank === 1 && tile.id === 'jobs'
+      ? t('c9b.today.rankLowest', { total: tile.ladder.total })
+      : t('z3.today.rank', { rank: tile.ladder.rank, total: tile.ladder.total });
+  // Период рядом с подписью: годы у стран разные, и «30,9 %» без «декабрь 2025» нечем проверить.
+  const period = formatWorldPeriod(tile.item.date, tile.item.frequency === 'annual' ? 'annual' : 'full');
   const shown = useMemo(() => {
     const parsed = parseShownNumber(tile.value.num, locale);
     if (!parsed) return null;
@@ -68,7 +77,10 @@ function TodayTile({ tile, href, countriesByCode }) {
         {flag ? <span className="fe-today__flag" aria-hidden="true">{flag}</span> : null}
         <span className="fe-today__country">{place}</span>
       </span>
-      <span className="fe-today__caption">{caption}</span>
+      <span className="fe-today__caption">
+        {caption}
+        {period ? <span className="fe-today__period">{period}</span> : null}
+      </span>
       <span className="fe-today__rank">
         <RankScale ladder={tile.ladder} />
         <span className="fe-today__rank-text">{rank}</span>

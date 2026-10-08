@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
+import { Fragment, useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -11,10 +11,11 @@ import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import useGlobalSearch from '../lib/useGlobalSearch';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
-import { dedupeSearchRows, describeSearchResult, searchSuggestions } from '../lib/searchExamples';
+import { dedupeSearchRows, describeSearchResult, searchSuggestions, separateVisibleTwins } from '../lib/searchExamples';
 import { friendlySearchName } from '../lib/searchGroups';
+import { readRecentQueries, rememberQuery } from '../lib/searchRecent';
 import { buildSearchView, COUNTRY_CHIPS_VISIBLE } from '../lib/searchView';
-import { isGlobalMarketRow, isIndexUnit, openingLabel, plainUnit, searchTopic } from '../lib/searchText';
+import { isGlobalMarketRow, isIndexUnit, isReadableCorrection, openingLabel, plainUnit, searchTopic } from '../lib/searchText';
 import { homeConceptLabel } from '../lib/homeWorkbench';
 import { splitUnit } from '../lib/countryFlag';
 import Chip from './Chip';
@@ -154,15 +155,25 @@ export default function IndicatorSearch({
   const detailOf = useCallback((item) => describeSearchResult(item, t, locale), [t, locale]);
   const titleOf = useCallback((item) => friendlySearchName(item, nameOf(item), t, locale), [nameOf, t, locale]);
   const ratingLabelOf = useCallback((concept) => homeConceptLabel(concept.slug, t, concept.name), [t]);
-  const suggestionRows = useMemo(() => suggestions.map((item, i) => ({
-    type: 'suggestion', id: `suggest:${i}`, item: { kind: 'suggestion', key: `suggest:${i}`, path: item.path }, name: item.text, query: item.text, path: item.path,
-  })), [suggestions]);
+  // Круг 9 (P7): в пустом поле сначала недавние запросы этого браузера, затем примеры. Список читается при каждом открытии окна.
+  const recent = useMemo(() => (open ? readRecentQueries() : []), [open]);
+  const suggestionRows = useMemo(() => [
+    ...recent.map((text, i) => ({
+      type: 'suggestion', recent: true, id: `recent:${i}`, item: { kind: 'suggestion', key: `recent:${i}`, path: null }, name: text, query: text, path: null,
+    })),
+    ...suggestions.map((item, i) => ({
+      type: 'suggestion', id: `suggest:${i}`, item: { kind: 'suggestion', key: `suggest:${i}`, path: item.path }, name: item.text, query: item.text, path: item.path,
+    })),
+  ], [suggestions, recent]);
   // Раскладка: «Страны», «Рейтинги», «Показатели»; вариации частот и страны свёрнуты в строки, лишнее — в «Ещё варианты».
   const view = useMemo(() => {
     if (!qTrim) return null;
     const deduped = dedupeSearchRows(results, nameOf, detailOf);
-    return buildSearchView(deduped, {
-      query: qTrim, intent: globalSearch.data?.intent || null, locale, nameOf, titleOf, detailOf, t, ratingConcepts, ratingLabelOf,
+    // Круг 9 (Q3): одинаково названные на экране ряды разводятся различителем («за год», «к пред. месяцу», «индекс») или склеиваются.
+    const { rows: separated, variants } = separateVisibleTwins(deduped, { titleOf, detailOf, nameOf, t });
+    const shownTitle = (item) => (variants.has(item.key) ? `${titleOf(item)}, ${variants.get(item.key)}` : titleOf(item));
+    return buildSearchView(separated, {
+      query: qTrim, intent: globalSearch.data?.intent || null, locale, nameOf, titleOf: shownTitle, detailOf, t, ratingConcepts, ratingLabelOf,
     });
   }, [qTrim, results, nameOf, detailOf, titleOf, t, locale, ratingConcepts, ratingLabelOf, globalSearch.data?.intent]);
   const [moreFor, setMoreFor] = useState('');
@@ -201,6 +212,7 @@ export default function IndicatorSearch({
     if (!item?.path?.startsWith('/') || item.path.startsWith('//') || item.path.includes('\\')) return;
     const q = (queryRef.current || '').trim();
     selectedRef.current = true;
+    rememberQuery(q);
     // position — номер строки в выдаче (1-based): клики по хвосту = сигнал,
     // что ранжирование каталога не совпадает со спросом.
     track(events.SEARCH_SELECT, {
@@ -313,7 +325,11 @@ export default function IndicatorSearch({
     const previousFocus = document.activeElement;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const timer = setTimeout(() => inputRef.current?.focus(), 30);
+    // Круг 9 (Q4): фокус ставится сразу, в том же событии нажатия: на iOS клавиатура открывается только так.
+    // Таймер остался запасным, если поле смонтировалось позже.
+    const focusInput = () => inputRef.current?.focus({ preventScroll: true });
+    focusInput();
+    const timer = setTimeout(() => { if (document.activeElement !== inputRef.current) focusInput(); }, 30);
     return () => {
       clearTimeout(timer);
       document.body.style.overflow = previousOverflow;
@@ -408,6 +424,7 @@ export default function IndicatorSearch({
         onToggle={() => setExpandedKey(expandedKey === row.id ? '' : row.id)}
         onHover={setHi}
         onPick={go}
+        onQuick={(text) => { onQueryChange(text); inputRef.current?.focus(); }}
       />
     );
   };
@@ -446,6 +463,15 @@ export default function IndicatorSearch({
             onClick={() => { arm(); setOpen(true); }}
             onMouseEnter={arm}
             onFocus={arm}
+            onKeyDown={(event) => {
+              // Круг 9 (Q4): символ, набранный на «кнопке-строке», попадает в поле поиска, а не пропадает.
+              if (event.key.length !== 1 || event.key === ' ' || event.ctrlKey || event.metaKey || event.altKey || event.nativeEvent?.isComposing) return;
+              event.preventDefault();
+              arm();
+              setQuery(event.key);
+              setHi(0);
+              setOpen(true);
+            }}
             className={cn(
               FOCUS_RING,
               'group w-full flex min-h-14 items-center gap-3 rounded-2xl px-4 py-3.5 text-left fe-press fe-glass-lite',
@@ -459,7 +485,7 @@ export default function IndicatorSearch({
               ? <RotatingHint lead={t('shell.search.hintLead')} items={examples} />
               : <span className="flex-1 text-sm text-text-tertiary truncate">{placeholder}</span>}
             {/* Подсказка про клавиши только там, где есть клавиатура и мышь: на планшете «⌘K» ничего не говорит. */}
-            <kbd className="fe-k8-kbd hidden pointer-fine:inline">
+            <kbd className="fe-k8-kbd fe-search-trigger-kbd hidden pointer-fine:inline">
               {isAppleModKey ? '⌘K' : 'Ctrl K'}
             </kbd>
           </button>
@@ -563,9 +589,10 @@ export default function IndicatorSearch({
               {t('search.help')}
             </p>
 
-            {qTrim && !isLoading && globalSearch.data?.corrected_query && globalSearch.data.corrected_query !== qTrim && (
+            {qTrim && !isLoading && rows.length > 0 && globalSearch.data?.corrected_query && globalSearch.data.corrected_query !== qTrim
+              && isReadableCorrection(globalSearch.data.corrected_query) && (
               <div className="px-4 py-2 text-sm text-text-secondary" role="status">
-                {t('search.corrected', { query: globalSearch.data.corrected_query })}
+                {t('c9b.search.showingFor', { query: globalSearch.data.corrected_query })}
               </div>
             )}
 
@@ -578,21 +605,29 @@ export default function IndicatorSearch({
                 </div>
               ) : null}
               {!qTrim ? (
-                <div role="group" aria-labelledby={`${resultId}-popular`} className={opening ? 'pointer-events-none opacity-60' : undefined}>
-                  <p id={`${resultId}-popular`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
-                    {t('shell.search.popular')}
-                  </p>
+                <div role="group" aria-labelledby={`${resultId}-${recent.length ? 'recent' : 'popular'}`} className={opening ? 'pointer-events-none opacity-60' : undefined}>
+                  {recent.length > 0 && (
+                    <p id={`${resultId}-recent`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
+                      {t('c9b.search.recent')}
+                    </p>
+                  )}
                   {rows.map((row, i) => (
-                    <SearchRow
-                      key={row.id}
-                      row={row}
-                      index={i}
-                      id={`${resultId}-result-${i}`}
-                      active={i === highlighted}
-                      onHover={setHi}
-                      onPick={go}
-                      onWarm={() => { if (!row.path) globalSearch.prefetch?.(row.query); }}
-                    />
+                    <Fragment key={row.id}>
+                      {i === recent.length && (
+                        <p id={recent.length ? undefined : `${resultId}-popular`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
+                          {t('shell.search.popular')}
+                        </p>
+                      )}
+                      <SearchRow
+                        row={row}
+                        index={i}
+                        id={`${resultId}-result-${i}`}
+                        active={i === highlighted}
+                        onHover={setHi}
+                        onPick={go}
+                        onWarm={() => { if (!row.path) globalSearch.prefetch?.(row.query); }}
+                      />
+                    </Fragment>
                   ))}
                 </div>
               ) : rows.length === 0 ? (
@@ -708,7 +743,7 @@ function latestText(item, locale, t) {
  * Строка-семья несёт переключатель частот, строка «по странам» — кнопки стран; сама строка открывает главное.
  */
 function SearchRow({
-  row, index, id, active, flagCode = '', flagBySlug = null, locale = 'ru', t, expanded = false, onToggle, onHover, onPick, onWarm,
+  row, index, id, active, flagCode = '', flagBySlug = null, locale = 'ru', t, expanded = false, onToggle, onHover, onPick, onWarm, onQuick,
 }) {
   const isSuggestion = row.type === 'suggestion';
   const item = row.item || {};
@@ -758,15 +793,15 @@ function SearchRow({
               <strong>{value}</strong>
               {spark ? <RatingSpark points={spark} width={56} height={20} label={t('w6d.search.trendAria')} /> : null}
             </span>
+          ) : indexRow && rawValue ? (
+            // Круг 9 (Q3): число индекса видно сразу, с подписью «Значение индекса»; раньше оно пряталось за «Подробнее».
+            <span className="w6d-sr-value">
+              <span className="w6d-sr-value__label">{t('c9b.search.indexValueLabel')}</span>
+              <strong>{rawValue}</strong>
+            </span>
           ) : null}
         </span>
       </button>
-      {indexRow && rawValue ? (
-        <details className="fe-z8-sr-more">
-          <summary>{t('z8.search.details')}</summary>
-          <p>{t('z8.search.indexValue', { value: rawValue })}</p>
-        </details>
-      ) : null}
       {row.type === 'family' ? (
         <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
           {row.chips.map((chip) => (
@@ -779,6 +814,13 @@ function SearchRow({
             >
               {t(`w6d.search.freq.${chip.frequency}`)}
             </button>
+          ))}
+        </div>
+      ) : null}
+      {row.quick?.length ? (
+        <div className="w6d-sr-chips" role="group" aria-label={t('c9b.search.quickAria')}>
+          {row.quick.map((chip) => (
+            <button key={chip.id} type="button" className="w6d-sr-chip fe-press" onClick={() => onQuick?.(chip.query)}>{chip.label}</button>
           ))}
         </div>
       ) : null}
