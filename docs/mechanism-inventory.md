@@ -13,8 +13,8 @@
 - Direct environment reads: **32**
 - Jobs: **43**
 - Middleware: **5**
-- Registry declarations: **980**
-- Registry references: **1868**
+- Registry declarations: **982**
+- Registry references: **1870**
 - Migration operations: **377**
 - Candidate effects: **2175**
 - Unresolved syntax: **1**
@@ -60,8 +60,8 @@
 | POST | /api/v1/analytics/actions/{action_id}/apply | app.api.analytics.apply_action | [backend/app/api/analytics.py:261](../backend/app/api/analytics.py#L261) |
 | POST | /api/v1/analytics/events | app.api.analytics.collect_event | [backend/app/api/analytics.py:334](../backend/app/api/analytics.py#L334) |
 | POST | /api/v1/analytics/behavior | app.api.analytics.collect_behavior_batch | [backend/app/api/analytics.py:670](../backend/app/api/analytics.py#L670) |
-| GET | /api/v1/ticker/rates/{pair} | app.api.ticker.get_rate_basis | [backend/app/api/ticker.py:159](../backend/app/api/ticker.py#L159) |
-| GET | /api/v1/ticker/live | app.api.ticker.get_live_ticker | [backend/app/api/ticker.py:227](../backend/app/api/ticker.py#L227) |
+| GET | /api/v1/ticker/rates/{pair} | app.api.ticker.get_rate_basis | [backend/app/api/ticker.py:166](../backend/app/api/ticker.py#L166) |
+| GET | /api/v1/ticker/live | app.api.ticker.get_live_ticker | [backend/app/api/ticker.py:234](../backend/app/api/ticker.py#L234) |
 | POST | /api/v1/auth/register | app.api.auth.register | [backend/app/api/auth.py:117](../backend/app/api/auth.py#L117) |
 | POST | /api/v1/auth/login | app.api.auth.login | [backend/app/api/auth.py:165](../backend/app/api/auth.py#L165) |
 | POST | /api/v1/auth/logout | app.api.auth.logout | [backend/app/api/auth.py:208](../backend/app/api/auth.py#L208) |
@@ -115,7 +115,7 @@
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code} | app.api.world_subnational.region_indicator | [backend/app/api/world_subnational.py:481](../backend/app/api/world_subnational.py#L481) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug}/{code}/forecast | app.api.world_subnational.region_indicator_forecast | [backend/app/api/world_subnational.py:618](../backend/app/api/world_subnational.py#L618) |
-| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:37](../backend/app/api/search.py#L37) |
+| GET | /api/v1/search | app.api.search.search | [backend/app/api/search.py:38](../backend/app/api/search.py#L38) |
 | GET | /api/v1/api-interest/config | app.api.api_interest.api_interest_config | [backend/app/api/api_interest.py:102](../backend/app/api/api_interest.py#L102) |
 | POST | /api/v1/api-interest | app.api.api_interest.submit_api_interest | [backend/app/api/api_interest.py:109](../backend/app/api/api_interest.py#L109) |
 | GET | /api/v1/pwa/config | app.api.pwa.pwa_config | [backend/app/api/pwa.py:144](../backend/app/api/pwa.py#L144) |
@@ -1701,7 +1701,8 @@ Relationships: `[]`
 | app.api.ticker.TICKER_SET_WORLD | Tuple | sequence/source expression | [backend/app/api/ticker.py:78](../backend/app/api/ticker.py#L78) |
 | app.api.ticker.TICKER_SETS | Dict | 'russia', 'world' | [backend/app/api/ticker.py:86](../backend/app/api/ticker.py#L86) |
 | app.api.ticker.TICKER_CODES | Call | computed source expression | [backend/app/api/ticker.py:91](../backend/app/api/ticker.py#L91) |
-| app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:138](../backend/app/api/ticker.py#L138) |
+| app.api.ticker.STALE_AFTER_DAYS_BY_CODE | Dict | 'brent' | [backend/app/api/ticker.py:103](../backend/app/api/ticker.py#L103) |
+| app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:145](../backend/app/api/ticker.py#L145) |
 | app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:666](../backend/app/api/world.py#L666) |
 | app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:711](../backend/app/api/world.py#L711) |
 | app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:718](../backend/app/api/world.py#L718) |
@@ -2238,26 +2239,27 @@ Relationships: `[]`
 | app.services.search_dimensions._CLINICAL_PATTERN | Call | computed source expression | [backend/app/services/search_dimensions.py:300](../backend/app/services/search_dimensions.py#L300) |
 | app.services.search_intent.TOKEN_RE | Call | computed source expression | [backend/app/services/search_intent.py:16](../backend/app/services/search_intent.py#L16) |
 | app.services.search_intent.CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:20](../backend/app/services/search_intent.py#L20) |
-| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:87](../backend/app/services/search_intent.py#L87) |
-| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:90](../backend/app/services/search_intent.py#L90) |
-| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:95](../backend/app/services/search_intent.py#L95) |
-| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:97](../backend/app/services/search_intent.py#L97) |
-| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:98](../backend/app/services/search_intent.py#L98) |
-| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:102](../backend/app/services/search_intent.py#L102) |
-| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:109](../backend/app/services/search_intent.py#L109) |
-| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:110](../backend/app/services/search_intent.py#L110) |
-| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:112](../backend/app/services/search_intent.py#L112) |
-| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:128](../backend/app/services/search_intent.py#L128) |
-| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:140](../backend/app/services/search_intent.py#L140) |
-| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:141](../backend/app/services/search_intent.py#L141) |
-| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:142](../backend/app/services/search_intent.py#L142) |
-| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:371](../backend/app/services/search_intent.py#L371) |
-| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:833](../backend/app/services/search_intent.py#L833) |
+| app.services.search_intent._SINGLE_ALIASES | Call | computed source expression | [backend/app/services/search_intent.py:93](../backend/app/services/search_intent.py#L93) |
+| app.services.search_intent._CONTROL_WORDS | Call | computed source expression | [backend/app/services/search_intent.py:96](../backend/app/services/search_intent.py#L96) |
+| app.services.search_intent._CURRENCY_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:101](../backend/app/services/search_intent.py#L101) |
+| app.services.search_intent._FX_SUBJECT_KEYS | Call | computed source expression | [backend/app/services/search_intent.py:103](../backend/app/services/search_intent.py#L103) |
+| app.services.search_intent._DENOMINATOR_COUNTS | Dict | '1000', '1 000', 'thousand', 'one thousand', 'тысячу', 'тысячи', '10000', '10 000', 'ten thousand', 'десять тысяч', '100000', '100 000', 'hundred thousand', 'сто тысяч' | [backend/app/services/search_intent.py:104](../backend/app/services/search_intent.py#L104) |
+| app.services.search_intent._DENOMINATOR_RE | Call | computed source expression | [backend/app/services/search_intent.py:108](../backend/app/services/search_intent.py#L108) |
+| app.services.search_intent._AMBIGUOUS_ISO | Call | computed source expression | [backend/app/services/search_intent.py:115](../backend/app/services/search_intent.py#L115) |
+| app.services.search_intent._CODE_RE | Call | computed source expression | [backend/app/services/search_intent.py:116](../backend/app/services/search_intent.py#L116) |
+| app.services.search_intent.COUNTRY_ALIASES | Dict | 'russia', 'germany', 'united-states', 'canada', 'australia', 'mexico', 'united-kingdom', 'china', 'japan', 'france', 'india', 'brazil', 'south-korea', 'turkey' | [backend/app/services/search_intent.py:118](../backend/app/services/search_intent.py#L118) |
+| app.services.search_intent.REGION_ALIASES | Dict | 'moskva', 'moscow', 'moskovskaya-oblast', 'sankt-peterburg', 'respublika-tatarstan', 'respublika-bashkortostan', 'krasnodarskiy-kray' | [backend/app/services/search_intent.py:134](../backend/app/services/search_intent.py#L134) |
+| app.services.search_intent._LAYOUT_EN_RU | Call | computed source expression | [backend/app/services/search_intent.py:146](../backend/app/services/search_intent.py#L146) |
+| app.services.search_intent._LAYOUT_RU_EN | Call | computed source expression | [backend/app/services/search_intent.py:147](../backend/app/services/search_intent.py#L147) |
+| app.services.search_intent.MONTHS | Tuple | sequence/source expression | [backend/app/services/search_intent.py:148](../backend/app/services/search_intent.py#L148) |
+| app.services.search_intent.CONCEPT_MATCHERS | Call | computed source expression | [backend/app/services/search_intent.py:377](../backend/app/services/search_intent.py#L377) |
+| app.services.search_intent._RATE_QUOTE_CODES | Call | computed source expression | [backend/app/services/search_intent.py:669](../backend/app/services/search_intent.py#L669) |
+| app.services.search_intent.CONCEPTS_ALTERNATIVES | Call | computed source expression | [backend/app/services/search_intent.py:846](../backend/app/services/search_intent.py#L846) |
 | app.services.search_language.QUESTION_WORDS | Call | computed source expression | [backend/app/services/search_language.py:15](../backend/app/services/search_language.py#L15) |
-| app.services.search_language.LANGUAGE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_language.py:42](../backend/app/services/search_language.py#L42) |
-| app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:214](../backend/app/services/search_language.py#L214) |
-| app.services.search_language._VALUATION_CURRENCIES | Tuple | sequence/source expression | [backend/app/services/search_language.py:315](../backend/app/services/search_language.py#L315) |
-| app.services.search_language.VALUATION_UNIT_RULES | Dict | sequence/source expression | [backend/app/services/search_language.py:317](../backend/app/services/search_language.py#L317) |
+| app.services.search_language.LANGUAGE_CONCEPTS | Tuple | sequence/source expression | [backend/app/services/search_language.py:44](../backend/app/services/search_language.py#L44) |
+| app.services.search_language.MEASURE_RULES | Dict | 'search-subject-price', 'food-industry', 'current-prices', 'constant-prices', 'earnings-income-contribution', 'consumption-change-contribution', 'farm-earnings', 'internet-daily-use', 'deprivation-weekly-spending', 'usd-rub', 'usd-jpy', 'cny-rub', 'try-rub', 'kzt-rub', 'eur-rub', 'eur-usd', 'credit-stock-households', 'credit-stock-business', 'research-personnel', 'research-organizations', 'wage-salary-employment', 'net-earnings', 'employee-compensation', 'benefits-workers-compensation', 'monetary-base', 'dividend-interest-rent-income', 'budget-spending', 'budget-revenue', 'birth-count', 'birth-rate', 'death-rate', 'employment-count', 'unemployment-count', 'employment-rate', 'median-household-income', 'road-paved-share', 'road-density', 'grain-area', 'grain-yield', 'population', 'saving-rate', 'university-students', 'vocational-students', 'rent-index', 'pension-real', 'pension', 'auto-loan-rate', 'gas-price', 'housing-price', 'housing-completions', 'building-permits', 'external-debt', 'rent', 'births', 'mortality', 'labour-productivity', 'household-consumption', 'capital-investment', 'capital-formation', 'wages-nominal', 'grain-harvest', 'household-deposits', 'tourism', 'wages-real', 'median-wage', 'gdp-nominal', 'gdp-real', 'consumer-credit', 'gdp-ppp', 'gdp-deflator', 'government-debt', 'mortgage-rate', 'mortgage-volume', 'credit-rate', 'electricity-generation', 'electricity-price', 'car-production', 'car-sales' | [backend/app/services/search_language.py:216](../backend/app/services/search_language.py#L216) |
+| app.services.search_language._VALUATION_CURRENCIES | Tuple | sequence/source expression | [backend/app/services/search_language.py:317](../backend/app/services/search_language.py#L317) |
+| app.services.search_language.VALUATION_UNIT_RULES | Dict | sequence/source expression | [backend/app/services/search_language.py:319](../backend/app/services/search_language.py#L319) |
 | app.services.search_latest._FEDERAL_HEADLINE_YOY | DictComp | computed source expression | [backend/app/services/search_latest.py:61](../backend/app/services/search_latest.py#L61) |
 | app.services.search_units.UNIT_RULES | Dict | 'money', 'million', 'billion', 'thousand', 'rub', 'usd', 'cad', 'aud', 'gbp', 'cny', 'jpy', 'eur', 'persons', 'index', 'percentage-point', 'litre', 'tonne', 'kilogram', 'square-metre', 'chained-prices', 'btu', 'cubic-metre', 'solid-cubic-metre' | [backend/app/services/search_units.py:9](../backend/app/services/search_units.py#L9) |
 | app.services.search_units.UNIT_EXCLUDES | Dict | 'square-metre', 'cubic-metre' | [backend/app/services/search_units.py:34](../backend/app/services/search_units.py#L34) |
