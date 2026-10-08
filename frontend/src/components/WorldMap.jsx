@@ -483,6 +483,28 @@ export default function WorldMap({
     return () => node.removeEventListener('wheel', onWheel);
   }, [embedded, zoomBy]);
 
+  // Щипок двумя пальцами внутри окна карты принадлежит карте: без перехвата Safari увеличивает всю страницу и сдвигает её вбок.
+  // touchstart/touchmove с двумя касаниями гасим (слушатели не пассивные), у Safari ещё и свои события gesture*.
+  useEffect(() => {
+    const node = svgRef.current;
+    if (!embedded || !node) return undefined;
+    const holdTwoFingers = (event) => {
+      if (event.touches && event.touches.length > 1 && event.cancelable) event.preventDefault();
+    };
+    const holdGesture = (event) => { if (event.cancelable) event.preventDefault(); };
+    const touchOptions = { passive: false };
+    node.addEventListener('touchstart', holdTwoFingers, touchOptions);
+    node.addEventListener('touchmove', holdTwoFingers, touchOptions);
+    node.addEventListener('gesturestart', holdGesture);
+    node.addEventListener('gesturechange', holdGesture);
+    return () => {
+      node.removeEventListener('touchstart', holdTwoFingers, touchOptions);
+      node.removeEventListener('touchmove', holdTwoFingers, touchOptions);
+      node.removeEventListener('gesturestart', holdGesture);
+      node.removeEventListener('gesturechange', holdGesture);
+    };
+  }, [embedded]);
+
   const focusCountry = useCallback((code) => {
     const geometry = findGeometry(code);
     if (!geometry) return false;
@@ -694,7 +716,7 @@ export default function WorldMap({
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
+          style={{ touchAction: k > 1 ? 'none' : 'pan-y', overscrollBehavior: 'contain' }}
         >
           <g transform={`translate(${tx} ${ty}) scale(${k})`}>{layers}</g>
         </svg>

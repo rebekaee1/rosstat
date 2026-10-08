@@ -3289,4 +3289,8 @@ export default {
   // ===== Круг 8, волна 2: оболочка (W-A) =====
   'c8w.cookie.short': 'We use cookies',
   'c8w.loading.slow': 'The server is slow to respond, one more moment…',
+  // ===== Round 8, wave 2: home and map (W-B) =====
+  'c8w.map.noData': 'No data',
+  'c8w.map.top': 'First place in the ranking',
+  'c8w.globe.loading': 'Loading the globe…',
 };

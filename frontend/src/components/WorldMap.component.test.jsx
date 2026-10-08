@@ -247,6 +247,25 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
   });
 
+  it('щипок двумя пальцами внутри карты не отдаётся странице: touch и gesture гасятся, одним пальцем страница листается', () => {
+    const { container } = renderMap(embedded());
+    const svg = container.querySelector('svg');
+    const touch = (type, count) => {
+      const event = new Event(type, { bubbles: true, cancelable: true });
+      event.touches = Array.from({ length: count }, (_, index) => ({ identifier: index }));
+      svg.dispatchEvent(event);
+      return event.defaultPrevented;
+    };
+    expect(touch('touchstart', 2)).toBe(true);
+    expect(touch('touchmove', 2)).toBe(true);
+    expect(touch('touchstart', 1)).toBe(false);
+    expect(touch('touchmove', 1)).toBe(false);
+    const gesture = new Event('gesturestart', { bubbles: true, cancelable: true });
+    svg.dispatchEvent(gesture);
+    expect(gesture.defaultPrevented).toBe(true);
+    expect(svg.style.touchAction).toBe('pan-y');
+  });
+
   it('окно карты без Антарктиды: пропорции viewBox совпадают с `aspect-ratio` окна в CSS (нет пустых полос сверху и снизу)', () => {
     const { container } = renderMap(embedded());
     const svg = container.querySelector('svg');

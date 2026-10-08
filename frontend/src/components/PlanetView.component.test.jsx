@@ -4,7 +4,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import PlanetView from './PlanetView';
 
-const scene = vi.hoisted(() => ({ fail: false, props: null, mapProps: null, locale: 'ru' }));
+const scene = vi.hoisted(() => ({ fail: false, hold: false, props: null, mapProps: null, locale: 'ru' }));
 
 vi.mock('../i18n', () => ({
   useT: () => (key, vars) => (vars?.count == null ? key : `${key}: ${vars.count}`),
@@ -15,6 +15,7 @@ vi.mock('./PlanetScene', () => ({
     scene.props = props;
     const { onReady, onError } = props;
     useEffect(() => {
+      if (scene.hold) return;
       if (scene.fail) onError(new Error('No WebGL'));
       else onReady();
     }, [onError, onReady]);
@@ -49,6 +50,7 @@ beforeEach(() => {
   window.localStorage.clear();
   window.localStorage.setItem('fe_planet_view', 'globe');
   scene.fail = false;
+  scene.hold = false;
   scene.props = null;
   scene.mapProps = null;
   scene.locale = 'ru';
@@ -435,8 +437,8 @@ describe('PlanetView interaction contract', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     const onSelect = vi.fn();
     const { container } = render(<PlanetView countries={countries} detailsByCode={{ DE: germanyDetail }} onSelect={onSelect} />);
+    await screen.findByText('planet.unavailable');
     await screen.findByTestId('fallback-map');
-    expect(screen.getByText('planet.unavailable')).toBeTruthy();
     expect(container.querySelector('[data-scene-ready="true"]')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Select on map' }));
     expect(onSelect).not.toHaveBeenCalled();
@@ -828,7 +830,7 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     const stage = container.querySelector('.planet-stage--map');
     expect(container.querySelector('.planet-shell').classList.contains('planet-shell--map')).toBe(true);
     const order = [...stage.children].map((node) => node.className.split(' ')[0]);
-    expect(order).toEqual(['planet-quick', 'planet-map-stage', 'planet-map-tools', 'planet-stage-bottom']);
+    expect(order).toEqual(['planet-quick', 'planet-map-stage', 'planet-map-legend', 'planet-map-tools', 'planet-stage-bottom']);
     // Кнопки масштаба и действия лежат под картой, а не поверх неё.
     const tools = stage.querySelector('.planet-map-tools');
     expect(tools.querySelector('.planet-camera-controls')).toBeTruthy();
@@ -856,7 +858,9 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     await screen.findByTestId('fallback-map');
     fireEvent.click(globeButton());
     await screen.findByTestId('planet-scene');
-    expect(screen.queryByTestId('fallback-map')).toBeNull();
+    // Плоская карта под шаром остаётся только как приглушённая заставка на время загрузки сцены, затем снимается.
+    await waitFor(() => expect(screen.queryByTestId('fallback-map')).toBeNull());
+    expect(container.querySelector('.planet-stage--map')).toBeNull();
     expect(window.localStorage.getItem('fe_planet_view')).toBe('globe');
     expect(globeButton().getAttribute('aria-pressed')).toBe('true');
     expect(mapButton().getAttribute('aria-pressed')).toBe('false');
@@ -873,7 +877,7 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     window.localStorage.setItem('fe_planet_view', 'globe');
     render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('planet-scene');
-    expect(screen.queryByTestId('fallback-map')).toBeNull();
+    await waitFor(() => expect(screen.queryByTestId('fallback-map')).toBeNull());
     expect(globeButton().getAttribute('aria-pressed')).toBe('true');
   });
 
@@ -1077,5 +1081,43 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     fireEvent.click(globeButton());
     await screen.findByTestId('planet-scene');
     expect(container.querySelectorAll('.planet-stage').length).toBe(1);
+  });
+
+  it('explains the map colours in one line: grey for no data, gold for first place (round 8, wave 2)', async () => {
+    window.localStorage.setItem('fe_planet_view', 'map');
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    const legend = container.querySelector('.planet-map-stage + .planet-map-legend');
+    expect(legend).toBeTruthy();
+    expect(legend.textContent).toContain('c8w.map.noData');
+    expect(legend.textContent).toContain('c8w.map.top');
+    expect(legend.querySelectorAll('i')).toHaveLength(2);
+  });
+
+  it('keeps the flat map under the globe while the scene loads, with its own caption, and hands over when ready (round 8, wave 2)', async () => {
+    scene.hold = true;
+    window.localStorage.setItem('fe_planet_view', 'globe');
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    const veil = container.querySelector('.planet-globe-veil');
+    expect(veil).toBeTruthy();
+    expect(veil.querySelector('.planet-map-stage').getAttribute('aria-hidden')).toBe('true');
+    expect(within(veil).getByRole('status').textContent).toBe('c8w.globe.loading');
+    expect(container.querySelector('.planet-stage').getAttribute('data-planet-surface')).toBe('globe');
+    // Сцена готова: заставка плавно гаснет, затем снимается.
+    act(() => { scene.props.onReady(); });
+    await waitFor(() => expect(container.querySelector('.planet-globe-veil')).toBeNull());
+  });
+
+  it('keeps the map when the globe scene fails while the veil is up (round 8, wave 2)', async () => {
+    scene.hold = true;
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    window.localStorage.setItem('fe_planet_view', 'globe');
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    act(() => { scene.props.onError(new Error('No WebGL')); });
+    await screen.findByText('planet.unavailable');
+    expect(container.querySelector('.planet-globe-veil')).toBeNull();
+    expect(container.querySelector('.planet-stage--map [data-testid="fallback-map"]')).toBeTruthy();
   });
 });

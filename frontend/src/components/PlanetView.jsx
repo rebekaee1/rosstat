@@ -9,7 +9,9 @@ import {
 import { useLocale, useT } from '../i18n';
 import { localizeSource } from '../i18n/viewModeLabels';
 import { formatWorldValue, localizeWorldUnit } from '../lib/worldApi';
-import { buildWorldColorModel } from '../lib/worldMapColors';
+import {
+  WORLD_NO_DATA, WORLD_TOP_COLOR, buildWorldColorModel,
+} from '../lib/worldMapColors';
 import { valueExtent } from '../lib/regionsMapColors';
 import { comparePath, countryPath } from '../lib/sitePaths';
 import {
@@ -109,6 +111,8 @@ export default function PlanetView({
   const [viewKind, setViewKind] = useState(readPlanetViewPreference);
   const [sceneStatus, setSceneStatus] = useState('loading');
   const [sceneGeneration, setSceneGeneration] = useState(0);
+  // Пока шар грузится, поверх сцены лежит та же плоская карта приглушённой; после готовности сцены она гаснет и снимается.
+  const [veilGone, setVeilGone] = useState(false);
   const [PlanetScene, setPlanetScene] = useState(() => lazy(() => import('./PlanetScene')));
   // Плоская карта показана, пока выбрана она, и вместо шара, если у него не вышла сцена.
   const isMap = viewKind === 'map' || sceneStatus === 'error';
@@ -288,6 +292,11 @@ export default function PlanetView({
   const handleSceneSelect = useCallback((code, place) => activateCountry(code, false, place), [activateCountry]);
   const handleMapSelect = useCallback((country) => activateCountry(country.code), [activateCountry]);
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
+  useEffect(() => {
+    if (sceneStatus !== 'ready') { setVeilGone(false); return undefined; }
+    const timer = window.setTimeout(() => setVeilGone(true), 420);
+    return () => window.clearTimeout(timer);
+  }, [sceneStatus]);
   const handleError = useCallback((error) => {
     console.warn('Planet rendering failed:', error);
     setSceneStatus('error'); setHoverCode(null); setHoverPlace(null);
@@ -560,6 +569,33 @@ export default function PlanetView({
     </div>
   );
 
+  const worldMapProps = {
+    embedded: true, countries: availableCountries, valuesByCode: displayValues, detailsByCode: mapDetails, unit: displayUnit, metricName, periodLabel, colorMode, colorDirection,
+    colorModel, defaultScope, selectedCode: selectedCountry?.code || null,
+  };
+  const mapFallback = <div className="planet-map-plate planet-map-plate--loading"><div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div></div>;
+  const worldMapElement = (
+    <Suspense fallback={mapFallback}>
+      <WorldMap {...worldMapProps} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} />
+    </Suspense>
+  );
+  // Шар грузится заметно дольше карты: пока сцена не готова, стоит та же плоская карта (код и атлас уже загружены), приглушённая, с подписью.
+  const globeVeil = !isMap && !veilGone && sceneStatus !== 'error' ? (
+    <div className={'planet-globe-veil' + (sceneStatus === 'ready' ? ' is-leaving' : '')} data-planet-veil="true">
+      <div className="planet-map-stage planet-globe-veil__map" aria-hidden="true">
+        <Suspense fallback={<div className="planet-map-plate" />}><WorldMap {...worldMapProps} /></Suspense>
+      </div>
+      {sceneStatus === 'loading' && <div className="planet-globe-veil__note" role="status"><Spinner size={16} />{t('c8w.globe.loading')}</div>}
+    </div>
+  ) : null;
+  // Подпись к цветам карты: серый «нет данных» и золото первого места (шкала цвета лежит в легенде ниже).
+  const mapLegend = hasMetric ? (
+    <p className="planet-map-legend">
+      <span><i style={{ backgroundColor: WORLD_NO_DATA }} aria-hidden="true" />{t('c8w.map.noData')}</span>
+      {colorModel.sampleSize > 1 && <span><i style={{ backgroundColor: WORLD_TOP_COLOR }} aria-hidden="true" />{t('c8w.map.top')}</span>}
+    </p>
+  ) : null;
+
   return (
     <div className="planet-host">
       <section className={'planet-view' + (hideListOnPhone ? ' planet-view--no-phone-list' : '')} aria-labelledby={'planet-' + id + '-title'} data-planet-view="true">
@@ -624,13 +660,11 @@ export default function PlanetView({
             {isMap ? <div ref={stageRef} className={'planet-stage planet-stage--map' + (selectedCountry || placeCard ? ' has-card' : '')} data-scene-ready="false" data-planet-mode={mode} data-planet-surface="map">
               {quickRow}
               <div className="planet-map-stage" onPointerMove={trackPointer}>
-                <Suspense fallback={<div className="planet-map-plate planet-map-plate--loading"><div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div></div>}>
-                  <WorldMap embedded countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={displayUnit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection}
-                    colorModel={colorModel} defaultScope={defaultScope} selectedCode={selectedCountry?.code || null} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} />
-                </Suspense>
+                {worldMapElement}
                 {playYearBadge}
                 {hoverLabel}
               </div>
+              {mapLegend}
               <div className="planet-map-tools">{cameraControls}{stageActions}</div>
               <div className="planet-stage-bottom">{placeCardBlock}{countryCardBlock}</div>
             </div> : <div ref={stageRef} className={'planet-stage' + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView ? ' is-zoomed' : '')} data-scene-ready={sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} data-planet-surface="globe" onPointerMove={trackPointer}>
@@ -643,7 +677,7 @@ export default function PlanetView({
               <PlanetOrb />
               <div className="planet-caustic" aria-hidden="true" />
               <div className="planet-glass-sphere" aria-hidden="true" />
-              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>}
+              {globeVeil}
               {quickRow}
               {playYearBadge}
               {hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
