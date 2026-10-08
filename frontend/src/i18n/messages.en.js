@@ -3353,4 +3353,6 @@ export default {
   'c9d.calc.scope': 'Calculating for: {country}, {currency}',
   'c9d.slider.typeValue': 'Enter a number: {label}',
   'c9d.compound.currencyAria': 'Calculation currency',
+  // ===== Round 10: search =====
+  'c10s.search.keepTyping': 'Keep typing: one letter is too little to search.',
 };

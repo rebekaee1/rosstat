@@ -22,7 +22,11 @@ CONCEPTS = (
     (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минималь")),
     (("ипц", "cpi", "инфляция", "инфляции", "inflation", "рост цен"), ("cpi", "inflation", "hicp", "потребительских цен", "consumer price")),
     (("ввп", "gdp", "валовой продукт"), ("gdp", "ввп", "валовой внутренний продукт", "gross domestic product")),
-    (("ключевая ставка", "ставка цб", "key rate", "cbr rate", "central bank rate"), ("key-rate", "ключевая ставка")),
+    # `policy-rate` — код ключевой ставки других стран (us-policy-rate, uk-policy-rate): «ключевая ставка США» находит ставку ФРС.
+    (("ключевая ставка", "ставка цб", "key rate", "cbr rate", "central bank rate"), ("key-rate", "ключевая ставка", "policy-rate")),
+    (("ставка фрс", "ключевая ставка фрс", "процентная ставка фрс", "ставка федрезерва", "ставка федеральной резервной системы", "фрс",
+        "fed rate", "fed funds rate", "federal funds rate", "fed funds", "federal reserve rate"),
+        ("us-policy-rate", "federal funds", "федеральным фондам", "федеральные фонды")),
     (("средняя заработная плата", "зарплата", "зарплаты", "заработная плата", "зпл", "зп", "з п", "salary", "wages"), ("wage", "salary", "заработн", "зарплат")),
     (("безработица", "безработицы", "уровень безработицы", "unemployment", "unemployment rate"), ("unemployment", "безработ", "jobless")),
     (("экспорт товаров", "exports of goods", "goods exports"), ("exports", "экспорт товаров", "exports of goods")),
@@ -30,9 +34,10 @@ CONCEPTS = (
     (("население", "населения", "population"), ("population", "населен", "resident population")),
     (("промпроизводство", "ипп", "industrial production"), ("ipi", "industrial production", "промышленного производства")),
     (("ицп", "ppi", "цены производителей"), ("ppi", "producer price", "цен производителей")),
-    (("нефть", "нефти", "oil", "brent"), ("brent", "нефт", "crude oil")),
+    (("нефть брент", "нефти брент", "нефть марки брент", "брент", "нефть", "нефти", "oil", "brent"), ("brent", "нефт", "crude oil")),
     (("золото", "золота", "gold"), ("gold", "золот")),
-    (("курс доллара к рублю", "курс доллара", "доллар", "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
+    (("курс доллара к рублю", "курс доллара", "курса доллара", "курсе доллара", "курсом доллара", "доллар", "доллара", "доллару", "долларом",
+        "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
     (("курс юаня к рублю", "курс юаня", "юань", "юаня", "cny rub", "cnyrub"), ("cny-rub", "cny rub", "юан")),
     (("курс турецкой лиры к рублю", "турецкой лиры к рублю", "курс лиры к рублю", "лиры к рублю", "лира к рублю", "курс лиры",
         "курс турецкой лиры", "турецкая лира", "турецкой лиры", "турецких лир", "лира", "лиры", "лиру", "лире", "лирой",
@@ -41,11 +46,12 @@ CONCEPTS = (
     (("курс казахстанского тенге к рублю", "казахстанского тенге к рублю", "курс тенге к рублю", "тенге к рублю", "курс тенге",
         "курс казахстанского тенге", "казахстанский тенге", "тенге", "kazakhstani tenge to ruble", "tenge to ruble", "tenge to rouble",
         "kzt rub", "kztrub", "kzt", "tenge", "kazakhstani tenge"), ("kzt-rub", "kzt rub", "тенге")),
-    (("курс доллара к иене", "usd jpy", "usdjpy"), ("usd-jpy", "usd jpy", "dollar yen")),
+    (("курс доллара к иене", "курс иены", "курс йены", "курс японской иены", "иена", "иены", "иену", "йена", "йены", "йену", "usd jpy", "usdjpy"),
+        ("usd-jpy", "usd jpy", "dollar yen")),
     (("курс евро к доллару", "eur usd", "eurusd"), ("eur-usd", "eur usd")),
     (("индекс доллара", "dollar index", "dxy"), ("usd-index", "dollar index", "индекс доллара")),
     (("курс евро", "евро", "eur rub"), ("eur-rub", "eur rub", "евро")),
-    (("биткоин", "биткойн", "bitcoin", "btc"), ("btc-usd", "bitcoin", "биткоин")),
+    (("биткоин", "биткойн", "биткоина", "биткойна", "bitcoin", "btc"), ("btc-usd", "bitcoin", "биткоин")),
     (("ипотека", "ипотеки", "mortgage"), ("mortgage", "ипотеч")),
     (("розница", "retail trade"), ("retail", "рознич")),
     (("бензин", "gasoline", "petrol"), ("fuel", "gasoline", "petrol", "бензин")),
@@ -660,6 +666,9 @@ def _unmasked_query(query: str, text: str) -> str:
     return "".join(original)
 
 
+_RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-rub", "eur-usd", "usd-jpy", "btc-usd", "eth-usd"))
+
+
 def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         literal_content: str | None = None) -> SearchIntent:
     query = normalize(raw)
@@ -742,7 +751,7 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         for _alias, _normalized, _parts, matcher in matchers for hit in matcher.finditer(text)
         for position in range(hit.start(), hit.end())}
     if any(not frequency_positions.intersection(range(match.start(), match.end()))
-            for match in re.finditer(r"\b(?:q[1-4]|квартал|квартала|quarter|сегодня|yesterday|today)\b", text)):
+            for match in re.finditer(r"\b(?:q[1-4]|квартал|квартала|quarter|yesterday|today)\b", text)):
         error = "unsupported_period"
     # Explicit unit tokens belong to the nonliteral input, even when a bounded
     # natural-language rewrite consumes «проценты» as rate-question wording.
@@ -806,6 +815,10 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
             # the raw unknown word as the parser's mandatory public identity.
             alternatives = nominal_variants(token)
         terms.append(alternatives)
+    # «Сколько стоит доллар / евро / биткоин»: цена курса — это сам курс; в названии его ряда слова «цена» нет,
+    # и обязательная «цена» превращала такой вопрос в пустую выдачу.
+    if any(term[0] in _RATE_QUOTE_CODES for term in terms):
+        terms = [term for term in terms if term != ("search-subject-price",)]
     corrected_query = query
     for needle, replacement in corrections.items():
         corrected_query = re.sub(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", replacement, corrected_query)
