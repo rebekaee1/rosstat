@@ -3282,4 +3282,8 @@ export default {
   // ===== R6 G =====
   'r6.planet.loading': 'Загружаем карту…',
   'r6.planet.topNote': 'Золотом отмечена страна на первом месте',
+  // ===== Круг 8: карта по умолчанию, шар по переключателю =====
+  'x8.planet.viewSwitch': 'Как показать мир',
+  'x8.planet.viewMap': 'Карта',
+  'x8.planet.viewGlobe': 'Шар',
 };

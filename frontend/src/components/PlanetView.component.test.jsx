@@ -43,8 +43,11 @@ function selectListCountry(name) {
   fireEvent.click(countryList().getByRole('button', { name: new RegExp(name) }));
 }
 
+// Круг 8: по умолчанию показывается плоская карта. Тесты шара ниже явно выбирают шар (как человек, нажавший «Шар»);
+// новое поведение карты проверяет отдельный блок в конце файла.
 beforeEach(() => {
   window.localStorage.clear();
+  window.localStorage.setItem('fe_planet_view', 'globe');
   scene.fail = false;
   scene.props = null;
   scene.mapProps = null;
@@ -771,5 +774,277 @@ describe('PlanetView interaction contract', () => {
     render(<PlanetView countries={countries} valuesByCode={{ DE: 3855 }} detailsByCode={{ DE: germanyDetail }} metricName="ВВП" unit="млрд $" />);
     fireEvent.click(await screen.findByRole('button', { name: 'Pick Germany' }));
     expect(screen.getByLabelText('planet.value').textContent).toMatch(/^3\s?855$/);
+  });
+});
+
+describe('PlanetView: flat map by default, globe by choice', () => {
+  const manyCountries = [
+    { code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', indicators_count: 400 },
+    { code: 'MT', slug: 'malta', name: 'Мальта', name_en: 'Malta', indicators_count: 30 },
+    { code: 'FR', slug: 'france', name: 'Франция', name_en: 'France', indicators_count: 380 },
+    { code: 'ES', slug: 'spain', name: 'Испания', name_en: 'Spain', indicators_count: 210 },
+  ];
+  const switchGroup = () => screen.getByRole('group', { name: 'x8.planet.viewSwitch' });
+  const mapButton = () => within(switchGroup()).getByRole('button', { name: /x8.planet.viewMap/ });
+  const globeButton = () => within(switchGroup()).getByRole('button', { name: /x8.planet.viewGlobe/ });
+
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  it('opens on the flat map with every country at once and never mounts the globe', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(scene.props).toBeNull();
+    expect(screen.queryByTestId('planet-scene')).toBeNull();
+    expect(container.querySelector('canvas, .planet-orb, .planet-glass-sphere, .planet-caustic')).toBeNull();
+    expect(container.querySelector('.planet-stage').getAttribute('data-planet-surface')).toBe('map');
+    expect(container.querySelector('.planet-stage--map')).toBeTruthy();
+    expect(scene.mapProps.embedded).toBe(true);
+    expect(scene.mapProps.valuesByCode.get('DE')).toBe(3.2);
+    expect(scene.mapProps.colorModel).toBeTruthy();
+    expect(mapButton().getAttribute('aria-pressed')).toBe('true');
+    expect(globeButton().getAttribute('aria-pressed')).toBe('false');
+    // Сообщения о сбое нет: карта показана по выбору, а не вместо шара.
+    expect(screen.queryByText('planet.unavailable')).toBeNull();
+  });
+
+  it('keeps the colour legend, ranking list, search and year picker on the map', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" years={[2024, 2025]} year={2025} onYearChange={() => {}} />);
+    await screen.findByTestId('fallback-map');
+    expect(container.querySelector('.planet-key .planet-key-bar')).toBeTruthy();
+    expect(container.querySelector('.planet-scale summary')).toBeTruthy();
+    expect(countryList().getAllByRole('button').length).toBe(2);
+    expect(screen.getByRole('combobox')).toBeTruthy();
+    expect(container.querySelector('.planet-year')).toBeTruthy();
+    expect(container.querySelector('.planet-shell').classList.contains('has-key')).toBe(true);
+  });
+
+  it('switches Map and Globe, remembers the choice and unmounts the other surface', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    expect(screen.queryByTestId('fallback-map')).toBeNull();
+    expect(window.localStorage.getItem('fe_planet_view')).toBe('globe');
+    expect(globeButton().getAttribute('aria-pressed')).toBe('true');
+    expect(mapButton().getAttribute('aria-pressed')).toBe('false');
+    await waitFor(() => expect(container.querySelector('[data-scene-ready="true"]')).toBeTruthy());
+    expect(container.querySelector('.planet-stage').getAttribute('data-planet-surface')).toBe('globe');
+    fireEvent.click(mapButton());
+    expect(screen.queryByTestId('planet-scene')).toBeNull();
+    await screen.findByTestId('fallback-map');
+    expect(window.localStorage.getItem('fe_planet_view')).toBe('map');
+    expect(container.querySelector('[data-scene-ready="true"]')).toBeNull();
+  });
+
+  it('opens on the globe only when the person chose it before', async () => {
+    window.localStorage.setItem('fe_planet_view', 'globe');
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('planet-scene');
+    expect(screen.queryByTestId('fallback-map')).toBeNull();
+    expect(globeButton().getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('works without storage: the map by default and a switch that still works', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked'); });
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('blocked'); });
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    fireEvent.click(mapButton());
+    await screen.findByTestId('fallback-map');
+  });
+
+  it('labels the switch for assistive tech and gives both parts a visible caption', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(switchGroup()).toBeTruthy();
+    expect(mapButton().textContent).toBe('x8.planet.viewMap');
+    expect(globeButton().textContent).toBe('x8.planet.viewGlobe');
+    expect(mapButton().querySelector('svg')).toBeTruthy();
+    expect(globeButton().querySelector('svg')).toBeTruthy();
+  });
+
+  it('keeps the selected country and its card when switching in both directions; the globe camera starts on the country', async () => {
+    const onSelect = vi.fn();
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} detailsByCode={{ DE: germanyDetail }} metricName="Безработица" unit="%" onSelect={onSelect} />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'Select on map' }));
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
+    expect(scene.mapProps.selectedCode).toBe('DE');
+    expect(scene.mapProps.command).toMatchObject({ type: 'focus', countryCode: 'DE' });
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.selectedCode).toBe('DE');
+    expect(scene.props.cameraCommand).toMatchObject({ type: 'focus', countryCode: 'DE', instant: true });
+    expect(scene.props.autoRotate).toBe(false);
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
+    fireEvent.click(mapButton());
+    await screen.findByTestId('fallback-map');
+    expect(scene.mapProps.selectedCode).toBe('DE');
+    expect(container.querySelector('[data-selected-country="DE"]')).toBeTruthy();
+  });
+
+  it('resets the camera on a return to the globe when nothing is selected', async () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'map.zoomIn' }));
+    expect(scene.mapProps.command.type).toBe('zoomIn');
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    expect(scene.props.cameraCommand).toBeNull();
+    await waitFor(() => expect(scene.props.autoRotate).toBe(true));
+  });
+
+  it('first press on a map country previews it, the second press on the same one opens it', async () => {
+    const onSelect = vi.fn();
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} detailsByCode={{ DE: germanyDetail }} metricName="Безработица" unit="%" onSelect={onSelect} />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'Select on map' }));
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(container.querySelector('.planet-value-line strong').textContent).toBe('3,20');
+    fireEvent.click(screen.getByRole('button', { name: 'Select on map' }));
+    expect(onSelect).toHaveBeenCalledWith(countries[0], germanyDetail);
+  });
+
+  it('finds any country by search on the map and sends the map a focus command (small states included)', async () => {
+    const { container } = render(<PlanetView countries={countries} />);
+    await screen.findByTestId('fallback-map');
+    const search = screen.getByRole('combobox');
+    fireEvent.focus(search);
+    fireEvent.change(search, { target: { value: 'Мальта' } });
+    fireEvent.keyDown(search, { key: 'Enter' });
+    expect(scene.mapProps.selectedCode).toBe('MT');
+    expect(scene.mapProps.command).toMatchObject({ type: 'focus', countryCode: 'MT', instant: true });
+    expect(container.querySelector('[data-selected-country="MT"]')).toBeTruthy();
+  });
+
+  it('names the hovered country with a label on the map and drops it on leave; touch screens get no sticky label', async () => {
+    const { container, unmount } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(typeof scene.mapProps.onHover).toBe('function');
+    act(() => scene.mapProps.onHover('DE'));
+    expect(container.querySelector('.planet-hover-label').textContent).toContain('Германия');
+    expect(container.querySelector('.planet-hover-label small').textContent).toBe('planet.pressToSelect');
+    act(() => scene.mapProps.onHover(null));
+    expect(container.querySelector('.planet-hover-label')).toBeNull();
+    unmount();
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query) => ({ matches: query === '(pointer: coarse)', addEventListener: () => {}, removeEventListener: () => {} }));
+    try {
+      render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+      await screen.findByTestId('fallback-map');
+      expect(scene.mapProps.onHover).toBeUndefined();
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
+  });
+
+  it('drives the map with the same +, − and home buttons (map captions) and clearing the selection resets the view', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    const stack = container.querySelector('.planet-stage .planet-camera-controls');
+    expect([...stack.querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual(['map.zoomIn', 'map.zoomOut', 'map.zoomReset']);
+    fireEvent.click(screen.getByRole('button', { name: 'map.zoomOut' }));
+    expect(scene.mapProps.command.type).toBe('zoomOut');
+    fireEvent.click(screen.getByRole('button', { name: 'map.zoomReset' }));
+    expect(scene.mapProps.command.type).toBe('reset');
+  });
+
+  it('keeps indicator chips, years with Play, the coverage layer and Share on the map', async () => {
+    const onConceptChange = vi.fn();
+    const onYearChange = vi.fn();
+    const { container } = render(<PlanetView countries={manyCountries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" conceptSlug="unemployment-rate"
+      years={[2018, 2019, 2020, 2021]} year={2021} onYearChange={onYearChange} shareable
+      quickConcepts={[{ slug: 'gdp-usd', label: 'ВВП' }, { slug: 'unemployment-rate', label: 'Безработица' }]} onConceptChange={onConceptChange} />);
+    await screen.findByTestId('fallback-map');
+    const chips = container.querySelector('.planet-stage .planet-quick');
+    expect(chips).toBeTruthy();
+    fireEvent.click(within(chips).getByRole('button', { name: 'ВВП' }));
+    expect(onConceptChange).toHaveBeenCalledWith('gdp-usd');
+    expect(screen.getByRole('button', { name: /w6c.play.start/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'w6c.share' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'w6c.coverage.toggle' }));
+    expect(scene.mapProps.valuesByCode.get('DE')).toBe(400);
+    expect(scene.mapProps.valuesByCode.get('MT')).toBe(30);
+    expect(container.querySelector('.planet-key-title strong').textContent).toBe('w6c.coverage.title');
+    expect(screen.queryByTestId('planet-scene')).toBeNull();
+  });
+
+  it('shows the year Play overlay over the map and keeps the chips on top of the same stage as the globe', async () => {
+    vi.useFakeTimers();
+    try {
+      const onYearChange = vi.fn();
+      render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="ВВП" unit="%" years={[2018, 2019, 2020, 2021, 2022]} year={2022} onYearChange={onYearChange} conceptSlug="gdp-usd" />);
+      await act(async () => { await vi.advanceTimersByTimeAsync(0); });
+      fireEvent.click(screen.getByRole('button', { name: /w6c.play.start/ }));
+      expect(onYearChange).toHaveBeenLastCalledWith(2018);
+      expect(screen.getByRole('status').textContent).toContain('2022');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('hides the Earth/Data layer switch and the globe gesture hint on the map and brings them back with the globe', async () => {
+    const { container } = render(<PlanetView initialMode="earth" showLayerSwitch countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    expect(container.querySelector('.planet-layer-switch')).toBeNull();
+    expect(container.querySelector('.planet-gesture-hint')).toBeNull();
+    // Режим «Земля без данных» бывает только у шара: у карты легенда цветов на месте.
+    expect(container.querySelector('.planet-key')).toBeTruthy();
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelector('.planet-layer-switch')).toBeTruthy();
+    expect(scene.props.mode).toBe('earth');
+    expect(container.querySelector('.planet-key')).toBeNull();
+  });
+
+  it('does not use up the globe gesture hint while the person only used the map', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    fireEvent.click(screen.getByRole('button', { name: 'map.zoomIn' }));
+    expect(window.localStorage.getItem('fe_planet_hint_seen')).toBeNull();
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    await waitFor(() => expect(container.querySelector('.planet-gesture-hint')).toBeTruthy());
+  });
+
+  it('falls back to the map with the message and Retry when the globe fails to start; the choice is not stuck on the globe', async () => {
+    scene.fail = true;
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { container } = render(<PlanetView countries={countries} detailsByCode={{ DE: germanyDetail }} />);
+    await screen.findByTestId('fallback-map');
+    expect(screen.queryByText('planet.unavailable')).toBeNull();
+    fireEvent.click(globeButton());
+    await screen.findByText('planet.unavailable');
+    expect(screen.getByTestId('fallback-map')).toBeTruthy();
+    expect(mapButton().getAttribute('aria-pressed')).toBe('true');
+    expect(window.localStorage.getItem('fe_planet_view')).toBe('map');
+    // «Карта» убирает сообщение; «Повторить» возвращает шар, как только он снова запускается.
+    fireEvent.click(mapButton());
+    expect(screen.queryByText('planet.unavailable')).toBeNull();
+    fireEvent.click(globeButton());
+    await screen.findByText('planet.unavailable');
+    scene.fail = false;
+    fireEvent.click(screen.getByRole('button', { name: 'planet.retry' }));
+    await screen.findByTestId('planet-scene');
+    await waitFor(() => expect(container.querySelector('[data-scene-ready="true"]')).toBeTruthy());
+    expect(window.localStorage.getItem('fe_planet_view')).toBe('globe');
+    expect(screen.queryByText('planet.unavailable')).toBeNull();
+  });
+
+  it('places the view switch above the scene and the stage keeps one slot for both surfaces', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
+    await screen.findByTestId('fallback-map');
+    const shell = container.querySelector('.planet-shell');
+    const children = [...shell.children].map((node) => node.className.split(' ')[0]);
+    expect(children.indexOf('planet-viewbar')).toBe(0);
+    expect(container.querySelectorAll('.planet-stage').length).toBe(1);
+    fireEvent.click(globeButton());
+    await screen.findByTestId('planet-scene');
+    expect(container.querySelectorAll('.planet-stage').length).toBe(1);
   });
 });

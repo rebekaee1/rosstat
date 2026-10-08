@@ -223,3 +223,135 @@ describe('WorldMap tooltip', () => {
     expect(onSelect.mock.calls[0][1].indicator_code).toBe('us-ngdpd');
   });
 });
+
+describe('WorldMap embedded in the planet stage', () => {
+  const countries = [
+    { code: 'DE', slug: 'germany', name: 'Германия' },
+    { code: 'LU', slug: 'luxembourg', name: 'Люксембург' },
+    { code: 'MT', slug: 'malta', name: 'Мальта' },
+  ];
+  const values = new Map([['DE', 3.2], ['LU', 1.1], ['MT', 2.4]]);
+  const transform = (container) => container.querySelector('svg > g').getAttribute('transform');
+  const embedded = (extra = {}) => (
+    <WorldMap embedded countries={countries} valuesByCode={values} detailsByCode={new Map()} unit="%" {...extra} />
+  );
+
+  it('рисует только карту: без своей шапки, легенды, кнопок и подписи (их даёт PlanetView)', () => {
+    const { container } = renderMap(embedded());
+    expect(container.querySelector('[data-planet-map="true"] svg')).toBeTruthy();
+    expect(container.querySelector('.k4-tube, .k4-map-plate, .fe-map-btn')).toBeNull();
+    expect(screen.queryByText('Выберите страну на карте')).toBeNull();
+    expect(container.querySelector('svg rect')).toBeNull();
+    expect(screen.getByRole('button', { name: /Германия/ })).toBeTruthy();
+  });
+
+  it('красит страны переданной моделью цвета и сообщает о наведении и выборе', () => {
+    const onHover = vi.fn();
+    const onSelect = vi.fn();
+    const colorModel = { colorFor: () => '#123456', isTop: () => false, bins: [], describe: () => null };
+    renderMap(embedded({ colorModel, onHover, onSelect }));
+    const germany = screen.getByRole('button', { name: /Германия/ });
+    expect(germany.getAttribute('fill')).toBe('#123456');
+    fireEvent.mouseEnter(germany);
+    expect(onHover).toHaveBeenLastCalledWith('DE');
+    fireEvent.mouseLeave(germany);
+    expect(onHover).toHaveBeenLastCalledWith(null);
+    fireEvent.click(germany);
+    expect(onSelect).toHaveBeenCalledWith(countries[0], null);
+  });
+
+  it('обводит выбранную страну', () => {
+    const { container, rerender } = renderMap(embedded());
+    expect(container.querySelector('[data-selected-outline]')).toBeNull();
+    rerender(<LocaleProvider>{embedded({ selectedCode: 'DE' })}</LocaleProvider>);
+    expect(container.querySelector('[data-selected-outline]').getAttribute('d')).toBeTruthy();
+  });
+
+  it('выполняет команды камеры: приблизить, отдалить, показать страну и вся карта', () => {
+    const { container, rerender } = renderMap(embedded());
+    expect(transform(container)).toBe('translate(0 0) scale(1)');
+    const withCommand = (command) => rerender(<LocaleProvider>{embedded({ command })}</LocaleProvider>);
+    withCommand({ id: 1, type: 'zoomIn' });
+    expect(transform(container)).toMatch(/scale\(1\.55\)/);
+    withCommand({ id: 2, type: 'zoomOut' });
+    expect(transform(container)).toBe('translate(0 0) scale(1)');
+    withCommand({ id: 3, type: 'focus', countryCode: 'LU' });
+    expect(transform(container)).toMatch(/scale\((7|[3-6](\.\d+)?)\)/);
+    withCommand({ id: 4, type: 'reset' });
+    expect(transform(container)).toBe('translate(0 0) scale(1)');
+  });
+
+  it('не повторяет уже выполненную команду при обычной перерисовке', () => {
+    const { container, rerender } = renderMap(embedded({ command: { id: 1, type: 'zoomIn' } }));
+    expect(transform(container)).toMatch(/scale\(1\.55\)/);
+    rerender(<LocaleProvider>{embedded({ command: { id: 1, type: 'zoomIn' }, unit: '%' })}</LocaleProvider>);
+    expect(transform(container)).toMatch(/scale\(1\.55\)/);
+  });
+
+  it('щипок двумя пальцами приближает карту, а палец потом не выбирает страну под собой', () => {
+    const onSelect = vi.fn();
+    const { container } = renderMap(embedded({ onSelect }));
+    const svg = container.querySelector('svg');
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 480, right: 960, bottom: 480 });
+    svg.setPointerCapture = () => {};
+    fireEvent.pointerDown(svg, { pointerId: 1, clientX: 450, clientY: 240 });
+    fireEvent.pointerDown(svg, { pointerId: 2, clientX: 510, clientY: 240 });
+    fireEvent.pointerMove(svg, { pointerId: 2, clientX: 630, clientY: 240 });
+    // Пальцы разошлись втрое (60 → 180 px): масштаб ×3, точка под серединой щипка (480; 240) переехала вместе с серединой (540; 240).
+    expect(transform(container)).toBe('translate(-900 -480) scale(3)');
+    fireEvent.pointerUp(svg, { pointerId: 2 });
+    fireEvent.pointerUp(svg, { pointerId: 1 });
+    fireEvent.click(screen.getByRole('button', { name: /Германия/ }));
+    expect(onSelect).not.toHaveBeenCalled();
+    // Сведение пальцев возвращает вид целиком.
+    fireEvent.pointerDown(svg, { pointerId: 3, clientX: 300, clientY: 240 });
+    fireEvent.pointerDown(svg, { pointerId: 4, clientX: 700, clientY: 240 });
+    fireEvent.pointerMove(svg, { pointerId: 4, clientX: 300.5, clientY: 240 });
+    expect(transform(container)).toBe('translate(0 0) scale(1)');
+  });
+
+  it('одним пальцем двигает приближенную карту и не двигает карту целиком', () => {
+    const { container, rerender } = renderMap(embedded());
+    const svg = container.querySelector('svg');
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 960, height: 480, right: 960, bottom: 480 });
+    svg.setPointerCapture = () => {};
+    fireEvent.pointerDown(svg, { pointerId: 1, clientX: 400, clientY: 200 });
+    fireEvent.pointerMove(svg, { pointerId: 1, clientX: 300, clientY: 150 });
+    expect(transform(container)).toBe('translate(0 0) scale(1)');
+    fireEvent.pointerUp(svg, { pointerId: 1 });
+    rerender(<LocaleProvider>{embedded({ command: { id: 7, type: 'zoomIn' } })}</LocaleProvider>);
+    fireEvent.pointerDown(svg, { pointerId: 1, clientX: 400, clientY: 200 });
+    fireEvent.pointerMove(svg, { pointerId: 1, clientX: 380, clientY: 190 });
+    expect(transform(container)).not.toBe('translate(0 0) scale(1.55)');
+  });
+
+  it('государства-крохи получают точку с широкой зоной нажатия; точка выбирает страну', async () => {
+    const onSelect = vi.fn();
+    const { container } = renderMap(embedded({ onSelect }));
+    const marker = await waitFor(() => {
+      const found = container.querySelector('[data-country-marker="LU"]');
+      expect(found).toBeTruthy();
+      return found;
+    });
+    const [hit, dot] = marker.querySelectorAll('circle');
+    expect(Number(hit.getAttribute('r'))).toBeGreaterThan(Number(dot.getAttribute('r')));
+    expect(marker.getAttribute('aria-hidden')).toBe('true');
+    fireEvent.click(marker);
+    expect(onSelect).toHaveBeenCalledWith(countries[1], null);
+    // Крупную страну точкой не дублируем.
+    expect(container.querySelector('[data-country-marker="DE"]')).toBeNull();
+  });
+
+  it('Мальта получает точку, когда догрузился подробный атлас, и команда «показать» подводит к ней карту', async () => {
+    const { container, rerender } = renderMap(embedded());
+    await waitFor(() => expect(container.querySelector('[data-country-marker="MT"]')).toBeTruthy(), { timeout: 20000 });
+    rerender(<LocaleProvider>{embedded({ command: { id: 1, type: 'focus', countryCode: 'MT' } })}</LocaleProvider>);
+    expect(Number(transform(container).match(/scale\(([\d.]+)\)/)[1])).toBeGreaterThanOrEqual(3);
+  }, 30000);
+
+  it('показывает страну, контура которой ещё не было, когда он появится', async () => {
+    const { container } = renderMap(embedded({ command: { id: 1, type: 'focus', countryCode: 'MT' } }));
+    // Подробный атлас ещё не догружен: сначала вид общий, затем карта сама подводится к стране.
+    await waitFor(() => expect(Number(transform(container).match(/scale\(([\d.]+)\)/)[1])).toBeGreaterThanOrEqual(3), { timeout: 20000 });
+  }, 30000);
+});

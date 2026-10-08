@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
-  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, Layers3, Minus, Pause, Play,
+  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, Layers3, Map as MapIcon, Minus, Pause, Play,
   Plus, RotateCcw, Search, Share2, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
@@ -16,6 +16,7 @@ import {
   formatWorldPeriod, resolveWorldPeriodFormat, worldPeriodDates,
 } from '../lib/worldMapPeriod';
 import { playbackYears, yearTag } from '../lib/planetView';
+import { readPlanetViewPreference, writePlanetViewPreference } from '../lib/planetViewPreference';
 import { splitUnit, uniformDigits } from '../lib/countryFlag';
 import CountryFlag from './CountryFlag';
 import { PlanetOrb } from './PlanetPlaceholder';
@@ -102,9 +103,14 @@ export default function PlanetView({
   const { locale } = useLocale();
   const id = useId().replaceAll(':', '');
   const [mode, setMode] = useState(initialMode === 'earth' ? 'earth' : 'data');
+  // Что выбрал человек: плоская карта (по умолчанию) или шар. Шар и его код не загружаются, пока выбрана карта.
+  const [viewKind, setViewKind] = useState(readPlanetViewPreference);
   const [sceneStatus, setSceneStatus] = useState('loading');
   const [sceneGeneration, setSceneGeneration] = useState(0);
   const [PlanetScene, setPlanetScene] = useState(() => lazy(() => import('./PlanetScene')));
+  // Плоская карта показана, пока выбрана она, и вместо шара, если у него не вышла сцена.
+  const isMap = viewKind === 'map' || sceneStatus === 'error';
+  const sceneFailed = viewKind === 'globe' && sceneStatus === 'error';
   const [selectedCode, setSelectedCode] = useState(null);
   const [hoverCode, setHoverCode] = useState(null);
   // Geography without a public country page: named on hover, never navigable.
@@ -248,9 +254,10 @@ export default function PlanetView({
     commandId.current += 1;
     setHoverCode(null);
     setHoverPlace(null);
-    setEngaged(true);
+    // «Тронул» значит остановить самовращение шара и спрятать его подсказку; у карты этого нет.
+    if (!isMap) setEngaged(true);
     setCameraCommand({ id: commandId.current, type, countryCode, instant });
-  }, []);
+  }, [isMap]);
   const selectCountry = useCallback((code, moveFocus = false, instant = false) => {
     const country = countryByCode.get(code) || countryByCode.get(countryAlias(code));
     if (!country) return;
@@ -277,10 +284,13 @@ export default function PlanetView({
   }, [countryByCode, selectedCode, onSelect, detailsByCode, selectCountry, commandCamera]);
   // Сцена передаёт код страны и, для суши без страницы, её название.
   const handleSceneSelect = useCallback((code, place) => activateCountry(code, false, place), [activateCountry]);
+  const handleMapSelect = useCallback((country) => activateCountry(country.code), [activateCountry]);
   const handleReady = useCallback(() => setSceneStatus('ready'), []);
   const handleError = useCallback((error) => {
     console.warn('Planet rendering failed:', error);
     setSceneStatus('error'); setHoverCode(null); setHoverPlace(null);
+    // Шар не вышел на этом устройстве: в следующий раз сразу открываем карту, а не ту же ошибку.
+    writePlanetViewPreference('map');
   }, []);
   const handleInteract = useCallback(() => setEngaged(true), []);
   const handleOcean = useCallback((value) => setWater(value), []);
@@ -379,7 +389,6 @@ export default function PlanetView({
   // В строках — только короткая единица; длинное пояснение («% экономически активного населения») стоит над списком.
   const rowUnit = splitUnit(displayUnit).short;
   const hasMetric = Boolean(metricName || valuesByCode != null);
-  const isMap = sceneStatus === 'error';
 
   // Ряд быстрых чипов длиннее шара: пока справа есть непоказанные, у края стоит стрелка (чип не режется посреди слова).
   useEffect(() => {
@@ -392,7 +401,8 @@ export default function PlanetView({
     observer?.observe(node);
     return () => { node.removeEventListener('scroll', measure); observer?.disconnect(); };
   }, [quickConcepts.length, isMap]);
-  const showKey = !isMap && mode === 'data' && hasMetric;
+  // Карта всегда показывает данные; режим «Земля без данных» бывает только у шара.
+  const showKey = (isMap || mode === 'data') && hasMetric;
   const activeCountry = searchCountries[Math.min(activeOption, searchCountries.length - 1)];
   const optionId = (code) => 'planet-' + id + '-country-' + code;
   const comparisonCountries = comparisonCodes.map((code) => countryByCode.get(code)).filter(Boolean);
@@ -429,6 +439,9 @@ export default function PlanetView({
     };
   }, [benchmarkSeries, coverage]);
   const compactList = !listExpanded && rankedCountries.length > COMPACT_LIST_ROWS + 1;
+  const zoomInLabel = t(isMap ? 'map.zoomIn' : 'planet.zoomIn');
+  const zoomOutLabel = t(isMap ? 'map.zoomOut' : 'planet.zoomOut');
+  const resetLabel = t(isMap ? 'map.zoomReset' : 'planet.reset');
   const playTitle = t(playing ? 'w6c.play.stop' : 'w6c.play.start', { from: playYears[0], to: playYears[playYears.length - 1] });
   const shareTitle = t(shared ? 'w6c.share.done' : 'w6c.share');
   const placeMail = placeCard ? 'mailto:' + CONTACT_EMAIL + '?' + new URLSearchParams({
@@ -453,6 +466,22 @@ export default function PlanetView({
   function retryScene() {
     setPlanetScene(() => lazy(() => import('./PlanetScene')));
     setSceneGeneration((previous) => previous + 1); setSceneStatus('loading');
+    setViewKind('globe'); writePlanetViewPreference('globe');
+  }
+  // Переключатель «Карта | Шар»: выбранная страна остаётся, камера шара начинается заново (с выбранной страны, если она есть).
+  function chooseView(kind) {
+    // Уже показано то, что просят (кроме случая «шар не вышел, нажали Карта»: тогда убираем сообщение об ошибке).
+    if (kind === (isMap ? 'map' : 'globe') && !(kind === 'map' && sceneFailed)) return;
+    setHoverCode(null); setHoverPlace(null); setZoomedView(false); setWater(false);
+    commandId.current += 1;
+    setCameraCommand(selectedCode ? { id: commandId.current, type: 'focus', countryCode: selectedCode, instant: true } : null);
+    if (kind === 'globe') {
+      setEngaged(Boolean(selectedCode));
+      retryScene();
+      return;
+    }
+    writePlanetViewPreference('map');
+    setViewKind('map'); setSceneStatus('loading');
   }
   function clearSelection() {
     setSelectedCode(null); setPlaceCard(null); setHoverCode(null); setHoverPlace(null); commandCamera('reset');
@@ -484,6 +513,12 @@ export default function PlanetView({
           {compareReady ? <PlanetLink href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={15} aria-hidden="true" /></PlanetLink> : comparisonCountries.length === 2 && <span role="status">{t('planet.noData')}</span>}
         </div>}
         <div className={'planet-shell' + (showKey ? ' has-key' : '')}>
+          <div className="planet-viewbar">
+            <div className="planet-view-switch" role="group" aria-label={t('x8.planet.viewSwitch')}>
+              <button type="button" aria-pressed={isMap} onClick={() => chooseView('map')}><MapIcon size={15} aria-hidden="true" />{t('x8.planet.viewMap')}</button>
+              <button type="button" aria-pressed={!isMap} onClick={() => chooseView('globe')}><Globe2 size={15} aria-hidden="true" />{t('x8.planet.viewGlobe')}</button>
+            </div>
+          </div>
           <div className="planet-toolbar">
             <div className="planet-search" onBlur={(event) => {
               if (!event.currentTarget.contains(event.relatedTarget)) setSearchOpen(false);
@@ -525,10 +560,13 @@ export default function PlanetView({
             </div>
           </div>
           <div className="planet-geography">
-            <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '') + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView && !isMap ? ' is-zoomed' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} onPointerMove={trackPointer}>
-              {isMap ? <div className="planet-map-fallback">
-                <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>
-                <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}><WorldMap countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={unit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection} defaultScope={defaultScope} onSelect={(country) => selectCountry(country.code, true)} /></Suspense>
+            {sceneFailed && <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>}
+            <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '') + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView && !isMap ? ' is-zoomed' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} data-planet-surface={isMap ? 'map' : 'globe'} onPointerMove={trackPointer}>
+              {isMap ? <div className="planet-map-stage">
+                <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}>
+                  <WorldMap embedded countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={displayUnit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection}
+                    colorModel={colorModel} defaultScope={defaultScope} selectedCode={selectedCountry?.code || null} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} />
+                </Suspense>
               </div> : <>
                 <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                   <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
@@ -540,24 +578,24 @@ export default function PlanetView({
                 <div className="planet-caustic" aria-hidden="true" />
                 <div className="planet-glass-sphere" aria-hidden="true" />
                 {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>}
-                {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
-                  {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
-                    aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
-                </div>}
-                {playing && year != null && <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div>}
-                {hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
-                {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
-                  <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
-                {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
-                <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-                  <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={t('planet.zoomIn')} title={t('planet.zoomIn')} data-tip={t('planet.zoomIn')}><Plus size={17} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={t('planet.zoomOut')} title={t('planet.zoomOut')} data-tip={t('planet.zoomOut')}><Minus size={17} aria-hidden="true" /></button>
-                  <button type="button" onClick={() => commandCamera('reset')} aria-label={t('planet.reset')} title={t('planet.reset')} data-tip={t('planet.reset')}><RotateCcw size={15} aria-hidden="true" /></button>
-                </div>
               </>}
+              {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
+                {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
+                  aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
+              </div>}
+              {playing && year != null && <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div>}
+              {!isMap && hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
+              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
+                <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
+              {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
+              <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
+                <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} title={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
+                <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} title={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
+                <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} title={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
+              </div>
               <div className="planet-stage-bottom">
                 {!isMap && water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
-                {!isMap && (canPlay || coverageAvailable || shareable) && <div className="planet-stage-actions">
+                {(canPlay || coverageAvailable || shareable) && <div className="planet-stage-actions">
                   {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
                     {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>}
                   {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}

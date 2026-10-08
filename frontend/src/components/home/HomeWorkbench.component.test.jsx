@@ -7,8 +7,12 @@ import { renderPage, mockApiGet } from '../../test/renderPage';
 vi.mock('../PlanetView', () => ({
   default: vi.fn(() => <div data-testid="world-map-stub">map</div>),
 }));
+// Счётчики загрузки модулей: фабрика мока срабатывает при первом import(), то есть когда код реально потребовали.
+const loaded = vi.hoisted(() => ({ scene: 0, map: 0, images: [] }));
+vi.mock('../PlanetScene', () => { loaded.scene += 1; return { default: () => null }; });
+vi.mock('../WorldMap', () => { loaded.map += 1; return { default: () => null }; });
 
-afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
+afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); vi.unstubAllGlobals(); window.localStorage.clear(); });
 
 async function planetProps() {
   const PlanetView = (await import('../PlanetView')).default;
@@ -412,5 +416,29 @@ describe('HomeWorkbench', () => {
     const group = screen.getByRole('group', { name: 'Показатель' });
     const labels = [...group.querySelectorAll('.fe-chip')].map((el) => el.textContent);
     expect(labels).toEqual(['ВВП', 'ВВП на душу населения', 'Безработица', 'Инфляция', 'Население']);
+  });
+
+  it('лёгкая главная: по умолчанию заранее качается только плоская карта, а шар, его сцена и текстура не стартуют', async () => {
+    vi.stubGlobal('Image', class { set src(value) { loaded.images.push(value); } });
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/rating\/concepts/, () => new Promise(() => {})],
+    ]);
+    renderPage(<HomeWorkbench ratingConcepts={{ data: undefined }} />, { path: '/', route: '/' });
+    await waitFor(() => expect(loaded.map).toBe(1));
+    expect(loaded.scene).toBe(0);
+    expect(loaded.images.filter((src) => /planet|earth/.test(src))).toEqual([]);
+  });
+
+  it('если человек раньше выбрал шар, сцена и дневная текстура греются заранее, как и прежде', async () => {
+    window.localStorage.setItem('fe_planet_view', 'globe');
+    vi.stubGlobal('Image', class { set src(value) { loaded.images.push(value); } });
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/world\/rating\/concepts/, () => new Promise(() => {})],
+    ]);
+    renderPage(<HomeWorkbench ratingConcepts={{ data: undefined }} />, { path: '/', route: '/' });
+    await waitFor(() => expect(loaded.scene).toBe(1));
+    expect(loaded.images).toContain('/planet/earth_day_2048.webp');
   });
 });

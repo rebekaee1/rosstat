@@ -3277,4 +3277,8 @@ export default {
   // ===== R6 G =====
   'r6.planet.loading': 'Loading the map…',
   'r6.planet.topNote': 'Gold marks the country in first place',
+  // ===== Round 8: flat map by default, globe on request =====
+  'x8.planet.viewSwitch': 'How to show the world',
+  'x8.planet.viewMap': 'Map',
+  'x8.planet.viewGlobe': 'Globe',
 };

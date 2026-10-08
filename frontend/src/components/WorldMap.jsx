@@ -198,6 +198,31 @@ function legendBinLabel(bin) {
   return `${formatLegendValue(bin.min)}–${formatLegendValue(bin.max)}`;
 }
 
+const RESET_VIEW = { k: 1, tx: 0, ty: 0 };
+
+// Государства-крохи (Мальта, Люксембург, Сингапур) мельче пальца: пока контур страны на экране меньше MARKER_BELOW_PX,
+// рядом с ним стоит заметная точка с широкой зоной нажатия. Кандидаты отбираются один раз по размеру контура в единицах карты.
+const MARKER_CANDIDATE_UNITS = 40;
+const MARKER_PATH_CHARS = 700;
+const MARKER_BELOW_PX = 6;
+const MARKER_RADIUS_PX = 3.6;
+const MARKER_HIT_PX = 9;
+// Выбор страны поиском: маленькую страну подводим так, чтобы её контур стал заметным; большую только центрируем.
+const FOCUS_SMALL_UNITS = 40;
+const FOCUS_FRAME_FACTOR = 8;
+const FOCUS_MIN_ZOOM = 3;
+
+/** Точка экрана → единицы карты (viewBox) с учётом полей, которые оставляет вписывание svg в окно сцены. */
+function clientToMap(svg, clientX, clientY) {
+  const box = svg.getBoundingClientRect();
+  const scale = Math.min(box.width / WIDTH, box.height / HEIGHT) || 1;
+  return {
+    x: (clientX - box.left - (box.width - WIDTH * scale) / 2) / scale,
+    y: (clientY - box.top - (box.height - HEIGHT * scale) / 2) / scale,
+    scale,
+  };
+}
+
 export default function WorldMap({
   countries = [],
   valuesByCode = null,
@@ -209,19 +234,34 @@ export default function WorldMap({
   colorDirection = null,
   defaultScope = 'world',
   onSelect,
+  // Встроенный вид (окно сцены планеты): без своей шапки, легенды, кнопок и подписи, их даёт PlanetView.
+  embedded = false,
+  colorModel: sharedColorModel = null,
+  selectedCode = null,
+  onHover,
+  // Команда камеры из PlanetView: { id, type: 'zoomIn' | 'zoomOut' | 'reset' | 'focus', countryCode }.
+  command = null,
 }) {
   const t = useT();
   const [scope, setScope] = useState(defaultScope === 'europe' ? 'europe' : 'world');
   const [hover, setHover] = useState(null);
-  const [view, setView] = useState({ k: 1, tx: 0, ty: 0 });
+  const [view, setView] = useState(RESET_VIEW);
   const [detailFeatures, setDetailFeatures] = useState(null);
   const [detailShapes, setDetailShapes] = useState(null);
+  const [pxPerUnit, setPxPerUnit] = useState(1);
   const panRef = useRef(null);
+  const pinchRef = useRef(null);
+  const pointersRef = useRef(new Map());
   const svgRef = useRef(null);
+  const viewRef = useRef(RESET_VIEW);
+  const handledCommand = useRef(null);
+  const pendingFocus = useRef(null);
   const countryByCode = useMemo(
     () => new Map(countries.map((country) => [country.code, country])),
     [countries],
   );
+
+  useEffect(() => { viewRef.current = view; }, [view]);
 
   // Сразу 110m (лёгкий), затем 50m лениво — береговая линия читается достойно,
   // без утяжеления первого бандла на 740 КБ. Детальный атлас грузится только
@@ -238,6 +278,23 @@ export default function WorldMap({
     });
     return () => { active = false; cancel(); };
   }, []);
+
+  // Размер экранного пикселя в единицах карты нужен для точек-«крох»: их радиус задан в пикселях, а не в градусах.
+  useEffect(() => {
+    if (!embedded) return undefined;
+    const node = svgRef.current;
+    if (!node) return undefined;
+    const measure = () => {
+      const box = node.getBoundingClientRect();
+      const next = Math.min(box.width / WIDTH, box.height / HEIGHT);
+      if (next > 0) setPxPerUnit((previous) => (Math.abs(previous - next) < 0.004 ? previous : next));
+    };
+    measure();
+    if (typeof ResizeObserver !== 'function') return undefined;
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [embedded]);
 
   const baseFeatures = getBaseDisplayFeatures();
   const projection = useMemo(() => {
@@ -281,31 +338,39 @@ export default function WorldMap({
     [baseFeatures, detailReady, path],
   );
   const shapes = detailReady ? detailShapes.shapes : baseShapes;
-  const colorModel = useMemo(
-    () => buildWorldColorModel(valuesByCode, { mode: colorMode, direction: colorDirection }),
-    [valuesByCode, colorMode, colorDirection],
+  const ownColorModel = useMemo(
+    () => (sharedColorModel ? null : buildWorldColorModel(valuesByCode, { mode: colorMode, direction: colorDirection })),
+    [sharedColorModel, valuesByCode, colorMode, colorDirection],
   );
+  const colorModel = sharedColorModel || ownColorModel;
   const extent = useMemo(() => valueExtent(valuesByCode), [valuesByCode]);
   const periodFormat = useMemo(
     () => resolveWorldPeriodFormat(worldPeriodDates(detailsByCode)),
     [detailsByCode],
   );
+  const findGeometry = useCallback((code) => {
+    if (!code) return null;
+    return features.find((geometry) => {
+      const alpha = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
+      const country = resolveCountry(countryByCode, alpha);
+      if (country?.code === code || alpha === code) return true;
+      if (alpha === 'GB' && code === 'UK') return true;
+      if (alpha === 'UK' && code === 'GB') return true;
+      return alpha === 'EL' && code === 'GR';
+    }) || null;
+  }, [countryByCode, features]);
   const hoverGeometry = useMemo(
-    () => (hover ? features.find((geometry) => {
-      const code = ISO_NUMERIC_TO_ALPHA2[numericId(geometry.id)];
-      const country = resolveCountry(countryByCode, code);
-      if (country?.code === hover.country.code) return true;
-      if (code === hover.country.code) return true;
-      if (code === 'GB' && hover.country.code === 'UK') return true;
-      if (code === 'UK' && hover.country.code === 'GB') return true;
-      return false;
-    }) : null),
-    [countryByCode, features, hover],
+    () => (hover ? findGeometry(hover.country.code) : null),
+    [findGeometry, hover],
+  );
+  const selectedGeometry = useMemo(
+    () => (embedded && selectedCode ? findGeometry(selectedCode) : null),
+    [embedded, findGeometry, selectedCode],
   );
 
   const clampView = useCallback((next) => {
     const k = Math.max(1, Math.min(ZOOM_MAX, next.k));
-    if (k === 1) return { k: 1, tx: 0, ty: 0 };
+    if (k === 1) return RESET_VIEW;
     return {
       k,
       tx: Math.max(WIDTH * (1 - k), Math.min(0, next.tx)),
@@ -313,29 +378,58 @@ export default function WorldMap({
     };
   }, []);
 
-  const zoomBy = useCallback((factor) => {
+  const zoomBy = useCallback((factor, centerX = WIDTH / 2, centerY = HEIGHT / 2) => {
     setView((previous) => {
       const k = Math.max(1, Math.min(ZOOM_MAX, previous.k * factor));
       return clampView({
         k,
-        tx: WIDTH / 2 - (k / previous.k) * (WIDTH / 2 - previous.tx),
-        ty: HEIGHT / 2 - (k / previous.k) * (HEIGHT / 2 - previous.ty),
+        tx: centerX - (k / previous.k) * (centerX - previous.tx),
+        ty: centerY - (k / previous.k) * (centerY - previous.ty),
       });
     });
   }, [clampView]);
 
   const handlePointerDown = useCallback((event) => {
-    if (view.k === 1) return;
+    // Щипок бывает только пальцами; мышь не отслеживаем: отпущенная за краем карты, она оставила бы «призрачный» второй палец.
+    if (event.pointerType !== 'mouse') pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const svg = svgRef.current;
+    const current = viewRef.current;
+    if (pointersRef.current.size === 2 && svg) {
+      // Щипок двумя пальцами: точка карты под серединой между ними остаётся под ней, пока пальцы сводят или разводят.
+      const [a, b] = [...pointersRef.current.values()];
+      const middle = clientToMap(svg, (a.x + b.x) / 2, (a.y + b.y) / 2);
+      pinchRef.current = {
+        distance: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+        k: current.k,
+        anchor: { x: (middle.x - current.tx) / current.k, y: (middle.y - current.ty) / current.k },
+      };
+      panRef.current = { moved: true };
+      try { svg.setPointerCapture(event.pointerId); } catch { /* ok */ }
+      return;
+    }
+    if (current.k === 1) return;
     panRef.current = {
       startX: event.clientX,
       startY: event.clientY,
-      tx: view.tx,
-      ty: view.ty,
+      tx: current.tx,
+      ty: current.ty,
       moved: false,
     };
-  }, [view]);
+  }, []);
 
   const handlePointerMove = useCallback((event) => {
+    const known = pointersRef.current.get(event.pointerId);
+    if (known) { known.x = event.clientX; known.y = event.clientY; }
+    const svg = svgRef.current;
+    const pinch = pinchRef.current;
+    if (pinch) {
+      if (pointersRef.current.size < 2 || !svg) return;
+      const [a, b] = [...pointersRef.current.values()];
+      const middle = clientToMap(svg, (a.x + b.x) / 2, (a.y + b.y) / 2);
+      const k = Math.max(1, Math.min(ZOOM_MAX, pinch.k * ((Math.hypot(a.x - b.x, a.y - b.y) || 1) / pinch.distance)));
+      setView(clampView({ k, tx: middle.x - k * pinch.anchor.x, ty: middle.y - k * pinch.anchor.y }));
+      return;
+    }
     const pan = panRef.current;
     if (!pan) return;
     const dx = event.clientX - pan.startX;
@@ -343,20 +437,75 @@ export default function WorldMap({
     if (!pan.moved && Math.hypot(dx, dy) < 6) return;
     if (!pan.moved) {
       pan.moved = true;
-      try { svgRef.current?.setPointerCapture(event.pointerId); } catch { /* ok */ }
+      try { svg?.setPointerCapture(event.pointerId); } catch { /* ok */ }
     }
-    const box = svgRef.current?.getBoundingClientRect();
-    if (!box) return;
+    if (!svg) return;
+    const scale = clientToMap(svg, 0, 0).scale;
     setView((previous) => clampView({
       k: previous.k,
-      tx: pan.tx + dx * (WIDTH / box.width),
-      ty: pan.ty + dy * (HEIGHT / box.height),
+      tx: pan.tx + dx / scale,
+      ty: pan.ty + dy / scale,
     }));
   }, [clampView]);
 
-  const handlePointerUp = useCallback(() => {
-    setTimeout(() => { panRef.current = null; }, 0);
+  const handlePointerUp = useCallback((event) => {
+    pointersRef.current.delete(event?.pointerId);
+    if (pointersRef.current.size < 2) pinchRef.current = null;
+    if (pointersRef.current.size === 0) {
+      // Нажатие после сдвига или щипка не должно выбирать страну под пальцем: сбрасываем признак уже после click.
+      setTimeout(() => { panRef.current = null; }, 0);
+      return;
+    }
+    // Остался один палец после щипка: дальше он просто двигает карту.
+    const [rest] = [...pointersRef.current.values()];
+    const current = viewRef.current;
+    panRef.current = { startX: rest.x, startY: rest.y, tx: current.tx, ty: current.ty, moved: true };
   }, []);
+
+  // Щипок на трекпаде приходит как wheel с ctrlKey: без перехвата браузер увеличил бы всю страницу.
+  useEffect(() => {
+    const node = svgRef.current;
+    if (!embedded || !node) return undefined;
+    const onWheel = (event) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      const point = clientToMap(node, event.clientX, event.clientY);
+      zoomBy(Math.exp(-event.deltaY * 0.01), point.x, point.y);
+    };
+    node.addEventListener('wheel', onWheel, { passive: false });
+    return () => node.removeEventListener('wheel', onWheel);
+  }, [embedded, zoomBy]);
+
+  const focusCountry = useCallback((code) => {
+    const geometry = findGeometry(code);
+    if (!geometry) return false;
+    const [[x0, y0], [x1, y1]] = path.bounds(geometry);
+    if (![x0, y0, x1, y1].every(Number.isFinite)) return false;
+    const size = Math.max(x1 - x0, y1 - y0, 1);
+    const current = viewRef.current;
+    const k = size < FOCUS_SMALL_UNITS
+      ? Math.max(current.k, Math.min(ZOOM_MAX, Math.max(FOCUS_MIN_ZOOM, WIDTH / (size * FOCUS_FRAME_FACTOR))))
+      : current.k;
+    setView(clampView({ k, tx: WIDTH / 2 - k * ((x0 + x1) / 2), ty: HEIGHT / 2 - k * ((y0 + y1) / 2) }));
+    return true;
+  }, [clampView, findGeometry, path]);
+
+  // Команды «+ − вся карта» и «показать страну» приходят из PlanetView (одни и те же кнопки у шара и у карты).
+  useEffect(() => {
+    if (!command || handledCommand.current === command.id) return;
+    handledCommand.current = command.id;
+    pendingFocus.current = null;
+    if (command.type === 'zoomIn') zoomBy(ZOOM_STEP);
+    else if (command.type === 'zoomOut') zoomBy(1 / ZOOM_STEP);
+    else if (command.type === 'reset') setView(RESET_VIEW);
+    else if (command.type === 'focus' && command.countryCode && !focusCountry(command.countryCode)) {
+      // Контура ещё нет (подробный атлас догружается): повторим, когда он появится.
+      pendingFocus.current = command.countryCode;
+    }
+  }, [command, focusCountry, zoomBy]);
+  useEffect(() => {
+    if (pendingFocus.current && focusCountry(pendingFocus.current)) pendingFocus.current = null;
+  }, [focusCountry]);
 
   const selectCountry = useCallback((country) => {
     if (panRef.current?.moved) return;
@@ -365,6 +514,186 @@ export default function WorldMap({
 
   const { k, tx, ty } = view;
   const hoverPeriod = formatWorldPeriod(hover?.detail?.date, periodFormat) || periodLabel;
+
+  // Всё, что известно о контуре: страна каталога (или страна, найденная по данным), её значение и наблюдение.
+  const describe = (code) => {
+    const catalogCountry = resolveCountry(countryByCode, code);
+    const valueKey = catalogCountry?.code || code;
+    const detail = (valueKey && detailsByCode?.get(valueKey))
+      || (code && detailsByCode?.get(code))
+      || null;
+    const country = catalogCountry || (detail?.country_slug ? {
+      code: detail.country_code || code,
+      slug: detail.country_slug,
+      name: detail.country_name || code,
+    } : null);
+    const value = valueKey ? collectionValue(valuesByCode, valueKey)
+      : (code ? collectionValue(valuesByCode, code) : null);
+    return {
+      country,
+      detail,
+      value,
+      active: Boolean(country),
+      hasValue: value != null && Number.isFinite(Number(value)),
+    };
+  };
+  const enter = (item) => {
+    setHover({ country: item.country, value: item.value, detail: item.detail });
+    onHover?.(item.country.code);
+  };
+  const leave = () => {
+    setHover(null);
+    onHover?.(null);
+  };
+  const fillFor = (item) => {
+    if (item.hasValue) return colorModel.isTop?.(item.value) ? WORLD_TOP_COLOR : colorModel.colorFor(item.value);
+    return item.active ? WORLD_NO_DATA : WORLD_OUTSIDE;
+  };
+  const labelFor = (item) => {
+    if (!item.active) return undefined;
+    return item.hasValue
+      ? t('world.map.countryValue', { name: item.country.name, value: formatWorldValue(item.value), unit: unit || '' })
+      : t('world.map.countryNoData', { name: item.country.name });
+  };
+
+  // Точки-«кроха»: кандидаты считаются при смене контуров, видимость решается по текущему масштабу.
+  const markerCandidates = useMemo(() => {
+    if (!embedded || !shapes) return [];
+    const result = [];
+    shapes.forEach((shape, index) => {
+      if (!shape.code || shape.d.length > MARKER_PATH_CHARS) return;
+      const geometry = features[index];
+      if (!geometry || !resolveCountry(countryByCode, shape.code)) return;
+      const [[x0, y0], [x1, y1]] = path.bounds(geometry);
+      const size = Math.max(x1 - x0, y1 - y0);
+      if (![x0, y0, x1, y1].every(Number.isFinite) || size > MARKER_CANDIDATE_UNITS) return;
+      result.push({ key: `${shape.key}-marker`, code: shape.code, x: (x0 + x1) / 2, y: (y0 + y1) / 2, size });
+    });
+    return result;
+  }, [countryByCode, embedded, features, path, shapes]);
+  const markers = markerCandidates.filter((marker) => marker.size * k * pxPerUnit < MARKER_BELOW_PX);
+  const unitsPerPx = 1 / (pxPerUnit * k);
+
+  const layers = (
+    <>
+      <path
+        d={path(WORLD_GRATICULE) || ''}
+        fill="none"
+        stroke="rgba(94,116,132,0.15)"
+        strokeWidth={0.55}
+        vectorEffect="non-scaling-stroke"
+        pointerEvents="none"
+        aria-hidden="true"
+      />
+      {shapes.map(({ key, code, d }) => {
+        const item = describe(code);
+        const isHover = Boolean(hover && item.country && hover.country.code === item.country.code);
+        return (
+          <path
+            key={key}
+            d={d}
+            fill={fillFor(item)}
+            stroke={item.active ? 'rgba(30,38,56,0.4)' : 'rgba(30,38,56,0.14)'}
+            strokeWidth={item.active ? 0.9 : 0.45}
+            vectorEffect="non-scaling-stroke"
+            className={item.active
+              ? 'cursor-pointer outline-none focus-visible:outline-none'
+              : 'outline-none'}
+            style={isHover ? {
+              filter: 'brightness(0.94) drop-shadow(0 0 1.2px rgba(44,74,138,0.85))',
+            } : undefined}
+            onClick={() => item.active && selectCountry(item.country)}
+            onMouseEnter={() => item.active && enter(item)}
+            onMouseLeave={leave}
+            onFocus={() => item.active && enter(item)}
+            onBlur={leave}
+            role={item.active ? 'button' : undefined}
+            aria-label={labelFor(item)}
+            tabIndex={item.active ? 0 : undefined}
+            onKeyDown={(event) => {
+              if (item.active && (event.key === 'Enter' || event.key === ' ')) {
+                event.preventDefault();
+                selectCountry(item.country);
+              }
+            }}
+          />
+        );
+      })}
+      {hoverGeometry && (
+        <path
+          d={path(hoverGeometry) || ''}
+          fill="rgba(44,74,138,0.14)"
+          stroke="#2C4A8A"
+          strokeWidth={1.35}
+          vectorEffect="non-scaling-stroke"
+          pointerEvents="none"
+          aria-hidden="true"
+          style={{ filter: 'drop-shadow(0 0 2px rgba(44,74,138,0.45))' }}
+        />
+      )}
+      {selectedGeometry && (
+        <path
+          d={path(selectedGeometry) || ''}
+          fill="rgba(30,58,110,0.16)"
+          stroke="#1E3A6E"
+          strokeWidth={1.8}
+          vectorEffect="non-scaling-stroke"
+          pointerEvents="none"
+          aria-hidden="true"
+          data-selected-outline="true"
+        />
+      )}
+      {markers.map((marker) => {
+        const item = describe(marker.code);
+        if (!item.active) return null;
+        const isHover = Boolean(hover && hover.country.code === item.country.code);
+        const selected = Boolean(selectedCode && selectedCode === item.country.code);
+        return (
+          <g
+            key={marker.key}
+            className="cursor-pointer"
+            data-country-marker={item.country.code}
+            aria-hidden="true"
+            onClick={() => selectCountry(item.country)}
+            onMouseEnter={() => enter(item)}
+            onMouseLeave={leave}
+          >
+            <circle cx={marker.x} cy={marker.y} r={MARKER_HIT_PX * unitsPerPx} fill="transparent" />
+            <circle
+              cx={marker.x}
+              cy={marker.y}
+              r={MARKER_RADIUS_PX * unitsPerPx}
+              fill={fillFor(item)}
+              stroke={selected || isHover ? '#1E3A6E' : 'rgba(30,38,56,0.65)'}
+              strokeWidth={selected || isHover ? 1.8 : 1}
+              vectorEffect="non-scaling-stroke"
+            />
+          </g>
+        );
+      })}
+    </>
+  );
+
+  if (embedded) {
+    return (
+      <div className="planet-map-plate select-none" data-planet-map="true">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+          className={`planet-map-svg${k > 1 ? ' is-zoomed' : ''}`}
+          role="group"
+          aria-label={t('world.map.aria')}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
+        >
+          <g transform={`translate(${tx} ${ty}) scale(${k})`}>{layers}</g>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="select-none">
@@ -382,7 +711,7 @@ export default function WorldMap({
               active={scope === id}
               onClick={() => {
                 setScope(id);
-                setView({ k: 1, tx: 0, ty: 0 });
+                setView(RESET_VIEW);
                 setHover(null);
               }}
               className="gap-1.5"
@@ -409,90 +738,7 @@ export default function WorldMap({
           style={{ touchAction: k > 1 ? 'none' : 'pan-y' }}
         >
           <rect width={WIDTH} height={HEIGHT} fill={WORLD_OCEAN} />
-          <g transform={`translate(${tx} ${ty}) scale(${k})`}>
-            <path
-              d={path(WORLD_GRATICULE) || ''}
-              fill="none"
-              stroke="rgba(94,116,132,0.15)"
-              strokeWidth={0.55}
-              vectorEffect="non-scaling-stroke"
-              pointerEvents="none"
-              aria-hidden="true"
-            />
-            {shapes.map(({ key, code, d }) => {
-              const catalogCountry = resolveCountry(countryByCode, code);
-              const valueKey = catalogCountry?.code || code;
-              const detail = (valueKey && detailsByCode?.get(valueKey))
-                || (code && detailsByCode?.get(code))
-                || null;
-              const country = catalogCountry || (detail?.country_slug ? {
-                code: detail.country_code || code,
-                slug: detail.country_slug,
-                name: detail.country_name || code,
-              } : null);
-              const value = valueKey ? collectionValue(valuesByCode, valueKey)
-                : (code ? collectionValue(valuesByCode, code) : null);
-              const active = Boolean(country);
-              const hasValue = value != null && Number.isFinite(Number(value));
-              const isHover = Boolean(hover && country && hover.country.code === country.code);
-              return (
-                <path
-                  key={key}
-                  d={d}
-                  fill={hasValue
-                    ? (colorModel.isTop?.(value) ? WORLD_TOP_COLOR : colorModel.colorFor(value))
-                    : active ? WORLD_NO_DATA : WORLD_OUTSIDE}
-                  stroke={active ? 'rgba(30,38,56,0.4)' : 'rgba(30,38,56,0.14)'}
-                  strokeWidth={active ? 0.9 : 0.45}
-                  vectorEffect="non-scaling-stroke"
-                  className={active
-                    ? 'cursor-pointer outline-none focus-visible:outline-none'
-                    : 'outline-none'}
-                  style={isHover ? {
-                    filter: 'brightness(0.94) drop-shadow(0 0 1.2px rgba(44,74,138,0.85))',
-                  } : undefined}
-                  onClick={() => active && selectCountry(country)}
-                  onMouseEnter={() => active && setHover({
-                    country,
-                    value,
-                    detail: detailsByCode?.get(valueKey) || detailsByCode?.get(code) || null,
-                  })}
-                  onMouseLeave={() => setHover(null)}
-                  onFocus={() => active && setHover({
-                    country,
-                    value,
-                    detail: detailsByCode?.get(valueKey) || detailsByCode?.get(code) || null,
-                  })}
-                  onBlur={() => setHover(null)}
-                  role={active ? 'button' : undefined}
-                  aria-label={active
-                    ? (hasValue
-                      ? t('world.map.countryValue', { name: country.name, value: formatWorldValue(value), unit: unit || '' })
-                      : t('world.map.countryNoData', { name: country.name }))
-                    : undefined}
-                  tabIndex={active ? 0 : undefined}
-                  onKeyDown={(event) => {
-                    if (active && (event.key === 'Enter' || event.key === ' ')) {
-                      event.preventDefault();
-                      selectCountry(country);
-                    }
-                  }}
-                />
-              );
-            })}
-            {hoverGeometry && (
-              <path
-                d={path(hoverGeometry) || ''}
-                fill="rgba(44,74,138,0.14)"
-                stroke="#2C4A8A"
-                strokeWidth={1.35}
-                vectorEffect="non-scaling-stroke"
-                pointerEvents="none"
-                aria-hidden="true"
-                style={{ filter: 'drop-shadow(0 0 2px rgba(44,74,138,0.45))' }}
-              />
-            )}
-          </g>
+          <g transform={`translate(${tx} ${ty}) scale(${k})`}>{layers}</g>
         </svg>
 
         <div className="absolute right-3 top-3 flex flex-col gap-2" data-no-export="true">
@@ -503,7 +749,7 @@ export default function WorldMap({
             <Minus size={16} />
           </button>
           {k > 1 && (
-            <button type="button" onClick={() => setView({ k: 1, tx: 0, ty: 0 })} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-11 w-11 rounded-full text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2">
+            <button type="button" onClick={() => setView(RESET_VIEW)} aria-label={t('map.zoomReset')} className="fe-map-btn fe-press h-11 w-11 rounded-full text-text-secondary transition-colors hover:text-champagne-ink fe-glass-2">
               <Maximize2 size={15} />
             </button>
           )}

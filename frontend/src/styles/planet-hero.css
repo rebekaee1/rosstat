@@ -205,7 +205,8 @@
 }
 .fe-dashboard .fe-hero-planet .planet-search-field,
 .fe-dashboard .fe-hero-planet .fe-year-button,
-.fe-dashboard .fe-hero-planet .planet-layer-switch {
+.fe-dashboard .fe-hero-planet .planet-layer-switch,
+.fe-dashboard .fe-hero-planet .planet-view-switch {
   background: var(--k7-well-bg, rgb(240 232 214 / 0.55));
   box-shadow: var(--k7-well-shadow, inset 0 2px 5px rgb(120 95 45 / 0.16), inset 0 -1px 0 rgb(255 255 255 / 0.8));
 }
@@ -213,10 +214,20 @@
 .fe-dashboard .fe-hero-planet .planet-search-field:focus-within {
   box-shadow: var(--k7-well-shadow, inset 0 2px 5px rgb(120 95 45 / 0.16)), var(--fe-focus-ring), 0 0 24px -4px rgb(44 74 138 / 0.4);
 }
-.fe-dashboard .fe-hero-planet .planet-layer-switch button[aria-pressed='true'] {
+.fe-dashboard .fe-hero-planet .planet-layer-switch button[aria-pressed='true'],
+.fe-dashboard .fe-hero-planet .planet-view-switch button[aria-pressed='true'] {
   background: var(--fe-glass-active);
   color: var(--fe-on-active, #F2F5FA);
   box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+
+/* Круг 8: плоская карта по умолчанию. Подложка карты скруглена как плита, переключатель «Карта | Шар» стоит над сценой (в правой колонке
+   рядом с поиском и годом, на узкой карточке отдельной строкой) и повторяет «колодец» полей. */
+.fe-dashboard .fe-hero-planet .planet-view { --planet-map-radius: 22px; }
+.fe-dashboard .fe-hero-planet .planet-viewbar { padding: 2px 8px 12px; }
+.fe-dashboard .fe-hero-planet .planet-view-switch { height: 52px; border-radius: 16px; }
+@container planet (max-width: 700px) {
+  .fe-dashboard .fe-hero-planet .planet-viewbar { padding: 2px 2px 12px; }
 }
 
 /* Колонка списка стоит рядом со сценой, у которой сверху 52 px под ряд чипов: высота колонки растёт на те же 52 px, низы выровнены. */

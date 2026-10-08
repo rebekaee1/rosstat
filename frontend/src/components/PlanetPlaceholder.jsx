@@ -1,4 +1,5 @@
 import { useT } from '../i18n';
+import { readPlanetViewPreference } from '../lib/planetViewPreference';
 import Spinner from './Spinner';
 import './PlanetView.css';
 
@@ -32,13 +33,17 @@ export function PlanetOrb() {
  * страница не прыгает при подмене. Человек сразу видит нейтральный шар с подписью «Загружаем карту…», строку поиска страны
  * с годом, полосу легенды и рейтинг стран из бегущих строк.
  * Лёгкий модуль без three и без данных: его можно показывать с первого кадра.
+ * Над сценой стоит каркас переключателя «Карта | Шар», в окне сцены — ровная подложка карты (или шар, если выбран он).
  */
 export default function PlanetPlaceholder() {
   const t = useT();
+  // По умолчанию окно сцены занимает плоская карта; матовый шар виден только тем, кто выбрал шар.
+  const flat = readPlanetViewPreference() === 'map';
   return (
     <div className="planet-host" aria-busy="true">
       <div className="planet-view planet-view--placeholder">
         <div className="planet-shell has-key">
+          <div className="planet-viewbar" aria-hidden="true"><span className="planet-ph-view skeleton" /></div>
           <div className="planet-toolbar" aria-hidden="true">
             <div className="planet-search">
               <div className="planet-search-field planet-ph-field"><span className="skeleton planet-ph-line" style={{ width: '46%' }} /></div>
@@ -49,7 +54,7 @@ export default function PlanetPlaceholder() {
           </div>
           <div className="planet-geography">
             <div className="planet-stage" data-scene-ready="false">
-              <PlanetOrb />
+              {flat ? <div className="planet-map-ph" aria-hidden="true" /> : <PlanetOrb />}
               <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>
             </div>
             <div className="planet-key" aria-hidden="true">

@@ -33,23 +33,31 @@ import WorldMapConceptNote from '../WorldMapConceptNote';
 import HomeHero from './HomeHero';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
+import { readPlanetViewPreference } from '../../lib/planetViewPreference';
 import '../../styles/world.css';
 import '../../styles/shell.css';
 
-// Стартовый поворот шара на первом экране: Евразия на русском сайте, США на английском (а не пустая Атлантика).
+// Стартовый поворот шара (если выбран шар): Евразия на русском сайте, США на английском (а не пустая Атлантика).
 const HOME_START_FOCUS_RU = [52, 38];
 const HOME_START_FOCUS_EN = [-96, 36];
 
 const loadPlanetView = () => import('../PlanetView');
 const PlanetView = lazy(loadPlanetView);
 
-/** Сцена и дневная карта качаются заранее, пока человек читает первый экран: шар появляется без долгой паузы. */
+/**
+ * Заранее качается то, что человек увидит первым. По умолчанию это плоская карта (лёгкий чанк без three): шар, его сцена и текстуры
+ * не грузятся и не стартуют, пока человек сам не выбрал шар. Если выбор шара сохранён с прошлого визита, тянем сцену и дневную текстуру.
+ */
 function warmPlanet() {
   try {
-    // Экономия трафика: ничего заранее, шар загрузится, когда его попросят.
+    // Экономия трафика: ничего заранее, нужное загрузится, когда его попросят.
     if (navigator.connection?.saveData) return;
-    import('../PlanetScene').catch(() => {});
-    new Image().src = '/planet/earth_day_2048.webp';
+    if (readPlanetViewPreference() === 'globe') {
+      import('../PlanetScene').catch(() => {});
+      new Image().src = '/planet/earth_day_2048.webp';
+    } else {
+      import('../WorldMap').catch(() => {});
+    }
   } catch { /* предзагрузка необязательна */ }
 }
 

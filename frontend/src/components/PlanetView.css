@@ -34,7 +34,7 @@
   .planet-view { --planet-glass: rgba(255,255,255,.9); --planet-glass-strong: rgba(255,255,255,.95); --planet-well: rgba(255,255,255,.8); }
   .planet-shell { background: rgba(255,255,255,.86); }
 }
-.planet-toolbar { display: flex; align-items: flex-end; gap: 14px; grid-column: 1 / -1; padding: 14px 16px; }
+.planet-toolbar { display: flex; align-items: flex-end; gap: 14px; grid-column: 1; grid-row: 1; padding: 14px 16px; }
 .planet-control-label { display: block; margin: 0 0 6px 2px; color: var(--planet-muted); font-size: 12px; font-weight: 500; line-height: 1.4; }
 .planet-search { position: relative; flex: 1; min-width: 0; z-index: 5; }
 .planet-search-field { display: flex; align-items: center; min-height: 48px; padding-left: 14px; border-radius: 14px; background: var(--planet-well); box-shadow: var(--planet-well-shadow); }
@@ -59,9 +59,9 @@
 /* Пометка года, которого ещё нет в фактах: «оценка» или «прогноз». */
 .planet-tag { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: rgba(30,58,110,.1); color: var(--planet-accent-ink); font-size: 11px; font-style: normal; font-weight: 600; line-height: 1.5; vertical-align: 1px; box-shadow: var(--fe-l2-shadow); }
 .planet-tag--year { position: absolute; top: 0; right: 0; margin: 0; }
-.planet-layer-switch { display: flex; align-items: center; gap: 3px; height: 48px; padding: 4px; border-radius: 14px; background: var(--planet-well); box-shadow: var(--planet-well-shadow); }
-.planet-layer-switch button { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--planet-muted); font: inherit; font-size: 13px; cursor: pointer; }
-.planet-layer-switch button[aria-pressed="true"] { color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255,255,255,.2); }
+.planet-layer-switch, .planet-view-switch { display: flex; align-items: center; gap: 3px; height: 48px; padding: 4px; border-radius: 14px; background: var(--planet-well); box-shadow: var(--planet-well-shadow); }
+.planet-layer-switch button, .planet-view-switch button { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--planet-muted); font: inherit; font-size: 13px; cursor: pointer; }
+.planet-layer-switch button[aria-pressed="true"], .planet-view-switch button[aria-pressed="true"] { color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255,255,255,.2); }
 .planet-shell { display: grid; grid-template-columns: minmax(0, 1fr) 332px; align-items: start; border-radius: 24px; background: var(--fe-glass-l1-sheen), var(--fe-glass-l1, rgba(255,255,255,.52)); overflow: hidden; box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom); -webkit-backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25); backdrop-filter: blur(var(--fe-blur-l1, 18px)) saturate(1.25); }
 .planet-geography { position: relative; min-width: 0; }
 .planet-stage { position: relative; height: var(--planet-scene-height); min-width: 0; isolation: isolate; overflow: hidden; scroll-margin-top: 104px; background: radial-gradient(circle at 50% 46%, rgba(150,178,225,.16) 0%, rgba(150,178,225,.05) 44%, transparent 72%); }
@@ -269,11 +269,29 @@
 .planet-comparison > [role="status"] { font-size: 12px; color: var(--planet-muted); }
 .planet-attribution { margin: 8px 2px 0; color: var(--planet-muted); font-size: 12px; line-height: 1.5; }
 .planet-attribution a { text-decoration: underline; text-underline-offset: 2px; }
-.planet-stage--map { height: auto; min-height: var(--planet-scene-height); background: transparent; }
-.planet-map-fallback { padding: 16px; color: var(--planet-ink); }
-.planet-fallback-message { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; font-size: 13px; }
+.planet-fallback-message { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px 0; color: var(--planet-ink); font-size: 13px; }
 .planet-fallback-message button { flex-shrink: 0; min-height: 40px; padding: 7px 12px; border-radius: 14px; color: var(--planet-ink); background: var(--fe-glass-l2); font: inherit; font-size: 13px; cursor: pointer; box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint); }
-.planet-stage--map .planet-stage-bottom { position: sticky; bottom: 10px; margin: 0 10px 10px; }
+
+/* Круг 8: плоская карта по умолчанию, шар по переключателю «Карта | Шар».
+   Карта стоит в том же окне сцены, что и шар (та же высота --planet-scene-height, те же кнопки, чипы и карточка поверх), поэтому страница
+   при переключении не прыгает. Подложка карты — спокойный океан с мягким светом сверху: поля над и под картой не пустые. */
+.planet-view { --planet-ocean: #DCE8F3; --planet-ocean-light: #EAF1F9; }
+:root[data-theme="dark"] .planet-view, :root.dark .planet-view { --planet-ocean: #22344A; --planet-ocean-light: #2B405A; }
+.planet-stage--map { background: transparent; }
+.planet-map-stage {
+  position: absolute; inset: 0; overflow: hidden; border-radius: var(--planet-map-radius, 0);
+  background: radial-gradient(120% 90% at 30% 0%, var(--planet-ocean-light), transparent 70%), var(--planet-ocean);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
+}
+.planet-map-plate { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.planet-map-svg { display: block; width: 100%; height: 100%; }
+.planet-map-svg.is-zoomed { cursor: grab; }
+.planet-map-svg.is-zoomed:active { cursor: grabbing; }
+.planet-map-svg path[role="button"] { cursor: pointer; }
+/* Панель выбора вида стоит над сценой: на компьютере в правой колонке рядом с поиском и годом, на телефоне отдельной строкой над картой. */
+.planet-viewbar { grid-column: 2; grid-row: 1; align-self: stretch; display: flex; align-items: flex-end; padding: 14px 16px; }
+.planet-view-switch { width: 100%; }
+.planet-view-switch button { flex: 1; }
 .planet-view button, .planet-view summary, .planet-all-indicators, .planet-comparison > a, .planet-list-footer a { touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
 .planet-view button, .planet-view a { transition: background-color 120ms ease-out, color 120ms ease-out; }
 .planet-view button:active:not(:disabled) { transform: scale(.98); }
@@ -288,8 +306,8 @@
 }
 @media (pointer: coarse) {
   .planet-search-field input { font-size: 16px; }
-  .planet-layer-switch button { min-height: 44px; }
-  .planet-layer-switch { height: 54px; }
+  .planet-layer-switch button, .planet-view-switch button { min-height: 44px; }
+  .planet-layer-switch, .planet-view-switch { height: 54px; }
   .planet-search-field { min-height: 54px; }
   .planet-year { --fe-year-h: 54px; }
   .planet-list-footer a, .planet-scale summary { min-height: 44px; }
@@ -298,13 +316,15 @@
 @container planet (max-width: 950px) {
   .planet-shell { grid-template-columns: minmax(0, 1fr) 290px; }
   .planet-toolbar { gap: 8px; }
-  .planet-layer-switch button { padding: 0 9px; }
+  .planet-layer-switch button, .planet-view-switch button { padding: 0 9px; }
 }
 /* Узкая планета (телефон, правая колонка первого экрана): шар на всю ширину, под ним поиск, цвета и список. */
 @container planet (max-width: 700px) {
   .planet-view { --planet-scene-height: min(100cqw, 500px); }
   .planet-shell { display: flex; flex-direction: column; border-radius: 24px; }
   .planet-geography, .planet-info { display: contents; }
+  .planet-viewbar { order: 0; width: 100%; padding: 12px 14px 0; }
+  .planet-fallback-message { order: 0; width: 100%; padding: 10px 14px 0; }
   .planet-stage { order: 1; width: 100%; }
   .planet-toolbar { order: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; gap: 10px; width: 100%; padding: 12px 14px 8px; border-bottom: 0; }
   .planet-toolbar:not(:has(.planet-year)) .planet-search { grid-column: 1 / -1; }
@@ -313,8 +333,8 @@
   .planet-year { grid-column: 2; grid-row: 1; width: 112px; --fe-year-h: 48px; }
   .planet-tag--year { top: auto; right: auto; bottom: -9px; left: 8px; }
   .planet-layer-control { grid-column: 1 / -1; grid-row: 2; min-width: 0; }
-  .planet-layer-switch { height: 48px; }
-  .planet-layer-switch button { flex: 1; padding: 0 10px; min-height: 40px; }
+  .planet-layer-switch, .planet-view-switch { height: 48px; }
+  .planet-layer-switch button, .planet-view-switch button { flex: 1; padding: 0 10px; min-height: 40px; }
   .planet-key { order: 3; width: 100%; min-height: 0; padding: 12px 16px 12px; }
   .planet-country-heading h3 { font-size: 18px; }
   .planet-source { display: none; }
@@ -377,3 +397,5 @@
 .planet-ph-dot { display: block; width: 18px; height: 18px; border-radius: 50%; }
 .planet-ph-value { width: 54px; }
 .planet-view--placeholder .planet-list-heading > div > .planet-ph-line { height: 14px; }
+.planet-ph-view { display: block; width: 100%; height: 48px; border-radius: 14px; }
+.planet-map-ph { position: absolute; inset: 0; border-radius: var(--planet-map-radius, 0); background: radial-gradient(120% 90% at 30% 0%, var(--planet-ocean-light), transparent 70%), var(--planet-ocean); }
