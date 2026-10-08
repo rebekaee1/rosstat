@@ -18,7 +18,7 @@ import {
 } from '../lib/regionsApi';
 import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
-import { formatRegionNumber, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
+import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -274,7 +274,13 @@ export default function RegionIndicatorPage() {
 
   // «Лучший / худший год» там, где понятно, что хорошо (безработица ниже — лучше), иначе просто наибольшее и наименьшее.
   const extremePolarity = indicatorPolarity(indName, code);
-  const extremeKeys = extremePolarity === 'up-good'
+  // Денежные и штучные уровни (номинальная зарплата, доход, число жителей) почти всегда растут,
+  // поэтому «лучший год» — это просто последний, а «худший» — первый. Оценку «лучше/хуже» оставляем
+  // процентным показателям (безработица, рост), а у уровней пишем нейтрально «наибольшее/наименьшее».
+  const isLevel = !isPercentUnit(active?.indicator?.unit);
+  const extremeKeys = extremePolarity === 'up-good' && isLevel
+    ? { max: 'w6f.reg.highestYear', min: 'w6f.reg.lowestYear' }
+    : extremePolarity === 'up-good'
     ? { max: 'w6f.reg.bestYear', min: 'w6f.reg.worstYear' }
     : extremePolarity === 'up-bad'
       ? { max: 'w6f.reg.worstYear', min: 'w6f.reg.bestYear' }
@@ -332,7 +338,7 @@ export default function RegionIndicatorPage() {
                 <span className="min-w-0 pl-2 text-text-secondary">{active.indicator.section_name}</span>
               )}
             </div>
-            <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-3xl">
+            <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-2xl">
               {indName}
             </h1>
             {abortion && (

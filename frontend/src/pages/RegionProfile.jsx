@@ -9,6 +9,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
 import Button from '../components/Button';
+import RegionComparePick from '../components/regions/RegionComparePick';
 import { SkeletonBox } from '../components/Skeleton';
 import MobileNavSelect from '../components/MobileNavSelect';
 import {
@@ -125,16 +126,19 @@ export default function RegionProfile() {
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
               {t('w4.regions.profile.intro', { sections: data.sections.length })}
             </p>
-            {headline.length > 0 && (
-              <Link
-                to={regionIndicatorPath(slug, headline.find((h) => h.code === '3.4')?.code || headline[0].code)}
-                className="fe-chip fe-press mt-3 gap-1.5 text-champagne-ink"
-                data-testid="region-compare-russia"
-              >
-                <GitCompare size={14} aria-hidden="true" />
-                {t('w6f.reg.compareRussia')}
-              </Link>
-            )}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {headline.length > 0 && (
+                <Link
+                  to={regionIndicatorPath(slug, headline.find((h) => h.code === '3.4')?.code || headline[0].code)}
+                  className="fe-chip fe-press gap-1.5 text-champagne-ink"
+                  data-testid="region-compare-russia"
+                >
+                  <GitCompare size={14} aria-hidden="true" />
+                  {t('w6f.reg.compareRussia')}
+                </Link>
+              )}
+              <RegionComparePick slug={slug} />
+            </div>
           </div>
 
           {headline.length > 0 && (

@@ -23,6 +23,16 @@
 
 /* Рамка карты: ничего не режется по краям, элементы управления — в углу вне суши. */
 .fe-map-frame { position: relative; padding: 0 2px; }
+/* Контур выбранного региона рисуется штрихом поверх карты (см. RegionsMap), поэтому общий прямоугольный
+   :focus-visible из index.css для регионов-кнопок отключаем: он обводил весь габарит области, а не её границу. */
+.fe-map-frame svg :is([role='button'], path, circle, g):focus,
+.fe-map-frame svg :is([role='button'], path, circle, g):focus-visible,
+.fe-map-frame svg:focus-visible { outline: none; }
+/* На компьютере высота карты не больше ~54 % экрана: шкала и ползунок года остаются рядом с картой, а не ниже сгиба.
+   Ограничиваем ширину по пропорции карты, чтобы поля не появлялись сверху и снизу. */
+@media (min-width: 1024px) {
+  .fe-map-frame > .fe-map-svg { max-width: calc(54svh * var(--fe-map-aspect, 1.9)); margin-inline: auto; }
+}
 .fe-map-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 8px; margin-top: 4px; }
 .fe-map-tools {
   margin-left: auto;
@@ -133,7 +143,7 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   box-shadow: var(--fe-l2-shadow);
 }
 .fe-map-pick__text { min-width: 0; flex: 1; }
-.fe-map-pick__name { font-size: 14px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); overflow-wrap: anywhere; }
+.fe-map-pick__name { font-size: 14px; font-weight: 600; line-height: 1.25; color: var(--color-text-primary); overflow-wrap: break-word; }
 .fe-map-pick__value { margin-top: 2px; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--color-champagne-ink); }
 .fe-map-pick__open {
   display: inline-flex; align-items: center; gap: 6px; flex: none;
@@ -144,10 +154,41 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   display: inline-flex; align-items: center; justify-content: center; flex: none;
   width: 44px; height: 44px; border-radius: 12px; color: var(--color-text-secondary);
 }
+/* Телефон: название и цифры получают всю ширину, кнопки идут своим рядом под ними, крестик справа вверху
+   (раньше всё жило в одной строке, и название сжималось до одной буквы). */
+@media (max-width: 639px) {
+  .fe-map-pick {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    grid-template-areas: 'text close' 'actions actions';
+    align-items: start;
+    row-gap: 6px;
+    padding: 10px 8px 10px 14px;
+  }
+  .fe-map-pick__text { grid-area: text; padding-top: 4px; }
+  .fe-map-pick__close { grid-area: close; }
+  .fe-map-pick__actions { grid-area: actions; flex-wrap: wrap; }
+  .fe-map-pick__name { overflow-wrap: break-word; word-break: normal; hyphens: auto; font-size: 15px; }
+}
 
 /* ── Круг 8 (Y3): переключатель «Контуры / Пузыри» ─────────────────────────────────────────────────
    Активный сегмент графитовый, как у остальных переключателей страницы (было бежевое золото). */
 :root .fe-map-shape button[aria-pressed='true'] {
   background: var(--fe-glass-active, linear-gradient(135deg, #2A3550, #1E2638));
   color: var(--fe-on-active, #F2F5FA);
+}
+
+/* ── Страница региона: выбор второго региона для сравнения ─────────────────────────────────────── */
+.fe-reg-pick {
+  position: relative; display: inline-flex; align-items: center; max-width: 100%;
+  min-height: 44px; border-radius: 9999px;
+  background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow);
+  color: var(--color-text-primary);
+}
+.fe-reg-pick__icon { position: absolute; left: 14px; pointer-events: none; color: var(--color-champagne-ink); }
+.fe-reg-pick__chev { position: absolute; right: 14px; pointer-events: none; color: var(--color-text-secondary); }
+.fe-reg-pick__select {
+  appearance: none; -webkit-appearance: none; width: 100%; min-height: 44px; max-width: 100%;
+  padding: 0 38px 0 36px; border-radius: 9999px; background: transparent;
+  font-size: 14px; font-weight: 600; color: inherit; cursor: pointer; text-overflow: ellipsis;
 }

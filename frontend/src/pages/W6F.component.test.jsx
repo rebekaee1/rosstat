@@ -192,6 +192,9 @@ describe('«Регионы России»: рейтинг вместо алфа�
     expect(rows[0].textContent).toContain('Москва');
     expect(rows[0].querySelector('.fe-rank__place').textContent).toBe('1');
     expect(rows[0].querySelector('.fe-rank__bar')).toBeTruthy();
+    // Круг 9: название ведёт на страницу региона, число — на этот показатель в регионе.
+    expect(rows[0].querySelector('a.fe-rank__name').getAttribute('href')).toMatch(/^\/russia\/region\/[^/]+$/);
+    expect(rows[0].querySelector('a.fe-rank__value').getAttribute('href')).toMatch(/^\/russia\/region\/[^/]+\/.+/);
     // Выбранный показатель заметен: нажатая кнопка-чип.
     const chips = within(ranking).getAllByRole('button', { pressed: true });
     expect(chips.length).toBeGreaterThanOrEqual(1);

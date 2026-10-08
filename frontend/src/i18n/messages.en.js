@@ -3293,4 +3293,11 @@ export default {
   'c8w.map.noData': 'No data',
   'c8w.map.top': 'First place in the ranking',
   'c8w.globe.loading': 'Loading the globe…',
+  // ===== Round 9: Russia, regions, calendar (E) =====
+  'c9e.rank.valueTitle': 'This indicator in the region: chart and table',
+  'c9e.cal.addToCalendar': 'Add to phone calendar',
+  'c9e.cal.moreParts': '{n} more',
+  'c9e.cal.legendMore': 'How to read the calendar',
+  'c9e.demo.stackNote': 'The layers are stacked: the top edge shows the whole population.',
+  'c9e.reg.compareWith': 'Compare with another region',
 };

@@ -51,32 +51,35 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
   const periodLabel = tickLabel ? tickLabel(label) : label;
+  // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
+  const inlineUnit = !indexNote && unit && String(unit).length <= 6 ? `\u00A0${unit}` : '';
+  const fmt = (v) => `${formatRegionValue(v)}${inlineUnit}`;
   return (
     <div className="fe-chart-tooltip fe-chart-tooltip--stack text-xs max-w-[calc(100vw-48px)]">
       <div className="text-text-secondary mb-1">{periodLabel}</div>
       {region && (
         <div className="font-semibold tabular-nums text-champagne-ink">
-          {regionName}: {formatRegionValue(region.value)}
+          {regionName}: {fmt(region.value)}
         </div>
       )}
       {compare && (
         <div className="font-semibold tabular-nums mt-0.5 text-text-primary">
-          {compareName}: {formatRegionValue(compare.value)}
+          {compareName}: {fmt(compare.value)}
         </div>
       )}
       {russia && (
         <div className="tabular-nums text-text-secondary mt-0.5">
-          {russiaLabel}: {formatRegionValue(russia.value)}
+          {russiaLabel}: {fmt(russia.value)}
         </div>
       )}
       {forecast && (
         <div className="tabular-nums text-champagne-ink mt-0.5">
-          {forecastLabel}: {formatRegionValue(forecast.value)}
+          {forecastLabel}: {fmt(forecast.value)}
         </div>
       )}
       {indexNote
         ? <div className="mt-1 text-[11px] text-text-secondary">{indexNote}</div>
-        : (unit ? <div className="mt-1 text-[11px] text-text-secondary">{unit}</div> : null)}
+        : (unit && !inlineUnit ? <div className="mt-1 text-[11px] text-text-secondary">{unit}</div> : null)}
     </div>
   );
 }

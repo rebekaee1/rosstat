@@ -191,6 +191,9 @@ a.fe-today-card:active { background-color: rgba(173, 138, 72, 0.09); }
 }
 .fe-rank__name { grid-area: name; min-width: 0; font-size: 14px; line-height: 1.3; }
 .fe-rank__value { grid-area: value; font-size: 14px; font-weight: 650; white-space: nowrap; }
+.fe-rank__link { display: flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; transition: color 0.15s ease; }
+.fe-rank__link:hover { color: var(--color-champagne-ink); }
+.fe-rank__value.fe-rank__link { justify-content: flex-end; }
 .fe-rank__bar { grid-area: bar; height: 6px; border-radius: 9999px; background: rgba(88, 74, 46, 0.09); overflow: hidden; }
 .fe-rank__bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, var(--fe-gold-bright, #C9A24D), var(--fe-gold, #B08A3E)); }
 @media (min-width: 640px) {

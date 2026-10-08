@@ -12,6 +12,7 @@ import { SkeletonBox } from '../components/Skeleton';
 import { regionRatingTrail } from '../lib/breadcrumbs';
 import {
   regionIndicatorPath,
+  regionPath,
   regionRatingHubPath,
   regionRatingPath,
 } from '../lib/sitePaths';
@@ -219,14 +220,20 @@ export default function RegionRatingPage() {
                       </td>
                       <td className="px-4 py-2">
                         <Link
-                          to={regionIndicatorPath(row.slug, code)}
+                          to={regionPath(row.slug)}
                           className="fe-row-link__a text-text-primary hover:text-champagne-ink transition-colors"
                         >
                           {row.name}
                         </Link>
                       </td>
                       <td className="fe-num whitespace-nowrap px-4 py-2 text-right text-text-primary">
-                        {formatRegionNumber(row.raw ?? row.value, data.indicator.unit, locale)}
+                        <Link
+                          to={regionIndicatorPath(row.slug, code)}
+                          title={t('c9e.rank.valueTitle')}
+                          className="relative z-10 hover:text-champagne-ink transition-colors"
+                        >
+                          {formatRegionNumber(row.raw ?? row.value, data.indicator.unit, locale)}
+                        </Link>
                       </td>
                     </tr>
                   ))}
