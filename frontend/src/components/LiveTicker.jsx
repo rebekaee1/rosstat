@@ -156,10 +156,11 @@ function TickerCell({ snapshot, nowMs }) {
     }
   }
 
-  // Круг 8, D5: значение старше трёх суток не должно выглядеть живым. Подпись говорит прямо «не обновлялось N дн.», а точная дата
-  // остаётся в подсказке и в атрибуте data-stale (ячейка тусклее).
+  // Круг 8, D5 и волна 2: значение старше трёх суток не должно выглядеть живым, но и «заброшенным» тоже: оно приглушено (data-stale)
+  // и подписано короткой датой («на 29 сент.»), без слов «не обновлялось». Полная дата остаётся в подсказке.
   const ageDays = !isIntraday ? ageInDays(asOfRaw, locale) : null;
   const longStale = ageDays !== null && ageDays > STALE_AFTER_DAYS;
+  const staleDate = longStale ? formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: 1 }) : '';
 
   const cellClass = cn(
     'fe-ticker__cell flex h-full min-h-7 shrink-0 items-center gap-1.5 px-2.5 rounded-md whitespace-nowrap',
@@ -168,7 +169,7 @@ function TickerCell({ snapshot, nowMs }) {
     meta.linkTo && 'hover:bg-champagne/10',
     // Вспышка нового тика нейтральная: рост курса не «хорошо» и не «плохо», цвет не должен оценивать.
     flash && 'bg-champagne/15 fe-shadow-2',
-    (isStale || longStale) && 'opacity-60',
+    isStale && 'opacity-60',
   );
 
   // У пары «доллар к юаню» по-английски подпись «USD/CNY» сама говорит, что это за число: знак ¥ рядом
@@ -177,15 +178,15 @@ function TickerCell({ snapshot, nowMs }) {
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
   const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
-  // Подпись под ценой: «не обновлялось N дн.» у давнего значения, иначе источник — «биржа» или «ЦБ».
-  const caption = longStale
-    ? t('c8s.ticker.stale', { n: ageDays })
+  // Подпись под ценой: «на 29 сент.» у давнего значения, иначе источник — «биржа» или «ЦБ».
+  const caption = longStale && staleDate
+    ? t('shell.ticker.asOf', { date: staleDate })
     : (asOfHuman
       ? t('shell.ticker.asOf', { date: asOfHuman })
       : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null));
   const body = (
     <>
-      <span className="fe-ticker__name">{t(meta.nameKey)}</span>
+      <span className="fe-ticker__name" data-asof={longStale && staleDate ? t('shell.ticker.asOf', { date: staleDate }) : undefined}>{t(meta.nameKey)}</span>
       <span className="fe-ticker__quote">
         <span className="fe-ticker__price tabular-nums">
           {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}
@@ -291,8 +292,23 @@ function useEdgeFade(dep) {
   return { ref, edges, measure };
 }
 
+/** Узкий экран (телефон до 768 px): «Все валюты» там последняя ячейка ленты; шире она стоит отдельным блоком справа, вне прокрутки. */
+function usePhoneWidth() {
+  const [phone, setPhone] = useState(() => typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches);
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+    const mql = window.matchMedia('(max-width: 767px)');
+    const apply = () => setPhone(mql.matches);
+    apply();
+    mql.addEventListener?.('change', apply);
+    return () => mql.removeEventListener?.('change', apply);
+  }, []);
+  return phone;
+}
+
 export default function LiveTicker() {
   const t = useT();
+  const phone = usePhoneWidth();
   const { locale } = useLocale();
   const lane = tickerLaneFor(locale);
   const { data, dataUpdatedAt } = useQuery({
@@ -341,6 +357,16 @@ export default function LiveTicker() {
     );
   }
 
+  const allLink = (
+    <Link
+      to={currenciesPath()}
+      className="fe-ticker__all flex h-full min-h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 text-champagne-ink hover:bg-champagne/10"
+    >
+      {t('w6b.ticker.all')}
+      <ChevronRight size={14} aria-hidden="true" />
+    </Link>
+  );
+
   return (
     <div
       ref={rootRef}
@@ -349,31 +375,30 @@ export default function LiveTicker() {
       data-tone={overFooter ? 'dark' : undefined}
     >
       <div className="fe-ticker__inner mx-auto h-full">
-        <div className="fe-ticker__scroller">
-          <span className="fe-ticker__fade fe-ticker__fade--l" data-on={edges.start} aria-hidden="true" />
-          <span className="fe-ticker__fade fe-ticker__fade--r" data-on={edges.end} aria-hidden="true" />
-          <div
-            ref={scrollerRef}
-            onScroll={measure}
-            className="fe-ticker__scroll scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
-            role="group"
-            aria-label={t('ticker.quotes')}
-          >
-            <div className="flex h-full w-max min-w-full">
-              <div className="fe-ticker__track mx-auto flex h-full items-center">
-                {snapshots.map((s) => (
-                  <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
-                ))}
-                <Link
-                  to={currenciesPath()}
-                  className="fe-ticker__all flex h-full min-h-7 shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-3 text-champagne-ink hover:bg-champagne/10"
-                >
-                  {t('w6b.ticker.all')}
-                  <ChevronRight size={14} aria-hidden="true" />
-                </Link>
+        <div className={cn('fe-ticker__scroller', !phone && 'fe-ticker__scroller--aside')}>
+          {/* Курсы листаются в своей полосе (.fe-ticker__lane); на планшете и компьютере «Все валюты» стоит рядом с ней плотным блоком,
+              поэтому ни один курс не уходит под него (круг 8, волна 2, W-A2). */}
+          <div className="fe-ticker__lane">
+            <span className="fe-ticker__fade fe-ticker__fade--l" data-on={edges.start} aria-hidden="true" />
+            <span className="fe-ticker__fade fe-ticker__fade--r" data-on={edges.end} aria-hidden="true" />
+            <div
+              ref={scrollerRef}
+              onScroll={measure}
+              className="fe-ticker__scroll scrollbar-hide h-full w-full overflow-x-auto overscroll-x-contain"
+              role="group"
+              aria-label={t('ticker.quotes')}
+            >
+              <div className="flex h-full w-max min-w-full">
+                <div className="fe-ticker__track mx-auto flex h-full items-center">
+                  {snapshots.map((s) => (
+                    <TickerCell key={s.code} snapshot={s} nowMs={dataUpdatedAt} />
+                  ))}
+                  {phone ? allLink : null}
+                </div>
               </div>
             </div>
           </div>
+          {phone ? null : allLink}
         </div>
       </div>
     </div>

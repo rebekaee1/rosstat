@@ -45,6 +45,7 @@ export default function ApiRetryBanner({ children, onRetry, isFetching, classNam
       <div className={cn('fe-loading-note', className)} role="status" aria-live="polite" data-testid="retry-quiet">
         <span className="fe-loading-note__dot" aria-hidden="true" />
         <span>{t('w6a.loading.caption')}</span>
+        <span className="fe-loading-note__track" aria-hidden="true"><span className="fe-loading-note__run" /></span>
       </div>
     );
   }

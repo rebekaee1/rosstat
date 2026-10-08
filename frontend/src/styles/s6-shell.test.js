@@ -100,9 +100,9 @@ describe('круг 8 Z0: переменные оболочки для всех �
     expect(z2).toMatch(/footer\.fe-footer\s*\{\s*padding-bottom:\s*calc\(var\(--fe-cookie-h, 0px\) \+ var\(--fe-dock-reserve, 0px\)\)/);
   });
 
-  it('переход перед подвалом не выше 80 px', () => {
-    expect(k2).toMatch(/footer\.fe-footer\.fe-k2-footer\s*\{\s*margin-top:\s*80px/);
-    expect(k2).toMatch(/top:\s*-80px;[\s\S]*?height:\s*80px/);
+  it('переход перед подвалом не выше 56 px (волна 2, W-A5)', () => {
+    expect(k2).toMatch(/footer\.fe-footer\.fe-k2-footer\s*\{\s*margin-top:\s*56px/);
+    expect(k2).toMatch(/top:\s*-56px;[\s\S]*?height:\s*56px/);
   });
 
   it('«Все валюты» — плотный блок (.97) с затуханием слева; лента на телефоне 32 px', () => {
@@ -132,5 +132,31 @@ describe('круг 8 Z0: переменные оболочки для всех �
     const count = files.reduce((n, f) => n + (read(f).match(/backdrop-filter:\s*blur/g) || []).length, 0);
     // 19 вхождений в двух файлах было до круга 8 (часть из них взаимоисключающие медиазапросы): число не растёт; бюджет кадра: docs/design-system.md, раздел 5
     expect(count).toBeLessThanOrEqual(19);
+  });
+});
+
+describe('круг 8, волна 2, W-A: оболочка после приёмки', () => {
+  it('cookie: на телефоне сетка из двух строк (≈ 56 пт), не панель на треть экрана; от 640 px одна строка', () => {
+    expect(z2).toMatch(/grid-template-areas:\s*'text accept gear' 'necessary accept gear'/);
+    expect(z2).toMatch(/\.fe-cookie-compact\s*\{\s*display:\s*flex;\s*flex-direction:\s*row;/);
+    expect(z2).toMatch(/\.fe-cookie-compact__long\s*\{\s*display:\s*none/);
+  });
+
+  it('лента: «Все валюты» стоит рядом с полосой курсов (aside), а не липнет поверх неё', () => {
+    expect(z2).toMatch(/\.fe-ticker__scroller--aside\s*\{\s*display:\s*flex/);
+    expect(z2).not.toMatch(/\.fe-ticker__all\s*\{[^}]*position:\s*sticky/);
+  });
+
+  it('вуаль под лентой и шапкой закрывает щель при прокрутке, без blur и ниже затемнения шторки (z-index 70 < 80)', () => {
+    const veil = k3.match(/body::before\s*\{([^}]*)\}/);
+    expect(veil).toBeTruthy();
+    expect(veil[1]).toMatch(/position:\s*fixed/);
+    expect(veil[1]).toMatch(/z-index:\s*70/);
+    expect(veil[1]).not.toMatch(/backdrop-filter/);
+    expect(k3).toMatch(/body:has\(nav\.fe-navbar--glass\[data-scrolled='true'\]\)::before\s*\{\s*opacity:\s*1/);
+  });
+
+  it('запас под панелью и плашкой есть у любой страницы: scroll-padding-bottom на телефоне', () => {
+    expect(k3).toMatch(/html\s*\{\s*scroll-padding-bottom:\s*calc\(var\(--fe-dock-reserve, 0px\) \+ var\(--fe-cookie-h, 0px\) \+ 12px\)/);
   });
 });

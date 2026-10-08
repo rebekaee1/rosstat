@@ -29,6 +29,9 @@ import '../styles/k3-shell.css';
  * в футере и на странице политики). Смена CONSENT_VERSION (новая редакция
  * политики) показывает баннер заново.
  *
+ * Круг 8, волна 2 (W-A1): плашка тонкая и одна строка. Телефон: две строки текста слева («Мы используем cookie. Подробнее» и «Только необходимые»),
+ * справа «Хорошо» и шестерёнка, высота около 56 пт (раньше около 100 и закрывала нижнюю треть первого экрана вместе с картой). От 640 px:
+ * одна строка по центру (текст, «Хорошо», «Только необходимые», шестерёнка), а не карточка слева, закрывавшая плитки.
  * Круг 8 (S1): на любой ширине после первой прокрутки плашка прячется целиком (плавающего значка нет: он ложился на цифры и кнопки
  * страницы) и до конца сессии не возвращается ни при переходах, ни при возврате наверх. «Настройки cookie» остаются в меню и в подвале.
  * Прятание не записывает согласие: молчание остаётся молчанием, трекеры и выбор не меняются.
@@ -44,6 +47,8 @@ const CATEGORY_DEFS = [
 
 // Кнопки баннера делят ширину поровну и переносят подпись на узком экране.
 const btnBase = 'min-w-0 whitespace-normal! text-center';
+// Свёрнутая плашка: подпись кнопки в одну строку (перенос задал бы лишнюю высоту).
+const btnCompact = 'min-w-0 whitespace-nowrap text-center';
 
 // Сессионная память «плашку уже видели и прокрутили мимо»: без неё она возвращалась после каждого перехода (круг 8, S1).
 const SNOOZE_KEY = 'fe:consent:snooze';
@@ -184,7 +189,7 @@ export default function CookieConsent() {
       aria-modal="false"
       aria-label={t('cookie.aria')}
       // Появление (прозрачность и сдвиг) играет обёртка, а не панель с blur: пока идёт анимация, размытие не пересчитывается.
-      className="fe-cookie-wrap fe-reveal fe-reveal--free fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-2 [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))] [--fe-duration:0.22s] [--fe-rise:10px] sm:right-auto sm:p-4"
+      className="fe-cookie-wrap fe-reveal fe-reveal--free fixed inset-x-0 bottom-0 z-[80] pointer-events-none p-2 [padding-bottom:max(0.5rem,env(safe-area-inset-bottom))] [--fe-duration:0.22s] [--fe-rise:10px] sm:p-3"
     >
       <div
         ref={panelRef}
@@ -192,7 +197,7 @@ export default function CookieConsent() {
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
         data-expanded={expanded ? 'true' : 'false'}
-        className="fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden sm:w-fit sm:max-w-[26rem]"
+        className="fe-cookie-panel pointer-events-auto mx-auto flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden sm:w-fit sm:max-w-[54rem]"
       >
         {expanded ? (
           <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
@@ -213,7 +218,9 @@ export default function CookieConsent() {
         ) : (
           <div className="fe-cookie-compact">
             <p className="fe-cookie-compact__text">
-              {t('cookie.summary')}
+              {/* Телефон: короткая строка, чтобы плашка стояла в одну тонкую полосу; от 640 px полный текст. */}
+              <span className="fe-cookie-compact__long">{t('cookie.summary')}</span>
+              <span className="fe-cookie-compact__short">{t('c8w.cookie.short')}</span>
               {' '}
               <Link to="/privacy" className="text-champagne-ink hover:underline">
                 {t('cookie.privacyShort')}
@@ -224,7 +231,7 @@ export default function CookieConsent() {
                 data-analytics-action="consent-accept"
                 data-fe-interaction-action="accept"
                 onClick={() => commit(true, true, 'accept_all')}
-                className={cn(btnBase, 'fe-cookie-accept')}
+                className={cn(btnCompact, 'fe-cookie-accept')}
               >
                 {t('cookie.accept')}
               </Button>
@@ -233,7 +240,7 @@ export default function CookieConsent() {
                 data-analytics-action="consent-necessary-only"
                 data-fe-interaction-action="necessary-only"
                 onClick={() => commit(false, false, 'necessary_only')}
-                className={cn(btnBase, 'fe-cookie-necessary')}
+                className={cn(btnCompact, 'fe-cookie-necessary')}
               >
                 {t('shell.cookie.necessaryOnly')}
               </Button>
@@ -243,7 +250,7 @@ export default function CookieConsent() {
                 data-fe-interaction-action="customize"
                 onClick={() => setExpanded(true)}
                 title={t('cookie.customize')}
-                className={cn(btnBase, 'fe-cookie-gear')}
+                className={cn(btnCompact, 'fe-cookie-gear')}
               >
                 <Settings2 aria-hidden="true" />
                 <span className="fe-cookie-gear__label">{t('cookie.customize')}</span>

@@ -74,6 +74,39 @@ nav.fe-navbar--glass[data-scrolled='true']::after { opacity: 1; }
 /* При прокрутке капсула опускается на 6 px: между лентой и шапкой появляется воздух. */
 nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 
+/* Вуаль над страницей у верхнего края (круг 8, волна 2, W-A4): при прокрутке капсула опускается на 6 px (на телефоне уезжает вверх вместе с лентой),
+   и между лентой (или краем окна) и капсулой оставалась щель, в которой читались верхушки карточек и кнопки страницы. Вуаль появляется только
+   при прокрутке, закрывает эту щель тоном стекла (.92) и сходит на нет за 8 px; лежит под лентой, шапкой и затемнением шторки (z-index 70),
+   размытия не имеет (слоёв blur не добавляет), событий не ловит. Над тёмным подвалом берёт его сапфировый тон, как шапка. */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  height: calc(var(--fe-ticker-h, 40px) + 14px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: linear-gradient(180deg,
+    rgb(var(--k3-paper, 250 252 255) / 0.92) 0,
+    rgb(var(--k3-paper, 250 252 255) / 0.92) calc(100% - 8px),
+    rgb(var(--k3-paper, 250 252 255) / 0) 100%);
+}
+body:has(nav.fe-navbar--glass[data-scrolled='true'])::before { opacity: 1; }
+body:has(nav.fe-navbar--glass[data-tone='dark'])::before { --k3-paper: 22 32 56; }
+/* Лента при прокрутке тоже плотнее (.72 → .9): карта и карточки под ней не читаются сквозь стекло (приёмка v7, pad-07). */
+@media (prefers-reduced-transparency: no-preference) {
+  body:has(nav.fe-navbar--glass[data-scrolled='true']) .fe-ticker { background: rgb(var(--k3-paper) / 0.9); }
+}
+@media (max-width: 767px) {
+  /* Лента спрятана, капсула сжата и поднята: щель только над ней. */
+  body:has(.fe-ticker[data-hidden='true'])::before { height: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { body::before { transition: none; } }
+@media print { body::before { display: none; } }
+
 /* Телефон: шапка сжимается до 52 px при прокрутке вниз и возвращается при прокрутке вверх; лента курсов уезжает вместе с ней.
    Контент под сжатой шапкой не должен читаться сквозь неё (снимок V19-03): на телефоне стекло плотнее (.84, при прокрутке ≈ .93). */
 @media (max-width: 767px) {
@@ -181,7 +214,11 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 }
 .fe-ticker__delta[data-dir='down']::before { background: var(--k3-down); }
 /* Давнее дневное значение (круг 8, D5): тусклее и с подписью «не обновлялось N дн.», чтобы не выглядеть живым. */
-.fe-ticker__cell[data-stale='true'] .fe-ticker__caption { font-weight: 600; color: var(--color-text-secondary); }
+.fe-ticker__cell[data-stale='true'] { opacity: 0.6; }
+/* Телефон: подписи под ценой нет (строки не хватает), поэтому короткая дата давнего значения встаёт в строку имени: «Нефть · на 29 сент.». */
+@media (max-width: 767px) {
+  .fe-ticker__name[data-asof]::after { content: ' · ' attr(data-asof); }
+}
 /* «Все валюты»: графитовый текст, без синего и золотого. */
 .fe-ticker .fe-ticker__all { color: var(--fe-ink, #1e2638); }
 .fe-ticker[data-tone='dark'] .fe-ticker__all { color: var(--color-text-primary); }
@@ -498,6 +535,10 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   /* Круг 8, S4/S8: запас под док лежит один раз в подвале (footer.fe-footer, z2-shell.css), а не дважды (раньше и в main: это давало
      пустой пояс до 300 пт перед подвалом). Последняя строка страницы заканчивается ритмом секции, дальше идут переход и подвал. */
   main#main-content { padding-bottom: 0; }
+  /* Волна 2, W-A3: запас под панелью один и для всех типов страниц: подвал (он последний на каждой странице: рейтинг, показатель, страна,
+     календарь, поиск) несёт --fe-dock-reserve + --fe-cookie-h, поэтому последняя строка любой страницы доскролливается выше панели.
+     Якоря, фокус с клавиатуры и scrollIntoView тоже останавливаются выше панели и плашки, а не под ними. */
+  html { scroll-padding-bottom: calc(var(--fe-dock-reserve, 0px) + var(--fe-cookie-h, 0px) + 12px); }
 }
 
 /* ═══ Cookie: стеклянная капсула ═══════════════════════════════════════ */

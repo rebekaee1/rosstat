@@ -207,16 +207,18 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(dialog.firstElementChild.className).toMatch(/max-h-\[min\(30rem/);
   });
 
-  it.each(['ru', 'en'])('компактная плашка: один текст, значок-шестерёнка вместо слова, ширина по содержимому до 416 px (%s)', (locale) => {
+  it.each(['ru', 'en'])('компактная плашка: один текст, значок-шестерёнка вместо слова, одна тонкая строка по центру до 54 rem (%s)', (locale) => {
     renderConsent(locale);
     const dialog = screen.getByRole('dialog');
     const panel = dialog.firstElementChild;
     expect(panel.className).toContain('fe-cookie-panel');
-    expect(panel.className).toContain('sm:max-w-[26rem]');
+    expect(panel.className).toContain('sm:max-w-[54rem]');
     expect(panel.className).toContain('sm:w-fit');
-    // Круг 8: текст один на все ширины (двух вариантов «длинный/короткий» больше нет).
+    // Круг 8, волна 2 (W-A1): от 640 px полный текст про аналитику и рекламу, на телефоне короткое «Мы используем cookie» (CSS переключает);
+    // оба в разметке, ссылка «Подробнее» одна.
+    expect(dialog.querySelector('.fe-cookie-compact__long').textContent).toBe(translate('cookie.summary', undefined, locale));
+    expect(dialog.querySelector('.fe-cookie-compact__short').textContent).toBe(translate('c8w.cookie.short', undefined, locale));
     expect(dialog.querySelector('.fe-cookie-compact__text').textContent).toContain(translate('cookie.summary', undefined, locale));
-    expect(dialog.querySelector('.fe-cookie-compact__long')).toBeNull();
     // «Настроить» остаётся именем кнопки для скринридера и подсказкой, на глаз это значок.
     const gear = within(dialog).getByRole('button', { name: translate('cookie.customize', undefined, locale) });
     expect(gear.className).toContain('fe-cookie-gear');

@@ -117,9 +117,13 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(usd.getAttribute('title')).toContain('shell.ticker.source.market');
     // Нет «04.10»-подобных технических дат.
     expect(document.body.textContent).not.toMatch(/\b\d{2}\.\d{2}\b/);
-    // Круг 8, D5: устаревший ряд Brent (старше трёх суток) подписан «не обновлялось N дн.» вместо подписи источника и помечен data-stale.
-    expect(screen.getAllByText('c8s.ticker.stale')).toHaveLength(1);
-    expect(document.querySelectorAll('[data-stale="true"]')).toHaveLength(1);
+    // Круг 8, D5 и волна 2: устаревший ряд Brent (старше трёх суток) приглушён (data-stale) и подписан короткой датой («на 29 сент.») вместо источника;
+    // слов «не обновлялось» нет, дата на телефоне стоит в строке имени (data-asof).
+    expect(screen.queryByText('c8s.ticker.stale')).toBeNull();
+    const stale = document.querySelectorAll('[data-stale="true"]');
+    expect(stale).toHaveLength(1);
+    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('shell.ticker.asOf');
+    expect(stale[0].querySelector('.fe-ticker__name').getAttribute('data-asof')).toBe('shell.ticker.asOf');
   });
 
   it('EN: золото в рублях в ленте не показывается, остальные курсы на месте', async () => {
@@ -143,6 +147,15 @@ describe('LiveTicker: понятные подписи, единые знаки �
     await screen.findByText('84,41');
     const all = screen.getByText('w6b.ticker.all').closest('a');
     expect(all.getAttribute('href')).toBe('/currencies');
+  });
+
+  it('«Все валюты» вне прокручиваемой полосы курсов (волна 2, W-A2): ни один курс не уходит под него', async () => {
+    mockSnapshots();
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('84,41');
+    const all = screen.getByText('w6b.ticker.all').closest('a');
+    expect(all.closest('.fe-ticker__scroll')).toBeNull();
+    expect(all.closest('.fe-ticker__scroller--aside')).toBeTruthy();
   });
 
   it('EN: цена со знаком доллара перед числом, минус не дефис, нулевое изменение не показывается', async () => {

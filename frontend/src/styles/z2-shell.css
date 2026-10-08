@@ -46,25 +46,20 @@
 .fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__fade[data-on='true'] { opacity: 1; }
-/* «Все валюты» держится у правого края отдельным плотным блоком (круг 8, S3): фон почти непрозрачный (.97), слева затухание 28 px.
-   Курсы, которые уходят под блок, растворяются, а не режутся посередине слова и не просвечивают сквозь кнопку. */
+/* «Все валюты» (круг 8, S3 и волна 2, W-A2): на планшете и компьютере стоит рядом с полосой курсов (`.fe-ticker__scroller--aside`), а не
+   поверх неё: раньше блок липнул к правому краю прокрутки и накрывал последние курсы (они «тонули» под ним), пока посетитель не листал до конца.
+   Теперь курсы листаются в собственной полосе `.fe-ticker__lane`, которая кончается там, где начинается блок; её правый край растворяется
+   затуханием 36 px («дальше ещё есть»), блок плотный (.97). На телефоне блок остаётся последней ячейкой ленты (styles/k3-shell.css). */
+.fe-ticker__lane { display: contents; }
+.fe-ticker__scroller--aside { display: flex; align-items: stretch; }
+.fe-ticker__scroller--aside .fe-ticker__lane { display: block; position: relative; flex: 1 1 auto; min-width: 0; height: 100%; }
+.fe-ticker__scroller--aside .fe-ticker__fade { width: 36px; }
 .fe-ticker__all {
-  position: sticky;
-  right: 0;
+  position: relative;
   z-index: 2;
   font-size: 13px;
   font-weight: 650;
   background-color: rgb(var(--k3-paper, 250 252 255) / 0.97);
-}
-.fe-ticker__all::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -28px;
-  width: 28px;
-  background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0), rgb(var(--k3-paper, 250 252 255) / 0.97));
-  pointer-events: none;
 }
 .fe-ticker .fe-ticker__all:hover { background-color: color-mix(in srgb, var(--fe-ink, #1e2638) 7%, rgb(var(--k3-paper, 250 252 255) / 0.9)); }
 
@@ -238,8 +233,8 @@ nav.fe-navbar a.fe-nav-login:hover,
 }
 
 /* ═══ Cookie ═════════════════════════════════════════════════════════════ */
-/* Компьютер: стеклянная капсула слева внизу, шириной до 416 px. Телефон: полоса одной строкой, а после первой прокрутки
-   значок 44 px справа внизу (styles/k3-shell.css). Молчание не считается согласием: плашка не закрывается сама.
+/* Круг 8, волна 2: тонкая плашка по центру внизу (телефон ≈ 56 пт, от 640 px одна строка до 54 rem); после первой прокрутки
+   она прячется до конца сессии (CookieConsent.jsx). Молчание не считается согласием: плашка не закрывается сама.
    Рамки нет: блик сверху и тень-парение; размытие 24 px (плотность 0,74, чтобы текст страницы под ней не мешал). */
 .fe-cookie-panel {
   border-radius: 28px;
@@ -248,24 +243,29 @@ nav.fe-navbar a.fe-nav-login:hover,
   backdrop-filter: blur(24px) saturate(1.3);
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
-.fe-cookie-panel[data-expanded='true'] { border-radius: 24px; }
-.fe-cookie-compact { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 14px 12px 12px 18px; }
+/* Круг 8, волна 2 (W-A1): раскрытые настройки остаются компактной карточкой (до 26 rem), свернутая плашка — одна тонкая строка. */
+.fe-cookie-panel[data-expanded='true'] { border-radius: 24px; width: min(26rem, 100%); }
+/* Компьютер и планшет: одна строка — текст слева, справа «Хорошо», «Только необходимые» и шестерёнка. */
+.fe-cookie-compact { display: flex; flex-direction: row; align-items: center; gap: 14px; padding: 8px 10px 8px 22px; }
 .fe-cookie-compact__text {
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
   font-size: 13px;
   line-height: 1.4;
   color: var(--color-text-secondary);
 }
-/* Круг 8, S1: две кнопки решения на виду («Хорошо» и «Только необходимые») и шестерёнка настроек в одном ряду под текстом. */
-.fe-cookie-compact__actions { display: flex; align-items: center; gap: 8px; }
+.fe-cookie-compact__short { display: none; }
+.fe-cookie-compact__actions { display: flex; flex: none; align-items: center; gap: 8px; }
 .fe-cookie-compact__actions .fe-cookie-accept,
 .fe-cookie-compact__actions .fe-cookie-necessary {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 40px;
+  flex: none;
+  min-height: 38px;
   padding: 0 16px;
   font-size: 13.5px;
   border-radius: 9999px;
+  white-space: nowrap;
 }
 /* «Только необходимые» — плотный светлый L2, не слабее по виду, чем «Хорошо»: отказ виден так же, как согласие. */
 .fe-cookie-compact__actions .fe-cookie-necessary {
@@ -274,9 +274,9 @@ nav.fe-navbar a.fe-nav-login:hover,
   color: var(--fe-ink, #1e2638);
 }
 .fe-cookie-compact__actions .fe-cookie-necessary:hover:not(:disabled) { background: var(--fe-glass-l2-hover); }
-/* Кнопки выглядят на 40 px, а нажимаются как 44: зона нажатия шире видимой. */
+/* Кнопки выглядят на 38 px, а нажимаются как 44: зона нажатия шире видимой. */
 .fe-cookie-compact__actions .fe-cookie-accept::after,
-.fe-cookie-compact__actions .fe-cookie-necessary::after { content: ''; position: absolute; inset: -2px; }
+.fe-cookie-compact__actions .fe-cookie-necessary::after { content: ''; position: absolute; inset: -3px; }
 .fe-cookie-compact__actions .fe-cookie-gear {
   flex: none;
   width: 44px;
@@ -299,11 +299,33 @@ nav.fe-navbar a.fe-nav-login:hover,
   border: 0;
 }
 @media (max-width: 639px) {
-  /* Телефон: плашка вровень с краями, кнопки делят ряд поровну. */
-  .fe-cookie-compact { gap: 8px; padding: 12px 8px 8px 14px; }
-  .fe-cookie-compact__actions .fe-cookie-accept,
-  .fe-cookie-compact__actions .fe-cookie-necessary { min-height: 38px; padding: 0 10px; font-size: 13px; }
-  .fe-cookie-compact__actions .fe-cookie-gear { width: 40px; min-height: 40px; }
+  /* Телефон: сетка из двух строк слева и двух столбцов справа; вся плашка ≈ 56 пт.
+     Слева сверху «Мы используем cookie. Подробнее», слева снизу «Только необходимые» (мелкая светлая таблетка),
+     справа «Хорошо» на две строки высотой и шестерёнка. Кнопки группы встают в сетку плашки (display: contents). */
+  .fe-cookie-compact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'text accept gear' 'necessary accept gear';
+    align-items: center;
+    column-gap: 6px;
+    row-gap: 2px;
+    padding: 7px 4px 7px 14px;
+  }
+  .fe-cookie-compact__actions { display: contents; }
+  .fe-cookie-compact__text { grid-area: text; font-size: 12px; line-height: 1.2; }
+  .fe-cookie-compact__long { display: none; }
+  .fe-cookie-compact__short { display: inline; }
+  .fe-cookie-compact__actions .fe-cookie-necessary {
+    grid-area: necessary;
+    justify-self: start;
+    min-height: 26px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+  .fe-cookie-compact__actions .fe-cookie-accept { grid-area: accept; min-height: 40px; padding: 0 16px; font-size: 13.5px; }
+  .fe-cookie-compact__actions .fe-cookie-gear { grid-area: gear; width: 40px; min-height: 40px; }
+  /* Нажимаются как 44 px, хотя таблетка «Только необходимые» на вид ниже. */
+  .fe-cookie-compact__actions .fe-cookie-necessary::after { inset: -6px -4px; }
 }
 /* Место под плашкой резервируется в подвале (его фон продолжается до края), а не серой полосой под ним. */
 footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }

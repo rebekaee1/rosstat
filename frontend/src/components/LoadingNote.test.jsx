@@ -33,6 +33,18 @@ describe('LoadingNote', () => {
     expect(screen.getByRole('status').textContent).not.toContain('Дольше обычного');
   });
 
+  it('after 7 s the remark becomes the short server-is-slow line (W-A6), and a quiet track runs under the caption', () => {
+    vi.useFakeTimers();
+    view(<LoadingNote />);
+    expect(document.querySelector('.fe-loading-note__track')).toBeTruthy();
+    act(() => { vi.advanceTimersByTime(6900); });
+    expect(screen.getByRole('status').textContent).toContain('Дольше обычного.');
+    act(() => { vi.advanceTimersByTime(300); });
+    const text = screen.getByRole('status').textContent;
+    expect(text).toContain('Сервер отвечает медленно, ещё секунду…');
+    expect(text).not.toContain('Дольше обычного.');
+  });
+
   it('speaks English too', () => {
     vi.useFakeTimers();
     view(<LoadingNote />, 'en');

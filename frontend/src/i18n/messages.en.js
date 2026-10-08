@@ -3281,11 +3281,12 @@ export default {
   'x8.planet.viewSwitch': 'How to show the world',
   'x8.planet.viewMap': 'Map',
   'x8.planet.viewGlobe': 'Globe',
-  // ===== Круг 8: оболочка (Z0) =====
-  'c8s.ticker.stale': 'not updated for {n} d',
   // ===== Круг 8: Россия, регионы, календарь, страны (Z4) =====
   'c8y.ru.main.inflationMonth': 'Inflation, month over month',
   'c8y.map.replay': 'Play again',
   // ===== Круг 8: главная (Z1) =====
   'c8h.today.sub': 'Figures for the latest year with data',
+  // ===== Круг 8, волна 2: оболочка (W-A) =====
+  'c8w.cookie.short': 'We use cookies',
+  'c8w.loading.slow': 'The server is slow to respond, one more moment…',
 };
