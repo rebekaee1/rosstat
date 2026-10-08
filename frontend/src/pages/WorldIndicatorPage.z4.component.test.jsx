@@ -113,8 +113,9 @@ describe('WorldIndicatorPage: сцена и нижний блок', () => {
     await waitFor(() => expect(container.querySelector('.z4-lower')).toBeTruthy());
     const lower = container.querySelector('.z4-lower');
     expect(lower.querySelector('.z4-lower__table .fe-histtable')).toBeTruthy();
-    expect(lower.querySelector('.z4-lower__aside [data-block="methodology"]')).toBeTruthy();
+    expect(lower.querySelector('.z4-lower__method [data-block="methodology"]')).toBeTruthy();
     expect(lower.querySelector('.z4-lower__aside .z4-about')).toBeTruthy();
+    expect(lower.getAttribute('data-lower')).toBe('wide');
   });
 
   it('контейнер страницы берёт ширину из токена Z1', async () => {

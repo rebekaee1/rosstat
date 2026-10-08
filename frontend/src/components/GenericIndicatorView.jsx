@@ -274,7 +274,7 @@ export default function GenericIndicatorView({
         </div>
       </div>
 
-      <div className="z4-lower">
+      <div className="z4-lower" data-lower={forecastEnabled && showForecast && hasForecast ? 'wide' : 'stack'}>
         <div className="z4-lower__table">
       <IndicatorDataTableSection
         indicator={effectiveIndicator}
@@ -285,11 +285,6 @@ export default function GenericIndicatorView({
       />
         </div>
         <div className="z4-lower__aside">
-      <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecast ? 'on' : 'off'}>
-        <IndicatorMethodologyPanel
-          indicator={effectiveIndicator}
-          content={methodologyContent}
-        />
         <IndicatorForecastSection
           indicator={effectiveIndicator}
           chartMode="cpi"
@@ -300,7 +295,12 @@ export default function GenericIndicatorView({
           showForecast={showForecast}
           hasForecastData={hasForecast}
         />
-      </div>
+        </div>
+        <div className="z4-lower__method">
+        <IndicatorMethodologyPanel
+          indicator={effectiveIndicator}
+          content={methodologyContent}
+        />
         </div>
       </div>
 

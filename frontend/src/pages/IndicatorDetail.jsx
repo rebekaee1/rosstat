@@ -779,7 +779,7 @@ export default function IndicatorDetail() {
         </div>
       </div>
 
-      <div className="z4-lower">
+      <div className="z4-lower" data-lower={forecastEnabled && showForecast && hasForecastDataForSection ? 'wide' : 'stack'}>
         <div className="z4-lower__table">
       <IndicatorDataTableSection
         indicator={effectiveIndicator}
@@ -804,11 +804,6 @@ export default function IndicatorDetail() {
       />
         </div>
         <div className="z4-lower__aside">
-      <div className="fe-info-grid" data-forecast={forecastEnabled && showForecast && hasForecastDataForSection ? 'on' : 'off'}>
-        <IndicatorMethodologyPanel
-          indicator={indicator}
-          content={viewModeContent}
-        />
         <IndicatorForecastSection
           indicator={indicator}
           chartMode={chartMode}
@@ -836,7 +831,12 @@ export default function IndicatorDetail() {
           showForecast={showForecast}
           hasForecastData={hasForecastDataForSection}
         />
-      </div>
+        </div>
+        <div className="z4-lower__method">
+        <IndicatorMethodologyPanel
+          indicator={indicator}
+          content={viewModeContent}
+        />
         </div>
       </div>
 

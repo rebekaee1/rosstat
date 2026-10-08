@@ -232,14 +232,7 @@
 .fe-chart-draw { animation: fe-chart-draw 0.85s var(--fe-ease-out) 0.12s backwards; }
 @media (prefers-reduced-motion: reduce) { .fe-chart-draw { animation: none; } }
 
-/* ── Блок под графиком: методология и прогноз ───────────────────────────── */
-.fe-info-grid { display: grid; gap: 24px; margin-bottom: 48px; }
-@media (min-width: 1024px) {
-  .fe-info-grid[data-forecast='on'] { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); align-items: start; }
-}
-/* Нет прогноза: короткая плашка идёт первой, методология ниже — без пустой колонки. */
-.fe-info-grid[data-forecast='off'] > [data-block='forecast-empty'] { order: -1; }
-
+/* ── Блок под графиком: методология и прогноз (раскладка — `.z4-lower` в z4-indicator.css) ───────────────────────────── */
 .fe-info-card {
   display: flex;
   min-width: 0;

@@ -475,14 +475,68 @@
 
 /* ── Ниже графика: таблица истории рядом с методологией и блоком «О показателе» ─────────── */
 .z4-lower { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; margin-bottom: 40px; }
-.z4-lower__aside { display: flex; min-width: 0; flex-direction: column; gap: 16px; order: -1; }
-.z4-lower__table { min-width: 0; }
+.z4-lower__table { min-width: 0; order: 2; }
+.z4-lower__aside { display: flex; min-width: 0; flex-direction: column; gap: 16px; order: 1; }
+.z4-lower__method { min-width: 0; order: 3; }
 .z4-lower__side { display: flex; min-width: 0; flex-direction: column; gap: 16px; }
-.z4-lower__aside .fe-info-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 0; }
 .z4-lower__aside .w2-details--card { margin: 0; }
+/* Без прогноза: короткая плашка, за ней методология, потом таблица. */
+.z4-lower[data-lower='stack'] .z4-lower__method { order: 2; }
+.z4-lower[data-lower='stack'] .z4-lower__table { order: 3; }
+/* Круг 10, С1. Карточки под графиком одной формы: общий радиус и тень, чтобы края таблицы, прогноза и методологии сходились в линию. */
+.z4-lower :is(.k5-table, .fe-info-card, .z4-about, .w2-details--card) { border-radius: 22px; box-shadow: var(--z4-card-shadow); }
+.z4-lower__aside > [data-block='forecast']:empty { display: none; }
 @media (min-width: 1024px) {
-  .z4-lower { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; gap: 24px; }
-  .z4-lower__aside { order: 0; }
+  .z4-lower { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; }
+  /* Нет прогноза: колонка справа (плашка и методология) как прежде, таблица занимает всю высоту слева. */
+  .z4-lower[data-lower='stack'] {
+    grid-template-areas: 'table aside' 'table method' 'table .';
+    grid-template-rows: auto auto 1fr;
+    align-items: start;
+  }
+  .z4-lower[data-lower='stack'] .z4-lower__table { grid-area: table; }
+  .z4-lower[data-lower='stack'] .z4-lower__aside { grid-area: aside; }
+  .z4-lower[data-lower='stack'] .z4-lower__method { grid-area: method; }
+  /* Есть прогноз: таблица и прогноз поровну, обе карточки тянутся до низа ряда; методология ниже на всю ширину. */
+  .z4-lower[data-lower='wide'] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: 'table aside' 'method method';
+    align-items: stretch;
+  }
+  .z4-lower[data-lower='wide'] .z4-lower__table { grid-area: table; display: flex; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .z4-lower__aside { grid-area: aside; }
+  .z4-lower[data-lower='wide'] .z4-lower__method { grid-area: method; }
+  /* Прогноз прямо в колонке сам скрыт (после фильтра нет строк): раскладка как без прогноза, пустой колонки нет. */
+  .z4-lower[data-lower='wide']:has(.z4-lower__aside > [data-block='forecast']:empty) {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-areas: 'table method' 'table .';
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+  .z4-lower[data-lower='wide'] .z4-lower__table > section { display: flex; flex: 1 1 auto; min-width: 0; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .fe-datatable { display: flex; flex: 1 1 auto; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .fe-datatable .fe-histtable__scroll { flex: 0 0 auto; }
+  .z4-lower[data-lower='wide'] .fe-datatable .k5-seam--top { margin-top: auto; }
+  .z4-lower[data-lower='wide'] .z4-lower__aside > [data-block='forecast'] { display: flex; flex: 1 1 auto; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .z4-lower__aside > [data-block='forecast'] > .k5-table { flex: 1 1 auto; }
+  /* Мировая страница: справа проверка прогноза и «О показателе»; последняя карточка заполняет остаток, ссылки внизу. */
+  .z4-lower[data-lower='wide'] .z4-lower__side { flex: 1 1 auto; }
+  .z4-lower[data-lower='wide'] .z4-about { display: flex; flex: 1 1 auto; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .z4-about > :last-child { margin-top: auto; }
+}
+/* Методология на всю ширину: текст слева, источник справа в той же строке; на телефоне всё в столбик. */
+@media (min-width: 768px) {
+  .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'head head' 'text foot';
+    column-gap: 32px;
+    row-gap: 12px;
+    align-items: start;
+  }
+  .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__head { grid-area: head; }
+  .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__text { grid-area: text; min-width: 0; }
+  .z4-lower[data-lower='wide'] .z4-lower__method .fe-info-card__foot { grid-area: foot; align-self: end; margin-top: 0; padding-top: 0; max-width: 22rem; }
 }
 :root .z4-lower .fe-histtable { max-width: none; min-width: 0; }
 .z4-lower .fe-histtable__valhead { white-space: nowrap; }
