@@ -99,7 +99,9 @@ describe('HomeWorkbench', () => {
     // Поиск показателей на карте снят (owner 2026-08-28): глобальный поиск
     // живёт в navbar и в hero главной, пикер метрики карты — без поля.
     expect(screen.queryByRole('searchbox')).toBeNull();
-    expect(screen.getByRole('link', { name: /больше показателей/i })).toBeTruthy();
+    // Второго ряда показателей под планетой нет: показатели стоят одним рядом над картой (в PlanetView).
+    expect(screen.queryByRole('link', { name: /больше показателей/i })).toBeNull();
+    expect(screen.queryByRole('group', { name: 'Показатель' })).toBeNull();
 
     await waitFor(() => {
       expect(screen.getByTestId('world-map-stub')).toBeTruthy();
@@ -179,17 +181,16 @@ describe('HomeWorkbench', () => {
     await waitFor(() => expect(within(quick).getByRole('link', { name: 'ВВП Индии' }).getAttribute('href')).toBe('/india/indicator/in-gdp'));
 
     const today = await screen.findByRole('region', { name: 'Мир сейчас' });
-    await waitFor(() => expect(today.querySelectorAll('.fe-today__tile').length).toBe(4));
+    await waitFor(() => expect(today.querySelectorAll('.fe-today__tile').length).toBe(3));
     const tiles = [...today.querySelectorAll('.fe-today__tile')].map((tile) => tile.getAttribute('data-tile'));
-    expect(tiles).toEqual(['economy', 'prices', 'jobs', 'home']);
+    expect(tiles).toEqual(['economy', 'prices', 'jobs']);
     const economy = today.querySelector('[data-tile="economy"]');
     expect(economy.textContent).toContain('30,8');
     expect(economy.textContent).toContain('США');
     expect(economy.textContent).toContain('Место 1 из 4');
     expect(economy.getAttribute('href')).toBe('/united-states/indicator/weo-gdp-usd');
-    // Россия на русском сайте ведёт в российский раздел.
-    expect(today.querySelector('[data-tile="home"]').getAttribute('href')).toBe('/russia/indicator/cpi-yoy');
-    expect(today.querySelector('[data-tile="home"]').textContent).toContain('8,1');
+    // Карточка «Россия сейчас» убрана (круг 8): в ряду было две карточки про Россию.
+    expect(today.querySelector('[data-tile="home"]')).toBeNull();
 
     // Порядок в разметке как на телефоне: поиск и ссылки, планета, «Мир сейчас», числа платформы.
     const text = document.querySelector('.fe-hero-text');
@@ -256,7 +257,8 @@ describe('HomeWorkbench', () => {
     );
 
     await waitFor(async () => expect((await planetProps())?.rankingItems).toHaveLength(1));
-    expect(screen.getByRole('button', { name: 'Как читается карта валового внутреннего продукта' })).toBeTruthy();
+    // Справка о показателе (знак «i») отдана планете и стоит у названия в её легенде, а не отдельным рядом под картой.
+    expect((await planetProps()).conceptNote.props).toMatchObject({ conceptSlug: 'gdp-usd' });
     expect((await planetProps()).benchmark).toEqual({
       value: 12.4, label: 'Медиана по 48 странам с данными', countries_count: 48,
     });
@@ -407,15 +409,30 @@ describe('HomeWorkbench', () => {
     expect((await planetProps()).rankingItems[0].value).toBe(0);
   });
 
-  it('чипы показателей видны сразу все (из словаря), пока каталог понятий ещё не пришёл', () => {
+  it('пока данных нет, на месте ряда показателей каркас карточки (чипы-заготовки), а второго ряда под планетой нет', () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       [/^\/world\/rating\/concepts/, () => new Promise(() => {})],
     ]);
     renderPage(<HomeWorkbench ratingConcepts={{ data: undefined }} />, { path: '/', route: '/' });
-    const group = screen.getByRole('group', { name: 'Показатель' });
-    const labels = [...group.querySelectorAll('.fe-chip')].map((el) => el.textContent);
-    expect(labels).toEqual(['ВВП', 'ВВП на душу населения', 'Безработица', 'Инфляция', 'Население']);
+    expect(screen.queryByRole('group', { name: 'Показатель' })).toBeNull();
+    expect(document.querySelectorAll('.planet-ph-quick .planet-ph-chip').length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('планете отдаются все показатели набора главной (до восьми) в порядке витрины, из словаря названий', async () => {
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators/, INDICATORS],
+      ['/world/countries', { countries: [{ code: 'DE', slug: 'germany', name: 'Германия', indicators_count: 10 }], total: 1 }],
+      [/^\/world\/rating\/concepts/, { concepts: [], total: 0 }],
+      [/^\/world\/compare\/map-series\//, { years: [2025], values_by_year: { 2025: { DE: { country_code: 'DE', value: 1 } } }, concept: { name: 'ВВП', unit: 'млрд $' }, benchmark_by_year: {} }],
+    ]);
+    const concepts = ['gdp-usd', 'gdp-per-capita-usd', 'unemployment-rate', 'hicp-index', 'population', 'policy-rate', 'budget-balance-gdp', 'government-debt-gdp']
+      .map((slug) => ({ slug, name: slug, unit: '' }));
+    renderPage(<HomeWorkbench ratingConcepts={{ data: { concepts } }} />, { path: '/', route: '/' });
+    await waitFor(async () => expect((await planetProps())?.quickConcepts).toBeTruthy());
+    expect((await planetProps()).quickConcepts.map((item) => item.slug)).toEqual(concepts.map((item) => item.slug));
+    expect((await planetProps()).quickConcepts[0].label).toBe('ВВП');
   });
 
   it('лёгкая главная: по умолчанию заранее качается только плоская карта, а шар, его сцена и текстура не стартуют', async () => {

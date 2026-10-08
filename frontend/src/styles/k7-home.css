@@ -137,7 +137,7 @@
   box-shadow: 0 10px 20px -12px rgb(30 38 56 / 0.45), var(--fe-inset-glint);
 }
 .fe-dashboard .fe-quick__row { padding-bottom: 8px; }
-.fe-dashboard .fe-hero-text .fe-hero-eyebrow::before { height: 6px; width: 34px; background: radial-gradient(ellipse 50% 100% at 50% 50%, var(--z3-gold), transparent 75%); border-radius: 999px; }
+.fe-dashboard .fe-hero-text .fe-hero-eyebrow::before { height: 2px; width: 30px; background: var(--z3-gold); border-radius: 2px; }
 
 /* ── 3. «Мир сейчас» ─────────────────────────────────────────────────────── */
 .fe-dashboard .fe-today__tile {
@@ -480,7 +480,7 @@
    иначе содержимое обрезалось бы по границе элемента. */
 .fe-dashboard .fe-country-grid > li:nth-child(n + 17) {
   content-visibility: auto;
-  contain-intrinsic-size: auto 130px;
+  contain-intrinsic-size: auto 200px;
   padding: 10px 14px 28px;
   margin: -10px -14px -28px;
 }
@@ -617,3 +617,74 @@ html[data-fe-motion='off'] .fe-dashboard [data-block='home-data-scope'] .fe-scop
   cursor: pointer;
 }
 .fe-dashboard select.fe-tool__input:disabled { cursor: default; opacity: 0.7; }
+
+/* ── 9. Круг 8: облегчение главной ─────────────────────────────────────────────────────────────────────────────────────────────
+   Слова владельца: «чуть нагруженная». Убрано: второй ряд показателей под планетой, ряд «Популярные страны», четвёртая плитка «Мира сейчас»
+   (вторая про Россию), строка «обновляется…» и раскрывающийся абзац об источниках в «Платформе в цифрах». Остальное выровнено. */
+
+/* «Мир сейчас»: три плитки. Телефон и узкая колонка: первая во всю ширину, две другие рядом (нет сироты); 900–1279 px: три в ряд. */
+.fe-dashboard .fe-today__grid > li:first-child { grid-column: 1 / -1; }
+@media (min-width: 900px) and (max-width: 1279px) {
+  .fe-dashboard .fe-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fe-dashboard .fe-today__grid > li:first-child { grid-column: auto; }
+}
+.fe-dashboard .fe-today__caption { min-height: calc(1.35em * 2); }
+.fe-dashboard .fe-today__rank { padding-top: 10px; }
+
+/* «Платформа в цифрах»: одна полоса из трёх чисел. Значки сняты (числа говорят сами), плита ниже, число видно сразу и крупно. */
+.fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 14px 16px 12px; }
+.fe-dashboard .fe-scope-stats { margin: 6px -6px 0; }
+.fe-dashboard .fe-scope-stat { padding: 8px 12px; }
+.fe-dashboard .fe-scope-stat__icon { display: none; }
+.fe-dashboard [data-block='home-data-scope'] .fe-stat-unit--lead { font-size: 13px; line-height: 1; }
+@media (max-width: 639px) {
+  .fe-dashboard [data-block='home-data-scope'] dd.fe-stat-num { font-size: clamp(26px, 8.6vw, 32px); }
+  .fe-dashboard .fe-scope-stat { padding: 6px 8px; }
+  .fe-dashboard .fe-scope-stat__label { font-size: 12.5px; }
+}
+@media (min-width: 640px) {
+  .fe-dashboard [data-block='home-data-scope'].fe-scope { padding: 16px 22px 14px; }
+}
+
+/* Конвертер: на узкой карточке (измеряем саму карточку, а не окно) сумма на всю ширину, «Из ⇄ В» ниже; названия валют читаются целиком. */
+.fe-dashboard .fe-tool { container: fe-tool / inline-size; }
+@container fe-tool (max-width: 440px) {
+  .fe-dashboard .fe-tool__row:not(.fe-tool__row--pair) { grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr); }
+  .fe-dashboard .fe-tool__row:not(.fe-tool__row--pair) > .fe-tool__field:first-child { grid-column: 1 / -1; }
+}
+.fe-dashboard select.fe-tool__input { min-width: 5.2rem; }
+
+/* Каталог стран: один шаблон карточки. Колонка флага одной ширины у всех (у трёх крупнейших флаг был больше, и текст сдвигался),
+   подписи и цифры переносятся целиком, а не обрезаются. */
+.fe-dashboard .fe-country-row__flag,
+.fe-dashboard .fe-country-grid[data-featured] > li:nth-child(-n + 3) .fe-country-row__flag { flex: 0 0 44px; width: 44px; height: 44px; font-size: 24px; }
+.fe-dashboard .fe-country-row__main { min-width: 0; }
+.fe-dashboard .fe-country-row__name { padding-right: 18px; overflow-wrap: anywhere; }
+.fe-dashboard .fe-country-row__metrics { gap: 4px 14px; }
+.fe-dashboard .fe-country-row__metric { max-width: 100%; }
+.fe-dashboard .fe-country-row__top { flex-wrap: wrap; }
+/* Неполный последний ряд растягивается на оставшиеся колонки: дыры в сетке нет (при поиске и фильтре по региону). */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(2n + 1) { grid-column: 1 / -1; }
+}
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(3n + 2) { grid-column: span 2; }
+}
+@media (min-width: 1280px) {
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(4n + 1) { grid-column: 1 / -1; }
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(4n + 2) { grid-column: span 3; }
+  .fe-dashboard .fe-country-grid:not([data-featured]) > li:last-child:nth-child(4n + 3) { grid-column: span 2; }
+}
+/* Три крупнейшие экономики на ширине 1024–1279: равные карточки в три колонки без «первой на всю ширину» (15 карточек делятся на три). */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .fe-dashboard .fe-country-grid[data-featured] > li:first-child { grid-column: auto; }
+}
+
+/* Первый экран телефона: стеклянная F меньше и прижата к краю, не обрезается; заголовок получает больше ширины. */
+@media (max-width: 639px) {
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text > .fe-hero-eyebrow,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1,
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 100px); }
+  html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after { right: 0; width: 88px; height: 103px; }
+}

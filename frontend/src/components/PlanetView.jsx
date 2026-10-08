@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
-  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, Layers3, Map as MapIcon, Minus, Pause, Play,
+  ArrowUpRight, Check, ChevronDown, ChevronRight, GitCompare, Globe2, HelpCircle, Layers3, Map as MapIcon, Minus, Pause, Play,
   Plus, RotateCcw, Search, Share2, X,
 } from 'lucide-react';
 import { useLocale, useT } from '../i18n';
@@ -98,6 +98,8 @@ export default function PlanetView({
   benchmarkSeries = [],
   // Стартовый поворот шара [долгота, широта]; без него планета выбирает вид сама (по числу окрашенных стран).
   startFocus = null,
+  // Справка о показателе (знак «i» у названия в легенде): её даёт страница.
+  conceptNote = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -500,6 +502,64 @@ export default function PlanetView({
     if (slug !== conceptSlug) onConceptChange?.(slug);
   }
 
+  // Кнопки масштаба и действия (играть, слои, поделиться): у шара лежат поверх сцены, у карты в одной строке под ней, чтобы не закрывать страны.
+  const cameraControls = (
+    <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
+      <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} title={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} title={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
+      <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} title={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
+    </div>
+  );
+  const stageActions = (canPlay || coverageAvailable || shareable) ? (
+    <div className="planet-stage-actions">
+      {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
+        {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>}
+      {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
+        onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={16} aria-hidden="true" /></button>}
+      {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
+        {shared ? <Check size={16} aria-hidden="true" /> : <Share2 size={16} aria-hidden="true" />}</button>}
+    </div>
+  ) : null;
+  const quickRow = quickConcepts.length > 1 ? (
+    <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
+      {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
+        aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
+    </div>
+  ) : null;
+  const playYearBadge = playing && year != null ? <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div> : null;
+  const hoverLabel = (
+    <>
+      {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
+        <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
+      {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
+    </>
+  );
+  const placeCardBlock = placeCard && !selectedCountry ? (
+    <div className="planet-country-card planet-place-card fe-glass-2 is-selected" role="status">
+      <div className="planet-country-heading"><div><h3>{placeCard.name}</h3></div><button type="button" onClick={() => setPlaceCard(null)} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
+      <p className="planet-place-text"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('w6c.place.noData')}</p>
+      <div className="planet-country-actions"><a className="planet-open-country" href={placeMail}>{t('w6c.place.ask')}<ArrowUpRight size={15} aria-hidden="true" /></a></div>
+    </div>
+  ) : null;
+  const countryCardBlock = (
+    <div ref={countryCard} className={'planet-country-card fe-glass-2' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
+      {selectedCountry && <>
+        <div className="planet-country-heading"><div><CountryFlag code={selectedCountry.code} className="planet-flag-lg" /><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
+        {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{fmt(selectedValue)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('planet.noData')}</p>)}
+        {hasMetric && selectedRank && rankTotal > 1 && <p className="planet-rank">{t('w2.planet.rank', { rank: selectedRank, total: rankTotal })}</p>}
+        <div className="planet-country-actions"><button type="button" className="planet-open-country" disabled={!selectedCountry.slug || typeof onSelect !== 'function'} onClick={() => onSelect?.(selectedCountry, selectedDetail)}>{t(selectedDetail?.indicator_code ? 'planet.openIndicator' : 'planet.openCountry')}<ArrowUpRight size={15} aria-hidden="true" /></button>
+          {conceptSlug && !coverage && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t(selectedPinned ? 'planet.removeComparison' : 'planet.addComparison', { country: countryName(selectedCountry, locale) })} aria-describedby={comparisonFull ? 'planet-' + id + '-comparison-full' : undefined}>{selectedPinned ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
+        </div>
+        {conceptSlug && !coverage && comparisonFull && <p className="planet-comparison-limit" id={'planet-' + id + '-comparison-full'}>{t('planet.comparisonFull')}</p>}
+        <div className="planet-country-meta">
+          <div className="planet-country-observation"><span>{metricName}</span><span>{selectedPeriod}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span></div>
+          {selectedDetail?.source && <div className="planet-source"><SourceLink href={selectedDetail.source_url}>{localizeSource(selectedDetail.source, locale)}</SourceLink></div>}
+          {selectedCountry.slug && <PlanetLink className="planet-all-indicators" href={countryPath(selectedCountry.slug)}>{t('planet.allIndicators')}<ArrowUpRight size={12} aria-hidden="true" /></PlanetLink>}
+        </div>
+      </>}
+    </div>
+  );
+
   return (
     <div className="planet-host">
       <section className={'planet-view' + (hideListOnPhone ? ' planet-view--no-phone-list' : '')} aria-labelledby={'planet-' + id + '-title'} data-planet-view="true">
@@ -512,7 +572,7 @@ export default function PlanetView({
           </div>
           {compareReady ? <PlanetLink href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={15} aria-hidden="true" /></PlanetLink> : comparisonCountries.length === 2 && <span role="status">{t('planet.noData')}</span>}
         </div>}
-        <div className={'planet-shell' + (showKey ? ' has-key' : '')}>
+        <div className={'planet-shell' + (showKey ? ' has-key' : '') + (isMap ? ' planet-shell--map' : '')}>
           <div className="planet-viewbar">
             <div className="planet-view-switch" role="group" aria-label={t('x8.planet.viewSwitch')}>
               <button type="button" aria-pressed={isMap} onClick={() => chooseView('map')}><MapIcon size={15} aria-hidden="true" />{t('x8.planet.viewMap')}</button>
@@ -561,76 +621,46 @@ export default function PlanetView({
           </div>
           <div className="planet-geography">
             {sceneFailed && <div className="planet-fallback-message" role="status"><span>{t('planet.unavailable')}</span><button type="button" onClick={retryScene}>{t('planet.retry')}</button></div>}
-            <div ref={stageRef} className={'planet-stage' + (isMap ? ' planet-stage--map' : '') + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView && !isMap ? ' is-zoomed' : '')} data-scene-ready={!isMap && sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} data-planet-surface={isMap ? 'map' : 'globe'} onPointerMove={trackPointer}>
-              {isMap ? <div className="planet-map-stage">
-                <Suspense fallback={<div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div>}>
+            {isMap ? <div ref={stageRef} className={'planet-stage planet-stage--map' + (selectedCountry || placeCard ? ' has-card' : '')} data-scene-ready="false" data-planet-mode={mode} data-planet-surface="map">
+              {quickRow}
+              <div className="planet-map-stage" onPointerMove={trackPointer}>
+                <Suspense fallback={<div className="planet-map-plate planet-map-plate--loading"><div className="planet-loading" role="status"><Spinner size={19} />{t('planet.loading')}</div></div>}>
                   <WorldMap embedded countries={availableCountries} valuesByCode={displayValues} detailsByCode={mapDetails} unit={displayUnit} metricName={metricName} periodLabel={periodLabel} colorMode={colorMode} colorDirection={colorDirection}
                     colorModel={colorModel} defaultScope={defaultScope} selectedCode={selectedCountry?.code || null} command={cameraCommand} onHover={touchNavigation ? undefined : handleHover} onSelect={handleMapSelect} />
                 </Suspense>
-              </div> : <>
-                <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
-                  <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
-                    valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
-                    interactive={!touchNavigation} touchNavigation={touchNavigation}
-                    autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
-                </Suspense></SceneBoundary>
-                <PlanetOrb />
-                <div className="planet-caustic" aria-hidden="true" />
-                <div className="planet-glass-sphere" aria-hidden="true" />
-                {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>}
-              </>}
-              {quickConcepts.length > 1 && <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
-                {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
-                  aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
-              </div>}
-              {playing && year != null && <div className="planet-play-year" role="status" aria-live="polite">{year}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</div>}
-              {!isMap && hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
-              {hoveredCountry && <div className="planet-hover-label"><span>{countryName(hoveredCountry, locale)}</span><strong>{hasValue(valueForCountry(hoveredCountry)) ? fmt(valueForCountry(hoveredCountry)) + ' ' + displayUnit : t('planet.noDataLegend')}</strong>
-                <small>{t(hoveredCountry.code === selectedCode ? 'planet.pressToOpen' : 'planet.pressToSelect')}</small></div>}
-              {!hoveredCountry && hoverPlace && <div className="planet-hover-label planet-hover-label--muted"><span>{hoverPlace}</span><small>{t('planet.notInCatalog')}</small></div>}
-              <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
-                <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} title={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
-                <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} title={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
-                <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} title={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
+                {playYearBadge}
+                {hoverLabel}
               </div>
+              <div className="planet-map-tools">{cameraControls}{stageActions}</div>
+              <div className="planet-stage-bottom">{placeCardBlock}{countryCardBlock}</div>
+            </div> : <div ref={stageRef} className={'planet-stage' + (selectedCountry || placeCard ? ' has-card' : '') + (zoomedView ? ' is-zoomed' : '')} data-scene-ready={sceneStatus === 'ready' ? 'true' : 'false'} data-planet-mode={mode} data-planet-surface="globe" onPointerMove={trackPointer}>
+              <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
+                <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
+                  valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
+                  interactive={!touchNavigation} touchNavigation={touchNavigation}
+                  autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
+              </Suspense></SceneBoundary>
+              <PlanetOrb />
+              <div className="planet-caustic" aria-hidden="true" />
+              <div className="planet-glass-sphere" aria-hidden="true" />
+              {sceneStatus === 'loading' && <div className="planet-loading" role="status"><Spinner size={16} />{t('r6.planet.loading')}</div>}
+              {quickRow}
+              {playYearBadge}
+              {hintVisible && !selectedCountry && !placeCard && <div className="planet-gesture-hint" role="note">{t(touchNavigation ? 'w6c.hint.touch' : 'w6c.hint.mouse')}</div>}
+              {hoverLabel}
+              {cameraControls}
               <div className="planet-stage-bottom">
-                {!isMap && water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
-                {(canPlay || coverageAvailable || shareable) && <div className="planet-stage-actions">
-                  {canPlay && <button type="button" className={'planet-round' + (playing ? ' is-active' : '')} aria-pressed={playing} aria-label={playTitle} title={playTitle} data-tip={playTitle} onClick={togglePlay}>
-                    {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>}
-                  {coverageAvailable && <button type="button" className={'planet-round' + (coverage ? ' is-active' : '')} aria-pressed={coverage} aria-label={t('w6c.coverage.toggle')} title={t('w6c.coverage.toggle')} data-tip={t('w6c.coverage.toggle')}
-                    onClick={() => { setLayer(coverage ? 'metric' : 'coverage'); setPlaying(false); }}><Layers3 size={16} aria-hidden="true" /></button>}
-                  {shareable && <button type="button" className={'planet-round' + (shared ? ' is-active' : '')} aria-label={shareTitle} title={shareTitle} data-tip={shareTitle} onClick={shareView}>
-                    {shared ? <Check size={16} aria-hidden="true" /> : <Share2 size={16} aria-hidden="true" />}</button>}
-                </div>}
-                {placeCard && !selectedCountry && <div className="planet-country-card planet-place-card fe-glass-2 is-selected" role="status">
-                  <div className="planet-country-heading"><div><h3>{placeCard.name}</h3></div><button type="button" onClick={() => setPlaceCard(null)} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
-                  <p className="planet-place-text"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('w6c.place.noData')}</p>
-                  <div className="planet-country-actions"><a className="planet-open-country" href={placeMail}>{t('w6c.place.ask')}<ArrowUpRight size={15} aria-hidden="true" /></a></div>
-                </div>}
-                <div ref={countryCard} className={'planet-country-card fe-glass-2' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
-                  {selectedCountry && <>
-                    <div className="planet-country-heading"><div><CountryFlag code={selectedCountry.code} className="planet-flag-lg" /><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
-                    {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{fmt(selectedValue)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('planet.noData')}</p>)}
-                    {hasMetric && selectedRank && rankTotal > 1 && <p className="planet-rank">{t('w2.planet.rank', { rank: selectedRank, total: rankTotal })}</p>}
-                    <div className="planet-country-actions"><button type="button" className="planet-open-country" disabled={!selectedCountry.slug || typeof onSelect !== 'function'} onClick={() => onSelect?.(selectedCountry, selectedDetail)}>{t(selectedDetail?.indicator_code ? 'planet.openIndicator' : 'planet.openCountry')}<ArrowUpRight size={15} aria-hidden="true" /></button>
-                      {conceptSlug && !coverage && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t(selectedPinned ? 'planet.removeComparison' : 'planet.addComparison', { country: countryName(selectedCountry, locale) })} aria-describedby={comparisonFull ? 'planet-' + id + '-comparison-full' : undefined}>{selectedPinned ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
-                    </div>
-                    {conceptSlug && !coverage && comparisonFull && <p className="planet-comparison-limit" id={'planet-' + id + '-comparison-full'}>{t('planet.comparisonFull')}</p>}
-                    <div className="planet-country-meta">
-                      <div className="planet-country-observation"><span>{metricName}</span><span>{selectedPeriod}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span></div>
-                      {selectedDetail?.source && <div className="planet-source"><SourceLink href={selectedDetail.source_url}>{localizeSource(selectedDetail.source, locale)}</SourceLink></div>}
-                      {selectedCountry.slug && <PlanetLink className="planet-all-indicators" href={countryPath(selectedCountry.slug)}>{t('planet.allIndicators')}<ArrowUpRight size={12} aria-hidden="true" /></PlanetLink>}
-                    </div>
-                  </>}
-                </div>
+                {water && !selectedCountry && <button type="button" className="planet-pill planet-back-to-countries" onClick={() => commandCamera('reset')}><RotateCcw size={15} aria-hidden="true" />{t('w6c.backToCountries')}</button>}
+                {stageActions}
+                {placeCardBlock}
+                {countryCardBlock}
               </div>
-            </div>
+            </div>}
             {showKey && <div className="planet-key">
               <div className="planet-key-head">
-                <div className="planet-key-title"><strong>{metricName}</strong>{(periodLabel || tagLabel) && <span>{periodLabel}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span>}</div>
+                <div className="planet-key-title"><strong>{metricName}</strong>{(periodLabel || tagLabel) && <span>{periodLabel}{tagLabel && <em className="planet-tag">{tagLabel}</em>}</span>}{conceptNote}</div>
                 <details className="planet-scale">
-                  <summary>{t('planet.legend')}<ChevronDown size={14} aria-hidden="true" /></summary>
+                  <summary title={t('planet.legend')}><HelpCircle size={16} aria-hidden="true" /><span className="planet-scale-text">{t('planet.legend')}</span><ChevronDown size={14} aria-hidden="true" /></summary>
                   <div className="planet-legend" aria-label={t('planet.legend')}>
                     <p className="planet-key-order">{t(coverage ? 'w6c.key.ruleCoverage' : ranked ? 'w6c.key.rule' : 'w6c.key.ruleValue')}</p>
                     <p className="planet-legend-scale">{t(colorModel.kind === 'diverging' ? 'world.map.scaleZero' : 'world.map.scaleMedian')}</p>

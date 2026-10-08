@@ -68,7 +68,7 @@
 /* Холст проявляется за 300 мс, пока плейсхолдер так же гаснет: размер шара у них один (--planet-sphere), скачка нет. */
 .planet-stage canvas { opacity: 0; transition: opacity 300ms ease-out; }
 .planet-stage[data-scene-ready="true"] canvas { opacity: 1; }
-.planet-stage > div:first-child:not(.planet-map-fallback):not(.planet-orb) { height: 100%; }
+.planet-stage:not(.planet-stage--map) > div:first-child:not(.planet-orb) { height: 100%; }
 .planet-stage canvas { display: block; }
 /* Мягкая тень под шаром; поле холста вне шара прозрачное. Вблизи (is-zoomed) шар заполняет сцену: тень, каустика и стеклянная сфера
    снимаются, иначе на плоской карте остаётся серый круг и эллипс. */
@@ -158,7 +158,7 @@
   animation: planet-hint-in-centered 420ms ease-out both;
 }
 .planet-stage:has(.planet-quick) .planet-gesture-hint { top: 62px; }
-.planet-loading { position: absolute; left: 0; right: 0; bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 9px; z-index: 1; color: var(--planet-muted); font-size: 13px; pointer-events: none; }
+.planet-loading { position: absolute; left: 0; right: 0; bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 9px; z-index: 1; color: var(--planet-muted); font-size: 13px; pointer-events: none; }
 .planet-hover-label { position: absolute; z-index: 3; left: clamp(10px, calc(var(--planet-pointer-x, 18px) + 16px), calc(100% - 236px)); top: clamp(10px, calc(var(--planet-pointer-y, 18px) + 18px), calc(100% - 92px)); width: max-content; max-width: 220px; display: grid; gap: 2px; padding: 9px 12px 10px; border-radius: 14px; color: var(--planet-ink); background: var(--fe-glass-l1-sheen), rgba(255,255,255,.86); box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint); font-size: 13px; line-height: 1.35; pointer-events: none; }
 .planet-hover-label > span { font-weight: 600; }
 .planet-hover-label strong { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--planet-ink); }
@@ -191,7 +191,7 @@
 .planet-country-actions > button, .planet-country-actions > a { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 9px 12px; border-radius: 12px; font: inherit; font-size: 14px; cursor: pointer; }
 .planet-open-country { flex: 1.25 1 0; white-space: nowrap; color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); font-weight: 600; box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255,255,255,.2); text-decoration: none; }
 .planet-open-country:disabled { box-shadow: none; }
-.planet-pin-country { flex: 1 1 0; color: var(--planet-ink); background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow); }
+.planet-pin-country { flex: 1 1 0; color: var(--planet-ink); font-weight: 600; background: rgba(255,255,255,.94); box-shadow: var(--fe-shadow-l2, var(--fe-l2-shadow)), var(--fe-inset-glint); }
 .planet-pin-country[aria-pressed="true"] { color: var(--planet-accent-ink); background: linear-gradient(135deg, rgba(30,58,110,.16), rgba(30,58,110,.08)), var(--fe-l1-bg); box-shadow: var(--fe-l2-shadow); }
 .planet-comparison-limit { grid-column: 1 / -1; grid-row: 4; margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--planet-muted); }
 .planet-country-actions > button:disabled { opacity: .45; cursor: default; }
@@ -273,21 +273,43 @@
 .planet-fallback-message button { flex-shrink: 0; min-height: 40px; padding: 7px 12px; border-radius: 14px; color: var(--planet-ink); background: var(--fe-glass-l2); font: inherit; font-size: 13px; cursor: pointer; box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint); }
 
 /* Круг 8: плоская карта по умолчанию, шар по переключателю «Карта | Шар».
-   Карта стоит в том же окне сцены, что и шар (та же высота --planet-scene-height, те же кнопки, чипы и карточка поверх), поэтому страница
-   при переключении не прыгает. Подложка карты — спокойный океан с мягким светом сверху: поля над и под картой не пустые. */
-.planet-view { --planet-ocean: #DCE8F3; --planet-ocean-light: #EAF1F9; }
+   Карта стоит в окне, которое повторяет её собственные пропорции (960 × 424: без Антарктиды): сверху и снизу нет пустых голубых полос,
+   высоту задаёт ширина, а не высота круглого шара. Над картой ряд быстрых показателей, под ней одна строка «+ − вся карта | играть, слои,
+   поделиться» (кнопки не лежат на странах), карточка выбранной страны ниже строки и ничего не закрывает.
+   Подложка карты — спокойный океан с мягким светом сверху. */
+.planet-view { --planet-ocean: #DCE8F3; --planet-ocean-light: #EAF1F9; --planet-map-ratio: 0.4417; }
 :root[data-theme="dark"] .planet-view, :root.dark .planet-view { --planet-ocean: #22344A; --planet-ocean-light: #2B405A; }
-.planet-stage--map { background: transparent; }
+.planet-view .planet-shell--map .planet-stage--map { height: auto; display: flex; flex-direction: column; overflow: visible; background: transparent; }
+.planet-shell--map .planet-quick { position: relative; inset: auto; flex: none; padding: 12px 14px 8px; }
+.planet-shell--map .planet-quick[data-more='true']::after { right: 0; }
 .planet-map-stage {
-  position: absolute; inset: 0; overflow: hidden; border-radius: var(--planet-map-radius, 0);
+  position: relative; flex: none; margin: 0 14px; overflow: hidden; border-radius: var(--planet-map-radius, 18px);
   background: radial-gradient(120% 90% at 30% 0%, var(--planet-ocean-light), transparent 70%), var(--planet-ocean);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
 }
-.planet-map-plate { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.planet-map-svg { display: block; width: 100%; height: 100%; }
+.planet-map-plate { position: relative; width: 100%; aspect-ratio: 960 / 424; }
+.planet-map-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .planet-map-svg.is-zoomed { cursor: grab; }
 .planet-map-svg.is-zoomed:active { cursor: grabbing; }
 .planet-map-svg path[role="button"] { cursor: pointer; }
+.planet-map-plate--loading .planet-loading { top: 0; bottom: 0; }
+.planet-map-stage .planet-play-year { top: 10px; }
+.planet-map-tools { display: flex; align-items: center; justify-content: space-between; flex: none; gap: 10px; padding: 10px 14px 12px; }
+.planet-map-tools .planet-camera-controls { position: static; flex-direction: row; }
+.planet-map-tools .planet-stage-actions { margin-left: auto; }
+.planet-map-tools .planet-camera-controls button[data-tip]:hover::after, .planet-map-tools .planet-camera-controls button[data-tip]:focus-visible::after { right: auto; left: 50%; top: auto; bottom: calc(100% + 8px); transform: translateX(-50%); }
+.planet-map-tools .planet-stage-actions .planet-round[data-tip]:hover::after, .planet-map-tools .planet-stage-actions .planet-round[data-tip]:focus-visible::after { left: auto; right: 0; }
+.planet-shell--map .planet-stage-bottom { position: static; align-items: stretch; gap: 8px; padding: 0 14px 14px; }
+.planet-shell--map .planet-stage-bottom:not(:has(.is-selected)) { display: none; }
+.planet-shell--map .planet-country-card { max-width: none; margin: 0; }
+.planet-shell--map .planet-country-actions > button, .planet-shell--map .planet-country-actions > a { flex: 0 1 auto; min-width: 150px; }
+/* Колонка списка на карте ровно по высоте левой колонки (чипы, карта, строка кнопок, легенда), а не по высоте круглого шара. */
+.planet-shell--map { align-items: stretch; }
+.planet-shell--map .planet-info { height: auto; min-height: 320px; align-self: stretch; contain: size; }
+.planet-shell--map.has-key .planet-info { height: auto; }
+.z6-planet .planet-view .planet-shell { grid-template-columns: minmax(0, 1fr) auto; }
+.z6-planet .planet-view .planet-geography { grid-column: 1 / -1; }
+.z6-planet .planet-view .planet-viewbar { grid-column: 2; }
 /* Панель выбора вида стоит над сценой: на компьютере в правой колонке рядом с поиском и годом, на телефоне отдельной строкой над картой. */
 .planet-viewbar { grid-column: 2; grid-row: 1; align-self: stretch; display: flex; align-items: flex-end; padding: 14px 16px; }
 .planet-view-switch { width: 100%; }
@@ -326,6 +348,10 @@
   .planet-viewbar { order: 0; width: 100%; padding: 12px 14px 0; }
   .planet-fallback-message { order: 0; width: 100%; padding: 10px 14px 0; }
   .planet-stage { order: 1; width: 100%; }
+  .planet-shell--map .planet-info { contain: none; height: auto; min-height: 0; }
+  .planet-shell--map .planet-quick { padding: 10px 14px 8px; }
+  .planet-shell--map .planet-map-stage { margin: 0 10px; }
+  .planet-map-tools { padding: 8px 12px 10px; }
   .planet-toolbar { order: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; gap: 10px; width: 100%; padding: 12px 14px 8px; border-bottom: 0; }
   .planet-toolbar:not(:has(.planet-year)) .planet-search { grid-column: 1 / -1; }
   .planet-toolbar .planet-control-label, .planet-year > span { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
@@ -351,7 +377,7 @@
   .planet-comparison-pair { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); width: 100%; flex-basis: 100%; }
   .planet-comparison-pair > button { min-width: 0; overflow-wrap: anywhere; line-height: 1.4; }
   .planet-comparison > a { width: 100%; }
-  .planet-loading { bottom: 10px; }
+  .planet-loading { bottom: 4px; }
   .planet-gesture-hint { max-width: calc(100% - 112px); }
   /* Карточка страны на телефоне (круг 6): не выше 40 % шара — заголовок, число с местом и две кнопки; период, источник и «Все показатели»
      остаются в легенде под шаром и на странице страны. Пока карточка открыта, кнопки управления прячутся: над ней нет кружков. */
@@ -363,7 +389,7 @@
   .planet-country-actions { margin-top: 6px; }
   .planet-country-actions > button, .planet-country-actions > a { min-height: 40px; padding: 6px 12px; }
   .planet-country-meta { display: none; }
-  .planet-stage.has-card .planet-camera-controls, .planet-stage.has-card .planet-stage-actions, .planet-stage.has-card .planet-back-to-countries { display: none; }
+  .planet-stage:not(.planet-stage--map).has-card .planet-camera-controls, .planet-stage:not(.planet-stage--map).has-card .planet-stage-actions, .planet-stage.has-card .planet-back-to-countries { display: none; }
   /* Страница ниже показывает свой полный рейтинг: второй такой же список под планетой лишний. */
   .planet-view--no-phone-list .planet-list-heading, .planet-view--no-phone-list .planet-country-list, .planet-view--no-phone-list .planet-list-more { display: none; }
 }
@@ -398,4 +424,12 @@
 .planet-ph-value { width: 54px; }
 .planet-view--placeholder .planet-list-heading > div > .planet-ph-line { height: 14px; }
 .planet-ph-view { display: block; width: 100%; height: 48px; border-radius: 14px; }
-.planet-map-ph { position: absolute; inset: 0; border-radius: var(--planet-map-radius, 0); background: radial-gradient(120% 90% at 30% 0%, var(--planet-ocean-light), transparent 70%), var(--planet-ocean); }
+.planet-ph-quick { overflow: hidden; }
+.planet-ph-chip { display: block; flex: none; height: 38px; border-radius: 999px; }
+
+/* Круг 8: «Как читать цвета» — маленькая кнопка со знаком вопроса (текст остаётся для чтения с экрана и в подсказке), а не большая пилюля рядом с названием. */
+.planet-scale summary { min-width: 36px; padding: 0 10px; gap: 4px; }
+.planet-scale-text { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.planet-scale summary > svg:last-child { display: none; }
+.planet-key-title .fe-map-btn { margin-left: 2px; align-self: center; }
+.planet-scale[open] summary > svg:first-child { transform: none; }

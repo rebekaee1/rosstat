@@ -51,13 +51,12 @@ describe('HomeDataScope: три числа платформы', () => {
     expect(screen.queryByText('1897')).toBeNull();
     expect(document.querySelectorAll('.fe-scope-stat')).toHaveLength(3);
 
-    // Российские 145 и 495 — только внутри раскрывашки, не в основной сетке.
-    const details = screen.getByText('Только официальные источники').closest('details');
-    expect(details.contains(screen.getByText('145'))).toBe(true);
-    expect(details.contains(screen.getByText('495'))).toBe(true);
-    expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
-    expect(screen.queryByText(/2\s*377/)).toBeNull();
-    expect(screen.queryByText(/США:.*штатам/)).toBeNull();
+    // Круг 8: полоса из трёх чисел и больше ничего: ни строки «обновляется», ни раскрывающегося абзаца об источниках.
+    expect(document.querySelector('details')).toBeNull();
+    expect(screen.queryByText('Только официальные источники')).toBeNull();
+    expect(screen.queryByText(/обновляются автоматически/)).toBeNull();
+    expect(screen.queryByText('145')).toBeNull();
+    expect(screen.queryByText('495')).toBeNull();
   });
 
   it('плитки нажимаются: показатели ведут ко всем темам, страны к каталогу; история без ссылки', async () => {
@@ -91,16 +90,6 @@ describe('HomeDataScope: три числа платформы', () => {
     expect(screen.queryByText('тыс.')).toBeNull();
   });
 
-  it('свёрнутая строка сразу называет источники; полный список и режим обновления в раскрывашке', () => {
-    renderScope();
-
-    expect(screen.getByText('Росстат, Евростат, МВФ и другие')).toBeTruthy();
-    expect(screen.getByText(
-      'Евростат, МВФ, Бюро экономического анализа США, Бюро трудовой статистики США, ФРС, Росстат, Банк России, Минфин России',
-    )).toBeTruthy();
-    expect(screen.getByText(/обновляются автоматически/)).toBeTruthy();
-  });
-
   it('нет текста-заглушки и запрещённого разделителя mid-dot', () => {
     renderScope();
 
@@ -122,22 +111,14 @@ describe('HomeDataScope: три числа платформы', () => {
     expect(screen.getByText('years of history, since 1897')).toBeTruthy();
     expect(screen.queryByText(/Russian macro indicators/)).toBeNull();
     expect(screen.queryByText('495')).toBeNull();
-    expect(screen.getByText('Eurostat, IMF, BLS and others')).toBeTruthy();
-    expect(screen.getByText(
-      'Eurostat, IMF, U.S. Bureau of Labor Statistics, Bureau of Economic Analysis, Federal Reserve, national statistical offices and central banks',
-    )).toBeTruthy();
     expect(screen.queryByText(/Rosstat/)).toBeNull();
     expect(screen.getByText('268').closest('a').getAttribute('href')).toBe('/world/rating/gdp-usd');
   });
 
-  it('значки у плиток, строка «обновляется по мере публикации» видна сразу, не прячется в раскрывашке', async () => {
+  it('полоса «Платформа в цифрах» не обещает «ежедневно» и не несёт лишних строк', async () => {
     renderScope();
     await waitFor(() => expect(screen.getByText('268')).toBeTruthy());
-    expect(document.querySelectorAll('.fe-scope-stat__icon')).toHaveLength(3);
-    const update = screen.getByText(/обновляются автоматически/);
-    expect(update.closest('details')).toBeNull();
-    expect(update.closest('.fe-scope-update')).toBeTruthy();
-    // Обещания «ежедневно» нет: источники публикуют с разной частотой.
+    expect(document.querySelector('.fe-scope-update')).toBeNull();
     expect(document.querySelector('[data-block="home-data-scope"]').textContent).not.toMatch(/ежедневн/i);
   });
 

@@ -3286,4 +3286,6 @@ export default {
   // ===== Круг 8: Россия, регионы, календарь, страны (Z4) =====
   'c8y.ru.main.inflationMonth': 'Inflation, month over month',
   'c8y.map.replay': 'Play again',
+  // ===== Круг 8: главная (Z1) =====
+  'c8h.today.sub': 'Figures for the latest year with data',
 };

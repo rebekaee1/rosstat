@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import IndicatorSearch from '../IndicatorSearch';
 import HomeDataScope from './HomeDataScope';
-import HomePopularCountries from './HomePopularCountries';
 import HomeToday from './HomeToday';
 import { HOME_EXAMPLE_COUNT, searchExamples } from '../../lib/searchExamples';
 import { buildQuickLinks } from '../../lib/homeQuickLinks';
@@ -18,7 +17,9 @@ import '../../styles/k7-home.css';
  * Hero главной. Слева (на компьютере): заголовок, поиск и быстрые ссылки, «Мир сейчас» с четырьмя живыми фактами
  * и числа платформы: колонка не пустеет рядом с высокой карточкой планеты. Справа: живая планета `planet`.
  * На телефоне порядок другой: текст и поиск, планета, «Мир сейчас», числа платформы.
- * Ниже стоят «Популярные страны» одной полосой. Единственный источник разметки hero: HomeWorkbench её не дублирует.
+ * Ряд «Популярные страны» с круга 8 здесь не стоит: он повторял каталог стран ниже и дважды звал «Показать все страны»
+ * (компонент HomePopularCountries остаётся в каталоге компонентов, пока не выяснены все потребители).
+ * Единственный источник разметки hero: HomeWorkbench её не дублирует.
  */
 export default function HomeHero({ planet = null }) {
   const t = useT();
@@ -85,7 +86,6 @@ export default function HomeHero({ planet = null }) {
         {planet ? <HomeToday /> : null}
         {planet ? <div className="fe-hero-scope"><HomeDataScope /></div> : <HomeDataScope />}
       </div>
-      <HomePopularCountries />
     </header>
   );
 }

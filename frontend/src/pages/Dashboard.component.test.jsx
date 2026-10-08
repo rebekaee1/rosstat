@@ -66,11 +66,11 @@ describe('Dashboard', () => {
     expect(h1.textContent).not.toMatch(/рабочей среде/);
     // Карта России снята с hero (переехала на /russia). Поиск — inline под заголовком.
     expect(screen.queryByLabelText('Россия')).toBeNull();
-    // Блок чисел платформы; Россия — не на первом плане, а в раскрывашке «Подробнее».
+    // Полоса чисел платформы (круг 8): три числа, без раскрывашки с российскими цифрами и источниками.
     expect(screen.getByRole('heading', { name: 'Платформа в цифрах' })).toBeTruthy();
-    await waitFor(() => expect(screen.getByText('495')).toBeTruthy());
-    expect(screen.getByText(/региональных показателей России/)).toBeTruthy();
-    expect(screen.getByText('495').closest('details')).toBeTruthy();
+    await waitFor(() => expect(document.querySelectorAll('.fe-scope-stat')).toHaveLength(3));
+    expect(screen.queryByText('495')).toBeNull();
+    expect(document.querySelector('[data-block="home-data-scope"] details')).toBeNull();
     expect(screen.queryByText(/42\s*075/)).toBeNull();
     expect(screen.getByRole('heading', { name: 'Страны и показатели' })).toBeTruthy();
     expect(screen.queryByRole('heading', { name: 'Сколько данных доступно' })).toBeNull();

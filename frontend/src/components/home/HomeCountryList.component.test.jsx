@@ -96,14 +96,14 @@ describe('HomeCountryList — каталог стран', () => {
   it('длинный список свёрнут до первых строк и раскрывается кнопкой «Показать все страны»', async () => {
     renderCatalog(manyCountries(30));
     await screen.findAllByRole('link');
-    // 30 стран + Россия, добавленная каркасом, — по алфавиту видно 16 (четыре строки по четыре).
-    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(16);
+    // 30 стран + Россия, добавленная каркасом, — по алфавиту видно 24 (делится на 2, 3 и 4 колонки: в последнем ряду нет «дыры»).
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(24);
 
     const more = screen.getByRole('button', { name: /Показать все страны \(31\)/ });
     fireEvent.click(more);
     expect(document.querySelectorAll('.fe-country-row')).toHaveLength(31);
     fireEvent.click(screen.getByRole('button', { name: 'Свернуть список' }));
-    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(16);
+    expect(document.querySelectorAll('.fe-country-row')).toHaveLength(24);
   });
 
   it('EN: заголовок и поле по-английски, названия стран по-английски', async () => {
