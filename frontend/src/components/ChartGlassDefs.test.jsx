@@ -31,7 +31,7 @@ describe('ChartGlassDefs', () => {
     expect(new Set(Object.values(ids)).size).toBe(Object.values(ids).length);
   });
 
-  it('золотая лента идёт по длине линии тремя оттенками из темы', () => {
+  it('лента идёт по длине линии одним цветом из темы (без «двойной линии»)', () => {
     let ids;
     const { container } = render(<Probe onIds={(v) => { ids = v; }} />);
     const ribbon = container.querySelector(`[id="${ids.ribbon}"]`);
@@ -39,7 +39,8 @@ describe('ChartGlassDefs', () => {
     expect(ribbon.getAttribute('y2')).toBe('0');
     const colors = [...ribbon.querySelectorAll('stop')].map((stop) => stop.getAttribute('stop-color'));
     expect(colors).toEqual(RIBBON_STOPS.map((stop) => stop.color));
-    expect(colors[0]).toBe(CHART_THEME.goldLight);
+    expect(new Set(colors).size).toBe(1);
+    expect(colors[0]).toBe(CHART_THEME.gold);
   });
 
   it('заливка под лентой уходит в ноль у оси; градиента диапазона прогноза нет', () => {
@@ -47,7 +48,8 @@ describe('ChartGlassDefs', () => {
     const { container } = render(<Probe onIds={(v) => { ids = v; }} />);
     const area = container.querySelector(`[id="${ids.area}"]`);
     const stops = [...area.querySelectorAll('stop')];
-    expect(Number(stops[0].getAttribute('stop-opacity'))).toBeCloseTo(0.16);
+    expect(Number(stops[0].getAttribute('stop-opacity'))).toBeCloseTo(0.2);
+    expect(stops[0].getAttribute('stop-color')).toBe(CHART_THEME.gold);
     expect(Number(stops[1].getAttribute('stop-opacity'))).toBe(0);
     expect(ids.prism).toBeUndefined();
     expect(container.querySelector('[id$="-prism"]')).toBeNull();

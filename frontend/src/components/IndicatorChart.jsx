@@ -30,12 +30,14 @@ import '../styles/z4-indicator.css';
 import '../styles/k4-charts.css';
 import '../lib/glassChartDefs';
 
-// Основная линия: «стеклянная лента» 3 px (K4.1). Сплошной цвет нужен подсказке, легенде и шарику; сама линия — градиент ribbon.
+// Основная линия: один сплошной цвет 2,5 px, область под ней того же цвета (круг 10, Г1: без градиента по длине, блика и тени).
 const LINE = CHART_THEME.gold ?? CHART_THEME.line ?? '#B08A3E';
-// Прогноз: тот же ряд продолжается золотой линией, которая тает по прозрачности вдоль, чтобы факт и прогноз не сливались.
+// Прогноз: тот же ряд продолжается тонкой золотой линией одного цвета (круг 10, Г1: без затухания).
 const FORECAST = CHART_THEME.forecast;
 // Ряд сравнения по умолчанию — сапфир (светлый → тёмный); чужие цвета рисуются как заданы.
 const SAPPHIRE_LINES = new Set([CHART_THEME.sapphire, CHART_THEME.blue]);
+const LINE_WIDTH = 2.5;
+const FORECAST_WIDTH = 2;
 
 // Одни и те же короткие подписи на всех страницах: «1 г., 5 л., 10 л., Всё». У годовых рядов нет смысла в «1 г.»
 // (одна точка), поэтому там начинаем с 5 лет и добавляем 25.
@@ -261,23 +263,13 @@ function LastPointMarker({
 }
 
 /**
- * Вертикальный «луч» на границе факта и прогноза: тонкая светлая линия, тающая к краям, и размытое свечение рядом.
- * Градиент задан в координатах плота (userSpaceOnUse), потому что у вертикальной линии нулевая ширина ограничивающей рамки.
+ * Граница факта и прогноза: тонкая сплошная линия 1 px одного цвета, без градиента и свечения (круг 10, Г2, звонок 08.10).
  */
-function NowBeam({ x1, y1, y2, beamId }) {
+function NowBeam({ x1, y1, y2 }) {
   if (![x1, y1, y2].every(Number.isFinite)) return null;
   return (
     <g pointerEvents="none" className="k4-beam">
-      <defs>
-        <linearGradient id={beamId} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x1} y2={y2}>
-          <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={0} />
-          <stop offset="35%" stopColor={CHART_THEME.goldBright} stopOpacity={0.95} />
-          <stop offset="75%" stopColor={CHART_THEME.goldLight} stopOpacity={0.7} />
-          <stop offset="100%" stopColor={CHART_THEME.goldLight} stopOpacity={0} />
-        </linearGradient>
-      </defs>
-      <line className="k4-beam__glow" x1={x1} x2={x1} y1={y1} y2={y2} stroke={`url(#${beamId})`} strokeWidth={9} strokeLinecap="round" opacity={0.55} />
-      <line x1={x1} x2={x1} y1={y1} y2={y2} stroke={`url(#${beamId})`} strokeWidth={1.6} strokeLinecap="round" />
+      <line x1={x1} x2={x1} y1={y1} y2={y2} stroke={FORECAST} strokeOpacity={0.75} strokeWidth={1} />
     </g>
   );
 }
@@ -889,13 +881,13 @@ export default function IndicatorChart({
                 style={{ pointerEvents: 'none' }}
               />
             )}
-            {/* «Сейчас»: вертикальный луч света вместо штриховой линии. */}
+            {/* «Сейчас»: тонкая сплошная вертикаль (Г2). */}
             {forecastBoundaryDate && showForecast && chartType !== 'bar' && (
               <ReferenceLine
                 x={forecastBoundaryDate}
                 ifOverflow="visible"
                 shape={(props) => (
-                  <NowBeam x1={props.x1 ?? props.x} y1={props.y1} y2={props.y2} beamId={glass.beam} />
+                  <NowBeam x1={props.x1 ?? props.x} y1={props.y1} y2={props.y2} />
                 )}
               />
             )}
@@ -910,63 +902,32 @@ export default function IndicatorChart({
                 maxBarSize={28}
               />
             ) : chartType === 'line' ? (
-              <>
-                <Line
-                  className="k4-ribbon"
-                  dataKey="actual"
-                  stroke={`url(#${glass.ribbon})`}
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  dot={false}
-                  activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
-                  isAnimationActive={false}
-                  connectNulls
-                />
-                {/* Белый блик-штрих 1 px поверх ленты, смещён на 1 px вверх (css k4-gloss). */}
-                <Line
-                  className="k4-gloss"
-                  dataKey="actual"
-                  stroke="rgba(255,255,255,0.72)"
-                  strokeWidth={1}
-                  strokeLinecap="round"
-                  dot={false}
-                  activeDot={false}
-                  isAnimationActive={false}
-                  connectNulls
-                  legendType="none"
-                  tooltipType="none"
-                />
-              </>
+              <Line
+                className="k4-ribbon"
+                dataKey="actual"
+                stroke={LINE}
+                strokeWidth={LINE_WIDTH}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                dot={false}
+                activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
+                connectNulls
+              />
             ) : (
-              <>
-                <Area
-                  className="k4-ribbon"
-                  dataKey="actual"
-                  stroke={`url(#${glass.ribbon})`}
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill={`url(#${glass.area})`}
-                  dot={false}
-                  activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
-                  isAnimationActive={false}
-                  connectNulls
-                />
-                <Line
-                  className="k4-gloss"
-                  dataKey="actual"
-                  stroke="rgba(255,255,255,0.72)"
-                  strokeWidth={1}
-                  strokeLinecap="round"
-                  dot={false}
-                  activeDot={false}
-                  isAnimationActive={false}
-                  connectNulls
-                  legendType="none"
-                  tooltipType="none"
-                />
-              </>
+              <Area
+                className="k4-ribbon"
+                dataKey="actual"
+                stroke={LINE}
+                strokeWidth={LINE_WIDTH}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill={`url(#${glass.area})`}
+                dot={false}
+                activeDot={isDragging ? false : { r: 5, fill: LINE, stroke: '#FFFFFF', strokeWidth: 2 }}
+                isAnimationActive={false}
+                connectNulls
+              />
             )}
 
             {showForecast && (
@@ -983,8 +944,8 @@ export default function IndicatorChart({
                 <Line
                   className="k4-forecast"
                   dataKey="forecast"
-                  stroke={`url(#${glass.forecast})`}
-                  strokeWidth={3}
+                  stroke={FORECAST}
+                  strokeWidth={FORECAST_WIDTH}
                   strokeLinecap="round"
                   connectNulls
                   dot={(props) => (props.payload?.date === forecastLast?.date
@@ -1002,8 +963,8 @@ export default function IndicatorChart({
                   key={series.dataKey}
                   className={sapphire ? 'k4-ribbon k4-ribbon--sapphire' : 'k4-ribbon k4-ribbon--plain'}
                   dataKey={series.dataKey}
-                  stroke={sapphire ? `url(#${glass.sapphire})` : series.color}
-                  strokeWidth={2.5}
+                  stroke={series.color}
+                  strokeWidth={LINE_WIDTH}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   connectNulls

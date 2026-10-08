@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LocaleProvider } from '../i18n';
 import { AuthProvider } from '../context/AuthProvider';
 import IndicatorChart from './IndicatorChart';
+import { CHART_THEME } from '../lib/chartTheme';
 
 // В jsdom у контейнера нет размеров, и Recharts ничего не рисует: отдаём графику фиксированный размер.
 vi.mock('recharts', async (importOriginal) => {
@@ -63,32 +64,51 @@ function renderChart(props = {}) {
 }
 
 describe('IndicatorChart: стеклянная лента (K4.1, K4.4)', () => {
-  it('основная линия — градиент ленты 3 px, поверх неё блик-штрих', () => {
+  it('основная линия — один сплошной цвет 2,5 px, без блика-штриха; область того же цвета (Г1)', () => {
     const { container } = renderChart();
     const ribbon = container.querySelector('.k4-ribbon .recharts-area-curve');
     expect(ribbon).not.toBeNull();
-    expect(ribbon.getAttribute('stroke')).toMatch(/^url\(#k4-.+-ribbon\)$/);
-    expect(ribbon.getAttribute('stroke-width')).toBe('3');
-    expect(container.querySelector('.k4-gloss .recharts-curve')).not.toBeNull();
-    const gradientId = ribbon.getAttribute('stroke').slice(5, -1);
-    expect(container.querySelector(`[id="${gradientId}"]`)).not.toBeNull();
+    expect(ribbon.getAttribute('stroke')).toBe(CHART_THEME.gold);
+    expect(ribbon.getAttribute('stroke-width')).toBe('2.5');
+    // Блика-штриха (второй линии рядом с основной) больше нет: он и читался как «двойная линия».
+    expect(container.querySelector('.k4-gloss')).toBeNull();
+    const fill = container.querySelector('.recharts-area-area').getAttribute('fill');
+    const gradient = container.querySelector(`[id="${fill.slice(5, -1)}"]`);
+    const colors = [...gradient.querySelectorAll('stop')].map((stop) => stop.getAttribute('stop-color'));
+    expect(new Set(colors)).toEqual(new Set([CHART_THEME.gold]));
   });
 
-  it('на графике нет пунктира: ни линия прогноза, ни сетка, ни граница «сейчас»', () => {
+  it('тип «Линия» тоже рисует одну сплошную линию без блика', () => {
+    const { container } = renderChart({ showForecast: false });
+    const type = screen.getByRole('group', { name: 'Тип графика' });
+    fireEvent.click(within(type).getByRole('button', { name: /Линия/ }));
+    const line = container.querySelector('.k4-ribbon .recharts-line-curve');
+    expect(line.getAttribute('stroke')).toBe(CHART_THEME.gold);
+    expect(container.querySelectorAll('.recharts-line')).toHaveLength(1);
+    expect(container.querySelector('.recharts-area-area')).toBeNull();
+  });
+
+  it('на графике нет пунктира: ни линия прогноза, ни сетка, ни граница «сейчас»; прогноз сплошного цвета', () => {
     const { container } = renderChart();
     expect(container.querySelector('.recharts-wrapper')).not.toBeNull();
     expect(container.querySelectorAll('[stroke-dasharray]:not([stroke-dasharray="none"]):not([stroke-dasharray="0"])')).toHaveLength(0);
     const forecast = container.querySelector('.k4-forecast .recharts-curve');
-    expect(forecast.getAttribute('stroke')).toMatch(/^url\(#k4-.+-forecast\)$/);
+    expect(forecast.getAttribute('stroke')).toBe(CHART_THEME.forecast);
   });
 
-  it('прогноз: только линия и луч света на границе факта и прогноза, диапазона нет', () => {
+  it('прогноз: только линия и тонкая сплошная граница факта и прогноза без градиента, диапазона нет', () => {
     const { container } = renderChart();
     expect(container.querySelector('.k4-prism')).toBeNull();
     expect(container.querySelector('[id$="-prism"]')).toBeNull();
     expect(container.querySelector('.recharts-area-area[fill*="prism"]')).toBeNull();
     expect(container.querySelector('.k4-forecast .recharts-curve')).not.toBeNull();
-    expect(container.querySelector('.k4-beam')).not.toBeNull();
+    const beam = container.querySelector('.k4-beam');
+    expect(beam).not.toBeNull();
+    // Граница «сейчас» (Г2): одна тонкая сплошная линия, без градиента и размытого свечения.
+    expect(beam.querySelectorAll('line')).toHaveLength(1);
+    expect(beam.querySelector('line').getAttribute('stroke-width')).toBe('1');
+    expect(beam.querySelector('line').getAttribute('stroke')).toBe(CHART_THEME.forecast);
+    expect(beam.querySelector('linearGradient')).toBeNull();
     expect(container.textContent).not.toMatch(/диапазон|коридор|range/i);
   });
 

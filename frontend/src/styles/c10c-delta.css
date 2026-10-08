@@ -1,0 +1,14 @@
+/*
+ * Круг 10, зона «графики», Г3 (звонок 08.10): изменение «к прошлому значению» должно читаться без догадок.
+ * Раньше цветом отмечался только маленький маркер ▲▼, а число оставалось графитовым и знак «−» терялся
+ * (у биткоина «2,8» выглядело как рост при падении). Теперь число со знаком окрашено в цвет смысла:
+ * зелёный для хорошего, красный для плохого. Плашка остаётся нейтральным стеклом, заливки цветом нет.
+ */
+.fe-delta-badge.fe-tone--good,
+.fe-delta-badge.fe-tone--bad { color: var(--fe-delta-ink); }
+.fe-delta-badge > [aria-hidden='true'] { font-size: 0.8em; }
+
+:root[data-theme='dark'] .fe-delta-badge.fe-tone--good,
+:root.dark .fe-delta-badge.fe-tone--good { --fe-delta-ink: #86E3AE; }
+:root[data-theme='dark'] .fe-delta-badge.fe-tone--bad,
+:root.dark .fe-delta-badge.fe-tone--bad { --fe-delta-ink: #FCA5A5; }

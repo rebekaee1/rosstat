@@ -7,10 +7,10 @@ import {
  *   <defs><ChartGlassDefs ids={useChartGlassIds()} /></defs>
  * Линия ссылается на них как `stroke={`url(#${ids.ribbon})`}`. Значения берутся из lib/chartTheme.js.
  *
- * ribbon      золотая лента по длине линии (светлое, золото, тёмное)
- * sapphire    лента второго ряда (сапфир)
- * area/areaSapphire  заливка под лентой: 35 % у линии, к оси 0
- * forecast    линия прогноза: тёмное золото, прозрачность тает вдоль линии (без пунктира)
+ * ribbon      лента основного ряда: один цвет по всей длине (круг 10, Г1: без градиента)
+ * sapphire    лента второго ряда (один цвет)
+ * area/areaSapphire  заливка под линией: цвет ряда, 20 % у линии, к оси 0
+ * forecast    линия прогноза: один цвет, без затухания и пунктира
  * bar/barForecast    столбцы: градиент сверху вниз
  * width       ширина графика в px: горизонтальные градиенты привязываются к графику, а не к рамке линии (плоский ряд не пропадает)
  * bead        шарик последней точки: блик в левом верхнем углу
@@ -35,12 +35,12 @@ export default function ChartGlassDefs({ ids, forecastColor = CHART_THEME.champa
         <stop offset="100%" stopColor={CHART_AREA_COLOR} stopOpacity={CHART_AREA.bottom} />
       </linearGradient>
       <linearGradient id={ids.areaSapphire} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0.22} />
-        <stop offset="100%" stopColor={CHART_THEME.sapphireLight} stopOpacity={0} />
+        <stop offset="0%" stopColor={CHART_THEME.sapphire} stopOpacity={0.16} />
+        <stop offset="100%" stopColor={CHART_THEME.sapphire} stopOpacity={0} />
       </linearGradient>
       <linearGradient id={ids.forecast} {...along}>
         <stop offset="0%" stopColor={forecastColor} stopOpacity={1} />
-        <stop offset="100%" stopColor={forecastColor} stopOpacity={0.3} />
+        <stop offset="100%" stopColor={forecastColor} stopOpacity={1} />
       </linearGradient>
       <linearGradient id={ids.bar} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stopColor={CHART_THEME.goldLight} stopOpacity={0.95} />

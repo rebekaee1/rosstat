@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import DeltaBadge from './DeltaBadge';
 import { SkeletonBox } from './Skeleton';
 import { useIndicatorData } from '../lib/hooks';
+import { indicatorPolarity } from '../lib/deltaTone';
 import { currencyWindows, parsePair, rateBasis, unitMeta } from '../lib/currencyRates';
 import { formatDate, formatValue } from '../lib/format';
 import { useLocale, useT } from '../i18n';
@@ -77,7 +78,7 @@ export default function CurrencyTelemetry({ code, loading = false, fallback = nu
             delay={index + 1}
             foot={(
               <p className="fe-tele__delta">
-                <DeltaBadge delta={Math.abs(item.value) < 0.005 ? 0 : item.value}>
+                <DeltaBadge delta={Math.abs(item.value) < 0.005 ? 0 : item.value} polarity={indicatorPolarity(code)}>
                   {t(Math.abs(item.value) < 0.005 ? 'w6g.cur.tele.flat' : item.value > 0 ? 'w6g.cur.tele.up' : 'w6g.cur.tele.down')}
                 </DeltaBadge>
               </p>

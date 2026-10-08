@@ -316,8 +316,8 @@ export default function RegionAnnualChart({
               yAxisId="region"
               type="linear"
               dataKey="value"
-              stroke={`url(#${glass.ribbon})`}
-              strokeWidth={3}
+              stroke={CHART_THEME.gold}
+              strokeWidth={2.5}
               strokeLinecap="round"
               strokeLinejoin="round"
               fill={`url(#${glass.area})`}
@@ -333,7 +333,7 @@ export default function RegionAnnualChart({
                 yAxisId="region"
                 type="linear"
                 dataKey="compare"
-                stroke={`url(#${glass.sapphire})`}
+                stroke={CHART_THEME.sapphire}
                 strokeWidth={2.5}
                 strokeLinecap="round"
                 dot={false}
@@ -361,8 +361,8 @@ export default function RegionAnnualChart({
                 yAxisId="region"
                 type="linear"
                 dataKey="forecast"
-                stroke={`url(#${glass.forecast})`}
-                strokeWidth={3}
+                stroke={CHART_THEME.forecast}
+                strokeWidth={2}
                 strokeLinecap="round"
                 dot={false}
                 activeDot={{ r: 4.5, fill: CHART_THEME.champagneInk, stroke: '#FFFFFF', strokeWidth: 2 }}
