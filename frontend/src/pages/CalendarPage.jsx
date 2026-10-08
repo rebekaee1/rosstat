@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { CalendarX2, ChevronDown, Download, X } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
@@ -65,7 +65,7 @@ function monthRange(year, month) {
 
 function CalendarSkeleton({ onRefresh }) {
   return (
-    <div className="space-y-4" role="status" aria-busy="true">
+    <div className="min-h-[70svh] space-y-4" role="status" aria-busy="true">
       <LoadingNote onRefresh={onRefresh} />
       <SkeletonBox className="h-[22rem] w-full rounded-[1.5rem]" />
       <div className="space-y-3">
@@ -247,6 +247,19 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
     return pickDefaultDay(allEvents, todayStr, recurring.keys);
   }, [seoPath, fixedYear, isCurrentMonth, allEvents, todayStr, recurring]);
   const selectedDate = pickedDate !== undefined ? pickedDate : autoDate;
+
+  // Нажали на день в сетке — события этого дня лежали ниже первого экрана, и казалось, что ничего не произошло.
+  // Подводим заголовок дня в видимую часть, но только если он действительно ниже середины экрана.
+  const dayHeadRef = useRef(null);
+  useEffect(() => {
+    if (typeof pickedDate !== 'string') return;
+    const el = dayHeadRef.current;
+    if (!el || typeof el.getBoundingClientRect !== 'function') return;
+    const top = el.getBoundingClientRect().top;
+    if (top <= window.innerHeight * 0.6) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+  }, [pickedDate]);
   const showRecurring = !selectedDate && !onlyImportant && recurring.items.length > 0;
 
   const visibleEvents = useMemo(() => {
@@ -336,7 +349,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
             />
 
             {selectedDate && (
-              <div className="flex items-center gap-2 mb-4">
+              <div ref={dayHeadRef} className="mb-4 flex scroll-mt-24 items-center gap-2">
                 <h2 className="text-sm font-semibold text-text-primary">
                   {formatDayLabel(selectedDate, t)}
                 </h2>
