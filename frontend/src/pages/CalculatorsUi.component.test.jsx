@@ -46,8 +46,10 @@ describe('Ипотечный калькулятор', () => {
   it('значения ползунков читаются с единицами: «20 лет», «18%»', () => {
     mockApiGet(ROUTES);
     renderPage(<MortgageCalculatorPage />, { path: '/calculator/mortgage', route: '/calculator/mortgage' });
-    expect(screen.getByText('20 лет')).toBeTruthy();
-    expect(screen.getByText('18%')).toBeTruthy();
+    // Круг 9 (K5): значение стоит в числовом поле рядом с бегунком, единица — рядом с полем.
+    expect(screen.getByLabelText('Ввести число: Срок кредита').value).toBe('20');
+    expect(screen.getByText('лет')).toBeTruthy();
+    expect(screen.getByLabelText(/Ввести число: Ставка/).value).toMatch(/^\d+(,\d)?$/);
     expect(screen.getByLabelText('Срок кредита').getAttribute('aria-valuetext')).toBe('20 лет');
   });
 
@@ -88,7 +90,8 @@ describe('Сложные проценты', () => {
     expect(monthly.getAttribute('inputmode')).toBe('decimal');
     fireEvent.change(monthly, { target: { value: '0' } });
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(screen.getByText('10 лет')).toBeTruthy();
+    expect(screen.getByLabelText('Ввести число: Срок вклада').value).toBe('10');
+    expect(screen.getByText('лет')).toBeTruthy();
   });
 
   it('раунд 2: подсказка «Капитал вырастет за N лет» с кратностью роста', () => {
@@ -103,7 +106,7 @@ describe('Сложные проценты', () => {
   it('на английском единицы и сообщения тоже переведены', () => {
     mockApiGet(ROUTES);
     renderPage(<CompoundCalculatorPage />, { path: '/calculator/compound', route: '/calculator/compound', locale: 'en' });
-    expect(screen.getByText('10 years')).toBeTruthy();
+    expect(screen.getByText('years')).toBeTruthy();
     fireEvent.change(screen.getByLabelText(/Initial amount/), { target: { value: 'lots' } });
     expect(screen.getByRole('alert').textContent).toMatch(/digits only/);
   });

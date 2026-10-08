@@ -1,8 +1,8 @@
-// Число результата калькулятора: при появлении один раз «докручивается» от нуля, дальше плавно
-// катится к новому значению (gsap — единственное место калькуляторов, где он нужен), без прыжка
-// ширины (tabular-nums). При prefers-reduced-motion значение показывается сразу. Экранным дикторам
-// отдаётся только итоговое значение: анимируемая копия скрыта от них, иначе каждый кадр счётчика
-// озвучивался бы.
+// Число результата калькулятора. Круг 9 (K4): итог показывается сразу и всегда верный; раньше цифры «докручивались» от нуля,
+// и на медленной машине неверное промежуточное число висело секунды (рядом столбик уже показывал итог). Теперь при смене значения
+// число только коротко проявляется (прозрачность, gsap) и по нему проходит блик камня результата (K1 .fe-glint).
+// При prefers-reduced-motion, в фоновой вкладке и при том же значении движения нет. Экранным дикторам отдаётся только итог:
+// видимая копия скрыта от них (aria-hidden), чтобы пересчёт не озвучивался по кадрам.
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { replayGlint } from '../lib/calcGlint';
@@ -10,50 +10,29 @@ import '../styles/z8-tools.css';
 
 export default function CalcAnimatedNumber({ value, format, className }) {
   const ref = useRef(null);
-  // Что сейчас показано на экране: 0 до первого запуска — тогда первое появление считается от нуля.
-  const shownRef = useRef(0);
-  const firstRef = useRef(true);
+  const shownRef = useRef(null);
   const finalText = format(value);
 
   useLayoutEffect(() => {
     const node = ref.current;
     if (!node || value == null) return undefined;
+    const previous = shownRef.current;
+    shownRef.current = value;
+    node.textContent = format(value);
     const reduced = typeof window !== 'undefined'
       && typeof window.matchMedia === 'function'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const from = shownRef.current;
-    const first = firstRef.current;
-    firstRef.current = false;
-    if (reduced || from === value) {
-      shownRef.current = value;
-      node.textContent = format(value);
-      return undefined;
-    }
-    const counter = { v: from };
-    // Блик по камню результата (K1 .fe-glint): первый проход даёт появление блока, повтор — пересчёт.
-    if (!first) replayGlint(node.closest('.fe-glint'));
-    // Пока цифры «считаются», на них стоит класс .is-counting (стилей свечения нет: блик идёт по всему камню).
-    const box = node.parentElement;
-    box?.classList.add('is-counting');
-    const tween = gsap.to(counter, {
-      v: value,
-      duration: first ? 0.9 : 0.4,
-      ease: 'power2.out',
-      onUpdate() {
-        shownRef.current = counter.v;
-        if (ref.current) ref.current.textContent = format(Math.round(counter.v));
-      },
-      onComplete() {
-        shownRef.current = value;
-        if (ref.current) ref.current.textContent = format(value);
-        box?.classList.remove('is-counting');
-      },
-    });
+    const hidden = typeof document !== 'undefined' && document.hidden;
+    if (reduced || hidden || previous === value) return undefined;
+    if (previous != null) replayGlint(node.closest('.fe-glint'));
+    const tween = gsap.fromTo(
+      node,
+      { opacity: previous == null ? 0.2 : 0.55 },
+      { opacity: 1, duration: previous == null ? 0.35 : 0.22, ease: 'power2.out', clearProps: 'opacity' },
+    );
     return () => {
       tween.kill();
-      box?.classList.remove('is-counting');
-      // Строгий режим повторяет эффект: следующий запуск снова считается первым, пока ничего не показано.
-      if (shownRef.current === 0) firstRef.current = first;
+      node.style.opacity = '';
     };
   }, [value, format]);
 

@@ -455,8 +455,17 @@ export default function CalculatorPage() {
     try { await navigator.clipboard.writeText(text); } catch { /* ok */ }
   }, [result, amountText, fromYear, toYear, reversed, t, withRuble, money]);
 
-  const periodYears = result ? Math.max(1, Math.round(result.months / 12)) : 0;
-  const periodLabel = locale === 'en' ? t('calc.years', { n: periodYears }) : yearsPhrase(periodYears);
+  // Круг 9 (K2): срок называем по месяцам («10 лет 8 мес.»), а не округляем до целых лет: чип «10 лет» и подпись «за 11 лет» расходились.
+  const periodLabel = useMemo(() => {
+    if (!result) return '';
+    const totalMonths = Math.max(1, Math.round(result.months));
+    const wholeYears = Math.floor(totalMonths / 12);
+    const restMonths = totalMonths % 12;
+    const yearsText = locale === 'en' ? t('calc.years', { n: wholeYears }) : yearsPhrase(wholeYears);
+    if (restMonths === 0) return yearsText;
+    const monthsText = t('c9d.calc.monthsShort', { n: restMonths });
+    return wholeYears === 0 ? monthsText : `${yearsText} ${monthsText}`;
+  }, [result, locale, t]);
 
   const formatHero = money;
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
@@ -508,12 +517,20 @@ export default function CalculatorPage() {
       : []
   ), [fromYear, toYear, isRussia]);
 
-  const isActivePreset = useCallback((preset) => {
+  // Круг 9 (K2): чип показывается, только если его начало действительно внутри данных страны (у Турции данных меньше, чем
+  // у России, и «5 лет», «10 лет», «С 2000» раньше сливались в одно и то же и горели все сразу). «Всё время» остаётся всегда.
+  const visiblePresets = useMemo(() => PRESETS.filter((preset) => {
+    if (preset.from === null) return true;
+    const start = preset.from != null ? preset.from : effectiveMax - preset.offset;
+    return start >= effectiveMin;
+  }), [effectiveMin, effectiveMax]);
+  const activePreset = useMemo(() => visiblePresets.find((preset) => {
     const target = preset.from != null
-      ? Math.max(preset.from, effectiveMin)
-      : preset.from === null ? effectiveMin : Math.max(effectiveMax - preset.offset, effectiveMin);
+      ? preset.from
+      : preset.from === null ? effectiveMin : effectiveMax - preset.offset;
     return fromYear === target && toYear === effectiveMax;
-  }, [fromYear, toYear, effectiveMin, effectiveMax]);
+  }) || null, [visiblePresets, fromYear, toYear, effectiveMin, effectiveMax]);
+  const isActivePreset = useCallback((preset) => activePreset === preset, [activePreset]);
 
   const extremeInflation = result && result.totalInflation > 200;
 
@@ -556,9 +573,8 @@ export default function CalculatorPage() {
   const insights = useMemo(() => {
     if (!result) return [];
     const items = [];
-    const periodYears = Math.round(result.months / 12);
     const lossPercent = (1 - 1 / result.multiplier) * 100;
-    const yearsLabel = locale === 'en' ? t('calc.years', { n: periodYears }) : yearsPhrase(periodYears);
+    const yearsLabel = periodLabel;
 
     items.push({
       icon: TrendingDown,
@@ -611,7 +627,7 @@ export default function CalculatorPage() {
     }
 
     return items;
-  }, [result, t, locale, isRussia]);
+  }, [result, t, isRussia, periodLabel]);
 
   /* ── JSON-LD ── */
   const faqItems = useMemo(
@@ -674,6 +690,11 @@ export default function CalculatorPage() {
             {t(isRussia ? 'w5.calc.inflation.eyebrow' : 'w5.calc.inflation.eyebrowWorld')}
           </span>
           <h1 className="fe-z8-calc__title">{t('calc.inflation.title')}</h1>
+          {!isRussia && countryName && (
+            <p className="fe-z8-calc__scope" data-testid="calc-scope">
+              {t('c9d.calc.scope', { country: countryName, currency: currency ? currencyInPhrase(currency, locale) : t('calc.ui.unitLocal') })}
+            </p>
+          )}
           <p className="fe-z8-calc__lead">
             {isRussia
               ? t('calc.inflation.subtitle')
@@ -757,7 +778,7 @@ export default function CalculatorPage() {
 
         {/* Presets */}
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-auto">
-          {PRESETS.map((p) => (
+          {visiblePresets.map((p) => (
             <Chip
               key={t(p.labelKey)}
               active={isActivePreset(p)}

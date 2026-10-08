@@ -7,7 +7,7 @@ import '../styles/w5-tools.css';
 
 export function CalcStatTile({ label, value, accent = false, index = 0, className }) {
   return (
-    <div style={revealStyle(index + 4)} className={cn('w5-tile fe-reveal fe-reveal--free', accent && 'w5-tile--accent', className)}>
+    <div style={{ ...revealStyle(index + 4), '--w5-chars': Math.max(4, String(value ?? '').length) }} className={cn('w5-tile fe-reveal fe-reveal--free', accent && 'w5-tile--accent', className)}>
       <p className="w5-tile__label">{label}</p>
       <p className="w5-tile__value">{value}</p>
     </div>
