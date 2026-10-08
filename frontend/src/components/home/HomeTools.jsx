@@ -17,6 +17,8 @@ import '../../styles/w6-g.css';
 import '../../styles/z3-home.css';
 
 const FIAT = ['RUB', 'USD', 'EUR', 'CNY', 'GBP'];
+// Круг 10 (Эн1): на английском сайте рубля в конвертере нет вовсе и порядок общепринятый (доллар, евро, фунт, юань), Россия не в центре внимания.
+const FIAT_EN = ['USD', 'EUR', 'GBP', 'CNY'];
 const MAX_AMOUNT = 1_000_000_000_000;
 
 function parseAmount(text) {
@@ -57,9 +59,11 @@ function ConverterTool() {
   const indicators = useIndicators();
   const edges = useMemo(() => buildEdges(indicators.data || []), [indicators.data]);
   const units = useMemo(() => {
-    const known = convertibleUnits(edges).filter((unit) => FIAT.includes(unit));
-    return known.length >= 2 ? known : FIAT;
-  }, [edges]);
+    const allowed = locale === 'en' ? FIAT_EN : FIAT;
+    const known = convertibleUnits(edges).filter((unit) => allowed.includes(unit));
+    if (known.length < 2) return allowed;
+    return locale === 'en' ? allowed.filter((unit) => known.includes(unit)) : known;
+  }, [edges, locale]);
   const [amountText, setAmountText] = useState('100');
   const [from, setFrom] = useState('USD');
   const [to, setTo] = useState(locale === 'en' ? 'EUR' : 'RUB');
@@ -289,6 +293,9 @@ function CompareTool() {
 
 export default function HomeTools() {
   const t = useT();
+  const { locale } = useLocale();
+  // Начальные значения инструментов зависят от языка (США на английском, Россия на русском). Ключ по языку пересоздаёт их при смене языка
+  // без перезагрузки: раньше выбранная на русском Россия оставалась в английском «Попробуйте сами» (круг 10, Эн1).
   return (
     <section data-block="home-tools" className="fe-w6g-home-tools fe-tools" aria-labelledby="home-tools-title">
       <div className="fe-tools__head">
@@ -296,9 +303,9 @@ export default function HomeTools() {
         <p className="fe-tools__sub">{t('z3.tools.sub')}</p>
       </div>
       <div className="fe-tools__grid">
-        <ConverterTool />
-        <InflationTool />
-        <CompareTool />
+        <ConverterTool key={`converter-${locale}`} />
+        <InflationTool key={`inflation-${locale}`} />
+        <CompareTool key={`compare-${locale}`} />
       </div>
     </section>
   );

@@ -3355,4 +3355,5 @@ export default {
   'c9d.compound.currencyAria': 'Calculation currency',
   // ===== Круг 10, зона «карта и главная» =====
   'c10m.states.hint': 'Click a state to open its figures',
+  'c10m.country.compareUsa': 'Compare with the United States',
 };

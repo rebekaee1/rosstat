@@ -236,6 +236,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
               >
               <Suspense fallback={skeleton}>
                 <PlanetView
+                  key={locale}
                   countries={mapCountries}
                   valuesByCode={valuesByCode}
                   detailsByCode={detailsByCode}

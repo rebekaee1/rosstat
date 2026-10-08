@@ -20,15 +20,19 @@ const DE = {
   code: 'DE', slug: 'germany', name: 'Германия', name_en: 'Germany', region: 'Европа', indicators_count: 3, has_regions: false,
 };
 
-function mount(country, slug) {
+const GDP = {
+  concept_slug: 'gdp-usd', name: 'ВВП', name_en: 'GDP', unit: 'млрд $', indicator_code: 'x-gdp', frequency: 'annual', date: '2025-01-01', value: 100,
+};
+
+function mount(country, slug, locale) {
   mockApiGet([
     ['/auth/me', { user: null }],
     [`/world/countries/${slug}`, {
-      country, categories: [], overview: [], coverage: {}, market_indicators: [],
+      country, categories: [], overview: [GDP], coverage: {}, market_indicators: [],
     }],
     [`/world/${slug}/regions`, { regions: [{ slug: 'alabama', name: 'Алабама' }] }],
   ]);
-  renderPage(<WorldCountry />, { path: '/:countrySlug', route: `/${slug}` });
+  renderPage(<WorldCountry />, { path: '/:countrySlug', route: `/${slug}`, locale });
 }
 
 describe('К5: профиль страны США показывает карту штатов', () => {
@@ -44,5 +48,27 @@ describe('К5: профиль страны США показывает карт�
     const stub = await screen.findByTestId('silhouette-stub');
     expect(stub.querySelector('[data-block="country-states-map"]')).toBeNull();
     expect(stub.children).toHaveLength(0);
+  });
+});
+
+describe('Эн1: пара для сравнения на странице страны', () => {
+  it('на английском сайте предлагают сравнить с США, а не с Россией', async () => {
+    mount(DE, 'germany', 'en');
+    const link = await screen.findByRole('link', { name: /Compare with the United States/ });
+    expect(decodeURIComponent(link.getAttribute('href'))).toBe('/compare?codes=w:germany:gdp-usd,w:united-states:gdp-usd');
+    expect(screen.queryByRole('link', { name: /Compare with Russia/ })).toBeNull();
+  });
+
+  it('на странице самих США английской версии кнопки сравнения с США нет', async () => {
+    mount(US, 'united-states', 'en');
+    await screen.findByTestId('silhouette-stub');
+    expect(screen.queryByRole('link', { name: /Compare with the United States/ })).toBeNull();
+    expect(screen.queryByRole('link', { name: /Compare with Russia/ })).toBeNull();
+  });
+
+  it('на русском сайте остаётся «Сравнить с Россией»', async () => {
+    mount(DE, 'germany', 'ru');
+    const link = await screen.findByRole('link', { name: /Сравнить с Россией/ });
+    expect(decodeURIComponent(link.getAttribute('href'))).toBe('/compare?codes=w:germany:gdp-usd,w:russia:gdp-usd');
   });
 });

@@ -35,6 +35,13 @@
 @media (min-width: 768px) {
   .fe-map-frame > .fe-map-svg { max-width: calc(max(46svh, 300px) * var(--fe-map-aspect, 1.9)); margin-inline: auto; }
 }
+/* Круг 10 (К5): смена года и показателя перекрашивает карту плавным переходом цвета (инлайн `transition: fill`). При «уменьшить движение» и в режимах
+   без анимации (`data-fe-motion='off'`, `data-fe-lite`) цвет меняется сразу: спокойная карта без бегущих оттенков. */
+@media (prefers-reduced-motion: reduce) {
+  .fe-map-frame svg :is(path, circle) { transition: none !important; }
+}
+html[data-fe-motion='off'] .fe-map-frame svg :is(path, circle),
+html[data-fe-lite='on'] .fe-map-frame svg :is(path, circle) { transition: none !important; }
 .fe-map-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 8px; margin-top: 4px; }
 .fe-map-tools {
   margin-left: auto;
