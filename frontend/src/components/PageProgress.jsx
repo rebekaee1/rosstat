@@ -9,6 +9,8 @@ import { navLabelFor } from '../lib/navLabel';
  * клику на внутреннюю ссылку (capture) и сразу показываем полосу сверху и плашку «Открываем: …» с названием
  * того, что нажали (волна 6, 1.2). Плашка проявляется через 80 мс, чтобы мгновенные переходы её не мигали.
  * Конец — по смене адреса или через 8 с.
+ * Круг 8 (S10): сама нажатая ссылка сразу получает `data-fe-pressed` (тусклее, стили в shell.css): человек видит отклик в тот же кадр,
+ * даже если сайт отвечает медленно, а плашка проявится позже. Метка снимается со сменой адреса или через 8 с.
  */
 export default function PageProgress() {
   const t = useT();
@@ -18,7 +20,10 @@ export default function PageProgress() {
 
   useEffect(() => {
     let guard = null;
-    const stop = () => { clearTimeout(guard); guard = null; };
+    const clearPressed = () => {
+      document.querySelectorAll('[data-fe-pressed]').forEach((node) => node.removeAttribute('data-fe-pressed'));
+    };
+    const stop = () => { clearTimeout(guard); guard = null; clearPressed(); };
     const onClick = (event) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null;
@@ -28,12 +33,18 @@ export default function PageProgress() {
       if (url.origin !== window.location.origin) return;
       if (url.pathname === window.location.pathname && url.search === window.location.search) return;
       stop();
+      anchor.setAttribute('data-fe-pressed', 'true');
       setPending({ key: `${window.location.pathname}${window.location.search}`, label: navLabelFor(anchor) });
-      guard = setTimeout(() => setPending(null), 8000);
+      guard = setTimeout(() => { clearPressed(); setPending(null); }, 8000);
     };
     document.addEventListener('click', onClick, true);
     return () => { document.removeEventListener('click', onClick, true); stop(); };
   }, []);
+
+  // Смена адреса снимает отметку нажатия (ссылка могла остаться на странице, например в подвале).
+  useEffect(() => {
+    document.querySelectorAll('[data-fe-pressed]').forEach((node) => node.removeAttribute('data-fe-pressed'));
+  }, [key]);
 
   // Показываем, только пока адрес тот же, что был при старте: смена адреса гасит полосу без setState в эффекте.
   if (!pending || pending.key !== key) return null;

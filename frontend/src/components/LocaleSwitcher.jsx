@@ -70,7 +70,7 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
           FOCUS_RING,
           'flex h-8 items-center gap-1 rounded-lg px-1.5 text-text-secondary transition-colors [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:justify-center',
           'hover:text-text-primary',
-          open && 'text-champagne',
+          open && 'text-text-primary',
           triggerClassName,
         )}
         aria-label={`${t('nav.language')}: ${t(current.labelKey)}`}
@@ -84,7 +84,7 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
         <div
           className={cn(
             'absolute top-full z-[110] mt-2 min-w-[10.5rem] rounded-2xl',
-            'py-1.5 shadow-2xl fe-glass-pop',
+            'py-1.5 shadow-2xl fe-glass-pop fe-locale-menu',
             'right-0',
           )}
           role="menu"
@@ -96,7 +96,7 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
               FOCUS_RING,
               'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors',
               'fe-locale-item',
-              active ? 'is-active text-champagne' : 'text-text-primary',
+              active ? 'is-active font-semibold text-text-primary' : 'text-text-primary',
             );
             // Production hosts: real alternate URL, identical to hreflang.
             // Click still sets the preference cookie so a geo-redirect does not

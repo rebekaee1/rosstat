@@ -13,7 +13,6 @@ import {
   saveConsent,
 } from '../lib/consent';
 import { useT } from '../i18n';
-import useMediaQuery from '../lib/useMediaQuery';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import '../styles/shell.css';
 import '../styles/z2-shell.css';
@@ -30,9 +29,11 @@ import '../styles/k3-shell.css';
  * в футере и на странице политики). Смена CONSENT_VERSION (новая редакция
  * политики) показывает баннер заново.
  *
- * Телефон: после первой прокрутки плашка прячется целиком (плавающего значка нет: он ложился на цифры и кнопки страницы).
- * «Настройки cookie» остаются в меню «Ещё» и в подвале; вернувшись наверх страницы, посетитель снова видит плашку.
+ * Круг 8 (S1): на любой ширине после первой прокрутки плашка прячется целиком (плавающего значка нет: он ложился на цифры и кнопки
+ * страницы) и до конца сессии не возвращается ни при переходах, ни при возврате наверх. «Настройки cookie» остаются в меню и в подвале.
  * Прятание не записывает согласие: молчание остаётся молчанием, трекеры и выбор не меняются.
+ * Рядом с «Хорошо» на виду стоит «Только необходимые» (запись analytics: false, ads: false). Умолчания переключателей в «Настроить»
+ * не менялись: это решение владельца (подразумеваемое согласие, 152-ФЗ).
  */
 
 // Два переключателя обычными словами вместо названий сервисов. «Необходимые» — не переключатель, а строка текста.
@@ -43,6 +44,18 @@ const CATEGORY_DEFS = [
 
 // Кнопки баннера делят ширину поровну и переносят подпись на узком экране.
 const btnBase = 'min-w-0 whitespace-normal! text-center';
+
+// Сессионная память «плашку уже видели и прокрутили мимо»: без неё она возвращалась после каждого перехода (круг 8, S1).
+const SNOOZE_KEY = 'fe:consent:snooze';
+function readSnooze() {
+  try { return window.sessionStorage.getItem(SNOOZE_KEY) === '1'; } catch { return false; }
+}
+function writeSnooze(on) {
+  try {
+    if (on) window.sessionStorage.setItem(SNOOZE_KEY, '1');
+    else window.sessionStorage.removeItem(SNOOZE_KEY);
+  } catch { /* Без хранилища плашка просто прячется до перезагрузки. */ }
+}
 
 function notifyOverlayVisibility(visible, expanded) {
   try {
@@ -57,10 +70,18 @@ export default function CookieConsent() {
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(() => !isConsentCurrent(getConsent()));
   const [expanded, setExpanded] = useState(false);
-  // Телефон: после первой прокрутки плашка спрятана (открытые настройки не прячутся).
-  const phone = useMediaQuery('(max-width: 639px)');
+  // После первой прокрутки плашка спрятана на любой ширине и остаётся спрятанной до конца сессии (открытые настройки не прячутся).
+  const [snoozed, setSnoozed] = useState(() => readSnooze());
   const { scrolled } = useScrollDirection();
-  const collapsed = phone && scrolled && !expanded;
+  const collapsed = (snoozed || scrolled) && !expanded;
+  useEffect(() => {
+    // Страница действительно сдвинута (не доверяем снимку общего хука на первом кадре: он мог остаться от прошлой страницы).
+    const y = typeof window === 'undefined' ? 0 : (window.scrollY || window.pageYOffset || 0);
+    if (scrolled && visible && !snoozed && y > 0) {
+      writeSnooze(true);
+      setSnoozed(true);
+    }
+  }, [scrolled, visible, snoozed]);
   const committing = useRef(false);
   const overlayVisible = visible && !pathname.startsWith('/admin');
   // Подразумеваемое согласие: по умолчанию всё включено (трекеры уже загружены).
@@ -80,6 +101,8 @@ export default function CookieConsent() {
         analytics: current ? Boolean(current.analytics) : true,
         ads: current ? Boolean(current.ads) : true,
       });
+      writeSnooze(false);
+      setSnoozed(false);
       setExpanded(true);
       setVisible(true);
     };
@@ -169,7 +192,7 @@ export default function CookieConsent() {
         data-fe-attention-occluder="cookie-consent"
         data-fe-interaction="consent-dialog"
         data-expanded={expanded ? 'true' : 'false'}
-        className="fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden sm:max-w-[26rem]"
+        className="fe-cookie-panel pointer-events-auto mx-auto sm:mx-0 flex max-h-[min(30rem,calc(100dvh-1.5rem))] flex-col overflow-hidden sm:w-fit sm:max-w-[26rem]"
       >
         {expanded ? (
           <div className="flex shrink-0 items-start gap-1 px-3 pt-3 pb-1">
@@ -190,8 +213,7 @@ export default function CookieConsent() {
         ) : (
           <div className="fe-cookie-compact">
             <p className="fe-cookie-compact__text">
-              <span className="fe-cookie-compact__long">{t('cookie.summary')}</span>
-              <span className="fe-cookie-compact__short">{t('z2.cookie.short')}</span>
+              {t('cookie.summary')}
               {' '}
               <Link to="/privacy" className="text-champagne-ink hover:underline">
                 {t('cookie.privacyShort')}
@@ -205,6 +227,15 @@ export default function CookieConsent() {
                 className={cn(btnBase, 'fe-cookie-accept')}
               >
                 {t('cookie.accept')}
+              </Button>
+              <Button
+                variant="secondary"
+                data-analytics-action="consent-necessary-only"
+                data-fe-interaction-action="necessary-only"
+                onClick={() => commit(false, false, 'necessary_only')}
+                className={cn(btnBase, 'fe-cookie-necessary')}
+              >
+                {t('shell.cookie.necessaryOnly')}
               </Button>
               <Button
                 variant="ghost"

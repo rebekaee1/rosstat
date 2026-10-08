@@ -188,3 +188,15 @@ describe('Footer', () => {
     expect(strip.querySelectorAll('li').length).toBeGreaterThanOrEqual(3);
   });
 });
+
+// Круг 8, S8: на планшете последняя группа добирает ряд, а не остаётся одна слева.
+describe('круг 8, S8: колонки подвала на планшете', () => {
+  it.each([['ru', '3'], ['en', '2']])('группа «Информация» (%s) занимает %s дорожки в четырёх колонках', (locale, span) => {
+    asDesktop();
+    renderFooter(locale);
+    const footer = document.querySelector('footer');
+    const groups = [...footer.querySelectorAll('.fe-footer-grid > section')];
+    expect(groups.at(-1).getAttribute('data-md-span')).toBe(span);
+    expect(groups[0].getAttribute('data-md-span')).toBe('2');
+  });
+});

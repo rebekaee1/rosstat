@@ -25,6 +25,17 @@ import '../styles/z3-polish.css';
 import '../styles/z2-shell.css';
 import '../styles/k3-shell.css';
 
+/** После раскрытия группы меню подводит её список в видимую часть шторки; без плавности при reduced-motion. */
+function revealWhenRendered(id) {
+  if (typeof window === 'undefined' || typeof window.requestAnimationFrame !== 'function') return;
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+    const el = document.getElementById(id);
+    if (!el || typeof el.scrollIntoView !== 'function') return;
+    const reduce = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+  }));
+}
+
 function AuthCluster({ mobile = false, onNavigate }) {
   const { isAuthed, isLoading } = useAuth();
   const t = useT();
@@ -509,7 +520,11 @@ export default function Navbar() {
                     className={cn(navItemClass(false), 'fe-mnav-link fe-mnav-toggle w-full text-left')}
                     aria-expanded={open}
                     aria-controls={panelId}
-                    onClick={() => setOpenGroups((prev) => ({ ...prev, [group.id]: !open }))}
+                    onClick={() => {
+                      setOpenGroups((prev) => ({ ...prev, [group.id]: !open }));
+                      // Круг 8, S5: раскрытые подпункты прокручиваются в видимую часть списка (раньше менялась только стрелка).
+                      if (!open) revealWhenRendered(panelId);
+                    }}
                   >
                     {GroupIcon ? <MnavTile icon={GroupIcon} /> : null}
                     <span className="fe-mnav-text">

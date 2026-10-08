@@ -72,6 +72,24 @@ function formatAsOfTitle(isoDate, locale = 'ru') {
   });
 }
 
+/** Сколько полных календарных суток прошло с даты значения (по часовому поясу витрины); null, если даты нет. Круг 8, D5. */
+function ageInDays(isoDate, locale, now = new Date()) {
+  if (!isoDate) return null;
+  const tz = tzFor(locale);
+  let day = isoDate;
+  if (isoDate.includes('T')) {
+    const d = new Date(isoDate);
+    if (Number.isNaN(d.getTime())) return null;
+    day = d.toLocaleDateString('en-CA', { timeZone: tz });
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return null;
+  const today = now.toLocaleDateString('en-CA', { timeZone: tz });
+  return Math.round((Date.parse(`${today}T12:00:00Z`) - Date.parse(`${day}T12:00:00Z`)) / 86400000);
+}
+
+/** Дневное значение старше этого числа суток подписывается «не обновлялось N дн.»: выходные и праздники метки не получают. */
+const STALE_AFTER_DAYS = 3;
+
 function resolveAsOfRaw(snapshot) {
   if (snapshot.as_of_date) return snapshot.as_of_date;
   if (snapshot.fetched_at) return snapshot.fetched_at;
@@ -138,6 +156,11 @@ function TickerCell({ snapshot, nowMs }) {
     }
   }
 
+  // Круг 8, D5: значение старше трёх суток не должно выглядеть живым. Подпись говорит прямо «не обновлялось N дн.», а точная дата
+  // остаётся в подсказке и в атрибуте data-stale (ячейка тусклее).
+  const ageDays = !isIntraday ? ageInDays(asOfRaw, locale) : null;
+  const longStale = ageDays !== null && ageDays > STALE_AFTER_DAYS;
+
   const cellClass = cn(
     'fe-ticker__cell flex h-full min-h-7 shrink-0 items-center gap-1.5 px-2.5 rounded-md whitespace-nowrap',
     'md:gap-2 md:px-3.5',
@@ -145,7 +168,7 @@ function TickerCell({ snapshot, nowMs }) {
     meta.linkTo && 'hover:bg-champagne/10',
     // Вспышка нового тика нейтральная: рост курса не «хорошо» и не «плохо», цвет не должен оценивать.
     flash && 'bg-champagne/15 fe-shadow-2',
-    isStale && 'opacity-60',
+    (isStale || longStale) && 'opacity-60',
   );
 
   // У пары «доллар к юаню» по-английски подпись «USD/CNY» сама говорит, что это за число: знак ¥ рядом
@@ -154,10 +177,12 @@ function TickerCell({ snapshot, nowMs }) {
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
   const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
-  // Подпись под ценой: дата, если ряд давний (иначе он выглядел бы свежей котировкой), иначе источник — «биржа» или «ЦБ».
-  const caption = asOfHuman
-    ? t('shell.ticker.asOf', { date: asOfHuman })
-    : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null);
+  // Подпись под ценой: «не обновлялось N дн.» у давнего значения, иначе источник — «биржа» или «ЦБ».
+  const caption = longStale
+    ? t('c8s.ticker.stale', { n: ageDays })
+    : (asOfHuman
+      ? t('shell.ticker.asOf', { date: asOfHuman })
+      : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null));
   const body = (
     <>
       <span className="fe-ticker__name">{t(meta.nameKey)}</span>
@@ -181,14 +206,14 @@ function TickerCell({ snapshot, nowMs }) {
 
   if (meta.linkTo) {
     return (
-      <Link to={meta.linkTo} className={cellClass} title={titleParts.join(' — ')}>
+      <Link to={meta.linkTo} className={cellClass} title={titleParts.join(' — ')} data-stale={longStale ? 'true' : undefined}>
         {body}
       </Link>
     );
   }
 
   return (
-    <span className={cellClass} title={titleParts.join(' — ')}>
+    <span className={cellClass} title={titleParts.join(' — ')} data-stale={longStale ? 'true' : undefined}>
       {body}
     </span>
   );
@@ -218,7 +243,8 @@ async function fetchLiveTicker(lane) {
  */
 function useEdgeFade(dep) {
   const ref = useRef(null);
-  const [edges, setEdges] = useState({ start: false, end: false });
+  // Телефон: правое затухание горит с первого кадра («лента листается»), до первого измерения; на компьютере сначала выключено.
+  const [edges, setEdges] = useState(() => ({ start: false, end: typeof window !== 'undefined' && window.innerWidth < 768 }));
   const measure = useCallback(() => {
     const el = ref.current;
     if (!el) return;

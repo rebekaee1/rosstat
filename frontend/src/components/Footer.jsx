@@ -55,7 +55,7 @@ function ImageCredit({ t }) {
  * Группа ссылок подвала. На телефоне — аккордеон (заголовок-кнопка раскрывает список), чтобы подвал не занимал
  * три экрана; от 640 px — обычная колонка с заголовком. Все заголовки одного стиля, регистр обычный.
  */
-function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1, cols = 1, children }) {
+function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1, mdSpan, cols = 1, children }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
   const expanded = desktop || open;
@@ -81,7 +81,7 @@ function FooterGroup({ title, hubTo, hubLabel, desktop, chips = false, span = 1,
   // Длинный список на широком экране занимает две дорожки сетки и идёт в два столбца (строк поровну).
   const rows = Math.ceil(Children.count(children) / 2);
   return (
-    <section className={cn('fe-foot-group', span === 2 && 'fe-foot-span-2')}>
+    <section className={cn('fe-foot-group', span === 2 && 'fe-foot-span-2')} data-md-span={mdSpan}>
       <h3 className="fe-foot-title">
         <FacetMark size={6} tone="light" />
         {desktop ? (
@@ -195,6 +195,7 @@ export default function Footer() {
               desktop={desktop}
               chips
               span={2}
+              mdSpan={2}
               cols={2}
             >
               {catalog.links.map((item) => (
@@ -213,6 +214,7 @@ export default function Footer() {
               desktop={desktop}
               chips
               span={2}
+              mdSpan={2}
               cols={2}
             >
               {CATEGORIES.filter((c) => c.apiCategory).map((c) => (
@@ -235,6 +237,7 @@ export default function Footer() {
             desktop={desktop}
             chips
             span={isEn ? 2 : 1}
+            mdSpan={isEn ? 2 : undefined}
             cols={isEn ? 2 : 1}
           >
             {worldLinks.map((item) => (
@@ -266,7 +269,7 @@ export default function Footer() {
             ))}
           </FooterGroup>
 
-          <FooterGroup title={t('footer.info')} desktop={desktop} span={isEn ? 1 : 2} cols={isEn ? 1 : 2}>
+          <FooterGroup title={t('footer.info')} desktop={desktop} span={isEn ? 1 : 2} mdSpan={isEn ? 2 : 3} cols={isEn ? 1 : 2}>
             <li>
               <Link to="/about" className={footLink}>
                 {t('footer.about')}

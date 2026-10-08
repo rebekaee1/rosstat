@@ -24,6 +24,7 @@ function renderConsent(locale = 'ru', path = '/') {
 
 beforeEach(() => {
   window.localStorage.clear();
+  window.sessionStorage.clear();
   window.__feApplyConsent = vi.fn();
   vi.mocked(track).mockReset();
 });
@@ -183,11 +184,11 @@ describe('cookie choices remain usable when measurement fails', () => {
     }
   });
 
-  it('collapsed banner is compact: one short text and two buttons, no title row', () => {
+  it('compact banner: one short text and the decision buttons in view (accept, only necessary, settings), no title row', () => {
     renderConsent();
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).queryByText(translate('cookie.title', undefined, 'ru'))).toBeNull();
-    expect(within(dialog).getAllByRole('button').map((b) => b.textContent.trim()).filter(Boolean)).toEqual(['Хорошо', 'Настроить']);
+    expect(within(dialog).getAllByRole('button').map((b) => b.textContent.trim()).filter(Boolean)).toEqual(['Хорошо', 'Только необходимые', 'Настроить']);
     expect(translate('cookie.summary', undefined, 'ru').length).toBeLessThan(90);
     // Сами категории и длинный текст — только после «Настроить».
     expect(within(dialog).queryAllByRole('checkbox')).toHaveLength(0);
@@ -206,16 +207,16 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(dialog.firstElementChild.className).toMatch(/max-h-\[min\(30rem/);
   });
 
-  it.each(['ru', 'en'])('компактная плашка: короткая строка для телефона, значок-шестерёнка вместо слова, ширина до 416 px (%s)', (locale) => {
+  it.each(['ru', 'en'])('компактная плашка: один текст, значок-шестерёнка вместо слова, ширина по содержимому до 416 px (%s)', (locale) => {
     renderConsent(locale);
     const dialog = screen.getByRole('dialog');
     const panel = dialog.firstElementChild;
     expect(panel.className).toContain('fe-cookie-panel');
     expect(panel.className).toContain('sm:max-w-[26rem]');
-    // Длинный текст для компьютера и короткий для телефона лежат рядом, CSS показывает один из них.
-    expect(dialog.querySelector('.fe-cookie-compact__long').textContent).toBe(translate('cookie.summary', undefined, locale));
-    expect(dialog.querySelector('.fe-cookie-compact__short').textContent).toBe(translate('z2.cookie.short', undefined, locale));
-    expect(translate('z2.cookie.short', undefined, locale).length).toBeLessThan(30);
+    expect(panel.className).toContain('sm:w-fit');
+    // Круг 8: текст один на все ширины (двух вариантов «длинный/короткий» больше нет).
+    expect(dialog.querySelector('.fe-cookie-compact__text').textContent).toContain(translate('cookie.summary', undefined, locale));
+    expect(dialog.querySelector('.fe-cookie-compact__long')).toBeNull();
     // «Настроить» остаётся именем кнопки для скринридера и подсказкой, на глаз это значок.
     const gear = within(dialog).getByRole('button', { name: translate('cookie.customize', undefined, locale) });
     expect(gear.className).toContain('fe-cookie-gear');
@@ -249,6 +250,16 @@ describe('cookie choices remain usable when measurement fails', () => {
     });
   });
 
+  it('круг 8, S1: «Только необходимые» стоит на виду рядом с «Хорошо» и записывает отказ без захода в настройки', () => {
+    renderConsent();
+    fireEvent.click(screen.getByRole('button', { name: 'Только необходимые' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(getConsent()).toMatchObject({ analytics: false, ads: false });
+    expect(track).toHaveBeenCalledExactlyOnceWith('consent_update', {
+      action: 'necessary_only', analytics: 0, ads: 0, policy_version: CONSENT_VERSION,
+    });
+  });
+
   it('keeps the dialog absent on admin pages', () => {
     renderConsent('ru', '/admin/bi');
     expect(screen.queryByRole('dialog')).toBeNull();
@@ -256,7 +267,7 @@ describe('cookie choices remain usable when measurement fails', () => {
   });
 });
 
-describe('K3: на телефоне после первой прокрутки плашка прячется', () => {
+describe('круг 8, S1: после первой прокрутки плашка прячется на любой ширине и не возвращается до конца сессии', () => {
   const realMatchMedia = window.matchMedia;
   async function scrollTo(y) {
     Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
@@ -289,14 +300,26 @@ describe('K3: на телефоне после первой прокрутки �
     expect(track).not.toHaveBeenCalled();
   });
 
-  it('вернувшись наверх страницы, посетитель снова видит плашку; выбор по-прежнему не записан', async () => {
+  it('вернувшись наверх страницы, посетитель плашку не видит (она уже была показана); выбор не записан; настройки открываются из меню', async () => {
     phone();
     renderConsent();
     await scrollTo(120);
     expect(screen.queryByRole('dialog')).toBeNull();
     await scrollTo(0);
-    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(getConsent()).toBeNull();
+    expect(window.sessionStorage.getItem('fe:consent:snooze')).toBe('1');
+  });
+
+  it('в новой вкладке сессии (хранилище очищено) плашка показывается снова', async () => {
+    renderConsent();
+    await scrollTo(120);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    cleanup();
+    window.sessionStorage.clear();
+    await scrollTo(0);
+    renderConsent();
+    expect(screen.getByRole('dialog')).toBeTruthy();
   });
 
   it('настройки из меню или подвала (событие) раскрываются и после прокрутки', async () => {
@@ -309,11 +332,12 @@ describe('K3: на телефоне после первой прокрутки �
     expect(screen.getByRole('button', { name: 'Сохранить выбор' })).toBeTruthy();
   });
 
-  it('компьютер: плашка не сворачивается при прокрутке', async () => {
+  it('компьютер и планшет: плашка тоже сворачивается после прокрутки, значка вместо неё нет', async () => {
     renderConsent();
     await scrollTo(400);
-    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(screen.queryByRole('button', { name: 'Настройки cookie' })).toBeNull();
+    expect(getConsent()).toBeNull();
   });
 
   it('открытые настройки не сворачиваются', async () => {

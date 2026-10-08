@@ -117,8 +117,9 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(usd.getAttribute('title')).toContain('shell.ticker.source.market');
     // Нет «04.10»-подобных технических дат.
     expect(document.body.textContent).not.toMatch(/\b\d{2}\.\d{2}\b/);
-    // Устаревший ряд Brent получил дату словами (ключ i18n подставляет саму дату) вместо подписи источника.
-    expect(screen.getAllByText('shell.ticker.asOf')).toHaveLength(1);
+    // Круг 8, D5: устаревший ряд Brent (старше трёх суток) подписан «не обновлялось N дн.» вместо подписи источника и помечен data-stale.
+    expect(screen.getAllByText('c8s.ticker.stale')).toHaveLength(1);
+    expect(document.querySelectorAll('[data-stale="true"]')).toHaveLength(1);
   });
 
   it('EN: золото в рублях в ленте не показывается, остальные курсы на месте', async () => {

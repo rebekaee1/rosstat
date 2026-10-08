@@ -54,3 +54,30 @@ it('prefers data-nav-label and shortens long link text', () => {
   expect(navLabelFor(long).length).toBeLessThanOrEqual(44);
   expect(navLabelFor(long).endsWith('…')).toBe(true);
 });
+
+// Круг 8, S6: название и описание лежат в соседних элементах без пробела; в плашку попадает только название.
+it('S6: из пункта меню берётся заголовок, а не заголовок вместе с описанием', () => {
+  const a = document.createElement('a');
+  a.innerHTML = '<span class="fe-mnav-text"><span class="fe-mnav-label">Рейтинг стран</span><span class="fe-mnav-hint">Кто впереди по росту</span></span>';
+  expect(navLabelFor(a)).toBe('Рейтинг стран');
+});
+
+it('S6: без разметки заголовка куски текста соединяются пробелом, а слишком длинный набор сокращается до первого куска', () => {
+  const a = document.createElement('a');
+  a.innerHTML = '<b>Рейтинг</b><i>стран</i>';
+  expect(navLabelFor(a)).toBe('Рейтинг стран');
+  const b = document.createElement('a');
+  b.innerHTML = '<span>Рейтинг стран по размеру экономики</span><span>Кто впереди и кто отстаёт за десять лет</span>';
+  expect(navLabelFor(b)).toBe('Рейтинг стран по размеру экономики');
+});
+
+it('S10: нажатая ссылка сразу помечается data-fe-pressed и теряет метку при ответе или через 8 с', () => {
+  vi.useFakeTimers();
+  renderProgress(<a href="/germany" onClick={(e) => e.preventDefault()}>Германия</a>);
+  const link = screen.getByText('Германия');
+  expect(link.getAttribute('data-fe-pressed')).toBeNull();
+  fireEvent.click(link);
+  expect(link.getAttribute('data-fe-pressed')).toBe('true');
+  act(() => { vi.advanceTimersByTime(8100); });
+  expect(link.getAttribute('data-fe-pressed')).toBeNull();
+});
