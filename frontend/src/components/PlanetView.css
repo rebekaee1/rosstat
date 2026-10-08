@@ -420,7 +420,7 @@
 .planet-ph-line { display: block; height: 12px; border-radius: 6px; }
 .planet-ph-year { display: block; width: 112px; height: var(--fe-year-h, 48px); border-radius: 12px; }
 .planet-ph-pill { display: block; width: 120px; height: 36px; border-radius: 999px; }
-.planet-ph-bar { background-image: linear-gradient(90deg, #C9D7EA, #7C9AC9 50%, #1E3A6E); opacity: .55; }
+.planet-ph-bar { background-image: linear-gradient(90deg, #B4E0DC, #5B93C7 50%, #26327E); opacity: .55; }
 .planet-ph-list { overflow: hidden; }
 .planet-ph-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 46px; padding: 9px 10px; }
 .planet-ph-dot { display: block; width: 18px; height: 18px; border-radius: 50%; }

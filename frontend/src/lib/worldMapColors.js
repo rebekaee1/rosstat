@@ -1,9 +1,10 @@
 /**
- * Единственная палитра карты мира и планеты (круг 6, зона G; прежняя «тёплая» золотая шкала снята по принципу владельца
- * «не слишком жёлтый»): холодный лёд #C9D7EA на малых значениях → глубокий синий #1E3A6E на больших, семь равных ступеней
- * (опорные цвета: лёд, средний синий #7C9AC9, глубокий синий). Страна без данных — нейтральная суша #E6E3DC (не синяя и не
- * золотая, не сливается ни со шкалой, ни с океаном), океан — #DCE8F3. Золото `#C9A24D` есть только у страны на первом
- * месте (`isTop`), это не ступень шкалы и в легенду-полосу не входит. Без оценочного смысла «хорошо/плохо».
+ * Единственная палитра карты мира и планеты. Круг 6 снял прежнюю «тёплую» золотую шкалу по принципу владельца «не слишком жёлтый»,
+ * но одна синяя гамма (лёд → синий) не давала полного размаха. Круг 10 (звонок «На правки 23»): снова двойной градиент, два холодных цвета:
+ * светлая морская волна #B4E0DC на малых значениях → средний синий #5B93C7 → глубокий индиго #26327E на больших, семь равных ступеней.
+ * Страна без данных — нейтральная суша #E6E3DC (не синяя и не бирюзовая, не сливается ни со шкалой, ни с океаном #DCE8F3).
+ * Золота на карте нет совсем: страна на первом месте больше не выделяется (первое место видно в списке справа, на карте это просто
+ * самый тёмный цвет шкалы). Без оценочного смысла «хорошо/плохо».
  *
  * Палитра одна для всех показателей и всех лет. Раньше шкала выбиралась по
  * данным выбранного года: если срез пересекал ноль, включалась отдельная
@@ -11,7 +12,7 @@
  * на том же показателе. Меняется только привязка центра (медиана или ноль),
  * цвета остаются те же.
  */
-const WORLD_SCALE_STOPS = ['#C9D7EA', '#7C9AC9', '#1E3A6E'];
+const WORLD_SCALE_STOPS = ['#B4E0DC', '#5B93C7', '#26327E'];
 
 function mixHex(a, b, f) {
   const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16));
@@ -37,8 +38,10 @@ export const WORLD_DIVERGING_SCALE = WORLD_MAP_SCALE;
 export const WORLD_NO_DATA = '#E6E3DC';
 // Океан карты и шара: холодный лёд.
 export const WORLD_OCEAN_COLOR = '#DCE8F3';
-// Страна на первом месте списка — единственное золото на карте.
-export const WORLD_TOP_COLOR = '#C9A24D';
+// Выбранная страна на плоской карте: светлая «льдина» поверх цвета шкалы и тёмная графитово-синяя кромка (видна и на светлых, и на тёмных ступенях).
+export const WORLD_SELECT_FILL = 'rgba(255,255,255,0.4)';
+export const WORLD_SELECT_HALO = '#FFFFFF';
+export const WORLD_SELECT_INK = '#16264F';
 
 // Модуль остаётся без текстов: подписи полос живут в словарях, иначе
 // англоязычная версия карты показывала бы русскую легенду.
@@ -105,14 +108,7 @@ function shiftForDirection(band, direction, size) {
   return direction === 'asc' ? size - 1 - band : band;
 }
 
-/** Лучшее значение списка: наибольшее, а при порядке «по возрастанию» — наименьшее; одно значение «первого места» не делает. */
-function topChecker(values, direction, enabled = true) {
-  if (!enabled || values.length < 2) return () => false;
-  const best = direction === 'asc' ? values[0] : values[values.length - 1];
-  return (rawValue) => numericValue(rawValue) === best;
-}
-
-function relativeModel(values, { direction = null, highlightTop = true } = {}) {
+function relativeModel(values, { direction = null } = {}) {
   const size = WORLD_RELATIVE_SCALE.length;
   const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const thresholds = WORLD_RELATIVE_SCALE
@@ -126,8 +122,6 @@ function relativeModel(values, { direction = null, highlightTop = true } = {}) {
   };
   return {
     kind: 'relative',
-    isTop: topChecker(values, direction, highlightTop),
-    hasTop: highlightTop && values.length > 1,
     scale: WORLD_RELATIVE_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -156,7 +150,7 @@ function relativeModel(values, { direction = null, highlightTop = true } = {}) {
   };
 }
 
-function divergingModel(values, { direction = null, highlightTop = true } = {}) {
+function divergingModel(values, { direction = null } = {}) {
   const size = WORLD_DIVERGING_SCALE.length;
   const colorIndexFor = (band) => shiftForDirection(band, direction, size);
   const maxAbs = Math.max(...values.map(Math.abs), 1);
@@ -175,8 +169,6 @@ function divergingModel(values, { direction = null, highlightTop = true } = {}) 
   };
   return {
     kind: 'diverging',
-    isTop: topChecker(values, direction, highlightTop),
-    hasTop: highlightTop && values.length > 1,
     scale: WORLD_DIVERGING_SCALE,
     median: quantile(values, 0.5),
     sampleSize: values.length,
@@ -218,13 +210,11 @@ function divergingModel(values, { direction = null, highlightTop = true } = {}) 
  * у минимальных. Так переключение порядка в таблице переворачивает раскраску
  * карты: лидер нового порядка всегда акцентный, антилидер — бледный.
  */
-export function buildWorldColorModel(valuesByCode, { mode = 'relative', direction = null, highlightTop = true } = {}) {
+export function buildWorldColorModel(valuesByCode, { mode = 'relative', direction = null } = {}) {
   const values = numericValues(valuesByCode);
   if (!values.length) {
     return {
       kind: 'empty',
-      isTop: () => false,
-      hasTop: false,
       scale: WORLD_RELATIVE_SCALE,
       median: null,
       sampleSize: 0,
@@ -234,6 +224,6 @@ export function buildWorldColorModel(valuesByCode, { mode = 'relative', directio
       describe: () => null,
     };
   }
-  const options = { direction, highlightTop };
+  const options = { direction };
   return mode === 'diverging' ? divergingModel(values, options) : relativeModel(values, options);
 }

@@ -757,12 +757,12 @@ describe('PlanetView interaction contract', () => {
     expect(stage.classList.contains('has-card')).toBe(true);
   });
 
-  it('marks gold only for the country in first place in the legend', async () => {
+  it('К1: золота первого места нет ни в модели цвета, ни в легенде', async () => {
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('planet-scene');
-    expect(scene.props.colorModel.isTop(3.2)).toBe(true);
-    expect(scene.props.colorModel.isTop(1.7)).toBe(false);
-    expect(container.querySelector('.planet-key-note--top').textContent).toBe('r6.planet.topNote');
+    expect(scene.props.colorModel.isTop).toBeUndefined();
+    expect(scene.props.colorModel.hasTop).toBeUndefined();
+    expect(container.querySelector('.planet-key-note--top')).toBeNull();
   });
 
   it('selects the country from a shared link once the catalogue is here', async () => {
@@ -1083,15 +1083,15 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     expect(container.querySelectorAll('.planet-stage').length).toBe(1);
   });
 
-  it('explains the map colours in one line: grey for no data, gold for first place (round 8, wave 2)', async () => {
+  it('explains the map colours in one line: grey for no data only, no gold first place (round 10, К1)', async () => {
     window.localStorage.setItem('fe_planet_view', 'map');
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('fallback-map');
     const legend = container.querySelector('.planet-map-stage + .planet-map-legend');
     expect(legend).toBeTruthy();
     expect(legend.textContent).toContain('c8w.map.noData');
-    expect(legend.textContent).toContain('c8w.map.top');
-    expect(legend.querySelectorAll('i')).toHaveLength(2);
+    expect(legend.textContent).not.toContain('c8w.map.top');
+    expect(legend.querySelectorAll('i')).toHaveLength(1);
   });
 
   it('keeps the flat map under the globe while the scene loads, with its own caption, and hands over when ready (round 8, wave 2)', async () => {
@@ -1146,13 +1146,13 @@ describe('PlanetView: круг 9, зона B', () => {
     expect(screen.queryByRole('button', { name: 'c9b.planet.toRussia' })).toBeNull();
   });
 
-  it('H7: highlightTop=false не обещает золото первого места в подписи под картой', async () => {
+  it('К1: под картой подписан только серый «нет данных», золота первого места нет', async () => {
     window.localStorage.setItem('fe_planet_view', 'map');
-    const { container, rerender } = render(<PlanetView countries={withRussia} valuesByCode={{ RU: 5.6, US: 4.1 }} metricName="Инфляция" unit="%" />);
+    const { container } = render(<PlanetView countries={withRussia} valuesByCode={{ RU: 5.6, US: 4.1 }} metricName="Инфляция" unit="%" />);
     await screen.findByTestId('fallback-map');
-    expect(container.querySelector('.planet-map-legend').textContent).toContain('c8w.map.top');
-    rerender(<PlanetView countries={withRussia} valuesByCode={{ RU: 5.6, US: 4.1 }} metricName="Инфляция" unit="%" highlightTop={false} />);
-    expect(container.querySelector('.planet-map-legend').textContent).not.toContain('c8w.map.top');
+    const legend = container.querySelector('.planet-map-legend').textContent;
+    expect(legend).toContain('c8w.map.noData');
+    expect(legend).not.toContain('c8w.map.top');
   });
 
   it('H3: кнопки управления не имеют собственных title: нативная подсказка не зависает после ухода курсора', async () => {

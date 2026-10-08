@@ -283,7 +283,7 @@ describe('WorldMap embedded in the planet stage', () => {
   it('красит страны переданной моделью цвета и сообщает о наведении и выборе', () => {
     const onHover = vi.fn();
     const onSelect = vi.fn();
-    const colorModel = { colorFor: () => '#123456', isTop: () => false, bins: [], describe: () => null };
+    const colorModel = { colorFor: () => '#123456', bins: [], describe: () => null };
     renderMap(embedded({ colorModel, onHover, onSelect }));
     const germany = screen.getByRole('button', { name: /Германия/ });
     expect(germany.getAttribute('fill')).toBe('#123456');
@@ -300,6 +300,21 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(container.querySelector('[data-selected-outline]')).toBeNull();
     rerender(<LocaleProvider>{embedded({ selectedCode: 'DE' })}</LocaleProvider>);
     expect(container.querySelector('[data-selected-outline]').getAttribute('d')).toBeTruthy();
+  });
+
+  it('К2: выбранная страна видна на любой ступени шкалы: белое гало под тёмной кромкой и светлая заливка', () => {
+    const { container, rerender } = renderMap(embedded());
+    expect(container.querySelector('[data-selected-halo]')).toBeNull();
+    rerender(<LocaleProvider>{embedded({ selectedCode: 'DE' })}</LocaleProvider>);
+    const halo = container.querySelector('[data-selected-halo]');
+    const ink = container.querySelector('[data-selected-outline]');
+    expect(halo.getAttribute('d')).toBe(ink.getAttribute('d'));
+    expect(halo.getAttribute('stroke')).toBe('#FFFFFF');
+    expect(halo.getAttribute('fill')).toMatch(/^rgba\(255,255,255/);
+    expect(ink.getAttribute('stroke')).toBe('#16264F');
+    // Гало шире кромки и лежит под ней.
+    expect(Number(halo.getAttribute('stroke-width'))).toBeGreaterThan(Number(ink.getAttribute('stroke-width')));
+    expect(halo.compareDocumentPosition(ink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('выполняет команды камеры: приблизить, отдалить, показать страну и вся карта', () => {

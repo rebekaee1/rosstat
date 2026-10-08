@@ -5,39 +5,56 @@ import {
   WORLD_NO_DATA,
   WORLD_OCEAN_COLOR,
   WORLD_RELATIVE_SCALE,
-  WORLD_TOP_COLOR,
+  WORLD_SELECT_FILL,
+  WORLD_SELECT_HALO,
+  WORLD_SELECT_INK,
 } from './worldMapColors';
 
-describe('round 6 palette', () => {
-  it('runs from ice #C9D7EA to deep blue #1E3A6E in seven steps, with no warm tone', () => {
+describe('круг 10: двойной холодный градиент', () => {
+  it('идёт от светлой морской волны #B4E0DC через средний синий к глубокому индиго #26327E в семь ступеней, без тёплых тонов', () => {
     expect(WORLD_RELATIVE_SCALE).toHaveLength(7);
-    expect(WORLD_RELATIVE_SCALE[0]).toBe('#C9D7EA');
-    expect(WORLD_RELATIVE_SCALE[6]).toBe('#1E3A6E');
+    expect(WORLD_RELATIVE_SCALE[0]).toBe('#B4E0DC');
+    expect(WORLD_RELATIVE_SCALE[3]).toBe('#5B93C7');
+    expect(WORLD_RELATIVE_SCALE[6]).toBe('#26327E');
     for (const hex of WORLD_RELATIVE_SCALE) {
       const [r, , b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-      expect(b).toBeGreaterThan(r); // every step is bluer than red: nothing yellow or gold
+      expect(b).toBeGreaterThan(r); // каждая ступень синее, чем красная: ничего жёлтого и золотого
     }
   });
 
-  it('keeps ocean #DCE8F3 and neutral no-data land #E6E3DC apart from the scale', () => {
+  it('градиент двухцветный: у светлого края зелёного больше, чем у тёмного (бирюзовый → индиго), а светлота падает без скачков', () => {
+    const lum = (hex) => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+        .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const greens = WORLD_RELATIVE_SCALE.map((hex) => parseInt(hex.slice(3, 5), 16));
+    expect(greens[0] - greens[6]).toBeGreaterThan(100);
+    const lums = WORLD_RELATIVE_SCALE.map(lum);
+    for (let i = 1; i < lums.length; i += 1) expect(lums[i]).toBeLessThan(lums[i - 1]);
+  });
+
+  it('держит океан #DCE8F3 и нейтральную сушу без данных #E6E3DC отдельно от шкалы', () => {
     expect(WORLD_OCEAN_COLOR).toBe('#DCE8F3');
     expect(WORLD_NO_DATA).toBe('#E6E3DC');
     expect(WORLD_RELATIVE_SCALE).not.toContain(WORLD_NO_DATA);
     expect(WORLD_RELATIVE_SCALE).not.toContain(WORLD_OCEAN_COLOR);
   });
 
-  it('gold belongs only to the country in first place, and flips with the order', () => {
-    expect(WORLD_TOP_COLOR).toBe('#C9A24D');
-    const values = { A: 1, B: 5, C: 9 };
-    const descending = buildWorldColorModel(values, { direction: 'desc' });
-    expect([1, 5, 9].map((value) => descending.isTop(value))).toEqual([false, false, true]);
+  it('золото первого места убрано: модель не знает «первого места», страна на первом месте — самая тёмная ступень', () => {
+    const values = Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]));
+    const model = buildWorldColorModel(values, { direction: 'desc' });
+    expect(model.isTop).toBeUndefined();
+    expect(model.hasTop).toBeUndefined();
+    expect(model.colorFor(35)).toBe(WORLD_RELATIVE_SCALE[6]);
     const ascending = buildWorldColorModel(values, { direction: 'asc' });
-    expect([1, 5, 9].map((value) => ascending.isTop(value))).toEqual([true, false, false]);
-    // The scale itself holds no gold step, and one observation is not a «first place».
-    expect(descending.bins.map((bin) => bin.color)).not.toContain(WORLD_TOP_COLOR);
-    expect(buildWorldColorModel({ A: 3 }).isTop(3)).toBe(false);
-    expect(buildWorldColorModel({}).isTop(3)).toBe(false);
-    expect(descending.isTop(null)).toBe(false);
+    expect(ascending.colorFor(1)).toBe(WORLD_RELATIVE_SCALE[6]);
+  });
+
+  it('цвета выбранной страны: светлая заливка, белое гало и тёмная кромка', () => {
+    expect(WORLD_SELECT_FILL).toMatch(/^rgba\(255,255,255/);
+    expect(WORLD_SELECT_HALO).toBe('#FFFFFF');
+    expect(WORLD_SELECT_INK).toBe('#16264F');
   });
 });
 
@@ -160,14 +177,3 @@ describe('buildWorldColorModel', () => {
   });
 });
 
-describe('highlightTop (круг 9, H7)', () => {
-  it('у показателя, где первое место означает худшее, золото первого места отключается и легенда его не обещает', () => {
-    const on = buildWorldColorModel({ A: 1, B: 5, C: 9 }, { direction: 'desc' });
-    const off = buildWorldColorModel({ A: 1, B: 5, C: 9 }, { direction: 'desc', highlightTop: false });
-    expect(on.isTop(9)).toBe(true);
-    expect(on.hasTop).toBe(true);
-    expect(off.isTop(9)).toBe(false);
-    expect(off.hasTop).toBe(false);
-    expect(off.colorFor(9)).toBe(on.colorFor(9));
-  });
-});

@@ -21,7 +21,7 @@ import {
   loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
 } from '../lib/worldTopology';
 import {
-  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_TOP_COLOR,
+  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_SELECT_FILL, WORLD_SELECT_HALO, WORLD_SELECT_INK,
 } from '../lib/worldMapColors';
 import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
@@ -590,7 +590,7 @@ export default function WorldMap({
     onHover?.(null);
   };
   const fillFor = (item) => {
-    if (item.hasValue) return colorModel.isTop?.(item.value) ? WORLD_TOP_COLOR : colorModel.colorFor(item.value);
+    if (item.hasValue) return colorModel.colorFor(item.value);
     return item.active ? WORLD_NO_DATA : WORLD_OUTSIDE;
   };
   const labelFor = (item) => {
@@ -676,16 +676,28 @@ export default function WorldMap({
         />
       )}
       {selectedGeometry && (
-        <path
-          d={path(selectedGeometry) || ''}
-          fill="rgba(30,58,110,0.16)"
-          stroke="#1E3A6E"
-          strokeWidth={1.8}
-          vectorEffect="non-scaling-stroke"
-          pointerEvents="none"
-          aria-hidden="true"
-          data-selected-outline="true"
-        />
+        // Круг 10 (К2): выбранная страна видна на любой ступени шкалы: светлая заливка-«льдина», белое гало и тёмная кромка.
+        // Раньше был тонкий контур цвета самой тёмной ступени (#1E3A6E) и почти прозрачная заливка: на тёмных странах его не было видно.
+        <g pointerEvents="none" aria-hidden="true">
+          <path
+            d={path(selectedGeometry) || ''}
+            fill={WORLD_SELECT_FILL}
+            stroke={WORLD_SELECT_HALO}
+            strokeWidth={4.4}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            data-selected-halo="true"
+          />
+          <path
+            d={path(selectedGeometry) || ''}
+            fill="none"
+            stroke={WORLD_SELECT_INK}
+            strokeWidth={1.8}
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            data-selected-outline="true"
+          />
+        </g>
       )}
       {markers.map((marker) => {
         const item = describe(marker.code);
@@ -707,9 +719,9 @@ export default function WorldMap({
               cx={marker.x}
               cy={marker.y}
               r={MARKER_RADIUS_PX * unitsPerPx}
-              fill={fillFor(item)}
-              stroke={selected || isHover ? '#1E3A6E' : 'rgba(30,38,56,0.65)'}
-              strokeWidth={selected || isHover ? 1.8 : 1}
+              fill={selected ? WORLD_SELECT_HALO : fillFor(item)}
+              stroke={selected || isHover ? WORLD_SELECT_INK : 'rgba(30,38,56,0.65)'}
+              strokeWidth={selected || isHover ? 2.2 : 1}
               vectorEffect="non-scaling-stroke"
             />
           </g>
