@@ -3283,4 +3283,6 @@ export default {
   'x8.planet.viewGlobe': 'Globe',
   // ===== Круг 8: оболочка (Z0) =====
   'c8s.ticker.stale': 'not updated for {n} d',
+  // ===== Круг 8: главная (Z1) =====
+  'c8h.today.sub': 'Figures for the latest year with data',
 };

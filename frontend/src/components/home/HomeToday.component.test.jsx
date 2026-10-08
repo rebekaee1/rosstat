@@ -38,7 +38,7 @@ function mount(locale = 'ru', { prices } = {}) {
 }
 
 describe('HomeToday: «Мир сейчас»', () => {
-  it('пока срезы грузятся, показывает каркас четырёх плиток, а не пустое место', () => {
+  it('пока срезы грузятся, показывает каркас трёх плиток, а не пустое место', () => {
     mockApiGet([
       ['/auth/me', { user: null }],
       ['/world/countries', () => new Promise(() => {})],
@@ -47,17 +47,18 @@ describe('HomeToday: «Мир сейчас»', () => {
     renderPage(<HomeToday />, { path: '/', route: '/' });
     const block = screen.getByRole('region', { name: 'Мир сейчас' });
     expect(block.getAttribute('aria-busy')).toBe('true');
-    expect(block.querySelectorAll('.fe-today__skeleton')).toHaveLength(4);
+    expect(block.querySelectorAll('.fe-today__skeleton')).toHaveLength(3);
   });
 
-  it('четыре плитки: число, страна с флагом, подпись с годом, место из N и лесенка стран', async () => {
+  it('три плитки: число, страна с флагом, подпись без года (год общей строкой), место из N и шкала', async () => {
     mount();
     const block = await screen.findByRole('region', { name: 'Мир сейчас' });
-    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(4));
+    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(3));
     const prices = block.querySelector('[data-tile="prices"]');
     expect(prices.textContent).toContain('34,9');
     expect(prices.textContent).toContain('Турция');
-    expect(prices.textContent).toContain('рост цен за год, 2025');
+    expect(prices.textContent).toContain('рост цен за год');
+    expect(prices.textContent).not.toContain('2025');
     expect(prices.textContent).toContain('Место 1 из 4');
     expect(prices.textContent).toContain('\u{1F1F9}\u{1F1F7}');
     // Шкала места: трубка и один камень; Турция первая, камень в самом начале.
@@ -68,10 +69,9 @@ describe('HomeToday: «Мир сейчас»', () => {
     expect(scale.style.getPropertyValue('--fe-rank-pos')).toBe('0');
     // Штрихов-столбиков (похожих на штрих-код) нет.
     expect(prices.querySelectorAll('svg rect')).toHaveLength(0);
-    // Не первое место: камень сдвинут по рангу (дом: 4 страны, место ниже первого), «первого» класса нет.
-    const homeScale = block.querySelector('[data-tile="home"], [data-tile="median"]').querySelector('.fe-today__scale');
-    expect(Number(homeScale.style.getPropertyValue('--fe-rank-pos'))).toBeGreaterThan(0);
-    expect(homeScale.className).not.toContain('is-first');
+    // Карточек про «домашнюю» страну нет: третьей была вторая про Россию (круг 8).
+    expect(block.querySelector('[data-tile="home"], [data-tile="median"]')).toBeNull();
+    expect(block.textContent).toContain('Данные за последний год, по которому они есть');
     const jobs = block.querySelector('[data-tile="jobs"]');
     expect(jobs.textContent).toContain('Япония');
     expect(jobs.textContent).toContain('2,5');
@@ -79,26 +79,17 @@ describe('HomeToday: «Мир сейчас»', () => {
     expect(within(block).getByRole('link', { name: /Весь рейтинг стран/ }).getAttribute('href')).toBe('/world/rating/gdp-usd');
   });
 
-  it('нет России в срезе инфляции: четвёртая плитка «обычная страна» без названия и ведёт в рейтинг цен', async () => {
-    mount('ru');
-    const block = await screen.findByRole('region', { name: 'Мир сейчас' });
-    await waitFor(() => expect(block.querySelector('[data-tile="median"]')).toBeTruthy());
-    const median = block.querySelector('[data-tile="median"]');
-    expect(median.textContent).toContain('Обычная страна');
-    expect(median.textContent).toContain('середина рейтинга');
-    expect(median.getAttribute('href')).toBe('/world/rating/hicp-index');
-  });
-
-  it('английский сайт: США как домашняя страна, подписи и числа по-английски', async () => {
+  it('английский сайт: США на месте, подписи и числа по-английски, карточки «домашней» страны нет', async () => {
     mount('en');
     const block = await screen.findByRole('region', { name: 'The world right now' });
-    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(4));
+    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(3));
     const economy = block.querySelector('[data-tile="economy"]');
     expect(economy.textContent).toContain('$30.8');
     expect(economy.textContent).toContain('trillion');
     expect(economy.textContent).toContain('United States');
     expect(economy.textContent).toContain('Rank 1 of 3');
-    expect(block.querySelector('[data-tile="home"]').textContent).toContain('United States right now');
+    expect(block.querySelector('[data-tile="home"]')).toBeNull();
+    expect(block.textContent).toContain('Figures for the latest year with data');
   });
 
   it('данных мало или срезы недоступны: блока нет совсем, без пустых плиток', async () => {
@@ -114,7 +105,7 @@ describe('HomeToday: «Мир сейчас»', () => {
   it('нет запрещённого разделителя mid-dot и текста-заглушки', async () => {
     mount();
     const block = await screen.findByRole('region', { name: 'Мир сейчас' });
-    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(4));
+    await waitFor(() => expect(block.querySelectorAll('.fe-today__tile')).toHaveLength(3));
     expect(block.textContent).not.toContain(String.fromCharCode(0xb7));
     expect(block.textContent).not.toMatch(/lorem|заглушк|mock/i);
   });

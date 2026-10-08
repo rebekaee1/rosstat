@@ -48,11 +48,18 @@ const PERIOD_FORMAT = { daily: 'day', weekly: 'day', monthly: 'full', quarterly:
 function RotatingHint({ lead, items }) {
   const [index, setIndex] = useState(0);
   const [fading, setFading] = useState(false);
+  const rootRef = useRef(null);
   useEffect(() => {
     if (items.length < 2) return undefined;
     if (typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
     let swap = 0;
+    let swaps = 0;
     const timer = setInterval(() => {
+      // Круг 8: пока человек читает подсказку (курсор над полем или оно в фокусе), текст не меняется; после двух кругов остаётся на месте.
+      const field = rootRef.current?.closest('button');
+      if (field && (field.matches(':hover') || field === document.activeElement)) return;
+      if (swaps >= items.length * 2) { clearInterval(timer); return; }
+      swaps += 1;
       setFading(true);
       swap = setTimeout(() => {
         setIndex((i) => (i + 1) % items.length);
@@ -65,7 +72,7 @@ function RotatingHint({ lead, items }) {
     };
   }, [items.length]);
   return (
-    <span className="flex-1 min-w-0 truncate text-sm text-text-tertiary">
+    <span ref={rootRef} className="flex-1 min-w-0 truncate text-sm text-text-tertiary">
       {lead}{' '}
       <span className={cn('fe-z8-hint__text text-text-secondary', fading && 'is-fading')}>{items[index % items.length]}</span>
     </span>

@@ -36,12 +36,10 @@ function TodayTile({ tile, href, countriesByCode }) {
   const { locale } = useLocale();
   const catalog = countriesByCode.get(tile.item.country_code);
   const flag = countryFlag(tile.item.country_code);
-  const place = tile.id === 'median'
-    ? t('z3.today.median.place', { n: tile.total })
-    : tile.country;
+  const place = tile.country;
   const label = t(`z3.today.${tile.id}.label`, { country: tile.country || '' });
-  const caption = t(`z3.today.${tile.id}.caption`)
-    + (tile.year ? `, ${tile.year}` : '');
+  // Год общей строкой в заголовке блока («за последний доступный год»), а не в каждой карточке: годы у стран разные, и «2025» рядом с «2026» читалось как ошибка.
+  const caption = t(`z3.today.${tile.id}.caption`);
   const rank = t('z3.today.rank', { rank: tile.ladder.rank, total: tile.ladder.total });
   const shown = useMemo(() => {
     const parsed = parseShownNumber(tile.value.num, locale);
@@ -67,7 +65,7 @@ function TodayTile({ tile, href, countriesByCode }) {
         <span className="fe-today__unit">{tile.value.unit}</span>
       </span>
       <span className="fe-today__place">
-        {flag && tile.id !== 'median' ? <span className="fe-today__flag" aria-hidden="true">{flag}</span> : null}
+        {flag ? <span className="fe-today__flag" aria-hidden="true">{flag}</span> : null}
         <span className="fe-today__country">{place}</span>
       </span>
       <span className="fe-today__caption">{caption}</span>
@@ -80,7 +78,8 @@ function TodayTile({ tile, href, countriesByCode }) {
 }
 
 /**
- * «Мир сейчас»: четыре крупных факта под поиском на главной (левая колонка героя).
+ * «Мир сейчас»: три крупных факта под поиском на главной (левая колонка героя): самая большая экономика, самая быстрая инфляция,
+ * самая низкая безработица. Карточку «Россия сейчас» (вторую про Россию в ряду) убрали вместе с шапкой «год у всех разный».
  * Берёт готовые срезы ВВП, инфляции и безработицы: те же ответы, что у планеты и каталога стран, отдельных запросов нет.
  * Пока срезы грузятся, показывает каркас той же высоты; если данных не хватает, блок не рисуется.
  */
@@ -96,7 +95,7 @@ export default function HomeToday() {
     () => new Map((countriesQ.data?.countries || []).map((country) => [country.code, country])),
     [countriesQ.data],
   );
-  const tiles = useMemo(() => buildTodayTiles({
+  const allTiles = useMemo(() => buildTodayTiles({
     gdp: gdpQ.data,
     inflation: inflationQ.data,
     unemployment: unemploymentQ.data,
@@ -104,6 +103,7 @@ export default function HomeToday() {
     countriesByCode,
     localeName: (country) => countryPublicName(country, locale),
   }), [gdpQ.data, inflationQ.data, unemploymentQ.data, locale, countriesByCode]);
+  const tiles = useMemo(() => allTiles.filter((tile) => tile.id !== 'home' && tile.id !== 'median'), [allTiles]);
 
   const pending = (gdpQ.isLoading || inflationQ.isLoading || unemploymentQ.isLoading) && tiles.length === 0;
   if (!pending && tiles.length < 2) return null;
@@ -121,11 +121,11 @@ export default function HomeToday() {
           <span className="fe-today__pulse" aria-hidden="true" />
           {t('z3.today.title')}
         </h2>
-        <p className="fe-today__sub">{t('z3.today.sub')}</p>
+        <p className="fe-today__sub">{t('c8h.today.sub')}</p>
       </header>
       {pending ? (
         <div className="fe-today__grid" aria-hidden="true">
-          {[0, 1, 2, 3].map((index) => <SkeletonBox key={index} className="fe-today__skeleton" />)}
+          {[0, 1, 2].map((index) => <SkeletonBox key={index} className="fe-today__skeleton" />)}
         </div>
       ) : (
         <ul className="fe-today__grid">

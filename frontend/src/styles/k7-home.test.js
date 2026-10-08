@@ -33,8 +33,9 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
 
   it('планета на главной: чипы, кнопки, подсказка без blur, чипы вынесены над шаром', () => {
     expect(hero).toMatch(/\.planet-quick-chip,[\s\S]*?\.planet-gesture-hint\s*\{[^}]*backdrop-filter:\s*none/);
-    expect(hero).toMatch(/\.planet-stage:has\(> \.planet-quick\)\s*\{\s*margin-top:\s*52px/);
-    expect(hero).toMatch(/\.planet-quick\s*\{[^}]*top:\s*-52px/);
+    // У шара ряд чипов вынесен над сценой; у карты (круг 8) он идёт обычной строкой над картой, без отрицательных отступов.
+    expect(hero).toMatch(/\.planet-stage:not\(\.planet-stage--map\):has\(> \.planet-quick\)\s*\{\s*margin-top:\s*52px/);
+    expect(hero).toMatch(/\.planet-stage:not\(\.planet-stage--map\) \.planet-quick\s*\{[^}]*top:\s*-52px/);
   });
 
   it('высота карточки планеты считается от 100vh минус запас на остальное содержимое', () => {
@@ -51,8 +52,16 @@ describe('k7-home.css, planet-hero.css, z3-home.css (главная в хрус�
     expect(k7).toMatch(/html\[data-fe-motion='off'\]/);
   });
 
-  it('длинный каталог: content-visibility у карточек после первых 16', () => {
+  it('длинный каталог: content-visibility у карточек после первых 16, запас высоты близок к настоящей карточке (нет провалов при прокрутке)', () => {
     expect(k7).toMatch(/\.fe-country-grid > li:nth-child\(n \+ 17\)\s*\{[^}]*content-visibility:\s*auto/);
+    expect(k7).toMatch(/\.fe-country-grid > li:nth-child\(n \+ 17\)\s*\{[^}]*contain-intrinsic-size:\s*auto 200px/);
+  });
+
+  it('круг 8: у всех карточек стран колонка флага одной ширины, последний неполный ряд растягивается, конвертер считает ширину своей карточки', () => {
+    expect(k7).toMatch(/\.fe-country-row__flag,[\s\S]*?\{\s*flex:\s*0 0 44px;\s*width:\s*44px/);
+    expect(k7).toMatch(/\.fe-country-grid:not\(\[data-featured\]\) > li:last-child:nth-child\(3n \+ 1\)\s*\{\s*grid-column:\s*1 \/ -1/);
+    expect(k7).toMatch(/\.fe-tool\s*\{\s*container:\s*fe-tool \/ inline-size/);
+    expect(k7).toMatch(/@container fe-tool \(max-width: 440px\)/);
   });
 
   it('круг 6: шкала места — тонкая полоса лёд → синий и плоская точка, без столбиков; кадр героя и карточка планеты поправлены', () => {

@@ -1,8 +1,7 @@
 import {
   lazy, startTransition, Suspense, useEffect, useMemo, useState,
 } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   HOME_PICKER_PLACEHOLDER,
   conceptColorMode,
@@ -28,7 +27,6 @@ import {
 import PlanetPlaceholder from '../PlanetPlaceholder';
 import ApiRetryBanner from '../ApiRetryBanner';
 import ErrorBoundary from '../ErrorBoundary';
-import WorldConceptPicker from '../WorldConceptPicker';
 import WorldMapConceptNote from '../WorldMapConceptNote';
 import HomeHero from './HomeHero';
 import { track, events } from '../../lib/track';
@@ -178,8 +176,9 @@ export default function HomeWorkbench({ ratingConcepts }) {
     .map((year) => ({ year, value: seriesPayload?.benchmark_by_year?.[String(year)]?.value }))
     .filter((point) => point.value != null && Number.isFinite(Number(point.value))), [seriesPayload]);
 
-  // Быстрая смена показателя прямо на шаре: первые показатели набора с короткими человеческими названиями.
-  const quickConcepts = useMemo(() => mapConcepts.slice(0, 5).map((item) => ({
+  // Один ряд показателей над картой (круг 8): прежний второй ряд «Показатель» под планетой повторял те же кнопки и убран.
+  // Пока каталог понятий не пришёл, ряд виден целиком из словаря (названия не зависят от API), макет не прыгает.
+  const quickConcepts = useMemo(() => (mapConcepts.length ? mapConcepts : HOME_PICKER_PLACEHOLDER).map((item) => ({
     slug: item.slug,
     label: homeConceptLabel(item.slug, t, item.name),
   })), [mapConcepts, t]);
@@ -204,40 +203,10 @@ export default function HomeWorkbench({ ratingConcepts }) {
       className="relative z-10 mb-10 md:mb-12"
       aria-labelledby="home-world-map-title"
     >
-        <div
-          data-block="home-map-controls"
-          className="mb-3 min-w-0"
-        >
-          <h2 id="home-world-map-title" className="text-base font-semibold text-text-primary">
+        <div data-block="home-map-controls" className="min-w-0">
+          <h2 id="home-world-map-title" className="sr-only">
             {t('home.map.title')}
           </h2>
-          <div className="mt-2 min-w-0">
-            <WorldConceptPicker
-              concepts={mapConcepts.length
-                ? mapConcepts
-                : HOME_PICKER_PLACEHOLDER}
-              value={concept}
-              onChange={(slug) => {
-                setPicked(slug);
-                setMapYear(null);
-                track(events.HOME_COUNTRIES_METRIC, { concept: slug });
-              }}
-              label={t('home.map.metricLabel')}
-              searchable={false}
-              mobileScroll
-              trailing={<WorldMapConceptNote conceptSlug={concept} />}
-              hint={fullRatingHref ? (
-                <Link
-                  to={fullRatingHref}
-                  onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'rating-hint', concept })}
-                  className="inline-flex min-h-8 items-center gap-1 text-xs text-text-secondary transition-colors hover:text-champagne-ink pointer-coarse:-my-1.5 pointer-coarse:min-h-11"
-                >
-                  {t('home.map.moreMetrics')}
-                  <ArrowRight size={12} aria-hidden="true" />
-                </Link>
-              ) : null}
-            />
-          </div>
         </div>
 
         {(mapSeries.isError && snapshot.isError) && (
@@ -292,6 +261,7 @@ export default function HomeWorkbench({ ratingConcepts }) {
                   }}
                   shareable
                   benchmarkSeries={benchmarkSeries}
+                  conceptNote={<WorldMapConceptNote conceptSlug={concept} />}
                   initialCountry={shared?.country || ''}
                   startFocus={locale === 'en' ? HOME_START_FOCUS_EN : HOME_START_FOCUS_RU}
                 />
