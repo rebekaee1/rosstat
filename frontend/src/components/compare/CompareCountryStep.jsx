@@ -1,5 +1,6 @@
 // Первый шаг «Сравнения»: выбор страны. Без вложенной прокрутки (список не перехватывает свайп страницы):
-// поиск, быстрые подборки («G7», «БРИКС», «Соседи России») и сетка стран с флагами; полный список — по кнопке.
+// поиск, быстрые подборки («G7», «БРИКС»; в русской версии ещё «Соседи России») и сетка стран с флагами; полный список — по кнопке.
+// Английская версия: страны идут по размеру ВВП, Россия не первая и без отдельной подборки «соседей».
 import { useMemo, useState } from 'react';
 import { Landmark, Search, X } from 'lucide-react';
 import Button from '../Button';
@@ -7,15 +8,18 @@ import Chip from '../Chip';
 import { SkeletonBox } from '../Skeleton';
 import { flagForSlug, COUNTRY_GROUPS } from '../../lib/slugFlags';
 import { cn } from '../../lib/format';
-import { useT } from '../../i18n';
+import { useLocale, useT } from '../../i18n';
+import { orderCountriesByGdp } from '../../lib/countryOrder';
 import '../../styles/regions-w4.css';
 
-/** Страны, которые люди сравнивают чаще всего: показываются первыми, пока список свёрнут. */
+/** Русская версия: страны, которые люди сравнивают чаще всего, показываются первыми, пока список свёрнут. */
 const POPULAR = [
   'russia', 'germany', 'united-states', 'china', 'france', 'united-kingdom',
   'italy', 'japan', 'india', 'brazil', 'turkey', 'poland',
 ];
 const COLLAPSED_COUNT = 12;
+/** Подборки, которых нет в английской версии. */
+const HIDDEN_GROUPS_EN = new Set(['neighbors']);
 const GROUP_LABEL_KEYS = {
   g7: 'w4.compare.group.g7',
   brics: 'w4.compare.group.brics',
@@ -35,23 +39,34 @@ export default function CompareCountryStep({
   countries, query, onQuery, onSelect,
   indicatorMatches = [], matchesPending = false, onAddIndicator, atCap = false, capHint,
   loading = false,
+  restrictNote = '',
 }) {
   const t = useT();
+  const { locale } = useLocale();
+  const english = locale === 'en';
   const [group, setGroup] = useState('all');
   const [expanded, setExpanded] = useState(false);
   const searching = query.trim().length > 0;
+  const groups = useMemo(
+    () => COUNTRY_GROUPS.filter((g) => !(english && HIDDEN_GROUPS_EN.has(g.id))),
+    [english],
+  );
 
   const visible = useMemo(() => {
     if (searching) return countries;
+    // Английская версия: весь список по размеру ВВП (первые строки — крупнейшие экономики), Россия на своём месте.
+    const ordered = english ? orderCountriesByGdp(countries, (c) => c.key) : countries;
     if (group !== 'all') {
-      const slugs = COUNTRY_GROUPS.find((g) => g.id === group)?.slugs || [];
-      return slugs.map((slug) => countries.find((c) => c.key === slug)).filter(Boolean);
+      const slugs = groups.find((g) => g.id === group)?.slugs || [];
+      const members = slugs.map((slug) => ordered.find((c) => c.key === slug)).filter(Boolean);
+      return english ? orderCountriesByGdp(members, (c) => c.key) : members;
     }
-    if (expanded || countries.length <= COLLAPSED_COUNT) return countries;
-    const popular = POPULAR.map((slug) => countries.find((c) => c.key === slug)).filter(Boolean);
-    const rest = countries.filter((c) => !popular.includes(c));
+    if (expanded || ordered.length <= COLLAPSED_COUNT) return ordered;
+    if (english) return ordered.slice(0, COLLAPSED_COUNT);
+    const popular = POPULAR.map((slug) => ordered.find((c) => c.key === slug)).filter(Boolean);
+    const rest = ordered.filter((c) => !popular.includes(c));
     return [...popular, ...rest].slice(0, COLLAPSED_COUNT);
-  }, [countries, searching, group, expanded]);
+  }, [countries, searching, group, expanded, english, groups]);
 
   const canExpand = !searching && group === 'all' && !expanded && countries.length > COLLAPSED_COUNT;
   const noCountries = countries.length === 0;
@@ -87,12 +102,16 @@ export default function CompareCountryStep({
           <Chip active={group === 'all'} onClick={() => { setGroup('all'); setExpanded(false); }}>
             {t('w4.compare.group.all')}
           </Chip>
-          {COUNTRY_GROUPS.map((g) => (
+          {groups.map((g) => (
             <Chip key={g.id} active={group === g.id} onClick={() => setGroup(g.id)}>
               {t(GROUP_LABEL_KEYS[g.id])}
             </Chip>
           ))}
         </div>
+      )}
+
+      {restrictNote && !searching && (
+        <p className="mb-3 text-xs leading-snug text-text-secondary" data-testid="compare-country-restrict">{restrictNote}</p>
       )}
 
       {noCountries && indicatorMatches.length > 0 ? (

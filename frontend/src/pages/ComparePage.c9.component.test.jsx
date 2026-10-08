@@ -84,12 +84,10 @@ describe('ComparePage: Россия и другая страна (круг 9, C1
     await screen.findByText('Индекс потребительских цен');
     fireEvent.click(await screen.findByRole('button', { name: /Добавить или изменить/ }));
     fireEvent.click(await screen.findByRole('button', { name: 'Турция' }));
-    // Раньше здесь стояло «У этой страны нет показателя» и выбор был закрыт.
-    const concept = await screen.findByRole('textbox', { name: 'Показатель страны' });
-    expect(concept.disabled).toBe(false);
-    fireEvent.focus(concept);
-    const option = await screen.findByRole('button', { name: /Потребительские цены/ });
-    fireEvent.mouseDown(option);
+    // Раньше здесь стояло «У этой страны нет показателя» и выбор был закрыт. Круг 10: подходит ровно один показатель — его можно добавить одним нажатием.
+    const only = await screen.findByTestId('compare-add-only');
+    expect(only.textContent).toMatch(/Потребительские цены/);
+    fireEvent.click(only);
     // Российский ряд заменён своим двойником из общего набора стран, и об этом сказано словами.
     expect(await screen.findByTestId('compare-status')).toBeTruthy();
     await waitFor(() => expect(screen.getByTestId('compare-status').textContent).toMatch(/заменён на тот же/));

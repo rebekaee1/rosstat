@@ -35,7 +35,9 @@ import {
 import { scalesDiffer } from '../lib/useCountryComparison';
 import ChartBrush from '../components/ChartBrush';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
-import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from '../lib/comparePresets';
+import {
+  COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, comparePresetsFor, presetIsActive, presetParams,
+} from '../lib/comparePresets';
 import { compareEndName, compareLabels, conceptShortLabel, unitHint } from '../lib/compareTitle';
 import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
@@ -60,10 +62,11 @@ import {
 import {
   activeCompatibilityNote,
   compareCompatibilityWithTwins,
+  normalizeCompareCodes,
   parseSubnationalCompareCode,
   parseWorldCompareCode,
-  sanitizeCompareCodes,
 } from '../lib/compareCompatibility';
+import { orderCountriesByGdp } from '../lib/countryOrder';
 import {
   comparePath,
   countryRegionsPath,
@@ -122,12 +125,15 @@ function compatText(t, compatibility) {
   return key ? t(key) : undefined;
 }
 
+// Круг 10 (Ср2): по умолчанию 25 лет. Короткий период обрезал историю («с 2016») там, где ряды сравнивают от общего старта.
 const RANGE_OPTIONS = [
   { key: '3y', labelKey: 'compare.range.3y', months: 36 },
   { key: '5y', labelKey: 'compare.range.5y', months: 60 },
   { key: '10y', labelKey: 'compare.range.10y', months: 120 },
+  { key: '25y', labelKey: 'c10k.compare.range.25y', months: 300 },
   { key: 'all', labelKey: 'compare.range.all', months: null },
 ];
+const DEFAULT_RANGE = '25y';
 
 // До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js::COMPARE_COLORS).
 // Круг 8 (C1): цвет ряда один на линию, легенду, точку на конце, заливку, подсказку и карточки итогов.
@@ -794,6 +800,8 @@ function russiaLandingPool(indicators, worldItems, locale) {
       : item.concept_name;
     macros.push({
       code: item.code,
+      // Понятие нужно поиску: по слову «ВВП» находится «Валовой внутренний продукт» России из общего набора стран.
+      concept_slug: item.concept_slug,
       name: conceptName,
       name_en: item.concept_name_en || item.concept_name,
       category: item.category || '',
@@ -820,7 +828,16 @@ function AddIndicator({
     const pool = (indicators || []).filter((i) =>
       !selected.includes(i.code)
       && (!compatibilityFor || compatibilityFor(i.code).allowed));
-    return filterSearchOptions(pool, query, {
+    // Круг 10 (Ср1): рядом с рядами других стран российский показатель добавляется своим двойником из общего набора.
+    // Если двойник уже есть в списке сам («ВВП в текущих долларах США» и тот же показатель из набора стран), второй не показываем.
+    const targets = new Set(pool.map((i) => i.code));
+    const unique = compatibilityFor
+      ? pool.filter((i) => {
+        const target = compatibilityFor(i.code).addCode;
+        return !target || target === i.code || !targets.has(target);
+      })
+      : pool;
+    return filterSearchOptions(unique, query, {
       getSearchItem: (item) => ({ ...item, country_slug: 'russia' }),
     });
   }, [indicators, selected, query, compatibilityFor]);
@@ -951,18 +968,33 @@ function AddWorldCountrySeries({
     onAdd(item.code);
   };
 
+  // Круг 10: к уже выбранному подходит ровно один показатель — добавляем его одним нажатием, без открытия списка.
+  const onlyItem = selected.length > 0 && conceptItems.length === 1 ? conceptItems[0] : null;
+
   return (
     <div className="grid gap-2">
-      <ComboSelect
-        groups={groups}
-        value=""
-        onChange={pick}
-        placeholder={t('w6g.compare.findIndicator')}
-        searchPlaceholder={t('w6g.compare.findIndicator')}
-        ariaLabel={t('compare.conceptAria')}
-        disabled={atCap || conceptItems.length === 0}
-        trackContext="compare-world-concept"
-      />
+      {onlyItem && !atCap ? (
+        <Button
+          variant="primary"
+          onClick={() => pick(onlyItem.value)}
+          data-testid="compare-add-only"
+          className="justify-self-start"
+        >
+          <Plus className="h-4 w-4" aria-hidden="true" />
+          {t('c10k.compare.addOnly', { name: onlyItem.label })}
+        </Button>
+      ) : (
+        <ComboSelect
+          groups={groups}
+          value=""
+          onChange={pick}
+          placeholder={t('w6g.compare.findIndicator')}
+          searchPlaceholder={t('w6g.compare.findIndicator')}
+          ariaLabel={t('compare.conceptAria')}
+          disabled={atCap || conceptItems.length === 0}
+          trackContext="compare-world-concept"
+        />
+      )}
       {atCap && <CapNotice text={capHint} onLimit={onLimit} onClear={onClear} />}
       {emptyKey && (
         <p className="text-xs leading-relaxed text-text-secondary">
@@ -1035,23 +1067,46 @@ function CompareSeriesPicker({
     return [...map.values()].sort((a, b) => a.label.localeCompare(b.label, locale === 'en' ? 'en' : 'ru'));
   }, [worldItems, locale]);
 
+  // Круг 10 (Ср1): к уже выбранному подходят не все страны. Оставляем те, у кого есть ряд, который можно добавить,
+  // чтобы выбор не заканчивался тупиком «не нашлось» (особенно когда сначала взяли США, а потом идут к России).
+  const availableSlugs = useMemo(() => {
+    if (!selected.length || !compatibilityFor) return null;
+    const set = new Set();
+    for (const item of worldItems || []) {
+      if (selected.includes(item.code)) {
+        // Страна, ряд которой уже на графике, остаётся в списке: открыв её, человек увидит, что добавлено всё подходящее.
+        set.add(item.country_slug);
+        continue;
+      }
+      if (set.has(item.country_slug)) continue;
+      if (compatibilityFor(item.code).allowed) set.add(item.country_slug);
+    }
+    if (!set.has('russia') && (indicators || []).some((ind) => (
+      !selected.includes(ind.code) && compatibilityFor(ind.code).allowed
+    ))) set.add('russia');
+    return set.size ? set : null;
+  }, [selected, worldItems, indicators, compatibilityFor]);
+
   const filteredCountries = useMemo(() => {
     const q = countryQuery.trim().toLowerCase();
     const russia = { key: 'russia', country_slug: 'russia', label: t('compare.russia') };
-    const rest = (q
-      ? filterSearchCountries(countries, q)
-      : countries
-    ).filter((c) => c.key !== 'russia');
-    const showRussia = !q || filterSearchCountries([russia], q).length > 0;
-    if (q) return showRussia ? [russia, ...rest] : rest;
-    if (locale === 'en') {
-      const all = [...rest, ...(showRussia ? [russia] : [])]
-        .sort((a, b) => a.label.localeCompare(b.label, 'en'));
-      const us = all.find((c) => c.key === 'united-states');
-      return [...(us ? [us] : []), ...all.filter((c) => c.key !== 'united-states')];
+    const worldOnly = countries.filter((c) => c.key !== 'russia');
+    if (q) {
+      // Английская версия: Россия в поиске стоит там, где её поставит релевантность, а не первой.
+      if (locale === 'en') return filterSearchCountries([...worldOnly, russia], q);
+      const found = filterSearchCountries(worldOnly, q);
+      return filterSearchCountries([russia], q).length > 0 ? [russia, ...found] : found;
     }
-    return showRussia ? [russia, ...rest] : rest;
-  }, [countries, countryQuery, locale, t]);
+    const pool = availableSlugs ? worldOnly.filter((c) => availableSlugs.has(c.key)) : worldOnly;
+    const showRussia = !availableSlugs || availableSlugs.has('russia');
+    // Английская версия: по размеру ВВП, Россия на своём месте и не первая. Русская: Россия первой, дальше по алфавиту.
+    if (locale === 'en') {
+      return orderCountriesByGdp([...pool, ...(showRussia ? [russia] : [])], (c) => c.key);
+    }
+    return showRussia ? [russia, ...pool] : pool;
+  }, [countries, countryQuery, locale, t, availableSlugs]);
+  const countriesRestricted = Boolean(availableSlugs)
+    && (countries.some((c) => c.key !== 'russia' && !availableSlugs.has(c.key)) || !availableSlugs.has('russia'));
 
   // Человек часто вводит сюда сам показатель («дизель», «инфляция»), а не страну.
   // Вместо тупика «Ничего не найдено» спрашиваем общий поиск и показываем
@@ -1090,6 +1145,14 @@ function CompareSeriesPicker({
       t,
     )
     : undefined;
+
+  // Тот же показатель у России одним нажатием: ряд США уже на графике, и Россию не нужно искать в общем списке.
+  const russiaSameItem = activeWorldConcept
+    ? worldItems.find((item) => item.code === `w:russia:${activeWorldConcept}`)
+    : null;
+  const russiaSameAllowed = Boolean(russiaSameItem)
+    && !selected.includes(russiaSameItem.code)
+    && compatibilityFor(russiaSameItem.code).allowed;
 
   // Подсказка шага зависит от состояния: не просим «выбрать показатель», когда все уже на графике.
   const countryHasOptions = Boolean(
@@ -1153,12 +1216,26 @@ function CompareSeriesPicker({
           atCap={atCap}
           capHint={capHint}
           loading={catalogLoading}
+          restrictNote={countriesRestricted ? t('c10k.compare.onlyMatching', {
+            indicator: activeWorldConceptName || t('c10k.compare.chosenIndicator'),
+          }) : ''}
         />
       )}
 
       {countryKey === 'russia' && !russiaBranch && (
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
+          {russiaSameAllowed && !atCap && (
+            <Button
+              variant="primary"
+              className="mb-4"
+              data-testid="compare-add-russia-same"
+              onClick={() => onAdd(russiaSameItem.code)}
+            >
+              <Plus className="h-4 w-4" aria-hidden="true" />
+              {t('c10k.compare.addRussiaSame', { name: activeWorldConceptName || t('c10k.compare.chosenIndicator') })}
+            </Button>
+          )}
           <div className="mb-4">
             <div className="mb-2 text-sm font-medium text-text-secondary">
               {t('compare.conceptGroup')}
@@ -1419,7 +1496,7 @@ export default function ComparePage() {
   const glass = useChartGlassIds('k5c');
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [range, setRange] = useState('5y');
+  const [range, setRange] = useState(DEFAULT_RANGE);
   // Свой период, выбранный ручками под графиком: длина окна в точках (range === 'custom').
   const [customLen, setCustomLen] = useState(0);
   const [scale, setScale] = useState('values');
@@ -1457,7 +1534,16 @@ export default function ComparePage() {
     () => (isDemo ? DEFAULT_COMPARE_PRESET.codes : parseCodes(searchParams)),
     [isDemo, searchParams],
   );
-  const compatibleCodes = useMemo(() => sanitizeCompareCodes(allCodes), [allCodes]);
+  const { data: worldCompareCatalog, isLoading: worldCatalogLoading } = useWorldCompareCatalog();
+  const worldCompareItems = useMemo(() => worldCompareCatalog?.items || [], [worldCompareCatalog]);
+  const worldCodeSet = useMemo(() => new Set(worldCompareItems.map((item) => item.code)), [worldCompareItems]);
+  const hasWorldCode = useCallback((code) => worldCodeSet.has(code), [worldCodeSet]);
+  // Круг 10 (Ср1): набор из адреса приводим к сопоставимому, и порядок кодов не важен: российский показатель с двойником
+  // в общем наборе стран (ВВП, инфляция…) становится двойником, пока каталог не загрузился, считаем двойника существующим.
+  const compatibleCodes = useMemo(
+    () => normalizeCompareCodes(allCodes, worldCodeSet.size ? hasWorldCode : () => true),
+    [allCodes, worldCodeSet, hasWorldCode],
+  );
   const codes = useMemo(
     () => (isAuthed ? compatibleCodes : compatibleCodes.slice(0, GUEST_MAX)),
     [compatibleCodes, isAuthed],
@@ -1491,16 +1577,12 @@ export default function ComparePage() {
   const { data: unlistedIndicators, isFetched: unlistedFetched } = useIndicators({
     includeUnlisted: true, enabled: needsUnlisted,
   });
-  const { data: worldCompareCatalog, isLoading: worldCatalogLoading } = useWorldCompareCatalog();
   const hasWorldSeries = codes.some(isWorldCode);
   const dataSpacesCount = [
     codes.some((code) => isWorldCode(code) || isSubnationalCode(code)),
     codes.some(isRegionCode),
     codes.some((code) => !isWorldCode(code) && !isRegionCode(code) && !isSubnationalCode(code)),
   ].filter(Boolean).length;
-  const worldCompareItems = useMemo(() => worldCompareCatalog?.items || [], [worldCompareCatalog]);
-  const worldCodeSet = useMemo(() => new Set(worldCompareItems.map((item) => item.code)), [worldCompareItems]);
-  const hasWorldCode = useCallback((code) => worldCodeSet.has(code), [worldCodeSet]);
   const compatibilityNote = activeCompatibilityNote(codes);
   const worldMetaByCode = useMemo(
     () => new Map((worldCompareCatalog?.items || []).map((item) => [item.code, {
@@ -1592,19 +1674,26 @@ export default function ComparePage() {
     }
     setCompatibilityMessage('');
     // Российский показатель заменён своим «двойником» в общем наборе стран: так он сравним с рядом другой страны.
-    const next = [...(compatibility.replaceWith || current), code];
+    // Это работает в обе стороны: уже выбранный заменяется (`replaceWith`), добавляемый заменяется на двойника (`addCode`).
+    const added = compatibility.addCode || code;
+    const next = [...(compatibility.replaceWith || current), added];
     writeCodes(next);
-    const name = shortNameForCode(code) || t('z2.compare.seriesFallback');
-    const statusKey = compatibility.replaceWith
-      ? 'c9d.compare.twinSwapped'
-      : next.length >= cap && !isAuthed ? 'w6g.compare.addedLimit' : 'w6g.compare.added';
+    const name = shortNameForCode(added) || t('z2.compare.seriesFallback');
+    const statusKey = compatibility.swapNoteKey
+      || (next.length >= cap && !isAuthed ? 'w6g.compare.addedLimit' : 'w6g.compare.added');
     setStatus(t(statusKey, { name }));
     // Круг 9 (C3): после второго ряда выбор сворачивается, и график виден сразу, а не через два экрана.
     setPickerOpen(next.length < 2 && next.length < cap);
-    track(events.COMPARE_ADD, { code, count: next.length });
+    track(events.COMPARE_ADD, { code: added, count: next.length });
     // График остаётся ниже выбора: подкручиваем к нему на любом экране, если он не в поле зрения.
     window.setTimeout(scrollToCompareChart, 140);
   }, [codes, isDemo, cap, isAuthed, writeCodes, t, shortNameForCode, hasWorldCode]);
+
+  // Что можно добавить к уже выбранному: решение одно и то же для списка стран, списка показателей и самого добавления.
+  const compatibilityFor = useCallback(
+    (code) => compareCompatibilityWithTwins(isDemo ? [] : codes, code, hasWorldCode),
+    [isDemo, codes, hasWorldCode],
+  );
 
   // «Начать заново»: убрать все ряды и открыть выбор (гость упёрся в лимит или набор не сочетается).
   const clearAll = useCallback(() => {
@@ -2183,7 +2272,7 @@ export default function ComparePage() {
         {/* Готовые сравнения: один тап, и график уже построен. */}
         <div className="mb-2.5 md:mb-4" role="group" aria-label={t('w6g.compare.presetsAria')}>
           <div className="fe-scroll-row">
-            {COMPARE_PRESETS.map((preset) => (
+            {comparePresetsFor(locale).map((preset) => (
               <Chip
                 key={preset.id}
                 active={activePreset?.id === preset.id}
@@ -2307,7 +2396,7 @@ export default function ComparePage() {
               onAdd={addCode}
               atCap={atCap}
               capHint={capHint}
-              compatibilityFor={(code) => compareCompatibilityWithTwins(isDemo ? [] : codes, code, hasWorldCode)}
+              compatibilityFor={compatibilityFor}
               onClear={clearAll}
               status={status}
               catalogLoading={worldCatalogLoading}
@@ -2391,9 +2480,10 @@ export default function ComparePage() {
               </p>
             </div>
 
-            {autoIndex && (
-              <div className="fe-compare-auto" role="status" data-testid="compare-auto-index" data-no-export="true">
-                <p>{t('z7.compare.autoIndex', { date: formatDate(baseDate, compareDateFmt) })}</p>
+            {/* Круг 10 (Ср2): что значит «старт = 100» сказано словами и с примером, а настоящие числа возвращает видимая кнопка рядом. */}
+            {indexed && !forceIndex && baseDate && (
+              <div className="fe-compare-auto" role="status" data-testid={autoIndex ? 'compare-auto-index' : 'compare-index-note'} data-no-export="true">
+                <p>{t(autoIndex ? 'c10k.compare.autoIndex' : 'c10k.compare.manualIndex', { date: formatDate(baseDate, compareDateFmt) })}</p>
                 <Button variant="secondary" size="sm" onClick={() => chooseScale('values')}>
                   {t('z7.scale.backToValues')}
                 </Button>

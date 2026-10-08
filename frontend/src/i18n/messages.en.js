@@ -3353,4 +3353,16 @@ export default {
   'c9d.calc.scope': 'Calculating for: {country}, {currency}',
   'c9d.slider.typeValue': 'Enter a number: {label}',
   'c9d.compound.currencyAria': 'Calculation currency',
+
+  // ===== Compare (round 10) =====
+  'c10k.compare.range.25y': '25Y',
+  'c10k.compare.autoIndex': 'The series differ a lot in size, so the chart shows growth in percent from a common start: on {date} every series equals 100. The number at the end of a line shows how much it grew: 150 means one and a half times. The “Show values” button brings back the real numbers.',
+  'c10k.compare.manualIndex': 'The chart shows growth from a common start: on {date} every series equals 100. If a line ends at 150, it grew by half. The “Show values” button brings back the real numbers.',
+  'c10k.compare.twinRubToUsd': 'Russia’s GDP is taken in US dollars (the annual GDP converted at the average rate of the year), so it can be compared with other countries. Added: “{name}”.',
+  'c10k.compare.onlyMatching': 'Showing the countries that have “{indicator}”.',
+  'c10k.compare.chosenIndicator': 'the chosen indicator',
+  'c10k.compare.addRussiaSame': 'Add Russia: “{name}”',
+  'c10k.compare.addOnly': 'Add: {name}',
+  'c10k.compare.baseExplain': 'Period start = 100: on the first date of the period every series is set to 100, so you can see by what percent it grew or fell. 150 means “one and a half times the start”.',
+  'c10k.compare.showValues': 'Show values',
 };

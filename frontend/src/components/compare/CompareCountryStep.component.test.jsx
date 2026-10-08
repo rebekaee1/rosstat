@@ -14,11 +14,11 @@ const SLUGS = [
 ];
 const COUNTRIES = SLUGS.map(([key, label]) => ({ key, label }));
 
-function renderStep(props = {}) {
+function renderStep(props = {}, locale = 'ru') {
   const onSelect = vi.fn();
   const onQuery = vi.fn();
   const utils = render(
-    <LocaleProvider locale="ru">
+    <LocaleProvider locale={locale}>
       <CompareCountryStep countries={COUNTRIES} query="" onQuery={onQuery} onSelect={onSelect} {...props} />
     </LocaleProvider>,
   );
@@ -85,5 +85,60 @@ describe('CompareCountryStep', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: /Дизельное топливо/ }));
     expect(onAddIndicator).toHaveBeenCalledWith({ code: 'diesel', label: 'Дизельное топливо' });
+  });
+
+  describe('английская версия (круг 10, Ср3)', () => {
+    const EN = [
+      ['russia', 'Russia'], ['germany', 'Germany'], ['united-states', 'United States'], ['china', 'China'],
+      ['france', 'France'], ['united-kingdom', 'United Kingdom'], ['italy', 'Italy'], ['japan', 'Japan'],
+      ['india', 'India'], ['brazil', 'Brazil'], ['turkey', 'Turkey'], ['poland', 'Poland'],
+      ['albania', 'Albania'], ['canada', 'Canada'], ['finland', 'Finland'], ['south-africa', 'South Africa'],
+    ].map(([key, label]) => ({ key, label }));
+
+    function names(container) {
+      return [...container.querySelectorAll('.fe-compare-countries button')]
+        .map((b) => b.querySelector('span:not(.fe-flag)')?.textContent.trim());
+    }
+
+    it('первой идёт самая крупная экономика, Россия не первая: порядок по ВВП', () => {
+      const { container } = renderStep({ countries: EN }, 'en');
+      const list = names(container);
+      expect(list[0]).toBe('United States');
+      expect(list.slice(0, 4)).toEqual(['United States', 'China', 'Germany', 'Japan']);
+      expect(list.indexOf('Russia')).toBeGreaterThan(0);
+      expect(list.indexOf('Russia')).toBeGreaterThan(list.indexOf('France'));
+    });
+
+    it('подборки: G7 и BRICS есть, «Russia’s neighbours» нет', () => {
+      renderStep({ countries: EN }, 'en');
+      expect(screen.getByRole('button', { name: 'G7' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'BRICS' })).toBeTruthy();
+      expect(screen.queryByRole('button', { name: /neighbo/i })).toBeNull();
+    });
+
+    it('BRICS идут по размеру ВВП, а Россия не первая', () => {
+      const { container } = renderStep({ countries: EN }, 'en');
+      fireEvent.click(screen.getByRole('button', { name: 'BRICS' }));
+      expect(names(container)).toEqual(['China', 'India', 'Russia', 'Brazil', 'South Africa']);
+    });
+
+    it('русская версия не меняется: подборка «Соседи России» на месте', () => {
+      renderStep();
+      expect(screen.getByRole('button', { name: 'Соседи России' })).toBeTruthy();
+    });
+
+    it('после «Показать все» весь список остаётся по ВВП', () => {
+      const { container } = renderStep({ countries: EN }, 'en');
+      fireEvent.click(screen.getByRole('button', { name: /Show all countries/ }));
+      const list = names(container);
+      expect(list.length).toBe(EN.length);
+      expect(list[0]).toBe('United States');
+      expect(list.indexOf('Italy')).toBeLessThan(list.indexOf('Albania'));
+    });
+  });
+
+  it('примечание, почему список короче, видно без поиска', () => {
+    renderStep({ restrictNote: 'Показаны страны, у которых есть «ВВП».' });
+    expect(screen.getByTestId('compare-country-restrict').textContent).toMatch(/Показаны страны/);
   });
 });
