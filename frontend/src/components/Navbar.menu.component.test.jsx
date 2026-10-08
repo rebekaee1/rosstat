@@ -336,3 +336,18 @@ describe('Navbar K3: капсула, сжатие на телефоне, «Ещ�
   });
 });
 
+
+describe('Navbar: меню телефона (круг 9, S10)', () => {
+  it('«Инструменты» стоят сразу после мировых разделов, до раскрывающейся «Россия»; у списка запас снизу над кнопками «Войти»', () => {
+    renderNav();
+    fireEvent.click(screen.getByRole('button', { name: 'Открыть меню' }));
+    const menu = document.getElementById('fe-nav-mobile-menu');
+    const groups = [...menu.querySelectorAll('.fe-mnav-columns > .fe-mnav-group')];
+    const titles = groups.map((g) => g.querySelector('.fe-mnav-title, .fe-mnav-toggle .fe-mnav-label')?.textContent || '');
+    const tools = titles.findIndex((t) => /Инструменты/.test(t));
+    const russia = groups.findIndex((g) => g.classList.contains('fe-mnav-group--collapsible'));
+    expect(tools).toBeGreaterThan(-1);
+    expect(russia).toBeGreaterThan(tools);
+    expect(menu.querySelector('.fe-mnav-scroll')).toBeTruthy();
+  });
+});

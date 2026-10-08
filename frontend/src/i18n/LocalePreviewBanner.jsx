@@ -33,9 +33,9 @@ export default function LocalePreviewBanner() {
   const scrolling = useHiddenWhileScrolling();
   if (!isPreview) return null;
 
-  // Над плашкой cookie, над док-панелью телефона: их высоты лежат в --fe-cookie-h и --fe-dock-h
-  // (0, пока их нет на экране).
-  const lift = { bottom: 'calc(var(--fe-cookie-h, 0px) + var(--fe-dock-h, 0px) + 8px)' };
+  // Над плашкой cookie, над док-панелью телефона и плашкой «Результат»: их высоты лежат в --fe-cookie-h, --fe-dock-h и --fe-sticky-h
+  // (0, пока их нет на экране; круг 9 добавил плашку «Результат»).
+  const lift = { bottom: 'calc(var(--fe-cookie-h, 0px) + var(--fe-dock-h, 0px) + var(--fe-sticky-h, 0px) + 8px)' };
 
   if (!open) {
     return (

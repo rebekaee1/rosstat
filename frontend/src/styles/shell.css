@@ -196,6 +196,10 @@
 
 /* ── Подвал: на телефоне аккордеон, от 640px — колонки ───────────────────── */
 .fe-foot-wrap { padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)); }
+/* Круг 9, S7: на телефоне нижний отступ подвала один (воздух + безопасная зона), а не сумма ритма секции, py-10 и запаса под панель. */
+@media (max-width: 767px) {
+  .fe-foot-wrap { padding-block: 2rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); }
+}
 .fe-foot-title {
   margin: 0;
   font-size: 14px;
@@ -566,6 +570,9 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 .fe-foot-requisites p { font-size: 13px; line-height: 1.5; }
 
 /* ── Заглушка загрузки маршрута: видна сразу, по форме карточек ─────────────── */
+/* Круг 9, L1: заглушка загрузки страницы занимает окно целиком (минус шапка и лента), поэтому подвал не выглядывает под серыми блоками,
+   а при появлении страницы низ не «прыгает». Высота на 100svh: адресная строка телефона её не раздувает. */
+.fe-route-shell { min-height: calc(100svh - var(--fe-shell-top, 112px)); }
 .fe-route-skel { animation: fe-reveal 0.2s ease-out both; }
 .fe-route-skel__tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 768px) { .fe-route-skel__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -663,7 +670,13 @@ a[data-fe-pressed='true'] { opacity: 0.62; transition: opacity 0.08s linear; }
   max-width: calc(100vw - 32px);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.fe-nudge-desk[data-near-footer='true'] { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.fe-nudge-desk[data-near-footer='true'],
+.fe-nudge-desk[data-scroll-hidden='true'] { opacity: 0; transform: translateY(8px); pointer-events: none; }
+/* Круг 9, S3: кнопка стоит над плашкой cookie, нижней панелью и плашкой «Результат» (общий запас --fe-bottom-clear, z1-tokens.css).
+   `:root:root` перебивает прежнее `:root .fe-nudge-desk` из x2-indicator.css, где учитывалась только панель. */
+:root:root .fe-nudge-desk { bottom: calc(var(--fe-bottom-clear, 0px) + 16px); }
+/* На странице «Не найдено» кнопки нет: там и так одно действие. */
+body:has(.z2-nf) .fe-nudge-root { display: none !important; }
 .fe-nudge-fab {
   display: inline-flex;
   align-items: center;

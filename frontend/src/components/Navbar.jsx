@@ -204,6 +204,9 @@ export default function Navbar() {
   const primaryItems = primaryNav(locale);
   const mobileGroups = mobileNavGroups(locale);
   const mobileActiveId = resolveActiveNavId(pathname, mobileGroups.flatMap((group) => group.items));
+  // Круг 9, S10: «Инструменты» стоят сразу после мировых разделов, до «Россия»: раскрытая «Россия» (4 подпункта) больше не уводит
+  // конвертер и калькуляторы на два экрана вниз и не прижимает «Виджеты» к кнопкам «Войти».
+  const menuGroups = [mobileGroups[0], { id: 'tools' }, ...mobileGroups.slice(1)];
 
   const setMobileOpen = (next) => setMobileOpenAt(next ? locationKey : null);
   const setCalcOpen = (next) => {
@@ -489,7 +492,20 @@ export default function Navbar() {
         footer={<AuthCluster mobile onNavigate={closeAll} />}
       >
         <div className="fe-mnav-columns">
-          {mobileGroups.map((group) => {
+          {menuGroups.map((group) => {
+            if (group.id === 'tools') {
+              return (
+                <div key="tools" className="fe-mnav-group">
+                  <p className="fe-mnav-title">{t('w6g.nav.tools')}</p>
+                  {CALCULATOR_ITEMS.map((c) => (
+                    <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+                      <MnavTile icon={c.icon} />
+                      <span className="fe-mnav-text"><span className="fe-mnav-label">{t(c.labelKey)}</span></span>
+                    </NavLink>
+                  ))}
+                </div>
+              );
+            }
             const renderLink = (item, nested = false) => {
               const Icon = MOBILE_ICONS[item.icon];
               const isActive = mobileActiveId === item.id;
@@ -548,15 +564,6 @@ export default function Navbar() {
               </div>
             );
           })}
-          <div className="fe-mnav-group">
-            <p className="fe-mnav-title">{t('w6g.nav.tools')}</p>
-            {CALCULATOR_ITEMS.map((c) => (
-              <NavLink key={c.to} to={c.to} end className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
-                <MnavTile icon={c.icon} />
-                <span className="fe-mnav-text"><span className="fe-mnav-label">{t(c.labelKey)}</span></span>
-              </NavLink>
-            ))}
-          </div>
           <div className="fe-mnav-group">
             <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
               <MnavTile icon={Info} />

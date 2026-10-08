@@ -3298,4 +3298,9 @@ export default {
   'c8w.map.noData': 'Нет данных',
   'c8w.map.top': 'Первое место в рейтинге',
   'c8w.globe.loading': 'Загружаем шар…',
+  // ===== Круг 9: A (оболочка, нижние слои телефона, лента) =====
+  'c9a.sticky.go': 'К результату',
+  'c9a.pwa.how': 'Как?',
+  'c9a.ticker.staleFrom': 'данные от {date}',
+  'c9a.locale.switching': 'Переключаем язык…',
 };

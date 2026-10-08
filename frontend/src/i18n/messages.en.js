@@ -3293,4 +3293,9 @@ export default {
   'c8w.map.noData': 'No data',
   'c8w.map.top': 'First place in the ranking',
   'c8w.globe.loading': 'Loading the globe…',
+  // ===== Round 9: A (shell, phone bottom layers, ticker) =====
+  'c9a.sticky.go': 'To the result',
+  'c9a.pwa.how': 'How?',
+  'c9a.ticker.staleFrom': 'data from {date}',
+  'c9a.locale.switching': 'Switching language…',
 };

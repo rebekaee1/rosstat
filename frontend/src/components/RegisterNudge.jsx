@@ -15,6 +15,7 @@ import {
 } from '../lib/registerNudge';
 import Button from './Button';
 import { usePwaCardVisible } from '../lib/pwa';
+import { useScrollDirection } from '../lib/useScrollDirection';
 import '../styles/indicator-russia.css';
 import '../styles/shell.css';
 import '../styles/z1-polish.css';
@@ -88,6 +89,9 @@ export default function RegisterNudge() {
   const variant = isAuthed ? FEEDBACK_VARIANT : REGISTER_VARIANT;
   const pill = t(variant.pillKey);
   const pwaCardVisible = usePwaCardVisible(); // окно «Установить приложение» не накрываем и не перебиваем
+  // Круг 9, S3: пока страница едет вниз, круглая кнопка уходит (как нижняя панель): она не закрывает подписи и цифры, которые читают.
+  const { deep, dir } = useScrollDirection();
+  const scrollHidden = deep && dir === 'down';
 
   const [dismissed, setDismissed] = useState(() => readDismissed(variant.storageKey));
   const [expanded, setExpanded] = useState(false);
@@ -187,6 +191,7 @@ export default function RegisterNudge() {
     <div
       className="fe-nudge-root fe-nudge-desk hidden sm:block print:hidden"
       data-near-footer={nearFooter && !expanded ? 'true' : undefined}
+      data-scroll-hidden={scrollHidden && !expanded ? 'true' : undefined}
     >
       {!expanded ? (
         <button

@@ -36,6 +36,8 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
   const t = useT();
   const { locale, switchLanguage } = useLocale();
   const [open, setOpen] = useState(false);
+  // Круг 9, S9: смена языка = полная перезагрузка страницы, на медленном канале 3–7 секунд кнопка стояла как ни в чём не бывало.
+  const [switching, setSwitching] = useState(false);
   const wrapRef = useRef(null);
   const current = LOCALES.find((item) => item.code === locale) || LOCALES[0];
 
@@ -55,9 +57,22 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
     };
   }, [open]);
 
+  // Если переход не состоялся (нет адреса, закрыли загрузку) или страницу вернули из кэша «назад», состояние ожидания снимается.
+  useEffect(() => {
+    if (!switching) return undefined;
+    const timer = window.setTimeout(() => setSwitching(false), 12000);
+    const onShow = () => setSwitching(false);
+    window.addEventListener('pageshow', onShow);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('pageshow', onShow);
+    };
+  }, [switching]);
+
   const pick = (code) => {
     setOpen(false);
     if (code === locale) return;
+    setSwitching(true);
     switchLanguage(code);
   };
 
@@ -73,12 +88,15 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
           open && 'text-text-primary',
           triggerClassName,
         )}
-        aria-label={`${t('nav.language')}: ${t(current.labelKey)}`}
+        aria-label={switching ? t('c9a.locale.switching') : `${t('nav.language')}: ${t(current.labelKey)}`}
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-busy={switching || undefined}
+        data-switching={switching ? 'true' : undefined}
       >
         <LocaleFlag locale={current.code} />
         <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} />
+        {switching ? <span className="sr-only" role="status">{t('c9a.locale.switching')}</span> : null}
       </button>
       {open && (
         <div

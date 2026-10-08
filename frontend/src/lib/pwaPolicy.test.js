@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  AFTER_ACTION_DELAY_MS, DAY_MS, MIN_PAGE_DWELL_MS, SECOND_VISIT_MIN_GAP_MS,
-  afterDismiss, afterIosAck, detectPlatform, emptyState, eligibleAt, isHiddenPath,
+  AFTER_ACTION_DELAY_MS, DATA_PAGE_DWELL_MS, DAY_MS, MIN_PAGE_DWELL_MS, SECOND_VISIT_MIN_GAP_MS,
+  afterDismiss, afterIosAck, detectPlatform, emptyState, eligibleAt, isDataPath, isHiddenPath,
   shouldShowInstallCard, snoozeDaysFor, triggerFor,
 } from './pwaPolicy';
 
@@ -9,7 +9,7 @@ const T0 = 1_800_000_000_000;
 const base = {
   state: emptyState(), now: T0, platform: 'android', hasNativePrompt: true, flagEnabled: true,
   standalone: false, inIframe: false, pathname: '/russia/indicator/cpi', blocked: false,
-  trigger: 'action', pageLoadedAt: T0 - MIN_PAGE_DWELL_MS - 1,
+  trigger: 'action', pageLoadedAt: T0 - DATA_PAGE_DWELL_MS - 1,
 };
 
 describe('интервалы «Не сейчас»', () => {
@@ -84,6 +84,16 @@ describe('когда можно показать', () => {
     expect(eligibleAt({ state, now: T0, pageLoadedAt: T0 - 60_000, trigger: 'action' })).toBe(T0 + AFTER_ACTION_DELAY_MS);
     expect(eligibleAt({ state: emptyState(), now: T0, pageLoadedAt: T0, trigger: 'visit' })).toBe(T0 + MIN_PAGE_DWELL_MS);
     expect(eligibleAt({ state: emptyState(), now: T0, pageLoadedAt: T0, trigger: null })).toBeNull();
+  });
+
+  it('круг 9, S2: на странице с данными окно не раньше чем через 30 с, на главной и в текстовых страницах через 15 с', () => {
+    const args = { state: emptyState(), now: T0, pageLoadedAt: T0, trigger: 'visit' };
+    expect(eligibleAt({ ...args, pathname: '/world/rating/gdp-usd' })).toBe(T0 + DATA_PAGE_DWELL_MS);
+    expect(eligibleAt({ ...args, pathname: '/' })).toBe(T0 + MIN_PAGE_DWELL_MS);
+    expect(eligibleAt({ ...args, pathname: '/about' })).toBe(T0 + MIN_PAGE_DWELL_MS);
+    expect(isDataPath('/calculator/mortgage')).toBe(true);
+    expect(isDataPath('/privacy')).toBe(false);
+    expect(shouldShowInstallCard({ ...base, pageLoadedAt: T0 - MIN_PAGE_DWELL_MS - 1 })).toBe(false);
   });
 
   it('показывает Android с системным окном и iPhone Safari', () => {

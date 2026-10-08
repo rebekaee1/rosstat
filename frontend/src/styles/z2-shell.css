@@ -53,7 +53,10 @@
 .fe-ticker__lane { display: contents; }
 .fe-ticker__scroller--aside { display: flex; align-items: stretch; }
 .fe-ticker__scroller--aside .fe-ticker__lane { display: block; position: relative; flex: 1 1 auto; min-width: 0; height: 100%; }
-.fe-ticker__scroller--aside .fe-ticker__fade { width: 36px; }
+/* Круг 9, S5: край ленты растворяется на 56 px и плотнее (.96 у самого края): третья ячейка («Золото 1 / Ц» на iPad) не обрывается посреди цифры. */
+.fe-ticker__scroller--aside .fe-ticker__fade { width: 56px; }
+.fe-ticker__scroller--aside .fe-ticker__fade--r { background: linear-gradient(270deg, rgb(var(--k3-paper, 250 252 255) / 0.97), rgb(var(--k3-paper, 250 252 255) / 0.7) 40%, rgb(var(--k3-paper, 250 252 255) / 0)); }
+.fe-ticker__scroller--aside .fe-ticker__fade--l { background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0.97), rgb(var(--k3-paper, 250 252 255) / 0.7) 40%, rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__all {
   position: relative;
   z-index: 2;
@@ -298,8 +301,10 @@ nav.fe-navbar a.fe-nav-login:hover,
   white-space: nowrap;
   border: 0;
 }
-@media (max-width: 639px) {
-  /* Телефон: сетка из двух строк слева и двух столбцов справа; вся плашка ≈ 56 пт.
+@media (max-width: 1023px) {
+  /* Круг 9, S6: компактный вид (короткий текст, две строки слева, «Хорошо» на две строки высотой) держится до 1023 px, а не до 639:
+     на планшете длинная однострочная плашка занимала полэкрана и закрывала «Мир сейчас».
+     Телефон и планшет: сетка из двух строк слева и двух столбцов справа; вся плашка ≈ 56 пт.
      Слева сверху «Мы используем cookie. Подробнее», слева снизу «Только необходимые» (мелкая светлая таблетка),
      справа «Хорошо» на две строки высотой и шестерёнка. Кнопки группы встают в сетку плашки (display: contents). */
   .fe-cookie-compact {
@@ -329,10 +334,9 @@ nav.fe-navbar a.fe-nav-login:hover,
 }
 /* Место под плашкой резервируется в подвале (его фон продолжается до края), а не серой полосой под ним. */
 footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
-/* Телефон: ещё и высота нижней док-панели (64 px + отступ 12), чтобы она не закрывала конец подвала. */
-@media (max-width: 767px) {
-  footer.fe-footer { padding-bottom: calc(var(--fe-cookie-h, 0px) + var(--fe-dock-reserve, 0px)); }
-}
+/* Круг 9, S7: на телефоне запас под док-панель в подвале больше не добавляется (было + 76 px: под «Источниками» лежал пустой пояс).
+   Над подвалом панель сама прячется (MobileDock: у футера она возвращается только при движении вверх), а якоря и фокус по-прежнему
+   останавливаются выше неё (scroll-padding-bottom в k3-shell.css). */
 
 /* ═══ Подвал: графитовое стекло с золотой линией ═════════════════════════ */
 footer.fe-footer {

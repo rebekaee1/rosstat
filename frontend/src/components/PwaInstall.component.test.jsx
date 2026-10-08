@@ -8,7 +8,7 @@ import PwaInstallPrompt from './PwaInstallPrompt';
 import PwaInstallEntry from './PwaInstallEntry';
 import * as pwa from '../lib/pwa';
 import { track } from '../lib/track';
-import { DAY_MS, MIN_PAGE_DWELL_MS, SECOND_VISIT_MIN_GAP_MS } from '../lib/pwaPolicy';
+import { DATA_PAGE_DWELL_MS, DAY_MS, MIN_PAGE_DWELL_MS, SECOND_VISIT_MIN_GAP_MS } from '../lib/pwaPolicy';
 
 vi.mock('../lib/track', () => ({
   track: vi.fn(),
@@ -100,7 +100,7 @@ describe('Android: окно «Установить приложение»', () =
   it('второй заход: не сразу, а после паузы на странице; показ фиксируется один раз', async () => {
     secondVisit(); await enable(); window.dispatchEvent(prompt());
     renderCard();
-    await advance(MIN_PAGE_DWELL_MS - 3000);
+    await advance(DATA_PAGE_DWELL_MS - 3000);
     expect(screen.queryByTestId('pwa-install-card')).toBeNull();
     await advance(5000);
     expect(screen.getByTestId('pwa-install-card')).toBeTruthy();
@@ -117,7 +117,7 @@ describe('Android: окно «Установить приложение»', () =
     writeState({ ..._store.state, visits: 1, firstSeen: T0 });
     window.dispatchEvent(prompt());
     renderCard();
-    await advance(20_000); // пауза на странице уже прошла
+    await advance(DATA_PAGE_DWELL_MS + 2000); // пауза на странице уже прошла
     expect(screen.queryByTestId('pwa-install-card')).toBeNull();
     act(() => { window.dispatchEvent(new CustomEvent('fe:track', { detail: { event: 'download_csv' } })); });
     await advance(3000);
@@ -130,7 +130,7 @@ describe('Android: окно «Установить приложение»', () =
     await enable(); secondVisit();
     const event = prompt('dismissed'); window.dispatchEvent(event);
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: ru('pwa.card.install') })); });
     await advance(0);
     expect(event.prompt).toHaveBeenCalledTimes(1);
@@ -143,7 +143,7 @@ describe('Android: окно «Установить приложение»', () =
   it('«Не сейчас» откладывает с растущими интервалами и шлёт dismiss с номером отказа', async () => {
     secondVisit(); await enable(); window.dispatchEvent(prompt());
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
     fireEvent.click(screen.getByRole('button', { name: ru('pwa.card.later') }));
     expect(track).toHaveBeenCalledWith('pwa_install_prompt_dismiss', { platform: 'android', dismiss_count: 1 });
     expect(_store.state.nextAt - Date.now()).toBe(3 * DAY_MS);
@@ -156,7 +156,7 @@ describe('Android: окно «Установить приложение»', () =
   it('крестик равен «Не сейчас»', async () => {
     secondVisit(); await enable(); window.dispatchEvent(prompt());
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
     fireEvent.click(screen.getByRole('button', { name: ru('common.close') }));
     expect(_store.state.dismissCount).toBe(1);
   });
@@ -240,7 +240,7 @@ describe('не наезжает на другие окна', () => {
   it('RegisterNudge узнаёт, что окно установки на экране (флаг cardVisible)', async () => {
     secondVisit(); await enable(); window.dispatchEvent(prompt());
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
     expect(screen.getByTestId('pwa-install-card')).toBeTruthy();
     expect(pwa.__testing._store.cardVisible).toBe(true);
     cleanup();
@@ -254,8 +254,13 @@ describe('iPhone (Safari): подсказка «Поделиться → На э
   it('показывает подсказку с иконками, без кнопки «Установить», шлёт события показа', async () => {
     await enable(); secondVisit();
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
     expect(screen.getByTestId('pwa-install-card')).toBeTruthy();
+    // Круг 9, S2: сначала тонкая строка «Как?», три шага инструкции раскрываются по касанию.
+    expect(screen.getByTestId('pwa-install-card').getAttribute('data-slim')).toBe('true');
+    expect(screen.queryByTestId('pwa-ios-steps')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: ru('c9a.pwa.how') }));
+    expect(screen.getByTestId('pwa-install-card').getAttribute('data-slim')).toBeNull();
     expect(screen.getByTestId('pwa-ios-steps').querySelectorAll('svg').length).toBeGreaterThanOrEqual(3);
     expect(screen.getByText(ru('pwa.ios.step.share'))).toBeTruthy();
     expect(screen.getByText(ru('pwa.ios.step.add'))).toBeTruthy();
@@ -267,7 +272,8 @@ describe('iPhone (Safari): подсказка «Поделиться → На э
   it('«Понятно» — пауза 30 дней; «Не сейчас» — обычная лестница', async () => {
     await enable(); secondVisit();
     renderCard();
-    await advance(20_000);
+    await advance(DATA_PAGE_DWELL_MS + 2000);
+    fireEvent.click(screen.getByRole('button', { name: ru('c9a.pwa.how') }));
     fireEvent.click(screen.getByRole('button', { name: ru('pwa.ios.ok') }));
     expect(track).toHaveBeenCalledWith('pwa_install_prompt_accept', { platform: 'ios' });
     expect(_store.state.nextAt - Date.now()).toBe(30 * DAY_MS);
@@ -278,7 +284,8 @@ describe('iPhone (Safari): подсказка «Поделиться → На э
   it('английский текст на английском хосте', async () => {
     await enable(); secondVisit();
     renderCard('/', en, 'en');
-    await advance(20_000);
+    await advance(MIN_PAGE_DWELL_MS + 2000); // главная: 15 с, не 30
+    fireEvent.click(screen.getByRole('button', { name: en('c9a.pwa.how') }));
     expect(screen.getByText(en('pwa.ios.title'))).toBeTruthy();
     expect(screen.getByText('Share')).toBeTruthy();
     expect(screen.getByText('Add to Home Screen')).toBeTruthy();

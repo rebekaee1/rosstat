@@ -20,8 +20,10 @@ describe('круг 6 S: контент не уходит под шапку', () 
   it('у секций нет собственного scroll-margin-top больше нуля: он складывался бы с общим запасом', () => {
     const bad = [];
     for (const f of readdirSync(here).filter((n) => n.endsWith('.css'))) {
-      for (const m of read(f).matchAll(/scroll-margin-top:\s*([^;}]+)/g)) {
-        if (!/^0(px)?$/.test(m[1].trim())) bad.push(`${f}: ${m[1].trim()}`);
+      // Круг 9, S11: строки таблиц (tbody > tr) единственное исключение, у них запас под липкую шапку таблицы, а не под общую шапку сайта.
+      for (const m of read(f).matchAll(/([^{}]*)\{[^{}]*?scroll-margin-top:\s*([^;}]+)/g)) {
+        if (/tbody/.test(m[1])) continue;
+        if (!/^0(px)?$/.test(m[2].trim())) bad.push(`${f}: ${m[2].trim()}`);
       }
     }
     expect(bad).toEqual([]);
@@ -95,9 +97,10 @@ describe('круг 8 Z0: переменные оболочки для всех �
     expect(k3).toMatch(/nav\.fe-navbar--glass::after\s*\{\s*background:\s*rgb\(var\(--k3-paper\) \/ 0\.6\)/);
   });
 
-  it('док не добавляет запас в main (он один раз в подвале), подвал считает cookie и док', () => {
+  it('док не добавляет запас в main, а подвал считает только cookie: запас под док в подвале снят (круг 9, S7), якоря держит scroll-padding-bottom', () => {
     expect(k3).toMatch(/main#main-content\s*\{\s*padding-bottom:\s*0;/);
-    expect(z2).toMatch(/footer\.fe-footer\s*\{\s*padding-bottom:\s*calc\(var\(--fe-cookie-h, 0px\) \+ var\(--fe-dock-reserve, 0px\)\)/);
+    expect(z2).toMatch(/footer\.fe-footer\s*\{\s*padding-bottom:\s*var\(--fe-cookie-h, 0px\);\s*\}/);
+    expect(z2).not.toMatch(/footer\.fe-footer\s*\{\s*padding-bottom:\s*calc\(var\(--fe-cookie-h, 0px\) \+ var\(--fe-dock-reserve/);
   });
 
   it('переход перед подвалом не выше 56 px (волна 2, W-A5)', () => {
@@ -158,5 +161,72 @@ describe('круг 8, волна 2, W-A: оболочка после приём�
 
   it('запас под панелью и плашкой есть у любой страницы: scroll-padding-bottom на телефоне', () => {
     expect(k3).toMatch(/html\s*\{\s*scroll-padding-bottom:\s*calc\(var\(--fe-dock-reserve, 0px\) \+ var\(--fe-cookie-h, 0px\) \+ 12px\)/);
+  });
+});
+
+// Круг 9, зона A: нижние слои телефона, выпадающие списки, лента, подвал.
+describe('круг 9 A: оболочка после повторного прохода', () => {
+  const shell = read('shell.css');
+  const index = strip(readFileSync(join(here, '..', 'index.css'), 'utf8'));
+  const k8 = read('k8-tools.css');
+
+  it('S4: всплывающие списки плотные (.97, без размытия — .98), у .fe-glass-pop есть префикс -webkit-backdrop-filter', () => {
+    expect(z1).toMatch(/--fe-pop-bg:\s*rgba\(255, 255, 255, 0\.97\)/);
+    expect(z1).toMatch(/--fe-pop-bg:\s*rgba\(255, 255, 255, 0\.98\)/);
+    expect(z1).not.toMatch(/--fe-pop-bg:\s*rgba\(255, 255, 255, 0\.88\)/);
+    expect(z1).toMatch(/\.fe-glass-pop\s*\{[^}]*-webkit-backdrop-filter:\s*blur\(var\(--fe-blur-l1\)\)/);
+  });
+
+  it('S1: общий запас внизу --fe-bottom-clear включает плашку «Результат»; есть класс-хук нижнего отступа формы', () => {
+    expect(z1).toMatch(/--fe-sticky-h:\s*0px/);
+    expect(z1).toMatch(/--fe-bottom-clear:\s*calc\(var\(--fe-dock-h\) \+ var\(--fe-cookie-h\) \+ var\(--fe-sticky-h\)/);
+    expect(z1).toMatch(/--fe-sticky-reserve:\s*64px/);
+    expect(z1).toMatch(/\.fe-sticky-clear\s*\{\s*padding-bottom:\s*calc\(var\(--fe-sticky-reserve, 0px\) \+ 16px\)/);
+    expect(k3).toMatch(/html\[data-fe-sticky\]\s*\{\s*scroll-padding-bottom:/);
+  });
+
+  it('S1: плашка «Результат» стоит над плашкой cookie и показывает подпись «К результату», на 320 px — только стрелку', () => {
+    expect(k8).toMatch(/\.fe-k8-sticky\s*\{[^}]*var\(--fe-cookie-h, 0px\)/);
+    expect(k8).toMatch(/\.fe-k8-sticky__go-label\s*\{/);
+    expect(k8).toMatch(/@media \(max-width: 359px\)\s*\{\s*\.fe-k8-sticky__go\s*\{[^}]*\}\s*\.fe-k8-sticky__go-label\s*\{\s*display:\s*none/);
+  });
+
+  it('S6: компактная плашка cookie держится до 1023 px, подъём над панелью — до 767 px', () => {
+    expect(z2).toMatch(/@media \(max-width: 1023px\)\s*\{[^}]*grid-template-areas:\s*'text accept gear' 'necessary accept gear'/);
+    expect(k3).toMatch(/@media \(max-width: 767px\)\s*\{[^}]*\.fe-cookie-wrap\s*\{\s*transform:\s*translateY\(calc\(-1 \* var\(--fe-dock-h, 0px\)\)\)/);
+  });
+
+  it('S8: наведение на значки шапки и золотую кнопку только при hover: hover, ссылка «К содержимому» по :focus-visible и с отступом выреза', () => {
+    expect(k3).toMatch(/@media \(hover: hover\)\s*\{\s*nav\.fe-navbar \.fe-nav-cluster \.fe-nav-round:hover/);
+    expect(k3).toMatch(/@media \(hover: hover\)\s*\{\s*nav\.fe-navbar--glass \.fe-button-primary:hover/);
+    expect(index).toMatch(/\.fe-skip-link:focus-visible\s*\{\s*transform:\s*none/);
+    expect(index).not.toMatch(/\.fe-skip-link:focus\s*\{/);
+    expect(index).toMatch(/\.fe-skip-link\s*\{[^}]*top:\s*calc\(env\(safe-area-inset-top, 0px\) \+ 8px\)/);
+  });
+
+  it('S3: круглая кнопка «Скачать» над общим запасом, прячется при прокрутке вниз, на странице 404 её нет', () => {
+    expect(shell).toMatch(/:root:root \.fe-nudge-desk\s*\{\s*bottom:\s*calc\(var\(--fe-bottom-clear, 0px\) \+ 16px\)/);
+    expect(shell).toMatch(/\.fe-nudge-desk\[data-scroll-hidden='true'\]/);
+    expect(shell).toMatch(/body:has\(\.z2-nf\) \.fe-nudge-root\s*\{\s*display:\s*none !important/);
+  });
+
+  it('S5: давнее значение ленты — серая цена и подпись, а не прозрачность 0,6; край ленты растворяется на 56 px', () => {
+    expect(k3).not.toMatch(/\.fe-ticker__cell\[data-stale='true'\]\s*\{\s*opacity/);
+    expect(k3).toMatch(/\.fe-ticker__cell\[data-stale='true'\] \.fe-ticker__price\s*\{\s*color:\s*var\(--color-text-secondary\)/);
+    expect(z2).toMatch(/\.fe-ticker__scroller--aside \.fe-ticker__fade\s*\{\s*width:\s*56px/);
+  });
+
+  it('S7: на телефоне подвал без запаса под док и ссылки подвала 14 px', () => {
+    expect(shell).toMatch(/@media \(max-width: 767px\)\s*\{\s*\.fe-foot-wrap\s*\{\s*padding-block:\s*2rem calc\(1\.25rem/);
+    expect(k2).toMatch(/\.fe-foot-list a,[\s\S]*?\{\s*font-size:\s*14px/);
+  });
+
+  it('L1: заглушка загрузки занимает окно целиком, подвал не выглядывает', () => {
+    expect(shell).toMatch(/\.fe-route-shell\s*\{\s*min-height:\s*calc\(100svh - var\(--fe-shell-top, 112px\)\)/);
+  });
+
+  it('S9/S10: ожидание смены языка анимирует только прозрачность; в меню запас снизу 56 px', () => {
+    expect(k3).toMatch(/@keyframes fe-locale-wait\s*\{\s*0%, 100%\s*\{\s*opacity:\s*1;\s*\}\s*50%\s*\{\s*opacity:\s*0\.35;/);
+    expect(k3).toMatch(/\.fe-mnav-scroll\s*\{\s*padding:\s*4px 12px 56px/);
   });
 });

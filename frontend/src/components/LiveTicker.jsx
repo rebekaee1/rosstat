@@ -46,7 +46,10 @@ function formatPrice(value, decimals, locale = 'ru') {
   });
 }
 
-/** Изменение за день: «0,1 %» без знака (направление показывает стрелка рядом), один знак после запятой. */
+/**
+ * Изменение за день со знаком: «+0,2 %», «−0,2 %» (круг 9, S5). Точка рядом с числом (зелёная/серо-синяя) направление лишь дублирует,
+ * а «0,2 %» без знака читалось как рост или падение наугад. Минус настоящий (U+2212), не дефис.
+ */
 function formatPct(pct, locale = 'ru') {
   if (pct === null || pct === undefined) return '\u2014';
   const tag = locale === 'en' ? 'en-US' : 'ru-RU';
@@ -54,7 +57,8 @@ function formatPct(pct, locale = 'ru') {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-  return locale === 'en' ? `${body}%` : `${body}\u00a0%`;
+  const sign = pct > 0 ? '+' : '\u2212';
+  return locale === 'en' ? `${sign}${body}%` : `${sign}${body}\u00a0%`;
 }
 
 function formatAsOfTitle(isoDate, locale = 'ru') {
@@ -156,11 +160,17 @@ function TickerCell({ snapshot, nowMs }) {
     }
   }
 
-  // Круг 8, D5 и волна 2: значение старше трёх суток не должно выглядеть живым, но и «заброшенным» тоже: оно приглушено (data-stale)
-  // и подписано короткой датой («на 29 сент.»), без слов «не обновлялось». Полная дата остаётся в подсказке.
-  const ageDays = !isIntraday ? ageInDays(asOfRaw, locale) : null;
-  const longStale = ageDays !== null && ageDays > STALE_AFTER_DAYS;
-  const staleDate = longStale ? formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: 1 }) : '';
+  // Круг 8, D5 и волна 2: значение старше трёх суток не должно выглядеть живым, но и «заброшенным» тоже.
+  // Круг 9, S5: решение принимает сервер (поля `stale`, `age_days`, `as_of_day` у каждого снимка), клиентский пересчёт остаётся запасным.
+  // У давнего значения нет процента изменения (красное «−0,9 %» над вчерашней ценой выглядело свежим), а серая подпись говорит
+  // «данные от 29 сент.»; полная дата остаётся в подсказке.
+  const ageDays = !isIntraday
+    ? (Number.isFinite(snapshot.age_days) ? snapshot.age_days : ageInDays(asOfRaw, locale))
+    : null;
+  const longStale = !isIntraday && (typeof snapshot.stale === 'boolean'
+    ? snapshot.stale
+    : (ageDays !== null && ageDays > STALE_AFTER_DAYS));
+  const staleDate = longStale ? formatAsOfHuman(snapshot.as_of_day || asOfRaw, locale, new Date(), { minAgeDays: 1 }) : '';
 
   const cellClass = cn(
     'fe-ticker__cell flex h-full min-h-7 shrink-0 items-center gap-1.5 px-2.5 rounded-md whitespace-nowrap',
@@ -177,16 +187,17 @@ function TickerCell({ snapshot, nowMs }) {
   const sign = (meta.pairLabel && locale === 'en') ? '' : (CURRENCY_SIGN[meta.cur] || '');
   // По-русски знак валюты после числа («85,79 ₽»), по-английски перед («$1.12»).
   const signFirst = locale === 'en' && meta.cur !== 'rub';
-  const showPct = pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
-  // Подпись под ценой: «на 29 сент.» у давнего значения, иначе источник — «биржа» или «ЦБ».
-  const caption = longStale && staleDate
-    ? t('shell.ticker.asOf', { date: staleDate })
+  const showPct = !longStale && pct !== null && pct !== undefined && Math.abs(pct) >= 0.05;
+  // Подпись под ценой: «данные от 29 сент.» у давнего значения, иначе источник — «биржа» или «ЦБ».
+  const staleLabel = longStale && staleDate ? t('c9a.ticker.staleFrom', { date: staleDate }) : undefined;
+  const caption = staleLabel
+    ? staleLabel
     : (asOfHuman
       ? t('shell.ticker.asOf', { date: asOfHuman })
       : (sourceKind ? t(`shell.ticker.source.${sourceKind}`) : null));
   const body = (
     <>
-      <span className="fe-ticker__name" data-asof={longStale && staleDate ? t('shell.ticker.asOf', { date: staleDate }) : undefined}>{t(meta.nameKey)}</span>
+      <span className="fe-ticker__name" data-asof={staleLabel}>{t(meta.nameKey)}</span>
       <span className="fe-ticker__quote">
         <span className="fe-ticker__price tabular-nums">
           {signFirst && hasPrice ? <span className="fe-ticker__sign">{sign}</span> : null}

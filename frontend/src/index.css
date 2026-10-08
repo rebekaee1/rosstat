@@ -710,10 +710,11 @@ nav.glass-surface-soft {
   .fe-btn--sm { min-height: 40px; }
   .fe-chip { min-height: 44px; padding: 0 14px; }
 }
-/* Ссылка «к содержимому»: видна только при фокусе с клавиатуры. */
+/* Ссылка «к содержимому»: видна только при фокусе с клавиатуры. Круг 9, S8: `:focus-visible` вместо `:focus` (после касания или программного
+   фокуса она «мелькала» над часами) и отступ от выреза экрана. */
 .fe-skip-link {
   position: fixed;
-  top: 8px;
+  top: calc(env(safe-area-inset-top, 0px) + 8px);
   left: 8px;
   z-index: 300;
   padding: 10px 16px;
@@ -722,10 +723,11 @@ nav.glass-surface-soft {
   color: var(--color-on-accent);
   font-size: 14px;
   font-weight: 600;
-  transform: translateY(-160%);
+  /* Целиком за верхним краем с учётом выреза: прежние -160% высоты оставляли полоску на виду там, где отступ сверху больше 8 px. */
+  transform: translateY(calc(-100% - env(safe-area-inset-top, 0px) - 16px));
   transition: transform 0.15s ease;
 }
-.fe-skip-link:focus { transform: none; }
+.fe-skip-link:focus-visible { transform: none; }
 /* iOS приближает страницу при фокусе в поле со шрифтом меньше 16px. */
 @media (pointer: coarse) {
   input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea { font-size: 16px; }

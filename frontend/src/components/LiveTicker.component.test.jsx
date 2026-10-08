@@ -99,8 +99,9 @@ describe('LiveTicker: понятные подписи, единые знаки �
     const text = document.body.textContent.replace(/\u00a0/g, ' ');
     expect(text).toContain('84,41 \u20BD');
     // Между стрелкой и числом — скрытая от глаз подпись для скринридера («снизился на»).
-    expect(text).toContain('\u25BCw6b.ticker.down0,3 %');
-    expect(text).toContain('\u25B2w6b.ticker.up0,2 %');
+    // Круг 9, S5: у изменения есть знак (настоящий минус U+2212, плюс), а не только цвет точки.
+    expect(text).toContain('\u25BCw6b.ticker.down\u22120,3 %');
+    expect(text).toContain('\u25B2w6b.ticker.up+0,2 %');
     expect(text).not.toMatch(/-\d,\d %/);
   });
 
@@ -122,8 +123,30 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(screen.queryByText('c8s.ticker.stale')).toBeNull();
     const stale = document.querySelectorAll('[data-stale="true"]');
     expect(stale).toHaveLength(1);
-    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('shell.ticker.asOf');
-    expect(stale[0].querySelector('.fe-ticker__name').getAttribute('data-asof')).toBe('shell.ticker.asOf');
+    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('c9a.ticker.staleFrom');
+    expect(stale[0].querySelector('.fe-ticker__name').getAttribute('data-asof')).toBe('c9a.ticker.staleFrom');
+  });
+
+  it('круг 9, S5: давнее значение по полям сервера (stale, as_of_day) без процента и с серой подписью «данные от …»', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        snapshots: [
+          { code: 'brent', price: 78.5, change_pct: -0.9, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, as_of_day: '2026-09-29', age_days: 9, stale: true, source: 'EIA' },
+          { code: 'eur-rub-live', price: 94.32, change_pct: 0.4, market_open: false, fetched_at: new Date().toISOString(), as_of_date: today, as_of_day: today, age_days: 0, stale: false, source: 'CBR' },
+        ],
+      }),
+    }));
+    renderTicker({ locale: 'ru', route: '/' });
+    await screen.findByText('78,50');
+    const stale = document.querySelectorAll('[data-stale="true"]');
+    expect(stale).toHaveLength(1);
+    expect(stale[0].querySelector('.fe-ticker__delta')).toBeNull();
+    expect(stale[0].textContent).not.toMatch(/0,9/);
+    expect(stale[0].querySelector('.fe-ticker__caption').textContent).toBe('c9a.ticker.staleFrom');
+    const fresh = screen.getByText('94,32').closest('a');
+    expect(fresh.getAttribute('data-stale')).toBeNull();
+    expect(fresh.querySelector('.fe-ticker__delta').textContent).toContain('+0,4');
   });
 
   it('EN: золото в рублях в ленте не показывается, остальные курсы на месте', async () => {
@@ -175,7 +198,7 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(screen.queryByText('shell.ticker.asOf')).toBeNull();
     const text = document.body.textContent;
     expect(text).toContain('$1.12');
-    expect(text).toContain('\u25BCw6b.ticker.down0.7%');
+    expect(text).toContain('\u25BCw6b.ticker.down\u22120.7%');
     expect(text).not.toMatch(/\b0\.0%/);
   });
 

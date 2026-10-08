@@ -16,6 +16,8 @@ export const SNOOZE_DAYS = [3, 7, 14, 30];
 export const REPEAT_DAYS = 30;
 /** Не раньше стольких мс после загрузки страницы (даже на втором визите). */
 export const MIN_PAGE_DWELL_MS = 15_000;
+/** На страницах с данными (график, рейтинг, страна, калькулятор) человек читает: окно не раньше чем через полминуты (круг 9, S2). */
+export const DATA_PAGE_DWELL_MS = 30_000;
 /** После полезного действия даём человеку дочитать/дослушать результат. */
 export const AFTER_ACTION_DELAY_MS = 8_000;
 /** Второй заход = новая сессия браузера не раньше чем через столько после первой. */
@@ -81,6 +83,12 @@ export function detectPlatform({ userAgent = '', maxTouchPoints = 0 } = {}) {
   return 'desktop';
 }
 
+/** Страница с данными: всё, кроме главной и текстовых страниц. */
+export function isDataPath(pathname = '/') {
+  const p = String(pathname || '/');
+  return p !== '/' && !/^\/(about|methodology|privacy|terms)(\/|$)/.test(p);
+}
+
 export function isHiddenPath(pathname = '') {
   const p = String(pathname);
   return HIDDEN_PREFIXES.some((prefix) => p === prefix || p.startsWith(`${prefix}/`));
@@ -90,11 +98,11 @@ export function isHiddenPath(pathname = '') {
  * Когда окно можно показать, мс (абсолютное время), либо null, если сейчас нельзя.
  * `trigger` — что открыло дверь: 'action' (полезное действие), 'visit' (второй заход) или null.
  */
-export function eligibleAt({ state, now, pageLoadedAt, trigger }) {
+export function eligibleAt({ state, now, pageLoadedAt, trigger, pathname = '/' }) {
   if (!trigger) return null;
   if (state.installed) return null;
   if (state.nextAt && now < state.nextAt) return null;
-  const dwell = pageLoadedAt + MIN_PAGE_DWELL_MS;
+  const dwell = pageLoadedAt + (isDataPath(pathname) ? DATA_PAGE_DWELL_MS : MIN_PAGE_DWELL_MS);
   const afterAction = trigger === 'action' && state.usefulAt ? state.usefulAt + AFTER_ACTION_DELAY_MS : 0;
   return Math.max(dwell, afterAction, state.nextAt || 0);
 }
@@ -118,6 +126,6 @@ export function shouldShowInstallCard({
   if (isHiddenPath(pathname)) return false;
   if (platform === 'android' && !hasNativePrompt) return false; // без beforeinstallprompt кнопку не к чему привязать
   if (platform !== 'android' && platform !== 'ios-safari') return false;
-  const at = eligibleAt({ state, now, pageLoadedAt, trigger });
+  const at = eligibleAt({ state, now, pageLoadedAt, trigger, pathname });
   return at !== null && now >= at;
 }

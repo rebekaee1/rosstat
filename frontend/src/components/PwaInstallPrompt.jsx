@@ -13,8 +13,10 @@ import {
 import { shouldShowInstallCard, triggerFor } from '../lib/pwaPolicy';
 import PwaInstallCard from './PwaInstallCard';
 
-// Всё, что нельзя накрывать: баннер согласия, модальные окна, нудж регистрации/обратной связи.
-const BLOCKERS = '[data-analytics-overlay="cookie-consent"], [role="dialog"][aria-modal="true"], .fe-nudge-root';
+// Всё, что нельзя накрывать: баннер согласия, модальные окна, нудж регистрации/обратной связи и плашка «Результат» калькулятора
+// (круг 9, S2). Нижняя панель телефона в список не входит: карточка стоит над ней (`--fe-bottom-clear`), иначе на телефоне,
+// где панель появляется при каждом движении вверх, карточка почти не показывалась бы.
+const BLOCKERS = '[data-analytics-overlay="cookie-consent"], [role="dialog"][aria-modal="true"], .fe-nudge-root, .fe-k8-sticky';
 const POLL_MS = 1500;
 
 function overlayPresent() {
@@ -28,7 +30,10 @@ export default function PwaInstallPrompt() {
   const [tick, setTick] = useState(0);
   const [busy, setBusy] = useState(false);
   const platform = currentPlatform(); // дёшево; не замораживаем: UA в тестах подменяется на лету
-  const [loadedAt] = useState(() => Date.now());
+  // Время на странице считается с последнего перехода: карточка не прилетает сразу после открытия страницы с данными (круг 9, S2).
+  const [pageVisit, setPageVisit] = useState(() => ({ path: pathname, at: Date.now() }));
+  if (pageVisit.path !== pathname) setPageVisit({ path: pathname, at: Date.now() });
+  const loadedAt = pageVisit.at;
   const shownRef = useRef(false);
   const stateKey = `${store.state.installed}|${store.state.nextAt}|${store.state.usefulAt}|${store.state.visits}`;
 

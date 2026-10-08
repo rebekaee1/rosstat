@@ -137,11 +137,18 @@ nav.fe-navbar .fe-nav-round.fe-glass-2 {
   box-shadow: none;
   color: var(--color-text-primary);
 }
-nav.fe-navbar .fe-nav-cluster .fe-nav-round:hover,
 nav.fe-navbar .fe-nav-cluster .fe-nav-round[aria-expanded='true'] {
   background: rgb(30 38 56 / 0.06);
   box-shadow: none;
   color: var(--color-text-primary);
+}
+/* Круг 9, S8: наведение только у настоящей мыши. На iOS :hover залипает после касания, и закрытый бургер оставался серым кругом. */
+@media (hover: hover) {
+  nav.fe-navbar .fe-nav-cluster .fe-nav-round:hover {
+    background: rgb(30 38 56 / 0.06);
+    box-shadow: none;
+    color: var(--color-text-primary);
+  }
 }
 nav.fe-navbar svg.lucide { stroke-width: 1.5; }
 /* Открытый пункт и кнопка шапки читаются графитом, а не золотом (Tailwind `text-champagne` у открытых меню). */
@@ -163,10 +170,12 @@ nav.fe-navbar--glass .fe-button-primary,
   color: var(--fe-on-gold-cta);
   box-shadow: 0 8px 22px -12px rgba(176, 138, 62, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
-nav.fe-navbar--glass .fe-button-primary:hover,
-.fe-bsheet .fe-button-primary:hover {
-  background: var(--fe-glass-gold-hover);
-  box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+@media (hover: hover) {
+  nav.fe-navbar--glass .fe-button-primary:hover,
+  .fe-bsheet .fe-button-primary:hover {
+    background: var(--fe-glass-gold-hover);
+    box-shadow: 0 12px 26px -12px rgba(176, 138, 62, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
 }
 
 /* ═══ Лента курсов ════════════════════════════════════════════════════════ */
@@ -213,8 +222,10 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   background: var(--k3-up);
 }
 .fe-ticker__delta[data-dir='down']::before { background: var(--k3-down); }
-/* Давнее дневное значение (круг 8, D5): тусклее и с подписью «не обновлялось N дн.», чтобы не выглядеть живым. */
-.fe-ticker__cell[data-stale='true'] { opacity: 0.6; }
+/* Давнее дневное значение (круг 8, D5; круг 9, S5): без процента изменения и с серой подписью «данные от 29 сент.»; цена серая, а не графитовая,
+   но читаемая (прозрачность 0,6 делала и цифру нечитаемой, и процент оставался красным). */
+.fe-ticker__cell[data-stale='true'] .fe-ticker__price { color: var(--color-text-secondary); font-weight: 550; }
+.fe-ticker__cell[data-stale='true'] .fe-ticker__caption { color: var(--k3-caption, #55627a); font-style: normal; }
 /* Телефон: подписи под ценой нет (строки не хватает), поэтому короткая дата давнего значения встаёт в строку имени: «Нефть · на 29 сент.». */
 @media (max-width: 767px) {
   .fe-ticker__name[data-asof]::after { content: ' · ' attr(data-asof); }
@@ -280,7 +291,17 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 .fe-locale-flag {
   background: rgb(30 38 56 / 0.05);
 }
-.fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
+@media (hover: hover) {
+  .fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
+}
+/* Круг 9, S9: пока идёт смена языка, кружок с кодом мягко мигает (только прозрачность), кнопка не нажимается повторно. */
+button[data-switching='true'] { pointer-events: none; }
+button[data-switching='true'] .fe-locale-flag { animation: fe-locale-wait 0.9s ease-in-out infinite; }
+@keyframes fe-locale-wait { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) {
+  button[data-switching='true'] .fe-locale-flag { animation: none; opacity: 0.5; }
+}
+html[data-fe-motion='off'] button[data-switching='true'] .fe-locale-flag { animation: none; opacity: 0.5; }
 /* Круг 8, S7: список языков плотный (L1 .97: сквозь него не просвечивают пилюли страницы), активный язык графитом, а не золотом на сером. */
 .fe-locale-menu { --fe-pop-bg: rgb(var(--k3-paper) / 0.97); }
 .fe-locale-item.is-active { background: rgb(30 38 56 / 0.08); color: var(--fe-ink, #1e2638); }
@@ -451,7 +472,8 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 .fe-bsheet__foot { flex: none; }
 
 /* Пункты меню в шторке: 56 px, иконка-грань, без линий (между группами воздух). */
-.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 28px; background: none; }
+/* Круг 9, S10: запас снизу 56 px (затухание над кнопками «Войти» 28 + 28 воздуха): последний пункт («Виджеты» при раскрытой «Россия») доскролливается выше кнопок. */
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 56px; scroll-padding-bottom: 56px; background: none; }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { gap: 4px; animation: fe-mnav-in 0.22s var(--fe-ease-out, ease-out) backwards; }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 14px; padding-top: 0; }
 @media (min-width: 640px) {
@@ -540,6 +562,10 @@ nav.fe-navbar--glass .fe-button-primary:hover,
      Якоря, фокус с клавиатуры и scrollIntoView тоже останавливаются выше панели и плашки, а не под ними. */
   html { scroll-padding-bottom: calc(var(--fe-dock-reserve, 0px) + var(--fe-cookie-h, 0px) + 12px); }
 }
+/* Круг 9, S1: пока на экране плашка «Результат», фокус и якоря останавливаются выше неё (бегунок не остаётся под плашкой). */
+@media (max-width: 1023px) {
+  html[data-fe-sticky] { scroll-padding-bottom: calc(var(--fe-cookie-h, 0px) + var(--fe-sticky-h, 52px) + 24px); }
+}
 
 /* ═══ Cookie: стеклянная капсула ═══════════════════════════════════════ */
 /* Пока открыто меню (шторка с затемнением), плашка cookie не торчит из-под неё (круг 8, S5): прячется, а не закрывается. */
@@ -547,7 +573,10 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 @media (max-width: 639px) {
   /* Плашка тоньше: отступы 6 px вместо 8 (вместе с одной строкой 48 px это ≈ 60 px вместо 72). */
   .fe-cookie-wrap { padding: 6px 6px max(6px, env(safe-area-inset-bottom, 0px)); }
-  /* Раскрытые настройки cookie встают над док-панелью, а не под ней. */
+}
+@media (max-width: 767px) {
+  /* Раскрытые настройки cookie встают над док-панелью, а не под ней. Круг 9, S6: панель видна до 767 px, а подъём был только до 639,
+     поэтому на планшете плашка стояла под панелью. */
   .fe-cookie-wrap {
     transform: translateY(calc(-1 * var(--fe-dock-h, 0px)));
     transition: transform 0.3s var(--k3-ease);
@@ -647,6 +676,9 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 html {
   scroll-padding-top: calc(var(--fe-header-h) + var(--fe-ticker-h) + 12px);
 }
+/* Круг 9, S11: строки таблиц под липкой шапкой таблицы (она держится на --fe-shell-top и сама занимает ≈ 44 px). Якорь на строку, фокус
+   и scrollIntoView останавливают её ниже этой шапки, а не под ней. Запас прибавляется к `scroll-padding-top` страницы, поэтому он небольшой. */
+tbody > tr[id], tbody > tr[data-row], tbody > tr:focus-within { scroll-margin-top: 56px; }
 /* Блок планеты (PlanetView.css, зона G) раньше ставил свой `scroll-margin-top: 104px`: с общим запасом он считался бы дважды. */
 :root .planet-stage { scroll-margin-top: 0; }
 

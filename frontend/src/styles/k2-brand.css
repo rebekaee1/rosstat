@@ -279,6 +279,14 @@ footer.fe-footer.fe-k2-footer .fe-foot-sources__label { display: inline-flex; al
   footer.fe-footer.fe-k2-footer .fe-footer-grid { column-gap: 40px; }
 }
 footer.fe-footer.fe-k2-footer .fe-foot-top { padding-bottom: 28px; margin-bottom: 28px; }
+@media (max-width: 767px) {
+  /* Круг 9, S7: на телефоне зазоры между блоками подвала короче (16 + 16 вместо 28 + 28). */
+  footer.fe-footer.fe-k2-footer .fe-foot-top { padding-bottom: 16px; margin-bottom: 16px; }
+}
+/* Круг 9, S7: ссылки подвала 14 px (были 12–13): читаются без приближения, строки по-прежнему не ниже 44 px на касании. */
+footer.fe-footer.fe-k2-footer .fe-foot-list a,
+footer.fe-footer.fe-k2-footer .fe-foot-list button,
+footer.fe-footer.fe-k2-footer .fe-foot-requisites__summary { font-size: 14px; line-height: 1.4; }
 
 /* Ссылки: на наведении мягкое свечение (без перехода: text-shadow не анимируем). */
 footer.fe-footer.fe-k2-footer .fe-foot-list a:hover,

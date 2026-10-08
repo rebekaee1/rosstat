@@ -61,6 +61,31 @@ describe('RegisterNudge (карточка на телефоне)', () => {
   });
 });
 
+describe('RegisterNudge: круглая кнопка уходит при прокрутке вниз (круг 9, S3)', () => {
+  afterEach(() => { Object.defineProperty(window, 'scrollY', { value: 0, configurable: true }); });
+
+  it('при движении вниз кнопка помечена скрытой, при движении вверх возвращается', async () => {
+    renderNudge(null);
+    const desk = await waitFor(() => {
+      const el = document.querySelector('.fe-nudge-desk');
+      expect(el).toBeTruthy();
+      return el;
+    });
+    expect(desk.getAttribute('data-scroll-hidden')).toBeNull();
+    const scrollTo = async (y) => {
+      Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
+      await act(async () => {
+        window.dispatchEvent(new Event('scroll'));
+        await new Promise((resolve) => { setTimeout(resolve, 40); });
+      });
+    };
+    await scrollTo(400);
+    expect(desk.getAttribute('data-scroll-hidden')).toBe('true');
+    await scrollTo(300);
+    expect(desk.getAttribute('data-scroll-hidden')).toBeNull();
+  });
+});
+
 describe('RegisterNudge (волна 6: не просим регистрацию раньше времени)', () => {
   it('не показывается, пока человек не сделал второе действие', async () => {
     renderNudge(null, DATA_PAGE, { actions: 0 });
