@@ -40,3 +40,6 @@
     top: calc(var(--fe-shell-top, 112px) + 16px);
   }
 }
+
+/* Круг 9 (V2): курс не обновлялся больше трёх суток — вместо изменения серая пометка с датой. */
+.fe-trow__date.is-stale { color: var(--color-text-tertiary); font-style: normal; }

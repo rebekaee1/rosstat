@@ -1,12 +1,12 @@
 // Волна 6, зона G: чистая логика сравнения, курсов, калькуляторов и населения.
 import { describe, expect, it } from 'vitest';
 import { COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, presetIsActive, presetParams } from './comparePresets';
-import { compareLabels, conceptShortLabel, joinList, unitHint } from './compareTitle';
+import { compareEndName, compareLabels, conceptShortLabel, joinList, unitHint } from './compareTitle';
 import { orderCountryOptions } from './countryOrder';
 import { scalesDiffer } from './useCountryComparison';
 import {
   buildEdges, convert, convertibleUnits, currencyWindows, formatConverted, pairTab, pairTitle,
-  parseAmountInput, parsePair, rateBasis, sortByPopularity, normalizeRateNameEn,
+  parseAmountInput, parsePair, rateBasis, sortByPopularity, normalizeRateNameEn, unitMeta,
 } from './currencyRates';
 import { COUNTRY_CURRENCY, currencyForCountry, currencyInPhrase, formatMoney } from './countryCurrency';
 import {
@@ -57,6 +57,18 @@ describe('готовые сравнения', () => {
   it('набор считается активным независимо от порядка', () => {
     expect(presetIsActive(DEFAULT_COMPARE_PRESET, ['w:china:gdp-usd', 'w:united-states:gdp-usd'])).toBe(true);
     expect(presetIsActive(DEFAULT_COMPARE_PRESET, ['w:china:gdp-usd'])).toBe(false);
+  });
+});
+
+describe('подпись у конца линии (круг 9, C4)', () => {
+  it('короткое имя остаётся целым, длинное режется по слову, а не «Индекс пот…»', () => {
+    expect(compareEndName('Германия')).toBe('Германия');
+    expect(compareEndName('Индекс потребительских цен (ИПЦ), к декабрю', 26)).toBe('Индекс потребительских цен');
+    const long = compareEndName('Гармонизированный индекс потребительских цен', 22);
+    expect(long.endsWith('…')).toBe(true);
+    expect(long.length).toBeLessThanOrEqual(23);
+    expect(long).not.toMatch(/\s…$/);
+    expect(compareEndName('', 20)).toBe('');
   });
 });
 
@@ -153,6 +165,37 @@ describe('курсы валют: названия, вкладки, конвер�
     expect(pairTitle('usd-rub', 'en')).toBe('US dollar to ruble');
     expect(pairTitle('btc-usd', 'en')).toBe('Bitcoin in US dollars');
     expect(pairTitle('mystery', 'ru', 'Как есть')).toBe('Как есть');
+  });
+
+  it('круг 9: новая валюта (лира, тенге, дирхам) подхватывается по коду пары без правки словаря', () => {
+    expect(parsePair('try-rub')).toEqual({ base: 'TRY', quote: 'RUB' });
+    expect(parsePair('kzt-rub')).toEqual({ base: 'KZT', quote: 'RUB' });
+    // Не валюта: коды рядов вида «три буквы – три буквы» остаются не парами.
+    expect(parsePair('cpi-yoy')).toBeNull();
+    expect(parsePair('gdp-qoq')).toBeNull();
+    expect(pairTitle('try-rub', 'ru')).toBe('Турецкая лира к рублю');
+    expect(pairTitle('try-rub', 'en')).toBe('Turkish Lira to ruble');
+    expect(pairTab('try-rub')).toBe('rub');
+    expect(rateBasis('try-rub')).toBe('cb');
+    const meta = unitMeta('TRY');
+    expect(meta.symbol).toBe('₺');
+    expect(meta.flag).toBe('🇹🇷');
+    expect(unitMeta('ЛИР')).toBeNull();
+    // Без падежной формы «к чему» название строится без неё (или берётся из ответа API).
+    expect(pairTitle('usd-try', 'ru', 'Доллар к лире')).toBe('Доллар к лире');
+  });
+
+  it('круг 9: новые валюты попадают в конвертер после привычных, монеты в конце', () => {
+    const edges = buildEdges([
+      { code: 'btc-usd', current_value: 60000 },
+      { code: 'usd-rub', current_value: 80 },
+      { code: 'try-rub', current_value: 2.2 },
+      { code: 'kzt-rub', current_value: 0.16 },
+      { code: 'eur-rub', current_value: 100 },
+    ]);
+    expect(convertibleUnits(edges)).toEqual(['RUB', 'USD', 'EUR', 'TRY', 'KZT', 'BTC']);
+    const converted = convert(100, 'TRY', 'USD', edges);
+    expect(converted.value).toBeCloseTo((100 * 2.2) / 80, 6);
   });
 
   it('вкладки: рубль, крипто, мир; порядок по популярности', () => {

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import DeltaBadge from './DeltaBadge';
 import { SkeletonBox } from './Skeleton';
 import { useIndicatorData } from '../lib/hooks';
-import { currencyWindows, parsePair, rateBasis, UNITS } from '../lib/currencyRates';
+import { currencyWindows, parsePair, rateBasis, unitMeta } from '../lib/currencyRates';
 import { formatDate, formatValue } from '../lib/format';
 import { useLocale, useT } from '../i18n';
 import '../styles/indicator-russia.css';
@@ -53,7 +53,7 @@ export default function CurrencyTelemetry({ code, loading = false, fallback = nu
   if (isError || !windows) return fallback;
 
   const pair = parsePair(code);
-  const symbol = pair ? UNITS[pair.quote].symbol : '';
+  const symbol = pair ? unitMeta(pair.quote).symbol : '';
   const digits = Math.abs(windows.last.value) >= 1000 ? 0 : 2;
   const money = (value) => `${formatValue(value, digits, locale)}${NBSP}${symbol}`.trim();
 

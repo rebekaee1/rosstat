@@ -21,8 +21,8 @@ import EdgeAwareTick from './ChartAxisTick';
 import ChartGlassDefs from './ChartGlassDefs';
 import EmptyState from './brand/EmptyState';
 import {
-  CURRENCY_TABS, UNITS, buildEdges, convert, convertibleUnits, formatConverted,
-  pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity,
+  CURRENCY_TABS, buildEdges, convert, convertibleUnits, formatConverted,
+  pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity, unitMeta,
 } from '../lib/currencyRates';
 import { MARKET_BOARD_CODES, chartPairFor, useMarketSnapshots, yearSeries } from '../lib/currencyMarket';
 import { track, events } from '../lib/track';
@@ -44,14 +44,14 @@ const MARKET_UNITS_EN = { 'gold-rub-live': 'RUB/g' };
 const MARKET_DIGITS = { 'gold-rub-live': 0, brent: 2, 'btc-usd': 0 };
 
 function unitName(unit, locale) {
-  const meta = UNITS[unit];
+  const meta = unitMeta(unit);
   if (!meta) return unit;
   return locale === 'en' ? meta.en : meta.ru;
 }
 
 /** Значок валюты: у доллара знак «$» (флаг США читался как «валюта страны»), у остальных флаг, у монет их знак. */
 function coinOf(unit) {
-  const meta = UNITS[unit];
+  const meta = unitMeta(unit);
   if (!meta) return {};
   return unit === 'USD' ? { symbol: '$' } : { flag: meta.flag, symbol: meta.symbol };
 }
@@ -70,6 +70,21 @@ function rateDigits(value) {
   if (abs >= 1) return 2;
   if (abs >= 0.01) return 4;
   return 6;
+}
+
+/** Сколько полных суток прошло с даты ряда; нет даты: 0. */
+function ageInDays(iso) {
+  if (!iso) return 0;
+  const ms = Date.parse(`${String(iso).slice(0, 10)}T12:00:00Z`);
+  return Number.isFinite(ms) ? Math.floor((Date.now() - ms) / 86_400_000) : 0;
+}
+/** Данные старше трёх суток считаются устаревшими (в строке вместо изменения серая пометка). */
+const STALE_AFTER_DAYS = 3;
+
+/** Число знаков для делений оси по шагу: 1000 -> 0, 0,5 -> 1, 0,00005 -> 5 (без «0,0000» на мелких значениях). */
+function digitsForStep(step) {
+  if (!(step > 0) || step >= 1) return 0;
+  return Math.min(8, Math.ceil(-Math.log10(step) - 1e-9));
 }
 
 function pctOf(change, value) {
@@ -197,7 +212,7 @@ function Converter({ edges, from, to, onFrom, onTo }) {
     track(events.COMPARE_CHANGE, { converter: 'swap' });
   };
   const optionOf = (unit) => {
-    const meta = UNITS[unit];
+    const meta = unitMeta(unit);
     return {
       value: unit,
       name: unitName(unit, locale),
@@ -308,11 +323,20 @@ function YearChart({ pair }) {
   const { data, isLoading } = useIndicatorData(pair?.code, { limit: 400 });
   const glass = useChartGlassIds('k8cur');
   const [setPlotNode, plotWidth] = useElementWidth();
-  const series = useMemo(() => yearSeries(data?.data, { invert: pair?.invert }), [data, pair?.invert]);
+  // Круг 9 (V3): обратный курс мелкой монеты («1 доллар = 0,000012 биткоина») показываем как есть: «1 биткоин = N долларов».
+  const rawSeries = useMemo(() => yearSeries(data?.data, { invert: false }), [data]);
+  const lastRaw = rawSeries.length ? rawSeries[rawSeries.length - 1].value : null;
+  const flipped = Boolean(pair?.invert && lastRaw != null && lastRaw > 100);
+  const series = useMemo(
+    () => (pair?.invert && !flipped ? yearSeries(data?.data, { invert: true }) : rawSeries),
+    [data, pair?.invert, flipped, rawSeries],
+  );
   if (!pair) return null;
-  const quote = UNITS[pair.quote];
+  const baseUnit = flipped ? pair.quote : pair.base;
+  const quoteUnit = flipped ? pair.base : pair.quote;
+  const quote = unitMeta(quoteUnit);
   const unit = quote?.symbol || '';
-  const title = t('z8.cur.chartTitle', { pair: `${unitName(pair.base, locale)} → ${unitName(pair.quote, locale)}` });
+  const title = t('z8.cur.chartTitle', { pair: `${unitName(baseUnit, locale)} → ${unitName(quoteUnit, locale)}` });
 
   if (isLoading) {
     return (
@@ -343,7 +367,7 @@ function YearChart({ pair }) {
   const yAxis = niceAxis(series.map((p) => p.value), 5);
   const yTicks = yAxis?.ticks;
   const yStep = yTicks && yTicks.length > 1 ? Math.abs(yTicks[1] - yTicks[0]) : 0;
-  const yDigits = yStep >= 1 ? 0 : yStep >= 0.1 ? 1 : yStep >= 0.01 ? 2 : 4;
+  const yDigits = digitsForStep(yStep);
   const yWidthPx = Math.max(40, Math.min(70, Math.round(String(yTicks ? formatValue(yTicks[yTicks.length - 1], yDigits, locale) : '88,30').length * 8 + 12)));
 
   return (
@@ -472,7 +496,7 @@ function CurrencyRow({ ind, index }) {
   const t = useT();
   const { locale } = useLocale();
   const pair = parsePair(ind.code);
-  const quote = pair ? UNITS[pair.quote] : null;
+  const quote = pair ? unitMeta(pair.quote) : null;
   const coin = pair ? coinOf(pair.base) : {};
   const title = pairTitle(ind.code, locale, locale === 'en' && ind.name_en ? ind.name_en : ind.name);
   const basis = rateBasis(ind.code);
@@ -482,6 +506,7 @@ function CurrencyRow({ ind, index }) {
   const delta = pct != null ? formatDeltaWithUnit(pct, '%', { pct: true, locale }) : null;
   const dateText = shortDate(ind.current_date, locale);
   const digits = Math.abs(value) >= 1000 ? 0 : 2;
+  const stale = ageInDays(ind.current_date) > STALE_AFTER_DAYS;
   return (
     <Link
       to={russiaIndicatorPath(ind.code)}
@@ -492,11 +517,13 @@ function CurrencyRow({ ind, index }) {
       <span className="fe-trow__main">
         <h3 className="fe-trow__title">{title}</h3>
         <span className="fe-trow__meta">
-          {delta && !delta.flat && (
+          {delta && !delta.flat && !stale && (
             <DeltaBadge delta={pct}>{delta.text}</DeltaBadge>
           )}
           {basis && (
-            <span className="fe-trow__date">{t(`w6g.cur.basisShort.${basis}`, { date: dateText })}</span>
+            <span className={cn('fe-trow__date', stale && 'is-stale')}>
+              {stale ? t('c9d.cur.stale', { date: dateText }) : t(`w6g.cur.basisShort.${basis}`, { date: dateText })}
+            </span>
           )}
         </span>
       </span>
@@ -516,7 +543,7 @@ function matchesQuery(ind, needle) {
   const parts = [ind.code, ind.name, ind.name_en, pairTitle(ind.code, 'ru'), pairTitle(ind.code, 'en')];
   if (pair) {
     [pair.base, pair.quote].forEach((unit) => {
-      const meta = UNITS[unit];
+      const meta = unitMeta(unit);
       parts.push(unit, meta.ru, meta.en, meta.symbol);
     });
   }
