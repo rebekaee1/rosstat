@@ -99,6 +99,7 @@ CH session-метрики не имеют гарантии равенства PG
 ### Как настройки попадают в процесс
 
 1. Корневой `.env` читает **Compose для подстановки** `${...}`. В контейнер попадают только перечисленные в `docker-compose.yml::environment` ключи. `env_file` для backend не подключён. Просто добавить произвольный `RUSTATS_*` в корневой `.env` недостаточно: нужен явный environment mapping/override.
+   **Прод, с 2026-10-08:** в `/opt/rosstat` есть не входящий в Git `docker-compose.override.yml`. Он монтирует в scheduler файлы-секреты из `/etc/rosstat-secrets/` (сейчас только OAuth Google Search Console, см. [GSC](analytics_api_inventory/google_search_console.md)). `deploy.sh` вызывает обычный `docker compose` и подхватывает его; при переносе сервера файл и каталог нужно перенести вручную.
 2. При прямом `uvicorn`/Python `Settings` читает переменные процесса и `.env` **текущего рабочего каталога** (`config.py::Settings.model_config`). Из `backend/` это `backend/.env`, а не автоматически корневой файл. Default Settings для одного процесса отличается от Compose (например, pool 10+15 против web 8+7).
 3. `VITE_*` — параметры Vite build/dev. Смена runtime env уже собранного nginx-контейнера не меняет JS. Locale build arg в Compose берётся из `RUSTATS_APEX_LOCALE_EN`; SSR и browser должны собираться для одного режима.
 4. Caddy работает на хосте. Корневой `.env` не является `EnvironmentFile` systemd автоматически.

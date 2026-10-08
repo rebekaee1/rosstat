@@ -4,8 +4,31 @@
 **Implementation status:** local read-only API access verified after user consent.
 The Search Console API is enabled; `sites` returned `sc-domain:forecasteconomy.com`
 with `permissionLevel: siteFullUser`. `app/services/gsc_client.py` supports renewable
-OAuth and the existing daily job (09:10 Moscow). Credentials are local; the
-production scheduler/credential mount has **not** been activated by this setup.
+OAuth and the existing daily job (09:10 Moscow).
+
+**Production activation, 2026-10-08:** until this date the prod scheduler logged
+`GSC sync skipped: OAuth credentials are not configured` every morning. The same
+`authorized_user` file now lives on the host at `/etc/rosstat-secrets/gsc-oauth.json`
+(owner uid/gid 999 = container `appuser`, mode `0600`), is mounted read-only into
+the **scheduler only** as `/run/secrets/gsc-oauth.json` by the untracked
+`/opt/rosstat/docker-compose.override.yml`, and `.env` sets
+`RUSTATS_GSC_CREDENTIALS_FILE=/run/secrets/gsc-oauth.json` (previous file kept as
+`.env.bak-20261008-gsc`). `scripts/deploy.sh` calls plain `docker compose` in
+`/opt/rosstat`, so the override survives releases. Verified inside the recreated
+scheduler: `sites` → `sc-domain:forecasteconomy.com` / `siteFullUser`. The web
+`backend` receives the env key on its next recreate but has no file and no GSC
+consumer. A one-off backfill (same row shape and upsert as the job, script not kept)
+loaded everything the API still holds: **67,202** `query/page/date` rows,
+2026-03-03 → 2026-10-05, no day hit the 50,000-row cap. History before 2026-03-03
+is empty in Google. Rows omit anonymized queries, so their clicks (248) and
+impressions (115,181) are below property totals.
+
+Search Console **bulk data export** (BigQuery) is not configured: it requires a
+Cloud project with active billing (the only billing account of the `floydii1010`
+Google account is closed) and the property **owner**; that account is `siteFullUser`.
+At current volume (≈31k rows in September vs. 50,000 rows/day API cap) the API job
+already receives every row the export would add; the export would only matter for
+anonymized-query totals or much larger traffic.
 
 **Provider UI, 2026-09-21:** `sc-domain:forecasteconomy.com` and the intended owner
 account were verified in Search Console. The existing Google Cloud project's
