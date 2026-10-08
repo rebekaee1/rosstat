@@ -46,23 +46,24 @@
 .fe-ticker__fade--l { left: 0; background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__fade--r { right: 0; background: linear-gradient(270deg, rgb(var(--k3-paper, 250 252 255) / 0.9), rgb(var(--k3-paper, 250 252 255) / 0)); }
 .fe-ticker__fade[data-on='true'] { opacity: 1; }
-/* «Все валюты» держится у правого края, пока лента длиннее экрана: ссылка никогда не режется посередине слова. */
+/* «Все валюты» держится у правого края отдельным плотным блоком (круг 8, S3): фон почти непрозрачный (.97), слева затухание 28 px.
+   Курсы, которые уходят под блок, растворяются, а не режутся посередине слова и не просвечивают сквозь кнопку. */
 .fe-ticker__all {
   position: sticky;
   right: 0;
   z-index: 2;
   font-size: 13px;
   font-weight: 650;
-  background-color: rgb(var(--k3-paper, 250 252 255) / 0.9);
+  background-color: rgb(var(--k3-paper, 250 252 255) / 0.97);
 }
 .fe-ticker__all::before {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -22px;
-  width: 22px;
-  background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0), rgb(var(--k3-paper, 250 252 255) / 0.9));
+  left: -28px;
+  width: 28px;
+  background: linear-gradient(90deg, rgb(var(--k3-paper, 250 252 255) / 0), rgb(var(--k3-paper, 250 252 255) / 0.97));
   pointer-events: none;
 }
 .fe-ticker .fe-ticker__all:hover { background-color: color-mix(in srgb, var(--fe-ink, #1e2638) 7%, rgb(var(--k3-paper, 250 252 255) / 0.9)); }
@@ -248,27 +249,36 @@ nav.fe-navbar a.fe-nav-login:hover,
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
 }
 .fe-cookie-panel[data-expanded='true'] { border-radius: 24px; }
-.fe-cookie-compact { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 4px 6px 4px 18px; }
+.fe-cookie-compact { display: flex; flex-direction: column; align-items: stretch; gap: 10px; padding: 14px 12px 12px 18px; }
 .fe-cookie-compact__text {
-  flex: 1 1 auto;
-  min-width: 0;
   margin: 0;
   font-size: 13px;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--color-text-secondary);
 }
-.fe-cookie-compact__short { display: none; }
-.fe-cookie-compact__actions { display: flex; flex: none; align-items: center; gap: 2px; margin-left: auto; }
-.fe-cookie-compact__actions .fe-cookie-accept {
+/* Круг 8, S1: две кнопки решения на виду («Хорошо» и «Только необходимые») и шестерёнка настроек в одном ряду под текстом. */
+.fe-cookie-compact__actions { display: flex; align-items: center; gap: 8px; }
+.fe-cookie-compact__actions .fe-cookie-accept,
+.fe-cookie-compact__actions .fe-cookie-necessary {
   position: relative;
+  flex: 1 1 auto;
   min-height: 40px;
   padding: 0 16px;
   font-size: 13.5px;
   border-radius: 9999px;
 }
-/* Кнопка выглядит на 40 px, а нажимается как 44: зона нажатия шире видимой. */
-.fe-cookie-compact__actions .fe-cookie-accept::after { content: ''; position: absolute; inset: -2px; }
+/* «Только необходимые» — плотный светлый L2, не слабее по виду, чем «Хорошо»: отказ виден так же, как согласие. */
+.fe-cookie-compact__actions .fe-cookie-necessary {
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+  color: var(--fe-ink, #1e2638);
+}
+.fe-cookie-compact__actions .fe-cookie-necessary:hover:not(:disabled) { background: var(--fe-glass-l2-hover); }
+/* Кнопки выглядят на 40 px, а нажимаются как 44: зона нажатия шире видимой. */
+.fe-cookie-compact__actions .fe-cookie-accept::after,
+.fe-cookie-compact__actions .fe-cookie-necessary::after { content: ''; position: absolute; inset: -2px; }
 .fe-cookie-compact__actions .fe-cookie-gear {
+  flex: none;
   width: 44px;
   min-height: 44px;
   padding: 0;
@@ -289,13 +299,11 @@ nav.fe-navbar a.fe-nav-login:hover,
   border: 0;
 }
 @media (max-width: 639px) {
-  /* Телефон: одна строка 48 px (плашка вместе с отступами ≈ 60 px вместо 72). */
-  .fe-cookie-compact { min-height: 48px; padding: 2px 2px 2px 14px; }
-  .fe-cookie-compact__actions .fe-cookie-accept { min-height: 36px; padding: 0 14px; }
+  /* Телефон: плашка вровень с краями, кнопки делят ряд поровну. */
+  .fe-cookie-compact { gap: 8px; padding: 12px 8px 8px 14px; }
+  .fe-cookie-compact__actions .fe-cookie-accept,
+  .fe-cookie-compact__actions .fe-cookie-necessary { min-height: 38px; padding: 0 10px; font-size: 13px; }
   .fe-cookie-compact__actions .fe-cookie-gear { width: 40px; min-height: 40px; }
-  .fe-cookie-compact__long { display: none; }
-  .fe-cookie-compact__short { display: inline; }
-  .fe-cookie-compact__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 /* Место под плашкой резервируется в подвале (его фон продолжается до края), а не серой полосой под ним. */
 footer.fe-footer { padding-bottom: var(--fe-cookie-h, 0px); }
@@ -411,6 +419,24 @@ footer.fe-footer .fe-foot-bottom { margin-top: 16px; padding-top: 14px; font-siz
 .fe-foot-meta p { margin: 0; }
 footer.fe-footer .fe-foot-updates__dot { background: var(--z2-gold-on-dark); box-shadow: 0 0 0 4px rgba(220, 193, 137, 0.16); }
 footer.fe-footer .fe-foot-legal { max-width: 56rem; gap: 2px; color: var(--color-text-tertiary); }
+/* Круг 8, S8: колонки подвала на планшете. Раньше при 4 дорожках пятая группа оставалась одна в ряду и правая половина пустела;
+   теперь последняя группа добирает ряд (RU: «Инструменты» + «Информация» на три дорожки, EN: ряд из трёх на 1+1+2),
+   а заголовки всех колонок стоят на одной линии (align-items: start, одинаковая высота строки заголовка). */
+footer.fe-footer .fe-footer-grid { align-items: start; }
+footer.fe-footer .fe-foot-title { min-height: 24px; }
+@media (min-width: 640px) and (max-width: 767px) {
+  footer.fe-footer .fe-footer-grid > [data-md-span='2'] { grid-column: span 2; }
+}
+@media (min-width: 768px) and (max-width: 1179px) {
+  footer.fe-footer .fe-footer-grid > [data-md-span='2'] { grid-column: span 2; }
+  footer.fe-footer .fe-footer-grid > [data-md-span='3'] { grid-column: span 3; }
+  footer.fe-footer .fe-footer-grid > [data-md-span] .fe-foot-list--cols2 {
+    grid-auto-flow: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(var(--fe-foot-rows, 6), auto);
+    column-gap: 20px;
+  }
+}
 footer.fe-footer .fe-foot-credit a { color: inherit; }
 footer.fe-footer .fe-foot-requisites__summary { color: var(--color-text-secondary); }
 

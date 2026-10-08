@@ -3281,4 +3281,6 @@ export default {
   'x8.planet.viewSwitch': 'How to show the world',
   'x8.planet.viewMap': 'Map',
   'x8.planet.viewGlobe': 'Globe',
+  // ===== Круг 8: оболочка (Z0) =====
+  'c8s.ticker.stale': 'not updated for {n} d',
 };

@@ -402,3 +402,27 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
 .fe-stretch:has(.fe-stretch__link:focus-visible) { box-shadow: var(--fe-focus-ring), var(--fe-float-shadow, 0 18px 40px -24px rgba(30, 38, 56, 0.4)); }
 .fe-stretch__link:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) { .fe-stretch:hover { transform: none; } }
+
+/* ── Круг 8, зона Z0: переменные оболочки для всех зон ───────────────────────────────────────────────────────────────────────────
+   Значения на лету ставят компоненты (Navbar → --fe-header-h, LiveTicker → --fe-ticker-h, MobileDock → --fe-dock-h и --fe-dock-reserve,
+   CookieConsent → --fe-cookie-h); здесь запасные значения для SSR и первого кадра, а также производные, которыми пользуются страницы.
+     --fe-shell-top     нижний край шапки от верха окна (лента + шапка); sticky-заголовки таблиц и панелей держат top: var(--fe-shell-top)
+     --fe-page-top      с какой высоты начинается содержимое страницы (низ шапки + 16 px воздуха)
+     --fe-dock-h        сколько занимает нижняя панель телефона сейчас (0, пока спрятана)
+     --fe-bottom-clear  чем плавающие кнопки страницы поднимаются над доком и плашкой cookie: bottom: calc(var(--fe-bottom-clear) + 8px) */
+:root {
+  --fe-dock-h: 0px;
+  --fe-dock-reserve: 0px;
+  --fe-cookie-h: 0px;
+  --fe-shell-top: calc(var(--fe-ticker-h, 40px) + var(--fe-header-h, 76px));
+  --fe-page-top: calc(var(--fe-shell-top) + 16px);
+  --fe-bottom-clear: calc(var(--fe-dock-h) + var(--fe-cookie-h) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Круг 8, S9: панели с таблицами и числами плотные ───────────────────────────────────────────────────────────────────────────
+   Строки таблицы и крупные числа лежат на панели не прозрачнее .9: стеклянная F и пятна сцены под ней не режут текст. Правило по
+   содержимому (`:has`), поэтому страницы разметку не меняют; панели без таблиц остаются прозрачными, как были. */
+:root:not([data-theme='dark'], .dark) :is(.fe-panel, .fe-panel-soft, .fe-glass, .fe-glass-lite, .fe-glass-key, .fe-chart-card):has(table, [role='table'], [role='grid'], .fe-data-table) {
+  --fe-glass-l1: rgba(255, 255, 255, 0.9);
+  --fe-glass-l1-soft: rgba(255, 255, 255, 0.88);
+}

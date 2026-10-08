@@ -55,7 +55,8 @@ nav.fe-navbar--glass {
   backdrop-filter: blur(22px) saturate(1.2);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint);
 }
-/* Прокрутка: слой плотнее (0,55 → 0,7) и тень глубже. Меняется только прозрачность слоя, а не цвет и не тень.
+/* Прокрутка (круг 8, S2): слой плотнее, суммарно ≈ .93 (было ≈ .78): текст страницы под шапкой не читается сквозь неё.
+   Меняется только прозрачность слоя, а не цвет и не тень.
    Слой лежит над основой (z-index -1 внутри контекста шапки), под содержимым. */
 nav.fe-navbar--glass::after {
   content: '';
@@ -64,7 +65,7 @@ nav.fe-navbar--glass::after {
   z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  background: rgb(var(--k3-paper) / 0.34);
+  background: rgb(var(--k3-paper) / 0.8);
   box-shadow: 0 34px 56px -26px rgba(30, 38, 56, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -78,7 +79,7 @@ nav.fe-navbar--glass[data-scrolled='true'] { transform: translateY(6px); }
 @media (max-width: 767px) {
   /* В покое шапка ниже: 64 px вместо 72 (лента 36 + шапка 64 = 100 px, было 108). */
   nav.fe-navbar--glass { padding-block: 8px; background: rgb(var(--k3-paper) / 0.84); }
-  nav.fe-navbar--glass::after { background: rgb(var(--k3-paper) / 0.5); }
+  nav.fe-navbar--glass::after { background: rgb(var(--k3-paper) / 0.6); }
   nav.fe-navbar--glass[data-compact='true'] {
     transform: translateY(-30px);
     box-sizing: border-box;
@@ -179,6 +180,8 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   background: var(--k3-up);
 }
 .fe-ticker__delta[data-dir='down']::before { background: var(--k3-down); }
+/* Давнее дневное значение (круг 8, D5): тусклее и с подписью «не обновлялось N дн.», чтобы не выглядеть живым. */
+.fe-ticker__cell[data-stale='true'] .fe-ticker__caption { font-weight: 600; color: var(--color-text-secondary); }
 /* «Все валюты»: графитовый текст, без синего и золотого. */
 .fe-ticker .fe-ticker__all { color: var(--fe-ink, #1e2638); }
 .fe-ticker[data-tone='dark'] .fe-ticker__all { color: var(--color-text-primary); }
@@ -203,7 +206,7 @@ nav.fe-navbar--glass .fe-button-primary:hover,
     scroll-snap-type: x proximity;
     scroll-padding-inline: 8px;
   }
-  .fe-ticker .fe-ticker__fade { width: 40px; }
+  .fe-ticker .fe-ticker__fade { width: 44px; }
   .fe-ticker__cell {
     display: grid;
     grid-template-columns: auto auto;
@@ -241,7 +244,10 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   background: rgb(30 38 56 / 0.05);
 }
 .fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
-.fe-locale-item.is-active { background: rgb(30 58 110 / 0.1); }
+/* Круг 8, S7: список языков плотный (L1 .97: сквозь него не просвечивают пилюли страницы), активный язык графитом, а не золотом на сером. */
+.fe-locale-menu { --fe-pop-bg: rgb(var(--k3-paper) / 0.97); }
+.fe-locale-item.is-active { background: rgb(30 38 56 / 0.08); color: var(--fe-ink, #1e2638); }
+.fe-locale-item.is-active .fe-locale-flag { background: var(--fe-glass-active); color: var(--fe-on-active); }
 
 /* ═══ Нижняя док-панель телефона ══════════════════════════════════════════ */
 .fe-dock {
@@ -250,19 +256,21 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   right: 12px;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   z-index: 70;
-  max-width: 440px;
+  /* Круг 8, S4: по ширине содержимого (пять ячеек не уже 56 px), а не растянутая полоса на весь экран. */
+  width: fit-content;
+  max-width: min(440px, calc(100vw - 24px));
   height: 64px;
   margin-inline: auto;
   border-radius: 28px;
-  /* Круг 6, S: графитовое стекло rgba(30,38,56,.72) с размытием: светлый текст ≥ 4,5:1 даже над белой страницей;
-     блика-диагонали нет, только тонкая кромка света сверху 1 px и тень снизу. Над тёмным подвалом тон глубже (data-tone). */
-  --k3-dock-bg: rgba(30, 38, 56, 0.72);
-  --k3-dock-ink: #ffffff;
-  --k3-dock-ink-2: #e1e5ee;
+  /* Круг 8, S4: светлое стекло L2 вместо графитовой «таблетки» (она читалась чужой на светлых страницах): плотность .9, графитовые
+     подписи ≥ 9:1, размытие 20 px, тонкая кромка света сверху 1 px и тень снизу. Над тёмным подвалом тон глубже (data-tone). */
+  --k3-dock-bg: rgb(var(--k3-paper) / 0.9);
+  --k3-dock-ink: #1e2638;
+  --k3-dock-ink-2: #3b4760;
   background: var(--k3-dock-bg);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   backdrop-filter: blur(20px) saturate(1.2);
-  box-shadow: 0 18px 40px -18px rgba(30, 38, 56, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 40px -18px rgba(30, 38, 56, 0.4), 0 2px 6px -2px rgba(30, 38, 56, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   transform: translateY(0);
   opacity: 1;
   transition: transform 0.3s var(--k3-ease), opacity 0.24s ease, visibility 0s;
@@ -279,7 +287,7 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 }
 .fe-dock__list {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(56px, 1fr));
   height: 100%;
   margin: 0;
   padding: 0 6px;
@@ -316,8 +324,8 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   transition: transform 0.2s var(--k3-ease);
 }
 .fe-dock__icon svg { width: 21px; height: 21px; }
-/* Активный раздел (круг 6, S): светлый текст и иконка, сверху тонкая линия 2 px; ни геммы, ни плашки, ни золота. */
-.fe-dock__item.is-active { color: var(--k3-dock-ink); font-weight: 650; }
+/* Активный раздел (круг 8, S4): графит и линия 2 px сверху; ни геммы, ни плашки, ни золота. Остальные пункты графитовые, но светлее. */
+.fe-dock__item.is-active { color: var(--k3-dock-ink); font-weight: 700; }
 .fe-dock__item.is-active::before {
   content: '';
   position: absolute;
@@ -331,7 +339,12 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   pointer-events: none;
 }
 .fe-dock__item:focus-visible { outline: 2px solid var(--k3-dock-ink); outline-offset: -3px; }
-.fe-dock[data-tone='dark'] { --k3-dock-bg: rgba(10, 18, 38, 0.8); }
+.fe-dock[data-tone='dark'] {
+  --k3-dock-bg: rgba(10, 18, 38, 0.86);
+  --k3-dock-ink: #ffffff;
+  --k3-dock-ink-2: #d5dbea;
+  box-shadow: 0 18px 40px -18px rgba(8, 14, 30, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
 .fe-dock__item:active .fe-dock__icon { transform: scale(0.94); }
 
 /* ═══ Шторка снизу (меню телефона и планшета) ══════════════════════════════ */
@@ -401,13 +414,18 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 .fe-bsheet__foot { flex: none; }
 
 /* Пункты меню в шторке: 56 px, иконка-грань, без линий (между группами воздух). */
-.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 8px; background: none; }
+.fe-bsheet.fe-navbar-mobile-menu .fe-mnav-scroll { padding: 4px 12px 28px; background: none; }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group { gap: 4px; animation: fe-mnav-in 0.22s var(--fe-ease-out, ease-out) backwards; }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 14px; padding-top: 0; }
 @media (min-width: 640px) {
-  /* В две и три колонки группы лежат рядом: воздух между рядами даёт зазор сетки, а не верхний отступ. */
+  /* Круг 8, S5: на планшете группы раскладываются по колонкам браузера (CSS columns), а не сеткой «по рядам»: колонки выходят
+     одной высоты и лист не остаётся наполовину пустым, когда одна группа («Россия») длиннее соседних. */
+  .fe-bsheet .fe-mnav-columns { display: block; column-count: 2; column-gap: 20px; }
+  .fe-bsheet .fe-mnav-columns > .fe-mnav-group { break-inside: avoid; margin-bottom: 14px; }
   .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-group + .fe-mnav-group { margin-top: 0; }
-  .fe-bsheet .fe-mnav-columns { row-gap: 14px; }
+}
+@media (min-width: 900px) {
+  .fe-bsheet .fe-mnav-columns { column-count: 3; }
 }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-title {
   padding: 4px 12px 2px;
@@ -418,6 +436,9 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   color: var(--color-champagne-ink);
 }
 .fe-bsheet.fe-navbar-mobile-menu .fe-mnav-link {
+  /* Круг 8, S5: flex у всех пунктов, а не только у ссылок (index.css даёт его лишь тегу <a>): кнопка «Настройки cookie» стояла
+     значком над подписью. Правило общее для кнопок и ссылок, поэтому строки одного вида. */
+  display: flex;
   align-items: center;
   gap: 14px;
   min-height: 56px;
@@ -448,20 +469,40 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 }
 .fe-bsheet .fe-mnav-link[aria-current='page'] .fe-mnav-tile .fe-mnav-icon { color: var(--fe-on-active); }
 .fe-bsheet .fe-mnav-chevron { margin-right: 4px; }
-/* Вход и регистрация: закреплены внизу, над ними мягкий свет вместо линии. */
+/* Описание пункта переносится и не упирается в край листа (круг 8, S5). */
+.fe-bsheet .fe-mnav-text { padding-right: 8px; }
+.fe-bsheet .fe-mnav-label, .fe-bsheet .fe-mnav-hint { overflow-wrap: anywhere; white-space: normal; }
+/* Раскрытая «Россия»: подпункты отделены левым полем и не лезут под закреплённые кнопки. */
+.fe-bsheet .fe-mnav-sub { padding-bottom: 4px; }
+/* Вход и регистрация: закреплены внизу; над ними затухание 28 px (последний пункт уходит под него плавно, а не режется кнопками),
+   самому списку оставлен нижний запас 28 px, чтобы последний пункт можно было дотянуть выше кнопок (круг 8, S5). */
 .fe-bsheet .fe-mnav-foot a { display: flex; align-items: center; justify-content: center; min-height: 48px; }
 .fe-bsheet .fe-mnav-foot {
+  position: relative;
   padding: 12px 16px calc(14px + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(180deg, transparent, rgb(var(--k3-paper) / 0.6));
+  background: rgb(var(--k3-paper) / 0.96);
+}
+.fe-bsheet .fe-mnav-foot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 28px;
+  background: linear-gradient(180deg, rgb(var(--k3-paper) / 0), rgb(var(--k3-paper) / 0.96));
+  pointer-events: none;
 }
 
 /* ═══ Место под док-панелью ═══════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  /* Последние строки страницы не уходят под док: запас на высоту панели (--fe-dock-reserve ставит MobileDock) + 16 px. */
-  main#main-content { padding-bottom: calc(var(--fe-dock-reserve, 0px) + 16px); }
+  /* Круг 8, S4/S8: запас под док лежит один раз в подвале (footer.fe-footer, z2-shell.css), а не дважды (раньше и в main: это давало
+     пустой пояс до 300 пт перед подвалом). Последняя строка страницы заканчивается ритмом секции, дальше идут переход и подвал. */
+  main#main-content { padding-bottom: 0; }
 }
 
 /* ═══ Cookie: стеклянная капсула ═══════════════════════════════════════ */
+/* Пока открыто меню (шторка с затемнением), плашка cookie не торчит из-под неё (круг 8, S5): прячется, а не закрывается. */
+body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 @media (max-width: 639px) {
   /* Плашка тоньше: отступы 6 px вместо 8 (вместе с одной строкой 48 px это ≈ 60 px вместо 72). */
   .fe-cookie-wrap { padding: 6px 6px max(6px, env(safe-area-inset-bottom, 0px)); }
@@ -475,7 +516,8 @@ nav.fe-navbar--glass .fe-button-primary:hover,
 /* ═══ Плотные слои: без backdrop-filter и при «меньше прозрачности» ═════════ */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   nav.fe-navbar--glass, .fe-ticker { background: rgb(var(--k3-paper) / 0.94); }
-  .fe-dock { --k3-dock-bg: rgba(30, 38, 56, 0.94); }
+  .fe-dock { --k3-dock-bg: rgb(var(--k3-paper) / 0.97); }
+  .fe-dock[data-tone='dark'] { --k3-dock-bg: rgba(10, 18, 38, 0.96); }
   .fe-bsheet { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96); }
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -487,8 +529,9 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   .fe-dock {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    --k3-dock-bg: rgba(30, 38, 56, 0.97);
+    --k3-dock-bg: rgb(var(--k3-paper) / 0.98);
   }
+  .fe-dock[data-tone='dark'] { --k3-dock-bg: rgba(10, 18, 38, 0.97); }
   .fe-bsheet {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -515,7 +558,12 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   :root { --k3-ticker-h: 40px; }
   .fe-ticker { height: var(--k3-ticker-h); }
   nav.fe-navbar--glass { top: var(--k3-ticker-h); }
-  main#main-content { padding-top: 4px; }
+  /* Круг 8, S2: содержимое начинается ниже шапки с воздухом 16 px. Страницы задают себе pt-24 (96 px), поэтому main добавляет только
+     недостающее: --fe-page-top (низ шапки + 16 px, переменные меряют Navbar и LiveTicker) минус эти 96 px, но не меньше 4 px.
+     Раньше стояло 4 px: заголовок и хлебные крошки на компьютере начинались на 100 px при нижнем крае шапки на ≈ 116 px. */
+  main#main-content { padding-top: max(4px, calc(var(--fe-page-top) - 96px)); }
+  /* Страницы с pt-20 (80 px) получают те же 96 px, что и остальные. */
+  main#main-content > .fe-data-page.pt-20 { padding-top: 6rem; }
   .fe-ticker .fe-ticker__quote { line-height: 1.05; }
   .fe-ticker .fe-ticker__caption { margin-top: 0; line-height: 1.1; }
 }
@@ -526,18 +574,19 @@ nav.fe-navbar--glass .fe-button-primary:hover,
   nav.fe-navbar.fe-navbar--glass { max-width: var(--fe-container-wide, 1280px); }
 }
 
-/* Телефон: лента курсов 28 px вместо 36 (лента + шапка 64 = 92 px вместо 100). От высоты ленты зависят верх шапки (top),
+/* Телефон: лента курсов 32 px вместо 36 (лента + шапка 64 = 92 px вместо 100). От высоты ленты зависят верх шапки (top),
    верхний отступ main и сдвиг сжатой шапки; все три читают --k3-ticker-h. Две строки в ячейке (подпись 10 px над ценой 13 px). */
 @media (max-width: 767px) {
-  :root { --k3-ticker-h: 28px; }
+  :root { --k3-ticker-h: 32px; }
   .fe-ticker { height: var(--k3-ticker-h); }
   nav.fe-navbar--glass { top: var(--k3-ticker-h); }
   nav.fe-navbar--glass[data-compact='true'] { transform: translateY(calc(6px - var(--k3-ticker-h))); }
   main#main-content { padding-top: var(--k3-ticker-h); }
   .fe-ticker .fe-ticker__cell { min-height: 0; padding-block: 0; }
-  .fe-ticker .fe-ticker__name { font-size: 10px; line-height: 1; }
-  .fe-ticker .fe-ticker__price { font-size: 13px; line-height: 1.05; }
-  .fe-ticker .fe-ticker__delta { font-size: 11.5px; line-height: 1.05; }
+  /* Круг 8, S3: лента 32 px (было 28): подпись валюты 10,5 px и цена 13 px умещаются в две строки, не налезая друг на друга. */
+  .fe-ticker .fe-ticker__name { font-size: 10.5px; line-height: 1.1; white-space: nowrap; }
+  .fe-ticker .fe-ticker__price { font-size: 13px; line-height: 1.1; white-space: nowrap; }
+  .fe-ticker .fe-ticker__delta { font-size: 11.5px; line-height: 1.1; white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   nav.fe-navbar--glass[data-compact='true'] { transform: none; }

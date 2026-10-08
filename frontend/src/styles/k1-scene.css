@@ -350,6 +350,11 @@ html.fe-scene-on #root {
   mask-composite: intersect;
 }
 .fe-scene__f.is-ready { opacity: var(--fe-scene-f-opacity, 0.42); }
+/* Круг 8, S9: на страницах с таблицами и графиками (показатель, рейтинг, сравнение, курсы, калькуляторы, прогнозы: режим «all») F тише
+   (≤ .18) и сдвинута ниже и правее: силуэт не режет строки и числа сквозь полупрозрачные панели. Фон остаётся не голым (принцип 4):
+   F видна в зазорах и у края, а не под текстом. Главная и профиль страны (свои F) режим «all» не используют. */
+.fe-scene__f[data-fe-f-mode="all"] { top: 30vh; right: clamp(-6vw, -2vw, 0px); }
+.fe-scene__f[data-fe-f-mode="all"].is-ready { opacity: var(--fe-scene-f-data-opacity, 0.16); }
 .fe-scene__f picture,
 .fe-scene__f img { display: block; width: 100%; height: 100%; object-fit: contain; }
 @media (max-width: 767px) {

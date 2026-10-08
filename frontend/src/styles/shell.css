@@ -235,6 +235,10 @@
   transition: grid-template-rows 0.22s var(--fe-ease-out);
 }
 .fe-foot-panel__inner { min-height: 0; overflow: hidden; }
+/* Круг 8, S8: закрытая группа не оставляет «дыры» под заголовком ни в одном движке: высота и отступы сняты явно, а не только через 0fr. */
+@media (max-width: 639px) {
+  .fe-foot-panel[data-open='false'] .fe-foot-panel__inner { max-height: 0; padding: 0; margin: 0; }
+}
 .fe-foot-panel[data-open='true'] .fe-foot-panel__inner { padding-bottom: 12px; }
 @media (min-width: 640px) {
   .fe-foot-group { border-top: 0; }
@@ -585,7 +589,7 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-champagne);
+  background: var(--fe-blue-2, #2c4a8a);
   animation: fe-note-pulse 1.4s ease-in-out infinite;
 }
 .fe-loading-note .fe-loading-note__btn { min-height: 44px; }
@@ -597,7 +601,8 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
 /* Плашка «Открываем: …» сразу после нажатия на ссылку (PageProgress). */
 .fe-nav-hint {
   position: fixed;
-  top: 48px;
+  /* Круг 8, S6/S10: плашка под шапкой (раньше на 48 px и перекрывала капсулу шапки по центру). */
+  top: calc(var(--fe-shell-top, 116px) + 8px);
   left: 50%;
   z-index: 121;
   display: inline-flex;
@@ -615,13 +620,16 @@ aside.fe-nudge-m .fe-nudge-m__cta { margin-top: 2px; }
   white-space: nowrap;
   pointer-events: none;
   transform: translateX(-50%);
-  animation: fe-nav-hint-in 0.18s ease-out 0.08s both;
+  animation: fe-nav-hint-in 0.16s ease-out both;
 }
 .fe-nav-hint__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 @keyframes fe-nav-hint-in {
   from { opacity: 0; transform: translate(-50%, -4px); }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
+
+/* Отклик на нажатие ссылки в тот же кадр (PageProgress ставит data-fe-pressed): только прозрачность, без сдвига вёрстки. */
+a[data-fe-pressed='true'] { opacity: 0.62; transition: opacity 0.08s linear; }
 
 /* Приглашение зарегистрироваться на планшете и компьютере: маленькая кнопка-значок в углу,
    прячется у подвала; не показывается поверх скелета и ошибки. */
