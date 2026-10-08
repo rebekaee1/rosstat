@@ -3,6 +3,8 @@ import messagesRu from '../i18n/messages.ru';
 import messagesEn from '../i18n/messages.en';
 import {
   compactCount,
+  compactMoneyAmount,
+  typographicMinus,
   describeChange,
   humanizeQualifier,
   indicatorsCountText,
@@ -147,5 +149,29 @@ describe('темы страны', () => {
     };
     expect(similarCountries(catalog, { slug: 'germany', region: 'Европа' }).map((c) => c.slug)).toEqual(['france', 'italy']);
     expect(similarCountries(null, { slug: 'germany', region: 'Европа' })).toEqual([]);
+  });
+});
+
+describe('круг 8, Y5: сумма без масштаба', () => {
+  it('56 459 257 590 евро — «56,5 млрд €»', () => {
+    expect(compactMoneyAmount(56459257590, 'евро')).toEqual({ value: 56.45925759, unit: 'млрд €' });
+    expect(compactMoneyAmount(56459257590, 'euro', 'en').unit).toBe('billion €');
+    expect(compactMoneyAmount(2_500_000, 'евро').unit).toBe('млн €');
+  });
+
+  it('малые суммы и обычные единицы остаются как есть', () => {
+    expect(compactMoneyAmount(900000, 'евро')).toBeNull();
+    expect(compactMoneyAmount(56459257590, 'сделок')).toBeNull();
+    expect(compactMoneyAmount(2320, 'млрд $')).toBeNull();
+  });
+
+  it('изменение суммы в фразе короткое', () => {
+    const text = describeChange({ change: -11898246453, unit: 'евро', frequency: 'quarterly', locale: 'ru', t: tRu });
+    expect(text.replace(/\u00a0/g, ' ')).toBe('на 11,9 млрд € ниже, чем в прошлом квартале');
+  });
+
+  it('typographicMinus заменяет только ведущий дефис перед цифрой', () => {
+    expect(typographicMinus('-0,08')).toBe('−0,08');
+    expect(typographicMinus('5-6')).toBe('5-6');
   });
 });

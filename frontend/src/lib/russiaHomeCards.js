@@ -104,8 +104,14 @@ export function russiaOverviewChips(indicators) {
 
 /**
  * «Главная пятёрка» страны: инфляция, ставка, курс доллара, ВВП, безработица.
- * Главное число инфляции — за год (derived `cpi-yoy`); месячный индекс остаётся мелко рядом.
- * Нет годового ряда: показываем то, что есть у `cpi` (как раньше), без подмены смысла.
+ *
+ * Инфляция всегда за год, и число, «год назад» и график идут из одного годового
+ * ряда `cpi-yoy` (скрыт из каталога, но читается по коду). Источник числа:
+ * 1) `cpi-yoy` в листинге (если вызван с includeUnlisted);
+ * 2) `hero_value` у `cpi` (бэкенд берёт его из `cpi-yoy` того же месяца).
+ * Месячный индекс `cpi` (около 100) в годовую карточку не подставляется ни как
+ * число, ни как «год назад»: он остаётся только мелкой строкой «за месяц».
+ * Годового значения нет вообще — карточка честно называется «за месяц».
  */
 export const RUSSIA_MAIN_FIVE = Object.freeze([
   Object.freeze({ id: 'inflation', codes: Object.freeze(['cpi']) }),
@@ -115,9 +121,35 @@ export const RUSSIA_MAIN_FIVE = Object.freeze([
   Object.freeze({ id: 'unemployment', codes: Object.freeze(['unemployment', 'unemployment-rate']) }),
 ]);
 
+const INFLATION_YOY_SERIES = 'cpi-yoy';
+
+function finiteOrNull(value) {
+  if (value == null || value === '') return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Годовая инфляция: { value, date } из листинга или null, если годового числа нет. */
+function inflationYearly(cpi, yoy) {
+  const yoyValue = finiteOrNull(yoy?.current_value);
+  if (yoyValue != null) return { value: yoyValue, date: yoy.current_date || cpi?.current_date || null };
+  const hero = finiteOrNull(cpi?.hero_value);
+  if (hero != null) return { value: hero, date: cpi.current_date || null };
+  return null;
+}
+
+/** Месячное изменение цен из индекса `cpi` (около 100): 99,92 -> -0,08. null, если индекса нет. */
+function inflationMonthly(cpi, yearlyDate) {
+  const raw = finiteOrNull(cpi?.current_value);
+  if (raw == null) return null;
+  // Показываем месяц только того же периода, что и годовое число, иначе строка соврёт.
+  if (yearlyDate && cpi.current_date && String(cpi.current_date).slice(0, 7) !== String(yearlyDate).slice(0, 7)) return null;
+  return { value: +(raw - 100).toFixed(2), unit: '%' };
+}
+
 /**
  * @returns {Array<{ id: string, code: string, seriesCode: string, indicator: object, value: number,
- *   unit: string, monthly: ?{ value: number, unit: string }, date: ?string }>}
+ *   unit: string, monthly: ?{ value: number, unit: string }, date: ?string, titleKey: ?string }>}
  */
 export function russiaMainFive(indicators) {
   const byCode = new Map(
@@ -126,25 +158,44 @@ export function russiaMainFive(indicators) {
   const out = [];
   for (const slot of RUSSIA_MAIN_FIVE) {
     const indicator = slot.codes.map((code) => byCode.get(code)).find(Boolean);
-    const display = russiaIndicatorDisplay(indicator);
-    if (!indicator || !display) continue;
     if (slot.id === 'inflation') {
-      const yoy = byCode.get('cpi-yoy');
-      const yoyValue = yoy?.current_value;
-      if (yoyValue != null && Number.isFinite(Number(yoyValue))) {
+      if (!indicator) continue;
+      const yearly = inflationYearly(indicator, byCode.get(INFLATION_YOY_SERIES));
+      if (yearly) {
         out.push({
           id: slot.id,
           code: indicator.code,
-          seriesCode: 'cpi-yoy',
+          seriesCode: INFLATION_YOY_SERIES,
           indicator,
-          value: Number(yoyValue),
+          value: yearly.value,
           unit: '%',
-          monthly: { value: display.value, unit: display.unit === 'индекс' ? '%' : display.unit },
-          date: yoy.current_date || indicator.current_date,
+          monthly: inflationMonthly(indicator, yearly.date),
+          date: yearly.date,
+          titleKey: null,
         });
         continue;
       }
+      // Годового числа нет: показываем месяц и называем его месяцем, а не годом.
+      const month = inflationMonthly(indicator, null);
+      if (month) {
+        out.push({
+          id: slot.id,
+          code: indicator.code,
+          seriesCode: indicator.code,
+          indicator,
+          value: month.value,
+          unit: '%',
+          monthly: null,
+          date: indicator.current_date,
+          titleKey: 'c8y.ru.main.inflationMonth',
+          // «Год назад» из индексного ряда нельзя: вычитать 99,6 из -0,08 бессмысленно.
+          noYearAgo: true,
+        });
+      }
+      continue;
     }
+    const display = russiaIndicatorDisplay(indicator);
+    if (!indicator || !display) continue;
     out.push({
       id: slot.id,
       code: indicator.code,
@@ -154,6 +205,7 @@ export function russiaMainFive(indicators) {
       unit: display.unit,
       monthly: null,
       date: indicator.current_date,
+      titleKey: null,
     });
   }
   return out;

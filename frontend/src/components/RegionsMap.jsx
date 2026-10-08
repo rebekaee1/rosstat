@@ -37,11 +37,13 @@ const LIGHT_HOVER_STROKE = CHART_THEME.champagne;
 const COMPACT_VIEWBOX = '8 6 984 526';
 /** Живая карта получает поля вокруг геометрии: Чукотка, Камчатка и обводка не упираются в рамку. */
 const LIVE_PAD = 8;
+/** Слева шире: маркер Севастополя стоит у самого края (cx≈0, радиус 10) и без запаса обрезался (круг 8, Y3). */
+const LIVE_PAD_LEFT = 16;
 
 function paddedViewBox(box) {
   const [x, y, w, h] = box.split(' ').map(Number);
   if (![x, y, w, h].every(Number.isFinite)) return box;
-  return `${x - LIVE_PAD} ${y - LIVE_PAD} ${w + LIVE_PAD * 2} ${h + LIVE_PAD * 2}`;
+  return `${x - LIVE_PAD_LEFT} ${y - LIVE_PAD} ${w + LIVE_PAD + LIVE_PAD_LEFT} ${h + LIVE_PAD * 2}`;
 }
 
 export default function RegionsMap({

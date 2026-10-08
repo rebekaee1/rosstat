@@ -13,7 +13,7 @@ const SOURCE_DOT = {
  * Ближайшие события рядом с сеткой месяца (планшет и компьютер): дата, название, время «по Москве».
  * Нажатие открывает этот день в календаре. На телефоне блок скрыт: там тот же день виден в списке под сеткой.
  */
-export default function CalendarUpcoming({ events = [], onPick, limit = 3 }) {
+export default function CalendarUpcoming({ events = [], onPick, limit = 5 }) {
   const t = useT();
   const { locale } = useLocale();
   const items = events.slice(0, limit);

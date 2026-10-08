@@ -155,7 +155,7 @@ export default function CalendarGrid({
       <div className="grid grid-cols-7">
         {cells.map((day, i) => {
           if (day === null) {
-            return <div key={`empty-${i}`} className="min-h-[3.5rem] md:min-h-[5.5rem]" />;
+            return <div key={`empty-${i}`} className="fe-cal-day--ghost" aria-hidden="true" />;
           }
 
           const dateStr = fmt(year, month, day);

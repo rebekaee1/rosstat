@@ -15,6 +15,8 @@ const CPI_YOY = {
   ...base, code: 'cpi-yoy', name: 'Инфляция год к году', unit: '%', frequency: 'monthly', is_listed: false,
   category: 'Цены', category_ru: 'Цены', current_value: 5.4, current_date: '2026-08-01',
 };
+// Листинг после круга 8: у cpi есть годовое hero_value, а cpi-yoy из каталога скрыт.
+const CPI_HERO = { ...CPI, hero_value: 6.34, hero_unit: '%', hero_label: 'г/г', hero_change: -0.2 };
 const KEY_RATE = {
   ...base, code: 'key-rate', name: 'Ключевая ставка', unit: '%', frequency: 'daily',
   category: 'Ставки', category_ru: 'Ставки', current_value: 14, current_date: '2026-10-02', change: 0,
@@ -40,19 +42,37 @@ describe('russiaMainFive', () => {
     expect(cards[0].monthly.value).toBeCloseTo(-0.08, 2);
   });
 
-  it('без годового ряда показывает то, что есть у cpi, и пропускает отсутствующие показатели', () => {
-    const cards = russiaMainFive([{ ...CPI, current_value: 105.4 }, UNEMPLOYMENT]);
+  it('cpi-yoy нет в каталоге, но у cpi есть годовое hero_value: число годовое, ряд годовой, месяц мелко', () => {
+    const cards = russiaMainFive([CPI_HERO, KEY_RATE]);
+    expect(cards[0]).toMatchObject({ code: 'cpi', seriesCode: 'cpi-yoy', value: 6.34, unit: '%' });
+    expect(cards[0].monthly.value).toBeCloseTo(-0.08, 2);
+    expect(cards[0].noYearAgo).toBeUndefined();
+  });
+
+  it('годового числа нет совсем: карточка называется «за месяц» и «год назад» из индекса не берёт', () => {
+    const cards = russiaMainFive([CPI, UNEMPLOYMENT]);
     expect(cards.map((c) => c.id)).toEqual(['inflation', 'unemployment']);
-    expect(cards[0]).toMatchObject({ seriesCode: 'cpi', value: 5.4, monthly: null });
+    expect(cards[0]).toMatchObject({
+      seriesCode: 'cpi', unit: '%', monthly: null, noYearAgo: true, titleKey: 'c8y.ru.main.inflationMonth',
+    });
+    expect(cards[0].value).toBeCloseTo(-0.08, 2);
+  });
+
+  it('месяц годовой карточки не показывается, если период индекса другой', () => {
+    const stale = { ...CPI_HERO, current_date: '2026-07-01' };
+    const cards = russiaMainFive([stale, { ...CPI_YOY, current_date: '2026-08-01' }]);
+    expect(cards[0].monthly).toBeNull();
   });
 });
 
-function mount(listing) {
-  mockApiGet([
+function mount(listing, extra = []) {
+  const spy = mockApiGet([
     ['/auth/me', { user: null }],
+    ...extra,
     ['/indicators', listing],
   ]);
-  return renderPage(<RussiaHome />, { path: '/russia', route: '/russia' });
+  renderPage(<RussiaHome />, { path: '/russia', route: '/russia' });
+  return spy;
 }
 
 describe('RussiaHome: главная пятёрка', () => {
@@ -67,13 +87,49 @@ describe('RussiaHome: главная пятёрка', () => {
     expect(inflation.getAttribute('href')).toBe('/russia/indicator/cpi');
     const text = inflation.textContent.replace(/\u00a0/g, ' ');
     expect(text).toContain('5,4');
-    expect(text).toContain('за месяц: -0,08 %');
+    expect(text).toContain('за месяц: \u22120,08 %');
     // ВВП в трлн, а не «41 250 млрд»
     expect(cards[3].textContent.replace(/\u00a0/g, ' ')).toContain('41,3');
     expect(cards[3].textContent).toContain('трлн ₽');
     // Жаргона нет, полное название читается скринридером.
     expect(inflation.querySelector('.sr-only').textContent).toContain('Индекс потребительских цен');
     expect(document.body.textContent).not.toContain('\u00B7');
+  });
+});
+
+describe('RussiaHome: годовая инфляция и «год назад»', () => {
+  const YOY_ROWS = [
+    { date: '2025-08-01', value: 8.14 },
+    { date: '2026-07-01', value: 6.5 },
+    { date: '2026-08-01', value: 6.34 },
+  ];
+
+  it('число, «год назад» и график берутся из годового ряда, а не из индекса около 100', async () => {
+    const spy = mount([CPI_HERO, KEY_RATE, USD, GDP, UNEMPLOYMENT], [
+      [/\/indicators\/cpi-yoy\/data/, { data: YOY_ROWS }],
+    ]);
+    const box = await screen.findByTestId('russia-overview-chips');
+    const inflation = (await within(box).findAllByRole('link'))[0];
+    await vi.waitFor(() => {
+      expect(inflation.textContent.replace(/\u00a0/g, ' ')).toContain('год назад: 8,14 %');
+    });
+    const text = inflation.textContent.replace(/\u00a0/g, ' ');
+    expect(text).toContain('6,34');
+    expect(text).not.toContain('99,6');
+    const urls = spy.mock.calls.map((c) => c[0]);
+    expect(urls).toContain('/indicators/cpi-yoy/data');
+    expect(urls).not.toContain('/indicators/cpi/data');
+  });
+
+  it('без годового числа плитка «за месяц» не выдумывает «год назад»', async () => {
+    mount([CPI, KEY_RATE, USD, GDP, UNEMPLOYMENT], [
+      [/\/indicators\/cpi\/data/, { data: [{ date: '2025-08-01', value: 99.6 }, { date: '2026-08-01', value: 99.92 }] }],
+    ]);
+    const box = await screen.findByTestId('russia-overview-chips');
+    const inflation = (await within(box).findAllByRole('link'))[0];
+    expect(inflation.querySelector('.z5-key__name').firstChild.textContent).toBe('Инфляция за месяц');
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    expect(inflation.textContent).not.toContain('год назад');
   });
 });
 

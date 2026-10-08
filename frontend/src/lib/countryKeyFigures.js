@@ -52,6 +52,31 @@ export function scaleMoneyUnit(value, unitText, locale = 'ru') {
   return { value: scaled, unit: `${word} ${symbol}`, qualifier: parsed.head };
 }
 
+const PLAIN_MONEY_TOKEN = /^(евро|euro|eur|usd|доллар\w*|dollars?|руб\.?|рублей|rub)$/i;
+
+/**
+ * Крупная сумма в коротком виде: 56 459 257 590 евро -> «56,5 млрд €» (круг 8, Y5).
+ * Работает для единицы-валюты без масштаба («евро») от миллиона; масштабные единицы («млн евро») остаются как были.
+ * @returns {{ value: number, unit: string } | null} null — сокращать нечего, показывать как есть.
+ */
+export function compactMoneyAmount(value, unitText, locale = 'ru') {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const text = String(unitText || '').trim();
+  const abs = Math.abs(n);
+  if (PLAIN_MONEY_TOKEN.test(text)) {
+    if (abs < 1e6) return null;
+    const words = locale === 'en' ? SCALE_SHORT_EN : SCALE_SHORT_RU;
+    // k делений на 1000: 1 — тыс., 2 — млн, 3 — млрд, 4 — трлн.
+    let k = 0;
+    let scaled = n;
+    while (Math.abs(scaled) >= 1000 && k < 4) { scaled /= 1000; k += 1; }
+    const symbol = CURRENCY_SYMBOL[text] || CURRENCY_SYMBOL[text.toLowerCase()] || text;
+    return { value: scaled, unit: `${words[Math.max(k - 1, 0)]} ${symbol}` };
+  }
+  return null;
+}
+
 /** Знаки после запятой для крупной цифры: 849,7 / 2,3 / 12 345. */
 export function figureDigits(value) {
   const abs = Math.abs(Number(value));
@@ -109,6 +134,11 @@ export function yearAgoPoint(points, frequency = 'annual') {
   return { value, date: best.date };
 }
 
+/** Знак «минус» вместо дефиса в начале числа: «−0,08», а не «-0,08» (круг 8, Y1). */
+export function typographicMinus(text) {
+  return typeof text === 'string' ? text.replace(/^-(?=\d)/, '\u2212') : text;
+}
+
 /** Изменение без хвоста нулей: 0,7 вместо 0,70, 12 вместо 12,0. */
 function tidyNumber(abs, locale) {
   const digits = abs < 1 ? 2 : abs < 100 ? 1 : 0;
@@ -140,12 +170,15 @@ export function describeChange({ change, unit, frequency, locale = 'ru', t }) {
   const n = Number(change);
   if (change == null || !Number.isFinite(n)) return '';
   const abs = Math.abs(n);
-  const number = tidyNumber(abs, locale);
+  const unitText = String(unit || '').trim();
+  // Суммы в рублях и евро печатаем коротко («11,9 млрд €»), а не двенадцатью цифрами.
+  const compact = compactMoneyAmount(abs, unitText, locale);
+  const number = tidyNumber(compact ? compact.value : abs, locale);
   if (number == null) return t('z5.chg.none');
   const rounded = Number(abs.toFixed(abs < 1 ? 2 : abs < 100 ? 1 : 0));
-  const unitText = String(unit || '').trim();
   let suffix = '';
-  if (!unitText) suffix = '';
+  if (compact) suffix = ` ${compact.unit}`;
+  else if (!unitText) suffix = '';
   else if (POINT_UNIT.test(unitText)) suffix = ` ${pointsWord(rounded, locale, t)}`;
   else suffix = ` ${unitText}`;
   const amount = `${number}${suffix}`;

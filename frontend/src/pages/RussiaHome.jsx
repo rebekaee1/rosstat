@@ -72,22 +72,23 @@ function RussiaTerritoryCard() {
   return (
     <aside
       data-block="russia-territory-card"
-      className="z5-ru-territory fe-glass-dark relative min-h-[270px] overflow-hidden"
+      className="z5-ru-territory fe-glass-dark relative min-h-[300px] overflow-hidden"
       aria-label={t('russia.map.caption')}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(207,180,95,0.2),transparent_47%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_28%,rgba(150,178,225,0.22),transparent_47%)]" />
       <div className="z5-ru-territory__dots pointer-events-none absolute inset-0" aria-hidden="true" />
 
-      <div className="absolute left-4 top-3 z-10 max-w-[60%] pr-2">
-        <div className="text-[13px] font-semibold text-white/80">
+      <div className="absolute left-4 top-3 z-10 max-w-[75%] pr-2">
+        <div className="text-[13px] font-semibold text-white/85">
           {t('world.territory.profile')}
         </div>
-        <div className="mt-1 text-xs text-[#d8c58b]">
+        <div className="mt-1 text-xs text-[#BFD2F0]">
           {t('russia.map.eyebrow')}
         </div>
       </div>
 
-      <div className="relative pt-9 pb-14">
+      {/* Карта начинается ниже двухстрочной подписи: Новая Земля больше не под текстом (круг 8, Y2). */}
+      <div className="relative pt-16 pb-[4.5rem]">
         <Suspense fallback={<RussiaMapSkeleton />}>
           <RegionsMap
             variant="compact"
@@ -99,13 +100,12 @@ function RussiaTerritoryCard() {
         </Suspense>
       </div>
 
-      <div className="absolute bottom-3 left-4 right-4 z-10 flex items-start justify-between gap-x-2 gap-y-1 pt-3 sm:items-end sm:gap-3">
-        <div className="min-w-0">
-          <div className="max-w-[11rem] truncate text-sm font-semibold text-white/90">
-            {t('crumb.russia')}
-          </div>
+      {/* Название страны целиком, пояснение под ним ровными строками; в строку они не ставятся: в узкой карточке одно резало другое. */}
+      <div className="absolute bottom-3 left-4 right-4 z-10 flex flex-col gap-0.5">
+        <div className="text-sm font-semibold text-white/90">
+          {t('crumb.russia')}
         </div>
-        <div className="max-w-[14rem] text-right text-xs leading-snug text-white/75">
+        <div className="text-xs leading-snug text-white/80 [text-wrap:balance]">
           {t('russia.map.note')}
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function RussiaHome() {
       <Breadcrumbs items={crumbs} />
 
       <section className="fe-panel z5-ru-hero relative mb-6 overflow-hidden rounded-[1.5rem] p-4 sm:mb-8 sm:rounded-[2rem] sm:p-8">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(201,162,77,0.2),transparent)]" />
+        <div className="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(150,178,225,0.2),transparent)]" />
         <div className="relative grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)] lg:items-center lg:gap-7">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-champagne-ink">

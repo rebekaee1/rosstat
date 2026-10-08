@@ -347,15 +347,12 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 @media (min-width: 1100px) {
   .z5-key-grid--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
-/* Общая подложка «Главного»: один широкий лоток-стекло под плитками (без blur: он внутри размытого героя). */
+/* Круг 8 (Y1): общей подложки под плитками «Главного» больше нет. Плитки стоят прямо на стекле героя (подложка внутри подложки давала вложенный контур и лишнюю тень). */
 .z5-key-grid, .z5-ru-main {
-  padding: 12px;
-  border-radius: 28px;
-  background: var(--k6-tray-glass, none);
-  box-shadow: var(--k6-glass-glint, none);
-}
-@media (max-width: 639px) {
-  .z5-key-grid, .z5-ru-main { padding: 8px; border-radius: 24px; gap: 10px; }
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 :root .z5-key {
   /* Цветное свечение снизу по знаку изменения: рост — изумруд, падение — бронза, неясно — золото. */
@@ -705,6 +702,11 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 .z5-row__spark:has(.z5-row__spark-empty) { display: none; }
 .z5-row__meaning {
   align-items: flex-start;
+  /* Длинная фраза («на 11,9 млрд € ниже, чем в прошлом квартале») переносится внутри плашки, а не вылезает за край (круг 8, Y5). */
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  border-radius: 16px;
   font-size: 12.5px;
   font-weight: 500;
   line-height: 1.4;
@@ -742,8 +744,18 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   gap: 14px;
   margin-top: 14px;
 }
+/* Круг 8 (Y1): пять плиток никогда не оставляют сироту. Планшет: 3 + 2, нижние две растянуты на всю ширину. Компьютер: пять в ряд. */
 @media (min-width: 640px) {
-  .z5-ru-main { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+  .z5-ru-main { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+  .z5-ru-main > .z5-key { grid-column: span 2; }
+  .z5-ru-main > .z5-key:nth-child(4):nth-last-child(2),
+  .z5-ru-main > .z5-key:nth-child(5):last-child { grid-column: span 3; }
+}
+@media (min-width: 1100px) {
+  .z5-ru-main { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .z5-ru-main > .z5-key,
+  .z5-ru-main > .z5-key:nth-child(4):nth-last-child(2),
+  .z5-ru-main > .z5-key:nth-child(5):last-child { grid-column: auto; }
 }
 /* «Камень»: плитка L1 со своим цветом света в верхнем углу и светлой гранью по диагонали (это заливка, не линия). */
 :root .z5-ru-key {
@@ -766,12 +778,15 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
   }
 }
 :root .z5-ru-key__monthly { color: var(--fe-text-muted, #5b6578); font-size: 12px; line-height: 1.4; }
-:root .z5-ru-key .z5-key__spark { min-height: 64px; }
+/* Круг 8 (Y1): единица остаётся рядом с числом («56,2 трлн ₽» в одной строке), график всегда прижат к низу плитки, пустого слота «год назад» нет. */
+:root .z5-ru-key .z5-key__value { flex-wrap: nowrap; white-space: nowrap; }
+:root .z5-ru-key .z5-key__spark { min-height: 64px; margin-top: auto; padding-top: 8px; }
+:root .z5-ru-key .z5-key__ago--empty { display: none; }
 @media (max-width: 639px) {
   :root .z5-ru-key { grid-template-areas: 'name spark' 'value spark' 'period spark' 'monthly spark' 'ago spark'; }
   :root .z5-ru-key .z5-key__value { font-size: 2.25rem; }
   :root .z5-ru-key__monthly { grid-area: monthly; }
-  :root .z5-ru-key .z5-key__spark { min-height: 48px; }
+  :root .z5-ru-key .z5-key__spark { min-height: 48px; margin-top: 0; padding-top: 0; }
 }
 .z5-ru-rows {
   display: grid;

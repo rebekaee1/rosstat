@@ -604,10 +604,22 @@ a.fe-today-card:hover .fe-today-card__go { color: var(--color-champagne-ink); tr
 .fe-today-chart { margin-bottom: 24px; padding: 16px; border-radius: 24px; background: var(--fe-l1-bg); box-shadow: var(--fe-card-shadow); }
 
 /* ── Календарь ──────────────────────────────────────────────────────────── */
-.fe-cal-day[data-heat='1'] { background: linear-gradient(rgba(173, 138, 72, 0.07), rgba(173, 138, 72, 0.07)), var(--fe-glass-l2); }
-.fe-cal-day[data-heat='2'] { background: linear-gradient(rgba(173, 138, 72, 0.14), rgba(173, 138, 72, 0.14)), var(--fe-glass-l2); }
-.fe-cal-day[data-heat='3'] { background: linear-gradient(rgba(173, 138, 72, 0.22), rgba(173, 138, 72, 0.22)), var(--fe-glass-l2); }
-.fe-cal-day[aria-pressed='true'] { background: linear-gradient(135deg, color-mix(in srgb, var(--fe-gold) 32%, transparent), color-mix(in srgb, var(--fe-gold) 16%, transparent)), var(--fe-l1-bg); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
+/* Круг 8 (Y4): день в сетке — цвет-плотность и точки источников со счётчиком; полные названия — в списке дня под сеткой и справа.
+   Названия в самой клетке есть только там, где клетка шире 150 пт (компьютер): на планшете они резались до «Международн…». Плотность дня — холодный синий тон (золото большими площадями не нужно). */
+:root .fe-cal-day { container-type: inline-size; container-name: calday; }
+:root .fe-cal-day[data-heat='1'] { background: linear-gradient(rgba(30, 58, 110, 0.05), rgba(30, 58, 110, 0.05)), var(--fe-glass-l2); }
+:root .fe-cal-day[data-heat='2'] { background: linear-gradient(rgba(30, 58, 110, 0.1), rgba(30, 58, 110, 0.1)), var(--fe-glass-l2); }
+:root .fe-cal-day[data-heat='3'] { background: linear-gradient(rgba(30, 58, 110, 0.16), rgba(30, 58, 110, 0.16)), var(--fe-glass-l2); }
+:root .fe-cal-day[aria-pressed='true'] { background: linear-gradient(135deg, rgba(30, 58, 110, 0.2), rgba(30, 58, 110, 0.1)), var(--fe-l1-bg); box-shadow: var(--fe-shadow-active), var(--fe-inset-glint); }
+:root .fe-cal-day__dots { display: flex; }
+:root .fe-cal-day__title { display: none; }
+@container calday (min-width: 150px) {
+  :root .fe-cal-day__dots { display: none; }
+  :root .fe-cal-day__title { display: -webkit-box; }
+}
+/* Пустые клетки до первого и после последнего дня месяца: бледное стекло, чтобы сетка не обрывалась посреди недели. */
+.fe-cal-day--ghost { border-radius: 12px; background: rgba(255, 255, 255, 0.28); min-height: 3.5rem; }
+@media (min-width: 768px) { .fe-cal-day--ghost { min-height: 5.5rem; } }
 .fe-cal-legend { padding: 10px 16px 12px; color: var(--color-text-secondary); font-size: 13px; }
 .fe-cal-legend__row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
 .fe-cal-legend__count { margin-left: auto; }

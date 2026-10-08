@@ -10,12 +10,14 @@ import {
   useWorldIndicatorData, formatWorldValue, localizeWorldUnit, pluralRu,
 } from '../../lib/worldApi';
 import { indicatorPublicName } from '../../lib/worldViewModes';
-import { formatDate } from '../../lib/format';
+import { formatDate, formatValue } from '../../lib/format';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { shortUsIndicatorName } from '../../lib/usCatalogTopics';
 import { dropRepeatedUnit, groupNearDuplicates } from '../../lib/countryIndicatorGroups';
-import { describeChange, splitTechnicalNote } from '../../lib/countryKeyFigures';
+import {
+  compactMoneyAmount, describeChange, figureDigits, splitTechnicalNote,
+} from '../../lib/countryKeyFigures';
 import { indicatorPath } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
 import DeltaBadge from '../DeltaBadge';
@@ -139,6 +141,12 @@ export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true 
   const unit = splitUnit(tech.unit);
   const polarity = indicatorPolarity(indicatorPublicName(item, locale));
   const change = item.change != null && Number.isFinite(Number(item.change)) ? Number(item.change) : null;
+  // Сумма из десяти и более цифр («56 459 257 590 евро») читается как «56,5 млрд €».
+  const compactValue = compactMoneyAmount(item.last_value, unit.short, locale);
+  const valueText = compactValue
+    ? formatValue(compactValue.value, figureDigits(compactValue.value), locale)
+    : formatWorldValue(item.last_value, undefined, locale);
+  const valueUnit = compactValue ? compactValue.unit : unit.short;
   const meaning = change != null
     ? describeChange({
       change,
@@ -164,8 +172,8 @@ export function IndicatorRow({ item, slug, to, sectionName, sparkEnabled = true 
       </div>
       <div className="z5-row__main">
         <div className="z5-row__value">
-          <span className="z5-row__num">{formatWorldValue(item.last_value, undefined, locale)}</span>
-          {unit.short ? <small>{unit.short}</small> : null}
+          <span className="z5-row__num">{valueText}</span>
+          {valueUnit ? <small>{valueUnit}</small> : null}
         </div>
         {sparkEnabled ? (
           <div className="z5-row__spark" aria-hidden="true">

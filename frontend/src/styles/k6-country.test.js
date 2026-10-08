@@ -99,7 +99,8 @@ describe('k6-country.css (зона K6, хрусталь без границ)', (
     expect(light).toMatch(/--k6-row-glass-alt:\s*linear-gradient\(135deg, rgba\(255, 255, 255, 0\.38\), rgba\(255, 255, 255, 0\.26\)\)/);
     expect(k6).toContain('--k6-glass-glint: inset 0 1px 0');
     expect(z5).toMatch(/\.fe-data-header\.z5-hero \{[^}]*var\(--k6-hero-glass/);
-    expect(z5).toMatch(/\.z5-key-grid, \.z5-ru-main \{[^}]*var\(--k6-tray-glass/);
+    // Круг 8 (Y1): общей подложки под плитками «Главного» нет — плитки стоят прямо на стекле героя.
+    expect(z5).toMatch(/\.z5-key-grid, \.z5-ru-main \{[^}]*padding: 0;[^}]*background: none;[^}]*box-shadow: none/);
     expect(z5).toMatch(/\.z5-key \{[^}]*var\(--k6-tile-glass/);
   });
 

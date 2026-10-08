@@ -3283,4 +3283,7 @@ export default {
   'x8.planet.viewGlobe': 'Globe',
   // ===== Круг 8: оболочка (Z0) =====
   'c8s.ticker.stale': 'not updated for {n} d',
+  // ===== Круг 8: Россия, регионы, календарь, страны (Z4) =====
+  'c8y.ru.main.inflationMonth': 'Inflation, month over month',
+  'c8y.map.replay': 'Play again',
 };
