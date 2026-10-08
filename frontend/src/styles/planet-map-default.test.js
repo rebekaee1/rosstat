@@ -43,11 +43,23 @@ describe('карта по умолчанию: раскладка окна сце
   it('на узкой карточке и телефоне переключатель стоит отдельной строкой над сценой', () => {
     const narrow = css.slice(css.indexOf('@container planet (max-width: 700px)'));
     expect(narrow).toMatch(/\.planet-viewbar\s*\{[^}]*order:\s*0;[^}]*width:\s*100%/);
-    expect(narrow).toMatch(/\.planet-stage\s*\{\s*order:\s*1/);
+    expect(narrow).toMatch(/\.planet-stage\s*\{\s*order:\s*2/);
+    // Круг 8 (волна 2): поиск страны и год над картой, а не под её кнопками.
+    expect(narrow).toMatch(/\.planet-toolbar\s*\{\s*order:\s*1/);
   });
 
   it('на главной подложка скруглена как плита, а переключатель повторяет «колодец» полей', () => {
     expect(hero).toMatch(/\.planet-view\s*\{\s*--planet-map-radius:\s*22px/);
     expect(hero).toMatch(/\.planet-view-switch button\[aria-pressed='true'\]/);
+  });
+
+  it('волна 2: подпись цветов, затухание ряда чипов, заставка шара и щипок внутри окна карты', () => {
+    expect(css).toMatch(/\.planet-map-legend\s*\{[^}]*font-size:\s*12px/);
+    expect(css).toMatch(/\.planet-shell--map \.planet-quick\[data-more='true'\]\s*\{[^}]*mask-image:\s*linear-gradient\(90deg/);
+    expect(css).toMatch(/\.planet-globe-veil\s*\{[^}]*position:\s*absolute[^}]*pointer-events:\s*none/);
+    expect(css).toMatch(/\.planet-globe-veil\.is-leaving\s*\{\s*opacity:\s*0/);
+    expect(css).toMatch(/\.planet-map-stage\s*\{[^}]*overscroll-behavior:\s*contain[^}]*touch-action:\s*pan-y/);
+    // Заставка анимирует только opacity и гаснет при «меньше движения».
+    expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*\.planet-globe-veil\s*\{\s*transition:\s*none/);
   });
 });

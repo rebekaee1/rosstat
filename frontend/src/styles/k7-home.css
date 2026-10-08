@@ -688,3 +688,13 @@ html[data-fe-motion='off'] .fe-dashboard [data-block='home-data-scope'] .fe-scop
   .fe-dashboard [data-block="home-hero"] .fe-hero-text h1 + p { max-width: calc(100% - 100px); }
   html[data-fe-f="on"] .fe-dashboard .fe-hero-text::after { right: 0; width: 88px; height: 103px; }
 }
+
+/* Круг 8 (волна 2): ряд быстрых ссылок героя на телефоне листается, и это видно: правый край плавно гаснет шире прежнего (чип не режется
+   посреди слова без намёка), последний чип можно вытянуть из-под затухания. На 640 px и шире ряд переносится строками, маски нет. */
+@media (max-width: 639px) {
+  .fe-dashboard .fe-quick.fe-fade-x {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent);
+  }
+  .fe-dashboard .fe-quick__row { padding-right: 56px; scroll-padding-inline: 0 56px; overscroll-behavior-x: contain; }
+}

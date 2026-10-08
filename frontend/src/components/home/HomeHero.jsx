@@ -34,6 +34,15 @@ export default function HomeHero({ planet = null }) {
     setParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // Стеклянная F рядом с заголовком включается атрибутом html[data-fe-f]. Сцена света ставит его только после load и простоя
+  // браузера (на первом заходе по медленной сети это секунды), поэтому главная включает его сразу после первой отрисовки.
+  // Режим экономии и тёмная тема гасят F в CSS сами; при уходе с главной атрибут снимается.
+  useEffect(() => {
+    if (!planet) return undefined;
+    const html = document.documentElement;
+    const timer = window.setTimeout(() => html.setAttribute('data-fe-f', 'on'), 0);
+    return () => { window.clearTimeout(timer); html.removeAttribute('data-fe-f'); };
+  }, [planet]);
   const examples = useMemo(() => searchExamples(t, HOME_EXAMPLE_COUNT), [t]);
   // Те же срезы, что у планеты и каталога стран: общий кэш, лишних запросов нет.
   const gdp = useWorldCompareSnapshot('gdp-usd');

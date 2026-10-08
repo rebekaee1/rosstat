@@ -3288,4 +3288,8 @@ export default {
   'c8y.map.replay': 'Play again',
   // ===== Круг 8: главная (Z1) =====
   'c8h.today.sub': 'Figures for the latest year with data',
+  // ===== Round 8, wave 2: home and map (W-B) =====
+  'c8w.map.noData': 'No data',
+  'c8w.map.top': 'First place in the ranking',
+  'c8w.globe.loading': 'Loading the globe…',
 };
