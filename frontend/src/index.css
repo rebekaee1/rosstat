@@ -132,8 +132,9 @@
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
 }
 /* Диалог (поиск ⌘K и др.): тот же хрусталь, но плотнее, чтобы текст читался поверх страницы. */
+/* Круг 11, G (U12): фон диалога и меню «Скачать» плотный (.97, --fe-pop-bg), а не .8: сквозь список не читается страница под ним. */
 .fe-dialog-panel {
-  background: var(--fe-glass-l1-sheen), var(--fe-nav-surface);
+  background: var(--fe-glass-l1-sheen), var(--fe-pop-bg, var(--fe-nav-surface));
   border: 0;
   box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
   backdrop-filter: blur(var(--fe-blur-l1)) saturate(1.25);
@@ -705,6 +706,35 @@ nav.glass-surface-soft {
   white-space: normal;
 }
 .fe-chip:disabled { opacity: 0.45; cursor: default; }
+/* Круг 11, G (U31): ожидание на кнопке и чипе. Тусклая подпись и тонкое кольцо по центру (графит, не золото); кольцо проявляется через 140 мс,
+   поэтому мгновенный ответ его не мигает. Размер не меняется (кольцо поверх подписи), новых слоёв blur нет; крутится только transform. */
+@keyframes fe-pending-in { from { opacity: 0; } to { opacity: 1; } }
+.fe-chip[aria-busy='true'] { position: relative; cursor: progress; }
+.fe-chip[aria-busy='true'] .fe-chip__label { opacity: 0.4; }
+.fe-chip__spinner,
+.fe-btn[data-fe-pressed='true']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 9999px;
+  background: conic-gradient(from -45deg, currentColor 0 25%, color-mix(in srgb, currentColor 22%, transparent) 25% 100%);
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  pointer-events: none;
+  animation: fe-spin 0.7s linear infinite, fe-pending-in 0.16s ease var(--fe-pending-delay, 140ms) both;
+}
+.fe-chip.is-active .fe-chip__spinner { color: var(--fe-chip-active-ink); }
+.fe-btn[data-fe-pressed='true'] {
+  position: relative;
+  cursor: progress;
+  opacity: 1;
+  /* Подпись тускнеет, кольцо (currentColor) остаётся ясным. */
+  -webkit-text-fill-color: color-mix(in srgb, currentColor 38%, transparent);
+}
 @media (pointer: coarse) {
   .fe-btn { min-height: 44px; }
   .fe-btn--sm { min-height: 40px; }
@@ -728,6 +758,8 @@ nav.glass-surface-soft {
   transition: transform 0.15s ease;
 }
 .fe-skip-link:focus-visible { transform: none; }
+/* Круг 11, G (U32): пока не нажат Tab (html[data-fe-pointer], его ставит SkipLink), ссылка за краем окна даже при фокусе. */
+html[data-fe-pointer] .fe-skip-link:focus-visible { transform: translateY(calc(-100% - env(safe-area-inset-top, 0px) - 16px)); }
 /* iOS приближает страницу при фокусе в поле со шрифтом меньше 16px. */
 @media (pointer: coarse) {
   input:not([type='checkbox']):not([type='radio']):not([type='range']), select, textarea { font-size: 16px; }
@@ -753,6 +785,7 @@ nav.glass-surface-soft {
     scroll-behavior: auto !important;
   }
   .fe-spinner, .fe-search-spinner { animation-duration: 2.4s !important; animation-iteration-count: infinite !important; }
+  .fe-chip__spinner, .fe-btn[data-fe-pressed='true']::after { animation-duration: 2.4s, 0.01ms !important; animation-iteration-count: infinite, 1 !important; }
   /* Парение и нажатие тоже отключены: тень и цвет меняются, но ничего не движется. */
   .fe-chip, .fe-btn, .fe-button-primary, .fe-button-secondary, .fe-category-card { transform: none !important; }
 }

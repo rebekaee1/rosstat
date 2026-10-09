@@ -3377,4 +3377,6 @@ export default {
   // ===== Круг 10, зона «карта и главная» =====
   'c10m.states.hint': 'Click a state to open its figures',
   'c10m.country.compareUsa': 'Compare with the United States',
+  // ===== Круг 11: оболочка и телефон (зона G) =====
+  'c11g.pending': 'Loading…',
 };
