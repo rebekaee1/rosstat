@@ -3,11 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { BarChart3, Ellipsis, GitCompare, Globe2, TrendingUp } from 'lucide-react';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
-import { FORECASTS_TO, OPEN_NAV_MENU_EVENT, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
+import { COUNTRIES_ANCHOR_ID, FORECASTS_TO, OPEN_NAV_MENU_EVENT, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
+import { useAnchorInView } from '../lib/useAnchorInView';
 import { comparePath } from '../lib/sitePaths';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
 import { useStickyActive } from '../lib/stickyLayer';
+import { useDockSuppressed } from '../lib/dockSuppress';
 import '../styles/k3-shell.css';
 
 const ITEMS = [
@@ -22,6 +24,8 @@ const ITEMS = [
  * Появляется после первой прокрутки, прячется, пока страница едет вниз, и возвращается при движении вверх (или после долгой остановки,
  * 2,5 с, но не над подвалом: там она закрывала бы ссылки). Круг 9, S1: короткая пауза панель больше не возвращает (раньше 700 мс:
  * она выскакивала на каждом чтении), а пока на экране плашка «Результат» калькулятора, панель спрятана (html[data-fe-sticky]).
+ * Круг 11, G (U29): панель убирается и на время ввода: пока фокус в текстовом поле или открыта клавиатура (visualViewport), и пока палец
+ * на бегунке или ручке диапазона (`lib/dockSuppress.js`); вернётся сама, когда помеха кончится.
  * Только на телефоне (до 768 px, CSS); на /admin/* не показывается. Резерв места под ней задаёт `--fe-dock-h`
  * на корне документа (подвал и cookie-значок читают её), пока панель на экране.
  */
@@ -32,8 +36,11 @@ export default function MobileDock() {
   const stickyShown = useStickyActive();
   const hidden = pathname.startsWith('/admin');
   const overFooter = useFooterTone().dock;
-  const visible = !hidden && deep && !stickyShown && (dir === 'up' || (rest && !overFooter));
-  const activeId = pathname === '/' && hash === '#countries' ? 'countries' : resolveActiveNavId(pathname);
+  const suppressed = useDockSuppressed();
+  const visible = !hidden && deep && !stickyShown && !suppressed && (dir === 'up' || (rest && !overFooter));
+  // «Страны» подсвечены по адресу (#countries) и пока человек читает каталог стран на главной (круг 11, G, U33).
+  const countriesInView = useAnchorInView(COUNTRIES_ANCHOR_ID, pathname === '/' && !hidden);
+  const activeId = resolveActiveNavId(pathname, undefined, hash, countriesInView);
 
   // --fe-dock-reserve: место под панелью, пока она смонтирована (main и подвал на телефоне добавляют его к нижнему отступу);
   // --fe-dock-h: сколько занимает панель сейчас (0, пока спрятана); data-fe-dock: признак «панель на экране» для CSS.

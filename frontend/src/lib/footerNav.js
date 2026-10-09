@@ -11,6 +11,7 @@ import {
   countryRegionsPath,
   demographicsPath,
   indicatorPath,
+  isRussiaSectionPath,
   regionHubPath,
   regionRatingHubPath,
   russiaHomePath,
@@ -44,7 +45,33 @@ export const FOOTER_SOURCE_LINKS_BY_LOCALE = {
   ],
 };
 
-export function footerSourceLinks(locale) {
+/**
+ * Круг 11, G (U19): английский список (США и Евросоюз) не должен стоять под страницами России и Турции, чьи данные из других источников.
+ * Страница страны задаёт своё: Россия — Росстат, Банк России, Минфин и международные МВФ/Евростат; Турция — МВФ, Евростат и Банк России
+ * (курс лиры к рублю). Прочие страницы остаются как были. Русский список уже содержит оба набора, он от страницы не зависит.
+ */
+const EN_CONTEXT_SOURCES = {
+  russia: ['footer.rosstat', 'footer.cbr', 'footer.minfin', 'footer.imf', 'footer.eurostat'],
+  turkey: ['footer.imf', 'footer.eurostat', 'footer.cbr'],
+};
+
+const ALL_SOURCE_ITEMS = Object.fromEntries(
+  [...FOOTER_SOURCE_LINKS_BY_LOCALE.ru, ...FOOTER_SOURCE_LINKS_BY_LOCALE.en].map((item) => [item.key, item]),
+);
+
+/** Какой страной занята страница: 'russia' (раздел России, валюты), 'turkey' или null. */
+export function sourceContextFor(pathname = '') {
+  const p = String(pathname || '');
+  if (isRussiaSectionPath(p) || p === '/currencies' || p.startsWith('/currencies/')) return 'russia';
+  if (p === '/turkey' || p.startsWith('/turkey/')) return 'turkey';
+  return null;
+}
+
+export function footerSourceLinks(locale, pathname = '') {
+  if (locale === 'en') {
+    const context = sourceContextFor(pathname);
+    if (context) return EN_CONTEXT_SOURCES[context].map((key) => ALL_SOURCE_ITEMS[key]);
+  }
   return FOOTER_SOURCE_LINKS_BY_LOCALE[locale] || FOOTER_SOURCE_LINKS_BY_LOCALE.ru;
 }
 

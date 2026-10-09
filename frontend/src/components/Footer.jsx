@@ -1,5 +1,5 @@
 import { Children, useId, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import Brand from './Brand';
 import Emblem from './brand/Emblem';
@@ -144,7 +144,8 @@ export default function Footer() {
   const { locale } = useLocale();
   const desktop = useMediaQuery('(min-width: 640px)');
   const categoryLabel = (c) => (locale === 'en' && c.nameEn ? c.nameEn : c.name);
-  const sourceLinks = footerSourceLinks(locale);
+  const { pathname } = useLocation();
+  const sourceLinks = footerSourceLinks(locale, pathname);
   const homeCountry = footerHomeCountryColumn(locale);
   const catalog = footerCatalogColumn(locale);
   const worldLinks = footerWorldLinks(locale);

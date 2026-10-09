@@ -417,6 +417,7 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
    Круг 9, зона A:
      --fe-sticky-h        сколько места внизу занимает плашка «Результат» калькулятора сейчас (52px, пока видна; ставит lib/stickyLayer.js);
                           пока она видна, на корне стоит html[data-fe-sticky], а нижняя панель телефона спрятана
+     --fe-tap, --fe-pending-delay, --fe-avatar-size  (круг 11, G): см. комментарий в :root ниже
      --fe-sticky-reserve  постоянный запас под плашку на телефоне и планшете (64px; 0 от 1024 px): нижний отступ формы калькулятора берёт его
                           через класс .fe-sticky-clear, чтобы последний бегунок можно было поднять выше плашки */
 :root {
@@ -425,6 +426,13 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
   --fe-cookie-h: 0px;
   --fe-sticky-h: 0px;
   --fe-sticky-reserve: 0px;
+  /* Круг 11, G: общие токены оболочки для зон страниц и кабинета.
+       --fe-tap            минимальная цель нажатия, 44 px (кнопки закрытия, ручки, значки на сенсорных экранах)
+       --fe-pending-delay  через сколько кольцо ожидания проявляется на кнопке и чипе (Button/Chip `pending`): быстрые ответы его не мигают
+       --fe-avatar-size    размер кружка с буквой имени (.fe-avatar в k3-shell.css; --sm 26 px, --lg 52 px) */
+  --fe-tap: 44px;
+  --fe-pending-delay: 140ms;
+  --fe-avatar-size: 40px;
   --fe-shell-top: calc(var(--fe-ticker-h, 40px) + var(--fe-header-h, 76px));
   --fe-page-top: calc(var(--fe-shell-top) + 16px);
   --fe-bottom-clear: calc(var(--fe-dock-h) + var(--fe-cookie-h) + var(--fe-sticky-h) + env(safe-area-inset-bottom, 0px));

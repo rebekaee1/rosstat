@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Menu, X, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
-  Cookie, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2,
+  Cookie, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2, User,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -12,7 +12,12 @@ import LocaleSwitcher from './LocaleSwitcher';
 import BottomSheet from './BottomSheet';
 import Brand from './Brand';
 import { useAuth } from '../context/authContext';
-import { mobileNavGroups, primaryNav, resolveActiveNavId, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO } from '../lib/navItems';
+import {
+  COUNTRIES_ANCHOR_ID, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO,
+  isAccountPath, isToolsPath, mobileNavGroups, primaryNav, resolveActiveNavId,
+} from '../lib/navItems';
+import { useAnchorInView } from '../lib/useAnchorInView';
+import { accountInitial } from '../lib/accountInitial';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { openConsentSettings } from '../lib/consent';
 import { useFooterTone } from '../lib/useFooterTone';
@@ -37,7 +42,8 @@ function revealWhenRendered(id) {
 }
 
 function AuthCluster({ mobile = false, onNavigate }) {
-  const { isAuthed, isLoading } = useAuth();
+  const { isAuthed, isLoading, user } = useAuth();
+  const { pathname } = useLocation();
   const t = useT();
   // Анти-фликер: пока первый /me грузится — нейтральный плейсхолдер фикс. ширины,
   // чтобы кнопки не прыгали и не было layout shift (ADR-0007).
@@ -50,17 +56,24 @@ function AuthCluster({ mobile = false, onNavigate }) {
     );
   }
   if (isAuthed) {
+    // Круг 11, G (U2): вошедшего видно по кружку с первой буквой имени (графит, не золото); на /account кнопка подсвечена.
+    const current = isAccountPath(pathname);
+    const initial = accountInitial(user);
     return (
       <Link
         to="/account"
         onClick={onNavigate}
+        title={user?.display_name || user?.email || undefined}
+        aria-current={current ? 'page' : undefined}
         className={cn(
           FOCUS_RING,
-          'fe-button-primary rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
+          'fe-nav-account text-sm font-semibold transition-colors',
+          current && 'is-current',
           mobile && 'w-full justify-center text-center',
         )}
       >
-        {t('common.account')}
+        <span className="fe-avatar fe-avatar--sm" aria-hidden="true">{initial || <User size={14} strokeWidth={1.75} />}</span>
+        <span className="fe-nav-account__text">{t('common.account')}</span>
       </Link>
     );
   }
@@ -182,7 +195,7 @@ export default function Navbar() {
   const overFooter = useFooterTone().nav;
   // Открытые панели помнят адрес, на котором их открыли: при любом переходе (ссылка, «назад», программный переход)
   // адрес меняется, и панель закрывается сама, без отдельных обработчиков на каждой ссылке.
-  const { pathname, key: locationKey } = useLocation();
+  const { pathname, hash, key: locationKey } = useLocation();
   const [mobileOpenAt, setMobileOpenAt] = useState(null);
   const [calcOpenAt, setCalcOpenAt] = useState(null);
   const [megaOpenAt, setMegaOpenAt] = useState(null);
@@ -200,10 +213,13 @@ export default function Navbar() {
   // Служебный раздел /admin/*: fixed-пилюля наезжала на карточки BI при
   // скролле (обход BI 2.1, этап 4а) — показываем шапку только вверху страницы.
   const isAdmin = pathname.startsWith('/admin');
-  const activeNavId = resolveActiveNavId(pathname);
+  // Круг 11, G (U33): «Страны» подсвечен, когда в адресе #countries или человек долистал до каталога стран на главной.
+  const countriesInView = useAnchorInView(COUNTRIES_ANCHOR_ID, pathname === '/');
+  const activeNavId = resolveActiveNavId(pathname, undefined, hash, countriesInView);
+  const toolsActive = isToolsPath(pathname);
   const primaryItems = primaryNav(locale);
   const mobileGroups = mobileNavGroups(locale);
-  const mobileActiveId = resolveActiveNavId(pathname, mobileGroups.flatMap((group) => group.items));
+  const mobileActiveId = resolveActiveNavId(pathname, mobileGroups.flatMap((group) => group.items), hash, countriesInView);
   // Круг 9, S10: «Инструменты» стоят сразу после мировых разделов, до «Россия»: раскрытая «Россия» (4 подпункта) больше не уводит
   // конвертер и калькуляторы на два экрана вниз и не прижимает «Виджеты» к кнопкам «Войти».
   const menuGroups = [mobileGroups[0], { id: 'tools' }, ...mobileGroups.slice(1)];
@@ -412,8 +428,9 @@ export default function Navbar() {
             className={cn(
               FOCUS_RING,
               'fe-nav-tools-btn flex items-center gap-1 text-sm font-medium transition-colors px-2 py-1 rounded-xl',
-              calcOpen ? 'text-champagne' : 'text-text-secondary hover:text-text-primary'
+              calcOpen ? 'text-champagne' : (toolsActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary')
             )}
+            data-active={toolsActive ? 'true' : undefined}
             aria-expanded={calcOpen}
             aria-haspopup="menu"
             aria-controls={calcOpen ? 'fe-nav-calc-menu' : undefined}

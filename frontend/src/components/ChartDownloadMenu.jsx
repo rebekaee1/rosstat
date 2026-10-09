@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
+import { useKeepInViewport } from '../lib/useKeepInViewport';
 import Button from './Button';
 import '../styles/z4-indicator.css';
 
@@ -20,6 +21,9 @@ export default function ChartDownloadMenu({
   const t = useT();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  const panelRef = useRef(null);
+  // Круг 11, G (U12): панель не уходит за край окна и не прячется под нижней панелью Safari (lib/useKeepInViewport.js).
+  useKeepInViewport(panelRef, open);
   useEffect(() => {
     if (!open) return undefined;
     const onDown = (event) => { if (!rootRef.current?.contains(event.target)) setOpen(false); };
@@ -52,7 +56,7 @@ export default function ChartDownloadMenu({
           <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
         </Button>
         {open && (
-          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5">
+          <div ref={panelRef} role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5">
             {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
               <button
                 key={id}

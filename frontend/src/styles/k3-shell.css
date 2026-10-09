@@ -55,7 +55,7 @@ nav.fe-navbar--glass {
   backdrop-filter: blur(22px) saturate(1.2);
   box-shadow: var(--fe-float-shadow), var(--fe-inset-glint);
 }
-/* Прокрутка (круг 8, S2): слой плотнее, суммарно ≈ .93 (было ≈ .78): текст страницы под шапкой не читается сквозь неё.
+/* Прокрутка (круг 8, S2): слой плотнее, суммарно ≈ .93 (было ≈ .78); круг 11, G (U32): слой .88 поверх .66, суммарно ≈ .96 (на телефоне .7 поверх .84 ≈ .95): текст страницы под шапкой не читается сквозь неё.
    Меняется только прозрачность слоя, а не цвет и не тень.
    Слой лежит над основой (z-index -1 внутри контекста шапки), под содержимым. */
 nav.fe-navbar--glass::after {
@@ -65,7 +65,7 @@ nav.fe-navbar--glass::after {
   z-index: -1;
   border-radius: inherit;
   pointer-events: none;
-  background: rgb(var(--k3-paper) / 0.8);
+  background: rgb(var(--k3-paper) / 0.88);
   box-shadow: 0 34px 56px -26px rgba(30, 38, 56, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -112,7 +112,7 @@ body:has(nav.fe-navbar--glass[data-tone='dark'])::before { --k3-paper: 22 32 56;
 @media (max-width: 767px) {
   /* В покое шапка ниже: 64 px вместо 72 (лента 36 + шапка 64 = 100 px, было 108). */
   nav.fe-navbar--glass { padding-block: 8px; background: rgb(var(--k3-paper) / 0.84); }
-  nav.fe-navbar--glass::after { background: rgb(var(--k3-paper) / 0.6); }
+  nav.fe-navbar--glass::after { background: rgb(var(--k3-paper) / 0.7); }
   nav.fe-navbar--glass[data-compact='true'] {
     transform: translateY(-30px);
     box-sizing: border-box;
@@ -161,6 +161,57 @@ nav.fe-navbar a.fe-nav-login {
 }
 @media (hover: hover) {
   nav.fe-navbar .fe-nav-search button.fe-glass-2:hover:not(:disabled) { background: rgb(30 38 56 / 0.09); }
+}
+
+/* Круг 11, G (U2): общий «аватар» (кружок с первой буквой имени) и кнопка кабинета в шапке. Графит, как активный чип (--fe-glass-active), золота
+   нет (принцип 3). Размер задаёт --fe-avatar-size (26 px в шапке, 52 px в кабинете: класс --lg). Кабинет и другие зоны берут этот же .fe-avatar. */
+.fe-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--fe-avatar-size, 40px);
+  height: var(--fe-avatar-size, 40px);
+  border-radius: 9999px;
+  background: var(--fe-glass-active);
+  color: var(--fe-on-active);
+  font-family: var(--font-display, inherit);
+  font-size: calc(var(--fe-avatar-size, 40px) * 0.44);
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fe-avatar--sm { --fe-avatar-size: 26px; }
+.fe-avatar--lg { --fe-avatar-size: 52px; }
+nav.fe-navbar a.fe-nav-account,
+.fe-bsheet a.fe-nav-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 14px 4px 5px;
+  border-radius: 9999px;
+  color: var(--color-text-primary);
+  background: rgb(30 38 56 / 0.06);
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+nav.fe-navbar a.fe-nav-account.is-current,
+.fe-bsheet a.fe-nav-account.is-current { background: rgb(30 38 56 / 0.12); }
+@media (hover: hover) {
+  nav.fe-navbar a.fe-nav-account:hover,
+  .fe-bsheet a.fe-nav-account:hover { background: rgb(30 38 56 / 0.1); }
+}
+@media (pointer: coarse) {
+  nav.fe-navbar a.fe-nav-account,
+  .fe-bsheet a.fe-nav-account { min-height: 44px; }
+}
+nav.fe-navbar[data-tone='dark'] .fe-avatar { background: rgba(255, 255, 255, 0.18); }
+nav.fe-navbar[data-tone='dark'] a.fe-nav-account { background: rgba(255, 255, 255, 0.1); }
+@media (prefers-reduced-motion: reduce) {
+  nav.fe-navbar a.fe-nav-account, .fe-bsheet a.fe-nav-account { transition: none; }
 }
 
 /* CTA регистрации (круг 6): единственная золотая заливка страницы; остальные primary — синие (index.css). Только в шапке и шторке меню. */
@@ -278,7 +329,9 @@ nav.fe-navbar--glass .fe-button-primary,
 .fe-mega__flag.fe-mega__tile { font-size: 17px; }
 /* Круг 6: плитка-«гемма» меню снята (была кремово-золотая заливка); класс остался в разметке без отдельного вида. */
 .fe-locale-flag {
-  background: rgb(30 38 56 / 0.05);
+  /* Круг 11, G (U34): кружок с кодом языка темнее (9 % вместо 5 %) и подпись графитом: на стеклянной шапке он больше не сливается с фоном. */
+  background: rgb(30 38 56 / 0.1);
+  color: var(--fe-ink, #1e2638);
 }
 @media (hover: hover) {
   .fe-locale-item:hover { background: var(--fe-glass-l2-hover); }
@@ -305,13 +358,13 @@ html[data-fe-motion='off'] button[data-switching='true'] .fe-locale-flag { anima
   z-index: 70;
   /* Круг 8, S4: по ширине содержимого (пять ячеек не уже 56 px), а не растянутая полоса на весь экран. */
   width: fit-content;
-  max-width: min(440px, calc(100vw - 24px));
+  max-width: min(460px, calc(100vw - 24px));
   height: 64px;
   margin-inline: auto;
   border-radius: 28px;
   /* Круг 8, S4: светлое стекло L2 вместо графитовой «таблетки» (она читалась чужой на светлых страницах): плотность .9, графитовые
      подписи ≥ 9:1, размытие 20 px, тонкая кромка света сверху 1 px и тень снизу. Над тёмным подвалом тон глубже (data-tone). */
-  --k3-dock-bg: rgb(var(--k3-paper) / 0.9);
+  --k3-dock-bg: rgb(var(--k3-paper) / 0.95);
   --k3-dock-ink: #1e2638;
   --k3-dock-ink-2: #3b4760;
   background: var(--k3-dock-bg);
@@ -334,7 +387,9 @@ html[data-fe-motion='off'] button[data-switching='true'] .fe-locale-flag { anima
 }
 .fe-dock__list {
   display: grid;
-  grid-template-columns: repeat(5, minmax(56px, 1fr));
+  /* Круг 11, G (U29): ячейка не уже 64 px и между ячейками зазор 2 px: «Сравнение» и «Прогнозы» больше не стоят вплотную. */
+  grid-template-columns: repeat(5, minmax(64px, 1fr));
+  column-gap: 2px;
   height: 100%;
   margin: 0;
   padding: 0 6px;
@@ -357,10 +412,11 @@ html[data-fe-motion='off'] button[data-switching='true'] .fe-locale-flag { anima
   font-size: 11px;
   font-weight: 600;
   line-height: 1.1;
+  letter-spacing: 0.01em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.fe-dock__label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fe-dock__label { max-width: 100%; padding-inline: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fe-dock__icon {
   position: relative;
   display: grid;
@@ -549,7 +605,7 @@ html[data-fe-motion='off'] button[data-switching='true'] .fe-locale-flag { anima
   /* Волна 2, W-A3: запас под панелью один и для всех типов страниц: подвал (он последний на каждой странице: рейтинг, показатель, страна,
      календарь, поиск) несёт --fe-dock-reserve + --fe-cookie-h, поэтому последняя строка любой страницы доскролливается выше панели.
      Якоря, фокус с клавиатуры и scrollIntoView тоже останавливаются выше панели и плашки, а не под ними. */
-  html { scroll-padding-bottom: calc(var(--fe-dock-reserve, 0px) + var(--fe-cookie-h, 0px) + 12px); }
+  html { scroll-padding-bottom: calc(var(--fe-dock-reserve, 0px) + var(--fe-cookie-h, 0px) + 12px + env(safe-area-inset-bottom, 0px)); }
 }
 /* Круг 9, S1: пока на экране плашка «Результат», фокус и якоря останавливаются выше неё (бегунок не остаётся под плашкой). */
 @media (max-width: 1023px) {
@@ -575,7 +631,7 @@ body:has(.fe-bsheet-scrim) .fe-cookie-wrap { visibility: hidden; }
 /* ═══ Плотные слои: без backdrop-filter и при «меньше прозрачности» ═════════ */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   nav.fe-navbar--glass, .fe-ticker { background: rgb(var(--k3-paper) / 0.94); }
-  .fe-dock { --k3-dock-bg: rgb(var(--k3-paper) / 0.97); }
+  .fe-dock { --k3-dock-bg: rgb(var(--k3-paper) / 0.98); }
   .fe-dock[data-tone='dark'] { --k3-dock-bg: rgba(10, 18, 38, 0.96); }
   .fe-bsheet { background: var(--fe-glass-l1-sheen), rgb(var(--k3-paper) / 0.96); }
 }

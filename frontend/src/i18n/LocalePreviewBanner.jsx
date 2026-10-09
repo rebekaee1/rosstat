@@ -47,7 +47,7 @@ export default function LocalePreviewBanner() {
         aria-expanded="false"
         onClick={() => setOpen(true)}
         style={lift}
-        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full text-champagne opacity-55 hover:opacity-100 focus-visible:opacity-100 fe-glass-2"
+        className="z2-preview-toggle fixed right-2 z-[60] flex h-11 w-11 items-center justify-center rounded-full text-text-primary opacity-85 hover:opacity-100 focus-visible:opacity-100 fe-glass-2"
       >
         <Languages className="h-4 w-4" aria-hidden="true" />
       </button>

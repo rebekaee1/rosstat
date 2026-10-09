@@ -50,3 +50,28 @@ describe('LocaleSwitcher: ожидание смены языка (круг 9, S9
     expect(screen.getByRole('button', { name: /nav\.language/ }).getAttribute('data-switching')).toBeNull();
   });
 });
+
+describe('LocaleSwitcher: страница «Не найдено» (круг 11, G, U35)', () => {
+  it('на 404 смена языка ведёт на главную нужного хоста, а не на несуществующий адрес', () => {
+    const switchLanguage = vi.fn();
+    const nf = document.createElement('div');
+    nf.className = 'z2-nf';
+    document.body.appendChild(nf);
+    try {
+      renderSwitcher(switchLanguage);
+      fireEvent.click(screen.getByRole('button', { name: /nav\.language/ }));
+      fireEvent.click(screen.getAllByRole('menuitem')[1]);
+      expect(switchLanguage).toHaveBeenCalledWith('en', { href: `${window.location.origin}/` });
+    } finally {
+      nf.remove();
+    }
+  });
+
+  it('на обычной странице вызов прежний: только код языка', () => {
+    const switchLanguage = vi.fn();
+    renderSwitcher(switchLanguage);
+    fireEvent.click(screen.getByRole('button', { name: /nav\.language/ }));
+    fireEvent.click(screen.getAllByRole('menuitem')[1]);
+    expect(switchLanguage).toHaveBeenCalledWith('en');
+  });
+});
