@@ -4,8 +4,8 @@ import {
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
   BackSide, CanvasTexture, DataTexture, LinearMipmapLinearFilter,
-  NoColorSpace, Quaternion, SphereGeometry, SRGBColorSpace,
-  TextureLoader, Vector3,
+  NoColorSpace, Quaternion, Raycaster, SphereGeometry, SRGBColorSpace,
+  TextureLoader, Vector2, Vector3,
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { geoArea, geoEquirectangular, geoPath } from 'd3-geo';
@@ -15,7 +15,7 @@ import {
 } from '../lib/planetGeometry';
 import { outlineRings, substantialPolygons } from '../lib/planetAtlas';
 import {
-  bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, zoomedDistance,
+  bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, oceanReach, zoomedDistance,
 } from '../lib/planetView';
 import { WORLD_FEATURES } from '../lib/worldTopology';
 import { WORLD_NO_DATA } from '../lib/worldMapColors';
@@ -33,6 +33,9 @@ import {
 // Запасной стартовый вид, пока данных ещё нет: Европа и Азия (там больше всего окрашенных стран), а не пустая Атлантика с Африкой.
 const DEFAULT_FOCUS = [30, 38];
 const MIN_DISTANCE = 1.45;
+// Круг 11 (D): щипок и колесо на сенсорном экране не приближают ближе этого: ещё ближе шар превращается в синюю плоскость океана без берегов.
+// Кнопки «+» и выбор страны по-прежнему могут подойти до MIN_DISTANCE.
+const MIN_DISTANCE_PINCH = 1.9;
 const MAX_DISTANCE = 4.8;
 // Closer than this the 2048 px day map starts to blur; the 4096 px map is fetched once, on demand.
 const DETAIL_DISTANCE = 2.7;
@@ -43,6 +46,9 @@ const LABEL_DISTANCE = 2.9;
 // Самовращение до первого касания: градусов в секунду и кадров в секунду (30: экономим батарею).
 const SPIN_DEGREES_PER_SECOND = 4.5;
 const SPIN_TICK_MS = 33;
+// Круг 11 (D): самовращение качается на столько градусов в обе стороны от стартового вида и не уходит дальше: раньше шар крутился по кругу,
+// и за время загрузки страницы стартовая Евразия или Америка сменялась пустым Тихим океаном.
+const SPIN_SWING_DEGREES = 35;
 const DOUBLE_TAP_MS = 320;
 const Y_AXIS = new Vector3(0, 1, 0);
 const INITIAL_DISTANCE = 3.35;
@@ -221,7 +227,7 @@ function PlanetControls({
   // Callbacks and data change identity often; the long-lived listeners below read the latest through this ref.
   const live = useRef({});
   live.current = {
-    vectors, onView, onOcean, onZoomState, onInteract, onZoomDetail, onZoomDeep, onHover, fitDistance, maxDistance,
+    vectors, onView, onOcean, onZoomState, onInteract, onZoomDetail, onZoomDeep, onHover, fitDistance, maxDistance, aspect,
   };
   const oceanRef = useRef(null);
   const zoomedRef = useRef(null);
@@ -265,7 +271,7 @@ function PlanetControls({
     controls.enableDamping = !reducedMotion;
     controls.dampingFactor = 0.12;
     controls.rotateSpeed = 0.55;
-    controls.minDistance = MIN_DISTANCE;
+    controls.minDistance = touchNavigation ? MIN_DISTANCE_PINCH : MIN_DISTANCE;
     controls.maxDistance = live.current.maxDistance;
     controls.minPolarAngle = 0.035;
     controls.maxPolarAngle = Math.PI - 0.035;
@@ -287,7 +293,7 @@ function PlanetControls({
       live.current.onView?.({ lon: lonLat?.[0] ?? 0, lat: lonLat?.[1] ?? 0, distance });
       const zoomed = distance < LABEL_DISTANCE;
       if (zoomedRef.current !== zoomed) { zoomedRef.current = zoomed; live.current.onZoomState?.(zoomed); }
-      const water = !hasVisibleData(live.current.vectors, [camera.position.x, camera.position.y, camera.position.z]);
+      const water = !hasVisibleData(live.current.vectors, [camera.position.x, camera.position.y, camera.position.z], oceanReach(distance, camera.fov, live.current.aspect));
       if (oceanRef.current !== water) { oceanRef.current = water; live.current.onOcean?.(water); }
     };
     const onChange = () => {
@@ -327,7 +333,7 @@ function PlanetControls({
       if (!event.ctrlKey) return;
       event.preventDefault();
       const distance = camera.position.length();
-      const next = Math.min(live.current.maxDistance, Math.max(MIN_DISTANCE, distance * Math.exp(event.deltaY * 0.01)));
+      const next = Math.min(live.current.maxDistance, Math.max(touchNavigation ? MIN_DISTANCE_PINCH : MIN_DISTANCE, distance * Math.exp(event.deltaY * 0.01)));
       flightRef.current = null;
       camera.position.multiplyScalar(next / distance);
       controls.update();
@@ -376,9 +382,9 @@ function PlanetControls({
   // Данные меняются (смена показателя или года): пересчитать, видна ли ещё окрашенная страна.
   useEffect(() => {
     if (!controlsRef.current) return;
-    const water = !hasVisibleData(vectors, [camera.position.x, camera.position.y, camera.position.z]);
+    const water = !hasVisibleData(vectors, [camera.position.x, camera.position.y, camera.position.z], oceanReach(camera.position.length(), camera.fov, aspect));
     if (oceanRef.current !== water) { oceanRef.current = water; live.current.onOcean?.(water); }
-  }, [vectors, camera]);
+  }, [vectors, camera, aspect]);
 
   // Двойное касание: плавное приближение к точке на шаре.
   useEffect(() => {
@@ -407,6 +413,9 @@ function PlanetControls({
   const spinning = Boolean(autoRotate) && !reducedMotion && visible;
   useEffect(() => {
     if (!spinning) return undefined;
+    // Отклонение от стартового вида и направление качания (см. SPIN_SWING_DEGREES).
+    let swing = 0;
+    let direction = 1;
     let last = performance.now();
     const timer = window.setInterval(() => {
       const now = performance.now();
@@ -415,7 +424,10 @@ function PlanetControls({
       const controls = controlsRef.current;
       if (!controls || flightRef.current || draggingRef.current || hoveredByMouse.current || document.hidden) return;
       // Камера идёт на запад над поверхностью: страны плывут слева направо, как при вращении Земли.
-      camera.position.applyAxisAngle(Y_AXIS, -SPIN_DEGREES_PER_SECOND * dt * Math.PI / 180);
+      const step = SPIN_DEGREES_PER_SECOND * dt * direction;
+      swing += step;
+      if (Math.abs(swing) >= SPIN_SWING_DEGREES) direction = -direction;
+      camera.position.applyAxisAngle(Y_AXIS, -step * Math.PI / 180);
       camera.lookAt(0, 0, 0);
       controls.update();
       invalidate();
@@ -498,8 +510,14 @@ function PlanetControls({
 }
 
 function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, valueDigits, showValues, colorModel, selectedCode, cameraCommand, onHover, onSelect, onReady, onInteract, zoomed, controlApi }) {
-  const { invalidate, gl } = useThree();
+  const { invalidate, gl, camera } = useThree();
   const pointerState = useRef(createPlanetPointerState());
+  // Круг 11 (D): касание шара обрабатывается прямо по событию пальца (луч от камеры через точку касания), а не только через события сцены:
+  // на iPad и телефоне сцена иногда не присылала «отпускание», и нажатие на страну молчало. Какой путь сработал первым, тот и выбрал страну.
+  const meshRef = useRef(null);
+  const tapRef = useRef(null);
+  const handledStamp = useRef(null);
+  const rayCaster = useMemo(() => new Raycaster(), []);
   const completedTap = useRef(null);
   const lastTap = useRef(null);
   const hoverCode = useRef(null);
@@ -602,6 +620,7 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       const result = endPlanetPointer(pointerState.current, event, event.type === 'pointercancel');
       pointerState.current = result.state;
       completedTap.current = result.tap ? { pointerId: event.pointerId, timeStamp: event.timeStamp } : null;
+      if (result.tap && event.type === 'pointerup') tapRef.current?.(event, canvas);
     };
     canvas.addEventListener('pointerdown', down, true);
     ownerDocument.addEventListener('pointerdown', additionalDown, true);
@@ -639,26 +658,42 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
       onHover(code, code ? null : entry?.name || null);
     }
   };
-  const pointerUp = (event) => {
-    const tap = completedTap.current;
-    completedTap.current = null;
-    if (!tap || tap.pointerId !== event.pointerId || tap.timeStamp !== event.nativeEvent.timeStamp) return;
+  // Общая часть касания: двойное касание приближает шар к точке, одиночное выбирает страну под пальцем.
+  const processTap = (point, native) => {
     // Двойное касание приближает шар к точке касания и не считается повторным нажатием («открыть страну»).
-    const native = event.nativeEvent;
     const previous = lastTap.current;
     if (previous && native.timeStamp - previous.time < DOUBLE_TAP_MS && Math.hypot(native.clientX - previous.x, native.clientY - previous.y) < 28) {
       lastTap.current = null;
-      const point = sphereToLonLat(event.point);
-      if (point) controlApi?.current?.zoomAt(point);
+      const lonLat = sphereToLonLat(point);
+      if (lonLat) controlApi?.current?.zoomAt(lonLat);
       return;
     }
     lastTap.current = { time: native.timeStamp, x: native.clientX, y: native.clientY };
-    const entry = hit(event);
+    const entry = pickPlanetCountry(entries, sphereToLonLat(point));
     // Суша без страницы в каталоге передаёт своё название: интерфейс отвечает «данных пока нет», а не молчит.
     onSelect(
       entry?.country ? entry.dataCode : null,
       entry && !entry.country ? { name: entry.name, code: entry.code } : null,
     );
+  };
+  tapRef.current = (native, canvas) => {
+    if (handledStamp.current === native.timeStamp || !meshRef.current) return;
+    const box = canvas.getBoundingClientRect();
+    if (!(box.width > 0 && box.height > 0)) return;
+    rayCaster.setFromCamera(new Vector2(((native.clientX - box.left) / box.width) * 2 - 1, -((native.clientY - box.top) / box.height) * 2 + 1), camera);
+    const point = rayCaster.intersectObject(meshRef.current, false)[0]?.point;
+    if (!point) return;
+    handledStamp.current = native.timeStamp;
+    completedTap.current = null;
+    processTap(point, native);
+  };
+  const pointerUp = (event) => {
+    const tap = completedTap.current;
+    completedTap.current = null;
+    if (!tap || tap.pointerId !== event.pointerId || tap.timeStamp !== event.nativeEvent.timeStamp) return;
+    if (handledStamp.current === event.nativeEvent.timeStamp) return;
+    handledStamp.current = event.nativeEvent.timeStamp;
+    processTap(event.point, event.nativeEvent);
   };
   const selected = selectedCode
     ? entries.find((entry) => entry.code === normalizePlanetCountryCode(selectedCode)) : null;
@@ -670,6 +705,7 @@ function Earth({ textures, budget, entries, locale, mode, valuesByCode, unit, va
   return (
     <>
       <mesh
+        ref={meshRef}
         geometry={geometry}
         onAfterRender={() => {
           if (!readyRef.current) { readyRef.current = true; onReady(); }

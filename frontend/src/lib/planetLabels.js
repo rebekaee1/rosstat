@@ -52,8 +52,19 @@ export function buildPlanetLabels(entries = [], { locale = 'ru', valuesByCode = 
   return [...labels.values()].sort((a, b) => b.area - a.area || a.code.localeCompare(b.code));
 }
 
-/** Break at words, then Unicode code points when a single word is too wide. */
-export function wrapPlanetLabel(text, measure, maxWidth) {
+/** Узкая строка для названий из нескольких слов: доля от полной ширины подписи. */
+const WORD_SPLIT_SHARE = 0.55;
+
+/**
+ * Break at words, then Unicode code points when a single word is too wide.
+ * Круг 11 (D): `splitWords` переносит название из нескольких слов по словам уже тогда, когда оно шире `WORD_SPLIT_SHARE` подписи:
+ * «United Kingdom» стоит в две строки, а не одной с «проглоченным» пробелом («UnitedKingdom»).
+ */
+export function wrapPlanetLabel(text, measure, maxWidth, { splitWords = false } = {}) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  if (splitWords && words.length > 1 && measure(words.join(' ')) > maxWidth * WORD_SPLIT_SHARE) {
+    return wrapPlanetLabel(text, measure, maxWidth * WORD_SPLIT_SHARE);
+  }
   const lines = [];
   let line = '';
   for (const word of String(text || '').trim().split(/\s+/).filter(Boolean)) {
@@ -97,10 +108,10 @@ function splitAtlasSpace(spaces, used) {
 export function packPlanetLabelAtlas(labels, measure, {
   width = 2048, height = 1024, maxTextWidth = 220, lineHeight = 24,
   measureValue = measure, valueLineHeight = lineHeight,
-  paddingX = 12, paddingY = 8, lineGap = 4, tailHeight = 0,
+  paddingX = 12, paddingY = 8, lineGap = 4, tailHeight = 0, splitWords = false,
 } = {}) {
   const measured = labels.map((label, index) => {
-    const nameLines = wrapPlanetLabel(label.text, measure, maxTextWidth);
+    const nameLines = wrapPlanetLabel(label.text, measure, maxTextWidth, { splitWords });
     const valueLine = label.hasValue ? label.valueText : '';
     const valueLines = valueLine
       ? measureValue(valueLine) <= maxTextWidth || !label.numberText || !label.unitText
@@ -213,7 +224,8 @@ export function layoutPlanetLabels(candidates, {
       const corners = [[box.left, box.top], [box.right, box.top], [box.left, box.bottom], [box.right, box.bottom]];
       if (corners.some(([x, y]) => (x - globe.x) ** 2 + (y - globe.y) ** 2 > radius ** 2)) continue;
     }
-    if (result.some((label) => intersects(box, label.box, collisionGap))) continue;
+    // Рядом с выбранной или наведённой страной чужие подписи не рисуются: зазор вокруг неё шире, название и число читаются без налезания.
+    if (result.some((label) => intersects(box, label.box, label.active > 0 ? collisionGap * 3 : collisionGap))) continue;
     result.push({ ...candidate, box, labelX: candidate.x + shiftX, labelY: (box.top + box.bottom) / 2, active: priority(candidate) });
     if (result.length >= maxVisible) break;
   }

@@ -183,3 +183,40 @@
   position: absolute; right: -5px; bottom: -5px; width: 18px; height: 18px; padding: 2px; border-radius: 50%;
   background: var(--color-surface); color: var(--color-champagne-ink); box-shadow: none;
 }
+
+/* ── Круг 11, зона D: фильтры выдачи и «недавнее» в окне поиска ── */
+.c11d-filters { flex: none; padding: 4px 12px 6px; }
+.c11d-filters__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.c11d-filters__toggle {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 999px;
+  color: var(--color-text-primary); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation;
+  background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint);
+}
+.c11d-filters__toggle[aria-expanded='true'] { background: var(--fe-glass-l2-hover, var(--fe-glass-l2)); }
+.c11d-filters__count {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px;
+  color: var(--fe-on-active, #F2F5FA); background: var(--fe-glass-active); font-size: 12px; font-weight: 700;
+}
+.c11d-filters__shown { color: var(--color-text-secondary); font-size: 13px; }
+.c11d-filters__reset {
+  min-height: 40px; padding: 0 8px; border: 0; background: transparent; color: var(--color-champagne-ink); font: inherit; font-size: 14px; font-weight: 600;
+  text-decoration: underline; text-decoration-color: rgb(30 58 110 / 0.35); text-underline-offset: 3px; cursor: pointer; touch-action: manipulation;
+}
+.c11d-filters__panel { display: grid; gap: 8px; padding: 10px 0 4px; }
+.c11d-filters__group { display: grid; gap: 4px; }
+.c11d-filters__label { color: var(--color-text-secondary); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+/* Ряд чипов прокручивается вбок, правый край плавно гаснет: обрезанный посреди слова чип не выглядит поломкой. */
+.c11d-filters__row {
+  display: flex; gap: 6px; padding: 2px 24px 4px 0; overflow-x: auto; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+}
+.c11d-filters__row::-webkit-scrollbar { display: none; }
+.c11d-filters__row > .w6d-sr-chip { flex: none; min-height: 40px; white-space: nowrap; }
+.w6d-sr-chip.is-picked { background: var(--fe-glass-active); color: var(--fe-on-active, #F2F5FA); box-shadow: var(--fe-shadow-active), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+@media (hover: hover) { .w6d-sr-chip.is-picked:hover { background: var(--fe-glass-active-hover, var(--fe-glass-active)); } }
+.c11d-recent-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-right: 12px; }
+.c11d-recent-clear {
+  min-height: 36px; padding: 0 10px; border: 0; background: transparent; color: var(--color-text-secondary); font: inherit; font-size: 13px; cursor: pointer; touch-action: manipulation;
+  text-decoration: underline; text-decoration-color: rgb(75 89 111 / 0.35); text-underline-offset: 3px;
+}
+@media (pointer: coarse) { .c11d-recent-clear { min-height: 44px; } }

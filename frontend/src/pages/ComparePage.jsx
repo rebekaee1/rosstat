@@ -1023,7 +1023,7 @@ function PickerBack({ label, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors"
+      className="mb-3 flex w-fit max-w-full items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {label}

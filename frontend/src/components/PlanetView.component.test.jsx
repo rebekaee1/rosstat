@@ -318,20 +318,36 @@ describe('PlanetView interaction contract', () => {
     expect(codes).not.toContain(maltaDetail.indicator_code);
   });
 
-  it('opens country search from the empty comparison slot and allows real zero observations', async () => {
+  it('picks the second country right in the comparison tray and allows real zero observations (round 11)', async () => {
     render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 0 }} conceptSlug="budget-balance" />);
     selectListCountry('Германия');
     fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
     fireEvent.click(screen.getByRole('button', { name: 'planet.chooseSecond' }));
-    const input = screen.getByRole('combobox');
+    // Выбор лежит в самом лотке: курсор в его поле, а не в верхнем поиске страны.
+    const input = screen.getByPlaceholderText('c11d.planet.pickPlaceholder');
     expect(document.activeElement).toBe(input);
-    expect(input.getAttribute('aria-expanded')).toBe('true');
-    fireEvent.change(input, { target: { value: 'MT' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
-    await waitFor(() => expect(scene.props.selectedCode).toBe('MT'));
-    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    expect(screen.getAllByRole('combobox')[0].getAttribute('aria-expanded')).toBe('false');
+    const options = within(screen.getByRole('group', { name: 'c11d.planet.pickTitle' }));
+    // Страна, которая уже в сравнении, не предлагается; нулевое значение остаётся настоящим.
+    expect(options.queryByRole('button', { name: /Германия/ })).toBeNull();
+    fireEvent.change(input, { target: { value: 'мальт' } });
+    fireEvent.click(options.getByRole('button', { name: /Мальта/ }));
     expect(new URL(screen.getByRole('link', { name: 'planet.showComparison' }).href).searchParams.get('codes')).toBe('w:germany:budget-balance,w:malta:budget-balance');
     expect(screen.queryByRole('button', { name: 'planet.chooseSecond' })).toBeNull();
+    expect(screen.queryByPlaceholderText('c11d.planet.pickPlaceholder')).toBeNull();
+  });
+
+  it('list rows keep the full country name in a title and put the unit under the number (round 11)', () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} unit="млрд $" metricName="ВВП" />);
+    const row = countryList().getByRole('button', { name: /Германия/ });
+    expect(row.querySelector('.planet-list-text').getAttribute('title')).toBe('Германия');
+    expect(row.querySelector('strong > small')).toBeTruthy();
+  });
+
+  it('answers a tap on a country without data with the period, not silence (round 11)', () => {
+    render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: null }} periodLabel="2025" metricName="ВВП" />);
+    selectListCountry('Мальта');
+    expect(screen.getByText('c11d.planet.noDataPeriod')).toBeTruthy();
   });
 
   it('explains the two-country limit and makes room for a replacement when a chip is removed', () => {
@@ -1094,14 +1110,15 @@ describe('PlanetView: flat map by default, globe by choice', () => {
     expect(legend.querySelectorAll('i')).toHaveLength(1);
   });
 
-  it('keeps the flat map under the globe while the scene loads, with its own caption, and hands over when ready (round 8, wave 2)', async () => {
+  it('shows only the round placeholder with its caption while the globe loads (no flat map inside the sphere), and hands over when ready (round 11)', async () => {
     scene.hold = true;
     window.localStorage.setItem('fe_planet_view', 'globe');
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" />);
     await screen.findByTestId('planet-scene');
     const veil = container.querySelector('.planet-globe-veil');
     expect(veil).toBeTruthy();
-    expect(veil.querySelector('.planet-map-stage').getAttribute('aria-hidden')).toBe('true');
+    expect(veil.querySelector('.planet-map-stage')).toBeNull();
+    expect(container.querySelector('.planet-orb')).toBeTruthy();
     expect(within(veil).getByRole('status').textContent).toBe('c8w.globe.loading');
     expect(container.querySelector('.planet-stage').getAttribute('data-planet-surface')).toBe('globe');
     // Сцена готова: заставка плавно гаснет, затем снимается.
@@ -1162,5 +1179,46 @@ describe('PlanetView: круг 9, зона B', () => {
       expect(button.getAttribute('title')).toBeNull();
       expect(button.getAttribute('aria-label')).toBeTruthy();
     }
+  });
+});
+
+describe('PlanetView: круг 11, зона D', () => {
+  function stubMatchMedia(matchers) {
+    window.matchMedia = (query) => ({
+      matches: matchers.some((part) => query.includes(part)),
+      addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {},
+    });
+  }
+  afterEach(() => { delete window.matchMedia; });
+
+  it('на узком экране на шаре две кнопки масштаба; «сбросить» появляется, только когда вид изменён; «К России» убрана', () => {
+    stubMatchMedia(['max-width: 520px']);
+    const russia = { code: 'RU', slug: 'russia', name: 'Россия' };
+    const { container } = render(<PlanetView countries={[...countries, russia]} valuesByCode={{ DE: 3.2, MT: 1.7, RU: 5 }} conceptSlug="unemployment-rate" homeCountryCode="RU" />);
+    const group = container.querySelector('.planet-camera-controls');
+    expect(group.querySelectorAll('button')).toHaveLength(2);
+    expect(group.querySelector('.planet-home-button')).toBeNull();
+    selectListCountry('Германия');
+    expect(container.querySelector('.planet-camera-controls button[aria-label="planet.reset"]')).toBeTruthy();
+  });
+
+  it('на широком экране остаются все кнопки: плюс, минус, сброс и «К России»', () => {
+    stubMatchMedia([]);
+    const russia = { code: 'RU', slug: 'russia', name: 'Россия' };
+    const { container } = render(<PlanetView countries={[...countries, russia]} valuesByCode={{ DE: 3.2, MT: 1.7, RU: 5 }} conceptSlug="unemployment-rate" homeCountryCode="RU" />);
+    expect(container.querySelector('.planet-camera-controls').querySelectorAll('button')).toHaveLength(4);
+  });
+
+  it('лоток «Сравнение» не сдвигает блок: страница прокручивается на высоту лотка', () => {
+    const scrollBy = vi.fn();
+    window.scrollBy = scrollBy;
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} conceptSlug="unemployment-rate" />);
+    const shell = container.querySelector('.planet-shell');
+    // Пока лотка нет, блок стоит на 100 px, с лотком его отодвигает на 60 px.
+    vi.spyOn(shell, 'getBoundingClientRect').mockImplementation(() => ({ top: container.querySelector('.planet-comparison') ? 160 : 100, bottom: 0, left: 0, right: 0, width: 1, height: 1 }));
+    selectListCountry('Германия');
+    fireEvent.click(screen.getByRole('button', { name: 'planet.addComparison' }));
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ top: 60 }));
+    delete window.scrollBy;
   });
 });

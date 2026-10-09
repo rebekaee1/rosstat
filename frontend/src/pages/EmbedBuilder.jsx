@@ -25,6 +25,7 @@ import '../styles/w5-tools.css';
 import '../styles/w6-g.css';
 import '../styles/z8-tools.css';
 import '../styles/k8-tools.css';
+import '../styles/c11d-forms.css';
 
 const WIDGET_TYPES = [
   { key: 'chart', labelKey: 'embed.type.chart', descKey: 'w5.embed.type.chartHint', icon: BarChart3 },

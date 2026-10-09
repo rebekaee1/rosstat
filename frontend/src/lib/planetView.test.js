@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   ZOOM_STEP, bestStartFocus, dataVectors, focusDistance, hasVisibleData, liftedFocus, playbackYears,
-  viewHalfExtent, viewRectangles, yearTag, zoomedDistance,
+  oceanReach, viewHalfExtent, viewRectangles, yearTag, zoomedDistance,
 } from './planetView';
 import { lonLatToSphere } from './planetGeometry';
 
@@ -112,5 +112,21 @@ describe('years that are not facts yet', () => {
     expect(sequence.at(-1)).toBe(2025);
     expect(sequence).toHaveLength(16);
     expect(playbackYears([2025], now)).toEqual([]);
+  });
+});
+
+describe('круг 11 (D): окрестность для проверки «виден ли океан»', () => {
+  it('издалека видно почти полушарие, вблизи окрестность сужается, но с запасом на центр страны', () => {
+    expect(oceanReach(3.35)).toBe(62);
+    expect(oceanReach(2.4)).toBeLessThan(62);
+    expect(oceanReach(1.45)).toBeGreaterThan(20);
+    expect(oceanReach(1.45)).toBeLessThan(oceanReach(2.0));
+    expect(oceanReach(0.5)).toBe(62);
+  });
+  it('вблизи над океаном без страны рядом это вода, над сушей с окрашенной страной нет', () => {
+    const vectors = dataVectors([country('RU', 100, 60, 3)], { RU: 1 });
+    // Камера над Тихим океаном у самой воды: страны в 30° от центра нет.
+    expect(hasVisibleData(vectors, lonLatToSphere([-150, 0], 1.45), oceanReach(1.45))).toBe(false);
+    expect(hasVisibleData(vectors, lonLatToSphere([100, 60], 1.45), oceanReach(1.45))).toBe(true);
   });
 });

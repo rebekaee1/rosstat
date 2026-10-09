@@ -4,6 +4,7 @@ import { useIndicators } from '../lib/hooks';
 import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import HomeWorkbench from '../components/home/HomeWorkbench';
+import HomeContinue from '../components/home/HomeContinue';
 import HomeCountryList from '../components/home/HomeCountryList';
 import HomeTools from '../components/home/HomeTools';
 import { useWorldRatingConcepts } from '../lib/worldApi';
@@ -43,6 +44,8 @@ export default function Dashboard() {
       <div className="relative">
         <HomeWorkbench ratingConcepts={ratingConcepts} />
       </div>
+      {/* Круг 11 (D): для вошедшего «Продолжить» и «Вы смотрели» (хранится в браузере; для гостя и без записей блока нет). */}
+      <HomeContinue />
       <HomeTools />
       <HomeCountryList russiaSeriesCount={listedCount} />
     </div>

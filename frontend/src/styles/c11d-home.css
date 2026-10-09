@@ -1,0 +1,46 @@
+/* Круг 11, зона D: блок «Вы смотрели» на главной. Форму задают свет и тень, не линии; холодная палитра; ничего не анимируется. */
+.c11d-continue { position: relative; margin: 0 0 40px; }
+.c11d-continue__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.c11d-continue__title { margin: 0; color: var(--color-text-primary); font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+.c11d-continue__clear {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 12px; border: 0; border-radius: 999px;
+  color: var(--color-text-secondary); font: inherit; font-size: 13px; cursor: pointer;
+  background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55)); box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint);
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+@media (pointer: coarse) { .c11d-continue__clear { min-height: 44px; padding: 0 14px; } }
+@media (hover: hover) { .c11d-continue__clear:hover { color: var(--color-text-primary); } }
+.c11d-continue__clear:focus-visible { outline: 2px solid var(--color-champagne-ink); outline-offset: 2px; }
+/* Телефон: карточки идут в строку и прокручиваются, правый край гаснет; на компьютере сетка в три колонки. */
+.c11d-continue__row {
+  display: flex; gap: 10px; margin: 0; padding: 2px 2px 8px; list-style: none; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent);
+}
+.c11d-continue__row::-webkit-scrollbar { display: none; }
+.c11d-continue__row > li { flex: 0 0 min(76%, 270px); scroll-snap-align: start; min-width: 0; }
+@media (min-width: 768px) {
+  .c11d-continue__row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; -webkit-mask-image: none; mask-image: none; padding-bottom: 2px; }
+  .c11d-continue__row > li { flex: none; }
+}
+.c11d-continue__card {
+  display: flex; align-items: center; gap: 12px; height: 100%; min-height: 72px; padding: 12px 14px; border-radius: 20px; text-decoration: none;
+  color: var(--color-text-primary); touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  background: var(--fe-glass-l1-sheen), var(--fe-glass-l1, rgba(255, 255, 255, 0.52));
+  box-shadow: var(--fe-float-shadow), var(--fe-inset-glint), var(--fe-inset-glint-bottom);
+}
+.c11d-continue__row > li.is-first .c11d-continue__card {
+  background: radial-gradient(90% 120% at 100% 0%, rgb(44 74 138 / 0.12), transparent 62%), var(--fe-glass-l1-sheen), var(--fe-glass-l1, rgba(255, 255, 255, 0.52));
+}
+@media (hover: hover) { .c11d-continue__card:hover { box-shadow: var(--fe-float-shadow-hover), var(--fe-inset-glint), var(--fe-inset-glint-bottom); } }
+.c11d-continue__card:focus-visible { outline: 2px solid var(--color-champagne-ink); outline-offset: 2px; }
+.c11d-continue__tile {
+  display: grid; flex: none; place-items: center; width: 40px; height: 40px; border-radius: 13px; color: var(--color-champagne-ink);
+  background: rgb(30 58 110 / 0.09); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
+}
+.c11d-continue__text { display: grid; gap: 2px; min-width: 0; }
+.c11d-continue__kind { color: var(--color-text-secondary); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; }
+.c11d-continue__row > li.is-first .c11d-continue__kind { color: var(--color-champagne-ink); }
+.c11d-continue__name {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: break-word;
+  font-size: 15px; font-weight: 600; line-height: 1.3;
+}

@@ -3,7 +3,11 @@
  * без регистрации, без отправки на сервер. Любая ошибка хранилища (приватное окно, запрет) просто даёт пустой список.
  */
 const STORAGE_KEY = 'fe_recent_queries';
-export const RECENT_LIMIT = 4;
+/** Круг 11 (D): хранится 8 запросов, в окне поиска видны первые 6 (раньше 4: люди не замечали, что список вообще есть). */
+export const RECENT_LIMIT = 8;
+export const RECENT_SHOWN = 6;
+/** Сколько недавних страниц («Вы смотрели») показывает окно поиска под запросами. */
+export const RECENT_PAGES_SHOWN = 4;
 
 export function readRecentQueries() {
   try {
@@ -25,5 +29,14 @@ export function rememberQuery(query) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
     /* приватное окно: недавнее просто не запоминается */
+  }
+}
+
+/** Стереть недавние запросы (кнопка «Очистить» в окне поиска). */
+export function clearRecentQueries() {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* нечего очищать */
   }
 }

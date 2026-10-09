@@ -2,8 +2,8 @@ import { Fragment, useState, useEffect, useMemo, useRef, useCallback, useId } fr
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  BarChart3, Briefcase, Building2, Coins, Fuel, Gem, Globe2, Home, Landmark, MapPin, Percent, Search,
-  Tag, TrendingUp, Users, X,
+  BarChart3, Briefcase, Building2, Calculator, Clock, Coins, Fuel, Gem, Globe2, History, Home, Landmark, MapPin, Percent, Search,
+  SlidersHorizontal, Tag, TrendingUp, Users, X,
 } from 'lucide-react';
 import { cn, formatDate, formatValue } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -13,7 +13,13 @@ import useGlobalSearch from '../lib/useGlobalSearch';
 import { useWorldCountries, useWorldRatingConcepts } from '../lib/worldApi';
 import { dedupeSearchRows, describeSearchResult, searchSuggestions, separateVisibleTwins } from '../lib/searchExamples';
 import { friendlySearchName } from '../lib/searchGroups';
-import { readRecentQueries, rememberQuery } from '../lib/searchRecent';
+import {
+  RECENT_PAGES_SHOWN, RECENT_SHOWN, clearRecentQueries, readRecentQueries, rememberQuery,
+} from '../lib/searchRecent';
+import { clearRecentVisited, readRecentVisited } from '../lib/homeContinue';
+import {
+  EMPTY_FILTERS, activeFilterCount, applySearchFilters, buildFilterOptions,
+} from '../lib/searchFilters';
 import { buildSearchView, COUNTRY_CHIPS_VISIBLE } from '../lib/searchView';
 import { isGlobalMarketRow, isIndexUnit, isReadableCorrection, openingLabel, plainUnit, searchTopic } from '../lib/searchText';
 import { homeConceptLabel } from '../lib/homeWorkbench';
@@ -34,6 +40,11 @@ const SEARCH_MIN_LEN = 2;
 /** Через сколько мс без событий ввода составной ввод считается завершённым, даже если compositionend не пришёл. */
 const COMPOSITION_GUARD_MS = 1200;
 
+/** Значок недавней страницы по её виду (запись «Вы смотрели»). */
+const PAGE_ICON = {
+  country: Landmark, region: MapPin, russia: Landmark, rating: BarChart3, indicator: TrendingUp, calculator: Calculator, currency: Coins, compare: BarChart3,
+};
+const FILTER_GROUPS_ORDER = ['country', 'frequency', 'source', 'basis'];
 const KIND_ICON = { country: Landmark, region: MapPin, subnational_region: MapPin, rating: BarChart3 };
 const TOPIC_ICON = {
   labour: Briefcase, prices: Tag, people: Users, energy: Fuel, metal: Gem, money: Coins, rates: Percent,
@@ -127,6 +138,10 @@ export default function IndicatorSearch({
   // Подсказка без готового адреса: ищем и открываем лучший результат сами.
   const [autoOpen, setAutoOpen] = useState(null);
   const [expandedKey, setExpandedKey] = useState('');
+  // Круг 11 (D): фильтры выдачи (страна, периодичность, источник, способ счёта) и версия списка «недавнего» (после «Очистить»).
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [recentVersion, setRecentVersion] = useState(0);
   const triggerRef = useRef(null);
   const inputRef = useRef(null);
   const listRef = useRef(null);
@@ -173,6 +188,16 @@ export default function IndicatorSearch({
     () => (qTrim && !isSearchPending && !isSearchError ? globalSearch.data?.results || [] : []),
     [qTrim, isSearchPending, isSearchError, globalSearch.data],
   );
+  const russiaName = t('search.russia');
+  const filterOptions = useMemo(
+    () => buildFilterOptions(results, filters, { russiaName, locale }),
+    [results, filters, russiaName, locale],
+  );
+  const filtersActive = activeFilterCount(filters);
+  const visibleResults = useMemo(
+    () => applySearchFilters(results, filters, { russiaName, locale }),
+    [results, filters, russiaName, locale],
+  );
   const nameOf = useCallback(
     (item) => (locale === 'en' && item.name_en ? item.name_en : item.name),
     [locale],
@@ -181,26 +206,40 @@ export default function IndicatorSearch({
   const titleOf = useCallback((item) => friendlySearchName(item, nameOf(item), t, locale), [nameOf, t, locale]);
   const ratingLabelOf = useCallback((concept) => homeConceptLabel(concept.slug, t, concept.name), [t]);
   // Круг 9 (P7): в пустом поле сначала недавние запросы этого браузера, затем примеры. Список читается при каждом открытии окна.
-  const recent = useMemo(() => (open ? readRecentQueries() : []), [open]);
+  // Круг 11 (D): запросов видно до 6, под ними последние открытые страницы («Вы смотрели»); оба списка живут только в этом браузере.
+  /* eslint-disable react-hooks/exhaustive-deps -- recentVersion нужен, чтобы список перечитался после «Очистить» */
+  const recent = useMemo(() => (open ? readRecentQueries().slice(0, RECENT_SHOWN) : []), [open, recentVersion]);
+  const recentPages = useMemo(() => (open ? readRecentVisited(RECENT_PAGES_SHOWN) : []), [open, recentVersion]);
+  /* eslint-enable react-hooks/exhaustive-deps */
   const suggestionRows = useMemo(() => [
     ...recent.map((text, i) => ({
-      type: 'suggestion', recent: true, id: `recent:${i}`, item: { kind: 'suggestion', key: `recent:${i}`, path: null }, name: text, query: text, path: null,
+      type: 'suggestion', recent: true, group: 'queries', id: `recent:${i}`, item: { kind: 'suggestion', key: `recent:${i}`, path: null }, name: text, query: text, path: null,
+    })),
+    ...recentPages.map((page, i) => ({
+      type: 'suggestion', recentPage: true, group: 'pages', pageKind: page.kind, id: `page:${i}`,
+      item: { kind: 'suggestion', key: `page:${i}`, path: page.path }, name: page.title, query: page.title, path: page.path,
     })),
     ...suggestions.map((item, i) => ({
-      type: 'suggestion', id: `suggest:${i}`, item: { kind: 'suggestion', key: `suggest:${i}`, path: item.path }, name: item.text, query: item.text, path: item.path,
+      type: 'suggestion', group: 'popular', id: `suggest:${i}`, item: { kind: 'suggestion', key: `suggest:${i}`, path: item.path }, name: item.text, query: item.text, path: item.path,
     })),
-  ], [suggestions, recent]);
+  ], [suggestions, recent, recentPages]);
+  const clearRecent = useCallback(() => {
+    clearRecentQueries();
+    clearRecentVisited();
+    setRecentVersion((value) => value + 1);
+    setHi(0);
+  }, []);
   // Раскладка: «Страны», «Рейтинги», «Показатели»; вариации частот и страны свёрнуты в строки, лишнее — в «Ещё варианты».
   const view = useMemo(() => {
     if (!qTrim) return null;
-    const deduped = dedupeSearchRows(results, nameOf, detailOf);
+    const deduped = dedupeSearchRows(visibleResults, nameOf, detailOf);
     // Круг 9 (Q3): одинаково названные на экране ряды разводятся различителем («за год», «к пред. месяцу», «индекс») или склеиваются.
     const { rows: separated, variants } = separateVisibleTwins(deduped, { titleOf, detailOf, nameOf, t });
     const shownTitle = (item) => (variants.has(item.key) ? `${titleOf(item)}, ${variants.get(item.key)}` : titleOf(item));
     return buildSearchView(separated, {
       query: qTrim, intent: globalSearch.data?.intent || null, locale, nameOf, titleOf: shownTitle, detailOf, t, ratingConcepts, ratingLabelOf,
     });
-  }, [qTrim, results, nameOf, detailOf, titleOf, t, locale, ratingConcepts, ratingLabelOf, globalSearch.data?.intent]);
+  }, [qTrim, visibleResults, nameOf, detailOf, titleOf, t, locale, ratingConcepts, ratingLabelOf, globalSearch.data?.intent]);
   const [moreFor, setMoreFor] = useState('');
   const showMore = Boolean(qTrim) && moreFor === qTrim;
   const rows = useMemo(() => {
@@ -222,6 +261,8 @@ export default function IndicatorSearch({
     const q = (queryRef.current || '').trim();
     if (q.length >= SEARCH_MIN_LEN && !selectedRef.current) {
       track(events.SEARCH_ABANDON, { q: q.slice(0, 256), results: resultsCountRef.current, context: 'global', interaction_id: interactionRef.current });
+      // Запрос, который дождался выдачи (ответ пришёл, поле не менялось), пригодится в «недавнем», даже если страницу не открыли.
+      if (q.length >= 3 && lastSentRef.current === q && resultsCountRef.current > 0) rememberQuery(q);
     }
     setOpen(false);
     stopComposing();
@@ -230,6 +271,8 @@ export default function IndicatorSearch({
     setOpening(null);
     setAutoOpen(null);
     setExpandedKey('');
+    setFilters(EMPTY_FILTERS);
+    setFiltersOpen(false);
   }, [stopComposing]);
 
   // Открыть страницу: панель остаётся с полосой «Открываем: …», пока адрес не сменился (или 12 секунд).
@@ -393,6 +436,8 @@ export default function IndicatorSearch({
   const onQueryChange = (v) => {
     setQuery(v);
     setHi(0);
+    // Новый запрос: прежние фильтры (страна, источник) к нему могут не подходить.
+    if (filtersActive) setFilters(EMPTY_FILTERS);
   };
 
   // прокрутка к выделенному элементу
@@ -628,6 +673,21 @@ export default function IndicatorSearch({
               </div>
             )}
 
+            {qTrim && !isLoading && !isSearchError && (filterOptions.country.length > 0 || filterOptions.frequency.length > 0 || filterOptions.source.length > 0 || filterOptions.basis.length > 0 || filtersActive > 0) && (
+              <SearchFilters
+                id={`${resultId}-filters`}
+                t={t}
+                options={filterOptions}
+                filters={filters}
+                open={filtersOpen}
+                onToggle={() => setFiltersOpen((value) => !value)}
+                onChange={(group, value) => { setFilters((previous) => ({ ...previous, [group]: previous[group] === value ? '' : value })); setHi(0); }}
+                onReset={() => { setFilters(EMPTY_FILTERS); setHi(0); }}
+                shown={visibleResults.length}
+                total={results.length}
+              />
+            )}
+
             <div ref={listRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 sm:max-h-[60vh]" role="listbox" id={`${resultId}-list`} aria-busy={isLoading}>
               {opening || (autoOpen && qTrim === autoOpen.q) ? (
                 <div className="w6d-open-progress" role="status" aria-live="polite" data-testid="search-opening">
@@ -637,18 +697,23 @@ export default function IndicatorSearch({
                 </div>
               ) : null}
               {!qTrim ? (
-                <div role="group" aria-labelledby={`${resultId}-${recent.length ? 'recent' : 'popular'}`} className={opening ? 'pointer-events-none opacity-60' : undefined}>
-                  {recent.length > 0 && (
-                    <p id={`${resultId}-recent`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
-                      {t('c9b.search.recent')}
-                    </p>
-                  )}
+                <div role="group" aria-labelledby={`${resultId}-${recent.length ? 'recent' : recentPages.length ? 'pages' : 'popular'}`} className={opening ? 'pointer-events-none opacity-60' : undefined}>
                   {rows.map((row, i) => (
                     <Fragment key={row.id}>
-                      {i === recent.length && (
-                        <p id={recent.length ? undefined : `${resultId}-popular`} className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary">
-                          {t('shell.search.popular')}
-                        </p>
+                      {row.group !== rows[i - 1]?.group && (
+                        <div className="c11d-recent-head">
+                          <p
+                            id={`${resultId}-${row.group === 'queries' ? 'recent' : row.group === 'pages' ? 'pages' : 'popular'}`}
+                            className="px-4 pb-1 pt-1 text-sm font-semibold text-text-secondary"
+                          >
+                            {row.group === 'queries' ? t('c9b.search.recent') : row.group === 'pages' ? t('c11d.search.pages') : t('shell.search.popular')}
+                          </p>
+                          {i === 0 && (recent.length > 0 || recentPages.length > 0) && (
+                            <button type="button" className={cn(FOCUS_RING, 'c11d-recent-clear fe-press')} onClick={clearRecent} tabIndex={-1}>
+                              {t('c11d.search.clearRecent')}
+                            </button>
+                          )}
+                        </div>
                       )}
                       <SearchRow
                         row={row}
@@ -677,7 +742,15 @@ export default function IndicatorSearch({
                       ))}
                     </div>
                   )}
-                  {isLoading ? <><span className="fe-search-loading-text">{String(t('search.loading')).replace(/[….]+$/, '')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</>
+                  {!isLoading && !isSearchError && filtersActive > 0 && results.length > 0 ? (
+                    <div className="text-center" data-testid="search-filtered-out" role="status">
+                      <p className="font-medium text-text-primary">{t('c11d.search.noneForFilters')}</p>
+                      <button type="button" onClick={() => { setFilters(EMPTY_FILTERS); setHi(0); }} className={cn(FOCUS_RING, 'fe-press mt-3 min-h-11 rounded-xl px-4 text-text-primary fe-glass-2')}>
+                        {t('c11d.search.resetFilters')}
+                      </button>
+                    </div>
+                  ) : null}
+                  {filtersActive > 0 && results.length > 0 && !isLoading && !isSearchError ? null : isLoading ? <><span className="fe-search-loading-text">{String(t('search.loading')).replace(/[….]+$/, '')}</span>{slow && <span className="mt-1 block text-xs" data-testid="search-slow">{t('search.slow')}</span>}</>
                     : isSearchError ? (
                       <>
                         {t('search.error')}
@@ -781,7 +854,9 @@ function SearchRow({
   const isSuggestion = row.type === 'suggestion';
   const item = row.item || {};
   const globalMarket = !isSuggestion && isGlobalMarketRow(item);
-  const Icon = isSuggestion ? Search : KIND_ICON[item.kind] || TOPIC_ICON[searchTopic(item)] || TrendingUp;
+  const Icon = isSuggestion
+    ? (row.recentPage ? (PAGE_ICON[row.pageKind] || History) : row.recent ? Clock : Search)
+    : KIND_ICON[item.kind] || TOPIC_ICON[searchTopic(item)] || TrendingUp;
   // Страна — её флаг вместо значка; у региона и показателя значок темы, а флаг страны — маленьким бейджем в углу.
   // Мировая цена (нефть, газ) получает глобус: чужой флаг на ней сбивает с толку.
   const flagAsIcon = item.kind === 'country' && Boolean(flagCode);
@@ -881,6 +956,69 @@ function SearchRow({
               {expanded ? t('w6d.search.countryLess') : t('w6d.search.countryMore', { n: countries.length - COUNTRY_CHIPS_VISIBLE })}
             </button>
           ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+const FILTER_LABELS = { country: 'c11d.search.f.country', frequency: 'c11d.search.f.frequency', source: 'c11d.search.f.source', basis: 'c11d.search.f.basis' };
+
+/** Подпись значения фильтра: страна называется сама, остальное берётся из словаря. */
+function filterValueLabel(group, entry, t) {
+  if (group === 'country') return entry.label;
+  if (group === 'frequency') return t(`shell.freq.${entry.value}`);
+  if (group === 'source') return t(`c11d.search.source.${entry.value}`);
+  return t(`c11d.search.basis.${entry.value}`);
+}
+
+/**
+ * Круг 11 (D): фильтры выдачи. Свёрнуты в одну кнопку «Фильтры» (с числом выбранных), раскрываются в четыре ряда чипов:
+ * страна, периодичность, источник, «в среднем за год» и «год к году». Выдача сужается сразу, запрос не повторяется.
+ */
+function SearchFilters({ id, t, options, filters, open, onToggle, onChange, onReset, shown, total }) {
+  const count = FILTER_GROUPS_ORDER.filter((group) => Boolean(filters[group])).length;
+  return (
+    <div className="c11d-filters">
+      <div className="c11d-filters__bar">
+        <button
+          type="button"
+          className={cn(FOCUS_RING, 'c11d-filters__toggle fe-press')}
+          aria-expanded={open}
+          aria-controls={id}
+          onClick={onToggle}
+        >
+          <SlidersHorizontal size={15} aria-hidden="true" />
+          {t('c11d.search.filters')}
+          {count > 0 ? <span className="c11d-filters__count" aria-label={t('c11d.search.filtersOn', { n: count })}>{count}</span> : null}
+        </button>
+        {count > 0 ? (
+          <>
+            <span className="c11d-filters__shown" role="status">{t('c11d.search.shown', { shown, total })}</span>
+            <button type="button" className={cn(FOCUS_RING, 'c11d-filters__reset fe-press')} onClick={onReset}>{t('c11d.search.resetFilters')}</button>
+          </>
+        ) : null}
+      </div>
+      {open ? (
+        <div id={id} className="c11d-filters__panel">
+          {FILTER_GROUPS_ORDER.filter((group) => options[group].length > 0).map((group) => (
+            <div key={group} className="c11d-filters__group" role="group" aria-label={t(FILTER_LABELS[group])}>
+              <span className="c11d-filters__label">{t(FILTER_LABELS[group])}</span>
+              <div className="c11d-filters__row">
+                {options[group].map((entry) => (
+                  <button
+                    key={entry.value}
+                    type="button"
+                    className={cn(FOCUS_RING, 'w6d-sr-chip fe-press', filters[group] === entry.value && 'is-picked')}
+                    aria-pressed={filters[group] === entry.value}
+                    onClick={() => onChange(group, entry.value)}
+                  >
+                    {filterValueLabel(group, entry, t)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       ) : null}
     </div>
