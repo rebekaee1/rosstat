@@ -496,7 +496,8 @@ def test_world_countries(world_client):
     assert "max-age=60" in cc
     assert "s-maxage=300" in cc
     assert "stale-while-revalidate=600" in cc
-    assert r.headers.get("vary", "").lower() == "host"
+    # Vary: Host и X-FE-Locale (язык задаёт хост и заголовок локали; см. hotfix локали).
+    assert {v.strip() for v in r.headers.get("vary", "").lower().split(",")} >= {"host"}
 
 
 def test_russia_list_country_payload_exposes_series_count():

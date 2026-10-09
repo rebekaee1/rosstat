@@ -23,6 +23,8 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   const syncTimer = useRef(null);
   useEffect(() => {
     const idle = Date.now() - lastInput.current;
+    // Намеренная сверка с адресом после паузы ввода (см. комментарий выше): синхронизация с внешним состоянием роутера.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (idle > 450) { setLocal(year); return undefined; }
     syncTimer.current = setTimeout(() => setLocal(year), 450 - idle + 20);
     return () => clearTimeout(syncTimer.current);

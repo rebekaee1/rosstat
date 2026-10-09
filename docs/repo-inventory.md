@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1899  ·  **Строк:** 1 255 779  ·  **Токенов (≈):** 11 834 320
+**Файлов:** 1899  ·  **Строк:** 1 255 782  ·  **Токенов (≈):** 11 834 444
 
 ## По верхним папкам
 
@@ -16,11 +16,11 @@
 | `(root)` | 8 | 2 531 | 57 291 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 736 | 263 691 | 2 905 359 |
+| `backend` | 736 | 263 692 | 2 905 390 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 125 | 804 190 | 6 800 938 |
-| `frontend` | 905 | 163 093 | 1 808 266 |
+| `docs` | 125 | 804 190 | 6 800 985 |
+| `frontend` | 905 | 163 095 | 1 808 312 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 103 | 20 953 | 247 962 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 307 727 | 2 508 992 |
-| `docs/client-mechanism-inventory.json` | 235 985 | 1 668 198 |
+| `docs/client-mechanism-inventory.json` | 235 985 | 1 668 245 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -119,8 +119,8 @@
 | `frontend/src/styles/z8-tools.css` | 905 | 9 366 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 865 | 9 315 |
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
+| `backend/tests/test_world.py` | 957 | 9 237 |
 | `frontend/src/pages/WorldIndicatorPage.jsx` | 831 | 9 225 |
-| `backend/tests/test_world.py` | 956 | 9 206 |
 | `backend/app/services/calendar_sources/official_calendar.py` | 838 | 9 190 |
 | `backend/app/services/search_language.py` | 384 | 9 134 |
 | `backend/scripts/repair-world-listing.py` | 971 | 9 115 |
@@ -902,6 +902,7 @@
 | `frontend/src/components/BottomSheet.jsx` | 149 | 1 367 |
 | `backend/app/services/eurostat_structure.py` | 148 | 1 364 |
 | `backend/tests/test_world_fred_adapter.py` | 180 | 1 364 |
+| `frontend/src/components/MapTimeline.jsx` | 130 | 1 360 |
 | `frontend/src/styles/w6e-indicator.css` | 141 | 1 358 |
 | `backend/app/schemas.py` | 176 | 1 357 |
 | `frontend/src/styles/calc-ui.css` | 127 | 1 356 |
@@ -919,7 +920,6 @@
 | `backend/app/data/eurostat_substance.py` | 157 | 1 324 |
 | `backend/app/services/cbr_keyrate_parser.py` | 152 | 1 321 |
 | `frontend/src/pages/GlobalSearchHome.component.test.jsx` | 84 | 1 320 |
-| `frontend/src/components/MapTimeline.jsx` | 128 | 1 314 |
 | `scripts/e2e/liquid-glass-source-audit.mjs` | 70 | 1 314 |
 | `backend/tests/test_search_headline.py` | 124 | 1 312 |
 | `frontend/src/pages/Account.jsx` | 118 | 1 310 |

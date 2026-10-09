@@ -73909,11 +73909,6 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 539,
-          "kind": "tests"
-        },
-        {
-          "file": "backend/tests/test_world.py",
           "line": 540,
           "kind": "tests"
         },
@@ -73939,7 +73934,12 @@
         },
         {
           "file": "backend/tests/test_world.py",
-          "line": 548,
+          "line": 545,
+          "kind": "tests"
+        },
+        {
+          "file": "backend/tests/test_world.py",
+          "line": 549,
           "kind": "tests"
         },
         {

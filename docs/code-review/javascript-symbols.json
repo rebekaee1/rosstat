@@ -8468,12 +8468,12 @@
     "anonymous_functions": 8
   },
   "frontend/src/components/MapTimeline.jsx": {
-    "sha256": "8172c2c79bf810f3903f4566abc932ca61ec0013307a14898ed44ec97f4daf8b",
+    "sha256": "fdf8e6f193e2146a24231b499a9042b5a3d754fc6a06577a457b5307a2510e62",
     "definitions": [
       {
         "name": "MapTimeline",
         "line": 14,
-        "end_line": 128,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       }
     ],

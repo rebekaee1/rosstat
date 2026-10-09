@@ -55,7 +55,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1b090f7e6ef8a59c6cf3cffff511218abcca6fc980630a6ab899563b8d65e0b1",
@@ -100,7 +100,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6630f357781e67e96e18c43d1c5c48e82fe431cc332f07f736f01c56c48f03ac",
@@ -145,7 +145,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dbdb6d6be860ab23c9400d8546e5516c98ab3d2f5ecae1dea1e9fba7fac7eec1",
@@ -190,7 +190,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8845a98240b7d1853df3acc545a4af0efac055c88c0bf3fcc43631863f5f683f",
@@ -235,7 +235,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "91f204a1c51f3d844f28cb8bcfc1dce360ff1a6c04f08e8b4bbdfd82e51181ab",
@@ -280,7 +280,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69c49497f7143a331f71102794ef1057ff4431de3d882d6a914e713ce3450eaa",
@@ -321,7 +321,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "21958168590c94130cdfe8abf97dab39058f48c1f1e0a759f7e076df9a78fd38",
@@ -368,7 +368,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e10bd378004525f721adb7683171ebbc524733f91880ed94297607afa5eec27d",
@@ -421,7 +421,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8f997bfd8952cc057e4d3c5a3a3c60134b84867416956078e8609be95d273790",
@@ -466,7 +466,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "70153297639346d10d2d8cafaf08d70e6a9f567400f41b0b347154a1c0507f89",
@@ -507,7 +507,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "749b68755d24418863ffc2fd1218ce7e13dd6e4ff0b6dd990a1266dcc9829c37",
@@ -552,7 +552,7 @@
       "role": "agent entry",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6c9f96323d98830305ae1ef494b4150b03d54f5cc3fbf42ffae99deb68c374a5",
@@ -792,7 +792,7 @@
       "role": "domain glossary and dated invariants",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0260701446ec78170471329a15daa527169dc42438bd7923aced1222dda2835a",
@@ -1627,7 +1627,7 @@
       "role": "product overview",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2cf5fabeea1234c3e45f8d99e11d1ea83d422fccb2774387f8a436a49912233b",
@@ -2056,7 +2056,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "27926cf6444bcbecd31c8b4f59e0ce72d11651feaa0a01d6d8a578abd5ed5ec1",
@@ -2103,7 +2103,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "aa386cd5059d473aac642b7973a450aa37f64d18c044bc0afb43c208e96c169c",
@@ -2198,7 +2198,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "47c85e7d4da7247a0e14c9b9e0734f0b3e7d072790fa13fd050f3bfbc0f61b1a",
@@ -2245,7 +2245,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e5b781f753fe4b54b38f82d2d182bdc8cd8f34687e23ddc96a65a5d201b05531",
@@ -2340,7 +2340,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "64b7c1734f95f25ed454456a0ef629774a3920db53b9fc0ce59a13d58e1dba98",
@@ -2387,7 +2387,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c59ffc214e32a31bdd2cb38fab11a99d5276628844c5de2155f06505866141b4",
@@ -2434,7 +2434,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "70bf72dbb19a087fcb3ef36ae07ff78961bdb38c4afa7874e9030f74097b96b3",
@@ -2703,7 +2703,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5a51a8d2bc4084f15b5046ec89bff07ad1a3ccf441dbb9c296f07db945af40b4",
@@ -2798,7 +2798,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6ed5c3a5db6c2877449da3f3195f2fdd25a20743ec3d15c781d3dbd4b9ca84e1",
@@ -3027,7 +3027,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "61900d4911abe14d9edfaa633df9ed103a51d38c1ffad9c5dc13bc5129a2a797",
@@ -3350,7 +3350,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9162d486eb7855105951ac04a901a00924889ea74f80ac31d38277ca226f9f35",
@@ -3439,7 +3439,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "477aecee55c0a5ed9ef663dc6901eeb8d3f593c450449b53395e4a951310587b",
@@ -3486,7 +3486,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bab2ebec2c6369294cfaf64d95ca1b9b998c94a57a7313fe957d8a69cd9533a3",
@@ -3663,7 +3663,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "352a14ac814e321fec149d3ca292c9dd3bf0d2532aa943256b950f9b3e436edc",
@@ -3710,7 +3710,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "11e9af1b5cf850645cdfd0d1b2447c93f82e50f2c9bae1bc8bc0f17cc3431e0f",
@@ -3757,7 +3757,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "08026a6d29ec4b0cb9436176d6cc84c0fe4ef0ed9c4f499ce37f13735f1937a3",
@@ -3804,7 +3804,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4677cd7dd60d8e84f8d239739d37fc7eee5ee6a632a3572762e285c21845f809",
@@ -3925,7 +3925,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2e0de4507082e66ccf76ff4ef836f3cc60e27b83759aa119e7e778810e2a5742",
@@ -4114,7 +4114,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "478ce5d6e2bf48ca9c392229b3a65405749340e1e29075e5c69dabf7245be7b2",
@@ -4161,7 +4161,7 @@
       "role": "dated decision and later additions",
       "classification": "current_document",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ccf3034fa16064597690fe470efa9259a20b6d0793b5b23beff62faa11f779ff",
@@ -4331,7 +4331,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d",
@@ -4421,7 +4421,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "510371dbc67c71b913edf422b12c79d308ccf2c9241c7b5bbd3288499d109bac",
@@ -4510,7 +4510,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8f1e7da130fe1b654231f25b07f7e28d08d4a156e730c8abb5ac047988d872c",
@@ -4557,7 +4557,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3697501fd51554ca1fec638e4b6cea89a532ab83d7a9028f8bd747d6b50da09",
@@ -4678,7 +4678,7 @@
       "role": "dated decision and later additions",
       "classification": "current_with_history",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ceeebe2443bbb269359a95e03c5f71d2dd1fbffb07eafb87cab521212e66372",
@@ -4742,7 +4742,7 @@
         "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5c4f3a40c8021b19d1a16342231ee15ead3ce09e021e42a1d872c663cacbde1b",
@@ -5062,7 +5062,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "14da8adac2f7e57b7b48bc86b996795a85a9b86d3da39a48e9dd69898c51c086",
@@ -5098,7 +5098,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d56da6b17fa5d91052db215a0797e0bf90d06bd57b9c2788020ab6e04843609",
@@ -5274,7 +5274,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "37b51cf6e859776673e965c7d3883333aa667fbb96b0d4cf52f5174e12c7b903",
@@ -5310,7 +5310,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "66cadd0d70f255b5a63527b464e56ba406b8646d76d9bd3986399ea80385c8d5",
@@ -5346,7 +5346,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dc52894b388cca621fe805a2398e1bb51aa62c2cafaaed8c877b9367735cedfb",
@@ -5382,7 +5382,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a9680120cdf123acbb6be426538e3008c9ad893216d128fb3102ac7b78cf11e1",
@@ -5418,7 +5418,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e71bca28e05e4f8a1f1cce2351d22bf8204672fd27ec48402b3ef5fb8b831d9",
@@ -5571,7 +5571,7 @@
       "role": "owner indicator/category recipes",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ca094bf94a7d7fafd4d17b203c5d298e8bc981e2bc22be3bf988bce837bda9df",
@@ -5620,7 +5620,7 @@
       "role": "project source/explanation",
       "classification": "current_document",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e21be6d6d0f89dffb0f867577da544231cb3f57c55aec17093af616671878ea9",
@@ -5779,7 +5779,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "952956423601c3c316e7a9a32f67a8a214557c8ff632d205e465c4bade65a141",
@@ -6002,7 +6002,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a4fc303b2cf768f1d50f9f2bbe2c9918853b7b48f21b1f513a344b895750ccb",
@@ -6099,7 +6099,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "77649635b4d753b3e1e286730c4728048565c584114a47f9a4310d3ef9f8dfe0",
@@ -6146,7 +6146,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "704672067d5cc9dcd2e5786b48ff8c0a29f7572546386c9f084dc06173ece084",
@@ -6193,7 +6193,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "76671fa70b5e781e3ea5d813f24aae2df290c6917825a9bd1437fdcd505ddc0e",
@@ -6240,7 +6240,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41716999dfd14d8c268ef9289111bf6e50fe35d675b265e613506704348e50a1",
@@ -6287,7 +6287,7 @@
       "role": "history/recovery index",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "618a5fb94d58eddf798b956a150949b13f36cc4205a4cfe9ef0df7cbfbdb58db",
@@ -6760,7 +6760,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c",
@@ -6807,7 +6807,7 @@
       "role": "system topology/scenarios",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "252237d1403797cd908bb0c0613c3f017f838793f975d9592712d6425d412e93",
@@ -7445,7 +7445,7 @@
       "role": "one execution backlog",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e23ba1c91b7156e0f07ee7821dc0e3d9f4b22905eb4398d697c02c82b58d0d29",
@@ -8667,16 +8667,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "35ec15de143cdd20209091c52316341f8cc216076a72df826a500a8e715b46a5",
+        "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80",
         "canonical_source": "docs/client-mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "35ec15de143cdd20209091c52316341f8cc216076a72df826a500a8e715b46a5",
-        "bytes": 6703649
+        "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80",
+        "bytes": 6703931
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -8946,6 +8946,23 @@
             "sha256": "8ef4db161075302388860f04a1de3bcf44456f36381e0f8e6ea824232acf70db",
             "canonical_source": "docs/client-mechanism-inventory.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "35ec15de143cdd20209091c52316341f8cc216076a72df826a500a8e715b46a5",
+            "bytes": 6703649
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "35ec15de143cdd20209091c52316341f8cc216076a72df826a500a8e715b46a5",
+            "canonical_source": "docs/client-mechanism-inventory.json"
+          }
         }
       ]
     },
@@ -8967,7 +8984,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2fffe464561ddc20d05815420bbe693fe589912fb63a768f6a8e279915e96e40",
@@ -9218,7 +9235,7 @@
       "role": "project source/explanation",
       "classification": "current_document",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13",
@@ -9404,7 +9421,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c4c18f163265729a58dbb9f4fb6a0957e9d37c715f1bcf64020e4e9ce0e07ed5",
@@ -9462,7 +9479,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fd5c7605c45253e2d2345e3dc4e1b261a3f37f412f8134c30eca0e880b70b98e",
@@ -9533,7 +9550,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "554eb447f0226bdc985f586c7e9aa1c8de9c39ab092e3ab23d5073ed9e8486b6",
@@ -9584,7 +9601,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3bee1aa5998a9c2dc66e8d40ca26857030fe76be93bdf773f0af89a1b755802",
@@ -9613,7 +9630,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ccadda31c0850e1ec9479c707805a9302324b336379a443e29e112d21607dd5",
@@ -9643,7 +9660,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6137d4de5bc294b86d46ceaf440b2a0cade95129ee7f2f848ec157ab8f6c2c9b",
@@ -9659,7 +9676,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3a77673afc8037819e16331e6e5ca18563855aa0e2eb119894f2061f6cd24299",
@@ -9689,7 +9706,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b29d972461a4cc5ae9b739426de0cf6784485ca19d22eec5c56b0cb02db9c36c",
@@ -9733,7 +9750,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e2122391dbc38693b281b02cb0ada730b3f486f4691377dcbd2780fb542eae5",
@@ -9806,7 +9823,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3291dde1df9827b1bd085aa0dc41c1b5a4c941d610d18c89797762f62a0234ff",
@@ -9897,7 +9914,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "68c42025a2e95c770272c64b3901575dd3e7a152ad8c1527e57001506899e9db",
@@ -9926,7 +9943,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "045ecb543ee82140cf299ad63e6f35d91c15279793102067c2d911ee34af0a1b",
@@ -9954,7 +9971,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bddd4016dfa3c0029403ce1b647e84efd491fb5ff4f74b2754262096037346cd",
@@ -9970,7 +9987,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7c3e36c9797aaae26248bf4b328b96ed83000499a1354711bd36df76b4337e61",
@@ -10015,7 +10032,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53adbd9f59a10e9a20d594663a5a10d32434f4ddcbf2d580ef0308893a67bc6c",
@@ -10045,7 +10062,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1e66cef556bb2f0faa9f9dec7dd8f2fb576280dff112500270baec37df7b4241",
@@ -10066,7 +10083,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "87289cca5a34b71fa6f74d4d6e5caaca14734a81a2f524f4e35bb9dfcb16f99e",
@@ -10087,7 +10104,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2f3cbf945373c548b86d850781f4e6d06290d9c3f31e9a3baca5750f6491f137",
@@ -10108,7 +10125,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4d628f315709eee124d5ab99e3f64593b3a0cd49fd8cc585cf0b6d83c0a977d6",
@@ -10129,7 +10146,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bff42d02ab7f2fcdae179d74efcaffa36674d678ee92467b253e13bcc89d9075",
@@ -10150,7 +10167,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "312228d991f4764f8c40ca8f2af9e98452654fc1ce0388bd38481cdebfcb3913",
@@ -10184,7 +10201,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be8f5018dabfc39fa53477ab4e691fa86a7900b3f082d810a525727a9a9b84a7",
@@ -10235,7 +10252,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "23d875961fbfebd0ffd71676470ea5c825436be3df1cddfef084254514fed47b",
@@ -10265,7 +10282,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "839838b807644a6a11df6eaf0fc627628c978818157484b819651eeb25f9ed92",
@@ -10295,7 +10312,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3d349e1c78b4e22a16a320841957a29149948864d55c4af93200459c7dc7fead",
@@ -10323,7 +10340,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "34415c55bbed16287f5aa19a2cd4c76f35368de3343a7f0da526c558b1f07552",
@@ -10352,7 +10369,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a45c17d50b8cb96493bc49b1d1695fb2ef6c2c1519671f09c636e28309d1defe",
@@ -10484,7 +10501,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "78c0fed9e41bc2cb035a573ec4ef112f037eb2ac8a79961c5c8fe2adadd9bb98",
@@ -10586,17 +10603,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "8b1585f4f0a73eac89b5511100f244c20203f8a4a7e6d3b456050a2684d7f9a8",
-        "bytes": 782836
+        "sha256": "ccc9b1b372eb48d16fc29b4dfc4c64a165b2750d9134d2c40b5e1373d869b31b",
+        "bytes": 782880
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "8b1585f4f0a73eac89b5511100f244c20203f8a4a7e6d3b456050a2684d7f9a8",
+        "sha256": "ccc9b1b372eb48d16fc29b4dfc4c64a165b2750d9134d2c40b5e1373d869b31b",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -11568,6 +11585,23 @@
             "sha256": "1b1f787dfadd2ee75fb80a47aeed12465abf9e12bd6c80156b65cd3c89a32d54",
             "canonical_source": "scripts/audit-code-documentation.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "8b1585f4f0a73eac89b5511100f244c20203f8a4a7e6d3b456050a2684d7f9a8",
+            "bytes": 782836
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "8b1585f4f0a73eac89b5511100f244c20203f8a4a7e6d3b456050a2684d7f9a8",
+            "canonical_source": "scripts/audit-code-documentation.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -11593,7 +11627,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "46f005d6b3401ceac4fb458d2f0aca42386f92dc8d57f614b35cd6c935048588",
@@ -11645,7 +11679,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "25a19b7070db92aacd22ae74b72e3c6c064af58869ce9ef6ac5906d6d4ef632d",
@@ -11674,7 +11708,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c60873105f82599634b4b3663278441d5caced7492e1b642e561688418a97cf2",
@@ -11703,7 +11737,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "75a5fb156f99fbe4f31eb7a8899ee935f5b022cc48b1df0597a1d613f8ad8b86",
@@ -11719,7 +11753,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c3dd7018c30a5c3c96a298f58e2dfa52d208f2933edad03100b58507208fd2e3",
@@ -11767,7 +11801,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ed512ad288e0d2fcba89054ac59702f588b5d8fb09b4e830896a8eaa4007785f",
@@ -11817,15 +11851,15 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "f496905878da810f3621d3ede208639c72ff359dd234a33477083eb93327aea2",
+        "sha256": "d9f221c42561e76a9a46a85c71142d898c5846be713fc698efb9292bf7977fb2",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "f496905878da810f3621d3ede208639c72ff359dd234a33477083eb93327aea2",
+        "sha256": "d9f221c42561e76a9a46a85c71142d898c5846be713fc698efb9292bf7977fb2",
         "bytes": 6674530
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -12739,6 +12773,40 @@
             "sha256": "113abcbc0b833a999909243ff5f8b5f693840619de513044112fa8633f772847",
             "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "f496905878da810f3621d3ede208639c72ff359dd234a33477083eb93327aea2",
+            "bytes": 6674530
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "f496905878da810f3621d3ede208639c72ff359dd234a33477083eb93327aea2",
+            "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+          }
+        },
+        {
+          "source_version": {
+            "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "293e9a84b48cb89bcc98a3ef3523b0625916f672b97d6fce9e071710b46a5293",
+            "bytes": 6674530
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "293e9a84b48cb89bcc98a3ef3523b0625916f672b97d6fce9e071710b46a5293",
+            "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
+          }
         }
       ]
     },
@@ -12763,7 +12831,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4cdc8c00bf8947c341140212e9eb7c86602140effbe1e834f7048b49e7a304f4",
@@ -12808,7 +12876,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7d20e372512460ab37f1a53d6cc075965573c62ea55c77ab4778f9aeb6df9763",
@@ -12837,7 +12905,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a60799f2d1ad73f125060a4bfaaf77a0cb748af493f5ed22692925290c57f7e4",
@@ -12867,7 +12935,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3845ab30998f62e8ca9d0205a39e3e417e3f4fb3dd9f95a330dcee40bef2626",
@@ -12896,7 +12964,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7287b4b228298f9d4d7e104bb54d31ef685a8f9d45d3b330d63d75232d46f8c3",
@@ -12934,17 +13002,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
+        "sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
         "bytes": 1209988
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
+        "sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
         "canonical_source": "scripts/code-review-symbols.mjs"
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
@@ -13296,6 +13364,23 @@
             "sha256": "a055d1e8096ce599bc0db40ad9dd0893c55d306f616e99a71fc678221ae5e974",
             "canonical_source": "scripts/code-review-symbols.mjs"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
+            "bytes": 1209988
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
+            "canonical_source": "scripts/code-review-symbols.mjs"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -13322,7 +13407,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2073b2afe833e5c32fbc3f95486e9655206be2e24a1c2dabefd8d74e14183001",
@@ -13396,7 +13481,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5377d90ecb5fa84c2aa08938bf59fc3170c25412adb76175bd8fcdc287d5d257",
@@ -13424,7 +13509,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d3637ae305eaa2366ebc2d74381f373a6a044ad548d4181cda8c66577ec6f637",
@@ -13452,7 +13537,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f2849aaf74b18e219b6f071f97e383b5ba2764d1bcdd563ced83626051734836",
@@ -13501,7 +13586,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "892429678ca12073b1ce9abceb7e1c1f1f68203cc01ac810ecde7687279edd86",
@@ -13550,7 +13635,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f7bdf88a530cd1328284b55403cc455dd801b0c4c5373bf32f97e213e735c756",
@@ -13578,7 +13663,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4dcc0258e5345124503230a9bca89dce134d147cc27bad8772cc048f8db3764c",
@@ -13636,7 +13721,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c5af3ca8ca3ea3c3a795cdf8f096cd13c939ffe061a9c610632650a4e90636ed",
@@ -13694,7 +13779,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9392d611cf6db12a80af26fc4c40b91c58b4fb632a4567c3478bde4a358589e4",
@@ -13724,7 +13809,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7cf6afc720a657f4c5882a10a097907d9b0a6c7c0db6d304fd328e80bf3d3346",
@@ -13752,7 +13837,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "98ebf5d5313f2b2314731f5361a6852f260f3fd931e9b6e6c7f4eb4b94e8464a",
@@ -13768,7 +13853,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7ac778b2e76c2dd863ea1c60e195027d2b7d53475e1b39355a0027c043e6858",
@@ -13826,7 +13911,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be16232583fcdb3df2ba3bf66ba9162499a1f1fb504296b29752398c367cf66e",
@@ -13856,7 +13941,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8ebf4116269d4b41379f5f2eafbb72d968a38e95294afa865f043edb97c930ae",
@@ -13872,7 +13957,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "091398f5aafb1130d3a6322fc9f2f338a9f7e6b7fc5c5a243094eadad22822e2",
@@ -13893,7 +13978,7 @@
       "role": "knowledge acceptance K01-K12",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cfab5aabcaf8b3314efeffbfa8cbfd751dbd9caf54b08d2e5b871e197b889cb2",
@@ -14015,7 +14100,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5140e2dd7ac32b87d36709ca8f3bb616eddfbac234ecc2670b6a16662c2de86b",
@@ -14050,7 +14135,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "45f6dccc2d5ae3692b4f30aee5199df51b7b6585aa1251b55f1547d04cd017da",
@@ -14102,7 +14187,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "54e0bcac9c26a2e2b6bf050a92efac861f913f0ae8d73ca8bef172379e6cfb15",
@@ -14131,7 +14216,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7b6c4e0355dcb163ea66012b16427efa59579237a37c6aeb9a1442c4025a4507",
@@ -14189,17 +14274,17 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
+        "sha256": "e9f4834560750d3f5636a082dbcd4f53539441247f8211a5273e6b81a25f1412",
         "bytes": 20804536
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
+        "sha256": "e9f4834560750d3f5636a082dbcd4f53539441247f8211a5273e6b81a25f1412",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -15148,6 +15233,23 @@
             "sha256": "fe905c7661893b3ca15726765212d60c55e9e503bb525727e1e6e0be4b828170",
             "canonical_source": "docs/code-review/reviews.jsonl"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
+            "bytes": 20804536
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
+            "canonical_source": "docs/code-review/reviews.jsonl"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -15160,7 +15262,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "eb8c0c1398c5c05336682bf808a6c2312aabc7dbcc752d418f7bf9467ae07acd",
@@ -15205,7 +15307,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ba22e1e7d1d6f30551b97f62ed9d84f1194e7157a19a7136ff25bfb0b450d899",
@@ -15226,7 +15328,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "current_task_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "044f0dd8632b0625620b6f8da7fe41063c66d7bd007da3c89e7322e739b623fd",
@@ -15256,7 +15358,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3264c3e3619725e17020fed57785060c5efdb88881a233267523a1ae6e098e4",
@@ -15286,7 +15388,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e4b40aaa97d94d9b830afab85cf95e2765c07266fa67aac310312ed20bbeea54",
@@ -15316,7 +15418,7 @@
       "role": "historical preserved source",
       "classification": "historical_copy",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fde033ba9176d5005d3d1b577f5d4809d5adcd2a4765b24d5aff4f4e1e8a17e2",
@@ -15359,7 +15461,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7a596a0e66cea368e42f7b3c11bfceeef1bafce7d36aa96fe48cc6c411728ac",
@@ -15375,7 +15477,7 @@
       "role": "audit evidence excluded from recursive sourceguard",
       "classification": "historical_evidence",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5510eb83294c0e9016605ab79f20a9184e2540e3e7e0cf1164f0c08e424e5384",
@@ -15408,7 +15510,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f5ae0ec25b3ef8ff4933c34d753c86fa2b83ff7ea75adc1f32b4664ba7a76820",
@@ -15424,7 +15526,7 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a37d8e49c6d87138c2d557cf4b09c391263401c3828e7fd56deba4b1c97927d",
@@ -16156,7 +16258,7 @@
       "role": "official source mappings",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5f4461592a1c9dbbaeffbaa915f42a607caecc433edc1cb7962bd1285a743f97",
@@ -16438,7 +16540,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0b6f61d6832aecef7b0af2cea7c77df5ea07971a08b962dc6ff5789c3e09e2de",
@@ -16670,7 +16772,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "75c8c52f17c59f5a6ba3a272f4c68374217d00497784290505c38c09f5dee027",
@@ -16985,7 +17087,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f69cb4d2fa760f5d3d822ee4319db55137831de0f011fc68004bfa8fb38250f0",
@@ -17113,7 +17215,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c02433608b474a744ff54c4d40ab95b09ec403dfae4137aaaa4ae0c6659d8b9c",
@@ -17160,7 +17262,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c9a2ace1e58bfa1d1a2cd29fdd147a238eb98ea4e3677a093dcc53c170a930da",
@@ -17207,7 +17309,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5046e2d30d5b20968f4b81fb3ae2e90452e817783003b44f62e3323bf34b67fd",
@@ -17254,7 +17356,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a8a8370b93e82538d9ee4a8e1381794bfd6b00188932b4a45417e77a9cf31a95",
@@ -17301,7 +17403,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "aa58aa5fe2ff11c835cfd06fef0c16dee1904659377125793b46434b5838a985",
@@ -17348,7 +17450,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "89916f0c5b9ef4042cfa9c2d92be8440fa0f4fb7673ba0286d41d94692793525",
@@ -17395,7 +17497,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "79d525d3a108c4b809a3393d0986f681413deb95c27917f0db9d8fc5067b4366",
@@ -17442,7 +17544,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cc6d2fa7998e6fa249e86653bc8a841e6b6ebd5ad125e3784a18636ae8e1bfa9",
@@ -17489,7 +17591,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3526d55d57b307d0a606fcfc85c1599f2f4668c7fb5351d15bbf149d75486160",
@@ -17536,7 +17638,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fa3b35325a6d08b67200ed515a7785b2bf537cf91f8a79f19a9975da2038bc2e",
@@ -17583,7 +17685,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c8adcfdf6b076d4fa1f539319b3da2c993cf8627b5c043e7e7cdb280997ce413",
@@ -17630,7 +17732,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "068984170ba573465354342144c5fa130852c07a6ba200ab3bfd19d06f964e07",
@@ -17677,7 +17779,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "88bcbaf32bc5730597dfe74317b09f651dbec5ea26f8f58dac0e4920917a5cbe",
@@ -17724,7 +17826,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2265d2e973c2a0496fd345e14eb145e34e06ca020ae4e6ace395ae176dbbeb0e",
@@ -17771,7 +17873,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9cd46dc60d1b6e353b07276c56638da3485bfcee54d9486488e5d1ae0b80f5ab",
@@ -17818,7 +17920,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0eeec3468f8d214605ab3de2d3ac23322ff7431a1b98a72f40bbe19985dd19e7",
@@ -17865,7 +17967,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "02cdf2ac7bbc5621463e13ee4975b9609111e5d214954fe7d477fe45ac2d8c88",
@@ -17912,7 +18014,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5f47a42592976ba922e6eda4c0c0fef1c2f473d1bf1263de073ec3352e9e2c2e",
@@ -17959,7 +18061,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d676691e283189edded954bc1e99e76e82e5fa787f70a224fe7692309944f317",
@@ -18006,7 +18108,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5fbc290c0d7ea36b1174c8f781c6b2b64548fd174c2e6810b14e282ea1c87a8c",
@@ -18053,7 +18155,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6b26acbc764cf16d7db013482a241a442acf51b62f0f52ae48893bfc9db55e46",
@@ -18100,7 +18202,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6de8820bc64e5a60f059413e5d84220c9f4a260626678a20385a04bb7d20e255",
@@ -18147,7 +18249,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6d8c001988b782810d4cb10b0ca22e5a868f7f86b5408e5c76a6bdffda032ed4",
@@ -18194,7 +18296,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c807812a963112736171c7376cd99fb3bc4dc9c96ae488eab7bf181751ca22d8",
@@ -18241,7 +18343,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8e577651dd732a798d1c007d75aca5b4cd9ad4fa2266b96ed22e77a42168902c",
@@ -18288,7 +18390,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "372c3d5dd0702967d8cd32cf50ea300d25e25b7cea9641a3703a17aced123368",
@@ -18335,7 +18437,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a0ed46edd4e049a17941783fa790ac68e38fe906e7aea4171915501ff6e31474",
@@ -18382,7 +18484,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e45fae4ad5036659c471142215c3aadc6d68be79a84ee012c8f8005b67d597d5",
@@ -18429,7 +18531,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1f7fddce1329353ccda316be38c278331b7f957d4412f9da421dcd064cf7c560",
@@ -18476,7 +18578,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ad031293827635dd61266f469f0540f2ade88492f0253a7dcd9b2a0db136d615",
@@ -18523,7 +18625,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "290e39cad4d9c57916c5d504702af518674b76ec327eda282bed317ee86d7498",
@@ -18570,7 +18672,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8022f4aa7b6221ce87227155b9d6c382cc8c4cfd666937b5404be86dbdab4d2e",
@@ -18617,7 +18719,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f84b8138719d58a594280e1f068fafd8aceaa62f30b7c64ba8878ccd920b39b5",
@@ -18664,7 +18766,7 @@
       "role": "operational acceptance and recovery",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e12cf120792e88bad21ebc1cbc6ef6d878669ef049e5c53d5106e6232ef4471a",
@@ -18872,7 +18974,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339",
@@ -18919,7 +19021,7 @@
       "role": "view-mode domain recipe",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad",
@@ -19018,17 +19120,17 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
+        "sha256": "ca325d71db595de44bc37c4199d9c291e3b8a1ba040a3725330c1ad5e117bcae",
         "bytes": 2899006
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
+        "sha256": "ca325d71db595de44bc37c4199d9c291e3b8a1ba040a3725330c1ad5e117bcae",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -26852,6 +26954,23 @@
             "sha256": "73bd8cab4578899c985ba010601b7f37fbae9c7c67b201409bfcc8ccfcb83536",
             "canonical_source": "scripts/build-indicator-index.py"
           }
+        },
+        {
+          "source_version": {
+            "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+            "scope": "tracked/index",
+            "date": "2026-09-30",
+            "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
+            "bytes": 2899006
+          },
+          "review_status": "generated_snapshot",
+          "body_reviewed_in_this_pass": false,
+          "current_delta_reviewed_in_this_pass": false,
+          "review_basis": {
+            "method": "Current generated artifact bytes recorded; no new body/value review",
+            "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
+            "canonical_source": "scripts/build-indicator-index.py"
+          }
         }
       ],
       "current_delta_reviewed_in_this_pass": false
@@ -26864,7 +26983,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3e2171cb4b868b8e872466ceb9ba1bf8cd0d152c1e27c3bf1115a29293399dcb",
@@ -27113,7 +27232,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5ca0d1a3349bdf1f9cffcffccb867d45f25ba5cbfba6c28fefff130ca5a6ebbb",
@@ -27636,7 +27755,7 @@
       "role": "obligatory knowledge lifecycle",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a",
@@ -27819,7 +27938,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bf4f1f565724f2ad6beb0746bed8f43b9bc7859b1a503d06622e1b2c87bf6d63",
@@ -28267,7 +28386,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2dd6d5cc34e86344e0e2e4157756aa9e46820a09a25c53e68f4e571fb541df9c",
@@ -28620,7 +28739,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a",
@@ -28687,7 +28806,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f07c5398732aa47da4df27ce0e1fc00db13594ccda146eec7dfa67f295540381",
@@ -29012,7 +29131,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c30d99d14b7d27abf99b029962459072fb8e0474f5d5aa71c3049974aed8e60a",
@@ -29068,7 +29187,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e3171d011b1acb532b8d62b4e03cde3e9b597926b6dfbbe1896e71fa91c99da2",
@@ -29245,7 +29364,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5026f5e2e163627a567c73b45b8868166cdef929d322b4c367e74d72de03b754",
@@ -29292,7 +29411,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d40796901993721dd1386e07783856e0c83a1b8b539c28badf9ee21b7ec41948",
@@ -29339,7 +29458,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "214c0da63da38517da57687a253996d088cf0c6c21127d623c3af89b20186bbb",
@@ -29386,7 +29505,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8551a3ccf372b24e98d8f5856e2666b2ae2f9f1a0f3040b885d368fc50601c00",
@@ -29433,7 +29552,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a68905d253959c4bd65e2a97acffbe4f59c9f1d7285440e89466b6c58648d98d",
@@ -29480,7 +29599,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d69ea8ce7a177029caec266724454160a0e2c849dbe1dd5573edba68a6384e5a",
@@ -29527,7 +29646,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b3d830741adfa2a4e00a4dc3dcfd52ff006d9aba40b5b93c1cefd770ed3cb294",
@@ -29574,7 +29693,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e12c388f71c7be67df096ce4280e5a84e9ce28d98c3afd40b5894d43e7e7885",
@@ -29621,7 +29740,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "947c463e742672b79c4c077a324c383925ec0d412ed4b0695123a4bb95a36e51",
@@ -29668,7 +29787,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2bbafbbb61ae8eeb8c33ee7b8a61fe9ec36ea702447699bd8ca729d733d30a66",
@@ -29715,7 +29834,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "60d3e4ef6de5e0cd5d59b381aac838e248b12a2f5b51107d53958c1087cf579e",
@@ -29762,7 +29881,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "56b6b74c76b986237587e39f19ecb3fae62db5bf3170b7bd9546821a9623db6f",
@@ -29846,7 +29965,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e5f013444d93e8d7c2ae4e21f4592161e1ce0a5c9c1509f9fc8c044b9b086776",
@@ -29862,7 +29981,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41c72daa4fb9de204f37129c5e3d167bbb825a1740fec1ac3838afbbcfb60a8a",
@@ -29931,7 +30050,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a3f7bac69696435237687e0400d0359a2b3756be99417f12411d3adade24db60",
@@ -30016,7 +30135,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "10f355a5c7e1a1b525a7ad76ec0fc60c5d12a62cb133ac049941c451eb6b2a49",
@@ -30048,7 +30167,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6c50532f0ab521e7c3616b695439ac2db2361bbcd805fe9f30ad0435374bf58f",
@@ -30082,7 +30201,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "663ad9cf51c5fd7852e94fca4bc5c1d0dd9ea52db8287d5046eb963313a26c43",
@@ -30098,7 +30217,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "860ccfb7c648f0b15b6cada449ef8caec271f56176de3d624d5409049dfb93cb",
@@ -30208,7 +30327,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "05cd2f29a403fb267da3ca2d9b59751f5421f2cf7168b77fc6b2c2e1b05661a8",
@@ -30277,7 +30396,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ade56805105abc8a5ad1c1bd681f8d7e88a47478dc8041c3742e9e2936e000e9",
@@ -30346,7 +30465,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "12032f633fe04ec1ef0fdd2582008e17a55c42f3c16d3813ef6e17a121dc8863",
@@ -30415,7 +30534,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "317243ccf87fee465667636f231fc26e4879f725115a8ad31de7966cbb8672b4",
@@ -30495,7 +30614,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "14698ceb0bc1dffcf1784d9d30c6fa46adabe8660d71835b4253ab1b5a03bc7c",
@@ -30582,7 +30701,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e656c15e5f62362cd7eddf189fb10afa63e8dad08bee058bd577680e5057cbc3",
@@ -30598,7 +30717,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a65fc039de33066dfeb4fbe0768b6b528daeb8a6b6170a5608efd082628966de",
@@ -30687,7 +30806,7 @@
         "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f2a0275947ea8d57f9402c54462e2cdf40148ebe4d83901a194c9045f0d0b646",
@@ -30835,7 +30954,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "dd312d4a63c945a26a4ff7119114a5c1d99de34ec784b6d608c7cb6095e1127b",
@@ -30862,7 +30981,7 @@
         "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a2c2d1be7a4a33e19ac9f40306f120fba8cb6360a1a53657005e27453b25c52a",
@@ -30942,7 +31061,7 @@
         "sha256": "87105e7ef5b93a8d01b75880114d1446e4abbe25bad439dd1e69a2d366fb6848"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "87105e7ef5b93a8d01b75880114d1446e4abbe25bad439dd1e69a2d366fb6848",
@@ -31149,7 +31268,7 @@
         "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8aec2bb6bd24e6c6bc8d49dcfbb90dc9175e70bcf4f145d70294d50384df3e3e",
@@ -31318,7 +31437,7 @@
         "sha256": "c11acdfc0636e0bc401646dbb767c3111a2cd34ab499be00bc1c2aade06fd83c"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c11acdfc0636e0bc401646dbb767c3111a2cd34ab499be00bc1c2aade06fd83c",
@@ -31561,7 +31680,7 @@
         "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "200fe2bd1f6426d289a4b15e0d09c56fac19ef1ec88d9281349b6ecd8761a0ce",
@@ -31708,7 +31827,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ff61486cff1e69f4bf5658b25c32821ba7fa53f5ef8a659f37a6b3ff921cefda",
@@ -31724,7 +31843,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "41354109cb35c16a4effd5e8defe668265bfe62c9a4868477b60f25988a011bf",
@@ -31811,7 +31930,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "08ddb1dcbe8743ed5c969dedfafe2d22c6e8e3ca7fc3f2d47838f7403ccee037",
@@ -31827,7 +31946,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b661aac648e124f3ee80e598a82148f005e2331bf3070eb0f148bc5fc55b746b",
@@ -31911,7 +32030,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "630f99f4acc90b8d911bb09115bd3a2c11135235d0398d880fe67fc4db393e2a",
@@ -31942,7 +32061,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3f39d44b937312cb861d0b94bf73766a5d0e5bb005c176a948d229a2a91b57ef",
@@ -31973,7 +32092,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "11fdb17535e5acc8baf776359cda94f16a1c33552770ed3f26f94d4ab3620cb3",
@@ -32013,7 +32132,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf",
@@ -32082,7 +32201,7 @@
       "role": "research/mapping/source evidence; currentness unestablished",
       "classification": "historical_research",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710",
@@ -32151,7 +32270,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "85455c0ee855892f1ea599e954f192d0d0297da2dda975bd51ba22081814826c",
@@ -32342,7 +32461,7 @@
         "sha256": "be365b2bbffae57cd1bdafb579b2b8366f2a116d71bb71dc08fd70598ec10611"
       },
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "be365b2bbffae57cd1bdafb579b2b8366f2a116d71bb71dc08fd70598ec10611",
@@ -33116,7 +33235,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "893bb21466c35e9c64a25d077b72c36430e1db41459c715791cf49f191cedd87",
@@ -33156,7 +33275,7 @@
       "role": "project source/explanation",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "c628cc19ea494dcec92f4b44f2bff1b9066fb7bae86606c151a595fc9be714fb",
@@ -33202,7 +33321,7 @@
       "role": "dated observation/reanalysis/plan; status in document",
       "classification": "historical",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b1108dda38345640549754179e7380483324d992bafa4dea90ffc549fc736af6",
@@ -33264,7 +33383,7 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ac14cba681558995fb3f55887004eded425d5fb28eda7ce68bbcf494a2322980",
@@ -33280,7 +33399,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e0548dcf2b4155648fe21c8924efa9752b0b174fb96160f89843db1a924c66d2",
@@ -33327,7 +33446,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "42181870d6129e325dcb37782a9ccd24f6a57186ec5e945564e80bcc5c366ebf",
@@ -33374,7 +33493,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "54e63895a8275fe3aafdd3dd6c5b673ebe1280a738ad82d06128f0958f5e8275",
@@ -33421,7 +33540,7 @@
       "role": "dev/release procedures",
       "classification": "current_document",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e754e456ad4d8a0fa7f5cd45ee70548226c9013797a06cfd6a8674868d0595f",
@@ -33747,7 +33866,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8083ca5ec3f2b55a4bea41f0491ad6b4a754e0dafdd12b2cbe789f2d10814c1f",
@@ -33913,7 +34032,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a7c34306e9ef93f54ca97cf751da8c04e900860e3c6683f6c3bdca3ed8925139",
@@ -33980,7 +34099,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "831c91b749e20af2cf70b0bd6f768436fb6e2df6bfe5998be83562da8e02666a",
@@ -34163,7 +34282,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "335eef2202576be354899af024d39732d4b595346642eee749425309988ea029",
@@ -34210,7 +34329,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "1a82f4db7956825c4e84ab064a05973d31257918828cbadb6890773f6cb7ee54",
@@ -34255,7 +34374,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "93a1f02be37383700cb86c1ad4a21a5fa1f1de94a2b8681510f87ee3266d9f93",
@@ -34300,7 +34419,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8367dbb0ca6ac0cf2e3d73d17ae7cf0ba354a1e49c1ce8c0e39adf4b1efab3c",
@@ -34345,7 +34464,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fe401f0a54c499dee2d36ae1a4e929d0437021d1098ab0b4a1ebf312eb4df4d3",
@@ -34390,7 +34509,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a7e888dece908bb530ce1b59bbfed6ada4a8bbc2f1c226ad37e1daa0113ee5f6",
@@ -34435,7 +34554,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "07985b604b4f04bf2f46165095b92d55a0d71c4ad5b390d9257e1569b1d32f7b",
@@ -34480,7 +34599,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "15b9f131a96199fd810f17089d5529d580aece9f4ad296c93a211d2c69611d9a",
@@ -34525,7 +34644,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e92fab475ace4abb557ebc22f38c76ead9ad532d861ddca78feac9a97d69f619",
@@ -34570,7 +34689,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d046bbcb2399a6d03062de0f724138b69b020cce9c2f55c0e5b3b7655c2f89e6",
@@ -34615,7 +34734,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "92bb5c411f0b7009d9100b6d80372a391d9a83870feeb897a81c0ae986df275d",
@@ -34660,7 +34779,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f017c6e5407c0e4f632baa016bfbcd63934881cee854a5870995b0546a0bd275",
@@ -34705,7 +34824,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a37c9f3198c593a9d52dcfcda1eab8652097ed760d12df79fe5e9646e40bba23",
@@ -34750,7 +34869,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a70c45d18f3fba4d3a2c9ab18563ee3ac32f1a916e89ceac3624074d241e974e",
@@ -34795,7 +34914,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5d556119520e53221bcca38b970ef348cbe2e220bf56d39ce3b3bb6f033e8320",
@@ -34840,7 +34959,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "599c8b0a731cc0c2f403c678d57fc44a470393f277019803e5b3f4384220b3a7",
@@ -34885,7 +35004,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6021950642f7e96fb263ed7988e22167984fa34a94b8803e5ce23ab3558dbab0",
@@ -34930,7 +35049,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53d40500a285c3700174929e7052f302c36fed87d64e22bbcc12d692127ae922",
@@ -34975,7 +35094,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d4a46e61ff81210d876111437e99139632b25a3faa407b78cad6f48221879840",
@@ -35020,7 +35139,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ff4d9dbd6022897057207ba55db3a515170542aa1188df1689532ecc3d1ca411",
@@ -35065,7 +35184,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9ab0a89fe98a1668a1e363e0cf8ad12628d756274ef0bf8dd903c302086898da",
@@ -35110,7 +35229,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d9f8572cc878560fa900b86276fd2e301b6ef3519e3751ee4f4d16914e3b13ea",
@@ -35155,7 +35274,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "69aafa5d7858c9583f585bb51e5301c47b713a89d655bbdc6bce553c15ca2f50",
@@ -35200,7 +35319,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "2ba59dcd3882fd75eb4341b82f0993fbaf2796fddccd7506b1105387f74598ca",
@@ -35245,7 +35364,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "3ab095df112731eba07953496b22fd7122bb6dabcfda4d6efc838b7b09f4df56",
@@ -35290,7 +35409,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "584776bbf4ec5348b1b81a3de24850a6f4de7322fa84165823765df71c9285da",
@@ -35335,7 +35454,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ee71192a55fb93c56c39191c2e414b904e9f49aa921db30504ead84e058eb17d",
@@ -35380,7 +35499,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fcd0f14c8efc8498db86bc7107aadab622339999998fb5d8cca846119c7a3b96",
@@ -35425,7 +35544,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d1993c44fb809483230ddecfda6deaef46b98239f2d950af601ec82be5c282bb",
@@ -35470,7 +35589,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9b4070f54a4c69d9aea65cdc6bdd436aae1913a52b219af0ae1d9b1a1cae1f3f",
@@ -35515,7 +35634,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "bf789376399bdbdb4dddebbd2a53cb78550e9077b3c552e8ad7e280db7a8d324",
@@ -35560,7 +35679,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "0a194cd7217af2048f38cb3799487ae746c4b3c9a74dc989137830447f1f89d6",
@@ -35605,7 +35724,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "660bc618011937b4fdf2abc8ae90d5208a9748bc4d2d13b451cd92ebf1ffd79d",
@@ -35650,7 +35769,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "97dbbfe0d8619fae01158f95c10ebcfebbe4dd8f6852828475790bfc90881aa3",
@@ -35695,7 +35814,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d78cca8e9a83c03ba4725bf0119b1f523a3d0732a45087675a2774e725aa31cd",
@@ -35740,7 +35859,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "83f3b3054ed28f625cf1d04f56796df7dda72f5d62c38cfa79a2a5b536352fb0",
@@ -35876,7 +35995,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "83f3b3054ed28f625cf1d04f56796df7dda72f5d62c38cfa79a2a5b536352fb0",
@@ -36012,7 +36131,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "978f8edebeacd11abbb199d19847e8d7322ace3ef29b8227e013e467968266d3",
@@ -36164,7 +36283,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d6a309fcfb963d329a93baf9df66fa5f3c23a4be2b5f67edf24d6cafecde12ac",
@@ -36211,7 +36330,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "fd3d58f3db64bfba66da3139de3b30230bbd925ac56d9ec5abfd9a134c5777f9",
@@ -36331,7 +36450,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7a077ffcc76456391e0405b956b72d38d980fefccad20f5da6edfea14a5db78f",
@@ -36418,7 +36537,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7a077ffcc76456391e0405b956b72d38d980fefccad20f5da6edfea14a5db78f",
@@ -36505,7 +36624,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7a077ffcc76456391e0405b956b72d38d980fefccad20f5da6edfea14a5db78f",
@@ -36592,7 +36711,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
@@ -36803,7 +36922,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ac23f289bf19e4c8ac6f1205a089f1cd3805709d0d231258b51421d1d14249c1",
@@ -36939,7 +37058,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "93fab759f36216f8b7ee42ebccd0758cd989300c7d36097f49f16131b0e0dcae",
@@ -37075,7 +37194,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "53ee75ed6ab7e7452c8f160293877e6dd7e2a7283ad6126550290d03f973388a",
@@ -37122,7 +37241,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "591346bf090109cdb260996c7fb284d7dd157d2fe2415dfee241c12c7e26c43d",
@@ -37169,7 +37288,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5",
@@ -37214,7 +37333,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "83b531b870be333c861eb73b67ec980a8ebe5f373a0d1c5a47fe80eae6128fc2",
@@ -37261,7 +37380,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8a40e40e40a56dbe29a3073344135149614fb3fad6d5ddf22df096e3eb0a7e89",
@@ -37308,7 +37427,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "b7bc9053c135dfd274c3756716c7cb284a2cab497ccd6943fc02cdce5debb8a7",
@@ -37355,7 +37474,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "ab397bf317b5498f03286a9fa0902d1e2c3b488821c3115e8ca5d1c72426ebee",
@@ -37478,7 +37597,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "84befc3cb36300701c99cf4c568ed1e8f3b838d8034768787ed1d7b6f857893c",
@@ -37525,7 +37644,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7b11566d16a3a2b5d51c1c3ae37b924b868ff8f8adc5b55d9848c73df553b2e7",
@@ -38515,7 +38634,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "6e9f5dec0570a89a6023410c723e57849d66dc63a75d2b7cfd423203782eb4d8",
@@ -38562,7 +38681,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "7152a39b43bcac5e257ef3f73164a3a8c46ee6d965d6a2d9a81968abc76566a2",
@@ -38609,7 +38728,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "42e6c05b1d8ccf8c7831e75c9983a1b0f18ecb3f2bd927379768579a4baab053",
@@ -39674,7 +39793,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "871709ec15ec5099592a8c657f281271c8b860dfb10265ff03ad2577ffb991d9",
@@ -39744,7 +39863,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9810cdded44129a186f032c0e854d91da96e434c673de614c2576f359ccbfe83",
@@ -39791,7 +39910,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "9c977d2ff47c0b322eb7f40d62fad7c6e8a0f230b5f5376c18ab04e5255ab021",
@@ -39838,7 +39957,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "e5a84261aa1aa201529ed93d63ff415a3f189af75db9f0e9d30b10edde2cb67c",
@@ -39933,7 +40052,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4e331734997d915369c2c6d72ec7c4350c345620c72ed153f746d3e0702c5db1",
@@ -40028,7 +40147,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86f595f4b11d2923dfb8fdae35bdc78c953a302ead30984dbd6d698298af7895",
@@ -40228,7 +40347,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "a180c1bbe9b7de73ab8ca107ee4ca663b1f8efa8717bbf946cf69d0e77be050d",
@@ -40275,7 +40394,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f95388492d2c5dfe30ce4b3e95df7c47049ecd6c4e943d5ec1670e5b15669199",
@@ -40345,7 +40464,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "22e2284a44edc61ad74551fe47657019c3a847a40da901e662e71f1bafd4fbef",
@@ -40392,7 +40511,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "cbedbe02e33512a2ea0234a5aefe6bfc7807336a6336b0a5c9416a682b0df85b",
@@ -40448,7 +40567,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "5a6b28a864b64bbb9ec2430e924268146277693228e1f7c6b053d042bd299f78",
@@ -40495,7 +40614,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "d32ca7bbbe22f9b7f26f400cf5f789712602db5749a4e39f0df255f869102952",
@@ -40542,7 +40661,7 @@
       "role": "generated projection/export",
       "classification": "generated",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "4ac45974d57b98efda733744ea037a806506c6e28a0a3b5428e8c5b5e6c770ed",
@@ -40665,7 +40784,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "8537824c2655a7b2f67f08a96ff8da8c07dcd6632b22cfcc9c3f5851e85d3882",
@@ -40712,7 +40831,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "86e1b37b582132f9876bc253add4d1677f028bba0fc9a1ea267376a45f2a341e",
@@ -40759,7 +40878,7 @@
       "role": "project source/explanation",
       "classification": "current",
       "source_version": {
-        "main": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+        "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-09-30",
         "sha256": "f8c787342f45fb9761897a0a8bc86166a8aae90f4239e6e38b23ff8ee9904a3e",
@@ -57137,8 +57256,8 @@
     }
   ],
   "metadata_refresh": {
-    "at_utc": "2026-10-09T08:50:51.937085+00:00",
-    "head": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+    "at_utc": "2026-10-09T08:54:24.817614+00:00",
+    "head": "a0391a745fd357f07bb9649ae621f348b8ed092d",
     "collector": "docs/code-review/refresh-materials-2026-09-30.py",
     "tracked_docs_required": 213,
     "excluded_hash_paths": [

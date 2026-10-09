@@ -9721,9 +9721,9 @@
     },
     {
       "path": "backend/tests/test_world.py",
-      "sha256": "1693156c4ceb52024dd8d62484e9c58540d434784c29a18000715e4ed7fef6fd",
-      "bytes": 39601,
-      "lines": 956,
+      "sha256": "1268e3b83a42c489345d42ae49ee18e05f48739ae12f9bfce6325af64c594e55",
+      "bytes": 39763,
+      "lines": 957,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -10943,8 +10943,8 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "35ec15de143cdd20209091c52316341f8cc216076a72df826a500a8e715b46a5",
-      "bytes": 6703649,
+      "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80",
+      "bytes": 6703931,
       "lines": 235985,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -11515,7 +11515,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
+      "sha256": "ca325d71db595de44bc37c4199d9c291e3b8a1ba040a3725330c1ad5e117bcae",
       "bytes": 2899006,
       "lines": 104854,
       "code": false,
@@ -15623,9 +15623,9 @@
     },
     {
       "path": "frontend/src/components/MapTimeline.jsx",
-      "sha256": "8172c2c79bf810f3903f4566abc932ca61ec0013307a14898ed44ec97f4daf8b",
-      "bytes": 5758,
-      "lines": 128,
+      "sha256": "fdf8e6f193e2146a24231b499a9042b5a3d754fc6a06577a457b5307a2510e62",
+      "bytes": 6037,
+      "lines": 130,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26777,11 +26777,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
-  "javascript_inventory_sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
-  "baseline_commit": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
+  "ledger_sha256": "e9f4834560750d3f5636a082dbcd4f53539441247f8211a5273e6b81a25f1412",
+  "javascript_inventory_sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
+  "baseline_commit": "a0391a745fd357f07bb9649ae621f348b8ed092d",
   "branch": "circle11/int",
   "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
     "docs/indicator-index.json"
   ]
 }
