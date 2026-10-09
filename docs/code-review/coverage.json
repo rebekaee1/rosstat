@@ -10319,9 +10319,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "56606f74d3bbc79e0b71572c62a955cdb0c3ee9cf9bc277511d2e2a34671e238",
-      "bytes": 11468,
-      "lines": 135,
+      "sha256": "c1d1350d0b160f26854768a4a8ee09915a844779b14a51c6fc71054bb431a87e",
+      "bytes": 11786,
+      "lines": 137,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10956,8 +10956,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2",
-      "bytes": 545170,
+      "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be",
+      "bytes": 545266,
       "lines": 2780,
       "code": false,
       "status": "reviewed",
@@ -12217,9 +12217,9 @@
     },
     {
       "path": "docs/runtime-inventory.json",
-      "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
-      "bytes": 222510,
-      "lines": 6987,
+      "sha256": "94840cc9d217f2e1300a6ec4365965993e5d5dcffd5c09443c522d3b895d6221",
+      "bytes": 224754,
+      "lines": 7045,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -26803,13 +26803,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "dc60bae5d375bac59109215c7f7443265306745d38a8bcaef0797501e82307da",
+  "ledger_sha256": "451652b475c4922efed5a82e935f9a9ebd34defe769c0eab2b0b179a38786d29",
   "javascript_inventory_sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
-  "baseline_commit": "eb815d5f1980d2601392c9d096e993535ee89139",
+  "baseline_commit": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
   "branch": "main",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/backlog.md",
+    "docs/runtime-inventory.json"
   ]
 }

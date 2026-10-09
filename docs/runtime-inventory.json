@@ -6982,6 +6982,64 @@
         "not a capacity/p95 or LTE measurement",
         "external Telegram timeout, next Eurostat no-op and autovacuum timing unverified"
       ]
+    },
+    {
+      "id": "production-telegram-delivery-2026-10-09",
+      "observed_msk": "2026-10-09 17:48",
+      "source_commit": "9bc0c0145f8eb8a019fd8fc60cdddf64ecc55aae",
+      "runtime_wrapper": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+      "alembic_revision": "20261009c_session_perf",
+      "scope": "dedicated Telegram CONNECT route and bounded retry of technical alerts",
+      "live_acceptance": {
+        "watch_minutes": 15,
+        "ready_all": true,
+        "oom": false,
+        "representative_pages": 34,
+        "getMe_successes": 4,
+        "getMe_attempts": 4,
+        "getMe_seconds": [
+          0.493,
+          0.439,
+          0.452,
+          1.037
+        ],
+        "application_outbox_id": 3303,
+        "application_message_id": 4744,
+        "host_backup_message_id": 4743,
+        "dedicated_route_enabled": true,
+        "scheduler_observation": {
+          "log_lines": 493,
+          "getUpdates_http_200": 0,
+          "getUpdates_http_non200": 0,
+          "telegram_getUpdates_failures": 1,
+          "telegram_sendMessage_failures": 0,
+          "connect_timeout_mentions": 0,
+          "resend_job_success": 3,
+          "poller_job_success": 35
+        },
+        "poller_recovery": {
+          "last_getUpdates_failure": "2026-10-09 17:44:21,512",
+          "poller_success_after_failure": 8,
+          "later_getUpdates_failure": 0
+        },
+        "post_timeout_getMe": {
+          "bot_api_ok": true,
+          "seconds": 0.494
+        }
+      },
+      "delivery_bounds": {
+        "window_hours": 6,
+        "min_age_minutes": 10,
+        "max_per_run": 10,
+        "max_tries": 3
+      },
+      "evidence": "docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+      "limits": [
+        "Telegram acceptance is not proof of human reading or long-term network SLA",
+        "24 historical groups without confirmed receipt preserved; replay awaits owner choice; one interrupted row has unknown actual result",
+        "No manual getUpdates offset consumption; owner callback interaction not tested",
+        "One long-poll ReadTimeout followed by 8 completed cycles without new errors; one first home HTTPS probe timed out, retry succeeded while readiness remained healthy"
+      ]
     }
   ]
 }

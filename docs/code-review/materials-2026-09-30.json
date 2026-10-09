@@ -7409,22 +7409,22 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2",
-        "bytes": 545170,
-        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
-        "contents": "working tree scoped performance delta; identity does not prove live release"
+        "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be",
+        "bytes": 545266,
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2",
+        "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
-      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
@@ -10560,10 +10560,10 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "df1f54770c042b37eb5dfb1ff5f37a1b642ff4d1d58082f5e6f4adc324dd9535",
-        "bytes": 783662,
-        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
-        "contents": "working tree scoped performance delta; identity does not prove live release"
+        "sha256": "8e2b6f6b5383df677f0b032feae3ae4a0ec855c3d69e4216a89443c49a518e74",
+        "bytes": 783615,
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -10574,7 +10574,7 @@
       },
       "canonical_source": "scripts/audit-code-documentation.py",
       "linked_mechanisms": null,
-      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -11810,15 +11810,15 @@
         "sha256": "d9f221c42561e76a9a46a85c71142d898c5846be713fc698efb9292bf7977fb2",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
-      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "5fa29d45b63b3b01a5062070ce39901435fd7f9009b3e116d90e01fd998d6280",
+        "sha256": "9844b508b9b180d6e7d3326761d7750b60faa3ca75fc1d9a43effe2699b6eb51",
         "bytes": 6697236,
-        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
-        "contents": "working tree scoped performance delta; identity does not prove live release"
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -14235,10 +14235,10 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "dc60bae5d375bac59109215c7f7443265306745d38a8bcaef0797501e82307da",
-        "bytes": 20800067,
-        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
-        "contents": "working tree scoped performance delta; identity does not prove live release"
+        "sha256": "451652b475c4922efed5a82e935f9a9ebd34defe769c0eab2b0b179a38786d29",
+        "bytes": 20800109,
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -14249,7 +14249,7 @@
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
       "linked_mechanisms": null,
-      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -32225,22 +32225,22 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
-        "bytes": 222510,
-        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
-        "contents": "working tree scoped performance delta; identity does not prove live release"
+        "sha256": "94840cc9d217f2e1300a6ec4365965993e5d5dcffd5c09443c522d3b895d6221",
+        "bytes": 224754,
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "artifact_schema_reviewed",
-        "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
+        "sha256": "94840cc9d217f2e1300a6ec4365965993e5d5dcffd5c09443c522d3b895d6221",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/runtime-inventory.json",
       "linked_mechanisms": null,
-      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
         {
@@ -40887,14 +40887,14 @@
       "body_reviewed_in_this_pass": true,
       "current_delta_reviewed_in_this_pass": true,
       "source_version": {
-        "sha256": "7f5b75443a2064928617c0e399e8db561a5dcec93873604323f39a34d64699a7",
-        "bytes": 4893,
-        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
+        "sha256": "dbb5d297b94149ae18cf65bc04985392083988e1b88ff12fbb877b7b2cf42597",
+        "bytes": 8756,
+        "head": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "contents": "authored Telegram delivery evidence; production status explicit"
+        "contents": "working tree scoped Telegram delivery delta; identity does not prove live release"
       },
-      "update_action": "Maintain measured network paths, exact undelivered groups and release/recovery evidence separately."
+      "update_action": "2026-10-09 Telegram delivery delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance."
     }
   ],
   "external_sources": [
@@ -57234,5 +57234,5 @@
       "update_action": "Preserve; inspect explicitly if linked to FE requirement or runtime evidence, then classify before promotion to main."
     }
   ],
-  "metadata_refresh": "2026-10-09 scoped performance changes and generated maps; preserved independent review statuses."
+  "metadata_refresh": "2026-10-09 scoped Telegram delivery changes and generated maps; preserved independent review statuses."
 }

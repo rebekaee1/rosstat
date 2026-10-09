@@ -2775,6 +2775,6 @@ acceptance09.10; actual auto-vacuum timing не обещан.
 
 ### Telegram delivery — 2026-10-09
 
-Telegram delivery 09.10: реализован dedicated proxy route в двух sender paths и bounded досылка технических алертов; production release/live acceptance ещё ожидаются. Выявленные 24 недоставленные logical groups за 48 ч и план восстановления — в приёмке; сегодняшние digest/Pulse доставлены.
+Telegram delivery 09.10: реализован dedicated proxy route в двух sender paths и bounded досылка технических алертов; production9bc0c014 (wrapper0a4d0966) принят после34 страниц,15min watch и двух Telegram receipts. Выявлены24 группы без подтверждения доставки за48h; историческая досылка ожидает выбора владельца. Сегодняшние digest/Pulse доставлены.
 
 Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

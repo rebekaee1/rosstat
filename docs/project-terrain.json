@@ -1,14 +1,14 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "eb815d5f1980d2601392c9d096e993535ee89139",
+  "baseline_commit": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
+    "docs/backlog.md",
     "docs/code-review/coverage.json",
     "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+    "docs/runtime-inventory.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1505,7 +1505,7 @@
     {"path": "backend/tests/test_year_mode_crawl_policy.py", "kind": "code", "bytes": 6659, "lines": 133, "sha256": "6ba8ecaeef6859643fa41c12438f5bab97ab3333a39f7f2bc2a52e3ed316d672", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "tests", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory-users.xml", "kind": "asset/data/config", "bytes": 788, "lines": 13, "sha256": "080f86dcb363402e39661016991bd3476b535dc80bc6984dc2111e046a62cbff", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "clickhouse/low-memory.xml", "kind": "asset/data/config", "bytes": 1507, "lines": 24, "sha256": "bcc85a0843dec3a7afb3d5ed811535527dbdec50d231159563d27ff794635803", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
-    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 11468, "lines": 135, "sha256": "56606f74d3bbc79e0b71572c62a955cdb0c3ee9cf9bc277511d2e2a34671e238", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "deploy/approved-shas.txt", "kind": "asset/data/config", "bytes": 11786, "lines": 137, "sha256": "c1d1350d0b160f26854768a4a8ee09915a844779b14a51c6fc71054bb431a87e", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban-install.sh", "kind": "code", "bytes": 2815, "lines": 66, "sha256": "bb335d7a0a8b5de89b43cd1005212020346478df872dbbea654ed0844246d4ee", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban/filter.d-honeytrap.conf", "kind": "asset/data/config", "bytes": 846, "lines": 11, "sha256": "5069bf244cdad48b7d9b402df84f909f4624d51baa9d75d27000b31f9e98433d", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "deploy/fail2ban/filter.d-nginx-429.conf", "kind": "asset/data/config", "bytes": 889, "lines": 10, "sha256": "e30a4d487bc13eec82b28576670a1fa2fcb38ed670817ea5e8ea791fbd41e817", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
@@ -1554,7 +1554,7 @@
     {"path": "docs/architecture-history.md", "kind": "document", "bytes": 50957, "lines": 277, "sha256": "1c9a9013f4caf53de412f0d11cd7c9d28dbe741b94702d3be84fce24672d6b70", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/architecture-knowledge.json", "kind": "asset/data/config", "bytes": 89676, "lines": 2436, "sha256": "86587255fded212e1a67835787614a9bd9c2b64ce583c57da2d64088dd5dbc2c", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/architecture.md", "kind": "document", "bytes": 86241, "lines": 457, "sha256": "75de5701041cc5841038b3cd343cce98d45007542f031c752f980eeaf56b729a", "symlink": false, "nodes": 31, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/backlog.md", "kind": "document", "bytes": 545170, "lines": 2780, "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2", "symlink": false, "nodes": 151, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
+    {"path": "docs/backlog.md", "kind": "document", "bytes": 545266, "lines": 2780, "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be", "symlink": false, "nodes": 151, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 6703931, "lines": 235985, "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13325, "lines": 136, "sha256": "2fffe464561ddc20d05815420bbe693fe589912fb63a768f6a8e279915e96e40", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -1651,7 +1651,7 @@
     {"path": "docs/research/ui-review-2026-10-04.md", "kind": "document", "bytes": 5535, "lines": 39, "sha256": "11fdb17535e5acc8baf776359cda94f16a1c33552770ed3f26f94d4ab3620cb3", "symlink": false, "nodes": 5, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/uk-official-sources.xlsx", "kind": "asset/data/config", "bytes": 15777, "lines": null, "sha256": "cec484b5e72c91ba6eedd8bdb70838ab2b6707aa8e7c04e55b77a4153f37e3cf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/research/usa-official-sources.xlsx", "kind": "asset/data/config", "bytes": 17255, "lines": null, "sha256": "a5f38267cc79f287d02364f0d7149c9eb9a075d91623cf2f5a235ada2c715710", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "research", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/runtime-inventory.json", "kind": "asset/data/config", "bytes": 222510, "lines": 6987, "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/runtime-inventory.json", "kind": "asset/data/config", "bytes": 224754, "lines": 7045, "sha256": "94840cc9d217f2e1300a6ec4365965993e5d5dcffd5c09443c522d3b895d6221", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/search.md", "kind": "document", "bytes": 90298, "lines": 683, "sha256": "be365b2bbffae57cd1bdafb579b2b8366f2a116d71bb71dc08fd70598ec10611", "symlink": false, "nodes": 24, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/server-hardening-runbook-2026-10-04.md", "kind": "document", "bytes": 7526, "lines": 59, "sha256": "893bb21466c35e9c64a25d077b72c36430e1db41459c715791cf49f191cedd87", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/site-inventory.json", "kind": "asset/data/config", "bytes": 445, "lines": 9, "sha256": "c628cc19ea494dcec92f4b44f2bff1b9066fb7bae86606c151a595fc9be714fb", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
