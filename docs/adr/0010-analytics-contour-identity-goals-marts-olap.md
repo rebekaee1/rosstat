@@ -259,3 +259,21 @@ bounded snapshot с generation/ack; это ещё не принятая реал
 - **Приватность.** Параметры событий очищаются на приёме (`event_params.py`), в текст для внешней языковой модели имена, почты и телефоны не попадают (`pii_scrub.py`), удаление аккаунта разрывает связь событий с человеком (`account_erasure.py`).
 - **Отчёты Telegram за четырьмя флагами** (`telegram_digest_v2_enabled`, `telegram_weekly_enabled`, `telegram_monthly_enabled`, `telegram_new_alerts_enabled`, по умолчанию все `false`); длинные сообщения режутся общим разбивателем.
 - Контракт — [data-contracts](../data-contracts.md#c11-analytics-2026-10-09); на PostgreSQL, ClickHouse и боевых объёмах не проверялось.
+
+### 2026-10-09 — узкая индексируемая история
+
+Боевой `0bcf68b4`: sessionize не завершал history INSERT за 60 секунд;
+план читал behavior_events целиком через normalized coalesce и сортировал
+широкие строки с JSON. Перенос вычисления ownership на узкие стадии,
+покрывающий normalized visitor/time индекс и отдельные ANALYZE стадий
+устраняют эту ресурсную причину без изменения доменных границ/истории.
+Payload загружается после отбора затронутых сессий. Индекс строится
+CONCURRENTLY; повреждённый interrupted index пересоздаётся, valid/ready
+проверяются. [Проверки](../code-review/performance-acceptance-2026-10-09.md).
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

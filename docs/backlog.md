@@ -2739,3 +2739,19 @@ endpoint probe воспроизвёл это в RU/EN при неизменны�
 pool способен потерять подходящую цель даже при существующих фактах;
 `has_more` не доказывает полноту каталога. Перенос эквивалентных predicates
 до LIMIT и отдельная маршрутная приёмка остаются следующими проверками.
+
+## 2026-10-09 — скорость после 0bcf68b4
+
+В работе: таймаут SQL history INSERT и пустые инвалидации world/catalog/SSR
+при повторной записи Eurostat. Реализация: узкие indexed stages +
+ix_behavior_logical_time; публикация только изменённых поверхностей.
+[Приёмка и актуальный статус](code-review/performance-acceptance-2026-10-09.md).
+Telegram ConnectTimeout — отдельный внешний сетевой остаток; это
+исправление не объявляет его закрытым.
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

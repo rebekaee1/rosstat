@@ -214,7 +214,7 @@ shards остаётся отдельным job, а не частью этой т
    сбой кэша не теряет success/changed и дальнейший derived-каскад.
 3. Eurostat country metadata, remap и parsed slice публикуют world/catalog/SSR
    после commit, перед закрытием сессии: metadata/remap при реальном изменении,
-   slice при наличии сохранённого индикатора, включая same-value retry.
+   slice при фактическом изменении данных/metadata (уточнение 09.10 ниже).
    Later failure не отменяет предыдущие коммиты, loader остаётся ошибочным,
    applied TOC не продвигается. Ни dataset atomicity, ни общий PostgreSQL/Redis
    commit не обещаны. Strict world-catalog failure виден; DB0 best-effort и
@@ -655,3 +655,34 @@ string type JSON. TOTAL другой оси и `TOT_FTE` не равны уни�
 Конечная грамматика и ограниченные кеши чистых словоформ не хранят запросы
 пользователей, выдачу или таблицу ответов. Проверки и границы переноса — в
 [replay](research/search-history-replay-2026-09-30.md).
+
+## 2026-10-09 — скорость sessionize и публикация Eurostat
+
+Сессионизация сохраняет полную историю посетителей окна и прежние правила
+30 минут, позднего dwell, целей и атрибуции. История проходит через узкие
+временные таблицы: visitor/id/session_id/event_type/occurred_at, затем logical
+start. JSON/page/user читаются только после отбора затронутых logical sessions.
+Индекс `ix_behavior_logical_time` покрывает нормализованный ключ
+`coalesce(nullif(visitor_id_hash,''),nullif(session_id_hash,''))`, время и id;
+пустые строки в SQL literal, чтобы выражение совпадало и в generic plan.
+Каждая стадия получает ANALYZE внутри собственной транзакции, постоянные
+настройки планировщика не меняются. История не обрезается фиксированным halo.
+
+Eurostat same-value/same-metadata replay больше не публикует namespace.
+Изменённые точки или metadata публикуют world/ssr-world после commit.
+world-catalog меняется только при создании ряда, изменении country/code/name_ru/
+is_listed либо смене наличия ненулевого сигнала у listed-ряда. Исправление
+значения 10→20 не меняет счётчик страны; 10→0 и 0→10 меняют. Country/remap
+по-прежнему публикуются при реальном изменении. Ошибка следующего среза не
+отменяет уже опубликованные коммиты. Это уточняет старое требование публикации
+любого сохранённого среза (включая no-op): немедленная видимость изменений
+сохранена, пустая инвалидация устранена.
+
+Проверки и границы: [приёмка](code-review/performance-acceptance-2026-10-09.md).
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

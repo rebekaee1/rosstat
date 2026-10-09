@@ -528,3 +528,21 @@ host-swap на `ru.` + cookie `fe_locale_pref`. Перед релизом обя
 Поисковые роботы, API, sitemap, robots, RSS, OG, embed, health и OAuth
 callback отвечают на запрошенном хосте. Явный выбор языка хранится год
 в cookie `fe_locale_pref` с Domain `.forecasteconomy.com`.
+
+## 2026-10-09 — выпуск оптимизации сессионизации
+
+Миграция 20261009c_session_perf добавляет ix_behavior_logical_time
+CONCURRENTLY и проверяет valid/ready. Можно подготовить ровно этот индекс
+перед заменой backend, оставив прежний код и alembic_version неизменными;
+entrypoint нового образа затем быстро применит/stamp миграцию. Индекс
+добавочный, старый код продолжает работать. Не повышать statement_timeout
+для маскировки ошибки. После выпуска проверить завершение реального
+15-минутного расчёта и холодный/тёплый API карты на обоих хостах.
+[Протокол](code-review/performance-acceptance-2026-10-09.md).
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

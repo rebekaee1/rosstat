@@ -21,7 +21,7 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.schema import CreateIndex, CreateSchema, CreateTable, DropSchema
 
 from app.core import cache
-from app.models import BehaviorEvent, FrontendEvent
+from app.models import BehaviorEvent, FrontendEvent, ServerSessionChange
 from app.services import clickhouse_sync as sync
 from test_world_national_reconcile_pg import _validated_pg_url
 
@@ -44,7 +44,7 @@ async def event_database(monkeypatch):
             await db.execute(CreateSchema(schema))
         created = True
         async with engine.begin() as db:
-            for model in (BehaviorEvent, FrontendEvent):
+            for model in (BehaviorEvent, FrontendEvent, ServerSessionChange):
                 await db.execute(CreateTable(model.__table__))
                 for index in model.__table__.indexes:
                     await db.execute(CreateIndex(index))

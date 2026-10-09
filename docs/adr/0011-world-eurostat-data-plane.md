@@ -284,3 +284,14 @@ URL не меняется. Ошибка loader не продвигает applied
 best-effort, state/catalog strict. SIGKILL и unknown commit outcome требуют
 reconciliation/outbox отдельно. [Локальная приёмка](../code-review/history-publication-acceptance-2026-09-30.md),
 без production release. История условий quarantine выше сохраняется.
+
+### 2026-10-09 — публикация только изменённых поверхностей
+
+Наблюдение production `0bcf68b4`: каждый persist_result с n_ind>0
+сбрасывал world/catalog/SSR даже при same-value replay. Поколение каталога
+менялось быстрее холодной сборки, API давал 503. Теперь no-op ничего
+не сбрасывает, point/metadata revision сбрасывает world/SSR, а catalogue
+только при изменении входов его count/name фильтра или nonzero signal.
+После каждого изменённого commit сохраняется прежняя публикация до
+следующего среза/закрытия сессии. Partial/rollback/cancellation контракт
+сохранён. [Приёмка](../code-review/performance-acceptance-2026-10-09.md).

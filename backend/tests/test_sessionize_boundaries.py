@@ -264,3 +264,31 @@ def test_failed_commit_restores_previous_logical_sessions(monkeypatch):
         assert attempts == ['actual-written']
         assert await _sessions(maker) == before
     _run_with_db(scenario)
+
+
+
+def test_indexed_raw_history_keeps_fallback_keys_disjoint_and_literal(monkeypatch):
+    """Indexed history must equal the original logical-key query, including empties."""
+    from sqlalchemy import Column, MetaData, Table
+    from sqlalchemy.schema import CreateTable
+
+    async def scenario(maker):
+        async with maker() as db:
+            db.add_all([
+                BehaviorEvent(visitor_id_hash='owner', session_id_hash='shared', event_type='pageview', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash=None, session_id_hash='owner', event_type='click', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash='', session_id_hash='owner', event_type='dwell', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash='other', session_id_hash='owner', event_type='move', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash=None, session_id_hash='', event_type='pageview', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash='owner', session_id_hash='shared', event_type='copy', occurred_at=BOUNDARY),
+                BehaviorEvent(visitor_id_hash='owner', session_id_hash='shared', event_type='pageview', occurred_at=NOW + timedelta(days=1)),
+            ])
+            await db.commit()
+            visitors = Table('fixture_visitors', MetaData(), Column('visitor', BehaviorEvent.visitor_id_hash.type, primary_key=True), prefixes=['TEMPORARY'])
+            await db.execute(CreateTable(visitors))
+            await db.execute(visitors.insert(), [{'visitor': 'owner'}, {'visitor': 'shared'}])
+            rows = (await db.execute(rollups._session_raw_select(db, NOW, visitors))).mappings().all()
+            assert sorted((r['visitor'], r['event_type']) for r in rows) == [('owner', 'click'), ('owner', 'dwell'), ('owner', 'pageview')]
+            assert len({r['id'] for r in rows}) == 3
+            await db.rollback()
+    _run_with_db(scenario)

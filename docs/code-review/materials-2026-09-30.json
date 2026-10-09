@@ -794,30 +794,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "0260701446ec78170471329a15daa527169dc42438bd7923aced1222dda2835a",
-        "bytes": 229341
+        "date": "2026-10-09",
+        "sha256": "9612326437bbdb76abaf5363f1f39285203113cd66530f9650cb61e996a65c6c",
+        "bytes": 230837,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "4c9b2e6e780ffa5a59d706fdb48e46c8d965a43ad4551fe0a74c9459e1c894c6",
-          "prior_commit": "849a0373c4ea3202f8192380d20b59d31e0f67e2",
-          "delta": "Vary X-FE-Locale у ленты курсов и указатель на контракт.",
-          "head": "204af55a",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "0260701446ec78170471329a15daa527169dc42438bd7923aced1222dda2835a"
+        "sha256": "9612326437bbdb76abaf5363f1f39285203113cd66530f9650cb61e996a65c6c",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "CONTEXT.md",
       "linked_mechanisms": "domain glossary and dated invariants",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -4163,39 +4156,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "ccf3034fa16064597690fe470efa9259a20b6d0793b5b23beff62faa11f779ff",
-        "bytes": 25048
+        "date": "2026-10-09",
+        "sha256": "5582e433016200aa7aaba8c538bea556211839aef970c743529dbcd724869309",
+        "bytes": 26542,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "mode": "previous_full_read_plus_reviewed_delta",
-          "base_commit": "83c455556998821ac3dcdc140e35b549dad064ec",
-          "previous_sha256": "fed16f1e09c1c211dce9120205fcd8920335ae8c9f57d55a0b85deb4c52dffeb",
-          "prior_full_read_ranges": [
-            [
-              1,
-              197
-            ]
-          ],
-          "reviewer": "root; independent regional_contracts",
-          "method": "Prior full immutable document review retained; current authored additions read against original ADR/source/consumer clauses, exact current code and focused proof; old long history not claimed newly reread. Composite current coverage, not hash-only promotion.",
-          "current_delta_read_ranges": [
-            [
-              198,
-              240
-            ]
-          ]
-        },
         "status_in_review": "reviewed",
-        "sha256": "ccf3034fa16064597690fe470efa9259a20b6d0793b5b23beff62faa11f779ff"
+        "sha256": "5582e433016200aa7aaba8c538bea556211839aef970c743529dbcd724869309",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/adr/0010-analytics-contour-identity-goals-marts-olap.md",
       "linked_mechanisms": "Dated ADR addition records headless hardware signals and Metrika robot handling investigation; historical production numbers and scoring conclusions were not remeasured.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": true,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
@@ -4333,27 +4310,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d",
-        "bytes": 26329
+        "date": "2026-10-09",
+        "sha256": "de480ad689a86afc84d8ce972d05e5a2bc6418987bdb6019b02b54baabaa3acb",
+        "bytes": 27259,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "mode": "previous_full_read_plus_reviewed_delta",
-          "base_commit": "506122b",
-          "previous_sha256": "f3bd67e0dd76cd00790b216f1a5f4eb918ed55ff81995531421f830c32ae22c4",
-          "reviewer": "root; independent reconciliation_review",
-          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
-        },
         "status_in_review": "reviewed",
-        "sha256": "e51947a43aafec5a8c977cbebdf14c97f9b3e30c9829860636247929a7b8d96d"
+        "sha256": "de480ad689a86afc84d8ce972d05e5a2bc6418987bdb6019b02b54baabaa3acb",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/adr/0011-world-eurostat-data-plane.md",
       "linked_mechanisms": "Dated ADR addition replaces perpetual structure-change quarantine with verified-slice reconciliation and preserves immutable public card code; previous quarantine rationale remains historical.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": true,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
@@ -6289,30 +6262,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "618a5fb94d58eddf798b956a150949b13f36cc4205a4cfe9ef0df7cbfbdb58db",
-        "bytes": 47494
+        "date": "2026-10-09",
+        "sha256": "4a019c654e76be3fc1517df67167690eee4f2c52b39367de6be5598f57b6c741",
+        "bytes": 48924,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "a2b27956855ec20caf499c52d0b0ede6cacf528a001e425eaed40396315c540c",
-          "prior_commit": "0ad80ce4c08d11cffed86fd6d325342a268ba2c2",
-          "delta": "Добавлена запись 2026-10-06 о круге 6.",
-          "head": "d4edefad",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "618a5fb94d58eddf798b956a150949b13f36cc4205a4cfe9ef0df7cbfbdb58db"
+        "sha256": "4a019c654e76be3fc1517df67167690eee4f2c52b39367de6be5598f57b6c741",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/architecture-history.md",
       "linked_mechanisms": "history/recovery index",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
         {
@@ -7447,30 +7413,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "e23ba1c91b7156e0f07ee7821dc0e3d9f4b22905eb4398d697c02c82b58d0d29",
-        "bytes": 542029
+        "date": "2026-10-09",
+        "sha256": "4f2db28b012fbb4029ad6be0be78ea30e351f25776ab4de16a5cdbeece9b77d6",
+        "bytes": 543234,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "1608b99f925e094fa019638bd59734814ba115553dd6e0a5f13291e7f9dff9ec",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Пункт 4: быстрые SSR-страницы холодные, остались золотые акценты.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "e23ba1c91b7156e0f07ee7821dc0e3d9f4b22905eb4398d697c02c82b58d0d29"
+        "sha256": "4f2db28b012fbb4029ad6be0be78ea30e351f25776ab4de16a5cdbeece9b77d6",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "inherited_full_read_basis": {
         "date": "2026-09-30",
@@ -10605,9 +10564,11 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "ccc9b1b372eb48d16fc29b4dfc4c64a165b2750d9134d2c40b5e1373d869b31b",
-        "bytes": 782880
+        "date": "2026-10-09",
+        "sha256": "7efb3bc6162e6de12bbe22384c671c1ec3007b42fa9fe2bf0361957c09a32335",
+        "bytes": 783288,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -10618,7 +10579,7 @@
       },
       "canonical_source": "scripts/audit-code-documentation.py",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -11854,13 +11815,15 @@
         "sha256": "d9f221c42561e76a9a46a85c71142d898c5846be713fc698efb9292bf7977fb2",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "d9f221c42561e76a9a46a85c71142d898c5846be713fc698efb9292bf7977fb2",
-        "bytes": 6674530
+        "date": "2026-10-09",
+        "sha256": "f2df547b63e0aa9ed240b1c95b3657548fce6ad609f009463987473c66f06dd2",
+        "bytes": 6686434,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -14276,9 +14239,11 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "e9f4834560750d3f5636a082dbcd4f53539441247f8211a5273e6b81a25f1412",
-        "bytes": 20804536
+        "date": "2026-10-09",
+        "sha256": "af92fc6a7351bde20ef7fd61def60c3d3c1d199c0aa0c997cc07b7fa8f61a6dd",
+        "bytes": 20801185,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -14289,7 +14254,7 @@
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -15528,30 +15493,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "8a37d8e49c6d87138c2d557cf4b09c391263401c3828e7fd56deba4b1c97927d",
-        "bytes": 180330
+        "date": "2026-10-09",
+        "sha256": "d6fc86c18380fceaea4630c7a7b88d79bbf6ec51b2f5eae6e4db70d3276923c3",
+        "bytes": 183175,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "4e63a096df4b878756371fbbac66cd4cefd10ec3d5cd1ca2f6cc146b4e77d24c",
-          "prior_commit": "81a31144baf34d891385fe200a47a73c8c3cfb54",
-          "delta": "Новый раздел «Быстрые ссылки: мост на платформу и название приложения».",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "8a37d8e49c6d87138c2d557cf4b09c391263401c3828e7fd56deba4b1c97927d"
+        "sha256": "d6fc86c18380fceaea4630c7a7b88d79bbf6ec51b2f5eae6e4db70d3276923c3",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
         {
@@ -18768,33 +18726,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "e12cf120792e88bad21ebc1cbc6ef6d878669ef049e5c53d5106e6232ef4471a",
-        "bytes": 33694
+        "date": "2026-10-09",
+        "sha256": "23712462092ccc77766089771b036dddbdf5d5ef7ed73e7a1632ef83ce637fc0",
+        "bytes": 35008,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-09",
-          "reviewer": "Claude Sonnet 5.5 (рецензент-субагент цикла знаний после круга 11)",
-          "head": "2b489e3d",
-          "branch": "circle11/int",
-          "mode": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
-          "previous_sha256": "e1b0f80a2ce0367ea28499664bbab3fbd8f39c0e8e73191748aeb3bc6d2ab1b1",
-          "old_commit": "0dc13727",
-          "delta_evidence": "Автор правки (оркестратор цикла знаний круга 11) написал добавленные блоки по отчётам impl4-a…impl4-h, impl4-t, impl4-int, PLAN3.md и PLAN3-analytics.md и сверил утверждения с кодом ветки circle11/int (2b489e3d: config.py, models.py, services/cabinet.py, event_params.py, searchFilters.js, docker-compose.yml, alembic-ревизии); прежнее содержимое не менялось, диапазоны разделов пересчитаны по смещению хантов.",
-          "freshly_read_definitions": 0,
-          "reanchored_definitions": 0,
-          "reanchored_nondefinition_blocks": 12
-        },
         "status_in_review": "reviewed",
-        "sha256": "e12cf120792e88bad21ebc1cbc6ef6d878669ef049e5c53d5106e6232ef4471a"
+        "sha256": "23712462092ccc77766089771b036dddbdf5d5ef7ed73e7a1632ef83ce637fc0",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/enterprise_resilience.md",
       "linked_mechanisms": "operational acceptance and recovery",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -19122,20 +19070,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "ca325d71db595de44bc37c4199d9c291e3b8a1ba040a3725330c1ad5e117bcae",
-        "bytes": 2899006
+        "date": "2026-10-09",
+        "sha256": "9f61849b734177ab84afe693d694d1314e571eb05fb1ba8491b63c7266329c45",
+        "bytes": 2899006,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "ca325d71db595de44bc37c4199d9c291e3b8a1ba040a3725330c1ad5e117bcae",
-        "canonical_source": "scripts/build-indicator-index.py"
+        "proposal": "docs/code-review/reviews.jsonl",
+        "status_in_review": "data_schema_reviewed",
+        "sha256": "9f61849b734177ab84afe693d694d1314e571eb05fb1ba8491b63c7266329c45",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "scripts/build-indicator-index.py",
       "linked_mechanisms": "Generated map schema and semantic delta inspected: 194 annual forecast horizons shrink 2 to1; remaining changes are file reference membership/line shifts. Individual observations are outside this artifact.",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -27932,17 +27883,20 @@
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "bf4f1f565724f2ad6beb0746bed8f43b9bc7859b1a503d06622e1b2c87bf6d63",
-        "canonical_source": "docs/mechanism-inventory.json"
+        "proposal": "docs/code-review/reviews.jsonl",
+        "status_in_review": "artifact_schema_reviewed",
+        "sha256": "5dd4a542d11564716d636f82af56aee3ff083e53f323db7e8b9b91536a780f4a",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "bf4f1f565724f2ad6beb0746bed8f43b9bc7859b1a503d06622e1b2c87bf6d63",
-        "bytes": 10218352
+        "date": "2026-10-09",
+        "sha256": "5dd4a542d11564716d636f82af56aee3ff083e53f323db7e8b9b91536a780f4a",
+        "bytes": 10244425,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -28380,17 +28334,20 @@
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
-        "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "2dd6d5cc34e86344e0e2e4157756aa9e46820a09a25c53e68f4e571fb541df9c",
-        "canonical_source": "docs/mechanism-inventory.md"
+        "proposal": "docs/code-review/reviews.jsonl",
+        "status_in_review": "artifact_schema_reviewed",
+        "sha256": "c4f6b624ed5eb78cf17b63117bb2fd28a74785c1e5ed2808128d26fc76a8b854",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "2dd6d5cc34e86344e0e2e4157756aa9e46820a09a25c53e68f4e571fb541df9c",
-        "bytes": 506187
+        "date": "2026-10-09",
+        "sha256": "c4f6b624ed5eb78cf17b63117bb2fd28a74785c1e5ed2808128d26fc76a8b854",
+        "bytes": 506753,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -33542,30 +33499,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "4e754e456ad4d8a0fa7f5cd45ee70548226c9013797a06cfd6a8674868d0595f",
-        "bytes": 80191
+        "date": "2026-10-09",
+        "sha256": "2f1f9271362f17dda285bcd399b00ce31d4d8f6d645d1b14d856c29e3b6a8439",
+        "bytes": 81693,
+        "head": "0bcf68b4",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после дизайн-раундов 2-4)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые диапазоны прочитаны и сверены с кодом, неизменные разделы перенесены по совпадению текста",
-          "prior_sha256": "97e2508be6fa0f09acc9e5f2d9134f141c21b00eb764fcbbf4e9b5b14ceae25d",
-          "prior_commit": "324c8cbbe4921949fce9e2a5bc117a78a0d0fd5e",
-          "delta": "2026-10-06: изменён при актуализации знаний после дизайн-раундов 2-4 (дизайн-система, ADR-0018, контракты /forecasts, ticker, SSR «Главное», 404, лимиты).",
-          "head": "0ad80ce4",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "4e754e456ad4d8a0fa7f5cd45ee70548226c9013797a06cfd6a8674868d0595f"
+        "sha256": "2f1f9271362f17dda285bcd399b00ce31d4d8f6d645d1b14d856c29e3b6a8439",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
         {
@@ -40916,6 +40866,28 @@
         }
       ],
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/code-review/performance-acceptance-2026-10-09.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/code-review/performance-acceptance-2026-10-09.md",
+      "repository_path": "docs/code-review/performance-acceptance-2026-10-09.md",
+      "format": ".md",
+      "role": "dated performance evidence",
+      "classification": "current",
+      "canonical_source": "docs/code-review/performance-acceptance-2026-10-09.md",
+      "linked_mechanisms": "analytics_rollups / load-world-eurostat",
+      "review_status": "authored scenario evidence, bounds explicit",
+      "body_reviewed_in_this_pass": true,
+      "current_delta_reviewed_in_this_pass": true,
+      "source_version": {
+        "sha256": "29de542a816b0b6cfa1663634f41ce8cd1fcd273cf621e006ac267a420eb27fc",
+        "bytes": 3622,
+        "head": "0bcf68b4",
+        "scope": "tracked/index",
+        "date": "2026-10-09",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
+      },
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance."
     }
   ],
   "external_sources": [
@@ -57255,20 +57227,5 @@
       "update_action": "Preserve; inspect explicitly if linked to FE requirement or runtime evidence, then classify before promotion to main."
     }
   ],
-  "metadata_refresh": {
-    "at_utc": "2026-10-09T08:54:24.817614+00:00",
-    "head": "a0391a745fd357f07bb9649ae621f348b8ed092d",
-    "collector": "docs/code-review/refresh-materials-2026-09-30.py",
-    "tracked_docs_required": 213,
-    "excluded_hash_paths": [
-      "docs/code-review.md",
-      "docs/code-review/materials-2026-09-30.json",
-      "docs/code-review/materials-current.json",
-      "docs/project-terrain.html",
-      "docs/project-terrain.json",
-      "docs/project-terrain.md",
-      "docs/repo-inventory.md"
-    ],
-    "limit": "SHA refresh does not promote review; external discovery and foreign untracked observations are unchanged."
-  }
+  "metadata_refresh": "2026-10-09 scoped performance changes and generated maps; preserved independent review statuses."
 }

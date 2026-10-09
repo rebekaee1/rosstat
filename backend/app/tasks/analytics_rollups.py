@@ -24,7 +24,7 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import BigInteger, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text
+from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, MetaData, Table, and_, case, cast, delete, func, or_, select, text, literal_column
 from sqlalchemy.schema import CreateIndex, CreateTable, DropTable
 
 from app.config import settings
@@ -101,21 +101,17 @@ def _session_time_between(column, start, end, minutes: int, dialect: str):
     return and_(column >= start - margin, column <= end + margin)
 
 
-def _session_history_query(db, since: datetime, until: datetime, visitors=None):
-    """Resolve logical ownership in SQL, including history of window visitors.
+_RAW_COLUMNS = ("id", "session_id_hash", "event_type", "occurred_at")
 
-    A fixed30min halo cannot recover a long continuous chain or a delayed
-    pageviewless tail. SQL examines older raw rows of visitors present in this
-    window; Python never loads that history or an all-visitor dictionary.
-    """
-    dialect = db.bind.dialect.name
-    key = func.coalesce(func.nullif(BehaviorEvent.visitor_id_hash, ""),
-                        func.nullif(BehaviorEvent.session_id_hash, ""))
-    window_visitors = select(key.label("visitor")).where(
-        BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
-        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
-    ).distinct()
-    order = (BehaviorEvent.occurred_at, BehaviorEvent.id)
+
+def _session_key():
+    """Visitor key of a raw event: visitor hash, else client session hash."""
+    return func.coalesce(func.nullif(BehaviorEvent.visitor_id_hash, literal_column("''")),
+                         func.nullif(BehaviorEvent.session_id_hash, literal_column("''")))
+
+
+def _session_projected_params(dialect: str):
+    """Compact params: only six consumed fields (move/click polylines are large)."""
     params = BehaviorEvent.params_json
     is_object = (func.json_type(params) == "object" if dialect == "sqlite"
                  else func.json_typeof(params) == "object")
@@ -127,18 +123,64 @@ def _session_history_query(db, since: datetime, until: datetime, visitors=None):
         pairs.extend((name, func.json_extract(params, "$." + name) if dialect == "sqlite" else params[name]))
     compact_json = (func.json_object(*pairs) if dialect == "sqlite"
                     else func.json_build_object(*pairs))
-    projected = case((is_object, compact_json), else_=None).label("params_json")
-    ordered = select(
-        key.label("visitor"), BehaviorEvent.id, BehaviorEvent.session_id_hash,
-        BehaviorEvent.event_type, BehaviorEvent.occurred_at, BehaviorEvent.page,
-        BehaviorEvent.user_id, projected,
-        func.lag(BehaviorEvent.occurred_at).over(partition_by=key, order_by=order).label("previous"),
-    ).where(
-        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES),
-        BehaviorEvent.occurred_at < until,
-    )
-    ordered = (ordered.where(key.in_(window_visitors)) if visitors is None else
-               ordered.join(visitors, key == visitors.c.visitor))
+    return case((is_object, compact_json), else_=None).label("params_json")
+
+
+def _session_raw_select(db, until: datetime, visitors):
+    """Read narrow history through the normalized visitor/time covering index.
+
+    Literal empty strings match the expression index even in generic prepared
+    plans. JSON/page payloads are fetched only for touched logical sessions.
+    """
+    key = _session_key()
+    columns = [getattr(BehaviorEvent, name) for name in _RAW_COLUMNS]
+    where = (key == visitors.c.visitor,
+             # Fixed domain constants also match the partial index in generic
+             # prepared plans; this history never includes other event types.
+             BehaviorEvent.event_type.in_(tuple(literal_column("'" + kind + "'")
+                                                for kind in _SESSION_EVENT_TYPES)),
+             BehaviorEvent.occurred_at < until)
+    return select(visitors.c.visitor.label("visitor"), *columns).select_from(
+        visitors).join(BehaviorEvent, where[0]).where(*where[1:]).order_by(
+            visitors.c.visitor, BehaviorEvent.occurred_at, BehaviorEvent.id)
+
+
+def _session_history_query(db, since: datetime, until: datetime, visitors=None, raw=None):
+    """Resolve logical ownership in SQL, including history of window visitors.
+
+    A fixed30min halo cannot recover a long continuous chain or a delayed
+    pageviewless tail. SQL examines older raw rows of visitors present in this
+    window; Python never loads that history or an all-visitor dictionary.
+
+    `raw` is the staged table of `_session_raw_select` rows (index-served, see
+    there). Without it the rows are read directly from `behavior_events` through
+    the key expression: the reference form, equal in result and used by tests.
+    """
+    dialect = db.bind.dialect.name
+    order = (BehaviorEvent.occurred_at, BehaviorEvent.id)
+    if raw is not None:
+        ordered = select(
+            raw.c.visitor, raw.c.id, raw.c.session_id_hash, raw.c.event_type, raw.c.occurred_at,
+            func.lag(raw.c.occurred_at).over(
+                partition_by=raw.c.visitor, order_by=(raw.c.occurred_at, raw.c.id)).label("previous"),
+        )
+    else:
+        key = _session_key()
+        window_visitors = select(key.label("visitor")).where(
+            BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+            BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
+        ).distinct()
+        ordered = select(
+            key.label("visitor"), BehaviorEvent.id, BehaviorEvent.session_id_hash,
+            BehaviorEvent.event_type, BehaviorEvent.occurred_at, BehaviorEvent.page,
+            BehaviorEvent.user_id, _session_projected_params(dialect),
+            func.lag(BehaviorEvent.occurred_at).over(partition_by=key, order_by=order).label("previous"),
+        ).where(
+            BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES),
+            BehaviorEvent.occurred_at < until,
+        )
+        ordered = (ordered.where(key.in_(window_visitors)) if visitors is None else
+                   ordered.join(visitors, key == visitors.c.visitor))
     ordered = ordered.cte("session_events")
     gap = (_session_epoch_us(ordered.c.occurred_at) >= _session_epoch_us(ordered.c.previous) + SESSION_GAP_MIN * 60 * 1_000_000
            if dialect == "sqlite" else ordered.c.occurred_at >= ordered.c.previous + timedelta(minutes=SESSION_GAP_MIN))
@@ -155,9 +197,31 @@ def _session_history_query(db, since: datetime, until: datetime, visitors=None):
     logical_start = func.max(case((marked.c.has_pageview == 1, marked.c.burst_start), else_=None)).over(
         partition_by=marked.c.visitor, order_by=(marked.c.occurred_at, marked.c.id), rows=(None, 0),
     )
+    payload = [] if raw is not None else [marked.c.page, marked.c.user_id, marked.c.params_json]
     return select(marked.c.visitor, marked.c.id, marked.c.session_id_hash,
-        marked.c.event_type, marked.c.occurred_at, marked.c.page, marked.c.user_id,
-        marked.c.params_json, logical_start.label("logical_start"))
+        marked.c.event_type, marked.c.occurred_at, *payload, logical_start.label("logical_start"))
+
+
+def _temp_table(prefix: str, *columns, **kwargs) -> Table:
+    return Table(prefix + uuid4().hex, MetaData(), *columns,
+                 prefixes=["TEMPORARY"], postgresql_on_commit="DROP", **kwargs)
+
+
+async def _stage(db, table: Table, source, temporary: list, *, index: tuple = ()):
+    """Create a private temp stage, fill it from SELECT, index and ANALYZE it.
+
+    Fresh statistics on small staged tables keep the next step's join order
+    accurate: intermediate session/goal aggregates must not be planned from
+    compounded CTE estimates. Persistent source statistics are unchanged.
+    """
+    temporary.append(table)
+    await db.execute(CreateTable(table))
+    await db.execute(table.insert().from_select([c.name for c in table.columns], source))
+    if index:
+        await db.execute(CreateIndex(Index("ix_" + table.name, *index)))
+    if db.bind.dialect.name == "postgresql":
+        await db.execute(text("ANALYZE " + table.name))
+    return table
 
 
 async def _prepare_session_history(db, since: datetime, until: datetime, temporary: list):
@@ -166,40 +230,28 @@ async def _prepare_session_history(db, since: datetime, until: datetime, tempora
     Historical work lives in PostgreSQL temporary storage, not Python lists.
     ANALYZE touches only these private transaction-scoped stages.
     """
-    visitors = Table("sessionize_visitors_" + uuid4().hex, MetaData(),
-        Column("visitor", BehaviorEvent.visitor_id_hash.type, primary_key=True),
-        prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
-    temporary.append(visitors)
-    await db.execute(CreateTable(visitors))
-    key = func.coalesce(func.nullif(BehaviorEvent.visitor_id_hash, ""),
-                        func.nullif(BehaviorEvent.session_id_hash, ""))
-    await db.execute(visitors.insert().from_select(["visitor"], select(key).where(
-        BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
-        BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
-    ).distinct()))
-    if db.bind.dialect.name == "postgresql":
-        await db.execute(text("ANALYZE " + visitors.name))
-    history = Table("sessionize_history_" + uuid4().hex, MetaData(),
-        Column("visitor", BehaviorEvent.visitor_id_hash.type),
+    visitor_type = BehaviorEvent.visitor_id_hash.type
+    key = _session_key()
+    visitors = await _stage(
+        db, _temp_table("sessionize_visitors_", Column("visitor", visitor_type, primary_key=True)),
+        select(key).where(
+            BehaviorEvent.occurred_at >= since, BehaviorEvent.occurred_at < until,
+            BehaviorEvent.event_type.in_(_SESSION_EVENT_TYPES), key.isnot(None),
+        ).distinct(), temporary)
+    raw_columns = [Column("visitor", visitor_type),
+                   *(Column(name, BehaviorEvent.__table__.c[name].type) for name in _RAW_COLUMNS)]
+    raw = await _stage(db, _temp_table("sessionize_raw_", *raw_columns),
+                       _session_raw_select(db, until, visitors), temporary)
+    history = _temp_table("sessionize_history_", Column("visitor", visitor_type),
         *(Column(name, BehaviorEvent.__table__.c[name].type) for name in
-          ("id", "session_id_hash", "event_type", "occurred_at", "page", "user_id", "params_json")),
-        Column("logical_start", BehaviorEvent.occurred_at.type),
-        prefixes=["TEMPORARY"], postgresql_on_commit="DROP")
-    temporary.append(history)
-    await db.execute(CreateTable(history))
-    await db.execute(history.insert().from_select(
-        [c.name for c in history.columns], _session_history_query(db, since, until, visitors)))
-    await db.execute(CreateIndex(Index("ix_" + history.name, history.c.visitor, history.c.logical_start)))
-    if db.bind.dialect.name == "postgresql":
-        await db.execute(text("ANALYZE " + history.name))
-    return history
+          _RAW_COLUMNS),
+        Column("logical_start", BehaviorEvent.occurred_at.type))
+    return await _stage(db, history, _session_history_query(db, since, until, visitors, raw=raw),
+                        temporary, index=(history.c.visitor, history.c.logical_start))
 
 
-def _session_source_query(db, since: datetime, until: datetime, events=None):
-    """Join compact logical-session bounds, goals and portraits in SQL."""
-    dialect = db.bind.dialect.name
-    if events is None:
-        events = _session_history_query(db, since, until).cte("logical_session_events")
+def _session_bounds_select(events, since: datetime, dialect: str):
+    """Touched logical sessions: bounds, same-day count and visitor's first start."""
     keys = (events.c.visitor, events.c.logical_start)
     all_bounds = select(
         *keys, func.max(events.c.occurred_at).label("logical_end"),
@@ -210,21 +262,32 @@ def _session_source_query(db, since: datetime, until: datetime, events=None):
         func.count().over(partition_by=(all_bounds.c.visitor, day)).label("visitor_sessions"),
         func.min(all_bounds.c.logical_start).over(partition_by=all_bounds.c.visitor).label("first_start"),
     ).cte("session_day_counts")
-    bounds = select(counts).where(counts.c.logical_end >= since).cte("touched_session_bounds")
-    sids = select(*keys, events.c.session_id_hash).join(
-        bounds, and_(events.c.visitor == bounds.c.visitor, events.c.logical_start == bounds.c.logical_start),
-    ).where(events.c.session_id_hash.isnot(None), events.c.session_id_hash != "").distinct().cte("logical_session_client_ids")
+    return select(counts).where(counts.c.logical_end >= since)
+
+
+def _session_sids_select(events, bounds):
+    """Client session ids met in each touched logical session."""
+    return select(bounds.c.visitor, bounds.c.logical_start, bounds.c.logical_end, events.c.session_id_hash).join(
+        events, and_(events.c.visitor == bounds.c.visitor, events.c.logical_start == bounds.c.logical_start),
+    ).where(events.c.session_id_hash.isnot(None), events.c.session_id_hash != "").distinct()
+
+
+def _session_goals_select(sids, dialect: str):
     from app.services.goal_taxonomy import explicit_events
     micro_names = sorted(name for name in explicit_events() if tier_for_event(name) == TIER_MICRO)
     macro_names = sorted(name for name in explicit_events() if tier_for_event(name) == TIER_MACRO)
-    goals = select(
+    return select(
         sids.c.visitor, sids.c.logical_start,
         func.sum(case((FrontendEvent.event_name.in_(micro_names), 1), else_=0)).label("micro_goals"),
         func.sum(case((FrontendEvent.event_name.in_(macro_names), 1), else_=0)).label("macro_goals"),
-    ).join(bounds, and_(sids.c.visitor == bounds.c.visitor, sids.c.logical_start == bounds.c.logical_start)).join(
+    ).join(
         FrontendEvent, and_(FrontendEvent.session_id_hash == sids.c.session_id_hash,
-            _session_time_between(FrontendEvent.occurred_at, bounds.c.logical_start, bounds.c.logical_end, 5, dialect)),
-    ).group_by(sids.c.visitor, sids.c.logical_start).cte("logical_session_goals")
+            _session_time_between(FrontendEvent.occurred_at, sids.c.logical_start, sids.c.logical_end, 5, dialect)),
+    ).group_by(sids.c.visitor, sids.c.logical_start)
+
+
+def _session_details_select(bounds, goals, dialect: str):
+    """Bounds with the portrait fallback, newness and goal counters."""
     fallback = select(BehaviorSession.session_id_hash).where(
         BehaviorSession.visitor_id_hash == bounds.c.visitor,
         and_(
@@ -236,16 +299,67 @@ def _session_source_query(db, since: datetime, until: datetime, events=None):
     earlier = select(ServerSession.id).where(
         ServerSession.visitor_id_hash == bounds.c.visitor, ServerSession.started_at < bounds.c.first_start,
     ).exists()
-    details = select(bounds, fallback.label("fallback_sid"),
-        and_(bounds.c.logical_start == bounds.c.first_start, ~earlier).label("is_new_visitor"),
-    ).cte("session_attribution").prefix_with("MATERIALIZED", dialect="postgresql")
     return select(
-        events, details.c.logical_end, details.c.visitor_sessions, details.c.is_new_visitor,
-        details.c.fallback_sid, func.coalesce(goals.c.micro_goals, 0).label("micro_goals"),
+        bounds.c.visitor, bounds.c.logical_start, bounds.c.logical_end, bounds.c.visitor_sessions,
+        and_(bounds.c.logical_start == bounds.c.first_start, ~earlier).label("is_new_visitor"),
+        fallback.label("fallback_sid"),
+        func.coalesce(goals.c.micro_goals, 0).label("micro_goals"),
         func.coalesce(goals.c.macro_goals, 0).label("macro_goals"),
-    ).join(details, and_(events.c.visitor == details.c.visitor, events.c.logical_start == details.c.logical_start)).outerjoin(
-        goals, and_(goals.c.visitor == details.c.visitor, goals.c.logical_start == details.c.logical_start),
-    ).order_by(events.c.visitor, events.c.logical_start, events.c.occurred_at, events.c.id)
+    ).select_from(bounds).outerjoin(
+        goals, and_(goals.c.visitor == bounds.c.visitor, goals.c.logical_start == bounds.c.logical_start))
+
+
+async def _prepare_session_details(db, history, since: datetime, temporary: list):
+    """Stage touched-session bounds, goals and attributes (see `_stage`)."""
+    dialect = db.bind.dialect.name
+    visitor_type = BehaviorEvent.visitor_id_hash.type
+    time_type = BehaviorEvent.occurred_at.type
+    bounds = await _stage(db, _temp_table("sessionize_bounds_",
+        Column("visitor", visitor_type), Column("logical_start", time_type), Column("logical_end", time_type),
+        Column("visitor_sessions", Integer), Column("first_start", time_type)),
+        _session_bounds_select(history, since, dialect), temporary)
+    sids = await _stage(db, _temp_table("sessionize_sids_",
+        Column("visitor", visitor_type), Column("logical_start", time_type), Column("logical_end", time_type),
+        Column("session_id_hash", BehaviorEvent.session_id_hash.type)),
+        _session_sids_select(history, bounds), temporary)
+    goals = await _stage(db, _temp_table("sessionize_goals_",
+        Column("visitor", visitor_type), Column("logical_start", time_type),
+        Column("micro_goals", Integer), Column("macro_goals", Integer)),
+        _session_goals_select(sids, dialect), temporary)
+    details = _temp_table("sessionize_details_",
+        Column("visitor", visitor_type), Column("logical_start", time_type), Column("logical_end", time_type),
+        Column("visitor_sessions", Integer), Column("is_new_visitor", Boolean),
+        Column("fallback_sid", BehaviorSession.session_id_hash.type),
+        Column("micro_goals", Integer), Column("macro_goals", Integer))
+    return await _stage(db, details, _session_details_select(bounds, goals, dialect), temporary,
+                        index=(details.c.visitor, details.c.logical_start))
+
+
+def _session_source_query(db, since: datetime, until: datetime, events=None, details=None):
+    """Join compact logical-session bounds, goals and portraits in SQL.
+
+    Staged form (`sessionize`): `events` and `details` are analyzed temp tables.
+    Without them the same selects are chained as CTEs, the reference form for tests.
+    """
+    dialect = db.bind.dialect.name
+    if events is None:
+        events = _session_history_query(db, since, until).cte("logical_session_events")
+    if details is None:
+        bounds = _session_bounds_select(events, since, dialect).cte("touched_session_bounds")
+        sids = _session_sids_select(events, bounds).cte("logical_session_client_ids")
+        goals = _session_goals_select(sids, dialect).cte("logical_session_goals")
+        details = _session_details_select(bounds, goals, dialect).cte("session_attribution").prefix_with(
+            "MATERIALIZED", dialect="postgresql")
+    payload = [] if "params_json" in events.c else [
+        BehaviorEvent.page, BehaviorEvent.user_id, _session_projected_params(dialect),
+    ]
+    query = select(
+        events, *payload, details.c.logical_end, details.c.visitor_sessions, details.c.is_new_visitor,
+        details.c.fallback_sid, details.c.micro_goals, details.c.macro_goals,
+    ).join(details, and_(events.c.visitor == details.c.visitor, events.c.logical_start == details.c.logical_start))
+    if payload:
+        query = query.join(BehaviorEvent, BehaviorEvent.id == events.c.id)
+    return query.order_by(events.c.visitor, events.c.logical_start, events.c.occurred_at, events.c.id)
 
 
 class _SessionAccumulator:
@@ -337,7 +451,8 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
             await db.execute(CreateTable(previous))
         history = await _prepare_session_history(db, since, stop, temporary)
         admin_users, admin_visitors = await admin_identity(db)
-        result = await db.stream(_session_source_query(db, since, stop, history).execution_options(yield_per=_STREAM_BATCH))
+        details = await _prepare_session_details(db, history, since, temporary)
+        result = await db.stream(_session_source_query(db, since, stop, history, details).execution_options(yield_per=_STREAM_BATCH))
         current = None
         output = []
         owned = 0

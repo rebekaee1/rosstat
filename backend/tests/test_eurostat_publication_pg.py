@@ -63,7 +63,7 @@ def test_real_redis_and_api_observe_committed_revision_after_later_failure(isola
                 with pytest.raises(DBAPIError):
                     await loader.persist_result(result, ids, {"DE": "Германия"})
                 assert await api_values() == [20.0]
-                assert (int(await redis_cache.get("fe:ver:world")), int(await redis_state.get("fe:ver:world-catalog"))) == (versions[0] + 1, versions[1] + 1)
+                assert (int(await redis_cache.get("fe:ver:world")), int(await redis_state.get("fe:ver:world-catalog"))) == (versions[0] + 1, versions[1])
         finally:
             await redis_cache.aclose()
             await redis_state.aclose()
@@ -106,10 +106,10 @@ def test_slice_commit_then_later_rollback_keeps_published_facts(isolated_pg_url,
                 assert (await reader.execute(select(WorldIndicator.slice_hash))).scalars().all() == ["first"]
             assert published == [(("world", "world-catalog", "ssr-world"), [10.0])]
 
-            # Unchanged point writes remain idempotent, but metadata is still a
-            # published unit. A failed previous slice doesn't suppress retry.
+            # An identical replay changes neither metadata nor points and must
+            # leave the warm catalogue and public-series cache intact.
             assert await loader.persist_result(first, country_ids, {"DE": "Германия"}) == (1, 0)
-            assert len(published) == 2
+            assert len(published) == 1
 
     # Seed countries without a real Redis; publication assertions start after.
     async def noop(*namespaces):
@@ -144,4 +144,47 @@ def test_remap_publication_failure_keeps_commit_and_same_url(isolated_pg_url, mo
                 card = await reader.get(WorldIndicator, card_id)
                 assert (card.slice_hash, card.code) == ("new", "de-stable-url")
 
+    asyncio.run(scenario())
+
+
+
+def test_listed_slice_invalidates_catalog_only_for_visibility_signal_or_metadata(isolated_pg_url, monkeypatch):
+    loader = _loader()
+    async def scenario():
+        async with _world_database(isolated_pg_url) as maker:
+            monkeypatch.setattr(loader, 'async_session', maker)
+            monkeypatch.setattr(loader, 'is_listed_for_quality', lambda _quality: True)
+            monkeypatch.setattr(loader, 'unit_is_listable', lambda _unit: True)
+            monkeypatch.setattr(loader, 'meets_listing_depth', lambda *_args: True)
+            published = []
+            async def publish(*namespaces):
+                published.append(namespaces)
+            monkeypatch.setattr(loader, 'bump_namespaces', publish)
+            ids = await loader.ensure_countries({'DE'})
+            published.clear()
+            result = DatasetParseResult(dataset_id='fixture', title_en='Fixture', frequency='annual',
+                slice_={'freq': 'A', 'unit': 'PC'}, slice_hash='fixture', unit='PC',
+                series_by_geo={'DE': [(date(2024, 1, 1), 10.0)]}, source_url='https://example.invalid')
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published == [('world', 'world-catalog', 'ssr-world')]
+            async with maker() as reader:
+                assert (await reader.execute(select(WorldIndicator.is_listed))).scalar_one() is True
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert len(published) == 1
+            result.series_by_geo['DE'] = [(date(2024, 1, 1), 20.0)]
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published[-1] == ('world', 'ssr-world')
+            result.series_by_geo['DE'] = [(date(2024, 1, 1), 0.0)]
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published[-1] == ('world', 'world-catalog', 'ssr-world')
+            result.series_by_geo['DE'] = [(date(2024, 1, 1), 5.0)]
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published[-1] == ('world', 'world-catalog', 'ssr-world')
+            result.source_url = 'https://example.invalid/revised'
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published[-1] == ('world', 'ssr-world')
+            # Rename of a displayed indicator affects catalogue name filtering.
+            monkeypatch.setattr(loader, 'build_public_name', lambda *_args, **_kw: 'Новое имя')
+            await loader.persist_result(result, ids, {'DE': 'Германия'})
+            assert published[-1] == ('world', 'world-catalog', 'ssr-world')
     asyncio.run(scenario())

@@ -113,3 +113,20 @@ Sitemap, RSS, canonical, hreflang, OG и JSON-LD формируются от и�
 кэш разделён по host/locale. После cutover людей с IP России/СНГ с apex
 уводим на `ru.`; `Accept-Language` не редиректит. Bot UA и служебные маршруты
 всегда получают ответ запрошенного хоста. Канарейка: `scripts/dual-host-release-gate.py`.
+
+## 2026-10-09 — измеренная деградация и исправление
+
+На runtime 0bcf68b4 healthy контейнеры сочетались с Rollups 15min failed
+и 503 каталога: health не подтверждает успешный фоновой расчёт.
+Исправления: normalized visitor/time covering index и узкая history staging;
+Eurostat no-op не инвалидирует кэш, value revision не сбрасывает country
+catalogue без изменения его nonzero signal/metadata. Не повышены worker/
+память/таймауты. Доказательства и остаточные пределы —
+[приёмка](code-review/performance-acceptance-2026-10-09.md).
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

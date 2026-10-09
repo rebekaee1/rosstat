@@ -1259,3 +1259,21 @@ named Eurostat members и axis-specific totals требуют строковог
 TOTAL другой оси не заменяет intent. [Контракты](docs/data-contracts.md#уточнение-v5-0110-независимые-роли-и-нативные-свидетельства)
 и [измерения](docs/research/search-history-replay-2026-09-30.md) сохраняют
 отрицательные blind результаты; повтор после разбора является development.
+
+## Производительность аналитики и каталога — 2026-10-09
+
+Оптимизация не меняет logical session/30 минут/late dwell/новизну/цели:
+история посетителей полная, SQL ownership считается по узким полям через
+normalized visitor/time covering index, payload читается после отбора
+затронутых sessions. No-op Eurostat slice не публикует namespace; ревизия
+значений публикует world/SSR, каталог стран — только при изменении его
+состава/имён/наличия ненулевых фактов. Подробности в
+[data contracts](docs/data-contracts.md#2026-10-09--скорость-sessionize-и-публикация-eurostat),
+[проверки и runtime](docs/code-review/performance-acceptance-2026-10-09.md).
+
+Уточнение performance delta 09.10: history index частичный по четырём
+session event types; visitor/time/id и исходные ключи покрыты. Константы
+в SQL совпадают с expression/predicate индекса и при generic prepare.
+Raw читается по visitor/time/id; подбор fallback portrait использует
+индекс (visitor, started_at DESC, session_id). Миграция обновляет
+статистику expression index перед первым запуском.

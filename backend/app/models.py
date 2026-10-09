@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime, timezone
 from sqlalchemy import (
     String, Text, Boolean, Integer, BigInteger, Numeric, Date, DateTime,
-    ForeignKey, UniqueConstraint, Index, JSON, LargeBinary, Uuid, text,
+    ForeignKey, UniqueConstraint, Index, JSON, LargeBinary, Uuid, text, func,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -1028,12 +1028,7 @@ class BehaviorEvent(Base):
     rage) для дешёвых агрегаций; всё остальное — в params_json.
     """
     __tablename__ = "behavior_events"
-    __table_args__ = (
-        Index("ix_behavior_type_time", "event_type", "occurred_at"),
-        Index("ix_behavior_page_time", "page", "occurred_at"),
-        Index("ix_behavior_session_event", "session_id_hash", "id"),
-        Index("ix_behavior_occurred", "occurred_at"),
-    )
+
 
     # BigInteger на проде (поток большой), Integer-variant для sqlite-тестов
     # (иначе PK не автоинкрементится).
@@ -1057,6 +1052,17 @@ class BehaviorEvent(Base):
     occurred_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
     ingested_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
+    __table_args__ = (
+        Index("ix_behavior_type_time", "event_type", "occurred_at"),
+        Index("ix_behavior_page_time", "page", "occurred_at"),
+        Index("ix_behavior_session_event", "session_id_hash", "id"),
+        Index("ix_behavior_occurred", "occurred_at"),
+        Index("ix_behavior_logical_session_cover",
+              func.coalesce(func.nullif(visitor_id_hash, ""), func.nullif(session_id_hash, "")),
+              occurred_at, id, postgresql_include=["event_type", "session_id_hash", "visitor_id_hash"],
+              postgresql_where=event_type.in_(("pageview", "dwell", "click", "move"))),
+    )
+
 
 class BehaviorSession(Base):
     """Портрет сессии собственного счётчика (аналог визита Метрики, 2026-07-05).
@@ -1069,9 +1075,6 @@ class BehaviorSession(Base):
     по session_id_hash.
     """
     __tablename__ = "behavior_sessions"
-    __table_args__ = (
-        Index("ix_behavior_sessions_started", "started_at"),
-    )
 
     session_id_hash: Mapped[str] = mapped_column(String(80), primary_key=True)
     visitor_id_hash: Mapped[str | None] = mapped_column(String(80), index=True)
@@ -1128,6 +1131,12 @@ class BehaviorSession(Base):
     # pageview), когда session_start потерян. Настоящий session_start,
     # пришедший позже, апгрейдит строку полным портретом (см. analytics.py).
     is_synthetic: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
+
+    __table_args__ = (
+        Index("ix_behavior_sessions_started", "started_at"),
+        Index("ix_behavior_sessions_visitor_started", visitor_id_hash,
+              started_at.desc(), session_id_hash),
+    )
 
 
 class IdentityLink(Base):

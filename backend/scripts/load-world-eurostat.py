@@ -24,7 +24,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 
-from sqlalchemy import func, select, text
+from sqlalchemy import func, select, text, literal_column
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -97,7 +97,7 @@ EXIT_STRUCTURE_BLOCKED = 3
 STRUCTURE_VERDICT_PREFIX = "STRUCTURE_VERDICT "
 
 
-async def publish_committed_changes() -> None:
+async def publish_committed_changes(*, catalog_changed: bool = True) -> None:
     """Publish one committed unit before a later slice can fail.
 
     Finish a bounded Redis attempt on cooperative cancellation, then propagate
@@ -105,7 +105,7 @@ async def publish_committed_changes() -> None:
     atomic transaction between PostgreSQL and Redis.
     """
     publication = asyncio.create_task(asyncio.wait_for(
-        bump_namespaces("world", "world-catalog", "ssr-world"), timeout=15,
+        bump_namespaces(*(("world", "world-catalog", "ssr-world") if catalog_changed else ("world", "ssr-world"))), timeout=15,
     ))
     cancelled = False
     try:
@@ -311,6 +311,7 @@ async def upsert_indicator_meta(
     result: DatasetParseResult,
     points: list[tuple[date, float]],
     country_slug: str | None = None,
+    changes: set[str] | None = None,
 ) -> tuple[int, bool]:
     """Create/update WorldIndicator. Returns (id, created)."""
     code = make_indicator_code(country_code, result.dataset_id, result.slice_)
@@ -418,11 +419,14 @@ async def upsert_indicator_meta(
             )
             db.add(ind)
             await db.flush()
+            if changes is not None:
+                changes.update(("metadata", "catalog"))
             return ind.id, True
 
     # Код = URL карточки: после создания не меняется (редиректов для мировых
     # карточек нет). Переподключённая после смены структуры карточка сохраняет
     # прежний адрес, хотя её срез уже другой.
+    catalog_before = (existing.country_id, existing.code, existing.name_ru, existing.is_listed)
     existing.provider = "eurostat"
     existing.slice_json = result.slice_
     existing.name_ru = name_ru
@@ -443,6 +447,11 @@ async def upsert_indicator_meta(
     existing.seo_title = seo_title
     existing.seo_description = desc
     existing.seo_keywords = seo_kw
+    if changes is not None:
+        if db.is_modified(existing):
+            changes.add("metadata")
+        if catalog_before != (existing.country_id, existing.code, existing.name_ru, existing.is_listed):
+            changes.add("catalog")
     await db.flush()
     return existing.id, created
 
@@ -468,6 +477,8 @@ async def persist_result(
     """Persist one parsed slice atomically; returns (indicators, changed points)."""
     n_ind = 0
     n_pts = 0
+    changed = False
+    changes: set[str] = set()
     async with async_session() as db:
         async with db.begin():
             for geo, points in result.series_by_geo.items():
@@ -496,15 +507,28 @@ async def persist_result(
                     country_slug=slug,
                     result=result,
                     points=points,
+                    changes=changes,
                 )
+                # The country catalogue counts listed rows with nonzero signal;
+                # point revisions that keep that signal do not change its payload.
+                indicator = await db.get(WorldIndicator, iid)
+                signal_query = select(select(WorldDataPoint.id).where(
+                    WorldDataPoint.indicator_id == iid, WorldDataPoint.value != literal_column("0"),
+                ).exists())
+                before_signal = bool((await db.execute(signal_query)).scalar()) if indicator.is_listed else False
                 touched, _removed = await reconcile_points(db, iid, points)
                 await refresh_indicator_extent(db, iid)
+                changed = changed or bool(touched or _removed)
+                if indicator.is_listed and (touched or _removed):
+                    after_signal = bool((await db.execute(signal_query)).scalar())
+                    if before_signal != after_signal:
+                        changes.add("catalog")
                 n_ind += 1
                 n_pts += touched
-        if n_ind:
-            # Publish before session.close can be cancelled; metadata may
-            # change even when every point has the same value.
-            await publish_committed_changes()
+        if changed or changes:
+            # Publish only actual committed changes. Unchanged slices must not
+            # discard the expensive country catalogue or every public world cache.
+            await publish_committed_changes(catalog_changed="catalog" in changes)
     return n_ind, n_pts
 
 
