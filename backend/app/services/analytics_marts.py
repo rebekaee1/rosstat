@@ -319,6 +319,33 @@ async def admin_identity(db: AsyncSession) -> tuple[set[str], set[str]]:
     return user_ids, visitors
 
 
+async def human_event_conditions(
+    db: AsyncSession, start_date: date, end_date: date,
+) -> list:
+    """WHERE-условия для `frontend_events`: без роботов и собственной активности.
+
+    Тот же способ, что у `mart_pwa_installs` и истинной воронки: посетители с
+    `server_sessions.is_bot/is_internal` за окно и посетители/пользователи
+    владельца и админов из `admin_identity`. Единая точка для rollup'а целей,
+    витрин регистраций и «Что делали» (круг 11, E6: `daily_goals` раньше считал
+    всё подряд, и ферма 2026-09 раздувала `mart_feature_adoption`).
+    """
+    admin_users, admin_visitors = await admin_identity(db)
+    excluded_visitors = select(ServerSession.visitor_id_hash).where(
+        ServerSession.day >= start_date, ServerSession.day <= end_date,
+        or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True)))
+    conds: list = [
+        or_(FrontendEvent.visitor_id_hash.is_(None),
+            FrontendEvent.visitor_id_hash.notin_(excluded_visitors)),
+    ]
+    if admin_users:
+        conds.append(or_(FrontendEvent.user_id.is_(None), FrontendEvent.user_id.notin_(admin_users)))
+    if admin_visitors:
+        conds.append(or_(FrontendEvent.visitor_id_hash.is_(None),
+                         FrontendEvent.visitor_id_hash.notin_(admin_visitors)))
+    return conds
+
+
 def _pctl(values: list[float], p: float) -> float | None:
     if not values:
         return None

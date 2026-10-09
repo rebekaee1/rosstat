@@ -31,7 +31,9 @@ from app.config import settings
 from app.database import analytics_session
 from app.models import Hypothesis
 from app.services import pulse
+from app.services.display import today_msk
 from app.services.alerting import digest_recipients
+from app.services.pii_scrub import sanitize_memory_for_llm, sanitize_snapshot_for_llm, scrub_value
 from app.services.telegram_bot import main_menu_keyboard, send_message
 
 logger = logging.getLogger(__name__)
@@ -186,6 +188,23 @@ def _split_llm_output(content: str) -> tuple[str, list[dict]]:
     return text.strip(), updates
 
 
+def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict]) -> str:
+    """Текст пользовательского сообщения для модели.
+
+    152-ФЗ (круг 11): всё, что уходит в OpenRouter через зарубежный прокси, проходит
+    очистку: без имён и почт новых пользователей, без почт и телефонов в строках
+    поиска, копирования и фраз. Чистая функция (проверяется тестом без сети).
+    """
+    return (
+        "Память за прошлые дни (старые → новые):\n"
+        + json.dumps(sanitize_memory_for_llm(memory), ensure_ascii=False)
+        + "\n\nСнапшот за отчётный день:\n"
+        + json.dumps(sanitize_snapshot_for_llm(snapshot), ensure_ascii=False)
+        + "\n\nОткрытые гипотезы (hypotheses):\n"
+        + json.dumps(scrub_value(hypotheses), ensure_ascii=False)
+    )
+
+
 async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     """Сводка дня через OpenRouter (+ ведение гипотез). None при сбое —
     отчёт уйдёт без LLM."""
@@ -203,14 +222,7 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": (
-                    "Память за прошлые дни (старые → новые):\n"
-                    + json.dumps(memory, ensure_ascii=False)
-                    + "\n\nСнапшот за отчётный день:\n"
-                    + json.dumps(snapshot, ensure_ascii=False)
-                    + "\n\nОткрытые гипотезы (hypotheses):\n"
-                    + json.dumps(hypotheses, ensure_ascii=False)
-                ),
+                "content": build_llm_user_content(snapshot, memory, hypotheses),
             },
         ],
     }
@@ -380,7 +392,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
         logger.info("Pulse report skipped: telegram not configured")
         return False
 
-    d = report_date or (date.today() - timedelta(days=1))
+    d = report_date or (today_msk() - timedelta(days=1))
     snapshot = await pulse.get_or_build_snapshot(d)
     # Привлечение обновляем на момент отчёта: снапшот фиксируется в 23:57,
     # а синк Метрики за этот день отрабатывает только утром (08:20).
@@ -426,10 +438,14 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
 async def pulse_snapshot_job() -> None:
     """Ежедневная фиксация снапшота (23:57 МСК) — чтобы день не потерялся.
 
+    E2 (круг 11): снимок 23:57 не видит последние минуты суток и помечен
+    `complete=false`; отчёт 09:05 пересоберёт его по полному МСК-окну
+    (`pulse.get_or_build_snapshot`), так что вечерняя часть не теряется.
+
     Н-21: исключение НЕ глотаем — прокидываем в APScheduler, чтобы сработал
     scheduler-listener (Н-2) и владелец получил алерт, а не молча потерял день.
     """
-    snap = await pulse.build_snapshot(date.today())
+    snap = await pulse.build_snapshot(today_msk())
     await pulse.store_snapshot(snap)
     logger.info("Pulse snapshot stored for %s", snap["date"])
 

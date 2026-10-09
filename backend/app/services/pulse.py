@@ -15,15 +15,24 @@ from __future__ import annotations
 import json
 import logging
 from collections import Counter
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 
 from app.config import settings
 from app.core.cache import get_state_redis
 from app.database import analytics_session
+from app.services.analytics_period import MSK_OFFSET, msk_day_start_utc
+from app.services.display import today_msk
+from app.services.goal_taxonomy import (
+    GROUP_DOWNLOAD,
+    GROUP_FRONT_ERROR,
+    GROUP_WALL,
+    events_in_group,
+)
 from app.services.identity.consents import newsletter_subscriber_count_query
+from app.services.pii_scrub import scrub_text
 from app.models import (
     AnalyticsSyncRun,
     AuthAudit,
@@ -49,11 +58,12 @@ MEMORY_TTL = 30 * 86400    # компактная память — месяц
 _SNAP_KEY = "fe:pulse:snap:{d}"
 _MEM_KEY = "fe:pulse:memory:{d}"
 
-_DOWNLOAD_EVENTS = {
-    "download_csv", "download_excel", "chart_image_download",
-    "compare_image_download", "compare_csv_download", "download_limit",
-}
-_ERROR_EVENTS = {"error_reload", "api_retry", "api_error"}
+# E4/E5 (круг 11): единые группы событий из goal_taxonomy вместо локальных
+# списков с несуществующими именами (`compare_csv_download`, `api_error`).
+# `download_limit` — упор в стену регистрации, а не скачивание: считается отдельно.
+_DOWNLOAD_EVENTS = events_in_group(GROUP_DOWNLOAD)
+_WALL_EVENTS = events_in_group(GROUP_WALL)
+_ERROR_EVENTS = events_in_group(GROUP_FRONT_ERROR)
 
 # Статусы FetchLog, означающие ошибку прогона. Источник истины — что реально
 # пишут base_parser.py ("failed") и tasks/scheduler.py ("failed"/"timeout").
@@ -63,7 +73,13 @@ ETL_ERROR_STATUSES = ("failed", "timeout")
 
 
 def _day_bounds(d: date) -> tuple[datetime, datetime]:
-    start = datetime.combine(d, time.min)
+    """Границы МСК-суток `d` в UTC naive (как хранятся `occurred_at`/`created_at`).
+
+    E1 (круг 11): раньше `datetime.combine(d, time.min)` трактовалось как UTC,
+    хотя «день» везде в системе — московский (BI, rollup'ы, расписание). Из-за
+    этого Пульс терял ~3 часа каждых суток и расходился с BI за «вчера».
+    """
+    start = msk_day_start_utc(d)
     return start, start + timedelta(days=1)
 
 
@@ -387,10 +403,172 @@ async def _bot_signals(d: date) -> dict[str, Any]:
     }
 
 
+async def _signup_dims(db, user_ids: list) -> dict[str, dict[str, Any]]:
+    """Язык сайта и страна первого визита новых пользователей (без ПДн).
+
+    Таблица `user_signups` появилась в круге 11; на базе без миграции или в
+    тестовой схеме без неё функция возвращает пусто и не роняет снимок.
+    """
+    try:
+        from app.models import UserSignup
+
+        # SAVEPOINT: отсутствие таблицы на базе без миграции не должно
+        # отравить внешнюю транзакцию снимка (PostgreSQL: aborted transaction).
+        async with db.begin_nested():
+            rows = (await db.execute(
+                select(UserSignup.user_id, UserSignup.site_locale, UserSignup.country)
+                .where(UserSignup.user_id.in_(list(user_ids)))
+            )).all()
+    except Exception:  # noqa: BLE001
+        logger.debug("signup dims unavailable", exc_info=True)
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    for uid, locale, country in rows:
+        item: dict[str, Any] = {}
+        if locale:
+            item["site_locale"] = locale
+        if country:
+            item["country"] = country
+        out[str(uid)] = item
+    return out
+
+
+_REGION_MARKERS = ("/region/", "/regions/")
+
+
+def _region_from_url(url: str | None) -> str | None:
+    if not url:
+        return None
+    u = str(url)
+    for marker in _REGION_MARKERS:
+        if marker in u:
+            return u.split(marker, 1)[1].split("/")[0].split("?")[0] or None
+    return None
+
+
+async def _events_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
+    """Бизнес-события суток агрегатами SQL (E7). Результат совместим по форме с
+    прежним построчным подсчётом: те же ключи `events` и `audience`."""
+    window = (FrontendEvent.occurred_at >= start, FrontendEvent.occurred_at < end)
+
+    # 1) счёт по имени и аудитории: одна выборка по индексу имя+время.
+    name_rows = (await db.execute(
+        select(FrontendEvent.event_name, FrontendEvent.authed, func.count())
+        .where(*window)
+        .group_by(FrontendEvent.event_name, FrontendEvent.authed)
+    )).all()
+    by_name: Counter[str] = Counter()
+    downloads: Counter[str] = Counter()
+    walls: Counter[str] = Counter()
+    errors: Counter[str] = Counter()
+    events_by_audience = {"guest": 0, "authed": 0}
+    downloads_by_audience = {"guest": 0, "authed": 0}
+    for name, authed, n in name_rows:
+        n = int(n)
+        bucket = "authed" if authed else "guest"
+        by_name[name] += n
+        events_by_audience[bucket] += n
+        if name in _DOWNLOAD_EVENTS:
+            downloads[name] += n
+            downloads_by_audience[bucket] += n
+        if name in _WALL_EVENTS:
+            walls[name] += n
+        if name in _ERROR_EVENTS:
+            errors[name] += n
+
+    # 2) аудитория: зарегистрированные по user_id, гости по хэшу сессии.
+    is_user = (FrontendEvent.authed.is_(True)) & (FrontendEvent.user_id.is_not(None))
+    authed_active = int(await db.scalar(
+        select(func.count(func.distinct(FrontendEvent.user_id))).where(*window, is_user)
+    ) or 0)
+    guest_sessions = int(await db.scalar(
+        select(func.count(func.distinct(FrontendEvent.session_id_hash)))
+        .where(*window, ~is_user, FrontendEvent.session_id_hash.is_not(None))
+    ) or 0)
+
+    # 3) показатели: параметр `indicator` только у двух событий просмотра.
+    indicator_col = FrontendEvent.params_json["indicator"].as_string()
+    indicators: Counter[str] = Counter()
+    for ind, n in (await db.execute(
+        select(indicator_col, func.count())
+        .where(*window, FrontendEvent.event_name.in_(("indicator_view", "region_indicator_view")),
+               indicator_col.is_not(None), indicator_col != "")
+        .group_by(indicator_col).order_by(func.count().desc()).limit(200)
+    )).all():
+        indicators[str(ind)] += int(n)
+
+    # 4) поиск: группируем по строке запроса и числу результатов, чистим в Python.
+    q_col = FrontendEvent.params_json["q"].as_string()
+    res_col = FrontendEvent.params_json["results"].as_string()
+    searches: Counter[str] = Counter()
+    zero_search: Counter[str] = Counter()
+    for q, results, n in (await db.execute(
+        select(q_col, res_col, func.count())
+        .where(*window, FrontendEvent.event_name == "search_query", q_col.is_not(None))
+        .group_by(q_col, res_col).order_by(func.count().desc()).limit(3000)
+    )).all():
+        q = scrub_text(str(q or "").strip().lower())
+        if not q:
+            continue
+        searches[q] += int(n)
+        try:
+            if int(results if results is not None else -1) == 0:
+                zero_search[q] += int(n)
+        except (TypeError, ValueError):
+            pass
+
+    # 5) регионы: параметр события, иначе сегмент пути `/region/{slug}`. Берём
+    # только события с регионом в параметре или в пути и группируем по паре,
+    # поэтому в Python попадают уникальные пары, а не каждое событие.
+    region_col = FrontendEvent.params_json["region"].as_string()
+    regions: Counter[str] = Counter()
+    for region_param, url, n in (await db.execute(
+        select(region_col, FrontendEvent.url, func.count())
+        .where(*window, or_(region_col.is_not(None),
+                            FrontendEvent.url.like("%/region/%"),
+                            FrontendEvent.url.like("%/regions/%")))
+        .group_by(region_col, FrontendEvent.url)
+        .order_by(func.count().desc()).limit(5000)
+    )).all():
+        slug = region_param or _region_from_url(url)
+        if slug:
+            regions[str(slug)] += int(n)
+
+    return {
+        "events": {
+            "total": sum(by_name.values()),
+            "by_name": dict(by_name.most_common(40)),
+            "by_audience": events_by_audience,
+            "downloads_by_audience": downloads_by_audience,
+            "top_indicators": dict(indicators.most_common(10)),
+            "top_regions": dict(regions.most_common(10)),
+            "downloads": dict(downloads),
+            "wall_hits": dict(walls),
+            "errors": dict(errors),
+            "search_top": dict(searches.most_common(10)),
+            "search_zero_results": dict(zero_search.most_common(10)),
+        },
+        "audience": {
+            "authed_active": authed_active,
+            "guest_sessions": guest_sessions,
+        },
+    }
+
+
 async def build_snapshot(d: date) -> dict[str, Any]:
     """Собрать снапшот дня из БД. Чистое чтение, без побочных эффектов."""
     start, end = _day_bounds(d)
-    snap: dict[str, Any] = {"date": d.isoformat()}
+    built_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    snap: dict[str, Any] = {
+        "date": d.isoformat(),
+        # E2 (круг 11): окно и момент сборки. Снимок, собранный до конца МСК-суток
+        # (23:57), неполон; `get_or_build_snapshot` пересоберёт его утром.
+        "window": {
+            "start_utc": start.isoformat(), "end_utc": end.isoformat(),
+            "built_at_utc": built_at.isoformat(), "tz": "Europe/Moscow",
+        },
+        "complete": built_at >= end,
+    }
 
     async with analytics_session() as db:
         # --- Пользователи -------------------------------------------------
@@ -402,26 +580,27 @@ async def build_snapshot(d: date) -> dict[str, Any]:
             newsletter_subscriber_count_query()
         ) or 0
 
+        # 152-ФЗ (круг 11): имена и почты новых пользователей в снимок не кладём —
+        # снимок целиком уходит в LLM (OpenRouter, зарубежный прокси). Остаются
+        # способ входа, язык сайта и страна первого визита, если они известны.
         new_list = []
         if new_users:
             ids = [u.id for u in new_users]
-            emails = dict((await db.execute(
-                select(EmailCredential.user_id, EmailCredential.email)
-                .where(EmailCredential.user_id.in_(ids))
-            )).all())
+            emails = {uid for (uid,) in (await db.execute(
+                select(EmailCredential.user_id).where(EmailCredential.user_id.in_(ids))
+            )).all()}
             oauth = {}
             for uid, provider in (await db.execute(
                 select(OAuthIdentity.user_id, OAuthIdentity.provider)
                 .where(OAuthIdentity.user_id.in_(ids))
             )).all():
                 oauth.setdefault(uid, []).append(provider)
+            signup_info = await _signup_dims(db, ids)
             for u in new_users:
                 methods = (["email"] if u.id in emails else []) + oauth.get(u.id, [])
-                new_list.append({
-                    "name": u.display_name or "—",
-                    "contact": emails.get(u.id) or "—",
-                    "method": "/".join(methods) or "—",
-                })
+                entry = {"method": "/".join(methods) or "—"}
+                entry.update(signup_info.get(str(u.id), {}))
+                new_list.append(entry)
         snap["users"] = {
             "total": total_users,
             "new": len(new_users),
@@ -438,86 +617,14 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         snap["auth"] = {ev: n for ev, n in auth_rows}
 
         # --- События фронта -----------------------------------------------
-        ev_rows = (await db.execute(
-            select(
-                FrontendEvent.event_name,
-                FrontendEvent.params_json,
-                FrontendEvent.url,
-                FrontendEvent.authed,
-                FrontendEvent.user_id,
-                FrontendEvent.session_id_hash,
-            )
-            .where(FrontendEvent.occurred_at >= start, FrontendEvent.occurred_at < end)
-        )).all()
-
-        by_name: Counter[str] = Counter()
-        indicators: Counter[str] = Counter()
-        regions: Counter[str] = Counter()
-        searches: Counter[str] = Counter()
-        zero_search: Counter[str] = Counter()
-        downloads: Counter[str] = Counter()
-        errors: Counter[str] = Counter()
-        # Разрез «гость vs зарегистрированный»: события, скачивания, аудитория.
-        events_by_audience = {"guest": 0, "authed": 0}
-        downloads_by_audience = {"guest": 0, "authed": 0}
-        authed_user_ids: set[str] = set()
-        guest_sessions: set[str] = set()
-        for name, params, url, authed, user_id, sess_hash in ev_rows:
-            by_name[name] += 1
-            bucket = "authed" if authed else "guest"
-            events_by_audience[bucket] += 1
-            if authed and user_id:
-                authed_user_ids.add(str(user_id))
-            elif sess_hash:
-                guest_sessions.add(str(sess_hash))
-            params = params or {}
-            if name in ("indicator_view", "region_indicator_view") and params.get("indicator"):
-                indicators[str(params["indicator"])] += 1
-            if name in _DOWNLOAD_EVENTS:
-                downloads[name] += 1
-                downloads_by_audience[bucket] += 1
-            if name in _ERROR_EVENTS:
-                errors[name] += 1
-            if name == "search_query":
-                q = str(params.get("q") or "").strip().lower()
-                if q:
-                    searches[q] += 1
-                    try:
-                        if int(params.get("results", -1)) == 0:
-                            zero_search[q] += 1
-                    except (TypeError, ValueError):
-                        pass
-            # Регион: сначала из параметра события (region_indicator_view,
-            # region_compare_add и т.п.), иначе из URL (/region/{slug}/... или
-            # /regions/{slug}). Детальная карточка живёт на /region/ (ед. число).
-            slug = params.get("region")
-            if not slug and url:
-                u = str(url)
-                for marker in ("/region/", "/regions/"):
-                    if marker in u:
-                        slug = u.split(marker, 1)[1].split("/")[0].split("?")[0]
-                        break
-            if slug:
-                regions[str(slug)] += 1
-
-        snap["events"] = {
-            "total": sum(by_name.values()),
-            "by_name": dict(by_name.most_common(40)),
-            "by_audience": events_by_audience,
-            "downloads_by_audience": downloads_by_audience,
-            "top_indicators": dict(indicators.most_common(10)),
-            "top_regions": dict(regions.most_common(10)),
-            "downloads": dict(downloads),
-            "errors": dict(errors),
-            "search_top": dict(searches.most_common(10)),
-            "search_zero_results": dict(zero_search.most_common(10)),
-        }
+        # E7 (круг 11): считаем на SQL, а не читаем в память все строки суток с
+        # params_json и url (при росте к сотням тысяч событий это съедало
+        # контейнер на 1 ГиБ). Тяжёлый JSON читаем только у малых групп событий.
+        snap_events = await _events_snapshot(db, start, end)
+        snap["events"] = snap_events["events"]
         # Активная аудитория дня: уникальные зарегистрированные (по user_id) и
         # гости (по хэшу сессии). Даёт «сколько живых людей», а не только хиты.
-        snap["audience"] = {
-            "authed_active": len(authed_user_ids),
-            "guest_sessions": len(guest_sessions),
-        }
+        snap["audience"] = snap_events["audience"]
 
         # --- Поведенческий поток (behavior.js: сырые клики/мышь/скролл) ------
         # Агрегируем на SQL, сырые строки в снапшот не тянем (их могут быть
@@ -585,12 +692,13 @@ async def build_snapshot(d: date) -> dict[str, Any]:
         for p in b_copy:
             t = (p or {}).get("text")
             if t:
-                copy_counter[str(t)[:60]] += 1
+                copy_counter[scrub_text(str(t)[:60])] += 1
         snap["behavior"] = {
             "by_type": b_by_type,
             "pageviews_top": b_pageviews,
             "clicks_top": [
-                {"element": path, "text": text, "n": n} for path, text, n in b_clicks
+                {"element": path, "text": scrub_text(text) if text else text, "n": n}
+                for path, text, n in b_clicks
             ],
             "dead_clicks_top": [
                 {"element": path, "text": text, "n": n} for path, text, n in b_dead
@@ -655,9 +763,28 @@ async def load_snapshot(d: date) -> dict[str, Any] | None:
     return json.loads(raw) if raw else None
 
 
+def snapshot_is_complete(snap: dict[str, Any] | None, d: date) -> bool:
+    """Снимок дня `d` собран после конца МСК-суток и по МСК-окну.
+
+    Снимки до круга 11 (без ключа `window`) построены по окну UTC и без
+    последних часов суток; снимок, зафиксированный в 23:57, не видит 3 минуты
+    до полуночи МСК. Оба считаются неполными, пока день закончился.
+    """
+    if not snap or not isinstance(snap.get("window"), dict):
+        return False
+    return bool(snap.get("complete"))
+
+
 async def get_or_build_snapshot(d: date) -> dict[str, Any]:
+    """Снимок дня: из Redis, если он полон; иначе пересобираем (E2).
+
+    Для сегодняшнего (ещё не закончившегося) дня сохранённый снимок не
+    пересобираем: он по определению неполон, пересчёт по запросу делает
+    вызывающий код (`build_snapshot`).
+    """
     snap = await load_snapshot(d)
-    if snap is None:
+    day_over = d < today_msk()
+    if snap is None or (day_over and not snapshot_is_complete(snap, d)):
         snap = await build_snapshot(d)
         await store_snapshot(snap)
     return snap
@@ -728,7 +855,7 @@ async def store_memory(d: date, core: dict[str, Any], summary: str) -> None:
 
 async def load_memory(days: int = 7, before: date | None = None) -> list[dict[str, Any]]:
     """Память за последние `days` дней (до `before` исключительно), старые → новые."""
-    before = before or date.today()
+    before = before or today_msk()
     r = await get_state_redis()
     out: list[dict[str, Any]] = []
     for i in range(days, 0, -1):

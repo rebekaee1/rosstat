@@ -30,15 +30,17 @@ from app.models import (
 )
 from app.services.dataset_inventory import build_inventory
 
-_DOWNLOAD_EVENTS = {
-    "download_csv", "download_excel", "chart_image_download",
-    "compare_image_download", "compare_csv_download", "download_limit",
-}
-_ERROR_EVENTS = {"error_reload", "api_retry", "api_error"}
+from app.services.goal_taxonomy import GROUP_DOWNLOAD, GROUP_FRONT_ERROR, events_in_group
+
+_DOWNLOAD_EVENTS = events_in_group(GROUP_DOWNLOAD)
+_ERROR_EVENTS = events_in_group(GROUP_FRONT_ERROR)
 
 
 def _day_bounds(d: date) -> tuple[datetime, datetime]:
-    start = datetime.combine(d, time.min)
+    """МСК-сутки `d` в UTC naive (E1, круг 11): как в Пульсе и BI."""
+    from app.services.analytics_period import msk_day_start_utc
+
+    start = msk_day_start_utc(d)
     return start, start + timedelta(days=1)
 
 

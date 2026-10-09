@@ -8,6 +8,7 @@ import httpx
 
 from app.config import settings
 from app.services.telegram_retry import request_with_retry
+from app.services.telegram_text import split_telegram_text
 
 logger = logging.getLogger(__name__)
 # httpx logs the full request URL at INFO; Telegram's URL embeds the bot token.
@@ -58,23 +59,37 @@ async def send_telegram(
     Каждая отправка полностью архивируется в БД (`telegram_outbox`) — это
     «глаза» агента следующей сессии; архивация не влияет на доставку.
     """
-    from app.services.telegram_outbox import archive_begin, archive_finish  # против цикла
-
     token = settings.telegram_bot_token
     cid = chat_id or settings.telegram_chat_id
     if not token or not cid:
         return False
 
+    # E3 (круг 11): длинный текст режется на части под лимит Bot API; клавиатура
+    # вешается на последнюю часть, в архиве — по строке на каждую часть (как у
+    # telegram_bot.send_message), поэтому досылка работает по частям.
+    chunks = split_telegram_text(message)
+    all_ok = True
+    for index, chunk in enumerate(chunks):
+        payload: dict = {"chat_id": cid, "text": chunk, "parse_mode": "HTML"}
+        if reply_markup and index == len(chunks) - 1:
+            payload["reply_markup"] = reply_markup
+        if not await _send_one(token, payload, kind):
+            all_ok = False
+    return all_ok
+
+
+async def _send_one(token: str, payload: dict, kind: str) -> bool:
+    """Одна отправка `sendMessage` с архивом (pending до, итог после)."""
+    from app.services.telegram_outbox import archive_begin, archive_finish  # против цикла
+
     ok = False
     tg_message_id: Optional[int] = None
     error: Optional[str] = None
-    payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
-    if reply_markup:
-        payload["reply_markup"] = reply_markup
 
     # Н-16: pending-запись ДО отправки — креш между send и архивом не оставляет дыру.
     row_id = await archive_begin(
-        chat_id=str(cid), method="sendMessage", kind=kind, text=message, payload=payload,
+        chat_id=str(payload["chat_id"]), method="sendMessage", kind=kind,
+        text=payload["text"], payload=payload,
     )
     try:
         url = _TELEGRAM_API.format(token=token)

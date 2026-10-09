@@ -60,11 +60,16 @@ _GOAL_EVENTS = {
     "download_csv", "download_excel", "download_ical",
     "chart_image_download", "compare_image_download", "feedback_submit",
 }
-_DOWNLOAD_EVENTS = {
-    "download_csv", "download_excel", "download_ical",
-    "chart_image_download", "compare_image_download",
-}
-_ERROR_EVENTS = {"api_load_error", "error_reload", "api_retry"}
+# E5 (круг 11): единые группы из goal_taxonomy (раньше в BI, Пульсе и боте
+# были три разных списка «скачиваний» и два разных «ошибок»).
+from app.services.goal_taxonomy import (  # noqa: E402
+    GROUP_DOWNLOAD,
+    GROUP_FRONT_ERROR,
+    events_in_group,
+)
+
+_DOWNLOAD_EVENTS = events_in_group(GROUP_DOWNLOAD)
+_ERROR_EVENTS = events_in_group(GROUP_FRONT_ERROR)
 
 # Общие примитивы (маппинги Метрики, разделы, истинная проверка целей) живут
 # в analytics_marts — единой точке истины для BI, Пульса и rollup'ов.

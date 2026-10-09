@@ -676,11 +676,18 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
 
 
 async def rollup_daily_goals(db, since_day: date) -> int:
-    """день × событие (SQL GROUP BY по frontend_events; день — МСК)."""
+    """день × событие (SQL GROUP BY по frontend_events; день — МСК).
+
+    E6 (круг 11): роботы и собственная активность владельца/админов исключены —
+    так же, как в воронке и `mart_pwa_installs`. Сессионизация в `run_rollups`
+    выполняется раньше, поэтому флаги `is_bot/is_internal` уже свежие.
+    """
+    from app.services.analytics_marts import human_event_conditions
     from app.services.analytics_period import msk_day_start_utc
 
     since_dt = msk_day_start_utc(since_day)
     day_expr = msk_day_expr(FrontendEvent.occurred_at, db.bind.dialect.name)
+    human = await human_event_conditions(db, since_day, msk_day(_utcnow()))
     rows = (await db.execute(
         select(
             day_expr.label("day"),
@@ -689,7 +696,7 @@ async def rollup_daily_goals(db, since_day: date) -> int:
             func.count(func.distinct(FrontendEvent.session_id_hash)).label("sessions"),
             func.sum(case((FrontendEvent.authed.is_(True), 1), else_=0)).label("authed_cnt"),
         )
-        .where(FrontendEvent.occurred_at >= since_dt)
+        .where(FrontendEvent.occurred_at >= since_dt, *human)
         .group_by(day_expr, FrontendEvent.event_name)
     )).all()
 
