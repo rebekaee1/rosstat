@@ -326,11 +326,12 @@
   width: 52px;
   height: 52px;
   border-radius: 9999px;
-  background: rgba(173, 138, 72, 0.14);
+  /* Круг 11: графитово-синий кружок вместо золотой заливки (принцип 3: золото только тонким акцентом). */
+  background: linear-gradient(160deg, #2a3550, #1e2638);
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-champagne-ink);
+  color: var(--fe-on-active, #f2f5fa);
   box-shadow: var(--fe-l2-shadow);
 }
 
