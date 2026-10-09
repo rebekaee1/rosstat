@@ -4,7 +4,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import ComparePage from './ComparePage';
 import { renderPage, mockApiGet } from '../test/renderPage';
-import { COMPARE_COLORS, ribbonStopsFor } from '../lib/chartTheme';
+import { COMPARE_COLORS, COMPARE_SERIES_COLORS, ribbonStopsFor } from '../lib/chartTheme';
 
 vi.mock('../lib/track', async (importOriginal) => {
   const actual = await importOriginal();
@@ -56,8 +56,8 @@ describe('ComparePage: цвета рядов (круг 8)', () => {
       const n = parseInt(hex.slice(1), 16);
       return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;
     };
-    expect(legend).toEqual([toRgb(COMPARE_COLORS[0]), toRgb(COMPARE_COLORS[1])]);
-    expect(beads.map((b) => b.toLowerCase())).toEqual([COMPARE_COLORS[0].toLowerCase(), COMPARE_COLORS[1].toLowerCase()]);
+    expect(legend).toEqual([toRgb(COMPARE_SERIES_COLORS[0]), toRgb(COMPARE_SERIES_COLORS[1])]);
+    expect(beads.map((b) => b.toLowerCase())).toEqual([COMPARE_SERIES_COLORS[0].toLowerCase(), COMPARE_SERIES_COLORS[1].toLowerCase()]);
   });
 });
 
@@ -66,6 +66,31 @@ describe('палитра сравнения', () => {
     const [a, b] = COMPARE_COLORS;
     expect(Math.abs(lightness(a) - lightness(b))).toBeGreaterThan(40);
     expect(COMPARE_COLORS.slice(0, 2).every((c) => !/^#(E|D|C|B|A)/i.test(c))).toBe(true);
+  });
+
+  it('круг 11: первые пять цветов рядов различимы по тону (Китай и Россия не одного бирюзового оттенка)', () => {
+    const hue = (hex) => {
+      const n = parseInt(hex.slice(1), 16);
+      const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => v / 255);
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      if (max === min) return 0;
+      const d = max - min;
+      let h;
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      return ((h * 60) + 360) % 360;
+    };
+    const first = COMPARE_SERIES_COLORS.slice(0, 4);
+    expect(new Set(first).size).toBe(4);
+    for (let i = 0; i < first.length; i += 1) {
+      for (let j = i + 1; j < first.length; j += 1) {
+        const diff = Math.abs(hue(first[i]) - hue(first[j]));
+        expect(Math.min(diff, 360 - diff)).toBeGreaterThan(25);
+      }
+    }
+    expect(COMPARE_SERIES_COLORS.some((c) => /^#(?:F|E|D)[0-9A-F]{5}$/i.test(c) && hue(c) > 35 && hue(c) < 65)).toBe(false);
   });
 
   it('лента строится из цвета ряда и одного цвета по всей длине (круг 10, Г1: без «двойной линии»)', () => {

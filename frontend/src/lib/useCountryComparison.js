@@ -16,16 +16,6 @@ import { useLocale, useT } from '../i18n';
 export const COMPARISON_COLORS = ['#397C8C', '#7856A8', '#C86B5B', '#4D8A64'];
 export const MAX_COMPARISONS = COMPARISON_COLORS.length;
 const EMPTY_LIST = [];
-// Comparable sizes should stay visible by default. Rebased growth can make
-// a larger country look smaller, and population dates may not match exactly.
-const DIRECT_VALUE_CONCEPTS = new Set([
-  'gdp-usd',
-  'gdp-per-capita-usd',
-  'gdp-volume-annual',
-  'gdp-volume-quarterly',
-  'population',
-]);
-
 function isAbsoluteLevel(unit, modeMeta) {
   const normalized = (unit || '').toLowerCase();
   return modeMeta?.type === 'level'
@@ -97,7 +87,8 @@ export function useCountryComparison({
   modeMeta,
   peerMode,
   peerValueScale = 1,
-  autoPercent = false,
+  // Круг 11: параметр принимается для совместимости, но режим сам больше не переключается (см. ниже).
+  autoPercent: _autoPercent = false,
 } = {}) {
   const { locale } = useLocale();
   const t = useT();
@@ -107,10 +98,6 @@ export function useCountryComparison({
   });
   const [comparisonIds, setComparisonIds] = useState([]);
   const [scaleState, setScaleState] = useState('values');
-  // Человек сам выбрал «Значения» или «Проценты»: дальше автоматика не вмешивается.
-  const [scaleChosen, setScaleChosen] = useState(false);
-  // Проценты включила сама страница (по виду показателя), а не человек.
-  const [scaleAuto, setScaleAuto] = useState(false);
   const hicpWorldCard = surface === 'world' && conceptSlug === 'hicp-index';
   const ownCatalogItem = hicpWorldCard
     ? compareCatalog.data?.items?.find((item) => (
@@ -277,14 +264,12 @@ export function useCountryComparison({
   const absolute = surface === 'russia'
     ? isAbsoluteLevel(unit, { type: 'level' })
     : isAbsoluteLevel(unit, modeMeta);
-  // Страны разного размера на одной оси: меньшая линия кажется ровной. При включённой автоматике
-  // сразу показываем рост в процентах, а человеку остаётся кнопка «Показать значения».
-  const autoPercentActive = autoPercent && !scaleChosen && scaleState === 'values' && absolute
-    && loadedComparisonSeries.length > 0 && scalesDiffer(dataPoints, loadedComparisonSeries);
-  const comparisonScale = autoPercentActive ? 'index' : scaleState;
+  // Страны разного размера на одной оси: меньшая линия кажется ровной. Круг 11: страница молча режим не меняет
+  // (раньше сама включала проценты, и человек не понимал, почему числа стали другими). Вместо этого `scaleMismatch`
+  // показывает плашку с пояснением и кнопкой «Показать рост в процентах», а выбор остаётся за человеком.
+  const autoPercentActive = false;
+  const comparisonScale = scaleState;
   const setComparisonScale = (next) => {
-    setScaleChosen(true);
-    setScaleAuto(false);
     setScaleState(next);
   };
   const rebased = useMemo(
@@ -305,20 +290,9 @@ export function useCountryComparison({
     && scalesDiffer(dataPoints, loadedComparisonSeries);
 
   const toggleComparison = (id) => {
-    if (
-      !activeComparisonIds.includes(id)
-      && activeComparisonIds.length === 0
-      && absolute
-      && !DIRECT_VALUE_CONCEPTS.has(conceptSlug)
-    ) {
-      setScaleState('index');
-      setScaleAuto(true);
-    }
     // Все страны убраны: выбор масштаба начинается заново.
     if (activeComparisonIds.includes(id) && activeComparisonIds.length === 1) {
       setScaleState('values');
-      setScaleChosen(false);
-      setScaleAuto(false);
     }
     setComparisonIds((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
@@ -340,7 +314,7 @@ export function useCountryComparison({
     comparisonQueries,
     comparisonScale,
     setComparisonScale,
-    autoPercentActive: autoPercentActive || (scaleAuto && !scaleChosen && comparisonScale === 'index'),
+    autoPercentActive,
     toggleComparison,
     setComparisonPickerActive,
     compareCodes,

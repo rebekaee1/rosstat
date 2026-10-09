@@ -70,17 +70,16 @@ describe('сравнение стран на мировой карточке', (
     expect(screen.queryByTestId('compare-scale-auto')).toBeNull();
   });
 
-  it('страны разного размера: сразу проценты с пояснением и кнопкой «Показать значения»', async () => {
+  it('страны разного размера: проценты сами не включаются, есть предложение с объяснением', async () => {
     const { container } = renderSection();
     const compare = container.querySelector('#compare');
     fireEvent.click(within(compare).getByRole('button', { name: 'Китай' }));
-    const note = await screen.findByTestId('compare-scale-auto');
-    expect(note.textContent).toMatch(/в процентах/);
+    const nudge = await screen.findByTestId('compare-scale-nudge');
+    expect(nudge.textContent).toMatch(/в процентах/);
+    expect(screen.queryByTestId('compare-scale-auto')).toBeNull();
+    // Значения остаются на экране, пока человек не нажал кнопку.
     expect(legendLabels(container)).toEqual(['Китай']);
-    fireEvent.click(within(note).getByRole('button', { name: 'Показать значения' }));
-    // Человек сам выбрал значения: страница больше не переключает за него, а предлагает проценты плашкой.
-    await waitFor(() => expect(screen.queryByTestId('compare-scale-auto')).toBeNull());
-    expect(screen.getByTestId('compare-scale-nudge')).toBeTruthy();
-    expect(legendLabels(container)).toEqual(['Китай']);
+    fireEvent.click(within(nudge).getByRole('button', { name: 'Показать в процентах' }));
+    await waitFor(() => expect(screen.queryByTestId('compare-scale-nudge')).toBeNull());
   });
 });

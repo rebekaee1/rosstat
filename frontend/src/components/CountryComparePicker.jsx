@@ -169,7 +169,7 @@ export default function CountryComparePanel({
   const { locale } = useLocale();
   const [searchOpen, setSearchOpen] = useState(false);
   if (!pickerOptions.length) return null;
-  const quick = suggestedCompareOptions(pickerOptions, locale)
+  const quick = suggestedCompareOptions(pickerOptions, locale, 5, { currentSlug: countrySlug })
     .filter((option) => !activeComparisonIds.includes(option.code));
   const atLimit = activeComparisonIds.length >= MAX_COMPARISONS;
   return (

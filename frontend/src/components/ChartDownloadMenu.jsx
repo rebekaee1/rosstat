@@ -1,11 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  useCallback, useEffect, useLayoutEffect, useRef, useState,
+} from 'react';
 import {
   ChevronDown, Download, FileSpreadsheet, FileText, Image as ImageIcon, Lock,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
 import Button from './Button';
+import BottomSheet from './BottomSheet';
+import useMediaQuery from '../lib/useMediaQuery';
+import { placeMenu } from '../lib/popupPlacement';
 import '../styles/z4-indicator.css';
+import '../styles/c11c-charts.css';
 
 /**
  * Две кнопки над графиком на всех страницах показателей (Россия и мир): «Скачать» (таблица CSV, Excel, картинка)
@@ -16,12 +22,29 @@ import '../styles/z4-indicator.css';
  */
 export default function ChartDownloadMenu({
   onCsv, onExcel, onPng, dataBlocked, imageBlocked, hint, showSaveButton = true,
+  formats = null, label = '', menuLabel = '',
 }) {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [place, setPlace] = useState({ left: 0, up: false });
   const rootRef = useRef(null);
+  const phone = useMediaQuery('(max-width: 639px)');
+  // Круг 11: на телефоне меню открывается нижним листом (нижний пункт не прячется под панелью браузера), на компьютере считаем место.
+  const measure = useCallback(() => {
+    const el = rootRef.current;
+    if (!el || typeof window === 'undefined') return;
+    setPlace(placeMenu(el.getBoundingClientRect(), { viewportW: window.innerWidth, viewportH: window.innerHeight }));
+  }, []);
+  useLayoutEffect(() => {
+    if (open && !phone) measure();
+  }, [open, phone, measure]);
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open || phone) return undefined;
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [open, phone, measure]);
+  useEffect(() => {
+    if (!open || phone) return undefined;
     const onDown = (event) => { if (!rootRef.current?.contains(event.target)) setOpen(false); };
     const onKey = (event) => { if (event.key === 'Escape') setOpen(false); };
     document.addEventListener('mousedown', onDown);
@@ -30,12 +53,28 @@ export default function ChartDownloadMenu({
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('keydown', onKey);
     };
-  }, [open]);
+  }, [open, phone]);
   const items = [
     { id: 'csv', label: t('w2.dl.csv'), Icon: FileText, run: onCsv, blocked: dataBlocked, hint: dataBlocked ? t('download.dataBlocked') : undefined },
     { id: 'excel', label: t('w2.dl.excel'), Icon: FileSpreadsheet, run: onExcel, blocked: dataBlocked, hint: dataBlocked ? t('download.dataBlocked') : undefined },
     { id: 'png', label: t('w2.dl.png'), Icon: ImageIcon, run: onPng, blocked: imageBlocked, hint: imageBlocked ? t('download.chartBlocked') : t('download.chartPng') },
-  ];
+  ].filter((item) => !formats || formats.includes(item.id));
+  const renderItem = ({
+    id, label: itemLabel, Icon, run, blocked, hint: itemHint,
+  }) => (
+    <button
+      key={id}
+      type="button"
+      role={phone ? undefined : 'menuitem'}
+      title={itemHint}
+      onClick={() => { setOpen(false); run?.(); }}
+      className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-white/60 hover:shadow-[var(--fe-l2-shadow)]"
+    >
+      <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
+      <span className="min-w-0 flex-1">{itemLabel}</span>
+      {blocked && <Lock size={14} className="shrink-0 text-text-tertiary" aria-label={itemHint} />}
+    </button>
+  );
   return (
     <div className="z4-dl" data-no-export="true">
       <div ref={rootRef} className="relative" data-no-export="true" title={hint || undefined}>
@@ -48,27 +87,31 @@ export default function ChartDownloadMenu({
           className="gap-1.5"
         >
           <Download size={14} aria-hidden="true" />
-          {t('w2.dl.title')}
+          {label || t('w2.dl.title')}
           <ChevronDown size={13} aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
         </Button>
-        {open && (
-          <div role="menu" className="fe-dialog-panel absolute right-0 top-full z-50 mt-2 min-w-[15rem] rounded-2xl p-1.5">
-            {items.map(({ id, label, Icon, run, blocked, hint: itemHint }) => (
-              <button
-                key={id}
-                type="button"
-                role="menuitem"
-                title={itemHint}
-                onClick={() => { setOpen(false); run?.(); }}
-                className="flex min-h-11 w-full items-center gap-2.5 rounded-xl px-3 text-left text-sm text-text-primary transition-colors hover:bg-white/60 hover:shadow-[var(--fe-l2-shadow)]"
-              >
-                <Icon size={16} className="shrink-0 text-text-secondary" aria-hidden="true" />
-                <span className="min-w-0 flex-1">{label}</span>
-                {blocked && <Lock size={14} className="shrink-0 text-text-tertiary" aria-label={itemHint} />}
-              </button>
-            ))}
+        {open && !phone && (
+          <div
+            role="menu"
+            className={cn(
+              'fe-dialog-panel fe-w6g-solid-panel c11c-dl-menu absolute z-50 min-w-[15rem] rounded-2xl p-1.5',
+              place.up ? 'bottom-full mb-2' : 'top-full mt-2',
+            )}
+            style={{ left: place.left }}
+          >
+            {items.map(renderItem)}
           </div>
         )}
+        <BottomSheet
+          open={open && phone}
+          onClose={() => setOpen(false)}
+          ariaLabel={menuLabel || label || t('w2.dl.title')}
+          bodyClassName="c11c-dl-sheet"
+        >
+          <div className="grid gap-1 px-3 pt-1">
+            {items.map(renderItem)}
+          </div>
+        </BottomSheet>
       </div>
       {showSaveButton && onPng ? <ChartSaveButton onPng={onPng} imageBlocked={imageBlocked} /> : null}
     </div>

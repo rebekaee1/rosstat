@@ -125,6 +125,22 @@ describe('suggestedCompareOptions', () => {
   it('предел по количеству', () => {
     expect(suggestedCompareOptions(options, 'ru', 2)).toHaveLength(2);
   });
+  it('круг 11: у Турции сначала соседи (Греция, Болгария), затем близкие по ВВП, а не Германия, Франция и Албания', () => {
+    const slugs = ['germany', 'france', 'austria', 'albania', 'belgium', 'greece', 'bulgaria', 'poland', 'netherlands', 'mexico', 'turkey', 'china'];
+    const pool = slugs.map((slug) => ({ code: slug, country_name: slug, country_slug: slug }));
+    const picked = suggestedCompareOptions(pool, 'ru', 5, { currentSlug: 'turkey' }).map((o) => o.country_slug);
+    expect(picked.slice(0, 2)).toEqual(['greece', 'bulgaria']);
+    expect(picked).not.toContain('turkey');
+    expect(picked).toHaveLength(5);
+    expect(picked).toContain('mexico');
+    expect(picked).toContain('netherlands');
+    expect(picked).not.toContain('albania');
+  });
+  it('страна без соседей в списке: только близкие по размеру экономики', () => {
+    const pool = ['united-states', 'china', 'germany', 'japan', 'india', 'israel', 'norway'].map((slug) => ({ code: slug, country_name: slug, country_slug: slug }));
+    const picked = suggestedCompareOptions(pool, 'en', 3, { currentSlug: 'israel' }).map((o) => o.country_slug);
+    expect(picked).toEqual(['norway', 'india', 'japan']);
+  });
 });
 
 describe('chartCaption', () => {

@@ -1,0 +1,130 @@
+/* ===== Круг 11, зона C: сравнение, графики, таблицы ===== */
+/* Без рамок и колец: форму задают свет и тень. Анимаций нет, кроме opacity и transform. */
+
+/* Меню «Скачать» и нижний лист на телефоне. */
+.c11c-dl-menu { max-width: calc(100vw - 16px); }
+.c11c-dl-sheet { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 32px); }
+
+/* Отметки событий под графиком. */
+.c11c-events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+.c11c-events li { display: inline-flex; align-items: baseline; gap: 6px; min-width: 0; }
+.c11c-events__year { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--color-text-primary); }
+
+/* Ручки периода: видимая пластинка 8 px, зона нажатия остаётся 44 px по ширине и высоте дорожки. */
+:root:root .fe-brush__handle > span { width: 8px; }
+:root:root .fe-brush__handle { min-width: 44px; min-height: 44px; -webkit-touch-callout: none; }
+
+/* Подписи осей и ручки: долгое нажатие не выделяет текст. */
+.recharts-cartesian-axis-tick-value,
+.fe-brush { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* Таблица истории: единица один раз в заголовке, колонки сжимаются, при нехватке места таблица прокручивается, а у края видна подсказка. */
+.c11c-histtable__scroll {
+  position: relative;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+:root:root .fe-histtable table { table-layout: auto; min-width: 100%; }
+:root:root .fe-histtable th,
+:root:root .fe-histtable td { padding-inline: 14px; white-space: nowrap; }
+:root:root .fe-histtable th:first-child,
+:root:root .fe-histtable td:first-child { padding-left: 20px; }
+:root:root .fe-histtable th:last-child,
+:root:root .fe-histtable td:last-child { padding-right: 20px; }
+:root:root .fe-histtable__chg { white-space: nowrap; }
+.c11c-histtable__fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--color-surface, #fff));
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.c11c-histtable__wrap[data-more='true'] .c11c-histtable__fade { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .c11c-histtable__fade { transition: none; }
+}
+
+/* Диапазон «от / до» и «Скачать этот диапазон» над таблицей. */
+.c11c-range {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 12px;
+  padding: 0 20px 14px;
+}
+.c11c-range__field { display: grid; gap: 4px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--color-text-secondary); }
+.c11c-range__field input {
+  min-height: 40px;
+  min-width: 9.5rem;
+  padding: 0 12px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+}
+@media (pointer: coarse) {
+  .c11c-range__field input { min-height: 44px; font-size: 16px; }
+}
+.c11c-range__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; align-items: center; }
+.c11c-range__note { flex: 1 1 100%; margin: 0; font-size: 12px; color: var(--color-text-secondary); }
+
+/* Подсказка графика «Сравнение»: строка = имя и значение, ниже мелко фраза про рост и настоящее значение. Ширина держится в пределах графика. */
+.c11c-tip { min-width: 180px; width: max-content; overflow: hidden; }
+.c11c-tip__head { margin: 2px 0 0; font-size: 11.5px; line-height: 1.3; color: var(--color-text-secondary); }
+.c11c-tip__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 14px; row-gap: 1px; align-items: baseline; }
+.c11c-tip__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--color-text-secondary); }
+.c11c-tip__value { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--color-text-primary); }
+.c11c-tip__sub { grid-column: 1 / -1; padding-left: 16px; font-size: 11.5px; line-height: 1.3; color: var(--color-text-secondary); overflow-wrap: anywhere; }
+
+/* «Отменить последнее» рядом с карточками выбранных рядов. */
+.c11c-undo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.c11c-undo p { margin: 0; min-width: 0; }
+
+/* Управление графиком над ним и действия под ним. */
+.c11c-toolbar { align-items: end; }
+.c11c-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.c11c-actions__note { flex: 1 1 100%; margin: 4px 0 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); overflow-wrap: anywhere; }
+@media (max-width: 639px) {
+  .c11c-actions > .z4-dl,
+  .c11c-actions > .fe-btn { flex: 1 1 calc(50% - 8px); }
+  .c11c-actions > .z4-dl > div,
+  .c11c-actions > .z4-dl .fe-btn { width: 100%; }
+}
+
+/* Две единицы: какая шкала слева, какая справа. */
+.c11c-axes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+.c11c-axes__side { margin: 0; min-width: 0; }
+.c11c-axes__side b { font-weight: 600; color: var(--color-text-primary); }
+.c11c-axes__item { display: inline-flex; align-items: center; gap: 6px; margin-right: 10px; }
+.c11c-axes__item i { display: inline-block; width: 10px; height: 10px; border-radius: 999px; }
+
+/* Метка конца линии: тень от бирюзы заменена на тон второго ряда (терракот). */
+:root:root .fe-compare-plot .k4-ribbon--sapphire .recharts-line-curve { filter: drop-shadow(0 4px 6px rgba(181, 103, 91, 0.28)); }

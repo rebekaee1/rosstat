@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import {
   ArrowLeft, Activity, Search, X, Plus, ImageDown, Sparkles,
-  Landmark, MapPin, Check, ChevronDown, Globe2,
+  Landmark, MapPin, Check, ChevronDown, Globe2, Share2, Undo2, ArrowLeftRight,
 } from 'lucide-react';
 import { useIndicators } from '../lib/hooks';
 import { fetchIndicatorData } from '../lib/api';
@@ -20,7 +20,7 @@ import { useAuth } from '../context/authContext';
 import { useT, useLocale } from '../i18n';
 import { currentUiLocale } from '../i18n/locale';
 import {
-  formatDate, formatChartAxisDate, formatAxisTick, formatValueWithUnit,
+  formatDate, formatChartAxisDate, formatAxisTick,
   unitSuffix, unitDigits, cn, pickChartAxisTicks, chartAxisTickBudget,
 } from '../lib/format';
 import useDocumentMeta from '../lib/useMeta';
@@ -34,6 +34,13 @@ import {
 } from '../lib/compareInsight';
 import { scalesDiffer } from '../lib/useCountryComparison';
 import ChartBrush from '../components/ChartBrush';
+import ChartDownloadMenu from '../components/ChartDownloadMenu';
+import { ChartEventsList, EventsChip } from '../components/ChartEvents';
+import { eventReferenceLines, useEventsToggle } from '../lib/chartEventMarks';
+import { eventsInWindow } from '../lib/chartEvents';
+import { changeCorrelation } from '../lib/compareStats';
+import { downloadGrid, safeFilename } from '../lib/gridExport';
+import { useDownloadAccess } from '../lib/useDownloadAccess';
 import CompareCountryStep from '../components/compare/CompareCountryStep';
 import {
   COMPARE_PRESETS, DEFAULT_COMPARE_PRESET, comparePresetsFor, presetIsActive, presetParams,
@@ -43,9 +50,9 @@ import useMediaQuery from '../lib/useMediaQuery';
 import { deltaTone, indicatorPolarity } from '../lib/deltaTone';
 import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, CHART_AREA, axisTick, axisSampleValues,
-  axisWidthForLabels, chartHeightForWidth, niceAxis, COMPARE_COLORS, ribbonStopsFor,
+  axisWidthForLabels, chartHeightForWidth, niceAxis, COMPARE_SERIES_COLORS, ribbonStopsFor,
 } from '../lib/chartTheme';
-import { compareTooltipRows } from '../lib/compareTooltip';
+import { compareTooltipRows, indexNote } from '../lib/compareTooltip';
 import { useElementWidth, useTouchTooltip, useChartGlassIds } from '../lib/chartHooks';
 import { track, events } from '../lib/track';
 import useSearchTracking from '../lib/useSearchTracking';
@@ -80,6 +87,7 @@ import '../styles/w6-g.css';
 import '../styles/z7-compare.css';
 import '../styles/k5-pages.css';
 import '../styles/k4-charts.css';
+import '../styles/c11c-charts.css';
 
 /** Высота окна браузера (px); 0 до первого измерения и без window. */
 function useViewportHeight() {
@@ -136,22 +144,33 @@ const RANGE_OPTIONS = [
 const DEFAULT_RANGE = '25y';
 
 // До 10 рядов — палитра различимых цветов из общей темы графиков (lib/chartTheme.js::COMPARE_COLORS).
+// Круг 11: цвета рядов разведены по тону (синий, терракот, бирюза…), а конец линии у каждого ряда ещё и своей формы.
 // Круг 8 (C1): цвет ряда один на линию, легенду, точку на конце, заливку, подсказку и карточки итогов.
 // Первые два ряда рисуются лентой-градиентом, построенным из того же цвета (светлее слева, цвет ряда у правого конца).
-const PALETTE = COMPARE_COLORS;
+const PALETTE = COMPARE_SERIES_COLORS;
 const RIBBON_COUNT = 2;
 const RIBBON_GRADIENTS = Object.freeze(
   PALETTE.slice(0, RIBBON_COUNT).map((color) => Object.freeze(ribbonStopsFor(color))),
 );
 const AREA_OPACITY = Object.freeze([CHART_AREA.top, 0.14]);
 
-/** Точка на конце линии: плоский круг 6 px цвета ряда и тихое гало (как .k4-lastpoint). Рисуется поверх линии, мыши не мешает. */
-function EndPoint({ cx, cy, color }) {
+/**
+ * Метка на конце линии: гало цвета ряда и фигура внутри. Цвет различается не у всех людей одинаково, поэтому у каждого ряда
+ * своя форма: круг, ромб, квадрат со скруглением, треугольник. Рисуется поверх линии, мыши не мешает.
+ */
+const END_SHAPES = ['circle', 'diamond', 'square', 'triangle'];
+function EndPoint({
+  cx, cy, color, index = 0,
+}) {
   if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const shape = END_SHAPES[index % END_SHAPES.length];
   return (
-    <g pointerEvents="none" className="fe-compare-bead">
-      <circle cx={cx} cy={cy} r={8} fill={color} fillOpacity={0.2} />
-      <circle cx={cx} cy={cy} r={3.5} fill={color} />
+    <g pointerEvents="none" className="fe-compare-bead" data-shape={shape}>
+      <circle cx={cx} cy={cy} r={9} fill={color} fillOpacity={0.18} />
+      {shape === 'circle' && <circle cx={cx} cy={cy} r={4} fill={color} />}
+      {shape === 'diamond' && <path d={`M${cx} ${cy - 5.5}L${cx + 5.5} ${cy}L${cx} ${cy + 5.5}L${cx - 5.5} ${cy}Z`} fill={color} />}
+      {shape === 'square' && <rect x={cx - 4} y={cy - 4} width={8} height={8} rx={2} fill={color} />}
+      {shape === 'triangle' && <path d={`M${cx} ${cy - 5.5}L${cx + 5.5} ${cy + 4.5}L${cx - 5.5} ${cy + 4.5}Z`} fill={color} strokeLinejoin="round" />}
     </g>
   );
 }
@@ -181,24 +200,6 @@ const STEP_OPTIONS = [
   { key: 'quarter', labelKey: 'compare.step.quarter' },
   { key: 'year', labelKey: 'compare.step.year' },
 ];
-
-function pearsonCorrelation(pairs) {
-  if (pairs.length < 6) return null;
-  const meanX = pairs.reduce((sum, pair) => sum + pair[0], 0) / pairs.length;
-  const meanY = pairs.reduce((sum, pair) => sum + pair[1], 0) / pairs.length;
-  let covariance = 0;
-  let varianceX = 0;
-  let varianceY = 0;
-  for (const [x, y] of pairs) {
-    const dx = x - meanX;
-    const dy = y - meanY;
-    covariance += dx * dy;
-    varianceX += dx * dx;
-    varianceY += dy * dy;
-  }
-  const denominator = Math.sqrt(varianceX * varianceY);
-  return denominator > 0 ? covariance / denominator : null;
-}
 
 /** Усреднение ряда по календарному шагу (месяц/квартал/год); 'auto' — как есть. */
 function aggregateToStep(points, step) {
@@ -974,15 +975,15 @@ function AddWorldCountrySeries({
   return (
     <div className="grid gap-2">
       {onlyItem && !atCap ? (
-        <Button
-          variant="primary"
-          onClick={() => pick(onlyItem.value)}
+        <AddSeriesButton
+          onAdd={() => pick(onlyItem.value)}
+          selectedKey={selected.join(',')}
           data-testid="compare-add-only"
           className="justify-self-start"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           {t('c10k.compare.addOnly', { name: onlyItem.label })}
-        </Button>
+        </AddSeriesButton>
       ) : (
         <ComboSelect
           groups={groups}
@@ -1017,13 +1018,41 @@ const BRANCH_BTN = (active) => cn(
     : 'bg-obsidian-lighter text-text-secondary hover:text-champagne',
 );
 
+/**
+ * Кнопка добавления ряда с индикатором ожидания: после нажатия она тускнеет и показывает кольцо, пока ряд не появится в выборе
+ * (ответ приходит через 1–3 секунды, и раньше казалось, что нажатие не сработало).
+ */
+function AddSeriesButton({
+  children, onAdd, selectedKey, className, ...rest
+}) {
+  // Ожидание длится, пока набор выбранных рядов тот же, что был в момент нажатия; как только ряд добавился, набор меняется.
+  const [pendingFor, setPendingFor] = useState(null);
+  const pending = pendingFor !== null && pendingFor === selectedKey;
+  useEffect(() => {
+    if (!pending) return undefined;
+    const timer = window.setTimeout(() => setPendingFor(null), 6000);
+    return () => window.clearTimeout(timer);
+  }, [pending]);
+  return (
+    <Button
+      variant="primary"
+      loading={pending}
+      className={className}
+      onClick={() => { setPendingFor(selectedKey); onAdd(); }}
+      {...rest}
+    >
+      {children}
+    </Button>
+  );
+}
+
 /** Шаг назад в дереве пикера. */
 function PickerBack({ label, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors"
+      className="mb-3 flex min-h-9 w-fit items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors pointer-coarse:min-h-11"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {label}
@@ -1226,15 +1255,16 @@ function CompareSeriesPicker({
         <div>
           <PickerBack label={t('compare.backToCountry')} onClick={resetCountry} />
           {russiaSameAllowed && !atCap && (
-            <Button
-              variant="primary"
-              className="mb-4"
-              data-testid="compare-add-russia-same"
-              onClick={() => onAdd(russiaSameItem.code)}
-            >
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              {t('c10k.compare.addRussiaSame', { name: activeWorldConceptName || t('c10k.compare.chosenIndicator') })}
-            </Button>
+            <div className="mb-4">
+              <AddSeriesButton
+                data-testid="compare-add-russia-same"
+                selectedKey={selected.join(',')}
+                onAdd={() => onAdd(russiaSameItem.code)}
+              >
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                {t('c10k.compare.addRussiaSame', { name: activeWorldConceptName || t('c10k.compare.chosenIndicator') })}
+              </AddSeriesButton>
+            </div>
           )}
           <div className="mb-4">
             <div className="mb-2 text-sm font-medium text-text-secondary">
@@ -1467,31 +1497,77 @@ function UpsellModal({ open, onClose }) {
   );
 }
 
-function CompareTooltip({
-  active, payload, label, dateFormat = 'short', colors = null,
+/** Число без хвоста единицы: «30 767», «191». Хвост («млрд $») печатается отдельно, чтобы строка не росла вширь. */
+function tipNumber(value, unit, bigOnly = true) {
+  const big = Math.abs(Number(value)) >= 1000;
+  return formatValueSplit(value, unit, bigOnly && big ? 0 : undefined).main;
+}
+
+/**
+ * Подсказка графика. Обычный режим: имя ряда и значение с короткой единицей. Режим «рост от старта»: единица названа один раз
+ * в шапке, в строках число и фраза («в 8,8 раза больше старта»), а настоящее значение стоит рядом мелко.
+ * Ширина ограничена шириной графика, поэтому на телефоне подсказка не уходит за правый край.
+ */
+export function CompareTooltip({
+  active, payload, label, dateFormat = 'short', colors = null, indexed = false, locale = 'ru', maxWidth = 320,
 }) {
+  const t = useT();
   if (!active || !payload?.length) return null;
   const rows = compareTooltipRows(payload, colors);
   if (!rows.length) return null;
   return (
-    <div className="glass-surface min-w-[200px] max-w-[calc(100vw-48px)] rounded-xl px-4 py-3 shadow-2xl">
-      <p className="mb-2 text-xs text-text-secondary">{formatDate(label, dateFormat)}</p>
-      {rows.map((p) => (
-        <div key={p.dataKey} className="mb-1 flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colors?.[p.dataKey] || p.color }} />
-            <span className="max-w-[160px] truncate text-xs text-text-secondary">{p.name}</span>
-          </div>
-          <span className="shrink-0 whitespace-nowrap text-sm font-semibold tabular-nums text-text-primary">
-            {formatValueWithUnit(p.value, p.payload?.[`${p.dataKey}_unit`] || '%').replace(/ (?=[^\s]+$)/, '\u00A0')}
-          </span>
-        </div>
-      ))}
+    <div className="glass-surface c11c-tip rounded-xl px-3.5 py-3 shadow-2xl" style={{ maxWidth }}>
+      <p className="text-xs text-text-secondary">{formatDate(label, dateFormat)}</p>
+      {indexed && <p className="c11c-tip__head">{t('c11c.compare.tip.indexHead')}</p>}
+      <div className="mt-2 grid gap-1.5">
+        {rows.map((p) => {
+          const color = colors?.[p.dataKey] || p.color;
+          const raw = p.payload?.[`${p.dataKey}_raw`];
+          const rawUnit = p.payload?.[`${p.dataKey}_rawUnit`];
+          const note = indexed ? indexNote(p.value, locale) : null;
+          let noteText = '';
+          if (note?.kind === 'times') noteText = t('c11c.compare.tip.times', { ratio: note.ratio, times: t(`z7.compare.times.${note.plural}`) });
+          else if (note?.kind === 'less') noteText = t('c11c.compare.tip.less', { ratio: note.ratio, times: t(`z7.compare.times.${note.plural}`) });
+          else if (note?.kind === 'pct') noteText = t('c11c.compare.tip.pct', { pct: note.pct });
+          const realText = indexed && raw != null && Number.isFinite(Number(raw)) ? tipNumber(raw, rawUnit) : '';
+          return (
+            <div key={p.dataKey} className="c11c-tip__row">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+                <span className="c11c-tip__name">{p.name}</span>
+              </span>
+              <span className="c11c-tip__value">
+                {indexed
+                  ? formatAxisTick(p.value, Math.abs(Number(p.value)) >= 100 ? 0 : 1, locale)
+                  : tipNumber(p.value, p.payload?.[`${p.dataKey}_unit`] || '%', false).replace(/ (?=[^\s]+$)/, '\u00A0')}
+              </span>
+              {indexed && (noteText || realText) && (
+                <span className="c11c-tip__sub">
+                  {[noteText, realText].filter(Boolean).join(' \u00B7 ')}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-export default function ComparePage() {
+/** Текст по ключу или запасной вариант, пока ключа нет в словаре (словари зон сливаются позже кода). */
+function textOr(t, key, fallback, params) {
+  const value = t(key, params);
+  return value === key ? fallback : value;
+}
+
+/** Ограничитель стека «Отменить»: столько шагов назад помним. */
+const UNDO_LIMIT = 20;
+
+/**
+ * Страница сравнения. `renderSave` необязателен: зона кабинета передаёт функцию, которая рисует общую кнопку «Сохранить»;
+ * ей отдаётся описание сравнения (`kind`, `itemKey`, `title`, `payload`). Без неё место остаётся пустым.
+ */
+export default function ComparePage({ renderSave = null } = {}) {
   const t = useT();
   const glass = useChartGlassIds('k5c');
   const { locale } = useLocale();
@@ -1500,6 +1576,14 @@ export default function ComparePage() {
   // Свой период, выбранный ручками под графиком: длина окна в точках (range === 'custom').
   const [customLen, setCustomLen] = useState(0);
   const [scale, setScale] = useState('values');
+  // Две оси (разные единицы): можно поменять, какая единица слева, а какая справа.
+  const [axesSwapped, setAxesSwapped] = useState(false);
+  const [eventsOn, toggleEvents] = useEventsToggle();
+  const [actionNote, setActionNote] = useState('');
+  // Стек «Отменить»: прежние строки адреса (сравнение живёт в адресе), последние сверху.
+  const undoRef = useRef([]);
+  const [undoCount, setUndoCount] = useState(0);
+  const { blocked: dataBlocked } = useDownloadAccess();
   // Человек сам выбрал «Значения» или «Проценты»: автоматика больше не переключает.
   const [scaleChosen, setScaleChosen] = useState(false);
   const [step, setStep] = useState('auto');
@@ -1610,6 +1694,30 @@ export default function ComparePage() {
     [isDemo, searchParams],
   );
 
+  // Все правки сравнения идут через эту функцию: прежний адрес запоминается, и «Отменить» вернёт его.
+  const commitParams = useCallback((params) => {
+    const before = searchParams.toString();
+    if (params.toString() === before) return;
+    const stack = undoRef.current;
+    if (stack[stack.length - 1] !== before) {
+      stack.push(before);
+      if (stack.length > UNDO_LIMIT) stack.shift();
+      setUndoCount(stack.length);
+    }
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  const undoLast = useCallback(() => {
+    const stack = undoRef.current;
+    if (!stack.length) return;
+    const previous = stack.pop();
+    setUndoCount(stack.length);
+    setSearchParams(new URLSearchParams(previous), { replace: true });
+    setCompatibilityMessage('');
+    setStatus(t('c11c.compare.undone'));
+    track(events.COMPARE_CHANGE, { undo: true });
+  }, [setSearchParams, t]);
+
   const writeCodes = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     params.delete('a');
@@ -1626,8 +1734,8 @@ export default function ComparePage() {
       if (kept.length) params.set('rep', kept.join(','));
       else params.delete('rep');
     }
-    setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
+    commitParams(params);
+  }, [searchParams, commitParams]);
 
   const setRep = useCallback((code, rep) => {
     const params = new URLSearchParams(searchParams);
@@ -1635,9 +1743,9 @@ export default function ComparePage() {
     const entries = Object.entries(nextMap).filter(([, r]) => r && r !== REP_LEVEL);
     if (entries.length) params.set('rep', entries.map(([c, r]) => `${c}:${r}`).join(','));
     else params.delete('rep');
-    setSearchParams(params, { replace: true });
+    commitParams(params);
     track(events.COMPARE_CHANGE, { code, rep });
-  }, [searchParams, setSearchParams, repByCode]);
+  }, [searchParams, commitParams, repByCode]);
 
   // Короткое имя ряда для подсказки «… добавлен на график».
   const shortNameForCode = useCallback((code) => {
@@ -1705,24 +1813,26 @@ export default function ComparePage() {
   }, [writeCodes]);
 
   const removeCode = useCallback((code) => {
+    const name = shortNameForCode(code) || t('z2.compare.seriesFallback');
     writeCodes(codes.filter((c) => c !== code));
-    setStatus('');
+    // Случайное «×» не должно стоить всего набора: рядом с карточками появляется «Отменить».
+    setStatus(t('c11c.compare.removed', { name }));
     track(events.COMPARE_CHANGE, { removed: code });
-  }, [codes, writeCodes]);
+  }, [codes, writeCodes, shortNameForCode, t]);
 
   // Готовый набор одним нажатием: график строится сразу.
   const applyPreset = useCallback((preset) => {
-    setSearchParams(presetParams(preset, searchParams), { replace: true });
+    commitParams(presetParams(preset, searchParams));
     setStatus('');
     setCompatibilityMessage('');
     track(events.COMPARE_CHANGE, { preset: preset.id });
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, commitParams]);
 
   // «Изменить» на готовом примере: пример становится рабочим сравнением, выбор раскрывается.
   const startEditing = useCallback(() => {
-    if (isDemo) setSearchParams(presetParams(DEFAULT_COMPARE_PRESET, searchParams), { replace: true });
+    if (isDemo) commitParams(presetParams(DEFAULT_COMPARE_PRESET, searchParams));
     setPickerOpen(true);
-  }, [isDemo, searchParams, setSearchParams]);
+  }, [isDemo, searchParams, commitParams]);
 
   // Резолв (индикатор, представление) → {код ряда для загрузки, transform, unit}.
   // Так каждый ряд грузится в выбранном виде (уровень/к пред./к году), а не в
@@ -1845,8 +1955,9 @@ export default function ComparePage() {
   const mixedPriceIndexBases = requiresRebasedPriceIndex(series);
   const forceIndex = distinctUnits.length > 2 || mixedPriceIndexBases;
   // Ряды в одной единице, но разного размера (США и Австрия): на общей оси меньший кажется ровным.
-  // Тогда сразу показываем рост в процентах от начала периода и оставляем кнопку «Показать значения».
-  const autoIndex = useMemo(() => {
+  // Круг 11: страница сама режим не меняет. Она показывает плашку с выбором и пояснением («рост от старта, старт = 100»),
+  // а решение остаётся за человеком; выбрав «Как есть» один раз, он больше плашку не видит.
+  const suggestIndex = useMemo(() => {
     if (scaleChosen || scale !== 'values' || forceIndex || series.length < 2) return false;
     if (distinctUnits.length !== 1 || !isAbsoluteUnit(distinctUnits[0])) return false;
     if (series.some((s) => s.loading || s.error || s.rep !== REP_LEVEL || s.transform)) return false;
@@ -1854,7 +1965,7 @@ export default function ComparePage() {
     if (levels.some((points) => !points.length)) return false;
     return scalesDiffer(levels[0], levels.slice(1).map((data) => ({ data })));
   }, [scaleChosen, scale, forceIndex, series, distinctUnits]);
-  const indexed = forceIndex || scale === 'index' || autoIndex;
+  const indexed = forceIndex || scale === 'index';
 
   const chartData = useMemo(() => {
     const EMPTY = {
@@ -1931,7 +2042,13 @@ export default function ComparePage() {
         const v = m.get(d);
         const s = series[i];
         if (indexed) {
-          if (indexable[i]) { row[s.key] = rebaseToHundred(v, bases[i]); row[`${s.key}_unit`] = idxUnit; }
+          if (indexable[i]) {
+            row[s.key] = rebaseToHundred(v, bases[i]);
+            row[`${s.key}_unit`] = idxUnit;
+            // Настоящее значение в тот же день: подсказка показывает его рядом с ростом от старта.
+            row[`${s.key}_raw`] = v;
+            row[`${s.key}_rawUnit`] = s.unit || '%';
+          }
         } else {
           row[s.key] = v;
           row[`${s.key}_unit`] = s.unit || '%';
@@ -1968,16 +2085,14 @@ export default function ComparePage() {
       };
     });
     const base = metrics[0];
+    // Круг 11: связь считается по изменениям от даты к дате, а не по уровням: два растущих ряда иначе всегда «связаны».
     const correlations = base?.points?.length
       ? metrics.slice(1).map((metric) => {
-          const byDate = new Map(metric.points.map((point) => [point.date, point.value]));
-          const pairs = base.points
-            .filter((point) => byDate.has(point.date))
-            .map((point) => [point.value, byDate.get(point.date)]);
+          const result = changeCorrelation(base.points, metric.points);
           return {
             item: metric.item,
-            value: pearsonCorrelation(pairs),
-            observations: pairs.length,
+            value: result.value,
+            observations: result.observations,
           };
         }).filter((result) => result.value != null)
       : [];
@@ -2031,10 +2146,13 @@ export default function ComparePage() {
 
   // Оси: индекс → одна левая. Значения → группировка по единице: первая
   // единица слева, вторая справа (ряды одной единицы делят общую ось).
+  const dualAxes = !indexed && distinctUnits.length === 2;
+  const swapAxes = dualAxes && axesSwapped;
   const axisFor = (i) => {
     if (indexed) return 'left';
     const u = series[i]?.unit || '%';
-    return distinctUnits[0] === u ? 'left' : 'right';
+    const first = distinctUnits[0] === u;
+    return (first !== swapAxes) ? 'left' : 'right';
   };
   // Короткая подпись легенды: без повтора «Значение», длинных единиц и «шкала слева»
   // при одной оси — единицы видны на оси и в сводке ниже.
@@ -2055,8 +2173,8 @@ export default function ComparePage() {
     const text = compareLegendParts(parts);
     return text ? `(${text})` : '';
   };
-  const leftUnit = distinctUnits[0];
-  const rightUnit = distinctUnits[1];
+  const leftUnit = swapAxes ? distinctUnits[1] : distinctUnits[0];
+  const rightUnit = swapAxes ? distinctUnits[0] : distinctUnits[1];
   // Ширина оси Y — по самой длинной подписи: фиксированные 46–60 px резали левую цифру
   // («355 000» читалось как «55 000»).
   const axisValues = (id) => {
@@ -2209,6 +2327,83 @@ export default function ComparePage() {
     }
   };
 
+  // Выгрузка данных сравнения: все ряды одним файлом (даты строками, ряды колонками), в тех же единицах, что на графике.
+  const repString = Object.entries(repByCode)
+    .filter(([code, rep]) => codes.includes(code) && rep && rep !== REP_LEVEL)
+    .map(([code, rep]) => `${code}:${rep}`)
+    .join(',');
+  const handleDataExport = async (format) => {
+    if (!hasData) return;
+    const shown = series.filter((s) => !nonIndexableKeys.has(s.key));
+    const idxLabel = textOr(t, 'compare.indexUnit', '% от старта');
+    const columns = [
+      { key: 'date', label: t('table.date') },
+      ...shown.map((s) => {
+        const name = shortSeriesName(s) || t('z2.compare.seriesFallback');
+        const how = s.rep && s.rep !== REP_LEVEL ? `, ${s.repLabel}` : '';
+        return {
+          key: s.key,
+          label: indexed ? `${name}${how} (${t('compare.start100')})` : `${name}${how}`,
+          unit: indexed ? idxLabel : (splitUnit(s.unit).short || s.unit || undefined),
+        };
+      }),
+    ];
+    const rows = chartRows.map((row) => {
+      const out = { date: String(row.date).slice(0, 10) };
+      shown.forEach((s) => { out[s.key] = row[s.key] ?? null; });
+      return out;
+    });
+    const sources = [...new Set(shown.map((s) => s.ind?.source).filter(Boolean))];
+    try {
+      await downloadGrid({
+        format,
+        filename: safeFilename(`compare_${codes.join('-') || 'data'}`, format === 'csv' ? 'csv' : 'xlsx'),
+        title: headline,
+        columns,
+        rows,
+        meta: {
+          ...(sources.length ? { source: sources.join('; ') } : {}),
+          ...(indexed && baseDate ? { note: t('c11c.compare.exportNote', { date: formatDate(baseDate, compareDateFmt) }) } : {}),
+        },
+        history: {
+          source: 'compare',
+          subject_key: codes.join(','),
+          params: {
+            codes, rep: repString, range, scale: indexed ? 'index' : 'values', step,
+          },
+        },
+      }, { source: 'compare' });
+      setActionNote('');
+    } catch {
+      setActionNote(t('c11c.compare.exportFailed'));
+    }
+  };
+
+  // «Поделиться»: обычный адрес с кодами и видами рядов, без коротких ссылок и без хранения на сервере.
+  const handleShare = async () => {
+    if (!codes.length || typeof window === 'undefined') return;
+    const params = new URLSearchParams();
+    params.set('codes', codes.join(','));
+    if (repString) params.set('rep', repString);
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    track(events.COMPARE_CHANGE, { share: true });
+    try {
+      if (coarsePointer && typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+        await navigator.share({ url, title: headline });
+        setActionNote('');
+        return;
+      }
+    } catch (err) {
+      if (err?.name === 'AbortError') return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setActionNote(t('c11c.compare.shareCopied'));
+    } catch {
+      setActionNote(t('c11c.compare.shareManual', { url }));
+    }
+  };
+
   const atCap = codes.length >= cap;
   const capHint = isAuthed
     ? t('z7.compare.capAuthedFix', { n: USER_MAX })
@@ -2232,6 +2427,20 @@ export default function ComparePage() {
     track(events.COMPARE_RANGE, { scale: key });
   };
   const headline = series.length ? chartHeadline : t('compare.title');
+
+  // Описание сравнения для общей кнопки «Сохранить» кабинета (в записи только коды и виды рядов, как в адресе).
+  const saveSpec = (() => {
+    if (isDemo || !codes.length || !renderSave) return null;
+    const itemKey = repString ? `${codes.join(',')}|${repString}` : codes.join(',');
+    if (itemKey.length > 300) return null;
+    return {
+      kind: 'comparison',
+      itemKey,
+      title: String(headline || '').slice(0, 200),
+      payload: { codes: codes.join(','), ...(repString ? { rep: repString } : {}) },
+    };
+  })();
+
   const showPicker = pickerOpen || (!isDemo && codes.length === 0);
   const activePreset = COMPARE_PRESETS.find((preset) => presetIsActive(preset, codes));
   // Подсказка красит точки сплошным цветом ряда: у лент первых двух рядов stroke — ссылка на градиент.
@@ -2248,6 +2457,19 @@ export default function ComparePage() {
       break;
     }
   });
+
+  const corrValues = analysisSummary.correlations
+    .map((item) => item.value.toFixed(2).replace('.', locale === 'en' ? '.' : ','))
+    .join(', ');
+  const corrDetails = textOr(
+    t,
+    'c11t.compare.corr.detailsChanges',
+    t('w4.compare.corr.details', { values: corrValues }),
+    { values: corrValues },
+  );
+
+  // Отметки событий: только в окне графика и только по датам, где есть точки ряда.
+  const eventMarks = useMemo(() => eventsInWindow(chartRows.map((row) => row.date)), [chartRows]);
 
   return (
     <div className="fe-data-page fe-compare-page pt-24 md:pt-28 pb-12 md:pb-16">
@@ -2368,11 +2590,21 @@ export default function ComparePage() {
           </div>
         )}
 
-        {/* Выбор свернулся после второго ряда: что именно добавлено (и что заменено) остаётся видно. */}
-        {!showPicker && status && (
-          <p role="status" data-testid="compare-status" className="mb-3 text-[13px] leading-snug text-champagne-ink">
-            {status}
-          </p>
+        {/* Выбор свернулся после второго ряда: что именно добавлено (и что заменено) остаётся видно. «Отменить» возвращает прежний набор. */}
+        {!isDemo && ((!showPicker && status) || undoCount > 0) && (
+          <div className="c11c-undo mb-3">
+            {!showPicker && status && (
+              <p role="status" data-testid="compare-status" className="text-[13px] leading-snug text-champagne-ink">
+                {status}
+              </p>
+            )}
+            {undoCount > 0 && (
+              <Button variant="secondary" size="sm" onClick={undoLast} data-testid="compare-undo">
+                <Undo2 className="h-3.5 w-3.5" aria-hidden="true" />
+                {t('c11c.compare.undo')}
+              </Button>
+            )}
+          </div>
         )}
 
         {!isDemo && codes.length > 0 && (
@@ -2443,6 +2675,97 @@ export default function ComparePage() {
       )}
 
       <section ref={setSectionNode} data-block="compare-chart" className="mb-8">
+        {/* Круг 11: управление графиком стоит над графиком, а не под ним: период, частота, вид и события видны сразу. */}
+        {hasData && !loading && (
+          <div
+            data-block="compare-settings"
+            className="c11c-toolbar mb-4 grid gap-4 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6"
+          >
+            <div className="min-w-0">
+              <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+                <Activity className="h-3.5 w-3.5 text-champagne" aria-hidden="true" />
+                {t('compare.periodLabel')}
+              </div>
+              <div className="fe-scroll-row">
+                {RANGE_OPTIONS.map((opt) => (
+                  <Chip
+                    key={opt.key}
+                    active={range === opt.key}
+                    onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
+                  >
+                    {t(opt.labelKey)}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+
+            <div className="min-w-0">
+              <div
+                className="mb-1.5 text-xs font-medium text-text-secondary"
+                title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
+              >
+                {t('w4.compare.stepLabel')}
+              </div>
+              {hasWorldSeries ? (
+                // Частота мировых рядов задана источником и не выбирается: показываем её такой же кнопкой, как остальные, но неактивной.
+                <div className="fe-scroll-row">
+                  <Chip
+                    active
+                    aria-disabled="true"
+                    aria-pressed={undefined}
+                    data-testid="compare-step-official"
+                    title={t('compare.worldOfficialOnly')}
+                    onClick={() => {}}
+                  >
+                    {t('w6g.compare.step.official')}
+                  </Chip>
+                </div>
+              ) : (
+                <div className="fe-scroll-row">
+                  {STEP_OPTIONS.map((opt) => (
+                    <Chip
+                      key={opt.key}
+                      active={step === opt.key}
+                      onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
+                    >
+                      {t(opt.labelKey === 'compare.step.auto' ? 'w6g.compare.step.auto' : opt.labelKey)}
+                    </Chip>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="min-w-0">
+              <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('w4.compare.scaleLabel')}</div>
+              <div className="fe-scroll-row">
+                {SCALE_OPTIONS.map((opt) => {
+                  const disabled = forceIndex && opt.key === 'values';
+                  return (
+                    <Chip
+                      key={opt.key}
+                      disabled={disabled}
+                      active={indexed ? opt.key === 'index' : scale === opt.key && !forceIndex}
+                      onClick={() => chooseScale(opt.key)}
+                      title={disabled ? t('compare.indexOnlyUnits') : undefined}
+                    >
+                      {t(opt.key === 'index' ? 'w6g.compare.scale.index' : 'w6g.compare.scale.values')}
+                    </Chip>
+                  );
+                })}
+              </div>
+            </div>
+
+            {eventMarks.length > 0 && (
+              <div className="min-w-0">
+                <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('c11c.events.label')}</div>
+                <div className="fe-scroll-row">
+                  <EventsChip on={eventsOn} onToggle={toggleEvents} count={eventMarks.length} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {loading ? (
           <CompareChartState kind="loading" height={chartHeight} />
         ) : !hasData ? (
@@ -2480,10 +2803,20 @@ export default function ComparePage() {
               </p>
             </div>
 
+            {/* Круг 11: страница сама режим не переключает. Ряды разного размера: плашка с выбором и объяснением. */}
+            {suggestIndex && (
+              <div className="fe-compare-auto" role="status" data-testid="compare-suggest-index" data-no-export="true">
+                <p>{t('c11c.compare.suggestIndex')}</p>
+                <Button variant="primary" size="sm" onClick={() => chooseScale('index')}>
+                  {t('c11c.compare.suggestIndexBtn')}
+                </Button>
+              </div>
+            )}
+
             {/* Круг 10 (Ср2): что значит «старт = 100» сказано словами и с примером, а настоящие числа возвращает видимая кнопка рядом. */}
             {indexed && !forceIndex && baseDate && (
-              <div className="fe-compare-auto" role="status" data-testid={autoIndex ? 'compare-auto-index' : 'compare-index-note'} data-no-export="true">
-                <p>{t(autoIndex ? 'c10k.compare.autoIndex' : 'c10k.compare.manualIndex', { date: formatDate(baseDate, compareDateFmt) })}</p>
+              <div className="fe-compare-auto" role="status" data-testid="compare-index-note" data-no-export="true">
+                <p>{t('c10k.compare.manualIndex', { date: formatDate(baseDate, compareDateFmt) })}</p>
                 <Button variant="secondary" size="sm" onClick={() => chooseScale('values')}>
                   {t('z7.scale.backToValues')}
                 </Button>
@@ -2523,6 +2856,28 @@ export default function ComparePage() {
                 );
               })}
             </div>
+
+            {/* Две единицы: сказано, какой ряд на какой шкале, и шкалы можно поменять местами. */}
+            {dualAxes && (
+              <div className="c11c-axes" data-testid="compare-axes" data-no-export="true">
+                {['left', 'right'].map((side) => (
+                  <p key={side} className="c11c-axes__side">
+                    <b>{t(side === 'left' ? 'c11c.compare.axes.left' : 'c11c.compare.axes.right')}</b>
+                    {' '}
+                    {series.map((s, i) => (axisFor(i) === side ? (
+                      <span key={s.code} className="c11c-axes__item">
+                        <i style={{ backgroundColor: s.color }} aria-hidden="true" />
+                        {labels[i] || t('z2.compare.seriesFallback')}
+                      </span>
+                    ) : null))}
+                  </p>
+                ))}
+                <Button variant="secondary" size="sm" onClick={() => setAxesSwapped((value) => !value)} data-testid="compare-swap-axes">
+                  <ArrowLeftRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t('c11c.compare.axes.swap')}
+                </Button>
+              </div>
+            )}
 
             {nonIndexableNames.length > 0 && (
               <p className="mb-4 -mt-1 text-left text-xs text-text-secondary">
@@ -2600,9 +2955,25 @@ export default function ComparePage() {
                       tickFormatter={(v) => formatAxisTick(v, unitDigits(rightUnit))}
                     />
                   )}
+                  {eventsOn && eventReferenceLines(
+                    eventMarks,
+                    chartRows.map((row) => row.date),
+                    Math.max(0, plotWidth - axisWidths.left - chartMarginRight),
+                    'left',
+                  )}
                   <Tooltip
-                    content={<CompareTooltip dateFormat={compareDateFmt} colors={seriesColors} />}
+                    content={(
+                      <CompareTooltip
+                        dateFormat={compareDateFmt}
+                        colors={seriesColors}
+                        indexed={indexed}
+                        locale={locale}
+                        maxWidth={Math.max(180, Math.min(320, (plotWidth || 320) - 12))}
+                      />
+                    )}
                     cursor={HOVER_CURSOR}
+                    allowEscapeViewBox={{ x: false, y: false }}
+                    wrapperStyle={{ pointerEvents: 'none', zIndex: 20, maxWidth: Math.max(180, (plotWidth || 320) - 12) }}
                     {...touchTip.tooltipProps}
                   />
                   {/* Мягкая заливка под лентами первых двух рядов: тот же цвет ряда, 16 % / 14 % у линии, к оси 0. */}
@@ -2669,7 +3040,7 @@ export default function ComparePage() {
                       r={5}
                       ifOverflow="visible"
                       shape={(props) => (
-                        <EndPoint cx={props.cx} cy={props.cy} color={dot.color} />
+                        <EndPoint cx={props.cx} cy={props.cy} color={dot.color} index={dot.index} />
                       )}
                     />
                   ))}
@@ -2726,89 +3097,47 @@ export default function ComparePage() {
                 </div>
               </div>
             )}
+
+            {eventsOn && <ChartEventsList marks={eventMarks} />}
           </div>
         )}
 
-        {/* Настройки — после графика и только когда есть что настраивать. */}
+        {/* Что сделать с готовым графиком: скачать данные и картинку, поделиться ссылкой, сохранить в кабинет. */}
         {hasData && !loading && (
-          <div
-            data-block="compare-settings"
-            className="mt-5 grid gap-4 pt-5 sm:flex sm:flex-wrap sm:items-end sm:gap-x-6 k5-seam k5-seam--top"
-          >
-            <div className="min-w-0">
-              <div className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-text-secondary">
-                <Activity className="h-3.5 w-3.5 text-champagne" aria-hidden="true" />
-                {t('compare.periodLabel')}
-              </div>
-              <div className="fe-scroll-row">
-                {RANGE_OPTIONS.map((opt) => (
-                  <Chip
-                    key={opt.key}
-                    active={range === opt.key}
-                    onClick={() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}
-                  >
-                    {t(opt.labelKey)}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-
-            <div className="min-w-0">
-              <div
-                className="mb-1.5 text-xs font-medium text-text-secondary"
-                title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
-              >
-                {t('w4.compare.stepLabel')}
-              </div>
-              {hasWorldSeries ? (
-                <span className="inline-flex min-h-[34px] items-center rounded-xl px-3 text-xs text-text-secondary fe-glass-2">
-                  {t('w6g.compare.step.official')}
-                </span>
-              ) : (
-                <div className="fe-scroll-row">
-                  {STEP_OPTIONS.map((opt) => (
-                    <Chip
-                      key={opt.key}
-                      active={step === opt.key}
-                      onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                    >
-                      {t(opt.labelKey === 'compare.step.auto' ? 'w6g.compare.step.auto' : opt.labelKey)}
-                    </Chip>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="min-w-0">
-              <div className="mb-1.5 text-xs font-medium text-text-secondary">{t('w4.compare.scaleLabel')}</div>
-              <div className="fe-scroll-row">
-                {SCALE_OPTIONS.map((opt) => {
-                  const disabled = forceIndex && opt.key === 'values';
-                  return (
-                    <Chip
-                      key={opt.key}
-                      disabled={disabled}
-                      active={indexed ? opt.key === 'index' : scale === opt.key && !forceIndex}
-                      onClick={() => chooseScale(opt.key)}
-                      title={disabled ? t('compare.indexOnlyUnits') : undefined}
-                    >
-                      {t(opt.key === 'index' ? 'w6g.compare.scale.index' : 'w6g.compare.scale.values')}
-                    </Chip>
-                  );
-                })}
-              </div>
-            </div>
-
+          <div data-block="compare-actions" className="c11c-actions mt-4">
+            <ChartDownloadMenu
+              formats={['csv', 'excel']}
+              label={t('c11c.compare.downloadData')}
+              menuLabel={t('c11c.compare.downloadData')}
+              dataBlocked={dataBlocked}
+              onCsv={() => handleDataExport('csv')}
+              onExcel={() => handleDataExport('xlsx')}
+              showSaveButton={false}
+            />
             <Button
               variant="secondary"
               size="sm"
               onClick={handleExport}
-              className="w-full sm:ml-auto sm:w-auto"
               title={t('compare.downloadChart')}
             >
               <ImageDown className="h-3.5 w-3.5" aria-hidden="true" />
               {t('w6g.compare.saveImage')}
             </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleShare}
+              data-testid="compare-share"
+              title={t('c11c.compare.shareHint')}
+            >
+              <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('c11c.compare.share')}
+            </Button>
+            {/* Место общей кнопки «Сохранить» кабинета: рисует функция, которую передала зона кабинета. */}
+            {saveSpec ? renderSave(saveSpec) : null}
+            {actionNote && (
+              <p role="status" data-testid="compare-action-note" className="c11c-actions__note">{actionNote}</p>
+            )}
           </div>
         )}
 
@@ -2848,7 +3177,11 @@ export default function ComparePage() {
               const lastValue = formatValueSplit(metric.last.value, displayUnit, bigDigits(metric.last.value));
               const changeValue = formatValueSplit(
                 metric.change,
-                compareDifferenceUnit(metric.item.unit || '%', { indexed, locale }),
+                compareDifferenceUnit(metric.item.unit || '%', {
+                  indexed,
+                  locale,
+                  indexUnit: indexed ? textOr(t, 'c11t.compare.indexDiffUnit', locale === 'en' ? 'p.p. of start' : 'п. п. от старта') : '',
+                }),
                 bigDigits(metric.change),
               );
               return (
@@ -2916,17 +3249,21 @@ export default function ComparePage() {
                   </div>
                 ))}
               </div>
+              {chartRows.length > 1 && (
+                <p className="mt-3 text-xs text-text-tertiary" data-testid="compare-corr-period">
+                  {t('c11c.compare.corr.period', {
+                    from: formatDate(chartRows[0].date, compareDateFmt),
+                    to: formatDate(chartRows[chartRows.length - 1].date, compareDateFmt),
+                  })}
+                </p>
+              )}
               <details className="fe-acc mt-3 text-xs leading-5 text-text-secondary">
                 <summary className="fe-tap-inline gap-1 text-champagne-ink">
                   {t('w4.compare.corr.how')}
                   <ChevronDown className="fe-acc__chev h-3.5 w-3.5" aria-hidden="true" />
                 </summary>
                 <p className="mt-1">
-                  {t('w4.compare.corr.details', {
-                    values: analysisSummary.correlations
-                      .map((item) => item.value.toFixed(2).replace('.', locale === 'en' ? '.' : ','))
-                      .join(', '),
-                  })}
+                  {corrDetails}
                 </p>
               </details>
             </div>

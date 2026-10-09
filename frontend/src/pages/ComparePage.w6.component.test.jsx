@@ -130,7 +130,7 @@ describe('ComparePage: открывается живым сравнением', 
     expect(screen.queryAllByRole('button', { name: 'Убрать' }).length).toBe(0);
   });
 
-  it('подписи настроек человеческие и стоят после графика', async () => {
+  it('подписи настроек человеческие, управление над графиком, действия под ним', async () => {
     mockApis();
     const { container } = renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     await screen.findByRole('heading', { level: 2, name: /США и Китай/ });
@@ -142,10 +142,15 @@ describe('ComparePage: открывается живым сравнением', 
     expect(within(settings).getByRole('button', { name: 'Как есть' })).toBeTruthy();
     expect(within(settings).getByRole('button', { name: 'Рост от начала (старт = 100)' })).toBeTruthy();
     expect(within(settings).getByText('Как в источнике')).toBeTruthy();
-    expect(within(settings).getByRole('button', { name: /Сохранить как картинку/ })).toBeTruthy();
     expect(document.body.textContent).not.toMatch(/Исходные значения|Общая база|Частота по источнику/);
+    // Круг 11: период, частота и вид стоят над графиком, а скачать и поделиться под ним.
     const chartCard = container.querySelector('[data-block="compare-chart"] .fe-panel');
-    expect(chartCard.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(chartCard.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+    const actions = container.querySelector('[data-block="compare-actions"]');
+    expect(chartCard.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(actions).getByRole('button', { name: /Сохранить как картинку/ })).toBeTruthy();
+    expect(within(actions).getByRole('button', { name: /Скачать данные/ })).toBeTruthy();
+    expect(within(actions).getByRole('button', { name: /Поделиться ссылкой/ })).toBeTruthy();
   });
 
   it('ось «Период» под графиком убрана', async () => {

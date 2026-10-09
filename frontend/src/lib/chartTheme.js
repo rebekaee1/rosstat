@@ -57,6 +57,17 @@ export const COMPARE_COLORS = Object.freeze([
   '#2C4A8A', '#238F9B', ...CHART_THEME.series.slice(2), CHART_THEME.series[1],
 ]);
 
+/**
+ * Круг 11 (C): цвета рядов страницы «Сравнение». Китай и Россия (синий, бирюза, сталь) были почти одного холодного оттенка,
+ * поэтому соседние ряды разведены по тону внутри холодной палитры: глубокий синий, приглушённый терракот, бирюза, оливка,
+ * сливовый, графит, песочный, сталь, зелень, серо-синий. Золото в рядах не участвует. `COMPARE_COLORS` оставлен прежним:
+ * его берут калькуляторы.
+ */
+export const COMPARE_SERIES_COLORS = Object.freeze([
+  '#2C4A8A', '#B5675B', '#238F9B', '#7E8A4B', '#8E6FA0',
+  '#202A3C', '#A27B5C', '#5E86A8', '#4F8A7B', '#5A6A86',
+]);
+
 /** Смешивает цвет #RRGGBB с белым: amount 0 — исходный цвет, 1 — белый. */
 export function mixWithWhite(hex, amount = 0.3) {
   const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ''));
@@ -134,6 +145,8 @@ export function axisTick(overrides = {}) {
     fill: CHART_THEME.axis,
     fontSize: CHART_THEME.tickSize,
     fontFamily: CHART_THEME.font,
+    // Долгое нажатие на подпись оси не выделяет текст и не открывает меню копирования (круг 11).
+    style: { userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' },
     ...overrides,
   };
 }

@@ -152,7 +152,9 @@ describe('ComparePage: период и «старт = 100» (круг 10, Ср2)
   it('рост от старта объяснён словами с примером и кнопкой «Показать значения»', async () => {
     mockApis();
     renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=w:united-states:gdp-usd,w:china:gdp-usd' });
-    await screen.findByTestId('compare-auto-index');
+    // Страница режим сама не переключает: сначала показывает выбор.
+    await screen.findByTestId('compare-suggest-index');
+    expect(screen.queryByTestId('compare-index-note')).toBeNull();
     fireEvent.click(await screen.findByRole('button', { name: 'Рост от начала (старт = 100)' }));
     const note = await screen.findByTestId('compare-index-note');
     expect(note.textContent).toMatch(/каждый ряд равен 100/);

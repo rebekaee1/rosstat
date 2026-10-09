@@ -85,7 +85,8 @@ describe('useCountryComparison', () => {
     ['budget-balance-gdp', '% ВВП', 'values'],
     ['gdp-volume-annual', 'млн евро', 'values'],
     ['gdp-volume-quarterly', 'млн евро', 'values'],
-    ['custom-absolute', 'руб.', 'index'],
+    // Круг 11: страница сама проценты не включает, даже для обычной абсолютной величины.
+    ['custom-absolute', 'руб.', 'values'],
   ])('сохраняет корректный режим для %s', (conceptSlug, unit, expectedScale) => {
     const { result } = renderHook(() => useCountryComparison({
       surface: 'world',

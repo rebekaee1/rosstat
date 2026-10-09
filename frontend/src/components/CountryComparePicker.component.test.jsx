@@ -156,8 +156,8 @@ describe('CountryComparePicker', () => {
     );
     const group = screen.getByRole('group', { name: 'Сравнить с:' });
     const names = [...group.querySelectorAll('button')].map((b) => b.textContent);
-    // Китай и Германия популярнее остальных и идут первыми; «Среднее по странам» в чипах не предлагается.
-    expect(names.slice(0, 2)).toEqual(['Китай', 'Германия']);
+    // Круг 11: у России первым идёт сосед (Китай), затем страна, ближайшая по размеру экономики (Франция); «Среднее по странам» в чипах не предлагается.
+    expect(names.slice(0, 2)).toEqual(['Китай', 'Франция']);
     expect(names).not.toContain('Среднее по странам');
     fireEvent.click(screen.getByRole('button', { name: 'Китай' }));
     expect(onToggle).toHaveBeenCalledWith('peer:china:cn');
