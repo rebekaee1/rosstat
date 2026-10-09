@@ -4,6 +4,7 @@ import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale, useT } from '../i18n';
 import { canonicalLanguageUrl } from '../i18n/locale';
+import { isNotFoundScreen } from '../lib/notFoundScreen';
 import '../styles/k3-shell.css';
 
 const LOCALES = [
@@ -27,6 +28,11 @@ function LocaleFlag({ locale, className }) {
   );
 }
 
+/** Куда вести смену языка с 404: на главную нужного хоста (тот же origin, путь «/»), а не на адрес, которого нет. */
+function homeOptionsForNotFound() {
+  return { href: `${window.location.origin}/` };
+}
+
 /**
  * Язык в шапке: кружок с кодом текущего языка, клик открывает список языков.
  * До cutover / localhost: тот же origin + ?preview_locale=en (не канон).
@@ -38,6 +44,8 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
   const [open, setOpen] = useState(false);
   // Круг 9, S9: смена языка = полная перезагрузка страницы, на медленном канале 3–7 секунд кнопка стояла как ни в чём не бывало.
   const [switching, setSwitching] = useState(false);
+  // На 404 язык переключается на главную; решаем в момент открытия списка (страница к тому времени уже нарисована).
+  const [onNotFound, setOnNotFound] = useState(false);
   const wrapRef = useRef(null);
   const current = LOCALES.find((item) => item.code === locale) || LOCALES[0];
 
@@ -73,14 +81,15 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
     setOpen(false);
     if (code === locale) return;
     setSwitching(true);
-    switchLanguage(code);
+    if (isNotFoundScreen()) switchLanguage(code, homeOptionsForNotFound());
+    else switchLanguage(code);
   };
 
   return (
     <div className="relative" ref={wrapRef}>
       <button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={() => { if (!open) setOnNotFound(isNotFoundScreen()); setOpen(!open); }}
         className={cn(
           FOCUS_RING,
           'flex h-8 items-center gap-1 rounded-lg px-1.5 text-text-secondary transition-colors [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:justify-center',
@@ -109,7 +118,7 @@ export default function LocaleSwitcher({ className: triggerClassName }) {
         >
           {LOCALES.map((item) => {
             const active = item.code === locale;
-            const href = canonicalLanguageUrl(item.code);
+            const href = canonicalLanguageUrl(item.code, onNotFound ? homeOptionsForNotFound() : undefined);
             const className = cn(
               FOCUS_RING,
               'flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors',

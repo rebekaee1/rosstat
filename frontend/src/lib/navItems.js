@@ -104,17 +104,44 @@ export function primaryNav(locale) {
   return PRIMARY_NAV.filter((item) => !hidden.has(item.id));
 }
 
-/** Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна. */
-export function resolveActiveNavId(pathname, items = PRIMARY_NAV) {
+/** Раздел главной с каталогом стран: на него ведёт пункт «Страны» (якорь, а не отдельная страница). */
+export const COUNTRIES_ANCHOR_ID = 'countries';
+
+/** Страницы пункта «Инструменты» (калькуляторы и конструктор виджетов): пункт в шапке подсвечивается, пока человек на них (круг 11, G, U2). */
+export function isToolsPath(pathname = '') {
+  const p = String(pathname);
+  return p === '/calculator' || p.startsWith('/calculator/') || p === '/widgets' || p.startsWith('/widgets/');
+}
+
+/** Кабинет: кнопка в шапке подсвечивается на /account (круг 11, G, U2). */
+export function isAccountPath(pathname = '') {
+  const p = String(pathname);
+  return p === '/account' || p.startsWith('/account/');
+}
+
+/**
+ * Самый длинный совпавший префикс среди пунктов; граница сегмента обязательна.
+ * Круг 11, G (U33): пункт-якорь («Страны» → `/#countries`) подсвечивается, когда в адресе тот же якорь (`hash`) или человек долистал до
+ * раздела с каталогом (`anchorInView`): раньше он не подсвечивался никогда и казался просто обновлением главной.
+ */
+export function resolveActiveNavId(pathname, items = PRIMARY_NAV, hash = '', anchorInView = false) {
   let bestId = null;
   let bestLen = -1;
   for (const item of items) {
     const prefix = item.match || item.to;
-    const hit = item.exact
-      ? pathname === prefix
-      : pathname === prefix || pathname.startsWith(`${prefix}/`);
-    if (hit && prefix.length > bestLen) {
-      bestLen = prefix.length;
+    let hit;
+    if (prefix.includes('#')) {
+      const [anchorPath, anchorHash] = prefix.split('#');
+      hit = pathname === (anchorPath || '/') && (hash === `#${anchorHash}` || anchorInView);
+    } else if (item.exact) {
+      hit = pathname === prefix;
+    } else {
+      hit = pathname === prefix || pathname.startsWith(`${prefix}/`);
+    }
+    // Якорь главной точнее самой главной: он выигрывает у пункта «/», пока человек у каталога стран.
+    const weight = prefix.includes('#') ? prefix.length + 100 : prefix.length;
+    if (hit && weight > bestLen) {
+      bestLen = weight;
       bestId = item.id;
     }
   }

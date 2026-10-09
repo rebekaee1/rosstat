@@ -157,7 +157,7 @@ svg.lucide[stroke-width='2'] { stroke-width: 1.75; }
 footer.fe-footer.fe-k2-footer {
   --color-text-primary: #F2F5FA;
   --color-text-secondary: #C7CBD6;
-  --color-text-tertiary: #B7BFCF;
+  --color-text-tertiary: #C6CEDF;
   position: relative;
   isolation: isolate;
   overflow: visible;
@@ -311,13 +311,13 @@ footer.fe-footer.fe-k2-footer .fe-foot-sources li > a { display: inline-flex; al
   footer.fe-footer.fe-k2-footer .fe-foot-sources li > a { min-height: 44px; }
 }
 
-/* Нижняя строка: юридический текст #C7CBD6, 12 px. */
+/* Нижняя строка: юридический текст #D3D9E8, 13 px (круг 11, G: был #C7CBD6, 12.5 px). */
 footer.fe-footer.fe-k2-footer .fe-foot-bottom { margin-top: 28px; padding-top: 0; }
 footer.fe-footer.fe-k2-footer .fe-foot-legal,
 footer.fe-footer.fe-k2-footer .fe-foot-legal p,
 footer.fe-footer.fe-k2-footer .fe-foot-meta,
-footer.fe-footer.fe-k2-footer .fe-foot-requisites p { color: #C7CBD6; font-size: 13px; line-height: 1.55; }
-footer.fe-footer.fe-k2-footer .fe-foot-requisites__summary { color: #C7CBD6; }
+footer.fe-footer.fe-k2-footer .fe-foot-requisites p { color: #D3D9E8; font-size: 13px; line-height: 1.55; }
+footer.fe-footer.fe-k2-footer .fe-foot-requisites__summary { color: #D3D9E8; }
 footer.fe-footer.fe-k2-footer .fe-foot-updates__dot { box-shadow: 0 0 10px 2px rgba(176, 138, 62, 0.45); }
 footer.fe-footer.fe-k2-footer .fe-foot-chip { background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05)); box-shadow: 0 8px 16px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
 footer.fe-footer.fe-k2-footer .fe-foot-chip--all { background: transparent; box-shadow: none; color: #C4D2EE; }

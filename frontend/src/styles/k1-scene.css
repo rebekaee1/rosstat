@@ -365,6 +365,12 @@ html.fe-scene-on #root {
     aspect-ratio: 888 / 1200;
   }
 }
+/* Круг 11, G (U23): планшет 768-1023 px (например 820): F ниже и меньше, чтобы не наезжать на поле поиска и заголовок (была 64vh, до 760 px).
+   Высота остаётся не больше 520 px: кадр 1300x1519 всё ещё вдвое чётче показа (принцип 9). */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fe-scene__f { top: 22vh; height: min(42vh, 520px); right: clamp(-4vw, -2vw, 0px); }
+  .fe-scene__f[data-fe-f-mode="all"] { top: 36vh; height: min(36vh, 440px); }
+}
 @media (min-width: 768px) {
   .fe-scene__f[data-fe-f-mode="phone"] { display: none; }
 }

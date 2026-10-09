@@ -34,6 +34,8 @@ export function IosHint() {
 }
 
 /**
+ * Круг 11, G (U30): крестик «закрыть» везде 44 × 44 pt (был 36 на компьютере и мелкий значок), темнее; закрытие запоминается в `lib/pwa.js`
+ * (3 → 7 → 14 → 30 дней), на страницах данных карточка не раньше чем через 30 с (`lib/pwaPolicy.js`).
  * Круг 9, S2. Карточка стоит над нижней панелью, плашкой cookie и плашкой «Результат» (`--fe-bottom-clear`, z1-tokens.css),
  * а не на 12 px от низа окна, где панель (z-70) её накрывала. На iPhone три шага инструкции (~200 pt) не висят на экране сразу:
  * сначала тонкая строка «Установите Forecast Economy» и кнопка «Как?», шаги раскрываются по касанию.
@@ -69,7 +71,7 @@ export default function PwaInstallCard({
             type="button"
             onClick={onLater}
             aria-label={t('common.close')}
-            className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary')}
+            className={cn(FOCUS_RING, 'fe-press flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-text-secondary hover:text-text-primary')}
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -86,7 +88,7 @@ export default function PwaInstallCard({
               type="button"
               onClick={onLater}
               aria-label={t('common.close')}
-              className={cn(FOCUS_RING, 'fe-press -mr-1 -mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-text-tertiary hover:text-text-primary pointer-coarse:h-11 pointer-coarse:w-11')}
+              className={cn(FOCUS_RING, 'fe-press -mr-2 -mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-text-secondary hover:text-text-primary')}
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
