@@ -5,6 +5,7 @@ Phase 1: email+пароль (этот файл) + OAuth (oauth.py). Почты �
 """
 import re
 import logging
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
@@ -147,7 +148,14 @@ async def register(body: RegisterIn, request: Request, response: Response, db: A
     await db.commit()
     await _start_session(response, user)
     from app.services.locale import get_locale
+    from app.services.signup_attribution import record_signup
 
+    # Круг 11: как пришёл человек (метод, язык сайта, страна, рассылка) пишем здесь же,
+    # в запросе регистрации; остальное дополнит задача атрибуции. Не роняет регистрацию.
+    await record_signup(
+        db, user_id=user.id, method="email", site_locale=get_locale(),
+        newsletter=body.newsletter, ip=ip,
+    )
     await _notify_new_user_safe({
         "method": "Email + пароль",
         "email": body.email,
@@ -228,7 +236,14 @@ async def me(
         set_session_cookies(response, sess["sid"], sess["csrf"])
     # Признак админа — для показа BI-раздела в кабинете (/admin/bi).
     # Обычным пользователям поле не отдаём вовсе: раздел для них не существует.
-    return {"user": await _serialize_with_admin(db, user)}
+    payload = await _serialize_with_admin(db, user)
+    # Круг 11: аккаунт создан меньше двух минут назад — фронт отличает «зарегистрировался»
+    # от «вошёл» после возврата с провайдера (событие signup для OAuth).
+    created = user.created_at
+    payload["is_new"] = bool(
+        created and (datetime.now(timezone.utc).replace(tzinfo=None) - created) < timedelta(minutes=2)
+    )
+    return {"user": payload}
 
 
 class SetPasswordIn(BaseModel):
@@ -448,6 +463,10 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.execute(delete(EmailCredential).where(EmailCredential.user_id == uid))
     await db.execute(delete(Consent).where(Consent.user_id == uid))
     await db.execute(delete(AuthAudit).where(AuthAudit.user_id == uid))
+    # Круг 11 (152-ФЗ): аналитические следы — user_signups, identity_links, user_id в
+    # frontend_events сразу; большие таблицы без индекса обнулит ночная уборка.
+    from app.services.account_erasure import erase_analytics_now
+    await erase_analytics_now(db, uid)
     await db.execute(delete(User).where(User.id == uid))
     # Анонимный маркер факта удаления (без PII / без user_id).
     db.add(AuthAudit(user_id=None, event="account_deleted"))

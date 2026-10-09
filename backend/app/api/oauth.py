@@ -360,6 +360,16 @@ async def fake_authorize(request: Request, state: str, redirect_uri: str):
     return RedirectResponse(f"{redirect_uri}{sep}code={code}&state={state}", status_code=302)
 
 
+def _oauth_client_ip(request: Request) -> str | None:
+    """IP клиента для гео страны регистрации (сам IP не сохраняется)."""
+    from app.services.geoip import client_ip_from_headers
+
+    return client_ip_from_headers(
+        request.headers.get("x-forwarded-for"),
+        request.client.host if request.client else None,
+    )
+
+
 @router.get("/{provider}/callback")
 async def oauth_callback(provider: str, request: Request, db: AsyncSession = Depends(get_db)):
     qp = request.query_params
@@ -456,6 +466,14 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
         "user_id": str(user.id),
     }
     if created:
+        if intent == "login":
+            from app.services.signup_attribution import record_signup
+
+            # Круг 11: язык берём из return-URL (callback всегда на apex), страну — по IP.
+            await record_signup(
+                db, user_id=user.id, method=provider, site_locale=signup_locale,
+                newsletter=newsletter, ip=_oauth_client_ip(request),
+            )
         await _notify_new_user_safe(auth_info)
     elif intent == "login":
         await _notify_login_safe(auth_info)

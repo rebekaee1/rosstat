@@ -5,6 +5,7 @@ import { track, events } from '../lib/track';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
 import { useLocale } from '../i18n';
+import { markOAuthPending } from '../lib/authTrigger';
 import Button from './Button';
 import '../styles/k8-tools.css';
 
@@ -70,12 +71,23 @@ export default function OAuthButtons({
     return () => { alive = false; };
   }, []);
 
+  // Закрыл окно согласия, не продолжив (Escape, «Отмена», клик по подложке): событие для воронки.
+  const cancelConsent = () => {
+    if (!pending || redirecting) { setPending(null); return; }
+    track(events.OAUTH_CONSENT_CANCEL, { provider: pending, intent });
+    setPending(null);
+  };
+
   useEffect(() => {
     if (!pending) return undefined;
-    const onKey = (e) => { if (e.key === 'Escape') setPending(null); };
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      track(events.OAUTH_CONSENT_CANCEL, { provider: pending, intent });
+      setPending(null);
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [pending]);
+  }, [pending, intent]);
 
   if (providers === null && !showGoogleEmailFallback) {
     return <div className="space-y-2.5" aria-hidden>
@@ -97,13 +109,16 @@ export default function OAuthButtons({
     setRedirecting(false);
     setNewsletter(true);
     setPending(id);
+    track(events.OAUTH_CONSENT_OPEN, { provider: id, intent });
   };
 
   const proceed = () => {
     if (!policy || !pending || redirecting) return;
     setRedirecting(true);
     track(events.OAUTH_START, { provider: pending, intent });
-    if (newsletter) track(events.NEWSLETTER_OPT_IN, { channel: pending });
+    // Круг 11 (E8): подписка считается не на старте входа, а по факту регистрации. Выбор
+    // запоминаем; `newsletter_opt_in` и `signup` отправит AuthProvider после возврата.
+    markOAuthPending(pending, intent, { newsletter });
     // Полностраничный редирект: согласие пробрасываем параметром newsletter.
     window.location.href = oauthStartUrl(pending, { intent, next, newsletter, consent: policy });
   };
@@ -145,7 +160,7 @@ export default function OAuthButtons({
       {pending && createPortal((
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center p-4 fe-k8-scrim fe-reveal [--fe-duration:0.18s] [--fe-rise:0px]"
-          onClick={() => setPending(null)}
+          onClick={cancelConsent}
           role="dialog"
           aria-modal="true"
           aria-label={t('auth.oauth.dialogAria')}
@@ -197,7 +212,7 @@ export default function OAuthButtons({
               >
                 {t('common.continue')}
               </Button>
-              <Button variant="secondary" onClick={() => setPending(null)} disabled={redirecting}>
+              <Button variant="secondary" onClick={cancelConsent} disabled={redirecting}>
                 {t('common.cancel')}
               </Button>
             </div>

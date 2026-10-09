@@ -19,6 +19,7 @@ from app.security.auth import current_session
 from app.services.action_policy import evaluate_action
 from app.services.action_executor import execute_approved_action
 from app.services.analytics_features import detect_page_opportunities, sync_run_impact, top_pages, top_search_phrases
+from app.services.event_params import sanitize_event_params
 from app.services.scrape_guard import is_noise_client_ua
 from app.services.yandex_metrika_reporting import MetrikaReportingClient
 
@@ -356,7 +357,9 @@ async def collect_event(request: Request, payload: FrontendEventIn, db: AsyncSes
         authed=bool(user_id),
         url=payload.url,
         referrer=payload.referrer or request.headers.get("referer"),
-        params_json=payload.params,
+        # 152-ФЗ (круг 11): гигиена параметров — белый список ключей у событий входа и
+        # регистрации, потолок размера, почты и телефоны скрыты (в т.ч. в строке поиска).
+        params_json=sanitize_event_params(payload.event_name, payload.params),
         occurred_at=(payload.occurred_at or datetime.now(timezone.utc)).replace(tzinfo=None),
         ingested_at=datetime.now(timezone.utc).replace(tzinfo=None),
     )
@@ -375,6 +378,14 @@ _BEHAVIOR_TYPES = {
     "vital", "js_error", "api_timing", "block_view", "form",
     "interaction", "ui_state",
 }
+
+
+def _request_site_locale() -> str | None:
+    """Язык сайта запроса (ru./apex) — отдельно от языка браузера посетителя."""
+    from app.services.locale import get_locale
+
+    value = get_locale()
+    return value if value in ("ru", "en") else None
 
 
 def _int_or_none(v: Any) -> int | None:
@@ -464,6 +475,7 @@ async def _upsert_behavior_session(
         "viewport_h": _int_or_none(ev.get("vh")),
         "dpr": _num_or_none(ev.get("dpr")),
         "language": _str_or_none(ev.get("lang"), 16),
+        "site_locale": _request_site_locale(),
         "timezone": _str_or_none(ev.get("tz"), 60),
         "touch": bool(ev.get("touch")) if ev.get("touch") is not None else None,
         "conn_type": _str_or_none(ev.get("conn"), 16),
@@ -588,6 +600,7 @@ async def _upsert_synthetic_portrait(
         "viewport_h": _int_or_none(ev.get("vh")),
         "dpr": _num_or_none(ev.get("dpr")),
         "touch": bool(ev.get("touch")) if ev.get("touch") is not None else None,
+        "site_locale": _request_site_locale(),
         "is_synthetic": True,
     }
     await _insert_portrait(db, values, upgrade_synthetic=False)

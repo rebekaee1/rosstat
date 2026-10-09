@@ -146,6 +146,25 @@ const EVENT_RU = {
   empty_state: 'Показ пустого состояния',
   demographics_chart_type: 'Тип графика демографии',
   demographics_csv: 'CSV демографии',
+  // Круг 11 (зона H): вход, язык и новые функции.
+  auth_error: 'Ошибка входа или регистрации',
+  auth_form_error: 'Ошибка в поле формы входа',
+  oauth_consent_open: 'Открыто окно согласия перед входом через соцсеть',
+  oauth_consent_cancel: 'Окно согласия закрыто без входа',
+  locale_switch: 'Смена языка сайта',
+  share_link: 'Поделиться ссылкой',
+  favorite_add: 'Добавление в избранное',
+  favorite_remove: 'Удаление из избранного',
+  compare_preset_open: 'Открыто готовое сравнение',
+  compare_save: 'Сохранение сравнения',
+  compare_saved_open: 'Открыто сохранённое сравнение',
+  indicator_subscribe: 'Подписка на показатель',
+  indicator_unsubscribe: 'Отписка от показателя',
+  push_prompt_view: 'Показ запроса на уведомления',
+  push_permission: 'Ответ на запрос уведомлений',
+  converter_use: 'Конвертер валют',
+  calc_use: 'Работа в калькуляторе',
+  export_run: 'Запуск выгрузки',
 };
 const eventLabel = (name) => EVENT_RU[name] || name;
 

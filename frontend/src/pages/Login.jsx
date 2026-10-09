@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import useDocumentMeta from '../lib/useMeta';
 import { useAuth } from '../context/authContext';
@@ -9,6 +9,7 @@ import PasswordField from '../components/PasswordField';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { safeReturnTo, authLink } from '../lib/authReturn';
+import { authErrorCode, authErrorField, loginParams, oauthReturnError } from '../lib/authTrigger';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
 import '../styles/w5-pages.css';
@@ -35,6 +36,12 @@ export default function Login() {
   const [error, setError] = useState(oauthError);
   const [googleUnavailable, setGoogleUnavailable] = useState(false);
 
+  // Возврат с провайдера с ошибкой (?error=oauth_*): только код, без текстов.
+  const oauthReturnCode = oauthReturnError(params.toString());
+  useEffect(() => {
+    if (oauthReturnCode) track(events.AUTH_ERROR, { stage: 'oauth_return', code: oauthReturnCode });
+  }, [oauthReturnCode]);
+
   // Google ещё не подключён: честно говорим об этом и переводим человека к почте и паролю.
   const switchToEmailLogin = () => {
     setGoogleUnavailable(true);
@@ -50,10 +57,14 @@ export default function Login() {
     try {
       const user = await loginUser({ email, password });
       setUser(user);
-      track(events.AUTH_LOGIN, { method: 'email' });
+      track(events.AUTH_LOGIN, loginParams('email'));
       navigate(next, { replace: true });
     } catch (err) {
       setError(apiErrorMessage(err, t, 'auth.login.errorCredentials'));
+      const code = authErrorCode(err);
+      track(events.AUTH_ERROR, { stage: 'email_login', code });
+      const field = authErrorField(err);
+      if (field) track(events.AUTH_FORM_ERROR, { form: 'login', field, code });
     } finally {
       setBusy(false);
     }
@@ -87,7 +98,7 @@ export default function Login() {
         </div>
       )}
 
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className="space-y-4" data-track="login-email">
         <div>
           <label className="block text-sm text-text-secondary mb-1.5" htmlFor="email">{t('common.email')}</label>
           <input
