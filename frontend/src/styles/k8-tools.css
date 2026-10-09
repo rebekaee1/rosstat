@@ -321,7 +321,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: var(--font-display);
-  font-size: 20px;
+  /* Круг 11 (E): число не обрезается многоточием: длинное сокращает сама страница («17,1 млрд ₽»), а шрифт чуть мельчает на узком экране. */
+  font-size: clamp(16px, 5.4vw, 20px);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -345,6 +346,11 @@
 .fe-k8-sticky__go-label { font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap; }
 /* Совсем узкий экран (320 px): подпись «К результату» не помещается рядом с числом, остаётся стрелка. */
 @media (max-width: 359px) {
+  .fe-k8-sticky__go { padding: 0; width: 36px; }
+  .fe-k8-sticky__go-label { display: none; }
+}
+/* Круг 11 (E): на обычном телефоне (360–419 px) подпись тоже уступает числу: раньше число резалось многоточием. */
+@media (min-width: 360px) and (max-width: 419px) {
   .fe-k8-sticky__go { padding: 0; width: 36px; }
   .fe-k8-sticky__go-label { display: none; }
 }

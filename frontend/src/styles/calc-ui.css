@@ -42,3 +42,86 @@
 @media (pointer: coarse) {
   .calc-slider-input { min-height: 44px; }
 }
+
+/* ===== Круг 11 (E): калькуляторы ===== */
+/* Пояснение под результатом (деноминация 1998 года): спокойный абзац, без рамки и заливки. */
+.fe-c11e-note {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--fe-glass-soft, rgba(255, 255, 255, 0.5));
+  box-shadow: var(--fe-l2-shadow, none);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+/* Своя валюта: короткое поле под суммой, когда у страны нет валюты в таблице. */
+.fe-c11e-cur { display: grid; gap: 6px; margin-top: 12px; max-width: 16rem; }
+.fe-c11e-cur__label { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
+.fe-c11e-cur__input { padding: 10px 14px; border-radius: 16px; font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
+.fe-c11e-cur__hint { font-size: 12px; line-height: 1.4; color: var(--color-text-secondary); }
+
+/* Кнопка «Сравнить с другой ставкой» и ссылка «Убрать»: стекло и тень, без рамок. */
+.fe-c11e-cmp-open__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fe-glass-soft, rgba(255, 255, 255, 0.55));
+  box-shadow: var(--fe-l2-shadow, none);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.fe-c11e-link {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-champagne-ink);
+  cursor: pointer;
+}
+.fe-c11e-link:hover { text-decoration: underline; }
+
+/* Две ставки: сетка из четырёх колонок; полосы строк через фон, а не линии. */
+.fe-c11e-cmp { display: grid; gap: 6px; }
+.fe-c11e-cmp__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr));
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+.fe-c11e-cmp__row:not(.fe-c11e-cmp__row--head) { background: var(--fe-glass-l2, rgba(255, 255, 255, 0.5)); box-shadow: var(--fe-l2-shadow, none); }
+.fe-c11e-cmp__row--head { padding-block: 2px; font-size: 12px; font-weight: 700; color: var(--color-text-secondary); }
+.fe-c11e-cmp__label { font-weight: 600; color: var(--color-text-secondary); overflow-wrap: anywhere; }
+.fe-c11e-cmp__diff { font-weight: 700; }
+@media (max-width: 479px) {
+  .fe-c11e-cmp__row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); padding: 10px; }
+  .fe-c11e-cmp__row > :first-child { grid-column: 1 / -1; }
+  .fe-c11e-cmp__row--head > :first-child { display: none; }
+}
+
+/* Таблица платежей: горизонтальная прокрутка на узком экране, номер строки закреплён слева. */
+.fe-c11e-tablewrap {
+  overflow-x: auto;
+  border-radius: 16px;
+  background: var(--fe-glass-soft, rgba(255, 255, 255, 0.5));
+  -webkit-overflow-scrolling: touch;
+}
+.fe-c11e-table { width: 100%; min-width: 30rem; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.fe-c11e-table th, .fe-c11e-table td { padding: 10px 12px; text-align: right; white-space: nowrap; }
+.fe-c11e-table thead th { font-size: 12px; font-weight: 700; color: var(--color-text-secondary); }
+.fe-c11e-table tbody th { position: sticky; left: 0; text-align: left; font-weight: 600; color: var(--color-text-primary); background: #f4f6fb; }
+.fe-c11e-table tbody tr:nth-child(even) { background: rgba(30, 58, 110, 0.045); }
+.fe-c11e-table thead th:first-child { text-align: left; }

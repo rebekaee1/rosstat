@@ -10,7 +10,13 @@ const group = (str, sep) => str.replace(/\B(?=(\d{3})+(?!\d))/g, sep);
 export function decimalText(n, digits = 1) {
   if (n == null || !Number.isFinite(n)) return '—';
   const fixed = Number(n).toFixed(digits);
-  return isEn() ? fixed : fixed.replace('.', ',');
+  // Круг 11 (E): тысячи отделяются пробелом и у процентов («+17 147 219,6%», а не «+17147219,6%»).
+  const [intPart, frac] = fixed.split('.');
+  const negative = intPart.startsWith('-');
+  const grouped = group(negative ? intPart.slice(1) : intPart, isEn() ? ',' : '\u00A0');
+  const body = `${negative ? '-' : ''}${grouped}`;
+  if (frac == null) return body;
+  return `${body}${isEn() ? '.' : ','}${frac}`;
 }
 
 export function formatRubles(n) {
@@ -18,6 +24,48 @@ export function formatRubles(n) {
   const abs = Math.abs(Math.round(n));
   const sign = n < 0 ? '-' : '';
   return sign + group(abs.toString(), isEn() ? ',' : '\u00A0') + '\u00A0₽';
+}
+
+const COMPACT_RU = [[1e12, 'трлн'], [1e9, 'млрд'], [1e6, 'млн']];
+const COMPACT_EN = [[1e12, 'T'], [1e9, 'B'], [1e6, 'M']];
+
+/**
+ * Сумма в сокращённой записи: «17,1 млрд ₽», «160 млн ₽» (EN: «17.1B ₽»). Меньше миллиона остаётся целым числом.
+ * `symbol` дописывается через неразрывный пробел; пустой — без знака.
+ */
+export function formatCompactAmount(n, symbol = '₽', { prefix = false } = {}) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  const abs = Math.abs(n);
+  const sign = n < 0 ? '-' : '';
+  const tail = symbol && !prefix ? `\u00A0${symbol}` : '';
+  const head = symbol && prefix ? symbol : '';
+  const table = isEn() ? COMPACT_EN : COMPACT_RU;
+  for (const [limit, word] of table) {
+    if (abs >= limit) {
+      const scaled = abs / limit;
+      const digits = scaled >= 100 ? 0 : 1;
+      const text = decimalText(Math.round(scaled * 10 ** digits) / 10 ** digits, digits).replace(/[,.]0$/, '');
+      return isEn() ? `${sign}${head}${text}${word}${tail}` : `${sign}${head}${text}\u00A0${word}${tail}`;
+    }
+  }
+  return sign + head + group(Math.round(abs).toString(), isEn() ? ',' : '\u00A0') + tail;
+}
+
+/**
+ * Готовая строка, которая помещается в `maxChars` знаков: полная запись, а если длиннее, сокращённая.
+ * Нужна плашке «Результат» и плиткам итогов на телефоне, где длинное число обрезалось многоточием.
+ */
+export function fitAmountText(fullText, n, { symbol = '₽', maxChars = 13, prefix = false } = {}) {
+  const text = String(fullText ?? '');
+  if (text.length <= maxChars || n == null || !Number.isFinite(n) || Math.abs(n) < 1e6) return text;
+  return formatCompactAmount(n, symbol, { prefix });
+}
+
+/** Целое с разделителями тысяч без знака валюты (для ячеек таблиц, где валюта указана в шапке). */
+export function formatAmountPlain(n) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  const abs = Math.abs(Math.round(n));
+  return (n < 0 ? '-' : '') + group(abs.toString(), isEn() ? ',' : '\u00A0');
 }
 
 export function parseAmount(str) {
