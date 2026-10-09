@@ -8,8 +8,8 @@
 - HTTP reachable paths: **186**
 - ORM tables: **67**
 - DTO schemas (own fields + resolved inherited bases): **49**
-- Settings fields: **193**
-- Settings reads: **471**
+- Settings fields: **194**
+- Settings reads: **473**
 - Direct environment reads: **32**
 - Jobs: **45**
 - Middleware: **5**
@@ -1759,50 +1759,51 @@ Relationships: `[]`
 | RUSTATS_TELEGRAM_DIGEST_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:297](../backend/app/config.py#L297) |
 | RUSTATS_TELEGRAM_DIGEST_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:298](../backend/app/config.py#L298) |
 | RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:302](../backend/app/config.py#L302) |
-| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:305](../backend/app/config.py#L305) |
-| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 3 | [backend/app/config.py:310](../backend/app/config.py#L310) |
-| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:312](../backend/app/config.py#L312) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:313](../backend/app/config.py#L313) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:314](../backend/app/config.py#L314) |
-| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:315](../backend/app/config.py#L315) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:316](../backend/app/config.py#L316) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:317](../backend/app/config.py#L317) |
-| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 1 | [backend/app/config.py:320](../backend/app/config.py#L320) |
-| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:324](../backend/app/config.py#L324) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:325](../backend/app/config.py#L325) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:326](../backend/app/config.py#L326) |
-| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:330](../backend/app/config.py#L330) |
-| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:331](../backend/app/config.py#L331) |
-| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:332](../backend/app/config.py#L332) |
-| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:333](../backend/app/config.py#L333) |
-| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:334](../backend/app/config.py#L334) |
-| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:338](../backend/app/config.py#L338) |
-| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:339](../backend/app/config.py#L339) |
-| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:340](../backend/app/config.py#L340) |
-| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:341](../backend/app/config.py#L341) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 4 | [backend/app/config.py:343](../backend/app/config.py#L343) |
-| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:347](../backend/app/config.py#L347) |
-| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:348](../backend/app/config.py#L348) |
-| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:349](../backend/app/config.py#L349) |
-| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:350](../backend/app/config.py#L350) |
-| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:351](../backend/app/config.py#L351) |
-| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:352](../backend/app/config.py#L352) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 3 | [backend/app/config.py:353](../backend/app/config.py#L353) |
-| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 3 | [backend/app/config.py:359](../backend/app/config.py#L359) |
-| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:363](../backend/app/config.py#L363) |
-| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:366](../backend/app/config.py#L366) |
-| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:368](../backend/app/config.py#L368) |
-| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:374](../backend/app/config.py#L374) |
-| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:382](../backend/app/config.py#L382) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:389](../backend/app/config.py#L389) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:390](../backend/app/config.py#L390) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:401](../backend/app/config.py#L401) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:402](../backend/app/config.py#L402) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:403](../backend/app/config.py#L403) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:404](../backend/app/config.py#L404) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:405](../backend/app/config.py#L405) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:406](../backend/app/config.py#L406) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:410](../backend/app/config.py#L410) |
+| RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:305](../backend/app/config.py#L305) |
+| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:308](../backend/app/config.py#L308) |
+| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 3 | [backend/app/config.py:313](../backend/app/config.py#L313) |
+| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:315](../backend/app/config.py#L315) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:316](../backend/app/config.py#L316) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:317](../backend/app/config.py#L317) |
+| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:318](../backend/app/config.py#L318) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:319](../backend/app/config.py#L319) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:320](../backend/app/config.py#L320) |
+| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 1 | [backend/app/config.py:323](../backend/app/config.py#L323) |
+| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:327](../backend/app/config.py#L327) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:328](../backend/app/config.py#L328) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:329](../backend/app/config.py#L329) |
+| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:333](../backend/app/config.py#L333) |
+| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:334](../backend/app/config.py#L334) |
+| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:335](../backend/app/config.py#L335) |
+| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:336](../backend/app/config.py#L336) |
+| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:337](../backend/app/config.py#L337) |
+| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:341](../backend/app/config.py#L341) |
+| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:342](../backend/app/config.py#L342) |
+| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:343](../backend/app/config.py#L343) |
+| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:344](../backend/app/config.py#L344) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 4 | [backend/app/config.py:346](../backend/app/config.py#L346) |
+| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:350](../backend/app/config.py#L350) |
+| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:351](../backend/app/config.py#L351) |
+| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:352](../backend/app/config.py#L352) |
+| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:353](../backend/app/config.py#L353) |
+| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:354](../backend/app/config.py#L354) |
+| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:355](../backend/app/config.py#L355) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 3 | [backend/app/config.py:356](../backend/app/config.py#L356) |
+| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 3 | [backend/app/config.py:362](../backend/app/config.py#L362) |
+| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:366](../backend/app/config.py#L366) |
+| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:369](../backend/app/config.py#L369) |
+| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:371](../backend/app/config.py#L371) |
+| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:377](../backend/app/config.py#L377) |
+| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:385](../backend/app/config.py#L385) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:392](../backend/app/config.py#L392) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:393](../backend/app/config.py#L393) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:404](../backend/app/config.py#L404) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:405](../backend/app/config.py#L405) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:406](../backend/app/config.py#L406) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:407](../backend/app/config.py#L407) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:408](../backend/app/config.py#L408) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:409](../backend/app/config.py#L409) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:413](../backend/app/config.py#L413) |
 
 ## Registries and declarations
 
@@ -2096,10 +2097,10 @@ Relationships: `[]`
 | app.services.admin_bi._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/admin_bi.py:71](../backend/app/services/admin_bi.py#L71) |
 | app.services.admin_bi._ERROR_EVENTS | Call | computed source expression | [backend/app/services/admin_bi.py:72](../backend/app/services/admin_bi.py#L72) |
 | app.services.admin_bi._METRIKA_JSON_KEYS | Tuple | sequence/source expression | [backend/app/services/admin_bi.py:97](../backend/app/services/admin_bi.py#L97) |
-| app.services.alerting._DEVICE_RU | Dict | 'mobile', 'tablet', 'desktop', 'bot' | [backend/app/services/alerting.py:130](../backend/app/services/alerting.py#L130) |
-| app.services.alerting.API_INTEREST_USE_CASES | Dict | 'analytics_treasury', 'planning_contracts', 'consulting', 'research', 'study', 'journalism', 'other' | [backend/app/services/alerting.py:289](../backend/app/services/alerting.py#L289) |
-| app.services.alerting._API_INTEREST_SOURCES | Dict | 'indicator', 'limit_modal' | [backend/app/services/alerting.py:298](../backend/app/services/alerting.py#L298) |
-| app.services.alerting._DEGRADED_LABELS | Dict | 'parsed_zero', 'fallback_used' | [backend/app/services/alerting.py:382](../backend/app/services/alerting.py#L382) |
+| app.services.alerting._DEVICE_RU | Dict | 'mobile', 'tablet', 'desktop', 'bot' | [backend/app/services/alerting.py:132](../backend/app/services/alerting.py#L132) |
+| app.services.alerting.API_INTEREST_USE_CASES | Dict | 'analytics_treasury', 'planning_contracts', 'consulting', 'research', 'study', 'journalism', 'other' | [backend/app/services/alerting.py:291](../backend/app/services/alerting.py#L291) |
+| app.services.alerting._API_INTEREST_SOURCES | Dict | 'indicator', 'limit_modal' | [backend/app/services/alerting.py:300](../backend/app/services/alerting.py#L300) |
+| app.services.alerting._DEGRADED_LABELS | Dict | 'parsed_zero', 'fallback_used' | [backend/app/services/alerting.py:384](../backend/app/services/alerting.py#L384) |
 | app.services.analytics_alerts._ALERT_COOLDOWN | Dict | 'signup_drop', 'auth_error_spike', 'js_error_spike', 'memory_pressure', 'webmaster_sitemap_errors', 'webmaster_crawl_drop', 'webmaster_in_search_drop' | [backend/app/services/analytics_alerts.py:39](../backend/app/services/analytics_alerts.py#L39) |
 | app.services.analytics_alerts._NIGHT_MSK_HOURS | Call | computed source expression | [backend/app/services/analytics_alerts.py:51](../backend/app/services/analytics_alerts.py#L51) |
 | app.services.analytics_alerts._MSK_OFFSET | Call | computed source expression | [backend/app/services/analytics_alerts.py:52](../backend/app/services/analytics_alerts.py#L52) |
@@ -2561,8 +2562,8 @@ Relationships: `[]`
 | app.services.telegram_reports.SURFACE_LABELS | Dict | 'indicator', 'world_indicator', 'region', 'rating', 'compare', 'country', 'calculator', 'home', 'world_home', 'embed', 'chart_menu', 'category', 'demographics', 'calendar', 'today', 'other' | [backend/app/services/telegram_reports.py:52](../backend/app/services/telegram_reports.py#L52) |
 | app.services.telegram_reports.FUNNEL_SHORT | Dict | 'visitors', 'viewed', 'wall', 'register_click', 'form_open', 'submit', 'signed_up' | [backend/app/services/telegram_reports.py:59](../backend/app/services/telegram_reports.py#L59) |
 | app.services.telegram_resend.RESEND_KINDS | Tuple | sequence/source expression | [backend/app/services/telegram_resend.py:39](../backend/app/services/telegram_resend.py#L39) |
-| app.services.telegram_resend.PENDING_STALE_AFTER | Call | computed source expression | [backend/app/services/telegram_resend.py:48](../backend/app/services/telegram_resend.py#L48) |
-| app.services.telegram_resend._HTTP_ERROR_RE | Call | computed source expression | [backend/app/services/telegram_resend.py:50](../backend/app/services/telegram_resend.py#L50) |
+| app.services.telegram_resend.PENDING_STALE_AFTER | Call | computed source expression | [backend/app/services/telegram_resend.py:53](../backend/app/services/telegram_resend.py#L53) |
+| app.services.telegram_resend._HTTP_ERROR_RE | Call | computed source expression | [backend/app/services/telegram_resend.py:55](../backend/app/services/telegram_resend.py#L55) |
 | app.services.telegram_retry.RETRYABLE_EXCEPTIONS | Tuple | sequence/source expression | [backend/app/services/telegram_retry.py:33](../backend/app/services/telegram_retry.py#L33) |
 | app.services.telegram_text._BLOCKQUOTE_RE | Call | computed source expression | [backend/app/services/telegram_text.py:14](../backend/app/services/telegram_text.py#L14) |
 | app.services.telegram_text._BLOCKQUOTE_OPEN_RE | Call | computed source expression | [backend/app/services/telegram_text.py:15](../backend/app/services/telegram_text.py#L15) |

@@ -41,6 +41,11 @@ RESEND_KINDS = (
     "etl_summary", "world_ingest_summary",
     # Круг 11: недельный и месячный отчёты об аудитории и новые алерты.
     "weekly_report", "monthly_report", "audience_alert",
+    # Network failures must not silently discard operational warnings while
+    # their producers already hold an anti-spam mute/dedup lease.
+    "alert", "analytics_anomaly", "scheduler_alert", "http_5xx_spike",
+    "rate_limit_alert", "prod_config_alert", "etl_failure", "zero_parse",
+    "staleness", "forecast_issue",
 )
 PENDING_ERROR = "pending"
 PENDING_FINAL_ERROR = "interrupted: no delivery result recorded (pending > 1h)"

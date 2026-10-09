@@ -1,5 +1,9 @@
 """Backup freshness must survive cache eviction/FLUSHDB and rolling upgrades."""
 import asyncio
+import json
+import os
+from pathlib import Path
+import subprocess
 import time
 from datetime import datetime, timezone
 
@@ -39,3 +43,38 @@ def test_backup_state_precedence_and_legacy_fallback(monkeypatch, state_age, cac
     result = asyncio.run(system.health_ready(Response(), DB()))
     assert result["checks"]["pg_backup_age_hours"] == expected
     assert result["degraded"] is degraded
+
+
+@pytest.mark.parametrize("proxy", ["", "http://test-user:test-pass@relay.example:8888"])
+def test_backup_notification_uses_telegram_route_without_cli_credentials(tmp_path, proxy):
+    """Run the real backup shell with owned dump/HTTP stubs; inspect its route."""
+    scripts = tmp_path / "bin"
+    scripts.mkdir()
+    docker = scripts / "docker"
+    docker.write_text("#!/bin/sh\nprintf mock-dump\n")
+    docker.chmod(0o755)
+    curl = scripts / "curl"
+    curl.write_text(
+        "#!/usr/bin/env python3\nimport json,os,sys\n"
+        "open(os.environ['ROUTE_CAPTURE'],'w').write(json.dumps("
+        "{'args':sys.argv[1:],'config':sys.stdin.read()}))\n"
+    )
+    curl.chmod(0o755)
+    (tmp_path / ".env").write_text(
+        "RUSTATS_TELEGRAM_BOT_TOKEN=test-token\nRUSTATS_TELEGRAM_CHAT_ID=111\n"
+        f"RUSTATS_TELEGRAM_PROXY_URL='{proxy}'\n"
+    )
+    env = dict(os.environ, PATH=str(scripts) + os.pathsep + os.environ["PATH"],
+               COMPOSE_DIR=str(tmp_path), BACKUP_DIR=str(tmp_path / "backups"),
+               ROUTE_CAPTURE=str(tmp_path / "route.json"), OFFSITE_S3_BUCKET="")
+    for key in ("RUSTATS_TELEGRAM_BOT_TOKEN", "RUSTATS_TELEGRAM_CHAT_ID", "RUSTATS_TELEGRAM_PROXY_URL"):
+        env.pop(key, None)
+    script = Path(__file__).resolve().parents[2] / "scripts" / "pg-backup.sh"
+    result = subprocess.run(["bash", str(script)], env=env, capture_output=True, text=True, timeout=10)
+    assert result.returncode == 0, result.stderr
+    captured = json.loads((tmp_path / "route.json").read_text())
+    assert "--config" in captured["args"]
+    assert captured["config"] == (f'proxy = "{proxy}"\n' if proxy else "")
+    assert "test-pass" not in " ".join(captured["args"])
+    assert "test-pass" not in result.stdout + result.stderr
+    assert len(list((tmp_path / "backups").glob("*"))) == 2

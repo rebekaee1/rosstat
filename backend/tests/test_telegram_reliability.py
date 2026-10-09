@@ -198,6 +198,36 @@ def test_bot_send_message_archives_real_error(monkeypatch, tg):
     assert tg["finished"][0]["error"].startswith("HTTP 403")
 
 
+@pytest.mark.parametrize("sender", ["alert", "bot"])
+@pytest.mark.parametrize("proxy", ["", "http://relay.example:8888"])
+def test_notification_paths_use_dedicated_proxy(monkeypatch, tg, sender, proxy):
+    """Both real sending paths must receive the configured Telegram route."""
+    monkeypatch.setattr(alerting.settings, "telegram_proxy_url", proxy)
+    options = []
+
+    class Client:
+        def __init__(self, **kwargs):
+            options.append(kwargs)
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, **kwargs):
+            return _Resp(200)
+
+    monkeypatch.setattr(alerting.httpx, "AsyncClient", Client)
+    if sender == "alert":
+        assert asyncio.run(alerting.send_telegram("route test")) is True
+    else:
+        assert asyncio.run(tb.send_message("111", "route test")) is True
+    assert options[0].get("proxy") == (proxy or None)
+    assert options[0].get("trust_env") is False
+    assert len(tg["finished"]) == 1 and tg["finished"][0]["ok"] is True
+
+
 # ---------------------------------------------------------------------------
 # 2. Досылка: чистое планирование
 # ---------------------------------------------------------------------------
@@ -344,6 +374,22 @@ def test_resend_job_sends_once_and_marks_redelivered(job_env):
     # повторный запуск — дублей нет: ok=true строка закрывает логическое сообщение
     again = asyncio.run(resend.telegram_resend_job())
     assert again["candidates"] == 0 and len(job_env["sent"]) == 1
+
+
+@pytest.mark.parametrize("kind", [
+    "alert", "analytics_anomaly", "scheduler_alert", "http_5xx_spike",
+    "rate_limit_alert", "prod_config_alert", "etl_failure", "zero_parse",
+    "staleness", "forecast_issue",
+])
+def test_resend_job_recovers_technical_alert_once(job_env, kind):
+    """A failed technical alert must cross the real outbox query and be retried."""
+    ids = _seed(job_env, [(30, {"kind": kind, "text": "technical incident"})])
+    stats = asyncio.run(resend.telegram_resend_job())
+    assert stats["resent"] == 1 and stats["candidates"] == 1
+    assert job_env["sent"][0]["kind"] == kind
+    assert _fetch(job_env)[ids[0]].error == resend.REDELIVERED_ERROR
+    assert asyncio.run(resend.telegram_resend_job())["candidates"] == 0
+    assert len(job_env["sent"]) == 1
 
 
 def test_resend_job_failed_resend_is_counted_not_duplicated(job_env, monkeypatch):

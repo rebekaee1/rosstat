@@ -38,10 +38,25 @@ if [ -z "${RUSTATS_TELEGRAM_BOT_TOKEN:-}" ] && [ -f "$COMPOSE_DIR/.env" ]; then
   RUSTATS_TELEGRAM_CHAT_ID=$(grep -E '^RUSTATS_TELEGRAM_CHAT_ID=' "$COMPOSE_DIR/.env" | cut -d= -f2- || true)
 fi
 
+if [ -z "${RUSTATS_TELEGRAM_PROXY_URL:-}" ] && [ -f "$COMPOSE_DIR/.env" ]; then
+  RUSTATS_TELEGRAM_PROXY_URL=$(grep -E '^RUSTATS_TELEGRAM_PROXY_URL=' "$COMPOSE_DIR/.env" | cut -d= -f2- || true)
+  # .env may quote the URL. Read it as data, never source/eval credentials.
+  case "$RUSTATS_TELEGRAM_PROXY_URL" in
+    \'*\'|\"*\") RUSTATS_TELEGRAM_PROXY_URL="${RUSTATS_TELEGRAM_PROXY_URL:1:${#RUSTATS_TELEGRAM_PROXY_URL}-2}" ;;
+  esac
+fi
+
 tg_notify() {
   # $1 — текст. Никогда не роняет бэкап: сбой отправки игнорируется.
   [ -n "${RUSTATS_TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${RUSTATS_TELEGRAM_CHAT_ID:-}" ] || return 0
-  curl -sS -m 10 -o /dev/null \
+  local proxy_option="${RUSTATS_TELEGRAM_PROXY_URL:-}" proxy_config=""
+  if [ -n "$proxy_option" ]; then
+    proxy_option=${proxy_option//\\/\\\\}
+    proxy_option=${proxy_option//\"/\\\"}
+    proxy_config="proxy = \"${proxy_option}\""$'\n'
+  fi
+  # Proxy credentials travel on stdin, not in process-list arguments.
+  printf '%s' "$proxy_config" | curl --config - --fail -sS -m 10 -o /dev/null \
     "https://api.telegram.org/bot${RUSTATS_TELEGRAM_BOT_TOKEN}/sendMessage" \
     -d chat_id="${RUSTATS_TELEGRAM_CHAT_ID}" \
     --data-urlencode text="$1" || true

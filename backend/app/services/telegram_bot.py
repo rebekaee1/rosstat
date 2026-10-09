@@ -105,7 +105,9 @@ async def _api(method: str, payload: dict, files: dict | None = None) -> dict | 
                 stream.seek(0)
 
     try:
-        async with httpx.AsyncClient(timeout=35) as client:
+        async with httpx.AsyncClient(
+            timeout=35, proxy=settings.telegram_proxy_url or None, trust_env=False,
+        ) as client:
             async def _once() -> httpx.Response:
                 if files:
                     _rewind()

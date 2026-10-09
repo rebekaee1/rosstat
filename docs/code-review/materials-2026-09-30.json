@@ -795,9 +795,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "bc133ba4d9a97f7c13e534d04b97fb59c7e1b812dbcc1d139168dd8f8abe6ab0",
-        "bytes": 232159,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "30fad6465b4f9445b14588060d66cc70c42a94d7f9d2023be1111d34e3ca2de3",
+        "bytes": 232730,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
@@ -805,7 +805,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "bc133ba4d9a97f7c13e534d04b97fb59c7e1b812dbcc1d139168dd8f8abe6ab0",
+        "sha256": "30fad6465b4f9445b14588060d66cc70c42a94d7f9d2023be1111d34e3ca2de3",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "CONTEXT.md",
@@ -4109,21 +4109,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "478ce5d6e2bf48ca9c392229b3a65405749340e1e29075e5c69dabf7245be7b2",
-        "bytes": 11843
+        "date": "2026-10-09",
+        "sha256": "919e35a6b4b931e90ba744ed845f186f3119463d2552325217e34dd8d1c06664",
+        "bytes": 12521,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": null,
         "status_in_review": "reviewed",
-        "sha256": "478ce5d6e2bf48ca9c392229b3a65405749340e1e29075e5c69dabf7245be7b2"
+        "sha256": "919e35a6b4b931e90ba744ed845f186f3119463d2552325217e34dd8d1c06664",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/adr/0009-behavior-stream-first-party.md",
       "linked_mechanisms": null,
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -6263,9 +6265,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "c1717ccecbd6aa9cb64ac18d55c0ac03f8d6386c7ad8c2d69024437bd4502909",
-        "bytes": 50246,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "1c9a9013f4caf53de412f0d11cd7c9d28dbe741b94702d3be84fce24672d6b70",
+        "bytes": 50957,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
@@ -6273,7 +6275,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "c1717ccecbd6aa9cb64ac18d55c0ac03f8d6386c7ad8c2d69024437bd4502909",
+        "sha256": "1c9a9013f4caf53de412f0d11cd7c9d28dbe741b94702d3be84fce24672d6b70",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/architecture-history.md",
@@ -6775,30 +6777,23 @@
       "source_version": {
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "252237d1403797cd908bb0c0613c3f017f838793f975d9592712d6425d412e93",
-        "bytes": 85679
+        "date": "2026-10-09",
+        "sha256": "75de5701041cc5841038b3cd343cce98d45007542f031c752f980eeaf56b729a",
+        "bytes": 86241,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
+        "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
-        "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "3b36be592e0b35caa5a95f8912d3acca3e5bc66726285dd3ea8c184e4a284dcd",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Ссылка на контракт моста.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
-        },
         "status_in_review": "reviewed",
-        "sha256": "252237d1403797cd908bb0c0613c3f017f838793f975d9592712d6425d412e93"
+        "sha256": "75de5701041cc5841038b3cd343cce98d45007542f031c752f980eeaf56b729a",
+        "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/architecture.md",
       "linked_mechanisms": "system topology/scenarios",
-      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
       "prior_version_evidence": [
         {
           "source_version": {
@@ -7414,9 +7409,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "ec42a6a81053c255d4bb166a6bc659b142eb28810832a3747b4443da108446e5",
-        "bytes": 544556,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2",
+        "bytes": 545170,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
@@ -7424,7 +7419,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "ec42a6a81053c255d4bb166a6bc659b142eb28810832a3747b4443da108446e5",
+        "sha256": "0986a4b22104ab88465deb36a79c0cf3b6d95723bfedc792942f4331fe76b3b2",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/backlog.md",
@@ -10565,9 +10560,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "4a7a5a83a1243f8e94ea3a6dee20ea5ec55c2920a05e63551d92c33799f3e15f",
-        "bytes": 783592,
-        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
+        "sha256": "df1f54770c042b37eb5dfb1ff5f37a1b642ff4d1d58082f5e6f4adc324dd9535",
+        "bytes": 783662,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
@@ -11820,9 +11815,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "eb64a5d930fb13f0ba48207446846a69bf5f3fc4a9451ce298bc19bee2301b70",
-        "bytes": 6687399,
-        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
+        "sha256": "5fa29d45b63b3b01a5062070ce39901435fd7f9009b3e116d90e01fd998d6280",
+        "bytes": 6697236,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -14240,9 +14235,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "2f03c91bc94abf06f458fda2140080e463b9008827fb2620f6e5bc7e6de4df21",
-        "bytes": 20795704,
-        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
+        "sha256": "dc60bae5d375bac59109215c7f7443265306745d38a8bcaef0797501e82307da",
+        "bytes": 20800067,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
@@ -15494,9 +15489,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "db48b4d19b49c81b7563ab4e81bf6d266ef6752f655e64e84cc820b58a2c2ae8",
-        "bytes": 184497,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "7e2d4191c4bf1e19e560bb460311bbed571c0d335b0679cc54cf6051ff4ddd0b",
+        "bytes": 187371,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
@@ -15504,7 +15499,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "db48b4d19b49c81b7563ab4e81bf6d266ef6752f655e64e84cc820b58a2c2ae8",
+        "sha256": "7e2d4191c4bf1e19e560bb460311bbed571c0d335b0679cc54cf6051ff4ddd0b",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/data-contracts.md",
@@ -18727,9 +18722,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "27a0dec742405d42116655400110c325db4923068789dd06aeb3784cda0c10ef",
-        "bytes": 36330,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "009b2c4681081ac3b40f0d4169c6eaa3932d95a9f7163e83a29ddb5d1ad1938f",
+        "bytes": 37066,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
@@ -18737,7 +18732,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "27a0dec742405d42116655400110c325db4923068789dd06aeb3784cda0c10ef",
+        "sha256": "009b2c4681081ac3b40f0d4169c6eaa3932d95a9f7163e83a29ddb5d1ad1938f",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/enterprise_resilience.md",
@@ -19071,9 +19066,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "d581815bfe6384304e66fe3126248aaaf7e7e0179b1d204ab26b45928256494f",
+        "sha256": "6bf7db3a55c2a24f0e70b675fff81efc3ce63eb1ad865beab39595d2883c552f",
         "bytes": 2899006,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
@@ -19081,7 +19076,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "data_schema_reviewed",
-        "sha256": "d581815bfe6384304e66fe3126248aaaf7e7e0179b1d204ab26b45928256494f",
+        "sha256": "6bf7db3a55c2a24f0e70b675fff81efc3ce63eb1ad865beab39595d2883c552f",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -27885,7 +27880,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "artifact_schema_reviewed",
-        "sha256": "f55877d4a6ed59b0b85ea8dc9fd9d07bfb7d272e63154b6f688b264d9b0c0b29",
+        "sha256": "ec503cd7baa3e6280c3ff9218a0d9ffa771604ecca2f7c28d1ffcb0dbc5b81d8",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
@@ -27893,9 +27888,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "f55877d4a6ed59b0b85ea8dc9fd9d07bfb7d272e63154b6f688b264d9b0c0b29",
-        "bytes": 10243694,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "ec503cd7baa3e6280c3ff9218a0d9ffa771604ecca2f7c28d1ffcb0dbc5b81d8",
+        "bytes": 10244623,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -28336,7 +28331,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "artifact_schema_reviewed",
-        "sha256": "d220f421bbb6304af3ec2ec23b17688486124aef4a1f8e89ade0e2117d80cc41",
+        "sha256": "9ff3de68827397a4eb9d37bd185afe8f95700b68c4d1dc21c0dcfb9782961a5b",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance.",
@@ -28344,9 +28339,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "d220f421bbb6304af3ec2ec23b17688486124aef4a1f8e89ade0e2117d80cc41",
-        "bytes": 506753,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "9ff3de68827397a4eb9d37bd185afe8f95700b68c4d1dc21c0dcfb9782961a5b",
+        "bytes": 506860,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -33490,9 +33485,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "5d0b5bdb5dec88ee8a91902816ab153084ef7eff0188560547145aedab4f7e55",
-        "bytes": 83015,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "9d08c121bdbec353f86f90a12fa80e8a67180676b178a539f4c7f902a78ca83c",
+        "bytes": 83731,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "exact_version_review_in_ledger",
@@ -33500,7 +33495,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "reviewed",
-        "sha256": "5d0b5bdb5dec88ee8a91902816ab153084ef7eff0188560547145aedab4f7e55",
+        "sha256": "9d08c121bdbec353f86f90a12fa80e8a67180676b178a539f4c7f902a78ca83c",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/workflow.md",
@@ -40878,6 +40873,28 @@
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "update_action": "2026-10-09 performance delta: authored sections reviewed; generated schemas/diffs inspected without claiming full body or production acceptance."
+    },
+    {
+      "id": "docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+      "repository_path": "docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+      "format": ".md",
+      "role": "dated Telegram delivery incident evidence",
+      "classification": "current",
+      "canonical_source": "docs/code-review/telegram-delivery-acceptance-2026-10-09.md",
+      "linked_mechanisms": "Telegram senders / outbox / resend / pg-backup / dedicated CONNECT route",
+      "review_status": "authored scenario evidence, bounds explicit",
+      "body_reviewed_in_this_pass": true,
+      "current_delta_reviewed_in_this_pass": true,
+      "source_version": {
+        "sha256": "7f5b75443a2064928617c0e399e8db561a5dcec93873604323f39a34d64699a7",
+        "bytes": 4893,
+        "head": "eb815d5f1980d2601392c9d096e993535ee89139",
+        "scope": "tracked/index",
+        "date": "2026-10-09",
+        "contents": "authored Telegram delivery evidence; production status explicit"
+      },
+      "update_action": "Maintain measured network paths, exact undelivered groups and release/recovery evidence separately."
     }
   ],
   "external_sources": [

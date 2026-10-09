@@ -268,3 +268,10 @@ VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_i
 Он применён вручную; не запускается при каждом рестарте приложения.
 Таймауты/память/workers не повышены. Границы и выпуск — performance
 acceptance09.10; actual auto-vacuum timing не обещан.
+
+
+### Telegram delivery — 2026-10-09
+
+09.10.2026: прежний extra_hosts исправлял IPv6/DNS trap, но не гарантировал исправность прямого IPv4 пути. Введён dedicated Telegram CONNECT route (empty = direct), без изменения других внешних источников. Технические виды добавлены в bounded outbox-досылку; подтверждение потерь и исправления отделено от живого состояния сайта.
+
+Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

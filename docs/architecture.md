@@ -448,3 +448,10 @@ native title, source frequency world не выдумывается по observat
 повторным вычислениям словоформ; result/history cache и learned model не добавлены.
 Отрицательные blind оценки и inspected development результаты сохраняются в
 [replay](research/search-history-replay-2026-09-30.md).
+
+
+### Telegram delivery — 2026-10-09
+
+Оба HTTP-пути Telegram читают отдельный telegram_proxy_url из общего backend/scheduler env; остальные внешние источники не меняют маршрут. Resend job подбирает также технические виды из telegram_outbox, сохраняя прежние dedup/age/window/attempt limits.
+
+Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

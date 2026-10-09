@@ -93,7 +93,9 @@ async def _send_one(token: str, payload: dict, kind: str) -> bool:
     )
     try:
         url = _TELEGRAM_API.format(token=token)
-        async with httpx.AsyncClient(timeout=10) as client:
+        async with httpx.AsyncClient(
+            timeout=10, proxy=settings.telegram_proxy_url or None, trust_env=False,
+        ) as client:
             # Временные сбои (сеть/таймаут/429/5xx) повторяются с паузой в
             # пределах общего потолка; 400/403/404 — нет. Одна архивная строка
             # на всю отправку: итог (и число попыток при ошибке) пишет finish.

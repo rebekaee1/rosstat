@@ -562,3 +562,10 @@ VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_i
 Он применён вручную; не запускается при каждом рестарте приложения.
 Таймауты/память/workers не повышены. Границы и выпуск — performance
 acceptance09.10; actual auto-vacuum timing не обещан.
+
+
+### Telegram delivery — 2026-10-09
+
+Telegram-only route: заполнить RUSTATS_TELEGRAM_PROXY_URL в серверном .env; значение не печатать. Compose передаёт его backend и scheduler. После recreate проверить getMe через реальный клиент, poller logs и ok/message_id в telegram_outbox. Для rollback очистить только это поле и recreate оба процесса. Не менять общий HTTPS_PROXY, TLS verification и исторический архив.
+
+Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

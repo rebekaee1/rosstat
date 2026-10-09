@@ -300,6 +300,9 @@ class Settings(BaseSettings):
     # Получают дайджест 9:00, пульс, регистрации и обратную связь (указание
     # владельца 2026-07-06). Технические алерты (ETL/5xx) — только primary.
     telegram_digest_chat_ids: str = ""
+    # Dedicated HTTPS CONNECT route for Telegram; empty = direct. Do not use
+    # process-wide HTTPS_PROXY: it would also reroute every economic source.
+    telegram_proxy_url: str = ""
     # Мгновенные уведомления (регистрации + обратная связь). false = тишина,
     # всё уходит только в ежедневный дайджест. ETL-алерты не затрагивает.
     telegram_realtime_alerts_enabled: bool = True

@@ -2771,3 +2771,10 @@ VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_i
 Он применён вручную; не запускается при каждом рестарте приложения.
 Таймауты/память/workers не повышены. Границы и выпуск — performance
 acceptance09.10; actual auto-vacuum timing не обещан.
+
+
+### Telegram delivery — 2026-10-09
+
+Telegram delivery 09.10: реализован dedicated proxy route в двух sender paths и bounded досылка технических алертов; production release/live acceptance ещё ожидаются. Выявленные 24 недоставленные logical groups за 48 ч и план восстановления — в приёмке; сегодняшние digest/Pulse доставлены.
+
+Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

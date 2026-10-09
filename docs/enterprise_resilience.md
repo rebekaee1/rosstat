@@ -146,3 +146,10 @@ VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_i
 Он применён вручную; не запускается при каждом рестарте приложения.
 Таймауты/память/workers не повышены. Границы и выпуск — performance
 acceptance09.10; actual auto-vacuum timing не обещан.
+
+
+### Telegram delivery — 2026-10-09
+
+Прямой IPv4 Telegram API на production периодически даёт ConnectTimeout даже после extra_hosts; авторизованный существующий CONNECT relay проверен отдельно. Отдельный маршрут задаётся RUSTATS_TELEGRAM_PROXY_URL. В технической досылке теперь есть scheduler/5xx/anomaly/ETL/staleness warnings: producer mute после неудачной отправки больше не оставляет их вне retry queue.
+
+Основной контракт: [data-contracts.md](data-contracts.md#telegram-маршрут-и-техническая-досылка--2026-10-09).

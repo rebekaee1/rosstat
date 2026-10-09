@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `034b05388e47`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `eb815d5f1980`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -17,8 +17,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | Файлы в инвентаризации | 2059 |
 | Переданы структурному экстрактору | 1787 |
 | Дали узлы графа | 1706 |
-| Узлы / связи между символами | 20356 / 64824 |
-| Связи между файлами (тип и уверенность сохраняются) | 15215 |
+| Узлы / связи между символами | 20374 / 64861 |
+| Связи между файлами (тип и уверенность сохраняются) | 15218 |
 
 Исходники, шаблоны и стили: **1671** файлов; узлы есть у **1614**, из них **120** дали только один файловый узел. Исторический смысловой граф содержит основания для **68** файлов. Это прежний выборочный срез; его изменившиеся основания показаны в HTML отдельно. Текущий содержательный разбор каждого файла и именованного определения находится в [реестре рецензий](code-review.md), с отдельным guard по SHA и аннотациям. Успешный прогон тестов не измеряет полноту этого разбора.
 
@@ -51,8 +51,8 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 
 `EXTRACTED` и `INFERRED` — метки Graphify. Даже EXTRACTED означает статическую конструкцию, а не выполненный вызов. JSON сохраняет направление, тип, количество и примеры исходных строк. Внутрифайловые отношения остаются в полном Graphify-графе; внешние/неразрешённые endpoints не превращаются в выдуманные файлы. Отсутствие входящих связей не доказывает мёртвый код. Динамические реестры, HTTP, SQL, Redis и scheduler требуют контрактов из отдельных документов.
 
-Метки связей: `{"EXTRACTED": 59114, "INFERRED": 5710}`.
-Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2735, "missing_endpoint": 3596, "within_file": 27438}`.
+Метки связей: `{"EXTRACTED": 59149, "INFERRED": 5712}`.
+Не включены в проекцию между файлами: `{"external_or_unresolved_file": 2739, "missing_endpoint": 3601, "within_file": 27459}`.
 
 ## Слои файлов
 
@@ -88,7 +88,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [.cursor/rules/working-agreement.mdc](../.cursor/rules/working-agreement.mdc) | 63 | inventory_only |
 | [.cursor/rules/world-ui-parity.mdc](../.cursor/rules/world-ui-parity.mdc) | 32 | inventory_only |
 | [AGENTS.md](../AGENTS.md) | 87 | nodes |
-| [CONTEXT.md](../CONTEXT.md) | 1295 | nodes |
+| [CONTEXT.md](../CONTEXT.md) | 1302 | nodes |
 | [README.md](../README.md) | 273 | nodes |
 | [deploy/tor-http-bridge/README.md](../deploy/tor-http-bridge/README.md) | 37 | nodes |
 | [docs/adr/0001-derived-indicators-engine-shape.md](../docs/adr/0001-derived-indicators-engine-shape.md) | 158 | nodes |
@@ -99,7 +99,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/adr/0006-indicator-card-unification.md](../docs/adr/0006-indicator-card-unification.md) | 227 | nodes |
 | [docs/adr/0007-identity-user-accounts.md](../docs/adr/0007-identity-user-accounts.md) | 259 | nodes |
 | [docs/adr/0008-regional-bounded-context.md](../docs/adr/0008-regional-bounded-context.md) | 199 | nodes |
-| [docs/adr/0009-behavior-stream-first-party.md](../docs/adr/0009-behavior-stream-first-party.md) | 128 | nodes |
+| [docs/adr/0009-behavior-stream-first-party.md](../docs/adr/0009-behavior-stream-first-party.md) | 135 | nodes |
 | [docs/adr/0010-analytics-contour-identity-goals-marts-olap.md](../docs/adr/0010-analytics-contour-identity-goals-marts-olap.md) | 279 | nodes |
 | [docs/adr/0011-world-eurostat-data-plane.md](../docs/adr/0011-world-eurostat-data-plane.md) | 313 | nodes |
 | [docs/adr/0012-world-multi-provider-official-first-forecasts.md](../docs/adr/0012-world-multi-provider-official-first-forecasts.md) | 202 | nodes |
@@ -122,12 +122,12 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/analytics_api_inventory/metrika_management.md](../docs/analytics_api_inventory/metrika_management.md) | 49 | nodes |
 | [docs/analytics_api_inventory/metrika_reporting.md](../docs/analytics_api_inventory/metrika_reporting.md) | 47 | nodes |
 | [docs/analytics_api_inventory/yandex_webmaster.md](../docs/analytics_api_inventory/yandex_webmaster.md) | 64 | nodes |
-| [docs/architecture-history.md](../docs/architecture-history.md) | 270 | nodes |
-| [docs/architecture.md](../docs/architecture.md) | 450 | nodes |
-| [docs/backlog.md](../docs/backlog.md) | 2773 | nodes |
+| [docs/architecture-history.md](../docs/architecture-history.md) | 277 | nodes |
+| [docs/architecture.md](../docs/architecture.md) | 457 | nodes |
+| [docs/backlog.md](../docs/backlog.md) | 2780 | nodes |
 | [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | 136 | nodes |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | 161 | nodes |
-| [docs/data-contracts.md](../docs/data-contracts.md) | 704 | nodes |
+| [docs/data-contracts.md](../docs/data-contracts.md) | 737 | nodes |
 | [docs/data_sources.md](../docs/data_sources.md) | 652 | nodes |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | 82 | nodes |
 | [docs/design-system.md](../docs/design-system.md) | 429 | nodes |
@@ -137,13 +137,13 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/design/design-review-gallery.md](../docs/design/design-review-gallery.md) | 78 | nodes |
 | [docs/design/local-acceptance/README.md](../docs/design/local-acceptance/README.md) | 31 | nodes |
 | [docs/design/requirements-coverage.md](../docs/design/requirements-coverage.md) | 16 | nodes |
-| [docs/enterprise_resilience.md](../docs/enterprise_resilience.md) | 148 | nodes |
+| [docs/enterprise_resilience.md](../docs/enterprise_resilience.md) | 155 | nodes |
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | 204 | nodes |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | 618 | nodes |
 | [docs/indicator-index.md](../docs/indicator-index.md) | 1086 | nodes |
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | 98 | nodes |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | 107 | nodes |
-| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 2876 | nodes |
+| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 2877 | nodes |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | 449 | nodes |
 | [docs/planet-view.md](../docs/planet-view.md) | 590 | nodes |
 | [docs/pravki-21-reanalysis.md](../docs/pravki-21-reanalysis.md) | 52 | nodes |
@@ -171,7 +171,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/verification/us-eu-source-audit-2026-09-24.md](../docs/verification/us-eu-source-audit-2026-09-24.md) | 114 | nodes |
 | [docs/verification/us-indicators-2026-09-24.md](../docs/verification/us-indicators-2026-09-24.md) | 41 | nodes |
 | [docs/verification/world-forecast-v2-2026-09-24.md](../docs/verification/world-forecast-v2-2026-09-24.md) | 64 | nodes |
-| [docs/workflow.md](../docs/workflow.md) | 564 | nodes |
+| [docs/workflow.md](../docs/workflow.md) | 571 | nodes |
 | [frontend/public/brand/README-prompts.md](../frontend/public/brand/README-prompts.md) | 42 | nodes |
 | [frontend/public/planet/README.md](../frontend/public/planet/README.md) | 112 | nodes |
 | [scripts/audit-world-truthfulness-report.md](../scripts/audit-world-truthfulness-report.md) | 145 | nodes |

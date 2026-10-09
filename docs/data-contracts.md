@@ -702,3 +702,36 @@ VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_i
 Он применён вручную; не запускается при каждом рестарте приложения.
 Таймауты/память/workers не повышены. Границы и выпуск — performance
 acceptance09.10; actual auto-vacuum timing не обещан.
+
+
+### Telegram: маршрут и техническая досылка — 2026-10-09
+
+`RUSTATS_TELEGRAM_PROXY_URL` — отдельный HTTP CONNECT proxy для обоих
+HTTP-путей Telegram (`alerting._send_one`, `telegram_bot._api`). Пустое
+значение означает прямое соединение. Backend и scheduler получают поле
+из общей Compose environment anchor. TLS до api.telegram.org проверяется;
+токен остаётся внутри HTTPS. Общий HTTPS_PROXY не используется, остальные
+источники данных идут по прежним маршрутам. Proxy credentials — только
+в серверном .env, не в документации или логах. Повторы, таймауты, архив
+до отправки и rewind файла между попытками сохранены.
+
+`telegram_resend.RESEND_KINDS` теперь включает alert, analytics_anomaly,
+scheduler_alert, http_5xx_spike, rate_limit_alert, prod_config_alert,
+etl_failure, zero_parse, staleness и forecast_issue. Их producers могли
+поставить mute/dedup ещё до неудачного HTTP: архивная досылка закрывает
+последующее молчание. Граница досылки прежняя: sendMessage, 6 часов,
+минимальный возраст 10 минут, до 3 досылок и 10 отправок за запуск.
+HTTP 4xx кроме 408/429 не повторяются; файлы и bot_reply не досылаются.
+Успех того же kind/chat/text после первой неудачи исключает дубль.
+Сохранение строки не означает доставку: подтверждение — ok=true/message_id.
+
+Проверки и выявленные пропуски: [приёмка](code-review/telegram-delivery-acceptance-2026-10-09.md).
+Историческая досылка за пределами окна — отдельный ограниченный план;
+старые алерты не должны выдаваться за новые инциденты.
+
+Служебный `scripts/pg-backup.sh::tg_notify` читает то же отдельное поле
+из environment/.env и передаёт curl proxy credentials через stdin config,
+не argv. Пустое поле сохраняет direct route. Успех/сбой Telegram не
+меняет результат бэкапа. Эти host-уведомления не пишутся в telegram_outbox,
+поэтому24 группы потерь относятся только к приложению. Daily cron
+создал dump/identity8 и9 октября; уведомление и созданный backup различаются.

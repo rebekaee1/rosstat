@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `034b05388e47dded59ef8dc1c67facff72f360b3`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `eb815d5f1980d2601392c9d096e993535ee89139`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2059 |
 | Код, шаблоны и стили | 1671 |
 | Актуальные рецензии без пропусков guard | 2059 |
-| Именованные определения Python/JS: с аннотацией / всего | 13045 / 13045 |
+| Именованные определения Python/JS: с аннотацией / всего | 13053 / 13053 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -565,7 +565,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_auth_email.py](../backend/tests/test_auth_email.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_auth_oauth.py](../backend/tests/test_auth_oauth.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_auto_loan_rate.py](../backend/tests/test_auto_loan_rate.py) | reviewed | 3/3 | актуально |
-| [backend/tests/test_backup_readiness.py](../backend/tests/test_backup_readiness.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_backup_readiness.py](../backend/tests/test_backup_readiness.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_bank_credit_seo.py](../backend/tests/test_bank_credit_seo.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_boot_splash.py](../backend/tests/test_boot_splash.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_branded_errors.py](../backend/tests/test_branded_errors.py) | reviewed | 6/6 | актуально |
@@ -771,7 +771,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ssr_pool_release.py](../backend/tests/test_ssr_pool_release.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_staleness.py](../backend/tests/test_staleness.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_structured_metadata.py](../backend/tests/test_structured_metadata.py) | reviewed | 7/7 | актуально |
-| [backend/tests/test_telegram_reliability.py](../backend/tests/test_telegram_reliability.py) | reviewed | 59/59 | актуально |
+| [backend/tests/test_telegram_reliability.py](../backend/tests/test_telegram_reliability.py) | reviewed | 66/66 | актуально |
 | [backend/tests/test_telegram_reports.py](../backend/tests/test_telegram_reports.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_ticker_basis.py](../backend/tests/test_ticker_basis.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_ticker_sources.py](../backend/tests/test_ticker_sources.py) | reviewed | 33/33 | актуально |
