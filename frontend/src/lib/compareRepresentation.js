@@ -286,8 +286,12 @@ export function applyCompareTransform(points, transform) {
 }
 
 /** Absolute subtraction of rate levels is measured in percentage points. */
-export function compareDifferenceUnit(unit, { indexed = false, locale = 'ru' } = {}) {
-  if (indexed || /^(индекс|index|пункты|points)$/i.test(unit || '')) return locale === 'en' ? 'index points' : 'п. индекса';
+export function compareDifferenceUnit(unit, { indexed = false, locale = 'ru', indexUnit = '' } = {}) {
+  // Круг 11: разность индексов пишется «п. п. от старта» (текст `c11t.compare.indexDiffUnit` передаёт страница).
+  if (indexed || /^(индекс|index|пункты|points)$/i.test(unit || '')) {
+    if (indexUnit) return indexUnit;
+    return locale === 'en' ? 'index points' : 'п. индекса';
+  }
   if (typeof unit === 'string' && /^%($|\s)/.test(unit)) return unit.replace('%', locale === 'en' ? 'p.p.' : 'п.п.');
   return unit;
 }

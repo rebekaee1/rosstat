@@ -266,7 +266,7 @@ export default function WorldChartSection({
               forecastData={chartForecastPayload}
               showForecast={effectiveShowForecast}
               onFullData={onFullData}
-              cpiChartTitle={caption}
+              cpiChartTitle={humanTitle ? caption : `${nameForAria} — ${caption}`}
               chartTitleBuilder={titleBuilder}
               ariaTitle={`${nameForAria}. ${caption}`}
               levelTooltipLabel={modeMeta?.label || modeMeta?.group || t('chart.tooltip.value')}

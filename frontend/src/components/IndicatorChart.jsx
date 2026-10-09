@@ -22,6 +22,9 @@ import ChartBrandCaption from './ChartBrandCaption';
 import ChartGlassDefs from './ChartGlassDefs';
 import EdgeAwareTick from './ChartAxisTick';
 import ChartBrush from './ChartBrush';
+import { ChartEventsList, EventsChip } from './ChartEvents';
+import { eventReferenceLines, useEventsToggle } from '../lib/chartEventMarks';
+import { eventsInWindow } from '../lib/chartEvents';
 import { formatPointLabel, pointLabelWidth } from '../lib/chartPointLabel';
 import Chip from './Chip';
 import ChipGroup from './ChipGroup';
@@ -327,6 +330,8 @@ export default function IndicatorChart({
   const [touchMode, setTouchMode] = useState(false);
   const [prevPreset, setPrevPreset] = useState(rangePreset);
   const [chartType, setChartType] = useState(savedView?.chartType ?? defaultChartType);
+  // Круг 11: отметки событий (выключены, пока человек не включит).
+  const [eventsOn, toggleEvents] = useEventsToggle();
   useEffect(() => {
     const save = () => rememberAuthView(viewKey, { range, windowOverride, offset, chartType });
     window.addEventListener('fe:auth-leave', save);
@@ -742,6 +747,11 @@ export default function IndicatorChart({
     }
     return false;
   }, [visualData, lastPointRow]);
+  // События рисуются только на фактических датах: у прогноза отметок нет.
+  const eventMarks = useMemo(
+    () => eventsInWindow(visualData.filter((row) => row.actual != null).map((row) => row.date)),
+    [visualData],
+  );
   const showBrush = dataLen >= minWindow * 2;
 
   if (!dataLen) {
@@ -797,6 +807,7 @@ export default function IndicatorChart({
               {t('chart.resetZoom')}
             </Chip>
           )}
+          <EventsChip on={eventsOn} onToggle={toggleEvents} count={eventMarks.length} />
           <ChipGroup label={t('chart.rangeAria')} className="fe-chip-row--tight">
             {rangeOptions.map(opt => (
               <Chip
@@ -842,6 +853,11 @@ export default function IndicatorChart({
 
             {/* Сетка без пунктира: полосы 4,5 % чередуются (K4.1), линии едва заметны. */}
             <CartesianGrid {...GRID_PROPS} />
+            {eventsOn && eventReferenceLines(
+              eventMarks,
+              visualData.filter((row) => row.actual != null).map((row) => row.date),
+              Math.max(0, plotWidth - yWidth - 14),
+            )}
             <XAxis
               dataKey="date"
               tickFormatter={xTickFormat}
@@ -856,7 +872,9 @@ export default function IndicatorChart({
             />
             <YAxis
               stroke="rgba(88,74,46,0.12)"
-              tick={{ fill: CHART_THEME.axis, fontSize: CHART_THEME.tickSize, fontFamily: CHART_THEME.font }}
+              tick={{
+                fill: CHART_THEME.axis, fontSize: CHART_THEME.tickSize, fontFamily: CHART_THEME.font, style: { userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' },
+              }}
               tickLine={false}
               axisLine={false}
               domain={yDomain}
@@ -1033,6 +1051,8 @@ export default function IndicatorChart({
           }}
         />
       )}
+
+      {eventsOn && <ChartEventsList marks={eventMarks} />}
 
       {resolvedComparisonSeries.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 pt-3 fe-divider">

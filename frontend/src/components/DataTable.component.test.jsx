@@ -28,10 +28,34 @@ describe('DataTable', () => {
     expect(screen.queryByText('1 234,5 тыс. тонн')).toBeNull();
   });
 
-  it('по умолчанию сохраняет единицу у значения для существующих карточек', () => {
+  it('единица стоит один раз в заголовке столбца, а не в каждой строке (круг 11)', () => {
     renderTable(<DataTable data={data} unit="%" valueDigits={1} />);
-    // Число и единица через пробел (в разметке неразрывный): «1 234,5 %», а не «1 234,5%».
-    expect(screen.getByText('1 234,5 %')).toBeTruthy();
+    expect(screen.getByText('Значение (%)')).toBeTruthy();
+    expect(screen.getByText('1 234,5')).toBeTruthy();
+    expect(screen.queryByText('1 234,5 %')).toBeNull();
+  });
+
+  it('длинная единица остаётся в строке, потому что заголовок её не вмещает', () => {
+    renderTable(<DataTable data={data} unit="индекс, старт = 100 за базовый период" valueDigits={1} />);
+    expect(screen.getByText('Значение')).toBeTruthy();
+  });
+
+  it('изменение: единица один раз в заголовке («Изменение, п. п.»), в строках знак и число', () => {
+    const rows = [{ date: '2025-01-01', value: 3.0 }, { date: '2024-01-01', value: 2.5 }];
+    renderTable(<DataTable data={rows} unit="изменение за год, %" valueDigits={1} />);
+    expect(screen.getByText('Изменение, п. п.')).toBeTruthy();
+    expect(screen.getByText('+0,5')).toBeTruthy();
+    expect(screen.queryByText(/annual change/)).toBeNull();
+  });
+
+  it('диапазон «от / до» сужает строки и показывает, сколько показано', async () => {
+    const rows = Array.from({ length: 6 }, (_, i) => ({ date: `${2020 + i}-01-01`, value: i }));
+    renderTable(<DataTable data={rows} unit="%" valueDigits={0} dateFormat="annual" />);
+    fireEvent.change(screen.getByLabelText('От'), { target: { value: '2022' } });
+    fireEvent.change(screen.getByLabelText('До'), { target: { value: '2023' } });
+    await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(3));
+    expect(screen.getByRole('status').textContent).toBe('Показано 2 из 6');
+    expect(screen.getByRole('button', { name: /Скачать этот диапазон/ })).toBeTruthy();
   });
 
   it('не оставляет пустые скобки для единиц без короткого суффикса', () => {
@@ -44,7 +68,7 @@ describe('DataTable', () => {
     renderTable(<DataTable data={[{ date: '2024-12-01', value: 16.5 }, { date: '2023-12-01', value: 6.5 }]} />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '16,5' } });
     await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(2));
-    expect(screen.getByText('16,50 %')).toBeTruthy();
+    expect(screen.getByText('16,50')).toBeTruthy();
     expect(track).toHaveBeenCalledWith(events.TABLE_SEARCH, { query: '16,5', results: 1 });
   });
 

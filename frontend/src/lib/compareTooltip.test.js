@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareTooltipRows } from './compareTooltip';
+import { compareTooltipRows, indexNote } from './compareTooltip';
 
 const colors = { v0: '#2C4A8A', v1: '#238F9B' };
 
@@ -28,5 +28,19 @@ describe('compareTooltipRows', () => {
 
   it('не падает на пустом вводе', () => {
     expect(compareTooltipRows(undefined)).toEqual([]);
+  });
+});
+
+
+describe('indexNote', () => {
+  it('рост от полутора раз словами, малое изменение процентами', () => {
+    expect(indexNote(191.32)).toMatchObject({ kind: 'times', ratio: '1,9', plural: 'other' });
+    expect(indexNote(877)).toMatchObject({ kind: 'times', ratio: '8,8' });
+    expect(indexNote(2100)).toMatchObject({ kind: 'times', ratio: '21', plural: 'one' });
+    expect(indexNote(119)).toEqual({ kind: 'pct', pct: '+19 %' });
+    expect(indexNote(88)).toEqual({ kind: 'pct', pct: '−12 %' });
+    expect(indexNote(50)).toMatchObject({ kind: 'less', ratio: '2' });
+    expect(indexNote(100)).toEqual({ kind: 'same' });
+    expect(indexNote(null)).toEqual({ kind: 'same' });
   });
 });

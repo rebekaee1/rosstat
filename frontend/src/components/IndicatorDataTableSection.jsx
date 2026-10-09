@@ -66,6 +66,17 @@ export default function IndicatorDataTableSection({
         key={`${indicator?.code}-${chartMode}`}
         loading={loading}
         data={data}
+        exportMeta={{
+          filename: indicator?.code ? `${indicator.code}_${chartMode || 'data'}` : undefined,
+          name: indicator?.name,
+          code: indicator?.code,
+          params: { mode: chartMode },
+          meta: {
+            ...(indicator?.source ? { source: indicator.source } : {}),
+            ...(indicator?.source_url ? { source_url: indicator.source_url } : {}),
+            ...(indicator?.frequency ? { frequency: indicator.frequency } : {}),
+          },
+        }}
         title={yearFilter ? `${tableTitle}, ${yearFilter}` : tableTitle}
         dateFormat={resolveDateFormat({ chartMode, frequency: indicator?.frequency, safeViewMode })}
         unit={chartMode === 'index' ? 'индекс' : ((isPpiFamily || isHousingFamily) && chartMode !== 'index' ? '%' : (indicator?.unit || '%'))}

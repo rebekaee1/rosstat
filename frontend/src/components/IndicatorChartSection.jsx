@@ -206,9 +206,15 @@ export default function IndicatorChartSection({
     ? (windowRebase ? comparison.loadedComparisonSeries : comparison.displayedComparisonSeries)
     : [];
   const chartDisplayUnit = windowRebase ? comparison.windowRebaseUnit : (overlayActive ? comparison.displayedUnit : chartUnit);
+  // Круг 11: при сравнении название показателя в заголовке остаётся («Инфляция — динамика, старт периода = 100»), а не только описание вида.
+  const withIndicatorName = (text) => {
+    const name = String(indicator?.name || '').trim();
+    if (!name || !text || String(text).includes(name)) return text;
+    return `${name} — ${String(text).charAt(0).toLowerCase()}${String(text).slice(1)}`;
+  };
   const chartDisplayTitle = windowRebase
-    ? t('w6e.compare.captionIndex')
-    : (overlayActive ? comparison.displayedTitle : cpiChartTitle);
+    ? withIndicatorName(t('w6e.compare.captionIndex'))
+    : (overlayActive ? withIndicatorName(comparison.displayedTitle) : cpiChartTitle);
   const compareHint = compareConcept && !compareCompatible
     ? t('world.chart.compareNeedsMode')
     : null;

@@ -82,21 +82,28 @@ describe('ComparePage: раунд 2', () => {
     renderPage(<ComparePage />, { path: '/compare', route: '/compare' });
     const gap = await screen.findByTestId('compare-gap');
     expect(gap.textContent).toBe('США больше, чем Китай, в 1,6 раза');
-    expect(screen.queryByTestId('compare-auto-index')).toBeNull();
+    expect(screen.queryByTestId('compare-suggest-index')).toBeNull();
   });
 
-  it('очень разные размеры: сразу рост в процентах, пояснение и кнопка «Показать значения»', async () => {
+  it('очень разные размеры: страница молча не переключается, а предлагает рост от старта с объяснением', async () => {
     mockApis();
     const codes = encodeURIComponent('w:united-states:gdp-usd,w:germany:gdp-usd');
     renderPage(<ComparePage />, { path: '/compare', route: `/compare?codes=${codes}` });
-    const note = await screen.findByTestId('compare-auto-index');
-    expect(note.textContent).toMatch(/рост в процентах/);
+    const offer = await screen.findByTestId('compare-suggest-index');
+    expect(offer.textContent).toMatch(/каждый ряд равен 100/);
+    // Значения остаются на экране, пока человек сам не выбрал.
+    expect(screen.getByTestId('compare-gap').textContent).toMatch(/США больше, чем Германия/);
+    expect(screen.queryByTestId('compare-index-note')).toBeNull();
+    fireEvent.click(within(offer).getByRole('button', { name: 'Показать рост от старта' }));
+    const note = await screen.findByTestId('compare-index-note');
+    expect(note.textContent).toMatch(/каждый ряд равен 100/);
+    expect(screen.queryByTestId('compare-suggest-index')).toBeNull();
     expect(screen.queryByTestId('compare-gap')).toBeNull();
     fireEvent.click(within(note).getByRole('button', { name: 'Показать значения' }));
-    await waitFor(() => expect(screen.queryByTestId('compare-auto-index')).toBeNull());
-    expect(screen.getByTestId('compare-gap').textContent).toMatch(/США больше, чем Германия/);
-    // Выбор человека не отменяется сам: после «Показать значения» проценты не возвращаются.
-    expect(screen.queryByTestId('compare-auto-index')).toBeNull();
+    await waitFor(() => expect(screen.queryByTestId('compare-index-note')).toBeNull());
+    expect(screen.getByTestId('compare-gap')).toBeTruthy();
+    // Выбор человека не отменяется сам: после «Показать значения» плашка с предложением не возвращается.
+    expect(screen.queryByTestId('compare-suggest-index')).toBeNull();
   });
 
   it('заголовок вкладки совпадает с заголовком страницы', async () => {

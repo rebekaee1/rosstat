@@ -31,6 +31,7 @@ export default function EdgeAwareTick({
       fill={CHART_THEME.axis}
       fontSize={fontSize}
       fontFamily={CHART_THEME.font}
+      style={{ userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}
     >
       {text}
     </text>
