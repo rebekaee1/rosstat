@@ -257,6 +257,8 @@ services:
       RUSTATS_VAPID_PUBLIC_KEY: ${RUSTATS_VAPID_PUBLIC_KEY:-}
       RUSTATS_VAPID_PRIVATE_KEY: ${RUSTATS_VAPID_PRIVATE_KEY:-}
       RUSTATS_VAPID_SUBJECT: ${RUSTATS_VAPID_SUBJECT:-}
+      # Личный кабинет: false = /api/v1/cabinet/* отвечает 404 (кроме /cabinet/config); ничего не отправляется.
+      RUSTATS_CABINET_ENABLED: ${RUSTATS_CABINET_ENABLED:-false}
       # PWA: аварийные выключатели без пересборки фронта (по умолчанию включено).
       RUSTATS_PWA_ENABLED: ${RUSTATS_PWA_ENABLED:-true}
       RUSTATS_PWA_INSTALL_PROMPT_ENABLED: ${RUSTATS_PWA_INSTALL_PROMPT_ENABLED:-true}

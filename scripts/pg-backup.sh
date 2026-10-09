@@ -5,7 +5,8 @@
 #   1) Полный custom-dump всей БД (.dump) — основной бэкап для восстановления.
 #   2) Отдельный data-only SQL identity-таблиц (.identity.sql.gz) — подстраховка
 #      «пользователи никогда не теряются» (users / email_credentials /
-#      oauth_identities / consents / auth_audit). Plain SQL читается глазами и
+#      oauth_identities / consents / auth_audit + кабинет: user_saved_items /
+#      user_watches / user_exports / user_preferences). Plain SQL читается глазами и
 #      требует заранее созданной совместимой схемы и проверки связности.
 #
 # Персистентность БД между редеплоями обеспечивает docker volume `postgres_data`
@@ -29,7 +30,7 @@ KEEP_DAYS="${KEEP_DAYS:-14}"
 DB_NAME="rustats"
 DB_USER="rustats"
 COMPOSE_DIR="${COMPOSE_DIR:-/opt/rosstat}"
-IDENTITY_TABLES="users email_credentials oauth_identities consents auth_audit"
+IDENTITY_TABLES="users email_credentials oauth_identities consents auth_audit user_saved_items user_watches user_exports user_preferences"
 
 # Telegram-креды: из окружения или из .env compose-каталога.
 if [ -z "${RUSTATS_TELEGRAM_BOT_TOKEN:-}" ] && [ -f "$COMPOSE_DIR/.env" ]; then

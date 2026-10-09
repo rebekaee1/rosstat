@@ -1595,3 +1595,99 @@ class SessionAnalysisReport(Base):
     attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     error: Mapped[str | None] = mapped_column(String(300))
     generated_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+# ---------------------------------------------------------------------------
+# Личный кабинет (круг 11, 2026-10-09): избранное, слежения, история выгрузок,
+# настройки. Все четыре таблицы привязаны к человеку (ПДн, 152-ФЗ): user_id →
+# users.id ON DELETE CASCADE, но delete_account удаляет их ЯВНО (в SQLite FK off),
+# GET /auth/account/export отдаёт их разделами, scripts/pg-backup.sh включает их
+# в identity-копию. Не попадают в аналитику, frontend_events, логи и записи сессий.
+# Работа с ними — только через app/services/cabinet.py и app/api/cabinet.py за
+# флагом `cabinet_enabled`.
+# ---------------------------------------------------------------------------
+
+
+class UserSavedItem(Base):
+    """Избранное / сохранённое сравнение / расчёт калькулятора / вид рейтинга.
+
+    `kind` — белый список (services/cabinet.SAVED_KINDS), `item_key` — стабильный
+    ключ записи (код показателя, slug страны, нормализованные параметры адреса),
+    `payload` — только параметры для восстановления вида (не данные ряда).
+    Повторное сохранение того же (user, kind, item_key) обновляет строку.
+    """
+    __tablename__ = "user_saved_items"
+    __table_args__ = (
+        UniqueConstraint("user_id", "kind", "item_key", name="uq_user_saved_item"),
+        Index("ix_user_saved_items_user_kind", "user_id", "kind", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    item_key: Mapped[str] = mapped_column(String(300), nullable=False)
+    title: Mapped[str | None] = mapped_column(String(200))
+    payload: Mapped[dict | None] = mapped_column(JSON)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class UserWatch(Base):
+    """Слежение «сообщить, когда выйдет новое значение».
+
+    В круге 11 ничего не отправляется: канал только `inapp` (значок «Новое» и
+    лента в кабинете). `last_seen_date` — последняя дата ряда, которую человек уже
+    видел; `last_notified_date` зарезервирована под будущую доставку (почта,
+    Telegram, push) и сейчас не заполняется.
+    """
+    __tablename__ = "user_watches"
+    __table_args__ = (
+        UniqueConstraint("user_id", "subject_kind", "subject_key", "channel", name="uq_user_watch"),
+        Index("ix_user_watches_subject", "subject_kind", "subject_key"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    subject_kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    subject_key: Mapped[str] = mapped_column(String(300), nullable=False)
+    channel: Mapped[str] = mapped_column(String(16), nullable=False, default="inapp", server_default="inapp")
+    last_seen_date: Mapped[date | None] = mapped_column(Date)
+    last_notified_date: Mapped[date | None] = mapped_column(Date)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class UserExport(Base):
+    """История выгрузок: ПАРАМЕТРЫ, не файлы (повтор строит файл заново)."""
+    __tablename__ = "user_exports"
+    __table_args__ = (
+        Index("ix_user_exports_user_created", "user_id", "created_at"),
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    source: Mapped[str] = mapped_column(String(24), nullable=False)
+    subject_key: Mapped[str] = mapped_column(String(300), nullable=False, default="", server_default="")
+    format: Mapped[str] = mapped_column(String(8), nullable=False)
+    params: Mapped[dict | None] = mapped_column(JSON)
+    rows_count: Mapped[int | None] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class UserPreference(Base):
+    """Настройки кабинета: одна строка на человека (не колонки в `users`).
+
+    `data` проходит белый список полей (services/cabinet.PrefsIn). `feed_token_hash` —
+    SHA-256 токена личной ленты календаря `.ics`; сам токен нигде не хранится и
+    показывается один раз при выпуске.
+    """
+    __tablename__ = "user_preferences"
+    __table_args__ = (
+        Index("ix_user_preferences_feed_token", "feed_token_hash", unique=True),
+    )
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    data: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    feed_token_hash: Mapped[str | None] = mapped_column(String(64))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)

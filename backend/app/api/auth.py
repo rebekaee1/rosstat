@@ -13,7 +13,10 @@ from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models import User, Consent, AuthAudit, EmailCredential, OAuthIdentity
+from app.models import (
+    User, Consent, AuthAudit, EmailCredential, OAuthIdentity, PushSubscription,
+    UserSavedItem, UserWatch, UserExport, UserPreference,
+)
 from app.services import session as session_svc
 from app.services.identity.service import (
     register_email, authenticate_email, serialize_user, EmailAlreadyExists,
@@ -420,6 +423,15 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
     profile = await serialize_user(db, user)
     consents = (await db.scalars(select(Consent).where(Consent.user_id == user.id))).all()
     events = (await db.scalars(select(AuthAudit).where(AuthAudit.user_id == user.id))).all()
+    # Кабинет (круг 11): данные человека, которые он сам накопил. Токен личной ленты
+    # календаря не выгружаем (в БД только его хэш), даём лишь признак «выпущен».
+    saved = (await db.scalars(
+        select(UserSavedItem).where(UserSavedItem.user_id == user.id).order_by(UserSavedItem.created_at))).all()
+    watches = (await db.scalars(
+        select(UserWatch).where(UserWatch.user_id == user.id).order_by(UserWatch.created_at))).all()
+    exports = (await db.scalars(
+        select(UserExport).where(UserExport.user_id == user.id).order_by(UserExport.created_at))).all()
+    prefs = await db.get(UserPreference, user.id)
     payload = {
         "user": profile,
         "consents": [
@@ -432,6 +444,26 @@ async def export_account(user: User = Depends(get_current_user), db: AsyncSessio
              "ts": e.ts.isoformat() if e.ts else None}
             for e in events
         ],
+        "saved_items": [
+            {"kind": r.kind, "item_key": r.item_key, "title": r.title, "payload": r.payload,
+             "created_at": r.created_at.isoformat() if r.created_at else None}
+            for r in saved
+        ],
+        "watches": [
+            {"subject_kind": w.subject_kind, "subject_key": w.subject_key, "channel": w.channel,
+             "last_seen_date": w.last_seen_date.isoformat() if w.last_seen_date else None,
+             "created_at": w.created_at.isoformat() if w.created_at else None}
+            for w in watches
+        ],
+        "exports": [
+            {"source": x.source, "subject_key": x.subject_key, "format": x.format, "params": x.params,
+             "rows_count": x.rows_count, "created_at": x.created_at.isoformat() if x.created_at else None}
+            for x in exports
+        ],
+        "preferences": {
+            "data": (prefs.data if prefs else {}) or {},
+            "calendar_feed_active": bool(prefs and prefs.feed_token_hash),
+        },
     }
     return JSONResponse(
         payload,
@@ -448,6 +480,12 @@ async def delete_account(request: Request, response: Response, user: User = Depe
     await db.execute(delete(EmailCredential).where(EmailCredential.user_id == uid))
     await db.execute(delete(Consent).where(Consent.user_id == uid))
     await db.execute(delete(AuthAudit).where(AuthAudit.user_id == uid))
+    # Кабинет (круг 11) и подписки web-push: тоже ПДн, удаляем явно, а не только каскадом.
+    await db.execute(delete(UserSavedItem).where(UserSavedItem.user_id == uid))
+    await db.execute(delete(UserWatch).where(UserWatch.user_id == uid))
+    await db.execute(delete(UserExport).where(UserExport.user_id == uid))
+    await db.execute(delete(UserPreference).where(UserPreference.user_id == uid))
+    await db.execute(delete(PushSubscription).where(PushSubscription.user_id == uid))
     await db.execute(delete(User).where(User.id == uid))
     # Анонимный маркер факта удаления (без PII / без user_id).
     db.add(AuthAudit(user_id=None, event="account_deleted"))
