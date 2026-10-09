@@ -90,6 +90,8 @@
 }
 .w5-keyrate__dot { width: 8px; height: 8px; border-radius: 9999px; background: radial-gradient(circle at 35% 30%, #f6e3ab, var(--color-champagne)); box-shadow: 0 0 10px 2px rgba(201, 162, 77, 0.5); }
 @media (pointer: coarse) { .w5-keyrate { min-height: 44px; } }
+/* Круг 11 (E): заглушка ширины и высоты пилюли на время загрузки (без мерцания: только опасит, без движения). */
+.w5-keyrate--ghost { display: flex; width: 13.5rem; max-width: 100%; box-shadow: none; background: var(--fe-glass-soft); opacity: 0.5; }
 
 /* ── «Как считаем»: раскрывающийся блок простыми словами ────────────────── */
 .w5-method {

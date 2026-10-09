@@ -201,12 +201,32 @@ export function convert(amount, from, to, edges) {
   return null;
 }
 
-/** Число из поля ввода: пробелы и неразрывные пробелы убираются, запятая = точка. */
-export function parseAmountInput(text) {
-  const cleaned = String(text ?? '').replace(/\s/g, '').replace(',', '.');
+/**
+ * Число из поля ввода: пробелы и неразрывные пробелы убираются, запятая = точка.
+ * Круг 11 (E): на английской версии запятая отделяет тысячи («10,000»), а не дробь, потому что так её пишет само поле.
+ */
+export function parseAmountInput(text, locale = 'ru') {
+  const raw = String(text ?? '').replace(/\s/g, '');
+  const cleaned = locale === 'en' ? raw.replace(/,/g, '') : raw.replace(',', '.');
   if (!cleaned || !/^\d*\.?\d*$/.test(cleaned)) return null;
   const value = Number(cleaned);
   return Number.isFinite(value) ? value : null;
+}
+
+/** Курс в строке «1 USD = …»: знаков по величине (80,00; 0,0117; 0,000012), без «0,01169849». */
+export function formatRate(value, locale = 'ru') {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '—';
+  const abs = Math.abs(n);
+  let digits = 2;
+  if (abs >= 1000) digits = 0;
+  else if (abs >= 1) digits = 2;
+  else if (abs >= 0.01) digits = 4;
+  else if (abs >= 0.0001) digits = 6;
+  else digits = 8;
+  return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+    minimumFractionDigits: digits === 8 ? 0 : digits, maximumFractionDigits: digits,
+  }).format(n);
 }
 
 /** Результат пересчёта по правилам языка: крупные суммы целыми, обычные с копейками, доли монеты с точностью. */

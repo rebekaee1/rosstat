@@ -1,13 +1,24 @@
 // Поле денежной суммы калькуляторов (/calculator*): подпись, видимая единица, цифровая
 // клавиатура с разделителем (inputMode="decimal"), понятное сообщение при неверном вводе.
 // Прошлое корректное значение остаётся в расчёте — поле больше не «молча» обнуляет результат.
-import { useId, useState } from 'react';
+import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../lib/format';
 import { formatInput } from '../lib/calcFormat';
 import { MONEY_MAX, formatMoneyLimit, parseMoneyInput } from '../lib/calcUi';
 import { useT } from '../i18n';
 import '../styles/calc-ui.css';
 import '../styles/k8-tools.css';
+
+/** Позиция курсора после перестановки пробелов: за тем же числом цифр, что стояло слева от него. */
+function caretAfter(text, digitsBefore) {
+  if (digitsBefore <= 0) return 0;
+  let seen = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    if (/\d/.test(text[i])) seen += 1;
+    if (seen === digitsBefore) return i + 1;
+  }
+  return text.length;
+}
 
 const ERROR_KEYS = {
   chars: 'calc.ui.errChars',
@@ -28,6 +39,7 @@ export default function CalcMoneyField({
   max = MONEY_MAX,
   allowZero = false,
   labelAddon = null,
+  hint = '',
   hideLabel = false,
   className,
   inputClassName,
@@ -38,6 +50,8 @@ export default function CalcMoneyField({
   const errorId = `${fieldId}-error`;
   const [text, setText] = useState(() => (value || allowZero ? formatInput(value) : ''));
   const [error, setError] = useState(null);
+  const inputRef = useRef(null);
+  const caretRef = useRef(null);
   // Что поле само отдало наружу: отличает «родитель сменил значение» (синхронизируем текст)
   // от «родитель принял наше значение» (текст не трогаем, чтобы не сбивать ввод).
   const [emitted, setEmitted] = useState(value);
@@ -47,8 +61,30 @@ export default function CalcMoneyField({
     setError(null);
   }
 
+  // Круг 11 (E): после перестановки пробелов курсор возвращается на своё место. Раньше он прыгал в конец или оставался
+  // в середине старого текста, и «12000000» превращалось в «80 000 004».
+  useLayoutEffect(() => {
+    const position = caretRef.current;
+    if (position == null) return;
+    caretRef.current = null;
+    const node = inputRef.current;
+    if (!node || typeof document === 'undefined' || document.activeElement !== node) return;
+    try { node.setSelectionRange(position, position); } catch { /* тип поля не поддерживает выделение */ }
+  });
+
+  const handleFocus = (event) => {
+    // Касание выделяет всё число: новая цифра заменяет старое значение, а не вставляется в его середину.
+    const node = event.target;
+    window.setTimeout(() => {
+      if (document.activeElement === node) {
+        try { node.select(); } catch { /* поле не выделяется */ }
+      }
+    }, 0);
+  };
+
   const handleChange = (event) => {
     const raw = event.target.value;
+    const caret = event.target.selectionStart;
     const parsed = parseMoneyInput(raw, { max, allowZero });
     if (parsed.error) {
       setText(raw);
@@ -57,7 +93,11 @@ export default function CalcMoneyField({
       return;
     }
     setError(null);
-    setText(/[.,]/.test(raw) ? raw : formatInput(parsed.value));
+    const nextText = /[.,]/.test(raw) ? raw : formatInput(parsed.value);
+    if (nextText !== raw && typeof caret === 'number') {
+      caretRef.current = caretAfter(nextText, raw.slice(0, caret).replace(/\D/g, '').length);
+    }
+    setText(nextText);
     if (parsed.value !== value) {
       setEmitted(parsed.value);
       onChange(parsed.value);
@@ -101,6 +141,7 @@ export default function CalcMoneyField({
           </span>
         )}
         <input
+          ref={inputRef}
           id={fieldId}
           type="text"
           inputMode="decimal"
@@ -109,6 +150,7 @@ export default function CalcMoneyField({
           value={text}
           onChange={handleChange}
           onBlur={handleBlur}
+          onFocus={handleFocus}
           placeholder={placeholder}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errorId : undefined}
@@ -136,6 +178,7 @@ export default function CalcMoneyField({
           {message}
         </p>
       )}
+      {!error && hint && <p className="mt-2 text-xs leading-relaxed text-text-secondary">{hint}</p>}
     </div>
   );
 }

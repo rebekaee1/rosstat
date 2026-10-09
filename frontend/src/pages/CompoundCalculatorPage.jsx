@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid,
@@ -12,8 +12,9 @@ import { getPageSeo } from '../lib/pageMeta';
 import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
-import { revealStyle } from '../lib/calcUi';
-import { fmtPct, decimalText, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
+import { revealStyle, MONEY_MAX } from '../lib/calcUi';
+import { fmtPct, decimalText, evenYearTicks, fitAmountText, years as yearsPhrase } from '../lib/calcFormat';
+import useCalcUrlSync, { intParam, floatParam } from '../lib/useCalcUrlSync';
 import { RUB, currencyForCountry, currencyInPhrase, formatMoney } from '../lib/countryCurrency';
 import Chip from '../components/Chip';
 import { track, events } from '../lib/track';
@@ -31,6 +32,7 @@ import CalcStickyResult from '../components/CalcStickyResult';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import CalcKeyRate from '../components/CalcKeyRate';
+import CalcSaveSlot from '../components/CalcSaveSlot';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
@@ -59,7 +61,7 @@ const CURRENCY_CHOICES = [
   { id: 'TRY', currency: currencyForCountry('turkey') },
 ];
 
-export default function CompoundCalculatorPage() {
+export default function CompoundCalculatorPage({ renderSave } = {}) {
   const t = useT();
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
@@ -68,14 +70,32 @@ export default function CompoundCalculatorPage() {
   const touchTip = useTouchTooltip(chartBoxRef);
   const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
-  const [initial, setInitial] = useState(100000);
-  const [monthly, setMonthly] = useState(10000);
-  const [rate, setRate] = useState(12);
-  const [years, setYears] = useState(10);
-  const [inflation, setInflation] = useState(6);
-  const [currencyId, setCurrencyId] = useState('RUB');
+  const [searchParams] = useSearchParams();
+  // Параметры расчёта живут в адресе (?initial=&monthly=&rate=&years=&inflation=&cur=), как у остальных калькуляторов.
+  const [edited, setEdited] = useState(false);
+  const touch = (setter) => (value) => { setEdited(true); setter(value); };
+  const [initial, setInitialRaw] = useState(() => intParam(searchParams, 'initial', { min: 0, max: MONEY_MAX, fallback: 100000 }));
+  const [monthly, setMonthlyRaw] = useState(() => intParam(searchParams, 'monthly', { min: 0, max: MONEY_MAX, fallback: 10000 }));
+  const [rate, setRateRaw] = useState(() => floatParam(searchParams, 'rate', { min: 0.1, max: 30, fallback: 12 }));
+  const [years, setYearsRaw] = useState(() => intParam(searchParams, 'years', { min: 1, max: 40, fallback: 10 }));
+  const [inflation, setInflationRaw] = useState(() => floatParam(searchParams, 'inflation', { min: 0, max: 20, fallback: 6 }));
+  const [currencyId, setCurrencyIdRaw] = useState(() => {
+    const wanted = String(searchParams.get('cur') || '').toUpperCase();
+    return CURRENCY_CHOICES.some((choice) => choice.id === wanted) ? wanted : 'RUB';
+  });
+  const setInitial = touch(setInitialRaw);
+  const setMonthly = touch(setMonthlyRaw);
+  const setRate = touch(setRateRaw);
+  const setYears = touch(setYearsRaw);
+  const setInflation = touch(setInflationRaw);
+  const setCurrencyId = touch(setCurrencyIdRaw);
   const currency = (CURRENCY_CHOICES.find((choice) => choice.id === currencyId) || CURRENCY_CHOICES[0]).currency;
   const money = useCallback((n) => formatMoney(n, currency, locale), [currency, locale]);
+  // Длинные суммы (больше 14 знаков) пишутся сокращённо, чтобы плитки и плашка не обрезались.
+  const fitMoney = useCallback((n) => fitAmountText(money(n), n, {
+    symbol: currency.symbol, prefix: locale === 'en' && Boolean(currency.prefix), maxChars: 14,
+  }), [money, currency, locale]);
+  useCalcUrlSync({ initial, monthly, rate, years, inflation, cur: currencyId }, { enabled: edited });
 
   const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
 
@@ -87,7 +107,7 @@ export default function CompoundCalculatorPage() {
   });
   useScrollDepth({ key: 'calc-compound', page: 'calculator-compound' });
 
-  const { data: keyRate } = useQuery({
+  const { data: keyRate, isPending: keyRatePending } = useQuery({
     queryKey: ['key-rate-latest'],
     queryFn: () => api.get('/indicators/key-rate/data?limit=1').then((r) => {
       const p = r.data?.data?.[0];
@@ -147,7 +167,7 @@ export default function CompoundCalculatorPage() {
           <span className="w5-eyebrow">{t('calc.compound.eyebrow')}</span>
           <h1 className="fe-z8-calc__title">{t('calc.compound.title')}</h1>
           <p className="fe-z8-calc__lead">{t('calc.compound.subtitle')}</p>
-          <CalcKeyRate rate={keyRate} />
+          <CalcKeyRate rate={keyRate} pending={keyRatePending} />
         </div>
       </header>
 
@@ -200,17 +220,24 @@ export default function CompoundCalculatorPage() {
             })}</p>
             <CalcAnimatedNumber
               value={Math.round(result.balance)}
-              format={money}
-              className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
+              format={fitMoney}
+              className={`block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary ${fitMoney(Math.round(result.balance)).length > 14 ? 'text-3xl sm:text-5xl' : 'text-4xl md:text-5xl lg:text-6xl'} mb-6`}
             />
             <CalcStatGrid>
-              <CalcStatTile index={0} label={t('calc.compound.invested')} value={money(result.invested)} />
-              <CalcStatTile index={1} label={t('calc.compound.gain')} value={money(result.gain)} accent />
-              <CalcStatTile index={2} label={t('calc.compound.real')} value={money(result.real)} />
+              <CalcStatTile index={0} label={t('calc.compound.invested')} value={fitMoney(result.invested)} />
+              <CalcStatTile index={1} label={t('calc.compound.gain')} value={fitMoney(result.gain)} accent />
+              <CalcStatTile index={2} label={t('calc.compound.real')} value={fitMoney(result.real)} />
               {result.doubling && result.doubling < 100 && (
                 <CalcStatTile index={3} label={t('calc.compound.doubling')} value={`≈ ${decimalText(result.doubling, 1)} ${t('calc.compound.yearsUnit')}`} />
               )}
             </CalcStatGrid>
+            <CalcSaveSlot
+              className="mt-4"
+              renderSave={renderSave}
+              itemKey={`compound:${currencyId}:${initial}:${monthly}:${rate}:${years}:${inflation}`}
+              title={t('c11e.save.titleCompound', { amount: fitMoney(Math.round(result.balance)), years: yearsLabel(years) })}
+              payload={{ page: 'compound', initial, monthly, rate, years, inflation, cur: currencyId }}
+            />
           </section>
 
           <section ref={setChartWidthNode} style={revealStyle(4)} className="fe-reveal fe-panel rounded-[2rem] shadow-sm shadow-black/[0.03] p-5 md:p-6 mb-6">
@@ -286,7 +313,7 @@ export default function CompoundCalculatorPage() {
       <CalcStickyResult
         targetRef={resultRef}
         active={Boolean(result)}
-        value={result ? money(Math.round(result.balance)) : ''}
+        value={result ? fitMoney(Math.round(result.balance)) : ''}
       />
 
       <div className="fe-z8-calc__lower">

@@ -16,7 +16,8 @@
     justify-self: center;
     width: 40px;
     height: 40px;
-    margin: -2px 0;
+    /* Круг 11 (E): кнопка стоит между полями со своим зазором и не заходит на нижнюю часть поля «Из» (раньше margin был -2px). */
+    margin: 4px 0;
   }
   .fe-z8-cur .fe-z8-conv__row > .fe-z8-swap svg { transform: rotate(calc(var(--k8-turn, 0deg) + 90deg)); }
 }
@@ -43,3 +44,43 @@
 
 /* Круг 9 (V2): курс не обновлялся больше трёх суток — вместо изменения серая пометка с датой. */
 .fe-trow__date.is-stale { color: var(--color-text-tertiary); font-style: normal; }
+
+/* ===== Круг 11 (E): курсы валют ===== */
+/* Место под плитку «Рынок» и пояснение, пока они грузятся: конвертер ниже не сдвигается (раньше уезжал на ~30 px). */
+.fe-z8-rate-ghost {
+  min-height: 7.25rem;
+  border-radius: 22px;
+  background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55));
+  box-shadow: var(--fe-shadow-l2, none);
+  opacity: 0.55;
+}
+.fe-z8-why-ghost { min-height: 3.5rem; margin: 12px 2px 0; }
+
+/* График: высота панели одна и в загрузке, и после неё, чтобы блок не прыгал. */
+.fe-z8-chart { min-height: 27rem; }
+.fe-z8-chart__skeleton { height: 22rem; }
+
+/* Период и вторая пара над графиком. */
+.fe-c11e-chartbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 0 0 12px;
+}
+.fe-c11e-periods { display: flex; flex-wrap: wrap; gap: 6px; }
+.fe-c11e-second { flex: 1 1 13rem; max-width: 20rem; }
+.fe-c11e-second .fe-z8-select__label { font-size: 12px; }
+@media (max-width: 479px) {
+  .fe-c11e-second { flex-basis: 100%; max-width: none; }
+  /* Список второй пары раскрывается на всю ширину карточки, а не прячется за край. */
+  .fe-c11e-second .fe-z8-select__panel { left: 0; right: 0; width: auto; max-width: none; }
+}
+.fe-c11e-tip__second { color: #1c6f79; }
+.fe-c11e-chartnote { margin: 6px 0 0; font-size: 12px; line-height: 1.45; color: var(--z8-muted, var(--color-text-secondary)); }
+
+/* Дата у цены в «Золото, нефть, биткоин». */
+.fe-z8-board__name { display: grid; gap: 1px; min-width: 0; }
+.fe-c11e-board__date { font-size: 12px; font-weight: 500; line-height: 1.3; color: var(--color-text-secondary); }
+.fe-c11e-board__date.is-stale { color: var(--color-text-tertiary); }

@@ -2,30 +2,24 @@
 // и строки курсов. Справа: график выбранной пары за год и «Золото, нефть, биткоин». На телефоне всё идёт одной колонкой.
 import { useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Area, CartesianGrid, ComposedChart, ReferenceDot, ResponsiveContainer, Tooltip, XAxis, YAxis,
-} from 'recharts';
 import { ArrowRightLeft, Info, Search, X } from 'lucide-react';
 import Button from './Button';
 import DeltaBadge from './DeltaBadge';
 import Sparkline from './Sparkline';
 import CurrencySelect, { CoinBadge } from './CurrencySelect';
-import { SkeletonBox } from './Skeleton';
+import CurrencyPairChart from './CurrencyPairChart';
 import { useIndicatorData } from '../lib/hooks';
 import { cn, formatDate, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
-import { CHART_THEME, GRID_PROPS, axisTick, niceAxis } from '../lib/chartTheme';
-import { useChartGlassIds, useElementWidth } from '../lib/chartHooks';
-import EdgeAwareTick from './ChartAxisTick';
-import ChartGlassDefs from './ChartGlassDefs';
 import EmptyState from './brand/EmptyState';
 import {
   CURRENCY_TABS, buildEdges, convert, convertibleUnits, formatConverted,
-  pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity, unitMeta,
+  formatRate, pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity, unitMeta,
 } from '../lib/currencyRates';
-import { MARKET_BOARD_CODES, chartPairFor, useMarketSnapshots, yearSeries } from '../lib/currencyMarket';
+import { coinOf, unitName } from '../lib/currencyChart';
+import { MARKET_BOARD_CODES, chartPairFor, useMarketState } from '../lib/currencyMarket';
 import { track, events } from '../lib/track';
 import { useGlintOnChange } from '../lib/calcGlint';
 import { useLocale, useT } from '../i18n';
@@ -44,33 +38,12 @@ const MARKET_UNITS = { 'gold-rub-live': '₽/г', brent: '$', 'btc-usd': '$' };
 const MARKET_UNITS_EN = { 'gold-rub-live': 'RUB/g' };
 const MARKET_DIGITS = { 'gold-rub-live': 0, brent: 2, 'btc-usd': 0 };
 
-function unitName(unit, locale) {
-  const meta = unitMeta(unit);
-  if (!meta) return unit;
-  return locale === 'en' ? meta.en : meta.ru;
-}
-
-/** Значок валюты: у доллара знак «$» (флаг США читался как «валюта страны»), у остальных флаг, у монет их знак. */
-function coinOf(unit) {
-  const meta = unitMeta(unit);
-  if (!meta) return {};
-  return unit === 'USD' ? { symbol: '$' } : { flag: meta.flag, symbol: meta.symbol };
-}
-
 function shortDate(iso, locale) {
   if (!iso) return '';
   return new Date(`${String(iso).slice(0, 10)}T12:00:00Z`).toLocaleDateString(
     locale === 'en' ? 'en-US' : 'ru-RU',
     { day: 'numeric', month: 'short', timeZone: 'UTC' },
   );
-}
-
-function rateDigits(value) {
-  const abs = Math.abs(value);
-  if (abs >= 1000) return 0;
-  if (abs >= 1) return 2;
-  if (abs >= 0.01) return 4;
-  return 6;
 }
 
 /** Сколько полных суток прошло с даты ряда; нет даты: 0. */
@@ -81,12 +54,6 @@ function ageInDays(iso) {
 }
 /** Данные старше трёх суток считаются устаревшими (в строке вместо изменения серая пометка). */
 const STALE_AFTER_DAYS = 3;
-
-/** Число знаков для делений оси по шагу: 1000 -> 0, 0,5 -> 1, 0,00005 -> 5 (без «0,0000» на мелких значениях). */
-function digitsForStep(step) {
-  if (!(step > 0) || step >= 1) return 0;
-  return Math.min(8, Math.ceil(-Math.log10(step) - 1e-9));
-}
 
 function pctOf(change, value) {
   const prev = value - change;
@@ -108,7 +75,7 @@ function RowSpark({ code, index }) {
 }
 
 /** Доллар двумя числами: официальный курс ЦБ (для учёта) и рыночный (меняется в течение дня), с пояснением в одну строку. */
-function RateTiles({ edges, market }) {
+function RateTiles({ edges, market, pending = false }) {
   const t = useT();
   const { locale } = useLocale();
   const cb = edges.find((edge) => edge.code === 'usd-rub');
@@ -144,6 +111,9 @@ function RateTiles({ edges, market }) {
             </p>
             <p className="fe-z8-rate__note">{t('z8.cur.tile.marketNote')}</p>
           </div>
+        ) : pending ? (
+          // Пока рыночный курс грузится, его место занято: конвертер ниже не сдвигается, когда плитка появится.
+          <div className="fe-z8-rate-ghost" aria-hidden="true" />
         ) : null}
       </div>
       {live ? (
@@ -151,7 +121,7 @@ function RateTiles({ edges, market }) {
           <Info size={15} aria-hidden="true" />
           <span>{t('z8.cur.why')}</span>
         </p>
-      ) : null}
+      ) : pending ? <div className="fe-z8-why-ghost" aria-hidden="true" /> : null}
     </section>
   );
 }
@@ -172,7 +142,7 @@ function ConverterOut({ result, one, safeFrom, safeTo, basisKey }) {
           </p>
           {one && (
             <p className="fe-z8-conv__rate">
-              {`1 ${safeFrom} = ${formatConverted(one.value, locale)} ${safeTo}`}
+              {`1 ${safeFrom} = ${formatRate(one.value, locale)} ${safeTo}`}
             </p>
           )}
           {result.date && (
@@ -188,6 +158,13 @@ function ConverterOut({ result, one, safeFrom, safeTo, basisKey }) {
   );
 }
 
+/** Сумма в поле одним видом с кнопками «1 000», «10 000»: тысячи отделены пробелом, дробь сохраняется. */
+function groupedAmount(amount, locale) {
+  if (!Number.isFinite(amount)) return '';
+  const digits = Number.isInteger(amount) ? 0 : Math.min(8, (String(amount).split('.')[1] || '').length);
+  return formatValue(amount, digits, locale);
+}
+
 function Converter({ edges, from, to, onFrom, onTo }) {
   const t = useT();
   const { locale } = useLocale();
@@ -200,7 +177,7 @@ function Converter({ edges, from, to, onFrom, onTo }) {
 
   const safeFrom = units.includes(from) ? from : units[0];
   const safeTo = units.includes(to) && to !== safeFrom ? to : units.find((u) => u !== safeFrom);
-  const amount = parseAmountInput(amountText);
+  const amount = parseAmountInput(amountText, locale);
   const result = amount != null ? convert(amount, safeFrom, safeTo, edges) : null;
   const one = convert(1, safeFrom, safeTo, edges);
 
@@ -237,6 +214,8 @@ function Converter({ edges, from, to, onFrom, onTo }) {
             autoComplete="off"
             value={amountText}
             onChange={(event) => setAmountText(event.target.value)}
+            onFocus={(event) => { const node = event.target; window.setTimeout(() => { if (document.activeElement === node) node.select(); }, 0); }}
+            onBlur={() => { if (amount != null && amountText.trim() !== '') setAmountText(groupedAmount(amount, locale)); }}
             aria-invalid={amount == null ? 'true' : undefined}
             className="fe-z8-input"
           />
@@ -275,8 +254,8 @@ function Converter({ edges, from, to, onFrom, onTo }) {
           <button
             key={value}
             type="button"
-            className={cn('fe-z8-quick__btn fe-press', amountText.replace(/\s/g, '') === value && 'is-active')}
-            onClick={() => setAmountText(value)}
+            className={cn('fe-z8-quick__btn fe-press', amount === Number(value) && 'is-active')}
+            onClick={() => setAmountText(groupedAmount(Number(value), locale))}
           >
             {formatValue(Number(value), 0, locale)}
           </button>
@@ -294,153 +273,10 @@ function Converter({ edges, from, to, onFrom, onTo }) {
   );
 }
 
-function ChartTip({ active, payload, unit, locale }) {
-  if (!active || !payload?.length) return null;
-  const point = payload[0]?.payload;
-  if (!point) return null;
-  return (
-    <div className="fe-z8-tip glass-surface">
-      <p className="fe-z8-tip__date">{formatDate(point.date, 'full', locale)}</p>
-      <p className="fe-z8-tip__val">{formatValue(point.value, rateDigits(point.value), locale)}{unit ? `\u00A0${unit}` : ''}</p>
-    </div>
-  );
-}
-
-/** Точка на конце ленты: плоский круг и тихое гало (стили .k4-lastpoint делают её 6 px). */
-function EndBead({ cx, cy }) {
-  if (!Number.isFinite(cx) || !Number.isFinite(cy)) return null;
-  return (
-    <g pointerEvents="none" className="k4-lastpoint">
-      <circle className="k4-lastpoint__halo" cx={cx} cy={cy} r={8} fill={CHART_THEME.gold} fillOpacity={0.2} />
-      <circle cx={cx} cy={cy} r={3} fill={CHART_THEME.gold} />
-    </g>
-  );
-}
-
-/** Крупный график выбранной пары за год: золотая линия, текущее значение и изменение за год. */
-function YearChart({ pair }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const { data, isLoading } = useIndicatorData(pair?.code, { limit: 400 });
-  const glass = useChartGlassIds('k8cur');
-  const [setPlotNode, plotWidth] = useElementWidth();
-  // Круг 9 (V3): обратный курс мелкой монеты («1 доллар = 0,000012 биткоина») показываем как есть: «1 биткоин = N долларов».
-  const rawSeries = useMemo(() => yearSeries(data?.data, { invert: false }), [data]);
-  const lastRaw = rawSeries.length ? rawSeries[rawSeries.length - 1].value : null;
-  const flipped = Boolean(pair?.invert && lastRaw != null && lastRaw > 100);
-  const series = useMemo(
-    () => (pair?.invert && !flipped ? yearSeries(data?.data, { invert: true }) : rawSeries),
-    [data, pair?.invert, flipped, rawSeries],
-  );
-  if (!pair) return null;
-  const baseUnit = flipped ? pair.quote : pair.base;
-  const quoteUnit = flipped ? pair.base : pair.quote;
-  const quote = unitMeta(quoteUnit);
-  const unit = quote?.symbol || '';
-  const title = t('z8.cur.chartTitle', { pair: `${unitName(baseUnit, locale)} → ${unitName(quoteUnit, locale)}` });
-
-  if (isLoading) {
-    return (
-      <section className="fe-panel fe-z8-chart" aria-busy="true" data-block="currency-year-chart">
-        <SkeletonBox className="fe-z8-chart__skeleton" />
-      </section>
-    );
-  }
-  if (series.length < 2) return null;
-
-  const first = series[0].value;
-  const last = series[series.length - 1].value;
-  const pct = first ? ((last - first) / first) * 100 : null;
-  const delta = pct != null ? formatDeltaWithUnit(pct, '%', { pct: true, locale, digits: 1 }) : null;
-  const lastIndex = series.length - 1;
-  // Круг 8 (C4): пять подписей по году (три на узком графике); у крайних и у января стоит год, чтобы «окт … окт» не двоилось.
-  const tickSlots = plotWidth > 0 && plotWidth < 340 ? [0, 2, 4] : [0, 1, 2, 3, 4];
-  const ticks = tickSlots.map((i) => series[Math.round((lastIndex * i) / 4)].date);
-  const monthOf = (date) => new Date(`${date}T12:00:00Z`).toLocaleDateString(
-    locale === 'en' ? 'en-US' : 'ru-RU', { month: 'short', timeZone: 'UTC' },
-  ).replace('.', '');
-  const tickLabel = (date) => {
-    const edge = date === ticks[0] || date === ticks[ticks.length - 1];
-    const jan = String(date).slice(5, 7) === '01';
-    return edge || jan ? `${monthOf(date)} ${String(date).slice(0, 4)}` : monthOf(date);
-  };
-  // Круглые деления оси Y: 70, 75, 80… вместо границ вида 83,73 (круг 8, C4).
-  const yAxis = niceAxis(series.map((p) => p.value), 5);
-  const yTicks = yAxis?.ticks;
-  const yStep = yTicks && yTicks.length > 1 ? Math.abs(yTicks[1] - yTicks[0]) : 0;
-  const yDigits = digitsForStep(yStep);
-  const yWidthPx = Math.max(40, Math.min(70, Math.round(String(yTicks ? formatValue(yTicks[yTicks.length - 1], yDigits, locale) : '88,30').length * 8 + 12)));
-
-  return (
-    <section className="fe-panel fe-z8-chart" data-block="currency-year-chart" aria-label={title}>
-      <header className="fe-z8-chart__head">
-        <div>
-          <h2 className="fe-z8-chart__title">{title}</h2>
-          <p className="fe-z8-chart__value">
-            <span className="fe-z8-chart__num">{formatValue(last, rateDigits(last), locale)}</span>
-            {unit && <span className="fe-z8-chart__unit">{unit}</span>}
-          </p>
-        </div>
-        {delta && !delta.flat && (
-          <p className="fe-z8-chart__delta">
-            <DeltaBadge delta={pct} polarity={indicatorPolarity(pair.code)}>{delta.text}</DeltaBadge>
-            <span>{t('z8.cur.perYear')}</span>
-          </p>
-        )}
-      </header>
-      <div ref={setPlotNode} className="fe-z8-chart__plot k4-glass k4-glass-plot" role="img" aria-label={title}>
-        <div className="fe-z8-chart__abs">
-        <ResponsiveContainer width="100%" height="100%">
-          <ComposedChart data={series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-            <defs><ChartGlassDefs ids={glass} /></defs>
-            <CartesianGrid {...GRID_PROPS} />
-            <XAxis
-              dataKey="date"
-              ticks={ticks}
-              interval={0}
-              tickLine={false}
-              axisLine={false}
-              height={30}
-              tick={<EdgeAwareTick format={tickLabel} minX={yWidthPx} maxX={plotWidth > 0 ? plotWidth - 8 : Infinity} />}
-            />
-            <YAxis
-              domain={yAxis ? yAxis.domain : [(min) => min * 0.985, (max) => max * 1.015]}
-              ticks={yTicks}
-              tickCount={5}
-              tickLine={false}
-              axisLine={false}
-              width={yWidthPx}
-              tick={axisTick({ fontSize: 12 })}
-              tickFormatter={(v) => formatValue(v, yTicks ? yDigits : (rateDigits(v) > 2 ? 3 : rateDigits(v)), locale)}
-            />
-            <Tooltip content={<ChartTip unit={unit} locale={locale} />} cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeOpacity: 0.55 }} />
-            <Area
-              className="k4-ribbon"
-              type="monotone"
-              dataKey="value"
-              stroke={CHART_THEME.gold}
-              strokeWidth={2.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill={`url(#${glass.area})`}
-              dot={false}
-              activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
-              isAnimationActive
-              animationDuration={900}
-            />
-            <ReferenceDot
-              x={series[lastIndex].date}
-              y={series[lastIndex].value}
-              r={4.5}
-              ifOverflow="visible"
-              shape={(props) => <EndBead cx={props.cx} cy={props.cy} />}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-        </div>
-      </div>
-    </section>
-  );
+/** Дата значения у цены: сервер отдаёт as_of_day (день одним форматом) для живых и дневных рядов. */
+function boardDate(snap, locale = 'ru') {
+  const day = snap?.as_of_day || snap?.as_of_date || '';
+  return day ? shortDate(day, locale) : '';
 }
 
 /** «Золото, нефть, биткоин»: рыночные цены из той же ленты, что и строка сверху. */
@@ -460,7 +296,14 @@ function MarketBoard({ market }) {
           return (
             <li key={code}>
               <Link to={russiaIndicatorPath(MARKET_LINKS[code])} className="fe-z8-board__row fe-press">
-                <span className="fe-z8-board__name">{t(MARKET_LABEL_KEYS[code])}</span>
+                <span className="fe-z8-board__name">
+                  {t(MARKET_LABEL_KEYS[code])}
+                  {boardDate(snap) && (
+                    <span className={cn('fe-c11e-board__date', snap.stale && 'is-stale')}>
+                      {snap.stale ? t('c9d.cur.stale', { date: boardDate(snap, locale) }) : t('c11e.cur.board.asOf', { date: boardDate(snap, locale) })}
+                    </span>
+                  )}
+                </span>
                 {showPct && (
                   <DeltaBadge delta={pct} polarity="market" className="fe-z8-board__delta">
                     {formatDeltaWithUnit(pct, '%', { pct: true, locale, digits: 1 }).text}
@@ -545,7 +388,7 @@ export default function CurrencyDesk({ indicators }) {
   const [from, setFrom] = useState('USD');
   const [to, setTo] = useState('RUB');
   const needle = query.trim().toLowerCase();
-  const market = useMarketSnapshots();
+  const { market, pending: marketPending } = useMarketState();
 
   const sorted = useMemo(() => sortByPopularity(indicators || []), [indicators]);
   const edges = useMemo(() => buildEdges(sorted), [sorted]);
@@ -569,9 +412,9 @@ export default function CurrencyDesk({ indicators }) {
 
   return (
     <div className={cn('fe-z8-cur', hasBoard && 'has-board')}>
-      <div className="fe-z8-cur__rates"><RateTiles edges={edges} market={market} /></div>
+      <div className="fe-z8-cur__rates"><RateTiles edges={edges} market={market} pending={marketPending} /></div>
       <div className="fe-z8-cur__conv"><Converter edges={edges} from={from} to={to} onFrom={setFrom} onTo={setTo} /></div>
-      <div className="fe-z8-cur__chart"><YearChart pair={pair} /></div>
+      <div className="fe-z8-cur__chart"><CurrencyPairChart pair={pair} edges={edges} /></div>
 
       <section className="fe-z8-cur__list" data-block="currency-list" aria-label={t('w6g.cur.listTitle')}>
         <div className="fe-z8-toolbar">
