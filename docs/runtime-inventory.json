@@ -6937,6 +6937,28 @@
       },
       "limits": "Не проверялось: alembic upgrade head по цепочке на PostgreSQL, фактические значения флагов на серверах, pg-backup.sh в бою, нагрузка новых запросов аналитики.",
       "gap": "docker-compose.yml перечисляет переменные backend/scheduler явно, а четыре флага Telegram-отчётов круга 11 в нём не перечислены (и в .env.example их нет): из корневого .env они в контейнеры не дойдут, пока их не добавят в compose (сверено чтением docker-compose.yml, 09.10.2026)."
+    },
+    {
+      "id": "production-performance-2026-10-09",
+      "observed_msk": "2026-10-09 15:57",
+      "source_commit": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+      "alembic_revision": "20261009c_session_perf",
+      "scope": "scoped fixes + operator PG maintenance; previous full snapshots preserved",
+      "index_sizes_mb": {
+        "ix_behavior_logical_session_cover": 313,
+        "ix_behavior_sessions_visitor_started": 61
+      },
+      "world_indicators_table_options": {
+        "autovacuum_vacuum_scale_factor": 0.01,
+        "autovacuum_vacuum_threshold": 1000
+      },
+      "world_data_points_indicator_id_statistics": 1000,
+      "source": "deploy/pg-world-catalog-maintenance.sql",
+      "evidence": "docs/code-review/performance-acceptance-2026-10-09.md",
+      "limits": [
+        "second catalogue-code release pending; exact loader/source hashes verified for57315651",
+        "record does not replace full dated runtime inventory or prove capacity/auto-vacuum timing"
+      ]
     }
   ]
 }

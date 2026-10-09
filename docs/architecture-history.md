@@ -252,3 +252,19 @@ session event types; visitor/time/id и исходные ключи покрыт
 Raw читается по visitor/time/id; подбор fallback portrait использует
 индекс (visitor, started_at DESC, session_id). Миграция обновляет
 статистику expression index перед первым запуском.
+
+### 2026-10-09 — холодная пересборка каталога
+
+После первого выпуска прямой catalogue rebuild всё ещё падал на SQL30s;
+VACUUM метаданных сам по себе не устранил это. Listed metadata279k
+вызывала отдельные random probes nonzero index. Materialized DISTINCT
+indicator IDs меняет способ чтения, сохраняя exact signal/count/name
+контракт, RU/региональные счётчики и empty-world fallback. Чистка
+одинаковых заголовков после overrides кэшируется LRU8192 по исходной
+строке, без изменения текста/quality. Боевое полное old/new payload
+сравнение в repeatable-read совпало; candidate rebuild6.661s.
+Operator SQL: `deploy/pg-world-catalog-maintenance.sql` — обычный
+VACUUM/ANALYZE, autovacuum метаданных0.01/1000, statistics indicator_id1000.
+Он применён вручную; не запускается при каждом рестарте приложения.
+Таймауты/память/workers не повышены. Границы и выпуск — performance
+acceptance09.10; actual auto-vacuum timing не обещан.

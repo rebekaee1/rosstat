@@ -35972,22 +35972,27 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304404,
+          "line": 304377,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304405,
+          "line": 304378,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304430,
+          "line": 304403,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304464,
+          "line": 304437,
+          "kind": "other"
+        },
+        {
+          "file": "docs/mechanism-inventory.json",
+          "line": 304438,
           "kind": "other"
         },
         {
@@ -35997,22 +36002,17 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304492,
+          "line": 304499,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304526,
+          "line": 304500,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 304527,
-          "kind": "other"
-        },
-        {
-          "file": "docs/mechanism-inventory.json",
-          "line": 304549,
+          "line": 304522,
           "kind": "other"
         },
         {
@@ -57944,7 +57944,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 294365,
+          "line": 294338,
           "kind": "other"
         },
         {
@@ -63784,7 +63784,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 298545,
+          "line": 298518,
           "kind": "other"
         },
         {
@@ -71674,22 +71674,22 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1748,
+          "line": 1745,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1962,
+          "line": 1959,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1989,
+          "line": 1986,
           "kind": "other"
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 1990,
+          "line": 1987,
           "kind": "other"
         },
         {
@@ -77664,7 +77664,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 295261,
+          "line": 295234,
           "kind": "other"
         },
         {
@@ -88065,7 +88065,7 @@
         },
         {
           "file": "backend/app/api/world.py",
-          "line": 2492,
+          "line": 2489,
           "kind": "other"
         },
         {

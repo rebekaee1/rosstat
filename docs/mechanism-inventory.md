@@ -100,17 +100,17 @@
 | GET | /api/v1/analytics/replay/config | app.api.session_replay.replay_config | [backend/app/api/session_replay.py:102](../backend/app/api/session_replay.py#L102) |
 | POST | /api/v1/analytics/replay | app.api.session_replay.collect_replay | [backend/app/api/session_replay.py:109](../backend/app/api/session_replay.py#L109) |
 | GET | /api/v1/admin/bi/session-analysis/sessions/{session_id}/replay | app.api.session_replay.read_replay | [backend/app/api/session_replay.py:171](../backend/app/api/session_replay.py#L171) |
-| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:937](../backend/app/api/world.py#L937) |
-| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1038](../backend/app/api/world.py#L1038) |
-| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1070](../backend/app/api/world.py#L1070) |
-| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1228](../backend/app/api/world.py#L1228) |
-| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1285](../backend/app/api/world.py#L1285) |
-| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1372](../backend/app/api/world.py#L1372) |
-| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1464](../backend/app/api/world.py#L1464) |
-| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:1781](../backend/app/api/world.py#L1781) |
-| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2018](../backend/app/api/world.py#L2018) |
-| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2253](../backend/app/api/world.py#L2253) |
-| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2453](../backend/app/api/world.py#L2453) |
+| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:934](../backend/app/api/world.py#L934) |
+| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1035](../backend/app/api/world.py#L1035) |
+| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1067](../backend/app/api/world.py#L1067) |
+| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1225](../backend/app/api/world.py#L1225) |
+| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1282](../backend/app/api/world.py#L1282) |
+| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1369](../backend/app/api/world.py#L1369) |
+| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1461](../backend/app/api/world.py#L1461) |
+| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:1778](../backend/app/api/world.py#L1778) |
+| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2015](../backend/app/api/world.py#L2015) |
+| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2250](../backend/app/api/world.py#L2250) |
+| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2450](../backend/app/api/world.py#L2450) |
 | GET | /api/v1/world/{country_slug}/regions | app.api.world_subnational.list_regions | [backend/app/api/world_subnational.py:192](../backend/app/api/world_subnational.py#L192) |
 | GET | /api/v1/world/{country_slug}/regions/map/{code} | app.api.world_subnational.map_values | [backend/app/api/world_subnational.py:270](../backend/app/api/world_subnational.py#L270) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
@@ -1861,8 +1861,8 @@ Relationships: `[]`
 | app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:711](../backend/app/api/world.py#L711) |
 | app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:718](../backend/app/api/world.py#L718) |
 | app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:780](../backend/app/api/world.py#L780) |
-| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1748](../backend/app/api/world.py#L1748) |
-| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1750](../backend/app/api/world.py#L1750) |
+| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1745](../backend/app/api/world.py#L1745) |
+| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1747](../backend/app/api/world.py#L1747) |
 | app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:385](../backend/app/core/cache.py#L385) |
 | app.data.bi_targets.NORTH_STAR_MILESTONES | List | sequence/source expression | [backend/app/data/bi_targets.py:12](../backend/app/data/bi_targets.py#L12) |
 | app.data.bi_targets.TARGETS | Dict | 'visits_per_day', 'acquisition_search_share', 'engagement_rate', 'micro_conversion_rate', 'macro_conversion_rate', 'retention_7d' | [backend/app/data/bi_targets.py:14](../backend/app/data/bi_targets.py#L14) |
@@ -2079,9 +2079,9 @@ Relationships: `[]`
 | app.data.world_forecast_policy._FREQ_MAX_AGE_DAYS | Dict | 'monthly', 'quarterly', 'annual' | [backend/app/data/world_forecast_policy.py:56](../backend/app/data/world_forecast_policy.py#L56) |
 | app.data.world_forecast_policy._OFFICIAL_PROVIDERS | Tuple | sequence/source expression | [backend/app/data/world_forecast_policy.py:72](../backend/app/data/world_forecast_policy.py#L72) |
 | app.data.world_forecast_policy.OFFICIAL_PROVIDER_POLICIES | DictComp | computed source expression | [backend/app/data/world_forecast_policy.py:96](../backend/app/data/world_forecast_policy.py#L96) |
-| app.data.world_indicator_titles_ru.TITLE_BY_CODE | Dict | 'br-cpi-ipca', 'br-cpi-ipca-yoy', 'br-gdp-ibc-br', 'cn-shibor-1w', 'cn-shibor-on', 'cn-lpr-1y', 'cn-lpr-5y', 'mx-tiie-28', 'mx-fx-usd-mxn', 'ca-m2-plus', 'jp-m2', 'jp-m3' | [backend/app/data/world_indicator_titles_ru.py:17](../backend/app/data/world_indicator_titles_ru.py#L17) |
-| app.data.world_indicator_titles_ru.TITLE_BY_CODE_FRAGMENT | Tuple | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:38](../backend/app/data/world_indicator_titles_ru.py#L38) |
-| app.data.world_indicator_titles_ru._LATIN_CLEANUPS | List | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:57](../backend/app/data/world_indicator_titles_ru.py#L57) |
+| app.data.world_indicator_titles_ru.TITLE_BY_CODE | Dict | 'br-cpi-ipca', 'br-cpi-ipca-yoy', 'br-gdp-ibc-br', 'cn-shibor-1w', 'cn-shibor-on', 'cn-lpr-1y', 'cn-lpr-5y', 'mx-tiie-28', 'mx-fx-usd-mxn', 'ca-m2-plus', 'jp-m2', 'jp-m3' | [backend/app/data/world_indicator_titles_ru.py:18](../backend/app/data/world_indicator_titles_ru.py#L18) |
+| app.data.world_indicator_titles_ru.TITLE_BY_CODE_FRAGMENT | Tuple | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:39](../backend/app/data/world_indicator_titles_ru.py#L39) |
+| app.data.world_indicator_titles_ru._LATIN_CLEANUPS | List | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:58](../backend/app/data/world_indicator_titles_ru.py#L58) |
 | app.data.world_simple_names.SIMPLE_NAMES | Dict | 'hicp-index', 'unemployment-rate', 'gdp-volume-quarterly', 'gdp-volume-annual', 'gdp-usd', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate' | [backend/app/data/world_simple_names.py:18](../backend/app/data/world_simple_names.py#L18) |
 | app.database._PUBLIC_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:25](../backend/app/database.py#L25) |
 | app.database._ANALYTICS_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:48](../backend/app/database.py#L48) |

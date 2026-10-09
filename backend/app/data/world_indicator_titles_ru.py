@@ -10,6 +10,7 @@ Eurostat-заголовки собирает ``eurostat_titles_ru`` / curated JS
 from __future__ import annotations
 
 import re
+from functools import lru_cache
 
 from app.data.eurostat_titles_ru import has_latin, split_freq_suffix
 
@@ -77,7 +78,9 @@ _LATIN_CLEANUPS: list[tuple[re.Pattern[str], str]] = [
 ]
 
 
+@lru_cache(maxsize=8192)
 def _apply_latin_cleanups(name: str) -> str:
+    """Pure cleanup shared by repeated country titles; bounded per process."""
     out = name
     for pat, repl in _LATIN_CLEANUPS:
         out = pat.sub(repl, out)

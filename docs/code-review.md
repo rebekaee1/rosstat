@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `0bcf68b488d44a608b5e48ef56386daa14e72062`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `57315651a5c875f0c2480e7dfe7d02bd461f21d6`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2058 |
-| Код, шаблоны и стили | 1670 |
-| Актуальные рецензии без пропусков guard | 2058 |
+| Файлы в явно определённом scope | 2059 |
+| Код, шаблоны и стили | 1671 |
+| Актуальные рецензии без пропусков guard | 2059 |
 | Именованные определения Python/JS: с аннотацией / всего | 13045 / 13045 |
 | Файлы, требующие внимания | 0 |
 
@@ -837,6 +837,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [deploy/fail2ban/jail.local](../deploy/fail2ban/jail.local) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban/logrotate-rosstat-nginx](../deploy/fail2ban/logrotate-rosstat-nginx) | reviewed | 0/0 | актуально |
 | [deploy/optional/perplexitybot-ratelimit.nginx.conf](../deploy/optional/perplexitybot-ratelimit.nginx.conf) | reviewed | 0/0 | актуально |
+| [deploy/pg-world-catalog-maintenance.sql](../deploy/pg-world-catalog-maintenance.sql) | reviewed | 0/0 | актуально |
 | [deploy/test-fail2ban-filters.py](../deploy/test-fail2ban-filters.py) | reviewed | 5/5 | актуально |
 | [deploy/test-nginx-config.sh](../deploy/test-nginx-config.sh) | reviewed | 0/0 | актуально |
 | [deploy/tor-http-bridge/README.md](../deploy/tor-http-bridge/README.md) | reviewed | 0/0 | актуально |

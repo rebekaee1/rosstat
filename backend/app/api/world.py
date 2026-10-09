@@ -814,16 +814,13 @@ def _primary_of_card(
 
 async def _build_world_countries_payload(db: AsyncSession) -> dict:
     """Build the exact public catalogue from listed rows with nonzero signal."""
-    # EXISTS по listed-рядам вместо DISTINCT по всей world_data_points.
-    # Partial index on nonzero indicator_id avoids heap probes on a cold build.
-    has_signal = (
+    # Read the partial nonzero index once instead of probing it once for each
+    # listed row. MATERIALIZED prevents PostgreSQL from restoring the costly
+    # correlated semi-join (hundreds of thousands of random index probes).
+    signalled = (
         select(WorldDataPoint.indicator_id)
-        .where(
-            WorldDataPoint.indicator_id == WorldIndicator.id,
-            _nonzero_world_value(),
-        )
-        .correlate(WorldIndicator)
-        .exists()
+        .where(_nonzero_world_value()).distinct().cte("catalog_signalled_indicators")
+        .prefix_with("MATERIALIZED", dialect="postgresql")
     )
     listed_rows = (
         await db.execute(
@@ -833,12 +830,12 @@ async def _build_world_countries_payload(db: AsyncSession) -> dict:
                 WorldIndicator.code,
                 WorldIndicator.name_ru,
             )
+            .join(signalled, signalled.c.indicator_id == WorldIndicator.id)
             .where(
                 # Голая колонка (не IS TRUE): только так Postgres доказывает
                 # предикат partial ix_world_indicators_listed_signal (WHERE
                 # is_listed) — `is_listed IS true` индекс не использует.
                 WorldIndicator.is_listed,
-                has_signal,
             )
         )
     ).all()

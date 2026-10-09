@@ -345,8 +345,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "sha256": "8de6bca11a71e740aad8ef8beba5edfe98bbbd3eba6f57bf8dcb17a787d64f62",
-      "lines": 2629
+      "sha256": "a191f5f1006aed6035673b9df52aaf8978417150a70abaf75ee951db3fe02f1d",
+      "lines": 2626
     },
     {
       "path": "backend/app/api/world_subnational.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "sha256": "a1b1d243e889228ce4516a66f8b57f3463d4045bd8402faaeb946887e163d53c",
-      "lines": 111
+      "sha256": "96d460aa18748d59508c42919d9cea6ef079a9bf220211a5db29c01fc4b35338",
+      "lines": 114
     },
     {
       "path": "backend/app/data/world_national_core/au.yaml",
@@ -13273,8 +13273,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 937,
-      "end_line": 937,
+      "line": 934,
+      "end_line": 934,
       "owner": "list_countries",
       "conditions": [],
       "handler": "app.api.world.list_countries",
@@ -13285,8 +13285,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 938,
-      "handler_end_line": 1035,
+      "handler_line": 935,
+      "handler_end_line": 1032,
       "parameters": [
         {
           "name": "db",
@@ -13298,8 +13298,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1038,
-      "end_line": 1038,
+      "line": 1035,
+      "end_line": 1035,
       "owner": "world_rating_concepts",
       "conditions": [],
       "handler": "app.api.world.world_rating_concepts",
@@ -13310,15 +13310,15 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1039,
-      "handler_end_line": 1067,
+      "handler_line": 1036,
+      "handler_end_line": 1064,
       "parameters": [],
       "returns": null
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1070,
-      "end_line": 1070,
+      "line": 1067,
+      "end_line": 1067,
       "owner": "world_compare_catalog",
       "conditions": [],
       "handler": "app.api.world.world_compare_catalog",
@@ -13329,8 +13329,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1071,
-      "handler_end_line": 1170,
+      "handler_line": 1068,
+      "handler_end_line": 1167,
       "parameters": [
         {
           "name": "db",
@@ -13342,8 +13342,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1228,
-      "end_line": 1228,
+      "line": 1225,
+      "end_line": 1225,
       "owner": "world_compare_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_series",
@@ -13354,8 +13354,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1229,
-      "handler_end_line": 1282,
+      "handler_line": 1226,
+      "handler_end_line": 1279,
       "parameters": [
         {
           "name": "country_slug",
@@ -13377,8 +13377,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1285,
-      "end_line": 1285,
+      "line": 1282,
+      "end_line": 1282,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "handler": "app.api.world.world_compare_snapshot",
@@ -13389,8 +13389,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1286,
-      "handler_end_line": 1369,
+      "handler_line": 1283,
+      "handler_end_line": 1366,
       "parameters": [
         {
           "name": "concept_slug",
@@ -13407,8 +13407,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1372,
-      "end_line": 1372,
+      "line": 1369,
+      "end_line": 1369,
       "owner": "world_compare_map_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_map_series",
@@ -13419,8 +13419,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1373,
-      "handler_end_line": 1461,
+      "handler_line": 1370,
+      "handler_end_line": 1458,
       "parameters": [
         {
           "name": "concept_slug",
@@ -13437,8 +13437,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1464,
-      "end_line": 1464,
+      "line": 1461,
+      "end_line": 1461,
       "owner": "world_compare_average_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_average_series",
@@ -13449,8 +13449,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1465,
-      "handler_end_line": 1556,
+      "handler_line": 1462,
+      "handler_end_line": 1553,
       "parameters": [
         {
           "name": "concept_slug",
@@ -13472,8 +13472,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1781,
-      "end_line": 1781,
+      "line": 1778,
+      "end_line": 1778,
       "owner": "country_detail",
       "conditions": [],
       "handler": "app.api.world.country_detail",
@@ -13484,8 +13484,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1782,
-      "handler_end_line": 1992,
+      "handler_line": 1779,
+      "handler_end_line": 1989,
       "parameters": [
         {
           "name": "slug",
@@ -13502,8 +13502,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2018,
-      "end_line": 2018,
+      "line": 2015,
+      "end_line": 2015,
       "owner": "indicator_meta",
       "conditions": [],
       "handler": "app.api.world.indicator_meta",
@@ -13514,8 +13514,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2019,
-      "handler_end_line": 2250,
+      "handler_line": 2016,
+      "handler_end_line": 2247,
       "parameters": [
         {
           "name": "slug",
@@ -13537,8 +13537,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2250,
+      "end_line": 2250,
       "owner": "indicator_data",
       "conditions": [],
       "handler": "app.api.world.indicator_data",
@@ -13549,8 +13549,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2254,
-      "handler_end_line": 2450,
+      "handler_line": 2251,
+      "handler_end_line": 2447,
       "parameters": [
         {
           "name": "slug",
@@ -13592,8 +13592,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2453,
-      "end_line": 2453,
+      "line": 2450,
+      "end_line": 2450,
       "owner": "search_world",
       "conditions": [],
       "handler": "app.api.world.search_world",
@@ -13604,8 +13604,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2454,
-      "handler_end_line": 2629,
+      "handler_line": 2451,
+      "handler_end_line": 2626,
       "parameters": [
         {
           "name": "q",
@@ -38258,8 +38258,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1748,
-      "end_line": 1748,
+      "line": 1745,
+      "end_line": 1745,
       "owner": "<module>",
       "conditions": [],
       "name": "_OVERVIEW_PRIORITY",
@@ -38275,8 +38275,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1750,
-      "end_line": 1759,
+      "line": 1747,
+      "end_line": 1756,
       "owner": "<module>",
       "conditions": [],
       "name": "_PRICE_BASIS",
@@ -74112,8 +74112,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 17,
-      "end_line": 30,
+      "line": 18,
+      "end_line": 31,
       "owner": "<module>",
       "conditions": [],
       "name": "TITLE_BY_CODE",
@@ -74227,8 +74227,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 38,
-      "end_line": 42,
+      "line": 39,
+      "end_line": 43,
       "owner": "<module>",
       "conditions": [],
       "name": "TITLE_BY_CODE_FRAGMENT",
@@ -74244,8 +74244,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 57,
-      "end_line": 77,
+      "line": 58,
+      "end_line": 78,
       "owner": "<module>",
       "conditions": [],
       "name": "_LATIN_CLEANUPS",
@@ -111906,8 +111906,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1085,
-      "end_line": 1085,
+      "line": 1082,
+      "end_line": 1082,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "set",
@@ -111920,8 +111920,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1086,
-      "end_line": 1086,
+      "line": 1083,
+      "end_line": 1083,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "set",
@@ -111934,8 +111934,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1643,
-      "end_line": 1643,
+      "line": 1640,
+      "end_line": 1640,
       "owner": "build_country_overview",
       "conditions": [],
       "operation": "set",
@@ -111948,8 +111948,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2586,
-      "end_line": 2586,
+      "line": 2583,
+      "end_line": 2583,
       "owner": "search_world",
       "conditions": [],
       "operation": "set",
@@ -111992,8 +111992,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 951,
-      "end_line": 951,
+      "line": 948,
+      "end_line": 948,
       "owner": "list_countries",
       "conditions": [],
       "operation": "cache_get",
@@ -112006,8 +112006,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1079,
-      "end_line": 1079,
+      "line": 1076,
+      "end_line": 1076,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "versioned_key",
@@ -112020,8 +112020,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1080,
-      "end_line": 1080,
+      "line": 1077,
+      "end_line": 1077,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "cache_get",
@@ -112034,8 +112034,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1089,
-      "end_line": 1089,
+      "line": 1086,
+      "end_line": 1086,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "update",
@@ -112048,8 +112048,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1094,
-      "end_line": 1094,
+      "line": 1091,
+      "end_line": 1091,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "update",
@@ -112062,8 +112062,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1169,
-      "end_line": 1169,
+      "line": 1166,
+      "end_line": 1166,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "cache_set",
@@ -112076,8 +112076,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1300,
-      "end_line": 1302,
+      "line": 1297,
+      "end_line": 1299,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "operation": "versioned_key",
@@ -112090,8 +112090,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1303,
-      "end_line": 1303,
+      "line": 1300,
+      "end_line": 1300,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "operation": "cache_get",
@@ -112104,8 +112104,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1368,
-      "end_line": 1368,
+      "line": 1365,
+      "end_line": 1365,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "operation": "cache_set",
@@ -112118,8 +112118,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1384,
-      "end_line": 1386,
+      "line": 1381,
+      "end_line": 1383,
       "owner": "world_compare_map_series",
       "conditions": [],
       "operation": "versioned_key",
@@ -112132,8 +112132,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1387,
-      "end_line": 1387,
+      "line": 1384,
+      "end_line": 1384,
       "owner": "world_compare_map_series",
       "conditions": [],
       "operation": "cache_get",
@@ -112146,8 +112146,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1460,
-      "end_line": 1460,
+      "line": 1457,
+      "end_line": 1457,
       "owner": "world_compare_map_series",
       "conditions": [],
       "operation": "cache_set",
@@ -112160,8 +112160,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1480,
-      "end_line": 1483,
+      "line": 1477,
+      "end_line": 1480,
       "owner": "world_compare_average_series",
       "conditions": [],
       "operation": "versioned_key",
@@ -112174,8 +112174,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1484,
-      "end_line": 1484,
+      "line": 1481,
+      "end_line": 1481,
       "owner": "world_compare_average_series",
       "conditions": [],
       "operation": "cache_get",
@@ -112188,8 +112188,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1555,
-      "end_line": 1555,
+      "line": 1552,
+      "end_line": 1552,
       "owner": "world_compare_average_series",
       "conditions": [],
       "operation": "cache_set",
@@ -112202,8 +112202,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1675,
-      "end_line": 1675,
+      "line": 1672,
+      "end_line": 1672,
       "owner": "build_country_overview",
       "conditions": [],
       "operation": "add",
@@ -112216,8 +112216,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1778,
-      "end_line": 1778,
+      "line": 1775,
+      "end_line": 1775,
       "owner": "country_detail_cache_key",
       "conditions": [],
       "operation": "versioned_key",
@@ -112230,8 +112230,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1792,
-      "end_line": 1792,
+      "line": 1789,
+      "end_line": 1789,
       "owner": "country_detail",
       "conditions": [],
       "operation": "cache_get",
@@ -112244,8 +112244,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1991,
-      "end_line": 1991,
+      "line": 1988,
+      "end_line": 1988,
       "owner": "country_detail",
       "conditions": [],
       "operation": "cache_set",
@@ -112258,8 +112258,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2020,
-      "end_line": 2022,
+      "line": 2017,
+      "end_line": 2019,
       "owner": "indicator_meta",
       "conditions": [],
       "operation": "versioned_key",
@@ -112272,8 +112272,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2023,
-      "end_line": 2023,
+      "line": 2020,
+      "end_line": 2020,
       "owner": "indicator_meta",
       "conditions": [],
       "operation": "cache_get",
@@ -112286,8 +112286,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2249,
-      "end_line": 2249,
+      "line": 2246,
+      "end_line": 2246,
       "owner": "indicator_meta",
       "conditions": [],
       "operation": "cache_set",
@@ -112300,8 +112300,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2263,
-      "end_line": 2267,
+      "line": 2260,
+      "end_line": 2264,
       "owner": "indicator_data",
       "conditions": [],
       "operation": "versioned_key",
@@ -112314,8 +112314,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2268,
-      "end_line": 2268,
+      "line": 2265,
+      "end_line": 2265,
       "owner": "indicator_data",
       "conditions": [],
       "operation": "cache_get",
@@ -112328,8 +112328,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2321,
-      "end_line": 2321,
+      "line": 2318,
+      "end_line": 2318,
       "owner": "indicator_data",
       "conditions": [
         "include_forecast and parsed.freq not in ('daily', 'weekly')"
@@ -112344,8 +112344,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2449,
-      "end_line": 2449,
+      "line": 2446,
+      "end_line": 2446,
       "owner": "indicator_data",
       "conditions": [],
       "operation": "cache_set",
@@ -112358,8 +112358,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2592,
-      "end_line": 2592,
+      "line": 2589,
+      "end_line": 2589,
       "owner": "search_world",
       "conditions": [],
       "operation": "add",
@@ -112404,8 +112404,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1252,
-      "end_line": 1254,
+      "line": 1249,
+      "end_line": 1251,
       "owner": "world_compare_series",
       "conditions": [
         "country_slug == 'russia'"
@@ -112420,8 +112420,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1255,
-      "end_line": 1255,
+      "line": 1252,
+      "end_line": 1252,
       "owner": "world_compare_series",
       "conditions": [
         "country_slug == 'russia'"
@@ -112436,8 +112436,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1259,
-      "end_line": 1259,
+      "line": 1256,
+      "end_line": 1256,
       "owner": "world_compare_series",
       "conditions": [
         "country_slug == 'russia'"
@@ -112452,8 +112452,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1653,
-      "end_line": 1653,
+      "line": 1650,
+      "end_line": 1650,
       "owner": "build_country_overview",
       "conditions": [
         "national is not None and int(national.points_count or 0) > 0"
@@ -112468,8 +112468,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1737,
-      "end_line": 1737,
+      "line": 1734,
+      "end_line": 1734,
       "owner": "build_country_overview",
       "conditions": [
         "basis"
@@ -112484,8 +112484,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2325,
-      "end_line": 2325,
+      "line": 2322,
+      "end_line": 2322,
       "owner": "indicator_data",
       "conditions": [
         "include_forecast and parsed.freq not in ('daily', 'weekly')"
@@ -112598,22 +112598,22 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 829,
-      "end_line": 843,
+      "line": 826,
+      "end_line": 840,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.api.world.db.execute",
-      "expression": "db.execute(select(WorldIndicator.country_id, WorldIndicator.id, WorldIndicator.code, WorldIndicator.name_ru).where(WorldIndicator.is_listed, has_signal))",
+      "expression": "db.execute(select(WorldIndicator.country_id, WorldIndicator.id, WorldIndicator.code, WorldIndicator.name_ru).join(signalled, signalled.c.indicator_id == WorldIndicator.id).where(WorldIndicator.is_listed))",
       "expression_truncated": false,
-      "expression_chars": 153,
-      "ast_sha256": "d3f30db8c8fa4092fb6b258db142791dd387f8472db68e72bd7da4986c445c97"
+      "expression_chars": 204,
+      "ast_sha256": "e5d0ce625aadec2e1bb0dc7c4b85d1628bf5e0860f963adab9509d59a4069475"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 960,
-      "end_line": 960,
+      "line": 957,
+      "end_line": 957,
       "owner": "list_countries",
       "conditions": [
         "isinstance(durable, dict) and (not stale)",
@@ -112629,8 +112629,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 979,
-      "end_line": 979,
+      "line": 976,
+      "end_line": 976,
       "owner": "list_countries",
       "conditions": [],
       "operation": "cache_get",
@@ -112643,8 +112643,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1020,
-      "end_line": 1020,
+      "line": 1017,
+      "end_line": 1017,
       "owner": "list_countries",
       "conditions": [],
       "operation": "cache_set",
@@ -112657,8 +112657,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1092,
-      "end_line": 1092,
+      "line": 1089,
+      "end_line": 1089,
       "owner": "world_compare_catalog",
       "conditions": [
         "concept.provider_dataset_ids"
@@ -112673,8 +112673,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1103,
-      "end_line": 1112,
+      "line": 1100,
+      "end_line": 1109,
       "owner": "world_compare_catalog",
       "conditions": [],
       "operation": "execute",
@@ -112687,8 +112687,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2098,
-      "end_line": 2109,
+      "line": 2095,
+      "end_line": 2106,
       "owner": "indicator_meta",
       "conditions": [],
       "operation": "execute",
@@ -112717,8 +112717,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 870,
-      "end_line": 874,
+      "line": 867,
+      "end_line": 871,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -112733,8 +112733,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 989,
-      "end_line": 989,
+      "line": 986,
+      "end_line": 986,
       "owner": "list_countries",
       "conditions": [
         "isinstance(ready, dict) and (not ready_stale) and await is_current_world_countries_key(locale, cache_key)"
@@ -112749,8 +112749,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1590,
-      "end_line": 1593,
+      "line": 1587,
+      "end_line": 1590,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -112765,8 +112765,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1697,
-      "end_line": 1700,
+      "line": 1694,
+      "end_line": 1697,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -112781,8 +112781,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2053,
-      "end_line": 2053,
+      "line": 2050,
+      "end_line": 2050,
       "owner": "indicator_meta",
       "conditions": [
         "not ind.is_listed",
@@ -112799,8 +112799,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2526,
-      "end_line": 2534,
+      "line": 2523,
+      "end_line": 2531,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -112815,8 +112815,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 885,
-      "end_line": 889,
+      "line": 882,
+      "end_line": 886,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
@@ -112829,8 +112829,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 913,
-      "end_line": 915,
+      "line": 910,
+      "end_line": 912,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
@@ -112843,8 +112843,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 916,
-      "end_line": 919,
+      "line": 913,
+      "end_line": 916,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
@@ -112857,8 +112857,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 920,
-      "end_line": 923,
+      "line": 917,
+      "end_line": 920,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
@@ -112871,8 +112871,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1524,
-      "end_line": 1528,
+      "line": 1521,
+      "end_line": 1525,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -112887,8 +112887,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1566,
-      "end_line": 1571,
+      "line": 1563,
+      "end_line": 1568,
       "owner": "_country_market_indicators",
       "conditions": [],
       "operation": "execute",
@@ -112971,8 +112971,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 854,
-      "end_line": 858,
+      "line": 851,
+      "end_line": 855,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "operation": "execute",
@@ -112985,8 +112985,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 901,
-      "end_line": 901,
+      "line": 898,
+      "end_line": 898,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "ru_listed > 0"
@@ -113001,8 +113001,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2547,
-      "end_line": 2547,
+      "line": 2544,
+      "end_line": 2544,
       "owner": "search_world",
       "conditions": [],
       "operation": "execute",
@@ -113015,8 +113015,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2605,
-      "end_line": 2607,
+      "line": 2602,
+      "end_line": 2604,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -113031,8 +113031,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2163,
-      "end_line": 2171,
+      "line": 2160,
+      "end_line": 2168,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -113047,8 +113047,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2556,
-      "end_line": 2561,
+      "line": 2553,
+      "end_line": 2558,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -113063,8 +113063,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2567,
-      "end_line": 2578,
+      "line": 2564,
+      "end_line": 2575,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -153018,8 +153018,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1628,
-      "end_line": 1628,
+      "line": 1625,
+      "end_line": 1625,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -153027,8 +153027,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1762,
-      "end_line": 1762,
+      "line": 1759,
+      "end_line": 1759,
       "owner": "_price_chip_basis",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153036,8 +153036,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1996,
-      "end_line": 1996,
+      "line": 1993,
+      "end_line": 1993,
       "owner": "_card_context",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -153045,8 +153045,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1996,
-      "end_line": 1996,
+      "line": 1993,
+      "end_line": 1993,
       "owner": "_card_context",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153054,8 +153054,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1997,
-      "end_line": 1997,
+      "line": 1994,
+      "end_line": 1994,
       "owner": "_card_context",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153063,8 +153063,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2070,
-      "end_line": 2070,
+      "line": 2067,
+      "end_line": 2067,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153072,8 +153072,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2479,
-      "end_line": 2479,
+      "line": 2476,
+      "end_line": 2476,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code.ilike",
@@ -153081,8 +153081,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2481,
+      "end_line": 2481,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.seo_keywords.ilike",
@@ -153180,8 +153180,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1115,
-      "end_line": 1115,
+      "line": 1112,
+      "end_line": 1112,
       "owner": "world_compare_catalog.is_national",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153189,8 +153189,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1628,
-      "end_line": 1628,
+      "line": 1625,
+      "end_line": 1625,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153198,8 +153198,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1997,
-      "end_line": 1997,
+      "line": 1994,
+      "end_line": 1994,
       "owner": "_card_context",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153207,8 +153207,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2073,
-      "end_line": 2073,
+      "line": 2070,
+      "end_line": 2070,
       "owner": "indicator_meta",
       "conditions": [
         "vg is not None"
@@ -153218,8 +153218,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2479,
-      "end_line": 2479,
+      "line": 2476,
+      "end_line": 2476,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -153227,8 +153227,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2481,
-      "end_line": 2481,
+      "line": 2478,
+      "end_line": 2478,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru.ilike",
@@ -153236,8 +153236,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2482,
-      "end_line": 2482,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_en.ilike",
@@ -153245,8 +153245,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2481,
+      "end_line": 2481,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.seo_keywords",
@@ -153254,8 +153254,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2486,
-      "end_line": 2486,
+      "line": 2483,
+      "end_line": 2483,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru.ilike",
@@ -153263,8 +153263,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2487,
-      "end_line": 2487,
+      "line": 2484,
+      "end_line": 2484,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en.ilike",
@@ -153272,8 +153272,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2488,
-      "end_line": 2488,
+      "line": 2485,
+      "end_line": 2485,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug.ilike",
@@ -153281,8 +153281,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2489,
-      "end_line": 2489,
+      "line": 2486,
+      "end_line": 2486,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code.ilike",
@@ -153290,8 +153290,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2496,
-      "end_line": 2496,
+      "line": 2493,
+      "end_line": 2493,
       "owner": "search_world.relevance",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153299,8 +153299,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2517,
+      "end_line": 2517,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -153308,8 +153308,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2602,
-      "end_line": 2602,
+      "line": 2599,
+      "end_line": 2599,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -153357,17 +153357,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 825,
-      "end_line": 825,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 1101,
-      "end_line": 1101,
+      "line": 1098,
+      "end_line": 1098,
       "owner": "world_compare_catalog",
       "conditions": [
         "national_codes"
@@ -153377,8 +153368,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1818,
-      "end_line": 1818,
+      "line": 1815,
+      "end_line": 1815,
       "owner": "country_detail",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153386,8 +153377,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1997,
-      "end_line": 1997,
+      "line": 1994,
+      "end_line": 1994,
       "owner": "_card_context",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153395,8 +153386,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2479,
-      "end_line": 2479,
+      "line": 2476,
+      "end_line": 2476,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153404,8 +153395,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2481,
-      "end_line": 2481,
+      "line": 2478,
+      "end_line": 2478,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_ru",
@@ -153413,8 +153404,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2482,
-      "end_line": 2482,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_en",
@@ -153422,8 +153413,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2484,
-      "end_line": 2484,
+      "line": 2481,
+      "end_line": 2481,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153431,8 +153422,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2486,
-      "end_line": 2486,
+      "line": 2483,
+      "end_line": 2483,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -153440,8 +153431,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2487,
-      "end_line": 2487,
+      "line": 2484,
+      "end_line": 2484,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_en",
@@ -153449,8 +153440,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2488,
-      "end_line": 2488,
+      "line": 2485,
+      "end_line": 2485,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -153458,8 +153449,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2489,
-      "end_line": 2489,
+      "line": 2486,
+      "end_line": 2486,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldCountry.code",
@@ -153467,8 +153458,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2519,
-      "end_line": 2519,
+      "line": 2516,
+      "end_line": 2516,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153476,8 +153467,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2517,
+      "end_line": 2517,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -153485,8 +153476,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2539,
-      "end_line": 2539,
+      "line": 2536,
+      "end_line": 2536,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -153496,8 +153487,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2548,
-      "end_line": 2548,
+      "line": 2545,
+      "end_line": 2545,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153505,8 +153496,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2587,
-      "end_line": 2587,
+      "line": 2584,
+      "end_line": 2584,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153554,8 +153545,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1098,
-      "end_line": 1098,
+      "line": 1095,
+      "end_line": 1095,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
@@ -153563,8 +153554,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1101,
-      "end_line": 1101,
+      "line": 1098,
+      "end_line": 1098,
       "owner": "world_compare_catalog",
       "conditions": [
         "national_codes"
@@ -153574,8 +153565,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2111,
-      "end_line": 2111,
+      "line": 2108,
+      "end_line": 2108,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -153583,8 +153574,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2481,
-      "end_line": 2481,
+      "line": 2478,
+      "end_line": 2478,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153592,12 +153583,39 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2482,
-      "end_line": 2482,
+      "line": 2479,
+      "end_line": 2479,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2483,
+      "end_line": 2483,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2484,
+      "end_line": 2484,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2485,
+      "end_line": 2485,
+      "owner": "search_world",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/api/world.py",
@@ -153610,35 +153628,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2487,
-      "end_line": 2487,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2488,
-      "end_line": 2488,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2489,
-      "end_line": 2489,
-      "owner": "search_world",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2520,
-      "end_line": 2520,
+      "line": 2517,
+      "end_line": 2517,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153646,8 +153637,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2539,
-      "end_line": 2539,
+      "line": 2536,
+      "end_line": 2536,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -153657,8 +153648,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2545,
-      "end_line": 2545,
+      "line": 2542,
+      "end_line": 2542,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -153738,8 +153729,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 840,
-      "end_line": 840,
+      "line": 838,
+      "end_line": 838,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -153747,8 +153738,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1098,
-      "end_line": 1098,
+      "line": 1095,
+      "end_line": 1095,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153756,8 +153747,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1101,
-      "end_line": 1101,
+      "line": 1098,
+      "end_line": 1098,
       "owner": "world_compare_catalog",
       "conditions": [
         "national_codes"
@@ -153767,8 +153758,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -153776,8 +153767,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -153785,8 +153776,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -153794,8 +153785,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1586,
-      "end_line": 1586,
+      "line": 1583,
+      "end_line": 1583,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -153805,8 +153796,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1693,
-      "end_line": 1693,
+      "line": 1690,
+      "end_line": 1690,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -153816,8 +153807,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -153825,8 +153816,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -153834,8 +153825,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.code",
@@ -153843,8 +153834,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2111,
-      "end_line": 2111,
+      "line": 2108,
+      "end_line": 2108,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153852,8 +153843,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2545,
-      "end_line": 2545,
+      "line": 2542,
+      "end_line": 2542,
       "owner": "search_world",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153960,26 +153951,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 822,
-      "end_line": 822,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 822,
-      "end_line": 822,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 840,
-      "end_line": 840,
+      "line": 838,
+      "end_line": 838,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -153987,8 +153960,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 873,
-      "end_line": 873,
+      "line": 870,
+      "end_line": 870,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -153998,8 +153971,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154007,8 +153980,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154016,8 +153989,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1111,
-      "end_line": 1111,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -154025,8 +153998,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1586,
-      "end_line": 1586,
+      "line": 1583,
+      "end_line": 1583,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154036,8 +154009,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1693,
-      "end_line": 1693,
+      "line": 1690,
+      "end_line": 1690,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154047,8 +154020,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154056,8 +154029,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154065,8 +154038,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2108,
-      "end_line": 2108,
+      "line": 2105,
+      "end_line": 2105,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -154146,71 +154119,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 820,
-      "end_line": 820,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 822,
-      "end_line": 822,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 822,
-      "end_line": 822,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 831,
-      "end_line": 831,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 832,
-      "end_line": 832,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 833,
-      "end_line": 833,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.code",
-      "expression": "WorldIndicator.code"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 834,
-      "end_line": 834,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.name_ru",
-      "expression": "WorldIndicator.name_ru"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 873,
-      "end_line": 873,
+      "line": 870,
+      "end_line": 870,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -154220,8 +154130,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1527,
-      "end_line": 1527,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -154231,8 +154141,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1578,
-      "end_line": 1578,
+      "line": 1575,
+      "end_line": 1575,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154242,8 +154152,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1579,
-      "end_line": 1579,
+      "line": 1576,
+      "end_line": 1576,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154253,8 +154163,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1580,
-      "end_line": 1580,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154264,8 +154174,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1586,
-      "end_line": 1586,
+      "line": 1583,
+      "end_line": 1583,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154275,8 +154185,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1682,
+      "end_line": 1682,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154286,8 +154196,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1686,
-      "end_line": 1686,
+      "line": 1683,
+      "end_line": 1683,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154297,8 +154207,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1687,
-      "end_line": 1687,
+      "line": 1684,
+      "end_line": 1684,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154308,8 +154218,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1693,
-      "end_line": 1693,
+      "line": 1690,
+      "end_line": 1690,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154319,8 +154229,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2532,
-      "end_line": 2532,
+      "line": 2529,
+      "end_line": 2529,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -154393,53 +154303,17 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 820,
-      "end_line": 820,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 831,
-      "end_line": 831,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 832,
-      "end_line": 832,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
       "line": 833,
       "end_line": 833,
       "owner": "_build_world_countries_payload",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 834,
-      "end_line": 834,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 854,
+      "end_line": 854,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry.sort_order",
@@ -154447,8 +154321,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 854,
+      "end_line": 854,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry.name_ru",
@@ -154456,8 +154330,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed.is_",
@@ -154465,8 +154339,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -154474,8 +154348,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 914,
-      "end_line": 914,
+      "line": 911,
+      "end_line": 911,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator.is_listed.is_",
@@ -154483,8 +154357,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 914,
+      "end_line": 914,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator.country_code",
@@ -154492,8 +154366,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 918,
-      "end_line": 918,
+      "line": 915,
+      "end_line": 915,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator.is_listed.is_",
@@ -154501,8 +154375,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 921,
-      "end_line": 921,
+      "line": 918,
+      "end_line": 918,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion.country_code",
@@ -154510,8 +154384,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 922,
-      "end_line": 922,
+      "line": 919,
+      "end_line": 919,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion.kind",
@@ -154519,8 +154393,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1107,
-      "end_line": 1107,
+      "line": 1104,
+      "end_line": 1104,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -154528,8 +154402,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1108,
-      "end_line": 1108,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -154537,8 +154411,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1527,
-      "end_line": 1527,
+      "line": 1524,
+      "end_line": 1524,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -154548,8 +154422,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1568,
-      "end_line": 1568,
+      "line": 1565,
+      "end_line": 1565,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -154557,8 +154431,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1569,
-      "end_line": 1569,
+      "line": 1566,
+      "end_line": 1566,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -154566,8 +154440,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1578,
-      "end_line": 1578,
+      "line": 1575,
+      "end_line": 1575,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154577,8 +154451,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1579,
-      "end_line": 1579,
+      "line": 1576,
+      "end_line": 1576,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154588,8 +154462,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1580,
-      "end_line": 1580,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -154599,8 +154473,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1682,
+      "end_line": 1682,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154610,8 +154484,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1686,
-      "end_line": 1686,
+      "line": 1683,
+      "end_line": 1683,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154621,8 +154495,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1687,
-      "end_line": 1687,
+      "line": 1684,
+      "end_line": 1684,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -154632,8 +154506,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2102,
-      "end_line": 2102,
+      "line": 2099,
+      "end_line": 2099,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -154641,8 +154515,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2103,
-      "end_line": 2103,
+      "line": 2100,
+      "end_line": 2100,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -154650,8 +154524,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2104,
-      "end_line": 2104,
+      "line": 2101,
+      "end_line": 2101,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_quality.in_",
@@ -154659,8 +154533,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2105,
-      "end_line": 2105,
+      "line": 2102,
+      "end_line": 2102,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.provider",
@@ -154668,8 +154542,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2106,
-      "end_line": 2106,
+      "line": 2103,
+      "end_line": 2103,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id.in_",
@@ -154677,8 +154551,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2527,
-      "end_line": 2527,
+      "line": 2524,
+      "end_line": 2524,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -154688,8 +154562,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2529,
-      "end_line": 2529,
+      "line": 2526,
+      "end_line": 2526,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -154699,8 +154573,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2530,
-      "end_line": 2530,
+      "line": 2527,
+      "end_line": 2527,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -154710,8 +154584,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2532,
-      "end_line": 2532,
+      "line": 2529,
+      "end_line": 2529,
       "owner": "search_world",
       "conditions": [
         "country"
@@ -154867,8 +154741,62 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 821,
+      "end_line": 821,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 828,
+      "end_line": 828,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 829,
+      "end_line": 829,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 830,
+      "end_line": 830,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 831,
+      "end_line": 831,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_ru",
+      "expression": "WorldIndicator.name_ru"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 833,
+      "end_line": 833,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 854,
+      "end_line": 854,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154876,8 +154804,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 854,
+      "end_line": 854,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -154885,8 +154813,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 872,
-      "end_line": 872,
+      "line": 869,
+      "end_line": 869,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -154896,8 +154824,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 887,
-      "end_line": 887,
+      "line": 884,
+      "end_line": 884,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -154905,8 +154833,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed",
@@ -154914,8 +154842,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -154923,8 +154851,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 901,
-      "end_line": 901,
+      "line": 898,
+      "end_line": 898,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "ru_listed > 0"
@@ -154934,8 +154862,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 914,
-      "end_line": 914,
+      "line": 911,
+      "end_line": 911,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator.is_listed",
@@ -154943,8 +154871,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 914,
+      "end_line": 914,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator",
@@ -154952,8 +154880,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 918,
-      "end_line": 918,
+      "line": 915,
+      "end_line": 915,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator.is_listed",
@@ -154961,8 +154889,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 921,
-      "end_line": 921,
+      "line": 918,
+      "end_line": 918,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion",
@@ -154970,12 +154898,30 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 922,
-      "end_line": 922,
+      "line": 919,
+      "end_line": 919,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion",
       "expression": "SubnationalRegion"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 1102,
+      "end_line": 1102,
+      "owner": "world_compare_catalog",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 1104,
+      "end_line": 1104,
+      "owner": "world_compare_catalog",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.is_active",
+      "expression": "WorldCountry.is_active"
     },
     {
       "path": "backend/app/api/world.py",
@@ -154983,31 +154929,13 @@
       "end_line": 1105,
       "owner": "world_compare_catalog",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 1107,
-      "end_line": 1107,
-      "owner": "world_compare_catalog",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.is_active",
-      "expression": "WorldCountry.is_active"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 1108,
-      "end_line": 1108,
-      "owner": "world_compare_catalog",
-      "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
       "expression": "WorldIndicator.is_listed"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1567,
-      "end_line": 1567,
+      "line": 1564,
+      "end_line": 1564,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -155015,8 +154943,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1568,
-      "end_line": 1568,
+      "line": 1565,
+      "end_line": 1565,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -155024,8 +154952,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1569,
-      "end_line": 1569,
+      "line": 1566,
+      "end_line": 1566,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -155033,8 +154961,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1578,
-      "end_line": 1578,
+      "line": 1575,
+      "end_line": 1575,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155044,8 +154972,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1579,
-      "end_line": 1579,
+      "line": 1576,
+      "end_line": 1576,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155055,8 +154983,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1580,
-      "end_line": 1580,
+      "line": 1577,
+      "end_line": 1577,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155066,8 +154994,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1685,
-      "end_line": 1685,
+      "line": 1682,
+      "end_line": 1682,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155077,8 +155005,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1686,
-      "end_line": 1686,
+      "line": 1683,
+      "end_line": 1683,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155088,8 +155016,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1687,
-      "end_line": 1687,
+      "line": 1684,
+      "end_line": 1684,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155099,8 +155027,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2100,
-      "end_line": 2100,
+      "line": 2097,
+      "end_line": 2097,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155108,8 +155036,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2102,
-      "end_line": 2102,
+      "line": 2099,
+      "end_line": 2099,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -155117,8 +155045,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2103,
-      "end_line": 2103,
+      "line": 2100,
+      "end_line": 2100,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -155126,8 +155054,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2104,
-      "end_line": 2104,
+      "line": 2101,
+      "end_line": 2101,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.name_quality",
@@ -155135,8 +155063,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2105,
-      "end_line": 2105,
+      "line": 2102,
+      "end_line": 2102,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155144,12 +155072,34 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2106,
-      "end_line": 2106,
+      "line": 2103,
+      "end_line": 2103,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.dataset_id",
       "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2524,
+      "end_line": 2524,
+      "owner": "search_world",
+      "conditions": [
+        "country"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2526,
+      "end_line": 2526,
+      "owner": "search_world",
+      "conditions": [
+        "country"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
     },
     {
       "path": "backend/app/api/world.py",
@@ -155175,30 +155125,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2530,
-      "end_line": 2530,
-      "owner": "search_world",
-      "conditions": [
-        "country"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2532,
-      "end_line": 2532,
-      "owner": "search_world",
-      "conditions": [
-        "country"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2606,
-      "end_line": 2606,
+      "line": 2603,
+      "end_line": 2603,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -155408,8 +155336,53 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 871,
-      "end_line": 871,
+      "line": 821,
+      "end_line": 821,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 828,
+      "end_line": 828,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 829,
+      "end_line": 829,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 830,
+      "end_line": 830,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 831,
+      "end_line": 831,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 868,
+      "end_line": 868,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -155419,8 +155392,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 872,
-      "end_line": 872,
+      "line": 869,
+      "end_line": 869,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -155430,8 +155403,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -155439,8 +155412,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 888,
-      "end_line": 888,
+      "line": 885,
+      "end_line": 885,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -155448,14 +155421,32 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 901,
-      "end_line": 901,
+      "line": 898,
+      "end_line": 898,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "ru_listed > 0"
       ],
       "symbol": "app.models.RegionIndicator",
       "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 910,
+      "end_line": 910,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator.id",
+      "expression": "SubnationalIndicator.id"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 911,
+      "end_line": 911,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
     },
     {
       "path": "backend/app/api/world.py",
@@ -155468,8 +155459,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 914,
-      "end_line": 914,
+      "line": 915,
+      "end_line": 915,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalIndicator",
@@ -155477,26 +155468,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 916,
-      "end_line": 916,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.SubnationalIndicator.id",
-      "expression": "SubnationalIndicator.id"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 918,
-      "end_line": 918,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 920,
-      "end_line": 920,
+      "line": 917,
+      "end_line": 917,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion.id",
@@ -155504,8 +155477,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1105,
-      "end_line": 1105,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -155513,8 +155486,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1105,
-      "end_line": 1105,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -155522,8 +155495,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1107,
-      "end_line": 1107,
+      "line": 1104,
+      "end_line": 1104,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -155531,8 +155504,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1108,
-      "end_line": 1108,
+      "line": 1105,
+      "end_line": 1105,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155540,8 +155513,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1523,
+      "end_line": 1523,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -155551,8 +155524,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1568,
-      "end_line": 1568,
+      "line": 1565,
+      "end_line": 1565,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -155560,8 +155533,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1569,
-      "end_line": 1569,
+      "line": 1566,
+      "end_line": 1566,
       "owner": "_country_market_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -155569,8 +155542,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1582,
-      "end_line": 1582,
+      "line": 1579,
+      "end_line": 1579,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155580,8 +155553,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1689,
-      "end_line": 1689,
+      "line": 1686,
+      "end_line": 1686,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155591,8 +155564,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2100,
-      "end_line": 2100,
+      "line": 2097,
+      "end_line": 2097,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -155600,8 +155573,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2100,
-      "end_line": 2100,
+      "line": 2097,
+      "end_line": 2097,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -155609,12 +155582,30 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2102,
-      "end_line": 2102,
+      "line": 2099,
+      "end_line": 2099,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
       "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2100,
+      "end_line": 2100,
+      "owner": "indicator_meta",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2101,
+      "end_line": 2101,
+      "owner": "indicator_meta",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/api/world.py",
@@ -155627,26 +155618,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2104,
-      "end_line": 2104,
-      "owner": "indicator_meta",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2106,
-      "end_line": 2106,
-      "owner": "indicator_meta",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2170,
-      "end_line": 2170,
+      "line": 2167,
+      "end_line": 2167,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -155656,8 +155629,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2558,
-      "end_line": 2558,
+      "line": 2555,
+      "end_line": 2555,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -155667,8 +155640,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2606,
-      "end_line": 2606,
+      "line": 2603,
+      "end_line": 2603,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -155678,8 +155651,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2606,
-      "end_line": 2606,
+      "line": 2603,
+      "end_line": 2603,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -155810,8 +155783,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 856,
-      "end_line": 856,
+      "line": 853,
+      "end_line": 853,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active.is_",
@@ -155819,8 +155792,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 871,
-      "end_line": 871,
+      "line": 868,
+      "end_line": 868,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
@@ -155830,14 +155803,23 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 872,
-      "end_line": 872,
+      "line": 869,
+      "end_line": 869,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "not countries"
       ],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 910,
+      "end_line": 910,
+      "owner": "_build_world_countries_payload",
+      "conditions": [],
+      "symbol": "app.models.SubnationalIndicator",
+      "expression": "SubnationalIndicator"
     },
     {
       "path": "backend/app/api/world.py",
@@ -155850,17 +155832,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 916,
-      "end_line": 916,
-      "owner": "_build_world_countries_payload",
-      "conditions": [],
-      "symbol": "app.models.SubnationalIndicator",
-      "expression": "SubnationalIndicator"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 920,
-      "end_line": 920,
+      "line": 917,
+      "end_line": 917,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.SubnationalRegion",
@@ -155868,8 +155841,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1104,
-      "end_line": 1104,
+      "line": 1101,
+      "end_line": 1101,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -155877,8 +155850,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1104,
-      "end_line": 1104,
+      "line": 1101,
+      "end_line": 1101,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155886,8 +155859,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1105,
-      "end_line": 1105,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155895,8 +155868,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1105,
-      "end_line": 1105,
+      "line": 1102,
+      "end_line": 1102,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -155904,8 +155877,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1525,
-      "end_line": 1525,
+      "line": 1522,
+      "end_line": 1522,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -155915,8 +155888,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1525,
-      "end_line": 1525,
+      "line": 1522,
+      "end_line": 1522,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -155926,8 +155899,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1523,
+      "end_line": 1523,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -155937,8 +155910,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1582,
-      "end_line": 1582,
+      "line": 1579,
+      "end_line": 1579,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155948,8 +155921,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1583,
-      "end_line": 1583,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -155959,8 +155932,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1689,
-      "end_line": 1689,
+      "line": 1686,
+      "end_line": 1686,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155970,8 +155943,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1690,
-      "end_line": 1690,
+      "line": 1687,
+      "end_line": 1687,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -155981,8 +155954,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2099,
-      "end_line": 2099,
+      "line": 2096,
+      "end_line": 2096,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -155990,8 +155963,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2099,
-      "end_line": 2099,
+      "line": 2096,
+      "end_line": 2096,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -155999,8 +155972,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2100,
-      "end_line": 2100,
+      "line": 2097,
+      "end_line": 2097,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -156008,8 +155981,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2100,
-      "end_line": 2100,
+      "line": 2097,
+      "end_line": 2097,
       "owner": "indicator_meta",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -156017,8 +155990,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2167,
-      "end_line": 2167,
+      "line": 2164,
+      "end_line": 2164,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156028,8 +156001,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2170,
-      "end_line": 2170,
+      "line": 2167,
+      "end_line": 2167,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156039,8 +156012,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2557,
-      "end_line": 2557,
+      "line": 2554,
+      "end_line": 2554,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -156050,8 +156023,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2558,
-      "end_line": 2558,
+      "line": 2555,
+      "end_line": 2555,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -156061,8 +156034,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2606,
-      "end_line": 2606,
+      "line": 2603,
+      "end_line": 2603,
       "owner": "search_world",
       "conditions": [
         "result_country_ids"
@@ -156186,8 +156159,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 855,
-      "end_line": 855,
+      "line": 852,
+      "end_line": 852,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -156195,8 +156168,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 856,
-      "end_line": 856,
+      "line": 853,
+      "end_line": 853,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry.is_active",
@@ -156204,8 +156177,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1525,
-      "end_line": 1525,
+      "line": 1522,
+      "end_line": 1522,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -156215,8 +156188,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1525,
-      "end_line": 1525,
+      "line": 1522,
+      "end_line": 1522,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -156226,8 +156199,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1526,
-      "end_line": 1526,
+      "line": 1523,
+      "end_line": 1523,
       "owner": "world_compare_average_series",
       "conditions": [
         "not (mode)"
@@ -156237,8 +156210,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1583,
-      "end_line": 1583,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -156248,8 +156221,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1690,
-      "end_line": 1690,
+      "line": 1687,
+      "end_line": 1687,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -156259,14 +156232,36 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2166,
-      "end_line": 2166,
+      "line": 2163,
+      "end_line": 2163,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
       ],
       "symbol": "app.models.WorldForecast.world_indicator_id.in_",
       "expression": "WorldForecast.world_indicator_id.in_"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2164,
+      "end_line": 2164,
+      "owner": "indicator_meta",
+      "conditions": [
+        "member_ids"
+      ],
+      "symbol": "app.models.WorldForecast",
+      "expression": "WorldForecast"
+    },
+    {
+      "path": "backend/app/api/world.py",
+      "line": 2165,
+      "end_line": 2165,
+      "owner": "indicator_meta",
+      "conditions": [
+        "member_ids"
+      ],
+      "symbol": "app.models.WorldForecast.gate_status.in_",
+      "expression": "WorldForecast.gate_status.in_"
     },
     {
       "path": "backend/app/api/world.py",
@@ -156281,30 +156276,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2168,
-      "end_line": 2168,
-      "owner": "indicator_meta",
-      "conditions": [
-        "member_ids"
-      ],
-      "symbol": "app.models.WorldForecast.gate_status.in_",
-      "expression": "WorldForecast.gate_status.in_"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2170,
-      "end_line": 2170,
-      "owner": "indicator_meta",
-      "conditions": [
-        "member_ids"
-      ],
-      "symbol": "app.models.WorldForecast",
-      "expression": "WorldForecast"
-    },
-    {
-      "path": "backend/app/api/world.py",
-      "line": 2558,
-      "end_line": 2558,
+      "line": 2555,
+      "end_line": 2555,
       "owner": "search_world",
       "conditions": [
         "not country"
@@ -156363,8 +156336,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 856,
-      "end_line": 856,
+      "line": 853,
+      "end_line": 853,
       "owner": "_build_world_countries_payload",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -156372,8 +156345,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1583,
-      "end_line": 1583,
+      "line": 1580,
+      "end_line": 1580,
       "owner": "_country_market_indicators",
       "conditions": [
         "rows"
@@ -156383,8 +156356,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1690,
-      "end_line": 1690,
+      "line": 1687,
+      "end_line": 1687,
       "owner": "build_country_overview",
       "conditions": [
         "overview_candidates"
@@ -156394,8 +156367,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2164,
-      "end_line": 2164,
+      "line": 2161,
+      "end_line": 2161,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156405,8 +156378,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2166,
-      "end_line": 2166,
+      "line": 2163,
+      "end_line": 2163,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156416,8 +156389,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2168,
-      "end_line": 2168,
+      "line": 2165,
+      "end_line": 2165,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156427,8 +156400,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2576,
-      "end_line": 2576,
+      "line": 2573,
+      "end_line": 2573,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156448,8 +156421,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2166,
-      "end_line": 2166,
+      "line": 2163,
+      "end_line": 2163,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156459,8 +156432,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2168,
-      "end_line": 2168,
+      "line": 2165,
+      "end_line": 2165,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -156470,8 +156443,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2576,
-      "end_line": 2576,
+      "line": 2573,
+      "end_line": 2573,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156482,8 +156455,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2570,
-      "end_line": 2570,
+      "line": 2567,
+      "end_line": 2567,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156494,8 +156467,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2571,
-      "end_line": 2571,
+      "line": 2568,
+      "end_line": 2568,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156506,8 +156479,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2568,
-      "end_line": 2568,
+      "line": 2565,
+      "end_line": 2565,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156518,8 +156491,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2570,
-      "end_line": 2570,
+      "line": 2567,
+      "end_line": 2567,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156530,8 +156503,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2571,
-      "end_line": 2571,
+      "line": 2568,
+      "end_line": 2568,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156542,8 +156515,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2570,
-      "end_line": 2570,
+      "line": 2567,
+      "end_line": 2567,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -156554,8 +156527,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2571,
-      "end_line": 2571,
+      "line": 2568,
+      "end_line": 2568,
       "owner": "search_world",
       "conditions": [
         "not country",
@@ -239474,7 +239447,7 @@
     {
       "path": "backend/app/api/world.py",
       "line": 815,
-      "end_line": 934,
+      "end_line": 931,
       "owner": "<module>",
       "conditions": [],
       "name": "_build_world_countries_payload",
@@ -239482,8 +239455,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 938,
-      "end_line": 1035,
+      "line": 935,
+      "end_line": 1032,
       "owner": "<module>",
       "conditions": [],
       "name": "list_countries",
@@ -239491,8 +239464,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1039,
-      "end_line": 1067,
+      "line": 1036,
+      "end_line": 1064,
       "owner": "<module>",
       "conditions": [],
       "name": "world_rating_concepts",
@@ -239500,8 +239473,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1071,
-      "end_line": 1170,
+      "line": 1068,
+      "end_line": 1167,
       "owner": "<module>",
       "conditions": [],
       "name": "world_compare_catalog",
@@ -239509,8 +239482,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1173,
-      "end_line": 1225,
+      "line": 1170,
+      "end_line": 1222,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_compare_series",
@@ -239518,8 +239491,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1229,
-      "end_line": 1282,
+      "line": 1226,
+      "end_line": 1279,
       "owner": "<module>",
       "conditions": [],
       "name": "world_compare_series",
@@ -239527,8 +239500,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1286,
-      "end_line": 1369,
+      "line": 1283,
+      "end_line": 1366,
       "owner": "<module>",
       "conditions": [],
       "name": "world_compare_snapshot",
@@ -239536,8 +239509,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1373,
-      "end_line": 1461,
+      "line": 1370,
+      "end_line": 1458,
       "owner": "<module>",
       "conditions": [],
       "name": "world_compare_map_series",
@@ -239545,8 +239518,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1465,
-      "end_line": 1556,
+      "line": 1462,
+      "end_line": 1553,
       "owner": "<module>",
       "conditions": [],
       "name": "world_compare_average_series",
@@ -239554,8 +239527,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1559,
-      "end_line": 1624,
+      "line": 1556,
+      "end_line": 1621,
       "owner": "<module>",
       "conditions": [],
       "name": "_country_market_indicators",
@@ -239563,8 +239536,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1627,
-      "end_line": 1743,
+      "line": 1624,
+      "end_line": 1740,
       "owner": "<module>",
       "conditions": [],
       "name": "build_country_overview",
@@ -239572,8 +239545,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1762,
-      "end_line": 1773,
+      "line": 1759,
+      "end_line": 1770,
       "owner": "<module>",
       "conditions": [],
       "name": "_price_chip_basis",
@@ -239581,8 +239554,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1776,
-      "end_line": 1778,
+      "line": 1773,
+      "end_line": 1775,
       "owner": "<module>",
       "conditions": [],
       "name": "country_detail_cache_key",
@@ -239590,8 +239563,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1782,
-      "end_line": 1992,
+      "line": 1779,
+      "end_line": 1989,
       "owner": "<module>",
       "conditions": [],
       "name": "country_detail",
@@ -239599,8 +239572,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1995,
-      "end_line": 2015,
+      "line": 1992,
+      "end_line": 2012,
       "owner": "<module>",
       "conditions": [],
       "name": "_card_context",
@@ -239608,8 +239581,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2019,
-      "end_line": 2250,
+      "line": 2016,
+      "end_line": 2247,
       "owner": "<module>",
       "conditions": [],
       "name": "indicator_meta",
@@ -239617,8 +239590,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2254,
-      "end_line": 2450,
+      "line": 2251,
+      "end_line": 2447,
       "owner": "<module>",
       "conditions": [],
       "name": "indicator_data",
@@ -239626,8 +239599,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2454,
-      "end_line": 2629,
+      "line": 2451,
+      "end_line": 2626,
       "owner": "<module>",
       "conditions": [],
       "name": "search_world",
@@ -239635,8 +239608,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1115,
-      "end_line": 1116,
+      "line": 1112,
+      "end_line": 1113,
       "owner": "world_compare_catalog",
       "conditions": [],
       "name": "is_national",
@@ -239644,8 +239617,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2496,
-      "end_line": 2516,
+      "line": 2493,
+      "end_line": 2513,
       "owner": "search_world",
       "conditions": [],
       "name": "relevance",
@@ -242335,8 +242308,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 45,
-      "end_line": 53,
+      "line": 46,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "title_override_for_code",
@@ -242344,8 +242317,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 80,
-      "end_line": 87,
+      "line": 82,
+      "end_line": 90,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_latin_cleanups",
@@ -242353,8 +242326,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 90,
-      "end_line": 101,
+      "line": 93,
+      "end_line": 104,
       "owner": "<module>",
       "conditions": [],
       "name": "public_indicator_name",
@@ -242362,8 +242335,8 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 104,
-      "end_line": 111,
+      "line": 107,
+      "end_line": 114,
       "owner": "<module>",
       "conditions": [],
       "name": "is_public_catalog_name",
@@ -282109,8 +282082,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1644,
-      "end_line": 1644,
+      "line": 1641,
+      "end_line": 1641,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
@@ -282141,16 +282114,16 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1429,
-      "end_line": 1429,
+      "line": 1426,
+      "end_line": 1426,
       "owner": "world_compare_map_series",
       "conditions": [],
       "symbol": "app.api.world._AVERAGE_CONCEPTS"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1772,
-      "end_line": 1772,
+      "line": 1769,
+      "end_line": 1769,
       "owner": "_price_chip_basis",
       "conditions": [],
       "symbol": "app.api.world._PRICE_BASIS"
@@ -282197,64 +282170,64 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1150,
-      "end_line": 1150,
+      "line": 1147,
+      "end_line": 1147,
       "owner": "world_compare_catalog",
       "conditions": [],
       "symbol": "app.data.world_concept_russia.RUSSIA_CONCEPT_LINKS"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1241,
-      "end_line": 1241,
+      "line": 1238,
+      "end_line": 1238,
       "owner": "world_compare_series",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1291,
-      "end_line": 1291,
+      "line": 1288,
+      "end_line": 1288,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1343,
-      "end_line": 1343,
+      "line": 1340,
+      "end_line": 1340,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "symbol": "app.api.world._AVERAGE_CONCEPTS"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1378,
-      "end_line": 1378,
+      "line": 1375,
+      "end_line": 1375,
       "owner": "world_compare_map_series",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1471,
-      "end_line": 1471,
+      "line": 1468,
+      "end_line": 1468,
       "owner": "world_compare_average_series",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1472,
-      "end_line": 1472,
+      "line": 1469,
+      "end_line": 1469,
       "owner": "world_compare_average_series",
       "conditions": [],
       "symbol": "app.api.world._AVERAGE_CONCEPTS"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2148,
-      "end_line": 2148,
+      "line": 2145,
+      "end_line": 2145,
       "owner": "indicator_meta",
       "conditions": [
         "compare_concept_slug is not None and russia_eligible(concept.slug)"
@@ -282271,8 +282244,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 910,
-      "end_line": 910,
+      "line": 907,
+      "end_line": 907,
       "owner": "_build_world_countries_payload",
       "conditions": [
         "ru_listed > 0 and (not any((c.get('code') == 'RU' or c.get('slug') == 'russia' for c in countries)))"
@@ -282281,8 +282254,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2141,
-      "end_line": 2141,
+      "line": 2138,
+      "end_line": 2138,
       "owner": "indicator_meta",
       "conditions": [
         "concept is None"
@@ -282291,32 +282264,32 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1742,
-      "end_line": 1742,
+      "line": 1739,
+      "end_line": 1739,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.api.world._OVERVIEW_PRIORITY"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1742,
-      "end_line": 1742,
+      "line": 1739,
+      "end_line": 1739,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.api.world._OVERVIEW_PRIORITY"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1647,
-      "end_line": 1647,
+      "line": 1644,
+      "end_line": 1644,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.data.world_concept_national.NATIONAL_CONCEPT_INDICATOR_CODES"
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1741,
-      "end_line": 1741,
+      "line": 1738,
+      "end_line": 1738,
       "owner": "build_country_overview",
       "conditions": [],
       "symbol": "app.api.world._OVERVIEW_PRIORITY"
@@ -282331,8 +282304,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2168,
-      "end_line": 2168,
+      "line": 2165,
+      "end_line": 2165,
       "owner": "indicator_meta",
       "conditions": [
         "member_ids"
@@ -284974,32 +284947,32 @@
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 51,
+      "end_line": 51,
       "owner": "title_override_for_code",
       "conditions": [],
       "symbol": "app.data.world_indicator_titles_ru.TITLE_BY_CODE_FRAGMENT"
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 82,
-      "end_line": 82,
+      "line": 85,
+      "end_line": 85,
       "owner": "_apply_latin_cleanups",
       "conditions": [],
       "symbol": "app.data.world_indicator_titles_ru._LATIN_CLEANUPS"
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 93,
-      "end_line": 93,
+      "line": 96,
+      "end_line": 96,
       "owner": "public_indicator_name",
       "conditions": [],
       "symbol": "app.data.world_indicator_titles_ru.TITLE_BY_CODE"
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
-      "line": 94,
-      "end_line": 94,
+      "line": 97,
+      "end_line": 97,
       "owner": "public_indicator_name",
       "conditions": [
         "code_key and code_key in TITLE_BY_CODE"
@@ -302308,8 +302281,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 937,
-      "end_line": 937,
+      "line": 934,
+      "end_line": 934,
       "owner": "list_countries",
       "conditions": [],
       "handler": "app.api.world.list_countries",
@@ -302320,8 +302293,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 938,
-      "handler_end_line": 1035,
+      "handler_line": 935,
+      "handler_end_line": 1032,
       "parameters": [
         {
           "name": "db",
@@ -302358,8 +302331,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1038,
-      "end_line": 1038,
+      "line": 1035,
+      "end_line": 1035,
       "owner": "world_rating_concepts",
       "conditions": [],
       "handler": "app.api.world.world_rating_concepts",
@@ -302370,8 +302343,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1039,
-      "handler_end_line": 1067,
+      "handler_line": 1036,
+      "handler_end_line": 1064,
       "parameters": [],
       "returns": null,
       "full_path": "/api/v1/world/rating/concepts",
@@ -302402,8 +302375,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1070,
-      "end_line": 1070,
+      "line": 1067,
+      "end_line": 1067,
       "owner": "world_compare_catalog",
       "conditions": [],
       "handler": "app.api.world.world_compare_catalog",
@@ -302414,8 +302387,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1071,
-      "handler_end_line": 1170,
+      "handler_line": 1068,
+      "handler_end_line": 1167,
       "parameters": [
         {
           "name": "db",
@@ -302452,8 +302425,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1228,
-      "end_line": 1228,
+      "line": 1225,
+      "end_line": 1225,
       "owner": "world_compare_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_series",
@@ -302464,8 +302437,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1229,
-      "handler_end_line": 1282,
+      "handler_line": 1226,
+      "handler_end_line": 1279,
       "parameters": [
         {
           "name": "country_slug",
@@ -302512,8 +302485,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1285,
-      "end_line": 1285,
+      "line": 1282,
+      "end_line": 1282,
       "owner": "world_compare_snapshot",
       "conditions": [],
       "handler": "app.api.world.world_compare_snapshot",
@@ -302524,8 +302497,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1286,
-      "handler_end_line": 1369,
+      "handler_line": 1283,
+      "handler_end_line": 1366,
       "parameters": [
         {
           "name": "concept_slug",
@@ -302567,8 +302540,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1372,
-      "end_line": 1372,
+      "line": 1369,
+      "end_line": 1369,
       "owner": "world_compare_map_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_map_series",
@@ -302579,8 +302552,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1373,
-      "handler_end_line": 1461,
+      "handler_line": 1370,
+      "handler_end_line": 1458,
       "parameters": [
         {
           "name": "concept_slug",
@@ -302622,8 +302595,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1464,
-      "end_line": 1464,
+      "line": 1461,
+      "end_line": 1461,
       "owner": "world_compare_average_series",
       "conditions": [],
       "handler": "app.api.world.world_compare_average_series",
@@ -302634,8 +302607,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1465,
-      "handler_end_line": 1556,
+      "handler_line": 1462,
+      "handler_end_line": 1553,
       "parameters": [
         {
           "name": "concept_slug",
@@ -302682,8 +302655,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 1781,
-      "end_line": 1781,
+      "line": 1778,
+      "end_line": 1778,
       "owner": "country_detail",
       "conditions": [],
       "handler": "app.api.world.country_detail",
@@ -302694,8 +302667,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 1782,
-      "handler_end_line": 1992,
+      "handler_line": 1779,
+      "handler_end_line": 1989,
       "parameters": [
         {
           "name": "slug",
@@ -302737,8 +302710,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2018,
-      "end_line": 2018,
+      "line": 2015,
+      "end_line": 2015,
       "owner": "indicator_meta",
       "conditions": [],
       "handler": "app.api.world.indicator_meta",
@@ -302749,8 +302722,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2019,
-      "handler_end_line": 2250,
+      "handler_line": 2016,
+      "handler_end_line": 2247,
       "parameters": [
         {
           "name": "slug",
@@ -302797,8 +302770,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2253,
-      "end_line": 2253,
+      "line": 2250,
+      "end_line": 2250,
       "owner": "indicator_data",
       "conditions": [],
       "handler": "app.api.world.indicator_data",
@@ -302809,8 +302782,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2254,
-      "handler_end_line": 2450,
+      "handler_line": 2251,
+      "handler_end_line": 2447,
       "parameters": [
         {
           "name": "slug",
@@ -302877,8 +302850,8 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "line": 2453,
-      "end_line": 2453,
+      "line": 2450,
+      "end_line": 2450,
       "owner": "search_world",
       "conditions": [],
       "handler": "app.api.world.search_world",
@@ -302889,8 +302862,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 2454,
-      "handler_end_line": 2629,
+      "handler_line": 2451,
+      "handler_end_line": 2626,
       "parameters": [
         {
           "name": "q",
