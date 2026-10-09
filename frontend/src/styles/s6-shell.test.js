@@ -47,8 +47,8 @@ describe('круг 6 S: строгая оболочка', () => {
     expect(z2).not.toMatch(/radial-gradient\(closest-side, rgba\(201, 162, 77/);
   });
 
-  it('док (круг 8, S4) — светлое стекло .9 с размытием, графитовые подписи, активный пункт — графит и линия сверху', () => {
-    expect(k3).toMatch(/--k3-dock-bg:\s*rgb\(var\(--k3-paper\) \/ 0\.9\)/);
+  it('док (круг 8, S4; круг 11 G: плотность .95) — светлое стекло с размытием, графитовые подписи, активный пункт — графит и линия сверху', () => {
+    expect(k3).toMatch(/--k3-dock-bg:\s*rgb\(var\(--k3-paper\) \/ 0\.95\)/);
     expect(k3).toMatch(/--k3-dock-ink:\s*#1e2638/);
     expect(k3).toMatch(/\.fe-dock\s*\{[^}]*width:\s*fit-content/);
     expect(k3).toMatch(/\.fe-dock__item\.is-active::before\s*\{[^}]*top:\s*0;[^}]*height:\s*2px/);
@@ -93,8 +93,8 @@ describe('круг 8 Z0: переменные оболочки для всех �
   });
 
   it('шапка при прокрутке плотнее .9 суммарно (слой .8 поверх .66), на телефоне .6 поверх .84', () => {
-    expect(k3).toMatch(/nav\.fe-navbar--glass::after\s*\{[^}]*background:\s*rgb\(var\(--k3-paper\) \/ 0\.8\)/);
-    expect(k3).toMatch(/nav\.fe-navbar--glass::after\s*\{\s*background:\s*rgb\(var\(--k3-paper\) \/ 0\.6\)/);
+    expect(k3).toMatch(/nav\.fe-navbar--glass::after\s*\{[^}]*background:\s*rgb\(var\(--k3-paper\) \/ 0\.88\)/);
+    expect(k3).toMatch(/nav\.fe-navbar--glass::after\s*\{\s*background:\s*rgb\(var\(--k3-paper\) \/ 0\.7\)/);
   });
 
   it('док не добавляет запас в main, а подвал считает только cookie: запас под док в подвале снят (круг 9, S7), якоря держит scroll-padding-bottom', () => {
@@ -160,7 +160,7 @@ describe('круг 8, волна 2, W-A: оболочка после приём�
   });
 
   it('запас под панелью и плашкой есть у любой страницы: scroll-padding-bottom на телефоне', () => {
-    expect(k3).toMatch(/html\s*\{\s*scroll-padding-bottom:\s*calc\(var\(--fe-dock-reserve, 0px\) \+ var\(--fe-cookie-h, 0px\) \+ 12px\)/);
+    expect(k3).toMatch(/html\s*\{\s*scroll-padding-bottom:\s*calc\(var\(--fe-dock-reserve, 0px\) \+ var\(--fe-cookie-h, 0px\) \+ 12px \+ env\(safe-area-inset-bottom, 0px\)\)/);
   });
 });
 

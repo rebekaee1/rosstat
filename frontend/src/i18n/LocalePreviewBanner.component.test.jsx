@@ -21,7 +21,7 @@ describe('значок предпросмотра языка не мешает �
     renderBanner();
     const toggle = screen.getByTestId('locale-preview-toggle');
     expect(toggle.className).toContain('right-2');
-    expect(toggle.className).toContain('opacity-55');
+    expect(toggle.className).toContain('opacity-85');
     expect(toggle.style.bottom).toContain('--fe-cookie-h');
     expect(toggle.getAttribute('data-hidden')).toBe('false');
   });
