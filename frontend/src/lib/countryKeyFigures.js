@@ -5,6 +5,7 @@
  */
 import { formatCount, formatValue } from './format';
 import { plural } from './calcFormat';
+import { compactPeople, isPeopleUnit, peopleScale } from './populationFacts';
 
 const SCALES_RU = ['тыс.', 'млн', 'млрд', 'трлн'];
 const SCALES_EN = ['thousand', 'million', 'billion', 'trillion'];
@@ -75,6 +76,19 @@ export function compactMoneyAmount(value, unitText, locale = 'ru') {
     return { value: scaled, unit: `${words[Math.max(k - 1, 0)]} ${symbol}` };
   }
   return null;
+}
+
+/**
+ * Численность от миллиона читается словом: «1 476 625 577 человек» -> «1,48 млрд», «83 млн» (круг 11, F, U17).
+ * Меньшие числа и не-людей не трогает.
+ * @returns {{ text: string, unit: string } | null} null — сокращать нечего, показывать как есть
+ */
+export function peopleFigure(raw, unitText, locale = 'ru') {
+  if (!isPeopleUnit(unitText)) return null;
+  const people = Number(raw) * peopleScale(unitText);
+  if (!Number.isFinite(people) || Math.abs(people) < 1e6) return null;
+  const [text, ...rest] = compactPeople(people, locale).split('\u00a0');
+  return { text, unit: rest.join('\u00a0') };
 }
 
 /** Знаки после запятой для крупной цифры: 849,7 / 2,3 / 12 345. */

@@ -84,6 +84,12 @@ describe('groupMemberLabel', () => {
     expect(groupMemberLabel(`${base}, тысяч человек, 15–24 лет`, base, 'тысяч человек')).toBe('15–24 лет');
   });
 
+  it('остаток, который сам единица («% of active population»), не становится чипом без названия', () => {
+    const basePart = 'Individuals using the internet';
+    expect(groupMemberLabel(`${basePart}, % of active population`, basePart, 'persons')).toBe(`${basePart}, % of active population`);
+    expect(groupMemberLabel(`${basePart}, persons`, basePart, 'persons')).toBe(`${basePart}, persons`);
+  });
+
   it('если отличий нет, возвращает полное название', () => {
     expect(groupMemberLabel(`${base}, тысяч человек`, base, 'тысяч человек')).toBe(`${base}, тысяч человек`);
   });

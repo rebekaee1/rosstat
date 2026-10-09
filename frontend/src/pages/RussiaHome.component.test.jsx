@@ -102,7 +102,8 @@ describe('RussiaHome hero и обзорные чипы', () => {
 
     const chips = await findChips();
 
-    const cpiChip = await chips.findByRole('link', { name: /Индекс потребительских цен/ });
+    // Одно название на карточке (круг 11, U18): «Инфляция…», а не полное имя ряда рядом с ним.
+    const cpiChip = await chips.findByRole('link', { name: /Инфляция/ });
     expect(cpiChip.getAttribute('href')).toBe('/russia/indicator/cpi');
     expect(cpiChip.textContent).toContain('5,4');
 
@@ -110,7 +111,7 @@ describe('RussiaHome hero и обзорные чипы', () => {
     expect(rateChip.getAttribute('href')).toBe('/russia/indicator/key-rate');
     expect(rateChip.textContent).toContain('17');
 
-    const uneChip = chips.getByRole('link', { name: /Уровень безработицы/ });
+    const uneChip = chips.getByRole('link', { name: /Безработица/ });
     expect(uneChip.getAttribute('href')).toBe('/russia/indicator/unemployment');
     expect(uneChip.textContent).toContain('2,3');
   });

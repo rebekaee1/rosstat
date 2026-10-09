@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  barScaleOf, countrySeries, rankMap, rankShifts, shareOf, valueAt, yearOverYear,
+  barScaleOf, commonChangeYear, countrySeries, isPercentUnitText, rankMap, rankShifts, shareOf, valueAt, yearOverYear,
 } from './ratingInsights';
 
 const years = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
@@ -97,5 +97,23 @@ describe('ratingInsights', () => {
     expect(mid).toBeGreaterThan(small);
     expect(mid).toBeLessThan(big);
     expect(mid).toBeGreaterThan(40);
+  });
+});
+
+describe('isPercentUnitText и commonChangeYear (круг 11)', () => {
+  it('единицы в процентах распознаются по знаку или слову, а не по первому символу', () => {
+    expect(isPercentUnitText('изменение за год, %')).toBe(true);
+    expect(isPercentUnitText('% ВВП')).toBe(true);
+    expect(isPercentUnitText('annual change, %')).toBe(true);
+    expect(isPercentUnitText('Процент к предыдущему месяцу')).toBe(true);
+    expect(isPercentUnitText('млрд $')).toBe(false);
+    expect(isPercentUnitText(null)).toBe(false);
+  });
+
+  it('год сравнения — тот, что у большинства стран; при равенстве более поздний', () => {
+    expect(commonChangeYear([{ year: 2024 }, { year: 2024 }, { year: 2023 }, null], 2020)).toBe(2024);
+    expect(commonChangeYear([{ year: 2023 }, { year: 2024 }], 2020)).toBe(2024);
+    expect(commonChangeYear([], 2020)).toBe(2020);
+    expect(commonChangeYear(null, null)).toBeNull();
   });
 });

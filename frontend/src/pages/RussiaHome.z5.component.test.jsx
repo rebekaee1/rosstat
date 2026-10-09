@@ -91,8 +91,10 @@ describe('RussiaHome: главная пятёрка', () => {
     // ВВП в трлн, а не «41 250 млрд»
     expect(cards[3].textContent.replace(/\u00a0/g, ' ')).toContain('41,3');
     expect(cards[3].textContent).toContain('трлн ₽');
-    // Жаргона нет, полное название читается скринридером.
-    expect(inflation.querySelector('.sr-only').textContent).toContain('Индекс потребительских цен');
+    // Одно название на карточке: ни скрытого полного имени ряда, ни другой подсказки (круг 11, U18).
+    expect(inflation.querySelector('.sr-only')).toBeNull();
+    expect(inflation.querySelector('.z5-key__name').getAttribute('title')).toBeNull();
+    expect(inflation.textContent).not.toContain('Индекс потребительских цен');
     expect(document.body.textContent).not.toContain('\u00B7');
   });
 });

@@ -1,4 +1,5 @@
 import { formatDate, formatValue } from '../lib/format';
+import FreshnessBadge from './FreshnessBadge';
 import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
@@ -28,12 +29,13 @@ function useYearsWord() {
 }
 
 /** Одна строка под заголовком: «Германия: 2,3 % за 2025 год». Единица рядом с числом, период словами. */
-export function WorldHeroLine({ summary, place, dateFormat }) {
+export function WorldHeroLine({ summary, place, dateFormat, frequency = '' }) {
   const t = useT();
   const { locale } = useLocale();
   if (!summary) return null;
   const { shown, last, estimate, kind, yearPct } = summary;
   const unitParts = splitUnit(shown.unit);
+  const plainIndex = /^(индекс|index)$/i.test(unitParts.short);
   const when = estimate
     ? t('w6e.hero.estimate', { date: glueDate(formatDate(last.date, dateFormat, locale)) })
     : periodPhrase(t, last.date, dateFormat, locale);
@@ -47,13 +49,15 @@ export function WorldHeroLine({ summary, place, dateFormat }) {
       {' '}
       <strong className="fe-hero-line__value">
         {shown.text}
-        {unitParts.short ? <span className="fe-hero-line__unit">{' '}{unitParts.short}</span> : null}
+        {unitParts.short && !plainIndex ? <span className="fe-hero-line__unit">{' '}{unitParts.short}</span> : null}
+        {plainIndex ? <span className="fe-hero-line__unit">{' '}({unitParts.short})</span> : null}
         {!unitParts.short && unitParts.long ? <span className="fe-hero-line__unit">{' '}({unitParts.long})</span> : null}
       </strong>
       {when ? <span className="fe-hero-line__when">{' '}{when}</span> : null}
       {yearChange ? (
         <span className="fe-hero-line__extra">{' '}{t('w6e.hero.yearChange', { change: yearChange })}</span>
       ) : null}
+      {frequency && last?.date ? <FreshnessBadge lastDate={last.date} frequency={frequency} className="z4-fresh--line" /> : null}
     </p>
   );
 }

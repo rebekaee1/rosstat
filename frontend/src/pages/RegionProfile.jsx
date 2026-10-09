@@ -8,6 +8,8 @@ import { useRegionProfile } from '../lib/regionsApi';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
+import CabinetActionsSlot from '../components/CabinetActionsSlot';
+import { regionSubject } from '../lib/cabinetSubjects';
 import Button from '../components/Button';
 import RegionComparePick from '../components/regions/RegionComparePick';
 import { SkeletonBox } from '../components/Skeleton';
@@ -33,7 +35,8 @@ function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
 }
 
-export default function RegionProfile() {
+/** `renderActions` — необязательный слот кнопок кабинета («В избранное»); их рисует зона кабинета. */
+export default function RegionProfile({ renderActions = null } = {}) {
   const { t } = useLocale();
   const { slug } = useParams();
   const { data, isLoading, isError, refetch, isFetching } = useRegionProfile(slug);
@@ -138,6 +141,7 @@ export default function RegionProfile() {
                 </Link>
               )}
               <RegionComparePick slug={slug} />
+              <CabinetActionsSlot subject={regionSubject(slug, data.region.name)} renderActions={renderActions} />
             </div>
           </div>
 

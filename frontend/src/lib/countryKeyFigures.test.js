@@ -12,6 +12,7 @@ import {
   isMainTopic,
   isPinnedTopic,
   orderKeyFigures,
+  peopleFigure,
   scaleMoneyUnit,
   similarCountries,
   splitTechnicalNote,
@@ -221,5 +222,20 @@ describe('inflationCaption', () => {
 
   it('не инфляция: пусто', () => {
     expect(inflationCaption({ item: { concept_slug: 'population' }, period: '2025', t: tRu })).toBe('');
+  });
+});
+
+describe('peopleFigure (круг 11, U17)', () => {
+  it('«1 476 625 577 человек» читается как «1,48 млрд», миллионы словом', () => {
+    expect(peopleFigure(1476625577, 'человек', 'ru')).toEqual({ text: '1,48', unit: 'млрд' });
+    expect(peopleFigure(83300000, 'человек', 'ru')).toEqual({ text: '83,3', unit: 'млн' });
+    expect(peopleFigure(1476625577, 'people', 'en')).toEqual({ text: '1.48', unit: 'billion' });
+  });
+
+  it('единица в тысячах учитывается; малые числа и не люди не трогаются', () => {
+    expect(peopleFigure(83300, 'тыс. чел.', 'ru')).toEqual({ text: '83,3', unit: 'млн' });
+    expect(peopleFigure(812400, 'человек', 'ru')).toBeNull();
+    expect(peopleFigure(5000000000, 'млрд $', 'ru')).toBeNull();
+    expect(peopleFigure('x', 'человек', 'ru')).toBeNull();
   });
 });

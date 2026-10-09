@@ -1,6 +1,8 @@
 // Карточка мирового индикатора: /world/{slug}/{code}?mode=
 // UI-эталон — российские макрокарточки (TelemetryCard + champagne/15 picker).
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowUpRight, Activity,
@@ -55,6 +57,10 @@ import WorldStatTiles, { WorldHeroLine } from '../components/WorldStatTiles';
 import PopulationStats from '../components/PopulationStats';
 import { isPeopleUnit } from '../lib/populationFacts';
 import Breadcrumbs from '../components/Breadcrumbs';
+import CabinetActionsSlot from '../components/CabinetActionsSlot';
+import IndicatorPeers from '../components/IndicatorPeers';
+import { worldIndicatorSubject } from '../lib/cabinetSubjects';
+import { useScrollFadesWithin } from '../lib/useScrollFades';
 import { SkeletonBox } from '../components/Skeleton';
 import Button from '../components/Button';
 import '../styles/platform-pages.css';
@@ -73,7 +79,8 @@ import '../styles/k5-pages.css';
 
 const EMPTY_POINTS = [];
 
-export default function WorldIndicatorPage() {
+/** `renderActions` — необязательный слот кнопок кабинета («В избранное», «Следить»); их рисует зона кабинета. */
+export default function WorldIndicatorPage({ renderActions = null } = {}) {
   const { countrySlug, slug: slugParam, code } = useParams();
   const slug = countrySlug || slugParam;
   const navigate = useNavigate();
@@ -205,6 +212,8 @@ export default function WorldIndicatorPage() {
 
 
   const [fullChartData, setFullChartData] = useState([]);
+  // Таблица истории прокручивается вбок на узкой колонке: затухание у края показывает продолжение (круг 11, U11).
+  const lowerRef = useRef(null);
 
   // Канон URL: unlisted член merge-группы (замороженный ГИПЦ) → listed primary.
   useEffect(() => {
@@ -297,6 +306,7 @@ export default function WorldIndicatorPage() {
   const dataRefetch = needsFallback ? levelQ.refetch : dataQ.refetch;
   const dataFetching = needsFallback ? levelQ.isFetching : dataQ.isFetching;
   const empty = !dataLoading && !dataError && isEmptySeries(points);
+  useScrollFadesWithin(lowerRef, '.fe-histtable__scroll', [code, activeMode, dataLoading, Boolean(metaQ.data)]);
   const last = points.length ? points[points.length - 1] : null;
   // Единица из ответа с данными; если она называет процентный ряд «индексом», верим описанию показателя (Китай, Турция: инфляция МВФ).
   let rawUnit = preferPercentUnit(
@@ -579,13 +589,18 @@ export default function WorldIndicatorPage() {
                     {categoryLabel}
                   </span>
                 )}
+                <CabinetActionsSlot
+                  className="z4-hero__actions"
+                  subject={worldIndicatorSubject(slug, code, displayName)}
+                  renderActions={renderActions}
+                />
               </div>
               <h1 className="z4-hero__title text-pretty font-display font-bold tracking-tight text-text-primary">
                 <AccentTitle text={displayName} />
               </h1>
               <div className="z4-hero__line">
                 {summary ? (
-                  <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} />
+                  <WorldHeroLine summary={summary} place={countryName} dateFormat={dateFormat} frequency={activeFreq} />
                 ) : (dataLoading && !dataError ? <SkeletonBox className="fe-hero-line-skeleton" /> : null)}
               </div>
               {metaQ.data._fromMock && (
@@ -689,7 +704,7 @@ export default function WorldIndicatorPage() {
 
           </div>
 
-          <div className="z4-lower" data-lower="wide">
+          <div className="z4-lower" data-lower="wide" ref={lowerRef}>
             <section className="z4-lower__table">
               <DataTable
                 key={`${code}-${activeMode}`}
@@ -793,6 +808,11 @@ export default function WorldIndicatorPage() {
                     </Link>
                   </div>
                 </div>
+                <IndicatorPeers
+                  peers={metaQ.data.peers}
+                  currentSlug={slug}
+                  ratingSlug={snapshotQ.data?.items && indicator.concept_slug ? indicator.concept_slug : null}
+                />
               </div>
 
             </div>

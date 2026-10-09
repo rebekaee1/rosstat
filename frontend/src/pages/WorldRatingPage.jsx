@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 import {
   Link, useLocation, useNavigate, useParams, useSearchParams,
 } from 'react-router-dom';
 import {
-  ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, Globe2,
-  MapPinned, Plus, X,
+  ArrowDown, ArrowUp, ArrowUpDown, Bookmark, BookmarkCheck, ChevronDown, ChevronLeft, ChevronRight, Download,
+  Globe2, MapPinned, Plus, X,
 } from 'lucide-react';
 import { useAuth } from '../context/authContext';
 import useDocumentMeta from '../lib/useMeta';
@@ -54,8 +56,16 @@ import '../styles/k6-country.css';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { ratingHeading } from '../lib/ratingConcepts';
 import {
-  barScaleOf, countrySeries, rankShifts, shareOf, yearOverYear,
+  barScaleOf, commonChangeYear, countrySeries, isPercentUnitText, rankShifts, shareOf, yearOverYear,
 } from '../lib/ratingInsights';
+import {
+  filterRowsByGroup, groupCounts, normalizeRatingGroup, RATING_GROUP_IDS,
+} from '../lib/ratingGroups';
+import { useScrollFades } from '../lib/useScrollFades';
+import { downloadGrid, gridColumnKey, gridFilename } from '../lib/gridDownload';
+import DownloadMenu from '../components/regions/DownloadMenu';
+import CabinetActionsSlot from '../components/CabinetActionsSlot';
+import { ratingViewSubject } from '../lib/cabinetSubjects';
 import { worldRatingTrail } from '../lib/breadcrumbs';
 import {
   countryPath,
@@ -83,17 +93,19 @@ const TABLE_COMPACT_ROWS = 12;
  * первый клик фиксирует этот порядок, второй разворачивает.
  */
 function SortableTh({
-  label, active, dir, onClick, onRemove = null, right = true, minWidth = false,
+  label, active, dir, onClick, onRemove = null, right = true, minWidth = false, hint = undefined, colId = undefined,
 }) {
   const Icon = active ? (dir === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown;
   const ariaSort = active ? (dir === 'asc' ? 'ascending' : 'descending') : undefined;
   return (
     <th
       aria-sort={ariaSort}
+      data-col={colId}
+      title={hint}
       className={[
         'px-4 py-3 font-medium',
         right ? 'text-right' : '',
-        minWidth ? 'min-w-[12rem]' : '',
+        minWidth ? 'min-w-[9rem]' : '',
       ].join(' ')}
     >
       <span className="inline-flex max-w-full items-center justify-end gap-1">
@@ -122,6 +134,32 @@ function SortableTh({
       </span>
     </th>
   );
+}
+
+const SAVED_COLS_KEY = 'fe:rating-cols';
+
+const calmMotion = () => typeof window !== 'undefined'
+  && Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+
+/** Запомненный набор колонок (только в этом браузере); недоступное хранилище не ломает страницу. */
+function readSavedCols() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(SAVED_COLS_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed.filter((slug) => typeof slug === 'string').slice(0, RATING_EXTRA_MAX_AUTH) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeSavedCols(list) {
+  try {
+    if (list.length) window.localStorage.setItem(SAVED_COLS_KEY, JSON.stringify(list));
+    else window.localStorage.removeItem(SAVED_COLS_KEY);
+  } catch { /* хранилище закрыто: набор просто не запомнится */ }
+}
+
+function sameList(a, b) {
+  return a.length === b.length && a.every((item, index) => item === b[index]);
 }
 
 function parseColsParam(searchParams) {
@@ -187,7 +225,11 @@ function rowHref(item, { conceptSlug, russiaIndicatorCode } = {}) {
 /** Горизонтальный сдвиг шкалы карты при 5+ колонках: колонки 0-4 — без сдвига. */
 const TABLE_SHIFT_BY_COLUMN_COUNT = [0, 0, 0, 1, 1, 2];
 
-export default function WorldRatingPage() {
+/**
+ * `renderActions` — необязательный слот кнопок кабинета: «Сохранить вид» (показатель, год, группа и добавленные колонки).
+ * Без него вид хранится только в этом браузере (кнопка «Запомнить колонки»).
+ */
+export default function WorldRatingPage({ renderActions = null } = {}) {
   const t = useT();
   const { locale } = useLocale();
   const { isAuthed } = useAuth();
@@ -211,6 +253,9 @@ export default function WorldRatingPage() {
   // Любой refetch каталога не должен откатывать клик, поэтому запись идёт
   // только из обработчика клика и сброса при смене концепта.
   const [sortOverride, setSortOverride] = useState(null);
+  const [showAllRows, setShowAllRows] = useState(false);
+  const tableCardRef = useRef(null);
+  const [edges, setEdges] = useState({ start: false, end: false });
 
   const countriesQ = useWorldCountries();
   const catalogQ = useWorldRatingConcepts();
@@ -256,6 +301,9 @@ export default function WorldRatingPage() {
     }
     return out;
   }, [rawExtraCols, concepts, activeConcept, extraMax]);
+
+  // Фильтр групп стран «Все / G7 / БРИКС / СНГ» живёт в адресе (`group`), как и набор колонок.
+  const activeGroup = normalizeRatingGroup(searchParams.get('group'));
 
   const extraSeries0 = useWorldMapSeries(extraSlugs[0]);
   const extraSeries1 = useWorldMapSeries(extraSlugs[1]);
@@ -405,6 +453,12 @@ export default function WorldRatingPage() {
     );
     return rows.map((item, index) => ({ ...item, rank: index + 1 }));
   }, [yearItems, baseDirection]);
+  const groupTotals = useMemo(() => groupCounts(ranked), [ranked]);
+  // В группе места считаются внутри группы: «3-е среди стран G7», а не место в общем списке с пропусками.
+  const rankedView = useMemo(() => {
+    if (activeGroup === 'all') return ranked;
+    return filterRowsByGroup(ranked, activeGroup).map((item, index) => ({ ...item, rank: index + 1 }));
+  }, [ranked, activeGroup]);
   const withoutData = useMemo(() => {
     const withData = new Set(Object.values(yearItems).map((item) => item.country_code));
     return countries.filter((country) => !withData.has(country.code));
@@ -506,6 +560,8 @@ export default function WorldRatingPage() {
 
   // Доп-колонки: добавление через селектор, снятие крестиком в шапке колонки.
   const [addOpen, setAddOpen] = useState(false);
+  const justAddedRef = useRef('');
+  const [addedNote, setAddedNote] = useState('');
   const writeExtraCols = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     if (next.length) params.set('cols', next.join(','));
@@ -520,7 +576,11 @@ export default function WorldRatingPage() {
     writeExtraCols([...extraSlugs, slug]);
     track(events.WORLD_RATING_COMPARE_ADD, { concept: activeConcept, added: slug, total: extraSlugs.length + 1 });
     setAddOpen(false);
-  }, [activeConcept, extraSlugs, extraMax, writeExtraCols]);
+    // Новая колонка стоит справа: таблица сама доезжает до неё, а строка под таблицей называет её (круг 11, U13).
+    justAddedRef.current = slug;
+    const name = extraColumnLabel(slug, concepts, undefined, t);
+    setAddedNote(name);
+  }, [activeConcept, extraSlugs, extraMax, writeExtraCols, concepts, t]);
 
   const removeExtra = useCallback((slug) => {
     if (sortedColSlug === slug) setSortOverride(null);
@@ -533,15 +593,75 @@ export default function WorldRatingPage() {
   );
   const atExtraMax = extraSlugs.length >= extraMax;
 
+  // Новая колонка в поле зрения: если её правый край за краем карточки, прокручиваем ровно настолько.
+  useEffect(() => {
+    const slug = justAddedRef.current;
+    if (!slug) return;
+    const card = tableCardRef.current;
+    const th = card?.querySelector?.(`th[data-col="${slug}"]`);
+    if (!card || !th) return;
+    justAddedRef.current = '';
+    const gap = th.getBoundingClientRect().right - card.getBoundingClientRect().right;
+    if (gap > -12 && card.scrollBy) card.scrollBy({ left: gap + 20, behavior: calmMotion() ? 'auto' : 'smooth' });
+  });
+  useEffect(() => {
+    if (!addedNote) return undefined;
+    const timer = window.setTimeout(() => setAddedNote(''), 6000);
+    return () => window.clearTimeout(timer);
+  }, [addedNote]);
+
+  // Фильтр групп стран: пустые группы (нет ни одной страны с данными) кнопкой не показываются.
+  const groupIds = useMemo(
+    () => RATING_GROUP_IDS.filter((id) => id === 'all' || id === activeGroup || (groupTotals[id] || 0) > 0),
+    [groupTotals, activeGroup],
+  );
+  const setGroup = useCallback((id) => {
+    const params = new URLSearchParams(searchParams);
+    if (id && id !== 'all') params.set('group', id);
+    else params.delete('group');
+    setSearchParams(params, { replace: true });
+    setShowAllRows(false);
+    track(events.WORLD_RATING_FILTER, { concept: activeConcept, group: id });
+  }, [searchParams, setSearchParams, activeConcept]);
+
+  // Набор колонок запоминается в этом браузере и открывается сам, когда человек возвращается в рейтинг без своего набора в адресе.
+  const [savedCols, setSavedCols] = useState([]);
+  useEffect(() => { setSavedCols(readSavedCols()); }, []);
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current || concepts.length === 0) return;
+    restoredRef.current = true;
+    if (rawExtraCols.length > 0) return;
+    const known = new Set(concepts.map((item) => item.slug));
+    const saved = readSavedCols().filter((slug) => known.has(slug) && slug !== activeConcept).slice(0, extraMax);
+    if (saved.length > 0) writeExtraCols(saved);
+  }, [concepts, rawExtraCols.length, activeConcept, extraMax, writeExtraCols]);
+  const colsSaved = extraSlugs.length > 0 && sameList(extraSlugs, savedCols);
+  const toggleSaveCols = () => {
+    const next = colsSaved ? [] : extraSlugs;
+    writeSavedCols(next);
+    setSavedCols(next);
+  };
+
   // Изменение к прошлому году и мини-график считаются из уже загруженных лет: сервер ничего не досчитывает.
   const valuesByYear = mapSeriesQ.data?.values_by_year;
   const polarity = useMemo(() => indicatorPolarity(concept.name, shortName), [concept.name, shortName]);
-  const percentUnit = Boolean(sharedUnit) && sharedUnit.startsWith('%');
+  // Показатель в процентах (в том числе «изменение за год, %»): изменение к прошлому году считается разностью в п. п.
+  const percentUnit = isPercentUnitText(sharedUnit);
   const changeByCode = useMemo(() => {
     const map = new Map();
     for (const item of ranked) map.set(item.country_code, yearOverYear(valuesByYear, years, activeYear, item.country_code));
     return map;
   }, [ranked, valuesByYear, years, activeYear]);
+  // Шапка колонки изменения: у рядов в процентах «К 2024 г., п. п.» (год и мера названы), у остальных «К прошлому году, %».
+  const changeYear = useMemo(
+    () => commonChangeYear([...changeByCode.values()], activeYear ? Number(activeYear) - 1 : null),
+    [changeByCode, activeYear],
+  );
+  const changeHeader = percentUnit && changeYear != null
+    ? t('c9t.rating.col.changeYearPp', { year: changeYear })
+    : t('w6d.rating.col.change');
+  const changeHint = t(percentUnit ? 'c11t.rating.col.changePpHint' : 'c11t.rating.col.changePctHint');
   const sparkByCode = useMemo(() => {
     const map = new Map();
     for (const item of ranked) map.set(item.country_code, countrySeries(valuesByYear, years, activeYear, item.country_code));
@@ -554,7 +674,7 @@ export default function WorldRatingPage() {
   const displayRows = useMemo(() => {
     if (sortedColSlug === SORT_NAME_COLUMN) {
       const sign = sortedColDir === 'asc' ? 1 : -1;
-      return [...ranked].sort((a, b) => sign * ratingCountryName(a).localeCompare(ratingCountryName(b), locale));
+      return [...rankedView].sort((a, b) => sign * ratingCountryName(a).localeCompare(ratingCountryName(b), locale));
     }
     const valueOf = (item) => {
       if (sortedColSlug === SORT_BASE_COLUMN) return item.value ?? null;
@@ -568,7 +688,7 @@ export default function WorldRatingPage() {
     };
     const withValue = [];
     const withoutValue = [];
-    for (const item of ranked) {
+    for (const item of rankedView) {
       if (valueOf(item) == null) withoutValue.push(item);
       else withValue.push(item);
     }
@@ -576,9 +696,8 @@ export default function WorldRatingPage() {
       ? valueOf(a) - valueOf(b)
       : valueOf(b) - valueOf(a)));
     return [...withValue, ...withoutValue];
-  }, [ranked, sortedColSlug, sortedColDir, extraColumns, activeYear, changeByCode, percentUnit, ratingCountryName, locale]);
+  }, [rankedView, sortedColSlug, sortedColDir, extraColumns, activeYear, changeByCode, percentUnit, ratingCountryName, locale]);
 
-  const [showAllRows, setShowAllRows] = useState(false);
   const compactRows = !showAllRows && displayRows.length > TABLE_COMPACT_ROWS + 3;
   const visibleRows = compactRows ? displayRows.slice(0, TABLE_COMPACT_ROWS) : displayRows;
   const shifts = useMemo(
@@ -599,21 +718,82 @@ export default function WorldRatingPage() {
     });
   };
 
-  // Слайдер колонок (правка 16): при 3+ показателях таблица шире контейнера —
-  // разрешаем фиксированные сдвиги вправо, чтобы дотянуться до дальних колонок
-  // без горизонтального скролла всей страницы.
-  const columnCount = 1 + extraColumns.length;
-  const maxShift = TABLE_SHIFT_BY_COLUMN_COUNT[
-    Math.min(columnCount, TABLE_SHIFT_BY_COLUMN_COUNT.length - 1)
-  ] || 0;
-  const [tableShiftRaw, setTableShift] = useState(0);
-  const tableShift = Math.min(tableShiftRaw, maxShift);
-  const tableStyle = maxShift > 0 && tableShift > 0
-    ? { transform: `translateX(-${tableShift * 15}%)` }
-    : undefined;
+  // Скачать таблицу: то, что видно на экране (порядок, группа, добавленные колонки), целиком, а не только первые строки.
+  const [exporting, setExporting] = useState(false);
+  const handleExport = async (format) => {
+    if (exporting || displayRows.length === 0) return;
+    const indicator = `rating:${activeConcept}`;
+    if (!isAuthed) {
+      track(events.DOWNLOAD_LIMIT_HIT, { indicator });
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return;
+    }
+    setExporting(true);
+    try {
+      const round = (value) => (Number.isFinite(Number(value)) ? Number(Number(value).toFixed(4)) : null);
+      const columns = [
+        { key: 'rank', label: t('world.rating.col.rank') },
+        { key: 'country', label: t('world.rating.col.country') },
+        { key: 'value', label: shortName, unit: sharedUnit || undefined },
+        { key: 'change', label: changeHeader, unit: percentUnit ? t('w6d.rating.pp') : (sharedUnit ? '%' : undefined) },
+        ...extraColumns.map((col) => ({
+          key: gridColumnKey(`x_${col.slug}`),
+          label: col.label,
+          unit: localizeWorldUnit(col.unit, locale) || undefined,
+        })),
+        ...(sharedUnit ? [] : [{ key: 'unit', label: t('world.rating.col.unit') }]),
+      ];
+      const rows = displayRows.map((item) => {
+        const change = changeByCode.get(item.country_code);
+        const row = {
+          rank: item.rank,
+          country: ratingCountryName(item),
+          value: round(item.value),
+          change: change ? round(percentUnit || change.pct == null ? change.abs : change.pct) : null,
+        };
+        extraColumns.forEach((col) => {
+          row[gridColumnKey(`x_${col.slug}`)] = round(lookupExtraValue(col.seriesData, activeYear, item)?.value);
+        });
+        if (!sharedUnit) row.unit = localizeWorldUnit(item.unit || concept.unit, locale) || '';
+        return row;
+      });
+      const groupName = activeGroup === 'all' ? '' : t(`c11f.rating.group.${activeGroup}`);
+      await downloadGrid({
+        format,
+        filename: gridFilename(['rating', activeConcept, activeYear, activeGroup === 'all' ? '' : activeGroup].filter(Boolean).join('_'), format),
+        title: [heading.title, groupName].filter(Boolean).join(', '),
+        columns,
+        rows,
+        meta: {
+          source: localizeSource(first?.source || mapSeriesQ.data?.concept?.source || '', locale) || undefined,
+          note: [periodNote, percentUnit ? changeHint : ''].filter(Boolean).join('. ') || undefined,
+        },
+        history: { source: 'rating', subject_key: `${activeConcept}:${activeYear || ''}`, params: { group: activeGroup, columns: extraSlugs } },
+      });
+      track(format === 'csv' ? events.DOWNLOAD_CSV : events.DOWNLOAD_EXCEL, { indicator, rows: rows.length });
+    } catch (err) {
+      if (err?.code === 'download_limit') window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      // Остальные сбои сети не должны ронять страницу.
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  // Колонки: таблица прокручивается сама (карточка), у края, за которым есть продолжение, контент затухает, а стрелки
+  // сдвигают её на две-три колонки. Раньше колонку сдвигали трансформацией, и добавленный показатель уходил за край без подсказки.
+  const scrollTable = (direction) => {
+    const card = tableCardRef.current;
+    if (!card?.scrollBy) return;
+    card.scrollBy({ left: direction * Math.round(card.clientWidth * 0.7), behavior: calmMotion() ? 'auto' : 'smooth' });
+  };
 
   // На телефоне вместо широкой таблицы — карточки: место, флаг, страна, значение: значение всегда на одном экране со страной.
   const narrow = useMatchMedia('(max-width: 639px)');
+  // Состояние краёв обновляется только при настоящем изменении: прокрутка не перерисовывает страницу на каждый кадр.
+  const onEdges = useCallback((next) => {
+    setEdges((prev) => (prev.start === next.start && prev.end === next.end ? prev : next));
+  }, []);
+  useScrollFades(tableCardRef, [extraColumns.length, narrow, rankedView.length], onEdges);
   const digits = useMemo(() => uniformDigits(ranked.map((item) => item.value)), [ranked]);
   const fmtValue = useCallback((value) => formatWorldValue(value, digits, locale), [digits, locale]);
   const shortUnitOf = (text) => splitUnit(text).short;
@@ -734,9 +914,12 @@ export default function WorldRatingPage() {
                 <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
                   <div className="min-w-0">
                     <h2 className="font-display text-2xl font-bold text-text-primary">
-                      {t('world.rating.allWithData', { n: ranked.length })}
+                      {activeGroup === 'all'
+                        ? t('world.rating.allWithData', { n: ranked.length })
+                        : t('c11f.rating.group.title', { group: t(`c11f.rating.group.${activeGroup}`), n: rankedView.length })}
                     </h2>
                     {periodNote && <p className="z6-table__sub">{periodNote}</p>}
+                    {percentUnit && rankedView.length > 0 && <p className="z6-table__sub">{changeHint}</p>}
                   </div>
                   <div className="z6-controls flex min-w-0 flex-wrap items-end gap-2.5">
                     <div className="min-w-0">
@@ -770,6 +953,47 @@ export default function WorldRatingPage() {
                     </Button>
                   </div>
                 </div>
+                <div className="z6-subbar">
+                  {groupIds.length > 1 && (
+                    <ChipGroup label={t('c11f.rating.group.label')} className="z6-groups" data-testid="rating-groups">
+                      {groupIds.map((id) => (
+                        <Chip key={id} active={activeGroup === id} onClick={() => setGroup(id)}>
+                          {t(`c11f.rating.group.${id}`)}
+                        </Chip>
+                      ))}
+                    </ChipGroup>
+                  )}
+                  <div className="z6-tools">
+                    <DownloadMenu
+                      disabled={exporting || displayRows.length === 0}
+                      items={[
+                        { key: 'csv', label: 'CSV', hint: t('x4.download.csvHint'), icon: Download, onSelect: () => handleExport('csv') },
+                        { key: 'xlsx', label: 'Excel', hint: t('x4.download.xlsxHint'), icon: Download, onSelect: () => handleExport('xlsx') },
+                      ]}
+                    />
+                    {extraColumns.length > 0 && (
+                      <Chip
+                        active={colsSaved}
+                        onClick={toggleSaveCols}
+                        title={t(colsSaved ? 'c11f.rating.cols.savedHint' : 'c11f.rating.cols.saveHint')}
+                        className="gap-1.5"
+                        data-testid="rating-save-cols"
+                      >
+                        {colsSaved ? <BookmarkCheck size={14} aria-hidden="true" /> : <Bookmark size={14} aria-hidden="true" />}
+                        {t(colsSaved ? 'c11f.rating.cols.saved' : 'c11f.rating.cols.save')}
+                      </Chip>
+                    )}
+                    <CabinetActionsSlot
+                      subject={ratingViewSubject({
+                        concept: activeConcept, year: activeYear, group: activeGroup, cols: extraSlugs, title: heading.title,
+                      })}
+                      renderActions={renderActions}
+                    />
+                  </div>
+                </div>
+                {addedNote && (
+                  <p className="z6-added-note" role="status">{t('c11f.rating.columnAdded', { name: addedNote })}</p>
+                )}
                 {addOpen && (
                   <div className="z3-add-panel fe-reveal" role="group" aria-label={t('world.rating.addColumn')}>
                     {isAuthed && atExtraMax ? (
@@ -870,18 +1094,22 @@ export default function WorldRatingPage() {
                       })}
                       {!loading && displayRows.length === 0 && (
                         <li className="px-4 py-8 text-center text-sm text-text-secondary">
-                          {t('world.rating.emptyYear')}
+                          {activeGroup === 'all' || !activeYear
+                            ? t('world.rating.emptyYear')
+                            : t('c11f.rating.group.none', { year: activeYear })}
                         </li>
                       )}
                     </ol>
                   </>
                 ) : (
                   <div
+                    ref={tableCardRef}
                     className="z6-table-card overflow-x-auto"
                     data-scroll={extraColumns.length > 0 ? 'x' : undefined}
+                    data-extra={extraColumns.length > 0 ? String(extraColumns.length) : undefined}
                   >
-                    <div style={tableStyle} className="transition-transform duration-200">
-                      <table className="w6d-table w-full min-w-[34rem] text-sm">
+                    <div>
+                      <table className="w6d-table w-full min-w-[26rem] text-sm">
                         <thead>
                           <tr className="text-left text-xs text-text-secondary">
                             <th className="w-20 px-4 py-3 font-medium">{t('world.rating.col.rank')}</th>
@@ -900,7 +1128,8 @@ export default function WorldRatingPage() {
                             />
                             <th className="w6d-col-bar px-2 py-3 font-medium" aria-hidden="true" />
                             <SortableTh
-                              label={t('w6d.rating.col.change')}
+                              label={changeHeader}
+                              hint={changeHint}
                               active={sortedColSlug === SORT_DELTA_COLUMN}
                               dir={sortedColDir}
                               onClick={() => handleSortClick(SORT_DELTA_COLUMN)}
@@ -909,6 +1138,7 @@ export default function WorldRatingPage() {
                             {extraColumns.map((col) => (
                               <SortableTh
                                 key={col.slug}
+                                colId={col.slug}
                                 minWidth
                                 label={extraHeaderLabel(col)}
                                 active={sortedColSlug === col.slug}
@@ -983,7 +1213,9 @@ export default function WorldRatingPage() {
                           {!loading && displayRows.length === 0 && (
                             <tr>
                               <td colSpan={colCount} className="px-4 py-8 text-center text-text-secondary">
-                                {t('world.rating.emptyYear')}
+                                {activeGroup === 'all' || !activeYear
+                                  ? t('world.rating.emptyYear')
+                                  : t('c11f.rating.group.none', { year: activeYear })}
                               </td>
                             </tr>
                           )}
@@ -1004,13 +1236,13 @@ export default function WorldRatingPage() {
                   </button>
                 )}
                 {medianNote && <p className="w6d-median">{medianNote}</p>}
-                {!narrow && maxShift > 0 && (
-                  <div className="mt-2 flex items-center justify-end gap-1.5" data-testid="table-shift">
+                {!narrow && extraColumns.length > 0 && (edges.start || edges.end) && (
+                  <div className="z6-scrollbar" data-testid="table-shift">
                     <Button
                       variant="secondary"
                       aria-label={t('world.rating.slideLeft')}
-                      disabled={tableShift <= 0}
-                      onClick={() => setTableShift(Math.max(0, tableShift - 1))}
+                      disabled={!edges.start}
+                      onClick={() => scrollTable(-1)}
                       className="w-10 px-0! pointer-coarse:w-11"
                     >
                       <ChevronLeft size={15} aria-hidden="true" />
@@ -1018,8 +1250,8 @@ export default function WorldRatingPage() {
                     <Button
                       variant="secondary"
                       aria-label={t('world.rating.slideRight')}
-                      disabled={tableShift >= maxShift}
-                      onClick={() => setTableShift(Math.min(maxShift, tableShift + 1))}
+                      disabled={!edges.end}
+                      onClick={() => scrollTable(1)}
                       className="w-10 px-0! pointer-coarse:w-11"
                     >
                       <ChevronRight size={15} aria-hidden="true" />

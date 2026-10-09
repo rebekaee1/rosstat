@@ -265,7 +265,6 @@ export default function WorldRegionIndicatorPage() {
         items={worldSubnationalIndicatorTrail(
           countryName, countrySlug, kindPlural, regionName, slug, indName, code,
         )}
-        className="fe-crumbs--oneline"
       />
 
       {data.isError && !payload && (

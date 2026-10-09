@@ -19,6 +19,7 @@ import {
   regionVsPath,
 } from '../lib/sitePaths';
 import { useLocale } from '../i18n';
+import RegionComparePick from './regions/RegionComparePick';
 import { CHART_THEME } from '../lib/chartTheme';
 import '../styles/regions-w4.css';
 import '../styles/w6f-pages.css';
@@ -63,6 +64,10 @@ export default function RegionsMap({
   shape = 'regions',        // 'bubbles' — одинаковые кружки по регионам (равная площадь), без полигонов
   pickedSlug,               // регион выбран снаружи (поиск, быстрый выбор); undefined — выбор внутри карты
   onPickedChange = null,    // сообщает наружу, что выбор изменился
+  compareSlugs = null,      // Круг 11: набор регионов для сравнения (массив) снаружи; null — прежнее сравнение двух внутри карты
+  onCompareToggle = null,   // Круг 11: добавить или убрать регион из набора
+  compareMax = 5,
+  reserveCard = false,      // Круг 11: место под карточку выбранного региона занято всегда (страница не прыгает при выборе)
 }) {
   const geometry = mapDataProp || mapData;
   const compact = variant === 'compact';
@@ -81,6 +86,7 @@ export default function RegionsMap({
   // Второй регион для сравнения: «Сравнить с…» на карточке выбранного региона.
   const [compareSlug, setCompareSlug] = useState(null);
   const pointerTypeRef = useRef('mouse');
+  const multiCompare = Array.isArray(compareSlugs) && typeof onCompareToggle === 'function';
   const bubbles = shape === 'bubbles' && !compact;
   const bubblePos = useMemo(() => (bubbles ? bubbleLayout(geometry) : null), [bubbles, geometry]);
 
@@ -538,8 +544,13 @@ export default function RegionsMap({
         )}
       </div>
 
+      {!compact && !picked && reserveCard && (
+        <div className="fe-map-pick fe-map-pick--empty" data-no-export="true" data-testid="map-pick-empty">
+          <p className="fe-map-pick__prompt">{t('c11f.reg.pick.empty')}</p>
+        </div>
+      )}
       {!compact && picked && (
-        <div className="fe-map-pick" role="status" data-no-export="true" ref={pickCardRef}>
+        <div className={`fe-map-pick${reserveCard ? ' fe-map-pick--reserve' : ''}`} role="status" data-no-export="true" ref={pickCardRef}>
           <div className="fe-map-pick__text">
             <div className="fe-map-pick__name">{nameBySlug[picked] || picked}</div>
             {valuesBySlug?.get(picked) != null && (
@@ -553,8 +564,19 @@ export default function RegionsMap({
               </div>
             )}
           </div>
-          <div className="fe-map-pick__actions">
-            {compareSlug && compareSlug !== picked ? (
+          <div className={`fe-map-pick__actions${multiCompare ? ' fe-map-pick__actions--grid' : ''}`}>
+            {multiCompare ? (
+              <button
+                type="button"
+                className="fe-map-pick__cmp fe-press"
+                aria-pressed={compareSlugs.includes(picked)}
+                disabled={!compareSlugs.includes(picked) && compareSlugs.length >= compareMax}
+                onClick={() => onCompareToggle(picked)}
+              >
+                <GitCompare size={14} aria-hidden="true" />
+                {compareSlugs.includes(picked) ? t('c11f.reg.compare.inSet') : t('c11f.reg.compare.add')}
+              </button>
+            ) : compareSlug && compareSlug !== picked ? (
               <Link to={regionVsPath(compareSlug, picked)} className="fe-map-pick__open fe-press">
                 <GitCompare size={14} aria-hidden="true" />
                 {t('w6f.map.compareWith', { name: nameBySlug[compareSlug] || compareSlug })}
@@ -574,6 +596,7 @@ export default function RegionsMap({
               {t('z2.map.open')}
               <ArrowRight size={14} aria-hidden="true" />
             </button>
+            {multiCompare ? <div className="fe-map-pick__with"><RegionComparePick slug={picked} /></div> : null}
           </div>
           <button type="button" className="fe-map-pick__close fe-press" onClick={() => setPicked(null)} aria-label={t('common.close')}>
             <X size={16} aria-hidden="true" />

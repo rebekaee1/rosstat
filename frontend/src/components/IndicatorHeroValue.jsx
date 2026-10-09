@@ -6,6 +6,7 @@ import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
 import { splitUnit } from '../lib/countryFlag';
 import { useLocale, useT } from '../i18n';
 import DeltaBadge from './DeltaBadge';
+import FreshnessBadge from './FreshnessBadge';
 import Sparkline from './Sparkline';
 import { SkeletonBox } from './Skeleton';
 import WorldCountUp from './WorldCountUp';
@@ -48,6 +49,8 @@ export default function IndicatorHeroValue({
     kind, shown, last, prev, estimate, changeAbs, changePct, fmt,
   } = summary;
   const unitParts = splitUnit(shown.unit);
+  // «198,0 индекс» читается как ошибка: слово «индекс» не единица, оно стоит тихой строкой под числом (круг 11, U15).
+  const plainIndex = /^(индекс|index)$/i.test(unitParts.short);
   const dateText = (date) => glueDate(formatDate(date, dateFormat, locale));
   const label = estimate ? t('w6e.tile.estimate', { date: dateText(last.date) }) : t('w2.ind.now');
   const when = estimate ? '' : periodPhrase(t, last.date, dateFormat, locale);
@@ -92,7 +95,7 @@ export default function IndicatorHeroValue({
       <div className="z4-hv__row">
         <p className={String(shown.text || '').length > 8 ? 'z4-hv__value z4-hv__value--long' : 'z4-hv__value'}>
           <WorldCountUp value={last.value} format={fmt} />
-          {unitParts.short ? <span className="z4-hv__unit">{unitParts.short}</span> : null}
+          {unitParts.short && !plainIndex ? <span className="z4-hv__unit">{unitParts.short}</span> : null}
         </p>
         {spark.length > 1 ? (
           <div className="z4-hv__spark" aria-hidden="true">
@@ -100,7 +103,9 @@ export default function IndicatorHeroValue({
           </div>
         ) : null}
       </div>
+      {plainIndex ? <p className="z4-hv__basis">{unitParts.short}</p> : null}
       {delta}
+      {frequency && last?.date ? <FreshnessBadge lastDate={last.date} frequency={frequency} /> : null}
     </div>
   );
 }
