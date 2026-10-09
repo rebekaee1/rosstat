@@ -268,16 +268,25 @@ export const fetchOAuthProviders = ({ signal } = {}) =>
   api.get('/auth/oauth/providers', { signal }).then((r) => r.data.providers || []);
 
 /**
- * Серверная выгрузка таблицы (Excel/CSV) с гейтом лимита.
- * Возвращает Blob; при 403 download_limit бросает ошибку с code='download_limit'.
+ * Что кладём в историю выгрузок кабинета, если вызывающий не передал свою: адрес страницы, с которой скачали
+ * (по нему кабинет ведёт «Открыть страницу»). Сервер пишет историю только вошедшему и только при включённом кабинете.
  */
-export const exportTable = async ({ format, filename, valueLabel, points, meta }) => {
+function defaultExportHistory(source) {
   try {
-    const res = await api.post(
-      '/export/table',
-      { format, filename, value_label: valueLabel, points, meta },
-      { responseType: 'blob' },
-    );
+    const href = `${window.location.pathname}${window.location.search}`;
+    return { source, params: href.startsWith('/') && !href.startsWith('//') && href.length <= 600 ? { href } : {} };
+  } catch {
+    return { source };
+  }
+}
+
+/**
+ * POST выгрузки с ответом-файлом. Возвращает Blob и остаток гостевых выгрузок;
+ * при 403 download_limit бросает ошибку с code='download_limit' (тело ошибки приходит как Blob).
+ */
+async function postExportBlob(url, body) {
+  try {
+    const res = await api.post(url, body, { responseType: 'blob' });
     const raw = res.headers?.['x-download-remaining'];
     const remaining = raw == null || raw === '' ? null : Number(raw);
     return { blob: res.data, remaining };
@@ -298,6 +307,27 @@ export const exportTable = async ({ format, filename, valueLabel, points, meta }
     }
     throw err;
   }
-};
+}
+
+/**
+ * Серверная выгрузка таблицы (Excel/CSV) с гейтом лимита.
+ * Возвращает Blob; при 403 download_limit бросает ошибку с code='download_limit'.
+ * `history` (необязательно, круг 11): { source, subject_key, params } для истории выгрузок кабинета;
+ * по умолчанию записывается адрес текущей страницы. Диапазонов (lower/upper) в параметрах быть не может.
+ */
+export const exportTable = ({ format, filename, valueLabel, points, meta, history }) =>
+  postExportBlob('/export/table', {
+    format, filename, value_label: valueLabel, points, meta, history: history ?? defaultExportHistory('table'),
+  });
+
+/**
+ * Выгрузка произвольной сетки (сравнение, таблица рейтинга, график платежей): `POST /export/grid`.
+ * Колонки `[{ key, label, unit? }]`, строки `[{ [key]: число | строка | null }]`; ключей `lower`/`upper` быть не может (422).
+ * Допуск и гостевой лимит те же, что у `exportTable`; ошибка лимита тоже с code='download_limit'.
+ */
+export const exportGrid = ({ format, filename, title, columns, rows, meta, history }) =>
+  postExportBlob('/export/grid', {
+    format, filename, title, columns, rows, meta, history: history ?? defaultExportHistory('grid'),
+  });
 
 export default api;
