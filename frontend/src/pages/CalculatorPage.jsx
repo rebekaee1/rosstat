@@ -13,7 +13,8 @@ import useDocumentMeta from '../lib/useMeta';
 import { getPageSeo } from '../lib/pageMeta';
 import useInflationCalc from '../lib/useInflationCalc';
 import { formatDate, pickChartAxisTicks, cn } from '../lib/format';
-import { formatInput, fmtPct, decimalText, years as yearsPhrase } from '../lib/calcFormat';
+import { formatInput, fmtPct, decimalText, fitAmountText, formatCompactAmount, years as yearsPhrase } from '../lib/calcFormat';
+import useCalcUrlSync, { intParam } from '../lib/useCalcUrlSync';
 import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, refLabel, axisWidthForLabels } from '../lib/chartTheme';
@@ -38,6 +39,7 @@ import CalculatorShowcase from '../components/CalculatorShowcase';
 import CalcBeforeAfter from '../components/CalcBeforeAfter';
 import CalcAnimatedNumber from '../components/CalcAnimatedNumber';
 import CalcStickyResult from '../components/CalcStickyResult';
+import CalcSaveSlot from '../components/CalcSaveSlot';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
@@ -56,6 +58,7 @@ import {
   RUSSIA_SLUG,
 } from '../lib/inflationCalc';
 import { RUB, currencyForCountry, currencyInPhrase, formatMoney } from '../lib/countryCurrency';
+import { MONEY_MAX } from '../lib/calcUi';
 import {
   russiaIndicatorPath,
   russiaHomePath,
@@ -281,16 +284,35 @@ function YearlyBreakdownTable({ breakdown, format, partial = null }) {
 
 /* ─── Main Page ─── */
 
-export default function CalculatorPage() {
+/** Последняя выбранная человеком страна хранится в браузере; без хранилища страница работает как раньше. */
+const COUNTRY_MEMORY_KEY = 'fe_calc_country';
+function readRememberedCountry() {
+  try { return String(window.localStorage.getItem(COUNTRY_MEMORY_KEY) || '').trim().toLowerCase().slice(0, 60); } catch { return ''; }
+}
+function rememberCountry(slug) {
+  try { window.localStorage.setItem(COUNTRY_MEMORY_KEY, slug); } catch { /* хранилище недоступно */ }
+}
+
+/** Знак своей валюты: до 6 знаков, без разметки. */
+function cleanCustomCurrency(raw) {
+  return String(raw || '').replace(/[<>"'&\s]/g, '').slice(0, 6);
+}
+
+/** Деноминация 1 января 1998 года: 1000 старых рублей стали 1 новым. */
+const DENOMINATION_YEAR = 1998;
+
+export default function CalculatorPage({ renderSave } = {}) {
   const t = useT();
   const { locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentYear = new Date().getFullYear();
 
-  const [amount, setAmount] = useState(() => {
-    const p = searchParams.get('amount');
-    return p ? parseInt(p, 10) || 100000 : 100000;
-  });
+  // Круг 11 (E): все параметры живут в адресе (?amount=&from=&to=&country=&cur=), чтобы смена языка и сохранённый расчёт открывали то же.
+  const [edited, setEdited] = useState(false);
+  const [amount, setAmountRaw] = useState(() => intParam(searchParams, 'amount', { min: 1, max: MONEY_MAX, fallback: 100000 }));
+  const setAmount = useCallback((value) => { setEdited(true); setAmountRaw(value); }, []);
+  const [customCurrency, setCustomCurrencyRaw] = useState(() => cleanCustomCurrency(searchParams.get('cur')));
+  const setCustomCurrency = useCallback((value) => { setEdited(true); setCustomCurrencyRaw(cleanCustomCurrency(value)); }, []);
 
   // K4a: URL-период снимается один раз как неизменяемый референс — нормализация
   // (перестановка from > to, клэмп к данным) выполняется в одной точке ниже.
@@ -304,9 +326,20 @@ export default function CalculatorPage() {
   // K1: дефолт страны — по локали (EN-витрина → США), и только когда ?country
   // в URL нет; явный выбор пользователя всегда приоритетнее дефолта.
   const [countryParam] = useState(() => (searchParams.get('country') || '').trim().toLowerCase());
+  // Нет ?country: берём страну, которую человек выбирал в прошлый раз (после монтирования, чтобы разметка совпала с серверной),
+  // а если её нет, страну по языку.
   const [countrySlug, setCountrySlug] = useState(
     () => countryParam || defaultCountrySlug(locale),
   );
+  useEffect(() => {
+    if (countryParam) return undefined;
+    // Хранилище браузера читается после монтирования; применение в следующем такте, чтобы разметка совпала с серверной.
+    const timer = window.setTimeout(() => {
+      const remembered = readRememberedCountry();
+      if (remembered) setCountrySlug(remembered);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [countryParam]);
   const [copied, setCopied] = useState(false);
   const resultRef = useRef(null);
   const [chartMode, setChartMode] = useState('purchasing');
@@ -339,7 +372,14 @@ export default function CalculatorPage() {
 
   const withRuble = isRussia;
   // Валюта страны: «Сумма в австралийских долларах», «A$100 000» вместо «нац. валюта».
-  const currency = isRussia ? RUB : currencyForCountry(resolvedCountrySlug);
+  const knownCurrency = isRussia ? RUB : currencyForCountry(resolvedCountrySlug);
+  // Круг 11 (E): у страны вне таблицы валют человек может назвать свою («₸», «KZT»): знак подставляется в суммы и подписи.
+  const needsCustomCurrency = !isRussia && !knownCurrency;
+  const currency = useMemo(() => {
+    if (knownCurrency) return knownCurrency;
+    if (!needsCustomCurrency || !customCurrency) return null;
+    return { code: customCurrency, symbol: customCurrency, ruIn: customCurrency, enName: customCurrency, prefix: false };
+  }, [knownCurrency, needsCustomCurrency, customCurrency]);
   const money = useCallback((n) => formatMoney(n, currency, locale), [currency, locale]);
   const shortSymbolPrefix = Boolean(currency?.prefix && currency.symbol.length <= 2);
   const sourceLabel = source ? localizeSource(source, locale) : '';
@@ -371,6 +411,14 @@ export default function CalculatorPage() {
     return formatDate(lastAvailableDate, 'fullGen');
   }, [lastAvailableDate]);
 
+  useCalcUrlSync({
+    amount,
+    from: fromYear,
+    to: toYear,
+    country: resolvedCountrySlug || RUSSIA_SLUG,
+    cur: needsCustomCurrency ? customCurrency : '',
+  }, { enabled: edited });
+
   const calcSeo = getPageSeo('calculator', locale);
   useDocumentMeta({
     title: calcSeo.title,
@@ -381,15 +429,18 @@ export default function CalculatorPage() {
   useScrollDepth({ key: 'calculator', page: 'calculator' });
 
   const handleFromYear = useCallback((v) => {
+    setEdited(true);
     setPeriodTouched(true);
     setRawFromYear(Math.min(v, toYear - 1));
   }, [toYear]);
   const handleToYear = useCallback((v) => {
+    setEdited(true);
     setPeriodTouched(true);
     setRawToYear(Math.max(v, fromYear + 1));
   }, [fromYear]);
 
   const handlePreset = useCallback((preset) => {
+    setEdited(true);
     setPeriodTouched(true);
     if (preset.from != null) setRawFromYear(Math.max(preset.from, effectiveMin));
     else if (preset.from === null) setRawFromYear(effectiveMin);
@@ -402,12 +453,15 @@ export default function CalculatorPage() {
     // Явный выбор из пикера всегда валиден: кириллица/регистр нормализуются,
     // пустой выбор означает возврат к дефолту локали (K1).
     const normalized = String(slug || '').trim().toLowerCase();
+    setEdited(true);
+    if (normalized) rememberCountry(normalized);
     setCountrySlug(normalized || defaultCountrySlug(locale));
   }, [locale]);
 
   const handleShare = useCallback(async () => {
     const params = new URLSearchParams({ amount: String(amount), from: String(fromYear), to: String(toYear) });
     if (resolvedCountrySlug && resolvedCountrySlug !== RUSSIA_SLUG) params.set('country', resolvedCountrySlug);
+    if (needsCustomCurrency && customCurrency) params.set('cur', customCurrency);
     setSearchParams(params, { replace: true });
     // share-ссылка всегда уходит наружу с UTM, чтобы возвратный трафик
     // отделялся от Direct в Метрике (см. docs/utm_taxonomy.md::Internal share).
@@ -423,7 +477,7 @@ export default function CalculatorPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* clipboard unavailable */ }
-  }, [amount, fromYear, toYear, resolvedCountrySlug, setSearchParams]);
+  }, [amount, fromYear, toYear, resolvedCountrySlug, needsCustomCurrency, customCurrency, setSearchParams]);
 
   // В-28: hero и share-текст показывают ФАКТИЧЕСКИ посчитанный период
   // (клэмп к доступным данным), а не введённые годы — иначе «?from=1990»
@@ -469,6 +523,36 @@ export default function CalculatorPage() {
 
   const formatHero = money;
   const heroValue = reversed ? result?.purchasing : result?.equivalent;
+  // Круг 11 (E): длинная сумма (17 147 319 615 ₽ для 1991 года) не обрезается: шрифт мельчает, а рядом стоит короткая запись.
+  const heroFull = heroValue != null ? formatHero(heroValue) : '';
+  const compactOptions = useMemo(() => ({
+    symbol: currency?.symbol || '',
+    prefix: locale === 'en' && Boolean(currency?.prefix),
+  }), [currency, locale]);
+  const fitMoney = useCallback((n, maxChars) => fitAmountText(money(n), n, { ...compactOptions, maxChars }), [money, compactOptions]);
+  const heroCompact = heroValue != null && heroFull.length > 15 ? formatCompactAmount(heroValue, compactOptions.symbol, { prefix: compactOptions.prefix }) : '';
+  const heroSizeClass = heroFull.length > 18
+    ? 'text-2xl sm:text-4xl lg:text-5xl'
+    : heroFull.length > 14
+      ? 'text-3xl sm:text-5xl lg:text-5xl'
+      : 'text-4xl md:text-5xl lg:text-6xl';
+  // Рубли до 1998 года были «старыми»: расчёт считает только рост цен и о замене не знает, поэтому сумму надо пояснить.
+  const denomination = useMemo(() => {
+    if (!isRussia || !result || dispFrom >= DENOMINATION_YEAR || dispTo < DENOMINATION_YEAR) return null;
+    return reversed
+      ? { key: 'c11e.denom.reverse', value: money(result.purchasing * 1000), year: dispFrom }
+      : { key: 'c11e.denom.forward', value: money(result.equivalent / 1000), year: dispFrom };
+  }, [isRussia, result, dispFrom, dispTo, reversed, money]);
+  const saveTitle = t('c11e.save.title', { country: countryName || t('calc.country.russia'), from: dispFrom, to: dispTo });
+  const savePayload = useMemo(() => ({
+    page: 'inflation',
+    amount,
+    from: fromYear,
+    to: toYear,
+    country: resolvedCountrySlug || RUSSIA_SLUG,
+    ...(reversed ? { reversed: true } : {}),
+    ...(needsCustomCurrency && customCurrency ? { cur: customCurrency } : {}),
+  }), [amount, fromYear, toYear, resolvedCountrySlug, reversed, needsCustomCurrency, customCurrency]);
   const heroPrefix = reversed
     ? t(withRuble ? 'calc.inflation.heroWas' : 'calc.inflation.heroWasPlain', { amount: amountText, year: dispTo })
     : t(withRuble ? 'calc.inflation.heroIs' : 'calc.inflation.heroIsPlain', { amount: amountText, year: dispFrom });
@@ -755,6 +839,22 @@ export default function CalculatorPage() {
             suffix={isRussia || shortSymbolPrefix ? '' : (currency ? currency.symbol : t('calc.ui.suffixLocal'))}
             placeholder={locale === 'en' ? '100,000' : '100 000'}
           />
+          {needsCustomCurrency && (
+            <label className="fe-c11e-cur" data-testid="calc-custom-currency">
+              <span className="fe-c11e-cur__label">{t('c11e.cur.label')}</span>
+              <input
+                type="text"
+                inputMode="text"
+                autoComplete="off"
+                maxLength={6}
+                value={customCurrency}
+                onChange={(event) => setCustomCurrency(event.target.value)}
+                placeholder={t('c11e.cur.placeholder')}
+                className="calc-field-input fe-c11e-cur__input"
+              />
+              <span className="fe-c11e-cur__hint">{t('c11e.cur.hint')}</span>
+            </label>
+          )}
           {reversed && (
             <p className="mt-2 text-xs text-champagne-ink">
               {t('calc.inflation.reverseHint', { to: toYear, from: fromYear })}
@@ -863,12 +963,15 @@ export default function CalculatorPage() {
               value={heroValue}
               format={formatHero}
               className={cn(
-                'block min-h-[1.2em] font-display font-bold tracking-tight mb-1',
+                'block min-h-[1.2em] font-display font-bold tracking-tight mb-1 [overflow-wrap:anywhere]',
                 extremeInflation
-                  ? 'text-negative text-3xl md:text-4xl lg:text-5xl'
-                  : 'fe-w6g-hero-num text-4xl md:text-5xl lg:text-6xl'
+                  ? cn('text-negative', heroFull.length > 14 ? 'text-2xl sm:text-3xl lg:text-4xl' : 'text-3xl md:text-4xl lg:text-5xl')
+                  : cn('fe-w6g-hero-num', heroSizeClass)
               )}
             />
+            {heroCompact && (
+              <p className="text-base font-semibold text-text-primary mb-1" data-testid="calc-hero-compact">{`≈ ${heroCompact}`}</p>
+            )}
             <p className="text-sm text-text-secondary mb-2">{heroSuffix}</p>
 
             <CalcBeforeAfter
@@ -879,12 +982,12 @@ export default function CalculatorPage() {
               before={{
                 label: String(reversed ? dispFrom : dispFrom),
                 value: reversed ? result.purchasing : amount,
-                text: money(reversed ? result.purchasing : amount),
+                text: fitMoney(reversed ? result.purchasing : amount, 13),
               }}
               after={{
                 label: String(dispTo),
                 value: reversed ? amount : result.equivalent,
-                text: money(reversed ? amount : result.equivalent),
+                text: fitMoney(reversed ? amount : result.equivalent, 13),
               }}
             />
             <div className="mb-6" />
@@ -913,6 +1016,12 @@ export default function CalculatorPage() {
                     country: countryName || '',
                   },
                 )}
+              </p>
+            )}
+
+            {denomination && (
+              <p className="fe-c11e-note mb-6" data-testid="calc-denomination">
+                {t(denomination.key, { value: denomination.value, year: denomination.year })}
               </p>
             )}
 
@@ -947,6 +1056,13 @@ export default function CalculatorPage() {
                 {t('calc.inflation.copyText')}
               </Button>
             </div>
+            <CalcSaveSlot
+              className="mt-2"
+              renderSave={renderSave}
+              itemKey={`inflation:${resolvedCountrySlug || RUSSIA_SLUG}:${fromYear}-${toYear}:${amount}${reversed ? ':r' : ''}`}
+              title={saveTitle}
+              payload={savePayload}
+            />
           </section>
 
           {/* ── Insights ── */}
@@ -1091,7 +1207,7 @@ export default function CalculatorPage() {
       <CalcStickyResult
         targetRef={resultRef}
         active={Boolean(result && !isLoading)}
-        value={heroValue != null ? formatHero(heroValue) : ''}
+        value={heroValue != null ? fitMoney(heroValue, 13) : ''}
       />
 
       <div className="fe-z8-calc__lower">

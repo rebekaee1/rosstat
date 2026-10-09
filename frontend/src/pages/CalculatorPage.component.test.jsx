@@ -16,7 +16,7 @@ vi.mock('../lib/track', async (importOriginal) => {
   return { ...actual, track: vi.fn() };
 });
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => { vi.restoreAllMocks(); try { window.localStorage.clear(); } catch { /* нет хранилища */ } });
 
 function monthlyCpi(fromYear, toYear, value) {
   const out = [];

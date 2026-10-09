@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis,
   Tooltip, CartesianGrid, PieChart, Pie, Cell,
@@ -13,8 +13,10 @@ import { formatCompactTick } from '../lib/regionsApi';
 import { CHART_THEME, COMPARE_COLORS, GRID_PROPS, TOOLTIP_STYLES, axisTick, axisWidthForLabels } from '../lib/chartTheme';
 import { formatDate } from '../lib/format';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
-import { revealStyle } from '../lib/calcUi';
-import { formatRubles, fmtPct, loanYearOrdinal, evenYearTicks, years as yearsPhrase } from '../lib/calcFormat';
+import { revealStyle, formatMoneyLimit } from '../lib/calcUi';
+import { formatRubles, fmtPct, loanYearOrdinal, evenYearTicks, fitAmountText, years as yearsPhrase } from '../lib/calcFormat';
+import useCalcUrlSync, { intParam, floatParam } from '../lib/useCalcUrlSync';
+import { buildSchedule, compareRates, earlyRepaymentGain } from '../lib/mortgageSchedule';
 import { track, events } from '../lib/track';
 import useScrollDepth from '../lib/useScrollDepth';
 import FaqAccordion from '../components/FaqAccordion';
@@ -30,6 +32,10 @@ import CalcStickyResult from '../components/CalcStickyResult';
 import { CalcStatGrid, CalcStatTile } from '../components/CalcStatTile';
 import CalcMethod from '../components/CalcMethod';
 import CalcKeyRate from '../components/CalcKeyRate';
+import CalcSaveSlot from '../components/CalcSaveSlot';
+import CalcMortgageExtras from '../components/CalcMortgageExtras';
+import CalcRateCompare from '../components/CalcRateCompare';
+import CalcMortgageSchedule from '../components/CalcMortgageSchedule';
 import ChartTouchHint, { ChartLegend } from '../components/ChartTouchHint';
 import { useChartTouchHint } from '../lib/useChartTouchHint';
 import '../styles/w5-tools.css';
@@ -52,7 +58,16 @@ const FAQ_KEYS = [
 const PRINCIPAL_COLOR = COMPARE_COLORS[0];
 const OVERPAY_COLOR = COMPARE_COLORS[1];
 
-export default function MortgageCalculatorPage() {
+// Круг 11 (E): предел стоимости объекта 10 млрд ₽ (выше почти наверняка опечатка), с подсказкой под полем.
+const PRICE_MAX = 10_000_000_000;
+
+// Итоги не обрезаются: длинное число (больше 14 знаков) пишется сокращённо («160 млрд ₽»).
+const fitRubles = (n) => fitAmountText(formatRubles(n), n, { maxChars: 14 });
+const heroSize = (text) => (text.length > 15
+  ? 'text-2xl sm:text-4xl lg:text-5xl'
+  : text.length > 12 ? 'text-3xl sm:text-5xl lg:text-5xl' : 'text-4xl md:text-5xl lg:text-6xl');
+
+export default function MortgageCalculatorPage({ renderSave } = {}) {
   const t = useT();
   const { locale } = useLocale();
   const faqItems = FAQ_KEYS.map((item) => ({ q: t(item.q), a: t(item.a) }));
@@ -64,12 +79,22 @@ export default function MortgageCalculatorPage() {
   const touchHint = useChartTouchHint();
   const [setChartWidthNode, chartWidth] = useElementWidth();
   const yearsLabel = (n) => (locale === 'en' ? t('calc.years', { n }) : yearsPhrase(n));
-  const [price, setPrice] = useState(8000000);
-  const [downPct, setDownPct] = useState(20);
+  const [searchParams] = useSearchParams();
+  // Параметры расчёта живут в адресе (?price=&down=&rate=&years=): так работает «Поделиться» и сохранённый в кабинете расчёт.
+  const [edited, setEdited] = useState(false);
+  const [price, setPriceRaw] = useState(() => intParam(searchParams, 'price', { min: 1, max: PRICE_MAX, fallback: 8000000 }));
+  const [downPct, setDownPctRaw] = useState(() => intParam(searchParams, 'down', { min: 0, max: 90, fallback: 20 }));
   // Ставка: пока человек её не менял, берётся средняя по ипотеке сейчас (ниже), а если данных нет, 18 %.
-  const [userRate, setUserRate] = useState(null);
-  const [years, setYears] = useState(20);
-  const changeRate = useCallback((value) => { setUserRate(value); }, []);
+  const [userRate, setUserRate] = useState(() => floatParam(searchParams, 'rate', { min: 0.1, max: 30, fallback: null }));
+  const [years, setYearsRaw] = useState(() => intParam(searchParams, 'years', { min: 1, max: 30, fallback: 20 }));
+  const setPrice = useCallback((value) => { setEdited(true); setPriceRaw(value); }, []);
+  const setDownPct = useCallback((value) => { setEdited(true); setDownPctRaw(value); }, []);
+  const setYears = useCallback((value) => { setEdited(true); setYearsRaw(value); }, []);
+  const changeRate = useCallback((value) => { setEdited(true); setUserRate(value); }, []);
+  // Досрочное погашение и вторая ставка (сравнение двух ставок).
+  const [extra, setExtraState] = useState({ monthly: 0, lump: 0, lumpMonth: 12, lumpMode: 'term' });
+  const setExtra = useCallback((patch) => { setEdited(true); setExtraState((prev) => ({ ...prev, ...patch })); }, []);
+  const [rateB, setRateB] = useState(null);
 
   const mortgageSeo = getPageSeo('calculator-mortgage', locale);
   useDocumentMeta({
@@ -79,7 +104,7 @@ export default function MortgageCalculatorPage() {
   });
   useScrollDepth({ key: 'calc-mortgage', page: 'calculator-mortgage' });
 
-  const { data: keyRate } = useQuery({
+  const { data: keyRate, isPending: keyRatePending } = useQuery({
     queryKey: ['key-rate-latest'],
     queryFn: () => api.get('/indicators/key-rate/data?limit=1').then((r) => {
       const p = r.data?.data?.[0];
@@ -103,6 +128,8 @@ export default function MortgageCalculatorPage() {
   const avgRate = avgMortgage && Number.isFinite(avgMortgage.value) && avgMortgage.value > 0
     ? Math.round(avgMortgage.value * 10) / 10 : null;
   const rate = userRate ?? avgRate ?? 18;
+
+  useCalcUrlSync({ price, down: downPct, rate, years }, { enabled: edited });
 
   // Отчёт об использовании — с паузой, чтобы не спамить слайдерами.
   useEffect(() => {
@@ -158,6 +185,36 @@ export default function MortgageCalculatorPage() {
 
   const rubleTick = (v) => `${formatCompactTick(v)}\u00A0₽`;
 
+  // График платежей, досрочное погашение и две ставки (lib/mortgageSchedule.js).
+  const termMonths = years * 12;
+  const principal = result?.principal ?? 0;
+  const baseSchedule = useMemo(
+    () => buildSchedule({ principal, ratePct: rate, months: termMonths }),
+    [principal, rate, termMonths],
+  );
+  const hasExtra = extra.monthly > 0 || extra.lump > 0;
+  const earlySchedule = useMemo(() => (hasExtra
+    ? buildSchedule({
+      principal, ratePct: rate, months: termMonths, monthlyExtra: extra.monthly, lumpAmount: extra.lump, lumpMonth: extra.lumpMonth, lumpMode: extra.lumpMode,
+    })
+    : baseSchedule), [hasExtra, principal, rate, termMonths, extra, baseSchedule]);
+  const earlyGain = useMemo(() => earlyRepaymentGain(baseSchedule, earlySchedule), [baseSchedule, earlySchedule]);
+  const comparison = useMemo(
+    () => (rateB != null && principal > 0 ? compareRates({ principal, months: termMonths, rateA: rate, rateB }) : null),
+    [rateB, principal, termMonths, rate],
+  );
+  const openCompare = useCallback(() => {
+    // Вторая ставка по умолчанию: средняя по ипотеке сейчас, а если она совпала с первой, на пункт ниже.
+    const candidate = avgRate != null && Math.abs(avgRate - rate) > 0.05 ? avgRate : Math.max(0.1, Math.round((rate - 1) * 10) / 10);
+    setRateB(candidate);
+  }, [avgRate, rate]);
+  const comparePresets = useMemo(() => [
+    ...(Number.isFinite(keyRate) && keyRate > 0 ? [{ id: 'key', label: t('c11e.cmp.presetKey'), rate: Math.round(keyRate * 10) / 10 }] : []),
+    ...(avgRate != null ? [{ id: 'avg', label: t('c11e.cmp.presetAvg'), rate: avgRate }] : []),
+  ], [keyRate, avgRate, t]);
+  const saveTitle = t('c11e.save.titleMortgage', { price: fitRubles(price), rate: String(rate).replace('.', locale === 'en' ? '.' : ','), years: yearsLabel(years) });
+  const savePayload = useMemo(() => ({ page: 'mortgage', price, down: downPct, rate, years }), [price, downPct, rate, years]);
+
   const yearCount = result?.yearly?.length || 1;
   const [selectedYear, setSelectedYear] = useState(1);
   // Клэмп инлайн, а не эффектом: срок могли сократить слайдером, старое
@@ -182,7 +239,7 @@ export default function MortgageCalculatorPage() {
           {locale === 'en' && (
             <p className="fe-z8-note" data-testid="mortgage-en-note">{t('z8.calc.mortgage.enNote')}</p>
           )}
-          <CalcKeyRate rate={keyRate} />
+          <CalcKeyRate rate={keyRate} pending={keyRatePending} />
         </div>
       </header>
 
@@ -199,6 +256,8 @@ export default function MortgageCalculatorPage() {
           onChange={setPrice}
           prefix="₽"
           placeholder="8 000 000"
+          max={PRICE_MAX}
+          hint={t('c11e.mortgage.priceHint', { max: formatMoneyLimit(PRICE_MAX) })}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-x-6 gap-y-5">
@@ -232,7 +291,7 @@ export default function MortgageCalculatorPage() {
       {result && (
         <aside style={revealStyle(3)} className="fe-reveal fe-z8-hint" data-block="calc-hint">
           <span className="fe-z8-hint__label">{t('z8.calc.hint.label')}</span>
-          <p className="fe-z8-hint__big">{formatRubles(result.overpay)}</p>
+          <p className="fe-z8-hint__big">{fitRubles(result.overpay)}</p>
           <p className="fe-z8-hint__line">{t('z8.calc.hint.mortgage', { years: yearsLabel(years) })}</p>
           <p className="fe-z8-hint__sub">{t('z8.calc.hint.mortgageSub', { pct: fmtPct(result.principal ? (result.overpay / result.principal) * 100 : 0) })}</p>
         </aside>
@@ -248,14 +307,21 @@ export default function MortgageCalculatorPage() {
                 <p className="text-sm text-text-secondary mb-2">{t('calc.mortgage.payment')}</p>
                 <CalcAnimatedNumber
                   value={result.payment}
-                  format={formatRubles}
-                  className="block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary text-4xl md:text-5xl lg:text-6xl mb-6"
+                  format={fitRubles}
+                  className={`block min-h-[1.2em] font-display font-bold tracking-tight text-text-primary ${heroSize(fitRubles(result.payment))} mb-6`}
                 />
                 <CalcStatGrid>
-                  <CalcStatTile index={0} label={t('calc.mortgage.principal')} value={formatRubles(result.principal)} />
-                  <CalcStatTile index={1} label={t('calc.mortgage.overpay')} value={formatRubles(result.overpay)} accent />
-                  <CalcStatTile index={2} label={t('calc.mortgage.total')} value={formatRubles(result.total)} />
+                  <CalcStatTile index={0} label={t('calc.mortgage.principal')} value={fitRubles(result.principal)} />
+                  <CalcStatTile index={1} label={t('calc.mortgage.overpay')} value={fitRubles(result.overpay)} accent />
+                  <CalcStatTile index={2} label={t('calc.mortgage.total')} value={fitRubles(result.total)} />
                 </CalcStatGrid>
+                <CalcSaveSlot
+                  className="mt-4"
+                  renderSave={renderSave}
+                  itemKey={`mortgage:${price}:${downPct}:${rate}:${years}`}
+                  title={saveTitle}
+                  payload={savePayload}
+                />
               </div>
 
               <div className="flex flex-col items-center shrink-0 mx-auto 2xl:mx-0">
@@ -365,9 +431,9 @@ export default function MortgageCalculatorPage() {
                 })}
               />
               <CalcStatGrid className="mt-5 w5-tiles--three">
-                <CalcStatTile index={0} label={t('calc.mortgage.interestYear')} value={formatRubles(yearBreakdown.interestPaid)} accent />
-                <CalcStatTile index={1} label={t('calc.mortgage.principalYear')} value={formatRubles(yearBreakdown.principalPaid)} />
-                <CalcStatTile index={2} label={t('calc.mortgage.balanceYearEnd')} value={formatRubles(yearBreakdown.balance)} />
+                <CalcStatTile index={0} label={t('calc.mortgage.interestYear')} value={fitRubles(yearBreakdown.interestPaid)} accent />
+                <CalcStatTile index={1} label={t('calc.mortgage.principalYear')} value={fitRubles(yearBreakdown.principalPaid)} />
+                <CalcStatTile index={2} label={t('calc.mortgage.balanceYearEnd')} value={fitRubles(yearBreakdown.balance)} />
               </CalcStatGrid>
               <div className="mt-4 h-3.5 flex fe-k8-tube">
                 <div
@@ -391,7 +457,35 @@ export default function MortgageCalculatorPage() {
             </section>
           )}
 
-          <section style={revealStyle(6)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
+          <CalcMortgageExtras
+            value={extra}
+            onChange={setExtra}
+            termMonths={termMonths}
+            base={baseSchedule}
+            early={earlySchedule}
+            gain={earlyGain}
+            index={6}
+          />
+
+          <CalcRateCompare
+            rateB={rateB}
+            onRateB={setRateB}
+            onOpen={openCompare}
+            onClose={() => setRateB(null)}
+            rateA={rate}
+            comparison={comparison}
+            presets={comparePresets}
+            index={7}
+          />
+
+          <CalcMortgageSchedule
+            schedule={earlySchedule}
+            filenameBase={`mortgage-${Math.round(price)}-${String(rate).replace('.', '_')}-${years}y`}
+            historyParams={{ page: 'mortgage', price, down: downPct, rate, years, extra }}
+            index={8}
+          />
+
+          <section style={revealStyle(9)} className="fe-reveal grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
             <div className="flex items-start gap-3 p-3.5 rounded-xl fe-glass-2">
               <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-champagne/8 shrink-0 mt-0.5"><Percent className="w-3.5 h-3.5 text-champagne" /></div>
               <p className="text-[13px] leading-relaxed text-text-secondary">
@@ -423,7 +517,7 @@ export default function MortgageCalculatorPage() {
         targetRef={resultRef}
         active={Boolean(result)}
         label={t('calc.mortgage.payment')}
-        value={result ? formatRubles(result.payment) : ''}
+        value={result ? fitRubles(result.payment) : ''}
       />
 
       <div className="fe-z8-calc__lower">
