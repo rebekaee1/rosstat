@@ -15,8 +15,11 @@ async function fetchMarket() {
   }
 }
 
-/** Снимки ленты по коду: { 'usd-rub-live': { price, change_pct, source, ... } }. */
-export function useMarketSnapshots() {
+/**
+ * Снимки ленты по коду: { 'usd-rub-live': { price, change_pct, as_of_day, age_days, stale, ... } } и признак, что ответа ещё нет
+ * (по нему страница резервирует место под плитку «Рынок», чтобы конвертер не сдвигался).
+ */
+export function useMarketState() {
   const query = useQuery({
     queryKey: ['z8', 'market', 'russia'],
     queryFn: fetchMarket,
@@ -30,7 +33,12 @@ export function useMarketSnapshots() {
   for (const snap of query.data?.snapshots || []) {
     if (snap?.code && Number(snap.price) > 0) map[snap.code] = snap;
   }
-  return map;
+  return { market: map, pending: query.isPending };
+}
+
+/** Снимки ленты по коду (без признака загрузки). */
+export function useMarketSnapshots() {
+  return useMarketState().market;
 }
 
 /** Серия для годового графика: по возрастанию даты, без мусора, не старше года от последней точки. */

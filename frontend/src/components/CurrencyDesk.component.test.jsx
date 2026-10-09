@@ -196,6 +196,43 @@ describe('CurrencyDesk', () => {
   });
 });
 
+describe('CurrencyDesk: круг 11 (E)', () => {
+  it('кнопка «10 000» и поле показывают одно и то же число с разделителем; курс не в восьми знаках', () => {
+    mockApis();
+    renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    fireEvent.click(screen.getByRole('button', { name: '10\u00A0000' }));
+    expect(screen.getByLabelText('Сумма').value).toBe('10\u00A0000');
+    // Поменять пару: «1 RUB = 0,0125 USD», а не 0,01250000.
+    fireEvent.click(screen.getByRole('button', { name: 'Поменять местами' }));
+    expect(screen.getByTestId('converter-result').textContent).toContain('1 RUB = 0,0125 USD');
+    expect(screen.getByLabelText('Сумма').value).toBe('10\u00A0000');
+  });
+
+  it('пока рыночный курс грузится, его место занято и без заглушки лишних плиток нет', () => {
+    mockApis();
+    vi.spyOn(globalThis, 'fetch').mockReturnValue(new Promise(() => {}));
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    expect(container.querySelector('.fe-z8-rate-ghost')).toBeTruthy();
+    expect(container.querySelector('.fe-z8-why-ghost')).toBeTruthy();
+    expect(container.querySelectorAll('.fe-z8-rate')).toHaveLength(1);
+  });
+
+  it('у каждой цены в «Золото, нефть, биткоин» стоит дата; устаревшая помечена', async () => {
+    mockApis();
+    const snapshots = [
+      { code: 'usd-rub-live', price: 85.81, change_pct: 1.1 },
+      { code: 'gold-rub-live', price: 11143, change_pct: -0.3, as_of_day: '2026-10-05' },
+      { code: 'brent', price: 113.96, change_pct: -5, as_of_day: '2026-09-29', stale: true },
+    ];
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: () => Promise.resolve({ snapshots }) });
+    const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
+    await waitFor(() => expect(container.querySelector('[data-block="currency-market-board"]')).toBeTruthy());
+    const rows = [...container.querySelectorAll('.fe-z8-board__row')].map((row) => row.textContent);
+    expect(rows[0]).toMatch(/Золото\s*на 5 окт/);
+    expect(rows[1]).toMatch(/Нефть\s*не обновлялся с 29 сент/);
+  });
+});
+
 describe('CurrencyTelemetry', () => {
   const day = 24 * 60 * 60 * 1000;
   const start = Date.parse('2025-09-01');
