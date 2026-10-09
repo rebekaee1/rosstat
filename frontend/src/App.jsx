@@ -22,6 +22,7 @@ import PwaInstallPrompt from './components/PwaInstallPrompt';
 import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
+import RecentPagesTracker from './components/RecentPagesTracker';
 import LightScene from './components/LightScene';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { calculatorAliasTarget } from './lib/calculatorAlias';
@@ -242,6 +243,8 @@ function AppRoutes() {
       <PageProgress />
       <ScrollToAnchor />
       <YandexMetrikaHit />
+      {/* «Вы смотрели»: запоминает открытые страницы в этом браузере (lib/recentPages.js), ничего не рисует. */}
+      <RecentPagesTracker />
       <YandexRSY />
       {/* Cookie-баннер не монтируется на /embed/* — iframe на чужих сайтах */}
       <CookieConsent />
