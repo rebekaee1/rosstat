@@ -8,6 +8,7 @@ import httpx
 
 from app.config import settings
 from app.services.telegram_retry import request_with_retry
+from app.services.telegram_text import split_telegram_text
 
 logger = logging.getLogger(__name__)
 # httpx logs the full request URL at INFO; Telegram's URL embeds the bot token.
@@ -58,23 +59,37 @@ async def send_telegram(
     Каждая отправка полностью архивируется в БД (`telegram_outbox`) — это
     «глаза» агента следующей сессии; архивация не влияет на доставку.
     """
-    from app.services.telegram_outbox import archive_begin, archive_finish  # против цикла
-
     token = settings.telegram_bot_token
     cid = chat_id or settings.telegram_chat_id
     if not token or not cid:
         return False
 
+    # E3 (круг 11): длинный текст режется на части под лимит Bot API; клавиатура
+    # вешается на последнюю часть, в архиве — по строке на каждую часть (как у
+    # telegram_bot.send_message), поэтому досылка работает по частям.
+    chunks = split_telegram_text(message)
+    all_ok = True
+    for index, chunk in enumerate(chunks):
+        payload: dict = {"chat_id": cid, "text": chunk, "parse_mode": "HTML"}
+        if reply_markup and index == len(chunks) - 1:
+            payload["reply_markup"] = reply_markup
+        if not await _send_one(token, payload, kind):
+            all_ok = False
+    return all_ok
+
+
+async def _send_one(token: str, payload: dict, kind: str) -> bool:
+    """Одна отправка `sendMessage` с архивом (pending до, итог после)."""
+    from app.services.telegram_outbox import archive_begin, archive_finish  # против цикла
+
     ok = False
     tg_message_id: Optional[int] = None
     error: Optional[str] = None
-    payload: dict = {"chat_id": cid, "text": message, "parse_mode": "HTML"}
-    if reply_markup:
-        payload["reply_markup"] = reply_markup
 
     # Н-16: pending-запись ДО отправки — креш между send и архивом не оставляет дыру.
     row_id = await archive_begin(
-        chat_id=str(cid), method="sendMessage", kind=kind, text=message, payload=payload,
+        chat_id=str(payload["chat_id"]), method="sendMessage", kind=kind,
+        text=payload["text"], payload=payload,
     )
     try:
         url = _TELEGRAM_API.format(token=token)
@@ -110,6 +125,39 @@ def site_version_label(locale: str | None) -> str:
     if code == "en":
         return "английская"
     return "—"
+
+
+_DEVICE_RU = {"mobile": "телефон", "tablet": "планшет", "desktop": "компьютер", "bot": "робот"}
+
+
+def visitor_country_line(ip: str | None) -> str:
+    """«Германия, Берлин» по геобазе; «—», если страна неизвестна. Сам IP не показываем."""
+    if not ip:
+        return "—"
+    try:
+        from app.services.geoip import lookup
+
+        geo = lookup(ip)
+    except Exception:  # noqa: BLE001 — гео опционально
+        return "—"
+    parts = [p for p in (geo.get("country"), geo.get("city")) if p]
+    return ", ".join(parts) if parts else "—"
+
+
+def visitor_device_line(user_agent: str | None) -> str:
+    """«Chrome 126 · Windows 10/11 · компьютер» вместо полной строки User-Agent."""
+    if not user_agent:
+        return "—"
+    try:
+        from app.services.ua_parser import parse_user_agent
+
+        parsed = parse_user_agent(user_agent)
+    except Exception:  # noqa: BLE001
+        return "—"
+    browser = " ".join(p for p in (parsed.get("browser"), parsed.get("browser_version")) if p)
+    os_name = " ".join(p for p in (parsed.get("os"), parsed.get("os_version")) if p)
+    kind = _DEVICE_RU.get(parsed.get("device_type") or "", "")
+    return " · ".join(p for p in (browser, os_name, kind) if p) or "—"
 
 
 def digest_recipients() -> list[str]:
@@ -176,8 +224,10 @@ async def notify_new_user(info: dict) -> None:
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
         f"Рассылка: {'да' if info.get('newsletter') else 'нет'}",
-        f"IP: {esc(info.get('ip'))}",
-        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        # 152-ФЗ (круг 11): вместо IP и полного User-Agent — страна и «браузер, ОС, тип»;
+        # сообщение хранится в telegram_outbox без срока. Старые строки архива не трогаем.
+        f"Страна: {esc(visitor_country_line(info.get('ip')))}",
+        f"Устройство: {esc(visitor_device_line(info.get('user_agent')))}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
     # Всем получателям дайджеста (владелец + skrakan) — указание владельца 2026-07-06.
@@ -204,8 +254,8 @@ async def notify_login(info: dict) -> None:
         f"Email: {esc(info.get('email'))}",
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
-        f"IP: {esc(info.get('ip'))}",
-        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        f"Страна: {esc(visitor_country_line(info.get('ip')))}",
+        f"Устройство: {esc(visitor_device_line(info.get('user_agent')))}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
     for cid in digest_recipients():

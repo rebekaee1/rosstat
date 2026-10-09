@@ -281,7 +281,7 @@ def _since(days: int) -> datetime:
 # Все витрины принимают period: Period (МСК-границы) либо int (легаси «за N
 # дней») — as_period нормализует. Полуинтервал [start, end) режет datetime-
 # колонки, [start_date, end_date] — day-колонки rollup'ов и Метрики.
-from app.services.analytics_period import Period, as_period  # noqa: E402
+from app.services.analytics_period import Period, as_period, msk_day  # noqa: E402
 
 # --- Самоисключение (BI 2.1, этап 3б) -------------------------------------
 # Собственная активность пачкает данные: сессии владельца/админов и страницы
@@ -317,6 +317,39 @@ async def admin_identity(db: AsyncSession) -> tuple[set[str], set[str]]:
         select(IdentityLink.visitor_id_hash).where(IdentityLink.user_id.in_(user_ids))
     )).scalars())
     return user_ids, visitors
+
+
+async def _human_conditions(
+    db: AsyncSession, visitor_col, user_col, start_date: date, end_date: date,
+) -> list:
+    """Условия «не робот и не своя активность» для любой таблицы событий.
+
+    Посетители с `server_sessions.is_bot/is_internal` за окно и посетители/пользователи
+    владельца и админов из `admin_identity` (как у `mart_pwa_installs` и истинной воронки).
+    """
+    admin_users, admin_visitors = await admin_identity(db)
+    excluded_visitors = select(ServerSession.visitor_id_hash).where(
+        ServerSession.day >= start_date, ServerSession.day <= end_date,
+        or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True)))
+    conds: list = [or_(visitor_col.is_(None), visitor_col.notin_(excluded_visitors))]
+    if admin_users:
+        conds.append(or_(user_col.is_(None), user_col.notin_(admin_users)))
+    if admin_visitors:
+        conds.append(or_(visitor_col.is_(None), visitor_col.notin_(admin_visitors)))
+    return conds
+
+
+async def human_event_conditions(
+    db: AsyncSession, start_date: date, end_date: date,
+) -> list:
+    """WHERE-условия для `frontend_events`: без роботов и собственной активности.
+
+    Единая точка для rollup'а целей, витрин регистраций и «Что делали» (круг 11, E6:
+    `daily_goals` раньше считал всё подряд, и ферма 2026-09 раздувала
+    `mart_feature_adoption`).
+    """
+    return await _human_conditions(
+        db, FrontendEvent.visitor_id_hash, FrontendEvent.user_id, start_date, end_date)
 
 
 def _pctl(values: list[float], p: float) -> float | None:
@@ -740,7 +773,10 @@ async def mart_goal_reconciliation(db: AsyncSession, period: Period | int = 30) 
 async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
     p = as_period(period)
     rows = (await db.execute(
-        select(BehaviorEvent.event_type, BehaviorEvent.page, BehaviorEvent.params_json)
+        select(BehaviorEvent.event_type, BehaviorEvent.page, BehaviorEvent.params_json,
+               BehaviorSession.device_type)
+        .select_from(BehaviorEvent)
+        .outerjoin(BehaviorSession, BehaviorSession.session_id_hash == BehaviorEvent.session_id_hash)
         .where(BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end,
                BehaviorEvent.event_type.in_(("vital", "js_error", "api_timing")))
         .limit(20000)
@@ -760,11 +796,19 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         m = re.search(r"https?://([^/\s):]+)", src) or re.search(r"https?://([^/\s):]+)", str(pr.get("stack") or ""))
         return m.group(1).lower() if m else ""
 
-    for etype, page, params in rows:
+    # Круг 11: разрез «группа страниц × устройство» — LCP и число JS-ошибок.
+    from app.services.analytics_dims import surface_from_url
+    lcp_by_cell: dict[tuple[str, str], list[float]] = defaultdict(list)
+    errors_by_cell: Counter = Counter()
+
+    for etype, page, params, device in rows:
         pr = params if isinstance(params, dict) else {}
+        cell = (surface_from_url(page) or "other", device or _UNKNOWN)
         if etype == "vital" and pr.get("m") is not None:
             try:
                 vitals[str(pr["m"])].append(float(pr.get("v") or 0))
+                if str(pr["m"]).upper() == "LCP":
+                    lcp_by_cell[cell].append(float(pr.get("v") or 0))
             except (TypeError, ValueError):
                 pass
         elif etype == "js_error":
@@ -775,6 +819,7 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
             host = _error_host(pr)
             if not host or OWN_DOMAIN in host or host.startswith(("localhost", "127.")):
                 own_errors[label] += 1
+                errors_by_cell[cell] += 1  # разрез страница × устройство — только свои ошибки
             else:
                 third_party_errors[host] += 1
             if page:
@@ -808,6 +853,19 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         "js_errors_third_party": [{"domain": h, "count": c} for h, c in third_party_errors.most_common(8)],
         "js_error_pages": dict(error_pages.most_common(10)),
         "api_p75_ms": _pctl(api_all, 0.75),
+        # Круг 11: страница-группа × устройство — LCP p75 (мс) и число СВОИХ JS-ошибок.
+        "page_device": sorted(
+            (
+                {
+                    "page_group": group, "device": device,
+                    "lcp_p75_ms": _pctl(lcp_by_cell.get((group, device), []), 0.75),
+                    "lcp_samples": len(lcp_by_cell.get((group, device), [])),
+                    "js_errors_own": int(errors_by_cell.get((group, device), 0)),
+                }
+                for group, device in set(lcp_by_cell) | set(errors_by_cell)
+            ),
+            key=lambda x: (-(x["lcp_p75_ms"] or 0), -x["js_errors_own"]),
+        )[:20],
         # Таблица латентности (этап 4б): p50/p75/max/вызовы по endpoint'ам.
         "api_slowest": sorted(
             (
@@ -1707,6 +1765,425 @@ async def mart_partner_revenue(db: AsyncSession, period: Period | int = 30) -> d
 # Полный дневной контекст для Пульс-LLM (этап 6)
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Витрины регистраций, воронки и использования функций (круг 11, зона H)
+# ---------------------------------------------------------------------------
+
+_UNKNOWN = "unknown"
+# Минимальная база для вывода «самое слабое звено» (меньше — шум).
+_WEAKEST_STEP_MIN_BASE = 10
+# Сколько регистраций когорты берём в расчёт возврата (защита запроса).
+_RETURN_COHORT_CAP = 2000
+
+
+def _median(values: list[float]) -> float | None:
+    if not values:
+        return None
+    xs = sorted(values)
+    mid = len(xs) // 2
+    return float(xs[mid]) if len(xs) % 2 else round((xs[mid - 1] + xs[mid]) / 2, 1)
+
+
+async def mart_signups(db: AsyncSession, period: Period | int = 30) -> dict[str, Any]:
+    """Регистрации за период: сколько и кто (язык сайта, страна, канал, устройство,
+    что подтолкнуло, способ). Источник — `users` (истина о количестве) и
+    `user_signups` (как пришли). Нет данных ≠ ноль: поле «unknown» считается отдельно.
+
+    «Вне РФ» (`origin.foreign`) — страна первого визита не Россия, отдельно от «английской
+    версии» (`locale.en`): на английском сайте бывают и россияне. Почтовый домен для этого
+    не используется. Имён и почт витрина не отдаёт.
+    """
+    from app.models import UserSignup
+    from app.services.analytics_dims import country_group
+    from app.services.signup_attribution import is_russia  # noqa: F401 — единая логика страны
+
+    p = as_period(period)
+    rows = (await db.execute(
+        select(
+            User.id, User.created_at, UserSignup.method, UserSignup.site_locale, UserSignup.country,
+            UserSignup.country_code, UserSignup.channel, UserSignup.device_type, UserSignup.trigger,
+            UserSignup.days_to_signup, UserSignup.newsletter, UserSignup.source,
+            UserSignup.landing_page,
+        )
+        .select_from(User).outerjoin(UserSignup, UserSignup.user_id == User.id)
+        .where(User.created_at >= p.start, User.created_at < p.end)
+    )).all()
+
+    def tally(index: int, fallback: str = _UNKNOWN) -> dict[str, int]:
+        counter: Counter = Counter()
+        for row in rows:
+            counter[(row[index] or fallback)] += 1
+        return dict(counter.most_common())
+
+    origin: Counter = Counter()
+    cross: Counter = Counter()
+    foreign_countries: Counter = Counter()
+    for row in rows:
+        group = country_group(row.country, row.country_code)
+        origin[group] += 1
+        cross[f"{row.site_locale or _UNKNOWN}|{group}"] += 1
+        if group == "foreign" and row.country:
+            foreign_countries[row.country] += 1
+
+    days = [float(r.days_to_signup) for r in rows if r.days_to_signup is not None]
+
+    # Возврат за 7 и 30 дней: когорта — регистрации старше окна; вернулся = есть небот-сессия
+    # этого аккаунта в один из следующих N МСК-дней.
+    now_day = msk_day(datetime.utcnow())
+    cohort = [(str(r.id), msk_day(r.created_at)) for r in rows][:_RETURN_COHORT_CAP]
+    seen: dict[str, set[date]] = defaultdict(set)
+    if cohort:
+        first_day = min(d for _, d in cohort)
+        for uid, day in (await db.execute(
+            select(ServerSession.user_id, ServerSession.day).where(
+                ServerSession.user_id.in_([uid for uid, _ in cohort]), ServerSession.day > first_day,
+                ServerSession.day <= p.end_date + timedelta(days=31),
+                ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False),
+            ).distinct()
+        )).all():
+            seen[str(uid)].add(day)
+
+    def returned_in(window: int) -> dict[str, Any]:
+        eligible = [(uid, d) for uid, d in cohort if d + timedelta(days=window) < now_day]
+        back = sum(1 for uid, d in eligible
+                   if any(d < day <= d + timedelta(days=window) for day in seen.get(uid, ())))
+        return {"eligible": len(eligible), "returned": back,
+                "pct": round(100 * back / len(eligible), 1) if eligible else None}
+
+    landing: Counter = Counter(r.landing_page for r in rows if r.landing_page)
+
+    total = len(rows)
+    known_locale = sum(1 for r in rows if r.site_locale)
+    return {
+        "period": p.to_meta(),
+        "total": total,
+        "locale": tally(3),
+        "method": tally(2),
+        "origin": dict(origin.most_common()),
+        "locale_by_origin": dict(cross.most_common()),
+        "foreign_countries": dict(foreign_countries.most_common(8)),
+        "channel": tally(6),
+        "device": tally(7),
+        "trigger": tally(8),
+        "newsletter": sum(1 for r in rows if r.newsletter),
+        "median_days_to_signup": _median(days),
+        "known_locale": known_locale,
+        "unknown_locale": total - known_locale,
+        "returned_7d": returned_in(7),
+        "returned_30d": returned_in(30),
+        "landing_top": dict(landing.most_common(8)),
+    }
+
+
+async def mart_audience_geo(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    """Посетители (люди, без роботов и своих) и их география: Россия / не Россия.
+
+    Человек = `visitor_id_hash` портрета сессии; роботы и собственная активность исключены
+    по `server_sessions` за те же дни. Страна — по IP первого портрета в периоде, сам IP
+    не хранится. «Не РФ» — страна известна и это не Россия; без страны — отдельная строка.
+    """
+    from app.services.analytics_dims import country_group
+
+    p = as_period(period)
+    excluded = select(ServerSession.visitor_id_hash).where(
+        ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+        or_(ServerSession.is_bot.is_(True), ServerSession.is_internal.is_(True)))
+    rows = (await db.execute(
+        select(BehaviorSession.country, func.count(func.distinct(BehaviorSession.visitor_id_hash)))
+        .where(BehaviorSession.started_at >= p.start, BehaviorSession.started_at < p.end,
+               BehaviorSession.visitor_id_hash.is_not(None),
+               BehaviorSession.visitor_id_hash.notin_(excluded),
+               or_(BehaviorSession.is_webdriver.is_(None), BehaviorSession.is_webdriver.is_(False)))
+        .group_by(BehaviorSession.country)
+    )).all()
+    groups: Counter = Counter()
+    for country, people in rows:
+        groups[country_group(country)] += int(people or 0)
+    total = sum(groups.values())
+    known = groups["ru"] + groups["foreign"]
+    return {
+        "period": p.to_meta(),
+        "visitors": total,
+        "ru": groups["ru"], "foreign": groups["foreign"], "unknown": groups[_UNKNOWN],
+        "foreign_share_pct": round(100 * groups["foreign"] / known, 1) if known else None,
+        "note": "один человек, у которого в периоде разные страны, может попасть в несколько строк",
+    }
+
+
+async def mart_search_gaps(db: AsyncSession, period: Period | int = 7, limit: int = 10) -> dict[str, Any]:
+    """Запросы поиска без результатов: сколько раз и сколькими людьми (пробелы каталога).
+
+    Строки запросов проходят очистку от почт и телефонов (152-ФЗ). Роботы и свои исключены.
+    """
+    from app.services.pii_scrub import scrub_text
+
+    p = as_period(period)
+    human = await human_event_conditions(db, p.start_date, p.end_date)
+    q_col = FrontendEvent.params_json["q"].as_string()
+    res_col = FrontendEvent.params_json["results"].as_string()
+    vkey = func.coalesce(FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash)
+    rows = (await db.execute(
+        select(q_col, res_col, func.count(), func.count(func.distinct(vkey)))
+        .where(FrontendEvent.event_name == "search_query",
+               FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end,
+               q_col.is_not(None), *human)
+        .group_by(q_col, res_col).order_by(func.count().desc()).limit(3000)
+    )).all()
+    merged: dict[str, list[int]] = {}
+    total_queries = 0
+    for q, results, searches, people in rows:
+        text = scrub_text(str(q or "").strip().lower())
+        if not text:
+            continue
+        total_queries += int(searches)
+        try:
+            empty = int(results if results is not None else -1) == 0
+        except (TypeError, ValueError):
+            empty = False
+        if empty:
+            cell = merged.setdefault(text, [0, 0])
+            cell[0] += int(searches)
+            cell[1] += int(people)  # люди по разным результатам складываются: оценка сверху
+    top = sorted(merged.items(), key=lambda kv: (-kv[1][1], -kv[1][0]))[:limit]
+    return {
+        "period": p.to_meta(),
+        "queries": total_queries,
+        "empty_queries": sum(v[0] for v in merged.values()),
+        "top": [{"q": q[:60], "searches": v[0], "people": v[1]} for q, v in top],
+    }
+
+
+# Шаги воронки «просмотр → регистрация» (подписи для текста в Telegram).
+FUNNEL_STEPS = (
+    ("visitors", "посетители"),
+    ("viewed", "смотрели показатель"),
+    ("wall", "упёрлись в лимит"),
+    ("register_click", "нажали «Регистрация»"),
+    ("form_open", "открыли форму или окно соцсети"),
+    ("submit", "отправили форму или пошли к соцсети"),
+    ("signed_up", "зарегистрировались"),
+)
+
+_FUNNEL_REGISTRATION_STEPS = ("wall", "register_click", "form_open", "submit")
+
+
+async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    """Воронка «просмотр → регистрация» по людям (посетителям) без роботов и своих.
+
+    Шаги идут по тем же источникам, что и остальные витрины: `frontend_events` по индексу
+    имя+время, `behavior_events` (страница /register, отправка формы), `server_sessions`
+    (посетители), `users` (регистрации). Шаги — не вложенные множества: часть людей
+    регистрируется без показа стены. Поэтому, кроме счётчиков, витрина отдаёт
+    «на каком шаге ушли» только для тех, кто дошёл хотя бы до стены или кнопки и не
+    зарегистрировался (`dropped_at`), и самое слабое звено при достаточной базе.
+    """
+    from app.models import UserSignup
+    from app.services.goal_taxonomy import GROUP_WALL, events_in_group
+
+    p = as_period(period)
+    human = await human_event_conditions(db, p.start_date, p.end_date)
+    window = [FrontendEvent.occurred_at >= p.start, FrontendEvent.occurred_at < p.end]
+    vkey = func.coalesce(FrontendEvent.visitor_id_hash, FrontendEvent.session_id_hash)
+    ru_host = FrontendEvent.url.like("https://ru.%")
+
+    def locale_cond(locale: str | None):
+        if locale == "ru":
+            return [ru_host]
+        if locale == "en":
+            return [or_(FrontendEvent.url.is_(None), ~ru_host)]
+        return []
+
+    names = {
+        "viewed": ("indicator_view", "region_indicator_view"),
+        "wall": tuple(sorted(events_in_group(GROUP_WALL))),
+        "register_click": ("register_nudge_cta", "header_register_click"),
+    }
+
+    async def people(step: str, locale: str | None = None) -> int:
+        return int(await db.scalar(
+            select(func.count(func.distinct(vkey)))
+            .where(FrontendEvent.event_name.in_(names[step]), *window, *human, *locale_cond(locale))
+        ) or 0)
+
+    session_scope = [ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+                     ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False)]
+
+    async def visitors(locale: str | None = None) -> int:
+        extra = [ServerSession.site_locale == locale] if locale else []
+        return int(await db.scalar(
+            select(func.count(func.distinct(ServerSession.visitor_id_hash))).where(*session_scope, *extra)
+        ) or 0)
+
+    # Шаги «открыл форму» и «отправил»: объединение двух источников без дублей людей.
+    bh_human = await _behavior_human_conditions(db, p.start_date, p.end_date)
+    bh_window = [BehaviorEvent.occurred_at >= p.start, BehaviorEvent.occurred_at < p.end]
+    register_pv = select(BehaviorEvent.visitor_id_hash.label("v")).where(
+        BehaviorEvent.event_type == "pageview", BehaviorEvent.page == "/register",
+        BehaviorEvent.visitor_id_hash.is_not(None), *bh_window, *bh_human)
+    consent_open = select(FrontendEvent.visitor_id_hash.label("v")).where(
+        FrontendEvent.event_name == "oauth_consent_open", FrontendEvent.visitor_id_hash.is_not(None),
+        *window, *human)
+    oauth_start = select(FrontendEvent.visitor_id_hash.label("v")).where(
+        FrontendEvent.event_name == "oauth_start", FrontendEvent.visitor_id_hash.is_not(None),
+        *window, *human)
+    form_submit = select(BehaviorEvent.visitor_id_hash.label("v")).where(
+        BehaviorEvent.event_type == "form", BehaviorEvent.page == "/register",
+        BehaviorEvent.params_json["step"].as_string() == "submit",
+        BehaviorEvent.visitor_id_hash.is_not(None), *bh_window, *bh_human)
+
+    async def id_set(*selects) -> set[str]:
+        stmt = selects[0]
+        for extra in selects[1:]:
+            stmt = stmt.union(extra)
+        return {v for (v,) in (await db.execute(stmt.limit(20000))).all() if v}
+
+    async def id_set_events(step: str) -> set[str]:
+        stmt = select(vkey).where(FrontendEvent.event_name.in_(names[step]), *window, *human).distinct().limit(20000)
+        return {v for (v,) in (await db.execute(stmt)).all() if v}
+
+    form_open_ids = await id_set(register_pv, consent_open)
+    submit_ids = await id_set(oauth_start, form_submit)
+    wall_ids = await id_set_events("wall")
+    click_ids = await id_set_events("register_click")
+
+    new_user_ids = [str(uid) for (uid,) in (await db.execute(
+        select(User.id).where(User.created_at >= p.start, User.created_at < p.end).limit(5000)
+    )).all()]
+    signed_visitors: set[str] = set()
+    if new_user_ids:
+        signed_visitors = {v for (v,) in (await db.execute(
+            select(IdentityLink.visitor_id_hash).where(IdentityLink.user_id.in_(new_user_ids))
+        )).all()}
+    signed_up = int(await db.scalar(
+        select(func.count()).select_from(User).where(User.created_at >= p.start, User.created_at < p.end)
+    ) or 0)
+
+    counts = {
+        "visitors": await visitors(),
+        "viewed": await people("viewed"),
+        "wall": await people("wall"),
+        "register_click": await people("register_click"),
+        "form_open": len(form_open_ids),
+        "submit": len(submit_ids),
+        "signed_up": signed_up,
+    }
+
+    # На каком шаге ушли: последний достигнутый из четырёх шагов регистрации.
+    membership = {"wall": wall_ids, "register_click": click_ids, "form_open": form_open_ids, "submit": submit_ids}
+    engaged = set().union(*membership.values()) - signed_visitors
+    dropped: Counter = Counter()
+    for visitor in engaged:
+        last = None
+        for step in _FUNNEL_REGISTRATION_STEPS:
+            if visitor in membership[step]:
+                last = step
+        if last:
+            dropped[last] += 1
+
+    # Самое слабое звено среди шагов регистрации (конверсия соседних шагов, база не меньше порога).
+    weakest = None
+    chain = ["wall", "register_click", "form_open", "submit", "signed_up"]
+    for a, b in zip(chain, chain[1:]):
+        base, nxt = counts[a], counts[b]
+        if base >= _WEAKEST_STEP_MIN_BASE:
+            rate = min(100.0, round(100 * nxt / base, 1))
+            if weakest is None or rate < weakest["rate_pct"]:
+                weakest = {"from": a, "to": b, "base": base, "next": nxt, "rate_pct": rate}
+
+    by_locale: dict[str, dict[str, int]] = {}
+    for locale in ("ru", "en"):
+        by_locale[locale] = {
+            "visitors": await visitors(locale),
+            "viewed": await people("viewed", locale),
+            "wall": await people("wall", locale),
+            "register_click": await people("register_click", locale),
+            "signed_up": int(await db.scalar(
+                select(func.count()).select_from(UserSignup).where(
+                    UserSignup.created_at >= p.start, UserSignup.created_at < p.end,
+                    UserSignup.site_locale == locale)
+            ) or 0),
+        }
+
+    return {
+        "period": p.to_meta(),
+        "steps": [{"key": key, "label": label, "count": counts[key]} for key, label in FUNNEL_STEPS],
+        "dropped_at": dict(dropped),
+        "engaged_not_registered": len(engaged),
+        "weakest": weakest,
+        "by_locale": by_locale,
+        "note": "шаги не вложены друг в друга; регистрации считаются по аккаунтам, остальное по людям",
+    }
+
+
+async def _behavior_human_conditions(db: AsyncSession, start_date: date, end_date: date) -> list:
+    """Условия `behavior_events` без роботов и своих (как `human_event_conditions`)."""
+    return await _human_conditions(db, BehaviorEvent.visitor_id_hash, BehaviorEvent.user_id, start_date, end_date)
+
+
+async def mart_goal_usage(db: AsyncSession, period: Period | int = 7) -> dict[str, Any]:
+    """Использование функций по группам событий (выгрузки, упоры в стену, сравнение,
+    калькуляторы, поделились, избранное, подписки, смена языка): сколько действий и в
+    скольких сессиях, с разрезом по языку сайта, устройству, стране (РФ / не РФ) и
+    поверхности. Источник — `daily_goal_dims` (роботы и свои исключены при пересчёте).
+    `has_data=False`, если разрезы за период ещё не посчитаны: это не «ноль действий».
+    """
+    from app.models import DailyGoalDim
+    from app.services.goal_taxonomy import REPORT_GROUPS, group_of_event
+
+    p = as_period(period)
+    rows = (await db.execute(
+        select(DailyGoalDim.event_name, DailyGoalDim.dim, DailyGoalDim.value,
+               func.sum(DailyGoalDim.count), func.sum(DailyGoalDim.sessions))
+        .where(DailyGoalDim.day >= p.start_date, DailyGoalDim.day <= p.end_date)
+        .group_by(DailyGoalDim.event_name, DailyGoalDim.dim, DailyGoalDim.value)
+    )).all()
+    days_covered = int(await db.scalar(
+        select(func.count(func.distinct(DailyGoalDim.day)))
+        .where(DailyGoalDim.day >= p.start_date, DailyGoalDim.day <= p.end_date)
+    ) or 0)
+
+    groups: dict[str, dict[str, Any]] = {
+        g: {"actions": 0, "sessions": 0, "events": {}, "locale": {}, "device": {}, "country": {}, "surface": {}}
+        for g in REPORT_GROUPS
+    }
+    dim_key = {"site_locale": "locale", "device": "device", "country": "country", "surface": "surface"}
+    for name, dim, value, cnt, sess in rows:
+        group = group_of_event(name)
+        if group not in groups:
+            continue
+        cnt, sess = int(cnt or 0), int(sess or 0)
+        bucket = groups[group]
+        if dim == "all":
+            bucket["actions"] += cnt
+            bucket["sessions"] += sess
+            bucket["events"][name] = bucket["events"].get(name, 0) + cnt
+        elif dim in dim_key:
+            target = bucket[dim_key[dim]]
+            target[value] = target.get(value, 0) + cnt
+    for bucket in groups.values():
+        bucket["surface"] = dict(sorted(bucket["surface"].items(), key=lambda kv: -kv[1])[:8])
+        bucket["events"] = dict(sorted(bucket["events"].items(), key=lambda kv: -kv[1]))
+    return {
+        "period": p.to_meta(),
+        "has_data": days_covered > 0,
+        "days_covered": days_covered,
+        "groups": groups,
+    }
+
+
+async def _safe_mart(fn, db: AsyncSession, period: Period) -> dict[str, Any]:
+    """Витрина для LLM-контекста: при сбое отдаёт пометку, а не роняет весь контекст."""
+    try:
+        return await fn(db, period)
+    except Exception:  # noqa: BLE001
+        logger.warning("daily-context mart %s failed", getattr(fn, "__name__", fn), exc_info=True)
+        try:
+            await db.rollback()
+        except Exception:  # noqa: BLE001
+            pass
+        return {"error": "mart unavailable"}
+
+
 async def build_marts_daily_context(db: AsyncSession) -> dict[str, Any]:
     """ВСЕ витрины marts-слоя за окно «день» — уходит в снапшот Пульса.
     Директива владельца: LLM видит всё, что есть в аналитике за день; цифра
@@ -1730,4 +2207,9 @@ async def build_marts_daily_context(db: AsyncSession) -> dict[str, Any]:
         "ad_costs": await mart_ad_costs(db, week),
         "partner_revenue": await mart_partner_revenue(db, week),
         "ch_slices": await mart_ch_slices_of_day(db),
+        # Круг 11: регистрации, воронка и использование функций. Каждая витрина независима:
+        # сбой одной не лишает Пульс остального контекста. Только агрегаты, без имён и почт.
+        "signups_7d": await _safe_mart(mart_signups, db, week),
+        "signup_funnel_7d": await _safe_mart(mart_signup_funnel, db, week),
+        "goal_usage_7d": await _safe_mart(mart_goal_usage, db, week),
     }

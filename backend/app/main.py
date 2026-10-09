@@ -1000,6 +1000,46 @@ async def lifespan(app: FastAPI):
                 settings.telegram_digest_cron_minute,
             )
 
+        if settings.telegram_weekly_enabled:
+            from app.services.telegram_reports import weekly_report_job
+            scheduler.add_job(
+                locked_job(weekly_report_job, "telegram_weekly_report", ttl_seconds=20 * 60),
+                trigger=CronTrigger(
+                    day_of_week="mon",
+                    hour=settings.telegram_weekly_cron_hour,
+                    minute=settings.telegram_weekly_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="telegram_weekly_report",
+                name="Telegram weekly audience report (Mon, MSK)",
+                replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
+            )
+            logger.info(
+                "Telegram weekly report enabled: Mon %02d:%02d MSK",
+                settings.telegram_weekly_cron_hour, settings.telegram_weekly_cron_minute,
+            )
+
+        if settings.telegram_monthly_enabled:
+            from app.services.telegram_reports import monthly_report_job
+            scheduler.add_job(
+                locked_job(monthly_report_job, "telegram_monthly_report", ttl_seconds=20 * 60),
+                trigger=CronTrigger(
+                    day=1,
+                    hour=settings.telegram_monthly_cron_hour,
+                    minute=settings.telegram_monthly_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="telegram_monthly_report",
+                name="Telegram monthly audience report (1st, MSK)",
+                replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
+            )
+            logger.info(
+                "Telegram monthly report enabled: 1st day %02d:%02d MSK",
+                settings.telegram_monthly_cron_hour, settings.telegram_monthly_cron_minute,
+            )
+
         if settings.pulse_enabled:
             from app.services.pulse_report import pulse_report_job, pulse_snapshot_job
             scheduler.add_job(

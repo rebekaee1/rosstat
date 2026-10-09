@@ -37,6 +37,7 @@
 
 import { EVIDENCE_VERSION, SCROLL_SETTLE_MS, createBlockClock, createScrollProgress, evidenceToken, inpEvidence, interactionTarget, unobscuredRatio } from './behaviorEvidence';
 import { CONSENT_CHANGE_EVENT } from './consent';
+import { VISITOR_SINCE_KEY } from './authTrigger';
 
 const ENDPOINT = '/api/v1/analytics/behavior';
 const SESSION_KEY = 'fe:analytics:session';
@@ -153,6 +154,9 @@ export function visitorId() {
         ? window.crypto.randomUUID()
         : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
       window.localStorage.setItem(VISITOR_KEY, v);
+      // Метка первого визита (круг 11): сколько дней прошло до регистрации. Только у новых
+      // посетителей; у старых метки нет, и это честная пустота, а не ноль.
+      try { window.localStorage.setItem(VISITOR_SINCE_KEY, String(Date.now())); } catch { /* не критично */ }
     }
     return v;
   } catch {

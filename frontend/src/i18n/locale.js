@@ -267,6 +267,13 @@ export function switchLanguage(locale, opts) {
   setLocalePreference(locale);
   const next = buildLanguageSwitchUrl(locale, opts);
   if (next) {
+    // Круг 11: смена языка для аналитики. Событие уходит синхронно (sendBeacon) до смены
+    // хоста; locale.js не импортирует track.js, чтобы не создавать цикл, — слушает track.js.
+    try {
+      window.dispatchEvent(new CustomEvent('fe:locale-switch', {
+        detail: { from: String(document.documentElement.lang || '').slice(0, 2) || null, to: locale },
+      }));
+    } catch { /* аналитика не мешает переходу */ }
     // Место на странице переживает перезагрузку: новая страница вернёт прокрутку (см. langScroll.js).
     rememberScrollForLanguageSwitch();
     window.location.assign(next);

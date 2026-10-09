@@ -35,6 +35,14 @@ from collections import Counter
 
 from app.config import settings
 from app.services.alerting import interactive_authorized_ids
+from app.services.telegram_text import (  # noqa: F401 — реэкспорт для обратной совместимости
+    _BLOCKQUOTE_OPEN_RE,
+    _BLOCKQUOTE_RE,
+    _TG_TEXT_LIMIT,
+    _split_blockquote,
+    _split_plain_text,
+    _split_telegram_text,
+)
 from app.services.telegram_retry import request_with_retry
 from app.core.cache import get_state_redis
 from app.database import async_session
@@ -51,19 +59,26 @@ _OFFSET_KEY = "fe:tg:offset"
 # ---------------------------------------------------------------------------
 
 def main_menu_keyboard() -> dict:
-    return {
-        "inline_keyboard": [
-            [
-                {"text": "👥 Пользователи", "callback_data": "users"},
-                {"text": "📄 CSV пользователей", "callback_data": "users_csv"},
-            ],
-            [
-                {"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"},
-                {"text": "📦 Датасет", "callback_data": "dataset"},
-            ],
-            [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
-        ]
-    }
+    rows = [
+        [
+            {"text": "👥 Пользователи", "callback_data": "users"},
+            {"text": "📄 CSV пользователей", "callback_data": "users_csv"},
+        ],
+        [
+            {"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"},
+            {"text": "📦 Датасет", "callback_data": "dataset"},
+        ],
+        [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
+    ]
+    # Круг 11: кнопки отчётов об аудитории. Появляются вместе с дайджестом v2
+    # (флаг `telegram_digest_v2_enabled`); существующие кнопки не менялись.
+    if settings.telegram_digest_v2_enabled:
+        rows.append([
+            {"text": "🌍 Регистрации", "callback_data": "signups"},
+            {"text": "🧭 Воронка", "callback_data": "funnel"},
+        ])
+        rows.append([{"text": "🎯 Цели", "callback_data": "goals"}])
+    return {"inline_keyboard": rows}
 
 
 # Методы отправки повторяются при временных сбоях (telegram_retry); поллинг
@@ -114,90 +129,6 @@ async def _api(method: str, payload: dict, files: dict | None = None) -> dict | 
         _last_api_error.set(f"{type(exc).__name__}: {exc}"[:250])
         logger.warning("Telegram %s failed", method, exc_info=True)
         return None
-
-
-_TG_TEXT_LIMIT = 4000  # запас от жёсткого лимита Bot API (4096)
-_BLOCKQUOTE_RE = re.compile(r"<blockquote(?:\s[^>]*)?>.*?</blockquote>", re.DOTALL)
-_BLOCKQUOTE_OPEN_RE = re.compile(r"<blockquote(?:\s[^>]*)?>")
-
-
-def _split_plain_text(text: str, limit: int) -> list[str]:
-    """Режет текст без blockquote на части ≤limit по границам строк."""
-    chunks: list[str] = []
-    buf = ""
-    for line in text.split("\n"):
-        candidate = f"{buf}\n{line}" if buf else line
-        if len(candidate) <= limit:
-            buf = candidate
-            continue
-        if buf:
-            chunks.append(buf)
-            buf = ""
-        if len(line) <= limit:
-            buf = line
-        else:
-            # одиночная строка без переносов длиннее лимита — жёсткий разрез
-            for i in range(0, len(line), limit):
-                chunks.append(line[i:i + limit])
-    if buf:
-        chunks.append(buf)
-    return chunks
-
-
-def _split_blockquote(block: str, limit: int) -> list[str]:
-    """Режет один `<blockquote>...</blockquote>` на части, каждая — валидный тег."""
-    open_tag = _BLOCKQUOTE_OPEN_RE.match(block).group(0)
-    inner = block[len(open_tag):-len("</blockquote>")]
-    piece_limit = max(limit - len(open_tag) - len("</blockquote>"), 1)
-    return [
-        f"{open_tag}{piece}</blockquote>"
-        for piece in _split_plain_text(inner, piece_limit)
-    ]
-
-
-def _split_telegram_text(text: str, limit: int = _TG_TEXT_LIMIT) -> list[str]:
-    """Режет текст на части ≤limit для sendMessage.
-
-    Н-23 (2026-07-08): LLM-Пульс без max_tokens (директива владельца
-    2026-07-05) стал писать длиннее 4096 символов — Telegram отвечал 400
-    "message is too long", отчёт и апдейты гипотез молча терялись. Первый
-    хотфикс держал `<blockquote>` целиком атомарным — не помогло, если LLM
-    оборачивает в один blockquote почти весь ответ (реальный кейс 2026-07-08):
-    блок сам был длиннее лимита, разреза не происходило вообще. Теперь
-    blockquote при необходимости режется по внутренним строкам с
-    закрытием/переоткрытием тега на границе частей.
-    """
-    if len(text) <= limit:
-        return [text]
-
-    # Разбиваем текст на чередующиеся сегменты: обычный текст / целый blockquote.
-    segments: list[str] = []
-    pos = 0
-    for m in _BLOCKQUOTE_RE.finditer(text):
-        if m.start() > pos:
-            segments.append(text[pos:m.start()])
-        segments.append(m.group(0))
-        pos = m.end()
-    if pos < len(text):
-        segments.append(text[pos:])
-
-    chunks: list[str] = []
-    buf = ""
-    for seg in segments:
-        is_blockquote = seg.startswith("<blockquote")
-        if len(seg) > limit:
-            if buf:
-                chunks.append(buf)
-                buf = ""
-            chunks.extend(_split_blockquote(seg, limit) if is_blockquote else _split_plain_text(seg, limit))
-            continue
-        if buf and len(buf) + len(seg) > limit:
-            chunks.append(buf)
-            buf = ""
-        buf += seg
-    if buf:
-        chunks.append(buf)
-    return chunks
 
 
 async def send_message(
@@ -334,7 +265,8 @@ async def _user_card(user_id: str) -> str:
     ev_indicators: Counter = Counter()
     ev_downloads = 0
     last_active = fe_rows[0][2] if fe_rows else None
-    _dl = {"download_csv", "download_excel", "chart_image_download", "compare_image_download"}
+    from app.services.goal_taxonomy import GROUP_DOWNLOAD, events_in_group
+    _dl = events_in_group(GROUP_DOWNLOAD)  # E5: единая группа вместо локального списка
     for name, params, _ts in fe_rows:
         ev_names[name] += 1
         if name in _dl:
@@ -446,7 +378,8 @@ async def _handle_callback(cq: dict) -> None:
         await send_document(chat_id, f"users-{stamp}.csv", csv_bytes, caption="👥 Все пользователи")
     elif data == "pulse_today":
         from app.services import pulse  # локальный импорт против цикла
-        snap = await pulse.build_snapshot(date.today())
+        from app.services.display import today_msk
+        snap = await pulse.build_snapshot(today_msk())
         ev = snap.get("events", {})
         aud = snap.get("audience", {})
         by_aud = ev.get("by_audience", {})
@@ -485,6 +418,15 @@ async def _handle_callback(cq: dict) -> None:
     elif data == "hypotheses":
         text = await _hypotheses_overview()
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())
+    elif data in ("signups", "funnel", "goals") and settings.telegram_digest_v2_enabled:
+        from app.services import telegram_reports  # локальный импорт против цикла
+
+        builder = {
+            "signups": telegram_reports.signups_button_text,
+            "funnel": telegram_reports.funnel_button_text,
+            "goals": telegram_reports.goals_button_text,
+        }[data]
+        await send_message(chat_id, await builder(), reply_markup=main_menu_keyboard(), kind="bot_report")
     elif data.startswith("user:"):
         text = await _user_card(data.split(":", 1)[1])
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())

@@ -1111,6 +1111,9 @@ class BehaviorSession(Base):
     viewport_h: Mapped[int | None] = mapped_column(Integer)
     dpr: Mapped[float | None] = mapped_column(Numeric(4, 2))
     language: Mapped[str | None] = mapped_column(String(16))
+    # Язык САЙТА (по хосту запроса: ru./apex), отдельно от языка браузера `language`
+    # (круг 11, зона H). NULL у сессий до миграции — честная пустота.
+    site_locale: Mapped[str | None] = mapped_column(String(2))
     timezone: Mapped[str | None] = mapped_column(String(60))
     touch: Mapped[bool | None] = mapped_column(Boolean)
     # Расширенный портрет устройства (2026-07-06): сеть, железо, тема.
@@ -1235,6 +1238,8 @@ class ServerSession(Base):
     exit_page: Mapped[str | None] = mapped_column(String(500))
     channel: Mapped[str | None] = mapped_column(String(20))
     device: Mapped[str | None] = mapped_column(String(20))
+    # Язык сайта сессии (копируется из behavior_sessions при сессионизации).
+    site_locale: Mapped[str | None] = mapped_column(String(2))
     is_new_visitor: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     is_engaged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="false")
     micro_goals: Mapped[int] = mapped_column(Integer, default=0)
@@ -1691,3 +1696,77 @@ class UserPreference(Base):
     data: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     feed_token_hash: Mapped[str | None] = mapped_column(String(64))
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+class UserSignup(Base):
+    """Как пришёл зарегистрированный человек (круг 11, зона H, 2026-10-09).
+
+    Одна строка на аккаунт, удаляется вместе с ним (FK ON DELETE CASCADE и явное
+    удаление в `delete_account`: SQLite в тестах FK не включает). Серверные поля
+    (метод, язык сайта, страна, рассылка) пишутся В САМОМ запросе регистрации и не
+    могут потеряться; остальное (канал, устройство, посадочная, дни до
+    регистрации) дополняет `signup_attribution.ensure_signup_attribution` после
+    появления `identity_links`. IP не хранится: только страна/регион по геобазе.
+    Если посетитель отказался от аналитики, остаются серверные поля — это честная
+    пустота, а не ноль.
+    """
+    __tablename__ = "user_signups"
+    __table_args__ = (
+        Index("ix_user_signups_created", "created_at"),
+    )
+
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    # email / yandex / vk / google
+    method: Mapped[str | None] = mapped_column(String(20))
+    # ru / en — язык сайта, на котором человек регистрировался (по хосту)
+    site_locale: Mapped[str | None] = mapped_column(String(2))
+    newsletter: Mapped[bool | None] = mapped_column(Boolean)
+    country: Mapped[str | None] = mapped_column(String(60))
+    country_code: Mapped[str | None] = mapped_column(String(2))
+    geo_region: Mapped[str | None] = mapped_column(String(120))
+    # Дополняется задачей атрибуции (первая сессия посетителя до регистрации):
+    channel: Mapped[str | None] = mapped_column(String(20))
+    referrer_host: Mapped[str | None] = mapped_column(String(200))
+    utm_source: Mapped[str | None] = mapped_column(String(120))
+    utm_medium: Mapped[str | None] = mapped_column(String(120))
+    utm_campaign: Mapped[str | None] = mapped_column(String(200))
+    device_type: Mapped[str | None] = mapped_column(String(12))
+    browser: Mapped[str | None] = mapped_column(String(40))
+    os: Mapped[str | None] = mapped_column(String(30))
+    browser_lang: Mapped[str | None] = mapped_column(String(16))
+    landing_page: Mapped[str | None] = mapped_column(String(500))
+    # gate_download / gate_chart_image / gate_compare / nudge / header / direct
+    trigger: Mapped[str | None] = mapped_column(String(30))
+    sessions_before: Mapped[int | None] = mapped_column(Integer)
+    pageviews_before: Mapped[int | None] = mapped_column(Integer)
+    days_to_signup: Mapped[int | None] = mapped_column(Integer)
+    # NULL = атрибуция ещё не пробовали; задана = пробовали (даже если ничего не нашли)
+    filled_at: Mapped[datetime | None] = mapped_column(DateTime)
+    # request / job / backfill
+    source: Mapped[str | None] = mapped_column(String(20))
+
+
+class DailyGoalDim(Base):
+    """Rollup: день × событие × разрез × значение (круг 11, зона H).
+
+    Разрезы `site_locale` / `device` / `channel` / `country` / `surface` для
+    событий-групп отчётов (скачивания, упоры в стену, сравнение, калькуляторы…).
+    Роботы и собственная активность исключены (как в `mart_pwa_installs`).
+    Отчётам не нужно ходить в `frontend_events`.
+    """
+    __tablename__ = "daily_goal_dims"
+    __table_args__ = (
+        UniqueConstraint("day", "event_name", "dim", "value", name="uq_daily_goal_dim_key"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    day: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    event_name: Mapped[str] = mapped_column(String(120), nullable=False)
+    dim: Mapped[str] = mapped_column(String(20), nullable=False)
+    value: Mapped[str] = mapped_column(String(120), nullable=False)
+    count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    sessions: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)

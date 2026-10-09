@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMe } from '../lib/api';
-import { setTrackedIdentity } from '../lib/track';
+import { events, setTrackedIdentity, track } from '../lib/track';
+import { clearAuthTrigger, consumeOAuthPending, loginParams, signupParams } from '../lib/authTrigger';
 import { AuthContext } from './authContext';
 
 const AUTH_KEY = ['auth', 'me'];
@@ -38,6 +39,18 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     if (!isFetched) return;
     setTrackedIdentity({ authed: Boolean(user), userId: user?.id ?? null });
+    // Возврат с провайдера (Яндекс, VK, Google): полностраничный редирект не даёт вызвать
+    // track на странице входа, поэтому signup / login_success отправляем здесь, один раз.
+    if (!user) return;
+    const pending = consumeOAuthPending();
+    if (!pending || pending.intent !== 'login') return;
+    if (user.is_new) {
+      track(events.AUTH_SIGNUP, signupParams(pending.provider, { newsletter: pending.newsletter }));
+      if (pending.newsletter) track(events.NEWSLETTER_OPT_IN, { channel: pending.provider });
+      clearAuthTrigger();
+    } else {
+      track(events.AUTH_LOGIN, loginParams(pending.provider));
+    }
   }, [user, isFetched]);
 
   const setUser = useCallback((u) => qc.setQueryData(AUTH_KEY, u ?? null), [qc]);

@@ -31,7 +31,9 @@ from app.config import settings
 from app.database import analytics_session
 from app.models import Hypothesis
 from app.services import pulse
+from app.services.display import today_msk
 from app.services.alerting import digest_recipients
+from app.services.pii_scrub import sanitize_memory_for_llm, sanitize_snapshot_for_llm, scrub_value
 from app.services.telegram_bot import main_menu_keyboard, send_message
 
 logger = logging.getLogger(__name__)
@@ -98,6 +100,20 @@ exclusion_reasons_sample (топ-5 причин исключения стран�
 не настроен или Вебмастер недоступен, не считай это нулевой индексацией. Если
 доля индексации низкая или сильно
 изменилась — это стоит подсветить отдельно, это метрика роста трафика.
+
+Регистрации и воронка (marts.signups_7d, marts.signup_funnel_7d, marts.goal_usage_7d,
+users.new_list): имён и почт новых людей в данных нет — только число, способ входа и
+язык сайта. signups_7d: locale — язык сайта, на котором человек
+регистрировался (ru/en; unknown — язык не определён, это не ноль), origin.foreign —
+страна первого визита не Россия (это не то же самое, что английская версия: на ней
+бывают и россияне), channel/device/trigger — откуда пришёл и что подтолкнуло
+(gate_* — упор в лимит гостя, nudge — приглашение на странице, header — кнопка в
+шапке, direct — сам). signup_funnel_7d: шаги не вложены друг в друга, регистрации
+считаются по аккаунтам, остальное по людям; dropped_at — на каком шаге ушли те, кто
+дошёл до лимита или кнопки и не зарегистрировался; weakest — самое слабое звено при
+базе не меньше 10. goal_usage_7d: has_data=false значит «разрезы не посчитаны», а не
+«действий не было». Воронка и язык — наблюдение, причина неизвестна: не объясняй
+падение или рост конкретной причиной без подтверждения.
 
 Блок hypotheses в конце входа — булев слой знаний: открытые гипотезы о
 пользователях и сайте. Твоя обязанность — вести его: пересматривай открытые
@@ -186,6 +202,23 @@ def _split_llm_output(content: str) -> tuple[str, list[dict]]:
     return text.strip(), updates
 
 
+def build_llm_user_content(snapshot: dict, memory: list[dict], hypotheses: list[dict]) -> str:
+    """Текст пользовательского сообщения для модели.
+
+    152-ФЗ (круг 11): всё, что уходит в OpenRouter через зарубежный прокси, проходит
+    очистку: без имён и почт новых пользователей, без почт и телефонов в строках
+    поиска, копирования и фраз. Чистая функция (проверяется тестом без сети).
+    """
+    return (
+        "Память за прошлые дни (старые → новые):\n"
+        + json.dumps(sanitize_memory_for_llm(memory), ensure_ascii=False)
+        + "\n\nСнапшот за отчётный день:\n"
+        + json.dumps(sanitize_snapshot_for_llm(snapshot), ensure_ascii=False)
+        + "\n\nОткрытые гипотезы (hypotheses):\n"
+        + json.dumps(scrub_value(hypotheses), ensure_ascii=False)
+    )
+
+
 async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
     """Сводка дня через OpenRouter (+ ведение гипотез). None при сбое —
     отчёт уйдёт без LLM."""
@@ -203,14 +236,7 @@ async def _llm_summary(snapshot: dict, memory: list[dict]) -> str | None:
             {"role": "system", "content": _SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": (
-                    "Память за прошлые дни (старые → новые):\n"
-                    + json.dumps(memory, ensure_ascii=False)
-                    + "\n\nСнапшот за отчётный день:\n"
-                    + json.dumps(snapshot, ensure_ascii=False)
-                    + "\n\nОткрытые гипотезы (hypotheses):\n"
-                    + json.dumps(hypotheses, ensure_ascii=False)
-                ),
+                "content": build_llm_user_content(snapshot, memory, hypotheses),
             },
         ],
     }
@@ -340,6 +366,9 @@ def _raw_digits_block(snapshot: dict) -> str:
     if ev.get("by_name"):
         top = ", ".join(f"{k}: {v}" for k, v in list(ev["by_name"].items())[:15])
         parts.append(f"События: {escape(top)}")
+    if ev.get("wall_hits"):
+        top = ", ".join(f"{k}: {v}" for k, v in ev["wall_hits"].items())
+        parts.append(f"Упоры в лимит гостя: {escape(top)}")
     if ev.get("top_indicators"):
         top = ", ".join(f"{k} ×{v}" for k, v in ev["top_indicators"].items())
         parts.append(f"Индикаторы: {escape(top)}")
@@ -380,7 +409,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
         logger.info("Pulse report skipped: telegram not configured")
         return False
 
-    d = report_date or (date.today() - timedelta(days=1))
+    d = report_date or (today_msk() - timedelta(days=1))
     snapshot = await pulse.get_or_build_snapshot(d)
     # Привлечение обновляем на момент отчёта: снапшот фиксируется в 23:57,
     # а синк Метрики за этот день отрабатывает только утром (08:20).
@@ -426,10 +455,14 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
 async def pulse_snapshot_job() -> None:
     """Ежедневная фиксация снапшота (23:57 МСК) — чтобы день не потерялся.
 
+    E2 (круг 11): снимок 23:57 не видит последние минуты суток и помечен
+    `complete=false`; отчёт 09:05 пересоберёт его по полному МСК-окну
+    (`pulse.get_or_build_snapshot`), так что вечерняя часть не теряется.
+
     Н-21: исключение НЕ глотаем — прокидываем в APScheduler, чтобы сработал
     scheduler-listener (Н-2) и владелец получил алерт, а не молча потерял день.
     """
-    snap = await pulse.build_snapshot(date.today())
+    snap = await pulse.build_snapshot(today_msk())
     await pulse.store_snapshot(snap)
     logger.info("Pulse snapshot stored for %s", snap["date"])
 

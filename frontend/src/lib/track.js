@@ -1,9 +1,13 @@
 import { CATEGORIES } from './categories';
-import { isAutomationClient, visitorId } from './behavior';
+import { consentAllows, isAutomationClient, visitorId } from './behavior';
+import { rememberAuthTrigger, rememberLanding } from './authTrigger';
 import { SITE_ORIGIN } from './siteOrigin';
 
 const COUNTER_ID = 107136069;
 const EVENT_COLLECTOR_PATH = '/api/v1/analytics/events';
+
+// Первая страница визита нужна событию signup (откуда человек начал). Один раз на вкладку.
+rememberLanding();
 
 function sessionId() {
   const key = 'fe:analytics:session';
@@ -95,14 +99,22 @@ export function track(event, params) {
   // Признак аудитории — в каждое событие. authed уже мог прийти в params
   // (напр. compare_image_download), но здесь гарантируем его всегда.
   payload = { ...(payload || {}), authed: _identity.authed ? 1 : 0 };
+  // «Что подтолкнуло к регистрации» — запоминаем по событиям-упорам и кнопкам (для signup.trigger).
+  rememberAuthTrigger(event);
   ym(COUNTER_ID, 'reachGoal', event, payload);
   sendEvent(event, payload);
   // Локальный сигнал для лёгких подписчиков (lib/pwa.js: «полезное действие»). Только имя, без параметров.
   try { window.dispatchEvent(new CustomEvent('fe:track', { detail: { event } })); } catch { /* не критично */ }
 }
 
+// Единственное событие, которое уходит и после отказа от аналитики: оно фиксирует сам отказ.
+const CONSENT_EXEMPT_EVENTS = new Set(['consent_update']);
+
 export function sendEvent(eventName, params) {
   if (typeof window === 'undefined') return;
+  // 152-ФЗ (круг 11): явный отказ от аналитики уважается и здесь, как в behavior.js.
+  // Раньше first-party события шли без проверки согласия (документированная граница).
+  if (!CONSENT_EXEMPT_EVENTS.has(eventName) && !consentAllows()) return;
   const body = JSON.stringify({
     event_name: eventName,
     session_id: sessionId(),
@@ -127,6 +139,14 @@ export function sendEvent(eventName, params) {
   } catch {
     // Analytics must never affect the product UX.
   }
+}
+
+// Смена языка сайта: i18n/locale.js отправляет DOM-событие перед сменой хоста (круг 11).
+if (typeof window !== 'undefined') {
+  window.addEventListener('fe:locale-switch', (e) => {
+    const { from, to } = (e && e.detail) || {};
+    track(events.LOCALE_SWITCH, { from: from || undefined, to: to || undefined });
+  });
 }
 
 export function trackFile(filename) {
@@ -233,6 +253,29 @@ export const events = {
   CONSENT_UPDATE: 'consent_update',
   API_RETRY: 'api_retry',
   ERROR_RELOAD: 'error_reload',
+
+  // Круг 11 (зона H): вход, регистрация и язык. Только технические параметры (см. lib/authTrigger.js).
+  AUTH_ERROR: 'auth_error',
+  AUTH_FORM_ERROR: 'auth_form_error',
+  OAUTH_CONSENT_OPEN: 'oauth_consent_open',
+  OAUTH_CONSENT_CANCEL: 'oauth_consent_cancel',
+  LOCALE_SWITCH: 'locale_switch',
+
+  // Круг 11: события новых функций. Зоны кабинета и страниц вызывают их при выпуске своих
+  // функций; имена и допустимые поля зафиксированы здесь и на сервере (services/event_params.py).
+  SHARE_LINK: 'share_link',
+  FAVORITE_ADD: 'favorite_add',
+  FAVORITE_REMOVE: 'favorite_remove',
+  COMPARE_PRESET_OPEN: 'compare_preset_open',
+  COMPARE_SAVE: 'compare_save',
+  COMPARE_SAVED_OPEN: 'compare_saved_open',
+  INDICATOR_SUBSCRIBE: 'indicator_subscribe',
+  INDICATOR_UNSUBSCRIBE: 'indicator_unsubscribe',
+  PUSH_PROMPT_VIEW: 'push_prompt_view',
+  PUSH_PERMISSION: 'push_permission',
+  CONVERTER_USE: 'converter_use',
+  CALC_USE: 'calc_use',
+  EXPORT_RUN: 'export_run',
 
   // Личный кабинет / конверсия (ADR-0007 Phase 2). Каждое CTA — цель Метрики,
   // попадает в ежедневный Telegram-дайджест (бэкенд тянет все цели счётчика).

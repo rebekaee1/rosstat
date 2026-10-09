@@ -39,6 +39,8 @@ logger = logging.getLogger(__name__)
 RESEND_KINDS = (
     "digest", "pulse_digest", "new_user", "feedback", "api_interest",
     "etl_summary", "world_ingest_summary",
+    # Круг 11: недельный и месячный отчёты об аудитории и новые алерты.
+    "weekly_report", "monthly_report", "audience_alert",
 )
 PENDING_ERROR = "pending"
 PENDING_FINAL_ERROR = "interrupted: no delivery result recorded (pending > 1h)"

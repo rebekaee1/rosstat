@@ -349,6 +349,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
                     BehaviorSession.utm_source, BehaviorSession.utm_medium, BehaviorSession.yclid,
                     BehaviorSession.device_type, BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
                     BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h, BehaviorSession.cpu_cores,
+                    BehaviorSession.site_locale,
                 ).where(BehaviorSession.session_id_hash.in_(needed)))).all()} if needed else {}
                 for event in part:
                     key = (event.visitor, event.logical_start)
@@ -550,6 +551,8 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         "exit_page": next((e.page for e in reversed(evs) if e.page), None),
         "channel": channel,
         "device": device,
+        # Язык сайта (круг 11): портрет сессии, иначе портрет того же посетителя.
+        "site_locale": getattr(portrait, "site_locale", None) if portrait else None,
         "is_new_visitor": visitor not in known_visitors,
         "is_engaged": engaged,
         "micro_goals": micro,
@@ -676,11 +679,18 @@ async def rollup_daily_traffic(db, since_day: date) -> int:
 
 
 async def rollup_daily_goals(db, since_day: date) -> int:
-    """день × событие (SQL GROUP BY по frontend_events; день — МСК)."""
+    """день × событие (SQL GROUP BY по frontend_events; день — МСК).
+
+    E6 (круг 11): роботы и собственная активность владельца/админов исключены —
+    так же, как в воронке и `mart_pwa_installs`. Сессионизация в `run_rollups`
+    выполняется раньше, поэтому флаги `is_bot/is_internal` уже свежие.
+    """
+    from app.services.analytics_marts import human_event_conditions
     from app.services.analytics_period import msk_day_start_utc
 
     since_dt = msk_day_start_utc(since_day)
     day_expr = msk_day_expr(FrontendEvent.occurred_at, db.bind.dialect.name)
+    human = await human_event_conditions(db, since_day, msk_day(_utcnow()))
     rows = (await db.execute(
         select(
             day_expr.label("day"),
@@ -689,7 +699,7 @@ async def rollup_daily_goals(db, since_day: date) -> int:
             func.count(func.distinct(FrontendEvent.session_id_hash)).label("sessions"),
             func.sum(case((FrontendEvent.authed.is_(True), 1), else_=0)).label("authed_cnt"),
         )
-        .where(FrontendEvent.occurred_at >= since_dt)
+        .where(FrontendEvent.occurred_at >= since_dt, *human)
         .group_by(day_expr, FrontendEvent.event_name)
     )).all()
 
@@ -706,6 +716,84 @@ async def rollup_daily_goals(db, since_day: date) -> int:
         await db.execute(DailyGoal.__table__.insert(), out)
     await db.commit()
     return len(out)
+
+
+# События, для которых строим разрезы в `daily_goal_dims`: группы отчётов (скачивания,
+# упоры в стену, сравнение, калькуляторы, поделились, избранное, подписки, язык).
+_DIM_NAMES_CACHE: list[str] | None = None
+
+
+def _dim_event_names() -> list[str]:
+    global _DIM_NAMES_CACHE
+    if _DIM_NAMES_CACHE is None:
+        from app.services.goal_taxonomy import all_grouped_events
+
+        _DIM_NAMES_CACHE = sorted(all_grouped_events())
+    return _DIM_NAMES_CACHE
+
+
+async def rollup_daily_goal_dims(db, since_day: date) -> int:
+    """день × событие × разрез × значение (круг 11, зона H).
+
+    Разрезы: `all` (итого), `site_locale` (по адресу события), `device`, `channel`,
+    `country` (ru / foreign / unknown) — из портрета сессии, `surface` — из параметров.
+    Роботы и собственная активность исключены (как в `daily_goals`). Объём мал: берутся
+    только события групп отчётов, по индексу имя+время; читаются потоком пачками.
+    """
+    from app.models import DailyGoalDim
+    from app.services.analytics_dims import UNKNOWN, country_group, site_locale_from_url, surface_from_url
+    from app.services.analytics_marts import human_event_conditions
+    from app.services.analytics_period import msk_day_start_utc
+
+    since_dt = msk_day_start_utc(since_day)
+    human = await human_event_conditions(db, since_day, msk_day(_utcnow()))
+    surface_col = FrontendEvent.params_json["surface"].as_string()
+    result = await db.stream(
+        select(
+            FrontendEvent.occurred_at, FrontendEvent.event_name, FrontendEvent.session_id_hash,
+            FrontendEvent.url, surface_col,
+            BehaviorSession.device_type, BehaviorSession.channel, BehaviorSession.country,
+        )
+        .select_from(FrontendEvent)
+        .outerjoin(BehaviorSession, BehaviorSession.session_id_hash == FrontendEvent.session_id_hash)
+        .where(FrontendEvent.event_name.in_(_dim_event_names()),
+               FrontendEvent.occurred_at >= since_dt, *human)
+        .execution_options(yield_per=_STREAM_BATCH)
+    )
+    agg: dict[tuple, list] = {}
+
+    def bump(day: str, name: str, dim: str, value: str, sid: str | None) -> None:
+        cell = agg.setdefault((day, name, dim, value[:120]), [0, set()])
+        cell[0] += 1
+        if sid:
+            cell[1].add(sid)
+
+    try:
+        async for part in result.partitions(_STREAM_BATCH):
+            for occurred_at, name, sid, url, surface, device, channel, country in part:
+                day = msk_day(occurred_at).isoformat()
+                bump(day, name, "all", "all", sid)
+                bump(day, name, "site_locale", site_locale_from_url(url) or UNKNOWN, sid)
+                bump(day, name, "device", device or UNKNOWN, sid)
+                bump(day, name, "channel", channel or UNKNOWN, sid)
+                bump(day, name, "country", country_group(country), sid)
+                # Поверхность: параметр события, иначе по пути адреса.
+                where = str(surface) if surface else surface_from_url(url)
+                if where:
+                    bump(day, name, "surface", where, sid)
+    finally:
+        await result.close()
+
+    await db.execute(delete(DailyGoalDim).where(DailyGoalDim.day >= since_day))
+    rows = [
+        {"day": date.fromisoformat(day), "event_name": name, "dim": dim, "value": value,
+         "count": cnt, "sessions": len(sessions), "computed_at": _utcnow()}
+        for (day, name, dim, value), (cnt, sessions) in agg.items()
+    ]
+    if rows:
+        await db.execute(DailyGoalDim.__table__.insert(), rows)
+    await db.commit()
+    return len(rows)
 
 
 async def rollup_daily_pages(db, since_day: date) -> int:
@@ -888,9 +976,26 @@ async def run_rollups(days: int = 2) -> dict[str, int]:
         n_traffic = await rollup_daily_traffic(db, since_day)
     async with analytics_session() as db:
         n_goals = await rollup_daily_goals(db, since_day)
+    n_dims = 0
+    try:
+        async with analytics_session() as db:
+            n_dims = await rollup_daily_goal_dims(db, since_day)
+    except Exception:
+        # Разрезы для отчётов не должны останавливать основные роллапы.
+        logger.exception("daily_goal_dims rollup failed")
     async with analytics_session() as db:
         n_pages = await rollup_daily_pages(db, since_day)
-    return {"sessions": n_sessions, "traffic": n_traffic, "goals": n_goals, "pages": n_pages}
+    n_signups = 0
+    try:
+        from app.services.signup_attribution import ensure_signup_attribution, refill_empty_attribution
+
+        async with analytics_session() as db:
+            n_signups = await ensure_signup_attribution(db)
+            await refill_empty_attribution(db, since=_utcnow() - timedelta(days=3))
+    except Exception:
+        logger.exception("signup attribution failed")
+    return {"sessions": n_sessions, "traffic": n_traffic, "goals": n_goals, "goal_dims": n_dims,
+            "pages": n_pages, "signups": n_signups}
 
 
 async def rollups_15min_job() -> None:
@@ -920,6 +1025,17 @@ async def rollups_daily_job() -> None:
             await sync_metrika_goals(db)
     except Exception:
         logger.exception("Metrika goals sync failed")
+    try:
+        # Круг 11: добор атрибуции регистраций за всё время и уборка следов удалённых аккаунтов.
+        from app.services.account_erasure import process_pending_erasures
+        from app.services.signup_attribution import ensure_signup_attribution
+
+        async with analytics_session() as db:
+            await ensure_signup_attribution(db, since=_utcnow() - timedelta(days=3650), limit=1000)
+        async with analytics_session() as db:
+            logger.info("Analytics erasure: %s", await process_pending_erasures(db))
+    except Exception:
+        logger.exception("Signup attribution / erasure failed")
     try:
         from app.services.analytics_alerts import check_bot_calibration
         await check_bot_calibration()

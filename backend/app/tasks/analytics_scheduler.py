@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections import Counter
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from html import escape
 
 from sqlalchemy import delete, func, select
@@ -13,6 +13,8 @@ from app.database import analytics_session
 from app.services.identity.consents import newsletter_subscriber_count_query
 from app.models import BehaviorEvent, EmailCredential, FrontendEvent, OAuthIdentity, User
 from app.services.alerting import send_telegram_digest
+from app.services.analytics_period import msk_day_start_utc
+from app.services.display import today_msk
 from app.services.analytics_ingestion import (
     finish_sync_run,
     start_sync_run,
@@ -74,12 +76,19 @@ async def analytics_hourly_job() -> None:
             await db.commit()
 
 
-async def _user_stats_lines() -> list[str]:
+async def _user_stats_lines(report_date: date | None = None) -> list[str]:
+    """Блок «Пользователи». E1 (круг 11): «за сутки» = МСК-сутки `report_date`
+    (по умолчанию вчера), а не скользящие 24 часа на момент отправки: так число
+    совпадает с BI и с заголовком дайджеста «за {дата}»."""
+    report_date = report_date or (today_msk() - timedelta(days=1))
+    day_start = msk_day_start_utc(report_date)
+    day_end = day_start + timedelta(days=1)
     async with analytics_session() as db:
         total = await db.scalar(select(func.count(User.id))) or 0
-        since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=1)
         new_users = (await db.execute(
-            select(User).where(User.created_at >= since).order_by(User.created_at.desc())
+            select(User)
+            .where(User.created_at >= day_start, User.created_at < day_end)
+            .order_by(User.created_at.desc())
         )).scalars().all()
         newsletter = await db.scalar(
             newsletter_subscriber_count_query()
@@ -121,7 +130,7 @@ async def _user_stats_lines() -> list[str]:
 async def _search_demand_lines(report_date: date) -> list[str]:
     """Спрос-аналитика поиска за день из FrontendEvent: что искали (введённое,
     выбранное, брошенное) + запросы с 0 результатов = пробелы в каталоге."""
-    start = datetime.combine(report_date, time.min)
+    start = msk_day_start_utc(report_date)  # E1: МСК-сутки, как в BI
     end = start + timedelta(days=1)
     async with analytics_session() as db:
         rows = (await db.execute(
@@ -294,6 +303,7 @@ async def behavior_retention_job() -> None:
 
 
 _INVENTORY_BLOCK_TIMEOUT_S = 90  # потолок на блок «инвентаризация датасета» в дайджесте
+_DIGEST_V2_TIMEOUT_S = 150  # потолок на все блоки v2 вместе (внутри каждая витрина ограничена своим таймаутом)
 
 
 async def telegram_daily_digest_job() -> None:
@@ -302,12 +312,21 @@ async def telegram_daily_digest_job() -> None:
     if not (settings.telegram_bot_token and settings.telegram_chat_id):
         logger.info("Telegram digest skipped: bot token/chat not configured")
         return
-    yesterday = date.today() - timedelta(days=1)
+    yesterday = today_msk() - timedelta(days=1)
     parts = [f"📊 <b>Forecast Economy — дайджест за {yesterday.isoformat()}</b>"]
     try:
-        parts += await _user_stats_lines()
+        parts += await _user_stats_lines(yesterday)
     except Exception:
         logger.warning("Telegram digest: user stats failed", exc_info=True)
+    if settings.telegram_digest_v2_enabled:
+        # Круг 11: блоки v2 (регистрации, что делали, воронка, сайт). Включаются флагом;
+        # каждая витрина независима и ограничена по времени, сбой не отменяет дайджест.
+        try:
+            from app.services.telegram_reports import digest_v2_lines
+
+            parts += await asyncio.wait_for(digest_v2_lines(yesterday), _DIGEST_V2_TIMEOUT_S)
+        except Exception:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
+            logger.warning("Telegram digest: v2 blocks failed", exc_info=True)
     try:
         parts += await _search_demand_lines(yesterday)
     except Exception:

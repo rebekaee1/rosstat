@@ -9,6 +9,7 @@ import PasswordField from '../components/PasswordField';
 import { track, events } from '../lib/track';
 import { useT } from '../i18n';
 import { safeReturnTo, authLink } from '../lib/authReturn';
+import { authErrorCode, authErrorField, clearAuthTrigger, signupParams } from '../lib/authTrigger';
 import { cn } from '../lib/format';
 import Button from '../components/Button';
 import { usePrefersReducedMotion } from '../lib/chartHooks';
@@ -57,17 +58,25 @@ export default function Register() {
     setError(null);
     if (!consent) {
       setError(t('auth.register.consentRequired'));
+      track(events.AUTH_FORM_ERROR, { form: 'register', field: 'consent', code: 'required' });
       return;
     }
     setBusy(true);
     try {
       const user = await registerUser({ email, password, consent, newsletter });
       setUser(user);
-      track(events.AUTH_SIGNUP, { method: 'email', newsletter: newsletter ? 1 : 0 });
+      // Круг 11: метод, язык сайта, что подтолкнуло, первая страница, дни с первого визита.
+      track(events.AUTH_SIGNUP, signupParams('email', { newsletter }));
+      clearAuthTrigger();
       if (newsletter) track(events.NEWSLETTER_OPT_IN, { channel: 'email' });
       setWelcome(true);
     } catch (err) {
       setError(apiErrorMessage(err, t, 'auth.register.error'));
+      // Только коды: без текста сообщения и без введённых значений.
+      const code = authErrorCode(err);
+      track(events.AUTH_ERROR, { stage: 'email_register', code });
+      const field = authErrorField(err);
+      if (field) track(events.AUTH_FORM_ERROR, { form: 'register', field, code });
     } finally {
       setBusy(false);
     }
@@ -129,7 +138,7 @@ export default function Register() {
         </div>
       )}
 
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className="space-y-4" data-track="register-email">
         <div>
           <label className="block text-sm text-text-secondary mb-1.5" htmlFor="email">{t('common.email')}</label>
           <input

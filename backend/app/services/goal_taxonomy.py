@@ -48,6 +48,7 @@ _MACRO = {
     "feedback_submit",
     "api_interest_submit",    # заявка на платный API («фальшивая дверь», 2026-10-05)
     "pwa_installed",          # сайт установлен как приложение (appinstalled)
+    "indicator_subscribe",    # подписка на показатель (круг 11: функция кабинета)
 }
 
 # --- micro: ценные действия с продуктом ---
@@ -70,6 +71,14 @@ _MICRO = {
     "calc_compound",
     "embed_code_copy",
     "contact_email",          # интент связи — ценное действие
+    # Круг 11 (зона H): события новых функций. Вызывать их будут зоны кабинета и
+    # страниц; имена закладываем заранее, чтобы тест полноты и отчёты их знали.
+    "share_link",             # «Поделиться» (показатель, сравнение, калькулятор, страна)
+    "favorite_add",           # добавил в избранное
+    "compare_save",           # сохранил сравнение
+    "converter_use",          # воспользовался конвертером валют
+    "push_permission",        # ответил на запрос уведомлений
+    "export_run",             # запустил выгрузку из кабинета
 }
 
 # --- intent: намерение, НЕ конверсия ---
@@ -85,6 +94,7 @@ _INTENT = {
     "pwa_install_prompt_accept",    # «Установить» / «Понятно» в окне приглашения
     "pwa_install_native_accepted",  # согласие в системном окне установки
     "pwa_install_entry_click",      # пункт «Установить приложение» в подвале
+    "oauth_consent_open",           # открыл окно согласия перед входом через соцсеть
 }
 
 # --- engagement: вовлечение в контент и инструменты ---
@@ -150,6 +160,10 @@ _ENGAGEMENT = {
     "embed_size_change",
     "embed_theme_change",
     "embed_type_change",
+    "locale_switch",          # смена языка сайта (ru/en)
+    "compare_preset_open",    # открыл готовое сравнение
+    "compare_saved_open",     # открыл сохранённое сравнение
+    "calc_use",               # начал считать в калькуляторе (раз за загрузку)
 }
 
 # --- technical: не цели (ошибки, показы, consent, негативные сигналы) ---
@@ -176,11 +190,18 @@ _TECHNICAL = {
     "pwa_ios_hint_view",             # показ подсказки «Поделиться → На экран Домой»
     "pwa_install_prompt_dismiss",    # «Не сейчас» (откладывает показ)
     "pwa_install_native_dismissed",  # отказ в системном окне установки
+    "auth_error",                    # ошибка входа/регистрации (код, без текстов)
+    "auth_form_error",               # ошибка поля формы входа/регистрации
+    "oauth_consent_cancel",          # закрыл окно согласия, не продолжив
+    "favorite_remove",               # убрал из избранного
+    "indicator_unsubscribe",         # отписался от показателя
+    "push_prompt_view",              # показали запрос на уведомления
 }
 
 # Точечные override веса (сильнее дефолта tier'а).
 _WEIGHT_OVERRIDES = {
     "signup": 100,
+    "indicator_subscribe": 40,
     "newsletter_opt_in": 60,
     "feedback_submit": 40,
     "api_interest_submit": 40,
@@ -200,6 +221,96 @@ _WEIGHT_OVERRIDES = {
 # иначе scroll_depth (4 выстрела на страницу) и indicator_view (авто-событие)
 # делают «начитавшего» бота ценнее человека со скачиванием.
 SCORE_EVENT_CAP = 3
+
+
+# ---------------------------------------------------------------------------
+# Единые группы событий для отчётов (круг 11, зона H).
+#
+# Раньше «скачивания» и «ошибки фронта» были перечислены в пяти местах
+# (pulse.py, admin_bi.py, analytics_report_bundle.py, telegram_bot.py и
+# частично в таксономии) с разными составами и несуществующими именами
+# (`compare_csv_download`, `api_error`). Теперь одно определение; группы не
+# пересекаются (тест `test_event_groups_disjoint`), чтобы цифры «скачано» и
+# «упёрлись в стену» не складывались дважды.
+# ---------------------------------------------------------------------------
+GROUP_DOWNLOAD = "download"
+GROUP_WALL = "wall"
+GROUP_COMPARE = "compare"
+GROUP_CALC = "calc"
+GROUP_SHARE = "share"
+GROUP_FAVORITE = "favorite"
+GROUP_SUBSCRIBE = "subscribe"
+GROUP_LANGUAGE = "language"
+GROUP_FRONT_ERROR = "front_error"
+GROUP_AUTH_ERROR = "auth_error"
+
+EVENT_GROUPS: dict[str, frozenset[str]] = {
+    # Реально выданные файлы и картинки. `download_limit` и `*_blocked` сюда НЕ входят.
+    GROUP_DOWNLOAD: frozenset({
+        "download_csv", "download_excel", "download_ical", "demographics_csv",
+        "chart_image_download", "compare_image_download", "regions_map_gif_download",
+        "export_run",
+    }),
+    # Упор в стену регистрации: знаменатель воронки, не цель (technical).
+    GROUP_WALL: frozenset({
+        "download_limit", "chart_image_blocked", "compare_image_blocked",
+        "compare_limit_hit", "regions_map_gif_blocked",
+    }),
+    GROUP_COMPARE: frozenset({
+        "compare_add", "compare_change", "region_compare_add",
+        "world_rating_compare_add", "compare_preset_open", "compare_saved_open",
+        "compare_save",
+    }),
+    GROUP_CALC: frozenset({
+        "calc_mortgage", "calc_compound", "calc_use", "converter_use",
+    }),
+    GROUP_SHARE: frozenset({"share_link", "calc_share"}),
+    GROUP_FAVORITE: frozenset({"favorite_add"}),
+    GROUP_SUBSCRIBE: frozenset({"indicator_subscribe", "push_permission"}),
+    GROUP_LANGUAGE: frozenset({"locale_switch"}),
+    # Ошибки загрузки на стороне сайта. Имя `api_error` в реестре не существует.
+    GROUP_FRONT_ERROR: frozenset({"error_reload", "api_retry", "api_load_error"}),
+    GROUP_AUTH_ERROR: frozenset({"auth_error", "auth_form_error"}),
+}
+
+# Подписи групп для текста в Telegram (родительный не нужен: «Метка: число»).
+GROUP_LABELS_RU: dict[str, str] = {
+    GROUP_DOWNLOAD: "выгрузки",
+    GROUP_WALL: "упёрлись в лимит",
+    GROUP_COMPARE: "сравнение",
+    GROUP_CALC: "калькуляторы",
+    GROUP_SHARE: "поделились",
+    GROUP_FAVORITE: "избранное",
+    GROUP_SUBSCRIBE: "подписки",
+    GROUP_LANGUAGE: "смена языка",
+    GROUP_FRONT_ERROR: "ошибки загрузки",
+    GROUP_AUTH_ERROR: "ошибки входа",
+}
+
+# Порядок показа групп в отчётах.
+REPORT_GROUPS: tuple[str, ...] = (
+    GROUP_DOWNLOAD, GROUP_WALL, GROUP_COMPARE, GROUP_CALC, GROUP_SHARE,
+    GROUP_FAVORITE, GROUP_SUBSCRIBE, GROUP_LANGUAGE,
+)
+
+
+def group_of_event(event_name: str) -> str | None:
+    """Группа события или None. Группы не пересекаются."""
+    for group, names in EVENT_GROUPS.items():
+        if event_name in names:
+            return group
+    return None
+
+
+def events_in_group(group: str) -> frozenset[str]:
+    return EVENT_GROUPS.get(group, frozenset())
+
+
+def all_grouped_events() -> frozenset[str]:
+    out: set[str] = set()
+    for names in EVENT_GROUPS.values():
+        out |= names
+    return frozenset(out)
 
 
 def tier_for_event(event_name: str) -> str:
