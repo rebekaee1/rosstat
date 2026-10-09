@@ -249,3 +249,24 @@ describe('planet label visibility and placement', () => {
     expect(reversed.map((label) => label.code)).toEqual(forward.map((label) => label.code));
   });
 });
+
+describe('круг 11 (D): подписи не слипаются', () => {
+  const measure = (value) => Array.from(value).length * 10;
+  it('название из нескольких слов с splitWords стоит по словам, без него остаётся одной строкой', () => {
+    expect(wrapPlanetLabel('United Kingdom', measure, 220)).toEqual(['United Kingdom']);
+    expect(wrapPlanetLabel('United Kingdom', measure, 220, { splitWords: true })).toEqual(['United', 'Kingdom']);
+    // Короткое название и одно слово не переносятся.
+    expect(wrapPlanetLabel('Chad', measure, 220, { splitWords: true })).toEqual(['Chad']);
+    expect(wrapPlanetLabel('Peru', measure, 220, { splitWords: true })).toEqual(['Peru']);
+    expect(wrapPlanetLabel('New Zealand', measure, 220, { splitWords: true })).toEqual(['New Zealand']);
+  });
+
+  it('рядом с выбранной страной чужие подписи не рисуются: зазор вокруг неё в три раза шире', () => {
+    const width = candidate('TR').width;
+    // Без выбора обе подписи помещаются (зазор 12 больше 5), при выборе соседняя пропадает (12 меньше 15).
+    const gap = 12;
+    const spaced = [candidate('TR', { x: 200, y: 200, area: 1 }), candidate('GR', { x: 200 + width + gap, y: 200, area: 0.5 })];
+    expect(layoutPlanetLabels(spaced, viewport).map((label) => label.code)).toEqual(['TR', 'GR']);
+    expect(layoutPlanetLabels(spaced, { ...viewport, selectedCode: 'TR' }).map((label) => label.code)).toEqual(['TR']);
+  });
+});

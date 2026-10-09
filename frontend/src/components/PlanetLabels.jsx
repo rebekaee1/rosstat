@@ -17,7 +17,8 @@ const ATLAS_HEIGHT = 1024 * ATLAS_SCALE;
 const TAIL_HEIGHT = 0;
 const PADDING_X = 6 * ATLAS_SCALE;
 const PADDING_Y = 4 * ATLAS_SCALE;
-const HALO_WIDTH = 5 * ATLAS_SCALE;
+// Круг 11 (D): ореол тоньше (был 5): широкий белый контур съедал пробел в «United Kingdom», и слова слипались.
+const HALO_WIDTH = 3 * ATLAS_SCALE;
 
 const VERTEX = `
   attribute vec4 labelUv;
@@ -74,7 +75,7 @@ function createLabelAtlas(labels) {
         context.font = `600 ${candidateSize}px ${FONT_FAMILY}`;
         return context.measureText(text).width;
       }, width: ATLAS_WIDTH, height: ATLAS_HEIGHT, maxTextWidth: 220 * ATLAS_SCALE,
-      paddingX: PADDING_X, paddingY: PADDING_Y, lineGap: 2 * ATLAS_SCALE, tailHeight: TAIL_HEIGHT,
+      paddingX: PADDING_X, paddingY: PADDING_Y, lineGap: 2 * ATLAS_SCALE, tailHeight: TAIL_HEIGHT, splitWords: true,
     });
     fontPixels = candidateSize;
     if (items) break;

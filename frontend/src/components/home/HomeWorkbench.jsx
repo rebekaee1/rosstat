@@ -35,9 +35,10 @@ import { readPlanetViewPreference } from '../../lib/planetViewPreference';
 import '../../styles/world.css';
 import '../../styles/shell.css';
 
-// Стартовый поворот шара (если выбран шар): Евразия на русском сайте, США на английском (а не пустая Атлантика).
+// Стартовый поворот шара (если выбран шар): Евразия на русском сайте; на английском Северная Америка с краем Европы (круг 11: центр на США
+// оставлял слева пустой Тихий океан). Самовращение качается всего на 35° от этого вида и не уходит в океан.
 const HOME_START_FOCUS_RU = [52, 38];
-const HOME_START_FOCUS_EN = [-96, 36];
+const HOME_START_FOCUS_EN = [-45, 38];
 
 const loadPlanetView = () => import('../PlanetView');
 const PlanetView = lazy(loadPlanetView);

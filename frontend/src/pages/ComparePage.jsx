@@ -1052,7 +1052,7 @@ function PickerBack({ label, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="mb-3 flex min-h-9 w-fit items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors pointer-coarse:min-h-11"
+      className="mb-3 flex min-h-9 w-fit max-w-full items-center gap-1.5 text-sm font-medium text-text-secondary hover:text-champagne-ink transition-colors pointer-coarse:min-h-11"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {label}

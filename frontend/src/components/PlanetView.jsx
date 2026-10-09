@@ -1,5 +1,5 @@
 import {
-  Component, Suspense, lazy, useCallback, useEffect, useId, useMemo, useRef, useState,
+  Component, Suspense, lazy, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 import { Link, useInRouterContext } from 'react-router-dom';
 import {
@@ -148,6 +148,13 @@ export default function PlanetView({
   const stageRef = useRef(null);
   const quickRef = useRef(null);
   const [quickMore, setQuickMore] = useState(false);
+  const [quickLess, setQuickLess] = useState(false);
+  // Круг 11 (D): выбор второй страны для сравнения прямо в лотке (а не в верхнем поиске) и сдвиг страницы при появлении лотка.
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerQuery, setPickerQuery] = useState('');
+  const pickerInput = useRef(null);
+  const shellRef = useRef(null);
+  const shellTopBefore = useRef(null);
   const searchInput = useRef(null);
   const searchResults = useRef(null);
   const countryCard = useRef(null);
@@ -157,6 +164,8 @@ export default function PlanetView({
   const playExpected = useRef(null);
   const lastPlayYear = useRef(year);
   const initialApplied = useRef(false);
+  // Выбор сделал человек (касание шара или карты, строка списка), а не ссылка «Поделиться видом»: только тогда подводим к карточке.
+  const userPicked = useRef(false);
 
   useEffect(() => {
     const narrow = window.matchMedia?.('(max-width: 520px)');
@@ -285,6 +294,7 @@ export default function PlanetView({
     }
     const country = countryByCode.get(code) || countryByCode.get(countryAlias(code));
     if (!country) return;
+    userPicked.current = true;
     if (country.code === selectedCode && country.slug && typeof onSelect === 'function') {
       onSelect(country, collectionValue(detailsByCode, country.code) || null);
       return;
@@ -322,6 +332,35 @@ export default function PlanetView({
     initialApplied.current = true;
     selectCountry(code, false, true);
   }, [initialCountry, countryByCode, selectCountry]);
+
+  // После вставки или снятия лотка возвращаем блок на прежнее место экрана: карта под пальцем не уезжает на 44–65 px.
+  useLayoutEffect(() => {
+    const before = shellTopBefore.current;
+    shellTopBefore.current = null;
+    if (before == null || !shellRef.current || typeof window.scrollBy !== 'function') return;
+    const delta = shellRef.current.getBoundingClientRect().top - before;
+    if (Math.abs(delta) < 1) return;
+    try { window.scrollBy({ top: delta, left: 0, behavior: 'instant' }); } catch { /* прокрутка недоступна: страница просто сдвинется */ }
+  }, [comparisonCodes.length]);
+  useEffect(() => { if (pickerOpen) pickerInput.current?.focus({ preventScroll: true }); }, [pickerOpen]);
+  useEffect(() => { if (comparisonCodes.length !== 1) setPickerOpen(false); }, [comparisonCodes.length]);
+
+  // Страну выбрали касанием по шару или карте: если её карточка оказалась ниже края экрана или под нижней панелью, подводим к ней.
+  // Раньше на телефоне карточка выбранной страны появлялась ниже видимого и казалось, что нажатие «молчит».
+  useEffect(() => {
+    if (!selectedCode || focusCountryCard.current || !userPicked.current) return undefined;
+    const timer = window.setTimeout(() => {
+      userPicked.current = false;
+      const box = countryCard.current?.getBoundingClientRect();
+      if (!box || !(box.height > 0) || typeof window.scrollBy !== 'function') return;
+      const bottomLimit = window.innerHeight - 108;
+      const delta = box.bottom > bottomLimit ? box.bottom - bottomLimit + 12 : box.top < 72 ? box.top - 84 : 0;
+      if (!delta) return;
+      const quiet = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+      try { window.scrollBy({ top: delta, left: 0, behavior: quiet ? 'auto' : 'smooth' }); } catch { /* без прокрутки */ }
+    }, 260);
+    return () => window.clearTimeout(timer);
+  }, [selectedCode]);
 
   useEffect(() => {
     if (!focusCountryCard.current || !selectedCountry) return;
@@ -408,7 +447,10 @@ export default function PlanetView({
   useEffect(() => {
     const node = quickRef.current;
     if (!node) return undefined;
-    const measure = () => setQuickMore(node.scrollWidth - node.clientWidth - node.scrollLeft > 6);
+    const measure = () => {
+      setQuickMore(node.scrollWidth - node.clientWidth - node.scrollLeft > 6);
+      setQuickLess(node.scrollLeft > 6);
+    };
     measure();
     node.addEventListener('scroll', measure, { passive: true });
     const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
@@ -425,6 +467,15 @@ export default function PlanetView({
   const selectedPinned = comparisonCodes.includes(selectedCode);
   const canPin = selectedPinned || (selectedCountry?.slug && conceptSlug && hasValue(selectedValue) && comparisonCodes.length < 2);
   const comparisonFull = comparisonCodes.length === 2 && !selectedPinned && hasValue(selectedValue);
+  // Кандидаты для второй страны: только те, у кого есть значение и страница; лучшие по рейтингу первыми, ввод сужает список.
+  const pickerCountries = useMemo(() => {
+    if (!pickerOpen) return NO_ITEMS;
+    const needle = pickerQuery.trim().toLocaleLowerCase(locale);
+    return rankedCountries
+      .filter(({ country, value }) => country.slug && hasValue(value) && !comparisonCodes.includes(country.code)
+        && (!needle || [country.name, country.name_en, country.slug, country.code].some((field) => String(field || '').toLocaleLowerCase(locale).includes(needle))))
+      .slice(0, 6).map((entry) => entry.country);
+  }, [pickerOpen, pickerQuery, rankedCountries, comparisonCodes, locale]);
   const median = benchmark?.value ?? colorModel.median;
   // Слово «медиана» человеку ничего не говорит: середина списка называется «в середине рейтинга».
   const footerLabel = benchmark?.label && !/медиан|median/i.test(benchmark.label) ? benchmark.label : t('w2.planet.middle');
@@ -506,13 +557,23 @@ export default function PlanetView({
     setSelectedCode(null); setPlaceCard(null); setHoverCode(null); setHoverPlace(null); commandCamera('reset');
     countryList.current?.focus({ preventScroll: true });
   }
+  // Лоток «Сравнение» вставляется над блоком и сдвинул бы карту под пальцем: запоминаем положение блока и после вставки возвращаем его на место.
+  function updateComparison(update) {
+    shellTopBefore.current = shellRef.current ? shellRef.current.getBoundingClientRect().top : null;
+    setComparisonCodes(update);
+  }
   function toggleComparison() {
-    setComparisonCodes((codes) => codes.includes(selectedCode) ? codes.filter((code) => code !== selectedCode)
+    updateComparison((codes) => codes.includes(selectedCode) ? codes.filter((code) => code !== selectedCode)
       : codes.length < 2 ? [...codes, selectedCode] : codes);
   }
   function chooseComparisonCountry() {
-    setQuery(''); setActiveOption(0); setSearchOpen(true);
-    searchInput.current?.focus();
+    setPickerQuery('');
+    setPickerOpen((open) => !open);
+  }
+  function pickComparisonCountry(code) {
+    updateComparison((codes) => (codes.includes(code) || codes.length >= 2 ? codes : [...codes, code]));
+    setPickerOpen(false);
+    setPickerQuery('');
   }
   function chooseConcept(slug) {
     setLayer('metric');
@@ -524,8 +585,8 @@ export default function PlanetView({
     <div className="planet-camera-controls" role="group" aria-label={t('w2.planet.zoomGroup')}>
       <button type="button" onClick={() => commandCamera('zoomIn')} aria-label={zoomInLabel} data-tip={zoomInLabel}><Plus size={17} aria-hidden="true" /></button>
       <button type="button" onClick={() => commandCamera('zoomOut')} aria-label={zoomOutLabel} data-tip={zoomOutLabel}><Minus size={17} aria-hidden="true" /></button>
-      <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>
-      {homeLabel && <button type="button" className="planet-home-button" onClick={() => commandCamera('focus', homeCountry.code)} aria-label={homeLabel} data-tip={homeLabel}><LocateFixed size={16} aria-hidden="true" /></button>}
+      {(!narrowScreen || isMap || zoomedView || water || selectedCountry) && <button type="button" onClick={() => commandCamera('reset')} aria-label={resetLabel} data-tip={resetLabel}><RotateCcw size={15} aria-hidden="true" /></button>}
+      {homeLabel && !narrowScreen && <button type="button" className="planet-home-button" onClick={() => commandCamera('focus', homeCountry.code)} aria-label={homeLabel} data-tip={homeLabel}><LocateFixed size={16} aria-hidden="true" /></button>}
     </div>
   );
   const stageActions = (canPlay || coverageAvailable || shareable) ? (
@@ -539,7 +600,7 @@ export default function PlanetView({
     </div>
   ) : null;
   const quickRow = quickConcepts.length > 1 ? (
-    <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
+    <div ref={quickRef} className="planet-quick" data-more={quickMore ? 'true' : undefined} data-less={quickLess ? 'true' : undefined} role="group" aria-label={t('w6c.quick.label')}>
       {quickConcepts.map((concept) => <button key={concept.slug} type="button" className={'planet-quick-chip ' + (!coverage && concept.slug === conceptSlug ? 'fe-glass-active is-active' : 'fe-glass-2')}
         aria-pressed={!coverage && concept.slug === conceptSlug} onClick={() => chooseConcept(concept.slug)}>{concept.label}</button>)}
     </div>
@@ -563,7 +624,7 @@ export default function PlanetView({
     <div ref={countryCard} className={'planet-country-card fe-glass-2' + (selectedCountry ? ' is-selected' : '')} tabIndex={-1} aria-live="polite" data-selected-country={selectedCountry?.code || ''}>
       {selectedCountry && <>
         <div className="planet-country-heading"><div><CountryFlag code={selectedCountry.code} className="planet-flag-lg" /><h3>{countryName(selectedCountry, locale)}</h3></div><button type="button" onClick={clearSelection} aria-label={t('planet.clearSelection')}><X size={17} aria-hidden="true" /></button></div>
-        {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{fmt(selectedValue)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data"><span className="planet-soon">{t('w6c.place.soon')}</span>{t('planet.noData')}</p>)}
+        {hasMetric && (hasValue(selectedValue) ? <div className="planet-value-line"><strong aria-label={t('planet.value')}>{fmt(selectedValue)}</strong><span>{displayUnit}</span></div> : <p className="planet-no-data"><span className="planet-soon">{t('w6c.place.soon')}</span>{selectedPeriod ? t('c11d.planet.noDataPeriod', { period: selectedPeriod }) : t('planet.noData')}</p>)}
         {hasMetric && selectedRank && rankTotal > 1 && <p className="planet-rank">{t('w2.planet.rank', { rank: selectedRank, total: rankTotal })}</p>}
         <div className="planet-country-actions"><button type="button" className="planet-open-country" disabled={!selectedCountry.slug || typeof onSelect !== 'function'} onClick={() => onSelect?.(selectedCountry, selectedDetail)}>{t(selectedDetail?.indicator_code ? 'planet.openIndicator' : 'planet.openCountry')}<ArrowUpRight size={15} aria-hidden="true" /></button>
           {conceptSlug && !coverage && <button type="button" className="planet-pin-country" aria-pressed={selectedPinned} disabled={!canPin} onClick={toggleComparison} title={t(selectedPinned ? 'planet.removeComparison' : 'planet.addComparison', { country: countryName(selectedCountry, locale) })} aria-describedby={comparisonFull ? 'planet-' + id + '-comparison-full' : undefined}>{selectedPinned ? <Check size={15} aria-hidden="true" /> : <Plus size={15} aria-hidden="true" />}{t(selectedPinned ? 'planet.inComparison' : 'planet.addComparison')}</button>}
@@ -589,11 +650,9 @@ export default function PlanetView({
     </Suspense>
   );
   // Шар грузится заметно дольше карты: пока сцена не готова, стоит та же плоская карта (код и атлас уже загружены), приглушённая, с подписью.
+  // Круг 11 (D): пока шар грузится, виден только матовый круглый каркас (PlanetOrb) с подписью; плоской карты внутри контура шара больше нет.
   const globeVeil = !isMap && !veilGone && sceneStatus !== 'error' ? (
     <div className={'planet-globe-veil' + (sceneStatus === 'ready' ? ' is-leaving' : '')} data-planet-veil="true">
-      <div className="planet-map-stage planet-globe-veil__map" aria-hidden="true">
-        <Suspense fallback={<div className="planet-map-plate" />}><WorldMap {...worldMapProps} /></Suspense>
-      </div>
       {sceneStatus === 'loading' && <div className="planet-globe-veil__note" role="status"><Spinner size={16} />{t('c8w.globe.loading')}</div>}
     </div>
   ) : null;
@@ -610,13 +669,29 @@ export default function PlanetView({
         <h3 id={'planet-' + id + '-title'} className="sr-only">{t('planet.title')}</h3>
         {comparisonCountries.length > 0 && <div className="planet-comparison" aria-label={t('planet.comparison')}>
           <span className="planet-comparison-title"><GitCompare size={17} aria-hidden="true" />{t('planet.comparison')}<small>{comparisonCountries.length}/2</small></span>
-          <div className="planet-comparison-pair">{comparisonCountries.map((country) => <button type="button" key={country.code} onClick={() => setComparisonCodes((codes) => codes.filter((code) => code !== country.code))}
+          <div className="planet-comparison-pair">{comparisonCountries.map((country) => <button type="button" key={country.code} onClick={() => updateComparison((codes) => codes.filter((code) => code !== country.code))}
               aria-label={t('planet.removeComparison', { country: countryName(country, locale) })}>{countryName(country, locale)}<X size={14} aria-hidden="true" /></button>)}
-            {comparisonCountries.length === 1 && <button type="button" className="planet-comparison-empty" onClick={chooseComparisonCountry}><Plus size={15} aria-hidden="true" />{t('planet.chooseSecond')}</button>}
+            {comparisonCountries.length === 1 && <button type="button" className="planet-comparison-empty" aria-expanded={pickerOpen} onClick={chooseComparisonCountry}><Plus size={15} aria-hidden="true" />{t('planet.chooseSecond')}</button>}
           </div>
+          {comparisonCountries.length === 1 && pickerOpen && <div className="planet-comparison-picker">
+            <label className="sr-only" htmlFor={'planet-' + id + '-second'}>{t('c11d.planet.pickTitle')}</label>
+            <input ref={pickerInput} id={'planet-' + id + '-second'} type="text" autoComplete="off" autoCapitalize="none" autoCorrect="off" enterKeyHint="search"
+              placeholder={t('c11d.planet.pickPlaceholder')} value={pickerQuery} onChange={(event) => setPickerQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') { event.stopPropagation(); setPickerOpen(false); }
+                if (event.key === 'Enter' && pickerCountries[0]) { event.preventDefault(); pickComparisonCountry(pickerCountries[0].code); }
+              }} />
+            {pickerCountries.length ? <div className="planet-comparison-options" role="group" aria-label={t('c11d.planet.pickTitle')}>
+              {pickerCountries.map((country) => <button type="button" key={country.code} onClick={() => pickComparisonCountry(country.code)}>
+                <span className="planet-option-name"><CountryFlag code={country.code} />{countryName(country, locale)}</span>
+                <strong>{fmt(valueForCountry(country))}{rowUnit && <small>{rowUnit}</small>}</strong>
+              </button>)}
+            </div> : <p role="status">{t('c11d.planet.pickEmpty')}</p>}
+            <button type="button" className="planet-comparison-close" onClick={() => setPickerOpen(false)} aria-label={t('c11d.planet.pickClose')}><X size={16} aria-hidden="true" /></button>
+          </div>}
           {compareReady ? <PlanetLink href={comparisonHref}>{t('planet.showComparison')}<ArrowUpRight size={15} aria-hidden="true" /></PlanetLink> : comparisonCountries.length === 2 && <span role="status">{t('planet.noData')}</span>}
         </div>}
-        <div className={'planet-shell' + (showKey ? ' has-key' : '') + (isMap ? ' planet-shell--map' : '')}>
+        <div ref={shellRef} className={'planet-shell' + (showKey ? ' has-key' : '') + (isMap ? ' planet-shell--map' : '')}>
           <div className="planet-viewbar">
             <div className="planet-view-switch" role="group" aria-label={t('x8.planet.viewSwitch')}>
               <button type="button" aria-pressed={isMap} onClick={() => chooseView('map')}><MapIcon size={15} aria-hidden="true" />{t('x8.planet.viewMap')}</button>
@@ -726,7 +801,7 @@ export default function PlanetView({
             <div ref={countryList} className={'planet-country-list' + (compactList ? ' is-compact' : '')} role="group" tabIndex={-1} aria-label={t('planet.countries')}>
               {rankedCountries.map(({ country, value, rank }) => <button key={country.code} type="button" className={selectedCode === country.code ? 'is-selected' : ''} aria-pressed={selectedCode === country.code} onClick={() => activateCountry(country.code, true)}
                 title={selectedCode === country.code ? t('planet.pressToOpen') : undefined}>
-                <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name"><CountryFlag code={country.code} />{countryName(country, locale)}</span>
+                <span className="planet-list-rank">{rank || '—'}</span><span className="planet-list-name"><CountryFlag code={country.code} /><span className="planet-list-text" title={countryName(country, locale)}>{countryName(country, locale)}</span></span>
                 <strong>{hasValue(value) ? <>{fmt(value)}{rowUnit && <small>{rowUnit}</small>}</> : <em>{t('planet.noDataLegend')}</em>}</strong><ChevronRight size={14} aria-hidden="true" />
               </button>)}
             </div>
