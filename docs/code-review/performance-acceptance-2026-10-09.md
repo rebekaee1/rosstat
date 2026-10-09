@@ -36,7 +36,7 @@ nonzero transitions, metadata, partial rollback, cancellation.
 
 Runtime code 9eb29dcd выпущен approval-wrapper 57315651.
 Миграция 20261009c_session_perf применена; оба индекса valid/ready.
-Первый 15-min watch завершился; second cold catalogue code delta ещё не выпущен.
+Оба выпуска завершены; холодный каталог проверен в выпущенном контейнере.
 Первый probe выполнял только temp SQL и rollback, постоянные raw/session
 таблицы не менял. Проверки не гарантируют неограниченную нагрузку 4 vCPU.
 Telegram ConnectTimeout остаётся отдельным внешним сетевым вопросом.
@@ -107,3 +107,48 @@ sessions32626, traffic30, goals102, goal_dims100, pages29274, signups0.
 Первый15min watch passed: ready=1, no OOM; одна первая проба5.598s
 под maintenance, retry0.038s; остальные reported successful samples
 0.034–0.858s. Это отдельные измерения, не p95.
+
+
+## Второй выпуск и окончательная проверка
+
+Выпущенный runtime: `597cbb04e621073bb236dbe629517d624093d780`; production approval-wrapper:
+`034b05388e47dded59ef8dc1c67facff72f360b3`. Схема осталась `20261009c_session_perf`.
+SHA256 обоих изменённых source files в контейнере совпал с локальным кодом.
+Предрелизные копии `rustats_20261009_131521`: база 464 MB,
+identity 44 KB. Эффективные параметры PostgreSQL подтверждены:
+world_indicators autovacuum scale 0.01 / threshold 1000;
+world_data_points.indicator_id statistics 1000.
+
+Повторный `check-all.sh`: 4569 backend и 3168 frontend tests passed,
+170 backend skips; lint/build/language/maps/knowledge checks прошли.
+34 representative RU/EN release pages прошли. Все 24 HTTPS GET
+главной, login, countries и map-series на двух хостах вернули 200;
+полное время 0.030–0.781 s, из production host
+с compressed YandexBot. Это серверная проба, не скорость LTE телефона.
+
+Прямой полный builder, без Redis: на cutover при параллельных release
+проверках первый процесс 30.711 s, второй проход 4.515 s. После release
+gate новый процесс с пустым title cache: 4.943 s; повторный проход 4.754 s.
+Все четыре payload содержат 55 стран и совпадают с исходным SHA256:
+`81b4dfe511de4c6bcf784289c457e68b7d5a3b4e3d9d85e790414dc88df0d25e`.
+Это cold application-cache замер с обходом Redis; файловый кэш ОС/PG
+не сбрасывался. Измерения не являются p95 или гарантией любого уровня нагрузки.
+
+В IAB на 393×852 после reload карта с данными отображается,
+console errors нет. Снимок: `/tmp/fe-performance-20261009/mobile-map.jpg`.
+Штатное 15-минутное наблюдение завершилось: все ready=1, backend/scheduler
+OOM=false, reported successful TTFB 0.032–0.723 s.
+Логи и повторяемые probes находятся в `/tmp/fe-performance-20261009/`.
+
+Следующий штатный analytics job в новом scheduler: старт 16:29:54.602 МСК,
+успешное завершение 16:31:41.993 (107.391 s, включая anomaly checks).
+Rollups: sessions 32834, traffic 30, goals 102, goal_dims 100,
+pages 29464, signups 0. Во время этого job watch сохранил ready=1;
+отдельные home TTFB samples 0.318 s и 0.043 s.
+
+Граница: улучшение подтверждено на проверенных страницах и боевых объёмах;
+следующий Eurostat no-op запуск и последующий autovacuum ещё не наблюдались.
+Внешний Telegram ConnectTimeout и скорость через конкретную мобильную сеть
+этим результатом не считаются проверенными или исправленными.
+Прямой anonymous HTTPS probe api.telegram.org с host: IPv4 connection
+timeout 10 s до TLS, IPv6 connection failed; приложение в probe не участвовало.

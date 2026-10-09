@@ -10319,9 +10319,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "f8cb271169049071553a7f94bd5f423755b07c59832f2c2a650000810f6f6b0c",
-      "bytes": 11138,
-      "lines": 133,
+      "sha256": "56606f74d3bbc79e0b71572c62a955cdb0c3ee9cf9bc277511d2e2a34671e238",
+      "bytes": 11468,
+      "lines": 135,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12217,9 +12217,9 @@
     },
     {
       "path": "docs/runtime-inventory.json",
-      "sha256": "fb0894e0f252a2c3d4bc25c2c83dc269a6901d3be70c9a448bf45d31d353cc52",
-      "bytes": 221565,
-      "lines": 6964,
+      "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
+      "bytes": 222510,
+      "lines": 6987,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -26803,23 +26803,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "af7ceafcdf83058ceae9abefb3a4e7133b50dcc7a415a37b12ac666102141da5",
+  "ledger_sha256": "2f03c91bc94abf06f458fda2140080e463b9008827fb2620f6e5bc7e6de4df21",
   "javascript_inventory_sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
-  "baseline_commit": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+  "baseline_commit": "034b05388e47dded59ef8dc1c67facff72f360b3",
   "branch": "main",
   "unstaged_at_capture": [
-    "CONTEXT.md",
-    "backend/app/api/world.py",
-    "backend/app/data/world_indicator_titles_ru.py",
-    "docs/adr/0011-world-eurostat-data-plane.md",
-    "docs/architecture-history.md",
-    "docs/backlog.md",
-    "docs/data-contracts.md",
-    "docs/enterprise_resilience.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "docs/runtime-inventory.json",
-    "docs/workflow.md"
+    "docs/runtime-inventory.json"
   ]
 }

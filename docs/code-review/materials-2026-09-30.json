@@ -10565,9 +10565,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "8a4e1c27def3b12c5d6757eb3fe0a3431e25e4f6ee1ab578b8d146a8bfa05785",
-        "bytes": 784000,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "4a7a5a83a1243f8e94ea3a6dee20ea5ec55c2920a05e63551d92c33799f3e15f",
+        "bytes": 783592,
+        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
@@ -11820,9 +11820,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "44441c933710c31c417c8e6b040c3cca8379ec2dca83d27fb88062a830bc39d3",
+        "sha256": "eb64a5d930fb13f0ba48207446846a69bf5f3fc4a9451ce298bc19bee2301b70",
         "bytes": 6687399,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -14240,9 +14240,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "af7ceafcdf83058ceae9abefb3a4e7133b50dcc7a415a37b12ac666102141da5",
+        "sha256": "2f03c91bc94abf06f458fda2140080e463b9008827fb2620f6e5bc7e6de4df21",
         "bytes": 20795704,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "generated_snapshot",
@@ -32230,9 +32230,9 @@
         "main": "a0391a745fd357f07bb9649ae621f348b8ed092d",
         "scope": "tracked/index",
         "date": "2026-10-09",
-        "sha256": "fb0894e0f252a2c3d4bc25c2c83dc269a6901d3be70c9a448bf45d31d353cc52",
-        "bytes": 221565,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
+        "bytes": 222510,
+        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
         "contents": "working tree scoped performance delta; identity does not prove live release"
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 0dc13727..2b489e3d прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
@@ -32240,7 +32240,7 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "status_in_review": "artifact_schema_reviewed",
-        "sha256": "fb0894e0f252a2c3d4bc25c2c83dc269a6901d3be70c9a448bf45d31d353cc52",
+        "sha256": "0f3df1e478dbbf59e496b2335fab12e453971d03232c46f037858b3d77474e71",
         "method": "prior reviewed version plus authored/read scoped delta; full historical contents not reread"
       },
       "canonical_source": "docs/runtime-inventory.json",
@@ -40870,9 +40870,9 @@
       "body_reviewed_in_this_pass": true,
       "current_delta_reviewed_in_this_pass": true,
       "source_version": {
-        "sha256": "c55488abfd3bdbf7ac520be52e96c7bccbe6d6a8a9b1b183096cd8e8532e030d",
-        "bytes": 7615,
-        "head": "57315651a5c875f0c2480e7dfe7d02bd461f21d6",
+        "sha256": "63136079568e32aae1cbc1881919b409f2bc9c03a7df95ccebddffcbb927c672",
+        "bytes": 11088,
+        "head": "034b05388e47dded59ef8dc1c67facff72f360b3",
         "scope": "tracked/index",
         "date": "2026-10-09",
         "contents": "working tree scoped performance delta; identity does not prove live release"

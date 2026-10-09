@@ -6959,6 +6959,29 @@
         "second catalogue-code release pending; exact loader/source hashes verified for57315651",
         "record does not replace full dated runtime inventory or prove capacity/auto-vacuum timing"
       ]
+    },
+    {
+      "id": "production-performance-final-2026-10-09",
+      "observed_msk": "2026-10-09 16:37",
+      "source_commit": "034b05388e47dded59ef8dc1c67facff72f360b3",
+      "runtime_target": "597cbb04e621073bb236dbe629517d624093d780",
+      "alembic_revision": "20261009c_session_perf",
+      "scope": "two scoped production performance releases; full prior snapshots preserved",
+      "live_acceptance": {
+        "watch_minutes": 15,
+        "ready_all": true,
+        "oom": false,
+        "http_200": 24,
+        "representative_pages": 34,
+        "catalog_without_redis_fresh_process_seconds": 4.943,
+        "catalog_cutover_seconds": 30.711,
+        "catalog_payload_equal": true
+      },
+      "source": "docs/code-review/performance-acceptance-2026-10-09.md",
+      "limits": [
+        "not a capacity/p95 or LTE measurement",
+        "external Telegram timeout, next Eurostat no-op and autovacuum timing unverified"
+      ]
     }
   ]
 }
