@@ -11515,7 +11515,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "73bd8cab4578899c985ba010601b7f37fbae9c7c67b201409bfcc8ccfcb83536",
+      "sha256": "24b170fae6eceffb04086945ecf45fb9dcbe20c88d8f503fc341b0d7d07327fe",
       "bytes": 2899006,
       "lines": 104854,
       "code": false,
@@ -26777,9 +26777,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "96841167cf35a31d4ef3338529a1a9dbd28049fbefcda91e93f4bc1558b76dd1",
+  "ledger_sha256": "dcb455e7d618542c8d77dc308321997068c8312adf997ba324a344f33e02c175",
   "javascript_inventory_sha256": "345a8f849a82da44991638c3f73e24e3702a218b54fa4e69758295288d78a1f7",
-  "baseline_commit": "8cabc6d1abec39331208724a10f6a66d1d0dc50f",
+  "baseline_commit": "f1efdf92dade41117cbde39d31aaa999631ef0d7",
   "branch": "circle11/int",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/indicator-index.json"
+  ]
 }

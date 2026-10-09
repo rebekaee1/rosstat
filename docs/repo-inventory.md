@@ -7,19 +7,19 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1899  ·  **Строк:** 1 255 768  ·  **Токенов (≈):** 11 834 068
+**Файлов:** 1899  ·  **Строк:** 1 255 779  ·  **Токенов (≈):** 11 834 320
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 521 | 57 114 |
+| `(root)` | 8 | 2 531 | 57 291 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 736 | 263 691 | 2 905 359 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 13 | 776 | 9 082 |
-| `docs` | 125 | 804 189 | 6 800 863 |
+| `docs` | 125 | 804 190 | 6 800 938 |
 | `frontend` | 905 | 163 093 | 1 808 266 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 103 | 20 953 | 247 962 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 2 875 | 125 346 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 2 740 | 90 848 |
+| `docs/backlog.md` | 2 741 | 90 923 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
@@ -210,11 +210,11 @@
 | `backend/app/core/cache.py` | 637 | 5 929 |
 | `frontend/src/pages/WorldRegionsHome.jsx` | 561 | 5 929 |
 | `docs/enterprise_resilience.md` | 115 | 5 869 |
+| `docker-compose.yml` | 458 | 5 840 |
 | `backend/app/api/indicators.py` | 589 | 5 814 |
 | `backend/app/services/pulse_report.py` | 476 | 5 788 |
 | `backend/tests/test_forecast_showcase.py` | 549 | 5 782 |
 | `frontend/src/styles/k1-scene.css` | 587 | 5 740 |
-| `docker-compose.yml` | 453 | 5 728 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
 | `backend/tests/test_seo_world_year.py` | 530 | 5 689 |
 | `backend/app/services/forecast_showcase.py` | 568 | 5 603 |
@@ -411,6 +411,7 @@
 | `scripts/build-us-bea-catalog.py` | 263 | 3 407 |
 | `backend/tests/test_perf_batch2.py` | 347 | 3 380 |
 | `frontend/src/styles/k4-charts.css` | 285 | 3 353 |
+| `.env.example` | 274 | 3 349 |
 | `frontend/src/components/CurrencyPairChart.jsx` | 289 | 3 340 |
 | `backend/tests/forecast_strategies/snapshots/prod_generic_ols.json` | 985 | 3 333 |
 | `frontend/src/lib/worldViewModes.test.js` | 348 | 3 322 |
@@ -420,7 +421,6 @@
 | `scripts/audit-world-country-coverage.py` | 345 | 3 293 |
 | `backend/app/data/world_national_core/uk.yaml` | 312 | 3 288 |
 | `frontend/src/lib/compareRepresentation.js` | 302 | 3 288 |
-| `.env.example` | 269 | 3 284 |
 | `backend/tests/forecast_strategies/fixtures/construction_work_series.json` | 1 | 3 279 |
 | `scripts/test_deploy_asset_flow.py` | 281 | 3 276 |
 | `docs/client-mechanism-inventory.md` | 136 | 3 275 |
