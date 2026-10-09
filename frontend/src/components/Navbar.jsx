@@ -18,6 +18,7 @@ import {
 } from '../lib/navItems';
 import { useAnchorInView } from '../lib/useAnchorInView';
 import { accountInitial } from '../lib/accountInitial';
+import FeedBadge from './cabinet/FeedBadge';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { openConsentSettings } from '../lib/consent';
 import { useFooterTone } from '../lib/useFooterTone';
@@ -67,13 +68,15 @@ function AuthCluster({ mobile = false, onNavigate }) {
         aria-current={current ? 'page' : undefined}
         className={cn(
           FOCUS_RING,
-          'fe-nav-account text-sm font-semibold transition-colors',
+          'fe-nav-account relative text-sm font-semibold transition-colors',
           current && 'is-current',
           mobile && 'w-full justify-center text-center',
         )}
       >
         <span className="fe-avatar fe-avatar--sm" aria-hidden="true">{initial || <User size={14} strokeWidth={1.75} />}</span>
         <span className="fe-nav-account__text">{t('common.account')}</span>
+        {/* Круг 11: отметка «Новое» по рядам, за которыми человек следит; без кабинета на сервере не рисуется. */}
+        <FeedBadge corner />
       </Link>
     );
   }

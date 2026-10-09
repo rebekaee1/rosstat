@@ -2433,11 +2433,13 @@ export default function ComparePage({ renderSave = null } = {}) {
     if (isDemo || !codes.length || !renderSave) return null;
     const itemKey = repString ? `${codes.join(',')}|${repString}` : codes.join(',');
     if (itemKey.length > 300) return null;
+    // Названия рядов для строки «Мои сравнения» в кабинете (только то, что уже на экране; кодов там не показываем).
+    const names = series.map((s) => s.name).filter(Boolean).slice(0, 6);
     return {
       kind: 'comparison',
       itemKey,
       title: String(headline || '').slice(0, 200),
-      payload: { codes: codes.join(','), ...(repString ? { rep: repString } : {}) },
+      payload: { codes: codes.join(','), ...(repString ? { rep: repString } : {}), ...(names.length ? { names } : {}) },
     };
   })();
 

@@ -633,5 +633,7 @@
 /* Слот кнопок кабинета («В избранное», «Следить») в строке над названием. */
 .fe-cabinet-actions { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
 .z4-hero__actions:empty { display: none; }
+/* Круг 11, интеграция: кабинет выключен или ответа о нём нет, кнопки ничего не нарисовали: слот не занимает место и не даёт лишний зазор в ряду. */
+.fe-cabinet-actions:empty { display: none; }
 /* Число индекса без слова «индекс» рядом с цифрой: пояснение тихой строкой под ним. */
 .z4-hv__basis { margin: 0; color: var(--color-text-tertiary); font-size: 12.5px; font-weight: 500; line-height: 1.3; }

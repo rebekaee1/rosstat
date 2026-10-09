@@ -22,7 +22,7 @@ describe('downloadGrid', () => {
     const post = vi.spyOn(api, 'post').mockResolvedValue({ data: new Blob(['a']), headers: { 'x-download-remaining': '2' } });
     const payload = { format: 'csv', filename: 'a.csv', title: 'T', columns: [{ key: 'a', label: 'A' }], rows: [{ a: 1 }] };
     const result = await downloadGrid(payload);
-    expect(post).toHaveBeenCalledWith('/export/grid', payload, { responseType: 'blob' });
+    expect(post).toHaveBeenCalledWith('/export/grid', expect.objectContaining(payload), { responseType: 'blob' });
     expect(result.remaining).toBe(2);
   });
 

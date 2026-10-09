@@ -1,7 +1,7 @@
 // Выгрузка сетки «колонки × строки» (сравнение, диапазон истории) через `POST /export/grid` (бэкенд круга 11).
 // Файл собирает сервер: числа в Excel настоящие, в CSV русский формат. Гость получает отказ `download_limit`
 // (как у `/export/table`): тогда открывается окно входа, а не файл.
-import api from './api';
+import { exportGrid } from './api';
 import { track, trackFile, events } from './track';
 import { trackBusy } from './chunkRecovery';
 
@@ -41,28 +41,12 @@ export function buildGridPayload(spec) {
   return payload;
 }
 
-/** Запрос файла. При отказе по лимиту бросает ошибку с `code = 'download_limit'`. */
-export async function requestGrid(spec) {
-  try {
-    const res = await api.post('/export/grid', buildGridPayload(spec), { responseType: 'blob' });
-    const raw = res.headers?.['x-download-remaining'];
-    const remaining = raw == null || raw === '' ? null : Number(raw);
-    return { blob: res.data, remaining };
-  } catch (err) {
-    const blob = err?.response?.data;
-    if (err?.response?.status === 403 && blob && typeof blob.text === 'function') {
-      try {
-        const parsed = JSON.parse(await blob.text());
-        const detail = parsed?.detail || parsed;
-        const e = new Error(detail?.message || 'download_limit');
-        e.code = detail?.code || 'download_limit';
-        throw e;
-      } catch (parseErr) {
-        if (parseErr.code) throw parseErr;
-      }
-    }
-    throw err;
-  }
+/**
+ * Запрос файла. При отказе по лимиту бросает ошибку с `code = 'download_limit'`.
+ * Сам вызов `POST /export/grid` один на сайт: `exportGrid` из `lib/api.js` (круг 11, интеграция).
+ */
+export function requestGrid(spec) {
+  return exportGrid(buildGridPayload(spec));
 }
 
 function saveBlob(blob, filename) {

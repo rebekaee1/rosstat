@@ -14,7 +14,7 @@ describe('recordView', () => {
     recordView(view(1));
     recordView(view(2));
     recordView(view(1));
-    expect(readRecentViews().map((v) => v.key)).toEqual(['k1', 'k2']);
+    expect(readRecentViews().map((v) => v.key)).toEqual(['/russia/indicator/k1', '/russia/indicator/k2']);
   });
 
   it('хранит не больше предела', () => {
@@ -52,6 +52,28 @@ describe('recordView', () => {
   });
 });
 
+describe('общее хранилище с трекером оболочки (круг 11, интеграция)', () => {
+  it('пишет в fe:recent-pages:v1 в формате { path, title, kind, ts }; блок главной читает то же', async () => {
+    const { RECENT_PAGES_KEY, rememberPage } = await import('./recentPages');
+    const { readRecentVisited } = await import('./homeContinue');
+    expect(RECENT_VIEWS_KEY).toBe('fe:recent-pages:v1');
+    expect(RECENT_VIEWS_KEY).toBe(RECENT_PAGES_KEY);
+    recordView({ kind: 'world', key: 'tr-cpi', title: 'Инфляция в Турции — Forecast Economy', path: '/turkey/indicator/tr-cpi#table' });
+    rememberPage({ path: '/compare?codes=a,b', title: 'Сравнение' });
+    const stored = JSON.parse(window.localStorage.getItem('fe:recent-pages:v1'));
+    expect(stored[1]).toMatchObject({ path: '/turkey/indicator/tr-cpi', title: 'Инфляция в Турции', kind: 'indicator' });
+    expect(typeof stored[1].ts).toBe('number');
+    expect(window.localStorage.getItem('fe_recent_views_v1')).toBeNull();
+    expect(readRecentViews().map((v) => v.path)).toEqual(['/compare?codes=a,b', '/turkey/indicator/tr-cpi']);
+    expect(readRecentVisited().map((v) => v.path)).toEqual(['/compare?codes=a,b', '/turkey/indicator/tr-cpi']);
+  });
+
+  it('служебные параметры адреса не попадают в запись', () => {
+    recordView({ title: 'Ипотека', path: '/calculator/mortgage?price=5000000&utm_source=x' });
+    expect(readRecentViews()[0].path).toBe('/calculator/mortgage?price=5000000');
+  });
+});
+
 describe('titleFromDocument', () => {
   it('убирает название сайта из заголовка вкладки', () => {
     expect(titleFromDocument('Инфляция в Турции — Forecast Economy')).toBe('Инфляция в Турции');
@@ -65,6 +87,6 @@ describe('useRecentViews', () => {
     const { result } = renderHook(() => useRecentViews(5));
     expect(result.current).toEqual([]);
     act(() => { recordView(view(7)); });
-    expect(result.current.map((v) => v.key)).toEqual(['k7']);
+    expect(result.current.map((v) => v.path)).toEqual(['/russia/indicator/k7']);
   });
 });

@@ -112,7 +112,10 @@ describe('сравнение: ссылка, выгрузка, кнопка ка�
     expect(button.textContent).toBe('comparison');
     const spec = renderSave.mock.calls.at(-1)[0];
     expect(spec.itemKey).toBe('w:united-states:gdp-usd,w:china:gdp-usd');
-    expect(spec.payload).toEqual({ codes: 'w:united-states:gdp-usd,w:china:gdp-usd' });
+    expect(spec.payload.codes).toBe('w:united-states:gdp-usd,w:china:gdp-usd');
+    expect(spec.payload.rep).toBeUndefined();
+    // Круг 11, интеграция: названия рядов для строки «Мои сравнения» (если уже пришли), без кодов.
+    (spec.payload.names || []).forEach((n) => expect(n).not.toMatch(/^w:/));
     expect(spec.title.length).toBeGreaterThan(0);
   });
 

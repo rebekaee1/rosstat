@@ -23,6 +23,8 @@ import RouteFallback from './components/RouteFallback';
 import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
 import RecentPagesTracker from './components/RecentPagesTracker';
+import { CabinetSubjectActions, CompareSaveButton } from './components/cabinet/CabinetWiring';
+import { CabinetActionsContext } from './lib/cabinetActionsContext';
 import LightScene from './components/LightScene';
 import { cleanPathWithSearch } from './lib/cleanUrl';
 import { calculatorAliasTarget } from './lib/calculatorAlias';
@@ -225,6 +227,10 @@ function EmbedRoutes() {
   );
 }
 
+// Круг 11, интеграция: общие кнопки кабинета на страницах. Пока кабинет выключен на сервере, кнопки ничего не рисуют.
+const renderCabinetActions = (subject) => <CabinetSubjectActions subject={subject} />;
+const renderCompareSave = (spec) => <CompareSaveButton spec={spec} />;
+
 function AppRoutes() {
   const location = useLocation();
 
@@ -258,6 +264,7 @@ function AppRoutes() {
       {/* Нижняя док-панель телефона: пять главных разделов под большим пальцем (K3.4). */}
       <MobileDock />
       <main id="main-content" tabIndex={-1} className="relative z-0 flex-1 pt-9 outline-none">
+        <CabinetActionsContext.Provider value={renderCabinetActions}>
         <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <ServerNotFoundGate>
@@ -267,7 +274,7 @@ function AppRoutes() {
             <Route path="/methodology" element={<Methodology />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/compare" element={<ComparePage />} />
+            <Route path="/compare" element={<ComparePage renderSave={renderCompareSave} />} />
             <Route path="/forecasts" element={<ForecastsPage />} />
             <Route path="/widgets" element={<EmbedBuilder />} />
             <Route path="/calculator" element={<CalculatorPage />} />
@@ -356,6 +363,7 @@ function AppRoutes() {
           </ServerNotFoundGate>
           </Suspense>
         </ErrorBoundary>
+        </CabinetActionsContext.Provider>
       </main>
       <RegisterNudge />
       <PwaInstallPrompt />

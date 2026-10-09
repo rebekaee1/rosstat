@@ -344,7 +344,9 @@ describe('WorldRatingPage', () => {
     expect(screen.queryByText('Страны рядом')).toBeNull();
     expect(document.querySelector('#compare-matrix')).toBeNull();
     // Плюсики добавления стран в таблицу убраны.
-    expect(document.querySelector('#rating-table').textContent).not.toContain('+');
+    // (подсказка про п. п. над таблицей сама пишет «+0,7 п. п.», поэтому смотрим кнопки и строки, а не весь текст).
+    expect(screen.queryByRole('button', { name: /^\+$|Добавить страну/ })).toBeNull();
+    dataRows().forEach((row) => expect(row.textContent).not.toContain('+'));
   });
 
   it('включает Россию в таблицу, блок ссылок только в ru-локали, серверная нота не рендерится', async () => {

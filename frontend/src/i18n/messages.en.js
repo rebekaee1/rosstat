@@ -3707,4 +3707,7 @@ export default {
   'c11f.ru.vs.quarterly': 'vs last quarter',
   'c11f.ru.vs.annual': 'vs last year',
   'c11f.ru.vs.default': 'vs previous value',
+  // ===== Круг 11: интеграция =====
+  'c11i.compare.save': 'Save comparison',
+  'c11i.calc.save': 'Save calculation',
 };

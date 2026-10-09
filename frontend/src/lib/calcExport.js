@@ -1,7 +1,7 @@
 // Круг 11 (E): выгрузка таблицы калькулятора (график платежей по ипотеке) через POST /export/grid.
 // Допуск и лимит гостя те же, что у выгрузки рядов: гость без права скачивать получает событие
 // `fe:download-limit`, его подхватывает окно регистрации (components/DownloadLimitModal).
-import api from './api';
+import { exportGrid } from './api';
 
 function saveBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -20,24 +20,16 @@ function saveBlob(blob, filename) {
  */
 export async function downloadGrid({ format = 'csv', filename, title, grid, history }) {
   try {
-    const res = await api.post(
-      '/export/grid',
-      { format, filename, title, columns: grid.columns, rows: grid.rows, ...(history ? { history } : {}) },
-      { responseType: 'blob' },
-    );
-    saveBlob(res.data, filename);
+    // Один вызов `POST /export/grid` на сайт: `exportGrid` из `lib/api.js` (круг 11, интеграция).
+    const { blob } = await exportGrid({
+      format, filename, title, columns: grid.columns, rows: grid.rows, ...(history ? { history } : {}),
+    });
+    saveBlob(blob, filename);
     return 'ok';
   } catch (err) {
-    const blob = err?.response?.data;
-    if (err?.response?.status === 403 && blob && typeof blob.text === 'function') {
-      try {
-        const parsed = JSON.parse(await blob.text());
-        const detail = parsed?.detail || parsed;
-        if ((detail?.code || '') === 'download_limit') {
-          window.dispatchEvent(new CustomEvent('fe:download-limit'));
-          return 'limit';
-        }
-      } catch { /* тело не JSON */ }
+    if (err?.code === 'download_limit') {
+      window.dispatchEvent(new CustomEvent('fe:download-limit'));
+      return 'limit';
     }
     return 'error';
   }

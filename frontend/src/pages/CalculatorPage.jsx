@@ -19,7 +19,7 @@ import { getSiteOrigin } from '../lib/siteOrigin';
 import { mountJsonLd } from '../lib/jsonLd';
 import { CHART_THEME, GRID_PROPS, TOOLTIP_STYLES, axisTick, refLabel, axisWidthForLabels } from '../lib/chartTheme';
 import { useElementWidth, useTouchTooltip } from '../lib/chartHooks';
-import { revealStyle } from '../lib/calcUi';
+import { MONEY_MAX, revealStyle } from '../lib/calcUi';
 import { SkeletonBox } from '../components/Skeleton';
 import { track, events } from '../lib/track';
 import { buildShareUrl } from '../lib/utm';
@@ -58,7 +58,6 @@ import {
   RUSSIA_SLUG,
 } from '../lib/inflationCalc';
 import { RUB, currencyForCountry, currencyInPhrase, formatMoney } from '../lib/countryCurrency';
-import { MONEY_MAX } from '../lib/calcUi';
 import {
   russiaIndicatorPath,
   russiaHomePath,

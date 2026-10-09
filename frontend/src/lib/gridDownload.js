@@ -2,10 +2,10 @@
  * Выгрузка таблицы-сетки (рейтинг стран, сравнение регионов) через `POST /export/grid` (круг 11, зона A):
  * общая рамка CSV / Excel, только точечные значения (поля диапазона сервер отклоняет).
  *
- * Отдельный файл, а не дополнение `lib/api.js`: этот файл правят и другие зоны круга. Лимит гостевых выгрузок тот же, что у
+ * Запрос идёт через общую `exportGrid` из `lib/api.js`; здесь сохранение файла и имена. Лимит гостевых выгрузок тот же, что у
  * `/export/table`: при 403 `download_limit` вызывающий показывает окно регистрации (событие `fe:download-limit`).
  */
-import api from './api';
+import { exportGrid } from './api';
 import { trackFile } from './track';
 
 function saveBlob(blob, filename) {
@@ -43,28 +43,11 @@ export function gridFilename(base, format) {
  * @returns {Promise<{ remaining: number|null }>} бросает ошибку с `code === 'download_limit'`, когда гостевой лимит исчерпан
  */
 export async function downloadGrid(payload) {
-  try {
-    const res = await api.post('/export/grid', payload, { responseType: 'blob' });
-    saveBlob(res.data, payload.filename);
-    const raw = res.headers?.['x-download-remaining'];
-    const remaining = raw == null || raw === '' ? null : Number(raw);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { remaining } }));
-    }
-    return { remaining };
-  } catch (err) {
-    const blob = err?.response?.data;
-    if (err?.response?.status === 403 && blob && typeof blob.text === 'function') {
-      try {
-        const parsed = JSON.parse(await blob.text());
-        const detail = parsed?.detail || parsed;
-        const e = new Error(detail?.message || 'download_limit');
-        e.code = detail?.code || 'download_limit';
-        throw e;
-      } catch (parseErr) {
-        if (parseErr.code) throw parseErr;
-      }
-    }
-    throw err;
+  // Сам вызов `POST /export/grid` и разбор отказа по лимиту — общая функция `exportGrid` из `lib/api.js` (круг 11, интеграция).
+  const { blob, remaining } = await exportGrid(payload);
+  saveBlob(blob, payload.filename);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('fe:download-done', { detail: { remaining } }));
   }
+  return { remaining };
 }
