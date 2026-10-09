@@ -127,6 +127,39 @@ def site_version_label(locale: str | None) -> str:
     return "—"
 
 
+_DEVICE_RU = {"mobile": "телефон", "tablet": "планшет", "desktop": "компьютер", "bot": "робот"}
+
+
+def visitor_country_line(ip: str | None) -> str:
+    """«Германия, Берлин» по геобазе; «—», если страна неизвестна. Сам IP не показываем."""
+    if not ip:
+        return "—"
+    try:
+        from app.services.geoip import lookup
+
+        geo = lookup(ip)
+    except Exception:  # noqa: BLE001 — гео опционально
+        return "—"
+    parts = [p for p in (geo.get("country"), geo.get("city")) if p]
+    return ", ".join(parts) if parts else "—"
+
+
+def visitor_device_line(user_agent: str | None) -> str:
+    """«Chrome 126 · Windows 10/11 · компьютер» вместо полной строки User-Agent."""
+    if not user_agent:
+        return "—"
+    try:
+        from app.services.ua_parser import parse_user_agent
+
+        parsed = parse_user_agent(user_agent)
+    except Exception:  # noqa: BLE001
+        return "—"
+    browser = " ".join(p for p in (parsed.get("browser"), parsed.get("browser_version")) if p)
+    os_name = " ".join(p for p in (parsed.get("os"), parsed.get("os_version")) if p)
+    kind = _DEVICE_RU.get(parsed.get("device_type") or "", "")
+    return " · ".join(p for p in (browser, os_name, kind) if p) or "—"
+
+
 def digest_recipients() -> list[str]:
     """Получатели ежедневного дайджеста: primary + extra (config-driven, dedup).
 
@@ -191,8 +224,10 @@ async def notify_new_user(info: dict) -> None:
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
         f"Рассылка: {'да' if info.get('newsletter') else 'нет'}",
-        f"IP: {esc(info.get('ip'))}",
-        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        # 152-ФЗ (круг 11): вместо IP и полного User-Agent — страна и «браузер, ОС, тип»;
+        # сообщение хранится в telegram_outbox без срока. Старые строки архива не трогаем.
+        f"Страна: {esc(visitor_country_line(info.get('ip')))}",
+        f"Устройство: {esc(visitor_device_line(info.get('user_agent')))}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
     # Всем получателям дайджеста (владелец + skrakan) — указание владельца 2026-07-06.
@@ -219,8 +254,8 @@ async def notify_login(info: dict) -> None:
         f"Email: {esc(info.get('email'))}",
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
-        f"IP: {esc(info.get('ip'))}",
-        f"User-Agent: {esc((info.get('user_agent') or '')[:120])}",
+        f"Страна: {esc(visitor_country_line(info.get('ip')))}",
+        f"Устройство: {esc(visitor_device_line(info.get('user_agent')))}",
         f"ID: <code>{esc(info.get('user_id'))}</code>",
     ]
     for cid in digest_recipients():

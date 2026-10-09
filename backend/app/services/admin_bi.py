@@ -1182,6 +1182,7 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         mart_feature_adoption,
         mart_geo,
         mart_goal_reconciliation,
+        mart_goal_usage,
         mart_metric_tree,
         mart_metrika_funnel,
         mart_own_funnel,
@@ -1191,6 +1192,8 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
         mart_pwa_installs,
         mart_reliability,
         mart_segments,
+        mart_signup_funnel,
+        mart_signups,
     )
     from app.services.dataset_inventory import build_inventory
 
@@ -1219,6 +1222,14 @@ async def build_bi_dashboard(db: AsyncSession, period: Period | int = 30) -> dic
             {"experiments": [], "note": "слой недоступен"}),
         "people": await _soft_mart(
             "people", mart_people(db, p), {"people": []}),
+        # Круг 11 (зона H): регистрации по языку и стране, воронка, использование функций.
+        # Те же витрины, что в Telegram-отчётах; воронка считается по хвосту в 30 дней.
+        "signups": await _soft_mart(
+            "signups", mart_signups(db, p), {"total": 0, "error": "слой недоступен"}),
+        "signup_funnel": await _soft_mart(
+            "signup_funnel", mart_signup_funnel(db, p.tail(30)), {"steps": [], "error": "слой недоступен"}),
+        "goal_usage": await _soft_mart(
+            "goal_usage", mart_goal_usage(db, p), {"has_data": False, "groups": {}, "error": "слой недоступен"}),
         "reliability": await mart_reliability(db, p.tail(7)),
         "collection_quality": await _soft_mart(
             "collection_quality", mart_collection_quality(db, p.tail(7)),

@@ -37,6 +37,8 @@ logger = logging.getLogger(__name__)
 _MUTE_TTL = 2 * 3600  # один алерт типа — раз в 2 часа
 # Шумные виды охлаждаются дольше (ключ — часть alert_key до первого «:»).
 _ALERT_COOLDOWN = {
+    "signup_drop": 24 * 3600,
+    "auth_error_spike": 3 * 3600,
     "js_error_spike": 3 * 3600,
     "memory_pressure": 6 * 3600,
     "webmaster_sitemap_errors": 24 * 3600,
@@ -66,6 +68,31 @@ _STALE_TAB_RE = re.compile(
     r"|unable to preload css|loading (?:css )?chunk|chunkloaderror|reading 'default'",
     re.IGNORECASE,
 )
+
+
+# Круг 11 (зона H): алерты об аудитории. Включаются флагом `telegram_new_alerts_enabled`.
+SIGNUP_DROP_AFTER = timedelta(hours=72)          # ни одной регистрации столько часов
+SIGNUP_DROP_MIN_PAGEVIEWS_24H = 150              # «нормальный трафик»: человеческих просмотров за 24 часа
+AUTH_ERROR_SPIKE_MIN = 5                         # настоящих ошибок входа и регистрации за час
+# Коды, которые не считаем сбоем: неверный пароль, занятая почта, ошибка валидации, отказ человека.
+AUTH_ERROR_BENIGN_CODES = ("credentials", "exists", "invalid", "oauth_denied", "locked")
+
+
+def signup_drop_due(
+    *, last_signup_at: datetime | None, now: datetime, pageviews_24h: int,
+) -> bool:
+    """Регистраций нет ≥ 72 часов при нормальном трафике людей.
+
+    Без единой регистрации за всё время (`last_signup_at is None`) и при малом трафике
+    алерта нет: тишина при пустом сайте — не сигнал.
+    """
+    if last_signup_at is None or pageviews_24h < SIGNUP_DROP_MIN_PAGEVIEWS_24H:
+        return False
+    return (now - last_signup_at) >= SIGNUP_DROP_AFTER
+
+
+def auth_error_spike_due(*, real_errors_1h: int) -> bool:
+    return real_errors_1h >= AUTH_ERROR_SPIKE_MIN
 
 
 def _alert_cooldown(alert_key: str) -> int:
@@ -227,11 +254,11 @@ async def _clear_mute(alert_key: str) -> None:
         logger.debug("failed to clear alert mute for %s", alert_key, exc_info=True)
 
 
-async def _alert(alert_key: str, text: str) -> bool:
+async def _alert(alert_key: str, text: str, kind: str = "analytics_anomaly") -> bool:
     if await _muted(alert_key):
         return False
     from app.services.alerting import send_telegram
-    sent = await send_telegram(f"⚠️ <b>Аномалия аналитики</b>\n{text}", kind="analytics_anomaly")
+    sent = await send_telegram(f"⚠️ <b>Аномалия аналитики</b>\n{text}", kind=kind)
     if sent:
         logger.warning("Analytics anomaly alert: %s", alert_key)
     else:
@@ -315,6 +342,13 @@ async def check_anomalies() -> None:
                 f"{round((now - last_visit).total_seconds() / 3600)} ч (порог 36 ч).",
             )
 
+    # 4б. Алерты об аудитории (круг 11): регистрации и ошибки входа. За флагом.
+    if settings.telegram_new_alerts_enabled:
+        try:
+            await check_audience_alerts(now)
+        except Exception:  # noqa: BLE001 — новый контур не должен мешать остальным проверкам
+            logger.warning("Audience alerts check failed", exc_info=True)
+
     # 5. Лаг ClickHouse-синка (вне сессии БД — свой слой).
     if settings.clickhouse_enabled:
         try:
@@ -326,6 +360,39 @@ async def check_anomalies() -> None:
             pass
 
     await _check_host_pressure()
+
+
+async def check_audience_alerts(now: datetime) -> None:
+    """`signup_drop` и `auth_error_spike` (круг 11). Антиспам: сутки и три часа."""
+    from app.models import FrontendEvent, User
+
+    async with analytics_session() as db:
+        last_signup = await db.scalar(select(func.max(User.created_at)))
+        if last_signup is not None and (now - last_signup) >= SIGNUP_DROP_AFTER:
+            pageviews = int(await db.scalar(human_pageviews_query(now - timedelta(hours=24), now)) or 0)
+            if signup_drop_due(last_signup_at=last_signup, now=now, pageviews_24h=pageviews):
+                hours = round((now - last_signup).total_seconds() / 3600)
+                await _alert(
+                    "signup_drop",
+                    f"Регистраций нет {hours} ч при живом трафике: за сутки {pageviews} человеческих "
+                    "просмотров. Проверьте вход и регистрацию (форма, Яндекс, VK, Google).",
+                    kind="audience_alert",
+                )
+
+        code = FrontendEvent.params_json["code"].as_string()
+        real_errors = int(await db.scalar(
+            select(func.count()).select_from(FrontendEvent).where(
+                FrontendEvent.event_name == "auth_error",
+                FrontendEvent.occurred_at >= now - timedelta(hours=1),
+                or_(code.is_(None), code.not_in(AUTH_ERROR_BENIGN_CODES)),
+            )
+        ) or 0)
+        if auth_error_spike_due(real_errors_1h=real_errors):
+            await _alert(
+                "auth_error_spike",
+                f"Всплеск ошибок входа и регистрации: {real_errors} за час (без неверных паролей и отказов).",
+                kind="audience_alert",
+            )
 
 
 async def _check_host_pressure() -> None:

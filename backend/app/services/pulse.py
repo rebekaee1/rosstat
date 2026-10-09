@@ -404,7 +404,7 @@ async def _bot_signals(d: date) -> dict[str, Any]:
 
 
 async def _signup_dims(db, user_ids: list) -> dict[str, dict[str, Any]]:
-    """Язык сайта и страна первого визита новых пользователей (без ПДн).
+    """Язык сайта новых пользователей (без ПДн: ни имён, ни почт, ни страны).
 
     Таблица `user_signups` появилась в круге 11; на базе без миграции или в
     тестовой схеме без неё функция возвращает пусто и не роняет снимок.
@@ -416,19 +416,17 @@ async def _signup_dims(db, user_ids: list) -> dict[str, dict[str, Any]]:
         # отравить внешнюю транзакцию снимка (PostgreSQL: aborted transaction).
         async with db.begin_nested():
             rows = (await db.execute(
-                select(UserSignup.user_id, UserSignup.site_locale, UserSignup.country)
+                select(UserSignup.user_id, UserSignup.site_locale)
                 .where(UserSignup.user_id.in_(list(user_ids)))
             )).all()
     except Exception:  # noqa: BLE001
         logger.debug("signup dims unavailable", exc_info=True)
         return {}
     out: dict[str, dict[str, Any]] = {}
-    for uid, locale, country in rows:
+    for uid, locale in rows:
         item: dict[str, Any] = {}
         if locale:
             item["site_locale"] = locale
-        if country:
-            item["country"] = country
         out[str(uid)] = item
     return out
 
@@ -555,6 +553,47 @@ async def _events_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]
     }
 
 
+async def _users_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
+    """Пользователи суток для снимка (а значит, и для LLM).
+
+    152-ФЗ (круг 11): имена и почты новых пользователей в снимок не кладём — он целиком
+    уходит в OpenRouter через зарубежный прокси. Остаются число, способ входа и язык
+    сайта, если он известен.
+    """
+    total_users = await db.scalar(select(func.count(User.id))) or 0
+    new_users = (await db.execute(
+        select(User).where(User.created_at >= start, User.created_at < end)
+    )).scalars().all()
+    newsletter = await db.scalar(
+        newsletter_subscriber_count_query()
+    ) or 0
+
+    new_list = []
+    if new_users:
+        ids = [u.id for u in new_users]
+        emails = {uid for (uid,) in (await db.execute(
+            select(EmailCredential.user_id).where(EmailCredential.user_id.in_(ids))
+        )).all()}
+        oauth = {}
+        for uid, provider in (await db.execute(
+            select(OAuthIdentity.user_id, OAuthIdentity.provider)
+            .where(OAuthIdentity.user_id.in_(ids))
+        )).all():
+            oauth.setdefault(uid, []).append(provider)
+        signup_info = await _signup_dims(db, ids)
+        for u in new_users:
+            methods = (["email"] if u.id in emails else []) + oauth.get(u.id, [])
+            entry = {"method": "/".join(methods) or "—"}
+            entry.update(signup_info.get(str(u.id), {}))
+            new_list.append(entry)
+    return {
+        "total": total_users,
+        "new": len(new_users),
+        "new_list": new_list[:20],
+        "newsletter": newsletter,
+    }
+
+
 async def build_snapshot(d: date) -> dict[str, Any]:
     """Собрать снапшот дня из БД. Чистое чтение, без побочных эффектов."""
     start, end = _day_bounds(d)
@@ -572,41 +611,7 @@ async def build_snapshot(d: date) -> dict[str, Any]:
 
     async with analytics_session() as db:
         # --- Пользователи -------------------------------------------------
-        total_users = await db.scalar(select(func.count(User.id))) or 0
-        new_users = (await db.execute(
-            select(User).where(User.created_at >= start, User.created_at < end)
-        )).scalars().all()
-        newsletter = await db.scalar(
-            newsletter_subscriber_count_query()
-        ) or 0
-
-        # 152-ФЗ (круг 11): имена и почты новых пользователей в снимок не кладём —
-        # снимок целиком уходит в LLM (OpenRouter, зарубежный прокси). Остаются
-        # способ входа, язык сайта и страна первого визита, если они известны.
-        new_list = []
-        if new_users:
-            ids = [u.id for u in new_users]
-            emails = {uid for (uid,) in (await db.execute(
-                select(EmailCredential.user_id).where(EmailCredential.user_id.in_(ids))
-            )).all()}
-            oauth = {}
-            for uid, provider in (await db.execute(
-                select(OAuthIdentity.user_id, OAuthIdentity.provider)
-                .where(OAuthIdentity.user_id.in_(ids))
-            )).all():
-                oauth.setdefault(uid, []).append(provider)
-            signup_info = await _signup_dims(db, ids)
-            for u in new_users:
-                methods = (["email"] if u.id in emails else []) + oauth.get(u.id, [])
-                entry = {"method": "/".join(methods) or "—"}
-                entry.update(signup_info.get(str(u.id), {}))
-                new_list.append(entry)
-        snap["users"] = {
-            "total": total_users,
-            "new": len(new_users),
-            "new_list": new_list[:20],
-            "newsletter": newsletter,
-        }
+        snap["users"] = await _users_snapshot(db, start, end)
 
         # --- Аутентификация -----------------------------------------------
         auth_rows = (await db.execute(

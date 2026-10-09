@@ -303,6 +303,7 @@ async def behavior_retention_job() -> None:
 
 
 _INVENTORY_BLOCK_TIMEOUT_S = 90  # потолок на блок «инвентаризация датасета» в дайджесте
+_DIGEST_V2_TIMEOUT_S = 150  # потолок на все блоки v2 вместе (внутри каждая витрина ограничена своим таймаутом)
 
 
 async def telegram_daily_digest_job() -> None:
@@ -317,6 +318,15 @@ async def telegram_daily_digest_job() -> None:
         parts += await _user_stats_lines(yesterday)
     except Exception:
         logger.warning("Telegram digest: user stats failed", exc_info=True)
+    if settings.telegram_digest_v2_enabled:
+        # Круг 11: блоки v2 (регистрации, что делали, воронка, сайт). Включаются флагом;
+        # каждая витрина независима и ограничена по времени, сбой не отменяет дайджест.
+        try:
+            from app.services.telegram_reports import digest_v2_lines
+
+            parts += await asyncio.wait_for(digest_v2_lines(yesterday), _DIGEST_V2_TIMEOUT_S)
+        except Exception:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
+            logger.warning("Telegram digest: v2 blocks failed", exc_info=True)
     try:
         parts += await _search_demand_lines(yesterday)
     except Exception:

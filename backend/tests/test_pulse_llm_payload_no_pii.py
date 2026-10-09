@@ -55,7 +55,7 @@ def test_snapshot_for_llm_has_no_names_or_emails():
     assert clean["users"]["new"] == 2
     assert clean["users"]["new_list"] == [
         {"method": "email"},
-        {"method": "yandex", "site_locale": "en", "country": "Germany"},
+        {"method": "yandex", "site_locale": "en"},  # страна отдельного человека в модель не уходит
     ]
     assert clean["events"]["search_top"]["ввп"] == 3
 
@@ -78,3 +78,35 @@ def test_llm_user_content_is_clean_for_snapshot_memory_and_hypotheses():
 def test_memory_sanitizer_keeps_numbers():
     out = sanitize_memory_for_llm([{"date": "2026-10-07", "events": 150, "summary": "ok"}])
     assert out == [{"date": "2026-10-07", "events": 150, "summary": "ok"}]
+
+
+def test_users_snapshot_has_method_and_language_but_no_name_or_email(auth_env):
+    import asyncio
+    import uuid
+    from datetime import datetime
+
+    from app.models import EmailCredential, OAuthIdentity, User, UserSignup
+    from app.services import pulse
+
+    start, end = datetime(2026, 10, 7, 21, 0), datetime(2026, 10, 8, 21, 0)
+    u_mail, u_ya = uuid.uuid4(), uuid.uuid4()
+
+    async def run():
+        async with auth_env["session_maker"]() as db:
+            db.add_all([
+                User(id=u_mail, display_name="Иван Петров", created_at=datetime(2026, 10, 8, 6, 0)),
+                User(id=u_ya, display_name="Анна", created_at=datetime(2026, 10, 8, 7, 0)),
+                EmailCredential(user_id=u_mail, email="ivan@example.com", password_hash="x"),
+                OAuthIdentity(user_id=u_ya, provider="yandex", provider_user_id="1", email="anna@yandex.ru"),
+                UserSignup(user_id=u_ya, created_at=datetime(2026, 10, 8, 7, 0), site_locale="en", country="Германия"),
+            ])
+            await db.commit()
+            return await pulse._users_snapshot(db, start, end)
+
+    snap = asyncio.run(run())
+    assert snap["new"] == 2 and snap["total"] == 2
+    blob = json.dumps(snap, ensure_ascii=False)
+    for secret in ("Иван", "Петров", "Анна", "ivan@example.com", "anna@yandex.ru", "Германия"):
+        assert secret not in blob, secret
+    assert sorted(map(json.dumps, snap["new_list"])) == sorted(map(json.dumps, [
+        {"method": "email"}, {"method": "yandex", "site_locale": "en"}]))

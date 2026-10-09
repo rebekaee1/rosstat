@@ -84,7 +84,7 @@ def sanitize_snapshot_for_llm(snapshot: dict) -> dict:
     """Копия снимка дня для LLM без персональных данных.
 
     - `users.new_list` (имена и почты новых пользователей) не передаётся совсем:
-      остаются число, способ входа и язык сайта (если есть);
+      остаются число, способ входа и язык сайта (если есть); страну отдельного человека не передаём;
     - строки поиска, копирования, кликов, фраз из поиска очищаются от почт/телефонов;
     - прочие числа и коды (показатели, регионы) не меняются.
     Старые снимки в Redis (до круга 11) содержат `new_list` с именами и почтой:
@@ -94,7 +94,7 @@ def sanitize_snapshot_for_llm(snapshot: dict) -> dict:
     users = dict(clean.get("users") or {})
     raw_list = (snapshot.get("users") or {}).get("new_list") or []
     users["new_list"] = [
-        {k: item.get(k) for k in ("method", "site_locale", "country") if item.get(k)}
+        {k: item.get(k) for k in ("method", "site_locale") if item.get(k)}
         for item in raw_list
         if isinstance(item, dict)
     ]

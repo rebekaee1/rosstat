@@ -59,19 +59,26 @@ _OFFSET_KEY = "fe:tg:offset"
 # ---------------------------------------------------------------------------
 
 def main_menu_keyboard() -> dict:
-    return {
-        "inline_keyboard": [
-            [
-                {"text": "👥 Пользователи", "callback_data": "users"},
-                {"text": "📄 CSV пользователей", "callback_data": "users_csv"},
-            ],
-            [
-                {"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"},
-                {"text": "📦 Датасет", "callback_data": "dataset"},
-            ],
-            [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
-        ]
-    }
+    rows = [
+        [
+            {"text": "👥 Пользователи", "callback_data": "users"},
+            {"text": "📄 CSV пользователей", "callback_data": "users_csv"},
+        ],
+        [
+            {"text": "🛰 Пульс сегодня", "callback_data": "pulse_today"},
+            {"text": "📦 Датасет", "callback_data": "dataset"},
+        ],
+        [{"text": "🧠 Гипотезы", "callback_data": "hypotheses"}],
+    ]
+    # Круг 11: кнопки отчётов об аудитории. Появляются вместе с дайджестом v2
+    # (флаг `telegram_digest_v2_enabled`); существующие кнопки не менялись.
+    if settings.telegram_digest_v2_enabled:
+        rows.append([
+            {"text": "🌍 Регистрации", "callback_data": "signups"},
+            {"text": "🧭 Воронка", "callback_data": "funnel"},
+        ])
+        rows.append([{"text": "🎯 Цели", "callback_data": "goals"}])
+    return {"inline_keyboard": rows}
 
 
 # Методы отправки повторяются при временных сбоях (telegram_retry); поллинг
@@ -411,6 +418,15 @@ async def _handle_callback(cq: dict) -> None:
     elif data == "hypotheses":
         text = await _hypotheses_overview()
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())
+    elif data in ("signups", "funnel", "goals") and settings.telegram_digest_v2_enabled:
+        from app.services import telegram_reports  # локальный импорт против цикла
+
+        builder = {
+            "signups": telegram_reports.signups_button_text,
+            "funnel": telegram_reports.funnel_button_text,
+            "goals": telegram_reports.goals_button_text,
+        }[data]
+        await send_message(chat_id, await builder(), reply_markup=main_menu_keyboard(), kind="bot_report")
     elif data.startswith("user:"):
         text = await _user_card(data.split(":", 1)[1])
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())

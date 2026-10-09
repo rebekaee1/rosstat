@@ -461,7 +461,8 @@ async def oauth_callback(provider: str, request: Request, db: AsyncSession = Dep
         "display_name": profile.display_name,
         "newsletter": newsletter,
         "locale": signup_locale,
-        "ip": request.client.host if request.client else None,
+        # IP нужен только чтобы назвать страну в уведомлении (сам IP в сообщение не попадает).
+        "ip": _oauth_client_ip(request),
         "user_agent": request.headers.get("user-agent"),
         "user_id": str(user.id),
     }
