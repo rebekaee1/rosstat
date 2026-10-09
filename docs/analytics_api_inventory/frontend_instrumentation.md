@@ -33,6 +33,8 @@ guard и existing schema; `analytics_enabled` не выключает этот c
 opt-out так, как это делает behavior stream. Этот контракт здесь не изменён;
 наличие consent gating для внешнего ym не равно отключению first-party track.
 
+**Заменено кругом 11 (09.10.2026, локально, не выпущено):** `sendEvent` в `lib/track.js` теперь проверяет `consentAllows()` из `lib/behavior.js` и **не отправляет ни одно событие после явного отказа** от аналитики текущей редакции согласия, кроме `consent_update` (оно фиксирует сам отказ). Раньше first-party события шли без проверки (граница выше описывает состояние до круга 11). Отсутствие записи о согласии (подразумеваемое) событий не блокирует. Число событий отказавшихся в `frontend_events` после выкладки исчезнет.
+
 Текст каждого изменения input/textarea/contenteditable не снимается
 `behavior.js` и не добавлялся в эту версию. Полный retained search экспорт
 и ограничения доступности старой истории — [аудит](../research/search-history-2026-09-30.md),
@@ -40,6 +42,20 @@ opt-out так, как это делает behavior stream. Этот контр�
 hashes остаются в ignored локальном архиве; публичный отчёт — агрегаты.
 Возвращённые keys улучшат проверку действия, но без viewport/relevance/outcome
 labels не являются готовой обучающей выборкой ranking.
+
+## Дополнение 2026-10-09 (круг 11): вход, регистрация, язык, новые функции
+
+Источник: `frontend/src/lib/track.js` (реестр `events`), `lib/authTrigger.js`, `context/AuthProvider.jsx`, `components/OAuthButtons.jsx`; серверные правила параметров — `backend/app/services/event_params.py` (`EVENT_PARAM_KEYS`), группы — `services/goal_taxonomy.py`. Локально, не выпущено; на боевых данных не наблюдалось.
+
+| Событие | Когда | Параметры (только технические) |
+|---|---|---|
+| `signup`, `login_success` | для почты — после ответа сервера; **для OAuth — один раз `AuthProvider` после возврата с провайдера** (флаг `fe:auth:pending` в `sessionStorage`, причина `fe:auth:trigger`, первая страница `fe:analytics:landing`) | у `signup`: `method`, `newsletter`, `site_locale`, `trigger` (`gate_download`, `gate_chart_image`, `gate_compare`, `nudge`, `header`, `direct`), `landing`, `first_visit_days`; у `login_success`: `method`, `site_locale`; признак `is_new` приходит из `/auth/me` и решает, какое из двух событий отправить |
+| `oauth_consent_open`, `oauth_consent_cancel` | окно согласия перед входом через Яндекс/VK/Google | `provider`, `intent` |
+| `auth_error`, `auth_form_error` | сбой входа/регистрации | `auth_error`: `stage`, `code`, `provider`; только коды и стадии, без текстов |
+| `locale_switch` | `i18n/locale.js` кидает DOM-событие `fe:locale-switch` **до** смены хоста, `track` его слушает | `from`, `to`, `surface` (поле допустимо на сервере, вызов его не передаёт) |
+| `share_link`, `favorite_add/remove`, `compare_preset_open`, `compare_save`, `compare_saved_open`, `indicator_subscribe/unsubscribe`, `push_prompt_view`, `push_permission`, `converter_use`, `calc_use`, `export_run` | **заведены в реестре, сервер принимает их поля, вызовов в кнопках пока нет** (зоны кабинета и страниц ставят их при выпуске своих функций; имя `export_run` придумано зоной аналитики и не согласовано с зоной выгрузок) | поля по `EVENT_PARAM_KEYS`; чужие ключи сервер отбросит |
+
+`newsletter_opt_in` для OAuth теперь отправляется не на старте входа, а после возврата с провайдера (`AuthProvider`) и только для нового аккаунта (`user.is_new`). Флаг `fe:auth:pending` не сбрасывается при отмене входа у провайдера (лишнее `login_success` при следующем входе в той же вкладке, [backlog](../backlog.md#circle11-2026-10-09)). Метка первого визита `fe:analytics:visitor_since` (`lib/authTrigger.js`, `lib/behavior.js`) даёт `first_visit_days`. У форм входа и регистрации атрибут `data-track="login-email"` / `"register-email"` (в `behavior_events type=form` имя формы). Кабинет (звезда, колокольчик, вкладки, выгрузки из кабинета) в аналитику **не пишет**: `track` там не вызывается. Параметры любых событий сервер очищает на приёме (потолок 2 КБ, до 30 ключей, строки до 200 знаков, почты и телефоны скрыты, ключи с очевидными ПДн отбрасываются; строгий белый список только у событий входа, регистрации и новых функций). Подписи новых событий в BI — `pages/AdminBI.jsx::EVENT_RU`.
 
 ## Атрибуция аудитории (2026-07-02)
 

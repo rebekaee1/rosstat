@@ -6862,6 +6862,81 @@
         "world_forecast"
       ],
       "limits": "Не измерялись: время построения индексов миграции на таблицах событий боевого размера (в стенде они пусты), производительность 4 vCPU, ClickHouse, исходящие уведомления."
+    },
+    {
+      "id": "circle11-code-flags-2026-10-09",
+      "observed_date_msk": "2026-10-09",
+      "local_source_commit": "2b489e3d3c7e4475cdb254388b49691b1d1682a9",
+      "kind": "code defaults, not a server observation",
+      "scope": "Флаги и значения по умолчанию в коде ветки circle11/int (config.py, docker-compose.yml, .env.example). Сервер и стенд не опрашивались: что включено на боевом или тестовом сервере, неизвестно; код выкладкой флаги не включает.",
+      "settings": [
+        {
+          "env": "RUSTATS_CABINET_ENABLED",
+          "setting": "cabinet_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "false: все /api/v1/cabinet/* кроме GET /cabinet/config отвечают 404 даже гостю, история выгрузок не пишется, клиент не рисует кнопок кабинета; true включает владелец в .env"
+        },
+        {
+          "env": "RUSTATS_TELEGRAM_DIGEST_V2_ENABLED",
+          "setting": "telegram_digest_v2_enabled",
+          "default": false,
+          "passed_by_compose": false,
+          "effect": "новые блоки дайджеста (регистрации, откуда, что подтолкнуло, что делали, воронка, сайт) и кнопки бота Регистрации, Воронка, Цели"
+        },
+        {
+          "env": "RUSTATS_TELEGRAM_WEEKLY_ENABLED",
+          "setting": "telegram_weekly_enabled",
+          "default": false,
+          "passed_by_compose": false,
+          "effect": "недельный отчёт об аудитории, понедельник 09:20 МСК (telegram_weekly_cron_hour=9, telegram_weekly_cron_minute=20)"
+        },
+        {
+          "env": "RUSTATS_TELEGRAM_MONTHLY_ENABLED",
+          "setting": "telegram_monthly_enabled",
+          "default": false,
+          "passed_by_compose": false,
+          "effect": "месячный отчёт об аудитории, 1-е число 09:45 МСК (telegram_monthly_cron_hour=9, telegram_monthly_cron_minute=45)"
+        },
+        {
+          "env": "RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED",
+          "setting": "telegram_new_alerts_enabled",
+          "default": false,
+          "passed_by_compose": false,
+          "effect": "алерты signup_drop (72 часа без регистраций при не менее 150 человеческих просмотров за сутки) и auth_error_spike (не менее 5 настоящих ошибок входа за час)"
+        }
+      ],
+      "schema": {
+        "alembic_chain_unreleased": [
+          "20260930_session_reviews",
+          "20261004_session_changes",
+          "20261005_push_subscriptions",
+          "20261009_user_cabinet",
+          "20261009b_analytics_signups"
+        ],
+        "alembic_head_in_code": "20261009b_analytics_signups",
+        "server_head_last_observed": "20260927_world_nonzero_idx (30.09.2026)"
+      },
+      "backup": {
+        "script": "scripts/pg-backup.sh",
+        "identity_tables": [
+          "users",
+          "email_credentials",
+          "oauth_identities",
+          "consents",
+          "auth_audit",
+          "user_saved_items",
+          "user_watches",
+          "user_exports",
+          "user_preferences"
+        ],
+        "not_in_identity_copy": [
+          "user_signups"
+        ],
+        "checked": "bash -n only; not run against a database"
+      },
+      "limits": "Не проверялось: alembic upgrade head по цепочке на PostgreSQL, фактические значения флагов на серверах, pg-backup.sh в бою, нагрузка новых запросов аналитики.",
+      "gap": "docker-compose.yml перечисляет переменные backend/scheduler явно, а четыре флага Telegram-отчётов круга 11 в нём не перечислены (и в .env.example их нет): из корневого .env они в контейнеры не дойдут, пока их не добавят в compose (сверено чтением docker-compose.yml, 09.10.2026)."
     }
   ]
 }

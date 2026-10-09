@@ -25,6 +25,8 @@ and `analytics-smoke.py` exits with `enabled=false`.
 | `yandex_webmaster.md` | `app/services/yandex_webmaster_client.py` | `partial` — host/summary, diagnostics, sitemaps read+delete, search queries, indexing + in-search/events history, recrawl. Missing: important URLs, owners, SQI, sitemap add, external links. |
 | `google_search_console.md` | `app/services/gsc_client.py` | `live local API verified, 2026-09-21` — read-only OAuth refresh, Sites (`siteFullUser`), Sitemaps status and daily web/image Search Analytics exports accepted. Bounded URL Inspection is implemented/tested but not live-probed. CLI `backend/scripts/google-search-console.py`; production credential mount/scheduler activation not part of this setup. |
 
+**Круг 11 (09.10.2026, локально, не выпущено):** внутренний аналитический контур дополнен таблицами `user_signups` и `daily_goal_dims`, колонкой `site_locale`, витринами регистраций и воронки и четырьмя выключенными по умолчанию Telegram-отчётами; внешних API Яндекса и Google это не касается. События входа, регистрации и языка описаны в [frontend_instrumentation](frontend_instrumentation.md#дополнение-2026-10-09-круг-11-вход-регистрация-язык-новые-функции), контракт данных — [data-contracts](../data-contracts.md#c11-analytics-2026-10-09).
+
 Activation cheat-sheet:
 
 - `RUSTATS_ANALYTICS_API_TOKEN` защищает внутренние analytics REST endpoints

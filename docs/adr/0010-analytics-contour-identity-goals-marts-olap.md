@@ -250,3 +250,12 @@ mutation/deletion в session commit и versioned tombstones либо согла�
 bounded snapshot с generation/ack; это ещё не принятая реализация.
 [Действующий контракт](../data-contracts.md#аналитические-окна-и-репликация-f05f06--2026-09-30),
 [доказательства](../code-review/analytics-boundaries-acceptance-2026-09-30.md).
+
+### 2026-10-09 — Круг 11: регистрации, воронка, единые группы событий (локально, не выпущено)
+
+- **Новые витрины и таблицы.** `user_signups` (строка на аккаунт, серверная часть пишется в запросе регистрации, остальное достраивает `signup_attribution`), `daily_goal_dims` (разрезы язык сайта, устройство, канал, страна, поверхность), колонка `site_locale` у `behavior_sessions` и `server_sessions` (миграция `20261009b_analytics_signups`); витрины `mart_signups`, `mart_signup_funnel`, `mart_goal_usage`, `mart_audience_geo`, `mart_search_gaps` и ключ `page_device` у `mart_reliability`. «Вне РФ» = страна первого визита не Россия, отдельно от «английская версия».
+- **Единое условие «без роботов и своих»** (`analytics_marts.human_event_conditions`) теперь применяется и к `daily_goals`: значения `daily_goals` и `mart_feature_adoption` после выкладки упадут. Единые непересекающиеся группы событий — `services/goal_taxonomy.py`; пять прежних списков заменены.
+- **Окна Пульса и дайджеста по МСК-суткам**, снимок помечается `window` и `complete`; неполный снимок пересобирается при отправке. Известный остаток: накопительное окно поиска в `analytics_report_bundle.py` всё ещё начинается с UTC-полуночи.
+- **Приватность.** Параметры событий очищаются на приёме (`event_params.py`), в текст для внешней языковой модели имена, почты и телефоны не попадают (`pii_scrub.py`), удаление аккаунта разрывает связь событий с человеком (`account_erasure.py`).
+- **Отчёты Telegram за четырьмя флагами** (`telegram_digest_v2_enabled`, `telegram_weekly_enabled`, `telegram_monthly_enabled`, `telegram_new_alerts_enabled`, по умолчанию все `false`); длинные сообщения режутся общим разбивателем.
+- Контракт — [data-contracts](../data-contracts.md#c11-analytics-2026-10-09); на PostgreSQL, ClickHouse и боевых объёмах не проверялось.
