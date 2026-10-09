@@ -129,3 +129,5 @@ d3222d677d1baa4ca5d680f0c27706cad87a4703  # explicit owner GO 2026-09-29; f0dcba
 
 535f226a84f497d85695c569d01a92f273fe8b26  # explicit owner GO 2026-09-29 ("деплой актуальную версию"); 1fa191a..535f226 (12 commits: scheduler memory, IndexNow shards, world forecast timeout, analytics index, source alerts, RSY ads on quicklinks, Eurostat structure checks, bot_score hardware signals, llms.txt), no migrations
 ad887caa9b06d70620d7f2e97fd45f7a987a70c1  # explicit owner GO 2026-10-09 ("деплой до sha, я разрешаю"); 367ff336..ad887caa (круг 8-11: кабинет за флагом, аналитика и отчёты Telegram за флагами, 5 миграций только добавляющих: session_reviews, session_changes, push_subscriptions, user_cabinet, analytics_signups); индексы session_reviews построены заранее
+
+9eb29dcdc2610f38eba33921d2f309e0228f32b9  # owner GO 2026-10-09 ("почему тормозит ... улучши это всё сразу"); scoped live performance fix from 0bcf68b4: Eurostat no-op publication, narrow indexed session SQL, two additive indexes prebuilt/valid, local checks passed
