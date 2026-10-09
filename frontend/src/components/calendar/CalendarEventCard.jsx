@@ -4,6 +4,8 @@ import { cn } from '../../lib/format';
 import { FOCUS_RING_SURFACE } from '../../lib/uiTokens';
 import { isExternalHref } from '../../lib/sourceLink';
 import SourceLink from '../SourceLink';
+import CabinetActionsSlot from '../CabinetActionsSlot';
+import { russiaIndicatorSubject } from '../../lib/cabinetSubjects';
 import {
   calendarPath,
   russiaIndicatorPath,
@@ -271,6 +273,11 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
                 </li>
               ))}
             </ul>
+          )}
+          {!isPast && linkedIndicators.length === 1 && (
+            <CabinetActionsSlot
+              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch' })}
+            />
           )}
           {!isPast && event.scheduled_date && (
             <button

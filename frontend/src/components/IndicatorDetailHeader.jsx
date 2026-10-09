@@ -16,6 +16,7 @@ import { isGlobalMarketIndicator } from '../lib/globalMarketIndicators';
 import { useLocale } from '../i18n';
 import { localizeViewModeLabel } from '../i18n/viewModeLabels';
 import AccentTitle from './K5Accent';
+import CabinetActionsSlot from './CabinetActionsSlot';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
 
@@ -59,6 +60,8 @@ export default function IndicatorDetailHeader({
   displayFrequency,
   children = null,
   aside = null,
+  subject = null,
+  renderActions = null,
 }) {
   const { locale } = useLocale();
   const { year } = useParams();
@@ -122,6 +125,7 @@ export default function IndicatorDetailHeader({
                   {freqLabel}
                 </span>
               ) : null}
+              <CabinetActionsSlot className="z4-hero__actions" subject={subject} renderActions={renderActions} />
             </div>
 
             <h1

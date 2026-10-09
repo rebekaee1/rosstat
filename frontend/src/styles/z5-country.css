@@ -943,3 +943,27 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 
 /* Подпись региона в тёмной карточке профиля (круг 6): холодный светлый, не золотой/champagne. */
 :root .fe-data-header .z5-profile .w2-profile-region { color: #BFD2F0; }
+
+
+/* ===== Круг 11, зона F: страница страны и России ===== */
+
+/* U17. Заглушка карточки «Главного» с контуром: плита стекла и три полосы на месте названия, цифры и подписи, а не белый пустой
+   прямоугольник на 2–4 секунды. Пульс только по прозрачности (под prefers-reduced-motion анимации нет, правило выше). */
+@keyframes z5-skel-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+:root .z5-key.z5-key--skel {
+  background:
+    linear-gradient(rgba(44, 74, 138, 0.1), rgba(44, 74, 138, 0.1)) 20px 20px / 46% 12px no-repeat,
+    linear-gradient(rgba(44, 74, 138, 0.16), rgba(44, 74, 138, 0.16)) 20px 48px / 58% 34px no-repeat,
+    linear-gradient(rgba(44, 74, 138, 0.08), rgba(44, 74, 138, 0.08)) 20px 96px / 34% 10px no-repeat,
+    linear-gradient(rgba(44, 74, 138, 0.07), rgba(44, 74, 138, 0.07)) 20px calc(100% - 22px) / calc(100% - 40px) 30px no-repeat,
+    var(--k6-tile-glass, var(--fe-l1-bg));
+  box-shadow: var(--fe-card-shadow);
+  animation: z5-skel-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .z5-key.z5-key--skel { animation: none; }
+}
+
+/* U18. Изменение в строке раздела России называет, к чему оно: «к прошлому месяцу» мелким серым перед плашкой. */
+.z5-ru-row__delta { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 2px 8px; min-width: 0; }
+.z5-ru-row__vs { color: var(--color-text-tertiary); font-size: 12px; line-height: 1.3; white-space: nowrap; }

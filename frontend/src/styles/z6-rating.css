@@ -342,3 +342,43 @@
 /* Число изменения: правый край у всех строк один, знак и стрелка не «гуляют». */
 .z6-table-card .w6d-delta { justify-content: flex-end; min-width: 5.6em; }
 .z6-table-card tbody td.z6-val, .z6-table-card thead th { font-variant-numeric: tabular-nums; }
+
+
+/* ===== Круг 11, зона F: рейтинг ===== */
+
+/* U13. Липкая шапка внутри карточки с горизонтальной прокруткой считается от самой карточки, а не от окна: `top: 96px` сдвигал её
+   на 96 px вниз, она закрывала вторую строку, а над таблицей оставалась дыра. Пока у таблицы есть добавленные колонки (карточка
+   прокручивается вбок), шапка стоит на своём месте в потоке; без добавленных колонок она липнет к верху окна, как раньше. */
+:root .z6-table-card[data-scroll] thead { position: static; }
+:root .z6-table-card[data-scroll] thead th::after { display: none; }
+
+/* Добавленные колонки забирают место у украшений: столбец-полоска уходит сразу, мини-график при двух и более колонках. */
+.z6-table .z6-table-card[data-extra] .w6d-table .w6d-col-bar { display: none; }
+.z6-table .z6-table-card:is([data-extra='2'], [data-extra='3'], [data-extra='4']) .w6d-table .w6d-col-trend { display: none; }
+.z6-table-card[data-extra] .w6d-table thead th { white-space: normal; }
+.z6-table-card[data-extra] .w6d-table thead th button { text-align: right; }
+
+/* Край, за которым таблица продолжается, затухает; затухание исчезает, когда прокручено до конца. */
+:root .z6-table-card[data-fade-end='true'] {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent 100%);
+}
+:root .z6-table-card[data-fade-start='true'] {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40px);
+  mask-image: linear-gradient(90deg, transparent 0, #000 40px);
+}
+:root .z6-table-card[data-fade-start='true'][data-fade-end='true'] {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+}
+.z6-scrollbar { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+
+/* Группы стран и инструменты таблицы (скачать, запомнить колонки) одной строкой под заголовком. */
+.z6-subbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; margin: 0 0 12px; }
+.z6-groups { margin: 0; }
+.z6-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.z6-added-note { margin: 0 0 10px; color: var(--z6-muted); font-size: 13px; line-height: 1.4; }
+@media (max-width: 639px) {
+  .z6-subbar { gap: 8px; }
+  .z6-tools { margin-left: 0; }
+}

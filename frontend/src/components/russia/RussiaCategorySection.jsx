@@ -47,6 +47,10 @@ export function RussiaIndicatorRow({ indicator }) {
     })
     : '';
   const date = periodPhrase(t, indicator.current_date, resolveDateFormat({ frequency: indicator.frequency }), locale) || '';
+  // Стрелка без основания непонятна: рядом словами «к прошлому месяцу / кварталу / году» (круг 11, U18).
+  const vsKey = ['weekly', 'monthly', 'quarterly', 'annual'].includes(indicator.frequency)
+    ? `c11f.ru.vs.${indicator.frequency}`
+    : 'c11f.ru.vs.default';
   return (
     <Link to={russiaIndicatorPath(indicator.code)} className="z5-ru-row fe-press group">
       <span className="z5-ru-row__title">{title}</span>
@@ -55,6 +59,7 @@ export function RussiaIndicatorRow({ indicator }) {
         {display?.unit ? <small>{display.unit}</small> : null}
       </span>
       <span className="z5-ru-row__delta" title={meaning || undefined}>
+        {delta && !delta.flat ? <span className="z5-ru-row__vs">{t(vsKey)}</span> : null}
         {delta && (delta.flat
           ? <DeltaBadge delta={0}>{t('w3.tele.noChange')}</DeltaBadge>
           : <DeltaBadge delta={changeNum} polarity={polarity}>{delta.text}</DeltaBadge>)}

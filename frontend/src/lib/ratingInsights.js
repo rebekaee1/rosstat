@@ -35,6 +35,31 @@ export function yearOverYear(valuesByYear, years, activeYear, code) {
   return null;
 }
 
+/**
+ * Показатель выражен в процентах («изменение за год, %», «% ВВП», «% от среднего по ЕС»)? Тогда изменение к прошлому году
+ * показывается разностью в процентных пунктах: «было 3,0 %, стало 3,7 %» это +0,7 п. п., а не «+23 %» (круг 11, F).
+ */
+export function isPercentUnitText(unit) {
+  return /%|процент|percent/i.test(String(unit || ''));
+}
+
+/** Год сравнения, который встречается у большинства стран («К 2024 г.»); нет изменений — запасной год. */
+export function commonChangeYear(changes, fallback = null) {
+  const counts = new Map();
+  for (const change of changes || []) {
+    if (change?.year != null) counts.set(change.year, (counts.get(change.year) || 0) + 1);
+  }
+  let best = fallback;
+  let bestCount = 0;
+  for (const [year, count] of counts) {
+    if (count > bestCount || (count === bestCount && year > best)) {
+      best = year;
+      bestCount = count;
+    }
+  }
+  return best;
+}
+
 /** Последние `limit` значений страны по годам до выбранного включительно (для мини-графика). */
 export function countrySeries(valuesByYear, years, activeYear, code, limit = 12) {
   const list = [...(years || [])].map(Number).filter((y) => y <= Number(activeYear)).sort((a, b) => a - b);

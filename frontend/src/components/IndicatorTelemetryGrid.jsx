@@ -8,6 +8,7 @@ import {
   bestGrowth, growthOverYears, unitKind, windowStats,
 } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
+import { visibleRangeStats } from '../lib/rangeStats';
 import { useLocale, useT } from '../i18n';
 import TelemetryCard from './TelemetryCard';
 import { SkeletonBox } from './Skeleton';
@@ -33,6 +34,7 @@ export default function IndicatorTelemetryGrid({
   firstDate,
   points = null,
   windowPoints = null,
+  visibleRows = null,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -156,7 +158,19 @@ export default function IndicatorTelemetryGrid({
 
   // Максимум и среднее за всю историю (в России это 1990-е, «2 508 %») ничего не говорят: у ряда длиннее десяти лет берём последние десять.
   const win = !growthMode && Array.isArray(windowPoints) ? windowStats(windowPoints, 10) : null;
-  const windowed = win && win.years >= 10 ? win : null;
+  const tenYears = win && win.years >= 10 ? win : null;
+  // Окно сужено переключателем над графиком: максимум и среднее считаются по выбранному периоду (круг 11, U16).
+  const chosen = !growthMode ? visibleRangeStats(visibleRows, windowPoints) : null;
+  const windowed = chosen || tenYears;
+  // Подпись карточки: у сужённого окна год в нужной форме («за 5 лет», «за 1 год»), у окна короче года «за выбранный период».
+  const windowLabel = (kind) => {
+    if (!chosen) return t(kind === 'max' ? 'c9c.tele.maxWindow' : 'c9c.tele.avgWindow', { n: windowed.years });
+    if (chosen.years < 1) return t(`c11f.tele.${kind}Range`);
+    const form = locale === 'en'
+      ? (chosen.years === 1 ? 'one' : 'many')
+      : pluralRu(chosen.years, ['one', 'few', 'many']);
+    return t(`c11f.tele.${kind}.${form}`, { n: chosen.years });
+  };
 
   return (
     <section className="fe-tele-section">
@@ -203,7 +217,7 @@ export default function IndicatorTelemetryGrid({
         )}
         {!growthMode && (windowed || s?.highest || stats?.highest) && (
           <TelemetryCard
-            label={windowed ? t('c9c.tele.maxWindow', { n: windowed.years }) : t('w3.tele.max')}
+            label={windowed ? windowLabel('max') : t('w3.tele.max')}
             value={windowed ? windowed.highest.value : (s?.highest?.value ?? adj(stats?.highest?.value))}
             unit={displayUnit}
             valueDigits={valueDigits}
@@ -215,7 +229,7 @@ export default function IndicatorTelemetryGrid({
         )}
         {!growthMode && (windowed || s?.average != null || stats?.average != null) && (
           <TelemetryCard
-            label={windowed ? t('c9c.tele.avgWindow', { n: windowed.years }) : t('w3.tele.avg')}
+            label={windowed ? windowLabel('avg') : t('w3.tele.avg')}
             value={windowed ? windowed.average : (s?.average ?? adj(stats?.average))}
             unit={displayUnit}
             valueDigits={valueDigits}

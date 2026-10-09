@@ -9,6 +9,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
 import HousingIndicatorControls from '../components/HousingIndicatorControls';
@@ -454,6 +455,17 @@ export default function IndicatorDetail() {
     setFullChartData(data);
   }, [setFullChartData]);
 
+  // Строки, которые сейчас видны на графике: максимум и среднее в плитках следуют за выбранным периодом (круг 11, U16).
+  const [visibleRows, setVisibleRows] = useState(null);
+  const handleChartRows = useCallback((rows) => {
+    setVisibleRows((prev) => {
+      const next = Array.isArray(rows) && rows.length ? rows : null;
+      if (prev && next && prev.length === next.length
+        && prev[0]?.date === next[0]?.date && prev[prev.length - 1]?.date === next[next.length - 1]?.date) return prev;
+      return next;
+    });
+  }, []);
+
   const provenance = cpiProvenance(code, chartMode, locale);
   const downloadMeta = useMemo(() => ({
     name: provenance ? `${effectiveIndicator?.name} — ${locale === 'en' ? 'annual change (calculated)' : 'годовое изменение (расчёт)'}` : effectiveIndicator?.name,
@@ -607,6 +619,7 @@ export default function IndicatorDetail() {
         code={code}
         loading={loadingInd}
         displayFrequency={effectiveIndicator?.frequency}
+        subject={russiaIndicatorSubject(code, indicator?.name)}
         aside={(heroSummary || loadingInd || chartLoading) ? (
           <IndicatorHeroValue
             summary={heroSummary}
@@ -740,6 +753,7 @@ export default function IndicatorDetail() {
         showForecast={showForecast}
         onToggleForecast={() => setShowForecast((v) => !v)}
         onFullData={handleFullData}
+        onChartData={handleChartRows}
         emptyHint={chartEmptyHint}
         onDownloadCsv={handleDownloadCSV}
         onDownloadExcel={handleDownloadExcel}
@@ -761,6 +775,7 @@ export default function IndicatorDetail() {
         adj={adj}
         firstDate={dataPoints?.[0]?.date}
         windowPoints={heroPoints}
+        visibleRows={visibleRows}
         loading={
           loadingInd
           || (chartMode === 'inflation' && loadingInflation)

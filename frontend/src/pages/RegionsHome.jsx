@@ -22,6 +22,9 @@ import Spinner from '../components/Spinner';
 import Button from '../components/Button';
 import { RegionSearchField, RegionSectionHeading } from '../components/regions/RegionParts';
 import RegionRanking from '../components/regions/RegionRanking';
+import RegionLeaders from '../components/regions/RegionLeaders';
+import RegionCompareTray from '../components/regions/RegionCompareTray';
+import { COMPARE_MAX, toggleCompareSlug } from '../lib/regionCompareTable';
 import { formatRegionCompact, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
 import { plural } from '../lib/calcFormat';
@@ -228,6 +231,10 @@ const CONTRAST_METRICS = [
   { code: 'investitsii-v-osnovnoy-kapital', labelKey: 'regions.metric.investment' },
   { code: 'chislennost-naseleniya', labelKey: 'regions.metric.population', neutral: true },
 ];
+// Круг 11: те же шесть показателей идут в таблицу сравнения нескольких регионов (разница в разах и «лучше/хуже» уже заданы выше).
+const COMPARE_METRICS = CONTRAST_METRICS.map((m) => ({
+  code: m.code, labelKey: m.labelKey, betterIsLow: m.betterIsLow, neutral: m.neutral,
+}));
 const CONTRAST_PAGE_SIZE = 2;
 const CONTRAST_PAGES = Math.ceil(CONTRAST_METRICS.length / CONTRAST_PAGE_SIZE);
 
@@ -373,6 +380,11 @@ export default function RegionsHome() {
   );
   const mapCardRef = useRef(null);
   const [mapPicked, setMapPicked] = useState(null);
+  // Круг 11: набор регионов для сравнения (до пяти) живёт на странице, карта только добавляет и убирает.
+  const [compareSlugs, setCompareSlugs] = useState([]);
+  const toggleCompare = useCallback((slug) => {
+    setCompareSlugs((current) => toggleCompareSlug(current, slug, COMPARE_MAX));
+  }, []);
   const [mapShape, setMapShape] = useState('regions');
   // Поиск показателя и региона свёрнут в одну кнопку «Найти»: над картой остаётся один ряд управления.
   const [findOpen, setFindOpen] = useState(isCustomMetric);
@@ -829,14 +841,15 @@ export default function RegionsHome() {
             </div>
           )}
 
-          <div id="chart" data-block="regions-map" className="relative rounded-3xl p-3 sm:p-5 fe-glass-lite" ref={mapCardRef}>
-            <div className="mb-3 flex items-start justify-between gap-2">
+          <div className="fe-map-layout">
+          <div id="chart" data-block="regions-map" className="relative min-w-0 rounded-3xl p-3 sm:p-5 fe-glass-lite" ref={mapCardRef}>
+            <div className="mb-3 flex flex-col items-stretch gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1">
                 {activeMapCode && paint.indicator ? (
                   <>
                     {/* Название темы («Зарплата») уже стоит на выбранной вкладке выше: повторять его заголовком карточки не нужно (круг 8, Y3). */}
                     <div title={paint.indicator.name} className={activePreset
-                      ? 'line-clamp-3 font-display text-base font-bold leading-snug text-text-primary sm:line-clamp-2'
+                      ? 'font-display text-base font-bold leading-snug text-text-primary'
                       : 'text-sm font-medium leading-snug text-text-primary'}
                     >
                       {paint.indicator.name}
@@ -852,7 +865,7 @@ export default function RegionsHome() {
                   <div className="text-sm text-text-secondary">{t('regions.home.mapCaptionOverview')}</div>
                 )}
               </div>
-              <div className="flex shrink-0 items-center gap-1.5" data-no-export="true">
+              <div className="flex shrink-0 items-center gap-1.5 self-start" data-no-export="true">
                 <button
                   type="button"
                   disabled={exportingMap}
@@ -910,6 +923,10 @@ export default function RegionsHome() {
                 shape={mapShape}
                 pickedSlug={mapPicked}
                 onPickedChange={setMapPicked}
+                compareSlugs={compareSlugs}
+                onCompareToggle={toggleCompare}
+                compareMax={COMPARE_MAX}
+                reserveCard
                 onSelect={(slug) => {
                   track(events.REGIONS_MAP_SELECT, { region: slug, metric: activeMapCode || 'overview' });
                   navigate(activeMapCode ? regionIndicatorPath(slug, activeMapCode) : regionPath(slug));
@@ -929,6 +946,26 @@ export default function RegionsHome() {
               </Suspense>
             )}
           </div>
+          {activeMapCode && heatmapValues && heatmapValues.size > 0 ? (
+            <RegionLeaders
+              valuesBySlug={heatmapValues}
+              namesBySlug={namesBySlug}
+              unit={paint.indicator?.unit || ''}
+              indicatorName={paint.indicator?.name || ''}
+              year={mapYear}
+              heatmap={heatmap.data}
+              pickedSlug={mapPicked}
+              onPick={setMapPicked}
+            />
+          ) : null}
+          </div>
+          <RegionCompareTray
+            slugs={compareSlugs}
+            namesBySlug={namesBySlug}
+            metrics={COMPARE_METRICS}
+            onRemove={toggleCompare}
+            onClear={() => setCompareSlugs([])}
+          />
           <div className="mt-3 text-sm leading-relaxed text-text-secondary">
             <p>{activeMapCode ? t('w4.map.hintMetric') : t('w4.map.hintOverview')}</p>
             <details className="fe-acc mt-1">

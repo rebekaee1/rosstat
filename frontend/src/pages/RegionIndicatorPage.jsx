@@ -24,6 +24,8 @@ import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import Breadcrumbs from '../components/Breadcrumbs';
+import CabinetActionsSlot from '../components/CabinetActionsSlot';
+import { regionIndicatorSubject } from '../lib/cabinetSubjects';
 import { SkeletonBox } from '../components/Skeleton';
 import Chip from '../components/Chip';
 import { useAuth } from '../context/authContext';
@@ -94,7 +96,8 @@ const ABORTION_SIBLING = {  'beremennosti-s-abortivnym-ishodom-na-100-rodov': {
   },
 };
 
-export default function RegionIndicatorPage() {
+/** `renderActions` — необязательный слот кнопок кабинета («В избранное», «Следить»); их рисует зона кабинета. */
+export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const { t, locale } = useLocale();
   const { slug, code } = useParams();
   // Месячный ряд тянется только для показателей, у которых он есть: годовой
@@ -302,7 +305,6 @@ export default function RegionIndicatorPage() {
           indName || '…',
           code,
         )}
-        className="fe-crumbs--oneline"
       />
 
       {isError && !cardReady && (
@@ -337,6 +339,7 @@ export default function RegionIndicatorPage() {
               {active.indicator.section_name && (
                 <span className="min-w-0 pl-2 text-text-secondary">{active.indicator.section_name}</span>
               )}
+              <CabinetActionsSlot subject={regionIndicatorSubject(slug, code, indName)} renderActions={renderActions} />
             </div>
             <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-2xl">
               {indName}

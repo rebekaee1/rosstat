@@ -11,7 +11,7 @@ import { deltaTone, indicatorPolarity } from '../../lib/deltaTone';
 import { splitUnit } from '../../lib/countryFlag';
 import { homeConceptLabel } from '../../lib/homeWorkbench';
 import {
-  compactMoneyAmount, figureDigits, humanizeQualifier, inflationCaption, orderKeyFigures, scaleMoneyUnit, yearAgoPoint,
+  compactMoneyAmount, figureDigits, humanizeQualifier, inflationCaption, orderKeyFigures, peopleFigure, scaleMoneyUnit, yearAgoPoint,
 } from '../../lib/countryKeyFigures';
 import { preloadedFigurePoints } from '../../lib/countryBootstrap';
 import { indicatorPath } from '../../lib/sitePaths';
@@ -65,6 +65,8 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
   // Крупная сумма читается как «849,7 млрд €», а не «849 680».
   const scaled = scaleMoneyUnit(item.value, unitText, locale);
   const present = (raw) => {
+    const people = peopleFigure(raw, unitText, locale);
+    if (people) return people;
     const s = scaleMoneyUnit(raw, unitText, locale);
     if (s) return { text: formatWorldValue(s.value, figureDigits(s.value), locale), unit: s.unit };
     // Сумма в «евро» без масштаба («56 459 257 590») тоже сокращается до «56,5 млрд €» (круг 8, Y5).
@@ -73,9 +75,14 @@ function KeyFigureCard({ item, slug, locale, index, preload }) {
     return { text: formatWorldValue(raw, kpiDigits(raw), locale), unit: unit.short };
   };
   const main = present(item.value);
-  const format = (value) => (scaled
-    ? formatWorldValue(scaleMoneyUnit(value, unitText, locale)?.value ?? value, figureDigits(scaled.value), locale)
-    : formatWorldValue(value, kpiDigits(item.value), locale));
+  const format = (value) => {
+    const people = peopleFigure(value, unitText, locale);
+    if (people) return people.text;
+    if (scaled) {
+      return formatWorldValue(scaleMoneyUnit(value, unitText, locale)?.value ?? value, figureDigits(scaled.value), locale);
+    }
+    return formatWorldValue(value, kpiDigits(item.value), locale);
+  };
 
   // «изменение за год, %» уже сказано в названии: не повторяем в подписи периода.
   const longUnit = !scaled && unit.long && unit.long !== unit.short && !/за год|year[- ]over[- ]year|yoy/i.test(unit.long)

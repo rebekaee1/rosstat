@@ -56,6 +56,8 @@ export function groupMemberLabel(name, base, unit) {
   }
   tail = tail.replace(/^[\s,:;—–-]+/, '').replace(/[\s,:;—–-]+$/, '').trim();
   if (!tail) return text;
+  // Остаток, который сам является единицей («% of active population»), не название разреза: чип без названия хуже полного имени.
+  if (/^%/.test(tail) || (u && tail.toLowerCase() === u.toLowerCase())) return text;
   return tail.charAt(0).toUpperCase() + tail.slice(1);
 }
 

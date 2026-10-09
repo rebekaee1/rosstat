@@ -57,12 +57,12 @@ function MainCard({ card, index }) {
   const values = useMemo(() => thinForSpark(rows.map((row) => Number(row.value))), [rows]);
   const ago = useMemo(() => (card.noYearAgo ? null : yearAgoPoint(rows, frequency)), [rows, frequency, card.noYearAgo]);
   const polarity = indicatorPolarity(indicator.name, indicator.name_en, indicator.code);
-  const fullName = locale === 'en' && indicator.name_en ? indicator.name_en : indicator.name;
   const main = formatFigure(card.value, card.unit, locale);
   const agoFigure = ago ? formatFigure(ago.value, card.unit, locale) : null;
   const monthly = card.monthly ? formatFigure(card.monthly.value, card.monthly.unit, locale) : null;
   const date = periodPhrase(t, card.date, resolveDateFormat({ frequency }), locale) || '';
-
+  // Одно название на карточке: то же слово видно, читается и стоит в подсказке (раньше рядом жили ещё полное имя ряда и вид «Consumer Price Index»).
+  const title = t(card.titleKey || `z5.ru.main.${card.id}`);
   return (
     <Link
       to={russiaIndicatorPath(card.code)}
@@ -71,10 +71,7 @@ function MainCard({ card, index }) {
       data-tone={ago ? deltaTone(card.value - ago.value, polarity) : undefined}
       style={{ '--i': index, '--fe-duration': '0.45s', '--fe-rise': '12px' }}
     >
-      <span className="z5-key__name" title={fullName}>
-        {t(card.titleKey || `z5.ru.main.${card.id}`)}
-        <span className="sr-only">{`: ${fullName}`}</span>
-      </span>
+      <span className="z5-key__name">{title}</span>
       <span className="z5-key__value">
         <span>{main.text}</span>
         {main.unit ? <small>{main.unit}</small> : null}

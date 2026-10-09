@@ -22,6 +22,7 @@ import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
 import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
 import IndicatorHeroValue from './IndicatorHeroValue';
+import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
@@ -178,6 +179,7 @@ export default function GenericIndicatorView({
         loading={loadingInd}
         headerRef={headerRef}
         displayFrequency={effectiveIndicator?.frequency}
+        subject={russiaIndicatorSubject(code, indicator?.name)}
         aside={(heroSummary || loadingInd || isLoading) ? (
           <IndicatorHeroValue
             summary={loadingInd ? null : heroSummary}
@@ -191,7 +193,7 @@ export default function GenericIndicatorView({
         ) : null}
       >
         {!loadingInd && heroSummary ? (
-          <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} />
+          <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} frequency={heroFreq} />
         ) : null}
       </IndicatorDetailHeader>
 

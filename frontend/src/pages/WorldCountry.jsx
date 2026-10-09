@@ -55,6 +55,8 @@ import {
   indicatorsCountText, isPinnedTopic, orderKeyFigures, similarCountries, topicDisplayName,
 } from '../lib/countryKeyFigures';
 import { readCountryBootstrap } from '../lib/countryBootstrap';
+import CabinetActionsSlot from '../components/CabinetActionsSlot';
+import { countrySubject } from '../lib/cabinetSubjects';
 import '../styles/world.css';
 import '../styles/x2-indicator.css';
 import '../styles/z1-polish.css';
@@ -92,7 +94,8 @@ function withEnglishArticle(name) {
   return /^(United States|United Kingdom|Netherlands)$/i.test(String(name || '').trim()) ? `the ${name}` : name;
 }
 
-export default function WorldCountry() {
+/** `renderActions` — необязательный слот кнопок кабинета («В избранное») рядом с кнопками героя; их рисует зона кабинета. */
+export default function WorldCountry({ renderActions = null } = {}) {
   const t = useT();
   const { locale } = useLocale();
   const { countrySlug, slug: slugParam } = useParams();
@@ -313,9 +316,12 @@ export default function WorldCountry() {
         }
         pickedRef.current = { name: '', until: 0 };
       }
+      // Линия отсчёта: под нижним краем шапки (она на экране меняет высоту), но не выше 150 px.
+      const navBottom = document.querySelector('nav.fe-navbar')?.getBoundingClientRect?.().bottom;
+      const line = Number.isFinite(navBottom) ? Math.max(150, navBottom + 24) : 150;
       let current = sections[0]?.dataset.worldCountryCategory;
       for (const section of sections) {
-        if (section.getBoundingClientRect().top > 150) break;
+        if (section.getBoundingClientRect().top > line) break;
         current = section.dataset.worldCountryCategory;
       }
       if (current) setActiveCategory((previous) => previous === current ? previous : current);
@@ -324,11 +330,19 @@ export default function WorldCountry() {
       if (!frame) frame = window.requestAnimationFrame(syncActive);
     };
     schedule();
-    window.addEventListener('scroll', schedule, { passive: true });
+    // Круг 11 (U17): прокрутку слушаем в фазе перехвата (она ловит и прокрутку вложенного контейнера, не только окна),
+    // а наблюдатель пересечений будит расчёт, когда секция входит в экран или выходит из него: подсветка не застревает на первой теме.
+    window.addEventListener('scroll', schedule, { passive: true, capture: true });
     window.addEventListener('resize', schedule);
+    let observer = null;
+    if (typeof IntersectionObserver === 'function') {
+      observer = new IntersectionObserver(schedule, { rootMargin: '-120px 0px -40% 0px' });
+      document.querySelectorAll('[data-world-country-category]').forEach((section) => observer.observe(section));
+    }
     return () => {
-      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('scroll', schedule, { capture: true });
       window.removeEventListener('resize', schedule);
+      if (observer) observer.disconnect();
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, [filteredCategories, searching, isMobileSingle, isUsCatalog, denseCatalog]);
@@ -356,6 +370,7 @@ export default function WorldCountry() {
           {t(partnerSlug === 'russia' ? 'w6b.country.compareRussia' : 'c10m.country.compareUsa')}
         </Button>
       ) : null}
+      <CabinetActionsSlot subject={countrySubject(slug, countryName || previewName)} renderActions={renderActions} />
     </div>
   );
 
