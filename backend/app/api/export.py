@@ -9,22 +9,25 @@
 """
 import io
 import logging
+import re
 from datetime import datetime
 from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
 from app.models import User
+from app.services import cabinet as cabinet_svc
 from app.security.auth import get_optional_user
 from app.security import download_quota as dq
 from app.services.api_i18n import api_detail
 from app.services.display import format_number_ru, today_msk
 from app.services.locale import get_locale
+from app.services import export_grid
 from app.services.export_render import ExportAdmission, render_export_async, reserve_export_admission
 
 logger = logging.getLogger(__name__)
@@ -52,6 +55,16 @@ class ExportMeta(BaseModel):
     provenance: str | None = None
 
 
+class ExportHistoryHint(BaseModel):
+    """Необязательная подсказка клиента для истории выгрузок в кабинете (вошедшему,
+    при включённом кабинете): что нужно, чтобы построить тот же файл заново.
+    Файл не хранится. Диапазонов (lower/upper) здесь нет и быть не может."""
+
+    source: str | None = None        # table | chart | compare | rating | region | calc ...
+    subject_key: str | None = None   # код показателя / страница, по которой выгружали
+    params: dict | None = None       # параметры повтора (страна, период, режим), до 4 КБ
+
+
 class ExportIn(BaseModel):
     format: str
     filename: str
@@ -66,6 +79,7 @@ class ExportIn(BaseModel):
     source_url: str | None = None
     provenance: str | None = None
     meta: ExportMeta | None = None
+    history: ExportHistoryHint | None = None
 
     @field_validator("format")
     @classmethod
@@ -83,6 +97,112 @@ class ExportIn(BaseModel):
         if len(v) > _MAX_POINTS:
             raise ValueError("too many points")
         return v
+
+
+_COL_KEY_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
+GridCell = int | float | str | None
+
+
+class GridColumn(BaseModel):
+    key: str
+    label: str
+    unit: str | None = None
+
+    @field_validator("key")
+    @classmethod
+    def _key(cls, v: str) -> str:
+        if not _COL_KEY_RE.match(v or "") or v.lower() in export_grid.FORBIDDEN_KEYS:
+            raise ValueError("invalid column key")
+        return v
+
+    @field_validator("label")
+    @classmethod
+    def _label(cls, v: str) -> str:
+        v = (v or "").strip()
+        if not v or len(v) > 200:
+            raise ValueError("invalid column label")
+        return v
+
+    @field_validator("unit")
+    @classmethod
+    def _unit(cls, v: str | None) -> str | None:
+        v = (v or "").strip()
+        return v[:40] or None
+
+
+class GridMeta(BaseModel):
+    source: str | None = None
+    source_url: str | None = None
+    country: str | None = None
+    frequency: str | None = None
+    provenance: str | None = None
+    note: str | None = None
+
+
+class GridIn(BaseModel):
+    """Сетка для выгрузки: колонки + строки-словари {ключ колонки: точечное значение}.
+
+    Колонка с ключом `date` или `year` (если есть) служит осью времени: гостю при
+    `download_anon_history_years` > 0 отдаются только последние годы, как в /export/table.
+    """
+
+    format: str
+    filename: str
+    title: str = ""
+    columns: list[GridColumn]
+    rows: list[dict[str, GridCell]]
+    meta: GridMeta | None = None
+    history: ExportHistoryHint | None = None
+
+    @field_validator("format")
+    @classmethod
+    def _fmt(cls, v: str) -> str:
+        v = (v or "").lower()
+        if v not in ("xlsx", "csv"):
+            raise ValueError("format must be xlsx or csv")
+        return v
+
+    @field_validator("filename")
+    @classmethod
+    def _filename(cls, v: str) -> str:
+        v = (v or "").strip()
+        if not v or len(v) > 200:
+            raise ValueError("invalid filename")
+        return v
+
+    @field_validator("title")
+    @classmethod
+    def _title(cls, v: str) -> str:
+        return (v or "").strip()[:300]
+
+    @field_validator("columns")
+    @classmethod
+    def _columns(cls, v: list[GridColumn]) -> list[GridColumn]:
+        if not v or len(v) > export_grid.MAX_COLUMNS:
+            raise ValueError("invalid columns")
+        if len({c.key for c in v}) != len(v):
+            raise ValueError("duplicate column keys")
+        return v
+
+    @field_validator("rows")
+    @classmethod
+    def _rows(cls, v: list[dict]) -> list[dict]:
+        if not v:
+            raise ValueError("no rows")
+        if len(v) > export_grid.MAX_ROWS:
+            raise ValueError("too many rows")
+        for row in v:
+            if len(row) > export_grid.MAX_COLUMNS or any(
+                str(k).lower() in export_grid.FORBIDDEN_KEYS for k in row
+            ):
+                raise ValueError("invalid row")
+        return v
+
+    @model_validator(mode="after")
+    def _cells(self):
+        if len(self.rows) * len(self.columns) > export_grid.MAX_CELLS:
+            raise ValueError("too many cells")
+        return self
 
 
 def _round(x: float | None) -> float | None:
@@ -281,9 +401,122 @@ def _build_table(body: ExportIn, authenticated: bool) -> bytes:
     return builder(facts, forecasts, body.value_label, meta)
 
 
+def _grid_rows_for(body: GridIn, authenticated: bool) -> list[dict]:
+    """Гостю — последние годы по оси `date`/`year` (как _limit_history); вошедшему всё."""
+    rows = body.rows
+    years = settings.download_anon_history_years
+    axis = next((c.key for c in body.columns if c.key in ("date", "year")), None)
+    if authenticated or years <= 0 or axis is None:
+        return rows
+    ys = [y for r in rows if (y := _point_year(str(r.get(axis) or ""))) is not None]
+    if not ys:
+        return rows
+    cutoff = max(ys) - years
+    kept = [r for r in rows if (y := _point_year(str(r.get(axis) or ""))) is None or y > cutoff]
+    return kept or rows
+
+
+def _build_grid(body: GridIn, authenticated: bool) -> bytes:
+    """Вся O(cells) работа и сборка файла — в рабочем потоке."""
+    locale = get_locale()
+    columns = [c.model_dump() for c in body.columns]
+    rows = _grid_rows_for(body, authenticated)
+    meta = {k: (v or "").strip() for k, v in (body.meta.model_dump() if body.meta else {}).items()}
+    exported_at = datetime.now(_MSK).strftime("%Y-%m-%d %H:%M %Z")
+    builder = export_grid.build_xlsx if body.format == "xlsx" else export_grid.build_csv
+    return builder(body.title or body.filename, columns, rows, meta, exported_at, locale)
+
+
 def _content_disposition(filename: str) -> str:
     ascii_fallback = "export." + (filename.rsplit(".", 1)[-1] if "." in filename else "dat")
     return f"attachment; filename=\"{ascii_fallback}\"; filename*=UTF-8''{quote(filename)}"
+
+
+async def consume_anon_quota(request: Request, user: User | None) -> str | None:
+    """Гостевой лимит выгрузок (общий для /export/table и /export/grid).
+
+    Вошедшему ничего не списывается. Возвращает id нового cookie `fe_dl`, если его
+    нужно выставить в ответе; при исчерпании лимита — 403 `download_limit`.
+    """
+    if user is not None:
+        return None
+    set_cookie_id: str | None = None
+    dl_id = request.cookies.get(dq.DL_COOKIE)
+    if not dl_id:
+        dl_id = dq.new_download_id()
+        set_cookie_id = dl_id
+    allowed = await dq.consume_anon_download(dl_id)
+    if not allowed:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "code": "download_limit",
+                "message": api_detail(
+                    "Лимит бесплатных выгрузок исчерпан. Войдите в аккаунт для безлимитного скачивания.",
+                    "Free download limit reached. Sign in for unlimited downloads.",
+                ),
+            },
+        )
+    return set_cookie_id
+
+
+async def decorate_download(resp: Response, request: Request, user: User | None, set_cookie_id: str | None) -> None:
+    """Заголовок остатка гостевых выгрузок и cookie `fe_dl` (как в /export/table)."""
+    if user is None:
+        remaining = await dq.remaining_anon_downloads(set_cookie_id or request.cookies.get(dq.DL_COOKIE))
+        resp.headers["X-Download-Remaining"] = str(remaining)
+        resp.headers["Access-Control-Expose-Headers"] = "X-Download-Remaining"
+    if set_cookie_id is not None:
+        kw = {"httponly": True, "secure": settings.auth_cookie_secure, "samesite": "lax", "path": "/"}
+        if settings.auth_cookie_domain:
+            kw["domain"] = settings.auth_cookie_domain
+        resp.set_cookie(dq.DL_COOKIE, set_cookie_id, max_age=settings.download_anon_window_seconds, **kw)
+
+
+async def record_history_safe(
+    db: AsyncSession, user: User | None, *, source: str, subject_key: str | None,
+    fmt: str, params: dict | None, rows_count: int | None,
+) -> None:
+    """История выгрузок кабинета: только вошедшему и при включённом кабинете.
+
+    Отдельный try: сбой записи истории НЕ ломает уже построенную выгрузку.
+    """
+    if user is None or not settings.cabinet_enabled:
+        return
+    try:
+        await cabinet_svc.record_export(
+            db, user.id, source=source, subject_key=subject_key, fmt=fmt,
+            params=params, rows_count=rows_count)
+    except Exception:
+        logger.warning("export history write failed", exc_info=True)
+        try:
+            await db.rollback()
+        except Exception:  # pragma: no cover
+            pass
+
+
+async def _record_history_safe(db: AsyncSession, user: User | None, body: ExportIn) -> None:
+    if user is None or not settings.cabinet_enabled:
+        return
+    hint = body.history
+    dates = [p.date for p in body.points if p.date]
+    meta = _resolve_meta(body)
+    params = {
+        "filename": body.filename[:200],
+        "value_label": (body.value_label or "")[:200],
+        "indicator_name": meta.get("indicator_name") or None,
+        "unit": meta.get("unit") or None,
+        "frequency": meta.get("frequency") or None,
+        "country": meta.get("country") or None,
+        "period": {"from": min(dates), "to": max(dates)} if dates else None,
+    }
+    params = {k: v for k, v in params.items() if v}
+    if hint and hint.params:
+        params.update(hint.params)
+    await record_history_safe(
+        db, user, source=(hint.source if hint and hint.source else "table"),
+        subject_key=(hint.subject_key if hint and hint.subject_key else meta.get("indicator_name") or body.filename),
+        fmt=body.format, params=params, rows_count=len(body.points))
 
 
 @router.get("/quota")
@@ -312,24 +545,7 @@ async def export_table(
     db: AsyncSession = Depends(get_db),
     admission: ExportAdmission = Depends(reserve_export_admission),
 ):
-    set_cookie_id: str | None = None
-    if user is None:
-        dl_id = request.cookies.get(dq.DL_COOKIE)
-        if not dl_id:
-            dl_id = dq.new_download_id()
-            set_cookie_id = dl_id
-        allowed = await dq.consume_anon_download(dl_id)
-        if not allowed:
-            raise HTTPException(
-                status_code=403,
-                detail={
-                    "code": "download_limit",
-                    "message": api_detail(
-                        "Лимит бесплатных выгрузок исчерпан. Войдите в аккаунт для безлимитного скачивания.",
-                        "Free download limit reached. Sign in for unlimited downloads.",
-                    ),
-                },
-            )
+    set_cookie_id = await consume_anon_quota(request, user)
 
     data = await render_export_async(_build_table, body, user is not None, admission=admission)
     media = ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -337,13 +553,46 @@ async def export_table(
 
     resp = Response(content=data, media_type=media)
     resp.headers["Content-Disposition"] = _content_disposition(body.filename)
-    if user is None:
-        remaining = await dq.remaining_anon_downloads(set_cookie_id or request.cookies.get(dq.DL_COOKIE))
-        resp.headers["X-Download-Remaining"] = str(remaining)
-        resp.headers["Access-Control-Expose-Headers"] = "X-Download-Remaining"
-    if set_cookie_id is not None:
-        kw = {"httponly": True, "secure": settings.auth_cookie_secure, "samesite": "lax", "path": "/"}
-        if settings.auth_cookie_domain:
-            kw["domain"] = settings.auth_cookie_domain
-        resp.set_cookie(dq.DL_COOKIE, set_cookie_id, max_age=settings.download_anon_window_seconds, **kw)
+    await decorate_download(resp, request, user, set_cookie_id)
+    await _record_history_safe(db, user, body)
+    return resp
+
+
+@router.post("/grid")
+async def export_grid_file(
+    body: GridIn,
+    request: Request,
+    user: User | None = Depends(get_optional_user),
+    db: AsyncSession = Depends(get_db),
+    admission: ExportAdmission = Depends(reserve_export_admission),
+):
+    """Универсальная выгрузка таблицы (сравнение, рейтинг, регион, график платежей).
+
+    Тот же допуск (`reserve_export_admission`) и тот же гостевой лимит
+    (`download_anon_limit`), что у /export/table. Только точечные значения: `lower` /
+    `upper` отклоняются (422). Вошедшему при включённом кабинете параметры выгрузки
+    попадают в историю (без файла)."""
+    set_cookie_id = await consume_anon_quota(request, user)
+
+    data = await render_export_async(_build_grid, body, user is not None, admission=admission)
+    media = ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+             if body.format == "xlsx" else "text/csv; charset=utf-8")
+    resp = Response(content=data, media_type=media)
+    resp.headers["Content-Disposition"] = _content_disposition(body.filename)
+    await decorate_download(resp, request, user, set_cookie_id)
+
+    if user is not None and settings.cabinet_enabled:
+        hint = body.history
+        params = {
+            "filename": body.filename[:200],
+            "title": body.title[:200] or None,
+            "columns": [c.label for c in body.columns][:20],
+        }
+        params = {k: v for k, v in params.items() if v}
+        if hint and hint.params:
+            params.update(hint.params)
+        await record_history_safe(
+            db, user, source=(hint.source if hint and hint.source else "grid"),
+            subject_key=(hint.subject_key if hint and hint.subject_key else body.title or body.filename),
+            fmt=body.format, params=params, rows_count=len(body.rows))
     return resp

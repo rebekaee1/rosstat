@@ -111,6 +111,28 @@ def test_delete_account_purges_and_allows_reregister(auth_client):
     assert again.status_code == 201
 
 
+def test_delete_account_removes_push_subscriptions_explicitly(auth_client, auth_env, monkeypatch):
+    """Подписка web-push — ПДн: удаляется явно (в SQLite FK-каскада нет), чужая остаётся."""
+    from sqlalchemy import func, select
+    from app.config import settings
+    from app.models import PushSubscription
+    monkeypatch.setattr(settings, "push_subscribe_enabled", True)
+    keys = {"p256dh": "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U",
+            "auth": "tBHItJI5svbpez7KI4CCXg"}
+    # подписка гостя (без user_id) не должна пострадать
+    auth_client.post("/api/v1/push/subscribe", json={"endpoint": "https://fcm.googleapis.com/fcm/send/guest", "keys": keys})
+    _register(auth_client, email="pushdel@example.com")
+    auth_client.post("/api/v1/push/subscribe", json={"endpoint": "https://fcm.googleapis.com/fcm/send/mine", "keys": keys})
+
+    async def total(maker):
+        async with maker() as s:
+            return await s.scalar(select(func.count()).select_from(PushSubscription))
+
+    assert auth_client.portal.call(total, auth_env["session_maker"]) == 2
+    assert auth_client.delete("/api/v1/auth/account", headers=csrf_headers(auth_client)).status_code == 200
+    assert auth_client.portal.call(total, auth_env["session_maker"]) == 1
+
+
 # --- Срез G: lockout 423 ---
 
 def test_login_lockout_returns_423(auth_client):
