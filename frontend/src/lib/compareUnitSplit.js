@@ -20,7 +20,6 @@ export function splitUnit(unit) {
   return { short: raw, tail: '' };
 }
 
-/** Число с короткой единицей + отдельный пояснительный хвост. */
 // Единица не отрывается от числа и знак валюты не уходит на новую строку: «136 168 млрд ₽» рвётся только после числа.
 function bindUnit(text) {
   return String(text)
@@ -28,6 +27,7 @@ function bindUnit(text) {
     .replace(/\s(?=[₽$€¥])/g, '\u00a0');
 }
 
+/** Число с короткой единицей + отдельный пояснительный хвост. */
 export function formatValueSplit(value, unit, digits, locale) {
   const { short, tail } = splitUnit(unit);
   if (value == null || !Number.isFinite(Number(value))) return { main: '—', tail, unitShort: short };

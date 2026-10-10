@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `0a4d0966b9bb952d5b8a39b1f927821178ad124d`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `28d2c46d6da425e7c57ae2fb0289c8a02e57e48a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2059 |
 | Код, шаблоны и стили | 1671 |
 | Актуальные рецензии без пропусков guard | 2059 |
-| Именованные определения Python/JS: с аннотацией / всего | 13053 / 13053 |
+| Именованные определения Python/JS: с аннотацией / всего | 13054 / 13054 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1520,7 +1520,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/compareTitle.js](../frontend/src/lib/compareTitle.js) | reviewed | 5/5 | актуально |
 | [frontend/src/lib/compareTooltip.js](../frontend/src/lib/compareTooltip.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/compareTooltip.test.js](../frontend/src/lib/compareTooltip.test.js) | reviewed | 0/0 | актуально |
-| [frontend/src/lib/compareUnitSplit.js](../frontend/src/lib/compareUnitSplit.js) | reviewed | 2/2 | актуально |
+| [frontend/src/lib/compareUnitSplit.js](../frontend/src/lib/compareUnitSplit.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/compareUnitSplit.test.js](../frontend/src/lib/compareUnitSplit.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/consent.js](../frontend/src/lib/consent.js) | reviewed | 4/4 | актуально |
 | [frontend/src/lib/consentAdsGate.component.test.jsx](../frontend/src/lib/consentAdsGate.component.test.jsx) | reviewed | 14/14 | актуально |
