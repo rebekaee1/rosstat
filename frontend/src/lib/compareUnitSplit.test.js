@@ -24,4 +24,10 @@ describe('compareUnitSplit', () => {
   it('shows a dash for missing values', () => {
     expect(formatValueSplit(null, '%').main).toBe('—');
   });
+
+  it('does not let the currency sign or the scale word drift away from the number', () => {
+    const r = formatValueSplit(136168, 'млрд ₽', 0, 'ru');
+    expect(r.main).not.toMatch(/ ₽/);
+    expect(r.main).toMatch(/млрд\u00a0₽$/);
+  });
 });

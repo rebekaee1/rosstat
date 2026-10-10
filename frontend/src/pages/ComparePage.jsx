@@ -3194,7 +3194,7 @@ export default function ComparePage({ renderSave = null } = {}) {
                       {shortSeriesName(metric.item) || t('z2.compare.seriesFallback')}
                     </div>
                   </div>
-                  <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="mt-4 grid grid-cols-1 gap-3 min-[440px]:grid-cols-2">
                     <div>
                       <div className="text-xs font-medium text-text-secondary">{t('compare.analysis.last')}</div>
                       <div className="fe-num mt-1 text-lg font-semibold leading-tight text-text-primary">

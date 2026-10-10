@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 1851
     },
-    "definitions": 13053,
-    "annotated_definitions": 13053,
+    "definitions": 13054,
+    "annotated_definitions": 13054,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -10956,9 +10956,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be",
-      "bytes": 545266,
-      "lines": 2780,
+      "sha256": "9b46863fe04f4b4888ba5db36b6e8584e54170b9afb54ced2c9c8ddd87ceb263",
+      "bytes": 546857,
+      "lines": 2784,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10969,9 +10969,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80",
-      "bytes": 6703931,
-      "lines": 235985,
+      "sha256": "a63ce6ee3517722d441eb45c6a39ee8effc31c1bbc10ac3cec382a0df22946aa",
+      "bytes": 6704345,
+      "lines": 236001,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -10982,7 +10982,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "2fffe464561ddc20d05815420bbe693fe589912fb63a768f6a8e279915e96e40",
+      "sha256": "4ed8db973c48d9826e91c0aba8cf2ec2774bd1215376bf5deb52e42060b030ac",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -19302,22 +19302,22 @@
     },
     {
       "path": "frontend/src/lib/compareUnitSplit.js",
-      "sha256": "3899f120088c44c792542d65da6a47f1970fd5d3d17c1e5933d3b3c38fd41321",
-      "bytes": 1683,
-      "lines": 31,
+      "sha256": "7c1db690bb152d51b89eab26fbf269d0781695e4d2083b3bee5969067fca2b96",
+      "bytes": 2074,
+      "lines": 38,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 2,
-      "annotated_definitions": 2,
+      "definitions": 3,
+      "annotated_definitions": 3,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/compareUnitSplit.test.js",
-      "sha256": "88132e3571fff58d96b2cf4986a3a0571ca53d29f06cc3899a3360347a35a4e8",
-      "bytes": 1199,
-      "lines": 27,
+      "sha256": "9708252123dc515dbbe826eff8a2b1248700ac1564d7c21533a8069cbf9be6ba",
+      "bytes": 1453,
+      "lines": 33,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -23527,8 +23527,8 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.jsx",
-      "sha256": "605c5bb454bf4c50cc2d1280abb7e086654b41a41dce8be852a0d762bd5c7517",
-      "bytes": 156377,
+      "sha256": "44cf3853a02e6c08e3647710cae44e20387992047e3cc5e7cc1325ef79707fc3",
+      "bytes": 156401,
       "lines": 3277,
       "code": true,
       "status": "reviewed",
@@ -25217,9 +25217,9 @@
     },
     {
       "path": "frontend/src/styles/z5-country.css",
-      "sha256": "db8b7db0b16166ec474da932ee2b6884e95b7bcefe285c2d1e76df343946f734",
-      "bytes": 39755,
-      "lines": 969,
+      "sha256": "0ce5d91695602d404fe026b2c766b10d0b5be1a74214bd7766ada1e60a0af1d0",
+      "bytes": 40407,
+      "lines": 981,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26803,12 +26803,15 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "451652b475c4922efed5a82e935f9a9ebd34defe769c0eab2b0b179a38786d29",
-  "javascript_inventory_sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
-  "baseline_commit": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
-  "branch": "main",
+  "ledger_sha256": "28d21b98edbf12859bea286e05d282a5f10e2bb8ac6cf496deda800f99b7f4ae",
+  "javascript_inventory_sha256": "e2b4b173c208ab420ce2bf852c9fefc1e2716a8d50124c5e9a130c205a75ada9",
+  "baseline_commit": "28d2c46d6da425e7c57ae2fb0289c8a02e57e48a",
+  "branch": "claude/eloquent-hawking-m5xirk",
   "unstaged_at_capture": [
     "docs/backlog.md",
-    "docs/runtime-inventory.json"
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "frontend/src/lib/compareUnitSplit.js",
+    "frontend/src/lib/compareUnitSplit.test.js"
   ]
 }

@@ -118830,7 +118830,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/compareUnitSplit.js": {
-      "sha256": "3899f120088c44c792542d65da6a47f1970fd5d3d17c1e5933d3b3c38fd41321",
+      "sha256": "7c1db690bb152d51b89eab26fbf269d0781695e4d2083b3bee5969067fca2b96",
       "imports": [
         {
           "line": 1,
@@ -118858,7 +118858,15 @@
         },
         {
           "line": 24,
-          "end_line": 31,
+          "end_line": 28,
+          "owner": "<module>",
+          "name": "bindUnit",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 31,
+          "end_line": 38,
           "owner": "<module>",
           "name": "formatValueSplit",
           "kind": "FunctionDeclaration",
@@ -118874,7 +118882,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/compareUnitSplit.test.js": {
-      "sha256": "88132e3571fff58d96b2cf4986a3a0571ca53d29f06cc3899a3360347a35a4e8",
+      "sha256": "9708252123dc515dbbe826eff8a2b1248700ac1564d7c21533a8069cbf9be6ba",
       "imports": [
         {
           "line": 1,
@@ -118908,7 +118916,7 @@
       "functions": [
         {
           "line": 4,
-          "end_line": 27,
+          "end_line": 33,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -118941,6 +118949,14 @@
         {
           "line": 24,
           "end_line": 26,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 28,
+          "end_line": 32,
           "owner": "<callback@4>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -187607,7 +187623,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/ComparePage.jsx": {
-      "sha256": "605c5bb454bf4c50cc2d1280abb7e086654b41a41dce8be852a0d762bd5c7517",
+      "sha256": "44cf3853a02e6c08e3647710cae44e20387992047e3cc5e7cc1325ef79707fc3",
       "imports": [
         {
           "line": 1,
@@ -235971,7 +235987,7 @@
   "totals": {
     "imports": 4348,
     "routes": 94,
-    "functions": 14174,
+    "functions": 14176,
     "hooks": 2635,
     "http": 113,
     "storage": 215,

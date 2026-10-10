@@ -28307,7 +28307,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/lib/compareUnitSplit.js": {
-    "sha256": "3899f120088c44c792542d65da6a47f1970fd5d3d17c1e5933d3b3c38fd41321",
+    "sha256": "7c1db690bb152d51b89eab26fbf269d0781695e4d2083b3bee5969067fca2b96",
     "definitions": [
       {
         "name": "splitUnit",
@@ -28316,9 +28316,15 @@
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "formatValueSplit",
+        "name": "bindUnit",
         "line": 24,
-        "end_line": 31,
+        "end_line": 28,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "formatValueSplit",
+        "line": 31,
+        "end_line": 38,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28339,13 +28345,13 @@
         "names": [
           "formatValueSplit"
         ],
-        "line": 24
+        "line": 31
       }
     ],
     "anonymous_functions": 0
   },
   "frontend/src/lib/compareUnitSplit.test.js": {
-    "sha256": "88132e3571fff58d96b2cf4986a3a0571ca53d29f06cc3899a3360347a35a4e8",
+    "sha256": "9708252123dc515dbbe826eff8a2b1248700ac1564d7c21533a8069cbf9be6ba",
     "definitions": [],
     "imports": [
       {
@@ -28358,7 +28364,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 5
+    "anonymous_functions": 6
   },
   "frontend/src/lib/consent.js": {
     "sha256": "44c0ca34ee3525d637ec0e93cc494f3c7b79fc667a3461a144bb8d9e5d78c307",
@@ -49950,7 +49956,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "605c5bb454bf4c50cc2d1280abb7e086654b41a41dce8be852a0d762bd5c7517",
+    "sha256": "44cf3853a02e6c08e3647710cae44e20387992047e3cc5e7cc1325ef79707fc3",
     "definitions": [
       {
         "name": "useViewportHeight",
