@@ -156,7 +156,7 @@ def test_etl_summary_counts_problems(monkeypatch):
     ))
     text = sent[0]
     assert text.startswith("🟡")
-    assert "Problems: 3" in text
+    assert "с замечаниями: 3" in text
     assert "housing-price-primary" in text and "budget-revenue" in text
 
 
@@ -169,7 +169,7 @@ def test_etl_summary_green_without_problems(monkeypatch):
 
     monkeypatch.setattr(alerting, "send_telegram", fake_send)
     asyncio.run(alerting.alert_etl_summary(117, 10, [], 700.0, degraded={"parsed_zero": []}))
-    assert sent[0].startswith("🟢") and "Problems: 0" in sent[0]
+    assert sent[0].startswith("🟢") and "с замечаниями: 0" in sent[0]
 
 
 def test_fetch_changed_semantics():

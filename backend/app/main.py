@@ -228,7 +228,7 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
                 try:
                     from app.services.alerting import send_telegram
                     asyncio.get_running_loop().create_task(send_telegram(
-                        f"🔴 <b>5xx spike</b>\n{len(cls._recent_5xx)} ответов 5xx "
+                        f"🔴 <b>Всплеск ошибок сервера (5xx)</b>\n{len(cls._recent_5xx)} ответов 5xx "
                         f"за {cls.SPIKE_WINDOW // 60} мин (последний путь: {path[:120]})",
                         kind="http_5xx_spike",
                     ))
@@ -292,16 +292,16 @@ def _scheduler_event_listener(event) -> None:
             return
 
         if getattr(event, "exception", None):
-            kind = "🔴 <b>Scheduler job failed</b>"
+            kind = "🔴 <b>Сбой фоновой задачи</b>"
             detail = escape(str(event.exception)[:300])
         else:
-            kind = "🟡 <b>Scheduler job missed</b>"
-            detail = "misfire (job не запустилась в срок)"
+            kind = "🟡 <b>Пропуск фоновой задачи</b>"
+            detail = "задача не запустилась в срок"
         job = scheduler.get_job(event.job_id)
         next_run = getattr(job, "next_run_time", None)
         msg = (
-            f"{kind}\nJob: <code>{escape(str(event.job_id))}</code>\n"
-            f"{detail}\nNext run: {next_run or '—'}"
+            f"{kind}\nЗадача: <code>{escape(str(event.job_id))}</code>\n"
+            f"{detail}\nСледующий запуск: {next_run or '—'}"
         )
         logger.error("Scheduler event: job=%s exc=%s", event.job_id,
                      getattr(event, "exception", None))

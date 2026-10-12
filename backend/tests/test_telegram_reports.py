@@ -61,7 +61,7 @@ REL = {"js_errors_own": [{"error": "x", "count": 3}], "vitals_p75": {"LCP": 2400
 def test_digest_v2_matches_the_agreed_shape():
     lines = tr.format_digest_v2(signups=SIG, usage=USAGE, funnel=FUNNEL, reliability=REL)
     text = "\n".join(lines)
-    assert "🌍 Регистрации: 2 · русская версия 1, английская версия 1 · вне РФ: 1" in text
+    assert "🌍 Регистрации: 2 · русская версия 1, английская версия 1 · вне РФ: 1 (Германия 1)" in text
     assert "🧭 Откуда: поиск 1, прямой заход 1 · устройство: телефон 2" in text
     assert "🚪 Что подтолкнуло: скачивание данных 1, кнопка в шапке 1" in text
     assert "🎯 Что делали: выгрузки 5 (CSV 3, Excel 2) · упёрлись в лимит 4 · сравнение 21 · поделились 3 · смена языка 2" in text
@@ -159,7 +159,7 @@ def test_monthly_report_adds_cohort_lines():
     text = tr.format_period_report(data, kind="monthly")
     assert "месяц 01.09–30.09.2026" in text.split("\n")[0]
     assert "за 30 дней: 2 из 5 (40%)" in text
-    assert "🧲 лучшие первые страницы: /russia/indicator/cpi ×1" in text
+    assert "🧲 Лучшие первые страницы: /russia/indicator/cpi ×1" in text
 
 
 def test_report_marks_missing_blocks_instead_of_zeros():
@@ -257,3 +257,186 @@ def test_signups_reply_keeps_rf_uppercase_and_country_names():
     assert "Вчера — Страны вне РФ: Германия 1, Казахстан 1" in reply
     digest_details = tr.detail_lines_for_day(sig, None, None)
     assert "Страны вне РФ: Германия 1, Казахстан 1" in digest_details
+
+
+# --- круг 13: источники, цели ценности, надёжность (5xx) ---------------------------------
+
+def test_signups_head_names_foreign_countries_and_details_name_referrers():
+    sig = dict(SIG, origin={"ru": 1, "foreign": 3}, foreign_countries={"DE": 2, "kz": 1},
+               referrer={"yandex.ru": 2, "t.me": 1})
+    head = tr.signups_lines(sig)[0]
+    assert "вне РФ: 3 (Германия 2, Казахстан 1)" in head
+    details = tr.detail_lines_for_day(sig, None, None)
+    assert "Переходы с сайтов: yandex.ru 2, t.me 1" in details
+
+
+def test_other_goals_line_hides_zeros_and_uses_russian_labels():
+    adoption = {"features": [
+        {"event": "login_success", "tier": "micro", "count": 17, "sessions": 9},
+        {"event": "newsletter_opt_in", "tier": "macro", "count": 3, "sessions": 3},
+        {"event": "feedback_submit", "tier": "macro", "count": 0, "sessions": 0},
+        {"event": "indicator_view", "tier": "engagement", "count": 9999, "sessions": 5000},
+    ]}
+    assert tr.other_goals_line(adoption) == "🏁 Прочие цели: входы 17 · подписка на рассылку 3"
+    assert tr.other_goals_line({"features": []}) == "" and tr.other_goals_line(None) == ""
+    prev = {"features": [{"event": "login_success", "count": 10}]}
+    assert "входы 17 (+70%)" in tr.other_goals_line(adoption, prev)
+    # в дайджесте v2 строка стоит после «Что делали»
+    lines = tr.format_digest_v2(signups=SIG, usage=USAGE, funnel=FUNNEL, reliability=REL, adoption=adoption)
+    texts = [line.split(":")[0] for line in lines]
+    assert texts.index("🏁 Прочие цели") == texts.index("🎯 Что делали") + 1
+
+
+def test_every_value_goal_outside_report_groups_has_a_russian_label():
+    """Новая macro/micro-цель без группы и без подписи не должна пропасть из отчётов молча."""
+    from app.services import goal_taxonomy as gt
+
+    uncovered = (gt._MACRO | gt._MICRO) - gt.all_grouped_events() - {"signup", "pwa_installed"}
+    assert uncovered <= set(tr.OTHER_GOAL_LABELS), sorted(uncovered - set(tr.OTHER_GOAL_LABELS))
+
+
+def test_reliability_line_reports_server_errors_without_addresses():
+    rel = dict(REL, server_5xx_spikes={"count": 3, "by_group": {"seo": 2, "api": 1}}, api_5xx_sampled=4)
+    line = tr.reliability_line(rel)
+    assert "всплесков ошибок сервера (5xx): 3 (страницы для поисковиков, запросы к данным)" in line
+    assert "людям пришла ошибка 5xx (выборка) 4" in line
+    assert "/seo/" not in line and "/api/" not in line
+    quiet = tr.reliability_line(dict(REL, server_5xx_spikes={"count": 0, "by_group": {}}, api_5xx_sampled=0))
+    assert "5xx" not in quiet
+
+
+def test_server_error_group_and_spike_path_parser():
+    from app.services.analytics_marts import _SPIKE_PATH_RE, server_error_group
+
+    assert server_error_group("/seo/world/x") == "seo"
+    assert server_error_group("/api/v1/og-image/a.png") == "og"
+    assert server_error_group("/api/v1/regions?x=1") == "api"
+    assert server_error_group(None) == "other"
+    old = "🔴 <b>5xx spike</b>\n10 ответов 5xx за 5 мин (последний путь: /seo/world/x/y)"
+    new = "🔴 <b>Всплеск ошибок сервера (5xx)</b>\n10 ответов 5xx за 5 мин (последний путь: /api/v1/regions)"
+    assert _SPIKE_PATH_RE.search(old.replace("\n", " \n")).group(1) == "/seo/world/x/y"
+    assert _SPIKE_PATH_RE.search(new.replace("\n", " \n")).group(1) == "/api/v1/regions"
+
+
+def test_report_recipients_default_to_digest_and_can_be_narrowed(monkeypatch):
+    from app.services.alerting import digest_recipients, report_recipients
+
+    monkeypatch.setattr(settings, "telegram_chat_id", "100", raising=False)
+    monkeypatch.setattr(settings, "telegram_digest_chat_ids", "200, 300", raising=False)
+    monkeypatch.setattr(settings, "telegram_reports_chat_ids", "", raising=False)
+    assert report_recipients() == digest_recipients() == ["100", "200", "300"]
+    monkeypatch.setattr(settings, "telegram_reports_chat_ids", "999, 999 ,", raising=False)
+    assert report_recipients() == ["999"]  # тестовый чат: остальным адресатам дайджеста ничего не уходит
+    assert type(settings).model_fields["telegram_reports_chat_ids"].default == ""
+
+
+def test_conversion_hides_channels_without_signups_and_download_shows_the_rest():
+    sig = dict(SIG, channel={"search": 2})
+    text = tr.conversion_by_channel(sig, {"search": 1000, "direct": 800, "social": 500})
+    assert text == "поиск 0,2%"  # «прямой заход 0%» и «соцсети 0%» только раздувают строку
+    usage = {"has_data": True, "groups": {"download": {"actions": 65, "events": {"download_csv": 4, "download_excel": 42}}}}
+    assert "выгрузки 65 (CSV 4, Excel 42, прочее 19)" in tr.usage_lines(usage)[0]
+
+
+def test_incomplete_language_split_is_announced():
+    funnel = dict(FUNNEL, locale_coverage_pct=54.0)
+    lines = tr.detail_lines_for_day(None, None, funnel)
+    assert any(line.startswith("Деление по версиям неполное: язык сайта записан у 54% посетителей") for line in lines)
+    # посетители по версиям при неполном языке не показываем: они несравнимы с остальными шагами
+    ru_line = next(line for line in lines if line.startswith("Русская версия:"))
+    assert ru_line.startswith("Русская версия: смотрели показатель 80") and "посетители" not in ru_line
+    assert "Деление по версиям неполное" in tr.format_funnel_reply(funnel, resolve_period("custom", date(2026, 10, 1), date(2026, 10, 7)))
+    assert "цифры неполные" in tr._english_summary(SIG, funnel, None)
+    full = dict(FUNNEL, locale_coverage_pct=97.0)
+    assert tr.locale_coverage_note(full) == "" and tr.locale_coverage_note(FUNNEL) == ""
+
+
+def test_reliability_details_explain_the_causes():
+    rel = dict(REL, js_errors_own=[{"error": "TypeError: x is undefined", "count": 40}, {"error": "mail me a@b.org", "count": 2}])
+    details = tr.reliability_details(rel)
+    assert details[0].startswith("Частые ошибки скриптов: TypeError: x is undefined ×40")
+    assert "@" not in details[0]
+    assert details[1] == "Медленные страницы (LCP p75): показатель России, телефон 3,1 с (выборка 12)"
+    assert tr.reliability_details(None) == [] and tr.reliability_details({"js_errors_own": []}) == []
+
+
+def test_median_zero_days_reads_naturally():
+    data = _weekly_data()
+    data["signups"] = dict(data["signups"], median_days_to_signup=0.0)
+    assert "⏳ Регистрируются в день первого визита (медиана)" in tr.format_period_report(data, kind="weekly")
+
+
+def test_locale_visitors_hidden_when_fewer_than_viewers():
+    funnel = dict(FUNNEL, locale_coverage_pct=95.0,
+                  by_locale={"ru": {"visitors": 622, "viewed": 982, "wall": 21}, "en": {"visitors": 100, "viewed": 40}})
+    lines = tr.locale_lines(funnel)
+    assert lines == ["Русская версия: смотрели показатель 982, лимит 21",
+                     "Английская версия: посетители 100, смотрели показатель 40"]
+
+
+def test_reliability_line_splits_code_errors_and_files_not_loaded():
+    rel = dict(REL, js_errors_real_own=[{"error": "TypeError", "count": 5}],
+               js_files_failed_own={"total": 700, "top": {"charts-AAA.js": 400, "d3-BBB.js": 300}})
+    line = tr.reliability_line(rel)
+    assert "ошибок своих скриптов 5 · не загрузились файлы сайта 700" in line
+    details = tr.reliability_details(rel)
+    assert details[0] == "Частые ошибки скриптов: TypeError ×5"
+    assert details[1] == "Не загрузились файлы: charts-AAA.js ×400, d3-BBB.js ×300"
+
+
+def test_report_blocks_queue_for_the_small_analytics_pool(monkeypatch):
+    """Блоков 13, а соединений 4: витрины идут не более чем по двое, иначе часть падала бы на пуле."""
+    running = {"now": 0, "max": 0}
+
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(tr, "analytics_session", lambda: FakeSession())
+
+    async def mart(db):
+        running["now"] += 1
+        running["max"] = max(running["max"], running["now"])
+        await asyncio.sleep(0.01)
+        running["now"] -= 1
+        return {"ok": True}
+
+    async def scenario():
+        return await asyncio.gather(*[tr._guarded(f"b{i}", mart) for i in range(13)])
+
+    results = asyncio.run(scenario())
+    assert all(r == {"ok": True} for r in results) and running["max"] == 2
+
+
+def test_guarded_returns_none_on_failure_and_retries_a_busy_pool(monkeypatch):
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(tr, "analytics_session", lambda: FakeSession())
+    calls = {"n": 0}
+
+    class TimeoutError(Exception):  # имя как у sqlalchemy.exc.TimeoutError
+        pass
+
+    async def busy_once(db):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise TimeoutError("QueuePool limit of size 2 overflow 2 reached")
+        return {"ok": 1}
+
+    async def broken(db):
+        raise ValueError("boom")
+
+    async def sleepless(_):
+        return None
+
+    monkeypatch.setattr(tr.asyncio, "sleep", lambda s: sleepless(s))
+    assert asyncio.run(tr._guarded("busy", busy_once)) == {"ok": 1} and calls["n"] == 2
+    assert asyncio.run(tr._guarded("broken", broken)) is None

@@ -298,6 +298,8 @@ services:
       RUSTATS_API_INTEREST_ENABLED: ${RUSTATS_API_INTEREST_ENABLED:-false}
       # Круг 11: отчёты аудитории в Telegram. Все выключены; включать по одному, сначала в тестовый чат.
       RUSTATS_TELEGRAM_DIGEST_V2_ENABLED: ${RUSTATS_TELEGRAM_DIGEST_V2_ENABLED:-false}
+      # Получатели недельного и месячного отчётов; пусто = как у дайджеста. Для первого включения: тестовый чат.
+      RUSTATS_TELEGRAM_REPORTS_CHAT_IDS: ${RUSTATS_TELEGRAM_REPORTS_CHAT_IDS:-}
       RUSTATS_TELEGRAM_WEEKLY_ENABLED: ${RUSTATS_TELEGRAM_WEEKLY_ENABLED:-false}
       RUSTATS_TELEGRAM_MONTHLY_ENABLED: ${RUSTATS_TELEGRAM_MONTHLY_ENABLED:-false}
       RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED: ${RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED:-false}
