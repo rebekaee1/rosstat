@@ -74,3 +74,57 @@ def test_job_is_noop_when_disabled(monkeypatch):
     monkeypatch.setattr(ssr_warm.settings, "ssr_warm_enabled", True)
     _run(ssr_warm.ssr_warm_job())
     assert called == [1]
+
+
+def test_first_screen_has_no_redirecting_address():
+    """Журнал боевого 12.10.2026: `/world/rating` отвечает 301 — прогрев берёт канон страницы по умолчанию."""
+    from app.services import site_paths as paths
+    from app.services.seo_world import WORLD_RATING_DEFAULT_CONCEPT
+
+    assert "/world/rating" not in ssr_warm.WARM_PATHS
+    assert paths.world_rating(WORLD_RATING_DEFAULT_CONCEPT) in ssr_warm.WARM_PATHS
+    assert all(p == "/" or not p.endswith("/") for p in ssr_warm.WARM_PATHS)
+
+
+def test_top_page_redirect_is_followed_once_and_remembered(monkeypatch):
+    seen: list[tuple[str, str]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append((request.headers["host"], request.url.path))
+        if request.url.path == "/old":
+            return httpx.Response(301, headers={"location": "https://ru.forecasteconomy.com/new"})
+        if request.url.path == "/away":
+            return httpx.Response(301, headers={"location": "https://evil.example/x"})
+        return httpx.Response(200)
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            monkeypatch.setattr(ssr_warm, "_known_redirects", {})
+            assert await ssr_warm._get(client, "ru.forecasteconomy.com", "/old", strict=False)
+            assert await ssr_warm._get(client, "ru.forecasteconomy.com", "/old", strict=False)
+            assert await ssr_warm._get(client, "ru.forecasteconomy.com", "/away", strict=False)
+
+    monkeypatch.setattr(ssr_warm.settings, "ssr_warm_base_url", "http://frontend")
+    _run(scenario())
+    # Первый проход: /old -> /new; второй сразу /new; чужой хост не посещается.
+    assert [p for _h, p in seen] == ["/old", "/new", "/new", "/away"]
+
+
+def test_first_screen_redirect_is_still_a_failure(monkeypatch):
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(301, headers={"location": "/elsewhere"})
+
+    async def scenario():
+        async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+            return await ssr_warm._get(client, "forecasteconomy.com", "/x", strict=True)
+
+    monkeypatch.setattr(ssr_warm.settings, "ssr_warm_base_url", "http://frontend")
+    assert _run(scenario()) is False
+
+
+def test_top_paths_are_normalised_and_deduplicated():
+    assert ssr_warm._normalise_top_path("/russia/indicator/cpi/") == "/russia/indicator/cpi"
+    assert ssr_warm._normalise_top_path("/") == "/"
+    assert ssr_warm._same_host_target("/a/b", "x.com") == "/a/b"
+    assert ssr_warm._same_host_target("https://x.com/a?y=1", "x.com") is None
+    assert ssr_warm._same_host_target("https://other.com/a", "x.com") is None
