@@ -290,3 +290,10 @@ def test_forecast_job_times_are_configurable_and_default_to_the_old_schedule():
     assert (fields["europe_world_forecast_hour"].default, fields["europe_world_forecast_minute"].default) == (21, 0)
     assert fields["world_forecast_max_age_days_annual"].default == 0
     assert fields["world_forecast_max_age_days_quarterly"].default == 0
+
+
+def test_europe_forecast_time_ceiling_has_its_own_setting_defaulting_to_the_common_one():
+    from app.config import Settings
+
+    assert Settings.model_fields["europe_world_forecast_max_run_seconds"].default == 0  # 0 = общий потолок
+    assert Settings.model_fields["world_forecast_max_run_seconds"].default == 2400
