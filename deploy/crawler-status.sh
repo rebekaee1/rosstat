@@ -11,7 +11,6 @@ docker compose logs --no-log-prefix --since "${HOURS}h" frontend 2>/dev/null \
    {
      if (match($0, /"(GET|HEAD) [^ ]+ HTTP[^"]*" [0-9]+/)) {
        split(substr($0, RSTART, RLENGTH), a, "\""); n = split(a[2], p, " "); path = p[2]
-       split(substr($0, RSTART + RLENGTH - 3, 3), s, "")
        st = substr($0, RSTART + RLENGTH - 3, 3)
      } else next
      ua = tolower($0)
