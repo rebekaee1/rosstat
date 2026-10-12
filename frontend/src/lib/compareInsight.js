@@ -1,6 +1,6 @@
 // Мелочи графика «Сравнение»: подписи концов линий, разрыв между двумя рядами словами,
 // раскладка подписей без наложения. Чистые функции: ничего не знают про React.
-import { formatAxisTick } from './format';
+import { formatAxisTick, numberTag } from './format';
 
 const PERCENT_LIKE = /%|п\.\s?п\.|p\.p\.|индекс|index/i;
 
@@ -34,7 +34,7 @@ export function formatEndValue(value, { unit = '', locale = 'ru', indexed = fals
   let text;
   if (abs >= 1e6) {
     try {
-      text = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+      text = new Intl.NumberFormat(numberTag(locale), {
         notation: 'compact',
         maximumFractionDigits: abs >= 1e8 ? 0 : 1,
       }).format(num);
@@ -69,7 +69,7 @@ export function gapInsight(items, locale = 'ru') {
   const raw = Math.max(va, vb) / Math.min(va, vb);
   if (raw < 1.05) return { equal: true, a: a.label, b: b.label };
   const ratioNumber = raw >= 10 ? Math.round(raw) : Math.round(raw * 10) / 10;
-  const ratio = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+  const ratio = new Intl.NumberFormat(numberTag(locale), {
     maximumFractionDigits: raw >= 10 ? 0 : 1,
   }).format(ratioNumber);
   let plural = 'other';

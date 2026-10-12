@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import { cn } from '../lib/format';
+import { cn, numberTag } from '../lib/format';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
@@ -42,7 +42,7 @@ const CURRENCY_SIGN = { rub: '\u20BD', usd: '$', cny: '\u00A5' };
 
 function formatPrice(value, decimals, locale = 'ru') {
   if (value === null || value === undefined) return '—';
-  const tag = locale === 'en' ? 'en-US' : 'ru-RU';
+  const tag = numberTag(locale);
   return value.toLocaleString(tag, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -55,7 +55,7 @@ function formatPrice(value, decimals, locale = 'ru') {
  */
 function formatPct(pct, locale = 'ru') {
   if (pct === null || pct === undefined) return '\u2014';
-  const tag = locale === 'en' ? 'en-US' : 'ru-RU';
+  const tag = numberTag(locale);
   const body = Math.abs(pct).toLocaleString(tag, {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,

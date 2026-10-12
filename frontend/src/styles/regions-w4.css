@@ -386,7 +386,7 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   [data-block='regions-map'] .fe-map-pick { order: 4; }
   .z5-page .fe-chip-row--grid.z5-metric-ribbon > .fe-chip { min-height: 40px; padding: 6px 14px; }
   .fe-map-capline { flex-direction: row; align-items: flex-start; gap: 6px; margin-bottom: 4px; }
-  .fe-map-capline__text > div:first-child {
+  .fe-map-capline__text > div[title]:first-child {
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden;
     font-size: 14px; line-height: 1.25;
   }
@@ -415,4 +415,9 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
   [data-block='regions-map'] .fe-map-pick--reserve { min-height: 0; }
   [data-block='regions-map'] .fe-map-pick__with { display: none; }
   [data-block='regions-map'] .fe-map-pick__actions--grid { width: 100%; }
+}
+/* Совсем узкий экран (320 px): «Список / Карта», «Найти» и «Контуры / Пузыри» в одну строку не помещаются — вторая строка, а не наложение. */
+@media (max-width: 359px) {
+  .z5-head[data-view='map'] .z5-head__ctl { flex-wrap: wrap; row-gap: 6px; }
+  .z5-head[data-view='map'] .z5-map-tools { justify-content: flex-start; flex: 1 1 100%; }
 }

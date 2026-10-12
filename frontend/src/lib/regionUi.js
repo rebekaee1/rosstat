@@ -1,11 +1,12 @@
 // Человеческая подача региональных чисел: единица всегда рядом, процент с одним знаком,
 // «₽» и «%» не отрываются от числа (неразрывный пробел). Используется на страницах регионов и штатов.
 import { shortUnit } from './regionsApi';
+import { numberTag } from './format';
 
 export const NBSP = ' ';
 
 function numberLocale(locale) {
-  return locale === 'en' ? 'en-US' : 'ru-RU';
+  return numberTag(locale);
 }
 
 /** Единица для показа: «₽», «%», «тыс. чел.»; пустая строка, если единицу нельзя назвать коротко. */

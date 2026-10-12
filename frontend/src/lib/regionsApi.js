@@ -13,7 +13,7 @@ function localeKey() {
 }
 
 function numberLocale(locale = localeKey()) {
-  return locale === 'en' ? 'en-US' : 'ru-RU';
+  return numberTag(locale);
 }
 
 export function useRegionsLanding() {
@@ -262,3 +262,4 @@ export {
   regionRatingPath,
   regionVsPath,
 } from './sitePaths';
+import { numberTag } from './format';

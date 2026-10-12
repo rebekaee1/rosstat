@@ -12,3 +12,6 @@
 :root.dark .fe-delta-badge.fe-tone--good { --fe-delta-ink: #86E3AE; }
 :root[data-theme='dark'] .fe-delta-badge.fe-tone--bad,
 :root.dark .fe-delta-badge.fe-tone--bad { --fe-delta-ink: #FCA5A5; }
+
+/* Круг 13: плашка не шире своей карточки: длинная подпись переносится внутри плашки (EN «+0.34 percentage points» заезжала на соседнюю). */
+.fe-delta-badge { max-width: 100%; min-width: 0; overflow-wrap: break-word; }

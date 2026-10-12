@@ -3719,6 +3719,8 @@ export default {
   'c12u.quick.home': 'Your country: {country}',
   // ===== Круг 13: UI =====
   'c13u.delta.last24h': 'over the past 24 hours',
+  'c13u.globe.showMap': 'Show the map',
+  'c13u.globe.slow': 'The globe is still loading: it is a 3D scene and takes longer on a slow connection. The site has not frozen.',
   'c13u.ticker.brentNote': 'Brent crude price as of the date shown. Source: US Energy Information Administration (EIA), which publishes once a week, so the price lags by a few days',
   'c13u.ticker.change24h': '24-hour change',
 };

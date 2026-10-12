@@ -117,6 +117,8 @@ export default function PlanetView({
   const [sceneGeneration, setSceneGeneration] = useState(0);
   // Пока шар грузится, поверх сцены лежит та же плоская карта приглушённой; после готовности сцены она гаснет и снимается.
   const [veilGone, setVeilGone] = useState(false);
+  // Круг 13: шар грузится дольше 6 с (медленная сеть): подпись объясняет, что это не поломка, и даёт открыть плоскую карту сразу.
+  const [globeSlow, setGlobeSlow] = useState(false);
   const [PlanetScene, setPlanetScene] = useState(() => lazy(() => import('./PlanetScene')));
   // Плоская карта показана, пока выбрана она, и вместо шара, если у него не вышла сцена.
   const isMap = viewKind === 'map' || sceneStatus === 'error';
@@ -379,6 +381,11 @@ export default function PlanetView({
   }, [selectedCountry, cameraCommand]);
 
   // Подсказка-жест: один раз поверх шара, пока человек его не коснулся.
+  useEffect(() => {
+    if (viewKind !== 'globe' || sceneStatus !== 'loading') { setGlobeSlow(false); return undefined; }
+    const timer = setTimeout(() => setGlobeSlow(true), 6000);
+    return () => clearTimeout(timer);
+  }, [viewKind, sceneStatus]);
   const hintVisible = sceneStatus === 'ready' && !engaged && !hintSeen && !hintExpired;
   useEffect(() => {
     if (sceneStatus !== 'ready' || engaged || hintSeen) return undefined;
@@ -666,7 +673,13 @@ export default function PlanetView({
   // Круг 11 (D): пока шар грузится, виден только матовый круглый каркас (PlanetOrb) с подписью; плоской карты внутри контура шара больше нет.
   const globeVeil = !isMap && !veilGone && sceneStatus !== 'error' ? (
     <div className={'planet-globe-veil' + (sceneStatus === 'ready' ? ' is-leaving' : '')} data-planet-veil="true">
-      {sceneStatus === 'loading' && <div className="planet-globe-veil__note" role="status"><Spinner size={16} />{t('c8w.globe.loading')}</div>}
+      {sceneStatus === 'loading' && (
+        <div className="planet-globe-veil__note" role="status">
+          <Spinner size={16} />
+          <span>{globeSlow ? t('c13u.globe.slow') : t('c8w.globe.loading')}</span>
+          {globeSlow ? <button type="button" className="planet-globe-veil__go" onClick={() => chooseView('map')}>{t('c13u.globe.showMap')}</button> : null}
+        </div>
+      )}
     </div>
   ) : null;
   // Подпись к цветам карты: серый «нет данных» (шкала цвета лежит в легенде ниже; золота первого места с круга 10 нет).

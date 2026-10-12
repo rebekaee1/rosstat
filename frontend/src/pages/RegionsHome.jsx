@@ -50,6 +50,7 @@ import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
+import { numberTag } from '../lib/format';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
@@ -254,7 +255,7 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
   // «в 4,6 раза выше» вместо «× 4,6»: знак умножения новичку ничего не говорит.
   const ratioLabel = ratio && ratio >= 1.05
     ? t('w6f.reg.timesHigher', {
-      n: ratio.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 }),
+      n: ratio.toLocaleString(numberTag(locale), { maximumFractionDigits: 1 }),
       word: Number.isInteger(Math.round(ratio * 10) / 10) ? plural(ratio, 'раз', 'раза', 'раз') : 'раза',
     })
     : null;
