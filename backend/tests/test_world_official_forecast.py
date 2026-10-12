@@ -255,3 +255,26 @@ def test_weo_categories_have_english_names():
     for weo_code, meta in WEO_SERIES.items():
         name = localize_category_name(meta["category_ru"], locale="en")
         assert name and not re.search(r"[А-Яа-яЁё]", name), (weo_code, name)
+
+
+def test_new_weo_series_have_readable_english_units(monkeypatch):
+    """Рост реального ВВП и счёт текущих операций в EN: не «PC» и не «Percentage of gross domestic product (GDP)»."""
+    from types import SimpleNamespace
+
+    import app.api.world as world_api
+
+    monkeypatch.setattr(world_api, "get_locale", lambda: "en")
+    growth = SimpleNamespace(
+        provider="imf", code="in-weo-ngdp-rpch", unit="PC", unit_ru="изменение за год, %",
+        dataset_id="WEO", slice_json=None,
+    )
+    bca = SimpleNamespace(
+        provider="imf", code="in-weo-bca", unit="PC_GDP", unit_ru="% ВВП", dataset_id="WEO", slice_json=None,
+    )
+    assert world_api._indicator_public_unit(growth) == "annual change, %"
+    assert world_api._indicator_public_unit(bca) == "% of GDP"
+    # В заголовках данных единица тоже не из понятия.
+    assert world_api._concept_unit_for_indicator(object(), growth) == "annual change, %"
+    assert world_api._concept_unit_for_indicator(object(), bca) == "% of GDP"
+    monkeypatch.setattr(world_api, "get_locale", lambda: "ru")
+    assert world_api._indicator_public_unit(bca) == "% ВВП"

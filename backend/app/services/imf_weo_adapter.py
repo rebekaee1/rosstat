@@ -228,7 +228,7 @@ WEO_SERIES: dict[str, dict[str, str]] = {
     WEO_NGDP_RPCH: {
         "unit": "PC",
         "unit_ru": "изменение за год, %",
-        "unit_en": "year-over-year change, %",
+        "unit_en": "annual change, %",
         "name_ru": "Рост реального ВВП",
         "name_en": "Real GDP growth",
         "code_suffix": "ngdp-rpch",
