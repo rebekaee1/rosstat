@@ -741,7 +741,11 @@ async def lifespan(app: FastAPI):
                     "europe_world_forecast",
                     ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
                 ),
-                trigger=CronTrigger(hour=21, minute=0, timezone="Europe/Moscow"),
+                trigger=CronTrigger(
+                    hour=settings.europe_world_forecast_hour,
+                    minute=settings.europe_world_forecast_minute,
+                    timezone="Europe/Moscow",
+                ),
                 id="europe_world_forecast",
                 name="Europe quality-gated forecasts (bounded daily batch)",
                 replace_existing=True,

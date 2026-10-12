@@ -133,6 +133,10 @@ class Settings(BaseSettings):
     europe_world_forecast_enabled: bool = True
     us_world_forecast_daily_limit: int = 500
     europe_world_forecast_daily_limit: int = 3000
+    # Время запуска пакета Европы (МСК). По умолчанию прежнее 21:00, что лежит
+    # внутри окна ETL 19:30–22:30; при расширении охвата переносить на 23:10.
+    europe_world_forecast_hour: int = 21
+    europe_world_forecast_minute: int = 0
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
     # Страны вне США и Европы (Китай, Япония, Индия, Бразилия, Канада,
