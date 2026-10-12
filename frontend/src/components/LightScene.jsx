@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { isReservedFirstSegment } from '../lib/sitePaths';
 import { applySceneMode, heroKindForPath, parallaxOffset, readSceneMode } from '../lib/sceneBudget';
@@ -176,30 +176,48 @@ function useDeferredMount(enabled) {
 /**
  * Стеклянная F: один крупный объект сцены. `mode="all"` виден на любой ширине, `mode="phone"` только до 768 px
  * (там, где на компьютере стоят кристаллы героя). Кадр: 1300x1519 с альфой для компьютера, 856x1000 для телефона.
+ *
+ * Круг 13 (S1): раньше F была `<img>` и после загрузки страницы становилась «крупнейшим элементом» (LCP 5,3 с вместо 0,5 с
+ * у текста): это декор, он не должен определять скорость страницы. Теперь кадр качается не вставленным в документ `Image`
+ * (низкий приоритет, после загрузки и простоя) и рисуется в `<canvas>`: Chrome не считает canvas кандидатом LCP (`img`, фон
+ * `background-image` и SVG-`image` считает, в том числе фон псевдоэлемента: проверено замером). Вид тот же, плавное появление то же.
  */
+function sceneFSource(mode) {
+  const wide = typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 768px)').matches;
+  if (mode === 'phone' && wide) return null; // на компьютере у страны и 404 эта F скрыта (display: none), кадр не нужен
+  return wide ? '/brand/emblem-f-2x.webp' : '/brand/emblem-f-phone.webp';
+}
+
 function SceneF({ mode }) {
   const [loaded, setLoaded] = useState(false);
+  const canvasRef = useRef(null);
   const mounted = useDeferredMount(!!mode);
-  const imgRef = useCallback((img) => {
-    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
-  }, []);
+  useEffect(() => {
+    if (!mounted || loaded) return undefined;
+    const src = sceneFSource(mode);
+    if (!src) return undefined;
+    const img = new Image();
+    let cancelled = false;
+    img.onload = () => {
+      if (cancelled) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      try {
+        canvas.getContext('2d')?.drawImage(img, 0, 0);
+      } catch { /* кадр необязателен: без него сцена просто без F */ return; }
+      setLoaded(true);
+    };
+    try { img.fetchPriority = 'low'; } catch { /* старые браузеры: приоритет по умолчанию */ }
+    img.decoding = 'async';
+    img.src = src;
+    return () => { cancelled = true; img.onload = null; };
+  }, [mounted, loaded, mode]);
   if (!mounted) return null;
   return (
     <div className={`fe-scene__f${loaded ? ' is-ready' : ''}`} data-fe-f-mode={mode} aria-hidden="true">
-      <picture>
-        <source media="(min-width: 768px)" srcSet="/brand/emblem-f-2x.webp" width="1300" height="1519" />
-        <img
-          ref={imgRef}
-          src="/brand/emblem-f-phone.webp"
-          width="856"
-          height="1000"
-          alt=""
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          onLoad={() => setLoaded(true)}
-        />
-      </picture>
+      <canvas ref={canvasRef} />
     </div>
   );
 }

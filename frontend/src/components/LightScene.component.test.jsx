@@ -87,16 +87,10 @@ describe('LightScene', () => {
     expect(fs).toHaveLength(1);
     expect(fs[0].getAttribute('data-fe-f-mode')).toBe('all');
     expect(fs[0].getAttribute('aria-hidden')).toBe('true');
-    const img = fs[0].querySelector('img');
-    expect(img.getAttribute('src')).toBe('/brand/emblem-f-phone.webp');
-    expect(img.getAttribute('width')).toBe('856');
-    expect(img.getAttribute('height')).toBe('1000');
-    expect(img.getAttribute('loading')).toBe('lazy');
-    expect(img.getAttribute('alt')).toBe('');
-    const src = fs[0].querySelector('source');
-    expect(src.getAttribute('srcset')).toBe('/brand/emblem-f-2x.webp');
-    expect(src.getAttribute('width')).toBe('1300');
-    expect(src.getAttribute('height')).toBe('1519');
+    // Круг 13 (S1): кадр F рисуется в <canvas> (в разметке нет <img>), иначе декор становился LCP страницы.
+    expect(fs[0].querySelector('img')).toBeNull();
+    expect(fs[0].querySelector('picture')).toBeNull();
+    expect(fs[0].querySelector('canvas')).not.toBeNull();
     page.unmount();
 
     const about = scene('/about');
