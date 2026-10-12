@@ -54,7 +54,7 @@ SURFACE_LABELS = {
     "rating": "рейтинг", "compare": "сравнение", "country": "страница страны", "calculator": "калькулятор",
     "home": "главная", "world_home": "мировой раздел", "embed": "виджеты", "chart_menu": "меню графика",
     "category": "категория", "demographics": "демография", "calendar": "календарь", "today": "сегодня",
-    "other": "другое",
+    "other": "остальные страницы",
 }
 # Цели ценности (макро и микро), которые не входят в группы «Что делали»: рассылка, обратная связь,
 # заявка на API, вход, виджеты. «signup» и «pwa_installed» здесь нет: они в блоках «Регистрации»
@@ -253,7 +253,8 @@ def usage_lines(usage: dict | None, prev: dict | None = None) -> list[str]:
             csv = events.get("download_csv", 0)
             xls = events.get("download_excel", 0)
             if csv or xls:
-                text += f" (CSV {fmt_int(csv)}, Excel {fmt_int(xls)})"
+                other = max(actions - csv - xls, 0)  # картинки графиков и сравнений, календарь, карта
+                text += f" (CSV {fmt_int(csv)}, Excel {fmt_int(xls)}" + (f", прочее {fmt_int(other)}" if other else "") + ")"
         if prev and prev.get("has_data"):
             before = (prev.get("groups") or {}).get(group, {}).get("actions")
             change = delta_text(actions, before)
@@ -286,6 +287,36 @@ def weakest_text(funnel: dict | None) -> str:
     return (f"слабое звено: {FUNNEL_SHORT.get(weak['from'], weak['from'])} → "
             f"{FUNNEL_SHORT.get(weak['to'], weak['to'])}, {fmt_int(weak['base'])} → {fmt_int(weak['next'])} "
             f"({fmt_pct(weak['rate_pct'], 0)})")
+
+
+def locale_coverage_note(funnel: dict | None) -> str:
+    """Предупреждение, если язык сайта записан не у всех посетителей (деление по версиям неполное)."""
+    coverage = (funnel or {}).get("locale_coverage_pct")
+    if coverage is None or coverage >= 90:
+        return ""
+    return (f"Деление по версиям неполное: язык сайта записан у {fmt_pct(coverage, 0)} посетителей, "
+            "поэтому числа посетителей по версиям не показаны")
+
+
+def _locale_coverage_low(funnel: dict | None) -> bool:
+    coverage = (funnel or {}).get("locale_coverage_pct")
+    return coverage is not None and coverage < 90
+
+
+def locale_lines(funnel: dict | None) -> list[str]:
+    """Воронка по версиям сайта. Если язык записан не у всех посетителей, число «посетителей» по версии
+    не показываем: оно несравнимо с остальными шагами (те считаются по адресу события)."""
+    out = []
+    low = _locale_coverage_low(funnel)
+    for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
+        cell = (funnel.get("by_locale") or {}).get(locale) or {} if funnel else {}
+        parts = [f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v and not (low and k == "visitors")]
+        if parts:
+            out.append(f"{label}: " + ", ".join(parts))
+    note = locale_coverage_note(funnel)
+    if note:
+        out.append(note)
+    return out
 
 
 def dropped_text(funnel: dict | None) -> str:
@@ -360,7 +391,25 @@ def _split_block(title: str, mapping: dict | None, labels: dict[str, str], limit
     return f"{title}: {text}" if text else ""
 
 
-def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | None) -> list[str]:
+def reliability_details(rel: dict | None) -> list[str]:
+    """Причины для строки «Сайт»: самые частые ошибки своих скриптов и самые медленные страницы."""
+    from app.services.pii_scrub import scrub_text
+
+    out: list[str] = []
+    errors = [item for item in (rel or {}).get("js_errors_own", []) if item.get("count")]
+    if errors:
+        out.append("Частые ошибки скриптов: " + "; ".join(
+            f"{escape(scrub_text(str(item['error']))[:70])} ×{fmt_int(item['count'])}" for item in errors[:3]))
+    slow = [c for c in (rel or {}).get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and (c.get("lcp_p75_ms") or 0) >= 2500]
+    if slow:
+        out.append("Медленные страницы (LCP p75): " + "; ".join(
+            f"{SURFACE_LABELS.get(c['page_group'], c['page_group'])}, {DEVICE_LABELS.get(c['device'], c['device'])} "
+            f"{fmt_seconds(c['lcp_p75_ms'])} ({fmt_int(c['lcp_samples'])} замеров)" for c in slow[:3]))
+    return out
+
+
+def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | None,
+                         rel: dict | None = None) -> list[str]:
     """Подробности под спойлер: каналы, поверхности упоров и выгрузок, ушедшие, языки воронки."""
     out: list[str] = []
     if sig and sig.get("total"):
@@ -373,7 +422,7 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
         sources = count_list(sig.get("referrer"), limit=6, show_unknown=False)
         if sources:
             out.append(f"Переходы с сайтов: {sources}")
-        landing = ", ".join(f"{escape(page)} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
+        landing = ", ".join(f"{escape(_short_path(page))} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
         if landing:
             out.append(f"Первые страницы: {landing}")
     if usage and usage.get("has_data"):
@@ -386,12 +435,13 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
         for item in (dropped_text(funnel), weakest_text(funnel)):
             if item:
                 out.append(item[0].upper() + item[1:])
-        for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
-            cell = (funnel.get("by_locale") or {}).get(locale) or {}
-            if any(cell.values()):
-                out.append(f"{label}: " + ", ".join(
-                    f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v))
+        out += locale_lines(funnel)
+    out += reliability_details(rel)
     return out
+
+
+def _short_path(page: str, limit: int = 48) -> str:
+    return page if len(page) <= limit else page[: limit - 1] + "…"
 
 
 def expandable(lines: list[str]) -> str:
@@ -415,7 +465,7 @@ def format_digest_v2(
     site = reliability_line(reliability)
     if site:
         lines.append(site)
-    details = expandable(detail_lines_for_day(signups, usage, funnel))
+    details = expandable(detail_lines_for_day(signups, usage, funnel, reliability))
     if details:
         lines.append(details)
     return lines
@@ -432,8 +482,8 @@ def conversion_by_channel(sig: dict | None, visitors_by_channel: dict[str, int] 
     reg = sig.get("channel") or {}
     parts = []
     for channel, visitors in sorted(visitors_by_channel.items(), key=lambda kv: -kv[1]):
-        if visitors < min_visitors or channel == "unknown":
-            continue
+        if visitors < min_visitors or channel == "unknown" or not reg.get(channel):
+            continue  # каналы без регистраций («0%») строку только раздувают
         parts.append(f"{CHANNEL_LABELS.get(channel, channel)} {fmt_pct(100 * reg.get(channel, 0) / visitors, 1)}")
     return ", ".join(parts[:5])
 
@@ -492,7 +542,9 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
                     back_line += f" · за 30 дней: {fmt_int(back30['returned'])} из {fmt_int(back30['eligible'])} ({fmt_pct(back30['pct'], 0)})"
             parts.append(back_line)
         if sig.get("median_days_to_signup") is not None:
-            parts.append(f"⏳ Дней от первого визита до регистрации (медиана): {fmt_pct(sig['median_days_to_signup'], 1).rstrip('%')}")
+            days = sig["median_days_to_signup"]
+            parts.append("⏳ Регистрируются в день первого визита (медиана)" if days == 0 else
+                         f"⏳ Дней от первого визита до регистрации (медиана): {fmt_pct(days, 1).rstrip('%')}")
     else:
         notes.append("регистрации: данных нет")
 
@@ -534,16 +586,16 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
 
     if kind == "monthly" and sig:
         cohort_bits = []
-        landing = ", ".join(f"{escape(page)} ×{n}" for page, n in list((sig.get("landing_top") or {}).items())[:5])
+        landing = ", ".join(f"{escape(_short_path(page))} ×{n}" for page, n in list((sig.get("landing_top") or {}).items())[:5])
         if landing:
             cohort_bits.append(f"лучшие первые страницы: {landing}")
         if cohort_bits:
-            parts.append("🧲 " + "; ".join(cohort_bits))
+            parts.append("🧲 " + "; ".join(cohort_bits)[:1].upper() + "; ".join(cohort_bits)[1:])
 
     if notes:
         parts.append("ℹ️ " + "; ".join(notes))
 
-    details = detail_lines_for_day(sig, usage, funnel)
+    details = detail_lines_for_day(sig, usage, funnel, rel)
     if kind == "monthly" and usage and usage.get("has_data"):
         for group in ("share", "favorite", "subscribe"):
             bucket = (usage["groups"].get(group) or {}).get("surface") or {}
@@ -600,12 +652,7 @@ def format_funnel_reply(funnel: dict | None, period: Period) -> str:
     for text in (dropped_text(funnel), weakest_text(funnel)):
         if text:
             lines.append(text[0].upper() + text[1:])
-    details = []
-    for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
-        cell = (funnel.get("by_locale") or {}).get(locale) or {}
-        if any(cell.values()):
-            details.append(f"{label}: " + ", ".join(f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v))
-    block = expandable(details)
+    block = expandable(locale_lines(funnel))
     return "\n".join(lines) + ("\n" + block if block else "")
 
 
@@ -715,14 +762,19 @@ async def _visitors_by_channel(db, period: Period) -> dict[str, int]:
 def _english_summary(sig: dict | None, funnel: dict | None, audience: dict | None) -> str:
     bits = []
     en_visitors = ((funnel or {}).get("by_locale") or {}).get("en", {})
-    if en_visitors.get("visitors"):
+    if en_visitors.get("visitors") and not _locale_coverage_low(funnel):
         bits.append(f"посетители {fmt_int(en_visitors['visitors'])}")
+    elif en_visitors.get("viewed"):
+        bits.append(f"смотрели показатель {fmt_int(en_visitors['viewed'])}")
     en_signups = ((sig or {}).get("locale") or {}).get("en")
     if en_signups:
         bits.append(f"регистрации {fmt_int(en_signups)}")
     if en_visitors.get("wall"):
         bits.append(f"упёрлись в лимит {fmt_int(en_visitors['wall'])}")
-    return ", ".join(bits)
+    text = ", ".join(bits)
+    if text and locale_coverage_note(funnel):
+        text += " (язык сайта записан не у всех посетителей, цифры неполные)"
+    return text
 
 
 async def collect_period_report(period: Period, prev: Period) -> dict[str, Any]:

@@ -159,7 +159,7 @@ def test_monthly_report_adds_cohort_lines():
     text = tr.format_period_report(data, kind="monthly")
     assert "месяц 01.09–30.09.2026" in text.split("\n")[0]
     assert "за 30 дней: 2 из 5 (40%)" in text
-    assert "🧲 лучшие первые страницы: /russia/indicator/cpi ×1" in text
+    assert "🧲 Лучшие первые страницы: /russia/indicator/cpi ×1" in text
 
 
 def test_report_marks_missing_blocks_instead_of_zeros():
@@ -328,3 +328,39 @@ def test_report_recipients_default_to_digest_and_can_be_narrowed(monkeypatch):
     monkeypatch.setattr(settings, "telegram_reports_chat_ids", "999, 999 ,", raising=False)
     assert report_recipients() == ["999"]  # тестовый чат: остальным адресатам дайджеста ничего не уходит
     assert type(settings).model_fields["telegram_reports_chat_ids"].default == ""
+
+
+def test_conversion_hides_channels_without_signups_and_download_shows_the_rest():
+    sig = dict(SIG, channel={"search": 2})
+    text = tr.conversion_by_channel(sig, {"search": 1000, "direct": 800, "social": 500})
+    assert text == "поиск 0,2%"  # «прямой заход 0%» и «соцсети 0%» только раздувают строку
+    usage = {"has_data": True, "groups": {"download": {"actions": 65, "events": {"download_csv": 4, "download_excel": 42}}}}
+    assert "выгрузки 65 (CSV 4, Excel 42, прочее 19)" in tr.usage_lines(usage)[0]
+
+
+def test_incomplete_language_split_is_announced():
+    funnel = dict(FUNNEL, locale_coverage_pct=54.0)
+    lines = tr.detail_lines_for_day(None, None, funnel)
+    assert any(line.startswith("Деление по версиям неполное: язык сайта записан у 54% посетителей") for line in lines)
+    # посетители по версиям при неполном языке не показываем: они несравнимы с остальными шагами
+    ru_line = next(line for line in lines if line.startswith("Русская версия:"))
+    assert ru_line.startswith("Русская версия: смотрели показатель 80") and "посетители" not in ru_line
+    assert "Деление по версиям неполное" in tr.format_funnel_reply(funnel, resolve_period("custom", date(2026, 10, 1), date(2026, 10, 7)))
+    assert "цифры неполные" in tr._english_summary(SIG, funnel, None)
+    full = dict(FUNNEL, locale_coverage_pct=97.0)
+    assert tr.locale_coverage_note(full) == "" and tr.locale_coverage_note(FUNNEL) == ""
+
+
+def test_reliability_details_explain_the_causes():
+    rel = dict(REL, js_errors_own=[{"error": "TypeError: x is undefined", "count": 40}, {"error": "mail me a@b.org", "count": 2}])
+    details = tr.reliability_details(rel)
+    assert details[0].startswith("Частые ошибки скриптов: TypeError: x is undefined ×40")
+    assert "@" not in details[0]
+    assert details[1] == "Медленные страницы (LCP p75): показатель России, телефон 3,1 с (12 замеров)"
+    assert tr.reliability_details(None) == [] and tr.reliability_details({"js_errors_own": []}) == []
+
+
+def test_median_zero_days_reads_naturally():
+    data = _weekly_data()
+    data["signups"] = dict(data["signups"], median_days_to_signup=0.0)
+    assert "⏳ Регистрируются в день первого визита (медиана)" in tr.format_period_report(data, kind="weekly")

@@ -34,6 +34,9 @@ from app.services.telegram_resend import OutboxRow, is_permanent_failure, logica
 MSK = timezone(timedelta(hours=3))
 SUMMARY_KIND = "missed_summary"
 MESSAGE_LIMIT = 4000  # запас от жёсткого лимита Bot API (4096)
+# Одинаковый текст, доставленный позже окна, — уже другое сообщение (повторяющиеся алерты каждый день
+# приходят с тем же текстом). Доставкой считаем успех не позже этого срока после первой неудачи.
+DELIVERY_WINDOW = timedelta(hours=12)
 
 # Виды, которые в сводку не входят: ответы кнопок бота и файлы приходят по запросу человека,
 # а сама сводка не должна пересказывать себя.
@@ -106,8 +109,8 @@ def find_missed(rows: Iterable[OutboxRow]) -> list[Missed]:
         if not failed:
             continue
         first = failed[0]
-        if any(r.ok and r.sent_at >= first.sent_at for r in items):
-            continue  # дошло позже
+        if any(r.ok and first.sent_at <= r.sent_at <= first.sent_at + DELIVERY_WINDOW for r in items):
+            continue  # дошло повтором
         if first.error == "redelivered by resend job":
             continue
         key = (first.kind, first.text)
@@ -159,8 +162,16 @@ def _plural(n: int, one: str, few: str, many: str) -> str:
     return many
 
 
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _plain(text: str) -> str:
+    """Текст без разметки Telegram: сводка собирает свою."""
+    return " ".join(_TAG_RE.sub("", text).split())
+
+
 def _clip(text: str, limit: int = 120) -> str:
-    text = scrub_text(" ".join(str(text).split()))
+    text = scrub_text(_plain(text))
     return text if len(text) <= limit else text[: limit - 1] + "…"
 
 
@@ -259,6 +270,20 @@ def _job_facts(items: list[Missed]) -> list[str]:
     return facts
 
 
+def _pulse_headlines(items: list[Missed]) -> list[str]:
+    """Первая фраза каждого отчёта Пульса (после заголовка), без персональных данных."""
+    out = []
+    for m in items:
+        found = re.search(r"Пульс платформы\s*[—-]\s*(\d{4}-\d{2}-\d{2})", m.text)
+        if not found:
+            continue
+        rest = m.text[found.end():].split("\n")
+        line = next((_plain(x) for x in rest if _plain(x)), "")
+        if line:
+            out.append(f"{day_label(date.fromisoformat(found.group(1)))}: {_clip(line, 150)}")
+    return out
+
+
 def _pulse_facts(items: list[Missed]) -> list[str]:
     reports = set()
     for m in items:
@@ -288,8 +313,9 @@ def _etl_facts(items: list[Missed]) -> list[str]:
 def _world_facts(items: list[Missed]) -> list[str]:
     facts = []
     for m in items:
-        head = re.search(r"Обновление:\s*([^\n]+)", m.text)
-        result = re.search(r"Итог:\s*([^\n]+)", m.text)
+        plain = _TAG_RE.sub("", m.text)
+        head = re.search(r"Обновление:\s*([^\n]+)", plain)
+        result = re.search(r"Итог:\s*([^\n]+)", plain)
         errors = re.search(r"(?:Ошибок|Ошибки):\s*(\d+)", m.text)
         bit = f"{day_label(m.day_msk)}: {_clip(head.group(1), 60) if head else 'обновление'}"
         if result:
@@ -305,7 +331,7 @@ def _digest_facts(items: list[Missed]) -> list[str]:
     seen: set[str] = set()
     for m in items:
         title = re.search(r"дайджест за (\d{4}-\d{2}-\d{2})", m.text)
-        label = title.group(1) if title else day_label(m.day_msk)
+        label = day_label(date.fromisoformat(title.group(1))) if title else day_label(m.day_msk)
         if label in seen:
             continue
         seen.add(label)
@@ -372,6 +398,8 @@ def build_summary(missed: list[Missed], *, since: date, until: date) -> str:
         if not items:
             continue
         facts = [f for f in _FACTS[key](items) if f]
+        if key == "pulse":
+            details.extend(f"Пульс: {escape(h)}" for h in _pulse_headlines(items))
         if key in ("job", "etl", "world", "digest", "anomaly") and len(facts) > 1:
             body.append(f"{icon} <b>{title}</b>: {len(items)}")
             details.extend(f"{title}: {escape(f)}" for f in facts)

@@ -2161,8 +2161,12 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
             ) or 0),
         }
 
+    known_locale_visitors = by_locale["ru"]["visitors"] + by_locale["en"]["visitors"]
     return {
         "period": p.to_meta(),
+        # Доля посетителей с записанным языком сайта: до выкладки круга 11 и у части сессий его нет,
+        # тогда деление «русская/английская версия» неполное, и отчёт говорит об этом.
+        "locale_coverage_pct": round(100 * known_locale_visitors / counts["visitors"], 1) if counts["visitors"] else None,
         "steps": [{"key": key, "label": label, "count": counts[key]} for key, label in FUNNEL_STEPS],
         "dropped_at": dict(dropped),
         "engaged_not_registered": len(engaged),

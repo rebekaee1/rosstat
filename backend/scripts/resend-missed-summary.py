@@ -42,11 +42,18 @@ from app.services.telegram_missed_summary import (  # noqa: E402
 from app.services.telegram_resend import OutboxRow  # noqa: E402
 
 
-def resolve_recipient(value: str) -> str:
-    """`owner` или номер чата владельца; чужой номер — ошибка (досылка только владельцу)."""
+def resolve_recipient(value: str, *, strict: bool = True) -> str:
+    """`owner` или номер чата владельца; чужой номер — ошибка (досылка только владельцу).
+
+    `strict=False` (пробный прогон) допускает сервер без номера чата владельца (тестовый стенд).
+    """
     owner = str(settings.telegram_chat_id or "").strip()
     if not owner:
-        raise SystemExit("RUSTATS_TELEGRAM_CHAT_ID не задан: получатель-владелец неизвестен.")
+        if strict:
+            raise SystemExit("RUSTATS_TELEGRAM_CHAT_ID не задан: получатель-владелец неизвестен.")
+        if value.strip().lower() in ("owner", "владелец"):
+            return ""
+        raise SystemExit("Получатель может быть только владельцем (owner).")
     if value.strip().lower() in ("owner", "владелец", owner):
         return owner
     raise SystemExit("Получатель может быть только владельцем (owner). Другие номера чатов не принимаются.")
@@ -83,7 +90,7 @@ async def already_sent(start: datetime, end: datetime) -> bool:
 
 
 async def main(args: argparse.Namespace) -> int:
-    recipient = resolve_recipient(args.recipient)
+    recipient = resolve_recipient(args.recipient, strict=not args.dry_run)
     since, until = date.fromisoformat(args.since), date.fromisoformat(args.until)
     start, end = window_utc(since, until)
     rows = await load_rows(start, end)
@@ -92,7 +99,8 @@ async def main(args: argparse.Namespace) -> int:
 
     print(f"Окно: {since}..{until} по МСК, строк архива: {len(rows)}, недоставленных событий: {len(missed)}, "
           f"постоянных ошибок доставки (чат/бот): {permanent_failures(rows)}")
-    print(f"Получатель: владелец (чат ...{recipient[-4:]}). Длина сводки: {len(text)} знаков.")
+    print(f"Получатель: владелец ({'чат ...' + recipient[-4:] if recipient else 'номер чата не задан на этом сервере'}). "
+          f"Длина сводки: {len(text)} знаков.")
     print("-" * 60)
     print(text)
     print("-" * 60)

@@ -171,3 +171,26 @@ def test_render_script_masks_people_and_refuses_to_send():
     assert "(yandex)" in masked and "(vk)" in masked
     args = module.parse_args([])
     assert args.what == "all" and args.show_personal is False and args.no_v2 is False
+
+
+def test_same_text_delivered_next_day_does_not_hide_the_lost_one():
+    text = "⚠️ <b>Аномалия аналитики</b>\nЦели Метрики разошлись с goal_taxonomy (не macro/micro): a, b"
+    rows = [
+        row("analytics_anomaly", text, datetime(2026, 10, 6, 1, 55)),                         # потеряно
+        row("analytics_anomaly", text, datetime(2026, 10, 7, 1, 55), ok=True, error=None),    # завтрашний повтор
+        row("analytics_anomaly", text, datetime(2026, 10, 8, 1, 55)),                         # потеряно
+        row("analytics_anomaly", text, datetime(2026, 10, 8, 1, 58), ok=True, error=None),    # досылка через 3 мин
+    ]
+    missed = ms.find_missed(rows)
+    assert [m.at.day for m in missed] == [6]
+
+
+def test_pulse_headlines_and_clean_world_titles():
+    rows = [
+        row("pulse_digest", "🛰 Пульс платформы — 2026-10-03\n\n3 октября, пятница — обычный день, два технических сигнала\nДальше",
+            datetime(2026, 10, 4, 6, 6)),
+        row("world_ingest_summary", "🟡 <b>Обновление: Европа: Eurostat</b>\nИтог: частично\nОшибок: 1", datetime(2026, 10, 6, 0, 4)),
+    ]
+    text = ms.build_summary(ms.find_missed(rows), since=date(2026, 10, 3), until=date(2026, 10, 9))
+    assert "Пульс: 3 окт.: 3 октября, пятница — обычный день, два технических сигнала" in text
+    assert "&lt;" not in text and "&amp;" not in text
