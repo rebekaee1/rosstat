@@ -288,3 +288,72 @@ details.fe-acc[open] > summary .fe-acc__chev { transform: rotate(180deg); }
 .fe-tray__val:hover { text-decoration: underline; text-underline-offset: 3px; }
 .fe-tray__open { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: var(--color-champagne-ink); font-size: 14px; font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .fe-lead__row { transition: none; } }
+
+/* ===== Круг 12, зона UI2: карта регионов помещается в один экран (К6) ===================================================== */
+/* Проверка 12.10: над картой стояло 550 px (крошки, подпись, вступление, переключатель, два ряда чипов, ряд «Найти / Контуры»), верх карты на
+   552 px, низ на 1043 px при экране 900. В режиме карты (`data-view='map'`):
+   - вступление и подпись-эбрау скрыты (в списке остаются), название, «Список / Карта», «Найти» и «Контуры / Пузыри» стоят одной шапкой;
+   - показатели одной лентой в строку (на телефоне так было с круга 10; теперь и от 640 px, с прокруткой и затуханием у правого края);
+   - высота карты ограничена высотой окна, чтобы подпись, карта, шкала и ползунок года вошли в один экран. */
+.z5-head[data-view='map'] .z5-head__title > :not(h1) { display: none; }
+.z5-head[data-view='map'] .z5-head__title { margin-bottom: 12px; }
+.z5-head[data-view='map'] .z5-head__ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
+@media (min-width: 768px) {
+  .z5-head[data-view='map'] { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; column-gap: 24px; }
+  .z5-head[data-view='map'] .z5-head__title h1 { font-size: 1.875rem; line-height: 1.15; }
+  .z5-head[data-view='map'] .z5-map-tools { gap: 8px 12px; }
+  .z5-head[data-view='map'] .z5-map-tools .fe-map-shape { margin-left: 0; }
+}
+@media (min-width: 640px) {
+  :root .fe-chip-row--grid.z5-metric-ribbon {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    padding: 2px 28px 4px 2px;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  }
+  :root .fe-chip-row--grid.z5-metric-ribbon::-webkit-scrollbar { display: none; }
+  :root .fe-chip-row--grid.z5-metric-ribbon > .fe-chip,
+  :root .fe-chip-row--grid.z5-metric-ribbon > .fe-chip:last-child:nth-child(odd) {
+    flex: 0 0 auto;
+    grid-column: auto;
+    width: auto;
+    min-width: max-content;
+    white-space: nowrap;
+    padding: 6px 16px;
+  }
+}
+
+/* Карточка карты от 768 px: порядок «подпись, карта, шкала, ползунок года, карточка выбранного региона». Карточка региона
+   (резерв 152 px) раньше стояла между картой и шкалой и уводила шкалу с ползунком ниже экрана; теперь она внизу, а выбор региона всё так же
+   не двигает страницу (место занято всегда). Обёртка карты становится `display: contents`, поэтому порядок задаёт сама карточка.
+   Кнопки зума и подпись «Forecast Economy» лежат поверх нижнего края карты (раньше отдельный ряд 36 px). Высота карты:
+   высота окна минус верх карточки (--z5-map-top) и всё остальное в ней (--z5-map-rest), но не меньше 260 px. */
+@media (min-width: 768px) {
+  [data-block='regions-map'] {
+    --z5-map-top: 292px;
+    --z5-map-rest: 196px;
+    --z5-map-h: clamp(260px, calc(100svh - var(--z5-map-top) - var(--z5-map-rest)), 560px);
+    display: flex;
+    flex-direction: column;
+  }
+  [data-block='regions-map'] > .select-none { display: contents; }
+  [data-block='regions-map'] .fe-map-frame { order: 1; }
+  [data-block='regions-map'] .fe-map-legend { order: 2; }
+  [data-block='regions-map'] .fe-map-timeline { order: 3; }
+  [data-block='regions-map'] .fe-map-pick { order: 4; margin-top: 12px; }
+  [data-block='regions-map'] .fe-map-frame > .fe-map-svg { max-width: calc(var(--z5-map-h) * var(--fe-map-aspect, 1.9)); }
+  [data-block='regions-map'] .fe-map-frame > .fe-map-bar {
+    position: absolute; left: 0; right: 0; bottom: 0; margin: 0; pointer-events: none;
+  }
+  [data-block='regions-map'] .fe-map-frame > .fe-map-bar > * { pointer-events: auto; }
+}
+/* Невысокое окно (ноутбук 720–800 px): хлебные крошки над картой скрыты, верх карточки поднимается на их высоту. */
+@media (min-width: 768px) and (max-height: 820px) {
+  .z5-page:has(.z5-head[data-view='map']) > nav[aria-label] { display: none; }
+  [data-block='regions-map'] { --z5-map-top: 256px; }
+}
