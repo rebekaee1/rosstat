@@ -18,7 +18,8 @@ STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", 
 
 # Equivalent concepts only. Minimum wage deliberately does not alias average wages.
 CONCEPTS = (
-    (("ввп на душу населения", "ввп на душу", "gdp per capita", "per capita gdp"), ("gdp-per-capita", "gdp per capita", "ввп на душу")),
+    (("ввп на душу населения", "ввп на душу", "gdp per capita", "per capita gdp"), ("gdp-per-capita", "gdp per capita", "ввп на душу",
+        "внутренний продукт на душу", "domestic product per capita")),
     (("мрот", "minimum wage", "минимальная зарплата"), ("minimum-wage", "minimum wage", "минималь")),
     (("ипц", "cpi", "инфляция", "инфляции", "inflation", "рост цен"), ("cpi", "inflation", "hicp", "потребительских цен", "consumer price")),
     (("ввп", "gdp", "валовой продукт"), ("gdp", "ввп", "валовой внутренний продукт", "gross domestic product")),
