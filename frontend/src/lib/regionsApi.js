@@ -263,4 +263,3 @@ export {
   regionRatingPath,
   regionVsPath,
 } from './sitePaths';
-import { numberTag } from './format';

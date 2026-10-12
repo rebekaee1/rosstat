@@ -3,7 +3,6 @@ import { numberTag } from '../../lib/format';
 import { Link } from 'react-router-dom';
 import { BarChart3, Globe2, History } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
-import { numberTag } from '../../lib/format';
 import { compactIndicatorCount, historyYears, startYear } from '../../lib/homeStats';
 import { pluralRu, useWorldCountries } from '../../lib/worldApi';
 import { russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';

@@ -3,7 +3,6 @@
 import { numberTag } from './format';
 
 
-import { numberTag } from './format';
 
 /** Множитель единицы ряда: «млн чел.» -> 1e6, «тыс. человек» -> 1e3, иначе люди. */
 export function peopleScale(unit) {

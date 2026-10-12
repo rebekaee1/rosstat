@@ -5,7 +5,6 @@ import { russiaIndicatorPath } from '../lib/sitePaths';
 import { numberTag } from '../lib/format';
 import { useLocale, useT } from '../i18n';
 import '../styles/w5-tools.css';
-import { numberTag } from '../lib/format';
 
 export default function CalcKeyRate({ rate, pending = false }) {
   const t = useT();

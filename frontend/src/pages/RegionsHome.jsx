@@ -51,7 +51,6 @@ import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
-import { numberTag } from '../lib/format';
 
 const RegionsMap = lazy(() => import('../components/RegionsMap'));
 const MapTimeline = lazy(() => import('../components/MapTimeline'));
