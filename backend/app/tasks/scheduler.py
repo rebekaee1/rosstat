@@ -52,6 +52,23 @@ logger = logging.getLogger(__name__)
 def etl_timeout_for(parser_type: str) -> int:
     return ETL_TIMEOUT_BY_PARSER.get(parser_type, ETL_TIMEOUT_SECONDS)
 
+
+def etl_job_deadline_exceeded(started_monotonic: float, now_monotonic: float | None = None) -> bool:
+    """Потолок времени всего ежедневного ETL (`etl_job_max_seconds`, 0 = нет).
+
+    Один зависший источник не должен держать выгрузку часами и отодвигать
+    пересчёт производных, прогнозы и итоговое сообщение (инцидент 07.10.2026:
+    33 100 с). По достижении потолка оставшиеся индикаторы пропускаются, а их
+    имена попадают в итог (статус ``deadline_skipped``), чтобы тишины не было.
+    """
+    from app.config import settings
+
+    limit = int(getattr(settings, "etl_job_max_seconds", 0) or 0)
+    if limit <= 0:
+        return False
+    now = time.monotonic() if now_monotonic is None else now_monotonic
+    return (now - started_monotonic) > limit
+
 _running_locks: set[str] = set()
 _lock = asyncio.Lock()
 
@@ -192,9 +209,18 @@ async def daily_update_job():
     updated_codes: list[str] = []
     failed_codes: list[str] = []
     degraded: dict[str, list[str]] = {s: [] for s in DEGRADED_STATUSES}
+    degraded["deadline_skipped"] = []
     for task in indicator_tasks:
         code = task["code"]
         if task["parser_type"] == "derived":
+            continue
+        if etl_job_deadline_exceeded(t0):
+            if not degraded["deadline_skipped"]:
+                logger.error(
+                    "Daily ETL: job time ceiling reached after %.0fs; skipping the rest",
+                    time.monotonic() - t0,
+                )
+            degraded["deadline_skipped"].append(code)
             continue
 
         async with _lock:

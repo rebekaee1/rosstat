@@ -48,6 +48,10 @@ DEFAULT_THEMES = (
 LOADER_FREQUENCIES = ("M", "Q", "A")
 # Набор без разреза по странам (курсы, города, рыболовные районы) — не ошибка.
 _NOT_COUNTRY_SHAPED = "JSON-stat missing geo/time dims"
+# Загрузчик сам отбирает наборы по теме и частоте (M/Q/A); недельные и дневные
+# наборы из оглавления он не берёт. Это не сбой набора (круг 12: 15 недельных и
+# дневных наборов demo_r_mw*, ert_*_d каждую ночь числились «ошибкой»).
+_NOT_IN_LOADER_SCOPE = "Selected 0 datasets"
 MAX_DATASETS_PER_RUN = 200
 MAX_RUN_SECONDS = 3 * 3600
 
@@ -293,6 +297,7 @@ async def _run_one_loader(entry: TocEntry, *, structure_check: bool = False) -> 
 
 
 _SKIPPED_REASON = "в наборе нет разреза по странам (geo)"
+_SKIPPED_OUT_OF_SCOPE = "набор вне охвата загрузчика (недельная/дневная частота или другая тема)"
 
 
 def format_dataset_list(
@@ -491,9 +496,12 @@ async def world_eurostat_ingest_job(
                 update_state=True,
                 rows_fetched=await _persisted_rows(entry.dataset_id, entry.provider),
             )
-        elif _NOT_COUNTRY_SHAPED in detail:
+        elif _NOT_COUNTRY_SHAPED in detail or _NOT_IN_LOADER_SCOPE in detail:
             skipped += 1
-            skipped_datasets.append((entry.dataset_id, _SKIPPED_REASON))
+            skipped_datasets.append((
+                entry.dataset_id,
+                _SKIPPED_REASON if _NOT_COUNTRY_SHAPED in detail else _SKIPPED_OUT_OF_SCOPE,
+            ))
             logger.info("World Eurostat dataset %s has no country dimension, skipped", entry.dataset_id)
             await _record_dataset(
                 run_id=run_id,

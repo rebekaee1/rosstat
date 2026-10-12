@@ -19,6 +19,7 @@ Connect timeout and host breaker (2026-10-08): 07.10 rosstat.gov.ru 8 ч не
 
 from __future__ import annotations
 
+import contextvars
 import logging
 import threading
 import time
@@ -59,6 +60,37 @@ HOST_BREAKER_COOLDOWN_S = 20 * 60
 
 _breaker_lock = threading.Lock()
 _host_down_until: dict[str, float] = {}
+
+
+# Журнал сетевых сбоев текущего прогона парсера (circle 12, 2026-10-12).
+# 09.10 rosstat.gov.ru на минуту не принял соединение, парсеры fuel-ai92 и
+# inflation-weekly проглотили RequestException и вернули 0 точек; ETL записал
+# parsed_zero и «вероятна смена layout источника», хотя вёрстка не менялась.
+# BaseParser.run кладёт сюда список, сессия дописывает недоступность хоста
+# (ConnectionError/Timeout после всех хопов, 5xx/403/429 в итоговом ответе);
+# asyncio.to_thread копирует контекст, поэтому список виден из потока fetch.
+_fetch_issues: contextvars.ContextVar[list[str] | None] = contextvars.ContextVar(
+    "etl_fetch_issues", default=None,
+)
+
+
+def begin_fetch_issues() -> contextvars.Token:
+    """Начать сбор сетевых сбоев текущего прогона; вернуть токен для `end_fetch_issues`."""
+    return _fetch_issues.set([])
+
+
+def current_fetch_issues() -> list[str]:
+    return list(_fetch_issues.get() or [])
+
+
+def end_fetch_issues(token: contextvars.Token) -> None:
+    _fetch_issues.reset(token)
+
+
+def record_fetch_issue(message: str) -> None:
+    issues = _fetch_issues.get()
+    if issues is not None and len(issues) < 20:
+        issues.append(message[:300])
 
 
 def _host(url: str) -> str:
@@ -177,17 +209,25 @@ class ProxyFallbackSession(requests.Session):
             resp = self._request_hop(method, url, **kwargs)
         except requests.exceptions.SSLError:
             # Ошибка сертификата — свойство вызова (verify/CA), не недоступность хоста.
+            record_fetch_issue(f"{host or url}: SSL error")
             raise
-        except requests.ConnectionError:
+        except requests.ConnectionError as exc:
             if host:
                 _mark_host_down(host)
                 logger.warning(
                     "ETL host %s unreachable on all hops — fail fast for %ds",
                     host, HOST_BREAKER_COOLDOWN_S,
                 )
+            record_fetch_issue(f"{host or url} unreachable: {type(exc).__name__}")
+            raise
+        except requests.Timeout as exc:
+            record_fetch_issue(f"{host or url} timeout: {type(exc).__name__}")
             raise
         if host:
             _mark_host_up(host)
+        # 404 при переборе имён файлов — норма; сбой источника — 5xx и бан-статусы.
+        if resp.status_code >= 500 or resp.status_code in _PROXY_FALLBACK_STATUSES:
+            record_fetch_issue(f"{host or url}: HTTP {resp.status_code}")
         return resp
 
     def _request_hop(self, method: str, url: str, **kwargs: Any) -> requests.Response:

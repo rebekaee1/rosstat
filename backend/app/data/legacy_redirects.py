@@ -419,6 +419,58 @@ async def resolve_world_hicp_successor(
     return paths.indicator(slug, successor_code)
 
 
+async def resolve_world_superseded(
+    db: AsyncSession, slug: str, code: str, year: int | None = None,
+) -> str | None:
+    """Замороженный у источника дубль (cind и т.п.) → 301 на живую каноническую карточку.
+
+    Правило круга 12: страница ряда, остановленного источником, не должна
+    выглядеть единственным ответом по предмету. Цель — листингованная карточка
+    набора-преемника той же страны; без неё (или без запрошенного года) None и
+    страница рендерится как архив с честной пометкой свежести.
+    """
+    from app.data.world_superseded import is_superseded_dataset, superseded_target
+    from app.models import WorldDataPoint, WorldIndicator
+    from sqlalchemy import func
+
+    country = await world_country_by_slug(db, slug)
+    if country is None:
+        return None
+    old = await world_indicator_by_code(db, country.id, code)
+    if old is None or not is_superseded_dataset(old.dataset_id):
+        return None
+    target = superseded_target(old.dataset_id, old.code, old.slice_json, old.unit)
+    if target is None:
+        return None
+    canonical_code, mode = target
+    successor = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == old.country_id,
+                WorldIndicator.code == canonical_code,
+                WorldIndicator.is_listed.is_(True),
+                WorldIndicator.points_count > 0,
+            )
+        )
+    ).scalar_one_or_none()
+    if successor is None:
+        return None
+    if year is not None:
+        has_year = (
+            await db.execute(
+                select(WorldDataPoint.id).where(
+                    WorldDataPoint.indicator_id == successor.id,
+                    func.extract("year", WorldDataPoint.date) == year,
+                ).limit(1)
+            )
+        ).scalar_one_or_none()
+        if has_year is None:
+            return None
+        return paths.indicator_year(slug, canonical_code, year)
+    base = paths.indicator(slug, canonical_code)
+    return f"{base}?mode={mode}-{_mode_freq(old)}" if mode else base
+
+
 # Мера снятого с листинга ряда → тип режима слитой карточки. Темп к
 # аналогичному периоду прошлого года (RCH_A, PCH_SM/SAME, скользящий 12-мес.)
 # → yoy; темп к предыдущему периоду (RCH_M, RT1, PCH_PRE, RT_M_DIF) → step.

@@ -367,6 +367,18 @@ class Settings(BaseSettings):
     # SOCKS (например host Tor): после direct и HTTP-прокси. Prod Docker →
     # socks5h://172.18.0.1:9050 (Tor SocksPort на gateway rosstat_default). Нужен PySocks.
     etl_socks_proxy_url: str = ""
+    # Потолок времени одного ежедневного ETL (секунды): после него оставшиеся
+    # индикаторы пропускаются и названы в итоговом сообщении. 07.10.2026 выгрузка
+    # шла 9 часов из-за недоступного rosstat.gov.ru. 0 = без потолка.
+    etl_job_max_seconds: int = 7200
+    # Сторож свежести (круг 12): раз в сутки считает просроченные публичные ряды
+    # (тем же правилом, что значок «Устарело» на странице) и шлёт ОДНО
+    # сгруппированное сообщение владельцу, если просрочено не меньше порога и
+    # картина изменилась (или прошла неделя). Сводка — /api/v1/health/freshness.
+    freshness_watchdog_enabled: bool = False
+    freshness_watchdog_min_stale: int = 25
+    freshness_watchdog_cron_hour: int = 10
+    freshness_watchdog_cron_minute: int = 30
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
 

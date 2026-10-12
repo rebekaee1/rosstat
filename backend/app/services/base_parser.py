@@ -51,6 +51,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator, publish_committed_indicator_changes
 from app.models import FetchLog, Indicator
+from app.services.http_client import (
+    begin_fetch_issues,
+    current_fetch_issues,
+    end_fetch_issues,
+)
 from app.services.forecast_pipeline import (
     retrain_indicator_forecast,
     values_changed_for_retrain,
@@ -153,11 +158,29 @@ class BaseParser(ABC):
         try:
             cfg = indicator.model_config_json or {}
 
-            points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
+            issues_token = begin_fetch_issues()
+            try:
+                points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
+                fetch_issues = current_fetch_issues()
+            finally:
+                end_fetch_issues(issues_token)
             if source_url:
                 fetch_log.source_url = source_url[:500]
 
             points = self._validate(points, cfg)
+
+            if not points and fetch_issues and not expected_empty_reason(fetch_log):
+                # Источник не ответил, а не «вёрстка сменилась»: честный failed,
+                # а не parsed_zero с ложным «смена layout». Данные в БД целы.
+                fetch_log.status = STATUS_FAILED
+                fetch_log.error_message = (
+                    "Source unreachable, 0 points: " + "; ".join(dict.fromkeys(fetch_issues))
+                )[:500]
+                fetch_log.completed_at = _utcnow_naive()
+                await db.commit()
+                mark_storage_committed(fetch_log)
+                logger.warning("ETL %s: %s", code, fetch_log.error_message)
+                return
 
             if not points:
                 logger.warning("No data points parsed for %s", code)

@@ -1224,6 +1224,22 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
+        # Круг 12: сторож свежести (выключен по умолчанию). После утреннего ETL
+        # и Н-3 staleness (10:00 MSK), одно сообщение в сутки.
+        if settings.freshness_watchdog_enabled:
+            from app.tasks.freshness_watchdog import freshness_watchdog_job
+            scheduler.add_job(
+                locked_job(freshness_watchdog_job, "freshness_watchdog", ttl_seconds=20 * 60),
+                trigger=CronTrigger(
+                    hour=settings.freshness_watchdog_cron_hour,
+                    minute=settings.freshness_watchdog_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="freshness_watchdog",
+                name="Freshness watchdog: stale public series → one grouped Telegram message",
+                replace_existing=True, coalesce=True, max_instances=1,
+            )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без

@@ -272,3 +272,20 @@ def test_parser_marks_fallback_used(monkeypatch):
     assert url.startswith("artifact://")
     reason = fallback_reason(fl)
     assert reason and "2026-06-01" in reason and "503" in reason
+
+
+def test_packaged_artifact_covers_september_2026_official_csv():
+    """Снимок fedbud_month.csv обновлён с ноутбука 12.10.2026 (сервер Минфин не пускает).
+
+    Официальный OpenData-файл от 09.10.2026 уже содержит сентябрь; без снимка
+    budget-* стояли на августе и шли с пометкой «Fallback source».
+    """
+    from datetime import date
+
+    from app.services import minfin_budget_parser as m
+
+    text = m._ARTIFACT_CSV.read_text(encoding="utf-8-sig")
+    for target in ("deficit", "revenue", "expenditure"):
+        points = m._parse_budget_csv(text, target=target)
+        assert points[-1].date >= date(2026, 9, 1), target
+        assert len(points) >= 189

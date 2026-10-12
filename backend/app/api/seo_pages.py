@@ -47,6 +47,7 @@ from app.data.legacy_redirects import (
     resolve_unlisted_indicator,
     resolve_world_hicp_successor,
     resolve_world_frequency_sibling,
+    resolve_world_superseded,
 )
 from app.database import get_db
 from app.services.seo_calendar import render_calendar_month_html
@@ -808,6 +809,10 @@ async def seo_world_indicator(
     hicp_target = await resolve_world_hicp_successor(db, slug, code)
     if hicp_target:
         return _permanent_redirect(hicp_target, request)
+    # Круг 12: замороженный у источника дубль (HICP cind и т.п.) → живой канон.
+    superseded_target = await resolve_world_superseded(db, slug, code)
+    if superseded_target:
+        return _permanent_redirect(superseded_target, request)
     # Вторичные частоты → финальный /{slug}/indicator/{primary}?mode=…
     target = await resolve_world_frequency_sibling(db, slug, code)
     if target:
@@ -844,6 +849,9 @@ async def seo_world_indicator_year(
     hicp_target = await resolve_world_hicp_successor(db, slug, code, int(year))
     if hicp_target:
         return _permanent_redirect(hicp_target, request)
+    superseded_target = await resolve_world_superseded(db, slug, code, int(year))
+    if superseded_target:
+        return _permanent_redirect(superseded_target, request)
     # Вторичные частоты → финальный /{slug}/indicator/{primary} (query отрезаем,
     # годовой лендинг живёт только на primary-ряде).
     target = await resolve_world_frequency_sibling(db, slug, code)

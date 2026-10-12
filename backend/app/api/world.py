@@ -2023,6 +2023,18 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
 
     country = await _country_by_slug(db, slug)
     ind = await _indicator_by_code(db, country.id, code)
+    # Круг 12: замороженный у источника дубль (HICP cind) → живая каноническая
+    # карточка; SPA уже понимает redirect_to (тот же контракт, что у слитых частот).
+    from urllib.parse import urlparse
+
+    from app.data.legacy_redirects import resolve_world_superseded
+
+    superseded_to = await resolve_world_superseded(db, slug, code)
+    if superseded_to:
+        dest_code = urlparse(superseded_to).path.rstrip("/").split("/")[-1]
+        payload = {"primary_code": dest_code, "redirect_to": superseded_to}
+        await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+        return payload
     primary, by_freq, all_inds = await _card_context(db, country, ind)
     # Витрина: listed. Срезы с реальным сигналом тоже открываем (variant-пикер),
     # все-нули / пустые unlisted — 404.
