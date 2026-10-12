@@ -529,7 +529,7 @@ def _art_background(theme: str) -> Image.Image:
     """Bounded decoded art cache; Pillow never retains an open file descriptor.
 
     Круг 12, SPEED3: кадр RGBA 1200×630 — 3 МБ; 17 тем × 3 МБ × 3 воркера были ≈ 150 МБ. Восемь самых частых тем
-    держат воркеру ≈ 24 МБ, редкая тема перечитывается с диска, готовая карточка уходит в дисковый кэш (время пересборки темы — в отчёте SPEED3).
+    держат воркеру ≈ 24 МБ, редкая тема перечитывается с диска (≈ 70 мс на стенде с 2 vCPU), готовая карточка уходит в дисковый кэш.
     """
     img = Image.new("RGBA", (WIDTH, HEIGHT), (*BG, 255))
     path = _ART_DIR / f"{theme}.webp"
