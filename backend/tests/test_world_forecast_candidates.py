@@ -185,3 +185,26 @@ def test_imputed_targets_do_not_enter_backtest_errors():
     unmasked = wf._score_candidates(names, values, [28, 29, 30], season=1, test_horizon=1)
     assert masked is not None and unmasked is not None
     assert masked[0]["drift"][0] < 1.0 < unmasked[0]["drift"][0]
+
+
+def test_gap_filling_never_takes_away_a_forecast_the_legacy_path_published(monkeypatch):
+    """Если с интерполяцией ряд не прошёл, а по-старому (история после дыры) прошёл — берём прежний."""
+    passed = wf.WorldForecastGate("passed", "beats_seasonal_naive", "monthly_auto", 0.4, 0.9, 6, object())
+    failed = wf.WorldForecastGate(
+        "failed", "not_better_than_seasonal_naive", "monthly_auto", 0.9, 0.9, 6, None,
+        {"imputed_points": 1},
+    )
+    calls = []
+
+    def fake(dates, values, **kwargs):
+        calls.append(kwargs["fill_gaps"])
+        return failed if kwargs["fill_gaps"] else passed
+
+    monkeypatch.setattr(wf, "_gate_with_fallbacks", fake)
+    dates = _dates(date(2018, 1, 1), 96, 1)
+    gate = wf.train_quality_gated_world_forecast(
+        dates, [float(i) for i in range(96)],
+        frequency="monthly", horizon=12, season=12, strategy="monthly_auto",
+    )
+    assert gate is passed
+    assert calls == [True, False]

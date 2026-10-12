@@ -680,6 +680,42 @@ def train_quality_gated_world_forecast(
     вне него не публикуется. Применяется и к главной модели.
     ``fill_gaps=False`` возвращает прежнее поведение: любая дыра режет историю.
     """
+    gate = _gate_with_fallbacks(
+        dates, values,
+        frequency=frequency, horizon=horizon, season=season, strategy=strategy,
+        strict=strict, candidates=candidates, bounds=bounds, fill_gaps=fill_gaps,
+    )
+    if (
+        fill_gaps
+        and gate.result is None
+        and (gate.details or {}).get("imputed_points")
+    ):
+        # Интерполяция удлинила историю, но ряд не прошёл: даём шанс прежнему
+        # пути (история после последней дыры), чтобы заполнение дыр никогда не
+        # отнимало прогноз, который раньше публиковался.
+        legacy = _gate_with_fallbacks(
+            dates, values,
+            frequency=frequency, horizon=horizon, season=season, strategy=strategy,
+            strict=strict, candidates=candidates, bounds=bounds, fill_gaps=False,
+        )
+        if legacy.result is not None:
+            return legacy
+    return gate
+
+
+def _gate_with_fallbacks(
+    dates: Sequence[date],
+    values: Sequence[float],
+    *,
+    frequency: str,
+    horizon: int,
+    season: int,
+    strategy: str,
+    strict: bool,
+    candidates: bool,
+    bounds: tuple[float, float] | None,
+    fill_gaps: bool,
+) -> WorldForecastGate:
     gate = _train_primary_gate(
         dates, values,
         frequency=frequency, horizon=horizon, season=season,
@@ -692,7 +728,7 @@ def train_quality_gated_world_forecast(
     ):
         gate = WorldForecastGate(
             "failed", "out_of_range", gate.strategy, gate.mase,
-            gate.baseline_mase, gate.origins, None,
+            gate.baseline_mase, gate.origins, None, gate.details,
         )
     if (
         not candidates
