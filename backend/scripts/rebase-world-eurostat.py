@@ -41,13 +41,59 @@ from app.models import WorldDatasetState, WorldIndicator  # noqa: E402
 from app.services.eurostat_parser import (  # noqa: E402
     _structure_and_live,
     build_data_url,
+    extract_dimensions,
     index_base_year,
     replace_dead_index_unit,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("rebase-world-eurostat")
-PROBE_TIMEOUT_S = 60
+PROBE_TIMEOUT_S = 25
+PROBE_PERIODS = 3                   # три последних периода: у страны последний месяц набора бывает ещё пуст
+PROBE_ATTEMPTS = 3                  # холодный запрос у Евростата бывает долгим: короткий таймаут и повтор вместо одной минуты ожидания
+# Страны для пробы: сначала крупные, затем остальные — у части наборов (`sts_rb_*`, `sts_sepr_m`) в последнем периоде
+# наблюдений у Германии, Франции и Италии ещё нет (круг 13: «проба не удалась: None»), а у других стран есть.
+PROBE_GEOS = (
+    "DE", "FR", "IT", "ES", "NL", "PL", "AT", "BE", "SE", "CZ", "RO", "HU", "PT", "BG", "DK", "FI", "IE", "SK",
+    "SI", "HR", "LT", "LV", "EE", "EL", "LU", "MT", "CY", "NO", "CH",
+)
+
+
+def live_units_at_latest_period(payload: dict) -> set[str]:
+    """Члены unit с наблюдением в **последнем периоде, где у этой страны вообще есть данные**.
+
+    Окно из нескольких периодов нужно, чтобы не промахнуться мимо пустого последнего месяца, но «живой» считается
+    только база, у которой есть данные в самом свежем периоде окна: у годового набора мёртвая I15 кончилась в 2023,
+    а окно из трёх лет это 2023–2025, и по всему окну она выглядела бы живой.
+    """
+    ids, sizes = list(payload.get("id") or []), [int(x) for x in payload.get("size") or []]
+    if "unit" not in ids or "time" not in ids or len(ids) != len(sizes):
+        return set()
+    members = extract_dimensions(payload).get("unit") or []
+    value = payload.get("value")
+    if isinstance(value, dict):
+        keys = [int(k) for k, v in value.items() if v is not None]
+    elif isinstance(value, list):
+        keys = [i for i, v in enumerate(value) if v is not None]
+    else:
+        return set()
+    if not keys or not members:
+        return set()
+
+    def stride(dim: str) -> tuple[int, int]:
+        pos = ids.index(dim)
+        step = 1
+        for size in sizes[pos + 1:]:
+            step *= size
+        return step, sizes[pos]
+
+    t_step, t_size = stride("time")
+    u_step, u_size = stride("unit")
+    latest = max((k // t_step) % t_size for k in keys)
+    return {
+        members[(k // u_step) % u_size] for k in keys
+        if (k // t_step) % t_size == latest and (k // u_step) % u_size < len(members)
+    }
 
 
 def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
@@ -57,19 +103,27 @@ def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
     не укладывается в таймаут): первая страна из списка, у которой есть данные.
     """
     last_error: Exception | None = None
-    for geo in ("DE", "FR", "IT"):
-        url = build_data_url(dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True)
-        for _attempt in (1, 2):             # холодный запрос у Евростата бывает долгим, второй быстрый
+    answered = False
+    for geo in PROBE_GEOS:
+        url = build_data_url(dataset_id, {"geo": geo}, last_time_period=PROBE_PERIODS, pin_geo=True)
+        for _attempt in range(PROBE_ATTEMPTS):   # холодный запрос у Евростата бывает долгим, повтор быстрый
             try:
                 resp = requests.get(url, timeout=PROBE_TIMEOUT_S)
                 resp.raise_for_status()
-                dims, live = _structure_and_live(resp.json())
+                payload = resp.json()
+                dims, _live_all = _structure_and_live(payload)
+                live = {"unit": live_units_at_latest_period(payload)} if dims.get("unit") else {}
             except (requests.RequestException, ValueError) as exc:
                 last_error = exc
                 continue
+            answered = True
             if live.get("unit"):
                 return dims.get("unit") or [], live["unit"]
             break                           # ответ получен, но живых единиц нет: следующая страна
+        if not answered and geo == PROBE_GEOS[2]:
+            break                           # три страны подряд без единого ответа: источник недоступен, остальных не ждать
+    if answered:
+        raise RuntimeError("в последнем периоде набора нет наблюдений ни у одной проверенной страны")
     raise RuntimeError(f"проба не удалась: {last_error}")
 
 

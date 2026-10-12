@@ -85,6 +85,10 @@ def test_world_note_names_nearest_fresh_measure_of_same_country(auth_env):
             assert note["level"] == "stale" and note["reason"] == "series_lag"
             assert note["nearest"]["url"] == "/germany/indicator/de-fresh"
             assert note["message"].endswith("Ближайший актуальный показатель: Свежий ряд.")
+            # Круг 13: первая фраза отдельно (для интерфейса), ссылка с частотой рисуется отдельным элементом.
+            assert note["message"].startswith(note["lead"]) and note["lead"].endswith(".")
+            assert "Ближайший" not in note["lead"]
+            assert note["nearest"]["frequency"] == "annual"
             assert note["nearest"]["code"] != "de-other", "другой предмет (иная отрасль) не предлагается"
             assert note["age_days"] > 700
             # свежий ряд блока не получает
@@ -126,6 +130,8 @@ def test_ru_note_for_stalled_indicator_points_to_fresh_one_in_category(auth_env)
             assert note["reason"] == "source_stopped"
             assert note["nearest"]["code"] == "population-total"
             assert "Численность населения" in note["message"]
+            assert "Численность" not in note["lead"] and note["message"].startswith(note["lead"])
+            assert note["nearest"]["frequency"] in {"annual", "monthly", "quarterly"}
             assert await ru_freshness_note(db, ind, date(2026, 8, 1), today=TODAY) is None
 
     asyncio.run(check())

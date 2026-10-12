@@ -9,6 +9,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import FreshnessNote from '../components/FreshnessNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
@@ -635,6 +636,8 @@ export default function IndicatorDetail() {
       />
 
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
+
+      <FreshnessNote freshness={indicator?.freshness} />
 
       {/* Оба переключателя — НАД графиком, сверху вниз:
           1) «Состав» (категории-родственники: cpi → cpi-food / housing-primary →

@@ -43,7 +43,7 @@ async def freshness_watchdog_job() -> dict:
         report.stale, report.total, len(report.stale_groups()), send, reason,
     )
     if send:
-        delivered = await send_telegram(format_message(report), kind="freshness_watchdog")
+        delivered = await send_telegram(format_message(report, previous=previous), kind="freshness_watchdog")
         if delivered:
-            await store_last_sent(report.signature(), now)
+            await store_last_sent(report.signature(), now, digest=report.digest(), stale=report.stale)
     return {"stale": report.stale, "total": report.total, "notified": send, "reason": reason}

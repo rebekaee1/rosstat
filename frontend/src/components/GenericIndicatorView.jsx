@@ -22,6 +22,7 @@ import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
 import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
 import IndicatorHeroValue from './IndicatorHeroValue';
+import FreshnessNote from './FreshnessNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
@@ -201,6 +202,8 @@ export default function GenericIndicatorView({
           <WorldHeroLine summary={heroSummary} place="" dateFormat={heroDateFormat} frequency={heroFreq} />
         ) : null}
       </IndicatorDetailHeader>
+
+      <FreshnessNote freshness={indicator?.freshness} />
 
       <ViewModesPanel label={isCurrency ? t('w6g.cur.show') : undefined}>
         {variantGroup ? (
