@@ -791,6 +791,11 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
     api_fail = 0
     api_5xx = 0
     api_5xx_by_group: Counter = Counter()
+    # Для Telegram: настоящие ошибки кода (то же правило, что у алерта: без устаревшей вкладки и чужих
+    # скриптов) отдельно от «не загрузился файл сайта» (kind=resource: сеть, кэш, выкладка).
+    from app.services.analytics_alerts import js_error_counts_for_alert
+    real_errors: Counter = Counter()
+    failed_files: Counter = Counter()
 
     def _error_host(pr: dict) -> str:
         """Домен скрипта-виновника: из src (filename) либо первого URL стека."""
@@ -821,6 +826,10 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
             host = _error_host(pr)
             if not host or OWN_DOMAIN in host or host.startswith(("localhost", "127.")):
                 own_errors[label] += 1
+                if pr.get("kind") == "resource":
+                    failed_files[str(pr.get("src") or "").split("?")[0].rsplit("/", 1)[-1][:60] or "файл"] += 1
+                elif js_error_counts_for_alert(pr):
+                    real_errors[label] += 1
                 errors_by_cell[cell] += 1  # разрез страница × устройство — только свои ошибки
             else:
                 third_party_errors[host] += 1
@@ -861,6 +870,9 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
         "js_errors_own": [{"error": e, "count": c} for e, c in own_errors.most_common(12)],
         "js_errors_third_party": [{"domain": h, "count": c} for h, c in third_party_errors.most_common(8)],
         "js_error_pages": dict(error_pages.most_common(10)),
+        "js_errors_real_own": [{"error": e, "count": c} for e, c in real_errors.most_common(12)],
+        "js_files_failed_own": {"total": int(sum(failed_files.values())),
+                                "top": dict(failed_files.most_common(5))},
         "api_p75_ms": _pctl(api_all, 0.75),
         # Круг 11: страница-группа × устройство — LCP p75 (мс) и число СВОИХ JS-ошибок.
         "page_device": sorted(
@@ -2115,8 +2127,9 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
         select(func.count()).select_from(User).where(User.created_at >= p.start, User.created_at < p.end)
     ) or 0)
 
+    session_visitors = await visitors()
     counts = {
-        "visitors": await visitors(),
+        "visitors": session_visitors,
         "viewed": await people("viewed"),
         "wall": await people("wall"),
         "register_click": await people("register_click"),
@@ -2162,11 +2175,14 @@ async def mart_signup_funnel(db: AsyncSession, period: Period | int = 7) -> dict
         }
 
     known_locale_visitors = by_locale["ru"]["visitors"] + by_locale["en"]["visitors"]
+    # Люди, которые отказались от поведенческой аналитики, есть только в событиях сайта, но не в сессиях:
+    # без поправки «посетителей» выходило бы меньше, чем «смотревших показатель». Верхний шаг не меньше нижнего.
+    counts["visitors"] = max(counts["visitors"], counts["viewed"])
     return {
         "period": p.to_meta(),
         # Доля посетителей с записанным языком сайта: до выкладки круга 11 и у части сессий его нет,
         # тогда деление «русская/английская версия» неполное, и отчёт говорит об этом.
-        "locale_coverage_pct": round(100 * known_locale_visitors / counts["visitors"], 1) if counts["visitors"] else None,
+        "locale_coverage_pct": round(100 * known_locale_visitors / session_visitors, 1) if session_visitors else None,
         "steps": [{"key": key, "label": label, "count": counts[key]} for key, label in FUNNEL_STEPS],
         "dropped_at": dict(dropped),
         "engaged_not_registered": len(engaged),

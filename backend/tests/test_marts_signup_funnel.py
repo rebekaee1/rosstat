@@ -259,3 +259,69 @@ def test_daily_context_includes_new_marts_and_survives_a_failing_one(monkeypatch
         assert partial["signups_7d"]["total"] == 0  # остальное цело
 
     _run_with_db(scenario)
+
+
+def test_reliability_splits_real_errors_files_not_loaded_and_5xx():
+    """Круг 13: настоящие ошибки кода отдельно от «файл не загрузился»; 5xx глазами человека и всплески из архива."""
+    from app.models import TelegramOutbox
+
+    now = _now()
+    spike = "🔴 <b>5xx spike</b>\n10 ответов 5xx за 5 мин (последний путь: /seo/world/x/y)"
+
+    async def scenario(maker):
+        async with maker() as db:
+            own = "https://ru.forecasteconomy.com/assets/charts-AAA.js"
+            db.add_all([
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                              params_json={"kind": "resource", "src": own + "?v=1"}),
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                              params_json={"kind": "resource", "src": own}),
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                              params_json={"kind": "error", "msg": "TypeError: boom", "src": "https://forecasteconomy.com/a.js"}),
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                              params_json={"kind": "error", "msg": "Failed to fetch dynamically imported module",
+                                           "src": "https://forecasteconomy.com/a.js"}),
+                BehaviorEvent(event_type="api_timing", page="/", occurred_at=now,
+                              params_json={"u": "/api/v1/regions", "ms": 900, "st": 503, "ok": 0}),
+                BehaviorEvent(event_type="api_timing", page="/", occurred_at=now,
+                              params_json={"u": "/api/v1/regions", "ms": 90, "st": 200, "ok": 1}),
+                # один и тот же всплеск у двух получателей + повтор; плюс чужой вид сообщения
+                TelegramOutbox(chat_id="1", method="sendMessage", kind="http_5xx_spike", text=spike, sent_at=now, ok=False),
+                TelegramOutbox(chat_id="2", method="sendMessage", kind="http_5xx_spike", text=spike, sent_at=now, ok=True),
+                TelegramOutbox(chat_id="1", method="sendMessage", kind="digest", text="x", sent_at=now, ok=True),
+            ])
+            await db.commit()
+            data = await m.mart_reliability(db, resolve_period("7d"))
+        assert [e["error"] for e in data["js_errors_real_own"]] == ["TypeError: boom"]  # устаревшая вкладка не в счёт
+        assert data["js_files_failed_own"] == {"total": 2, "top": {"charts-AAA.js": 2}}
+        assert data["js_errors_total"] == 4  # прежние показатели не изменились
+        assert data["api_5xx_sampled"] == 1 and data["api_5xx_by_group"] == {"api": 1}
+        assert data["server_5xx_spikes"] == {"count": 1, "by_group": {"seo": 1}}
+
+    _run_with_db(scenario)
+
+
+def test_signup_funnel_visitors_not_below_viewers_and_signups_have_referrers():
+    now = _now()
+    uid = uuid.uuid4()
+
+    async def scenario(maker):
+        async with maker() as db:
+            url = "https://ru.forecasteconomy.com/russia/indicator/cpi"
+            db.add_all([
+                # трое смотрели показатель, а сессия записана только у одного (двое отказались от аналитики)
+                *[FrontendEvent(event_name="indicator_view", visitor_id_hash=f"v{i}", session_id_hash=f"s{i}",
+                                occurred_at=now, url=url) for i in range(3)],
+                ServerSession(day=now.date(), visitor_id_hash="v0", started_at=now, ended_at=now, site_locale=None),
+                User(id=uid, created_at=now),
+                UserSignup(user_id=uid, created_at=now, site_locale="ru", referrer_host="yandex.ru", utm_source=None),
+            ])
+            await db.commit()
+            funnel = await m.mart_signup_funnel(db, resolve_period("7d"))
+            signups = await m.mart_signups(db, resolve_period("7d"))
+        steps = {s["key"]: s["count"] for s in funnel["steps"]}
+        assert steps["viewed"] == 3 and steps["visitors"] == 3
+        assert funnel["locale_coverage_pct"] == 0.0  # язык сайта у сессии не записан
+        assert signups["referrer"] == {"yandex.ru": 1}
+
+    _run_with_db(scenario)

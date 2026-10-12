@@ -310,7 +310,9 @@ def locale_lines(funnel: dict | None) -> list[str]:
     low = _locale_coverage_low(funnel)
     for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
         cell = (funnel.get("by_locale") or {}).get(locale) or {} if funnel else {}
-        parts = [f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v and not (low and k == "visitors")]
+        # посетителей по версии нет или их меньше, чем смотревших (разные источники): число не показываем
+        hide_visitors = low or (cell.get("visitors") or 0) < (cell.get("viewed") or 0)
+        parts = [f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v and not (hide_visitors and k == "visitors")]
         if parts:
             out.append(f"{label}: " + ", ".join(parts))
     note = locale_coverage_note(funnel)
@@ -362,13 +364,18 @@ def _server_errors_bit(rel: dict) -> str:
 def reliability_line(rel: dict | None) -> str:
     if not rel:
         return ""
-    own_errors = sum(int(item.get("count", 0)) for item in rel.get("js_errors_own", []))
+    # Если витрина разделила ошибки кода и «не загрузился файл», показываем их раздельно.
+    split = "js_errors_real_own" in rel
+    own_errors = sum(int(item.get("count", 0)) for item in rel.get("js_errors_real_own" if split else "js_errors_own", []))
+    files_failed = int((rel.get("js_files_failed_own") or {}).get("total") or 0)
     lcp = (rel.get("vitals_p75") or {}).get("LCP")
     api = rel.get("api_p75_ms")
     worst = next((c for c in rel.get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and c.get("lcp_p75_ms")), None)
     bits = []
     if own_errors:
         bits.append(f"ошибок своих скриптов {fmt_int(own_errors)}")
+    if files_failed:
+        bits.append(f"не загрузились файлы сайта {fmt_int(files_failed)}")
     server = _server_errors_bit(rel)
     if server:
         bits.append(server)
@@ -396,10 +403,14 @@ def reliability_details(rel: dict | None) -> list[str]:
     from app.services.pii_scrub import scrub_text
 
     out: list[str] = []
-    errors = [item for item in (rel or {}).get("js_errors_own", []) if item.get("count")]
+    key = "js_errors_real_own" if "js_errors_real_own" in (rel or {}) else "js_errors_own"
+    errors = [item for item in (rel or {}).get(key, []) if item.get("count")]
     if errors:
         out.append("Частые ошибки скриптов: " + "; ".join(
             f"{escape(scrub_text(str(item['error']))[:70])} ×{fmt_int(item['count'])}" for item in errors[:3]))
+    files = ((rel or {}).get("js_files_failed_own") or {}).get("top") or {}
+    if files:
+        out.append("Не загрузились файлы: " + ", ".join(f"{escape(name)} ×{fmt_int(n)}" for name, n in list(files.items())[:3]))
     slow = [c for c in (rel or {}).get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and (c.get("lcp_p75_ms") or 0) >= 2500]
     if slow:
         out.append("Медленные страницы (LCP p75): " + "; ".join(

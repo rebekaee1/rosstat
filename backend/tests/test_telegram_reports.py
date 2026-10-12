@@ -364,3 +364,21 @@ def test_median_zero_days_reads_naturally():
     data = _weekly_data()
     data["signups"] = dict(data["signups"], median_days_to_signup=0.0)
     assert "⏳ Регистрируются в день первого визита (медиана)" in tr.format_period_report(data, kind="weekly")
+
+
+def test_locale_visitors_hidden_when_fewer_than_viewers():
+    funnel = dict(FUNNEL, locale_coverage_pct=95.0,
+                  by_locale={"ru": {"visitors": 622, "viewed": 982, "wall": 21}, "en": {"visitors": 100, "viewed": 40}})
+    lines = tr.locale_lines(funnel)
+    assert lines == ["Русская версия: смотрели показатель 982, лимит 21",
+                     "Английская версия: посетители 100, смотрели показатель 40"]
+
+
+def test_reliability_line_splits_code_errors_and_files_not_loaded():
+    rel = dict(REL, js_errors_real_own=[{"error": "TypeError", "count": 5}],
+               js_files_failed_own={"total": 700, "top": {"charts-AAA.js": 400, "d3-BBB.js": 300}})
+    line = tr.reliability_line(rel)
+    assert "ошибок своих скриптов 5 · не загрузились файлы сайта 700" in line
+    details = tr.reliability_details(rel)
+    assert details[0] == "Частые ошибки скриптов: TypeError ×5"
+    assert details[1] == "Не загрузились файлы: charts-AAA.js ×400, d3-BBB.js ×300"
