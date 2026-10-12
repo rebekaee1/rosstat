@@ -135,6 +135,15 @@ class Settings(BaseSettings):
     europe_world_forecast_daily_limit: int = 3000
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
+    # Страны вне США и Европы (Китай, Япония, Индия, Бразилия, Канада,
+    # Австралия, …): раньше ни одна задача их не считала, и прогноза не было
+    # вовсе. Небольшой дневной пакет в 04:50 МСК, до окна ETL 05:30.
+    rest_world_forecast_enabled: bool = True
+    rest_world_forecast_daily_limit: int = 400
+    # Потолок времени одного пакета прогнозов (секунды): по истечении задача
+    # корректно останавливается, остаток уходит на следующий день. Защищает
+    # окна ETL (05:30–07:30 и 19:30–22:30 МСК) на сервере с 1 vCPU у планировщика.
+    world_forecast_max_run_seconds: int = 2400
     # Инкрементальный world job: не переобучать ряд, если последняя запись
     # world_forecasts с тем же отпечатком данных не старше N дней.
     world_forecast_max_age_days: int = 30
@@ -143,8 +152,8 @@ class Settings(BaseSettings):
     # Порядок обхода: эти slug'и world_countries первыми, затем остальные.
     # korea в каталоге — south-korea.
     world_forecast_priority_countries: str = (
-        "united-states,germany,france,united-kingdom,italy,spain,austria,"
-        "canada,japan,china,india,brazil,mexico,australia,south-korea,"
+        "united-states,china,japan,germany,france,united-kingdom,india,brazil,"
+        "turkey,italy,spain,austria,canada,mexico,australia,south-korea,"
         "netherlands,poland"
     )
     world_subnational_ingest_enabled: bool = True

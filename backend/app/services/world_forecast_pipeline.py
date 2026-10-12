@@ -35,10 +35,10 @@ from app.models import (
     WorldForecastValue,
     WorldIndicator,
 )
+from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
 from app.services.world_forecaster import (
     PUBLISHED_GATE_STATUSES,
     WORLD_FORECAST_METHOD_VERSION,
-    WorldForecastGate,
     is_percentage_unit,
     train_quality_gated_world_forecast,
 )
@@ -194,9 +194,17 @@ def forecast_is_unchanged(
         history_digest=history_digest, source_ready=source_ready, frequency=frequency,
     )
     stored = _stored_fingerprint(getattr(latest, "model_params", None))
-    if stored is not None:
-        return stored == expected
-    return False
+    if stored is None:
+        return False
+    if stored != expected:
+        return False
+    # Набор дополнительных моделей расширился: отказы, посчитанные без него,
+    # пересчитываются (опубликованные прогнозы не трогаем).
+    if getattr(latest, "gate_status", None) == "failed":
+        params = getattr(latest, "model_params", None)
+        if not isinstance(params, dict) or params.get("candidate_set") != WORLD_CANDIDATE_SET_VERSION:
+            return False
+    return True
 
 
 def world_forecast_sort_key(
@@ -387,6 +395,10 @@ async def retrain_world_indicator_forecast(
     *,
     history_digest: str | None = None,
 ) -> str:
+    if (indicator.provider or "").strip().lower() == "imf":
+        # Официальный прогноз МВФ пишет ingest WEO (world_official_forecast);
+        # пересчёт платформенной моделью его не трогает и не снимает.
+        return "official"
     source_ready = await world_forecast_source_ready(db, indicator)
     eligibility, reason = forecast_eligibility_for(indicator)
     if not source_ready:
@@ -425,6 +437,14 @@ async def retrain_world_indicator_forecast(
         "|".join(f"{point.date.isoformat()}:{point.value}" for point in points).encode(),
         usedforsecurity=False,
     ).hexdigest() if points else None
+    # Процентный ряд, всегда лежавший в 0..100, не может прогнозироваться вне
+    # этих границ (раньше проверялось только для США; теперь для всех стран).
+    bounds = (
+        (0.0, 100.0)
+        if is_percentage_unit(indicator.unit) and values
+        and min(values) >= 0 and max(values) <= 100
+        else None
+    )
     gate = await asyncio.to_thread(
         train_quality_gated_world_forecast,
         dates,
@@ -435,18 +455,8 @@ async def retrain_world_indicator_forecast(
         strategy=eligibility.strategy,
         # Одинаковый fail-closed gate для США, Европы и остальных стран.
         strict=True,
+        bounds=bounds,
     )
-    country = await db.get(WorldCountry, indicator.country_id)
-    if (
-        country is not None and country.code == "US"
-        and gate.result is not None and is_percentage_unit(indicator.unit)
-        and values and min(values) >= 0 and max(values) <= 100
-        and any(point.value < 0 or point.value > 100 for point in gate.result.points)
-    ):
-        gate = WorldForecastGate(
-            "failed", "out_of_range", gate.strategy, gate.mase,
-            gate.baseline_mase, gate.origins, None,
-        )
 
     await _deactivate_current(db, indicator.id)
     forecast = WorldForecast(
@@ -462,6 +472,8 @@ async def retrain_world_indicator_forecast(
             eligibility,
             {
                 "resolved_strategy": gate.strategy,
+                "candidate_set": WORLD_CANDIDATE_SET_VERSION,
+                **(gate.details or {}),
             },
             history_digest=history_digest,
             source_ready=source_ready,
@@ -716,8 +728,14 @@ async def world_forecast_job(
     dry_run: bool = False,
     acquire_lock: bool = True,
     eligible_only: bool = False,
+    max_seconds: float | None = None,
 ) -> WorldForecastRunSummary:
-    """Пересчитать публичные M/Q/A primary-series; ошибки изолированы по ряду."""
+    """Пересчитать публичные M/Q/A primary-series; ошибки изолированы по ряду.
+
+    ``max_seconds`` — потолок времени цикла обучения: по его истечении задача
+    останавливается после текущего ряда, остальные ряды остаются в очереди
+    (план строится заново, уже посчитанные пропускаются по отпечатку).
+    """
     slugs = parse_country_slugs(country_slugs)
     lock = _WorldForecastLock()
     if acquire_lock and not dry_run:
@@ -763,6 +781,15 @@ async def world_forecast_job(
         total = len(candidates)
 
         for row in candidates:
+            if (
+                max_seconds is not None
+                and time.monotonic() - started >= max_seconds
+            ):
+                logger.warning(
+                    "World forecast stopped by time ceiling %.0fs at %s/%s",
+                    max_seconds, done, total,
+                )
+                break
             done += 1
             if row.id not in unchanged_ids:
                 try:
@@ -820,6 +847,20 @@ async def world_forecast_job(
         return summary
     finally:
         await lock.release()
+
+
+async def rest_of_world_slugs() -> tuple[str, ...]:
+    """Страны, которых не покрывают задачи «США» и «Европа» (Азия, Америка, …)."""
+    async with async_session() as db:
+        rows = (
+            await db.execute(
+                select(WorldCountry.slug).where(
+                    WorldCountry.slug != "united-states",
+                    func.coalesce(WorldCountry.region_ru, "") != "Европа",
+                )
+            )
+        ).scalars().all()
+    return tuple(sorted(str(slug) for slug in rows if slug))
 
 
 async def scheduled_world_forecast_job() -> WorldForecastRunSummary:

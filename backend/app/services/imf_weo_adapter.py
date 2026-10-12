@@ -80,6 +80,12 @@ WEO_GGXWDG_NGDP = "GGXWDG_NGDP"
 WEO_LP = "LP"
 WEO_LUR = "LUR"
 WEO_PCPIPCH = "PCPIPCH"
+# Добавлены в круге 12 (12.10.2026) ради охвата прогнозов: реальный рост ВВП
+# и счёт текущих операций есть у всех стран WEO, включая Китай и Японию, у
+# которых национальных рядов в каталоге почти нет. Коды проверены на живом
+# SDMX 12.10.2026 (USA/CHN/JPN: значения в процентах, SCALE 0).
+WEO_NGDP_RPCH = "NGDP_RPCH"
+WEO_BCA_NGDPD = "BCA_NGDPD"
 
 # Identity + public units. Ranking compares measure_class(unit, unit_ru)
 # to WorldConcept.measure — keep these codes in lockstep with world_concepts.
@@ -216,6 +222,40 @@ WEO_SERIES: dict[str, dict[str, str]] = {
             "изменение цен за год"
         ),
     },
+    WEO_NGDP_RPCH: {
+        "unit": "PC",
+        "unit_ru": "изменение за год, %",
+        "unit_en": "year-over-year change, %",
+        "name_ru": "Рост реального ВВП",
+        "name_en": "Real GDP growth",
+        "code_suffix": "ngdp-rpch",
+        "category_ru": "Национальные счета",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда: "
+            "изменение объёма валового внутреннего продукта за год "
+            "в постоянных ценах ({unit})."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, рост ВВП, темпы роста экономики, реальный ВВП"
+        ),
+    },
+    WEO_BCA_NGDPD: {
+        "unit": "PC_GDP",
+        "unit_ru": "% ВВП",
+        "unit_en": "% of GDP",
+        "name_ru": "Сальдо счёта текущих операций",
+        "name_en": "Current account balance",
+        "code_suffix": "bca",
+        "category_ru": "Внешний сектор",
+        "desc_ru": (
+            "{name} — годовая оценка Международного валютного фонда "
+            "в процентах от валового внутреннего продукта ({unit}); "
+            "положительное значение — профицит, отрицательное — дефицит."
+        ),
+        "keywords_ru": (
+            "{name}, {country}, счёт текущих операций, платёжный баланс, % ВВП"
+        ),
+    },
 }
 
 # Публичная методология per series (RU/EN): денежные ряды и процентный ряд
@@ -273,6 +313,21 @@ WEO_METHODOLOGY_BY_CODE: dict[str, tuple[str, str]] = {
         "Среднее изменение потребительских цен за календарный год. "
         "Source: International Monetary Fund, World Economic Outlook.",
         "Average consumer-price change over the calendar year. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_NGDP_RPCH: (
+        "Изменение валового внутреннего продукта в постоянных ценах за "
+        "календарный год, в процентах. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Annual change in gross domestic product at constant prices, percent. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+    ),
+    WEO_BCA_NGDPD: (
+        "Сальдо счёта текущих операций платёжного баланса за год, в процентах "
+        "от валового внутреннего продукта. "
+        "Source: International Monetary Fund, World Economic Outlook.",
+        "Current account balance of the balance of payments for the year, "
+        "percent of GDP. "
         "Source: International Monetary Fund, World Economic Outlook.",
     ),
 }
@@ -373,6 +428,8 @@ WEO_YEAR_POLICY_BY_CODE: dict[str, str] = {
     WEO_LP: "stock",
     WEO_LUR: "stock",
     WEO_PCPIPCH: "closed",
+    WEO_NGDP_RPCH: "closed",
+    WEO_BCA_NGDPD: "closed",
 }
 
 _YEAR_POLICY_CLOSED = "closed"
@@ -507,8 +564,49 @@ def _float_or_none(raw: Any) -> float | None:
         return None
 
 
-def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
-    """Чистый разбор SDMX 3.0 JSON → точки в единице хранения (млрд $ / $)."""
+def _parse_update_date(raw: Any) -> date | None:
+    """COUNTRY_UPDATE_DATE приходит как M/D/YYYY (или ISO)."""
+    text = str(raw or "").strip()
+    if not text:
+        return None
+    for fmt in ("%m/%d/%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(text[:10] if fmt == "%Y-%m-%d" else text, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _series_update_date(
+    structure: Mapping[str, Any], attribute_indexes: Sequence[Any] | None,
+) -> date | None:
+    attrs = ((structure.get("attributes") or {}).get("series") or [])
+    pos = next(
+        (i for i, item in enumerate(attrs)
+         if str(item.get("id") or "").upper() == "COUNTRY_UPDATE_DATE"),
+        None,
+    )
+    if pos is None or not attribute_indexes or pos >= len(attribute_indexes):
+        return None
+    raw = attribute_indexes[pos]
+    values = attrs[pos].get("values") or []
+    if isinstance(raw, int) and 0 <= raw < len(values):
+        entry = values[raw]
+        raw = _dim_code(entry) if isinstance(entry, Mapping) else entry
+    return _parse_update_date(raw)
+
+
+@dataclass(frozen=True)
+class _WeoSeries:
+    country_iso3: str
+    weo_code: str
+    scale: int
+    update_date: date | None
+    points: tuple[tuple[date, float], ...]
+
+
+def _walk_weo_series(payload: Mapping[str, Any]) -> list[_WeoSeries]:
+    """Все ряды ответа SDMX: единицы хранения, без отсечения по году."""
     data = payload.get("data") if isinstance(payload.get("data"), Mapping) else payload
     if not isinstance(data, Mapping):
         return []
@@ -535,7 +633,7 @@ def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
         1,
     )
 
-    out: list[WeoParsedPoint] = []
+    out: list[_WeoSeries] = []
     for dataset in datasets:
         if not isinstance(dataset, Mapping):
             continue
@@ -567,6 +665,7 @@ def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
             observations = series.get("observations") or {}
             if not isinstance(observations, Mapping):
                 continue
+            points: list[tuple[date, float]] = []
             for obs_key, raw_value in observations.items():
                 try:
                     time_idx = int(obs_key)
@@ -578,18 +677,84 @@ def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
                 value = _float_or_none(raw_value)
                 if period is None or value is None:
                     continue
-                if period.year > weo_max_observation_year(weo_code):
-                    continue
-                out.append(
-                    WeoParsedPoint(
-                        country_iso3=country,
-                        weo_code=weo_code,
-                        period=period,
-                        value=value / divisor,
-                        scale=scale,
-                    )
+                points.append((period, value / divisor))
+            out.append(_WeoSeries(
+                country_iso3=country,
+                weo_code=weo_code,
+                scale=scale,
+                update_date=_series_update_date(structure, series.get("attributes")),
+                points=tuple(points),
+            ))
+    return out
+
+
+def parse_imf_weo_sdmx(payload: Mapping[str, Any]) -> list[WeoParsedPoint]:
+    """Чистый разбор SDMX 3.0 JSON → наблюдения в единице хранения (млрд $ / $).
+
+    Годы после ``weo_max_observation_year`` — это проекции фонда; они здесь
+    отбрасываются (не наблюдения), а разбирает их ``parse_imf_weo_projections``.
+    """
+    out: list[WeoParsedPoint] = []
+    for series in _walk_weo_series(payload):
+        max_year = weo_max_observation_year(series.weo_code)
+        for period, value in series.points:
+            if period.year > max_year:
+                continue
+            out.append(
+                WeoParsedPoint(
+                    country_iso3=series.country_iso3,
+                    weo_code=series.weo_code,
+                    period=period,
+                    value=value,
+                    scale=series.scale,
                 )
+            )
     out.sort(key=lambda item: (item.country_iso3, item.weo_code, item.period))
+    return out
+
+
+# Сколько лет проекции фонда храним как официальный прогноз: ровно горизонт
+# платформы для годовых рядов (WORLD_FORECAST_HORIZONS["annual"] == 1), то есть
+# ближайший год после последнего наблюдения. Дальние годы WEO не пишем: карта и
+# рейтинг не должны принять 2031 за «последнее значение».
+WEO_PROJECTION_YEARS = 1
+# Выпуск WEO старше этого возраста (по дате обновления страны) уже не
+# показываем как действующий прогноз: фонд публикует апрель и октябрь.
+WEO_MAX_VINTAGE_AGE_DAYS = 460
+
+
+@dataclass(frozen=True)
+class WeoProjection:
+    """Официальная проекция фонда по одной стране и одному ряду."""
+
+    country_iso3: str
+    weo_code: str
+    points: tuple[tuple[date, float], ...]
+    vintage: date | None
+
+
+def parse_imf_weo_projections(
+    payload: Mapping[str, Any],
+    *,
+    today: date | None = None,
+) -> list[WeoProjection]:
+    """Проекции фонда: первые ``WEO_PROJECTION_YEARS`` лет после наблюдений."""
+    out: list[WeoProjection] = []
+    for series in _walk_weo_series(payload):
+        max_year = weo_max_observation_year(series.weo_code, today)
+        future = tuple(sorted(
+            (period, value) for period, value in series.points
+            if max_year < period.year <= max_year + WEO_PROJECTION_YEARS
+        ))
+        if not future:
+            continue
+        out.append(WeoProjection(
+            country_iso3=series.country_iso3,
+            weo_code=series.weo_code,
+            points=future,
+            vintage=series.update_date,
+        ))
+    out.sort(key=lambda item: (item.country_iso3, item.weo_code))
     return out
 
 
@@ -714,3 +879,24 @@ class ImfWeoAdapter:
             for item in parse_imf_weo_sdmx(payload)
             if item.weo_code == wanted and item.period.year <= max_year
         ]
+
+    def fetch_weo_bundle(
+        self, weo_code: str, iso3_codes: Iterable[str],
+    ) -> tuple[list[WeoParsedPoint], list[WeoProjection]]:
+        """Наблюдения и официальные проекции фонда одним HTTP-запросом."""
+        countries = [code.strip().upper() for code in iso3_codes if code and code.strip()]
+        if not countries:
+            return [], []
+        url = weo_data_url(countries, weo_code)
+        payload = self._fetch_json(url)
+        wanted = weo_code.strip().upper()
+        max_year = weo_max_observation_year(wanted)
+        observations = [
+            item for item in parse_imf_weo_sdmx(payload)
+            if item.weo_code == wanted and item.period.year <= max_year
+        ]
+        projections = [
+            item for item in parse_imf_weo_projections(payload)
+            if item.weo_code == wanted
+        ]
+        return observations, projections

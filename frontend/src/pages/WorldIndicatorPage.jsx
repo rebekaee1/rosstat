@@ -31,6 +31,7 @@ import {
   worldVariantsToPickerGroup,
 } from '../lib/worldViewModes';
 import { formatDate, chartValueDigits, resolveDateFormat } from '../lib/format';
+import { formatOfficialVintage } from '../lib/officialForecast';
 import { indicatorPolarity } from '../lib/deltaTone';
 import {
   buildIndicatorSummary, isPercentChangeUnit, preferPercentUnit, rankAmongCountries,
@@ -658,6 +659,7 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                 forecastData={forecastPoints}
                 forecastEnabled={forecastAvailable && !derived}
                 forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
+                forecastOfficial={dataQ.data?.forecast?.official || null}
                 forecastGateStatus={
                   dataQ.data?.forecast?.quality?.gate_status
                   || metaQ.data?.forecast_gate_status
@@ -718,7 +720,17 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
               />
             </section>
             <div className="z4-lower__aside">
-              {dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
+              {dataQ.data?.forecast?.official && (
+                <details className="w2-details w2-details--card" aria-label={t('world.forecast.officialTitle')}>
+                  <summary>{t('world.forecast.officialTitle')}</summary>
+                  <p>
+                    {t('world.forecast.officialBody', {
+                      date: formatOfficialVintage(dataQ.data.forecast.official.vintage, locale),
+                    })}
+                  </p>
+                </details>
+              )}
+              {!dataQ.data?.forecast?.official && dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
                 <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
                   <summary>{locale === 'en' ? 'How our forecast is checked' : 'Как мы проверяем наш прогноз'}</summary>
                   <p>

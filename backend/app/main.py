@@ -698,6 +698,7 @@ async def lifespan(app: FastAPI):
                     limit=settings.us_world_forecast_daily_limit,
                     acquire_lock=False,
                     eligible_only=True,
+                    max_seconds=settings.world_forecast_max_run_seconds,
                 )
 
             scheduler.add_job(
@@ -731,6 +732,7 @@ async def lifespan(app: FastAPI):
                     limit=settings.europe_world_forecast_daily_limit,
                     acquire_lock=False,
                     eligible_only=True,
+                    max_seconds=settings.world_forecast_max_run_seconds,
                 )
 
             scheduler.add_job(
@@ -742,6 +744,39 @@ async def lifespan(app: FastAPI):
                 trigger=CronTrigger(hour=21, minute=0, timezone="Europe/Moscow"),
                 id="europe_world_forecast",
                 name="Europe quality-gated forecasts (bounded daily batch)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+            )
+
+        if settings.rest_world_forecast_enabled and not settings.world_forecast_enabled:
+            from app.services.world_forecast_pipeline import (
+                WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                rest_of_world_slugs,
+                world_forecast_job,
+            )
+
+            async def scheduled_rest_world_forecasts():
+                slugs = await rest_of_world_slugs()
+                if not slugs:
+                    return None
+                return await world_forecast_job(
+                    country_slugs=slugs,
+                    limit=settings.rest_world_forecast_daily_limit,
+                    acquire_lock=False,
+                    eligible_only=True,
+                    max_seconds=settings.world_forecast_max_run_seconds,
+                )
+
+            scheduler.add_job(
+                locked_job(
+                    scheduled_rest_world_forecasts,
+                    "rest_world_forecast",
+                    ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
+                ),
+                trigger=CronTrigger(hour=4, minute=50, timezone="Europe/Moscow"),
+                id="rest_world_forecast",
+                name="Rest-of-world quality-gated forecasts (bounded daily batch)",
                 replace_existing=True,
                 max_instances=1,
                 coalesce=True,

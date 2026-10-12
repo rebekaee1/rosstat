@@ -20,6 +20,7 @@ import { useLocale, useT } from '../i18n';
 import { useCountryComparison } from '../lib/useCountryComparison';
 import { countryPath, worldRatingPath } from '../lib/sitePaths';
 import { buildChartTitle } from '../lib/z4ChartTitle';
+import { formatOfficialVintage } from '../lib/officialForecast';
 import { localizeSource } from '../i18n/viewModeLabels';
 import CountryComparePanel, { ScaleNudge } from './CountryComparePicker';
 import '../styles/z4-indicator.css';
@@ -53,6 +54,7 @@ export default function WorldChartSection({
   forecastEnabled = false,
   forecastGateStatus = null,
   forecastDerivedFrom = null,
+  forecastOfficial = null,
   showForecast = false,
   onToggleForecast,
   chartLoading,
@@ -119,7 +121,9 @@ export default function WorldChartSection({
     || aggregation?.source_frequency === 'weekly'
     || aggregation?.source_frequency === 'daily';
   const noForecastReason = highFreqNative ? t('world.chart.forecastHighFreq') : t('world.chart.forecastGate');
-  const forecastNote = forecastDerivedFrom
+  const forecastNote = forecastOfficial
+    ? t('world.chart.forecastOfficial', { date: formatOfficialVintage(forecastOfficial.vintage, locale) })
+    : forecastDerivedFrom
     ? t('world.chart.forecastDerived')
     : (forecastGateStatus === 'advisory'
       ? t('world.chart.forecastAdvisory')

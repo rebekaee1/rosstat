@@ -89,6 +89,7 @@ from app.services.world_forecaster import (
     publishable_world_forecast,
 )
 from app.services.world_forecast_pipeline import world_forecast_source_ready
+from app.services.world_official_forecast import official_forecast_info
 from app.services.world_rank_values import (
     apply_rank_series,
     latest_rank_point,
@@ -2259,7 +2260,7 @@ async def indicator_data(
 ):
     cache_key = await versioned_key(
         "world",
-        f"data:v12:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
+        f"data:v13:forecast-method-{WORLD_FORECAST_METHOD_VERSION}:{slug}:{code}:{mode}:{int(include_forecast)}:"
         f"{date_from}:{date_to}:{get_locale()}",
     )
     cached = await cache_get(cache_key)
@@ -2389,6 +2390,8 @@ async def indicator_data(
                     "origins": forecast.origins,
                     "gate_status": forecast.gate_status,
                 },
+                # Официальный прогноз МВФ (не наша модель): без MASE, с выпуском WEO.
+                "official": official_forecast_info(forecast),
                 "source_code": candidate.code,
                 "derived": (
                     forecast_resolved.aggregated

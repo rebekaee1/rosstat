@@ -14,8 +14,17 @@ from datetime import date
 from statistics import median
 from typing import Sequence
 
+from dateutil.relativedelta import relativedelta
+
 from app.services.forecast_strategies import StrategyContext, resolve
 from app.services.forecaster import ForecastPoint, ForecastResult
+from app.services.world_forecast_candidates import (
+    SEASONAL_DRIFT_NAME,
+    WORLD_CANDIDATE_SET_VERSION,
+    candidate_names,
+    forecast_candidate,
+    min_fit_points,
+)
 
 
 WORLD_FORECAST_METHOD_VERSION = 2
@@ -46,6 +55,8 @@ class WorldForecastGate:
     baseline_mase: float | None
     origins: int
     result: ForecastResult | None
+    # Параметры выбора модели (кандидатный путь); пишутся в model_params.
+    details: dict | None = None
 
 
 def _month_index(value: date) -> int:
@@ -168,7 +179,7 @@ def _backtest_layout(frequency: str, season: int, horizon: int) -> tuple[int, in
     return 3, horizon, 6, 6, season * 6, season * 5
 
 
-def train_quality_gated_world_forecast(
+def _train_primary_gate(
     dates: Sequence[date],
     values: Sequence[float],
     *,
@@ -351,4 +362,258 @@ def train_quality_gated_world_forecast(
     return WorldForecastGate(
         status, quality_reason,
         resolved_strategy, mase, baseline_mase, len(origins), result,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Кандидатный путь: дополнительные модели с вложенным выбором
+# ---------------------------------------------------------------------------
+#
+# Главная стратегия (multi-window OLS) остаётся первой и неизменной: всё, что
+# она публиковала, публикуется так же. Кандидаты пробуются только когда она не
+# прошла по качеству (``mase_not_below_one``, ``not_better_than_seasonal_naive``)
+# или не смогла посчитать. Чтобы выбор лучшей из многих моделей не раздувал
+# качество, выбор и проверка разведены по времени:
+#
+#   1. модель выбирается на «окнах выбора» — прошлых точках отсчёта, чьи
+#      целевые значения лежат СТРОГО до первого окна гейта; допускаются
+#      только модели с MASE < 1 на этих окнах, берётся лучшая по MASE;
+#   2. выбранная одна модель сдаёт тот же гейт на окнах гейта (MASE < 1 и
+#      ошибка минимум на 2% меньше сезонного наивного, пороги не менялись).
+#      Окна гейта выбору недоступны, поэтому результат на них не завышен
+#      отбором из многих моделей (проверено на отложенных данных, см. отчёт
+#      круга 12: опубликованные так прогнозы лучше наивного в 71% случаев
+#      против 57% у главной модели).
+#
+# Допущения без порога качества: число окон выбора (annual 5, quarterly 6,
+# monthly 6; минимум 3/4/4, иначе ряд остаётся с прежним отказом) и окно
+# подгонки моделей (см. world_forecast_candidates).
+
+RETRYABLE_QUALITY_REASONS = frozenset({
+    "mase_not_below_one",
+    "not_better_than_seasonal_naive",
+    "candidate_model_failed",
+})
+_SELECTION_ORIGINS = {"annual": (5, 3), "quarterly": (6, 4), "monthly": (6, 4)}
+_MASE_LIMIT = 1.0
+_NAIVE_MARGIN = 0.98
+# Допуск модели к гейту по результату на окнах выбора: "naive" — MASE < 1 и
+# ошибка минимум на 2% меньше наивного (как сам гейт); "mase" — только MASE < 1;
+# "none" — берётся минимум MASE без порога. Меняется только в бенчмарках.
+SELECTION_RULE = "mase"
+
+
+def _candidate_forecast(
+    name: str, train: Sequence[float], *, season: int, steps: int,
+) -> list[float] | None:
+    if name == SEASONAL_DRIFT_NAME:
+        if len(train) < season * 3:
+            return None
+        return _seasonal_projection(train, season=season, steps=steps, drift=True)
+    return forecast_candidate(name, train, season=season, steps=steps)
+
+
+def _score_candidates(
+    names: Sequence[str],
+    values: Sequence[float],
+    origins: Sequence[int],
+    *,
+    season: int,
+    test_horizon: int,
+) -> tuple[dict[str, tuple[float, list[float]]], float] | None:
+    """MASE каждой модели на окнах ``origins`` и MASE сезонного наивного."""
+    scaled: dict[str, list[float] | None] = {name: [] for name in names}
+    signed: dict[str, list[float]] = {name: [] for name in names}
+    baseline_scaled: list[float] = []
+    for origin in origins:
+        train = values[:origin]
+        actual = [float(value) for value in values[origin:origin + test_horizon]]
+        scale = _scale(train, season)
+        if scale is None:
+            return None
+        baseline = _seasonal_projection(train, season=season, steps=test_horizon, drift=False)
+        baseline_scaled.extend(abs(p - a) / scale for p, a in zip(baseline, actual))
+        for name in names:
+            if scaled[name] is None:
+                continue
+            forecast = _candidate_forecast(name, train, season=season, steps=test_horizon)
+            if forecast is None or len(forecast) < test_horizon:
+                scaled[name] = None
+                continue
+            scaled[name].extend(abs(p - a) / scale for p, a in zip(forecast, actual))
+            signed[name].extend(p - a for p, a in zip(forecast, actual))
+    if not baseline_scaled:
+        return None
+    baseline_mase = sum(baseline_scaled) / len(baseline_scaled)
+    scores = {
+        name: (sum(errors) / len(errors), signed[name])
+        for name, errors in scaled.items()
+        if errors
+    }
+    return scores, baseline_mase
+
+
+def _beats_naive(mase: float, baseline: float) -> bool:
+    return (
+        math.isfinite(mase) and math.isfinite(baseline)
+        and mase < _MASE_LIMIT and mase < baseline * _NAIVE_MARGIN
+    )
+
+
+def _candidate_gate(
+    dates: Sequence[date],
+    values: Sequence[float],
+    *,
+    frequency: str,
+    horizon: int,
+    season: int,
+    primary: WorldForecastGate,
+    bounds: tuple[float, float] | None,
+) -> WorldForecastGate:
+    """Вложенный выбор дополнительной модели; при отказе возвращает ``primary``."""
+    (
+        step_months, test_horizon, requested_origins,
+        _min_origins, _min_history, origin_floor,
+    ) = _backtest_layout(frequency, season, horizon)
+    tail_start = _contiguous_tail_start(dates, step_months)
+    if tail_start is None:
+        return primary
+    if tail_start:
+        dates, values = dates[tail_start:], values[tail_start:]
+
+    gate_first = max(origin_floor, len(values) - requested_origins - test_horizon + 1)
+    gate_origins = list(range(gate_first, len(values) - test_horizon + 1))
+    want, need = _SELECTION_ORIGINS[frequency]
+    selection_last = gate_first - test_horizon
+    selection_floor = max(min_fit_points(season), season * 3)
+    selection_first = max(selection_floor, selection_last - want + 1)
+    selection_origins = list(range(selection_first, selection_last + 1))
+    details = {
+        "candidate_set": WORLD_CANDIDATE_SET_VERSION,
+        "candidate_selection_origins": len(selection_origins),
+    }
+    if len(selection_origins) < need or not gate_origins:
+        return WorldForecastGate(
+            primary.status, primary.reason, primary.strategy, primary.mase,
+            primary.baseline_mase, primary.origins, None, details,
+        )
+
+    positive = all(float(value) > 0 for value in values)
+    names = [SEASONAL_DRIFT_NAME] + candidate_names(positive=positive)
+    selected = _score_candidates(
+        names, values, selection_origins, season=season, test_horizon=test_horizon,
+    )
+    rejected = WorldForecastGate(
+        primary.status, primary.reason, primary.strategy, primary.mase,
+        primary.baseline_mase, primary.origins, None, details,
+    )
+    if selected is None:
+        return rejected
+    selection_scores, selection_baseline = selected
+    eligible = {
+        name: score for name, (score, _errors) in selection_scores.items()
+        if math.isfinite(score) and (
+            SELECTION_RULE == "none"
+            or (SELECTION_RULE == "mase" and score < _MASE_LIMIT)
+            or (SELECTION_RULE == "naive" and _beats_naive(score, selection_baseline))
+        )
+    }
+    if not eligible:
+        return rejected
+    chosen = min(eligible, key=lambda name: (eligible[name], name))
+
+    gated = _score_candidates(
+        [chosen], values, gate_origins, season=season, test_horizon=test_horizon,
+    )
+    if gated is None or chosen not in gated[0]:
+        return rejected
+    gate_scores, gate_baseline = gated
+    mase, errors = gate_scores[chosen]
+    details.update({
+        "candidate_model": chosen,
+        "candidate_selection_mase": round(eligible[chosen], 6),
+        "candidate_selection_baseline_mase": round(selection_baseline, 6),
+    })
+    if not _beats_naive(mase, gate_baseline):
+        return WorldForecastGate(
+            "failed",
+            "mase_not_below_one" if mase >= _MASE_LIMIT else "not_better_than_seasonal_naive",
+            f"candidate:{chosen}", mase, gate_baseline, len(gate_origins), None, details,
+        )
+
+    forecast = _candidate_forecast(chosen, values, season=season, steps=horizon)
+    if forecast is None or len(forecast) < horizon:
+        return rejected
+    max_history = max(abs(float(value)) for value in values) or 1.0
+    if any(abs(value) > max_history * 5 for value in forecast):
+        return WorldForecastGate(
+            "failed", "implausible_extrapolation", f"candidate:{chosen}",
+            mase, gate_baseline, len(gate_origins), None, details,
+        )
+    if bounds is not None and any(not bounds[0] <= value <= bounds[1] for value in forecast):
+        return WorldForecastGate(
+            "failed", "out_of_range", f"candidate:{chosen}",
+            mase, gate_baseline, len(gate_origins), None, details,
+        )
+    sigma = math.sqrt(sum(error * error for error in errors) / max(1, len(errors)))
+    last = dates[-1]
+    points = []
+    for step, value in enumerate(forecast, start=1):
+        uncertainty = 1.96 * sigma * math.sqrt(step)
+        points.append(ForecastPoint(
+            date=last + relativedelta(months=step_months * step),
+            value=float(value),
+            lower_bound=float(value - uncertainty),
+            upper_bound=float(value + uncertainty),
+        ))
+    result = ForecastResult(
+        model_name=f"World-{chosen}-v1", aic=None, bic=None, points=points,
+    )
+    return WorldForecastGate(
+        "passed", "beats_seasonal_naive", f"candidate:{chosen}",
+        mase, gate_baseline, len(gate_origins), result, details,
+    )
+
+
+def train_quality_gated_world_forecast(
+    dates: Sequence[date],
+    values: Sequence[float],
+    *,
+    frequency: str,
+    horizon: int,
+    season: int,
+    strategy: str,
+    strict: bool = True,
+    candidates: bool = True,
+    bounds: tuple[float, float] | None = None,
+) -> WorldForecastGate:
+    """Главная модель, затем (если не прошла по качеству) кандидатный путь.
+
+    ``bounds`` — допустимый диапазон значений (для процентов 0..100): прогноз
+    вне него не публикуется. Применяется и к главной модели.
+    """
+    gate = _train_primary_gate(
+        dates, values,
+        frequency=frequency, horizon=horizon, season=season,
+        strategy=strategy, strict=strict,
+    )
+    if (
+        gate.result is not None
+        and bounds is not None
+        and any(not bounds[0] <= point.value <= bounds[1] for point in gate.result.points)
+    ):
+        gate = WorldForecastGate(
+            "failed", "out_of_range", gate.strategy, gate.mase,
+            gate.baseline_mase, gate.origins, None,
+        )
+    if (
+        not candidates
+        or gate.result is not None
+        or gate.reason not in RETRYABLE_QUALITY_REASONS
+    ):
+        return gate
+    return _candidate_gate(
+        dates, values,
+        frequency=frequency, horizon=horizon, season=season,
+        primary=gate, bounds=bounds,
     )
