@@ -24,6 +24,7 @@ import { WorldHeroLine } from './WorldStatTiles';
 import { isFreshIntraday, useLiveQuote } from '../lib/tickerLive';
 import IndicatorHeroValue from './IndicatorHeroValue';
 import FreshnessNote from './FreshnessNote';
+import BrentLiveNote from './BrentLiveNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
@@ -217,6 +218,7 @@ export default function GenericIndicatorView({
       </IndicatorDetailHeader>
 
       <FreshnessNote freshness={indicator?.freshness} />
+      <BrentLiveNote code={code} />
 
       <ViewModesPanel label={isCurrency ? t('w6g.cur.show') : undefined}>
         {variantGroup ? (

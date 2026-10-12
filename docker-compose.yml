@@ -247,6 +247,10 @@ services:
       # 20261012c_world_listed_cnt; выключено). Включать в backend и scheduler одновременно.
       RUSTATS_WORLD_LISTED_COUNTS_ENABLED: ${RUSTATS_WORLD_LISTED_COUNTS_ENABLED:-false}
       RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS: ${RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS:-21600}
+      # Круг 13, R-BRENT: живая нефть Brent с Мосбиржи в ленте. ВЫКЛЮЧЕНО до договора с биржей (бесплатные данные ISS
+      # разрешены только «для ознакомления»). Включать только после подписания; нужен процесс scheduler (читает общий env).
+      RUSTATS_MOEX_BRENT_LIVE_ENABLED: ${RUSTATS_MOEX_BRENT_LIVE_ENABLED:-false}
+      RUSTATS_MOEX_BRENT_DELAY_MINUTES: ${RUSTATS_MOEX_BRENT_DELAY_MINUTES:-15}
       RUSTATS_GOOGLE_SITE_VERIFICATION: ${RUSTATS_GOOGLE_SITE_VERIFICATION:-}
       RUSTATS_BING_SITE_VERIFICATION: ${RUSTATS_BING_SITE_VERIFICATION:-}
       RUSTATS_GSC_ACCESS_TOKEN: ${RUSTATS_GSC_ACCESS_TOKEN:-}

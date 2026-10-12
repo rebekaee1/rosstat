@@ -8,7 +8,7 @@ import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
 import { fetchLiveTicker } from '../lib/tickerLive';
-import { formatAsOfHuman, tzFor, tickerSourceName } from '../lib/tickerFormat';
+import { formatAsOfHuman, tzFor, tickerSourceName, tickerSourceKind } from '../lib/tickerFormat';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
 import { useLocale, useT } from '../i18n';
@@ -134,7 +134,9 @@ function TickerCell({ snapshot, nowMs }) {
   const hasPrice = snapshot.price > 0;
 
   const fetchedMs = snapshot.fetched_at ? new Date(snapshot.fetched_at).getTime() : null;
-  const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
+  // Котировка нефти идёт с задержкой биржи (`delay_minutes`): её собственный возраст в 15 минут не значит «давняя».
+  const delayMinutes = Number.isFinite(snapshot.delay_minutes) ? snapshot.delay_minutes : 0;
+  const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > (15 + delayMinutes) * 60 * 1000;
   const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
   // Выходной день не делает дневной курс «устаревшим»: дату пишем, только когда значению больше четырёх суток.
   // Brent (EIA) выходит раз в неделю: дата значения видна всегда, чтобы отставание на несколько дней не принималось за «живую» цену (круг 13, Л2).
@@ -157,7 +159,12 @@ function TickerCell({ snapshot, nowMs }) {
       to: meta.pair[1],
     }));
   }
-  if (meta.noteKey) titleParts.push(t(meta.noteKey));
+  // Нефть с биржи (флаг на сервере включают после договора): подпись про недельный EIA к ней не относится.
+  const exchangeBrent = snapshot.code === 'brent' && tickerSourceKind(snapshot.source) === 'market';
+  if (exchangeBrent) {
+    titleParts.push(t('c13b.ticker.brentExchangeNote', { contract: snapshot.contract || 'BR' }));
+    if (delayMinutes > 0) titleParts.push(t('c13b.ticker.delayed', { minutes: delayMinutes }));
+  } else if (meta.noteKey) titleParts.push(t(meta.noteKey));
   // Круг 13: у биржевой котировки изменение считается к цене 24 часа назад; шапка страницы Биткоина берёт ту же базу.
   if (isIntraday && snapshot.code === 'btc-usd' && pct != null) titleParts.push(t('c13u.ticker.change24h'));
   if (!isIntraday) {
