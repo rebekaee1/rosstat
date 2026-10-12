@@ -229,3 +229,31 @@ def test_callback_for_new_buttons_is_ignored_when_flag_is_off(monkeypatch):
     monkeypatch.setattr(settings, "telegram_chat_id", "42", raising=False)
     asyncio.run(tb._handle_callback({"id": "1", "data": "signups", "message": {"chat": {"id": 42}}}))
     assert sent == ["answerCallbackQuery"]
+
+
+def test_goals_reply_skips_groups_without_breakdown():
+    """Спойлер «Цели»: группа без разрезов не даёт пустую строку «Сравнение: »."""
+    reply = tr.format_goals_reply({"Вчера": USAGE})
+    assert "Выгрузки: русский 5 · компьютер 5 · показатель России 4, рейтинг 1" in reply
+    for line in reply.splitlines():
+        assert not line.rstrip().endswith(":"), line
+    assert "Сравнение: " not in reply and "Поделились: " not in reply and "Смена языка: " not in reply
+
+
+def test_country_label_is_russian_and_capitalized():
+    assert tr.country_label("de") == "Германия" and tr.country_label("DE") == "Германия"
+    assert tr.country_label("germany") == "Германия"
+    assert tr.country_label("рф") == "Россия" and tr.country_label("Россия") == "Россия"
+    assert tr.country_label("новая зеландия") == "Новая зеландия"
+    assert tr.country_label("ZZ") == "ZZ" and tr.country_label(None) == ""
+    # «DE» и «Германия» из разных источников складываются в одну страну
+    assert tr.country_counts({"DE": 2, "Германия": 1, "us": 1}) == {"Германия": 3, "США": 1}
+
+
+def test_signups_reply_keeps_rf_uppercase_and_country_names():
+    sig = dict(SIG, foreign_countries={"DE": 1, "kz": 1})
+    reply = tr.format_signups_reply({"Вчера": sig})
+    assert "рф" not in reply
+    assert "Вчера — Страны вне РФ: Германия 1, Казахстан 1" in reply
+    digest_details = tr.detail_lines_for_day(sig, None, None)
+    assert "Страны вне РФ: Германия 1, Казахстан 1" in digest_details

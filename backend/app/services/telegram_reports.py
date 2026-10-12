@@ -123,6 +123,57 @@ def _line(*parts: str) -> str:
     return " · ".join(p for p in parts if p)
 
 
+# Страны вне РФ в отчётах: в витрине лежит то, что отдала геобаза (русское имя, иногда
+# английское или двухбуквенный код ISO). В сообщении всегда русское название с заглавной.
+_COUNTRY_RU_BY_ISO = {
+    "AE": "ОАЭ", "AM": "Армения", "AR": "Аргентина", "AT": "Австрия", "AU": "Австралия", "AZ": "Азербайджан",
+    "BE": "Бельгия", "BG": "Болгария", "BR": "Бразилия", "BY": "Беларусь", "CA": "Канада", "CH": "Швейцария",
+    "CL": "Чили", "CN": "Китай", "CO": "Колумбия", "CY": "Кипр", "CZ": "Чехия", "DE": "Германия",
+    "DK": "Дания", "EE": "Эстония", "EG": "Египет", "ES": "Испания", "FI": "Финляндия", "FR": "Франция",
+    "GB": "Великобритания", "GE": "Грузия", "GR": "Греция", "HK": "Гонконг", "HR": "Хорватия", "HU": "Венгрия",
+    "ID": "Индонезия", "IE": "Ирландия", "IL": "Израиль", "IN": "Индия", "IR": "Иран", "IT": "Италия",
+    "JP": "Япония", "KG": "Киргизия", "KR": "Южная Корея", "KZ": "Казахстан", "LT": "Литва", "LU": "Люксембург",
+    "LV": "Латвия", "MD": "Молдова", "MX": "Мексика", "MY": "Малайзия", "NL": "Нидерланды", "NO": "Норвегия",
+    "NZ": "Новая Зеландия", "PH": "Филиппины", "PK": "Пакистан", "PL": "Польша", "PT": "Португалия",
+    "RO": "Румыния", "RS": "Сербия", "RU": "Россия", "SA": "Саудовская Аравия", "SE": "Швеция",
+    "SG": "Сингапур", "SI": "Словения", "SK": "Словакия", "TH": "Таиланд", "TJ": "Таджикистан",
+    "TM": "Туркмения", "TR": "Турция", "TW": "Тайвань", "UA": "Украина", "US": "США", "UZ": "Узбекистан",
+    "VN": "Вьетнам", "ZA": "ЮАР",
+}
+_COUNTRY_RU_BY_EN = {
+    "germany": "Германия", "united states": "США", "united kingdom": "Великобритания", "france": "Франция",
+    "china": "Китай", "turkey": "Турция", "kazakhstan": "Казахстан", "belarus": "Беларусь", "ukraine": "Украина",
+    "armenia": "Армения", "georgia": "Грузия", "poland": "Польша", "netherlands": "Нидерланды",
+    "canada": "Канада", "india": "Индия", "japan": "Япония", "spain": "Испания", "italy": "Италия",
+    "israel": "Израиль", "uzbekistan": "Узбекистан", "azerbaijan": "Азербайджан", "finland": "Финляндия",
+}
+
+
+def country_label(value: str | None) -> str:
+    """Русское название страны с заглавной буквы: «de» и «Germany» дают «Германия», «рф» дает «Россия»."""
+    text = (value or "").strip()
+    if not text:
+        return ""
+    if len(text) == 2 and text.isascii() and text.isalpha():
+        return _COUNTRY_RU_BY_ISO.get(text.upper(), text.upper())
+    low = text.casefold()
+    if low in ("рф", "russia", "russian federation", "российская федерация"):
+        return "Россия"
+    if low in _COUNTRY_RU_BY_EN:
+        return _COUNTRY_RU_BY_EN[low]
+    return text[:1].upper() + text[1:]
+
+
+def country_counts(mapping: dict | None) -> dict[str, int]:
+    """Счётчик по странам с единым русским названием: «DE» и «Германия» складываются."""
+    out: dict[str, int] = {}
+    for key, n in (mapping or {}).items():
+        label = country_label(key)
+        if label:
+            out[label] = out.get(label, 0) + int(n or 0)
+    return out
+
+
 def period_title(period: Period) -> str:
     if period.start_date == period.end_date:
         return period.start_date.strftime("%d.%m.%Y")
@@ -262,7 +313,8 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
     if sig and sig.get("total"):
         for title, key, labels in (("Каналы", "channel", CHANNEL_LABELS), ("Устройства", "device", DEVICE_LABELS),
                                    ("Страны вне РФ", "foreign_countries", {})):
-            line = _split_block(title, sig.get(key), labels, 6)
+            data = country_counts(sig.get(key)) if key == "foreign_countries" else sig.get(key)
+            line = _split_block(title, data, labels, 6)
             if line:
                 out.append(line)
         landing = ", ".join(f"{escape(page)} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
@@ -464,9 +516,12 @@ def format_signups_reply(windows: dict[str, dict | None]) -> str:
         for title, key, labels in (("Канал", "channel", CHANNEL_LABELS), ("Устройство", "device", DEVICE_LABELS),
                                    ("Что подтолкнуло", "trigger", TRIGGER_LABELS), ("Способ", "method", METHOD_LABELS),
                                    ("Страны вне РФ", "foreign_countries", {})):
-            text = count_list(sig.get(key), labels, limit=6)
+            is_country = key == "foreign_countries"
+            text = count_list(country_counts(sig.get(key)) if is_country else sig.get(key), labels, limit=6)
             if text:
-                details.append(f"{label} — {title.lower()}: {text}")
+                # «Страны вне РФ» остаются с заглавными (РФ — аббревиатура), остальные подписи строчные.
+                name = title if is_country else title.lower()
+                details.append(f"{label} — {name}: {text}")
         unknown = int(sig.get("unknown_locale") or 0)
         if unknown:
             details.append(f"{label}: у {fmt_int(unknown)} из {fmt_int(total)} язык сайта не определён")
@@ -510,7 +565,10 @@ def format_goals_reply(windows: dict[str, dict | None]) -> str:
             by_locale = count_list(bucket.get("locale"), {"ru": "русский", "en": "английский", "unknown": "язык неизвестен"}, limit=3)
             by_surface = count_list(bucket.get("surface"), SURFACE_LABELS, limit=4)
             by_device = count_list(bucket.get("device"), DEVICE_LABELS, limit=3)
-            details.append(f"{GROUP_LABELS_RU[group].capitalize()}: " + _line(by_locale, by_device, by_surface))
+            line = _line(by_locale, by_device, by_surface)
+            if not line:  # группа есть, а разрезов нет: пустую строку «Сравнение: » не выводим
+                continue
+            details.append(f"{GROUP_LABELS_RU[group].capitalize()}: " + line)
     block = expandable(details)
     return "\n".join(lines) + ("\n" + block if block else "")
 
