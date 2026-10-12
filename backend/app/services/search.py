@@ -23,6 +23,7 @@ from app.data.global_market_indicators import COUNTRY_MARKET_INDICATOR_CODES, is
 from app.data.world_concept_national import national_codes_for_concept
 from app.data.world_concepts import concept_for_indicator, concept_public_unit
 from app.data.eurostat_listing import normalize_frequency
+from app.data.world_superseded import superseded_dataset_ids
 from app.data.eurostat_titles_ru import listing_category_ru
 from app.data.world_indicator_titles_ru import title_override_for_code
 from app.models import (
@@ -769,6 +770,8 @@ async def _world(db: AsyncSession, intent: SearchIntent, countries: dict[str, Wo
         # All explicit geography and fact constraints precede candidate LIMIT.
         return select(WorldIndicator, rank.label("fe_rank")).options(load_only(*columns)).where(
             WorldIndicator.country_id.in_(selected), _world_fact(intent), *term_clauses,
+            # Остановленные источником дубли ведут на канон (301), в выдаче их нет.
+            WorldIndicator.dataset_id.notin_(superseded_dataset_ids()),
             *dimension_constraints(intent.terms, WorldIndicator.provider, WorldIndicator.slice_json),
             *measure_constraints(intent.terms, WorldIndicator.code, (WorldIndicator.name_ru, WorldIndicator.name_en,
                 native_dimension_text(WorldIndicator.provider, WorldIndicator.slice_json, intent.terms)), postgres=postgres,
