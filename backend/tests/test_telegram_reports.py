@@ -61,7 +61,7 @@ REL = {"js_errors_own": [{"error": "x", "count": 3}], "vitals_p75": {"LCP": 2400
 def test_digest_v2_matches_the_agreed_shape():
     lines = tr.format_digest_v2(signups=SIG, usage=USAGE, funnel=FUNNEL, reliability=REL)
     text = "\n".join(lines)
-    assert "🌍 Регистрации: 2 · русская версия 1, английская версия 1 · вне РФ: 1" in text
+    assert "🌍 Регистрации: 2 · русская версия 1, английская версия 1 · вне РФ: 1 (Германия 1)" in text
     assert "🧭 Откуда: поиск 1, прямой заход 1 · устройство: телефон 2" in text
     assert "🚪 Что подтолкнуло: скачивание данных 1, кнопка в шапке 1" in text
     assert "🎯 Что делали: выгрузки 5 (CSV 3, Excel 2) · упёрлись в лимит 4 · сравнение 21 · поделились 3 · смена языка 2" in text
@@ -257,3 +257,74 @@ def test_signups_reply_keeps_rf_uppercase_and_country_names():
     assert "Вчера — Страны вне РФ: Германия 1, Казахстан 1" in reply
     digest_details = tr.detail_lines_for_day(sig, None, None)
     assert "Страны вне РФ: Германия 1, Казахстан 1" in digest_details
+
+
+# --- круг 13: источники, цели ценности, надёжность (5xx) ---------------------------------
+
+def test_signups_head_names_foreign_countries_and_details_name_referrers():
+    sig = dict(SIG, origin={"ru": 1, "foreign": 3}, foreign_countries={"DE": 2, "kz": 1},
+               referrer={"yandex.ru": 2, "t.me": 1})
+    head = tr.signups_lines(sig)[0]
+    assert "вне РФ: 3 (Германия 2, Казахстан 1)" in head
+    details = tr.detail_lines_for_day(sig, None, None)
+    assert "Переходы с сайтов: yandex.ru 2, t.me 1" in details
+
+
+def test_other_goals_line_hides_zeros_and_uses_russian_labels():
+    adoption = {"features": [
+        {"event": "login_success", "tier": "micro", "count": 17, "sessions": 9},
+        {"event": "newsletter_opt_in", "tier": "macro", "count": 3, "sessions": 3},
+        {"event": "feedback_submit", "tier": "macro", "count": 0, "sessions": 0},
+        {"event": "indicator_view", "tier": "engagement", "count": 9999, "sessions": 5000},
+    ]}
+    assert tr.other_goals_line(adoption) == "🏁 Прочие цели: входы 17 · подписка на рассылку 3"
+    assert tr.other_goals_line({"features": []}) == "" and tr.other_goals_line(None) == ""
+    prev = {"features": [{"event": "login_success", "count": 10}]}
+    assert "входы 17 (+70%)" in tr.other_goals_line(adoption, prev)
+    # в дайджесте v2 строка стоит после «Что делали»
+    lines = tr.format_digest_v2(signups=SIG, usage=USAGE, funnel=FUNNEL, reliability=REL, adoption=adoption)
+    texts = [line.split(":")[0] for line in lines]
+    assert texts.index("🏁 Прочие цели") == texts.index("🎯 Что делали") + 1
+
+
+def test_every_value_goal_outside_report_groups_has_a_russian_label():
+    """Новая macro/micro-цель без группы и без подписи не должна пропасть из отчётов молча."""
+    from app.services import goal_taxonomy as gt
+
+    uncovered = (gt._MACRO | gt._MICRO) - gt.all_grouped_events() - {"signup", "pwa_installed"}
+    assert uncovered <= set(tr.OTHER_GOAL_LABELS), sorted(uncovered - set(tr.OTHER_GOAL_LABELS))
+
+
+def test_reliability_line_reports_server_errors_without_addresses():
+    rel = dict(REL, server_5xx_spikes={"count": 3, "by_group": {"seo": 2, "api": 1}}, api_5xx_sampled=4)
+    line = tr.reliability_line(rel)
+    assert "всплесков ошибок сервера (5xx): 3 (страницы для поисковиков, запросы к данным)" in line
+    assert "людям пришла ошибка 5xx (выборка) 4" in line
+    assert "/seo/" not in line and "/api/" not in line
+    quiet = tr.reliability_line(dict(REL, server_5xx_spikes={"count": 0, "by_group": {}}, api_5xx_sampled=0))
+    assert "5xx" not in quiet
+
+
+def test_server_error_group_and_spike_path_parser():
+    from app.services.analytics_marts import _SPIKE_PATH_RE, server_error_group
+
+    assert server_error_group("/seo/world/x") == "seo"
+    assert server_error_group("/api/v1/og-image/a.png") == "og"
+    assert server_error_group("/api/v1/regions?x=1") == "api"
+    assert server_error_group(None) == "other"
+    old = "🔴 <b>5xx spike</b>\n10 ответов 5xx за 5 мин (последний путь: /seo/world/x/y)"
+    new = "🔴 <b>Всплеск ошибок сервера (5xx)</b>\n10 ответов 5xx за 5 мин (последний путь: /api/v1/regions)"
+    assert _SPIKE_PATH_RE.search(old.replace("\n", " \n")).group(1) == "/seo/world/x/y"
+    assert _SPIKE_PATH_RE.search(new.replace("\n", " \n")).group(1) == "/api/v1/regions"
+
+
+def test_report_recipients_default_to_digest_and_can_be_narrowed(monkeypatch):
+    from app.services.alerting import digest_recipients, report_recipients
+
+    monkeypatch.setattr(settings, "telegram_chat_id", "100", raising=False)
+    monkeypatch.setattr(settings, "telegram_digest_chat_ids", "200, 300", raising=False)
+    monkeypatch.setattr(settings, "telegram_reports_chat_ids", "", raising=False)
+    assert report_recipients() == digest_recipients() == ["100", "200", "300"]
+    monkeypatch.setattr(settings, "telegram_reports_chat_ids", "999, 999 ,", raising=False)
+    assert report_recipients() == ["999"]  # тестовый чат: остальным адресатам дайджеста ничего не уходит
+    assert type(settings).model_fields["telegram_reports_chat_ids"].default == ""

@@ -358,6 +358,10 @@ class Settings(BaseSettings):
     # v2 дайджеста добавляет блоки «Регистрации», «Что делали», «Воронка», «Сайт» и
     # кнопки бота «Регистрации», «Воронка», «Цели».
     telegram_digest_v2_enabled: bool = False
+    # Получатели недельного и месячного отчётов (comma-separated chat_id). Пусто = как у дайджеста
+    # (владелец + `telegram_digest_chat_ids`). Нужен для первого включения: указать здесь один
+    # тестовый чат или чат владельца, чтобы отчёты не ушли остальным адресатам дайджеста.
+    telegram_reports_chat_ids: str = ""
     # Недельный отчёт (понедельник) и месячный (1-го числа) об аудитории.
     telegram_weekly_enabled: bool = False
     telegram_weekly_cron_hour: int = 9

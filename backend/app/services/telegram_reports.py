@@ -56,6 +56,21 @@ SURFACE_LABELS = {
     "category": "категория", "demographics": "демография", "calendar": "календарь", "today": "сегодня",
     "other": "другое",
 }
+# Цели ценности (макро и микро), которые не входят в группы «Что делали»: рассылка, обратная связь,
+# заявка на API, вход, виджеты. «signup» и «pwa_installed» здесь нет: они в блоках «Регистрации»
+# и «Установки приложения». Тест требует подпись для каждой такой цели.
+OTHER_GOAL_LABELS = {
+    "newsletter_opt_in": "подписка на рассылку",
+    "feedback_submit": "обратная связь",
+    "api_interest_submit": "заявка на API",
+    "login_success": "входы",
+    "embed_code_copy": "код виджета скопирован",
+    "contact_email": "письмо нам",
+    "calc_copy_result": "результат расчёта скопирован",
+}
+SERVER_ERROR_GROUPS = {
+    "seo": "страницы для поисковиков", "api": "запросы к данным", "og": "картинки превью", "other": "остальное",
+}
 FUNNEL_SHORT = {
     "visitors": "посетители", "viewed": "смотрели показатель", "wall": "лимит",
     "register_click": "«Регистрация»", "form_open": "форма или соцсеть",
@@ -199,10 +214,11 @@ def signups_lines(sig: dict | None, prev: dict | None = None) -> list[str]:
         head += f" ({change})"
     known_origin = sig.get("origin", {})
     foreign = int(known_origin.get("foreign", 0))
+    countries = count_list(country_counts(sig.get("foreign_countries")), limit=3, show_unknown=False)
     lines = [_line(
         head,
         count_list(sig.get("locale"), LOCALE_LABELS, limit=3),
-        f"вне РФ: {fmt_int(foreign)}" if foreign else "",
+        (f"вне РФ: {fmt_int(foreign)}" + (f" ({countries})" if countries else "")) if foreign else "",
     )]
     where = _line(
         count_list(sig.get("channel"), CHANNEL_LABELS, limit=4),
@@ -281,6 +297,37 @@ def dropped_text(funnel: dict | None) -> str:
     return "ушли на шаге: " + ", ".join(pieces) if pieces else ""
 
 
+def other_goals_line(adoption: dict | None, prev: dict | None = None) -> str:
+    """Цели ценности вне групп «Что делали» (рассылка, обратная связь, заявка на API, входы, виджеты).
+
+    Источник — `mart_feature_adoption` (rollup `daily_goals` без роботов и своих). Пустую строку
+    возвращаем, если таких целей не было: нули не показываем.
+    """
+    if not adoption:
+        return ""
+    now = {f["event"]: int(f.get("count") or 0) for f in adoption.get("features", [])}
+    before = {f["event"]: int(f.get("count") or 0) for f in (prev or {}).get("features", [])} if prev else None
+    parts = []
+    for event, count in sorted(((e, now.get(e, 0)) for e in OTHER_GOAL_LABELS), key=lambda kv: -kv[1]):
+        if not count:
+            continue
+        text = f"{OTHER_GOAL_LABELS[event]} {fmt_int(count)}"
+        change = delta_text(count, before.get(event, 0)) if before is not None else ""
+        if change:
+            text += f" ({change})"
+        parts.append(text)
+    return "🏁 Прочие цели: " + " · ".join(parts) if parts else ""
+
+
+def _server_errors_bit(rel: dict) -> str:
+    spikes = rel.get("server_5xx_spikes") or {}
+    count = int(spikes.get("count") or 0)
+    if not count:
+        return ""
+    where = ", ".join(SERVER_ERROR_GROUPS.get(k, k) for k in list(spikes.get("by_group") or {})[:2])
+    return f"всплесков ошибок сервера (5xx): {fmt_int(count)}" + (f" ({where})" if where else "")
+
+
 def reliability_line(rel: dict | None) -> str:
     if not rel:
         return ""
@@ -291,6 +338,12 @@ def reliability_line(rel: dict | None) -> str:
     bits = []
     if own_errors:
         bits.append(f"ошибок своих скриптов {fmt_int(own_errors)}")
+    server = _server_errors_bit(rel)
+    if server:
+        bits.append(server)
+    seen_5xx = int(rel.get("api_5xx_sampled") or 0)
+    if seen_5xx:
+        bits.append(f"людям пришла ошибка 5xx (выборка) {fmt_int(seen_5xx)}")
     if lcp is not None:
         bits.append(f"LCP p75 {fmt_seconds(lcp)}")
     if api is not None:
@@ -317,6 +370,9 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
             line = _split_block(title, data, labels, 6)
             if line:
                 out.append(line)
+        sources = count_list(sig.get("referrer"), limit=6, show_unknown=False)
+        if sources:
+            out.append(f"Переходы с сайтов: {sources}")
         landing = ", ".join(f"{escape(page)} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
         if landing:
             out.append(f"Первые страницы: {landing}")
@@ -344,11 +400,15 @@ def expandable(lines: list[str]) -> str:
 
 def format_digest_v2(
     *, signups: dict | None, usage: dict | None, funnel: dict | None, reliability: dict | None,
+    adoption: dict | None = None,
 ) -> list[str]:
     """Строки блоков v2 для ежедневного дайджеста (вставляются после блока пользователей)."""
     lines: list[str] = []
     lines += signups_lines(signups)
     lines += usage_lines(usage)
+    goals = other_goals_line(adoption)
+    if goals:
+        lines.append(goals)
     funnel_text = funnel_line(funnel)
     if funnel_text:
         lines.append(funnel_text)
@@ -448,6 +508,9 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
         parts += usage_lines(usage, prev_usage)
     else:
         notes.append("использование функций: данных нет")
+    goals = other_goals_line(data.get("adoption"), data.get("prev_adoption"))
+    if goals:
+        parts.append(goals)
 
     pwa = data.get("pwa")
     if pwa:
@@ -616,13 +679,15 @@ async def collect_digest_v2(day: date) -> dict[str, Any]:
     from app.services import analytics_marts as m
 
     period = day_period(day)
-    signups, usage, funnel, reliability = await asyncio.gather(
+    signups, usage, funnel, reliability, adoption = await asyncio.gather(
         _guarded("signups", lambda db: m.mart_signups(db, period)),
         _guarded("usage", lambda db: m.mart_goal_usage(db, period)),
         _guarded("funnel", lambda db: m.mart_signup_funnel(db, period)),
         _guarded("reliability", lambda db: m.mart_reliability(db, period)),
+        _guarded("adoption", lambda db: m.mart_feature_adoption(db, period)),
     )
-    return {"signups": signups, "usage": usage, "funnel": funnel, "reliability": reliability}
+    return {"signups": signups, "usage": usage, "funnel": funnel, "reliability": reliability,
+            "adoption": adoption}
 
 
 async def digest_v2_lines(day: date) -> list[str]:
@@ -663,8 +728,8 @@ def _english_summary(sig: dict | None, funnel: dict | None, audience: dict | Non
 async def collect_period_report(period: Period, prev: Period) -> dict[str, Any]:
     from app.services import analytics_marts as m
 
-    (signups, prev_signups, audience, prev_audience, funnel, usage, prev_usage, reliability, pwa, gaps, by_channel
-     ) = await asyncio.gather(
+    (signups, prev_signups, audience, prev_audience, funnel, usage, prev_usage, reliability, pwa, gaps, by_channel,
+     adoption, prev_adoption) = await asyncio.gather(
         _guarded("signups", lambda db: m.mart_signups(db, period)),
         _guarded("prev_signups", lambda db: m.mart_signups(db, prev)),
         _guarded("audience", lambda db: m.mart_audience_geo(db, period)),
@@ -676,12 +741,15 @@ async def collect_period_report(period: Period, prev: Period) -> dict[str, Any]:
         _guarded("pwa", lambda db: m.mart_pwa_installs(db, period)),
         _guarded("search_gaps", lambda db: m.mart_search_gaps(db, period)),
         _guarded("visitors_by_channel", lambda db: _visitors_by_channel(db, period)),
+        _guarded("adoption", lambda db: m.mart_feature_adoption(db, period)),
+        _guarded("prev_adoption", lambda db: m.mart_feature_adoption(db, prev)),
     )
     return {
         "period": period, "prev_period": prev, "signups": signups, "prev_signups": prev_signups,
         "audience": audience, "prev_audience": prev_audience, "funnel": funnel, "usage": usage,
         "prev_usage": prev_usage, "reliability": reliability, "pwa": pwa, "search_gaps": gaps,
         "visitors_by_channel": by_channel, "english": _english_summary(signups, funnel, audience),
+        "adoption": adoption, "prev_adoption": prev_adoption,
     }
 
 
@@ -699,10 +767,11 @@ async def build_monthly_report(today: date | None = None) -> str:
 
 
 async def _send_to_recipients(text: str, kind: str) -> dict[str, bool]:
-    """Всем получателям дайджеста; `kind` различает виды сообщений для досылки и архива."""
-    from app.services.alerting import digest_recipients, send_telegram
+    """Получателям отчётов (по умолчанию как у дайджеста; `telegram_reports_chat_ids` сужает до тестового
+    чата); `kind` различает виды сообщений для досылки и архива."""
+    from app.services.alerting import report_recipients, send_telegram
 
-    return {cid: await send_telegram(text, chat_id=cid, kind=kind) for cid in digest_recipients()}
+    return {cid: await send_telegram(text, chat_id=cid, kind=kind) for cid in report_recipients()}
 
 
 async def weekly_report_job() -> None:

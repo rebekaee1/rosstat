@@ -789,6 +789,8 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
     error_pages: Counter = Counter()
     api: dict[str, list[float]] = defaultdict(list)
     api_fail = 0
+    api_5xx = 0
+    api_5xx_by_group: Counter = Counter()
 
     def _error_host(pr: dict) -> str:
         """Домен скрипта-виновника: из src (filename) либо первого URL стека."""
@@ -832,6 +834,13 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
                 pass
             if not pr.get("ok"):
                 api_fail += 1
+            try:
+                status = int(pr.get("st") or 0)
+            except (TypeError, ValueError):
+                status = 0
+            if status >= 500:  # ответ 5xx глазами человека (выборка 1 из 5)
+                api_5xx += 1
+                api_5xx_by_group[server_error_group(u)] += 1
 
     # Лаг Метрики: свежесть последнего повизитного сырья.
     last_visit_ingest = await db.scalar(select(func.max(RawMetrikaVisit.ingested_at)))
@@ -881,8 +890,51 @@ async def mart_reliability(db: AsyncSession, period: Period | int = 7) -> dict[s
             key=lambda x: -(x["p75_ms"] or 0),
         )[:60],
         "api_failed_sampled": api_fail,
+        "api_5xx_sampled": api_5xx,
+        "api_5xx_by_group": dict(api_5xx_by_group.most_common(5)),
+        # Серверные всплески 5xx (≥10 ответов за 5 минут): счётчик ответов живёт в памяти процесса,
+        # поэтому единственный след за прошлые дни — архив уведомлений о всплесках.
+        "server_5xx_spikes": await _server_5xx_spikes(db, p),
         "metrika_lag_hours": metrika_lag_h,
     }
+
+
+_SPIKE_PATH_RE = re.compile(r"последний путь:\s*(\S+?)\)?\s*$", re.MULTILINE)
+
+
+def server_error_group(path: str | None) -> str:
+    """Группа по адресу: куда попали ответы 5xx (для текста, без самих адресов)."""
+    text = (path or "").split("?")[0]
+    if text.startswith("/seo/") or text.startswith("seo/"):
+        return "seo"
+    if "og-image" in text:
+        return "og"
+    if text.startswith("/api/") or text.startswith("api/") or text.startswith("/v1/"):
+        return "api"
+    return "other"
+
+
+async def _server_5xx_spikes(db: AsyncSession, p: Period) -> dict[str, Any]:
+    """Сколько раз сервер сообщал о всплеске 5xx за период и на каких адресах (по группам)."""
+    from app.models import TelegramOutbox
+
+    rows = (await db.execute(
+        select(TelegramOutbox.text, TelegramOutbox.sent_at)
+        .where(TelegramOutbox.kind == "http_5xx_spike",
+               TelegramOutbox.sent_at >= p.start, TelegramOutbox.sent_at < p.end)
+        .limit(500)
+    )).all()
+    seen: set[tuple[str, int]] = set()
+    groups: Counter = Counter()
+    for text, sent_at in rows:
+        # одно событие приходит несколькими строками (получатели, повторы): сводим по тексту и десятиминутке
+        key = (str(text or ""), int(sent_at.timestamp() // 600))
+        if key in seen:
+            continue
+        seen.add(key)
+        match = _SPIKE_PATH_RE.search(str(text or "").replace("\n", " \n"))
+        groups[server_error_group(match.group(1) if match else None)] += 1
+    return {"count": int(sum(groups.values())), "by_group": dict(groups.most_common())}
 
 
 # ---------------------------------------------------------------------------
@@ -1803,7 +1855,7 @@ async def mart_signups(db: AsyncSession, period: Period | int = 30) -> dict[str,
             User.id, User.created_at, UserSignup.method, UserSignup.site_locale, UserSignup.country,
             UserSignup.country_code, UserSignup.channel, UserSignup.device_type, UserSignup.trigger,
             UserSignup.days_to_signup, UserSignup.newsletter, UserSignup.source,
-            UserSignup.landing_page,
+            UserSignup.landing_page, UserSignup.referrer_host, UserSignup.utm_source,
         )
         .select_from(User).outerjoin(UserSignup, UserSignup.user_id == User.id)
         .where(User.created_at >= p.start, User.created_at < p.end)
@@ -1851,6 +1903,10 @@ async def mart_signups(db: AsyncSession, period: Period | int = 30) -> dict[str,
                 "pct": round(100 * back / len(eligible), 1) if eligible else None}
 
     landing: Counter = Counter(r.landing_page for r in rows if r.landing_page)
+    # Источник одним словом: сайт-реферер, иначе метка UTM (канал «поиск», «прямой» без хоста не пишем).
+    referrers: Counter = Counter(
+        (r.referrer_host or r.utm_source or "").strip().lower() for r in rows if (r.referrer_host or r.utm_source)
+    )
 
     total = len(rows)
     known_locale = sum(1 for r in rows if r.site_locale)
@@ -1872,6 +1928,7 @@ async def mart_signups(db: AsyncSession, period: Period | int = 30) -> dict[str,
         "returned_7d": returned_in(7),
         "returned_30d": returned_in(30),
         "landing_top": dict(landing.most_common(8)),
+        "referrer": dict(referrers.most_common(8)),
     }
 
 
