@@ -3717,4 +3717,8 @@ export default {
   'c12u.delta.prevDay': 'vs previous day',
   'c12u.prefs.intro': 'Number format, converter currency and home country already apply across the site. Language, units and newsletter topics are only stored for now: the page address sets the language, and no emails are sent yet.',
   'c12u.quick.home': 'Your country: {country}',
+  // ===== Круг 13: UI =====
+  'c13u.delta.last24h': 'over the past 24 hours',
+  'c13u.ticker.brentNote': 'Brent crude price as of the date shown. Source: US Energy Information Administration (EIA), which publishes once a week, so the price lags by a few days',
+  'c13u.ticker.change24h': '24-hour change',
 };

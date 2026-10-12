@@ -279,6 +279,6 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(text).not.toMatch(/USD\/CNY/);
     const cny = screen.getByText('6.70').closest('a');
     expect(cny.getAttribute('title')).toContain('c10t.ticker.rate');
-    expect(screen.getByText('125.44').closest('a').getAttribute('title')).toContain('c10t.ticker.brentNote');
+    expect(screen.getByText('125.44').closest('a').getAttribute('title')).toContain('c13u.ticker.brentNote');
   });
 });

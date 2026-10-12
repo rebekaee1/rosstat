@@ -527,3 +527,15 @@
   :root:root .z4-chart-head .fe-help-link { transition: none; }
 }
 html[data-fe-motion='off'] .k5-signal::after { animation: none; opacity: 0; }
+
+/* Круг 13, V4: таблица прогноза. Между датой и значением тонкая полоса (доля от наибольшего значения прогноза), а не пустая белая середина.
+   Только transform/opacity не нужны: полоса статична; без рамок и колец, цвет золото тонким акцентом на холодной подложке. */
+.k5-table .fe-fc-table td, .k5-table .fe-fc-table th { white-space: nowrap; }
+.k5-table .fe-fc-table th.fe-fc-bar-col { padding: 0; }
+.k5-table .fe-fc-bar-col { width: 100%; padding: 0 4px; }
+.k5-table .fe-fc-bar { display: block; width: calc(var(--fe-fc-share, 0.5) * 100%); min-width: 6px; height: 4px; border-radius: 4px; background: color-mix(in srgb, var(--color-champagne, #B0893A) 42%, transparent); }
+@media (max-width: 479px) {
+  .k5-table .fe-fc-bar-col { padding: 0 2px; }
+  .k5-table .fe-fc-table td:not(.fe-fc-bar-col), .k5-table .fe-fc-table th:not(.fe-fc-bar-col) { padding-inline: 14px; }
+  .k5-table .fe-fc-table th { white-space: normal; }
+}

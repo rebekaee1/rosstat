@@ -602,7 +602,7 @@ export default function RegionsHome() {
               data-testid="map-find-toggle"
             >
               <Search size={14} aria-hidden="true" />
-              {t('w7p.map.find')}
+              <span className="z5-map-find__txt">{t('w7p.map.find')}</span>
             </button>
             <div className="fe-map-shape ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
               <button type="button" aria-pressed={mapShape === 'regions'} onClick={() => setMapShape('regions')}>{t('w6f.map.shape.regions')}</button>
@@ -848,8 +848,8 @@ export default function RegionsHome() {
 
           <div className="fe-map-layout">
           <div id="chart" data-block="regions-map" className="relative min-w-0 rounded-3xl p-3 sm:p-5 fe-glass-lite" ref={mapCardRef}>
-            <div className="mb-3 flex flex-col items-stretch gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0 flex-1">
+            <div className="fe-map-capline mb-3 flex flex-col items-stretch gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div className="fe-map-capline__text min-w-0 flex-1">
                 {activeMapCode && paint.indicator ? (
                   <>
                     {/* Название темы («Зарплата») уже стоит на выбранной вкладке выше: повторять его заголовком карточки не нужно (круг 8, Y3). */}
@@ -870,7 +870,7 @@ export default function RegionsHome() {
                   <div className="text-sm text-text-secondary">{t('regions.home.mapCaptionOverview')}</div>
                 )}
               </div>
-              <div className="flex shrink-0 items-center gap-1.5 self-start" data-no-export="true">
+              <div className="fe-map-export flex shrink-0 items-center gap-1.5 self-start" data-no-export="true">
                 <button
                   type="button"
                   disabled={exportingMap}
@@ -879,7 +879,7 @@ export default function RegionsHome() {
                   aria-label={t('download.mapPng')}
                   className="fe-chip fe-press gap-1"
                 >
-                  <ImageIcon size={13} aria-hidden="true" /> PNG
+                  <ImageIcon size={13} aria-hidden="true" /> <span className="fe-map-export__txt">PNG</span>
                 </button>
                 <button
                   type="button"
@@ -893,7 +893,7 @@ export default function RegionsHome() {
                   aria-label={t('download.mapGif')}
                   className="fe-chip fe-press gap-1"
                 >
-                  <Film size={13} aria-hidden="true" /> {exportingGif ? t('download.mapGifBusy') : 'GIF'}
+                  <Film size={13} aria-hidden="true" /> <span className="fe-map-export__txt">{exportingGif ? t('download.mapGifBusy') : 'GIF'}</span>
                 </button>
               </div>
             </div>

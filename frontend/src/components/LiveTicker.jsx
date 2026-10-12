@@ -6,6 +6,7 @@ import { cn } from '../lib/format';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
+import { fetchLiveTicker } from '../lib/tickerLive';
 import { formatAsOfHuman, tzFor, tickerSourceName } from '../lib/tickerFormat';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
@@ -31,7 +32,7 @@ const TICKER_META = {
   'gbp-usd':       { nameKey: 'c10t.ticker.gbp', cur: 'usd', pair: ['GBP', 'USD'], linkTo: russiaIndicatorPath('gbp-usd'), decimals: 2 },
   'usd-cny':       { nameKey: 'c10t.ticker.cny', cur: 'cny', pair: ['USD', 'CNY'], linkTo: russiaIndicatorPath('usd-cny'), decimals: 2 },
   'btc-usd':       { nameKey: 'w6b.ticker.btc', cur: 'usd', linkTo: russiaIndicatorPath('btc-usd'), decimals: 0 },
-  'brent':         { nameKey: 'c10t.ticker.brent', noteKey: 'c10t.ticker.brentNote', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
+  'brent':         { nameKey: 'c10t.ticker.brent', noteKey: 'c13u.ticker.brentNote', cur: 'usd', linkTo: russiaIndicatorPath('brent'), decimals: 2 },
   'gold-rub-live': { nameKey: 'w6b.ticker.gold', cur: 'rub', perGram: true, linkTo: russiaIndicatorPath('gold-price'), decimals: 0 },
 };
 
@@ -135,7 +136,8 @@ function TickerCell({ snapshot, nowMs }) {
   const isStale = isIntraday && fetchedMs !== null && nowMs - fetchedMs > 15 * 60 * 1000;
   const asOfRaw = !isIntraday ? resolveAsOfRaw(snapshot) : null;
   // Выходной день не делает дневной курс «устаревшим»: дату пишем, только когда значению больше четырёх суток.
-  const asOfHuman = formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: 4 });
+  // Brent (EIA) выходит раз в неделю: дата значения видна всегда, чтобы отставание на несколько дней не принималось за «живую» цену (круг 13, Л2).
+  const asOfHuman = formatAsOfHuman(asOfRaw, locale, new Date(), { minAgeDays: snapshot.code === 'brent' ? 1 : 4 });
   const asOfTitle = formatAsOfTitle(asOfRaw, locale);
   const asOfClock = fetchedMs !== null
     ? new Date(fetchedMs).toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', {
@@ -155,6 +157,8 @@ function TickerCell({ snapshot, nowMs }) {
     }));
   }
   if (meta.noteKey) titleParts.push(t(meta.noteKey));
+  // Круг 13: у биржевой котировки изменение считается к цене 24 часа назад; шапка страницы Биткоина берёт ту же базу.
+  if (isIntraday && snapshot.code === 'btc-usd' && pct != null) titleParts.push(t('c13u.ticker.change24h'));
   if (!isIntraday) {
     if (asOfTitle) titleParts.push(t('ticker.valueAsOf', { date: asOfTitle }));
   } else {
@@ -231,24 +235,6 @@ function TickerCell({ snapshot, nowMs }) {
       {body}
     </span>
   );
-}
-
-async function fetchLiveTicker(lane) {
-  const r = await fetch(`/api/v1/ticker/live?lane=${encodeURIComponent(lane)}`, {
-    cache: 'no-store',
-    credentials: 'same-origin',
-  });
-  if (!r.ok) {
-    const err = new Error(`Live ticker: HTTP ${r.status}`);
-    err.status = r.status;
-    if (r.status === 429) {
-      const raw = Number.parseInt(r.headers.get('retry-after') || '60', 10);
-      const sec = Number.isFinite(raw) ? raw : 60;
-      err.retryAfterMs = Math.min(Math.max(sec, 1), 120) * 1000;
-    }
-    throw err;
-  }
-  return r.json();
 }
 
 /**

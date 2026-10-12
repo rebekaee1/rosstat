@@ -20,6 +20,7 @@ import {
 import { playbackYears, yearTag } from '../lib/planetView';
 import { readPlanetViewPreference, writePlanetViewPreference } from '../lib/planetViewPreference';
 import { splitUnit, uniformDigits } from '../lib/countryFlag';
+import { fitWordsInBoxes } from '../lib/fitWords';
 import CountryFlag from './CountryFlag';
 import { PlanetOrb } from './PlanetPlaceholder';
 import SourceLink from './SourceLink';
@@ -504,6 +505,18 @@ export default function PlanetView({
     };
   }, [benchmarkSeries, coverage]);
   const compactList = !listExpanded && rankedCountries.length > COMPACT_LIST_ROWS + 1;
+  // Круг 13, V4: названия стран не рвутся посреди слова; одно слово шире колонки сжимает кегль (fitWords).
+  useLayoutEffect(() => {
+    const list = countryList.current;
+    if (!list) return undefined;
+    const fit = () => fitWordsInBoxes(list.querySelectorAll('.planet-list-text'));
+    fit();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    let width = list.clientWidth;
+    const ro = new ResizeObserver(() => { if (list.clientWidth !== width) { width = list.clientWidth; fit(); } });
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, [rankedCountries, compactList, locale]);
   // Кнопка «К России» / «К США» у шара: только если своя страна есть в каталоге. На плоской карте мир виден целиком, а контур России с Чукоткой
   // за линией перемены дат занимает всю ширину карты, поэтому подводить там некуда.
   const homeCountry = homeCountryCode ? (countryByCode.get(homeCountryCode) || countryByCode.get(countryAlias(homeCountryCode))) : null;

@@ -22,8 +22,9 @@ describe('formatCount', () => {
 describe('glueDate / periodPhrase', () => {
   it('дата не рвётся переносом: год не остаётся сиротой', () => {
     expect(glueDate('3 октября 2026')).toBe('3 октября 2026');
-    expect(periodPhrase(t, '2026-10-03', 'day', 'ru')).toBe('на 3 октября 2026');
-    expect(periodPhrase(t, '2026-08-01', 'full', 'ru')).toBe('за август 2026');
+    expect(periodPhrase(t, '2026-10-03', 'day', 'ru')).toBe('на\u00A03\u00A0октября\u00A02026');
+    // Круг 13, V4: предлог склеен с датой, «за» не остаётся в конце строки.
+    expect(periodPhrase(t, '2026-08-01', 'full', 'ru')).toBe('за\u00A0август\u00A02026');
     expect(periodPhrase(t, null, 'full', 'ru')).toBeUndefined();
   });
 });
@@ -37,7 +38,7 @@ describe('commonTilePhrase', () => {
     const list = [
       tile('a', '2026-10-03'), tile('b', '2026-10-03'), tile('c', '2026-10-03'), tile('d', '2026-10-02'),
     ];
-    expect(commonTilePhrase(list, t, 'ru')).toBe('на 3 октября 2026');
+    expect(commonTilePhrase(list, t, 'ru')).toBe('на\u00A03\u00A0октября\u00A02026');
   });
 
   it('нет общей даты у разнобоя и у коротких списков', () => {
