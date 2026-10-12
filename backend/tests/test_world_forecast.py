@@ -649,3 +649,23 @@ def test_forecast_plan_raises_statement_timeout_for_its_transaction(monkeypatch)
     assert calls[0] == ("timeout", "db", wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
     assert wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS >= 300_000
     assert [c[0] for c in calls[1:]] == ["candidates", "latest"]
+
+
+def test_strategy_exception_on_degenerate_series_is_a_recorded_failure(monkeypatch):
+    """Исключение statsmodels на вырожденном ряде («shapes (1,5) and (4,) not aligned», стенд 12.10) не должно
+    ронять обучение ряда: это обычный отказ модели с причиной, а не ошибка без записи, которая возвращается каждый день."""
+    from app.services import world_forecaster as wf
+
+    def broken(dates, values, ctx):
+        raise ValueError("shapes (1,5) and (4,) not aligned: 5 (dim 1) != 4 (dim 0)")
+
+    monkeypatch.setattr(wf, "resolve", lambda name: broken)
+    dates = _dates(date(2018, 1, 1), 96, 1)
+    values = [100.0 + (index % 12) * 2.0 + (index // 12) * 10.0 for index in range(96)]
+    gate = wf.train_quality_gated_world_forecast(
+        dates, values, frequency="monthly", horizon=12, season=12,
+        strategy="monthly_auto", strict=True, candidates=False,
+    )
+    assert gate.status == "failed"
+    assert gate.reason == "candidate_model_failed"
+    assert gate.result is None

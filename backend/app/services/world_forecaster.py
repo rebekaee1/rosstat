@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import logging
 import math
 from dataclasses import dataclass
 from datetime import date
@@ -32,6 +33,8 @@ from app.services.world_forecast_gate import (  # noqa: E402,F401 — реэкс
     WORLD_FORECAST_METHOD_VERSION,
     publishable_world_forecast,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def is_percentage_unit(unit: str | None) -> bool:
@@ -205,7 +208,14 @@ def _run_primary_strategy(
         forecast_steps=horizon,
         cfg={"model_name": f"{strategy_name}-MW"},
     )
-    outputs = strategy(dates, values, ctx)
+    try:
+        outputs = strategy(dates, values, ctx)
+    except (ValueError, ArithmeticError, LookupError) as exc:
+        # Вырожденный ряд (почти константа, лишний регрессор) ронял обучение исключением statsmodels
+        # («shapes (1,5) and (4,) not aligned», de-ert_bil_conv_q-avg на стенде 12.10): ряд не записывался,
+        # возвращался в очередь и падал каждый день. Теперь это обычный отказ модели с записью причины.
+        logger.warning("world forecast: strategy %s failed on a degenerate series: %s", strategy_name, exc)
+        return None
     if len(outputs) != 1:
         return None
     result = outputs[0].result
