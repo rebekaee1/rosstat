@@ -143,11 +143,14 @@ function nonBlockingCssPlugin() {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
+        // crossorigin у same-origin CSS убираем: backend (seo_renderer._css_preload) кладёт рядом
+        // <link rel=preload as=style> БЕЗ crossorigin, и при разном режиме запроса браузер не узнаёт
+        // предзагрузку и качает весь CSS (~80 КБ gzip) второй раз (замер circle-12: 2 запроса main-*.css).
         return html.replace(
           /<link\b([^>]*\brel="stylesheet"[^>]*\bhref="\/assets\/[^"]+\.css"[^>]*)>/g,
           (full, attrs) => (/\bdata-fe-css\b|\bmedia=/.test(attrs)
             ? full
-            : `<link${attrs} media="print" data-fe-css="1" onload="this.media='all'">`),
+            : `<link${attrs.replace(/\s+crossorigin(?:="[^"]*")?/g, '')} media="print" data-fe-css="1" onload="this.media='all'">`),
         )
       },
     },
