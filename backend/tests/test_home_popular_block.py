@@ -59,7 +59,7 @@ def test_ru_home_has_popular_block_without_duplicating_flagships(monkeypatch):
         reset_locale(token)
     assert "<h2>Популярные показатели</h2>" in html
     block = html.split("<h2>Популярные показатели</h2>", 1)[1].split("</section>", 1)[0]
-    assert 'href="/currencies/indicator/usd-rub"' in block
+    assert 'href="/currencies/indicator/eur-rub"' in block
     assert 'href="/russia/indicator/ruonia"' in block
     # показатель, уже стоящий среди ключевых, во втором списке не повторяется
     assert 'href="/russia/indicator/cpi"' not in block
