@@ -7,19 +7,19 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1949  ·  **Строк:** 1 274 509  ·  **Токенов (≈):** 12 036 920
+**Файлов:** 1950  ·  **Строк:** 1 274 549  ·  **Токенов (≈):** 12 037 533
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 631 | 59 479 |
+| `(root)` | 8 | 2 631 | 59 478 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 765 | 269 599 | 2 969 576 |
+| `backend` | 766 | 269 637 | 2 969 981 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 14 | 802 | 9 613 |
-| `docs` | 133 | 814 663 | 6 907 601 |
+| `deploy` | 14 | 804 | 9 826 |
+| `docs` | 133 | 814 663 | 6 907 597 |
 | `frontend` | 910 | 163 874 | 1 819 419 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 110 | 22 395 | 265 810 |
@@ -43,7 +43,7 @@
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
-| `docs/runtime-inventory.json` | 7 183 | 57 650 |
+| `docs/runtime-inventory.json` | 7 183 | 57 648 |
 | `backend/app/data/regional/indicators.json` | 6 440 | 56 948 |
 | `frontend/src/i18n/messages.ru.js` | 3 725 | 52 719 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
@@ -52,7 +52,7 @@
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 043 | 43 122 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
-| `CONTEXT.md` | 1 306 | 41 212 |
+| `CONTEXT.md` | 1 306 | 41 211 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `docs/design-system.md` | 463 | 36 105 |
 | `frontend/src/pages/ComparePage.jsx` | 3 277 | 35 921 |
@@ -77,10 +77,10 @@
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `backend/app/data/eurostat_titles_ru.py` | 1 789 | 16 579 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 401 | 16 504 |
-| `docs/architecture.md` | 462 | 16 364 |
+| `docs/architecture.md` | 462 | 16 363 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
-| `docs/workflow.md` | 595 | 16 095 |
+| `docs/workflow.md` | 595 | 16 094 |
 | `docs/planet-view.md` | 590 | 15 115 |
 | `docs/data_sources.md` | 662 | 15 108 |
 | `docs/search.md` | 692 | 15 071 |
@@ -477,6 +477,7 @@
 | `backend/tests/test_sitemap_public_coverage.py` | 229 | 3 019 |
 | `frontend/src/lib/behavior.browser.test.js` | 226 | 3 018 |
 | `frontend/src/styles/w5-tools.css` | 323 | 3 017 |
+| `deploy/approved-shas.txt` | 139 | 3 010 |
 | `backend/app/data/world_national_core/au.yaml` | 292 | 3 000 |
 | `frontend/src/lib/sessionReplay.js` | 255 | 2 995 |
 | `frontend/public/brand/manifest.json` | 361 | 2 994 |
@@ -514,7 +515,6 @@
 | `backend/tests/test_goal_dims_rollup.py` | 212 | 2 806 |
 | `scripts/audit-world-export.py` | 284 | 2 805 |
 | `backend/tests/test_index_policy.py` | 212 | 2 802 |
-| `deploy/approved-shas.txt` | 137 | 2 797 |
 | `frontend/src/lib/categories.js` | 292 | 2 797 |
 | `backend/tests/forecast_strategies/snapshots/prod_ppi_monthly.json` | 832 | 2 790 |
 | `frontend/src/lib/countryKeyFigures.test.js` | 241 | 2 776 |
@@ -1550,7 +1550,7 @@
 | `frontend/src/lib/glassChartDefs.js` | 40 | 500 |
 | `frontend/src/components/cabinet/ActionTip.jsx` | 46 | 496 |
 | `backend/tests/test_auth_cookie_clear.py` | 49 | 494 |
-| `backend/alembic/versions/20261012b_world_dataset_lower_idx.py` | 45 | 492 |
+| `backend/alembic/versions/20261012b_world_dataset_lower_idx.py` | 45 | 491 |
 | `frontend/src/components/RecentPagesTracker.jsx` | 41 | 491 |
 | `backend/tests/test_global_market_indicators.py` | 52 | 490 |
 | `frontend/src/lib/ratingGroups.js` | 50 | 490 |
@@ -1649,6 +1649,7 @@
 | `backend/tests/test_cbr_fx.py` | 55 | 410 |
 | `frontend/src/components/CalculatorSiblings.jsx` | 52 | 409 |
 | `frontend/src/lib/stickyLayer.js` | 44 | 408 |
+| `backend/tests/test_alembic_revision_ids.py` | 38 | 406 |
 | `frontend/src/lib/searchRecent.js` | 42 | 405 |
 | `frontend/src/styles/c10p-page.test.js` | 31 | 405 |
 | `frontend/src/components/cabinet/CabinetPrefsApplier.jsx` | 40 | 403 |

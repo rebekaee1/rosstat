@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `88e4c3876138f65187cc673f637c2fc3e42ca0e6`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `e69fc5114d5524de9d7082cae4288802a8cd9478`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2108 |
-| Код, шаблоны и стили | 1711 |
-| Актуальные рецензии без пропусков guard | 2108 |
-| Именованные определения Python/JS: с аннотацией / всего | 13441 / 13441 |
+| Файлы в явно определённом scope | 2109 |
+| Код, шаблоны и стили | 1712 |
+| Актуальные рецензии без пропусков guard | 2109 |
+| Именованные определения Python/JS: с аннотацией / всего | 13444 / 13444 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -563,6 +563,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/forecast_strategies/test_registry.py](../backend/tests/forecast_strategies/test_registry.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_action_apply_idempotency.py](../backend/tests/test_action_apply_idempotency.py) | reviewed | 28/28 | актуально |
 | [backend/tests/test_admin_bi.py](../backend/tests/test_admin_bi.py) | reviewed | 25/25 | актуально |
+| [backend/tests/test_alembic_revision_ids.py](../backend/tests/test_alembic_revision_ids.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_alerting.py](../backend/tests/test_alerting.py) | reviewed | 31/31 | актуально |
 | [backend/tests/test_analytics2.py](../backend/tests/test_analytics2.py) | reviewed | 53/53 | актуально |
 | [backend/tests/test_analytics_alert_hygiene.py](../backend/tests/test_analytics_alert_hygiene.py) | reviewed | 49/49 | актуально |

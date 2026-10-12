@@ -7162,11 +7162,11 @@
           "20261009_user_cabinet",
           "20261009b_analytics_signups",
           "20261009c_session_perf",
-          "20261012b_world_dataset_lower_idx"
+          "20261012b_world_dset_lower_idx"
         ],
-        "alembic_head_in_code": "20261012b_world_dataset_lower_idx",
+        "alembic_head_in_code": "20261012b_world_dset_lower_idx",
         "server_head_last_observed": "20260927_world_nonzero_idx (30.09.2026)",
-        "note": "20261012b_world_dataset_lower_idx — только индекс lower(dataset_id) CONCURRENTLY; строится заранее на старом коде; работа DATA2 заводит 20261012_world_ingest_note с тем же родителем, головы надо слить"
+        "note": "20261012b_world_dset_lower_idx — только индекс lower(dataset_id) CONCURRENTLY; строится заранее на старом коде; работа DATA2 заводит 20261012_world_ingest_note с тем же родителем, головы надо слить"
       },
       "data_observations_readonly": {
         "source": "боевая база, короткие запросы на чтение, 12.10.2026 (зона DATA и FORECAST)",

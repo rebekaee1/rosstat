@@ -780,7 +780,7 @@ SSR-страницы страны и рейтинга вставляют `<pictu
 
 ### Индекс для выборок по набору данных
 
-Миграция `20261012b_world_dataset_lower_idx` (после `20261009c_session_perf`; единственная голова текущей ветки): `CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_world_indicators_dataset_lower ON world_indicators (lower(dataset_id)) INCLUDE (country_id)` в `autocommit_block`, проверка `indisvalid AND indisready`, `ANALYZE`; откат — `DROP INDEX CONCURRENTLY`. Код работает и без индекса. Остальные холодные пути (индекс понятий по набору, один подсчёт понятия ряда, сиблинги страны лёгкой выборкой `(id, dataset_id)`, LATERAL в `/api/v1/indicators` вместо `row_number()` по всей истории, готовая JSON-строка каталога) контрактов не меняют. Порядок выкладки и сроки — [workflow](workflow.md#circle12-2026-10-12).
+Миграция `20261012b_world_dset_lower_idx` (после `20261009c_session_perf`; единственная голова текущей ветки): `CREATE INDEX CONCURRENTLY IF NOT EXISTS ix_world_indicators_dataset_lower ON world_indicators (lower(dataset_id)) INCLUDE (country_id)` в `autocommit_block`, проверка `indisvalid AND indisready`, `ANALYZE`; откат — `DROP INDEX CONCURRENTLY`. Код работает и без индекса. Остальные холодные пути (индекс понятий по набору, один подсчёт понятия ряда, сиблинги страны лёгкой выборкой `(id, dataset_id)`, LATERAL в `/api/v1/indicators` вместо `row_number()` по всей истории, готовая JSON-строка каталога) контрактов не меняют. Порядок выкладки и сроки — [workflow](workflow.md#circle12-2026-10-12).
 
 ### Поиск: поле `variants`, ранжирование «страна + понятие»
 
