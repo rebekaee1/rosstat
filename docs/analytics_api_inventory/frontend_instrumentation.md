@@ -239,9 +239,9 @@ ym(107136069, 'init', {
 | `source_link_click` | (зарезервировано) | клик «источник данных» | `indicator`, `source` |
 | `contact_email` | `Footer`, `About`, `Privacy` | mailto-ссылка | — |
 | `api_retry` | `ApiRetryBanner` | кнопка повторить | — |
-| `api_load_error` | (зарезервировано) | системное падение | — |
+| `api_load_error` | (зарезервировано; сервер принимает с 12.10.2026) | системное падение | `status` (код ответа), `endpoint` (группа запроса, не адрес), `surface`, `kind` (`network`/`http`/`timeout`) |
 | `error_reload` | `ErrorBoundary` | reload after crash | — |
-| `empty_state` | (зарезервировано) | пустые состояния | — |
+| `empty_state` | (зарезервировано; сервер принимает с 12.10.2026) | пустые состояния | `surface`, `reason` (`no_data`/`filtered`/`no_access`), `kind` |
 
 `experiment_exposure` — зарезервировано под A/B-тесты, ещё не подключено.
 

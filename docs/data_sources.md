@@ -116,6 +116,8 @@ Endpoint: `cbr.ru/scripts/XML_dynamic.asp?date_req1={from}&date_req2={to}&VAL_NM
 
 **Снято с витрины:** `steel` (`is_active=False`, в `INDICATOR_HIDDEN_FROM_LISTING`) — нет свободного официального ряда HRC: CME/LME требуют коммерческой лицензии на историю; в Pink Sheet колонки HRC нет; индекс BLS PPI — не цена в USD/т.
 
+**Brent, дневной источник (проверено 12.10.2026, круг 12).** Фьючерс BR на Мосбирже (ISS `engines/futures/markets/forts/securities`, ближайший контракт по `LASTTRADEDATE`, поля `LAST`/`SETTLEPRICE`) с ноутбука отвечает, цена обновляется в течение дня. Но условия Мосбиржи разрешают бесплатные данные ISS «только для ознакомления»; любое иное использование, в том числе показ на сайте с рекламой и подпиской, возможно только по договору с биржей (moex.com/a2193). Договора нет, поэтому в ленту фьючерс не подключён: Brent остаётся спотом EIA (FRED `DCOILBRENTEU`, выпуск раз в неделю, данные до вторника, подпись в ленте «официальные данные выходят раз в неделю»). Подключить Мосбиржу можно только после договора (запрос help@moex.com), с резервом на EIA.
+
 **Legacy:** `parser_type=moex_brent_daily` (Yahoo chart) оставлен в реестре для тестов и неактивного `steel`; новые listed-ряды на Yahoo не заводить.
 
 ## FRED graph CSV (`FredCsvParser`, `parser_type=fred_csv`)

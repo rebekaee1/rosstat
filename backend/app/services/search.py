@@ -40,6 +40,7 @@ from app.services.search_language import measure_matches, relevance_bonus, title
 from app.services.search_language_sql import measure_constraints, _pattern_clause
 from app.services.search_units import UNIT_RULES, UNIT_EXCLUDES, DENOMINATOR_RULES, unit_metadata, denominator_metadata
 from app.services.search_dimensions import dimension_constraints, dimension_metadata, native_dimension_labels, native_dimension_match_clause, native_dimension_text
+from app.services.search_variants import collapse_equivalent, disambiguate_titles
 from app.services.search_paths import russia_family_base, russia_search_path, russia_year_search_path, world_search_paths
 from app.services.seo_i18n import localize_category_name, public_indicator_fields, region_display_name, region_indicator_copy
 from app.services.world_subnational_ingest import country_has_subnational
@@ -201,6 +202,55 @@ def _country_only(intent: SearchIntent) -> bool:
     return not intent.terms and bool(intent.countries) and not intent.regions
 
 
+# «Страна + понятие» («ВВП США», «gdp india»): главный показатель понятия для страны. У страны
+# сотни рядов с теми же словами в названии (составляющие BEA, срезы Евростата), и без явной
+# подсказки главный ряд обрезается лимитом кандидатов раньше, чем получит счёт. Ключ — понятие
+# запроса (первый элемент группы терминов), значение — шаблоны кода главного ряда.
+_CONCEPT_HEADLINE_PATTERNS: dict[str, tuple[str, ...]] = {
+    "gdp": ("%-weo-ngdpd",),
+    "gdp-per-capita": ("%-weo-ngdpdpc",),
+    "unemployment": ("%-une_rt_m-total-sa-t-pc-act", "%-weo-lur"),
+    "population": ("%-demo_pjan-total-t-nr", "%-weo-lp"),
+    "cpi": ("%-weo-pcpipch", "%-prc_hicp_minr-total-%", "%-prc_hicp_minr-cp00-%",
+            "%-prc_hicp_midx-total-%", "%-prc_hicp_midx-cp00-%"),
+}
+# Понятия, у которых главный ряд не совпадает с понятием каталога (ВВП запроса «ввп» ведёт на
+# квартальный объём Евростата, а страницу страны открывает ВВП в текущих долларах МВФ): ему
+# дают явный повышающий счёт. Для цен, безработицы и населения хватает порядка выборки.
+_CONCEPT_HEADLINE_BONUS_KEYS = frozenset(("gdp", "gdp-per-capita"))
+_CONCEPT_HEADLINE_BONUS = 200
+
+
+def _like_regex(pattern: str) -> "re.Pattern[str]":
+    return re.compile("^" + "".join(".*" if ch == "%" else "." if ch == "_" else re.escape(ch) for ch in pattern) + "$")
+
+
+_CONCEPT_HEADLINE_REGEX = {key: tuple(_like_regex(p) for p in patterns)
+    for key, patterns in _CONCEPT_HEADLINE_PATTERNS.items()}
+
+
+def _headline_concept_key(intent: SearchIntent) -> str | None:
+    """Понятие запроса «страна + одно понятие»; для остальных запросов None."""
+    if not intent.countries or intent.regions:
+        return None
+    terms = [term for term in intent.terms if not term[0].startswith("search-")]
+    if len(terms) != 1 or terms[0][0] not in _CONCEPT_HEADLINE_PATTERNS:
+        return None
+    return terms[0][0]
+
+
+def _concept_headline_patterns(intent: SearchIntent) -> tuple[str, ...]:
+    key = _headline_concept_key(intent)
+    return _CONCEPT_HEADLINE_PATTERNS[key] if key else ()
+
+
+def _concept_headline_bonus(code: str, intent: SearchIntent) -> int:
+    key = _headline_concept_key(intent)
+    if key not in _CONCEPT_HEADLINE_BONUS_KEYS:
+        return 0
+    return _CONCEPT_HEADLINE_BONUS if any(rx.match(str(code or "")) for rx in _CONCEPT_HEADLINE_REGEX[key]) else 0
+
+
 def _world_preference(intent: SearchIntent):
     """Catalogue headline identities, not a popularity prior."""
     if _country_only(intent):
@@ -211,7 +261,7 @@ def _world_preference(intent: SearchIntent):
                 clauses.append(WorldIndicator.code.in_(codes))
         return or_(*clauses)
     concept = _intent_concept(intent)
-    clauses = []
+    clauses = [WorldIndicator.code.like(pattern) for pattern in _concept_headline_patterns(intent)]
     if concept:
         codes = national_codes_for_concept(concept)
         if codes:
@@ -239,15 +289,16 @@ def _country_headline_bonus(row) -> int:
 def _world_bonus(row, intent: SearchIntent) -> int:
     if _country_only(intent):
         return _country_headline_bonus(row)
+    headline = _concept_headline_bonus(row.code, intent)
     concept = _intent_concept(intent)
     if not concept:
-        return 0
+        return headline
     if row.code in national_codes_for_concept(concept):
-        return 160
+        return max(160, headline)
     if concept == "hicp-index" and any(stem in row.code for stem in ("-prc_hicp_midx-cp00-", "-prc_hicp_minr-cp00-")):
-        return 140
+        return max(140, headline)
     resolved = concept_for_indicator(row)
-    return 140 if resolved and resolved.slug == concept else 0
+    return max(140 if resolved and resolved.slug == concept else 0, headline)
 
 
 def _world_unit(row, locale: str) -> str:
@@ -1150,6 +1201,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
         if result["key"] not in seen:
             unique.append(result)
             seen.add(result["key"])
+    # U14: ряды одного понятия реестра (две выгрузки Евростата одного индекса) — одна строка с `variants`.
+    unique = collapse_equivalent(unique, world_rows)
     final, position = [], 0
     while position < len(unique) and len(final) <= limit:
         batch = unique[position:position + limit + 1 - len(final)]
@@ -1164,6 +1217,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
                     continue
                 result["path"], result["navigation"] = _period_path(canonical, intent, world=True)
             final.append(result)
+    # U15: одинаковое название у разных рядов страны различается периодом, единицей или срезом.
+    disambiguate_titles(final[:limit], world_rows, locale)
     response = {"results": final[:limit], "total": min(len(final), limit),
         "has_more": len(final) > limit or world_clipped or regions_clipped or sub_clipped,
         "version": SEARCH_VERSION, "intent": summary}

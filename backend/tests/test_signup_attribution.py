@@ -349,3 +349,16 @@ def test_nightly_erasure_nulls_user_id_in_big_tables_and_clears_marker(auth_env)
     assert left["other_events"] == 1  # чужие события не тронуты
     assert left["markers"] == [(account_erasure.DONE_EVENT, None)]  # идентификатор из журнала исчез
     assert again["pending"] == 0
+
+
+def test_method_label_is_russian_and_roundtrips_for_backfill():
+    from app.services.alerting import method_label
+
+    assert method_label("OAuth (yandex)") == "Яндекс" and method_label("yandex") == "Яндекс"
+    assert method_label("Email + пароль") == "почта и пароль" and method_label("OAuth (vk)") == "VK"
+    assert method_label(None) == "" and method_label("что-то новое") == "что-то новое"
+    # восстановление из архива понимает и новые подписи
+    for text in ("Яндекс", "VK", "Google", "почта и пароль"):
+        assert sa.normalize_method(text) in sa.SIGNUP_METHODS
+    new = "🆕 <b>Новый пользователь</b>\nСпособ входа: Яндекс\nРассылка: да\nID: <code>%s</code>" % uuid.uuid4()
+    assert sa.parse_new_user_message(new)["method"] == "yandex"

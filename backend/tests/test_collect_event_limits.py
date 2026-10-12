@@ -91,3 +91,16 @@ def test_behavior_portrait_stores_site_language_from_host(auth_client, auth_env)
     stored = asyncio.run(rows())
     assert len(stored) == 1
     assert stored[0].language == "ru-RU" and stored[0].site_locale == "en"
+
+
+def test_front_error_and_empty_state_events_accept_only_technical_keys():
+    """Круг 12: серверная часть `api_load_error` и `empty_state`; адреса и тексты ошибок не принимаются."""
+    cleaned = sanitize_event_params("api_load_error", {
+        "status": 503, "endpoint": "indicator", "surface": "world_indicator", "kind": "network",
+        "url": "https://example.com/a?token=1", "message": "Failed to fetch", "email": "a@b.ru",
+    })
+    assert cleaned == {"status": 503, "endpoint": "indicator", "surface": "world_indicator", "kind": "network"}
+    cleaned = sanitize_event_params("empty_state", {"surface": "rating", "reason": "no_data", "text": "Нет данных"})
+    assert cleaned == {"surface": "rating", "reason": "no_data"}
+    cleaned = sanitize_event_params("share_link", {"kind": "compare", "method": "copy", "surface": "compare", "title": "x"})
+    assert cleaned == {"kind": "compare", "method": "copy", "surface": "compare"}

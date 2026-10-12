@@ -125,7 +125,7 @@ def test_google_registration_reaches_telegram_recipients(monkeypatch):
     }))
     assert [chat_id for chat_id, _, _ in sent] == ["111", "222"]
     assert all(kind == "new_user" for _, kind, _ in sent)
-    assert all("OAuth (google)" in message and "Рассылка: да" in message for _, _, message in sent)
+    assert all("Способ входа: Google" in message and "Рассылка: да" in message for _, _, message in sent)
 
 
 def test_realtime_user_and_feedback_alerts_broadcast(monkeypatch):

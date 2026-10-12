@@ -63,6 +63,10 @@ EVENT_PARAM_KEYS: dict[str, frozenset[str]] = {
     "converter_use": frozenset({"from", "to", "surface"}),
     "calc_use": frozenset({"tool", "country"}),
     "export_run": frozenset({"kind", "format", "surface"}),
+    # Круг 12: серверная часть событий, которые фронт начнёт вызывать позже (impl4-h п. 18–21).
+    # Только технические поля: код ответа, группа запроса, место на сайте. Тексты ошибок и адреса не принимаются.
+    "api_load_error": frozenset({"status", "endpoint", "surface", "kind"}),
+    "empty_state": frozenset({"surface", "reason", "kind"}),
 }
 
 

@@ -72,10 +72,18 @@ def is_russia(country: str | None, country_code: str | None = None) -> bool | No
     return None
 
 
+# Подписи способа входа в сообщениях Telegram (alerting.method_label) читаются обратно при
+# восстановлении из архива: русские названия понимаются так же, как ключи.
+METHOD_LABELS_RU = {"email": "почта и пароль", "yandex": "Яндекс", "vk": "VK", "google": "Google"}
+_METHOD_BY_LABEL = {label.lower(): key for key, label in METHOD_LABELS_RU.items()} | {"вконтакте": "vk", "почта": "email"}
+
+
 def normalize_method(provider: str | None) -> str | None:
     value = (provider or "").strip().lower()
     if value in SIGNUP_METHODS:
         return value
+    if value in _METHOD_BY_LABEL:
+        return _METHOD_BY_LABEL[value]
     if value.startswith("email") or "пароль" in value:
         return "email"
     match = re.search(r"\(([a-z]+)\)", value)
