@@ -177,8 +177,10 @@ async function apiResponse(req, urlPath, search, locale) {
   if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, 'utf8'));
   if (!RECORD) return null;
   if (req.headers[':method'] !== 'GET') return null;
-  const origin = locale === 'ru' ? API.replace('://', '://ru.') : API;
-  const res = await fetch(`${origin}${urlPath}${search}`, { headers: { 'user-agent': UA, accept: req.headers.accept || '*/*' } });
+  // --api http://127.0.0.1:18080 — стенд/локальный backend без поддоменов: язык задаёт заголовок X-FE-Locale.
+  const plain = /^http:/.test(API);
+  const origin = !plain && locale === 'ru' ? API.replace('://', '://ru.') : API;
+  const res = await fetch(`${origin}${urlPath}${search}`, { headers: { 'user-agent': UA, accept: req.headers.accept || '*/*', ...(plain ? { 'x-fe-locale': locale } : {}) } });
   const body = Buffer.from(await res.arrayBuffer());
   const rec = {
     status: res.status,

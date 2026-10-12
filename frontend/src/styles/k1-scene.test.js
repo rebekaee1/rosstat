@@ -87,6 +87,12 @@ describe('k1-scene.css', () => {
     expect(stripped).toMatch(/html\[data-fe-lite="on"\] \.fe-scene__f/);
   });
 
+  it('круг 13 (S1): кадр F — <canvas>, а не <img> и не фон: декор не должен становиться крупнейшим элементом (LCP) страницы', () => {
+    expect(stripped).toMatch(/\.fe-scene__f canvas \{[^}]*object-fit: contain/);
+    expect(stripped).not.toMatch(/\.fe-scene__f img/);
+    expect(stripped).not.toMatch(/\.fe-scene__f::after/);
+  });
+
   it('круг 6: тёплое пятно сцены одно (альфа ≤ .18), лёд и «роза» холодные, на телефоне лёд .14 и пятно не у левого края', () => {
     const gold = /--fe-scene-gold:\s*rgba\(\d+, \d+, \d+, ([0-9.]+)\)/.exec(stripped);
     expect(Number(gold[1])).toBeLessThanOrEqual(0.18);
