@@ -93,8 +93,11 @@ export default function IndicatorHeroValue({
         {when ? <span className="z4-hv__when">{when}</span> : null}
       </p>
       <div className="z4-hv__row">
-        <p className={String(shown.text || '').length > 8 ? 'z4-hv__value z4-hv__value--long' : 'z4-hv__value'}>
-          <WorldCountUp value={last.value} format={fmt} />
+        <p
+          className={String(shown.text || '').length > 8 ? 'z4-hv__value z4-hv__value--long' : 'z4-hv__value'}
+          style={{ '--z4-hv-len': Math.max(4, String(shown.text || '').length) }}
+        >
+          <WorldCountUp value={last.value} format={fmt} className="z4-hv__num" />
           {unitParts.short && !plainIndex ? <span className="z4-hv__unit">{unitParts.short}</span> : null}
         </p>
         {spark.length > 1 ? (

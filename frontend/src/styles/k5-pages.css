@@ -100,6 +100,15 @@
   filter: drop-shadow(0 4px 10px rgba(176, 138, 62, 0.2));
 }
 :root:root .z4-hv__value--long { font-size: clamp(2.4rem, 1.7rem + 2.2vw, 3.8rem); }
+/* Число не рвётся по строкам («−5,626.» и «5»): размер считается от ширины колонки и длины числа, единица при нехватке места уходит на строку ниже. */
+.z4-hv { container-type: inline-size; }
+:root:root .z4-hv__value,
+:root:root .z4-hv__value--long {
+  font-size: clamp(2.2rem, calc(100cqi / (var(--z4-hv-len, 6) * 0.58)), 5.5rem);
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+:root:root .z4-hv__num { white-space: nowrap; }
 :root:root .z4-hv__unit { font-size: 0.3em; }
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   :root:root .z4-hv__value {

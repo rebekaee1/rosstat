@@ -136,6 +136,9 @@ describe('IndicatorHeroValue: главное число в шапке', () => {
     expect(text).toMatch(/\+\d/);
     expect(text).toContain('к 2024');
     expect(container.querySelector('.z4-hv__value')).toBeTruthy();
+    // Число не рвётся по строкам: у числа свой нерасщепляемый класс, а размер шрифта считается по длине числа.
+    expect(container.querySelector('.z4-hv__value .z4-hv__num')).toBeTruthy();
+    expect(Number(container.querySelector('.z4-hv__value').style.getPropertyValue('--z4-hv-len'))).toBeGreaterThanOrEqual(4);
   });
 
   it('оценка текущего года подписана словами', () => {
