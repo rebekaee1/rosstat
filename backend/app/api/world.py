@@ -84,12 +84,12 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_view_modes import is_signed_or_zero_crossing
-from app.services.world_forecaster import (
+from app.services.world_forecast_gate import (
     PUBLISHED_GATE_STATUSES,
     WORLD_FORECAST_METHOD_VERSION,
     publishable_world_forecast,
+    world_forecast_source_ready,
 )
-from app.services.world_forecast_pipeline import world_forecast_source_ready
 from app.services.world_official_forecast import official_forecast_info
 from app.services.world_rank_values import (
     apply_rank_series,

@@ -27,18 +27,11 @@ from app.services.world_forecast_candidates import (
 )
 
 
-WORLD_FORECAST_METHOD_VERSION = 2
-PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed"})
-
-
-def publishable_world_forecast(forecast: object) -> bool:
-    """Old gate versions did not backtest the full published horizon."""
-    params = getattr(forecast, "model_params", None)
-    return (
-        getattr(forecast, "gate_status", None) in PUBLISHED_GATE_STATUSES
-        and isinstance(params, dict)
-        and params.get("method_version") == WORLD_FORECAST_METHOD_VERSION
-    )
+from app.services.world_forecast_gate import (  # noqa: E402,F401 — реэкспорт: старые импорты работают
+    PUBLISHED_GATE_STATUSES,
+    WORLD_FORECAST_METHOD_VERSION,
+    publishable_world_forecast,
+)
 
 
 def is_percentage_unit(unit: str | None) -> bool:
