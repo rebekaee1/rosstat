@@ -273,3 +273,17 @@ def test_unconfirmed_rebase_replaces_card_and_redirects_old_to_new(auth_env):
             assert await resolve_world_superseded(db, "germany", "de-sts_trtu_m-g47-i21-sca") is None
 
     asyncio.run(check())
+
+
+def test_live_units_are_withheld_until_the_flag_is_on(monkeypatch):
+    """Релиз в два шага: пока флаг выключен, срез выбирается по прежнему приоритету."""
+    import app.services.eurostat_parser as parser
+    from app.config import settings
+
+    probe = ({"unit": ["I21", "I15"]}, {"unit": {"I21"}})
+    monkeypatch.setattr(parser, "_fetch_structure_live", lambda *a, **k: probe)
+    monkeypatch.setattr(settings, "eurostat_rebase_enabled", False)
+    assert parser.fetch_dataset_structure_live("sts_trtu_m")[1] == {}
+    assert parser.fetch_dataset_structure_live("sts_trtu_m", honor_flag=False)[1] == {"unit": {"I21"}}
+    monkeypatch.setattr(settings, "eurostat_rebase_enabled", True)
+    assert parser.fetch_dataset_structure_live("sts_trtu_m")[1] == {"unit": {"I21"}}

@@ -1796,6 +1796,15 @@ async def render_world_indicator_html(
             "Archived HICP series: Eurostat discontinued this dataset after a "
             "classification change. Its published history remains available here."
         ))
+    # Круг 12: устаревший ряд без живого двойника — одна честная строка (причина и
+    # ближайший актуальный показатель) вместо молчаливого «Устарело» только у скриптов.
+    from app.services.freshness_note import world_freshness_note
+
+    freshness_note = await world_freshness_note(
+        db, indicator, locale=loc, country_slug=slug,
+    )
+    if freshness_note is not None:
+        paragraphs.insert(1, escape(freshness_note["message"]))
     if indicator.methodology and indicator.methodology.strip():
         method = indicator.methodology.strip()
         if not (

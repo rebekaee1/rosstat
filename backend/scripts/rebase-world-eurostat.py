@@ -31,6 +31,7 @@ import sys
 import time
 from datetime import date, timedelta
 
+import requests
 from sqlalchemy import select
 
 sys.path.insert(0, "/app")
@@ -38,13 +39,38 @@ sys.path.insert(0, "/app")
 from app.database import async_session  # noqa: E402
 from app.models import WorldDatasetState, WorldIndicator  # noqa: E402
 from app.services.eurostat_parser import (  # noqa: E402
-    fetch_dataset_structure_live,
+    _structure_and_live,
+    build_data_url,
     index_base_year,
     replace_dead_index_unit,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("rebase-world-eurostat")
+PROBE_TIMEOUT_S = 60
+
+
+def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
+    """Члены unit и живые из них (есть наблюдение в последнем периоде набора).
+
+    Лёгкая проба по одной стране (полный ответ по всем странам у больших наборов
+    не укладывается в таймаут): первая страна из списка, у которой есть данные.
+    """
+    last_error: Exception | None = None
+    for geo in ("DE", "FR", "IT"):
+        url = build_data_url(dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True)
+        for _attempt in (1, 2):             # холодный запрос у Евростата бывает долгим, второй быстрый
+            try:
+                resp = requests.get(url, timeout=PROBE_TIMEOUT_S)
+                resp.raise_for_status()
+                dims, live = _structure_and_live(resp.json())
+            except (requests.RequestException, ValueError) as exc:
+                last_error = exc
+                continue
+            if live.get("unit"):
+                return dims.get("unit") or [], live["unit"]
+            break                           # ответ получен, но живых единиц нет: следующая страна
+    raise RuntimeError(f"проба не удалась: {last_error}")
 
 
 async def collect(only: set[str], stale_days: int) -> list[dict]:
@@ -88,15 +114,14 @@ async def run(apply: bool, only: set[str], stale_days: int, max_probes: int) -> 
             break
         probes += 1
         try:
-            dims, live = await asyncio.to_thread(fetch_dataset_structure_live, item["dataset_id"])
+            members, live_units = await asyncio.to_thread(probe_units, item["dataset_id"])
         except Exception as exc:  # noqa: BLE001
             log.warning("%s: структура не получена (%s)", item["dataset_id"], exc)
             continue
         finally:
             await asyncio.sleep(0.6)
-        members = dims.get("unit") or []
         moves = {
-            unit: replace_dead_index_unit(unit, members, (live or {}).get("unit"))
+            unit: replace_dead_index_unit(unit, members, live_units)
             for unit in item["units"]
         }
         moves = {a: b for a, b in moves.items() if b and b != a}
@@ -116,6 +141,12 @@ async def run(apply: bool, only: set[str], stale_days: int, max_probes: int) -> 
         log.info("сухой прогон: ничего не записано (--apply поставит наборы в очередь)")
         return len(plan)
 
+    from app.config import settings
+
+    if not settings.eurostat_rebase_enabled:
+        log.error("RUSTATS_EUROSTAT_REBASE_ENABLED выключен: набор в очереди загрузился бы по "
+                  "прежнему срезу I15. Включите флаг в .env, перезапустите scheduler и повторите.")
+        return len(plan)
     queued = 0
     async with async_session() as db:
         for p in plan:

@@ -741,18 +741,35 @@ def _structure_and_live(payload: dict) -> tuple[dict[str, list[str]], dict[str, 
 
 
 def fetch_dataset_structure_live(
-    dataset_id: str, session: requests.Session | None = None,
+    dataset_id: str, session: requests.Session | None = None, *, use_cache: bool = True,
+    honor_flag: bool = True,
+) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
+    dims, live = _fetch_structure_live(dataset_id, session, use_cache)
+    if honor_flag:
+        from app.config import settings
+
+        if not settings.eurostat_rebase_enabled:
+            live = {}
+    return dims, live
+
+
+def _fetch_structure_live(
+    dataset_id: str, session: requests.Session | None, use_cache: bool,
 ) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
     """Структура набора и живые члены измерения unit (с наблюдением в последнем периоде).
 
     Живость нужна, чтобы не закреплять срез на остановленной базе индекса.
     Пробы через DSD живость не дают (пустой словарь): поведение прежнее.
+    Пока ``RUSTATS_EUROSTAT_REBASE_ENABLED`` выключен, живость не отдаётся и срез
+    выбирается по прежнему приоритету (``honor_flag=False`` — для сухого прогона плана).
+    ``use_cache=False`` обязателен для обновления по расписанию: проба «последний период»
+    меняется с каждым выпуском, а кэш на диске ключуется только адресом и не стареет.
     """
     with _session_scope(session) as sess:
         # 1) cheap: last period, all geos
         try:
             url = build_data_url(dataset_id, {}, last_time_period=1)
-            return _structure_and_live(http_get_json(url, session=sess))
+            return _structure_and_live(http_get_json(url, session=sess, use_cache=use_cache))
         except EurostatHttpError as exc:
             if exc.status_code not in (413, 414):
                 logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
@@ -767,7 +784,9 @@ def fetch_dataset_structure_live(
                 url = build_data_url(
                     dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True
                 )
-                dims, live = _structure_and_live(http_get_json(url, session=sess))
+                dims, live = _structure_and_live(
+                    http_get_json(url, session=sess, use_cache=use_cache)
+                )
                 if dims:
                     return dims, live
             except Exception as exc:  # noqa: BLE001
@@ -847,7 +866,7 @@ def fetch_and_parse_dataset(
     вместо единственного headline TOTAL).
     """
     with _session_scope(session) as sess:
-        dims, live = fetch_dataset_structure_live(dataset_id, session=sess)
+        dims, live = fetch_dataset_structure_live(dataset_id, session=sess, use_cache=use_cache)
         slice_ = (
             dict(forced_slice)
             if forced_slice
@@ -931,7 +950,7 @@ def fetch_deep_slices(
     from app.data.eurostat_deep_expand import resolve_slice_specs
 
     with _session_scope(session) as sess:
-        dims, live = fetch_dataset_structure_live(dataset_id, session=sess)
+        dims, live = fetch_dataset_structure_live(dataset_id, session=sess, use_cache=use_cache)
         plan = resolve_slice_specs(dataset_id, dims, live=live)
         for skip in plan.skips:
             logger.info(

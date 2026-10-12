@@ -157,3 +157,33 @@ def test_world_note_without_same_subject_mate_has_honest_text_and_no_nearest(aut
             assert note["message"] == "Источник не обновлял ряд с 2021."
 
     asyncio.run(check())
+
+
+def test_ssr_page_of_stale_series_carries_the_honest_line(auth_env):
+    from app.models import WorldDataPoint
+    from app.services.seo_world import render_world_indicator_html
+
+    async def go():
+        async with auth_env["session_maker"]() as db:
+            c = WorldCountry(code="IT", slug="italy", name_ru="Италия", name_en="Italy", is_active=True)
+            db.add(c)
+            await db.flush()
+            old = _world(db, c.id, "it-old", date(2021, 1, 1), name_ru="Старый ряд")
+            last_year = date(date.today().year - 1, 1, 1)
+            fresh = _world(db, c.id, "it-fresh", last_year, name_ru="Свежий ряд",
+                           slice_json={"freq": "A", "unit": "PC_EUR", "cpa": "A"})
+            db.add_all([old, fresh])
+            await db.flush()
+            db.add_all([
+                WorldDataPoint(indicator_id=old.id, date=date(2020, 1, 1), value=1.0),
+                WorldDataPoint(indicator_id=old.id, date=date(2021, 1, 1), value=2.0),
+                WorldDataPoint(indicator_id=fresh.id, date=last_year, value=3.0),
+            ])
+            await db.commit()
+        async with auth_env["session_maker"]() as db:
+            return await render_world_indicator_html("italy", "it-old", db)
+
+    status, html = asyncio.run(go())
+    assert status == 200
+    assert "Источник не обновлял ряд с 2021." in html
+    assert "Ближайший актуальный показатель: Свежий ряд." in html
