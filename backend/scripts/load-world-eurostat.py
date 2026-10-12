@@ -72,6 +72,12 @@ from app.services.eurostat_structure import (  # noqa: E402
     StructureVerdict,
     plan_structure_migration,
 )
+from app.services.eurostat_rebase import (  # noqa: E402
+    REBASE_EVENTS,
+    RebaseContext,
+    describe_summary,
+    summarize_events,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -96,6 +102,8 @@ _UPSERT_CHUNK = 3000
 EXIT_STRUCTURE_BLOCKED = 3
 # Машиночитаемый итог сверки для world_eurostat_ingest (последние строки вывода).
 STRUCTURE_VERDICT_PREFIX = "STRUCTURE_VERDICT "
+# Итог смены базы индекса по набору (журнал загрузки и сообщение в Telegram).
+REBASE_VERDICT_PREFIX = "REBASE_VERDICT "
 
 
 async def publish_committed_changes(*, catalog_changed: bool = True) -> None:
@@ -485,6 +493,11 @@ async def persist_result(
     changes: set[str] = set()
     async with async_session() as db:
         async with db.begin():
+            # Смена базы индекса (I15 → I21): прежняя карточка страны переезжает на
+            # новый срез на месте, а не остаётся замороженной рядом с новой.
+            rebase = await RebaseContext.load(
+                db, result.dataset_id, result.slice_, result.slice_hash,
+            )
             for geo, points in result.series_by_geo.items():
                 cid = country_ids.get(geo)
                 if cid is None:
@@ -503,6 +516,12 @@ async def persist_result(
 
                 name_ru = country_names.get(geo) or WORLD_COUNTRIES[geo][1]
                 slug = (WORLD_COUNTRIES.get(geo) or (None,))[0]
+                rebase_event = (
+                    await rebase.retarget(db, country_id=cid, points=points)
+                    if rebase is not None else None
+                )
+                if rebase_event is not None:
+                    changes.update(("metadata", "catalog"))
                 iid, _ = await upsert_indicator_meta(
                     db,
                     country_id=cid,
@@ -516,6 +535,11 @@ async def persist_result(
                 # The country catalogue counts listed rows with nonzero signal;
                 # point revisions that keep that signal do not change its payload.
                 indicator = await db.get(WorldIndicator, iid)
+                if rebase is not None:
+                    await rebase.retire_twins(
+                        db, rebase_event, new_id=iid, new_listed=bool(indicator.is_listed),
+                        new_end=points[-1][0] if points else None,
+                    )
                 signal_query = select(select(WorldDataPoint.id).where(
                     WorldDataPoint.indicator_id == iid, WorldDataPoint.value != literal_column("0"),
                 ).exists())
@@ -715,6 +739,9 @@ async def run(args: argparse.Namespace) -> int:
         for e in stats["errors"][:30]:
             log.info("  %s", e)
     # Последними строками: world_eurostat_ingest читает хвост вывода.
+    for summary in summarize_events(REBASE_EVENTS):
+        summary["note"] = describe_summary(summary)
+        print(REBASE_VERDICT_PREFIX + json.dumps(summary, ensure_ascii=False), flush=True)
     for verdict in verdicts:
         print(STRUCTURE_VERDICT_PREFIX + json.dumps(verdict, ensure_ascii=False), flush=True)
     if stats["datasets_ok"]:

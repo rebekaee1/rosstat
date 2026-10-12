@@ -402,6 +402,8 @@ class WorldIngestDatasetLog(Base):
     rows_updated: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     rows_removed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     error_message: Mapped[str | None] = mapped_column(Text)
+    # Пояснение события набора, не ошибка (смена базы индекса и т.п.).
+    note: Mapped[str | None] = mapped_column(Text)
 
     run: Mapped["WorldIngestRun"] = relationship()
 

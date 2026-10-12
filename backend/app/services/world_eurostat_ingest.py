@@ -197,6 +197,7 @@ async def _record_dataset(
     error: str | None = None,
     update_state: bool,
     rows_fetched: int = 0,
+    note: str | None = None,
 ) -> None:
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
@@ -209,6 +210,7 @@ async def _record_dataset(
             structure_changed_at=entry.structure_changed_at,
             rows_fetched=rows_fetched,
             error_message=error[:2000] if error else None,
+            note=note[:2000] if note else None,
         ))
         if update_state:
             state = await db.get(
@@ -323,6 +325,20 @@ def format_dataset_list(
 
 
 _VERDICT_RE = re.compile(r"^STRUCTURE_VERDICT (\{.*\})$", re.MULTILINE)
+_REBASE_RE = re.compile(r"^REBASE_VERDICT (\{.*\})$", re.MULTILINE)
+
+
+def _rebase_verdicts(detail: str) -> list[dict]:
+    """Смена базы индекса в выводе loader'а: одна запись на набор (журнал и сводка)."""
+    out: list[dict] = []
+    for raw in _REBASE_RE.findall(detail or ""):
+        try:
+            item = json.loads(raw)
+        except ValueError:
+            continue
+        if isinstance(item, dict):
+            out.append(item)
+    return out
 
 
 def _structure_verdict(detail: str) -> dict | None:
@@ -440,6 +456,9 @@ async def world_eurostat_ingest_job(
     skipped_datasets: list[tuple[str, str]] = []
     remapped_total = 0
     orphans_total = 0
+    rebase_datasets = 0
+    rebase_cards = 0
+    rebase_twins = 0
     for entry in changed:
         if not shadow and processed and time.monotonic() - run_clock >= MAX_RUN_SECONDS:
             pending += len(changed) - processed
@@ -479,6 +498,12 @@ async def world_eurostat_ingest_job(
                 entry.dataset_id, verdict.get("reason"),
             )
             continue
+        rebase_items = _rebase_verdicts(detail) if ok else []
+        if rebase_items:
+            rebase_datasets += 1
+            rebase_cards += sum(int(i.get("rebased") or 0) for i in rebase_items)
+            rebase_twins += sum(int(i.get("twins") or 0) for i in rebase_items)
+        rebase_note = "; ".join(str(i.get("note") or "") for i in rebase_items) or None
         if ok and verdict is not None:
             structure_accepted += 1
             remapped_total += int(verdict.get("remapped") or 0)
@@ -495,6 +520,7 @@ async def world_eurostat_ingest_job(
                 status="ok",
                 update_state=True,
                 rows_fetched=await _persisted_rows(entry.dataset_id, entry.provider),
+                note=rebase_note,
             )
         elif _NOT_COUNTRY_SHAPED in detail or _NOT_IN_LOADER_SCOPE in detail:
             skipped += 1
@@ -539,6 +565,8 @@ async def world_eurostat_ingest_job(
         "skipped": skipped,
         "structure_accepted": structure_accepted,
         "structure_blocked": structure_blocked,
+        "rebase_datasets": rebase_datasets,
+        "rebase_cards": rebase_cards,
         "shadow": int(shadow),
         "pending": pending,
     }
@@ -568,6 +596,11 @@ async def world_eurostat_ingest_job(
                 f"Смена структуры сверена и принята: {structure_accepted} "
                 f"(переподключено рядов: {remapped_total}, без замены: {orphans_total}). "
                 if structure_accepted else ""
+            )
+            + (
+                f"Смена базы индекса: наборов {rebase_datasets}, карточек перенесено на месте "
+                f"{rebase_cards}, заменено новой {rebase_twins}. "
+                if rebase_datasets else ""
             )
             + (
                 format_dataset_list(
