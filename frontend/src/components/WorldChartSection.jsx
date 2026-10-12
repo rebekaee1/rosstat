@@ -327,7 +327,12 @@ export default function WorldChartSection({
           </p>
         )}
 
-        {forecastEnabled && (
+        {forecastEnabled && chartLoading && (
+          // Пока данные идут, подпись ничего не утверждает: у официального прогноза МВФ потом будет своя, и фраза
+          // «проверен на прошлых данных» не должна мелькать под скелетом. Пустая строка держит высоту.
+          <p className="mb-3 text-[13px] leading-5" aria-hidden="true">{'\u00A0'}</p>
+        )}
+        {forecastEnabled && !chartLoading && (
           <p className="mb-3 text-[13px] leading-5 text-text-secondary">
             {forecastNote}
             {' '}

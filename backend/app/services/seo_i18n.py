@@ -91,6 +91,9 @@ _WORLD_CATEGORY_EN_EXTRA: dict[str, str] = {
     "Государственные финансы": "Government finance",
     "Бизнес и инвестиции": "Business and investment",
     "Внешняя торговля": "Foreign trade",
+    # Сальдо счёта текущих операций МВФ (WEO, круг 12): без записи в EN-каталоге страны
+    # заголовок группы оставался русским.
+    "Внешний сектор": "External sector",
     "разделе": "section",
 }
 

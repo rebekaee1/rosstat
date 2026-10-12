@@ -649,3 +649,69 @@ def test_forecast_plan_raises_statement_timeout_for_its_transaction(monkeypatch)
     assert calls[0] == ("timeout", "db", wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS)
     assert wfp.WORLD_FORECAST_PLAN_STATEMENT_TIMEOUT_MS >= 300_000
     assert [c[0] for c in calls[1:]] == ["candidates", "latest"]
+
+
+def test_strategy_exception_on_degenerate_series_is_a_recorded_failure(monkeypatch):
+    """Исключение statsmodels на вырожденном ряде («shapes (1,5) and (4,) not aligned», стенд 12.10) не должно
+    ронять обучение ряда: это обычный отказ модели с причиной, а не ошибка без записи, которая возвращается каждый день."""
+    from app.services import world_forecaster as wf
+
+    def broken(dates, values, ctx):
+        raise ValueError("shapes (1,5) and (4,) not aligned: 5 (dim 1) != 4 (dim 0)")
+
+    monkeypatch.setattr(wf, "resolve", lambda name: broken)
+    dates = _dates(date(2018, 1, 1), 96, 1)
+    values = [100.0 + (index % 12) * 2.0 + (index // 12) * 10.0 for index in range(96)]
+    gate = wf.train_quality_gated_world_forecast(
+        dates, values, frequency="monthly", horizon=12, season=12,
+        strategy="monthly_auto", strict=True, candidates=False,
+    )
+    assert gate.status == "failed"
+    assert gate.reason == "candidate_model_failed"
+    assert gate.result is None
+
+
+def test_age_limit_can_differ_for_annual_and_quarterly_series(monkeypatch):
+    """Круг 13: годовой ряд не пересчитывается раз в 30 суток при неизменных данных (новая точка меняет отпечаток
+    и возвращает ряд в очередь сразу), по умолчанию срок общий и поведение прежнее."""
+    from datetime import datetime
+
+    from app.config import settings
+    from app.services.world_forecast_pipeline import (
+        effective_max_age_days,
+        forecast_fingerprint,
+        forecast_is_unchanged,
+    )
+
+    now = datetime(2026, 10, 12, 12, 0, 0)
+    history_end = date(2025, 1, 1)
+    old = SimpleNamespace(
+        created_at=datetime(2026, 8, 20, 8, 0, 0),  # 53 суток назад
+        model_params=forecast_fingerprint(history_end=history_end, points_count=40, frequency="annual"),
+        gate_status="passed",
+    )
+
+    def check(frequency):
+        return forecast_is_unchanged(
+            old, history_end=history_end, points_count=40, now=now, max_age_days=30, force=False,
+            frequency=frequency,
+        )
+
+    # Без настроек (0): общий срок, ряд старше 30 суток возвращается в очередь.
+    assert effective_max_age_days("annual", 30) == 30
+    assert not check("annual")
+    monkeypatch.setattr(settings, "world_forecast_max_age_days_annual", 180)
+    monkeypatch.setattr(settings, "world_forecast_max_age_days_quarterly", 90)
+    assert effective_max_age_days("annual", 30) == 180
+    assert effective_max_age_days("quarterly", 30) == 90
+    assert effective_max_age_days("monthly", 30) == 30
+    assert check("annual")
+    # Новая точка (другой отпечаток) возвращает годовой ряд в очередь независимо от срока.
+    assert not forecast_is_unchanged(
+        old, history_end=date(2026, 1, 1), points_count=41, now=now, max_age_days=30, force=False,
+        frequency="annual",
+    )
+    # --force по-прежнему пересчитывает всё.
+    assert not forecast_is_unchanged(
+        old, history_end=history_end, points_count=40, now=now, max_age_days=30, force=True, frequency="annual",
+    )

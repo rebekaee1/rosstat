@@ -252,6 +252,12 @@ describe('WorldChartSection', () => {
     expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
   });
 
+  it('пока данные идут, подпись под графиком ничего не утверждает (у официального прогноза она другая)', () => {
+    renderSection({ forecastEnabled: true, forecastGateStatus: 'passed', chartLoading: true });
+    expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
+    expect(screen.queryByText(/Официальный прогноз Международного валютного фонда/)).toBeNull();
+  });
+
   it('одна кнопка «Скачать» вместо россыпи кнопок', () => {
     renderSection();
     expect(screen.getAllByRole('button', { name: /Скачать/ })).toHaveLength(1);

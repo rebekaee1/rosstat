@@ -547,3 +547,33 @@ def test_warm_showcase_cache_survives_one_failing_locale(monkeypatch):
     monkeypatch.setattr(api, "cache_set", fake_set)
 
     assert asyncio.run(api.warm_showcase_cache(force=True)) == {"en": 2}
+
+
+def test_failed_world_theme_does_not_abort_the_session_for_the_next_themes():
+    """Боевой журнал 12.10: таймаут запроса одной темы обрывал транзакцию, и пропадали все следующие карточки мира.
+    После сбоя витрина откатывает сессию и спокойно идёт к следующей теме."""
+    from app.services import forecast_showcase as fs
+
+    class _Db:
+        def __init__(self):
+            self.rollbacks = 0
+            self.aborted = False
+            self.executed = 0
+
+        async def execute(self, *_a, **_k):
+            self.executed += 1
+            if self.aborted:
+                raise RuntimeError("InFailedSQLTransactionError")
+            self.aborted = True
+            raise RuntimeError("QueryCanceledError")
+
+        async def rollback(self):
+            self.rollbacks += 1
+            self.aborted = False
+
+    db = _Db()
+    items = asyncio.run(fs._world_items(db, "ru"))
+    assert items == []
+    assert db.rollbacks == len(fs.WORLD_THEMES)
+    # Каждая тема дошла до своего запроса: прежняя ошибка не отрезала следующие.
+    assert db.executed == len(fs.WORLD_THEMES)

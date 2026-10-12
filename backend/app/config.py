@@ -140,6 +140,12 @@ class Settings(BaseSettings):
     # внутри окна ETL 19:30–22:30; при расширении охвата переносить на 23:10.
     europe_world_forecast_hour: int = 21
     europe_world_forecast_minute: int = 0
+    # Круг 13: время пакетов США (прежнее 05:20, при потолке 40 минут упирается в окно ETL 05:30–07:30) и «остального
+    # мира» (прежнее 04:50) тоже настраивается; по умолчанию прежнее.
+    us_world_forecast_hour: int = 5
+    us_world_forecast_minute: int = 20
+    rest_world_forecast_hour: int = 4
+    rest_world_forecast_minute: int = 50
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
     # Страны вне США и Европы (Китай, Япония, Индия, Бразилия, Канада,
@@ -161,6 +167,12 @@ class Settings(BaseSettings):
     # Инкрементальный world job: не переобучать ряд, если последняя запись
     # world_forecasts с тем же отпечатком данных не старше N дней.
     world_forecast_max_age_days: int = 30
+    # Круг 13: срок, после которого ряд пересчитывается и при неизменных данных, по частотам. 0 = как общий срок
+    # выше (поведение прежнее). Годовой ряд меняется раз в год, а новая точка и так меняет отпечаток и возвращает
+    # ряд в очередь сразу, поэтому ему хватает 180 суток, квартальному 90: ежедневная потребность очереди Европы
+    # падает с ≈ 6 600 до ≈ 1 850 рядов и лимит 3 000 в день перестаёт съедаться обновлением уже готовых.
+    world_forecast_max_age_days_annual: int = 0
+    world_forecast_max_age_days_quarterly: int = 0
     # bump_namespaces("world", "ssr-world") каждые N успешных записей и в конце.
     world_forecast_cache_bump_every: int = 200
     # Порядок обхода: эти slug'и world_countries первыми, затем остальные.

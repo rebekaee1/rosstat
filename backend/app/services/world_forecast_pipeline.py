@@ -165,6 +165,15 @@ def _naive_now() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
+def effective_max_age_days(frequency: str | None, default: int) -> int:
+    """Срок «не старше» для ряда своей частоты: годовые и квартальные могут иметь свой, иначе общий."""
+    override = {
+        "annual": int(settings.world_forecast_max_age_days_annual or 0),
+        "quarterly": int(settings.world_forecast_max_age_days_quarterly or 0),
+    }.get((frequency or "").strip().lower(), 0)
+    return override if override > 0 else int(default)
+
+
 def forecast_is_unchanged(
     latest: object | None,
     *,
@@ -189,7 +198,7 @@ def forecast_is_unchanged(
         return False
     created_at = _as_naive(created_at)
     now = _as_naive(now)
-    if now - created_at > timedelta(days=int(max_age_days)):
+    if now - created_at > timedelta(days=effective_max_age_days(frequency, max_age_days)):
         return False
     expected = forecast_fingerprint(
         history_end=history_end, points_count=points_count,
