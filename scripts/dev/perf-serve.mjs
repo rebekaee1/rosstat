@@ -16,7 +16,7 @@
  *   node scripts/dev/perf-serve.mjs --dist frontend/dist --snap ../.artifacts/circle-12/data/snap --port 5290
  *   → https://en.localhost:5290/ , https://ru.localhost:5290/russia  (сертификат самоподписанный: --ignore-certificate-errors)
  *
- * Параметры: --dist, --snap, --port (5290), --api (https://forecasteconomy.com), --cache (./.perf-cache),
+ * Параметры: --no-br (не отдавать .br, как до brotli), --dist, --snap, --port (5290), --api (https://forecasteconomy.com), --cache (./.perf-cache),
  *            --api-delay (120), --html-delay (250: время ответа backend на SSR-страницу), --record (разрешить сходить
  *            на боевой за тем, чего нет в кэше; по умолчанию 404 для незаписанного).
  */
@@ -141,6 +141,17 @@ function send(stream, req, status, headers, body, { compress = true } = {}) {
 function serveFile(stream, req, file, urlPath) {
   const ext = path.extname(file);
   const headers = { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': cacheControlFor(urlPath) };
+  const br = `${file}.br`;
+  // как nginx.conf: br для js/css в /assets/ (map по Accept-Encoding + try_files), иначе .gz (gzip_static)
+  if (/^\/assets\/.+\.(js|mjs|css)$/.test(urlPath) && !args['no-br'] && fs.existsSync(br) && accepts(req, 'br')) {
+    const body = fs.readFileSync(br);
+    headers['content-encoding'] = 'br';
+    headers.vary = 'Accept-Encoding';
+    headers['content-length'] = String(body.length);
+    stream.respond({ ...headers, ':status': 200 });
+    stream.end(body);
+    return;
+  }
   const gz = `${file}.gz`;
   if (urlPath.startsWith('/assets/') && fs.existsSync(gz) && accepts(req, 'gzip')) {
     const body = fs.readFileSync(gz);

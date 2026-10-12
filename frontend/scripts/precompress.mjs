@@ -7,9 +7,10 @@
  * меньше, чем on-the-fly gzip_comp_level 4, и без CPU nginx на каждом запросе.
  * Файлы без выигрыша (< 1 КБ или сжатие хуже 95 %) не пишем.
  *
- * Brotli (`--brotli`, ещё −15…20 % к gzip) выключен по умолчанию: nginx:alpine
- * не содержит ngx_brotli, и `.br` просто лежали бы мёртвым грузом.
- * Использование: node scripts/precompress.mjs [distDir] [--brotli]
+ * Brotli (`--brotli`, ещё −10…22 % к gzip -9) пишется рядом как `.br`. В nginx:alpine нет модуля ngx_brotli, поэтому
+ * nginx.conf отдаёт `.br` сам: map по Accept-Encoding + try_files (location ^~ /assets/), без brotli_static.
+ * Если `.br` не нашёлся, клиент получает `.gz`. Файлы без выигрыша к gzip всё равно не пишем.
+ * Использование: node scripts/precompress.mjs [distDir] [--brotli]   (npm run build вызывает с --brotli)
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
