@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1908  ·  **Строк:** 1 258 020  ·  **Токенов (≈):** 11 864 029
+**Файлов:** 1908  ·  **Строк:** 1 258 035  ·  **Токенов (≈):** 11 864 366
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 737 | 264 057 | 2 910 244 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 14 | 802 | 9 613 |
-| `docs` | 131 | 805 648 | 6 819 953 |
-| `frontend` | 905 | 163 112 | 1 808 577 |
+| `docs` | 131 | 805 648 | 6 820 072 |
+| `frontend` | 905 | 163 127 | 1 808 795 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 104 | 21 278 | 252 193 |
 
@@ -55,7 +55,7 @@
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `CONTEXT.md` | 1 302 | 40 648 |
 | `frontend/src/pages/ComparePage.jsx` | 3 277 | 35 921 |
-| `docs/design-system.md` | 430 | 33 164 |
+| `docs/design-system.md` | 430 | 33 283 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `docs/data-contracts.md` | 737 | 32 299 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |
@@ -229,6 +229,7 @@
 | `backend/app/api/export.py` | 598 | 5 470 |
 | `backend/tests/test_world_search_compare_national.py` | 572 | 5 461 |
 | `backend/app/services/display.py` | 593 | 5 434 |
+| `frontend/src/styles/k5-pages.css` | 529 | 5 434 |
 | `frontend/src/lib/format.test.js` | 545 | 5 425 |
 | `backend/app/services/analytics_alerts.py` | 497 | 5 413 |
 | `frontend/src/components/WorldMap.component.test.jsx` | 457 | 5 401 |
@@ -236,7 +237,6 @@
 | `backend/app/data/eurostat_units_ru.py` | 567 | 5 361 |
 | `docs/code-review-findings.md` | 161 | 5 342 |
 | `backend/app/services/cabinet.py` | 548 | 5 340 |
-| `frontend/src/styles/k5-pages.css` | 520 | 5 326 |
 | `backend/tests/test_indicator_year_landing.py` | 523 | 5 317 |
 | `docs/adr/0006-indicator-card-unification.md` | 227 | 5 311 |
 | `frontend/src/components/home/HomeWorkbench.component.test.jsx` | 461 | 5 309 |
@@ -672,6 +672,7 @@
 | `frontend/src/embed/EmbedCompare.jsx` | 155 | 2 028 |
 | `backend/tests/test_scrape_access_policy.py` | 180 | 2 027 |
 | `frontend/src/lib/rsyFloorAd.js` | 241 | 2 022 |
+| `frontend/src/components/Z4Indicator.component.test.jsx` | 179 | 2 014 |
 | `frontend/src/components/IndicatorSearch.c11d.component.test.jsx` | 141 | 2 012 |
 | `scripts/backfill-keyrate-history.py` | 222 | 2 007 |
 | `frontend/src/components/compare/CompareCountryStep.jsx` | 182 | 2 002 |
@@ -689,7 +690,6 @@
 | `backend/tests/test_job_lock.py` | 257 | 1 964 |
 | `docs/verification/ssr-analytics-delivery-2026-09-30.md` | 41 | 1 963 |
 | `scripts/seo-audit.py` | 198 | 1 961 |
-| `frontend/src/components/Z4Indicator.component.test.jsx` | 176 | 1 935 |
 | `frontend/src/lib/api.test.js` | 176 | 1 930 |
 | `backend/tests/test_action_apply_idempotency.py` | 227 | 1 928 |
 | `backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json` | 560 | 1 926 |
@@ -982,6 +982,7 @@
 | `frontend/src/components/CalcMortgageExtras.jsx` | 112 | 1 197 |
 | `backend/app/services/seo_forecasts.py` | 127 | 1 196 |
 | `frontend/src/pages/RegionRatingPage.component.test.jsx` | 140 | 1 196 |
+| `frontend/src/components/IndicatorHeroValue.jsx` | 114 | 1 194 |
 | `backend/tests/test_search_single_letter.py` | 95 | 1 187 |
 | `docs/research/_fpsr_raw/build_excel.py` | 173 | 1 186 |
 | `frontend/src/lib/dockSuppress.js` | 95 | 1 185 |
@@ -1003,7 +1004,6 @@
 | `backend/tests/test_yandex_partner_stats.py` | 158 | 1 168 |
 | `scripts/e2e/liquid-glass-performance.mjs` | 50 | 1 167 |
 | `backend/tests/test_rosstat_housing.py` | 129 | 1 164 |
-| `frontend/src/components/IndicatorHeroValue.jsx` | 111 | 1 163 |
 | `frontend/src/pages/ComparePage.c8.component.test.jsx` | 103 | 1 161 |
 | `scripts/e2e/smoke.mjs` | 129 | 1 161 |
 | `backend/tests/test_search_quantity_facets.py` | 77 | 1 160 |

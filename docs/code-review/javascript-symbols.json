@@ -6372,12 +6372,12 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/IndicatorHeroValue.jsx": {
-    "sha256": "ecdeb841d09bef6b133e2c9f8f30c348deb8b68c072a5d911ef4de0cef5eed79",
+    "sha256": "66ca32edc4040ea8b57a281d4368bbef0a0e77c8b76c7c35424f68738d047d9a",
     "definitions": [
       {
         "name": "IndicatorHeroValue",
         "line": 24,
-        "end_line": 111,
+        "end_line": 114,
         "kind": "FunctionDeclaration"
       },
       {
@@ -14600,7 +14600,7 @@
     "anonymous_functions": 18
   },
   "frontend/src/components/Z4Indicator.component.test.jsx": {
-    "sha256": "58d9c7a9ea3a48c85b28523e52131709494c588df17aef58aaf4617222e4cd0f",
+    "sha256": "79e097721bd08fa5c66f7f185faf14720f19e69f68acf3dda5c965f3a0b15898",
     "definitions": [
       {
         "name": "get",

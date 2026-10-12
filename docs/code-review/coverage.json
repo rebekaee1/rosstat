@@ -11047,7 +11047,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "f01028ff6986d297f6a85ed8b812af1327b5f0ec7950413beed1232978c2bd92",
+      "sha256": "9fa12864ede8c7ae4828579c5945fe630579945b3e8f1f89cb4e3269beb133ac",
       "bytes": 6704137,
       "lines": 235993,
       "code": false,
@@ -11125,8 +11125,8 @@
     },
     {
       "path": "docs/design-system.md",
-      "sha256": "5eb9a763c34bc74f87cf3c04ddd7dd4390f28bc5361eccac5681fd35f261506c",
-      "bytes": 204064,
+      "sha256": "7ae51134ec53d1b07fa2d1fe7f3bfd60a7d1301c9a6e08c80acc7c11ae8b000d",
+      "bytes": 204785,
       "lines": 430,
       "code": false,
       "status": "reviewed",
@@ -15350,9 +15350,9 @@
     },
     {
       "path": "frontend/src/components/IndicatorHeroValue.jsx",
-      "sha256": "ecdeb841d09bef6b133e2c9f8f30c348deb8b68c072a5d911ef4de0cef5eed79",
-      "bytes": 5097,
-      "lines": 111,
+      "sha256": "66ca32edc4040ea8b57a281d4368bbef0a0e77c8b76c7c35424f68738d047d9a",
+      "bytes": 5221,
+      "lines": 114,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -16910,9 +16910,9 @@
     },
     {
       "path": "frontend/src/components/Z4Indicator.component.test.jsx",
-      "sha256": "58d9c7a9ea3a48c85b28523e52131709494c588df17aef58aaf4617222e4cd0f",
-      "bytes": 9199,
-      "lines": 176,
+      "sha256": "79e097721bd08fa5c66f7f185faf14720f19e69f68acf3dda5c965f3a0b15898",
+      "bytes": 9601,
+      "lines": 179,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -24866,9 +24866,9 @@
     },
     {
       "path": "frontend/src/styles/k5-pages.css",
-      "sha256": "019edd16a831d8d3dfbb446411de9130a7f496740974341547ab8b6b75e5d98c",
-      "bytes": 25003,
-      "lines": 520,
+      "sha256": "b95ae598793905c6eb6b98df0cce5d7e83ceeb76c5bf639610b23a92b3d96128",
+      "bytes": 25545,
+      "lines": 529,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26894,11 +26894,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "67edf68454e48b57191052ee8d56b2b973ab8586ab99af024307a93eb12464d2",
-  "javascript_inventory_sha256": "db93d68ce96d47763314b0d5fc691c1b929375d4e20406229dae654abd317304",
-  "baseline_commit": "48e00ab56fa7476a1c975b590ec5260c2ea40fcc",
+  "ledger_sha256": "37daf9a00d775a4e72e00db2c44efb0338584620132b94a552a6dd4411ef7fd2",
+  "javascript_inventory_sha256": "a50db621f6ab8a75c05e16d4e59fbf7b51f31724c93d89c1d47647ee9a126e74",
+  "baseline_commit": "9b7a73c3b60e62f286f733d6265f7b1f6c9ff584",
   "branch": "fix/mobile-rows",
   "unstaged_at_capture": [
-    "docs/indicator-index.json"
+    "docs/client-mechanism-inventory.json",
+    "docs/design-system.md"
   ]
 }
