@@ -112,6 +112,7 @@ class FreshnessGroup:
     causes: dict[str, int] = field(default_factory=lambda: defaultdict(int))
     examples: list[str] = field(default_factory=list)
     example_ages: dict[str, int] = field(default_factory=dict)
+    _candidates: list[tuple[int, int, str]] = field(default_factory=list, repr=False)
 
     def add(self, total: int, stale: int, cause: str | None = None, example: str | None = None,
             age: int | None = None) -> None:
@@ -119,11 +120,22 @@ class FreshnessGroup:
         self.stale += stale
         if stale and cause:
             self.causes[cause] += stale
-        if stale and example and example not in self.examples:
-            if len(self.examples) < EXAMPLES_PER_GROUP:
-                self.examples.append(example)
-                if age is not None:
-                    self.example_ages[example] = age
+        if stale and example:
+            # Примеры — самые крупные по числу рядов, при равенстве самые старые.
+            self._candidates.append((stale, age or 0, example))
+
+    def finalize(self) -> "FreshnessGroup":
+        best = sorted(self._candidates, key=lambda c: (-c[0], -c[1], c[2]))
+        self.examples, self.example_ages = [], {}
+        for _weight, age, name in best:
+            if name in self.example_ages or name in self.examples:
+                continue
+            self.examples.append(name)
+            if age:
+                self.example_ages[name] = age
+            if len(self.examples) >= EXAMPLES_PER_GROUP:
+                break
+        return self
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -199,7 +211,7 @@ async def collect_freshness(db, today: date | None = None) -> FreshnessReport:
     return FreshnessReport(
         generated_at=datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         today=today.isoformat(),
-        groups=groups,
+        groups=[g.finalize() for g in groups],
     )
 
 

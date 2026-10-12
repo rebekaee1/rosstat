@@ -156,6 +156,8 @@ def test_collect_groups_causes_and_ignores_unlisted(auth_env):
     assert set(world["examples"]) == {"prc_hicp_cind", "sts_trtu_m"}
 
     assert by_source["Регионы России · Росстат/ЕМИСС"]["stale"] == 1
+    # примеры - самые крупные наборы, а не первые попавшиеся
+    assert world["examples"][0] in {"prc_hicp_cind", "sts_trtu_m"}
     assert data["stale_series"] == 2 + 2 + 1 and data["total_series"] == 3 + 3 + 2
 
 
