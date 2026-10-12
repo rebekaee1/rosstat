@@ -74,9 +74,29 @@ describe('inflation titles', () => {
     expect(inCountry('Франция')).toBe('во Франции');
     expect(inCountry('Мальта')).toBe('на Мальте');
     expect(inCountry('Неведомая')).toBeNull();
+    expect(inCountry('Вьетнам')).toBe('во Вьетнаме');
+    expect(inCountry('Кипр')).toBe('на Кипре');
     expect(inflationTitle('Турция', ru)).toBe('Инфляция в Турции');
     expect(inflationTitle('Неведомая', ru)).toBe('Инфляция: Неведомая');
     expect(inflationTitle('Turkey', en, 'en')).toBe('Inflation in Turkey');
     expect(inflationTitle('United Kingdom', en, 'en')).toBe('Inflation in the United Kingdom');
+  });
+
+  // Все страны каталога world_countries (55): у каждой есть форма, «во» только перед в/ф + согласная.
+  it('знает предлог для всех стран каталога', () => {
+    const catalog = ['Испания', 'Швеция', 'Германия', 'Австрия', 'Франция', 'Италия', 'Бельгия', 'Нидерланды',
+      'Чехия', 'Финляндия', 'Португалия', 'Дания', 'Словения', 'Кипр', 'Венгрия', 'Греция', 'Люксембург',
+      'Норвегия', 'Ирландия', 'Хорватия', 'Польша', 'Латвия', 'Литва', 'Румыния', 'Словакия', 'Эстония',
+      'Болгария', 'Мальта', 'Сербия', 'Швейцария', 'Северная Македония', 'Турция', 'Исландия', 'Черногория',
+      'Босния и Герцеговина', 'США', 'Албания', 'Молдова', 'Грузия', 'Украина', 'Косово', 'Азербайджан',
+      'Армения', 'Великобритания', 'Канада', 'Австралия', 'Бразилия', 'Китай', 'Новая Зеландия', 'Мексика',
+      'Япония', 'Индия', 'ЮАР', 'Южная Корея', 'Израиль'];
+    expect(catalog).toHaveLength(55);
+    for (const name of catalog) {
+      const phrase = inCountry(name);
+      expect(phrase, name).toMatch(/^(в|во|на) /);
+      const rest = phrase.split(' ').slice(1).join(' ');
+      expect(/^[вф][бвгджзйклмнпрстфхцчшщь]/i.test(rest), phrase).toBe(phrase.startsWith('во '));
+    }
   });
 });

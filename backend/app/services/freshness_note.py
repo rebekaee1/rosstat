@@ -125,10 +125,28 @@ def decide_reason(
 _REPRESENTATION_DIMS = frozenset({"unit", "s_adj", "freq", "currency"})
 
 
+# Измерения, переименованные Евростатом при смене классификации (ECOICOP/COICOP 1999 → 2018):
+# одно и то же измерение под новым именем. Заголовочное значение CP00 («все товары и услуги»)
+# в ver.2 называется TOTAL. Подгруппы (CP01…) не переименовываются в общем виде, поэтому
+# остаются разными предметами.
+_RENAMED_DIMS = {"coicop18": "coicop", "ppp_cat18": "ppp_cat", "indic_ppp": "na_item"}
+
+
+def _subject_key(sl: dict | None) -> dict:
+    out: dict = {}
+    for k, v in (sl or {}).items():
+        if k in _REPRESENTATION_DIMS:
+            continue
+        key = _RENAMED_DIMS.get(k, k)
+        if key == "coicop" and str(v).upper() == "TOTAL":
+            v = "CP00"
+        out[key] = v
+    return out
+
+
 def _same_subject(a: dict | None, b: dict | None) -> bool:
     a, b = a or {}, b or {}
-    keys = (set(a) | set(b)) - _REPRESENTATION_DIMS
-    return bool(keys or a or b) and all(a.get(k) == b.get(k) for k in keys)
+    return bool(a or b) and _subject_key(a) == _subject_key(b)
 
 
 async def world_freshness_note(
@@ -137,6 +155,7 @@ async def world_freshness_note(
     """Блок для мировой карточки; None — ряд не устарел, говорить нечего."""
     from sqlalchemy import select
 
+    from app.data.world_superseded import successor_dataset_of
     from app.models import WorldCountry, WorldDatasetState, WorldIndicator
     from app.services import site_paths as paths
 
@@ -146,15 +165,22 @@ async def world_freshness_note(
     if last is None or not is_stale(last, freq, today):
         return None
 
+    # Набор остановлен у источника и заменён преемником (ECOICOP ver.1 → ver.2): живой
+    # двойник того же предмета лежит в наборе-преемнике той же страны.
+    successor = successor_dataset_of(ind.dataset_id)
+    datasets = [ind.dataset_id] + ([successor] if successor else [])
     siblings = (await db.execute(
         select(WorldIndicator).where(
             WorldIndicator.provider == ind.provider,
-            WorldIndicator.dataset_id == ind.dataset_id,
+            WorldIndicator.dataset_id.in_(datasets),
             WorldIndicator.is_listed.is_(True),
             WorldIndicator.points_count > 0,
         )
     )).scalars().all()
-    newest = max((s.history_end for s in siblings if s.history_end), default=last)
+    newest = max(
+        (s.history_end for s in siblings if s.history_end and s.dataset_id == ind.dataset_id),
+        default=last,
+    )
     dataset_newest_is_stale = is_stale(newest, freq, today)
     state = await db.get(WorldDatasetState, (ind.provider, ind.dataset_id))
     source_updated_at = state.last_update_of_data if state else None

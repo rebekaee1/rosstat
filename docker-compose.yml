@@ -192,6 +192,10 @@ services:
       RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS: ${RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS:-2400}
       RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL: ${RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL:-0}
       RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY: ${RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY:-0}
+      # Порядок обхода стран прогнозами. Значение из .env хоста попадает в контейнер только так
+      # (backend/.dockerignore исключает .env из образа). Дефолт совпадает с config.py и .env.example,
+      # его равенство проверяет backend/tests/test_world_forecast_priority_config.py.
+      RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES: ${RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES:-united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland}
       RUSTATS_EUROPE_WORLD_FORECAST_HOUR: ${RUSTATS_EUROPE_WORLD_FORECAST_HOUR:-21}
       RUSTATS_EUROPE_WORLD_FORECAST_MINUTE: ${RUSTATS_EUROPE_WORLD_FORECAST_MINUTE:-0}
       RUSTATS_US_WORLD_FORECAST_HOUR: ${RUSTATS_US_WORLD_FORECAST_HOUR:-5}

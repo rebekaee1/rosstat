@@ -422,15 +422,20 @@ async def resolve_world_hicp_successor(
 async def resolve_world_superseded(
     db: AsyncSession, slug: str, code: str, year: int | None = None,
 ) -> str | None:
-    """Замороженный у источника дубль (cind и т.п.) → 301 на живую каноническую карточку.
+    """Замороженный у источника дубль (cind, fp, prc_ppp_ind…) → 301 на живую каноническую карточку.
 
-    Правило круга 12: страница ряда, остановленного источником, не должна
+    Правило круга 12 (круг 13 добавил классы fp, prc_ppp_ind, nama_10_co3_p3 и условие «канон не
+    короче по истории»): страница ряда, остановленного источником, не должна
     выглядеть единственным ответом по предмету. Цель — листингованная карточка
     набора-преемника той же страны; без неё (или без запрошенного года) None и
     страница рендерится как архив с честной пометкой свежести.
     """
-    from app.data.world_superseded import is_superseded_dataset, superseded_target
-    from app.models import WorldDataPoint, WorldIndicator
+    from app.data.world_superseded import (
+        is_superseded_dataset,
+        live_superseded_canonical,
+        superseded_target,
+    )
+    from app.models import WorldDataPoint
     from sqlalchemy import func
 
     country = await world_country_by_slug(db, slug)
@@ -445,16 +450,10 @@ async def resolve_world_superseded(
     if target is None:
         return None
     canonical_code, mode = target
-    successor = (
-        await db.execute(
-            select(WorldIndicator).where(
-                WorldIndicator.country_id == old.country_id,
-                WorldIndicator.code == canonical_code,
-                WorldIndicator.is_listed.is_(True),
-                WorldIndicator.points_count > 0,
-            )
-        )
-    ).scalar_one_or_none()
+    successor = await live_superseded_canonical(
+        db, old.country_id, old.dataset_id, old.code, old.slice_json, old.unit,
+        old.history_start,
+    )
     if successor is None:
         return None
     if year is not None:

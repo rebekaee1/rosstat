@@ -42,8 +42,11 @@ def test_subgroups_and_live_datasets_are_not_redirected():
     from app.data.eurostat_listing import CATALOG_STEM_ALIASES
 
     merged = set().union(*CATALOG_STEM_ALIASES)
-    assert not (set(SUPERSEDED_WORLD_DATASETS) & merged)
-    assert set(superseded_dataset_ids()) == set(SUPERSEDED_WORLD_DATASETS)
+    # Исключение: prc_hicp_fp стоит в alias-группе, но ключ слияния его среза (CP00 + release=FIN)
+    # не совпадает ни с одним листингованным членом группы, поэтому ряд жил отдельной карточкой.
+    assert not (set(SUPERSEDED_WORLD_DATASETS) & merged - {"prc_hicp_fp"})
+    # поиск исключает целиком только наборы, закрытые полностью; остальные отсекает is_listed
+    assert set(superseded_dataset_ids()) == {"prc_hicp_cind", "prc_hicp_cann", "prc_hicp_cmon"}
 
 
 def _seed(db, *, canonical_listed=True):

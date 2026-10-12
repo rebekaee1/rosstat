@@ -51,7 +51,7 @@ export default function Brand({ className, compact = false }) {
       </svg>
       <span className="fe-brand-wordmark">
         forecast<span className="fe-brand-light">economy</span>
-        <small>ECONOMIC INTELLIGENCE</small>
+        <small aria-hidden="true">ECONOMIC INTELLIGENCE</small>
       </span>
     </span>
   );
