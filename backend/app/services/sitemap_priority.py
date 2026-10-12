@@ -168,7 +168,14 @@ async def _load_visits(db, plan: PriorityPlan, today: date) -> None:
         select(DailyPage.page)
         .where(DailyPage.day >= since)
         .group_by(DailyPage.page)
-        .having(func.sum(DailyPage.views) >= 3, visitors >= 2)
+        # Одиночные заходы в разные дни/сессии — след обхода роботами (ферма
+        # Chrome145, 20–29.09), а не интерес: страница должна собрать повтор
+        # минимум в двух разных днях.
+        .having(
+            func.sum(DailyPage.views) >= 3,
+            visitors >= 2,
+            func.count(func.distinct(DailyPage.day)) >= 2,
+        )
         .order_by(visitors.desc())
         .limit(_VISITS_LIMIT)
     )).all()
