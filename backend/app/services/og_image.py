@@ -185,13 +185,20 @@ _FONT_PATH = _FONT_DIR / "Inter-Variable.ttf"
 _CACHE: dict[str, tuple[float, bytes]] = {}
 _CACHE_TTL = 3600.0
 _CACHE_MAX = 600
-_CACHE_MAX_BYTES = 64 * 1024 * 1024
+# Круг 12, SPEED3: замер памяти воркера (стенд, поток боевых адресов): in-process PNG-кэш на 64 МБ × 3 воркера был
+# самым крупным управляемым слагаемым роста, а дисковый слой ниже (docker-том og_cache) и так хранит всё. 24 МБ держат
+# ≈ 100 последних картинок — этого хватает для повторных запросов подряд (бот грузит og:image сразу после страницы).
+_CACHE_MAX_BYTES = int(os.environ.get("OG_PROC_CACHE_BYTES", 24 * 1024 * 1024))
 _CACHE_LOCK = threading.RLock()
 
 # PIL ImageFont.truetype держит REG-дескриптор файла. Без кэша каждый OG-рендер
 # открывает Inter/Golos заново; объекты с __del__ плохо собирает GC.
 _FONT_CACHE: dict[tuple[str, int, int], ImageFont.FreeTypeFont] = {}
 _FONT_FILE_BYTES: dict[str, bytes] = {}
+# Ключ — (файл, размер, насыщенность): `_fit_font_size` подбирает размеры под ширину строки, и разных ключей набегает
+# сотни (замер: 152 шрифта ≈ 12 МБ за 600 карточек). Потолок вытесняет самые старые; шрифт в руках другого потока
+# остаётся жив, пока на него ссылаются.
+_FONT_CACHE_MAX = 128
 
 
 def _cached_truetype(path: Path, size: int, *axes: float) -> ImageFont.FreeTypeFont:
@@ -210,6 +217,8 @@ def _cached_truetype(path: Path, size: int, *axes: float) -> ImageFont.FreeTypeF
         except OSError:
             pass
     _FONT_CACHE[key] = font
+    while len(_FONT_CACHE) > _FONT_CACHE_MAX:
+        _FONT_CACHE.pop(next(iter(_FONT_CACHE)), None)
     return font
 
 
@@ -515,9 +524,13 @@ def quicklink_art_theme(text: str) -> str:
     return next((theme for theme, words in groups if any(word in key for word in words)), "finance")
 
 
-@lru_cache(maxsize=17)
+@lru_cache(maxsize=8)
 def _art_background(theme: str) -> Image.Image:
-    """Bounded decoded art cache; Pillow never retains an open file descriptor."""
+    """Bounded decoded art cache; Pillow never retains an open file descriptor.
+
+    Круг 12, SPEED3: кадр RGBA 1200×630 — 3 МБ; 17 тем × 3 МБ × 3 воркера были ≈ 150 МБ. Восемь самых частых тем
+    держат воркеру ≈ 24 МБ, редкая тема перечитывается с диска, готовая карточка уходит в дисковый кэш (время пересборки темы — в отчёте SPEED3).
+    """
     img = Image.new("RGBA", (WIDTH, HEIGHT), (*BG, 255))
     path = _ART_DIR / f"{theme}.webp"
     if path.is_file():
