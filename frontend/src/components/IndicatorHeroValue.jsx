@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { formatDate } from '../lib/format';
 import { glueDate, periodPhrase } from '../lib/periodPhrase';
 import { formatDeltaWithUnit } from '../lib/deltaText';
-import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
+import { formatPercentChangeFine } from '../lib/indicatorSummary';
 import { splitUnit } from '../lib/countryFlag';
 import { useLocale, useT } from '../i18n';
 import DeltaBadge from './DeltaBadge';
@@ -63,7 +63,7 @@ export default function IndicatorHeroValue({
     const abs = useAbs
       ? formatDeltaWithUnit(changeAbs, unitText.startsWith('%') ? '%' : unitText, { digits: shown.digits, locale })
       : null;
-    const pctText = useAbs ? null : formatPercentChange(changePct, locale, growthDigits(changePct));
+    const pctText = useAbs ? null : formatPercentChangeFine(changePct, locale);
     const known = useAbs ? changeAbs != null : changePct != null;
     if (known) {
       const flat = useAbs ? abs.flat : pctText == null;

@@ -3710,4 +3710,6 @@ export default {
   // ===== Круг 11: интеграция =====
   'c11i.compare.save': 'Save comparison',
   'c11i.calc.save': 'Save calculation',
+  // ===== Круг 12: UI2 =====
+  'c12u.delta.prevDay': 'vs previous day',
 };

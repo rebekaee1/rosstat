@@ -231,6 +231,22 @@ export function formatPercentChange(pct, locale = 'ru', digits = 1) {
   return `${n > 0 ? '+' : MINUS}${body}${NBSP}%`;
 }
 
+/**
+ * То же, но малое изменение не прячется в «без изменений»: у рядов «по дням» (биткоин, золото, Brent) шаг от закрытия вчера до сегодняшнего
+ * числа часто меньше 0,05 %, и «без изменений» при ленте «+0,6 %» читалось как ошибка (круг 12, Г3). Знаки цифр добавляются (до трёх),
+ * «без изменений» (null) остаётся только для настоящего нуля.
+ */
+export function formatPercentChangeFine(pct, locale = 'ru') {
+  const n = Number(pct);
+  if (pct == null || !Number.isFinite(n)) return null;
+  const base = growthDigits(n);
+  for (let digits = base; digits <= 3; digits += 1) {
+    const text = formatPercentChange(n, locale, digits);
+    if (text != null) return text;
+  }
+  return null;
+}
+
 /** Рост в процентах крупными окнами: от 1000 % убираем дробную часть, чтобы не было «+1 234,5 %». */
 export function growthDigits(pct) {
   return Math.abs(Number(pct)) >= 100 ? 0 : 1;
