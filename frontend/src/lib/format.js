@@ -435,6 +435,14 @@ export function setNumberFormat(value) {
   return changed;
 }
 
+/**
+ * Круг 13: тег для `Intl`/`toLocaleString` по тому же правилу, что и formatFixed: настройка кабинета «Формат чисел» сильнее языка страницы.
+ * Раньше блоки с `toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU')` игнорировали настройку и давали на одной странице «6,34» и «6.34».
+ */
+export function numberTag(locale) {
+  return (numberFormatOverride || resolveFormatLocale(locale)) === 'en' ? 'en-US' : 'ru-RU';
+}
+
 // Тысячи: RU — неразрывный пробел, EN — запятая («100,000»).
 function groupThousands(str, loc) {
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, loc === 'en' ? ',' : '\u00A0');

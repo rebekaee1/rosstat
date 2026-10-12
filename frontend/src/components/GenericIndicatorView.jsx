@@ -21,6 +21,7 @@ import { downloadExcel, downloadCSV } from '../lib/excel';
 import { buildIndicatorSummary, dataDigitsOf } from '../lib/indicatorSummary';
 import { resolveDateFormat } from '../lib/format';
 import { WorldHeroLine } from './WorldStatTiles';
+import { isFreshIntraday, useLiveQuote } from '../lib/tickerLive';
 import IndicatorHeroValue from './IndicatorHeroValue';
 import FreshnessNote from './FreshnessNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
@@ -128,21 +129,32 @@ export default function GenericIndicatorView({
 
   const handleFullData = useCallback((d) => setFullChartData(d), []);
 
+  // Биткоин (круг 13): число и изменение в шапке берутся от той же котировки и той же базы, что и лента курсов («к цене 24 часа назад»).
+  // Раньше шапка сравнивала сегодняшнюю точку ряда с закрытием вчера, а лента — цену с ценой сутки назад: «без изменений» против «+0,6 %».
+  const liveSnapshot = useLiveQuote(code === 'btc-usd' ? 'btc-usd' : null);
+  const liveBtc = code === 'btc-usd' && isFreshIntraday(liveSnapshot)
+    && (dataPoints?.length ?? 0) > 1
+    && String(dataPoints[dataPoints.length - 1]?.date || '').slice(0, 10) === liveSnapshot.as_of_day
+    ? liveSnapshot : null;
+  const heroPoints = useMemo(() => {
+    if (!liveBtc) return dataPoints;
+    return [...dataPoints.slice(0, -1), { ...dataPoints[dataPoints.length - 1], value: Number(liveBtc.price) }];
+  }, [dataPoints, liveBtc]);
   // Одна строка с главным числом под названием: как на странице показателя страны.
   const heroSummary = useMemo(() => buildIndicatorSummary({
-    points: dataPoints,
+    points: heroPoints,
     frequency: effectiveIndicator?.frequency,
     unit: effectiveIndicator?.unit,
     dataDigits: dataDigitsOf(dataPoints),
     locale,
-  }), [dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
+  }), [heroPoints, dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
   const heroDateFormat = resolveDateFormat({ chartMode: 'cpi', frequency: effectiveIndicator?.frequency, safeViewMode: safeMode });
   const heroFreq = effectiveIndicator?.frequency;
   // Ряд «по дням»: изменение считается от значения предыдущего дня (круг 12, Г3); при недельной или месячной детализации подпись прежняя.
   const heroDayGap = heroSummary?.prev && heroSummary?.last
     ? (Date.parse(heroSummary.last.date) - Date.parse(heroSummary.prev.date)) / 86_400_000
     : null;
-  const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+  const heroDeltaSuffix = liveBtc ? t('c13u.delta.last24h') : heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
     : heroFreq === 'daily' && heroDayGap != null && heroDayGap > 0 && heroDayGap <= 4 ? t('c12u.delta.prevDay')
     : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
       : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
@@ -194,6 +206,7 @@ export default function GenericIndicatorView({
             polarity={heroPolarity}
             frequency={heroFreq}
             deltaSuffix={heroDeltaSuffix}
+            liveChangePct={liveBtc ? Number(liveBtc.change_pct) : null}
             loading={loadingInd || isLoading}
           />
         ) : null}

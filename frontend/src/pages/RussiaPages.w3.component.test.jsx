@@ -113,7 +113,7 @@ describe('IndicatorTile', () => {
     expect(container.textContent).toContain('Без изменений');
     expect(container.textContent).not.toMatch(/0,00/);
     // Дата склеена неразрывными пробелами: «2026» не остаётся одиноким на второй строке.
-    expect(container.textContent).toContain('на 4\u00A0октября\u00A02026');
+    expect(container.textContent).toContain('на\u00A04\u00A0октября\u00A02026');
   });
 
   it('изменение с единицей и периодом, цвет по смыслу', () => {
@@ -126,7 +126,7 @@ describe('IndicatorTile', () => {
     expect(badge.textContent.replace(/\u00a0/g, ' ')).toContain('процентного пункта');
     expect(badge.className).toContain('fe-tone--bad');
     expect(container.textContent).toContain('за месяц');
-    expect(container.textContent).toContain('за август\u00A02026');
+    expect(container.textContent).toContain('за\u00A0август\u00A02026');
   });
 });
 

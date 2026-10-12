@@ -1,6 +1,8 @@
 // Население человеческими числами: «28,1 млн человек», «+0,35 млн (+1,3 %)», «5-е место среди стран».
 // Вместо «28 076 986 человек, +346 630,00» и «среднего за 47 лет».
 
+import { numberTag } from './format';
+
 /** Множитель единицы ряда: «млн чел.» -> 1e6, «тыс. человек» -> 1e3, иначе люди. */
 export function peopleScale(unit) {
   const text = String(unit || '').toLowerCase();
@@ -15,7 +17,7 @@ export function isPeopleUnit(unit) {
   return /чел|people|persons|person/i.test(String(unit || ''));
 }
 
-const nf = (locale, digits) => new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+const nf = (locale, digits) => new Intl.NumberFormat(numberTag(locale), {
   minimumFractionDigits: digits,
   maximumFractionDigits: digits,
 });

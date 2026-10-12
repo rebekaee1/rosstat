@@ -1,4 +1,5 @@
 // Чистая логика раздела «Курсы валют и криптовалют»: названия пар по-человечески, вкладки,
+import { numberTag } from './format';
 // конвертер через общий граф курсов и изменения за неделю / месяц / год для страницы курса.
 
 /** Валюты и монеты: название, форма «к чему» (для «Доллар к рублю») и значок. */
@@ -224,7 +225,7 @@ export function formatRate(value, locale = 'ru') {
   else if (abs >= 0.01) digits = 4;
   else if (abs >= 0.0001) digits = 6;
   else digits = 8;
-  return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+  return new Intl.NumberFormat(numberTag(locale), {
     minimumFractionDigits: digits === 8 ? 0 : digits, maximumFractionDigits: digits,
   }).format(n);
 }
@@ -237,7 +238,7 @@ export function formatConverted(value, locale = 'ru') {
   let min = 2;
   let max = 2;
   if (abs >= 1000) { min = 0; max = 0; } else if (abs > 0 && abs < 1) { min = 2; max = 8; }
-  return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+  return new Intl.NumberFormat(numberTag(locale), {
     minimumFractionDigits: min, maximumFractionDigits: max,
   }).format(n);
 }

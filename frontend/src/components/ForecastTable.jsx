@@ -43,6 +43,17 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
           : mode === 'index' ? t('forecast.value.index')
             : (suffix ? t('forecast.value.withUnit', { unit: suffix }) : t('forecast.value.generic'));
 
+  // Круг 13, V4: между датой и значением была пустая полоса (карточка шире содержимого). Теперь там тонкая полоса «насколько значение
+  // выше или ниже остальных точек прогноза»: каждой дате одно число и одна полоса, диапазона (от и до) нигде не показывается.
+  const nums = rows.map((row) => Number(row.value)).filter((n) => Number.isFinite(n));
+  const lo = nums.length ? Math.min(...nums) : 0;
+  const hi = nums.length ? Math.max(...nums) : 0;
+  const barShare = (value) => {
+    const n = Number(value);
+    if (!Number.isFinite(n) || hi === lo) return 0.55;
+    return 0.34 + 0.66 * ((n - lo) / (hi - lo));
+  };
+
   return (
     <div
       className="fe-reveal k5-table rounded-[2rem] overflow-hidden fe-glass-lite"
@@ -55,12 +66,13 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
       </div>
 
       <div className="overflow-x-auto scrollbar-hide">
-        <table className="w-full text-sm">
+        <table className="fe-fc-table w-full text-sm">
           <thead>
             <tr>
               <th scope="col" className="text-left px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {t('forecast.asOf')}
               </th>
+              <th scope="col" className="fe-fc-bar-col" aria-hidden="true" />
               <th scope="col" className="text-right px-5 py-3 text-xs font-medium text-text-secondary uppercase tracking-wider">
                 {valueLabel}
               </th>
@@ -71,6 +83,9 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
               <tr key={row.date} className="transition-colors">
                 <td className="px-5 py-2.5 text-text-secondary font-mono text-xs">
                   {formatDate(row.date, dateFormat)}
+                </td>
+                <td className="fe-fc-bar-col" aria-hidden="true">
+                  <span className="fe-fc-bar" style={{ '--fe-fc-share': barShare(row.value).toFixed(3) }} />
                 </td>
                 <td className="px-5 py-2.5 text-right font-mono font-medium text-champagne">
                   {formatValueWithUnit(row.value, unit, valueDigits)}

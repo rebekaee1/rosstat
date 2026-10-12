@@ -2248,7 +2248,7 @@ export default function ComparePage({ renderSave = null } = {}) {
   const unitsCaption = (() => {
     if (indexed || distinctUnits.length !== 1) return '';
     const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];
-    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: unitLabel(unit) }) : '';
+    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: String(unitLabel(unit)).replace(/\.$/, '') }) : '';
   })();
   // Разрыв двух величин словами: «США больше, чем Китай, в 1,6 раза».
   const gap = (() => {
