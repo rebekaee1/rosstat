@@ -1176,7 +1176,7 @@ def _ssr_boot_splash() -> str:
     caption = "Loading…" if locale == "en" else "Загружаем…"
     facts = "".join(f"<span>{text}</span>" for text in _BOOT_FACTS[locale])
     return (
-        '<div class="fe-boot-splash" aria-hidden="true">'
+        '<div class="fe-boot-splash" aria-hidden="true" data-nosnippet>'
         + _BOOT_BGF
         + _BOOT_LOGO
         + _BOOT_GLOBE
