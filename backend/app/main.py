@@ -211,7 +211,22 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
             self._record(500, request.url.path)
             raise
         self._record(status, request.url.path)
+        self._note_bot(request, status)
         return response
+
+    @staticmethod
+    def _note_bot(request: Request, status: int) -> None:
+        """Счётчик ответов поисковым роботам для недельного SEO-отчёта (флаг выключен — нулевая цена)."""
+        if not settings.seo_weekly_report_enabled:
+            return
+        ua = request.headers.get("user-agent")
+        if not ua or "bot" not in ua.lower() and "yandex" not in ua.lower() and "google" not in ua.lower():
+            return
+        try:
+            from app.services.seo_weekly_report import record_bot_status
+            asyncio.get_running_loop().create_task(record_bot_status(ua, status))
+        except Exception:
+            pass
 
     @classmethod
     def _record(cls, status: int, path: str) -> None:
@@ -1038,6 +1053,24 @@ async def lifespan(app: FastAPI):
                 settings.telegram_digest_cron_hour,
                 settings.telegram_digest_cron_minute,
             )
+
+        if settings.seo_weekly_report_enabled:
+            from app.services.seo_weekly_report import seo_weekly_report_job
+            scheduler.add_job(
+                locked_job(seo_weekly_report_job, "seo_weekly_report", ttl_seconds=20 * 60),
+                trigger=CronTrigger(
+                    day_of_week="mon",
+                    hour=settings.seo_weekly_report_cron_hour,
+                    minute=settings.seo_weekly_report_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="seo_weekly_report",
+                name="Telegram weekly SEO report (Mon, MSK)",
+                replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
+            )
+            logger.info("SEO weekly report enabled: Mon %02d:%02d MSK",
+                        settings.seo_weekly_report_cron_hour, settings.seo_weekly_report_cron_minute)
 
         if settings.telegram_weekly_enabled:
             from app.services.telegram_reports import weekly_report_job
