@@ -7040,6 +7040,144 @@
         "No manual getUpdates offset consumption; owner callback interaction not tested",
         "One long-poll ReadTimeout followed by 8 completed cycles without new errors; one first home HTTPS probe timed out, retry succeeded while readiness remained healthy"
       ]
+    },
+    {
+      "id": "circle12-code-flags-2026-10-12",
+      "observed_date_msk": "2026-10-12",
+      "local_source_commit": "2b8e2723",
+      "kind": "code defaults, not a server observation",
+      "scope": "Флаги и значения по умолчанию в коде ветки circle12/int (config.py, docker-compose.yml, .env.example). Сервер и стенд не опрашивались: что включено на боевом или тестовом сервере, неизвестно; код выкладкой флаги не включает. Порядок включения — docs/workflow.md#circle12-2026-10-12.",
+      "settings": [
+        {
+          "env": "RUSTATS_SSR_WARM_ENABLED",
+          "setting": "ssr_warm_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "прогрев кэша SSR и API: первый экран обеих языковых версий каждые 45 с, топ-страницы по daily_pages раз в ~9 минут; задача ssr_warm зарегистрирована всегда и ничего не делает без флага"
+        },
+        {
+          "env": "RUSTATS_SSR_WARM_TOP_N",
+          "setting": "ssr_warm_top_n",
+          "default": 50,
+          "passed_by_compose": true,
+          "effect": "сколько самых посещаемых страниц (14 дней) прогревать сверх первого экрана; 0 = только первый экран"
+        },
+        {
+          "env": "RUSTATS_SSR_SWR_ENABLED",
+          "setting": "ssr_swr_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "stale-while-revalidate для SSR HTML и тяжёлых API: запись живёт ttl + stale, устаревшая отдаётся сразу, пересчёт в фоне (ADR-0020); откат требует очистки ключей fe:*:ssr:*"
+        },
+        {
+          "env": "RUSTATS_SSR_SWR_STALE_SECONDS",
+          "setting": "ssr_swr_stale_seconds",
+          "default": 21600,
+          "passed_by_compose": true,
+          "effect": "сколько секунд запись живёт после своего ttl"
+        },
+        {
+          "env": "RUSTATS_SSR_SWR_TOKEN",
+          "setting": "ssr_swr_token",
+          "default": "",
+          "passed_by_compose": false,
+          "effect": "секрет заголовка X-FE-Revalidate; пусто = производный от scrape_bind_secret или database_url; в compose не перечислен"
+        },
+        {
+          "env": "RUSTATS_SSR_SWR_BASE_URL",
+          "setting": "ssr_swr_base_url",
+          "default": "",
+          "passed_by_compose": false,
+          "effect": "адрес, по которому backend перезапрашивает свою страницу; пусто = ssr_warm_base_url (http://frontend); в compose не перечислен"
+        },
+        {
+          "env": "RUSTATS_FRESHNESS_WATCHDOG_ENABLED",
+          "setting": "freshness_watchdog_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "сторож свежести: раз в сутки в 10:30 МСК одно сообщение о просроченных публичных рядах (ADR-0021)"
+        },
+        {
+          "env": "RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE",
+          "setting": "freshness_watchdog_min_stale",
+          "default": 25,
+          "passed_by_compose": true,
+          "effect": "порог числа просроченных рядов для сообщения"
+        },
+        {
+          "env": "RUSTATS_ETL_JOB_MAX_SECONDS",
+          "setting": "etl_job_max_seconds",
+          "default": 7200,
+          "passed_by_compose": true,
+          "effect": "потолок времени ежедневного ETL, 0 = без потолка; остаток пропускается и назван в итоге («Not run (job time ceiling)»)"
+        },
+        {
+          "env": "RUSTATS_WORLD_IMF_OFFICIAL_FORECAST_ENABLED",
+          "setting": "world_imf_official_forecast_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "официальные прогнозы МВФ (WEO, ближайший год) в world_forecasts и два новых ряда WEO (NGDP_RPCH, BCA_NGDPD)"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED",
+          "setting": "world_forecast_candidates_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "кандидатные модели с вложенным выбором, заполнение коротких дыр, границы 0..100 для процентов"
+        },
+        {
+          "env": "RUSTATS_REST_WORLD_FORECAST_ENABLED",
+          "setting": "rest_world_forecast_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "задача rest_world_forecast: страны вне США и Европы, 04:50 МСК"
+        },
+        {
+          "env": "RUSTATS_REST_WORLD_FORECAST_DAILY_LIMIT",
+          "setting": "rest_world_forecast_daily_limit",
+          "default": 400,
+          "passed_by_compose": true,
+          "effect": "рядов в день у rest_world_forecast"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS",
+          "setting": "world_forecast_max_run_seconds",
+          "default": 2400,
+          "passed_by_compose": true,
+          "effect": "потолок времени одного пакета прогнозов (США, Европа, остальной мир)"
+        },
+        {
+          "env": "RUSTATS_EUROPE_WORLD_FORECAST_HOUR / _MINUTE",
+          "setting": "europe_world_forecast_hour / europe_world_forecast_minute",
+          "default": "21 / 0",
+          "passed_by_compose": true,
+          "effect": "время пакета Европы (МСК); 21:00 лежит внутри окна ETL 19:30–22:30, при расширении охвата переносить на 23:10"
+        }
+      ],
+      "schema": {
+        "alembic_chain_unreleased": [
+          "20260930_session_reviews",
+          "20261004_session_changes",
+          "20261005_push_subscriptions",
+          "20261009_user_cabinet",
+          "20261009b_analytics_signups",
+          "20261009c_session_perf",
+          "20261012b_world_dataset_lower_idx"
+        ],
+        "alembic_head_in_code": "20261012b_world_dataset_lower_idx",
+        "server_head_last_observed": "20260927_world_nonzero_idx (30.09.2026)",
+        "note": "20261012b_world_dataset_lower_idx — только индекс lower(dataset_id) CONCURRENTLY; строится заранее на старом коде; работа DATA2 заводит 20261012_world_ingest_note с тем же родителем, головы надо слить"
+      },
+      "data_observations_readonly": {
+        "source": "боевая база, короткие запросы на чтение, 12.10.2026 (зона DATA и FORECAST)",
+        "public_world_series": 278882,
+        "stale_world_series": 22464,
+        "stale_due_to_frozen_eurostat_slice": 6511,
+        "public_world_forecasts": 10194,
+        "limits": "значения сняты разово, не обновляются; публичные счётчики меняются с каждым ночным прогоном"
+      },
+      "limits": "Не проверялось: включение флагов на сервере, alembic upgrade head по цепочке на PostgreSQL, фактическое значение любого флага на боевом и тестовом серверах, эффект прогрева и SWR на TTFB, работа brotli за Caddy, deploy/test-nginx-config.sh (нужен Docker), нагрузка пакета rest_world_forecast на планировщик с 1 vCPU.",
+      "gap": "RUSTATS_SSR_SWR_TOKEN и RUSTATS_SSR_SWR_BASE_URL в docker-compose.yml не перечислены (compose передаёт в backend только явный список переменных): значения из корневого .env не дойдут до контейнеров, пока их не добавят; по умолчанию секрет выводится сам, адрес берётся из ssr_warm_base_url. Сверено чтением docker-compose.yml, 12.10.2026."
     }
   ]
 }
