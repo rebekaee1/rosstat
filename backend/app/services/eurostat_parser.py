@@ -948,6 +948,19 @@ def fetch_and_parse_dataset(
         )
 
 
+# Доля не загруженных срезов, выше которой перенос на новую базу индекса уходит на повтор.
+MAX_SLICE_FAIL_SHARE = 0.10
+
+
+def _base_moved(dims: dict[str, list[str]], dataset_id: str, live: dict[str, set[str]]) -> bool:
+    """Живость единиц сменила выбор базы индекса (I15 → I21)."""
+    if not (live or {}).get("unit"):
+        return False
+    before = choose_headline_slice(dims, dataset_id=dataset_id).get("unit")
+    after = choose_headline_slice(dims, dataset_id=dataset_id, live=live).get("unit")
+    return before != after
+
+
 def fetch_deep_slices(
     dataset_id: str,
     *,
@@ -966,6 +979,7 @@ def fetch_deep_slices(
                 skip.dataset_id, skip.dim, skip.non_total_count, skip.reason,
             )
         out: list[DatasetParseResult] = []
+        failed = 0
         for spec in plan.specs:
             try:
                 out.append(
@@ -978,7 +992,14 @@ def fetch_deep_slices(
                     )
                 )
             except Exception as exc:  # noqa: BLE001
+                failed += 1
                 logger.warning("deep slice %s %s failed: %s", dataset_id, spec, exc)
+        if failed and out and _base_moved(dims, dataset_id, live) and failed > MAX_SLICE_FAIL_SHARE * len(plan.specs):
+            # Перенос на живую базу индекса с дырами не засчитываем: состояние набора стало бы
+            # «ok» до следующей смены оглавления. Лучше повтор следующим прогоном.
+            raise RuntimeError(
+                f"{dataset_id}: не загружено {failed} из {len(plan.specs)} срезов при смене базы индекса, повтор позже"
+            )
         if out:
             return out
         return [

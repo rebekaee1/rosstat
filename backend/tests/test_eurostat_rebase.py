@@ -322,3 +322,26 @@ def test_unknown_liveness_with_several_index_bases_is_retried_not_guessed(monkey
     monkeypatch.setattr(parser, "_fetch_structure_live",
                         lambda *a, **k: ({"unit": ["I21", "PCH_SM"]}, {}))
     assert parser.fetch_dataset_structure_live("sts_inpi_q")[1] == {}
+
+
+def test_base_move_with_many_failed_slices_is_retried(monkeypatch):
+    import pytest
+
+    import app.services.eurostat_parser as parser
+
+    dims = {"freq": ["M"], "nace_r2": ["G47", "G46", "G45"], "s_adj": ["SCA"],
+            "unit": ["I21", "I15"], "geo": [], "time": []}
+    monkeypatch.setattr(parser, "fetch_dataset_structure_live",
+                        lambda *a, **k: (dims, {"unit": {"I21"}}))
+    calls = {"n": 0}
+
+    def fake_fetch(dataset_id, **kw):
+        calls["n"] += 1
+        if calls["n"] > 1:
+            raise RuntimeError("timeout")
+        return parser.DatasetParseResult(dataset_id, "t", "monthly", kw["forced_slice"], "h", "I21", {}, "u")
+
+    monkeypatch.setattr(parser, "fetch_and_parse_dataset", fake_fetch)
+    assert parser._base_moved(dims, "sts_trtu_m", {"unit": {"I21"}})
+    with pytest.raises(RuntimeError, match="повтор позже"):
+        parser.fetch_deep_slices("sts_trtu_m")
