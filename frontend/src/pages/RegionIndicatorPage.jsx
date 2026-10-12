@@ -339,7 +339,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               {active.indicator.section_name && (
                 <span className="min-w-0 pl-2 text-text-secondary">{active.indicator.section_name}</span>
               )}
-              <CabinetActionsSlot subject={regionIndicatorSubject(slug, code, indName)} renderActions={renderActions} />
+              <CabinetActionsSlot subject={regionIndicatorSubject(slug, code, indName, regionName)} renderActions={renderActions} />
             </div>
             <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-2xl">
               {indName}

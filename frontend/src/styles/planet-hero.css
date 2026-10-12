@@ -308,3 +308,35 @@
   .fe-dashboard .fe-hero-grid > .fe-today .fe-today__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .fe-dashboard .fe-hero-grid > .fe-today .fe-today__grid > li:first-child { grid-column: auto; }
 }
+
+/* ===== Круг 12, зона UI2 ================================================================================================== */
+/* К3 (проверка 12.10): слева под быстрыми ссылками оставалось 130–340 px пустоты, пока карточка с картой выше текста.
+   От 1280 px колонка текста растягивается сеткой до высоты карточки (align-self: stretch) и становится столбцом: заголовок и
+   подпись сверху, поиск и быстрые ссылки внизу, нижний край ссылок на одной линии с нижним краем карточки. Ссылки встают
+   строками на всю ширину колонки и сами тянутся по высоте (44–68 px каждая), поэтому лишнее место работает на содержимое,
+   а не остаётся дырой; остаток (если карточка выше) уходит одним промежутком над поиском. Фиксированной высоты нет: когда
+   карточка подгрузила рейтинг и стала на пиксели выше или ниже, текст сверху не сдвигается, меняются только строки ссылок. */
+@media (min-width: 1280px) {
+  .fe-hero-text { display: flex; flex-direction: column; align-self: stretch; }
+  .fe-dashboard [data-block="home-hero"] .fe-hero-text .fe-hero-search { margin-top: auto; padding-top: 20px; }
+  .fe-hero-text .fe-quick { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; max-height: 400px; }
+  .fe-hero-text .fe-quick__row { flex: 1 1 auto; flex-direction: column; flex-wrap: nowrap; gap: 8px; padding: 2px 0 0; }
+  .fe-hero-text .fe-quick__row > li { flex: 1 1 44px; display: flex; min-height: 44px; max-height: 68px; }
+  .fe-dashboard .fe-hero-text .fe-quick__chip {
+    flex: 1 1 auto;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 20px;
+  }
+  .fe-hero-text .fe-quick__chip::after {
+    content: '\2192';
+    position: static;
+    inset: auto;
+    color: var(--color-text-tertiary);
+    font-weight: 400;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .fe-hero-text .fe-quick__chip:hover::after { color: var(--z3-gold-ink, var(--color-champagne-ink)); transform: translateX(2px); }
+}

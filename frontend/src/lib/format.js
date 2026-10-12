@@ -425,6 +425,16 @@ const UNIT_CONFIG = {
   'млн кв.м':  { digits: 1, suffix: ' млн кв.м', space: false },
 };
 
+// Круг 12: настройка кабинета «Формат чисел» (`lib/cabinetPrefs.js`) переопределяет разделители независимо от языка страницы.
+// Касается только чисел (formatFixed); даты и тексты идут по языку страницы. Возвращает true, если значение поменялось.
+let numberFormatOverride = null;
+export function setNumberFormat(value) {
+  const next = value === 'ru' || value === 'en' ? value : null;
+  const changed = next !== numberFormatOverride;
+  numberFormatOverride = next;
+  return changed;
+}
+
 // Тысячи: RU — неразрывный пробел, EN — запятая («100,000»).
 function groupThousands(str, loc) {
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, loc === 'en' ? ',' : '\u00A0');
@@ -433,7 +443,7 @@ function groupThousands(str, loc) {
 // Десятичный разделитель: RU — запятая (В-11), EN — точка. Тысячи — NBSP.
 // CSV/Excel-экспорт не затронут — файлы собирает бэкенд из сырых значений.
 function formatFixed(num, digits, locale) {
-  const loc = resolveFormatLocale(locale);
+  const loc = numberFormatOverride || resolveFormatLocale(locale);
   const dec = loc === 'en' ? '.' : ',';
   const fixed = num.toFixed(digits);
   const [intPart, decPart] = fixed.split('.');

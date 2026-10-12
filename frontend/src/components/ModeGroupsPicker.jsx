@@ -25,6 +25,7 @@ export default function ModeGroupsPicker({
   onSubClick,
   compact = false,
   className,
+  pending = false, // круг 12: данные выбранного режима грузятся, на активных чипах кольцо ожидания
 }) {
   const t = useT();
   const activeGroup = groups.find((g) => g.id === activeGroupId);
@@ -45,6 +46,7 @@ export default function ModeGroupsPicker({
           <Chip
             key={group.id}
             active={group.id === activeGroupId}
+            pending={pending && group.id === activeGroupId}
             onClick={() => onTopClick(group)}
           >
             {group.label}
@@ -64,6 +66,7 @@ export default function ModeGroupsPicker({
               <Chip
                 key={item.mode}
                 active={currentMode === item.mode}
+                pending={pending && currentMode === item.mode}
                 onClick={() => onSubClick(item)}
               >
                 {item.label}

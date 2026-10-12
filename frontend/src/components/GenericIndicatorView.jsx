@@ -137,7 +137,12 @@ export default function GenericIndicatorView({
   }), [dataPoints, effectiveIndicator?.frequency, effectiveIndicator?.unit, locale]);
   const heroDateFormat = resolveDateFormat({ chartMode: 'cpi', frequency: effectiveIndicator?.frequency, safeViewMode: safeMode });
   const heroFreq = effectiveIndicator?.frequency;
+  // Ряд «по дням»: изменение считается от значения предыдущего дня (круг 12, Г3); при недельной или месячной детализации подпись прежняя.
+  const heroDayGap = heroSummary?.prev && heroSummary?.last
+    ? (Date.parse(heroSummary.last.date) - Date.parse(heroSummary.prev.date)) / 86_400_000
+    : null;
   const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+    : heroFreq === 'daily' && heroDayGap != null && heroDayGap > 0 && heroDayGap <= 4 ? t('c12u.delta.prevDay')
     : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
       : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
         : heroFreq === 'monthly' ? t('w3.tele.delta.prevMonth')
@@ -206,6 +211,7 @@ export default function GenericIndicatorView({
           family={family}
           currentMode={safeMode}
           onChange={setViewMode}
+          pending={Boolean(isLoading)}
           trackContext={{ code, category: indicator?.category }}
         />
       </ViewModesPanel>

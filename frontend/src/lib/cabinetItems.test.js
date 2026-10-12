@@ -49,6 +49,8 @@ describe('ссылки записей', () => {
     expect(savedItemHref({ kind: 'country', item_key: 'turkey' })).toBe('/turkey');
     expect(savedItemHref({ kind: 'comparison', item_key: 'codes=a,b' })).toBe('/compare?codes=a,b');
     expect(savedItemHref({ kind: 'calc', item_key: 'x' })).toBe('/calculator');
+    expect(savedItemHref({ kind: 'region', item_key: 'moskva' })).toBe('/russia/region/moskva');
+    expect(savedItemHref({ kind: 'region', item_key: 'moskva:uroven-bezrabotitsy' })).toBe('/russia/region/moskva/uroven-bezrabotitsy');
     expect(savedItemHref({ kind: 'world', item_key: 'x' })).toBeNull();
   });
 

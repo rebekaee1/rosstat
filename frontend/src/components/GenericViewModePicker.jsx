@@ -26,6 +26,7 @@ export default function GenericViewModePicker({
   trackContext,
   title,
   compact = false,
+  pending = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -100,6 +101,7 @@ export default function GenericViewModePicker({
       currentMode={currentMode}
       onSubClick={(item) => onSubClick(expandedGroup, item)}
       compact={compact}
+      pending={pending}
     />
   );
 }

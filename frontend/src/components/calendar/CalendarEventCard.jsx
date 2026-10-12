@@ -264,7 +264,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
                     to={russiaIndicatorPath(ind.code)}
                     className={cn(
                       FOCUS_RING_SURFACE,
-                      'inline-flex items-center gap-1.5 rounded-lg py-0.5 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted',
+                      'inline-flex min-h-10 items-center gap-1.5 rounded-lg py-0.5 text-sm font-medium text-champagne-ink transition-colors hover:text-champagne-muted lg:min-h-8',
                     )}
                   >
                     {ind.name}
@@ -296,7 +296,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           <SourceLink
             href={event.source_url}
             fallbackTo={linkedIndicators[0] ? russiaIndicatorPath(linkedIndicators[0].code) : calendarPath()}
-            className="inline-flex items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors"
+            className="inline-flex min-h-10 items-center gap-1 text-xs text-text-tertiary hover:text-text-secondary transition-colors lg:min-h-8"
           >
             {t('z1.cal.source')}
             {isExternalHref(event.source_url) ? <ExternalLink className="w-3 h-3" aria-hidden="true" /> : null}

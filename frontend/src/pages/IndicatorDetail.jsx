@@ -565,6 +565,7 @@ export default function IndicatorDetail() {
     : chartMode === 'annual' ? 'annual'
       : effectiveIndicator?.frequency;
   const heroDeltaSuffix = heroFreq === 'quarterly' ? t('w3.tele.delta.prevQuarter')
+    : heroFreq === 'daily' && heroPoints === dataPoints ? t('c12u.delta.prevDay')
     : heroFreq === 'weekly' ? t('w3.tele.delta.prevWeek')
       : heroFreq === 'annual' ? t('w3.tele.delta.prevYear')
         : heroFreq === 'monthly' ? t('w3.tele.delta.prevMonth')
@@ -695,6 +696,7 @@ export default function IndicatorDetail() {
             modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
             currentMode={familyMode}
             onChange={setViewMode}
+            pending={Boolean(loadingData || chartLoading)}
             trackContext={{ code, category: indicator?.category }}
           />
         )}

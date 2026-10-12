@@ -25,6 +25,7 @@ import { useGlintOnChange } from '../lib/calcGlint';
 import { useLocale, useT } from '../i18n';
 import '../styles/y2-indicator.css';
 import '../styles/w6-g.css';
+import { converterCurrency, usePrefs } from '../lib/cabinetPrefs';
 import '../styles/z8-tools.css';
 import '../styles/k4-charts.css';
 import '../styles/k8-tools.css';
@@ -385,8 +386,11 @@ export default function CurrencyDesk({ indicators }) {
   const t = useT();
   const [tab, setTab] = useState('rub');
   const [query, setQuery] = useState('');
-  const [from, setFrom] = useState('USD');
+  // Валюта конвертера по умолчанию из настроек кабинета (круг 12); пока человек не выбрал сам, входит «настройка → RUB», иначе «USD → RUB».
+  const prefFrom = converterCurrency(usePrefs());
+  const [pickedFrom, setFrom] = useState(null);
   const [to, setTo] = useState('RUB');
+  const from = pickedFrom ?? prefFrom ?? 'USD';
   const needle = query.trim().toLowerCase();
   const { market, pending: marketPending } = useMarketState();
 

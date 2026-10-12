@@ -93,7 +93,7 @@ export default function CalendarHero({ nextEvent, stacked = false }) {
           {nextEvent.indicator_code && (
             <Link
               to={russiaIndicatorPath(nextEvent.indicator_code)}
-              className="inline-flex items-center gap-1 mt-2 text-sm text-champagne hover:text-champagne-muted transition-colors"
+              className="inline-flex min-h-10 items-center gap-1 mt-1 text-sm text-champagne hover:text-champagne-muted transition-colors"
             >
               {t('w3.cal.openIndicator')}
               <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />

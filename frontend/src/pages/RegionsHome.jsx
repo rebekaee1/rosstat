@@ -553,8 +553,10 @@ export default function RegionsHome() {
 
   return (
     <div className="fe-data-page z5-page mx-auto w-full max-w-7xl overflow-x-clip px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
-      <Breadcrumbs items={regionsTrail()} className="mb-6" />
-      <div className="mb-6">
+      <Breadcrumbs items={regionsTrail()} className={view === 'map' ? 'mb-3' : 'mb-6'} />
+      {/* Круг 12, К6: в режиме карты название, переключатель «Список / Карта» и «Найти / Контуры / Пузыри» стоят в одной шапке, чтобы карта поднялась и вошла в экран. */}
+      <div className="z5-head" data-view={view}>
+      <div className="z5-head__title mb-6">
         <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
           <MapPin size={15} aria-hidden="true" />
           {t('regions.eyebrow')}
@@ -566,28 +568,49 @@ export default function RegionsHome() {
           {t('regions.intro')}
         </p>
       </div>
-
-      <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl p-1 fe-glass-lite" role="tablist" aria-label={t('regions.viewAria')}>
-        <button
-          role="tab"
-          aria-selected={view === 'list'}
-          onClick={() => setView('list')}
-          className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'list' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
-          }`}
-        >
-          <List size={15} /> {t('regions.view.list')}
-        </button>
-        <button
-          role="tab"
-          aria-selected={view === 'map'}
-          onClick={() => setView('map')}
-          className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-            view === 'map' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
-          }`}
-        >
-          <MapIcon size={15} /> {t('regions.view.map')}
-        </button>
+      <div className="z5-head__ctl">
+        <div className="mb-3 flex w-fit items-center gap-1 rounded-2xl p-1 fe-glass-lite z5-head__tabs" role="tablist" aria-label={t('regions.viewAria')}>
+          <button
+            role="tab"
+            aria-selected={view === 'list'}
+            onClick={() => setView('list')}
+            className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+              view === 'list' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <List size={15} /> {t('regions.view.list')}
+          </button>
+          <button
+            role="tab"
+            aria-selected={view === 'map'}
+            onClick={() => setView('map')}
+            className={`fe-tap fe-press inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
+              view === 'map' ? 'fe-glass-active font-semibold' : 'text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <MapIcon size={15} /> {t('regions.view.map')}
+          </button>
+        </div>
+        {view === 'map' && (
+          <div className="z5-map-tools mb-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              aria-expanded={findOpen}
+              aria-controls="fe-map-find-panel"
+              onClick={() => setFindOpen((v) => !v)}
+              className={`fe-chip fe-press gap-1.5 ${findOpen || isCustomMetric ? 'is-active' : ''}`}
+              data-testid="map-find-toggle"
+            >
+              <Search size={14} aria-hidden="true" />
+              {t('w7p.map.find')}
+            </button>
+            <div className="fe-map-shape ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
+              <button type="button" aria-pressed={mapShape === 'regions'} onClick={() => setMapShape('regions')}>{t('w6f.map.shape.regions')}</button>
+              <button type="button" aria-pressed={mapShape === 'bubbles'} onClick={() => setMapShape('bubbles')}>{t('w6f.map.shape.bubbles')}</button>
+            </div>
+          </div>
+        )}
+      </div>
       </div>
 
       {view === 'list' && (
@@ -793,24 +816,6 @@ export default function RegionsHome() {
                   </button>
                 );
               })}
-            </div>
-          </div>
-
-          <div className="z5-map-tools mb-3 flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              aria-expanded={findOpen}
-              aria-controls="fe-map-find-panel"
-              onClick={() => setFindOpen((v) => !v)}
-              className={`fe-chip fe-press gap-1.5 ${findOpen || isCustomMetric ? 'is-active' : ''}`}
-              data-testid="map-find-toggle"
-            >
-              <Search size={14} aria-hidden="true" />
-              {t('w7p.map.find')}
-            </button>
-            <div className="fe-map-shape ml-auto" role="group" aria-label={t('w6f.map.shape.aria')} title={t('w6f.map.shape.hint')}>
-              <button type="button" aria-pressed={mapShape === 'regions'} onClick={() => setMapShape('regions')}>{t('w6f.map.shape.regions')}</button>
-              <button type="button" aria-pressed={mapShape === 'bubbles'} onClick={() => setMapShape('bubbles')}>{t('w6f.map.shape.bubbles')}</button>
             </div>
           </div>
 

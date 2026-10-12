@@ -50,13 +50,20 @@ export function regionSubject(slug, title) {
   return { kind: 'region', itemKey: String(slug), title: clean(title), payload: { path: regionPath(slug) }, watch: null };
 }
 
-/** Региональный показатель: слежение идёт за рядом региона. */
-export function regionIndicatorSubject(regionSlug, code, title) {
+/**
+ * Региональный показатель. Запись избранного: `region` + «slug региона:код показателя» (круг 12): комбинация «регион + показатель»,
+ * а не сам регион. Раньше звезда на странице показателя сохраняла регион (`region` + slug): она горела у региона, уже лежавшего в
+ * избранном, и нажатие там снимало сохранённый регион. Слежение идёт за рядом региона (код показателя).
+ * `regionName` (необязателен) попадает в название записи: «Москва: Безработица».
+ */
+export function regionIndicatorSubject(regionSlug, code, title, regionName = '') {
   if (!regionSlug || !code) return null;
+  const name = clean(title);
+  const place = clean(regionName);
   return {
     kind: 'region',
-    itemKey: String(regionSlug),
-    title: clean(title),
+    itemKey: `${regionSlug}:${code}`,
+    title: place && name ? clean(`${place}: ${name}`) : name,
     payload: { path: regionIndicatorPath(regionSlug, code) },
     watch: { subjectKind: 'region', subjectKey: String(code), regionSlug },
   };

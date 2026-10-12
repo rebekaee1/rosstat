@@ -215,7 +215,7 @@ describe('кабинет включён', () => {
     cabinetApi.fetchPrefs.mockResolvedValue({ data: { locale: 'ru' }, updated_at: null });
     cabinetApi.savePrefs.mockResolvedValue({ data: { locale: 'ru', currency: 'EUR' }, updated_at: '2026-10-09T10:00:00Z' });
     renderAccount('/account?tab=prefs');
-    await screen.findByText('c11b.prefs.intro');
+    await screen.findByText('c12u.prefs.intro');
     fireEvent.click(screen.getByRole('button', { name: 'EUR' }));
     fireEvent.click(screen.getByRole('button', { name: 'common.save' }));
     await waitFor(() => expect(cabinetApi.savePrefs).toHaveBeenCalledWith({ locale: 'ru', currency: 'EUR' }));

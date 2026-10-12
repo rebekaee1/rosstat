@@ -6,6 +6,7 @@ import { formatCount, formatDate } from '../../lib/format';
 import { clearExports, deleteExport, listExports } from '../../lib/cabinetApi';
 import { cabinetErrorCode, cabinetErrorKey, safePath } from '../../lib/cabinetItems';
 import Button from '../Button';
+import { usePending } from '../../lib/usePending';
 import Spinner from '../Spinner';
 
 /** Название выгрузки для человека: заданное при выгрузке, иначе имя файла без расширения. Ключи и коды не показываем. */
@@ -41,7 +42,7 @@ export default function ExportHistory() {
   const [state, setState] = useState({ status: 'loading', items: [] });
   const [error, setError] = useState(null);
   const [confirmClear, setConfirmClear] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const { pending: clearing, run } = usePending();
 
   const load = useCallback(() => {
     setState((s) => ({ ...s, status: 'loading' }));
@@ -51,7 +52,15 @@ export default function ExportHistory() {
       .catch(() => setState({ status: 'error', items: [] }));
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  // Первая загрузка: состояние «грузится» уже стоит с самого начала, поэтому здесь только запрос.
+  useEffect(() => {
+    let alive = true;
+    Promise.resolve()
+      .then(() => listExports({ limit: 50 }))
+      .then((res) => { if (alive) setState({ status: 'ready', items: Array.isArray(res?.items) ? res.items : [] }); })
+      .catch(() => { if (alive) setState({ status: 'error', items: [] }); });
+    return () => { alive = false; };
+  }, []);
 
   const remove = async (id) => {
     setError(null);
@@ -67,18 +76,16 @@ export default function ExportHistory() {
     }
   };
 
-  const clearAll = async () => {
-    setBusy(true); setError(null);
+  const clearAll = () => run(async () => {
+    setError(null);
     try {
       await clearExports();
       setState({ status: 'ready', items: [] });
       setConfirmClear(false);
     } catch (err) {
       setError(t(cabinetErrorKey(cabinetErrorCode(err))));
-    } finally {
-      setBusy(false);
     }
-  };
+  });
 
   if (state.status === 'loading' && !state.items.length) {
     return <div role="status" className="c11b-empty"><Spinner size={16} /> {t('common.loading')}</div>;
@@ -131,8 +138,8 @@ export default function ExportHistory() {
         {confirmClear ? (
           <>
             <span className="c11b-hint">{t('c11b.export.clearAsk')}</span>
-            <Button variant="secondary" size="sm" onClick={clearAll} loading={busy} className="text-negative!">{t('c11b.export.clearYes')}</Button>
-            <Button variant="ghost" size="sm" onClick={() => setConfirmClear(false)} disabled={busy}>{t('common.cancel')}</Button>
+            <Button variant="secondary" size="sm" onClick={clearAll} pending={clearing} className="text-negative!">{t('c11b.export.clearYes')}</Button>
+            <Button variant="ghost" size="sm" onClick={() => setConfirmClear(false)} disabled={clearing}>{t('common.cancel')}</Button>
           </>
         ) : (
           <Button variant="ghost" size="sm" onClick={() => setConfirmClear(true)}>{t('c11b.export.clear')}</Button>

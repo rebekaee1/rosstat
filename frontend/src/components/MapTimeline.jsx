@@ -88,7 +88,7 @@ export default function MapTimeline({ years, year, onYearChange, metric }) {
   const pct = max === min ? 100 : ((shown - min) / (max - min)) * 100;
 
   return (
-    <div className="mt-3 flex items-center gap-3">
+    <div className="fe-map-timeline mt-3 flex items-center gap-3">
       {/* В конце ряда кнопка остаётся «играть» (треугольник) и подписана словами: круговая стрелка «повторить» читалась как загадка. */}
       <Button
         onClick={togglePlay}

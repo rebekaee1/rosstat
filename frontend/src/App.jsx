@@ -24,6 +24,7 @@ import PageProgress from './components/PageProgress';
 import SkipLink from './components/SkipLink';
 import RecentPagesTracker from './components/RecentPagesTracker';
 import { CabinetSubjectActions, CompareSaveButton } from './components/cabinet/CabinetWiring';
+import CabinetPrefsApplier, { NumberFormatBoundary } from './components/cabinet/CabinetPrefsApplier';
 import { CabinetActionsContext } from './lib/cabinetActionsContext';
 import LightScene from './components/LightScene';
 import { cleanPathWithSearch } from './lib/cleanUrl';
@@ -251,6 +252,7 @@ function AppRoutes() {
       <YandexMetrikaHit />
       {/* «Вы смотрели»: запоминает открытые страницы в этом браузере (lib/recentPages.js), ничего не рисует. */}
       <RecentPagesTracker />
+      <CabinetPrefsApplier />
       <YandexRSY />
       {/* Cookie-баннер не монтируется на /embed/* — iframe на чужих сайтах */}
       <CookieConsent />
@@ -265,6 +267,7 @@ function AppRoutes() {
       <MobileDock />
       <main id="main-content" tabIndex={-1} className="relative z-0 flex-1 pt-9 outline-none">
         <CabinetActionsContext.Provider value={renderCabinetActions}>
+        <NumberFormatBoundary>
         <ErrorBoundary>
         <Suspense fallback={<RouteFallback />}>
           <ServerNotFoundGate>
@@ -363,6 +366,7 @@ function AppRoutes() {
           </ServerNotFoundGate>
           </Suspense>
         </ErrorBoundary>
+        </NumberFormatBoundary>
         </CabinetActionsContext.Provider>
       </main>
       <RegisterNudge />
