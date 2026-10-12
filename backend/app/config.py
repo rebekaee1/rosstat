@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     analytics_db_idle_in_transaction_timeout_ms: int = 120_000
     # Каталог статических sitemap (ночной job → nginx try_files).
     sitemap_dir: str = "/var/www/sitemaps"
+    # Круг 13 (SEO): размер приоритетного шарда sitemap-priority.xml (первым в
+    # sitemap.xml); 0 = шард не публиковать. Не флаг: без него шард только
+    # добавляет порядок обхода, остальные шарды не меняются.
+    sitemap_priority_max_urls: int = 20_000
     # Google Search Console: meta google-site-verification (пусто = не эмитить).
     google_site_verification: str = ""
     # Bing Webmaster meta msvalidate.01.

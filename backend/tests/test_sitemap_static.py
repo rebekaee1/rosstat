@@ -19,6 +19,8 @@ def publication(tmp_path, monkeypatch):
     import app.services.site_urls as urls
     monkeypatch.setattr(settings, "sitemap_dir", str(tmp_path))
     monkeypatch.setattr(settings, "apex_locale_en", True)
+    # Приоритетный шард проверяет tests/test_sitemap_priority.py.
+    monkeypatch.setattr(settings, "sitemap_priority_max_urls", 0)
     monkeypatch.setattr(settings, "public_base_url", "https://forecasteconomy.com")
 
     @asynccontextmanager
