@@ -3397,6 +3397,7 @@ def _year_page_title_desc(
     summary_text: str,
     source: str,
     country_independent: bool = False,
+    range_note: str = "",
 ) -> tuple[str, str]:
     """Заголовок и description с учётом частоты и числа точек за год."""
     from app.services.seo_i18n import year_template
@@ -3438,6 +3439,8 @@ def _year_page_title_desc(
             source=source,
             n=n_rows,
         )
+        if n_rows > 1:
+            desc = f"{desc}{range_note}"
         return title, desc
 
     if freq == "annual":
@@ -3473,9 +3476,12 @@ def _year_page_title_desc(
     else:
         desc = (
             f"{name} в {year} году{period_note}: {n_rows} значений, "
-            f"{summary_label.lower()} — {summary_bit}. Официальные данные — {source}."
+            f"{summary_label.lower()} — {summary_bit}.{range_note} Официальные данные — {source}."
         )
     return title, desc
+
+
+from app.services.seo_year_ui import year_range_note as ui_range_note  # noqa: E402
 
 
 async def render_indicator_year_html(
@@ -3612,6 +3618,11 @@ async def render_indicator_year_html(
         summary_text=summary_text,
         source=source,
         country_independent=paths.is_currency_indicator(parent_code),
+        range_note=(
+            ""
+            if cpi_mode or len(rows) < 3
+            else ui_range_note(shown_values, unit, en=bool(yt("title_annual")), last_is_partial=current_year)
+        ),
     )
 
     series_by_year = {y: (v, d) for y, v, d in series}

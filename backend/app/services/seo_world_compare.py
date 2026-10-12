@@ -439,7 +439,7 @@ async def render_world_vs_html(
         desc = (
             f"{name}: {label_a_name} — {_fmt(value_a)}{vsfx_a}, {label_b_name} — "
             f"{_fmt(value_b)}{vsfx_b} by the latest published data. "
-            f"Difference — {diff_text}{diff_sfx}. Table of the latest values and "
+            f"Difference — {(diff_text + diff_sfx).rstrip('.')}. Table of the latest values and "
             f"live comparison. Source: {sources}."
         )
         eyebrow = "Country comparison"
@@ -473,7 +473,7 @@ async def render_world_vs_html(
         desc = (
             f"{name}: {label_a_name} — {_fmt(value_a)}{vsfx_a}, {label_b_name} — "
             f"{_fmt(value_b)}{vsfx_b} по последним опубликованным данным. "
-            f"Разница — {diff_text}{diff_sfx}. Таблица последних значений и "
+            f"Разница — {(diff_text + diff_sfx).rstrip('.')}. Таблица последних значений и "
             f"живое сравнение. Источник: {sources}."
         )
         eyebrow = "Сравнение стран"

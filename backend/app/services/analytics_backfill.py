@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.models import MetrikaDailyPageMetric, MetrikaSearchPhrase
-from app.services.analytics_ingestion import finish_sync_run, start_sync_run
+from app.services.analytics_ingestion import describe_exception, finish_sync_run, start_sync_run
 from app.services.seo_crawler import crawl_url, store_seo_snapshot
 from app.services.yandex_metrika_reporting import MetrikaReportingClient
 
@@ -218,8 +218,10 @@ async def backfill_webmaster_search_queries(
     if not settings.yandex_webmaster_token:
         return 0
     client = YandexWebmasterClient()
-    user_id = (await client.user()).data["user_id"]
     host_ids = webmaster_sync_host_ids()
+    # Запись о запуске — до первого обращения к API: если api.webmaster.yandex.net
+    # не отвечает, в журнале остаётся строка failed, а не тишина (11–12.10.2026
+    # прогоны 08:40 МСК не оставили ни одной записи).
     run = await start_sync_run(
         db, source="yandex_webmaster", job_type="daily_search_queries",
         date_from=date_from, date_to=date_to,
@@ -228,6 +230,7 @@ async def backfill_webmaster_search_queries(
     await db.commit()
     processed = 0
     try:
+        user_id = (await client.user()).data["user_id"]
         for host_id in host_ids:
             processed += await _backfill_webmaster_host(
                 db, client, user_id, host_id, date_from, date_to,
@@ -237,7 +240,7 @@ async def backfill_webmaster_search_queries(
         return processed
     except Exception as exc:
         await db.rollback()
-        await finish_sync_run(db, run, status="failed", error_message=str(exc)[:500])
+        await finish_sync_run(db, run, status="failed", error_message=describe_exception(exc))
         await db.commit()
         raise
 

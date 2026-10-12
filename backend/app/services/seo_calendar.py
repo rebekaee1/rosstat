@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from app.services.seo_year_ui import plural_ru
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
 
@@ -33,6 +34,11 @@ _MONTHS_NOM = (
 _MONTHS_GEN = (
     "января", "февраля", "марта", "апреля", "мая", "июня",
     "июля", "августа", "сентября", "октября", "ноября", "декабря",
+)
+
+_MONTHS_PREP = (
+    "январе", "феврале", "марте", "апреле", "мае", "июне",
+    "июле", "августе", "сентябре", "октябре", "ноябре", "декабре",
 )
 
 _SOURCE_NAMES = {
@@ -118,8 +124,9 @@ async def render_calendar_month_html(
         en_desc.format(month_gen=month_gen_display, year=year, n=len(events))
         if en_desc
         else (
-            f"Какие данные по экономике России {verb} в {month_gen} {year} года: "
-            f"{len(events)} публикаций Росстата, Банка России и Минфина с точными датами — "
+            f"Какие данные по экономике России {verb} в {_MONTHS_PREP[month - 1]} {year} года: "
+            f"{len(events)} {plural_ru(len(events), 'публикация', 'публикации', 'публикаций')} "
+            f"Росстата, Банка России и Минфина с точными датами — "
             f"инфляция, ставка, ВВП и другие показатели."
         )
     )
@@ -133,7 +140,7 @@ async def render_calendar_month_html(
         if en_intro
         else (
             f"Официальные даты публикаций экономической статистики России в "
-            f"{month_gen} {year} года. "
+            f"{_MONTHS_PREP[month - 1]} {year} года. "
             f"Даты — официальные, из графиков раскрытия информации самих ведомств."
         )
     )

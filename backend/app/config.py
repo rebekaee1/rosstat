@@ -378,6 +378,11 @@ class Settings(BaseSettings):
     telegram_weekly_enabled: bool = False
     telegram_weekly_cron_hour: int = 9
     telegram_weekly_cron_minute: int = 20
+    # Круг 13 (SEO6): недельный SEO-отчёт (показы, клики, позиции, ошибки sitemap,
+    # доля 5xx поисковым роботам). Выключен по умолчанию; включать после проверки текста.
+    seo_weekly_report_enabled: bool = False
+    seo_weekly_report_cron_hour: int = 9
+    seo_weekly_report_cron_minute: int = 40
     telegram_monthly_enabled: bool = False
     telegram_monthly_cron_hour: int = 9
     telegram_monthly_cron_minute: int = 45
