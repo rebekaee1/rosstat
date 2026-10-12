@@ -90,7 +90,7 @@ def test_check_accepts_adjacent_consistent_projection():
         (_projection(vintage=date(2024, 1, 1)), WEO_NGDP_RPCH, "vintage_too_old"),
         (_projection(year=2028), WEO_NGDP_RPCH, "projection_not_adjacent"),
         (_projection(value=500.0), WEO_NGDP_RPCH, "implausible_projection"),
-        (_projection(code=WEO_LUR, value=140.0), WEO_LUR, "implausible_projection"),
+        (_projection(code=WEO_LUR, value=140.0), WEO_LUR, "out_of_range"),
         (_projection(code=WEO_NGDPD, value=-3.0), WEO_NGDPD, "out_of_range"),
         (_projection(value=float("nan")), WEO_NGDP_RPCH, "non_finite_projection"),
     ],
