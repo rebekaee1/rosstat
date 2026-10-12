@@ -11,7 +11,7 @@
  *             Диапазонов (`lower`/`upper`) в записи быть не может: сервер отвечает 422.
  */
 import {
-  comparePath, countryPath, indicatorPath, regionPath, regionRatingPath,
+  comparePath, countryPath, indicatorPath, regionIndicatorPath, regionPath, regionRatingPath,
   russiaIndicatorPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT,
 } from './sitePaths';
 
@@ -78,7 +78,11 @@ export function savedItemHref(item) {
   switch (item?.kind) {
     case 'indicator': return key ? russiaIndicatorPath(key) : null;
     case 'country': return key ? countryPath(key) : null;
-    case 'region': return key ? regionPath(key) : null;
+    case 'region': {
+      // «slug:код» — региональный показатель (круг 12); просто slug — профиль региона.
+      const [regionSlug, code] = key.split(':');
+      return code ? regionIndicatorPath(regionSlug, code) : (key ? regionPath(key) : null);
+    }
     case 'comparison': return key ? `${comparePath()}?${key.replace(/^\?/, '')}` : comparePath();
     case 'rating_view': return worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT);
     case 'calc': return '/calculator';

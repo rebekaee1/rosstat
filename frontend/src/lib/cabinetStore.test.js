@@ -173,6 +173,20 @@ describe('перенос избранного гостя при входе', () 
     expect(store.getState().importResult).toBeNull();
   });
 
+  it('при пределе сервера из браузера уходят только принятые, остаток остаётся и не уходит в бесконечный повтор', async () => {
+    seedGuest(5);
+    store.__resetCabinetStore();
+    // Сервер сохранил g0, g1; на g2 упёрся в предел (считается «пропущена», но не сохранена) и остановился.
+    api.importSaved.mockResolvedValue({ imported: 2, skipped: 1, limit_reached: true });
+    await boot({ auth: 'u1' });
+    await flush();
+    await flush();
+    expect(api.importSaved).toHaveBeenCalledTimes(1);
+    const left = JSON.parse(window.localStorage.getItem(store.GUEST_KEY));
+    expect(left.map((r) => r.item_key)).toEqual(['g2', 'g3', 'g4']);
+    expect(store.getState().importResult).toMatchObject({ imported: 2, limitReached: true });
+  });
+
   it('гостю ничего не отправляется', async () => {
     seedGuest(2);
     store.__resetCabinetStore();

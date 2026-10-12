@@ -715,6 +715,17 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                 valueDigits={chartValueDigits(displayUnit)}
                 showUnitInValues={false}
                 loading={dataLoading || (dataQ.isFetching && points.length === 0)}
+                exportMeta={{
+                  filename: `${slug}_${code}${activeMode ? `_${activeMode}` : ''}`,
+                  name: `${displayName}, ${countryName}`,
+                  code,
+                  params: { mode: activeMode, country: slug },
+                  meta: {
+                    ...(sourceLabel ? { source: sourceLabel } : {}),
+                    ...(indicator?.source_url ? { source_url: indicator.source_url } : {}),
+                    ...(activeFreq ? { frequency: activeFreq } : {}),
+                  },
+                }}
               />
             </section>
             <div className="z4-lower__aside">

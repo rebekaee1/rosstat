@@ -24,6 +24,12 @@ describe('предметы для кнопок кабинета', () => {
     expect(countrySubject('turkey', 'Турция').watch).toBeNull();
     expect(regionSubject('moskva', 'Москва').kind).toBe('region');
     expect(regionIndicatorSubject('moskva', 'uroven-bezrabotitsy', 'Безработица').watch.subjectKey).toBe('uroven-bezrabotitsy');
+    // Звезда на показателе региона сохраняет сочетание «регион + показатель», а не регион: ключ не совпадает с ключом профиля региона.
+    const regInd = regionIndicatorSubject('moskva', 'uroven-bezrabotitsy', 'Безработица', 'Москва');
+    expect(regInd.kind).toBe('region');
+    expect(regInd.itemKey).toBe('moskva:uroven-bezrabotitsy');
+    expect(regInd.itemKey).not.toBe(regionSubject('moskva', 'Москва').itemKey);
+    expect(regInd.title).toBe('Москва: Безработица');
     expect(countrySubject('', 'x')).toBeNull();
   });
 

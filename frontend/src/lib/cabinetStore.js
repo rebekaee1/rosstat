@@ -213,7 +213,7 @@ export function findSavedIn(s, kind, key) {
   return s.saved.find((r) => same(r, kind, key)) || s.guest.find((r) => same(r, kind, key)) || null;
 }
 
-export function loadSaved(force = false) {
+export function loadSaved(force = false, { sync = true } = {}) {
   if (!canUseServer()) return Promise.resolve();
   const s = current();
   if (!force) {
@@ -228,7 +228,7 @@ export function loadSaved(force = false) {
     .then((res) => {
       if (current().authKey !== who) return undefined;
       set({ saved: Array.isArray(res?.items) ? res.items : [], savedStatus: 'ready', savedAt: Date.now() });
-      return syncGuest();
+      return sync ? syncGuest() : undefined;
     })
     .catch(() => {
       if (current().authKey === who) set({ savedStatus: 'error', savedAt: Date.now() });
@@ -247,22 +247,38 @@ export async function syncGuest() {
   let skipped = 0;
   let limitReached = false;
   let failed = false;
+  // Записи, которые сервер подтвердил (сохранил или уже имел). Из браузера убираем только их: при пределе (limit_reached) сервер
+  // обрабатывает порцию по порядку и останавливается, поэтому остаток порции и непосланные порции остаются у гостя (круг 12, потеря избранного).
+  const confirmed = [];
   try {
     for (let i = 0; i < batch.length; i += IMPORT_BATCH) {
-      const res = await cabinetApi.importSaved(batch.slice(i, i + IMPORT_BATCH));
+      const part = batch.slice(i, i + IMPORT_BATCH);
+      const res = await cabinetApi.importSaved(part);
       imported += res?.imported || 0;
       skipped += res?.skipped || 0;
-      if (res?.limit_reached) { limitReached = true; break; }
+      if (res?.limit_reached) {
+        limitReached = true;
+        // Запись, упёршаяся в предел, посчитана как «пропущена», но не сохранена: она и всё после неё остаются.
+        const handled = Math.max(0, (res?.imported || 0) + (res?.skipped || 0) - 1);
+        confirmed.push(...part.slice(0, Math.min(handled, part.length)));
+        break;
+      }
+      confirmed.push(...part);
     }
   } catch {
     failed = true;
   }
   syncing = false;
-  if (current().authKey !== who || failed) return;
-  const left = current().guest.filter((g) => !batch.some((b) => same(b, g.kind, g.item_key)));
-  writeGuest(left);
-  set({ guest: left, importResult: { imported, skipped, limitReached } });
-  await loadSaved(true);
+  if (current().authKey !== who) return;
+  if (confirmed.length) {
+    const left = current().guest.filter((g) => !confirmed.some((b) => same(b, g.kind, g.item_key)));
+    writeGuest(left);
+    set({ guest: left });
+  }
+  if (failed) return;
+  set({ importResult: { imported, skipped, limitReached } });
+  // Остаток у гостя при пределе повторно не отправляем в этом же круге (иначе бесконечный обмен «сервер сказал: предел»).
+  await loadSaved(true, { sync: !limitReached });
 }
 
 export function dismissImportResult() {
