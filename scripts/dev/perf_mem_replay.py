@@ -1,7 +1,7 @@
 """Воспроизводит поток GET-адресов (из журнала backend боевого) против perf_mem_wrap и печатает RSS (круг 12, SPEED3).
 
     python perf_mem_replay.py <сколько> <с какого> <параллельно> <печатать каждые N>      # PATHS_FILE=файл с адресами
-Адреса:  на боевом (только чтение журнала).
+Адреса берутся из журнала backend боевого (только чтение): docker logs rosstat-backend-1, строки GET/HEAD с кодом 200 или 304.
 """
 import asyncio, httpx, json, random, sys, time
 PATHS = [l.strip() for l in open(__import__("os").environ.get("PATHS_FILE","/work/paths_uniq.txt")) if l.strip()]
