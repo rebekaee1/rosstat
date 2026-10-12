@@ -300,17 +300,35 @@
     scheduleMetrikaScript(immediate);
   }
 
-  function loadAds() {
+  // Круг 13 (S1): context.js (111 КБ + ~60 запросов партнёрских скриптов, ≈ 0,4 с процессора на телефоне ×4) подключался сразу после
+  // первого жеста, то есть в самое тяжёлое время загрузки (3–6 с на медленном 4G) и делил канал и главный поток с первым экраном
+  // (замер: TBT 1,4 → 0,75 с, 76 → 47 запросов). Теперь после жеста реклама ждёт, пока с начала навигации пройдёт ADS_MIN_AGE_MS, и ещё
+  // простоя браузера. Клик по баннеру согласия (явный ввод) по-прежнему грузит её сразу. Гейт «человек» не менялся.
+  var ADS_MIN_AGE_MS = 8000;
+
+  function injectAds() {
+    window.yaContextCb = window.yaContextCb || [];
+    var s = document.createElement('script');
+    s.src = 'https://yandex.ru/ads/system/context.js';
+    s.async = true;
+    document.head.appendChild(s);
+  }
+
+  function loadAds(immediate) {
     if (LOCAL_DEVELOPMENT) return;
     if (loaded.ads) return;
     loaded.ads = true;
     // Очередь yaContextCb наполняется компонентом YandexRSY.jsx независимо
     // от согласия; context.js при загрузке разбирает её и рендерит блоки.
     window.yaContextCb = window.yaContextCb || [];
-    var s = document.createElement('script');
-    s.src = 'https://yandex.ru/ads/system/context.js';
-    s.async = true;
-    document.head.appendChild(s);
+    if (immediate) { injectAds(); return; }
+    var age = 0;
+    try { age = window.performance && typeof window.performance.now === 'function' ? window.performance.now() : 0; } catch (e) { age = 0; }
+    var run = function () {
+      if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(injectAds, { timeout: 3000 });
+      else injectAds();
+    };
+    setTimeout(run, Math.max(0, ADS_MIN_AGE_MS - age));
   }
 
   // Метрика: хит в очереди на window.load (весь трафик; роботов фильтрует сама),
@@ -326,7 +344,7 @@
     if (explicitHuman) {
       window.__feAdsGate.armed = true;
       window.__feAdsGate.requested = true;
-      loadAds();
+      loadAds(true);
       return;
     }
     if (window.__feAdsGate.armed) return;

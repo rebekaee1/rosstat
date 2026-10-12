@@ -13,7 +13,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Путь от самого теста, а не от cwd: работает и в CI, и при запуске из корня.
 const SRC = readFileSync(
@@ -33,6 +33,12 @@ function humanGesture(type = 'pointermove') {
   if (!handler) return false;
   handler({ type, isTrusted: true });
   return true;
+}
+
+/** Круг 13 (S1): после жеста реклама ждёт ADS_MIN_AGE_MS от начала навигации и простоя; тест «проматывает» это время. */
+function afterAdsDelay() {
+  vi.advanceTimersByTime(9000);
+  flushIdle();
 }
 
 function adsRequested() {
@@ -74,6 +80,7 @@ function boot({ ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/145', web
 }
 
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
   // Existing cases exercise the production bootstrap rather than jsdom's localhost.
   globalThis.jsdom.reconfigure({ url: 'https://ru.forecasteconomy.com/' });
   document.head.innerHTML = '';
@@ -116,6 +123,7 @@ describe('local browser acceptance excludes third-party traffic', () => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   document.head.innerHTML = '';
 });
 
@@ -152,12 +160,16 @@ describe('гейт рекламы: человек', () => {
     boot();
     humanGesture('pointermove');
     expect(window.__feAdsGate.requested).toBe(true);
+    // Круг 13 (S1): сразу после жеста тег ещё не вставлен (не мешает первому экрану), через ADS_MIN_AGE_MS и простой — вставлен.
+    expect(adsRequested()).toBe(false);
+    afterAdsDelay();
     expect(adsRequested()).toBe(true);
   });
 
   it('скролл мобильного читателя тоже открывает гейт', () => {
     boot({ ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) Safari' });
     humanGesture('scroll');
+    afterAdsDelay();
     expect(adsRequested()).toBe(true);
   });
 
@@ -174,6 +186,7 @@ describe('гейт рекламы: человек', () => {
     boot();
     humanGesture('pointermove');
     humanGesture('keydown');
+    afterAdsDelay();
     const tags = [...document.scripts].filter((s) => s.src === ADS_SRC);
     expect(tags).toHaveLength(1);
   });
