@@ -123,6 +123,7 @@ def _title_desc(
     source: str,
     en: bool,
     yt,
+    range_note: str = "",
 ) -> tuple[str, str]:
     """Заголовок и description по числу точек года (зеркало РФ-веток)."""
     freq = (frequency or "").lower()
@@ -137,7 +138,7 @@ def _title_desc(
             title = f"{name} in {country_name}, {year} — published observations"
             desc = (
                 f"{name} in {country_name}, {year}{period_note}: {n_rows} observations, "
-                f"{label_out} — {summary_bit}. Official data — {source}."
+                f"{label_out} — {summary_bit}.{range_note} Official data — {source}."
             )
             return title, desc
         if freq == "annual":
@@ -187,7 +188,7 @@ def _title_desc(
         title = f"{name} в {year} году — наблюдения по месяцам"
     desc = (
         f"{name} в {year} году{period_note}: {n_rows} наблюдений, "
-        f"{label_out} — {summary_bit}. Официальные данные — {source}."
+        f"{label_out} — {summary_bit}.{range_note} Официальные данные — {source}."
     )
     return title, desc
 
@@ -302,6 +303,7 @@ async def render_world_indicator_year_html(
         source=source,
         en=en,
         yt=yt,
+        range_note=ui.year_range_note(values, shown_unit, en=en, last_is_partial=current_year) if n_rows > 2 else "",
     )
     h1_text = title.split(" — ")[0]
 

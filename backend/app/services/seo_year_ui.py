@@ -253,3 +253,40 @@ def collapsible_note(summary: str, text: str) -> str:
         f'<details class="seo-more seo-note-more"><summary>{escape(summary)}</summary>'
         f"<p>{escape(text)}</p></details>"
     )
+
+
+def year_range_note(
+    values: Sequence[float],
+    unit: str | None,
+    *,
+    en: bool,
+    last_is_partial: bool = False,
+    min_points: int = 3,
+) -> str:
+    """Короткая фраза для description годовой страницы ряда с несколькими точками.
+
+    Запросы вида «максимальная ключевая ставка в 2025», «курс доллара в 2010»
+    ищут именно крайние значения и значение на конец периода; прежний текст
+    («254 значений, среднее за год — 19,13 %») отвечал на другой вопрос
+    (Яндекс, 23.09–09.10.2026: позиция 5–10, кликов 0). Пустая строка, если
+    точек мало или все значения равны.
+    """
+    from app.services.display import format_number_ru
+
+    vals = [float(v) for v in values if v is not None]
+    if len(vals) < min_points:
+        return ""
+    lo, hi, last = min(vals), max(vals), vals[-1]
+    if lo == hi:
+        return ""
+    loc = "en" if en else "ru"
+    sfx = f" {unit}" if unit else ""
+
+    def fmt(v: float) -> str:
+        return f"{format_number_ru(v, locale=loc)}{sfx}"
+
+    if en:
+        tail = "latest" if last_is_partial else "last of the year"
+        return f" Low {fmt(lo)}, high {fmt(hi)}, {tail} {fmt(last)}."
+    tail = "последнее значение" if last_is_partial else "последнее за год"
+    return f" Минимум — {fmt(lo)}, максимум — {fmt(hi)}, {tail} — {fmt(last)}."
