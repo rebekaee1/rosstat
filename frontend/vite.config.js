@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -128,6 +128,33 @@ function swVersionPlugin(env) {
 }
 
 /**
+ * Словари интерфейса (src/i18n/messages.{ru,en}.js) — отдельные чанки, грузится один, на языке страницы.
+ * Браузер узнаёт имя чанка только из main-*.js, а тот выполняется поздно, поэтому public/consent.js (он стоит в <head> и у оболочки,
+ * и у SSR-страниц) ставит <link rel="modulepreload"> на нужный чанк. Сборка подставляет имена в токен __FE_LOCALE_CHUNKS__.
+ * В dev токена нет — consent.js его пропускает.
+ */
+function localeChunksPlugin(env) {
+  return {
+    name: 'fe-locale-chunks',
+    apply: 'build',
+    writeBundle(options) {
+      const outDir = options.dir || resolve(process.cwd(), 'dist')
+      const file = resolve(outDir, 'consent.js')
+      const assets = resolve(outDir, 'assets')
+      if (!existsSync(file) || !existsSync(assets)) return
+      const names = readdirSync(assets)
+      const pick = (lang) => names.find((n) => new RegExp(`^messages\\.${lang}-[\\w-]+\\.js$`).test(n))
+      const ru = pick('ru')
+      const en = pick('en')
+      if (!ru || !en) return
+      const apexEn = env.VITE_APEX_LOCALE_EN === 'true' || env.VITE_APEX_LOCALE_EN === '1'
+      const payload = JSON.stringify({ ru: `/assets/${ru}`, en: `/assets/${en}`, apexEn })
+      writeFileSync(file, readFileSync(file, 'utf8').replaceAll('__FE_LOCALE_CHUNKS__', payload.replaceAll("'", "\\'")))
+    },
+  }
+}
+
+/**
  * Оболочка (/login, /register, /account, /admin/bi, /widgets) отдаётся nginx как есть.
  * Блокирующий <link rel="stylesheet"> держит экран белым, пока едет весь CSS-бандл,
  * и фирменная заставка из index.html не успевает показаться. В сборке делаем ссылку
@@ -143,11 +170,14 @@ function nonBlockingCssPlugin() {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
+        // crossorigin у same-origin CSS убираем: backend (seo_renderer._css_preload) кладёт рядом
+        // <link rel=preload as=style> БЕЗ crossorigin, и при разном режиме запроса браузер не узнаёт
+        // предзагрузку и качает весь CSS (~80 КБ gzip) второй раз (замер circle-12: 2 запроса main-*.css).
         return html.replace(
           /<link\b([^>]*\brel="stylesheet"[^>]*\bhref="\/assets\/[^"]+\.css"[^>]*)>/g,
           (full, attrs) => (/\bdata-fe-css\b|\bmedia=/.test(attrs)
             ? full
-            : `<link${attrs} media="print" data-fe-css="1" onload="this.media='all'">`),
+            : `<link${attrs.replace(/\s+crossorigin(?:="[^"]*")?/g, '')} media="print" data-fe-css="1" onload="this.media='all'">`),
         )
       },
     },
@@ -187,7 +217,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin), nonBlockingCssPlugin(), swVersionPlugin(env)],
+  plugins: [react(), tailwindcss(), publicOriginPlugin(publicOrigin), nonBlockingCssPlugin(), swVersionPlugin(env), localeChunksPlugin(env)],
   // Версия сборки в js_error: привязка регрессий фронта к деплоям.
   define: {
     __BUILD_ID__: JSON.stringify(env.VITE_BUILD_ID || new Date().toISOString().slice(0, 10)),

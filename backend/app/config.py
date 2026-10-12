@@ -168,6 +168,10 @@ class Settings(BaseSettings):
 
     # SEO HTML rendering
     seo_app_shell_url: str = "http://frontend/__spa-index.html"
+    # Прогрев кэша SSR и API первого экрана (services/ssr_warm.py). Выключен по умолчанию:
+    # включать после выкладки (RUSTATS_SSR_WARM_ENABLED=true); описание в отчёте круга 12 (SPEED).
+    ssr_warm_enabled: bool = False
+    ssr_warm_base_url: str = "http://frontend"
 
     # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
     # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.
