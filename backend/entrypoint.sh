@@ -46,5 +46,15 @@ fi
 echo "[4/5] Seeding economic calendar (rolling 12-month window)..."
 python -m app.services.calendar_seed || echo "  (calendar seed warning, continuing startup)"
 
+# S2 (круг 13): супервизор uvicorn (--workers > 1) каждые 0,5 с шлёт воркеру ping и убивает его SIGKILL, если pong не пришёл за
+# --timeout-worker-healthcheck секунд (по умолчанию 5; в 0.34 параметра не было). На медленном диске воркер не успевал ответить,
+# его убивали вместе с запросами в полёте (503/обрыв). Параметр есть с uvicorn 0.37. Пусто = как раньше (5 с).
+HC_ARGS=""
+if [ -n "${UVICORN_WORKER_HEALTHCHECK_TIMEOUT:-}" ]; then
+  HC_ARGS="--timeout-worker-healthcheck ${UVICORN_WORKER_HEALTHCHECK_TIMEOUT}"
+  echo "  worker healthcheck timeout: ${UVICORN_WORKER_HEALTHCHECK_TIMEOUT}s"
+fi
+
 echo "[5/5] Starting uvicorn..."
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${UVICORN_WORKERS:-1}
+# shellcheck disable=SC2086  # HC_ARGS — осознанно без кавычек: либо пусто, либо два слова
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${UVICORN_WORKERS:-1} $HC_ARGS

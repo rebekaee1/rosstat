@@ -164,6 +164,10 @@ services:
       # Web-воркеры планировщик не запускают (иначе джобы ×N воркеров).
       RUSTATS_SCHEDULER_ENABLED: "false"
       UVICORN_WORKERS: ${UVICORN_WORKERS:-3}
+      # S2 (круг 13): сколько секунд супервизор uvicorn ждёт ответ воркера на ping, прежде чем убить его SIGKILL (в 0.34 зашито 5 с;
+      # под нагрузкой на медленном диске воркер не успевал, запросы в полёте получали 503/обрыв). Пусто = старое поведение (5 с).
+      # На боевом задать 30 в .env. Параметр есть с uvicorn 0.37 (в образе с 0.34 запуск с ним падает: сначала пересобрать образ).
+      UVICORN_WORKER_HEALTHCHECK_TIMEOUT: ${UVICORN_WORKER_HEALTHCHECK_TIMEOUT:-}
       # Пул на процесс (О-15): 3 воркера × (8+7) = 45 + аналитика 3 × (2+2)
       # + scheduler (6+6)+(2+2) = 73 + транзиенты < max_connections 100.
       RUSTATS_DB_POOL_SIZE: ${RUSTATS_DB_POOL_SIZE:-8}
