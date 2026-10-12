@@ -111,9 +111,17 @@ def decide_reason(
     return "series_lag"
 
 
-def _slice_similarity(a: dict | None, b: dict | None) -> int:
+# Измерения среза, которые меняют представление ряда, но не его предмет: единица (база
+# индекса, процент или уровень), сезонная корректировка, частота. Остальные (отрасль,
+# возраст, пол, партнёр…) определяют, о чём ряд, поэтому «ближайшим актуальным
+# показателем» считается только тот же предмет в другом представлении.
+_REPRESENTATION_DIMS = frozenset({"unit", "s_adj", "freq", "currency"})
+
+
+def _same_subject(a: dict | None, b: dict | None) -> bool:
     a, b = a or {}, b or {}
-    return sum(1 for k, v in a.items() if k != "freq" and b.get(k) == v)
+    keys = (set(a) | set(b)) - _REPRESENTATION_DIMS
+    return bool(keys or a or b) and all(a.get(k) == b.get(k) for k in keys)
 
 
 async def world_freshness_note(
@@ -150,11 +158,11 @@ async def world_freshness_note(
         if s.country_id == ind.country_id and s.id != ind.id
         and s.history_end is not None and not is_stale(s.history_end, s.frequency, today)
         and normalize_frequency(s.frequency) == freq
+        and _same_subject(ind.slice_json, s.slice_json)
     ]
     nearest = None
     if mates:
-        best = max(mates, key=lambda s: (_slice_similarity(ind.slice_json, s.slice_json),
-                                         s.history_end, s.points_count or 0, s.code))
+        best = max(mates, key=lambda s: (s.history_end, s.points_count or 0, s.code))
         slug = country_slug
         if slug is None:
             slug = (await db.execute(

@@ -67,8 +67,10 @@ def test_world_note_names_nearest_fresh_measure_of_same_country(auth_env):
             await db.flush()
             old = _world(db, c.id, "de-old", date(2023, 1, 1), name_ru="Старый ряд")
             fresh = _world(db, c.id, "de-fresh", date(2025, 1, 1), name_ru="Свежий ряд",
-                           slice_json={"freq": "A", "unit": "PC_TOT", "cpa": "B"})
-            db.add_all([old, fresh, WorldDatasetState(
+                           slice_json={"freq": "A", "unit": "PC_EUR", "cpa": "A"})
+            other_subject = _world(db, c.id, "de-other", date(2025, 1, 1), name_ru="Другой предмет",
+                                   slice_json={"freq": "A", "unit": "PC_TOT", "cpa": "B"})
+            db.add_all([old, fresh, other_subject, WorldDatasetState(
                 provider="eurostat", dataset_id="tec00134", status="ok",
                 last_update_of_data=date(2026, 10, 9))])
             await db.commit()
@@ -83,6 +85,7 @@ def test_world_note_names_nearest_fresh_measure_of_same_country(auth_env):
             assert note["level"] == "stale" and note["reason"] == "series_lag"
             assert note["nearest"]["url"] == "/germany/indicator/de-fresh"
             assert note["message"].endswith("Ближайший актуальный показатель: Свежий ряд.")
+            assert note["nearest"]["code"] != "de-other", "другой предмет (иная отрасль) не предлагается"
             assert note["age_days"] > 700
             # свежий ряд блока не получает
             fresh_ind = (await db.execute(
@@ -124,5 +127,33 @@ def test_ru_note_for_stalled_indicator_points_to_fresh_one_in_category(auth_env)
             assert note["nearest"]["code"] == "population-total"
             assert "Численность населения" in note["message"]
             assert await ru_freshness_note(db, ind, date(2026, 8, 1), today=TODAY) is None
+
+    asyncio.run(check())
+
+
+def test_world_note_without_same_subject_mate_has_honest_text_and_no_nearest(auth_env):
+    async def go():
+        async with auth_env["session_maker"]() as db:
+            c = WorldCountry(code="FR", slug="france", name_ru="Франция", name_en="France", is_active=True)
+            db.add(c)
+            await db.flush()
+            old = _world(db, c.id, "fr-old", date(2021, 1, 1), name_ru="Старый ряд")
+            alien = _world(db, c.id, "fr-alien", date(2025, 1, 1), name_ru="Чужой предмет",
+                           slice_json={"freq": "A", "unit": "PC_TOT", "cpa": "Z"})
+            db.add_all([old, alien, WorldDatasetState(
+                provider="eurostat", dataset_id="tec00134", status="ok",
+                last_update_of_data=date(2026, 3, 20))])
+            await db.commit()
+            return old.id
+
+    old_id = asyncio.run(go())
+
+    async def check():
+        async with auth_env["session_maker"]() as db:
+            note = await world_freshness_note(db, await db.get(WorldIndicator, old_id), today=TODAY,
+                                              country_slug="france")
+            assert note["nearest"] is None
+            assert note["reason"] == "source_stopped"
+            assert note["message"] == "Источник не обновлял ряд с 2021."
 
     asyncio.run(check())
