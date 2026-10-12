@@ -1794,8 +1794,20 @@ async def render_world_indicator_html(
             f"на {escape(last_label)}."
         )
 
+    from app.services.seo_dynamics import dynamics_note
+
+    dynamics_p = dynamics_note(
+        series,
+        indicator.frequency,
+        unit=unit,
+        unit_sfx=unit_sfx,
+        fmt=_fmt,
+        label=lambda d: _period_label(d, indicator.frequency),
+        en=loc == "en",
+    )
     paragraphs = [
         lead_p,
+        *([escape(dynamics_p)] if dynamics_p else []),
         escape(desc_text),
         period_line,
     ]

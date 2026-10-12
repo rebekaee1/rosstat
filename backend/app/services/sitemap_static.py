@@ -23,6 +23,7 @@ from app.config import settings
 from app.database import analytics_session, set_local_statement_timeout
 from app.services.display import today_msk
 from app.services.index_policy import is_noindex_path
+from app.services.sitemap_priority import PRIORITY_SECTION
 from app.services.site_urls import (
     SITEMAP_MAX_BYTES,
     SITEMAP_MAX_URLS,
@@ -128,6 +129,9 @@ def iter_published_paths(origin: str):
         return
     host = urlparse(origin).hostname
     host_stats = _read_json(generation / STATS_NAME).get("hosts", {}).get(host) or {}
+    # Приоритетный шард повторяет адреса основных: отдаём их один раз, на
+    # месте приоритетного шарда (он первый), и пропускаем в остальных.
+    priority_seen: set[str] = set()
     for name in host_stats.get("sections") or {}:
         if not _SECTION.fullmatch(str(name)):
             continue
@@ -137,9 +141,15 @@ def iter_published_paths(origin: str):
         except OSError:
             logger.warning("Published sitemap shard missing: %s", path)
             continue
+        is_priority = name == PRIORITY_SECTION
         for match in _LOC.finditer(raw):
             parsed = urlparse(unescape(match.group(1).decode("utf-8", "replace")).strip())
-            yield parsed.path + (f"?{parsed.query}" if parsed.query else "")
+            value = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+            if is_priority:
+                priority_seen.add(value)
+            elif value in priority_seen:
+                continue
+            yield value
 
 
 def published_section_paths(name: str, origin: str) -> list[str] | None:
@@ -299,6 +309,7 @@ async def build_static_sitemaps() -> dict:
     from app.api.sitemap import SITEMAP_ORIGIN_TOKEN, _render_urlset
     from app.services.locale import en_public_origin, ru_public_origin, apex_locale_en_enabled
     from app.services.site_urls import iter_url_sections
+    from app.services.sitemap_priority import PriorityCollector
 
     root = sitemap_dir()
     root.mkdir(parents=True, exist_ok=True, mode=0o755)
@@ -339,7 +350,14 @@ async def build_static_sitemaps() -> dict:
                 previous_changed = {str(key): str(value) for key, value in raw_changed.items()}
         build_day = today_msk().isoformat()
         section_changed: dict[str, str] = {}
+        priority_urls = 0
         try:
+            # Спрос для приоритетного шарда читается до основной сборки и в
+            # отдельной транзакции: откат слоя спроса не должен сбросить
+            # SET LOCAL statement_timeout основной транзакции.
+            collector = PriorityCollector(
+                await _load_priority_plan(), today_msk(), settings.sitemap_priority_max_urls
+            )
             async with analytics_session() as db:
                 # Ночной билд — пакетная задача: чанк US-штатов на хосте с 2 vCPU (тестовый
                 # сервер, 2026-10-04) не укладывался в 60 с analytics-пула. Транзакция одна на
@@ -350,6 +368,7 @@ async def build_static_sitemaps() -> dict:
                         raise ValueError(f"Invalid sitemap section: {name}")
                     if not urls:
                         continue  # Empty chunks must not be advertised.
+                    collector.feed(name, urls)
                     # Perf batch 2: валидация, отпечаток, рендер XML, gzip и
                     # fsync шарда (до 50k URL × 2 хоста) — чистый CPU/IO; в
                     # потоке, чтобы ~5 млн URL ночного билда не держали event
@@ -377,12 +396,38 @@ async def build_static_sitemaps() -> dict:
                     sections[name] = len(urls)
             if not sections:
                 raise ValueError("Refusing to publish an empty sitemap generation")
+            urls_unique = sum(sections.values())
+            picked = collector.result()
+            if picked:
+                # Приоритетный шард — первым в sitemap.xml. Его адреса дублируют
+                # адреса основных шардов: в urls_total они не входят.
+                stamp, digest, was_reused = await asyncio.to_thread(
+                    _publish_section,
+                    PRIORITY_SECTION, picked, previous, previous_digests, generation,
+                    origins, _render_urlset, SITEMAP_ORIGIN_TOKEN,
+                )
+                changed_on = None
+                if previous_changed is not None and previous_digests.get(PRIORITY_SECTION) == digest:
+                    changed_on = previous_changed.get(PRIORITY_SECTION)
+                changed_on = changed_on or build_day
+                section_changed = {PRIORITY_SECTION: changed_on, **section_changed}
+                section_stamps = {
+                    PRIORITY_SECTION: max(v for v in (stamp, changed_on) if v), **section_stamps,
+                }
+                section_digests = {PRIORITY_SECTION: digest, **section_digests}
+                if was_reused:
+                    reused += 1
+                else:
+                    rewritten += 1
+                sections = {PRIORITY_SECTION: len(picked), **sections}
+                priority_urls = len(picked)
             hosts = {urlparse(origin).hostname: {
                 "origin": origin, "sections": sections,
                 "section_lastmod": section_stamps,
                 "section_changed": section_changed,
                 "section_digest": section_digests,
-                "urls_total": sum(sections.values()), "section_count": len(sections),
+                "urls_total": urls_unique, "section_count": len(sections),
+                "priority_urls": priority_urls,
             } for origin in origins}
             stats = {
                 "built_at": started.isoformat(timespec="seconds"),
@@ -394,7 +439,8 @@ async def build_static_sitemaps() -> dict:
                 "section_digest": section_digests,
                 "sections_reused": reused,
                 "sections_rewritten": rewritten,
-                "urls_total": sum(sections.values()), "section_count": len(sections),
+                "urls_total": urls_unique, "section_count": len(sections),
+                "priority_urls": priority_urls,
                 "hosts": hosts, "published_urls_total": sum(h["urls_total"] for h in hosts.values()),
                 "errors": [],
             }
@@ -410,6 +456,21 @@ async def build_static_sitemaps() -> dict:
             generation.name, stats["published_urls_total"], len(hosts), reused, rewritten,
         )
         return stats
+
+
+async def _load_priority_plan():
+    """Спрос для приоритетного шарда; любой сбой = только хабы, сборка идёт дальше."""
+    from app.services.sitemap_priority import PriorityPlan, load_priority_plan
+
+    if settings.sitemap_priority_max_urls <= 0:
+        return PriorityPlan()
+    try:
+        async with analytics_session() as db:
+            await set_local_statement_timeout(db, _SECTION_STATEMENT_TIMEOUT_MS)
+            return await load_priority_plan(db, today_msk())
+    except Exception:  # noqa: BLE001
+        logger.warning("Priority sitemap demand failed; hubs only", exc_info=True)
+        return PriorityPlan()
 
 
 async def sitemap_build_job() -> None:

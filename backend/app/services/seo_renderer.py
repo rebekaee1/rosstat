@@ -1176,7 +1176,7 @@ def _ssr_boot_splash() -> str:
     caption = "Loading…" if locale == "en" else "Загружаем…"
     facts = "".join(f"<span>{text}</span>" for text in _BOOT_FACTS[locale])
     return (
-        '<div class="fe-boot-splash" aria-hidden="true">'
+        '<div class="fe-boot-splash" aria-hidden="true" data-nosnippet>'
         + _BOOT_BGF
         + _BOOT_LOGO
         + _BOOT_GLOBE
@@ -2453,6 +2453,16 @@ HOME_FLAGSHIP_CODES_EN: tuple[str, ...] = (
 )
 HOME_COUNTRY_SLUG_EN = "united-states"
 
+# Круг 13 (SEO): стабильный список «Популярные показатели» на главной русского
+# хоста. Показатели, по которым ru.forecasteconomy.com уже получает показы
+# (Google Search Console и Яндекс за 90 дней), не ключевые по категориям.
+# Нет в каталоге — строка молча пропускается. Только ru: apex индексируется.
+HOME_POPULAR_CODES_RU: tuple[str, ...] = (
+    "usd-rub", "eur-rub", "usd-cny", "ruonia", "mortgage-rate", "deposit-rate",
+    "auto-loan-rate", "fuel-ai95", "fuel-diesel", "gold", "wages-nominal",
+    "living-wage", "minimum-wage", "refinancing-rate",
+)
+
 
 async def _home_flagship_links_en(db: AsyncSession) -> tuple[tuple[str, str], ...]:
     """US headline rows for the EN home SSR (links + JSON-LD ItemList)."""
@@ -2499,6 +2509,16 @@ async def render_home_html(db: AsyncSession) -> str:
     # копия обязана держать эти ссылки, иначе карточки стран теряют
     # внутреннюю перелинковку.
     country_links = await _home_country_links(db)
+    popular_links: tuple[tuple[str, str], ...] = ()
+    if get_locale() != "en":
+        shown = {ind.code for ind in flagships}
+        popular = await _indicators_by_codes(
+            db, tuple(code for code in HOME_POPULAR_CODES_RU if code not in shown),
+        )
+        popular_links = tuple(
+            (paths.russia_indicator(ind.code), public_name(ind.name, ind.name_en))
+            for ind in popular
+        )
     refreshed = await _last_data_refresh(db)
     page = get_page_seo("home")
     if page is None:
@@ -2587,13 +2607,18 @@ async def render_home_html(db: AsyncSession) -> str:
         home_template("itemlist_flagships")
         or "Ключевые макроэкономические индикаторы"
     )
+    popular_section = (
+        f"<section><h2>{escape(home_template('h2_popular') or 'Популярные показатели')}</h2>"
+        f"{_links_list(popular_links)}</section>\n"
+        if popular_links else ""
+    )
     body = f"""<main class="seo-page">
 <p class="seo-eyebrow">{escape(eyebrow)}</p>
 <h1>{escape(page.h1)}</h1>
 <p>{escape(page.intro)}</p>
 {_blocks_html(page_blocks)}
 <section><h2>{escape(h2_flagships)}</h2>{_links_list(flagship_links)}</section>
-<section id="countries"><h2>{escape(h2_countries)}</h2>{_links_list(country_links)}</section>
+{popular_section}<section id="countries"><h2>{escape(h2_countries)}</h2>{_links_list(country_links)}</section>
 <section><h2>{escape(h2_tools)}</h2>{_links_list(page.links)}</section>
 </main>"""
     country_items = [
@@ -4138,6 +4163,30 @@ def _indicator_body(
     current_text = display_value_text(
         value_code, current.value if current else None, unit, frequency,
     )
+    # Круг 13 (SEO): одна фраза о динамике по тем же последним строкам, что и
+    # таблица ниже (без крайних значений: окно — 12 точек, не вся история).
+    dynamics_html = ""
+    if len(latest_rows) >= 3:
+        from app.services.seo_dynamics import dynamics_note
+
+        dynamics_text = dynamics_note(
+            [
+                (row.date, float(display_value(value_code, row.value)))
+                for row in reversed(latest_rows)
+                if row.value is not None
+            ],
+            frequency,
+            unit="%" if cpi_mode else (unit or ""),
+            fmt=lambda number: format_number_ru(number, locale=loc),
+            fmt_value=lambda number: (
+                f"{format_number_ru(number, locale=loc)}" + (f" {unit}" if unit else "")
+            ),
+            label=lambda day: _format_date(day),
+            en=en,
+            extremes=False,
+        )
+        if dynamics_text:
+            dynamics_html = f"<p>{escape(dynamics_text)}</p>\n"
     # V5: alt с «прогноз» на пилотных карточках; иначе — факт + последнее значение.
     chart_alt = (
         forecast_ssr_image_name(name)
@@ -4195,7 +4244,8 @@ def _indicator_body(
 <li>{li_source_tpl.format(source=source_link)}</li>
 <li>{escape(li_points_tpl.format(count=int(count)))}</li>
 <li>{escape(li_period_tpl.format(first=_format_date(first_dt), last=_format_date(last_dt)))}</li>
-</ul></section>
+</ul>
+{dynamics_html}</section>
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>

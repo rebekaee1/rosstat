@@ -137,6 +137,18 @@ async def collect_seo_week(today: date | None = None) -> dict:
             "WHERE source='yandex_webmaster' ORDER BY id DESC LIMIT 1"
         ))).first()
         out["webmaster_last_run"] = tuple(last_run) if last_run else None
+        try:
+            from app.services.seo_index_control import collect_yandex_indexing
+
+            out["yandex_indexing"] = await collect_yandex_indexing(db, today)
+        except Exception:
+            logger.warning("yandex indexing snapshots unavailable", exc_info=True)
+    try:
+        from app.services.seo_index_control import run_control_inspection
+
+        out["google_inspection"] = await run_control_inspection(today)
+    except Exception:
+        logger.warning("google control inspection unavailable", exc_info=True)
     try:
         from app.core.cache import get_redis
 
@@ -189,6 +201,16 @@ def format_seo_week(data: dict) -> str:
             label = host.replace("https:", "").replace(":443", "")
             ins = f", в поиске {_fmt_int(in_search)}" if in_search else ""
             lines.append(f"{label}: {_fmt_int(errors)} на {day:%d.%m}{ins}")
+    from app.services.seo_index_control import summarize_inspection, summarize_yandex_indexing
+
+    ya_index = summarize_yandex_indexing(data.get("yandex_indexing") or [])
+    g_index = summarize_inspection(data.get("google_inspection") or {})
+    if ya_index or g_index:
+        lines.append("\n<b>Индексация</b>")
+        if ya_index:
+            lines.append("Яндекс, страниц в поиске:")
+            lines.extend(ya_index)
+        lines.extend(g_index)
     run = data.get("webmaster_last_run")
     if run and run[0] == "failed":
         stale_notes.append(f"последний синк Вебмастера {run[1]:%d.%m} упал: {run[2]}")
