@@ -1,19 +1,12 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "5ce957fb11b7f19a46a8795b969fb35efcc33230",
+  "baseline_commit": "ad189ea70412e0bed075d8370ebcc41692ca824c",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/javascript-symbols.json",
-    "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/materials-2026-09-30.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1182,7 +1175,7 @@
     {"path": "backend/certs/russian_trusted_sub_ca_gost_2025.cer", "kind": "asset/data/config", "bytes": 1649, "lines": null, "sha256": "b809281bf07b865bcdd7f5746bf1ebb7ccee093d5c63b016dd91ee3b22cda8d1", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/certs/russiantrustedca.pem", "kind": "asset/data/config", "bytes": 4634, "lines": 74, "sha256": "6d1b66e7c1aa2512ad3abb50d6a6f144c9ee9d80fd7fbe1c9255a39f8e790944", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/certs/russiantrustedca2024.pem", "kind": "asset/data/config", "bytes": 4543, "lines": 72, "sha256": "e1a1602f9b4bbed3628e535b3dfb90da49a0fdf144858ebe7fed7ef0e8b29b3c", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/constraints.txt", "kind": "asset/data/config", "bytes": 1825, "lines": 86, "sha256": "b3e0a96bc5ed6da23abd3f762340ac7bb11600d0a674a54e7dd55db20c6ad494", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/constraints.txt", "kind": "asset/data/config", "bytes": 1825, "lines": 86, "sha256": "5ac58206728de5e8985f19d753820ea512569b783dbee90d686f6694432c0650", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/entrypoint.sh", "kind": "code", "bytes": 3061, "lines": 60, "sha256": "7db7f784e968c8cfa2d901c98d173a3a417b336e1b3fab4a0d77bde9c09dc635", "symlink": false, "nodes": 2, "extraction": "nodes", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/pytest.ini", "kind": "asset/data/config", "bytes": 42, "lines": 3, "sha256": "b160d82f7811555051f8966d8e02750a985227c1d022208c784e606946f2eada", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/requirements-dev.txt", "kind": "asset/data/config", "bytes": 434, "lines": 9, "sha256": "d0669db9b99708dc0222e37ee39b96dc956584330f62deba0aef75e58eb112fe", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "infra", "semantic_evidence": false, "semantic_current": null},

@@ -6016,7 +6016,7 @@
     },
     {
       "path": "backend/constraints.txt",
-      "sha256": "b3e0a96bc5ed6da23abd3f762340ac7bb11600d0a674a54e7dd55db20c6ad494",
+      "sha256": "5ac58206728de5e8985f19d753820ea512569b783dbee90d686f6694432c0650",
       "bytes": 1825,
       "lines": 86,
       "code": false,
@@ -28259,15 +28259,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "48ad861745da3182198fed9dc3527565d059c4a1b561a3ea3be0f03b80a98024",
+  "ledger_sha256": "6abf2fbfa5ac99a78fb43e6a61ef8319429faacf80d1659f30e0a02ca51dcd1e",
   "javascript_inventory_sha256": "32f588ec2a14803d566c037225d21051040ed7ab316a4378d4234d99bb5cc8b1",
-  "baseline_commit": "5ce957fb11b7f19a46a8795b969fb35efcc33230",
+  "baseline_commit": "ad189ea70412e0bed075d8370ebcc41692ca824c",
   "branch": "circle13/int",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
