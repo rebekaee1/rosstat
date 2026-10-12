@@ -12,9 +12,10 @@
       "age_days": 1015,                # от конца периода, как в значке
       "reason": "source_stopped" | "series_lag" | "update_delayed" | "retired",
       "source_updated_at": "2026-03-20" | null,   # когда источник последний раз менял набор
+      "lead": "Источник не обновлял ряд с декабря 2023.",   # первая фраза (причина), без ссылки
       "message": "Источник не обновлял ряд с декабря 2023. Ближайший актуальный показатель: …",
       "nearest": {"code": "...", "name": "...", "url": "/germany/indicator/...",
-                  "last_period": "2026-08-01"} | null
+                  "last_period": "2026-08-01", "frequency": "monthly"} | null
     }
 
 Причины (``reason``): ``source_stopped`` набор давно не обновляется у источника;
@@ -66,6 +67,18 @@ def build_message(
     nearest_name: str | None, locale: str = "ru",
 ) -> str:
     """Готовая строка блока. Без жаргона парсеров и кодов наборов."""
+    head = build_lead(reason=reason, last=last, frequency=frequency, locale=locale)
+    if nearest_name:
+        tail = (
+            f" Ближайший актуальный показатель: {nearest_name}."
+            if locale != "en" else f" The closest up-to-date measure: {nearest_name}."
+        )
+        return head + tail
+    return head
+
+
+def build_lead(*, reason: str, last: date, frequency: str | None, locale: str = "ru") -> str:
+    """Первая фраза блока: причина без предложения про ближайший показатель (круг 13: ссылка рисуется отдельно)."""
     ru = locale != "en"
     when = period_label(last, frequency, locale)
     if reason == "retired":
@@ -88,12 +101,6 @@ def build_message(
             f"Источник не обновлял ряд с {when}."
             if ru else f"The source has not updated this series since {when}."
         )
-    if nearest_name:
-        tail = (
-            f" Ближайший актуальный показатель: {nearest_name}."
-            if ru else f" The closest up-to-date measure: {nearest_name}."
-        )
-        return head + tail
     return head
 
 
@@ -174,6 +181,7 @@ async def world_freshness_note(
                 "name": (best.name_en if locale == "en" and best.name_en else best.name_ru),
                 "url": paths.indicator(slug, best.code),
                 "last_period": best.history_end.isoformat(),
+                "frequency": normalize_frequency(best.frequency),
             }
     reason = decide_reason(
         dataset_newest_is_stale=dataset_newest_is_stale and not mates,
@@ -186,6 +194,7 @@ async def world_freshness_note(
         "age_days": age_days(last, freq, today),
         "reason": reason,
         "source_updated_at": source_updated_at.isoformat() if source_updated_at else None,
+        "lead": build_lead(reason=reason, last=last, frequency=freq, locale=locale),
         "message": build_message(
             reason=reason, last=last, frequency=freq, source_updated_at=source_updated_at,
             nearest_name=nearest["name"] if nearest else None, locale=locale,
@@ -247,6 +256,7 @@ async def ru_freshness_note(
             "name": name_en if locale == "en" and name_en else name,
             "url": paths.russia_indicator(code),
             "last_period": rlast.isoformat(),
+            "frequency": normalize_frequency(rfreq),
         }
     return {
         "level": "stale",
@@ -254,6 +264,7 @@ async def ru_freshness_note(
         "age_days": age_days(last, freq, today),
         "reason": reason,
         "source_updated_at": None,
+        "lead": build_lead(reason=reason, last=last, frequency=freq, locale=locale),
         "message": build_message(
             reason=reason, last=last, frequency=freq, source_updated_at=None,
             nearest_name=nearest["name"] if nearest else None, locale=locale,

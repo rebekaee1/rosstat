@@ -3717,4 +3717,9 @@ export default {
   'c12u.delta.prevDay': 'vs previous day',
   'c12u.prefs.intro': 'Number format, converter currency and home country already apply across the site. Language, units and newsletter topics are only stored for now: the page address sets the language, and no emails are sent yet.',
   'c12u.quick.home': 'Your country: {country}',
+  // ===== Round 13: data (D) =====
+  'c13d.note.title': 'Up-to-date data',
+  'c13d.note.checked': 'The source last updated the dataset on {date}.',
+  'c13d.note.nearest': 'Closest up-to-date measure',
+  'c13d.note.until': 'data up to {date}',
 };

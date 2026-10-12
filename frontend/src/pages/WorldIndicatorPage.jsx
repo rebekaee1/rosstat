@@ -60,6 +60,7 @@ import { isPeopleUnit } from '../lib/populationFacts';
 import Breadcrumbs from '../components/Breadcrumbs';
 import CabinetActionsSlot from '../components/CabinetActionsSlot';
 import IndicatorPeers from '../components/IndicatorPeers';
+import FreshnessNote from '../components/FreshnessNote';
 import { worldIndicatorSubject } from '../lib/cabinetSubjects';
 import { useScrollFadesWithin } from '../lib/useScrollFades';
 import { SkeletonBox } from '../components/Skeleton';
@@ -622,6 +623,8 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
               />
             </div>
           </header>
+
+          <FreshnessNote freshness={indicator.freshness} />
 
           <ViewModesPanel>
             {variantGroup && (
