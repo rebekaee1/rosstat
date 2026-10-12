@@ -56,3 +56,14 @@ def test_zero_base_and_absurd_growth_are_skipped():
     assert dynamics_note(series, "monthly", unit="шт.", fmt=_fmt, label=_label) == ""
     # рост в сотни раз на единичной базе не публикуем как «динамику»
     assert dynamics_note(_monthly([5000, 1, 5000]), "monthly", unit="шт.", fmt=_fmt, label=_label) == ""
+
+
+def test_daily_unchanged_is_not_reported_and_fmt_value_overrides_unit():
+    series = [(date(2026, 10, d), v) for d, v in [(5, 14.0), (6, 14.0), (7, 14.0)]]
+    assert dynamics_note(series, "daily", unit="%", fmt=_fmt, label=_label) == ""
+    series = _monthly([100, 110, 121])
+    text = dynamics_note(
+        series, "monthly", unit="млрд руб.", fmt=_fmt, label=_label,
+        fmt_value=lambda n: f"{_fmt(n)} млрд руб.", extremes=False,
+    )
+    assert text == "Динамика: к предыдущему периоду (2025-02, 110 млрд руб.) — выше на 10 %."

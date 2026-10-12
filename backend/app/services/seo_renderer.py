@@ -4138,6 +4138,30 @@ def _indicator_body(
     current_text = display_value_text(
         value_code, current.value if current else None, unit, frequency,
     )
+    # Круг 13 (SEO): одна фраза о динамике по тем же последним строкам, что и
+    # таблица ниже (без крайних значений: окно — 12 точек, не вся история).
+    dynamics_html = ""
+    if len(latest_rows) >= 3:
+        from app.services.seo_dynamics import dynamics_note
+
+        dynamics_text = dynamics_note(
+            [
+                (row.date, float(display_value(value_code, row.value)))
+                for row in reversed(latest_rows)
+                if row.value is not None
+            ],
+            frequency,
+            unit="%" if cpi_mode else (unit or ""),
+            fmt=lambda number: format_number_ru(number, locale=loc),
+            fmt_value=lambda number: (
+                f"{format_number_ru(number, locale=loc)}" + (f" {unit}" if unit else "")
+            ),
+            label=lambda day: _format_date(day),
+            en=en,
+            extremes=False,
+        )
+        if dynamics_text:
+            dynamics_html = f"<p>{escape(dynamics_text)}</p>\n"
     # V5: alt с «прогноз» на пилотных карточках; иначе — факт + последнее значение.
     chart_alt = (
         forecast_ssr_image_name(name)
@@ -4195,7 +4219,8 @@ def _indicator_body(
 <li>{li_source_tpl.format(source=source_link)}</li>
 <li>{escape(li_points_tpl.format(count=int(count)))}</li>
 <li>{escape(li_period_tpl.format(first=_format_date(first_dt), last=_format_date(last_dt)))}</li>
-</ul></section>
+</ul>
+{dynamics_html}</section>
 {_blocks_html(blocks, current_code=indicator.code)}
 <section><h2>{escape(section_method)}</h2><p>{escape(clean_text(method_text, method_fb))}</p></section>
 <section><h2>{escape(section_latest)}</h2><table><thead><tr><th>{escape(th_date)}</th><th>{escape(value_head)}</th></tr></thead><tbody>{data_rows}</tbody></table></section>

@@ -64,6 +64,8 @@ def dynamics_note(
     label: Callable[[date], str],
     en: bool = False,
     min_points: int = 3,
+    fmt_value: Callable[[float], str] | None = None,
+    extremes: bool = True,
 ) -> str:
     """Готовая фраза или пустая строка, если ряд слишком короткий.
 
@@ -78,10 +80,13 @@ def dynamics_note(
     is_percent = "%" in (unit or "")
 
     def val(number: float) -> str:
-        return f"{fmt(number)}{unit_sfx}"
+        return fmt_value(number) if fmt_value else f"{fmt(number)}{unit_sfx}"
 
     parts: list[str] = []
     vs_prev = _delta_text(last, prev, is_percent=is_percent, fmt=fmt, en=en)
+    # Дневной ряд, где вчера и сегодня совпали, — не динамика (ставка ЦБ, курс на выходных).
+    if last == prev and (frequency or "").lower() in ("daily", "weekly"):
+        vs_prev = None
     if vs_prev:
         parts.append(
             f"{'versus the previous period' if en else 'к предыдущему периоду'} "
@@ -97,22 +102,22 @@ def dynamics_note(
             )
     lo = min(series, key=lambda item: item[1])
     hi = max(series, key=lambda item: item[1])
-    extremes = ""
-    if lo[1] != hi[1] and len(series) >= 5:
+    tail = ""
+    if extremes and lo[1] != hi[1] and len(series) >= 5:
         if en:
-            extremes = (
+            tail = (
                 f" Over the whole series the low is {val(lo[1])} ({label(lo[0])}) "
                 f"and the high is {val(hi[1])} ({label(hi[0])})."
             )
         else:
-            extremes = (
+            tail = (
                 f" За весь период наблюдений минимум — {val(lo[1])} ({label(lo[0])}), "
                 f"максимум — {val(hi[1])} ({label(hi[0])})."
             )
     if not parts:
-        return extremes.strip()
+        return tail.strip()
     head = "Change: " if en else "Динамика: "
     body = "; ".join(parts)
-    if body:
+    if body and not body.endswith("."):
         body += "."
-    return (head + body + extremes).strip()
+    return (head + body + (" " + tail.strip() if tail else "")).strip()
