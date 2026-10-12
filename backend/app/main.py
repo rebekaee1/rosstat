@@ -1228,7 +1228,7 @@ async def lifespan(app: FastAPI):
         # Интервал короче TTL главной (300 с); сама задача ничего не делает, пока ssr_warm_enabled выключен.
         from app.services.ssr_warm import ssr_warm_job
         scheduler.add_job(
-            locked_job(ssr_warm_job, "ssr_warm", ttl_seconds=120),
+            locked_job(ssr_warm_job, "ssr_warm", ttl_seconds=420),
             trigger=IntervalTrigger(seconds=45),
             id="ssr_warm",
             name="SSR/API first-screen cache warm-up (every 45 s, flag ssr_warm_enabled)",
@@ -1651,6 +1651,10 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         token = set_locale(locale)
         origin_token = set_request_origin(resolve_request_origin(host))
         preview_token = set_preview_locale(explicit_preview_active(host, explicit, locale))
+        # Stale-while-revalidate (флаг ssr_swr_enabled): признак фонового пересчёта и адрес запроса для кэша.
+        from app.services.ssr_swr import bind_request as _swr_bind, unbind_request as _swr_unbind
+
+        swr_tokens = _swr_bind(request)
         try:
             response = await call_next(request)
             response.headers.setdefault("Content-Language", locale)
@@ -1660,6 +1664,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
                 _merge_vary(response, LOCALE_HEADER)
             return response
         finally:
+            _swr_unbind(swr_tokens)
             reset_preview_locale(preview_token)
             reset_request_origin(origin_token)
             reset_locale(token)

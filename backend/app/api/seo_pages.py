@@ -34,9 +34,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # сохранены — тесты подменяют их на модуле.
 from app.core.cache import (
     ssr_cache_get as cache_get,
+    ssr_cache_get_swr as cache_get_swr,
     ssr_cache_set as cache_set,
     versioned_key,
 )
+from app.services import ssr_swr
 from app.services import site_paths as paths
 from app.services.attribution_query import merge_attribution_query
 from app.services.locale import get_locale
@@ -193,6 +195,15 @@ async def _peek_cached_html(namespace: str, variant: str) -> str | None:
         return None
     sig = await _asset_sig()
     key = await _ssr_key(namespace, variant, sig)
+    if ssr_swr.swr_enabled():
+        if ssr_swr.revalidate_requested():
+            return None  # фоновый пересчёт: идём в рендер и перезаписываем ключ
+        cached, fresh = await cache_get_swr(key)
+        if isinstance(cached, str) and cached:
+            if not fresh:
+                await ssr_swr.schedule_revalidate(key)
+            return cached
+        return None
     cached = await cache_get(key)
     if isinstance(cached, str) and cached:
         return cached
@@ -224,17 +235,36 @@ async def _cached_html(
     await _release_db(db)
     sig = await _asset_sig()
     key = await _ssr_key(namespace, variant, sig)
-    cached = await cache_get(key)
-    if isinstance(cached, str) and cached:
-        return 200, cached
+    # Stale-while-revalidate (флаг ssr_swr_enabled): устаревшая запись отдаётся сразу, пересчёт идёт в фоне
+    # одним запросом на ключ (services/ssr_swr.py). Запрос с заголовком пересчёта кэш не читает.
+    swr = ssr_swr.swr_enabled()
+    forced = swr and ssr_swr.revalidate_requested()
+    if swr and not forced:
+        cached, fresh = await cache_get_swr(key)
+        if isinstance(cached, str) and cached:
+            if not fresh:
+                await ssr_swr.schedule_revalidate(key)
+            return 200, cached
+    elif not swr:
+        cached = await cache_get(key)
+        if isinstance(cached, str) and cached:
+            return 200, cached
 
     if len(_render_locks) > _RENDER_LOCKS_MAX:
         _render_locks.clear()  # защита от роста на уникальных 404-путях
     lock = _render_locks.setdefault(key, asyncio.Lock())
     async with lock:
-        cached = await cache_get(key)  # мог появиться, пока ждали лок
-        if isinstance(cached, str) and cached:
-            return 200, cached
+        if swr:
+            # Пока ждали лок, соседний запрос мог записать свежее значение. Фоновый пересчёт (forced) рендерит всегда:
+            # он один на ключ благодаря замку в Redis, а свежее значение в этот момент — это как раз то, что он обновляет.
+            if not forced:
+                cached, fresh = await cache_get_swr(key)
+                if isinstance(cached, str) and cached and fresh:
+                    return 200, cached
+        else:
+            cached = await cache_get(key)  # мог появиться, пока ждали лок
+            if isinstance(cached, str) and cached:
+                return 200, cached
         async with _RENDER_SEM:
             try:
                 status, html = await render_coro_factory()
@@ -242,7 +272,10 @@ async def _cached_html(
                 # Не держать соединение во время cache_set / ответа.
                 await _release_db(db)
         if status == 200:
-            await cache_set(key, html, ttl)
+            if swr:
+                await cache_set(key, html, ttl, stale_ttl=ssr_swr.stale_window())
+            else:
+                await cache_set(key, html, ttl)
         return status, html
 
 
@@ -888,7 +921,10 @@ async def seo_world_vs(
         sig = await _asset_sig()
         key = await _ssr_key("ssr-world", variant, sig)
         await _release_db(db)
-        await cache_set(key, payload, _SSR_TTL_WORLD)
+        if ssr_swr.swr_enabled():
+            await cache_set(key, payload, _SSR_TTL_WORLD, stale_ttl=ssr_swr.stale_window())
+        else:
+            await cache_set(key, payload, _SSR_TTL_WORLD)
     return _html_response(status, payload, request)
 
 
