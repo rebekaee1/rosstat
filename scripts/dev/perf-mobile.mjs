@@ -90,7 +90,7 @@ const INIT_SCRIPT = `(() => {
   try {
     new PerformanceObserver((l) => { for (const e of l.getEntries()) w.__perf.paints[e.name] = e.startTime; })
       .observe({ type: 'paint', buffered: true });
-    new PerformanceObserver((l) => { for (const e of l.getEntries()) w.__perf.lcp = e.startTime; })
+    new PerformanceObserver((l) => { for (const e of l.getEntries()) { w.__perf.lcp = e.startTime; const el = e.element; w.__perf.lcpInfo = { tag: el && el.tagName, cls: el ? String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').slice(0, 70) : '', url: (e.url || '').slice(-60), size: e.size, text: el && el.textContent ? el.textContent.trim().slice(0, 40) : '' }; } })
       .observe({ type: 'largest-contentful-paint', buffered: true });
     new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) { w.__perf.cls += e.value; w.__perf.shifts++; } })
       .observe({ type: 'layout-shift', buffered: true });
@@ -285,6 +285,7 @@ async function measure(ctx, helper, url) {
     ttfb: nav?.responseStart ?? null,
     fcp,
     lcp: perf?.lcp || null,
+    lcpInfo: perf?.lcpInfo || null,
     speedIndex: si?.si ?? null,
     vc95: si?.vc95 ?? null,
     firstFrame: si?.firstPaint ?? null,
