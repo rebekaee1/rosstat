@@ -97,10 +97,10 @@ describe('карта регионов: пузыри и шкала', () => {
 
 describe('подача чисел без жаргона', () => {
   it('«п. п.» заменено словами, а для индекса остаются проценты', () => {
-    expect(formatDeltaWithUnit(0.34, '%', { locale: 'ru', plain: true }).text).toContain('процентного пункта');
+    expect(formatDeltaWithUnit(0.34, '%', { locale: 'ru', plain: true }).text.replace(/[\u00a0\u202f]/g, ' ')).toContain('процентного пункта');
     expect(formatDeltaWithUnit(0.34, '%', { locale: 'ru' }).text).toContain('п. п.');
-    expect(formatDeltaWithUnit(0.34, '%', { locale: 'en', plain: true }).text).toContain('percentage points');
-    expect(formatDeltaWithUnit(-0.6, 'руб./л', { locale: 'ru', plain: true }).text).toContain('₽ за литр');
+    expect(formatDeltaWithUnit(0.34, '%', { locale: 'en', plain: true }).text.replace(/[\u00a0\u202f]/g, ' ')).toContain('percentage points');
+    expect(formatDeltaWithUnit(-0.6, 'руб./л', { locale: 'ru', plain: true }).text.replace(/[\u00a0\u202f]/g, ' ')).toContain('₽ за литр');
     expect(formatDeltaWithUnit(0.05, 'пунктов', { pct: true, locale: 'ru' }).text).toMatch(/\+0,05\s%/);
   });
 

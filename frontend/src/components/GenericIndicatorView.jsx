@@ -306,6 +306,7 @@ export default function GenericIndicatorView({
         safeViewMode={safeMode}
         {...FLAGS}
         dataPoints={dataPoints}
+        pairedWithForecast={Boolean(forecastEnabled && showForecast && hasForecast)}
       />
         </div>
         <div className="z4-lower__aside">

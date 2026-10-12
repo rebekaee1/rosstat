@@ -440,6 +440,29 @@ a.fe-glass-2, button.fe-glass-2, [role='button'].fe-glass-2 { transition: backgr
 @media (max-width: 1023px) {
   :root { --fe-sticky-reserve: 64px; }
 }
+/* Круг 13 (находка симулятора-2 №8): карточка «Установите Forecast Economy» на планшете (от 744 px) — нижняя полоса во всю ширину, а не окно
+   поверх содержимого. Пока она видна, на корне html[data-fe-pwa-bar] и --fe-pwa-h (высота, ставит PwaInstallCard): страница получает такой же
+   нижний запас, якоря и фокус останавливаются выше полосы, плавающие кнопки поднимаются над ней. Тонкая строка (iPad Safari, «Как?») и
+   Android-вариант идут в одну строку; раскрытые шаги iOS остаются карточкой по центру. На телефоне (до 743) ничего не меняется. */
+@media (min-width: 744px) {
+  .fe-pwa-card[data-slim='true'],
+  .fe-pwa-card[data-platform='android'] {
+    left: 0; right: 0; max-width: none; margin: 0;
+    bottom: var(--fe-bottom-clear, 0px);
+    padding: 8px max(20px, env(safe-area-inset-right)) 8px max(20px, env(safe-area-inset-left));
+    border-radius: 20px 20px 0 0;
+  }
+  .fe-pwa-card[data-platform='android'] { display: flex; align-items: center; gap: 16px; }
+  .fe-pwa-card[data-platform='android'] > .fe-pwa-card__head { flex: 1 1 auto; align-items: center; min-width: 0; }
+  .fe-pwa-card[data-platform='android'] .fe-pwa-card__head > button { display: none; }
+  .fe-pwa-card[data-platform='android'] .fe-pwa-card__acts { flex: 0 0 auto; margin-top: 0; }
+  .fe-pwa-card[data-platform='android'] .fe-pwa-card__acts > * { flex: 0 0 auto; }
+  .fe-pwa-card[data-platform='android'] .fe-pwa-card__acts::after { content: none; }
+  html[data-fe-pwa-bar] body { padding-bottom: var(--fe-pwa-h, 0px); }
+  html[data-fe-pwa-bar] { scroll-padding-bottom: calc(var(--fe-pwa-h, 0px) + 12px); }
+  :root:root[data-fe-pwa-bar] .fe-nudge-desk { bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--fe-pwa-h, 0px)); }
+}
+
 /* Класс-хук для страниц с плашкой «Результат»: нижний отступ формы (последнее поле не остаётся под плашкой и панелью). */
 .fe-sticky-clear { padding-bottom: calc(var(--fe-sticky-reserve, 0px) + 16px); }
 

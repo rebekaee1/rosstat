@@ -491,7 +491,7 @@
   background: var(--k8-well-bg-focus, rgba(255, 255, 255, 0.8));
   box-shadow: var(--k8-well-shadow), var(--k8-well-glow, 0 0 22px 2px rgba(30, 58, 110, 0.3));
 }
-.fe-z8-search__input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--color-text-primary); font: inherit; font-size: 16px; }
+.fe-z8-search__input { flex: 1; min-width: 0; min-height: 40px; border: 0; outline: none; background: transparent; color: var(--color-text-primary); font: inherit; font-size: 16px; }
 .fe-z8-search__clear {
   display: inline-flex;
   align-items: center;
