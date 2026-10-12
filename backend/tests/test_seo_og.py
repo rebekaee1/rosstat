@@ -320,13 +320,21 @@ def test_chart_rewrite_and_lcp_preload_share_one_parse(monkeypatch):
     )
     assert calls == 1
     assert '<picture>' in html
-    assert 'fetchpriority="high"' in html
-    assert 'portrait=1' in preload
-    assert 'media="(max-width: 640px)"' in preload
-    assert 'media="(min-width: 641px)"' in preload
+    soup = renderer.BeautifulSoup(html, "html.parser")
+    img = soup.select_one(".seo-chart img")
+    # Круг 12: картинка не опережает CSS и JS — без fetchpriority=high и без preload в <head>.
+    assert img.get("fetchpriority") is None and img["loading"] == "eager"
+    assert preload == ""
+    # WebP нужного размера идёт первым, прежний PNG — запасной вариант.
+    sources = soup.select(".seo-chart source")
+    assert [s.get("type") for s in sources] == ["image/webp", None, "image/webp"]
+    assert sources[0]["media"] == "(max-width: 640px)"
+    assert "portrait=1&fmt=webp&w=720 720w" in sources[0]["srcset"] and "w=1080 1080w" in sources[0]["srcset"]
+    assert sources[1]["srcset"] == "/og/russia/cpi.png?portrait=1"
+    assert sources[2]["srcset"] == "/og/russia/cpi.png?fmt=webp&w=1200"
 
 
-def test_ssr_lcp_chart_preloads_before_css_and_modules(monkeypatch):
+def test_ssr_chart_image_does_not_compete_with_css_and_modules(monkeypatch):
     import asyncio
 
     from app.services import seo_renderer as renderer
@@ -347,11 +355,11 @@ def test_ssr_lcp_chart_preloads_before_css_and_modules(monkeypatch):
         body='<figure class="seo-chart"><img src="/og/russia/cpi.png" alt="ИПЦ"></figure>',
     ))
     head = html.split('</head>', 1)[0]
-    assert head.index('rel="preload" as="image"') < head.index('id="seo-critical"')
-    assert 'href="/og/russia/cpi.png?portrait=1"' in head
+    assert 'rel="preload" as="image"' not in head, "карточка 300–400 КБ не должна идти preload'ом перед CSS и JS"
     assert 'media="print" data-fe-css="1"' in head
-    assert 'href="/assets/vendor-test.js" fetchpriority="low"' in head
-    assert '<script fetchpriority="low" type="module" src="/assets/main-test.js"' in html
+    # JS и modulepreload больше не понижаются ради картинки.
+    assert 'href="/assets/vendor-test.js" fetchpriority="low"' not in head
+    assert 'fetchpriority="low" type="module"' not in html
 
 
 def test_sort_head_links_stylesheets_first():

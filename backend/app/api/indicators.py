@@ -1,15 +1,18 @@
 import re
+from collections import namedtuple
 from datetime import date, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, func, desc, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import Indicator, IndicatorData
 from app.schemas import IndicatorSummary, IndicatorDetail, IndicatorStats, DataPointOut, DataResponse
 from app.core.cache import cache_get, cache_set, versioned_key
+from app.services.ssr_swr import api_cache_get, api_cache_set
+from app.services.world_subnational_queries import _ids_subquery, _is_postgres
 from app.config import settings
 from app.services.locale import get_locale
 from app.services.seo_i18n import (
@@ -141,6 +144,60 @@ async def _hero_yoy_pct(db: AsyncSession, ind_id: int, frequency: str, current_v
     )
 
 
+_PointRow = namedtuple("_PointRow", "indicator_id date value rn")
+
+
+async def _latest_two_points(db: AsyncSession, indicator_ids) -> list[_PointRow]:
+    """Две последние точки каждого ряда без ранжирования всей истории (круг 12, SPEED2).
+
+    Раньше: `row_number() OVER (PARTITION BY indicator_id ORDER BY date DESC)` по всей `indicator_data` (333 тыс. строк
+    на стенде, сортировка всего ради двух строк на ряд). Теперь на PostgreSQL — LATERAL с индексным чтением по
+    (indicator_id, date); на SQLite (тесты) прежний оконный запрос. Строки: (indicator_id, date, value, rn), rn с 1.
+    """
+    ids = sorted({int(i) for i in indicator_ids})
+    if not ids:
+        return []
+    if _is_postgres(db):
+        id_rows = _ids_subquery(ids)
+        pts = (
+            select(IndicatorData.date, IndicatorData.value)
+            .where(IndicatorData.indicator_id == id_rows.c.id)
+            .order_by(IndicatorData.date.desc())
+            .limit(2)
+            .lateral("pts")
+        )
+        rows = (await db.execute(
+            select(id_rows.c.id, pts.c.date, pts.c.value)
+            .select_from(id_rows.join(pts, true()))
+            .order_by(id_rows.c.id, pts.c.date.desc())
+        )).all()
+        out: list[_PointRow] = []
+        seen: dict[int, int] = {}
+        for iid, d, v in rows:
+            seen[iid] = seen.get(iid, 0) + 1
+            out.append(_PointRow(iid, d, v, seen[iid]))
+        return out
+    ranked = (
+        select(
+            IndicatorData.indicator_id,
+            IndicatorData.date,
+            IndicatorData.value,
+            func.row_number()
+            .over(partition_by=IndicatorData.indicator_id, order_by=desc(IndicatorData.date))
+            .label("rn"),
+        )
+        .where(IndicatorData.indicator_id.in_(ids))
+        .subquery()
+    )
+    return [
+        _PointRow(*row)
+        for row in (await db.execute(
+            select(ranked.c.indicator_id, ranked.c.date, ranked.c.value, ranked.c.rn)
+            .where(ranked.c.rn <= 2)
+        )).all()
+    ]
+
+
 # Индексы цен Росстата (месяц к предыдущему, около 100) не годятся как «первая цифра»:
 # «99,92» или «−0,08 %» без базы не говорят читателю, какая инфляция. Годовой ряд
 # лежит в скрытом от каталога derived-ряду (`is_listed=false`), поэтому фронтенд,
@@ -192,23 +249,13 @@ async def _yoy_sibling_heroes(
     sibling_id_by_code = {code: sid for sid, code in siblings}
     if not sibling_id_by_code:
         return {}
-    ranked = (
-        select(
-            IndicatorData.indicator_id,
-            IndicatorData.date,
-            IndicatorData.value,
-            func.row_number()
-            .over(partition_by=IndicatorData.indicator_id, order_by=desc(IndicatorData.date))
-            .label("rn"),
+    rows = [
+        (r.indicator_id, r.date, r.value)
+        for r in sorted(
+            await _latest_two_points(db, sibling_id_by_code.values()),
+            key=lambda r: (r.indicator_id, r.rn),
         )
-        .where(IndicatorData.indicator_id.in_(sibling_id_by_code.values()))
-        .subquery()
-    )
-    rows = (await db.execute(
-        select(ranked.c.indicator_id, ranked.c.date, ranked.c.value)
-        .where(ranked.c.rn <= 2)
-        .order_by(ranked.c.indicator_id, desc(ranked.c.date))
-    )).all()
+    ]
     tail: dict[int, list[tuple[date, float]]] = {}
     for sid, d, v in rows:
         if v is not None:
@@ -243,7 +290,7 @@ async def list_indicators(
         f"{'all' if include_unlisted else 'listed'}:"
         f"{get_locale()}",
     )
-    cached = await cache_get(cache_key)
+    cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return cached
 
@@ -263,23 +310,7 @@ async def list_indicators(
 
     ind_ids = [ind.id for ind in indicators]
 
-    ranked = (
-        select(
-            IndicatorData.indicator_id,
-            IndicatorData.date,
-            IndicatorData.value,
-            func.row_number()
-            .over(partition_by=IndicatorData.indicator_id, order_by=desc(IndicatorData.date))
-            .label("rn"),
-        )
-        .where(IndicatorData.indicator_id.in_(ind_ids))
-        .subquery()
-    )
-    latest_q = await db.execute(
-        select(ranked.c.indicator_id, ranked.c.date, ranked.c.value, ranked.c.rn)
-        .where(ranked.c.rn <= 2)
-    )
-    latest_rows = latest_q.all()
+    latest_rows = await _latest_two_points(db, ind_ids)
 
     by_ind: dict[int, list] = {}
     for row in latest_rows:
@@ -374,7 +405,7 @@ async def list_indicators(
         ))
 
     serialized = [s.model_dump(mode="json") for s in out]
-    await cache_set(cache_key, serialized, settings.cache_ttl_meta)
+    await api_cache_set(cache_key, serialized, settings.cache_ttl_meta, cache_set)
     return out
 
 

@@ -156,13 +156,36 @@ async def cache_get(key: str) -> Optional[Any]:
     return None
 
 
-async def cache_set(key: str, value: Any, ttl: int | None = None):
+async def cache_set(key: str, value: Any, ttl: int | None = None, *, stale_ttl: int = 0):
+    """JSON-значение с TTL. ``stale_ttl`` > 0 — режим stale-while-revalidate (см. `ssr_cache_set`)."""
     try:
         r = await get_redis()
         ttl = ttl or settings.cache_ttl_data
-        await r.set(key, json.dumps(value, default=str), ex=ttl)
+        if stale_ttl > 0:
+            async with r.pipeline(transaction=False) as pipe:
+                pipe.set(key, json.dumps(value, default=str), ex=ttl + stale_ttl)
+                pipe.set(swr_fresh_key(key), "1", ex=ttl)
+                await pipe.execute()
+        else:
+            await r.set(key, json.dumps(value, default=str), ex=ttl)
     except Exception:
         _note_cache_failure("cache_set", key)
+
+
+async def cache_get_swr(key: str) -> tuple[Optional[Any], bool]:
+    """(значение, свежее ли) для JSON-кэша в режиме stale-while-revalidate."""
+    try:
+        r = await get_redis()
+        async with r.pipeline(transaction=False) as pipe:
+            pipe.get(key)
+            pipe.exists(swr_fresh_key(key))
+            raw, fresh = await pipe.execute()
+        if raw is None:
+            return None, False
+        return json.loads(raw), bool(fresh)
+    except Exception:
+        _note_cache_failure("cache_get", key)
+    return None, False
 
 
 # --- SSR HTML: zlib-сжатие значений (perf batch 2) --------------------------
@@ -201,8 +224,13 @@ async def ssr_cache_get(key: str) -> Optional[Any]:
     return None
 
 
-async def ssr_cache_set(key: str, value: Any, ttl: int | None = None):
-    """Запись SSR HTML (str) zlib-сжатым; не-строки — legacy JSON."""
+async def ssr_cache_set(key: str, value: Any, ttl: int | None = None, *, stale_ttl: int = 0):
+    """Запись SSR HTML (str) zlib-сжатым; не-строки — legacy JSON.
+
+    ``stale_ttl`` > 0 включает stale-while-revalidate (круг 12, SPEED2): значение живёт в Redis ``ttl + stale_ttl``
+    секунд, а «свежим» его считает маркер ``<key>:fresh`` со сроком ``ttl``. Формат значения не меняется, поэтому
+    переключение флага в обе стороны безопасно.
+    """
     try:
         r = await get_redis_bin()
         ttl = ttl or settings.cache_ttl_data
@@ -210,9 +238,35 @@ async def ssr_cache_set(key: str, value: Any, ttl: int | None = None):
             payload: bytes = encode_ssr_html(value)
         else:
             payload = json.dumps(value, default=str).encode("utf-8")
-        await r.set(key, payload, ex=ttl)
+        if stale_ttl > 0:
+            async with r.pipeline(transaction=False) as pipe:
+                pipe.set(key, payload, ex=ttl + stale_ttl)
+                pipe.set(swr_fresh_key(key), b"1", ex=ttl)
+                await pipe.execute()
+        else:
+            await r.set(key, payload, ex=ttl)
     except Exception:
         _note_cache_failure("cache_set", key)
+
+
+def swr_fresh_key(key: str) -> str:
+    """Маркер свежести записи кэша в режиме stale-while-revalidate."""
+    return f"{key}:fresh"
+
+
+async def ssr_cache_get_swr(key: str) -> tuple[Optional[Any], bool]:
+    """(значение, свежее ли) для SSR HTML. Значение без маркера свежести — устаревшее (ждёт пересчёта)."""
+    try:
+        r = await get_redis_bin()
+        async with r.pipeline(transaction=False) as pipe:
+            pipe.get(key)
+            pipe.exists(swr_fresh_key(key))
+            raw, fresh = await pipe.execute()
+        value = decode_ssr_value(raw)
+        return value, bool(fresh) if value is not None else False
+    except Exception:
+        _note_cache_failure("cache_get", key)
+    return None, False
 
 
 # --- П-11: версионированные namespace вместо pattern-delete -----------------

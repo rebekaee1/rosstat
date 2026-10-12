@@ -192,6 +192,19 @@ class Settings(BaseSettings):
     # включать после выкладки (RUSTATS_SSR_WARM_ENABLED=true); описание в отчёте круга 12 (SPEED).
     ssr_warm_enabled: bool = False
     ssr_warm_base_url: str = "http://frontend"
+    # Сколько самых посещаемых страниц (по таблице daily_pages за 14 дней) прогревать, помимо первого экрана.
+    # 0 — только первый экран. Работает под флагом ssr_warm_enabled (круг 12, SPEED2).
+    ssr_warm_top_n: int = 50
+    # Stale-while-revalidate для SSR HTML и тяжёлых API (services/ssr_swr.py). Выключено по умолчанию.
+    # Запись живёт в Redis ttl + ssr_swr_stale_seconds; после ttl её отдают сразу, а пересчёт идёт в фоне
+    # одним запросом на ключ (замок в Redis). Включать вместе или после ssr_warm_enabled.
+    ssr_swr_enabled: bool = False
+    ssr_swr_stale_seconds: int = 6 * 3600
+    # Адрес, по которому backend перезапрашивает собственную страницу для пересчёта (через nginx, как браузер).
+    # Пусто = ssr_warm_base_url. Секрет заголовка пересчёта выводится из RUSTATS_SSR_SWR_TOKEN либо, если он пуст,
+    # из адреса базы данных (общий для всех процессов деплоя и неизвестный снаружи).
+    ssr_swr_base_url: str = ""
+    ssr_swr_token: str = ""
 
     # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
     # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.

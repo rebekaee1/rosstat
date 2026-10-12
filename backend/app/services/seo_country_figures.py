@@ -225,7 +225,9 @@ def year_ago_point(
     return best
 
 
-async def _overview_for(db: AsyncSession, country) -> tuple[list[dict], dict | None]:
+async def _overview_for(
+    db: AsyncSession, country, listed=None,
+) -> tuple[list[dict], dict | None]:
     """«Главное» из Redis-каталога страны; при промахе тот же расчёт без каталога."""
     from app.api import world as world_api
     from app.core.cache import cache_get
@@ -237,24 +239,24 @@ async def _overview_for(db: AsyncSession, country) -> tuple[list[dict], dict | N
         cached = None
     if isinstance(cached, dict) and isinstance(cached.get("overview"), list):
         return list(cached["overview"]), cached.get("country")
-    all_inds = await world_api._country_indicators_for_listing(db, country.id)
+    all_inds = await world_api._country_indicators_for_listing(db, country.id, listed=listed)
     return await world_api.build_country_overview(db, country, all_inds), None
 
 
-async def load_country_key_figures(db: AsyncSession, country) -> dict | None:
+async def load_country_key_figures(db: AsyncSession, country, listed=None) -> dict | None:
     """Предзагрузка «Главного»: до четырёх карточек с точками мини-графика.
 
     None, если показывать нечего или чтение не удалось (страница страны
-    остаётся прежней).
+    остаётся прежней). ``listed`` — listed-ряды страны, уже загруженные страницей (без повторной выгрузки).
     """
     try:
-        return await _load(db, country)
+        return await _load(db, country, listed)
     except Exception:  # noqa: BLE001 — SSR не должен падать из-за блока «Главное»
         logger.warning("country key figures unavailable slug=%s", getattr(country, "slug", ""), exc_info=True)
         return None
 
 
-async def _load(db: AsyncSession, country) -> dict | None:
+async def _load(db: AsyncSession, country, listed=None) -> dict | None:
     from app.api import world as world_api
     from app.data.eurostat_listing import normalize_frequency
     from app.models import WorldIndicator
@@ -263,7 +265,7 @@ async def _load(db: AsyncSession, country) -> dict | None:
     from app.services.world_rank_values import apply_rank_series, rank_yoy_kind, ranking_value_mode
     from app.services.world_subnational_queries import latest_world_point_series
 
-    overview, country_payload = await _overview_for(db, country)
+    overview, country_payload = await _overview_for(db, country, listed)
     items = [item for item in overview if isinstance(item, dict)][:KEY_FIGURES_MAX]
     if not items:
         return None

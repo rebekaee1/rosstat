@@ -63,7 +63,7 @@ def test_warm_survives_network_errors(monkeypatch):
 def test_job_is_noop_when_disabled(monkeypatch):
     called = []
 
-    async def fake():
+    async def fake(**_kwargs):
         called.append(1)
         return {"ok": 0, "failed": 0}
 

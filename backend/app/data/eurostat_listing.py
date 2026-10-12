@@ -213,8 +213,25 @@ def catalog_stem(dataset_id: str | None) -> str:
 
 
 def extra_dims_frozen(slice_json: dict[str, Any] | None) -> tuple[tuple[str, str], ...]:
-    """Все измерения среза, кроме служебных — часть identity карточки."""
+    """Все измерения среза, кроме служебных — часть identity карточки.
+
+    Чистая функция от среза: у страны Евростата 8 тыс. рядов с сотнями одинаковых срезов, а ключ карточки считается
+    по ним десятки тысяч раз за построение каталога (круг 12, SPEED2) — поэтому результат запоминается.
+    """
     sl = slice_json or {}
+    try:
+        return _extra_dims_cached(tuple(sl.items()))
+    except TypeError:  # вложенные значения среза не хэшируются — считаем напрямую
+        return _extra_dims_compute(sl)
+
+
+@lru_cache(maxsize=32768)
+def _extra_dims_cached(items: tuple) -> tuple[tuple[str, str], ...]:
+    return _extra_dims_compute(dict(items))
+
+
+def _extra_dims_compute(slice_json: dict[str, Any]) -> tuple[tuple[str, str], ...]:
+    sl = slice_json
     out: list[tuple[str, str]] = []
     for key, raw in sl.items():
         k = (key or "").strip()

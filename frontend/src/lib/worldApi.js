@@ -110,13 +110,44 @@ export function useCachedWorldCountry(slug) {
   return list.find((country) => country?.slug === slug) || null;
 }
 
+/**
+ * Слим-форма каталога страны (`?slim=1`, круг 12): сервер не повторяет категорию в каждой карточке и не пишет
+ * значения по умолчанию (у Германии 6,7 МБ -> 3,7 МБ). Здесь карточкам возвращается прежний вид, поэтому остальной
+ * код видит тот же объект, что и раньше. Ответ без признака `slim` (старый сервер, мок) проходит как есть.
+ */
+export function expandSlimCountry(data) {
+  if (!data || !data.slim || !Array.isArray(data.categories)) return data;
+  for (const category of data.categories) {
+    if (!category || !Array.isArray(category.indicators)) continue;
+    for (const item of category.indicators) {
+      if (item.category_ru === undefined) item.category_ru = category.name_ru;
+      if (item.category === undefined) item.category = category.name;
+      if (item.category_en === undefined) item.category_en = category.name_en;
+      if (item.name_ru === undefined) item.name_ru = item.name;
+      if (item.unit_ru === undefined) item.unit_ru = item.unit;
+      if (item.simple_name === undefined) item.simple_name = null;
+      if (item.aggregated_frequencies === undefined) item.aggregated_frequencies = [];
+      if (item.merged_slices === undefined) item.merged_slices = [];
+      if (item.last_value === undefined) item.last_value = null;
+      if (item.last_date === undefined) item.last_date = null;
+      if (item.prev_value === undefined) item.prev_value = null;
+      if (item.change === undefined) item.change = null;
+      if (item.archived === undefined) item.archived = false;
+    }
+  }
+  return data;
+}
+
 export function useWorldCountry(slug, { enabled = true } = {}) {
   const lk = useLocaleKey();
   return useQuery({
     queryKey: ['world-country', slug, lk],
     queryFn: ({ signal }) =>
       withMockFallback(
-        () => api.get(`/world/countries/${slug}`, { signal }),
+        async () => {
+          const response = await api.get(`/world/countries/${slug}`, { signal, params: { slim: 1 } });
+          return { ...response, data: expandSlimCountry(response.data) };
+        },
         () => {
           const mock = WORLD_MOCK_COUNTRY[slug];
           if (!mock) {

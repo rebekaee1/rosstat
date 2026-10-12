@@ -332,23 +332,13 @@ def _css_preload(head_links: str) -> str:
 
 
 def _lcp_preload_from_chart_img(img) -> str:
-    """Preload the visible chart image selected for this viewport."""
-    from urllib.parse import urlsplit
+    """Раньше: preload видимой картинки с `fetchpriority=high` перед CSS и JS.
 
-    src = str(img.get("src") or "")
-    if not src or urlsplit(src).scheme in ("http", "https"):
-        return ""
-    href = escape(src)
-    picture = img.find_parent("picture")
-    source = picture.find("source") if picture is not None else None
-    srcset = str(source.get("srcset") or "") if source is not None else ""
-    if srcset:
-        portrait = escape(srcset)
-        return "\n".join((
-            f'<link rel="preload" as="image" href="{portrait}" media="(max-width: 640px)" fetchpriority="high">',
-            f'<link rel="preload" as="image" href="{href}" media="(min-width: 641px)" fetchpriority="high">',
-        ))
-    return f'<link rel="preload" as="image" href="{href}" fetchpriority="high">'
+    Круг 12 (SPEED2): карточка весит 307–410 КБ, и такой preload на медленном канале задерживал CSS и JS на ~0,8 с.
+    Теперь картинка (WebP нужного размера, см. `_responsive_charts`) находится сканером HTML сама, сразу после <head>,
+    и не опережает таблицы стилей и скрипты. Функция оставлена как место принятия решения: пустая строка = без preload.
+    """
+    return ""
 
 
 def _deprioritize_modulepreload(head_links: str) -> str:
@@ -1582,19 +1572,36 @@ def _responsive_charts(body: str) -> tuple[str, str]:
         route = urlsplit(src).path
         if route.startswith("/og/") and route.endswith(".png"):
             if img.parent.name != "picture":
+                sep = "&" if "?" in src else "?"
+                portrait = f"{src}{sep}portrait=1"
                 picture = soup.new_tag("picture")
-                source = soup.new_tag("source", attrs={
-                    "media": "(max-width: 640px)",
-                    "srcset": src + ("&" if "?" in src else "?") + "portrait=1",
-                    "width": "1080", "height": "1350",
-                })
+                # Порядок важен: браузер берёт первый подходящий <source>. WebP нужного размера (двукратный от показа:
+                # 720 px при ширине кадра ~360 CSS px, 1080 для трёхкратных экранов; на компьютере 1200) идёт первым,
+                # прежний PNG остаётся запасным вариантом для браузеров без WebP.
+                picture_sources = (
+                    soup.new_tag("source", attrs={
+                        "media": "(max-width: 640px)", "type": "image/webp",
+                        "srcset": f"{portrait}&fmt=webp&w=720 720w, {portrait}&fmt=webp&w=1080 1080w",
+                        "sizes": "calc(100vw - 32px)",
+                        "width": "1080", "height": "1350",
+                    }),
+                    soup.new_tag("source", attrs={
+                        "media": "(max-width: 640px)", "srcset": portrait,
+                        "width": "1080", "height": "1350",
+                    }),
+                    soup.new_tag("source", attrs={
+                        "type": "image/webp", "srcset": f"{src}{sep}fmt=webp&w=1200",
+                        "width": "1200", "height": "630",
+                    }),
+                )
                 img.wrap(picture)
-                picture.insert(0, source)
+                for position, source in enumerate(picture_sources):
+                    picture.insert(position, source)
             img.find_parent("figure")["data-portrait"] = "true"
         img["decoding"] = "async"
         if i == 0:
+            # Без `fetchpriority=high`: картинка не должна опережать CSS и JS (см. `_lcp_preload_from_chart_img`).
             img["loading"] = "eager"
-            img["fetchpriority"] = "high"
     preload = _lcp_preload_from_chart_img(images[0]) if images else ""
     return str(soup), preload
 

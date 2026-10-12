@@ -106,3 +106,38 @@ describe('fetchWorldCompareOrCard', () => {
     }
   });
 });
+
+describe('expandSlimCountry (слим-форма каталога страны)', () => {
+  it('возвращает карточке категорию и значения по умолчанию', async () => {
+    const { expandSlimCountry } = await import('./worldApi');
+    const data = {
+      slim: 1,
+      categories: [
+        {
+          name: 'Бизнес', name_en: 'Business', name_ru: 'Бизнес',
+          indicators: [{ code: 'a', name: 'Импорт', name_en: 'Imports', unit: 'млн евро', frequencies: ['annual'] }],
+        },
+      ],
+    };
+    const item = expandSlimCountry(data).categories[0].indicators[0];
+    expect(item).toMatchObject({
+      category: 'Бизнес', category_ru: 'Бизнес', category_en: 'Business',
+      name_ru: 'Импорт', unit_ru: 'млн евро',
+      simple_name: null, aggregated_frequencies: [], merged_slices: [],
+      last_value: null, last_date: null, prev_value: null, change: null, archived: false,
+    });
+  });
+
+  it('не трогает явные значения и ответы без признака slim', async () => {
+    const { expandSlimCountry } = await import('./worldApi');
+    const full = { categories: [{ name: 'X', indicators: [{ code: 'a', name_ru: 'иной' }] }] };
+    expect(expandSlimCountry(full)).toBe(full);
+    expect(full.categories[0].indicators[0]).toEqual({ code: 'a', name_ru: 'иной' });
+    const slim = {
+      slim: 1,
+      categories: [{ name: 'X', name_ru: 'Икс', indicators: [{ code: 'a', name: 'n', name_ru: 'иной', archived: true, last_value: 5 }] }],
+    };
+    const item = expandSlimCountry(slim).categories[0].indicators[0];
+    expect(item).toMatchObject({ name_ru: 'иной', archived: true, last_value: 5, category_ru: 'Икс' });
+  });
+});
