@@ -317,8 +317,8 @@ async def _alert_host(day: date, host: str) -> None:
                 WebmasterIndexingDaily.day == day,
             )
         )).scalar_one_or_none()
-        if row is None:
-            return
+        # Свежесть проверяем и без строки за этот день: молчащий API Вебмастера
+        # (ConnectTimeout, 11–12.10.2026) иначе не оставлял бы ни строки, ни тревоги.
         # History is sparse and delayed: alert on stale observations, not every empty day.
         for field, max_age in ((WebmasterIndexingDaily.in_search, 7),
                                (WebmasterIndexingDaily.crawled_2xx, 3)):
@@ -329,6 +329,8 @@ async def _alert_host(day: date, host: str) -> None:
                 await _alert(f"webmaster_data_missing:{host}:{field.key}",
                              f"{host}: нет свежего наблюдения {field.key}; последнее {last_day}. "
                              "Отсутствие данных не означает ноль.")
+        if row is None:
+            return
         if (row.crawled_5xx or 0) > 20:
             await _alert(
                 f"webmaster_5xx:{host}",
