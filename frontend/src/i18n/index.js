@@ -1,4 +1,4 @@
-export { MESSAGES, translate, t, messageKeyCount } from './messages';
+export { MESSAGES, translate, t, messageKeyCount, hasMessage } from './messages';
 export {
   resolveLocale,
   resolveBrowserLocale,

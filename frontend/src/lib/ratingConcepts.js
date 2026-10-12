@@ -4,7 +4,7 @@
  * по группам и тексты. Неизвестное понятие попадает в группу «Другое» и не пропадает.
  */
 import { homeConceptLabel } from './homeWorkbench';
-import { MESSAGES } from '../i18n/messages';
+import { hasMessage } from '../i18n/messages';
 
 export const RATING_GROUPS = Object.freeze([
   {
@@ -83,9 +83,9 @@ export function quickRatingConcepts(concepts = []) {
 export function ratingHeading(slug, { t, name = '', unit = '', year = null }) {
   const headKey = `w6d.rating.h1.${slug}`;
   const subKey = `w6d.rating.sub.${slug}`;
-  const known = Object.prototype.hasOwnProperty.call(MESSAGES.ru, headKey);
+  const known = hasMessage(headKey);
   const head = known ? t(headKey) : homeConceptLabel(slug, t, name);
   const title = year != null ? t('w6d.rating.h1Year', { head, year }) : head;
-  const subtitle = known && Object.prototype.hasOwnProperty.call(MESSAGES.ru, subKey) ? t(subKey) : String(unit || '');
+  const subtitle = known && hasMessage(subKey) ? t(subKey) : String(unit || '');
   return { title, subtitle };
 }

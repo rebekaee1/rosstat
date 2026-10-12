@@ -156,6 +156,32 @@
     return ref;
   }
 
+  // Предзагрузка словаря языка страницы. main-*.js начинается с import словаря (src/i18n/messages.js); без подсказки браузер
+  // узнал бы имя чанка только после выполнения main-*.js и потерял бы круг сети. Угадали язык неверно — лишний запрос, не ошибка.
+  // Токен подставляет vite.config.js (localeChunksPlugin); в dev и на чистых SSR-страницах без приложения ничего не делаем.
+  (function preloadLocaleChunk() {
+    try {
+      var raw = '__FE_LOCALE_CHUNKS__';
+      if (raw.charAt(0) !== '{') return;
+      if (!document.querySelector('script[type="module"][src*="/assets/main-"]')) return;
+      var chunks = JSON.parse(raw);
+      var host = (window.location.hostname || '').toLowerCase();
+      var lang = 'ru';
+      if (host.indexOf('en.') === 0) lang = 'en';
+      else if (host.indexOf('ru.') === 0) lang = 'ru';
+      else if (chunks.apexEn && (host === 'forecasteconomy.com' || host === 'www.forecasteconomy.com')) lang = 'en';
+      else {
+        var pm = /[?&]preview_locale=(en|ru)\b/.exec(window.location.search);
+        if (pm) lang = pm[1];
+      }
+      if (!chunks[lang]) return;
+      var link = document.createElement('link');
+      link.rel = 'modulepreload';
+      link.href = chunks[lang];
+      document.head.appendChild(link);
+    } catch { /* предзагрузка необязательна */ }
+  })();
+
   var loaded = { analytics: false, ads: false };
 
   // --- Гейт рекламы: запрос объявления только за живого человека ---
