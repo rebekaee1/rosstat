@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `58a82b4b85fd6b0d8cee70e6605a4b617671c07a`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `48e00ab56fa7476a1c975b590ec5260c2ea40fcc`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2059 |
-| Код, шаблоны и стили | 1671 |
-| Актуальные рецензии без пропусков guard | 2059 |
-| Именованные определения Python/JS: с аннотацией / всего | 13054 / 13054 |
+| Файлы в явно определённом scope | 2066 |
+| Код, шаблоны и стили | 1672 |
+| Актуальные рецензии без пропусков guard | 2066 |
+| Именованные определения Python/JS: с аннотацией / всего | 13065 / 13065 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -863,7 +863,12 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0017-platform-growth-boundaries.md](../docs/adr/0017-platform-growth-boundaries.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0018-crystal-without-borders-design-system.md](../docs/adr/0018-crystal-without-borders-design-system.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0019-personal-cabinet-behind-flag.md](../docs/adr/0019-personal-cabinet-behind-flag.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/knowledge-sync-brief.md](../docs/agent-briefs/knowledge-sync-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/selector-brief.md](../docs/agent-briefs/selector-brief.md) | reviewed | 0/0 | актуально |
+| [docs/agent-briefs/viewport-tester-brief.md](../docs/agent-briefs/viewport-tester-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/visitor-brief.md](../docs/agent-briefs/visitor-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/zone-brief.md](../docs/agent-briefs/zone-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-orchestration.md](../docs/agent-orchestration.md) | reviewed | 0/0 | актуально |
@@ -879,6 +884,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/architecture-knowledge.json](../docs/architecture-knowledge.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/architecture.md](../docs/architecture.md) | reviewed | 0/0 | актуально |
 | [docs/backlog.md](../docs/backlog.md) | reviewed | 0/0 | актуально |
+| [docs/circle-playbook.md](../docs/circle-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/client-mechanism-inventory.json](../docs/client-mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | artifact_schema_reviewed | 0/0 | актуально |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | reviewed | 0/0 | актуально |
@@ -2027,6 +2033,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/deploy.sh](../scripts/deploy.sh) | reviewed | 0/0 | актуально |
 | [scripts/dev/check-raster-dpr.py](../scripts/dev/check-raster-dpr.py) | reviewed | 10/10 | актуально |
 | [scripts/dev/generate-brand-image.py](../scripts/dev/generate-brand-image.py) | reviewed | 3/3 | актуально |
+| [scripts/dev/layout-sweep.mjs](../scripts/dev/layout-sweep.mjs) | reviewed | 11/11 | актуально |
 | [scripts/docker-cleanup.sh](../scripts/docker-cleanup.sh) | reviewed | 0/0 | актуально |
 | [scripts/dual-host-release-gate.py](../scripts/dual-host-release-gate.py) | reviewed | 3/3 | актуально |
 | [scripts/e2e/acceptance-matrix.mjs](../scripts/e2e/acceptance-matrix.mjs) | reviewed | 3/3 | актуально |

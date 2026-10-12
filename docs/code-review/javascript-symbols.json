@@ -58511,6 +58511,97 @@
     "exports": [],
     "anonymous_functions": 6
   },
+  "scripts/dev/layout-sweep.mjs": {
+    "sha256": "bc34d7d80e9d8d9191e45584d0d33291fc02826d0361b6e3865b174dd203ae2c",
+    "definitions": [
+      {
+        "name": "loadPlaywright",
+        "line": 39,
+        "end_line": 44,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "inPage",
+        "line": 70,
+        "end_line": 206,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "inPage.short",
+        "line": 73,
+        "end_line": 73,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "inPage.sel",
+        "line": 74,
+        "end_line": 81,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "inPage.visible",
+        "line": 82,
+        "end_line": 87,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "inPage.inScroller",
+        "line": 88,
+        "end_line": 95,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "inPage.rectsOf",
+        "line": 161,
+        "end_line": 165,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "scrollThrough",
+        "line": 208,
+        "end_line": 217,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "scrollThrough.h",
+        "line": 210,
+        "end_line": 210,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "worker",
+        "line": 244,
+        "end_line": 280,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "worker.short",
+        "line": 259,
+        "end_line": 259,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 33
+      },
+      {
+        "source": "node:path",
+        "line": 34
+      },
+      {
+        "source": "node:module",
+        "line": 35
+      },
+      {
+        "source": "node:url",
+        "line": 36
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 17
+  },
   "scripts/e2e/acceptance-matrix.mjs": {
     "sha256": "4c63bcaba8e7ebcc7975dfff7953c1be3d5554fa74d0762a12709f55c0be5dcb",
     "definitions": [

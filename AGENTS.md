@@ -30,6 +30,7 @@
 | URL, SSR, SPA, sitemap, OG, IndexNow | ADR-0003/0013, `site_paths.py`, `site_urls.py`, `seo_renderer.py`, frontend `sitePaths.js`, nginx; проверяй оба языка и видимую страницу |
 | Identity, аналитика, BI, Пульс, Telegram, MCP | ADR-0007/0009/0010, [аналитические контракты](docs/analytics_api_inventory/README.md), архитектура и contracts; проследи auth, retention, события, очереди и внешние запросы |
 | Dev, CI, release, настройки, ресурсы, backup/restore | [workflow](docs/workflow.md), [надёжность](docs/enterprise_resilience.md), [датированный runtime](docs/runtime-inventory.json), Compose/config/deploy; сверяй effective settings |
+| Круг правок с параллельными агентами, проверка на разных разрешениях, выпуск на боевой | [Playbook круга](docs/circle-playbook.md), [шаблоны заданий](docs/agent-briefs/README.md), [оркестрация дизайна](docs/agent-orchestration.md), `scripts/dev/layout-sweep.mjs` |
 | Новая страна, валюта, новости, форум, новый тип подсистемы | Назначение → сущности/права → источники/контракты → жизненный цикл → UI/API/jobs → ресурсы/хранение → проверка; расширь инвентарь и критерии покрытия |
 | Архитектура и полнота понимания | CONTEXT, [история](docs/architecture-history.md), ADR и [K01–K12](docs/code-review/readiness-criteria.md); выбор изменений следует за проверкой основания |
 

@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2059,
-    "code_files": 1671,
-    "current_reviews": 2059,
+    "files": 2066,
+    "code_files": 1672,
+    "current_reviews": 2066,
     "statuses": {
       "artifact_schema_reviewed": 82,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 1851
+      "reviewed": 1858
     },
-    "definitions": 13054,
-    "annotated_definitions": 13054,
+    "definitions": 13065,
+    "annotated_definitions": 13065,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -270,9 +270,9 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "6c9f96323d98830305ae1ef494b4150b03d54f5cc3fbf42ffae99deb68c374a5",
-      "bytes": 10394,
-      "lines": 87,
+      "sha256": "a6752ea6f20b2aa048d350180d9ddd0248eae539116c215101fc9c753e481ca7",
+      "bytes": 10771,
+      "lines": 88,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10760,10 +10760,75 @@
       "missing_definitions": []
     },
     {
+      "path": "docs/agent-briefs/README.md",
+      "sha256": "43842e3dc8bccb3c36f4fbff1511a9ea9c965b4266ca1dedaf926a3a6c23c821",
+      "bytes": 1327,
+      "lines": 15,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/hotfix-brief.md",
+      "sha256": "b4dd7bdd0b9788ea419b46b7e033679bd78235e627cb6eaa4639d09cf5dda5c4",
+      "bytes": 3550,
+      "lines": 15,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/integration-brief.md",
+      "sha256": "5ef4634590c8f0ceb16fc258593f30fcc3f67621309bd277788d72df9eed3f28",
+      "bytes": 2422,
+      "lines": 13,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/knowledge-sync-brief.md",
+      "sha256": "541d83673ead0c62afd7ad04519599e16cec0461908764d382eb30b5ed903958",
+      "bytes": 2583,
+      "lines": 11,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "docs/agent-briefs/selector-brief.md",
       "sha256": "66cadd0d70f255b5a63527b464e56ba406b8646d76d9bd3986399ea80385c8d5",
       "bytes": 4315,
       "lines": 18,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/agent-briefs/viewport-tester-brief.md",
+      "sha256": "1a37b012557150d368ec43aa2b208d973164d4c725eddc4e553e815b13af0e8a",
+      "bytes": 6046,
+      "lines": 31,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10787,9 +10852,9 @@
     },
     {
       "path": "docs/agent-briefs/zone-brief.md",
-      "sha256": "a9680120cdf123acbb6be426538e3008c9ad893216d128fb3102ac7b78cf11e1",
-      "bytes": 5817,
-      "lines": 39,
+      "sha256": "9586bdc27377028cd11c8aca249cac60c62e757b37b1c5ff35f0bcf47b720c5e",
+      "bytes": 7327,
+      "lines": 41,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -10800,8 +10865,8 @@
     },
     {
       "path": "docs/agent-orchestration.md",
-      "sha256": "4e71bca28e05e4f8a1f1cce2351d22bf8204672fd27ec48402b3ef5fb8b831d9",
-      "bytes": 60365,
+      "sha256": "44b40ad7eb31cb3665a80b0ffa2ac5a4ad2e06119981d05df0c7a177165007e1",
+      "bytes": 60635,
       "lines": 176,
       "code": false,
       "status": "reviewed",
@@ -10959,6 +11024,19 @@
       "sha256": "b0d856e23a23694bf8a33755ae31cf2c3a16b875906b7ae8eb3a40cb75d013be",
       "bytes": 545266,
       "lines": 2780,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/circle-playbook.md",
+      "sha256": "5b12c78d5c5a1b7d9a9d34678fb77b437a54458bcbbdfde0cdc8cd3b753fe2fe",
+      "bytes": 23565,
+      "lines": 115,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -11541,9 +11619,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "4f58c243f2d82cfd2e5a0db0e6d35c0db4460b25aa2604544d81a35a7df7f881",
-      "bytes": 2899006,
-      "lines": 104854,
+      "sha256": "07852be97678c7b904e8352401c55e8dd75e4abf1f4d7e4e7422d665da39ff5b",
+      "bytes": 2899125,
+      "lines": 104859,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -25892,6 +25970,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/dev/layout-sweep.mjs",
+      "sha256": "bc34d7d80e9d8d9191e45584d0d33291fc02826d0361b6e3865b174dd203ae2c",
+      "bytes": 17624,
+      "lines": 310,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 11,
+      "annotated_definitions": 11,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/docker-cleanup.sh",
       "sha256": "c6e4d353407bbd4299fea72706673597ab7063ca437727ea60604ae0f6f4f862",
       "bytes": 249,
@@ -26803,9 +26894,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "7c7e3e93d61b2da909e580a57d364fc803a71479b3ef5a32cdf91df17079dd7f",
-  "javascript_inventory_sha256": "0478ff098669be4cb9122cca7324b75eb2a98533bca3ec29a9144c6f86d3ecaa",
-  "baseline_commit": "58a82b4b85fd6b0d8cee70e6605a4b617671c07a",
+  "ledger_sha256": "67edf68454e48b57191052ee8d56b2b973ab8586ab99af024307a93eb12464d2",
+  "javascript_inventory_sha256": "db93d68ce96d47763314b0d5fc691c1b929375d4e20406229dae654abd317304",
+  "baseline_commit": "48e00ab56fa7476a1c975b590ec5260c2ea40fcc",
   "branch": "fix/mobile-rows",
   "unstaged_at_capture": [
     "docs/indicator-index.json"

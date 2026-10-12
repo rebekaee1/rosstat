@@ -7,22 +7,22 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1901  ·  **Строк:** 1 257 507  ·  **Токенов (≈):** 11 853 538
+**Файлов:** 1908  ·  **Строк:** 1 258 020  ·  **Токенов (≈):** 11 864 029
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 577 | 57 960 |
+| `(root)` | 8 | 2 578 | 58 027 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 737 | 264 057 | 2 910 244 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 14 | 802 | 9 613 |
-| `docs` | 125 | 805 446 | 6 813 560 |
+| `docs` | 131 | 805 648 | 6 819 953 |
 | `frontend` | 905 | 163 112 | 1 808 577 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 103 | 20 968 | 248 162 |
+| `scripts` | 104 | 21 278 | 252 193 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -125,7 +125,7 @@
 | `backend/app/services/search_language.py` | 384 | 9 134 |
 | `frontend/src/styles/z5-country.css` | 979 | 9 124 |
 | `backend/scripts/repair-world-listing.py` | 971 | 9 115 |
-| `docs/agent-orchestration.md` | 176 | 9 069 |
+| `docs/agent-orchestration.md` | 176 | 9 111 |
 | `docs/research/competitor-roschart-2026-10-04.md` | 277 | 9 030 |
 | `backend/app/services/clickhouse_sync.py` | 796 | 8 999 |
 | `docs/research/tech-benchmark-2026-10-05.md` | 345 | 8 854 |
@@ -348,6 +348,7 @@
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
 | `docs/adr/0013-country-first-url-architecture.md` | 309 | 4 041 |
 | `frontend/src/styles/w6d.css` | 222 | 4 031 |
+| `scripts/dev/layout-sweep.mjs` | 310 | 4 031 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `backend/app/services/emiss_regional_parser.py` | 420 | 3 994 |
 | `backend/app/services/base_parser.py` | 391 | 3 976 |
@@ -372,6 +373,7 @@
 | `backend/tests/test_clickhouse_replication_ch.py` | 296 | 3 741 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 380 | 3 740 |
 | `backend/tests/test_route_smoke.py` | 383 | 3 731 |
+| `docs/circle-playbook.md` | 115 | 3 717 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 364 | 3 707 |
 | `backend/tests/test_rosstat_plan.py` | 351 | 3 699 |
 | `backend/app/services/world_pop_ingest.py` | 424 | 3 698 |
@@ -741,6 +743,7 @@
 | `frontend/src/components/RegionsMap.component.test.jsx` | 140 | 1 777 |
 | `frontend/src/components/country/CountryKeyFigures.jsx` | 150 | 1 775 |
 | `frontend/src/lib/w6f.test.js` | 128 | 1 773 |
+| `AGENTS.md` | 88 | 1 772 |
 | `backend/app/data/world_national_core/kr.yaml` | 190 | 1 769 |
 | `backend/app/services/world_subnational_queries.py` | 202 | 1 766 |
 | `frontend/src/components/IndicatorChart.glass.component.test.jsx` | 151 | 1 765 |
@@ -761,7 +764,6 @@
 | `frontend/src/components/IndicatorForecastSection.jsx` | 187 | 1 716 |
 | `backend/tests/test_export_grid.py` | 153 | 1 715 |
 | `backend/app/services/sitemap_images.py` | 139 | 1 712 |
-| `AGENTS.md` | 87 | 1 705 |
 | `backend/app/services/calendar_i18n.py` | 88 | 1 705 |
 | `backend/tests/test_emiss_regional_parser.py` | 181 | 1 705 |
 | `scripts/regional/append_fuel_to_artifact.py` | 179 | 1 705 |
@@ -1013,6 +1015,7 @@
 | `frontend/public/planet/source-manifest.json` | 165 | 1 150 |
 | `backend/app/services/cbr_gold_parser.py` | 131 | 1 149 |
 | `frontend/src/embed/EmbedTable.jsx` | 103 | 1 147 |
+| `docs/agent-briefs/zone-brief.md` | 41 | 1 145 |
 | `frontend/src/lib/viewModeEngine.test.js` | 102 | 1 143 |
 | `frontend/src/lib/cpiViewModeGroups.test.js` | 123 | 1 142 |
 | `scripts/audit-doc-counters.py` | 133 | 1 142 |
@@ -1158,7 +1161,6 @@
 | `docs/verification/world-forecast-v2-2026-09-24.md` | 64 | 927 |
 | `frontend/src/lib/chartHooks.component.test.jsx` | 102 | 924 |
 | `backend/app/services/telegram_text.py` | 99 | 923 |
-| `docs/agent-briefs/zone-brief.md` | 39 | 922 |
 | `frontend/src/lib/indicatorVariants.test.js` | 100 | 922 |
 | `frontend/src/lib/recentViews.js` | 83 | 921 |
 | `frontend/src/lib/forecastShowcase.test.js` | 92 | 920 |
@@ -1201,6 +1203,7 @@
 | `scripts/insert-gdp-q1-2026-estimate.py` | 85 | 878 |
 | `frontend/src/lib/chartForecastMerge.test.js` | 90 | 877 |
 | `backend/tests/test_cbr_bop.py` | 109 | 876 |
+| `docs/agent-briefs/viewport-tester-brief.md` | 31 | 876 |
 | `backend/scripts/refresh-us-bea-metadata.py` | 93 | 875 |
 | `frontend/src/components/Breadcrumbs.jsx` | 94 | 875 |
 | `backend/tests/test_oauth_google.py` | 86 | 873 |
@@ -1487,6 +1490,7 @@
 | `frontend/src/components/W7P.component.test.jsx` | 48 | 521 |
 | `frontend/src/lib/deltaText.js` | 45 | 521 |
 | `frontend/src/lib/worldMapPeriod.test.js` | 56 | 521 |
+| `docs/agent-briefs/hotfix-brief.md` | 15 | 520 |
 | `frontend/src/lib/regionCompareTable.js` | 51 | 519 |
 | `backend/app/services/export_render.py` | 60 | 516 |
 | `frontend/src/lib/rangeStats.js` | 43 | 514 |
@@ -1587,6 +1591,7 @@
 | `frontend/src/lib/useSavedItems.js` | 48 | 428 |
 | `frontend/src/styles/c11b-cabinet.test.js` | 38 | 428 |
 | `backend/tests/test_budget_seo.py` | 52 | 426 |
+| `docs/agent-briefs/knowledge-sync-brief.md` | 11 | 426 |
 | `frontend/src/lib/housingViewModeContent.test.js` | 48 | 425 |
 | `backend/constraints.txt` | 86 | 424 |
 | `frontend/src/components/CabinetActionsSlot.jsx` | 32 | 422 |
@@ -1649,6 +1654,7 @@
 | `frontend/src/components/SkipLink.jsx` | 28 | 364 |
 | `backend/app/services/forecast_strategies/generic_quarterly.py` | 41 | 362 |
 | `backend/tests/test_cbr_reserves.py` | 49 | 362 |
+| `docs/agent-briefs/integration-brief.md` | 13 | 362 |
 | `frontend/src/lib/periodPhrase.js` | 32 | 362 |
 | `frontend/src/lib/cbrTermSliceRateContent.test.js` | 42 | 361 |
 | `frontend/src/lib/useSearchTracking.js` | 31 | 361 |
@@ -1795,6 +1801,7 @@
 | `backend/tests/test_cbr_monetary.py` | 32 | 231 |
 | `backend/tests/test_credit_rate_corp.py` | 27 | 229 |
 | `frontend/src/components/CalcStatTile.jsx` | 19 | 229 |
+| `docs/agent-briefs/README.md` | 15 | 227 |
 | `deploy/pg-world-catalog-maintenance.sql` | 19 | 226 |
 | `backend/tests/fixtures/ibge_sidra_6579_br.json` | 18 | 223 |
 | `deploy/fail2ban/filter.d-nginx-volume.conf` | 12 | 222 |
