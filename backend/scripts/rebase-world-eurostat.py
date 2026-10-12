@@ -47,7 +47,14 @@ from app.services.eurostat_parser import (  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("rebase-world-eurostat")
-PROBE_TIMEOUT_S = 60
+PROBE_TIMEOUT_S = 25
+PROBE_ATTEMPTS = 3                  # холодный запрос у Евростата бывает долгим: короткий таймаут и повтор вместо одной минуты ожидания
+# Страны для пробы: сначала крупные, затем остальные — у части наборов (`sts_rb_*`, `sts_sepr_m`) в последнем периоде
+# наблюдений у Германии, Франции и Италии ещё нет (круг 13: «проба не удалась: None»), а у других стран есть.
+PROBE_GEOS = (
+    "DE", "FR", "IT", "ES", "NL", "PL", "AT", "BE", "SE", "CZ", "RO", "HU", "PT", "BG", "DK", "FI", "IE", "SK",
+    "SI", "HR", "LT", "LV", "EE", "EL", "LU", "MT", "CY", "NO", "CH",
+)
 
 
 def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
@@ -57,9 +64,10 @@ def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
     не укладывается в таймаут): первая страна из списка, у которой есть данные.
     """
     last_error: Exception | None = None
-    for geo in ("DE", "FR", "IT"):
+    answered = False
+    for geo in PROBE_GEOS:
         url = build_data_url(dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True)
-        for _attempt in (1, 2):             # холодный запрос у Евростата бывает долгим, второй быстрый
+        for _attempt in range(PROBE_ATTEMPTS):   # холодный запрос у Евростата бывает долгим, повтор быстрый
             try:
                 resp = requests.get(url, timeout=PROBE_TIMEOUT_S)
                 resp.raise_for_status()
@@ -67,9 +75,14 @@ def probe_units(dataset_id: str) -> tuple[list[str], set[str]]:
             except (requests.RequestException, ValueError) as exc:
                 last_error = exc
                 continue
+            answered = True
             if live.get("unit"):
                 return dims.get("unit") or [], live["unit"]
             break                           # ответ получен, но живых единиц нет: следующая страна
+        if not answered and geo == PROBE_GEOS[2]:
+            break                           # три страны подряд без единого ответа: источник недоступен, остальных не ждать
+    if answered:
+        raise RuntimeError("в последнем периоде набора нет наблюдений ни у одной проверенной страны")
     raise RuntimeError(f"проба не удалась: {last_error}")
 
 
