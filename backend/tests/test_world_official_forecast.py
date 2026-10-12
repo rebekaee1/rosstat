@@ -219,3 +219,27 @@ def test_api_shows_official_forecast_without_range_and_with_signature(auth_env, 
     assert forecast["quality"]["mase"] is None
     assert forecast["points"] == [{"date": "2026-01-01", "value": 4.8}]
     assert all(set(point) == {"date", "value"} for point in forecast["points"])  # никаких границ диапазона
+
+
+def test_platform_pipeline_does_not_touch_official_imf_forecast():
+    """Плановый пересчёт моделью платформы не снимает и не заменяет прогноз МВФ."""
+    from types import SimpleNamespace
+
+    from app.services.world_forecast_pipeline import retrain_world_indicator_forecast
+
+    indicator = SimpleNamespace(id=1, provider="IMF", dataset_id="WEO")
+    # БД не нужна: решение принимается до первого обращения к ней.
+    assert asyncio.run(retrain_world_indicator_forecast(None, indicator)) == "official"
+
+
+def test_circle12_flags_are_off_by_default():
+    from app.config import Settings
+    from app.services.imf_weo_adapter import WEO_BCA_NGDPD, WEO_CIRCLE12_CODES
+
+    assert WEO_CIRCLE12_CODES == {WEO_NGDP_RPCH, WEO_BCA_NGDPD}
+    for name in (
+        "world_imf_official_forecast_enabled",
+        "world_forecast_candidates_enabled",
+        "rest_world_forecast_enabled",
+    ):
+        assert Settings.model_fields[name].default is False  # выпуск в два шага

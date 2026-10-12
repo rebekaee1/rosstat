@@ -240,6 +240,18 @@ describe('WorldChartSection', () => {
     expect(screen.queryByText('Прогноз для этого показателя пока не строится')).toBeNull();
   });
 
+  it('официальный прогноз МВФ: подпись с выпуском и датой, без слов «проверен на прошлых данных»', () => {
+    renderSection({
+      forecastEnabled: true,
+      forecastGateStatus: 'passed',
+      forecastOfficial: { provider: 'imf', publication: 'World Economic Outlook', vintage: '2025-09-25' },
+    });
+    const note = screen.getByText(/Официальный прогноз Международного валютного фонда/);
+    expect(note.textContent).toContain('25 сентября 2025');
+    expect(note.textContent).toContain('не пересчитываем');
+    expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
+  });
+
   it('одна кнопка «Скачать» вместо россыпи кнопок', () => {
     renderSection();
     expect(screen.getAllByRole('button', { name: /Скачать/ })).toHaveLength(1);
