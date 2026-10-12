@@ -36,6 +36,7 @@ from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
     category_for_dataset,
     country_prepositional,
+    in_place,
     dataset_title_en,
     is_listed_for_quality,
     public_description,
@@ -381,7 +382,7 @@ async def upsert_indicator_meta(
         name_ru, country_prep=prep, country_name_ru=country_name_ru
     )
     seo_kw = (
-        f"{name_ru}, {country_name_ru}, {name_ru} в {prep}, "
+        f"{name_ru}, {country_name_ru}, {name_ru} {in_place(prep)}, "
         f"{country_name_ru} статистика, график"
     )
 

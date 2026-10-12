@@ -18,7 +18,7 @@ from html import escape
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.data.eurostat_titles_ru import country_prepositional, listing_category_ru
+from app.data.eurostat_titles_ru import country_in, country_prepositional, listing_category_ru
 from app.data.eurostat_units_ru import unit_suffix
 from app.data.legacy_redirects import (
     strip_world_frequency_suffix,
@@ -164,6 +164,11 @@ def _genitive(country: WorldCountry) -> str:
 
 def _prep(country: WorldCountry) -> str:
     return country_prepositional(country.slug, country.name_ru)
+
+
+def _in(country: WorldCountry) -> str:
+    """«в Германии» / «во Франции» / «на Кипре» — готовая фраза с предлогом."""
+    return country_in(country.slug, country.name_ru)
 
 
 def _country_label(country: WorldCountry) -> str:
@@ -1722,6 +1727,7 @@ async def render_world_indicator_html(
     multi_freq = len(siblings) >= 2
 
     prep = _prep(country)
+    in_country = _in(country)
     country_label = _country_label(country)
     from app.services.locale import get_locale as _gl_ind
     from app.services.seo_i18n import world_template as _wt_ind
@@ -1749,7 +1755,7 @@ async def render_world_indicator_html(
             )
         else:
             desc_text = (
-                f"{display} в {prep} — официальный ряд {source}. "
+                f"{display} {in_country} — официальный ряд {source}. "
                 f"На графике — динамика показателя за доступный период наблюдений"
                 + (f"; значения приведены в единицах: {unit}" if unit else "")
                 + "."
@@ -1789,7 +1795,7 @@ async def render_world_indicator_html(
         )
     else:
         lead_p = (
-            f"{escape(display)} в {escape(prep)}: "
+            f"{escape(display)} {escape(in_country)}: "
             f"последнее значение {last_value_text}{escape(unit_sfx)} "
             f"на {escape(last_label)}."
         )
@@ -1870,7 +1876,7 @@ async def render_world_indicator_html(
         ).strip()
     else:
         alt = (
-            f"{display} в {prep}: график динамики {period}, "
+            f"{display} {in_country}: график динамики {period}, "
             f"последнее значение {last_value_text}{unit_sfx}".strip()
             + f", источник {source}"
         )
@@ -1881,7 +1887,7 @@ async def render_world_indicator_html(
         )
     else:
         figcaption = (
-            f"{display} в {prep}, {period}. Источник: {source}."
+            f"{display} {in_country}, {period}. Источник: {source}."
         )
     figure_html = (
         f'<figure class="seo-chart"><a class="seo-chart-link" '
@@ -1984,7 +1990,7 @@ async def render_world_indicator_html(
         ).strip()
     else:
         title = (
-            f"{display} в {prep}: {last_value_text}{unit_sfx} ({last_label})"
+            f"{display} {in_country}: {last_value_text}{unit_sfx} ({last_label})"
         ).strip()
     if en_desc:
         meta_desc = en_desc.format(
@@ -1998,13 +2004,13 @@ async def render_world_indicator_html(
         ).strip()
     else:
         meta_desc = (
-            f"{display} в {prep}: {last_value_text}{unit_sfx} на {last_label}. "
+            f"{display} {in_country}: {last_value_text}{unit_sfx} на {last_label}. "
             f"Динамика {period}, график и таблица. Источник: {source}."
         ).strip()
     h1_text = (
         en_h1.format(display=display, country=country_label)
         if en_h1
-        else f"{display} в {prep}"
+        else f"{display} {in_country}"
     )
 
     unit_part = f" ({unit})" if unit else ""
@@ -2021,7 +2027,7 @@ async def render_world_indicator_html(
         dataset_desc = (
             f"{display}"
             + unit_part
-            + f" в {prep}, {period}. Источник: {source}."
+            + f" {in_country}, {period}. Источник: {source}."
         )
 
     json_ld = [

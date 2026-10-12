@@ -42,6 +42,7 @@ from app.data.eurostat_listing import (  # noqa: E402
 from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
     country_prepositional,
+    in_place,
     is_listed_for_quality,
     listing_substance_score,
     public_description,
@@ -230,7 +231,7 @@ async def retitle_all() -> tuple[int, dict[str, int]]:
                 name_ru, country_prep=prep, country_name_ru=cname
             )
             ind.seo_keywords = (
-                f"{name_ru}, {cname}, {name_ru} в {prep}, "
+                f"{name_ru}, {cname}, {name_ru} {in_place(prep)}, "
                 f"{cname} статистика, график"
                 if cname
                 else f"{name_ru}, статистика, график"

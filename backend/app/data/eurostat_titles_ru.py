@@ -1492,11 +1492,123 @@ TEMPLATE_STUB_RE = re.compile(
 )
 
 
+# Страны-острова, при которых по русской норме «на», а не «в»: «на Кипре», «на Мальте».
+# Ключ — предложная форма (то, что хранит COUNTRY_PREPOSITIONAL).
+_ON_PLACE_FORMS = frozenset({
+    "Кипре", "Мальте", "Фиджи", "Тайване", "Филиппинах", "Шри-Ланке", "Мальдивах",
+    "Сейшелах", "Багамах", "Маврикии", "Кубе", "Ямайке", "Гаити", "Мадагаскаре",
+})
+
+_RU_VOWELS = frozenset("аеёиоуыэюяАЕЁИОУЫЭЮЯ")
+_RU_LETTERS = frozenset("абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
+
+
+def _is_consonant_cluster_start(word: str) -> bool:
+    """Слово начинается с в/ф + согласная (или ь): «Франции», «Вьетнаме», «Фландрии».
+
+    Перед такими сочетаниями предлог «в» произносится слитно и пишется «во».
+    Также «во» перед м + н/г/ж/ц/ч («во Мценске»); для стран каталога не нужно, но
+    правило единое.
+    """
+    w = (word or "").strip()
+    if len(w) < 2:
+        return False
+    first, second = w[0].lower(), w[1]
+    if second not in _RU_LETTERS and second != "-":
+        return False
+    if first in ("в", "ф"):
+        return second not in _RU_VOWELS and second != "ъ"
+    if first == "м":
+        return second.lower() in ("н", "г", "ж", "ц", "ч")
+    return False
+
+
+def place_preposition(prep_form: str) -> str:
+    """«в» / «во» / «на» перед предложной формой названия места.
+
+    Решает по первому слову: «Франции» → «во», «Кипре» → «на», «Германии» → «в».
+    """
+    text = (prep_form or "").strip()
+    first = text.split()[0] if text else ""
+    first = first.strip("«»\"'(")
+    if first in _ON_PLACE_FORMS:
+        return "на"
+    if _is_consonant_cluster_start(first):
+        return "во"
+    return "в"
+
+
+def in_place(prep_form: str) -> str:
+    """Готовая фраза места: «в Германии», «во Франции», «на Кипре». Пусто → пусто."""
+    text = (prep_form or "").strip()
+    if not text:
+        return ""
+    return f"{place_preposition(text)} {text}"
+
+
+def _guess_prepositional(name_ru: str) -> str:
+    """Запасной предложный падеж для страны, которой нет в COUNTRY_PREPOSITIONAL.
+
+    Только для однословных названий с очевидным окончанием; составные и
+    несклоняемые («Чили», «Перу», «ЮАР», «США») возвращаются как есть.
+    """
+    name = (name_ru or "").strip()
+    if " " in name:
+        words = name.split()
+        head = words[0]
+        hl = head.lower()
+        if len(words) == 2 and " и " not in name:
+            if hl in ("республика", "королевство", "княжество", "федерация"):
+                return f"{head[:-1]}е {words[1]}"
+            for end, repl in (("ая", "ой"), ("яя", "ей"), ("ый", "ом"), ("ий", "ем"), ("ой", "ом")):
+                if hl.endswith(end):
+                    return f"{head[:-2]}{repl} {_guess_prepositional(words[1])}"
+        return name
+    if not name or name.isupper():
+        return name
+    low = name.lower()
+    if low == "беларусь":
+        return "Беларуси"
+    if low in ("чили", "перу", "фиджи"):
+        return name
+    if low.endswith(("ия", "ья")):
+        return name[:-1] + "и"
+    if low.endswith(("ая", "яя")):
+        return name[:-2] + ("ой" if low.endswith("ая") else "ей")
+    if low.endswith("а"):
+        return name[:-1] + "е"
+    if low.endswith("я"):
+        return name[:-1] + "е"
+    if low.endswith("ы"):
+        return name[:-1] + "ах"
+    if low.endswith(("и", "о", "е", "у", "ю", "э")):
+        return name
+    if low.endswith("ь"):
+        return name[:-1] + "е"
+    if low.endswith("й"):
+        return name[:-1] + "е"
+    return name + "е"
+
+
 def country_prepositional(slug: str | None, name_ru: str | None = None) -> str:
-    """«в {prep}» — предложный падеж; фолбэк на именительный из БД."""
+    """Предложный падеж названия страны БЕЗ предлога: «Франции». Предлог — `country_in`.
+
+    Для слага вне таблицы — эвристика `_guess_prepositional` по русскому названию.
+    """
     if slug and slug in COUNTRY_PREPOSITIONAL:
         return COUNTRY_PREPOSITIONAL[slug]
-    return (name_ru or slug or "").strip()
+    if name_ru and name_ru.strip():
+        return _guess_prepositional(name_ru)
+    return (slug or "").strip()
+
+
+def country_in(slug: str | None, name_ru: str | None = None) -> str:
+    """Единственное место, где собирается «в/во/на + страна»: «во Франции», «на Кипре».
+
+    Все русские заголовки, описания, подписи картинок и JSON-LD мировых карточек
+    берут фразу отсюда, а не склеивают «в » + предложный падеж руками.
+    """
+    return in_place(country_prepositional(slug, name_ru))
 
 
 def _format_history_date(d, case: str = "gen") -> str:
@@ -1537,9 +1649,10 @@ def public_seo_title(
     if not subject:
         subject = "Экономический показатель"
     if prep:
-        title = f"{subject} в {prep} — график и данные"
+        where = in_place(prep)
+        title = f"{subject} {where} — график и данные"
         if len(title) > 300:
-            title = f"{subject} в {prep}"
+            title = f"{subject} {where}"
     else:
         title = f"{subject} — график и данные"
     if len(title) > 300:
@@ -1639,7 +1752,7 @@ def public_description(
     """Живое описание карточки: показатель × страна × период × источник."""
     subject, _ = split_freq_suffix(name_ru)
     prep = (country_prep or "").strip() or country_name_ru.strip()
-    where = f" в {prep}" if prep else ""
+    where = f" {in_place(prep)}" if prep else ""
 
     start_s = _format_history_date(history_start, case="gen")
     end_s = _format_history_date(history_end, case="nom")

@@ -18,6 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.data.eurostat_listing import normalize_frequency
+from app.data.eurostat_titles_ru import in_place
 from app.models import WorldIndicator, WorldDataPoint
 from app.services import breadcrumbs as crumbs
 from app.services import site_paths as paths
@@ -161,7 +162,8 @@ def _title_desc(
         )
         return title, desc
 
-    name = f"{name} в {country_name}"
+    # country_name — предложный падеж без предлога; «в/во/на» ставит in_place
+    name = f"{name} {in_place(country_name)}"
     if freq == "annual" and n_rows == 1:
         title = (
             f"{name} в {year} году — актуальное годовое значение"
@@ -204,6 +206,7 @@ async def render_world_indicator_year_html(
         _country,
         _country_label,
         _display_name,
+        _in,
         _prep,
         _source_label,
         _unit_of,
@@ -243,9 +246,10 @@ async def render_world_indicator_year_html(
 
     loc = get_locale()
     en = loc == "en"
-    prep = _prep(country)
+    prep = _prep(country)  # «Франции» — без предлога
+    in_country = _in(country)  # «в Германии» / «во Франции» / «на Кипре»
     country_label = _country_label(country)
-    place = country_label if en else prep
+    place = country_label if en else in_country
     display = _display_name(indicator)
     unit = _unit_of(indicator)
     # Русская каноническая единица → локализованная для показа (EN: pp вместо п.п.).
@@ -465,7 +469,7 @@ async def render_world_indicator_year_html(
         card_p_tpl = "Complete series for {place} — on the {_link} page."
     else:
         card_h2 = "Полная история и интерактивный график"
-        card_p_tpl = "Весь ряд данных по показателю в {place} — на странице {_link}."
+        card_p_tpl = "Весь ряд данных по показателю {place} — на странице {_link}."
     card_p = card_p_tpl.format(place=escape(place), _link=_link(card_path, display))
 
     trail = crumbs.world_indicator_trail(

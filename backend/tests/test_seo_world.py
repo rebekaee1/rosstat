@@ -568,6 +568,21 @@ def test_seo_world_country_locale_en(world_seo_client):
     assert "Экономика Германии" in r_ru.text
 
 
+def test_seo_world_indicator_france_uses_vo(world_seo_client):
+    """«во Франции», а не «в Франции»: заголовок, описание, H1, alt, JSON-LD (круг 13)."""
+    code = "fr-prc_hicp_midx-cp00-i15"
+    r = world_seo_client.get(f"/seo/world/france/{code}")
+    assert r.status_code == 200
+    html = r.text
+    title = re.search(r"<title>([^<]+)</title>", html).group(1)
+    assert "во Франции" in title
+    assert "<h1>Гармонизированный индекс потребительских цен во Франции</h1>" in html
+    meta = re.search(r'<meta name="description" content="([^"]+)"', html).group(1)
+    assert "во Франции" in meta
+    assert " в Франции" not in html
+    assert "в Франции" not in html.replace("во Франции", "")
+
+
 def test_seo_world_indicator(world_seo_client):
     code = "de-prc_hicp_midx-cp00-i15"
     r = world_seo_client.get(f"/seo/world/germany/{code}")
