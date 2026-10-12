@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 1851
     },
-    "definitions": 13053,
-    "annotated_definitions": 13053,
+    "definitions": 13054,
+    "annotated_definitions": 13054,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -10969,9 +10969,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "5670f45c650e135f6546de1048a1e7934ad237be3d856477607632628ab34b80",
-      "bytes": 6703931,
-      "lines": 235985,
+      "sha256": "f01028ff6986d297f6a85ed8b812af1327b5f0ec7950413beed1232978c2bd92",
+      "bytes": 6704137,
+      "lines": 235993,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -10982,7 +10982,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "2fffe464561ddc20d05815420bbe693fe589912fb63a768f6a8e279915e96e40",
+      "sha256": "944878bf19fc469c33ac622f05abcfe88c96b35e00ac2437ac58a02695c27b17",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -11034,7 +11034,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "0b6f61d6832aecef7b0af2cea7c77df5ea07971a08b962dc6ff5789c3e09e2de",
+      "sha256": "19e9fd837666b58464ca77d7b372f71ec1820a016a365ed4fe30b398be531c1d",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -11047,9 +11047,9 @@
     },
     {
       "path": "docs/design-system.md",
-      "sha256": "75c8c52f17c59f5a6ba3a272f4c68374217d00497784290505c38c09f5dee027",
-      "bytes": 201900,
-      "lines": 429,
+      "sha256": "5eb9a763c34bc74f87cf3c04ddd7dd4390f28bc5361eccac5681fd35f261506c",
+      "bytes": 204064,
+      "lines": 430,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -11541,7 +11541,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "6bf7db3a55c2a24f0e70b675fff81efc3ce63eb1ad865beab39595d2883c552f",
+      "sha256": "8d29fb0ceeb62b4fcde4068bc091dc3b4c4294405aaa012d8ca2e0d1d618a4f7",
       "bytes": 2899006,
       "lines": 104854,
       "code": false,
@@ -11554,7 +11554,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "3e2171cb4b868b8e872466ceb9ba1bf8cd0d152c1e27c3bf1115a29293399dcb",
+      "sha256": "e72c14b301576e5109cd9724a3d9bd161556e6f6128dcd23f70a311f7f2dfdcd",
       "bytes": 98628,
       "lines": 1086,
       "code": false,
@@ -19302,15 +19302,15 @@
     },
     {
       "path": "frontend/src/lib/compareUnitSplit.js",
-      "sha256": "3899f120088c44c792542d65da6a47f1970fd5d3d17c1e5933d3b3c38fd41321",
-      "bytes": 1683,
-      "lines": 31,
+      "sha256": "88e502f6e5f3df80ebf27a8a71b030ceffe8df2b58b4e9371dd5c388884a8f62",
+      "bytes": 2074,
+      "lines": 38,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 2,
-      "annotated_definitions": 2,
+      "definitions": 3,
+      "annotated_definitions": 3,
       "missing_definitions": []
     },
     {
@@ -23527,8 +23527,8 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.jsx",
-      "sha256": "605c5bb454bf4c50cc2d1280abb7e086654b41a41dce8be852a0d762bd5c7517",
-      "bytes": 156377,
+      "sha256": "44cf3853a02e6c08e3647710cae44e20387992047e3cc5e7cc1325ef79707fc3",
+      "bytes": 156401,
       "lines": 3277,
       "code": true,
       "status": "reviewed",
@@ -25217,9 +25217,9 @@
     },
     {
       "path": "frontend/src/styles/z5-country.css",
-      "sha256": "db8b7db0b16166ec474da932ee2b6884e95b7bcefe285c2d1e76df343946f734",
-      "bytes": 39755,
-      "lines": 969,
+      "sha256": "163df01e729236316d1f88b7d5773e10c029f9eba2cdf345da4694cf25d1d91a",
+      "bytes": 40700,
+      "lines": 979,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26803,12 +26803,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "451652b475c4922efed5a82e935f9a9ebd34defe769c0eab2b0b179a38786d29",
-  "javascript_inventory_sha256": "d99058a29529803015f864eaf889ac37388be4bb2b846e2a81f988594bc272f5",
-  "baseline_commit": "0a4d0966b9bb952d5b8a39b1f927821178ad124d",
-  "branch": "main",
+  "ledger_sha256": "006be1a1e89b10e2cc4b8f6d0b3c1ac7d87f3a2fb8bcdb2b99c292c7b1eda93f",
+  "javascript_inventory_sha256": "0478ff098669be4cb9122cca7324b75eb2a98533bca3ec29a9144c6f86d3ecaa",
+  "baseline_commit": "04a3edf331a12960935ceadecb30d25b353bcbe5",
+  "branch": "fix/mobile-rows",
   "unstaged_at_capture": [
-    "docs/backlog.md",
-    "docs/runtime-inventory.json"
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/dead-code-report.md",
+    "docs/design-system.md",
+    "docs/indicator-index.json",
+    "docs/indicator-index.md"
   ]
 }
