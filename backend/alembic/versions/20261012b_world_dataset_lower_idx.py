@@ -1,6 +1,6 @@
 """Индекс по lower(dataset_id) для мировых выборок «по набору данных» (круг 12, SPEED2).
 
-Revision ID: 20261012b_world_dataset_lower_idx
+Revision ID: 20261012b_world_dset_lower_idx
 Revises: 20261009c_session_perf
 
 Запросы сравнения стран, рейтингов и карт отбирают ряды условием `lower(dataset_id) IN (...)`; индекс по самому
@@ -13,7 +13,7 @@ Revises: 20261009c_session_perf
 from alembic import op
 import sqlalchemy as sa
 
-revision = "20261012b_world_dataset_lower_idx"
+revision = "20261012b_world_dset_lower_idx"
 down_revision = "20261009c_session_perf"
 branch_labels = None
 depends_on = None
