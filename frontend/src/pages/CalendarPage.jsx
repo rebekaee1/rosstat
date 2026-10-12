@@ -356,7 +356,7 @@ export default function CalendarPage({ fixedYear, fixedMonth, seoPath } = {}) {
                 <button
                   type="button"
                   onClick={() => { setPickedDate(null); track(events.CALENDAR_CLEAR_DAY); }}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                  className="inline-flex min-h-10 items-center gap-1 px-3 py-0.5 rounded-lg text-xs text-text-tertiary hover:text-text-primary hover:bg-surface-hover transition-colors lg:min-h-8"
                 >
                   <X className="w-3 h-3" />
                   {t('calendar.state.showMonth')}
