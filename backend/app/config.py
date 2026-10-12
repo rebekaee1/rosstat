@@ -122,6 +122,9 @@ class Settings(BaseSettings):
     # Automatic two-run shadow gate is enforced per database. This flag can
     # force shadow mode during source incidents without disabling polling.
     world_eurostat_ingest_shadow: bool = False
+    # Круг 12: перенос карточек Евростата на живую базу индекса (I15 -> I21). Выкл. по
+    # умолчанию: релиз в два шага (схема и код, затем флаг + scripts/rebase-world-eurostat.py).
+    eurostat_rebase_enabled: bool = False
     world_eurostat_ingest_hour: int = 2
     world_eurostat_ingest_minute: int = 20
     # Прогнозы world_* изолированы от российского pipeline и выключены до

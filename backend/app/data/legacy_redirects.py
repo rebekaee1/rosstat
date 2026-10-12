@@ -437,8 +437,10 @@ async def resolve_world_superseded(
     if country is None:
         return None
     old = await world_indicator_by_code(db, country.id, code)
-    if old is None or not is_superseded_dataset(old.dataset_id):
+    if old is None:
         return None
+    if not is_superseded_dataset(old.dataset_id):
+        return await _resolve_world_base_twin(db, slug, old, year)
     target = superseded_target(old.dataset_id, old.code, old.slice_json, old.unit)
     if target is None:
         return None
@@ -469,6 +471,61 @@ async def resolve_world_superseded(
         return paths.indicator_year(slug, canonical_code, year)
     base = paths.indicator(slug, canonical_code)
     return f"{base}?mode={mode}-{_mode_freq(old)}" if mode else base
+
+
+async def _resolve_world_base_twin(
+    db: AsyncSession, slug: str, old, year: int | None = None,
+) -> str | None:
+    """Снятая с листинга карточка прежней базы индекса → 301 на двойника новой базы.
+
+    Круг 12: Евростат перевёл индексы короткосрочной статистики с 2015=100 на 2021=100.
+    Если пересчёт на месте не подтвердился (короткая история новой базы, непостоянный
+    множитель), загрузчик создаёт карточку новой базы, а прежнюю снимает с листинга.
+    Цель — листингованная карточка той же страны, набора и среза (отличается только
+    база индекса) с данными не старее прежней. Без двойника или без запрошенного года
+    None: страница остаётся архивом с честной пометкой «Устарело».
+    """
+    from app.models import WorldDataPoint, WorldIndicator
+    from app.services.eurostat_rebase import rebase_twin_slice
+    from sqlalchemy import func
+
+    if getattr(old, "is_listed", True) or (getattr(old, "provider", "") or "") != "eurostat":
+        return None
+    if not (old.slice_json or {}).get("unit"):
+        return None
+    rows = (
+        await db.execute(
+            select(WorldIndicator).where(
+                WorldIndicator.country_id == old.country_id,
+                WorldIndicator.provider == "eurostat",
+                WorldIndicator.dataset_id == old.dataset_id,
+                WorldIndicator.is_listed.is_(True),
+                WorldIndicator.points_count > 0,
+                WorldIndicator.id != old.id,
+            )
+        )
+    ).scalars().all()
+    twins = [
+        r for r in rows
+        if rebase_twin_slice(old.slice_json, r.slice_json)
+        and (old.history_end is None or (r.history_end is not None and r.history_end >= old.history_end))
+    ]
+    if not twins:
+        return None
+    successor = max(twins, key=lambda r: (r.history_end or date.min, r.points_count or 0, r.code))
+    if year is not None:
+        has_year = (
+            await db.execute(
+                select(WorldDataPoint.id).where(
+                    WorldDataPoint.indicator_id == successor.id,
+                    func.extract("year", WorldDataPoint.date) == year,
+                ).limit(1)
+            )
+        ).scalar_one_or_none()
+        if has_year is None:
+            return None
+        return paths.indicator_year(slug, successor.code, year)
+    return paths.indicator(slug, successor.code)
 
 
 # Мера снятого с листинга ряда → тип режима слитой карточки. Темп к

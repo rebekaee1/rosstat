@@ -2305,6 +2305,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     )
     forecast_available = any(mode.get("forecastable") for mode in modes)
 
+    from app.services.freshness_note import world_freshness_note
     from app.services.seo_i18n import localize_category_name, translate_source
 
     cat_ru = listing_category_ru(
@@ -2338,6 +2339,11 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "points_count": ind.points_count,
             "archived": is_stale_history(ind.history_end),
             "concept_slug": compare_concept_slug,
+            # Круг 12: у устаревшего ряда без живого двойника — причина и ближайший
+            # актуальный показатель (контракт: app/services/freshness_note.py).
+            "freshness": await world_freshness_note(
+                db, ind, locale=get_locale(), country_slug=country.slug,
+            ),
         },
         "primary_code": primary.code,
         "frequencies": frequencies_payload(by_freq),

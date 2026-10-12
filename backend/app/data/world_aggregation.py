@@ -184,6 +184,13 @@ for _unit, _datasets in _QUARTERLY_MEAN_BY_UNIT.items():
 for _unit, _datasets in _QUARTERLY_SUM_BY_UNIT.items():
     _CURATED_POLICIES.update({(_dataset, _unit): "sum" for _dataset in _datasets})
 
+# Круг 12: Евростат перевёл индексы короткосрочной статистики (sts_*) с базы 2015=100
+# на 2021=100 (единица I21). Карточки переезжают на новую единицу на месте, поэтому
+# правила агрегации, заведённые для I15, действуют и для I21: тот же индекс, та же логика.
+for (_dataset, _unit), _policy in list(_CURATED_POLICIES.items()):
+    if _unit == "I15" and _dataset.startswith(("sts_", "ei_is")):
+        _CURATED_POLICIES.setdefault((_dataset, "I21"), _policy)
+
 
 # Потоки Eurostat: сумма только при одновременном совпадении семейства и
 # единицы-объёма. Префиксы собраны по реальным monthly dataset_id в БД
