@@ -669,3 +669,49 @@ def test_strategy_exception_on_degenerate_series_is_a_recorded_failure(monkeypat
     assert gate.status == "failed"
     assert gate.reason == "candidate_model_failed"
     assert gate.result is None
+
+
+def test_age_limit_can_differ_for_annual_and_quarterly_series(monkeypatch):
+    """Круг 13: годовой ряд не пересчитывается раз в 30 суток при неизменных данных (новая точка меняет отпечаток
+    и возвращает ряд в очередь сразу), по умолчанию срок общий и поведение прежнее."""
+    from datetime import datetime
+
+    from app.config import settings
+    from app.services.world_forecast_pipeline import (
+        effective_max_age_days,
+        forecast_fingerprint,
+        forecast_is_unchanged,
+    )
+
+    now = datetime(2026, 10, 12, 12, 0, 0)
+    history_end = date(2025, 1, 1)
+    old = SimpleNamespace(
+        created_at=datetime(2026, 8, 20, 8, 0, 0),  # 53 суток назад
+        model_params=forecast_fingerprint(history_end=history_end, points_count=40, frequency="annual"),
+        gate_status="passed",
+    )
+
+    def check(frequency):
+        return forecast_is_unchanged(
+            old, history_end=history_end, points_count=40, now=now, max_age_days=30, force=False,
+            frequency=frequency,
+        )
+
+    # Без настроек (0): общий срок, ряд старше 30 суток возвращается в очередь.
+    assert effective_max_age_days("annual", 30) == 30
+    assert not check("annual")
+    monkeypatch.setattr(settings, "world_forecast_max_age_days_annual", 180)
+    monkeypatch.setattr(settings, "world_forecast_max_age_days_quarterly", 90)
+    assert effective_max_age_days("annual", 30) == 180
+    assert effective_max_age_days("quarterly", 30) == 90
+    assert effective_max_age_days("monthly", 30) == 30
+    assert check("annual")
+    # Новая точка (другой отпечаток) возвращает годовой ряд в очередь независимо от срока.
+    assert not forecast_is_unchanged(
+        old, history_end=date(2026, 1, 1), points_count=41, now=now, max_age_days=30, force=False,
+        frequency="annual",
+    )
+    # --force по-прежнему пересчитывает всё.
+    assert not forecast_is_unchanged(
+        old, history_end=history_end, points_count=40, now=now, max_age_days=30, force=True, frequency="annual",
+    )
