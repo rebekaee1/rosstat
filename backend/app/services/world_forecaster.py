@@ -75,6 +75,65 @@ def _contiguous_tail_start(dates: Sequence[date], step_months: int) -> int | Non
     return start
 
 
+# Допущения круга 12 (не пороги качества): короткие дыры в самом ряду
+# (например, октябрь 2025 в данных США из-за остановки госорганов: нет ИПЦ и
+# безработицы за месяц) раньше отбрасывали всю историю до дыры и ряд падал с
+# ``recent_history_gap``. Теперь дыры не длиннее MAX_GAP_STEPS периодов
+# заполняются линейной интерполяцией, если заполненных точек не больше 5% ряда
+# (минимум 2). Заполненные точки не участвуют в ошибках проверки (целевыми
+# значениями служат только реальные наблюдения), число записывается в
+# параметры прогноза (``imputed_points``). Дыры длиннее по-прежнему режут
+# историю: берётся отрезок после последней такой дыры.
+MAX_GAP_STEPS = {1: 2, 3: 1, 12: 1}
+MAX_IMPUTED_SHARE = 0.05
+
+
+@dataclass(frozen=True)
+class _RegularSeries:
+    dates: list[date]
+    values: list[float]
+    observed: list[bool]
+    imputed: int
+    cut: bool  # история обрезана после слишком длинной дыры
+
+
+def _regularize_tail(
+    dates: Sequence[date], values: Sequence[float], step_months: int,
+) -> _RegularSeries | None:
+    """Непрерывный хвост ряда с заполненными короткими дырами; None — календарь неровный."""
+    gaps: list[tuple[int, int]] = []
+    for index, (left, right) in enumerate(zip(dates, dates[1:]), start=1):
+        delta = _month_index(right) - _month_index(left)
+        if delta <= 0 or delta % step_months != 0:
+            return None
+        if delta > step_months:
+            gaps.append((index, delta // step_months - 1))
+    allowed = max(2, int(MAX_IMPUTED_SHARE * len(values)))
+    limit = MAX_GAP_STEPS.get(step_months, 1)
+    start, imputed = 0, 0
+    for index, missing in reversed(gaps):
+        if missing > limit or imputed + missing > allowed:
+            start = index
+            break
+        imputed += missing
+    out_dates: list[date] = []
+    out_values: list[float] = []
+    observed: list[bool] = []
+    for index in range(start, len(values)):
+        if index > start:
+            delta = _month_index(dates[index]) - _month_index(dates[index - 1])
+            missing = delta // step_months - 1
+            previous, current = float(values[index - 1]), float(values[index])
+            for k in range(1, missing + 1):
+                out_dates.append(dates[index - 1] + relativedelta(months=step_months * k))
+                out_values.append(previous + (current - previous) * k / (missing + 1))
+                observed.append(False)
+        out_dates.append(dates[index])
+        out_values.append(float(values[index]))
+        observed.append(True)
+    return _RegularSeries(out_dates, out_values, observed, imputed, start > 0)
+
+
 def _seasonal_projection(
     values: Sequence[float],
     *,
@@ -207,18 +266,17 @@ def _train_primary_gate(
             "failed", "non_finite_history", resolved_strategy, None, None, 0, None,
         )
 
-    tail_start = _contiguous_tail_start(dates, step_months)
-    if tail_start is None:
+    regular = _regularize_tail(dates, values, step_months)
+    if regular is None:
         return WorldForecastGate(
             "failed", "irregular_calendar", resolved_strategy, None, None, 0, None,
         )
-    if tail_start:
-        dates = dates[tail_start:]
-        values = values[tail_start:]
-        if len(values) < min_history:
-            return WorldForecastGate(
-                "failed", "recent_history_gap", resolved_strategy, None, None, 0, None,
-            )
+    dates, values, observed = regular.dates, regular.values, regular.observed
+    if regular.cut and len(values) < min_history:
+        return WorldForecastGate(
+            "failed", "recent_history_gap", resolved_strategy, None, None, 0, None,
+        )
+    details = {"imputed_points": regular.imputed} if regular.imputed else None
 
     first_origin = max(
         origin_floor,
@@ -238,6 +296,7 @@ def _train_primary_gate(
         train_dates = dates[:origin]
         train = values[:origin]
         actual = [float(value) for value in values[origin:origin + test_horizon]]
+        target_ok = observed[origin:origin + test_horizon]
         # MASE denominator известен только в точке origin. Полная история
         # включала test targets и меняла решение гейта задним числом.
         scale = _scale(train, season)
@@ -271,15 +330,23 @@ def _train_primary_gate(
             train, season=season, steps=test_horizon, drift=False,
         )
         candidate_errors.extend(
-            predicted - observed for predicted, observed in zip(candidate, actual)
+            predicted - truth
+            for predicted, truth, real in zip(candidate, actual, target_ok) if real
         )
         candidate_scaled_errors.extend(
-            abs(predicted - observed) / scale for predicted, observed in zip(candidate, actual)
+            abs(predicted - truth) / scale
+            for predicted, truth, real in zip(candidate, actual, target_ok) if real
         )
         baseline_scaled_errors.extend(
-            abs(predicted - observed) / scale for predicted, observed in zip(baseline, actual)
+            abs(predicted - truth) / scale
+            for predicted, truth, real in zip(baseline, actual, target_ok) if real
         )
 
+    if not candidate_scaled_errors:
+        return WorldForecastGate(
+            "failed", "not_enough_backtest_origins",
+            resolved_strategy, None, None, 0, None,
+        )
     mase = sum(candidate_scaled_errors) / len(candidate_scaled_errors)
     baseline_mase = sum(baseline_scaled_errors) / len(baseline_scaled_errors)
     if not math.isfinite(mase) or not math.isfinite(baseline_mase):
@@ -298,7 +365,7 @@ def _train_primary_gate(
     if not quality_ok and strict:
         return WorldForecastGate(
             "failed", quality_reason,
-            resolved_strategy, mase, baseline_mase, len(origins), None,
+            resolved_strategy, mase, baseline_mase, len(origins), None, details,
         )
 
     candidate_result = _run_primary_strategy(
@@ -361,7 +428,7 @@ def _train_primary_gate(
     status = "passed" if quality_ok else "advisory"
     return WorldForecastGate(
         status, quality_reason,
-        resolved_strategy, mase, baseline_mase, len(origins), result,
+        resolved_strategy, mase, baseline_mase, len(origins), result, details,
     )
 
 
@@ -420,19 +487,30 @@ def _score_candidates(
     *,
     season: int,
     test_horizon: int,
+    observed: Sequence[bool] | None = None,
 ) -> tuple[dict[str, tuple[float, list[float]]], float] | None:
-    """MASE каждой модели на окнах ``origins`` и MASE сезонного наивного."""
+    """MASE каждой модели на окнах ``origins`` и MASE сезонного наивного.
+
+    Целевыми значениями считаются только реальные наблюдения (``observed``);
+    интерполированные точки в ошибки не входят.
+    """
     scaled: dict[str, list[float] | None] = {name: [] for name in names}
     signed: dict[str, list[float]] = {name: [] for name in names}
     baseline_scaled: list[float] = []
     for origin in origins:
         train = values[:origin]
         actual = [float(value) for value in values[origin:origin + test_horizon]]
+        real = (
+            list(observed[origin:origin + test_horizon])
+            if observed is not None else [True] * len(actual)
+        )
         scale = _scale(train, season)
         if scale is None:
             return None
         baseline = _seasonal_projection(train, season=season, steps=test_horizon, drift=False)
-        baseline_scaled.extend(abs(p - a) / scale for p, a in zip(baseline, actual))
+        baseline_scaled.extend(
+            abs(p - a) / scale for p, a, ok in zip(baseline, actual, real) if ok
+        )
         for name in names:
             if scaled[name] is None:
                 continue
@@ -440,8 +518,10 @@ def _score_candidates(
             if forecast is None or len(forecast) < test_horizon:
                 scaled[name] = None
                 continue
-            scaled[name].extend(abs(p - a) / scale for p, a in zip(forecast, actual))
-            signed[name].extend(p - a for p, a in zip(forecast, actual))
+            scaled[name].extend(
+                abs(p - a) / scale for p, a, ok in zip(forecast, actual, real) if ok
+            )
+            signed[name].extend(p - a for p, a, ok in zip(forecast, actual, real) if ok)
     if not baseline_scaled:
         return None
     baseline_mase = sum(baseline_scaled) / len(baseline_scaled)
@@ -475,11 +555,10 @@ def _candidate_gate(
         step_months, test_horizon, requested_origins,
         _min_origins, _min_history, origin_floor,
     ) = _backtest_layout(frequency, season, horizon)
-    tail_start = _contiguous_tail_start(dates, step_months)
-    if tail_start is None:
+    regular = _regularize_tail(dates, values, step_months)
+    if regular is None:
         return primary
-    if tail_start:
-        dates, values = dates[tail_start:], values[tail_start:]
+    dates, values, observed = regular.dates, regular.values, regular.observed
 
     gate_first = max(origin_floor, len(values) - requested_origins - test_horizon + 1)
     gate_origins = list(range(gate_first, len(values) - test_horizon + 1))
@@ -492,6 +571,8 @@ def _candidate_gate(
         "candidate_set": WORLD_CANDIDATE_SET_VERSION,
         "candidate_selection_origins": len(selection_origins),
     }
+    if regular.imputed:
+        details["imputed_points"] = regular.imputed
     if len(selection_origins) < need or not gate_origins:
         return WorldForecastGate(
             primary.status, primary.reason, primary.strategy, primary.mase,
@@ -501,7 +582,8 @@ def _candidate_gate(
     positive = all(float(value) > 0 for value in values)
     names = [SEASONAL_DRIFT_NAME] + candidate_names(positive=positive)
     selected = _score_candidates(
-        names, values, selection_origins, season=season, test_horizon=test_horizon,
+        names, values, selection_origins,
+        season=season, test_horizon=test_horizon, observed=observed,
     )
     rejected = WorldForecastGate(
         primary.status, primary.reason, primary.strategy, primary.mase,
@@ -523,7 +605,8 @@ def _candidate_gate(
     chosen = min(eligible, key=lambda name: (eligible[name], name))
 
     gated = _score_candidates(
-        [chosen], values, gate_origins, season=season, test_horizon=test_horizon,
+        [chosen], values, gate_origins,
+        season=season, test_horizon=test_horizon, observed=observed,
     )
     if gated is None or chosen not in gated[0]:
         return rejected

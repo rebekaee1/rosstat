@@ -70,8 +70,9 @@ def test_gate_rejects_constant_and_irregular_series():
     assert irregular.status == "failed"
     assert irregular.reason == "irregular_calendar"
 
-    # Даже одна дыра нарушает позиционную сезонность. Короткий хвост после
-    # пропуска не должен выглядеть как полный 72-месячный ряд.
+    # Одна пропущенная точка (как октябрь 2025 в данных США) заполняется
+    # интерполяцией: ряд не теряет историю, число заполненных точек записано,
+    # а в ошибки проверки заполненная точка не входит.
     full_dates = _dates(date(2018, 1, 1), 96, 1)
     one_gap = [*full_dates[:40], *full_dates[41:]]
     gapped = train_quality_gated_world_forecast(
@@ -82,7 +83,21 @@ def test_gate_rejects_constant_and_irregular_series():
         season=12,
         strategy="monthly_auto",
     )
-    assert gapped.reason == "recent_history_gap"
+    assert gapped.reason != "recent_history_gap"
+    assert (gapped.details or {}).get("imputed_points") == 1
+
+    # Дыра в пять месяцев не заполняется: история режется после неё, короткий
+    # хвост не выглядит как полный 72-месячный ряд.
+    long_gap = [*full_dates[:40], *full_dates[45:]]
+    cut = train_quality_gated_world_forecast(
+        long_gap,
+        [float(index) for index in range(91)],
+        frequency="monthly",
+        horizon=12,
+        season=12,
+        strategy="monthly_auto",
+    )
+    assert cut.reason == "recent_history_gap"
 
 
 def test_quarterly_auto_uses_shared_positive_and_signed_strategies():

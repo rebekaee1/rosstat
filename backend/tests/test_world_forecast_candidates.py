@@ -87,9 +87,9 @@ def test_selection_windows_end_before_the_first_gate_window(monkeypatch):
     calls: list[tuple[tuple[str, ...], list[int]]] = []
     real = wf._score_candidates
 
-    def spy(names, vals, origins, *, season, test_horizon):
+    def spy(names, vals, origins, **kwargs):
         calls.append((tuple(names), list(origins)))
-        return real(names, vals, origins, season=season, test_horizon=test_horizon)
+        return real(names, vals, origins, **kwargs)
 
     monkeypatch.setattr(wf, "_score_candidates", spy)
     wf.train_quality_gated_world_forecast(
@@ -154,3 +154,34 @@ def test_primary_forecast_outside_bounds_is_rejected():
     )
     assert gate.result is None
     assert gate.status == "failed"
+
+
+def test_regularize_tail_fills_short_gaps_and_cuts_after_long_ones():
+    monthly = _dates(date(2020, 1, 1), 60, 1)
+    one_missing = [*monthly[:30], *monthly[31:]]
+    regular = wf._regularize_tail(one_missing, [float(i) for i in range(59)], 1)
+    assert regular is not None and regular.imputed == 1 and not regular.cut
+    assert len(regular.dates) == 60
+    assert regular.observed.count(False) == 1
+    filled = regular.observed.index(False)
+    assert regular.dates[filled] == monthly[30]
+    assert regular.values[filled] == pytest.approx((29.0 + 30.0) / 2)
+
+    far = [*monthly[:20], *monthly[26:]]  # дыра в 6 месяцев
+    cut = wf._regularize_tail(far, [float(i) for i in range(54)], 1)
+    assert cut is not None and cut.cut and len(cut.dates) == 34 and cut.imputed == 0
+
+    duplicated = [*monthly[:6], monthly[5], *monthly[6:10]]  # повторная дата: календарь неровный
+    assert wf._regularize_tail(duplicated, [float(i) for i in range(11)], 1) is None
+
+
+def test_imputed_targets_do_not_enter_backtest_errors():
+    values = [10.0 + index for index in range(40)]
+    observed = [True] * 40
+    observed[30] = False
+    values[30] = 9999.0  # заведомо неверная «интерполяция»: в ошибки попасть не должна
+    names = ["drift"]
+    masked = wf._score_candidates(names, values, [28, 29, 30], season=1, test_horizon=1, observed=observed)
+    unmasked = wf._score_candidates(names, values, [28, 29, 30], season=1, test_horizon=1)
+    assert masked is not None and unmasked is not None
+    assert masked[0]["drift"][0] < 1.0 < unmasked[0]["drift"][0]
