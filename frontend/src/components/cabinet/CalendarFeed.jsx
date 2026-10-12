@@ -81,11 +81,11 @@ export default function CalendarFeed() {
       ) : null}
       {links?.https ? <p className="c11b-hint">{t('c11b.cal.once')}</p> : null}
       <div className="c11b-cal__actions">
-        <Button variant={active ? 'secondary' : 'primary'} size="sm" onClick={issue} loading={busy === 'issue'} disabled={active === null || busy === 'revoke'}>
+        <Button variant={active ? 'secondary' : 'primary'} size="sm" onClick={issue} pending={busy === 'issue'} disabled={active === null || busy === 'revoke'}>
           {active ? t('c11b.cal.renew') : t('c11b.cal.enable')}
         </Button>
         {active ? (
-          <Button variant="ghost" size="sm" onClick={revoke} loading={busy === 'revoke'} disabled={busy === 'issue'}>
+          <Button variant="ghost" size="sm" onClick={revoke} pending={busy === 'revoke'} disabled={busy === 'issue'}>
             {t('c11b.cal.disable')}
           </Button>
         ) : null}

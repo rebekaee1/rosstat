@@ -36,6 +36,7 @@ export default function WorldViewModePicker({
   trackContext,
   title,
   compact = false,
+  pending = false, // круг 12: данные выбранного режима грузятся, на активном чипе кольцо ожидания
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -126,6 +127,7 @@ export default function WorldViewModePicker({
           <Chip
             key={group.id}
             active={group.id === activeTopGroup}
+            pending={pending && group.id === activeTopGroup}
             onClick={() => onTopClick(group)}
           >
             {group.label}
@@ -145,6 +147,7 @@ export default function WorldViewModePicker({
               <Chip
                 key={`${expanded.id}-${item.mode}`}
                 active={item.mode === currentMode}
+                pending={pending && item.mode === currentMode}
                 title={item.hint || undefined}
                 onClick={() => onSubClick(expanded.id, item)}
               >

@@ -3712,4 +3712,6 @@ export default {
   'c11i.calc.save': 'Save calculation',
   // ===== Круг 12: UI2 =====
   'c12u.delta.prevDay': 'vs previous day',
+  'c12u.prefs.intro': 'Number format, converter currency and home country already apply across the site. Language, units and newsletter topics are only stored for now: the page address sets the language, and no emails are sent yet.',
+  'c12u.quick.home': 'Your country: {country}',
 };

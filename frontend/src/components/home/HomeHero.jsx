@@ -5,7 +5,10 @@ import HomeDataScope from './HomeDataScope';
 import HomeToday from './HomeToday';
 import { HOME_EXAMPLE_COUNT, searchExamples } from '../../lib/searchExamples';
 import { buildQuickLinks } from '../../lib/homeQuickLinks';
-import { useWorldCompareSnapshot } from '../../lib/worldApi';
+import { useWorldCompareSnapshot, useWorldCountries } from '../../lib/worldApi';
+import { countryPublicName } from '../../lib/homeWorkbench';
+import { countryPath } from '../../lib/sitePaths';
+import { homeCountrySlug, usePrefs } from '../../lib/cabinetPrefs';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 import '../../styles/shell.css';
@@ -52,6 +55,15 @@ export default function HomeHero({ planet = null }) {
     () => buildQuickLinks({ locale, gdp: gdp.data, inflation: inflation.data }),
     [locale, gdp.data, inflation.data],
   );
+  // Круг 12: «главная страна» из настроек кабинета первой быстрой ссылкой (только у вошедшего с выбранной страной).
+  const homeSlug = homeCountrySlug(usePrefs());
+  const countries = useWorldCountries();
+  const homeLink = useMemo(() => {
+    if (!homeSlug) return null;
+    const list = Array.isArray(countries.data?.countries) ? countries.data.countries : [];
+    const found = list.find((c) => c?.slug === homeSlug);
+    return found ? { id: 'home-country', name: countryPublicName(found, locale), to: countryPath(homeSlug) } : null;
+  }, [homeSlug, countries.data, locale]);
   return (
     <header
       data-block="home-hero"
@@ -77,6 +89,17 @@ export default function HomeHero({ planet = null }) {
           {planet ? (
             <nav className="fe-quick fe-fade-x" aria-label={t('z3.quick.aria')}>
               <ul className="fe-quick__row scrollbar-hide">
+                {homeLink ? (
+                  <li key={homeLink.id}>
+                    <Link
+                      to={homeLink.to}
+                      onClick={() => track(events.HOME_COUNTRIES_CTA, { target: 'quick-link', id: homeLink.id })}
+                      className="fe-quick__chip fe-press"
+                    >
+                      {t('c12u.quick.home', { country: homeLink.name })}
+                    </Link>
+                  </li>
+                ) : null}
                 {quickLinks.map((link) => (
                   <li key={link.id}>
                     <Link

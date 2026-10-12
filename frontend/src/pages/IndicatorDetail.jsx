@@ -696,6 +696,7 @@ export default function IndicatorDetail() {
             modes={viewFamily.modes.map((m) => ({ mode: m.mode, label: m.label }))}
             currentMode={familyMode}
             onChange={setViewMode}
+            pending={Boolean(loadingData || chartLoading)}
             trackContext={{ code, category: indicator?.category }}
           />
         )}

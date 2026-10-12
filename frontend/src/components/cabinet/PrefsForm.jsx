@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePending } from '../../lib/usePending';
 import { CheckCircle2 } from 'lucide-react';
 import { useLocale, useT } from '../../i18n';
 import { fetchPrefs, savePrefs } from '../../lib/cabinetApi';
 import { cabinetErrorCode, cabinetErrorKey } from '../../lib/cabinetItems';
+import { applyPrefs } from '../../lib/cabinetPrefs';
 import { countryPublicName } from '../../lib/homeWorkbench';
 import { useWorldCountries } from '../../lib/worldApi';
 import Button from '../Button';
@@ -39,8 +41,8 @@ function Field({ label, children }) {
 
 /**
  * Настройки: язык по умолчанию, формат чисел, единицы, валюта, главная страна, темы рассылки.
- * Сервер только хранит выбор; разделы сайта начнут учитывать его по мере обновлений. Темы рассылки не заменяют согласие:
- * оно остаётся в разделе «Профиль», письма пока не отправляются.
+ * Применяются формат чисел, валюта конвертера и главная страна (`lib/cabinetPrefs.js`); язык, единицы и темы рассылки пока только
+ * хранятся. Темы рассылки не заменяют согласие: оно остаётся в разделе «Профиль», письма пока не отправляются.
  */
 export default function PrefsForm() {
   const t = useT();
@@ -48,7 +50,7 @@ export default function PrefsForm() {
   const countries = useWorldCountries();
   const [state, setState] = useState({ status: 'loading', data: {} });
   const [draft, setDraft] = useState({});
-  const [busy, setBusy] = useState(false);
+  const { pending: saving, run } = usePending();
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
 
@@ -84,20 +86,22 @@ export default function PrefsForm() {
   };
   const dirty = JSON.stringify(pickPrefs(draft)) !== JSON.stringify(state.data);
 
-  const submit = async (event) => {
+  const submit = (event) => {
     event.preventDefault();
-    setBusy(true); setError(null);
-    try {
-      const res = await savePrefs(pickPrefs(draft));
-      const data = pickPrefs(res?.data);
-      setState({ status: 'ready', data });
-      setDraft(data);
-      setSaved(true);
-    } catch (err) {
-      setError(t(cabinetErrorKey(cabinetErrorCode(err))));
-    } finally {
-      setBusy(false);
-    }
+    return run(async () => {
+      setError(null);
+      try {
+        const res = await savePrefs(pickPrefs(draft));
+        const data = pickPrefs(res?.data);
+        setState({ status: 'ready', data });
+        setDraft(data);
+        setSaved(true);
+        // Сохранённое сразу начинает действовать на сайте (формат чисел, валюта конвертера, главная страна).
+        applyPrefs(data);
+      } catch (err) {
+        setError(t(cabinetErrorKey(cabinetErrorCode(err))));
+      }
+    });
   };
 
   const pick = (field, value, label) => (
@@ -106,7 +110,7 @@ export default function PrefsForm() {
 
   return (
     <form onSubmit={submit} className="c11b-prefs">
-      <p className="c11b-hint">{t('c11b.prefs.intro')}</p>
+      <p className="c11b-hint">{t('c12u.prefs.intro')}</p>
       <Field label={t('c11b.prefs.locale')}>
         <ChipGroup label={t('c11b.prefs.locale')}>
           {LOCALES.map((v) => pick('locale', v, t(`c11b.prefs.locale.${v}`)))}
@@ -149,7 +153,7 @@ export default function PrefsForm() {
         <p className="c11b-hint">{t('c11b.prefs.topicsNote')}</p>
       </Field>
       <div className="c11b-foot">
-        <Button type="submit" loading={busy} disabled={!dirty}>{t('common.save')}</Button>
+        <Button type="submit" pending={saving} disabled={!dirty}>{t('common.save')}</Button>
         {saved ? (
           <span role="status" className="c11b-ok"><CheckCircle2 size={16} aria-hidden="true" /> {t('c11b.prefs.saved')}</span>
         ) : null}

@@ -637,6 +637,7 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                 modes={modes}
                 currentMode={activeMode}
                 onChange={setMode}
+                pending={Boolean(dataLoading || dataQ.isPlaceholderData)}
                 trackContext={{ code, category: indicator.category }}
               />
             )}

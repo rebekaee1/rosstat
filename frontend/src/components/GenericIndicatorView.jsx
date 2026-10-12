@@ -211,6 +211,7 @@ export default function GenericIndicatorView({
           family={family}
           currentMode={safeMode}
           onChange={setViewMode}
+          pending={Boolean(isLoading)}
           trackContext={{ code, category: indicator?.category }}
         />
       </ViewModesPanel>

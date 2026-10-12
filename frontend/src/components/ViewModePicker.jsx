@@ -10,6 +10,7 @@ import { useViewModeSummary } from './viewModesContext';
  * Generic in-page view-mode switcher used on indicator pages where a
  * single domain concept can be viewed in several aggregations or
  * transformations (e.g. Level / YoY % / QoQ % / Cumulative index).
+ * Круг 12: `pending` — данные выбранного режима ещё грузятся: на активном чипе тонкое кольцо (общее состояние ожидания `Chip`).
  */
 export default function ViewModePicker({
   title,
@@ -17,6 +18,7 @@ export default function ViewModePicker({
   currentMode,
   onChange,
   trackContext,
+  pending = false,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -36,6 +38,7 @@ export default function ViewModePicker({
           <Chip
             key={item.mode}
             active={currentMode === item.mode}
+            pending={pending && currentMode === item.mode}
             onClick={() => {
               onChange(item.mode);
               track(events.CHART_MODE_CHANGE, {
