@@ -437,8 +437,12 @@ def test_world_forecast_priority_order_puts_us_and_concepts_first():
     assert de == ["de-une", "de-abc"]
 
 
-def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
+def test_world_forecast_unchanged_skip_by_fingerprint_and_force(monkeypatch):
     from datetime import datetime
+
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", True)
 
     from app.services.world_forecast_pipeline import (
         forecast_fingerprint,
@@ -466,6 +470,12 @@ def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
         stale_failed, history_end=history_end, points_count=120,
         now=now, max_age_days=30, force=False,
     )
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", False)
+    assert forecast_is_unchanged(  # набор выключен: прежнее поведение
+        stale_failed, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", True)
     stale_passed = SimpleNamespace(
         created_at=latest.created_at,
         model_params=forecast_fingerprint(history_end=history_end, points_count=120),

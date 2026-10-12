@@ -9,6 +9,7 @@ world_forecasts не переобучается.
 from __future__ import annotations
 
 import asyncio
+import functools
 import hashlib
 import logging
 import time
@@ -200,7 +201,10 @@ def forecast_is_unchanged(
         return False
     # Набор дополнительных моделей расширился: отказы, посчитанные без него,
     # пересчитываются (опубликованные прогнозы не трогаем).
-    if getattr(latest, "gate_status", None) == "failed":
+    if (
+        settings.world_forecast_candidates_enabled
+        and getattr(latest, "gate_status", None) == "failed"
+    ):
         params = getattr(latest, "model_params", None)
         if not isinstance(params, dict) or params.get("candidate_set") != WORLD_CANDIDATE_SET_VERSION:
             return False
@@ -437,25 +441,35 @@ async def retrain_world_indicator_forecast(
         "|".join(f"{point.date.isoformat()}:{point.value}" for point in points).encode(),
         usedforsecurity=False,
     ).hexdigest() if points else None
+    extended = bool(settings.world_forecast_candidates_enabled)
+    country = None if extended else await db.get(WorldCountry, indicator.country_id)
     # Процентный ряд, всегда лежавший в 0..100, не может прогнозироваться вне
-    # этих границ (раньше проверялось только для США; теперь для всех стран).
+    # этих границ. Раньше проверялось только для США; с включённым набором
+    # круга 12 (world_forecast_candidates_enabled) — для всех стран.
+    percent_bounded = (
+        is_percentage_unit(indicator.unit) and bool(values)
+        and min(values) >= 0 and max(values) <= 100
+    )
     bounds = (
         (0.0, 100.0)
-        if is_percentage_unit(indicator.unit) and values
-        and min(values) >= 0 and max(values) <= 100
+        if percent_bounded and (extended or (country is not None and country.code == "US"))
         else None
     )
     gate = await asyncio.to_thread(
-        train_quality_gated_world_forecast,
-        dates,
-        values,
-        frequency=eligibility.frequency,
-        horizon=eligibility.horizon,
-        season=eligibility.season,
-        strategy=eligibility.strategy,
-        # Одинаковый fail-closed gate для США, Европы и остальных стран.
-        strict=True,
-        bounds=bounds,
+        functools.partial(
+            train_quality_gated_world_forecast,
+            dates,
+            values,
+            frequency=eligibility.frequency,
+            horizon=eligibility.horizon,
+            season=eligibility.season,
+            strategy=eligibility.strategy,
+            # Одинаковый fail-closed gate для США, Европы и остальных стран.
+            strict=True,
+            bounds=bounds,
+            candidates=extended,
+            fill_gaps=extended,
+        )
     )
 
     await _deactivate_current(db, indicator.id)
@@ -472,7 +486,10 @@ async def retrain_world_indicator_forecast(
             eligibility,
             {
                 "resolved_strategy": gate.strategy,
-                "candidate_set": WORLD_CANDIDATE_SET_VERSION,
+                **(
+                    {"candidate_set": WORLD_CANDIDATE_SET_VERSION}
+                    if extended else {}
+                ),
                 **(gate.details or {}),
             },
             history_digest=history_digest,

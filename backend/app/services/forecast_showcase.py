@@ -9,9 +9,11 @@
   прошедший строгую проверку на прошлых данных (``publishable_world_forecast``),
   для Евростата ещё и при подтверждённом свежем состоянии набора данных.
 
-Чего здесь нет намеренно: проекции МВФ (WEO) платформа не хранит и не
-пересказывает (``world_forecast_policy``: у фонда собственные проекции, их не
-подменяем), ключевую ставку и курсы валют не прогнозируем.
+Официальные прогнозы МВФ (WEO, круг 12): ближайший год проекции фонда хранится
+в ``world_forecasts`` как есть (``world_official_forecast``), в витрине такая
+карточка идёт с пометкой «официальный» (``verified=False``), а не «проверен на
+истории»; платформа его не пересчитывает и не подменяет. Чего здесь нет
+намеренно: ключевую ставку и курсы валют не прогнозируем.
 
 Модуль отдаёт готовую структуру для API, SSR и страницы; чистые функции сверху
 (расчёт изменения, горизонт, срезы истории) покрыты тестами без БД.
@@ -433,6 +435,7 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
     from app.services.seo_i18n import translate_source
     from app.services.world_forecast_pipeline import world_forecast_source_ready
     from app.services.world_forecaster import PUBLISHED_GATE_STATUSES, publishable_world_forecast
+    from app.services.world_official_forecast import is_official_forecast
 
     items: list[dict[str, Any]] = []
     for spec in WORLD_THEMES:
@@ -511,11 +514,19 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
                 name = country.name_en if locale == "en" and (country.name_en or "").strip() else country.name_ru
                 title = (spec["title_en"] if locale == "en" else spec["title_ru"]).format(country=name)
                 unit = _world_unit(ind, locale)
+                official = is_official_forecast(forecast)
+                # Ряд МВФ с процентной единицей (безработица, инфляция за год)
+                # показываем в пунктах, а не как относительное изменение уровня.
+                kind = (
+                    "percent"
+                    if official and str(ind.unit or "").upper().startswith("PC")
+                    else spec["kind"]
+                )
                 item = build_item(
                     item_id=f"{country.slug}-{spec['theme']}",
                     scope="world",
                     theme=spec["theme"],
-                    kind=spec["kind"],
+                    kind=kind,
                     title=title,
                     country={"slug": country.slug, "code": country.code, "name": name},
                     unit=unit,
@@ -525,7 +536,7 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
                     actual=actual,
                     forecast=fc,
                     updated=forecast.created_at.date() if forecast.created_at else None,
-                    verified=True,
+                    verified=not official,
                 )
                 if item is not None:
                     items.append(item)

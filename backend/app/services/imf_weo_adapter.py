@@ -86,6 +86,9 @@ WEO_PCPIPCH = "PCPIPCH"
 # SDMX 12.10.2026 (USA/CHN/JPN: значения в процентах, SCALE 0).
 WEO_NGDP_RPCH = "NGDP_RPCH"
 WEO_BCA_NGDPD = "BCA_NGDPD"
+# Ряды круга 12: пишутся ingest'ом только при включённом
+# ``world_imf_official_forecast_enabled`` (новые страницы каталога).
+WEO_CIRCLE12_CODES = frozenset({WEO_NGDP_RPCH, WEO_BCA_NGDPD})
 
 # Identity + public units. Ranking compares measure_class(unit, unit_ru)
 # to WorldConcept.measure — keep these codes in lockstep with world_concepts.

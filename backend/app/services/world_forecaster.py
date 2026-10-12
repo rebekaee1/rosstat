@@ -99,6 +99,7 @@ class _RegularSeries:
 
 def _regularize_tail(
     dates: Sequence[date], values: Sequence[float], step_months: int,
+    *, fill_gaps: bool = True,
 ) -> _RegularSeries | None:
     """Непрерывный хвост ряда с заполненными короткими дырами; None — календарь неровный."""
     gaps: list[tuple[int, int]] = []
@@ -109,7 +110,7 @@ def _regularize_tail(
         if delta > step_months:
             gaps.append((index, delta // step_months - 1))
     allowed = max(2, int(MAX_IMPUTED_SHARE * len(values)))
-    limit = MAX_GAP_STEPS.get(step_months, 1)
+    limit = MAX_GAP_STEPS.get(step_months, 1) if fill_gaps else 0
     start, imputed = 0, 0
     for index, missing in reversed(gaps):
         if missing > limit or imputed + missing > allowed:
@@ -247,6 +248,7 @@ def _train_primary_gate(
     season: int,
     strategy: str,
     strict: bool = True,
+    fill_gaps: bool = True,
 ) -> WorldForecastGate:
     resolved_strategy = _resolve_primary_strategy(strategy, values)
     (
@@ -266,7 +268,7 @@ def _train_primary_gate(
             "failed", "non_finite_history", resolved_strategy, None, None, 0, None,
         )
 
-    regular = _regularize_tail(dates, values, step_months)
+    regular = _regularize_tail(dates, values, step_months, fill_gaps=fill_gaps)
     if regular is None:
         return WorldForecastGate(
             "failed", "irregular_calendar", resolved_strategy, None, None, 0, None,
@@ -549,13 +551,14 @@ def _candidate_gate(
     season: int,
     primary: WorldForecastGate,
     bounds: tuple[float, float] | None,
+    fill_gaps: bool = True,
 ) -> WorldForecastGate:
     """Вложенный выбор дополнительной модели; при отказе возвращает ``primary``."""
     (
         step_months, test_horizon, requested_origins,
         _min_origins, _min_history, origin_floor,
     ) = _backtest_layout(frequency, season, horizon)
-    regular = _regularize_tail(dates, values, step_months)
+    regular = _regularize_tail(dates, values, step_months, fill_gaps=fill_gaps)
     if regular is None:
         return primary
     dates, values, observed = regular.dates, regular.values, regular.observed
@@ -669,16 +672,18 @@ def train_quality_gated_world_forecast(
     strict: bool = True,
     candidates: bool = True,
     bounds: tuple[float, float] | None = None,
+    fill_gaps: bool = True,
 ) -> WorldForecastGate:
     """Главная модель, затем (если не прошла по качеству) кандидатный путь.
 
     ``bounds`` — допустимый диапазон значений (для процентов 0..100): прогноз
     вне него не публикуется. Применяется и к главной модели.
+    ``fill_gaps=False`` возвращает прежнее поведение: любая дыра режет историю.
     """
     gate = _train_primary_gate(
         dates, values,
         frequency=frequency, horizon=horizon, season=season,
-        strategy=strategy, strict=strict,
+        strategy=strategy, strict=strict, fill_gaps=fill_gaps,
     )
     if (
         gate.result is not None
@@ -698,5 +703,5 @@ def train_quality_gated_world_forecast(
     return _candidate_gate(
         dates, values,
         frequency=frequency, horizon=horizon, season=season,
-        primary=gate, bounds=bounds,
+        primary=gate, bounds=bounds, fill_gaps=fill_gaps,
     )

@@ -23,6 +23,7 @@ from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.core.cache import bump_namespaces
 from app.database import async_session
 from app.models import (
@@ -39,6 +40,7 @@ from app.services.imf_weo_adapter import (
     PROVIDER,
     PUBLIC_SOURCE_NAME,
     PUBLIC_SOURCE_URL,
+    WEO_CIRCLE12_CODES,
     WEO_SERIES,
     ImfWeoAdapter,
     make_weo_series_ref,
@@ -290,7 +292,10 @@ async def run_imf_weo_ingest(
         russia_points = 0
         error: str | None = None
         try:
+            official_enabled = bool(settings.world_imf_official_forecast_enabled)
             for weo_code in WEO_SERIES:
+                if weo_code in WEO_CIRCLE12_CODES and not official_enabled:
+                    continue
                 parsed, projections = await asyncio.to_thread(
                     adapter.fetch_weo_bundle, weo_code, iso3_list,
                 )
@@ -308,7 +313,7 @@ async def run_imf_weo_ingest(
                     )
                     indicators += n_ind
                     points_touched += n_pts
-                    if indicator_id is not None:
+                    if indicator_id is not None and official_enabled:
                         outcome = await _sync_official_forecast(
                             db,
                             indicator_id=indicator_id,
