@@ -305,3 +305,20 @@ def test_new_base_that_ended_earlier_does_not_spawn_a_stale_twin(auth_env):
     assert event.kind == "skipped"
     summary = summarize_events(REBASE_EVENTS)[0]
     assert summary["skipped"] == 1 and "кончился раньше" in describe_summary(summary)
+
+
+def test_unknown_liveness_with_several_index_bases_is_retried_not_guessed(monkeypatch):
+    import pytest
+
+    import app.services.eurostat_parser as parser
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "eurostat_rebase_enabled", True)
+    monkeypatch.setattr(parser, "_fetch_structure_live",
+                        lambda *a, **k: ({"unit": ["I21", "I15", "PCH_SM"]}, {}))
+    with pytest.raises(RuntimeError, match="живая база индекса не определена"):
+        parser.fetch_dataset_structure_live("sts_trtu_m")
+    # одна база индекса — гадать не о чем
+    monkeypatch.setattr(parser, "_fetch_structure_live",
+                        lambda *a, **k: ({"unit": ["I21", "PCH_SM"]}, {}))
+    assert parser.fetch_dataset_structure_live("sts_inpi_q")[1] == {}

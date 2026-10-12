@@ -750,6 +750,14 @@ def fetch_dataset_structure_live(
 
         if not settings.eurostat_rebase_enabled:
             live = {}
+        elif not live.get("unit"):
+            bases = [m for m in dims.get("unit") or [] if index_base_year(m) is not None]
+            if len(bases) >= 2:
+                # Несколько баз индекса, а какая жива, неизвестно (проба через DSD или
+                # без наблюдений): молча взять привычную нельзя, набор уйдёт на повтор.
+                raise RuntimeError(
+                    f"{dataset_id}: живая база индекса не определена ({', '.join(bases)}), повтор позже"
+                )
     return dims, live
 
 
