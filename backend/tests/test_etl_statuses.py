@@ -179,3 +179,57 @@ def test_fetch_changed_semantics():
     assert not _fetch_changed(FetchLog(status="fallback_used", records_added=0, records_updated=0))
     assert _fetch_changed(FetchLog(status="fallback_used", records_added=0, records_updated=2))
     assert not _fetch_changed(FetchLog(status="parsed_zero", records_added=0, records_updated=0))
+
+
+# --- Сбой сети не маскируется под «смену layout» (круг 12, 09.10.2026) --------
+# fuel-ai92 и inflation-weekly дали 0 точек, потому что rosstat.gov.ru на
+# минуту не принял соединение; парсер проглотил RequestException, ETL написал
+# parsed_zero и «вероятна смена layout источника».
+
+
+class _NetDownParser(_Parser):
+    """Парсер, чей fetch глотает сетевую ошибку, как rosstat_weekly_price."""
+
+    async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
+        import requests
+
+        from app.services import http_client
+
+        session = http_client.create_session(proxy=None, socks=None)
+        with pytest.MonkeyPatch.context() as mp:
+            def dead(self, method, url, **kwargs):
+                raise requests.ConnectTimeout("no route")
+
+            mp.setattr(requests.Session, "request", dead)
+            http_client._reset_host_breaker()
+            try:
+                session.get("https://rosstat.gov.ru/storage/mediabank/nedel_sred_cen.xlsx")
+            except requests.RequestException:
+                pass  # как в парсере: ошибка проглочена, точек нет
+            finally:
+                http_client._reset_host_breaker()
+        return [], "https://rosstat.gov.ru/storage/mediabank/nedel_sred_cen.xlsx"
+
+
+def test_unreachable_source_with_zero_points_is_failed_not_parsed_zero(env):
+    fl = _run(_NetDownParser([]), _FakeDB(existing=243))
+    assert fl.status == "failed"
+    assert "Source unreachable" in fl.error_message
+    assert "rosstat.gov.ru" in fl.error_message
+    assert env["zero_alerts"] == []  # ложный «смена layout» не рассылается
+
+
+def test_unreachable_secondary_request_does_not_fail_run_with_points(env):
+    class _P(_NetDownParser):
+        async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
+            await super()._fetch_and_parse(db, indicator, cfg, fetch_log)
+            return [(date(2026, 6, 1), 1.0)], "https://example.test"
+
+    fl = _run(_P([]), _FakeDB(existing=243))
+    assert fl.status == "no_new_data"
+
+
+def test_fetch_issues_do_not_leak_between_runs(env):
+    _run(_NetDownParser([]), _FakeDB(existing=243))
+    fl = _run(_Parser([]), _FakeDB(existing=0))
+    assert fl.status == "no_new_data"

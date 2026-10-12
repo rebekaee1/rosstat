@@ -286,6 +286,8 @@ services:
       RUSTATS_ETL_HTTP_PROXY_URL: ${RUSTATS_ETL_HTTP_PROXY_URL:-}
       # SOCKS fallback (host Tor on rosstat_default gw): socks5h://172.18.0.1:9050
       RUSTATS_ETL_SOCKS_PROXY_URL: ${RUSTATS_ETL_SOCKS_PROXY_URL:-}
+      # Потолок времени ежедневного ETL, секунды (0 = без потолка)
+      RUSTATS_ETL_JOB_MAX_SECONDS: ${RUSTATS_ETL_JOB_MAX_SECONDS:-7200}
       RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
       # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает.
       # Переезд на выделенный redis-state (О-8) — переопределением в .env.

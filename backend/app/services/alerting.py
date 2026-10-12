@@ -384,6 +384,7 @@ async def alert_zero_parse(indicator_code: str, existing_points: int) -> None:
 _DEGRADED_LABELS = {
     "parsed_zero": "Parsed zero (layout?)",
     "fallback_used": "Fallback source",
+    "deadline_skipped": "Not run (job time ceiling)",
 }
 
 
