@@ -243,3 +243,15 @@ def test_circle12_flags_are_off_by_default():
         "rest_world_forecast_enabled",
     ):
         assert Settings.model_fields[name].default is False  # выпуск в два шага
+
+
+def test_weo_categories_have_english_names():
+    """Группы показателей МВФ (в том числе «Внешний сектор») в английском каталоге страны без кириллицы."""
+    import re
+
+    from app.services.imf_weo_adapter import WEO_SERIES
+    from app.services.seo_i18n import localize_category_name
+
+    for weo_code, meta in WEO_SERIES.items():
+        name = localize_category_name(meta["category_ru"], locale="en")
+        assert name and not re.search(r"[А-Яа-яЁё]", name), (weo_code, name)

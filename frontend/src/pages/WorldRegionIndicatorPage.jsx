@@ -397,8 +397,6 @@ export default function WorldRegionIndicatorPage() {
             {forecastQ.data?.available && !showYoY && (
               <div className="mt-2 rounded-lg bg-champagne/5 px-3 py-2 text-xs leading-relaxed text-text-secondary fe-shadow-2">
                 <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
-                {' — '}{forecastQ.data.model_name}
-                {' — '}MASE {Number(forecastQ.data.quality.mase).toFixed(2)}
                 <p className="mt-1">{forecastQ.data.methodology}</p>
               </div>
             )}
