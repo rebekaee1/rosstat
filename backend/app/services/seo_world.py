@@ -604,7 +604,9 @@ async def _world_rating_countries(db: AsyncSession) -> list[WorldCountry]:
             WorldIndicator.country_id,
             func.count().label("cnt"),
         )
-        .where(WorldIndicator.is_listed.is_(True))
+        # Голая колонка (не `IS TRUE`): только так планировщик берёт partial ix_world_indicators_listed_signal
+        # (index-only scan вместо seq scan по 691 МБ: 0,57 с -> 0,19 с на стенде; круг 12, SPEED2). is_listed NOT NULL.
+        .where(WorldIndicator.is_listed)
         .group_by(WorldIndicator.country_id)
         .subquery()
     )
@@ -868,7 +870,9 @@ async def listed_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
             WorldIndicator.country_id,
             func.count().label("cnt"),
         )
-        .where(WorldIndicator.is_listed.is_(True))
+        # Голая колонка (не `IS TRUE`): только так планировщик берёт partial ix_world_indicators_listed_signal
+        # (index-only scan вместо seq scan по 691 МБ: 0,57 с -> 0,19 с на стенде; круг 12, SPEED2). is_listed NOT NULL.
+        .where(WorldIndicator.is_listed)
         .group_by(WorldIndicator.country_id)
         .subquery()
     )
@@ -1313,6 +1317,9 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
     if not inds:
         return 404, "<h1>Нет показателей</h1>"
 
+    # Те же listed-ряды нужны блоку «Главное» (обзор по понятиям): передаём их ему, чтобы не читать 8,5 тыс.
+    # строк второй раз (круг 12, SPEED2).
+    listed_rows = list(inds)
     inds = filter_weo_shadowed_from_country_listing(list(inds), country.code)
 
     # Каталог = карточки (primary частоты), не ряды M/Q/A.
@@ -1611,7 +1618,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         render_key_figures_html,
     )
 
-    key_figures = await load_country_key_figures(db, country)
+    key_figures = await load_country_key_figures(db, country, listed_rows)
     key_figures_html = render_key_figures_html(key_figures, slug)
 
     body = f"""<div class="seo-page">

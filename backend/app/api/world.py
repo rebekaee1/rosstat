@@ -30,6 +30,7 @@ from app.core.cache import (
     world_countries_build_lock,
 )
 from app.services.api_i18n import api_detail
+from app.services.ssr_swr import api_cache_get, api_cache_set
 from app.services.locale import get_locale
 from app.data.eurostat_listing import (
     catalog_merge_key,
@@ -583,8 +584,30 @@ async def _country_indicators(db: AsyncSession, country_id: int) -> list[WorldIn
     )
 
 
+def _sibling_stems_match(stems: set[str]):
+    """Предикат «набор данных ряда относится к одному из stem»: `stem` целиком или `stem_…`.
+
+    То же, что условие SQL `lower(dataset_id) = stem OR lower(dataset_id) LIKE 'stem\\_%'`: сравнение идёт
+    по границам `_` в самом наборе, без перебора всех stem для каждой строки.
+    """
+    def match(dataset_id: str | None) -> bool:
+        if not dataset_id:
+            return False
+        low = dataset_id.lower()
+        if low in stems:
+            return True
+        cut = low.find("_")
+        while cut != -1:
+            if low[:cut] in stems:
+                return True
+            cut = low.find("_", cut + 1)
+        return False
+
+    return match
+
+
 async def _country_indicators_for_listing(
-    db: AsyncSession, country_id: int,
+    db: AsyncSession, country_id: int, *, listed: list[WorldIndicator] | None = None,
 ) -> list[WorldIndicator]:
     """Listed + sibling-частоты тех же stem — без полной выгрузки 7k+ рядов страны.
 
@@ -594,17 +617,29 @@ async def _country_indicators_for_listing(
     Stem сравниваем без учёта регистра: у национальных провайдеров dataset_id
     часто в верхнем регистре (FM01, CPIAUCSL), а ``dataset_stem`` канонизирует
     в lower — иначе карточка страны обнулялась при ненулевом списке.
+
+    ``listed`` — уже загруженные listed-ряды страны (страница страны в SSR читает их сама): второй такой же
+    запрос на 8,5 тыс. строк не нужен. Сиблинги отбираются по лёгкой выборке (id, dataset_id) в Python,
+    а полные объекты читаются только для найденных: раньше условие из ~2 тыс. `OR` стоило 0,6 с на запрос.
     """
-    listed = list(
-        (
-            await db.execute(
-                select(WorldIndicator).where(
-                    WorldIndicator.country_id == country_id,
-                    WorldIndicator.is_listed.is_(True),
+    from app.services.seo_world import world_listing_light_options
+
+    light = world_listing_light_options()
+    if listed is None:
+        listed = list(
+            (
+                await db.execute(
+                    select(WorldIndicator)
+                    .options(*light)
+                    .where(
+                        WorldIndicator.country_id == country_id,
+                        WorldIndicator.is_listed.is_(True),
+                    )
                 )
-            )
-        ).scalars().all()
-    )
+            ).scalars().all()
+        )
+    else:
+        listed = list(listed)
     if not listed:
         return await _country_indicators(db, country_id)
 
@@ -622,21 +657,25 @@ async def _country_indicators_for_listing(
     if not stems:
         return listed
 
-    clauses = []
-    for stem in stems:
-        clauses.append(func.lower(WorldIndicator.dataset_id) == stem)
-        clauses.append(
-            func.lower(WorldIndicator.dataset_id).like(f"{stem}\\_%", escape="\\")
+    candidates = (
+        await db.execute(
+            select(WorldIndicator.id, WorldIndicator.dataset_id).where(
+                WorldIndicator.country_id == country_id,
+                WorldIndicator.is_listed.is_(False),
+            )
         )
+    ).all()
+    is_sibling = _sibling_stems_match(stems)
+    sibling_ids = [row.id for row in candidates if is_sibling(row.dataset_id)]
+    if not sibling_ids:
+        return listed
 
     siblings = list(
         (
             await db.execute(
-                select(WorldIndicator).where(
-                    WorldIndicator.country_id == country_id,
-                    WorldIndicator.is_listed.is_(False),
-                    or_(*clauses),
-                )
+                select(WorldIndicator)
+                .options(*light)
+                .where(WorldIndicator.id.in_(sibling_ids))
             )
         ).scalars().all()
     )
@@ -1074,7 +1113,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     индекс цен с родными юнитом и источником, а не 404.
     """
     cache_key = await versioned_key("world", f"compare:catalog:v8:{get_locale()}")
-    cached = await cache_get(cache_key)
+    cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return cached
 
@@ -1163,7 +1202,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
         })
 
     payload = {"items": items, "total": len(items)}
-    await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+    await api_cache_set(cache_key, payload, _CACHE_TTL, cache_set)
     return payload
 
 
@@ -1297,7 +1336,7 @@ async def world_compare_snapshot(
     cache_key = await versioned_key(
         "world", f"compare:snapshot:v8:{concept_slug}:{get_locale()}"
     )
-    cached = await cache_get(cache_key)
+    cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return _world_public_json(cached)
 
@@ -1362,7 +1401,7 @@ async def world_compare_snapshot(
             if average is not None else None
         ),
     }
-    await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+    await api_cache_set(cache_key, payload, _CACHE_TTL, cache_set)
     return _world_public_json(payload)
 
 
@@ -1381,7 +1420,7 @@ async def world_compare_map_series(
     cache_key = await versioned_key(
         "world", f"compare:map-series:v8:{concept_slug}:{get_locale()}"
     )
-    cached = await cache_get(cache_key)
+    cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return _world_public_json(cached)
 
@@ -1454,7 +1493,7 @@ async def world_compare_map_series(
         "values_by_year": values_by_year,
         "benchmark_by_year": benchmark_by_year,
     }
-    await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+    await api_cache_set(cache_key, payload, _CACHE_TTL, cache_set)
     return _world_public_json(payload)
 
 
@@ -1636,6 +1675,13 @@ async def build_country_overview(
     # берём только когда национального ряда нет и концепт матчится однозначно.
     # Для hicp-index чип — изменение за год (как карта/рейтинг), не уровень.
     all_by_code = {str(ind.code): ind for ind in all_inds}
+    # Понятие каждого ряда считаем один раз (раньше — для каждой пары «понятие × ряд»): порядок рядов внутри
+    # понятия остаётся порядком all_inds, ошибка пересечения понятий поднимается так же.
+    indicators_by_concept: dict[str, list[WorldIndicator]] = defaultdict(list)
+    for indicator in all_inds:
+        own = concept_for_indicator(indicator)
+        if own is not None and int(indicator.points_count or 0) > 0:
+            indicators_by_concept[own.slug].append(indicator)
     overview_candidates: list[tuple] = []
     seen_concepts: set[str] = set()
     for concept in WORLD_CONCEPTS:
@@ -1649,12 +1695,7 @@ async def build_country_overview(
             overview_candidates.append((concept, national))
             seen_concepts.add(concept.slug)
             continue
-        matches = [
-            indicator
-            for indicator in all_inds
-            if concept_for_indicator(indicator) == concept
-            and int(indicator.points_count or 0) > 0
-        ]
+        matches = indicators_by_concept.get(concept.slug, [])
         if not matches:
             continue
         # Несколько рядов одного концепта: официальный ряд ведомства/Eurostat
@@ -1775,8 +1816,50 @@ async def country_detail_cache_key(slug: str) -> str:
     return await versioned_key("world", f"country:v19:{slug}:{get_locale()}")
 
 
+# Круг 12 (SPEED2): сжатая форма каталога страны (`?slim=1`). У страны Евростата 8 тыс. карточек по ~730 байт: категория
+# повторялась в каждой карточке трижды, `name_ru`/`unit_ru` совпадали с `name`/`unit`, пустые значения писались явно.
+# Слим-форма убирает повторы и значения по умолчанию (-45 % байт, на 6,7 МБ JSON Германии это ~0,3 с разбора на телефоне);
+# клиент восстанавливает их в `expandSlimCountry` (frontend/src/lib/worldApi.js). Обычный ответ без параметра не меняется.
+_SLIM_ITEM_DROP = frozenset({"category", "category_ru", "category_en"})
+_SLIM_ITEM_DEFAULTS = {
+    "simple_name": None,
+    "aggregated_frequencies": [],
+    "merged_slices": [],
+    "last_value": None,
+    "last_date": None,
+    "prev_value": None,
+    "change": None,
+    "archived": False,
+}
+
+
+def slim_country_payload(payload: dict) -> dict:
+    """Слим-форма ответа `country_detail`: без повторов категории и значений по умолчанию."""
+    out = {key: value for key, value in payload.items() if key != "categories"}
+    categories = []
+    for category in payload.get("categories") or []:
+        items = []
+        for item in category.get("indicators") or []:
+            slim_item = {}
+            for key, value in item.items():
+                if key in _SLIM_ITEM_DROP:
+                    continue
+                if key == "name_ru" and value == item.get("name"):
+                    continue
+                if key == "unit_ru" and value == item.get("unit"):
+                    continue
+                if key in _SLIM_ITEM_DEFAULTS and value == _SLIM_ITEM_DEFAULTS[key]:
+                    continue
+                slim_item[key] = value
+            items.append(slim_item)
+        categories.append({**{k: v for k, v in category.items() if k != "indicators"}, "indicators": items})
+    out["categories"] = categories
+    out["slim"] = 1
+    return out
+
+
 @router.get("/countries/{slug}")
-async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
+async def country_detail(slug: str, slim: bool = False, db: AsyncSession = Depends(get_db)):
     """Каталог страны по категориям.
 
     ``frequencies`` — официальные частоты карточки (список строк-кодов,
@@ -1784,9 +1867,28 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
     официальных рядов, но карточка их отдаёт агрегацией по курируемой
     политике (например annual у месячного индекса); клиент помечает такие
     режимы как расчётные.
+
+    ``?slim=1`` — сжатая форма (см. `slim_country_payload`); хранится готовой JSON-строкой, поэтому тёплый ответ
+    не разбирается и не собирается заново.
     """
+    if not slim:
+        return await _country_detail_payload(slug, db)
+    import json as _json
+
+    from fastapi.responses import Response as _Response
+
+    slim_key = (await country_detail_cache_key(slug)) + ":slim"
+    text = await api_cache_get(slim_key, cache_get)
+    if not (isinstance(text, str) and text):
+        payload = await _country_detail_payload(slug, db)
+        text = _json.dumps(slim_country_payload(payload), ensure_ascii=False, separators=(",", ":"), default=str)
+        await api_cache_set(slim_key, text, _CACHE_TTL, cache_set)
+    return _Response(content=text, media_type="application/json")
+
+
+async def _country_detail_payload(slug: str, db: AsyncSession) -> dict:
     cache_key = await country_detail_cache_key(slug)
-    cached = await cache_get(cache_key)
+    cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return cached
 
@@ -1985,7 +2087,7 @@ async def country_detail(slug: str, db: AsyncSession = Depends(get_db)):
         payload["area"] = localize_territory_fact(area)
     if population is not None:
         payload["population"] = population
-    await cache_set(cache_key, payload, ttl=_CACHE_TTL)
+    await api_cache_set(cache_key, payload, _CACHE_TTL, cache_set)
     return payload
 
 

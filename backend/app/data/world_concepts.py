@@ -341,9 +341,36 @@ def concept_matches_indicator(concept: WorldConcept, indicator) -> bool:
     return True
 
 
+def _allowed_datasets(concept: WorldConcept, provider: str) -> frozenset[str]:
+    """Наборы данных понятия у провайдера (то же правило, что первый шаг `concept_matches_indicator`)."""
+    if concept.provider_dataset_ids is not None:
+        return concept.provider_dataset_ids.get(provider, frozenset())
+    return concept.dataset_ids if provider == "eurostat" else frozenset()
+
+
+# Круг 12 (SPEED2): страница страны перебирала для каждого из ~8000 рядов все понятия, а «обзор» — ещё и по
+# каждому понятию (1,46 млн вызовов `concept_matches_indicator`, ~2 с на холодном рендере). Понятия, чей список
+# наборов данных не содержит набор ряда, отсекаются первым шагом `concept_matches_indicator`; индекс
+# (провайдер, набор) → понятия, у которых набор есть, даёт тот же результат без перебора.
+_CONCEPTS_BY_DATASET: dict[tuple[str, str], tuple[WorldConcept, ...]] = {}
+
+
+def _concepts_for_dataset(provider: str, dataset: str) -> tuple[WorldConcept, ...]:
+    key = (provider, dataset)
+    hit = _CONCEPTS_BY_DATASET.get(key)
+    if hit is None:
+        hit = tuple(c for c in WORLD_CONCEPTS if dataset in _allowed_datasets(c, provider))
+        _CONCEPTS_BY_DATASET[key] = hit
+    return hit
+
+
 def concept_for_indicator(indicator) -> WorldConcept | None:
     """Возвращает единственный контракт или None; пересечение — ошибка реестра."""
-    matches = [concept for concept in WORLD_CONCEPTS if concept_matches_indicator(concept, indicator)]
+    provider = str(getattr(indicator, "provider", "eurostat") or "").lower()
+    candidates = _concepts_for_dataset(provider, (indicator.dataset_id or "").lower())
+    if not candidates:
+        return None
+    matches = [concept for concept in candidates if concept_matches_indicator(concept, indicator)]
     if len(matches) > 1:
         slugs = ", ".join(concept.slug for concept in matches)
         raise ValueError(f"World indicator matches multiple concepts: {slugs}")
