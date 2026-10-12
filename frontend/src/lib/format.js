@@ -435,6 +435,14 @@ export function setNumberFormat(value) {
   return changed;
 }
 
+/**
+ * Тег языка для `toLocaleString` / `Intl.NumberFormat` там, где число рисуется не через formatValue (бегущая строка, подсказки
+ * графика сравнения, подписи регионов, конвертер). Учитывает настройку кабинета «Формат чисел», иначе язык страницы (круг 13, C2).
+ */
+export function numberTag(locale) {
+  return (numberFormatOverride || resolveFormatLocale(locale)) === 'en' ? 'en-US' : 'ru-RU';
+}
+
 // Тысячи: RU — неразрывный пробел, EN — запятая («100,000»).
 function groupThousands(str, loc) {
   return str.replace(/\B(?=(\d{3})+(?!\d))/g, loc === 'en' ? ',' : '\u00A0');

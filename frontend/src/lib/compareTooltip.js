@@ -1,6 +1,8 @@
 // Строки подсказки графика «Сравнение»: по одной на ряд, только с человеческим именем.
 // Recharts кладёт в payload и заливку под линией, и белый блик-штрих: у них нет имени, подпись берётся из ключа данных
 // («v0», «v1»), а строки идут дважды. Здесь остаются только именованные линии рядов, по одной на ключ.
+import { numberTag } from './format';
+
 
 /**
  * @param {Array} payload элементы подсказки Recharts
@@ -33,7 +35,7 @@ export function compareTooltipRows(payload, colors = null) {
 export function indexNote(value, locale = 'ru') {
   const v = Number(value);
   if (!Number.isFinite(v) || v <= 0) return { kind: 'same' };
-  const lang = locale === 'en' ? 'en-US' : 'ru-RU';
+  const lang = numberTag(locale);
   const formatRatio = (raw) => {
     const rounded = raw >= 10 ? Math.round(raw) : Math.round(raw * 10) / 10;
     let plural = 'other';

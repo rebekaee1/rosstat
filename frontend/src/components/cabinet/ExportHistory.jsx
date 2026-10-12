@@ -4,7 +4,7 @@ import { ExternalLink, Trash2 } from 'lucide-react';
 import { useLocale, useT } from '../../i18n';
 import { formatCount, formatDate } from '../../lib/format';
 import { clearExports, deleteExport, listExports } from '../../lib/cabinetApi';
-import { cabinetErrorCode, cabinetErrorKey, safePath } from '../../lib/cabinetItems';
+import { cabinetErrorCode, cabinetErrorKey, exportHref } from '../../lib/cabinetItems';
 import Button from '../Button';
 import { usePending } from '../../lib/usePending';
 import Spinner from '../Spinner';
@@ -112,7 +112,7 @@ export default function ExportHistory() {
       <p className="c11b-hint">{t('c11b.export.intro')}</p>
       <ul className="c11b-list">
         {state.items.map((row) => {
-          const href = safePath(row.params?.href);
+          const href = exportHref(row);
           const title = exportTitle(row, t);
           return (
             <li key={row.id} className="c11b-row">

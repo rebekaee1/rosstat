@@ -10,7 +10,7 @@ import Button from '../Button';
  * новых значений по отслеживаемым федеральным показателям. Ссылка показывается один раз (на сервере только хэш);
  * новая ссылка гасит старую.
  */
-export default function CalendarFeed() {
+export default function CalendarFeed({ hasRussian = true }) {
   const t = useT();
   const [active, setActive] = useState(null);
   const [links, setLinks] = useState(null);
@@ -66,6 +66,7 @@ export default function CalendarFeed() {
     <section className="c11b-group c11b-cal" aria-label={t('c11b.cal.title')}>
       <h3 className="c11b-group__title">{t('c11b.cal.title')}</h3>
       <p className="c11b-hint">{t('c11b.cal.intro')}</p>
+      {hasRussian ? null : <p className="c11b-hint">{t('c11b.cal.noRussian')}</p>}
       {links?.https ? (
         <div className="c11b-cal__link">
           <input readOnly value={links.https} onFocus={(e) => e.target.select()} aria-label={t('c11b.cal.linkAria')} className="fe-k8-well c11b-row__input" />

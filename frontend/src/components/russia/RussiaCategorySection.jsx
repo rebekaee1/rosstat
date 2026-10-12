@@ -7,7 +7,7 @@ import {
   russiaIndicatorDisplay,
   RUSSIA_CATEGORY_PREVIEW,
 } from '../../lib/russiaHomeCards';
-import { resolveDateFormat } from '../../lib/format';
+import { resolveDateFormat, numberTag } from '../../lib/format';
 import { indicatorPolarity } from '../../lib/deltaTone';
 import { formatDeltaWithUnit } from '../../lib/deltaText';
 import { periodPhrase } from '../../lib/periodPhrase';
@@ -19,7 +19,7 @@ import { FreqBadges } from '../country/CountryIndicatorRow';
 import '../../styles/z5-country.css';
 
 function formatNumber(value, locale) {
-  return value.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', {
+  return value.toLocaleString(numberTag(locale), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });

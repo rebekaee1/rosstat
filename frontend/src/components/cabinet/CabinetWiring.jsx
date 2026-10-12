@@ -11,7 +11,7 @@ import WatchButton from './WatchButton';
 export function CabinetSubjectActions({ subject }) {
   if (!subject) return null;
   const watch = subject.watch?.subjectKey ? (
-    <WatchButton subjectKind={subject.watch.subjectKind} subjectKey={subject.watch.subjectKey} title={subject.title || undefined} />
+    <WatchButton subjectKind={subject.watch.subjectKind} subjectKey={subject.watch.subjectKey} title={subject.title || undefined} variant={subject.variant === 'button' ? 'button' : 'icon'} />
   ) : null;
   if (subject.only === 'watch') return watch;
   return (

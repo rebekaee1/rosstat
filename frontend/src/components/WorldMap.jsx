@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { valueExtent } from '../lib/regionsMapColors';
 import { substantialPolygons } from '../lib/planetAtlas';
-import { formatValue } from '../lib/format';
+import { formatValue, numberTag } from '../lib/format';
 import { formatWorldValue } from '../lib/worldApi';
 import {
   displayWorldGeometry, mainlandWorldGeometry, outlinePointCount,
@@ -171,7 +171,7 @@ function formatLegendValue(value) {
   const locale = resolveBrowserLocale();
   const numeric = Number(value);
   const abs = Math.abs(numeric);
-  const numberLocale = locale === 'en' ? 'en-US' : 'ru-RU';
+  const numberLocale = numberTag(locale);
   const compact = (divisor, suffix) => `${(numeric / divisor).toLocaleString(numberLocale, {
     maximumFractionDigits: 1,
   })}\u00A0${suffix}`;

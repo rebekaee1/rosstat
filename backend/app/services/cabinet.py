@@ -31,6 +31,7 @@ from app.models import (
     UserPreference, UserSavedItem, UserWatch, WorldCountry, WorldDataPoint,
     WorldIndicator, _utcnow_naive,
 )
+from app.services.display import localize_unit
 from app.services.locale import get_locale
 
 logger = logging.getLogger(__name__)
@@ -239,17 +240,17 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
                 values[iid] = float(val)
         for iid, code, name, name_en, unit, freq, latest in rows:
             out[("indicator", code)] = SeriesInfo(
-                "indicator", code, _pick(name, name_en), unit, freq, latest, values.get(iid))
+                "indicator", code, _pick(name, name_en), localize_unit(unit) or None, freq, latest, values.get(iid))
 
     if keys := by_kind.get("world"):
+        from app.api.world import _indicator_public_unit
+
         rows = (await db.execute(
-            select(WorldIndicator.id, WorldIndicator.code, WorldIndicator.name_ru, WorldIndicator.name_en,
-                   WorldIndicator.unit_ru, WorldIndicator.unit, WorldIndicator.frequency,
-                   WorldIndicator.history_end, WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en)
+            select(WorldIndicator, WorldCountry.slug, WorldCountry.name_ru, WorldCountry.name_en)
             .join(WorldCountry, WorldCountry.id == WorldIndicator.country_id)
             .where(WorldIndicator.code.in_(keys), WorldIndicator.is_listed.is_(True))
         )).all()
-        ids_dates = [(r[0], r[7]) for r in rows if r[7] is not None]
+        ids_dates = [(r[0].id, r[0].history_end) for r in rows if r[0].history_end is not None]
         values = {}
         if ids_dates:
             for iid, val in (await db.execute(
@@ -257,10 +258,11 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
                 .where(tuple_(WorldDataPoint.indicator_id, WorldDataPoint.date).in_(ids_dates))
             )).all():
                 values[iid] = float(val)
-        for iid, code, name_ru, name_en, unit_ru, unit, freq, latest, slug, c_ru, c_en in rows:
-            out[("world", code)] = SeriesInfo(
-                "world", code, _pick(name_ru, name_en), (unit_ru or unit) or None, freq, latest,
-                values.get(iid), slug, _pick(c_ru, c_en))
+        for ind, slug, c_ru, c_en in rows:
+            # Единица на языке страницы (на английской без русских «индекс», «баррель»): та же функция, что у карточки показателя.
+            out[("world", ind.code)] = SeriesInfo(
+                "world", ind.code, _pick(ind.name_ru, ind.name_en), _indicator_public_unit(ind) or None, ind.frequency,
+                ind.history_end, values.get(ind.id), slug, _pick(c_ru, c_en))
 
     if keys := by_kind.get("region"):
         rows = (await db.execute(
@@ -269,7 +271,7 @@ async def resolve_series(db: AsyncSession, pairs: Iterable[tuple[str, str]]) -> 
         )).all()
         for code, name, unit, year_max in rows:
             out[("region", code)] = SeriesInfo(
-                "region", code, name, unit or None, "annual",
+                "region", code, name, localize_unit(unit) or None, "annual",
                 date(year_max, 1, 1) if year_max else None)
     return out
 

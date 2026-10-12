@@ -635,6 +635,10 @@
 .z4-hero__actions:empty { display: none; }
 /* Круг 11, интеграция: кабинет выключен или ответа о нём нет, кнопки ничего не нарисовали: слот не занимает место и не даёт лишний зазор в ряду. */
 .fe-cabinet-actions:empty { display: none; }
+/* Круг 13, кабинет: в ряду кнопок героя страны и в карточке события звезда и колокольчик стоят рядом с остальными кнопками,
+   а не уезжают к правому краю (там `margin-left: auto` нужен только строке над названием показателя). */
+.z5-hero__actions > .fe-cabinet-actions,
+.fe-cabinet-actions--flush { margin-left: 0; }
 /* Число индекса без слова «индекс» рядом с цифрой: пояснение тихой строкой под ним. */
 .z4-hv__basis { margin: 0; color: var(--color-text-tertiary); font-size: 12.5px; font-weight: 500; line-height: 1.3; }
 

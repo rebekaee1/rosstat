@@ -294,6 +294,28 @@ def test_watch_world_and_region_and_english(auth_client, auth_env, on):
     assert rg["title"] == "Зарплата" and rg["latest_date"] == "2024-01-01" and rg["frequency"] == "annual"
     en = auth_client.get(f"{C}/watches", headers={"X-FE-Locale": "en"}).json()["items"]
     assert {i["title"] for i in en} >= {"Turkey GDP"}
+    # Единица тоже на языке страницы: по-английски без русских слов («долл.», «руб.»).
+    units_en = {i["subject_key"]: i["unit"] for i in en}
+    assert all(u and not any("а" <= ch.lower() <= "я" for ch in u) for u in units_en.values()), units_en
+    units_ru = {i["subject_key"]: i["unit"] for i in auth_client.get(f"{C}/watches").json()["items"]}
+    assert units_ru["reg-wage"] == "руб."
+
+
+def test_watch_indicator_unit_localized(auth_client, auth_env, on):
+    """Показатель России: «руб.» по-английски отдаётся как RUB (раньше в английском списке «Слежу» стояло русское слово)."""
+    async def seed_ind(s):
+        ind = Indicator(code="wage_rub", name="Зарплата", name_en="Wage", unit="руб.", frequency="monthly",
+                        is_active=True, is_listed=True)
+        s.add(ind)
+        await s.flush()
+        s.add(IndicatorData(indicator_id=ind.id, date=date(2026, 8, 1), value=100.0))
+    seed(auth_client, auth_env, seed_ind)
+    reg(auth_client)
+    h = csrf_headers(auth_client)
+    en = auth_client.post(f"{C}/watches", json={"subject_kind": "indicator", "subject_key": "wage_rub"},
+                          headers={**h, "X-FE-Locale": "en"}).json()["item"]
+    assert en["unit"] == "RUB"
+    assert auth_client.get(f"{C}/watches").json()["items"][0]["unit"] == "руб."
 
 
 @pytest.mark.parametrize("body,status,code", [

@@ -4,14 +4,14 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import Account from './Account';
-import { logoutUser, deleteAccount } from '../lib/api';
+import { logoutUser, deleteAccount, fetchAccountExport } from '../lib/api';
 import { __resetCabinetStore } from '../lib/cabinetStore';
 import * as cabinetApi from '../lib/cabinetApi';
 
 const mocks = vi.hoisted(() => ({ setUser: vi.fn(), refetch: vi.fn() }));
 vi.mock('../lib/useMeta', () => ({ default: () => {} }));
 vi.mock('../context/authContext', () => ({ useAuth: () => ({ user: { id: 'u1', email: 'test@example.com', identities: [] }, isAuthed: true, ...mocks }) }));
-vi.mock('../lib/api', () => ({ logoutUser: vi.fn(), deleteAccount: vi.fn(), logoutAll: vi.fn(), submitFeedback: vi.fn(), updateNewsletter: vi.fn(), updateProfile: vi.fn() }));
+vi.mock('../lib/api', () => ({ logoutUser: vi.fn(), deleteAccount: vi.fn(), logoutAll: vi.fn(), submitFeedback: vi.fn(), updateNewsletter: vi.fn(), updateProfile: vi.fn(), fetchAccountExport: vi.fn() }));
 vi.mock('../lib/cabinetApi', () => ({
   fetchCabinetConfig: vi.fn(),
   listSaved: vi.fn(),
@@ -220,5 +220,23 @@ describe('кабинет включён', () => {
     fireEvent.click(screen.getByRole('button', { name: 'common.save' }));
     await waitFor(() => expect(cabinetApi.savePrefs).toHaveBeenCalledWith({ locale: 'ru', currency: 'EUR' }));
     await screen.findByText('c11b.prefs.saved');
+  });
+
+  it('«Скачать мои данные»: берёт данные у сервера и отдаёт файл JSON; сбой показывает сообщение', async () => {
+    URL.createObjectURL = vi.fn(() => 'blob:x');
+    URL.revokeObjectURL = vi.fn();
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    fetchAccountExport.mockResolvedValueOnce({ user: { id: 'u1' }, saved_items: [] });
+    renderAccount('/account?tab=profile');
+    fireEvent.click(await screen.findByRole('button', { name: 'c13.account.exportCta' }));
+    await waitFor(() => expect(fetchAccountExport).toHaveBeenCalledOnce());
+    await waitFor(() => expect(click).toHaveBeenCalledOnce());
+    expect(URL.createObjectURL.mock.calls[0][0].type).toBe('application/json');
+
+    fetchAccountExport.mockRejectedValueOnce(new Error('boom'));
+    fireEvent.click(screen.getByRole('button', { name: 'c13.account.exportCta' }));
+    await screen.findByText('c13.account.exportFail');
+    expect(click).toHaveBeenCalledOnce();
+    click.mockRestore();
   });
 });

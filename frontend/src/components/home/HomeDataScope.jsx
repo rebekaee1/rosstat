@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart3, Globe2, History } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
+import { numberTag } from '../../lib/format';
 import { compactIndicatorCount, historyYears, startYear } from '../../lib/homeStats';
 import { pluralRu, useWorldCountries } from '../../lib/worldApi';
 import { russiaCategoriesPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT } from '../../lib/sitePaths';
@@ -11,7 +12,7 @@ import '../../styles/shell.css';
 import '../../styles/z3-home.css';
 
 const groupDigits = (locale) => {
-  const formatter = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU');
+  const formatter = new Intl.NumberFormat(numberTag(locale));
   return (n) => formatter.format(Math.round(n));
 };
 

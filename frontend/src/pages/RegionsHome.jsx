@@ -28,6 +28,7 @@ import { COMPARE_MAX, toggleCompareSlug } from '../lib/regionCompareTable';
 import { formatRegionCompact, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
 import { plural } from '../lib/calcFormat';
+import { numberTag } from '../lib/format';
 import MobileNavSelect from '../components/MobileNavSelect';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionsTrail } from '../lib/breadcrumbs';
@@ -254,7 +255,7 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
   // «в 4,6 раза выше» вместо «× 4,6»: знак умножения новичку ничего не говорит.
   const ratioLabel = ratio && ratio >= 1.05
     ? t('w6f.reg.timesHigher', {
-      n: ratio.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: 1 }),
+      n: ratio.toLocaleString(numberTag(locale), { maximumFractionDigits: 1 }),
       word: Number.isInteger(Math.round(ratio * 10) / 10) ? plural(ratio, 'раз', 'раза', 'раз') : 'раза',
     })
     : null;
