@@ -520,6 +520,8 @@ async def persist_result(
                     await rebase.retarget(db, country_id=cid, points=points)
                     if rebase is not None else None
                 )
+                if rebase_event is not None and rebase_event.kind == "skipped":
+                    continue
                 if rebase_event is not None:
                     changes.update(("metadata", "catalog"))
                 iid, _ = await upsert_indicator_meta(

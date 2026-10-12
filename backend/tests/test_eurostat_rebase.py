@@ -287,3 +287,21 @@ def test_live_units_are_withheld_until_the_flag_is_on(monkeypatch):
     assert parser.fetch_dataset_structure_live("sts_trtu_m", honor_flag=False)[1] == {"unit": {"I21"}}
     monkeypatch.setattr(settings, "eurostat_rebase_enabled", True)
     assert parser.fetch_dataset_structure_live("sts_trtu_m")[1] == {"unit": {"I21"}}
+
+
+def test_new_base_that_ended_earlier_does_not_spawn_a_stale_twin(auth_env):
+    old_pts = _monthly(_wave(120))
+    # у источника новая база кончилась раньше прежней карточки и по форме не совпадает
+    new_pts = [(d, 100 + ((i * 11) % 17) * 3.0) for i, (d, _) in enumerate(old_pts[:60])]
+    old_id, country_id = _seed(auth_env, new_points=new_pts, old_points=old_pts)
+    REBASE_EVENTS.clear()
+
+    async def go():
+        async with auth_env["session_maker"]() as db:
+            ctx = await RebaseContext.load(db, "sts_trtu_m", {"freq": "M", "unit": "I21", "nace_r2": "G47"}, "h21")
+            return await ctx.retarget(db, country_id=country_id, points=new_pts)
+
+    event = asyncio.run(go())
+    assert event.kind == "skipped"
+    summary = summarize_events(REBASE_EVENTS)[0]
+    assert summary["skipped"] == 1 and "кончился раньше" in describe_summary(summary)

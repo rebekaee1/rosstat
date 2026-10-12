@@ -143,7 +143,7 @@ def fit_rebase(
 
 @dataclass
 class RebaseEvent:
-    kind: str                      # rebased | twin
+    kind: str                      # rebased | twin | skipped
     dataset_id: str
     geo_country_id: int
     from_unit: str
@@ -178,10 +178,12 @@ def summarize_events(events: Iterable[RebaseEvent]) -> list[dict[str, Any]]:
     for ev in events:
         item = by_ds.setdefault(ev.dataset_id, {
             "dataset_id": ev.dataset_id, "from_unit": ev.from_unit, "to_unit": ev.to_unit,
-            "rebased": 0, "twins": 0, "examples": [], "twin_reasons": [],
+            "rebased": 0, "twins": 0, "skipped": 0, "examples": [], "twin_reasons": [],
         })
         if ev.kind == "rebased":
             item["rebased"] += 1
+        elif ev.kind == "skipped":
+            item["skipped"] += 1
         else:
             item["twins"] += 1
             reason = ev.fit.reason if ev.fit is not None else "нет данных для сверки"
@@ -198,6 +200,8 @@ def describe_summary(summary: dict[str, Any]) -> str:
         f"смена базы индекса {summary['from_unit']}→{summary['to_unit']}: "
         f"перенесено на месте {summary['rebased']}"
     )
+    if summary.get("skipped"):
+        text_ += f", без новой базы осталось {summary['skipped']} (у источника ряд кончился раньше)"
     if summary.get("twins"):
         text_ += f", заменено новой карточкой {summary['twins']}"
         if summary.get("twin_reasons"):
@@ -299,6 +303,17 @@ class RebaseContext:
                         self.dataset_id, old.code, from_unit, self.new_unit, fit.factor, fit.share)
             return event
         top = olds[0]
+        new_end = points[-1][0] if points else None
+        if new_end is not None and top.history_end is not None and new_end <= top.history_end:
+            # Новая база не свежее прежней карточки (ряд у источника давно закончился):
+            # двойник не создаётся, чтобы не множить устаревшие карточки одного предмета.
+            event = RebaseEvent("skipped", self.dataset_id, country_id,
+                                str(top.slice_json.get("unit") or ""), self.new_unit, top.id,
+                                top.code, last_fit)
+            REBASE_EVENTS.append(event)
+            logger.info("Eurostat rebase %s %s: new base is not fresher (%s <= %s), twin not created",
+                        self.dataset_id, top.code, new_end, top.history_end)
+            return event
         event = RebaseEvent("twin", self.dataset_id, country_id,
                             str(top.slice_json.get("unit") or ""), self.new_unit, top.id,
                             top.code, last_fit, [o.id for o in olds])
