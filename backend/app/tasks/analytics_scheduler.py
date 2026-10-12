@@ -118,9 +118,11 @@ async def _user_stats_lines(report_date: date | None = None) -> list[str]:
         oa = oauth_by_user.get(u.id) or []
         phone = next((ph for _, ph, _ in oa if ph), None)
         oemail = next((em for _, _, em in oa if em), None)
-        providers = [p for p, _, _ in oa]
+        from app.services.signup_attribution import METHOD_LABELS_RU
+
+        providers = [METHOD_LABELS_RU.get(p, p) for p, _, _ in oa]
         contact = emails.get(u.id) or oemail or phone or "—"
-        methods = (["почта"] if u.id in emails else []) + providers
+        methods = (["почта и пароль"] if u.id in emails else []) + providers
         method = "/".join(methods) if methods else "—"
         name = u.display_name or "—"
         lines.append(f"• {escape(name)} — {escape(str(contact)[:48])} ({escape(method)})")
