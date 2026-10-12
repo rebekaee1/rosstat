@@ -394,6 +394,8 @@ async def _world_compare_for_russia(db: AsyncSession, code: str) -> dict | None:
 
 @router.get("/{code}", response_model=IndicatorDetail)
 async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
+    from app.services.freshness_note import ru_freshness_note
+
     _validate_code(code)
     detail_key = await versioned_key(code, f"detail:v3:{get_locale()}")
     cached = await cache_get(detail_key)
@@ -493,6 +495,7 @@ async def get_indicator(code: str, db: AsyncSession = Depends(get_db)):
         hero_label=localize_hero_label(hero_label),
         hero_change=hero_change,
         world_compare=await _world_compare_for_russia(db, indicator.code),
+        freshness=await ru_freshness_note(db, indicator, last_dt, locale=get_locale()),
     )
 
     await cache_set(detail_key, detail.model_dump(mode="json"), settings.cache_ttl_meta)

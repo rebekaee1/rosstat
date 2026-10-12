@@ -64,6 +64,9 @@ class IndicatorDetail(IndicatorSummary):
     # Межстрановое сравнение: тот же концепт, что у мировой карточки.
     # None — честной связки нет, блок на карточке не показываем.
     world_compare: dict | None = None
+    # Круг 12: устаревший ряд — причина и ближайший актуальный показатель
+    # (контракт полей: app/services/freshness_note.py). None — ряд не устарел.
+    freshness: dict | None = None
 
 
 class IndicatorStats(BaseModel):
