@@ -5,7 +5,7 @@ import {
   WORLD_NO_DATA,
   WORLD_OCEAN_COLOR,
   WORLD_RELATIVE_SCALE,
-  WORLD_SELECT_FILL,
+  WORLD_SELECT_HALO_PX,
   WORLD_SELECT_HALO,
   WORLD_SELECT_INK,
 } from './worldMapColors';
@@ -30,7 +30,7 @@ const hue = (hex) => {
 
 describe('круг 12: двойной сине-коричневый градиент', () => {
   it('семь ступеней: синяя сторона, нейтральный центр, коричневая сторона', () => {
-    expect(WORLD_RELATIVE_SCALE).toEqual(['#1D3A82', '#3F74BB', '#7BA2D3', '#ADB2BC', '#B9957A', '#8C5F42', '#52311F']);
+    expect(WORLD_RELATIVE_SCALE).toEqual(['#0B306B', '#1E60A3', '#6294C8', '#AFB3BC', '#B98D6C', '#8F5C3A', '#523121']);
     expect(WORLD_DIVERGING_SCALE).toEqual(WORLD_RELATIVE_SCALE);
     for (const hex of WORLD_RELATIVE_SCALE.slice(0, 3)) expect(hue(hex)).toBeGreaterThan(200); // синие
     for (const hex of WORLD_RELATIVE_SCALE.slice(4)) expect(hue(hex)).toBeLessThan(30); // коричневые: не рыжие (выше 30) и не золото (около 41)
@@ -63,19 +63,19 @@ describe('круг 12: двойной сине-коричневый градие
   it('малые значения синие, большие коричневые; порядок «по возрастанию» меняет стороны местами', () => {
     const values = Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]));
     const desc = buildWorldColorModel(values, { direction: 'desc' });
-    expect(desc.colorFor(1)).toBe('#1D3A82');
-    expect(desc.colorFor(18)).toBe('#ADB2BC');
-    expect(desc.colorFor(35)).toBe('#52311F');
+    expect(desc.colorFor(1)).toBe('#0B306B');
+    expect(desc.colorFor(18)).toBe('#AFB3BC');
+    expect(desc.colorFor(35)).toBe('#523121');
     const asc = buildWorldColorModel(values, { direction: 'asc' });
-    expect(asc.colorFor(1)).toBe('#52311F');
-    expect(asc.colorFor(35)).toBe('#1D3A82');
+    expect(asc.colorFor(1)).toBe('#523121');
+    expect(asc.colorFor(35)).toBe('#0B306B');
   });
 
   it('режим diverging: ноль — серый центр, отрицательные синие, положительные коричневые', () => {
     const model = buildWorldColorModel({ a: -9, b: 0, c: 9 }, { mode: 'diverging' });
-    expect(model.colorFor(-9)).toBe('#1D3A82');
-    expect(model.colorFor(0)).toBe('#ADB2BC');
-    expect(model.colorFor(9)).toBe('#52311F');
+    expect(model.colorFor(-9)).toBe('#0B306B');
+    expect(model.colorFor(0)).toBe('#AFB3BC');
+    expect(model.colorFor(9)).toBe('#523121');
   });
 
   it('подписи полос читаются на светлом стекле (контраст не ниже 4,5:1) и принадлежат своей стороне', () => {
@@ -104,10 +104,27 @@ describe('круг 12: двойной сине-коричневый градие
     expect(ascending.colorFor(1)).toBe(WORLD_RELATIVE_SCALE[6]);
   });
 
-  it('цвета выбранной страны: светлая заливка, белое гало и тёмная кромка', () => {
-    expect(WORLD_SELECT_FILL).toMatch(/^rgba\(255,255,255/);
+  it('цвета выбранной страны: белое гало и тёмная кромка, белой заливки нет (страна остаётся цвета ступени)', () => {
+    expect(WORLD_SELECT_HALO_PX).toBeGreaterThan(3);
     expect(WORLD_SELECT_HALO).toBe('#FFFFFF');
     expect(WORLD_SELECT_INK).toBe('#16264F');
+  });
+});
+
+describe('круг 13: ступени различимы при ярком свете (не только по цветности, но и по светлоте)', () => {
+  const lstar = (hex) => {
+    const y = luminance(hex);
+    return y > 216 / 24389 ? 116 * Math.cbrt(y) - 16 : (24389 / 27) * y;
+  };
+
+  it('шаг светлоты между соседними ступенями не меньше 10 L*, у центра тоже', () => {
+    const ls = WORLD_RELATIVE_SCALE.map(lstar);
+    for (let i = 1; i < 7; i += 1) expect(Math.abs(ls[i] - ls[i - 1])).toBeGreaterThanOrEqual(10);
+  });
+
+  it('центр остаётся холодным серым и не сливается с «нет данных» и океаном по светлоте', () => {
+    expect(lstar(WORLD_RELATIVE_SCALE[3])).toBeLessThan(lstar(WORLD_NO_DATA) - 12);
+    expect(lstar(WORLD_RELATIVE_SCALE[3])).toBeLessThan(lstar(WORLD_OCEAN_COLOR) - 12);
   });
 });
 
