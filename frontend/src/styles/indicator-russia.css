@@ -380,8 +380,12 @@
   transition: color 0.15s;
 }
 .fe-crumbs__link:hover { color: var(--color-champagne-ink); }
-@media (pointer: coarse) {
-  .fe-crumbs__link::before { content: ''; position: absolute; inset: -14px -4px; }
+/* Цель нажатия не меньше 44 px по высоте на телефоне и планшете. Раньше область нажатия давал ::before с
+   inset -14px, но ссылка с overflow:hidden (нужен для многоточия длинных названий) его обрезала:
+   выходило 50×18 px и «Главная» считалась обрезанной. Теперь высоту даёт padding внутри самой ссылки, а
+   отрицательный margin возвращает прежний размер строки, поэтому крошки не растягиваются. */
+@media (pointer: coarse), (max-width: 1023px) {
+  .fe-crumbs__link { padding: 13px 4px; margin: -13px -4px; }
 }
 .fe-crumbs__sep { flex: none; width: 14px; height: 14px; opacity: 0.6; }
 .fe-crumbs__current {
