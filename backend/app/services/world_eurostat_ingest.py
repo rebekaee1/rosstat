@@ -93,10 +93,24 @@ def parse_toc(raw: str) -> dict[str, TocEntry]:
     return result
 
 
+TOC_ATTEMPTS = 3
+
+
 def _fetch_toc_sync() -> dict[str, TocEntry]:
-    response = requests.get(TOC_URL, timeout=120)
-    response.raise_for_status()
-    return parse_toc(response.content.decode("utf-8", "replace"))
+    """Оглавление Евростата. Холодный запрос иногда обрывается (`RemoteDisconnected`, замечено на стенде круга 13): без повтора
+    рушилась вся ночная задача («Каталог не получен»), хотя повтор через секунды отвечает."""
+    last: Exception | None = None
+    for attempt in range(TOC_ATTEMPTS):
+        try:
+            response = requests.get(TOC_URL, timeout=120)
+            response.raise_for_status()
+            return parse_toc(response.content.decode("utf-8", "replace"))
+        except requests.RequestException as exc:
+            last = exc
+            logger.warning("Eurostat TOC fetch failed (attempt %d/%d): %s", attempt + 1, TOC_ATTEMPTS, exc)
+            time.sleep(2.0 * (attempt + 1))
+    assert last is not None
+    raise last
 
 
 async def fetch_toc() -> dict[str, TocEntry]:
