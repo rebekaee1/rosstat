@@ -29,6 +29,7 @@
  *   --shots           сохранять кадр для каждого случая с находками
  *   --concurrency N   параллельных страниц (по умолчанию 3; прод держит 4 vCPU, не ставь больше 4)
  *   --browser PATH    свой исполняемый файл Chromium (по умолчанию тот, что поставил playwright)
+ *   --insecure        принимать самоподписанный сертификат (локальный стенд perf-serve.mjs)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -216,7 +217,11 @@ async function scrollThrough(page) {
   });
 }
 
-const browser = await chromium.launch(args.browser ? { executablePath: String(args.browser) } : {});
+// --insecure: самоподписанный сертификат локального стенда (scripts/dev/perf-serve.mjs); хосты *.localhost Chrome ведёт на петлю сам.
+const browser = await chromium.launch({
+  ...(args.browser ? { executablePath: String(args.browser) } : {}),
+  ...(args.insecure ? { args: ['--ignore-certificate-errors'] } : {}),
+});
 if (SELF_TEST) {
   // Проверка самого инструмента: страница с заведомыми дефектами должна дать находки каждого вида.
   const ctx = await browser.newContext({ viewport: { width: 300, height: 600 }, hasTouch: true });
@@ -250,6 +255,7 @@ async function worker() {
       deviceScaleFactor: touch ? 2 : 1,
       isMobile: w <= 820,
       hasTouch: touch,
+      ignoreHTTPSErrors: Boolean(args.insecure),
       locale: BASE.includes('ru.') || BASE.includes('ru.localhost') ? 'ru-RU' : 'en-US',
     });
     const page = await ctx.newPage();
