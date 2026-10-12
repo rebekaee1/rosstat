@@ -968,14 +968,12 @@ html[data-fe-motion='off'] .z5-mood::after { animation: none; }
 .z5-ru-row__delta { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 2px 8px; min-width: 0; }
 .z5-ru-row__vs { color: var(--color-text-tertiary); font-size: 12px; line-height: 1.3; white-space: nowrap; }
 
-/* Телефон: название занимает всю ширину строки (до трёх строк, перенос по словам), значение и изменение — под ним, период не рвётся. */
+/* Телефон: название на всю ширину строки (до трёх строк, перенос по словам); число и изменение идут в одну строку, а если вместе не
+   помещаются («309 014,39 млн $» и «к прошлому кварталу»), изменение уходит на свою строку, а не налезает на число; период не рвётся. */
 @media (max-width: 520px) {
-  .z5-ru-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: 'title title' 'value delta' 'date date';
-    row-gap: 4px;
-  }
-  .z5-ru-row__title { -webkit-line-clamp: 3; overflow-wrap: break-word; word-break: normal; hyphens: manual; }
-  .z5-ru-row__value { justify-content: flex-start; white-space: nowrap; }
-  .z5-ru-row__date { white-space: nowrap; }
+  .z5-ru-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+  .z5-ru-row__title { flex: 1 1 100%; -webkit-line-clamp: 3; overflow-wrap: break-word; word-break: normal; hyphens: manual; }
+  .z5-ru-row__value { flex: 0 1 auto; justify-content: flex-start; white-space: nowrap; }
+  .z5-ru-row__delta { flex: 1 1 auto; justify-content: flex-end; margin-left: auto; }
+  .z5-ru-row__date { flex: 1 1 100%; white-space: nowrap; }
 }
