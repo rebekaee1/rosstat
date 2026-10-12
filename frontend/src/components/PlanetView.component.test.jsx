@@ -785,8 +785,8 @@ describe('PlanetView interaction contract', () => {
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="data" />);
     await screen.findByTestId('planet-scene');
     const model = scene.props.colorModel;
-    expect(model.colorFor(1.7)).toBe('#1D3A82');
-    expect(model.bins.map((bin) => bin.color)).toEqual(['#1D3A82', '#3F74BB', '#7BA2D3', '#ADB2BC', '#B9957A', '#8C5F42', '#52311F']);
+    expect(model.colorFor(1.7)).toBe('#0B306B');
+    expect(model.bins.map((bin) => bin.color)).toEqual(['#0B306B', '#1E60A3', '#6294C8', '#AFB3BC', '#B98D6C', '#8F5C3A', '#523121']);
     const bar = container.querySelector('.planet-key-bar');
     expect(bar).toBeTruthy();
   });

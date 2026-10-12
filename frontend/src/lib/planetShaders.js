@@ -133,7 +133,8 @@ export const PLANET_FRAGMENT = `
     float insideHovered = smoothstep(0.35, 0.65, hl.g) * (1.0 - insideSelected);
     vec3 blueSelected = srgbToLinear(SELECT_SRGB);
     vec3 blueHovered = srgbToLinear(HOVER_SRGB);
-    color = mix(color, blueSelected, insideSelected * 0.10);
+    // Circle 13: the selected country keeps its scale colour (no blue wash that greyed brown steps); it is only lifted a little.
+    color *= 1.0 + insideSelected * 0.07;
     color = mix(color, blueHovered, insideHovered * 0.07);
     float dSel = edgeDistance(hl.r);
     float dHov = edgeDistance(hl.g);
