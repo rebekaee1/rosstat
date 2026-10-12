@@ -448,6 +448,25 @@ describe('WorldMap: заливка России (круг 9, H1)', () => {
     expect(russiaPaths[0].getAttribute('aria-label')).toContain('2');
   });
 
+  it('круг 12: карта красится двойной сине-коричневой шкалой: меньшее значение синее, большее коричневое, золота нет', () => {
+    const { container } = renderMap(
+      <WorldMap embedded countries={catalog} valuesByCode={values} unit="млрд $" />,
+    );
+    const hue = (hex) => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+      const max = Math.max(r, g, b);
+      const d = max - Math.min(r, g, b);
+      const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return (h * 60 + 360) % 360;
+    };
+    const smallest = fillOf(container, 'Турция');
+    const largest = fillOf(container, 'США');
+    expect(smallest).toBe('#1D3A82');
+    expect(['#8C5F42', '#52311F']).toContain(largest); // на пяти странах верхняя полоса — предпоследняя ступень, у шкалы всё равно коричневая сторона
+    expect(hue(smallest)).toBeGreaterThan(200); // синий
+    expect(hue(largest)).toBeLessThan(30); // коричневый, не золото (около 41)
+  });
+
   it('Россия без числа в срезе остаётся нейтральной, но кликабельной (не «вне каталога»)', () => {
     const { container } = renderMap(
       <WorldMap embedded countries={catalog} valuesByCode={new Map([['US', 30767], ['CN', 19626]])} unit="млрд $" />,

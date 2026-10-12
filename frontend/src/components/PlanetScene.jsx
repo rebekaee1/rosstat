@@ -78,7 +78,7 @@ function tracePath(path, context, geometry, minSpanDegrees) {
   for (const ring of outlineRings(geometry, minSpanDegrees)) path({ type: 'LineString', coordinates: ring });
 }
 
-// Страны без данных (круг 6): нейтральная суша #E6E3DC без штриховки; океан в шейдере #DCE8F3, шкала значений — лёд → синий.
+// Страны без данных (круг 6): нейтральная суша #E6E3DC без штриховки; океан в шейдере #DCE8F3, шкала значений — двойная сине-коричневая.
 const NO_DATA_FILL = WORLD_NO_DATA;
 
 /** Geography is rendered independently of country coverage in the API. */

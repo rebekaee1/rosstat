@@ -10,28 +10,81 @@ import {
   WORLD_SELECT_INK,
 } from './worldMapColors';
 
-describe('круг 10: двойной холодный градиент', () => {
-  it('идёт от светлой морской волны #B4E0DC через средний синий к глубокому индиго #26327E в семь ступеней, без тёплых тонов', () => {
-    expect(WORLD_RELATIVE_SCALE).toHaveLength(7);
-    expect(WORLD_RELATIVE_SCALE[0]).toBe('#B4E0DC');
-    expect(WORLD_RELATIVE_SCALE[3]).toBe('#5B93C7');
-    expect(WORLD_RELATIVE_SCALE[6]).toBe('#26327E');
-    for (const hex of WORLD_RELATIVE_SCALE) {
-      const [r, , b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-      expect(b).toBeGreaterThan(r); // каждая ступень синее, чем красная: ничего жёлтого и золотого
+const hexToRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+const luminance = (hex) => {
+  const [r, g, b] = hexToRgb(hex).map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+const hue = (hex) => {
+  const [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+  const max = Math.max(r, g, b);
+  const d = max - Math.min(r, g, b);
+  if (d === 0) return null;
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return (h * 60 + 360) % 360;
+};
+
+describe('круг 12: двойной сине-коричневый градиент', () => {
+  it('семь ступеней: синяя сторона, нейтральный центр, коричневая сторона', () => {
+    expect(WORLD_RELATIVE_SCALE).toEqual(['#1D3A82', '#3F74BB', '#7BA2D3', '#ADB2BC', '#B9957A', '#8C5F42', '#52311F']);
+    expect(WORLD_DIVERGING_SCALE).toEqual(WORLD_RELATIVE_SCALE);
+    for (const hex of WORLD_RELATIVE_SCALE.slice(0, 3)) expect(hue(hex)).toBeGreaterThan(200); // синие
+    for (const hex of WORLD_RELATIVE_SCALE.slice(4)) expect(hue(hex)).toBeLessThan(30); // коричневые: не рыжие (выше 30) и не золото (около 41)
+    for (const hex of WORLD_RELATIVE_SCALE.slice(4)) {
+      const [r, g, b] = hexToRgb(hex);
+      expect(r).toBeGreaterThan(g);
+      expect(g).toBeGreaterThan(b); // тёплая сторона, но без зелёного и красного смысла «хорошо/плохо»
     }
+    const [r, g, b] = hexToRgb(WORLD_RELATIVE_SCALE[3]);
+    expect(Math.max(r, g, b) - Math.min(r, g, b)).toBeLessThan(16); // центр почти серый
   });
 
-  it('градиент двухцветный: у светлого края зелёного больше, чем у тёмного (бирюзовый → индиго), а светлота падает без скачков', () => {
-    const lum = (hex) => {
-      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
-        .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
-      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    };
-    const greens = WORLD_RELATIVE_SCALE.map((hex) => parseInt(hex.slice(3, 5), 16));
-    expect(greens[0] - greens[6]).toBeGreaterThan(100);
-    const lums = WORLD_RELATIVE_SCALE.map(lum);
-    for (let i = 1; i < lums.length; i += 1) expect(lums[i]).toBeLessThan(lums[i - 1]);
+  it('светлота падает от центра к обоим краям без скачков: оба края шкалы тёмные, центр самый светлый', () => {
+    const lums = WORLD_RELATIVE_SCALE.map(luminance);
+    for (let i = 1; i <= 3; i += 1) expect(lums[i]).toBeGreaterThan(lums[i - 1]);
+    expect(lums[4]).toBeLessThan(lums[3]);
+    for (let i = 5; i < 7; i += 1) expect(lums[i]).toBeLessThan(lums[i - 1]);
+    expect(lums.indexOf(Math.max(...lums))).toBe(3);
+  });
+
+  it('все ступени отделены от океана и суши без данных, центр различим с ними по светлоте', () => {
+    for (const hex of WORLD_RELATIVE_SCALE) {
+      expect(contrast(hex, WORLD_OCEAN_COLOR)).toBeGreaterThanOrEqual(1.6);
+      expect(contrast(hex, WORLD_NO_DATA)).toBeGreaterThanOrEqual(1.6);
+    }
+    expect(contrast(WORLD_RELATIVE_SCALE[0], WORLD_OCEAN_COLOR)).toBeGreaterThan(8);
+    expect(contrast(WORLD_RELATIVE_SCALE[6], WORLD_OCEAN_COLOR)).toBeGreaterThan(8);
+  });
+
+  it('малые значения синие, большие коричневые; порядок «по возрастанию» меняет стороны местами', () => {
+    const values = Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]));
+    const desc = buildWorldColorModel(values, { direction: 'desc' });
+    expect(desc.colorFor(1)).toBe('#1D3A82');
+    expect(desc.colorFor(18)).toBe('#ADB2BC');
+    expect(desc.colorFor(35)).toBe('#52311F');
+    const asc = buildWorldColorModel(values, { direction: 'asc' });
+    expect(asc.colorFor(1)).toBe('#52311F');
+    expect(asc.colorFor(35)).toBe('#1D3A82');
+  });
+
+  it('режим diverging: ноль — серый центр, отрицательные синие, положительные коричневые', () => {
+    const model = buildWorldColorModel({ a: -9, b: 0, c: 9 }, { mode: 'diverging' });
+    expect(model.colorFor(-9)).toBe('#1D3A82');
+    expect(model.colorFor(0)).toBe('#ADB2BC');
+    expect(model.colorFor(9)).toBe('#52311F');
+  });
+
+  it('подписи полос читаются на светлом стекле (контраст не ниже 4,5:1) и принадлежат своей стороне', () => {
+    const values = Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]));
+    const model = buildWorldColorModel(values);
+    const inks = [1, 5, 9, 18, 22, 28, 35].map((value) => model.labelColorFor(value));
+    for (const ink of inks) expect(contrast(ink, '#FFFFFF')).toBeGreaterThanOrEqual(4.5);
+    expect(hue(inks[0])).toBeGreaterThan(200);
+    expect(hue(inks[6])).toBeLessThan(30);
   });
 
   it('держит океан #DCE8F3 и нейтральную сушу без данных #E6E3DC отдельно от шкалы', () => {
@@ -41,7 +94,7 @@ describe('круг 10: двойной холодный градиент', () => 
     expect(WORLD_RELATIVE_SCALE).not.toContain(WORLD_OCEAN_COLOR);
   });
 
-  it('золото первого места убрано: модель не знает «первого места», страна на первом месте — самая тёмная ступень', () => {
+  it('золото первого места убрано: модель не знает «первого места», страна на первом месте — край шкалы без особого цвета', () => {
     const values = Object.fromEntries(Array.from({ length: 35 }, (_, index) => [`c${index}`, index + 1]));
     const model = buildWorldColorModel(values, { direction: 'desc' });
     expect(model.isTop).toBeUndefined();

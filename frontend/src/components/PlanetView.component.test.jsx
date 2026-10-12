@@ -781,6 +781,16 @@ describe('PlanetView interaction contract', () => {
     expect(container.querySelector('.planet-key-note--top')).toBeNull();
   });
 
+  it('круг 12: цвета шара и легенды — двойная сине-коричневая шкала, малые значения синие, большие коричневые', async () => {
+    const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2, MT: 1.7 }} metricName="Безработица" unit="%" initialMode="data" />);
+    await screen.findByTestId('planet-scene');
+    const model = scene.props.colorModel;
+    expect(model.colorFor(1.7)).toBe('#1D3A82');
+    expect(model.bins.map((bin) => bin.color)).toEqual(['#1D3A82', '#3F74BB', '#7BA2D3', '#ADB2BC', '#B9957A', '#8C5F42', '#52311F']);
+    const bar = container.querySelector('.planet-key-bar');
+    expect(bar).toBeTruthy();
+  });
+
   it('selects the country from a shared link once the catalogue is here', async () => {
     const { container } = render(<PlanetView countries={countries} valuesByCode={{ DE: 3.2 }} metricName="Безработица" unit="%" initialCountry="de" />);
     await screen.findByTestId('planet-scene');
