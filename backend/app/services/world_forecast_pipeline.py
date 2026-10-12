@@ -37,6 +37,7 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
+from app.services.world_forecast_gate import world_forecast_source_ready  # noqa: F401 — реэкспорт (SPEED3)
 from app.services.world_forecaster import (
     PUBLISHED_GATE_STATUSES,
     WORLD_FORECAST_METHOD_VERSION,
@@ -339,23 +340,6 @@ async def _deactivate_current(
     for row in rows:
         row.is_current = False
     return len(rows)
-
-
-async def world_forecast_source_ready(
-    db: AsyncSession,
-    indicator: WorldIndicator,
-    *,
-    forecast: WorldForecast | None = None,
-) -> bool:
-    """Eurostat forecast requires a successfully applied source revision."""
-    if (indicator.provider or "").lower() != "eurostat":
-        return True
-    state = await db.get(WorldDatasetState, ("eurostat", indicator.dataset_id))
-    if state is None or state.status != "ok" or state.last_success_at is None:
-        return False
-    if forecast is not None and _as_naive(state.last_success_at) > _as_naive(forecast.created_at):
-        return False
-    return True
 
 
 def _model_params_for(

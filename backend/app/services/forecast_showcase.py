@@ -433,8 +433,8 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
     from app.models import WorldCountry, WorldDataPoint, WorldForecast, WorldForecastValue, WorldIndicator
     from app.services import site_paths as paths
     from app.services.seo_i18n import translate_source
-    from app.services.world_forecast_pipeline import world_forecast_source_ready
-    from app.services.world_forecaster import PUBLISHED_GATE_STATUSES, publishable_world_forecast
+    from app.services.world_forecast_gate import world_forecast_source_ready
+    from app.services.world_forecast_gate import PUBLISHED_GATE_STATUSES, publishable_world_forecast
     from app.services.world_official_forecast import is_official_forecast
 
     items: list[dict[str, Any]] = []

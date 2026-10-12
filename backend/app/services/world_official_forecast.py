@@ -44,7 +44,7 @@ from app.services.imf_weo_adapter import (
     WEO_NGDPDPC,
     WeoProjection,
 )
-from app.services.world_forecaster import WORLD_FORECAST_METHOD_VERSION
+from app.services.world_forecast_gate import WORLD_FORECAST_METHOD_VERSION
 
 OFFICIAL_STRATEGY = "imf_weo"
 OFFICIAL_MODEL_NAME = "IMF-WEO-official"

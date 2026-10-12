@@ -27,7 +27,7 @@ WEBP_QUALITY = 90
 
 _CACHE: OrderedDict[tuple[bytes, int], bytes] = OrderedDict()
 _CACHE_LOCK = threading.Lock()
-_CACHE_MAX_ENTRIES = 256
+_CACHE_MAX_ENTRIES = 96  # круг 12, SPEED3: было 256 (≈ 25 МБ на воркер); WebP пересобирается из готового PNG
 
 
 def png_to_webp(png: bytes, width: int | None = None, *, quality: int = WEBP_QUALITY) -> bytes:
