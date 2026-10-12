@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 1901  ·  **Строк:** 1 257 506  ·  **Токенов (≈):** 11 853 212
+**Файлов:** 1901  ·  **Строк:** 1 257 507  ·  **Токенов (≈):** 11 853 538
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 737 | 264 057 | 2 910 244 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 14 | 802 | 9 613 |
-| `docs` | 125 | 805 445 | 6 813 234 |
+| `docs` | 125 | 805 446 | 6 813 560 |
 | `frontend` | 905 | 163 112 | 1 808 577 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 103 | 20 968 | 248 162 |
@@ -55,7 +55,7 @@
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `CONTEXT.md` | 1 302 | 40 648 |
 | `frontend/src/pages/ComparePage.jsx` | 3 277 | 35 921 |
-| `docs/design-system.md` | 429 | 32 838 |
+| `docs/design-system.md` | 430 | 33 164 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `docs/data-contracts.md` | 737 | 32 299 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 080 |

@@ -1,20 +1,14 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "04a3edf331a12960935ceadecb30d25b353bcbe5",
+  "baseline_commit": "58a82b4b85fd6b0d8cee70e6605a4b617671c07a",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/javascript-symbols.json",
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/dead-code-report.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md"
+    "docs/indicator-index.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1605,7 +1599,7 @@
     {"path": "docs/enterprise_resilience.md", "kind": "document", "bytes": 37066, "lines": 155, "sha256": "009b2c4681081ac3b40f0d4169c6eaa3932d95a9f7163e83a29ddb5d1ad1938f", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indexnow-sitemap-backfill-plan.md", "kind": "document", "bytes": 15833, "lines": 204, "sha256": "18fb9f7b8891299a5a4acebf9770af9ec82d6c8fa60e4fd62743c757c7f93339", "symlink": false, "nodes": 16, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
-    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 2899006, "lines": 104854, "sha256": "8d29fb0ceeb62b4fcde4068bc091dc3b4c4294405aaa012d8ca2e0d1d618a4f7", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 2899006, "lines": 104854, "sha256": "4f58c243f2d82cfd2e5a0db0e6d35c0db4460b25aa2604544d81a35a7df7f881", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 98628, "lines": 1086, "sha256": "e72c14b301576e5109cd9724a3d9bd161556e6f6128dcd23f70a311f7f2dfdcd", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 33563, "lines": 98, "sha256": "5ca0d1a3349bdf1f9cffcffccb867d45f25ba5cbfba6c28fefff130ca5a6ebbb", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},

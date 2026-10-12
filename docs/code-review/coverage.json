@@ -11541,7 +11541,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "8d29fb0ceeb62b4fcde4068bc091dc3b4c4294405aaa012d8ca2e0d1d618a4f7",
+      "sha256": "4f58c243f2d82cfd2e5a0db0e6d35c0db4460b25aa2604544d81a35a7df7f881",
       "bytes": 2899006,
       "lines": 104854,
       "code": false,
@@ -26803,16 +26803,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "006be1a1e89b10e2cc4b8f6d0b3c1ac7d87f3a2fb8bcdb2b99c292c7b1eda93f",
+  "ledger_sha256": "7c7e3e93d61b2da909e580a57d364fc803a71479b3ef5a32cdf91df17079dd7f",
   "javascript_inventory_sha256": "0478ff098669be4cb9122cca7324b75eb2a98533bca3ec29a9144c6f86d3ecaa",
-  "baseline_commit": "04a3edf331a12960935ceadecb30d25b353bcbe5",
+  "baseline_commit": "58a82b4b85fd6b0d8cee70e6605a4b617671c07a",
   "branch": "fix/mobile-rows",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/dead-code-report.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md"
+    "docs/indicator-index.json"
   ]
 }
