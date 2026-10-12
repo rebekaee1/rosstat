@@ -1038,6 +1038,9 @@ export default {
   'world.chart.forecastHighFreq':
     'Forecast is not published for daily and weekly series.',
   'world.chart.forecastPassed': 'The forecast was tested on past data: it proved more accurate than simply repeating the past.',
+  'world.chart.forecastOfficial': 'Official forecast of the International Monetary Fund (World Economic Outlook, data as of {date}). We show it as published and do not recalculate it.',
+  'world.forecast.officialTitle': 'Where this forecast comes from',
+  'world.forecast.officialBody': 'This is the official forecast of the International Monetary Fund from its World Economic Outlook (data as of {date}). We did not build it ourselves and did not test it on past data: it is shown as the Fund published it, next to the history of the same release.',
   'world.chart.forecastAdvisory': 'The forecast was not more accurate than simply repeating the past, so read it as a rough trend.',
   'world.chart.forecastDerived':
     'The forecast at this frequency is calculated from the source-series forecast for complete calendar periods.',

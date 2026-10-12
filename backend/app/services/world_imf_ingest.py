@@ -23,6 +23,7 @@ from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.core.cache import bump_namespaces
 from app.database import async_session
 from app.models import (
@@ -39,6 +40,7 @@ from app.services.imf_weo_adapter import (
     PROVIDER,
     PUBLIC_SOURCE_NAME,
     PUBLIC_SOURCE_URL,
+    WEO_CIRCLE12_CODES,
     WEO_SERIES,
     ImfWeoAdapter,
     make_weo_series_ref,
@@ -47,6 +49,10 @@ from app.services.imf_weo_adapter import (
     world_indicator_code,
 )
 from app.services.upsert import bulk_upsert, prune_indicator_dates_not_in
+from app.services.world_official_forecast import (
+    check_official_projection,
+    store_official_forecast,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -70,9 +76,9 @@ async def _upsert_world_series(
     country: WorldCountry,
     weo_code: str,
     points: list[tuple[date, float]],
-) -> tuple[int, int]:
+) -> tuple[int, int, int | None]:
     if not points:
-        return 0, 0
+        return 0, 0, None
     meta = WEO_SERIES[weo_code]
     ref = make_weo_series_ref(country.code, weo_code)
     code = world_indicator_code(country.code, weo_code)
@@ -164,7 +170,7 @@ async def _upsert_world_series(
         target.points_count = int(count or 0)
         target.history_start = history_start
         target.history_end = history_end
-    return 1, touched
+    return 1, touched, indicator_id
 
 
 async def _upsert_russia_catalog(
@@ -191,6 +197,43 @@ async def _upsert_russia_catalog(
     added, updated = await bulk_upsert(db, indicator.id, points)
     await prune_indicator_dates_not_in(db, indicator.id, points)
     return added + updated
+
+
+async def _sync_official_forecast(
+    db: AsyncSession,
+    *,
+    indicator_id: int,
+    weo_code: str,
+    history: list[tuple[date, float]],
+    projection,
+) -> str:
+    """Официальный прогноз МВФ для ряда: проверить согласованность и записать.
+
+    Не прошедшая проверка проекция не публикуется, а ранее записанный
+    официальный прогноз снимается (устаревший выпуск не должен висеть).
+    """
+    points = None
+    if projection is not None:
+        points, reason = check_official_projection(
+            weo_code=weo_code, history=history, projection=projection,
+        )
+        if points is None:
+            logger.info(
+                "IMF WEO projection rejected indicator_id=%s %s: %s",
+                indicator_id, weo_code, reason,
+            )
+    outcome = await store_official_forecast(
+        db,
+        indicator_id=indicator_id,
+        weo_code=weo_code,
+        points=points,
+        vintage=projection.vintage if projection is not None else None,
+        history_end=history[-1][0] if history else None,
+        points_count=len(history),
+    )
+    if projection is not None and points is None:
+        return "rejected" if outcome == "none" else outcome
+    return outcome
 
 
 async def run_imf_weo_ingest(
@@ -245,11 +288,18 @@ async def run_imf_weo_ingest(
         adapter = ImfWeoAdapter(country_codes=iso2_targets)
         indicators = 0
         points_touched = 0
+        official = {"created": 0, "unchanged": 0, "withdrawn": 0, "none": 0, "rejected": 0}
         russia_points = 0
         error: str | None = None
         try:
+            official_enabled = bool(settings.world_imf_official_forecast_enabled)
             for weo_code in WEO_SERIES:
-                parsed = await asyncio.to_thread(adapter.fetch_weo_code, weo_code, iso3_list)
+                if weo_code in WEO_CIRCLE12_CODES and not official_enabled:
+                    continue
+                parsed, projections = await asyncio.to_thread(
+                    adapter.fetch_weo_bundle, weo_code, iso3_list,
+                )
+                projection_by_iso3 = {item.country_iso3: item for item in projections}
                 by_iso3: dict[str, list[tuple[date, float]]] = {}
                 for item in parsed:
                     by_iso3.setdefault(item.country_iso3, []).append((item.period, item.value))
@@ -258,11 +308,20 @@ async def run_imf_weo_ingest(
                 for iso2, country in countries.items():
                     iso3 = weo_iso3_for(iso2)
                     series = by_iso3.get(iso3 or "", [])
-                    n_ind, n_pts = await _upsert_world_series(
+                    n_ind, n_pts, indicator_id = await _upsert_world_series(
                         db, country=country, weo_code=weo_code, points=series
                     )
                     indicators += n_ind
                     points_touched += n_pts
+                    if indicator_id is not None and official_enabled:
+                        outcome = await _sync_official_forecast(
+                            db,
+                            indicator_id=indicator_id,
+                            weo_code=weo_code,
+                            history=series,
+                            projection=projection_by_iso3.get(iso3 or ""),
+                        )
+                        official[outcome] = official.get(outcome, 0) + 1
                 if include_ru:
                     russia_points += await _upsert_russia_catalog(
                         db,
@@ -320,8 +379,10 @@ async def run_imf_weo_ingest(
                     await err_db.commit()
             raise
 
-    await bump_namespaces("world", "world-catalog")
+    await bump_namespaces("world", "world-catalog", "ssr-world")
+    logger.info("IMF WEO official forecasts: %s", official)
     return {
+        "official_forecasts": official,
         "run_id": run_id,
         "countries": len(countries) + (1 if include_ru else 0),
         "indicators": indicators,

@@ -43,6 +43,10 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Train only policy- and source-ready rows; exclude pending-source skips.",
     )
     parser.add_argument(
+        "--max-seconds", type=float, default=None,
+        help="Потолок времени цикла обучения: по истечении остановиться, остаток в очереди.",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print plan (total / unchanged / to_train and first 20 rows), do not train.",
@@ -110,6 +114,7 @@ async def main() -> None:
             limit=args.limit,
             force=args.force,
             eligible_only=args.eligible_only,
+            max_seconds=args.max_seconds,
         )
         payload = summary.__dict__
     print(json.dumps(payload, ensure_ascii=False, sort_keys=True), flush=True)

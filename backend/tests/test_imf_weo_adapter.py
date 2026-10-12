@@ -10,7 +10,9 @@ from app.services.imf_weo_adapter import (
     WEO_GGXCNL_NGDP,
     WEO_GGXWDG_NGDP,
     WEO_LP,
+    WEO_BCA_NGDPD,
     WEO_LUR,
+    WEO_NGDP_RPCH,
     WEO_NGDPD,
     WEO_NGDPDPC,
     WEO_PCPIPCH,
@@ -103,6 +105,8 @@ def test_adapter_lists_only_requested_weo_countries():
         WEO_LP,
         WEO_LUR,
         WEO_PCPIPCH,
+        WEO_NGDP_RPCH,
+        WEO_BCA_NGDPD,
     }
     assert all(ref.provider == "imf" and ref.dataset_id == "WEO" for ref in refs)
     assert all(ref.frequency == "annual" for ref in refs)

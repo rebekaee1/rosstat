@@ -5,6 +5,7 @@ import math
 from dateutil.relativedelta import relativedelta
 
 from app.data.world_forecast_policy import forecast_eligibility_for
+from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
 from app.services.world_forecaster import (
     WORLD_FORECAST_METHOD_VERSION,
     is_percentage_unit,
@@ -69,8 +70,9 @@ def test_gate_rejects_constant_and_irregular_series():
     assert irregular.status == "failed"
     assert irregular.reason == "irregular_calendar"
 
-    # Даже одна дыра нарушает позиционную сезонность. Короткий хвост после
-    # пропуска не должен выглядеть как полный 72-месячный ряд.
+    # Одна пропущенная точка (как октябрь 2025 в данных США) заполняется
+    # интерполяцией: ряд не теряет историю, число заполненных точек записано,
+    # а в ошибки проверки заполненная точка не входит.
     full_dates = _dates(date(2018, 1, 1), 96, 1)
     one_gap = [*full_dates[:40], *full_dates[41:]]
     gapped = train_quality_gated_world_forecast(
@@ -81,7 +83,21 @@ def test_gate_rejects_constant_and_irregular_series():
         season=12,
         strategy="monthly_auto",
     )
-    assert gapped.reason == "recent_history_gap"
+    assert gapped.reason != "recent_history_gap"
+    assert (gapped.details or {}).get("imputed_points") == 1
+
+    # Дыра в пять месяцев не заполняется: история режется после неё, короткий
+    # хвост не выглядит как полный 72-месячный ряд.
+    long_gap = [*full_dates[:40], *full_dates[45:]]
+    cut = train_quality_gated_world_forecast(
+        long_gap,
+        [float(index) for index in range(91)],
+        frequency="monthly",
+        horizon=12,
+        season=12,
+        strategy="monthly_auto",
+    )
+    assert cut.reason == "recent_history_gap"
 
 
 def test_quarterly_auto_uses_shared_positive_and_signed_strategies():
@@ -171,10 +187,22 @@ def test_quality_fail_is_advisory_unless_strict(monkeypatch):
     failed = wf.train_quality_gated_world_forecast(
         dates, values,
         frequency="monthly", horizon=12, season=12,
-        strategy="monthly_auto", strict=True,
+        strategy="monthly_auto", strict=True, candidates=False,
     )
     assert failed.status == "failed"
     assert failed.result is None
+
+    # С дополнительными моделями тот же ряд публикуется только через них и
+    # под их именем: отравленная главная модель не пробивает гейт.
+    rescued = wf.train_quality_gated_world_forecast(
+        dates, values,
+        frequency="monthly", horizon=12, season=12,
+        strategy="monthly_auto", strict=True,
+    )
+    if rescued.status == "passed":
+        assert rescued.strategy.startswith("candidate:")
+        assert rescued.result is not None
+        assert all(point.value < 1e5 for point in rescued.result.points)
 
 
 def test_backtest_scale_uses_only_training_prefix(monkeypatch):
@@ -359,7 +387,8 @@ def test_world_forecast_priority_order_puts_us_and_concepts_first():
     )
 
     default = Settings.model_fields["world_forecast_priority_countries"].default
-    assert default.startswith("united-states,germany")
+    assert default.startswith("united-states,china,japan,germany")
+    assert "turkey" in default.split(",")[:10]
     assert "south-korea" in default
     assert "korea" not in {part.strip() for part in default.split(",")}
 
@@ -408,8 +437,12 @@ def test_world_forecast_priority_order_puts_us_and_concepts_first():
     assert de == ["de-une", "de-abc"]
 
 
-def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
+def test_world_forecast_unchanged_skip_by_fingerprint_and_force(monkeypatch):
     from datetime import datetime
+
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", True)
 
     from app.services.world_forecast_pipeline import (
         forecast_fingerprint,
@@ -420,8 +453,37 @@ def test_world_forecast_unchanged_skip_by_fingerprint_and_force():
     history_end = date(2026, 8, 1)
     latest = SimpleNamespace(
         created_at=datetime(2026, 9, 19, 8, 0, 0),
+        model_params={
+            **forecast_fingerprint(history_end=history_end, points_count=120),
+            "candidate_set": WORLD_CANDIDATE_SET_VERSION,
+        },
+        gate_status="failed",
+    )
+    # Отказ, посчитанный без текущего набора дополнительных моделей, возвращается
+    # в очередь, опубликованный прогноз с тем же отпечатком остаётся.
+    stale_failed = SimpleNamespace(
+        created_at=latest.created_at,
         model_params=forecast_fingerprint(history_end=history_end, points_count=120),
         gate_status="failed",
+    )
+    assert not forecast_is_unchanged(
+        stale_failed, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", False)
+    assert forecast_is_unchanged(  # набор выключен: прежнее поведение
+        stale_failed, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
+    )
+    monkeypatch.setattr(settings, "world_forecast_candidates_enabled", True)
+    stale_passed = SimpleNamespace(
+        created_at=latest.created_at,
+        model_params=forecast_fingerprint(history_end=history_end, points_count=120),
+        gate_status="passed",
+    )
+    assert forecast_is_unchanged(
+        stale_passed, history_end=history_end, points_count=120,
+        now=now, max_age_days=30, force=False,
     )
     assert forecast_is_unchanged(
         latest, history_end=history_end, points_count=120,
