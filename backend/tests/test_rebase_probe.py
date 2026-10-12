@@ -16,6 +16,29 @@ def script():
     return mod
 
 
+def _multi_period_payload(obs: dict[int, float]) -> dict:
+    """unit (I15, I21) x time (2023, 2024, 2025): ключ = unit * 3 + time."""
+    return {
+        "id": ["unit", "geo", "time"], "size": [2, 1, 3],
+        "dimension": {
+            "unit": {"category": {"index": {"I15": 0, "I21": 1}}},
+            "geo": {"category": {"index": {"DE": 0}}},
+            "time": {"category": {"index": {"2023": 0, "2024": 1, "2025": 2}}},
+        },
+        "value": {str(k): v for k, v in obs.items()},
+    }
+
+
+def test_live_base_is_judged_by_the_latest_period_not_by_the_whole_window(script):
+    # I15 кончилась в 2023 (ключ 0), I21 идёт до 2025 (ключи 3, 4, 5): окно из трёх лет не должно делать I15 живой
+    payload = _multi_period_payload({0: 99.0, 3: 100.0, 4: 101.0, 5: 102.0})
+    assert script.live_units_at_latest_period(payload) == {"I21"}
+    # у обеих баз есть данные в последнем периоде: живы обе (переход базы не закончен)
+    both = _multi_period_payload({2: 99.0, 5: 102.0})
+    assert script.live_units_at_latest_period(both) == {"I15", "I21"}
+    assert script.live_units_at_latest_period(_multi_period_payload({})) == set()
+
+
 def _payload(geo: str, with_obs: bool) -> dict:
     """Минимальный JSON-stat: измерения unit (I15, I21) и geo, одно наблюдение у I21 или ни одного."""
     return {
@@ -45,6 +68,7 @@ def test_probe_moves_to_next_country_when_big_three_have_no_observations(script,
 
     def fake_get(url, timeout):
         geo = url.split("geo=")[1].split("&")[0]
+        assert "lastTimePeriod=3" in url
         calls.append((geo, timeout))
         return _Resp(_payload(geo, with_obs=(geo == "ES")))
 
@@ -53,6 +77,7 @@ def test_probe_moves_to_next_country_when_big_three_have_no_observations(script,
     assert [g for g, _ in calls] == ["DE", "FR", "IT", "ES"]
     assert live == {"I21"} and "I15" in members
     assert all(t == script.PROBE_TIMEOUT_S == 25 for _, t in calls)
+    assert script.PROBE_PERIODS == 3
 
 
 def test_probe_says_no_observations_when_nobody_has_any_and_gives_up_when_source_is_silent(script, monkeypatch):

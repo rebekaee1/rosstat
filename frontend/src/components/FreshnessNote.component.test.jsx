@@ -28,12 +28,12 @@ describe('FreshnessNote (круг 13, D2)', () => {
     // Первая фраза — причина; предложение про ближайший показатель из общей строки не повторяется рядом со ссылкой.
     expect(screen.getByTestId('freshness-note-lead').textContent).toBe(STALE.lead);
     expect(block.textContent).not.toContain('Ближайший актуальный показатель:');
-    expect(block.textContent.replace(/ /g, ' ')).toContain('Источник обновлял набор: 1 октября 2026.');
+    expect(block.textContent.replace(/\u00a0/g, ' ')).toContain('Источник обновлял набор: 1 октября 2026.');
     const link = screen.getByTestId('freshness-note-link');
     expect(link.getAttribute('href')).toBe('/bulgaria/indicator/bg-services');
-    expect(link.textContent.replace(/ /g, ' ')).toContain('Производство в сфере услуг, индекс (2021 = 100)');
+    expect(link.textContent.replace(/\u00a0/g, ' ')).toContain('Производство в сфере услуг, индекс (2021 = 100)');
     // Дата ближайшего показателя говорит на его частоте (квартал), а не частоте устаревшего ряда.
-    expect(link.textContent.replace(/ /g, ' ')).toContain('данные до II кв. 2026');
+    expect(link.textContent.replace(/\u00a0/g, ' ')).toContain('данные до II кв. 2026');
   });
 
   it('старый ответ сервера без поля lead: из сообщения убирается предложение про ближайший показатель', () => {
