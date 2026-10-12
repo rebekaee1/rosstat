@@ -1730,6 +1730,9 @@ class ScrapeGuardMiddleware(BaseHTTPMiddleware):
 # Caddy → nginx (frontend/nginx.conf: gzip on, gzip_proxied any, html/json/
 # xml/js/css/csv/calendar). Middleware жал в Python и PNG OG-картинок (уже
 # сжатый формат) — пустая трата CPU единственного ядра backend.
+from app.services.og_webp import OgWebpMiddleware
+
+app.add_middleware(OgWebpMiddleware)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(HttpStatusCounterMiddleware)
 app.add_middleware(ScrapeGuardMiddleware)

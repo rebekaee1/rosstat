@@ -148,7 +148,7 @@ def test_document_preview_urls_are_body_only(locale, preview, include_app, monke
     suffix = f"&preview_locale={locale}" if preview else ""
     assert soup.select_one("#cta")["href"] == f"/world/rating/gdp-usd?view=interactive&year=2024{suffix}#chart"
     assert soup.select_one(".seo-chart img")["src"] == "/og/russia/cpi/2025.png" + (f"?preview_locale={locale}" if preview else "")
-    assert soup.select_one(".seo-chart source")["srcset"] == f"/og/russia/cpi/2025.png?portrait=1{suffix}"
+    assert soup.select_one(".seo-chart source:not([type])")["srcset"] == f"/og/russia/cpi/2025.png?portrait=1{suffix}"
     assert "preview_locale" not in str(soup.head)
     assert json.loads(soup.select_one('script[type="application/ld+json"]').string) == provenance
     assert soup.select_one('link[rel="canonical"]')["href"].endswith("/russia/indicator/cpi/2025")

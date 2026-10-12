@@ -86,12 +86,12 @@ def test_legacy_figure_upgrade_preserves_period_cta_fallback_and_is_idempotent()
     first=_responsive_chart_images(html)
     soup=BeautifulSoup(_responsive_chart_images(first),"html.parser")
     assert len(soup.select("picture"))==1
-    assert soup.source["srcset"]=="/og/world/rating/population/2020.png?portrait=1"
+    assert soup.select_one("source:not([type])")["srcset"]=="/og/world/rating/population/2020.png?portrait=1"
     assert soup.img["src"]=="/og/world/rating/population/2020.png"
     assert soup.img["alt"]=="Population 2020"
     assert soup.a["href"].endswith("?year=2020#chart")
     assert soup.figure["data-portrait"]=="true"
-    assert soup.img["fetchpriority"]=="high"
+    assert soup.img.get("fetchpriority") is None
 
 
 def test_country_endpoint_keeps_observation_date_and_actual_source(auth_env,monkeypatch):
