@@ -2,17 +2,17 @@
 
 Источник: Babel AST текущих tracked frontend/MCP файлов. Генератор не исполняет приложение и не присваивает reviewed.
 
-- imports: 4348
+- imports: 4374
 - routes: 94
-- functions: 14175
-- hooks: 2635
+- functions: 14243
+- hooks: 2645
 - http: 113
-- storage: 215
-- events: 440
-- jsx_handlers: 1169
-- registries: 667
+- storage: 216
+- events: 445
+- jsx_handlers: 1170
+- registries: 669
 - mcp_tools: 7
-- files: 831
+- files: 836
 - parse_errors: 0
 
 Полные call sites, выражения, anonymous callbacks, owner и строки — [JSON](client-mechanism-inventory.json). Смысл, loading/empty/error/access и исключения — [досье клиента](code-review/client-mechanism-acceptance-2026-09-30.md) и рецензии соответствующего файла.
@@ -21,88 +21,88 @@
 
 | Источник | path / index | element |
 |---|---|---|
-| [frontend/src/App.jsx:218](../frontend/src/App.jsx#L218) | "/embed/chart/:code" | {<EmbedChart />} |
-| [frontend/src/App.jsx:219](../frontend/src/App.jsx#L219) | "/embed/card/:code" | {<EmbedCard />} |
-| [frontend/src/App.jsx:220](../frontend/src/App.jsx#L220) | "/embed/table/:code" | {<EmbedTable />} |
-| [frontend/src/App.jsx:221](../frontend/src/App.jsx#L221) | "/embed/ticker" | {<EmbedTicker />} |
-| [frontend/src/App.jsx:222](../frontend/src/App.jsx#L222) | "/embed/compare" | {<EmbedCompare />} |
-| [frontend/src/App.jsx:272](../frontend/src/App.jsx#L272) | "/" | {<Dashboard />} |
-| [frontend/src/App.jsx:273](../frontend/src/App.jsx#L273) | "/about" | {<About />} |
-| [frontend/src/App.jsx:274](../frontend/src/App.jsx#L274) | "/methodology" | {<Methodology />} |
-| [frontend/src/App.jsx:275](../frontend/src/App.jsx#L275) | "/privacy" | {<Privacy />} |
-| [frontend/src/App.jsx:276](../frontend/src/App.jsx#L276) | "/terms" | {<Terms />} |
-| [frontend/src/App.jsx:277](../frontend/src/App.jsx#L277) | "/compare" | {<ComparePage renderSave={renderCompareSave} />} |
-| [frontend/src/App.jsx:278](../frontend/src/App.jsx#L278) | "/forecasts" | {<ForecastsPage />} |
-| [frontend/src/App.jsx:279](../frontend/src/App.jsx#L279) | "/widgets" | {<EmbedBuilder />} |
-| [frontend/src/App.jsx:280](../frontend/src/App.jsx#L280) | "/calculator" | {<CalculatorPage />} |
-| [frontend/src/App.jsx:281](../frontend/src/App.jsx#L281) | "/calculator/mortgage" | {<MortgageCalculatorPage />} |
-| [frontend/src/App.jsx:282](../frontend/src/App.jsx#L282) | "/calculator/compound" | {<CompoundCalculatorPage />} |
-| [frontend/src/App.jsx:283](../frontend/src/App.jsx#L283) | "/login" | {<Login />} |
-| [frontend/src/App.jsx:284](../frontend/src/App.jsx#L284) | "/register" | {<Register />} |
-| [frontend/src/App.jsx:285](../frontend/src/App.jsx#L285) | "/account" | {<Account />} |
-| [frontend/src/App.jsx:286](../frontend/src/App.jsx#L286) | "/admin/bi" | {<AdminBI />} |
-| [frontend/src/App.jsx:289](../frontend/src/App.jsx#L289) | "/world/rating" | {<WorldRatingPage />} |
-| [frontend/src/App.jsx:290](../frontend/src/App.jsx#L290) | "/world/rating/:conceptSlug/:year?" | {<WorldRatingPage />} |
-| [frontend/src/App.jsx:292](../frontend/src/App.jsx#L292) | "/currencies" | {<CategoryPage fixedSlug="currencies" />} |
-| [frontend/src/App.jsx:293](../frontend/src/App.jsx#L293) | "/currencies/indicator/:code" | {<IndicatorDetailKeyed />} |
-| [frontend/src/App.jsx:294](../frontend/src/App.jsx#L294) | "/currencies/indicator/:code/:year" | {<IndicatorDetailKeyed />} |
-| [frontend/src/App.jsx:297](../frontend/src/App.jsx#L297) | "/russia" | {<RussiaHome />} |
-| [frontend/src/App.jsx:298](../frontend/src/App.jsx#L298) | "/russia/category" | {<CategoriesHub />} |
-| [frontend/src/App.jsx:299](../frontend/src/App.jsx#L299) | "/russia/category/:slug" | {<CategoryPage />} |
-| [frontend/src/App.jsx:300](../frontend/src/App.jsx#L300) | "/russia/indicator/:code" | {<IndicatorDetailKeyed />} |
-| [frontend/src/App.jsx:301](../frontend/src/App.jsx#L301) | "/russia/indicator/:code/:year" | {<IndicatorDetailKeyed />} |
-| [frontend/src/App.jsx:302](../frontend/src/App.jsx#L302) | "/russia/today" | {<TodayHub />} |
-| [frontend/src/App.jsx:303](../frontend/src/App.jsx#L303) | "/russia/today/:code" | {<TodayIndicatorPage />} |
-| [frontend/src/App.jsx:304](../frontend/src/App.jsx#L304) | "/russia/calendar" | {<CalendarPage />} |
-| [frontend/src/App.jsx:305](../frontend/src/App.jsx#L305) | "/russia/calendar/:year/:month" | {<CalendarMonthPage />} |
-| [frontend/src/App.jsx:306](../frontend/src/App.jsx#L306) | "/russia/demographics" | {<DemographicsPage />} |
-| [frontend/src/App.jsx:307](../frontend/src/App.jsx#L307) | "/russia/region/map/:code" | {<RegionsHome />} |
-| [frontend/src/App.jsx:308](../frontend/src/App.jsx#L308) | "/russia/region" | {<RegionsHome />} |
-| [frontend/src/App.jsx:309](../frontend/src/App.jsx#L309) | "/russia/region/:slug" | {<RegionProfile />} |
-| [frontend/src/App.jsx:310](../frontend/src/App.jsx#L310) | "/russia/region/:slug/:code" | {<RegionIndicatorPage />} |
-| [frontend/src/App.jsx:311](../frontend/src/App.jsx#L311) | "/russia/region-rating" | {<RegionRatingsHub />} |
-| [frontend/src/App.jsx:312](../frontend/src/App.jsx#L312) | "/russia/region-rating/:code" | {<RegionRatingPage />} |
-| [frontend/src/App.jsx:313](../frontend/src/App.jsx#L313) | "/russia/region-vs/:pair" | {<RegionComparePage />} |
-| [frontend/src/App.jsx:316](../frontend/src/App.jsx#L316) | "/:countrySlug/regions" | {<WorldRegionsHome />} |
-| [frontend/src/App.jsx:317](../frontend/src/App.jsx#L317) | "/:countrySlug/region/map/:code" | {<WorldRegionsHome />} |
-| [frontend/src/App.jsx:318](../frontend/src/App.jsx#L318) | "/:countrySlug/region/:slug/:code" | {<WorldRegionIndicatorPage />} |
-| [frontend/src/App.jsx:319](../frontend/src/App.jsx#L319) | "/:countrySlug/region/:slug" | {<WorldRegionProfile />} |
-| [frontend/src/App.jsx:322](../frontend/src/App.jsx#L322) | "/:countrySlug/indicator/:code/:year" | {<WorldIndicatorRoute />} |
-| [frontend/src/App.jsx:323](../frontend/src/App.jsx#L323) | "/:countrySlug/indicator/:code" | {<WorldIndicatorRoute />} |
-| [frontend/src/App.jsx:324](../frontend/src/App.jsx#L324) | "/:countrySlug/category/:slug" | {<NotFound />} |
-| [frontend/src/App.jsx:325](../frontend/src/App.jsx#L325) | "/:countrySlug" | {<WorldCountryRoute />} |
-| [frontend/src/App.jsx:328](../frontend/src/App.jsx#L328) | "/category/:slug" | {<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} |
-| [frontend/src/App.jsx:329](../frontend/src/App.jsx#L329) | "/indicator/:code/:year" | {<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />} |
-| [frontend/src/App.jsx:330](../frontend/src/App.jsx#L330) | "/indicator/:code" | {<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} |
-| [frontend/src/App.jsx:332](../frontend/src/App.jsx#L332) | "/rankings" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
-| [frontend/src/App.jsx:333](../frontend/src/App.jsx#L333) | "/ranking" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
-| [frontend/src/App.jsx:334](../frontend/src/App.jsx#L334) | "/rankings/gdp" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
-| [frontend/src/App.jsx:335](../frontend/src/App.jsx#L335) | "/ranking/gdp" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
-| [frontend/src/App.jsx:336](../frontend/src/App.jsx#L336) | "/calculators" | {<NavigateKeepSearch to="/calculator" />} |
-| [frontend/src/App.jsx:337](../frontend/src/App.jsx#L337) | "/calculators/*" | {<CalculatorsAlias />} |
-| [frontend/src/App.jsx:338](../frontend/src/App.jsx#L338) | "/today" | {<NavigateKeepSearch to={todayPath()} />} |
-| [frontend/src/App.jsx:339](../frontend/src/App.jsx#L339) | "/today/:code" | {<RedirectTo build={({ code }) => todayPath(code)} />} |
-| [frontend/src/App.jsx:340](../frontend/src/App.jsx#L340) | "/calendar" | {<NavigateKeepSearch to={calendarPath()} />} |
-| [frontend/src/App.jsx:341](../frontend/src/App.jsx#L341) | "/calendar/:year/:month" | {<RedirectTo build={({ year, month }) => calendarPath(year, month)} />} |
-| [frontend/src/App.jsx:342](../frontend/src/App.jsx#L342) | "/demographics" | {<NavigateKeepSearch to={demographicsPath()} />} |
-| [frontend/src/App.jsx:343](../frontend/src/App.jsx#L343) | "/regions" | {<NavigateKeepSearch to={regionHubPath()} />} |
-| [frontend/src/App.jsx:344](../frontend/src/App.jsx#L344) | "/russia/regions" | {<NavigateKeepSearch to={regionHubPath()} />} |
-| [frontend/src/App.jsx:345](../frontend/src/App.jsx#L345) | "/countries" | {<CountriesToHome />} |
-| [frontend/src/App.jsx:346](../frontend/src/App.jsx#L346) | "/countries/:slug" | {<RedirectTo build={({ slug }) => countryPath(slug)} />} |
-| [frontend/src/App.jsx:347](../frontend/src/App.jsx#L347) | "/regions/map/:code" | {<RedirectTo build={({ code }) => regionMapPath(code)} />} |
-| [frontend/src/App.jsx:348](../frontend/src/App.jsx#L348) | "/region/:slug" | {<RedirectTo build={({ slug }) => regionPath(slug)} />} |
-| [frontend/src/App.jsx:349](../frontend/src/App.jsx#L349) | "/region/:slug/:code" | {<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} |
-| [frontend/src/App.jsx:350](../frontend/src/App.jsx#L350) | "/region-rating/:code" | {<RedirectTo build={({ code }) => regionRatingPath(code)} />} |
-| [frontend/src/App.jsx:351](../frontend/src/App.jsx#L351) | "/region-vs/:pair" | {<RedirectTo build={({ pair }) => {
+| [frontend/src/App.jsx:219](../frontend/src/App.jsx#L219) | "/embed/chart/:code" | {<EmbedChart />} |
+| [frontend/src/App.jsx:220](../frontend/src/App.jsx#L220) | "/embed/card/:code" | {<EmbedCard />} |
+| [frontend/src/App.jsx:221](../frontend/src/App.jsx#L221) | "/embed/table/:code" | {<EmbedTable />} |
+| [frontend/src/App.jsx:222](../frontend/src/App.jsx#L222) | "/embed/ticker" | {<EmbedTicker />} |
+| [frontend/src/App.jsx:223](../frontend/src/App.jsx#L223) | "/embed/compare" | {<EmbedCompare />} |
+| [frontend/src/App.jsx:275](../frontend/src/App.jsx#L275) | "/" | {<Dashboard />} |
+| [frontend/src/App.jsx:276](../frontend/src/App.jsx#L276) | "/about" | {<About />} |
+| [frontend/src/App.jsx:277](../frontend/src/App.jsx#L277) | "/methodology" | {<Methodology />} |
+| [frontend/src/App.jsx:278](../frontend/src/App.jsx#L278) | "/privacy" | {<Privacy />} |
+| [frontend/src/App.jsx:279](../frontend/src/App.jsx#L279) | "/terms" | {<Terms />} |
+| [frontend/src/App.jsx:280](../frontend/src/App.jsx#L280) | "/compare" | {<ComparePage renderSave={renderCompareSave} />} |
+| [frontend/src/App.jsx:281](../frontend/src/App.jsx#L281) | "/forecasts" | {<ForecastsPage />} |
+| [frontend/src/App.jsx:282](../frontend/src/App.jsx#L282) | "/widgets" | {<EmbedBuilder />} |
+| [frontend/src/App.jsx:283](../frontend/src/App.jsx#L283) | "/calculator" | {<CalculatorPage />} |
+| [frontend/src/App.jsx:284](../frontend/src/App.jsx#L284) | "/calculator/mortgage" | {<MortgageCalculatorPage />} |
+| [frontend/src/App.jsx:285](../frontend/src/App.jsx#L285) | "/calculator/compound" | {<CompoundCalculatorPage />} |
+| [frontend/src/App.jsx:286](../frontend/src/App.jsx#L286) | "/login" | {<Login />} |
+| [frontend/src/App.jsx:287](../frontend/src/App.jsx#L287) | "/register" | {<Register />} |
+| [frontend/src/App.jsx:288](../frontend/src/App.jsx#L288) | "/account" | {<Account />} |
+| [frontend/src/App.jsx:289](../frontend/src/App.jsx#L289) | "/admin/bi" | {<AdminBI />} |
+| [frontend/src/App.jsx:292](../frontend/src/App.jsx#L292) | "/world/rating" | {<WorldRatingPage />} |
+| [frontend/src/App.jsx:293](../frontend/src/App.jsx#L293) | "/world/rating/:conceptSlug/:year?" | {<WorldRatingPage />} |
+| [frontend/src/App.jsx:295](../frontend/src/App.jsx#L295) | "/currencies" | {<CategoryPage fixedSlug="currencies" />} |
+| [frontend/src/App.jsx:296](../frontend/src/App.jsx#L296) | "/currencies/indicator/:code" | {<IndicatorDetailKeyed />} |
+| [frontend/src/App.jsx:297](../frontend/src/App.jsx#L297) | "/currencies/indicator/:code/:year" | {<IndicatorDetailKeyed />} |
+| [frontend/src/App.jsx:300](../frontend/src/App.jsx#L300) | "/russia" | {<RussiaHome />} |
+| [frontend/src/App.jsx:301](../frontend/src/App.jsx#L301) | "/russia/category" | {<CategoriesHub />} |
+| [frontend/src/App.jsx:302](../frontend/src/App.jsx#L302) | "/russia/category/:slug" | {<CategoryPage />} |
+| [frontend/src/App.jsx:303](../frontend/src/App.jsx#L303) | "/russia/indicator/:code" | {<IndicatorDetailKeyed />} |
+| [frontend/src/App.jsx:304](../frontend/src/App.jsx#L304) | "/russia/indicator/:code/:year" | {<IndicatorDetailKeyed />} |
+| [frontend/src/App.jsx:305](../frontend/src/App.jsx#L305) | "/russia/today" | {<TodayHub />} |
+| [frontend/src/App.jsx:306](../frontend/src/App.jsx#L306) | "/russia/today/:code" | {<TodayIndicatorPage />} |
+| [frontend/src/App.jsx:307](../frontend/src/App.jsx#L307) | "/russia/calendar" | {<CalendarPage />} |
+| [frontend/src/App.jsx:308](../frontend/src/App.jsx#L308) | "/russia/calendar/:year/:month" | {<CalendarMonthPage />} |
+| [frontend/src/App.jsx:309](../frontend/src/App.jsx#L309) | "/russia/demographics" | {<DemographicsPage />} |
+| [frontend/src/App.jsx:310](../frontend/src/App.jsx#L310) | "/russia/region/map/:code" | {<RegionsHome />} |
+| [frontend/src/App.jsx:311](../frontend/src/App.jsx#L311) | "/russia/region" | {<RegionsHome />} |
+| [frontend/src/App.jsx:312](../frontend/src/App.jsx#L312) | "/russia/region/:slug" | {<RegionProfile />} |
+| [frontend/src/App.jsx:313](../frontend/src/App.jsx#L313) | "/russia/region/:slug/:code" | {<RegionIndicatorPage />} |
+| [frontend/src/App.jsx:314](../frontend/src/App.jsx#L314) | "/russia/region-rating" | {<RegionRatingsHub />} |
+| [frontend/src/App.jsx:315](../frontend/src/App.jsx#L315) | "/russia/region-rating/:code" | {<RegionRatingPage />} |
+| [frontend/src/App.jsx:316](../frontend/src/App.jsx#L316) | "/russia/region-vs/:pair" | {<RegionComparePage />} |
+| [frontend/src/App.jsx:319](../frontend/src/App.jsx#L319) | "/:countrySlug/regions" | {<WorldRegionsHome />} |
+| [frontend/src/App.jsx:320](../frontend/src/App.jsx#L320) | "/:countrySlug/region/map/:code" | {<WorldRegionsHome />} |
+| [frontend/src/App.jsx:321](../frontend/src/App.jsx#L321) | "/:countrySlug/region/:slug/:code" | {<WorldRegionIndicatorPage />} |
+| [frontend/src/App.jsx:322](../frontend/src/App.jsx#L322) | "/:countrySlug/region/:slug" | {<WorldRegionProfile />} |
+| [frontend/src/App.jsx:325](../frontend/src/App.jsx#L325) | "/:countrySlug/indicator/:code/:year" | {<WorldIndicatorRoute />} |
+| [frontend/src/App.jsx:326](../frontend/src/App.jsx#L326) | "/:countrySlug/indicator/:code" | {<WorldIndicatorRoute />} |
+| [frontend/src/App.jsx:327](../frontend/src/App.jsx#L327) | "/:countrySlug/category/:slug" | {<NotFound />} |
+| [frontend/src/App.jsx:328](../frontend/src/App.jsx#L328) | "/:countrySlug" | {<WorldCountryRoute />} |
+| [frontend/src/App.jsx:331](../frontend/src/App.jsx#L331) | "/category/:slug" | {<RedirectTo build={({ slug }) => russiaCategoryPath(slug)} />} |
+| [frontend/src/App.jsx:332](../frontend/src/App.jsx#L332) | "/indicator/:code/:year" | {<RedirectTo build={({ code, year }) => russiaIndicatorYearPath(code, year)} />} |
+| [frontend/src/App.jsx:333](../frontend/src/App.jsx#L333) | "/indicator/:code" | {<RedirectTo build={({ code }) => russiaIndicatorPath(code)} />} |
+| [frontend/src/App.jsx:335](../frontend/src/App.jsx#L335) | "/rankings" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
+| [frontend/src/App.jsx:336](../frontend/src/App.jsx#L336) | "/ranking" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
+| [frontend/src/App.jsx:337](../frontend/src/App.jsx#L337) | "/rankings/gdp" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
+| [frontend/src/App.jsx:338](../frontend/src/App.jsx#L338) | "/ranking/gdp" | {<NavigateKeepSearch to={worldRatingPath(WORLD_RATING_DEFAULT_CONCEPT)} />} |
+| [frontend/src/App.jsx:339](../frontend/src/App.jsx#L339) | "/calculators" | {<NavigateKeepSearch to="/calculator" />} |
+| [frontend/src/App.jsx:340](../frontend/src/App.jsx#L340) | "/calculators/*" | {<CalculatorsAlias />} |
+| [frontend/src/App.jsx:341](../frontend/src/App.jsx#L341) | "/today" | {<NavigateKeepSearch to={todayPath()} />} |
+| [frontend/src/App.jsx:342](../frontend/src/App.jsx#L342) | "/today/:code" | {<RedirectTo build={({ code }) => todayPath(code)} />} |
+| [frontend/src/App.jsx:343](../frontend/src/App.jsx#L343) | "/calendar" | {<NavigateKeepSearch to={calendarPath()} />} |
+| [frontend/src/App.jsx:344](../frontend/src/App.jsx#L344) | "/calendar/:year/:month" | {<RedirectTo build={({ year, month }) => calendarPath(year, month)} />} |
+| [frontend/src/App.jsx:345](../frontend/src/App.jsx#L345) | "/demographics" | {<NavigateKeepSearch to={demographicsPath()} />} |
+| [frontend/src/App.jsx:346](../frontend/src/App.jsx#L346) | "/regions" | {<NavigateKeepSearch to={regionHubPath()} />} |
+| [frontend/src/App.jsx:347](../frontend/src/App.jsx#L347) | "/russia/regions" | {<NavigateKeepSearch to={regionHubPath()} />} |
+| [frontend/src/App.jsx:348](../frontend/src/App.jsx#L348) | "/countries" | {<CountriesToHome />} |
+| [frontend/src/App.jsx:349](../frontend/src/App.jsx#L349) | "/countries/:slug" | {<RedirectTo build={({ slug }) => countryPath(slug)} />} |
+| [frontend/src/App.jsx:350](../frontend/src/App.jsx#L350) | "/regions/map/:code" | {<RedirectTo build={({ code }) => regionMapPath(code)} />} |
+| [frontend/src/App.jsx:351](../frontend/src/App.jsx#L351) | "/region/:slug" | {<RedirectTo build={({ slug }) => regionPath(slug)} />} |
+| [frontend/src/App.jsx:352](../frontend/src/App.jsx#L352) | "/region/:slug/:code" | {<RedirectTo build={({ slug, code }) => regionIndicatorPath(slug, code)} />} |
+| [frontend/src/App.jsx:353](../frontend/src/App.jsx#L353) | "/region-rating/:code" | {<RedirectTo build={({ code }) => regionRatingPath(code)} />} |
+| [frontend/src/App.jsx:354](../frontend/src/App.jsx#L354) | "/region-vs/:pair" | {<RedirectTo build={({ pair }) => {
               const m = String(pair &#124;&#124; '').match(/^(.+)-vs-(.+)$/);
               return m ? regionVsPath(m[1], m[2]) : regionHubPath();
             }} />} |
-| [frontend/src/App.jsx:355](../frontend/src/App.jsx#L355) | "/world/:slug/:code" | {<RedirectTo build={({ slug, code }) => indicatorPath(slug, code)} />} |
-| [frontend/src/App.jsx:356](../frontend/src/App.jsx#L356) | "/world/:slug" | {<RedirectTo build={({ slug }) => {
+| [frontend/src/App.jsx:358](../frontend/src/App.jsx#L358) | "/world/:slug/:code" | {<RedirectTo build={({ slug, code }) => indicatorPath(slug, code)} />} |
+| [frontend/src/App.jsx:359](../frontend/src/App.jsx#L359) | "/world/:slug" | {<RedirectTo build={({ slug }) => {
               if (slug === 'rating') return '/world/rating';
               return countryPath(slug);
             }} />} |
-| [frontend/src/App.jsx:361](../frontend/src/App.jsx#L361) | "*" | {<NotFound />} |
+| [frontend/src/App.jsx:364](../frontend/src/App.jsx#L364) | "*" | {<NotFound />} |
 | [frontend/src/components/IndicatorPage.w3.component.test.jsx:218](../frontend/src/components/IndicatorPage.w3.component.test.jsx#L218) | "/russia/indicator/:code/:year?" | {(
                 <IndicatorDataTableSection
                   indicator={{ code: 'key-rate', frequency: 'daily', unit: '%', name: 'Ключевая ставка' }}
