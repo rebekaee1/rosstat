@@ -52,6 +52,8 @@ _NOT_COUNTRY_SHAPED = "JSON-stat missing geo/time dims"
 # наборы из оглавления он не берёт. Это не сбой набора (круг 12: 15 недельных и
 # дневных наборов demo_r_mw*, ert_*_d каждую ночь числились «ошибкой»).
 _NOT_IN_LOADER_SCOPE = "Selected 0 datasets"
+# Меньше записей в оглавлении — ответ неполный, исчезнувшими наборы не считаем.
+MIN_TRUSTED_TOC_ENTRIES = 5000
 MAX_DATASETS_PER_RUN = 200
 MAX_RUN_SECONDS = 3 * 3600
 
@@ -402,7 +404,8 @@ async def world_eurostat_ingest_job(
         run_id = run.id
 
     try:
-        changed = await select_changed_datasets(await fetch_toc())
+        toc = await fetch_toc()
+        changed = await select_changed_datasets(toc)
     except Exception as exc:  # noqa: BLE001
         async with async_session() as db:
             run = await db.get(WorldIngestRun, run_id)
@@ -420,6 +423,12 @@ async def world_eurostat_ingest_job(
             changed_label="Успешно обновлено наборов",
         )
         raise
+
+    # Набор, исчезнувший из оглавления, больше не обновится: публичные карточки остаются
+    # (история не теряется), но владелец узнаёт об этом сразу, а не по значку «Устарело».
+    vanished: list[tuple[str, str]] = []
+    if len(toc) > MIN_TRUSTED_TOC_ENTRIES:
+        vanished = [(ds, "") for ds in sorted(await _listed_dataset_ids() - set(toc))]
 
     total_changed = len(changed)
     if not shadow and changed:
@@ -601,6 +610,10 @@ async def world_eurostat_ingest_job(
                 f"Смена базы индекса: наборов {rebase_datasets}, карточек перенесено на месте "
                 f"{rebase_cards}, заменено новой {rebase_twins}. "
                 if rebase_datasets else ""
+            )
+            + (
+                format_dataset_list("Нет в оглавлении Евростата (карточки остаются, не обновятся)", vanished)
+                if vanished else ""
             )
             + (
                 format_dataset_list(

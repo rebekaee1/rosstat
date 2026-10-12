@@ -331,3 +331,81 @@ def test_world_summary_details_limit_fits_named_lists(monkeypatch):
         details="x" * 1800,
     ))
     assert "x" * 1800 in sent[0]
+
+
+def test_base_change_goes_to_dataset_journal_and_vanished_sets_are_named(monkeypatch):
+    """Смена базы индекса: пояснение в журнале набора и в сводке; исчезнувший из оглавления
+    набор назван, а не молчит до значка «Устарело» (круг 12)."""
+    recorded, alerts = [], []
+    verdict = (
+        'REBASE_VERDICT {"dataset_id": "sts_trtu_m", "from_unit": "I15", "to_unit": "I21", '
+        '"rebased": 640, "twins": 17, "note": "смена базы индекса I15→I21: перенесено на месте 640"}'
+    )
+
+    async def fake_toc():
+        return {f"ds{i}": None for i in range(ingest.MIN_TRUSTED_TOC_ENTRIES + 1)}
+
+    async def fake_select(_toc):
+        return [TocEntry("sts_trtu_m", date(2026, 10, 2), date(2026, 9, 26))]
+
+    async def fake_loader(entry, **_kwargs):
+        return True, "12:00 INFO OK\n" + verdict + "\n"
+
+    async def fake_record(**kwargs):
+        recorded.append(kwargs)
+
+    async def no_quarantine(_entry):
+        return False
+
+    async def listed():
+        return {"sts_trtu_m", "tin00180"}      # tin00180 в оглавлении нет
+
+    async def empty_set():
+        return set()
+
+    async def noop(*_a, **_k):
+        return None
+
+    async def rows(*_a, **_k):
+        return 7
+
+    class Run:
+        id = 7
+        datasets_selected = 0
+
+    class Session:
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *_):
+            pass
+        def add(self, obj):
+            pass
+        async def commit(self):
+            pass
+        async def refresh(self, obj):
+            obj.id = 7
+        async def get(self, *_):
+            return Run()
+
+    async def fake_alert(*args, **kwargs):
+        alerts.append(kwargs)
+
+    monkeypatch.setattr(ingest, "async_session", Session)
+    monkeypatch.setattr(ingest, "fetch_toc", fake_toc)
+    monkeypatch.setattr(ingest, "select_changed_datasets", fake_select)
+    monkeypatch.setattr(ingest, "_run_one_loader", fake_loader)
+    monkeypatch.setattr(ingest, "_record_dataset", fake_record)
+    monkeypatch.setattr(ingest, "_persisted_rows", rows)
+    monkeypatch.setattr(ingest, "_structure_change_requires_quarantine", no_quarantine)
+    monkeypatch.setattr(ingest, "_mark_changed_states_pending", noop)
+    monkeypatch.setattr(ingest, "_listed_dataset_ids", listed)
+    monkeypatch.setattr(ingest, "_failed_dataset_ids", empty_set)
+    monkeypatch.setattr("app.services.alerting.alert_world_ingest_summary", fake_alert)
+
+    result = asyncio.run(ingest.world_eurostat_ingest_job(shadow=False, include_imf=False))
+    assert result["rebase_cards"] == 640 and result["rebase_datasets"] == 1
+    assert recorded[0]["status"] == "ok"
+    assert recorded[0]["note"] == "смена базы индекса I15→I21: перенесено на месте 640"
+    details = alerts[0]["details"]
+    assert "Смена базы индекса: наборов 1, карточек перенесено на месте 640, заменено новой 17" in details
+    assert "Нет в оглавлении Евростата" in details and "tin00180" in details
