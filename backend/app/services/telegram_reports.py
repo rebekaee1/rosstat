@@ -407,7 +407,7 @@ def reliability_details(rel: dict | None) -> list[str]:
     errors = [item for item in (rel or {}).get(key, []) if item.get("count")]
     if errors:
         out.append("Частые ошибки скриптов: " + "; ".join(
-            f"{escape(scrub_text(str(item['error']))[:70])} ×{fmt_int(item['count'])}" for item in errors[:3]))
+            f"{escape(scrub_text(str(item['error']))[:70], quote=False)} ×{fmt_int(item['count'])}" for item in errors[:3]))
     files = ((rel or {}).get("js_files_failed_own") or {}).get("top") or {}
     if files:
         out.append("Не загрузились файлы: " + ", ".join(f"{escape(name)} ×{fmt_int(n)}" for name, n in list(files.items())[:3]))
@@ -415,7 +415,7 @@ def reliability_details(rel: dict | None) -> list[str]:
     if slow:
         out.append("Медленные страницы (LCP p75): " + "; ".join(
             f"{SURFACE_LABELS.get(c['page_group'], c['page_group'])}, {DEVICE_LABELS.get(c['device'], c['device'])} "
-            f"{fmt_seconds(c['lcp_p75_ms'])} ({fmt_int(c['lcp_samples'])} замеров)" for c in slow[:3]))
+            f"{fmt_seconds(c['lcp_p75_ms'])} (выборка {fmt_int(c['lcp_samples'])})" for c in slow[:3]))
     return out
 
 
@@ -698,17 +698,40 @@ def format_goals_reply(windows: dict[str, dict | None]) -> str:
 # Сборка данных
 # ---------------------------------------------------------------------------
 
+# Пул соединений аналитики мал (2 + 2 переполнения, ожидание 15 с), а отчёт запускает до 13 витрин.
+# Без очереди часть блоков молча падала бы на «QueuePool limit … timed out» (найдено на боевых объёмах,
+# круг 13): витрины идут по две, таймаут блока отсчитывается после получения очереди.
+_BLOCK_SLOTS = 2
+_slots: dict[int, asyncio.Semaphore] = {}
+
+
+def _slot() -> asyncio.Semaphore:
+    loop_id = id(asyncio.get_running_loop())
+    if loop_id not in _slots:
+        _slots.clear()
+        _slots[loop_id] = asyncio.Semaphore(_BLOCK_SLOTS)
+    return _slots[loop_id]
+
+
 async def _guarded(name: str, factory: Callable[[Any], Awaitable[Any]], timeout: float = BLOCK_TIMEOUT_S) -> Any:
-    """Одна витрина в своей сессии: сбой и таймаут дают None, отчёт продолжается."""
+    """Одна витрина в своей сессии: сбой и таймаут дают None, отчёт продолжается.
+    Если пул соединений занят другой задачей, один раз повторяем."""
     async def run():
         async with analytics_session() as db:
             return await factory(db)
 
-    try:
-        return await asyncio.wait_for(run(), timeout)
-    except Exception:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
-        logger.warning("Telegram report block %s failed", name, exc_info=True)
-        return None
+    async with _slot():
+        for attempt in (1, 2):
+            try:
+                return await asyncio.wait_for(run(), timeout)
+            except Exception as exc:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
+                pool_busy = type(exc).__name__ == "TimeoutError" and "QueuePool" in str(exc)
+                if pool_busy and attempt == 1:
+                    await asyncio.sleep(5)
+                    continue
+                logger.warning("Telegram report block %s failed", name, exc_info=True)
+                return None
+    return None
 
 
 def day_period(day: date) -> Period:

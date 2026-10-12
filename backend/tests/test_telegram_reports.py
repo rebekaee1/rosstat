@@ -356,7 +356,7 @@ def test_reliability_details_explain_the_causes():
     details = tr.reliability_details(rel)
     assert details[0].startswith("Частые ошибки скриптов: TypeError: x is undefined ×40")
     assert "@" not in details[0]
-    assert details[1] == "Медленные страницы (LCP p75): показатель России, телефон 3,1 с (12 замеров)"
+    assert details[1] == "Медленные страницы (LCP p75): показатель России, телефон 3,1 с (выборка 12)"
     assert tr.reliability_details(None) == [] and tr.reliability_details({"js_errors_own": []}) == []
 
 
@@ -382,3 +382,61 @@ def test_reliability_line_splits_code_errors_and_files_not_loaded():
     details = tr.reliability_details(rel)
     assert details[0] == "Частые ошибки скриптов: TypeError ×5"
     assert details[1] == "Не загрузились файлы: charts-AAA.js ×400, d3-BBB.js ×300"
+
+
+def test_report_blocks_queue_for_the_small_analytics_pool(monkeypatch):
+    """Блоков 13, а соединений 4: витрины идут не более чем по двое, иначе часть падала бы на пуле."""
+    running = {"now": 0, "max": 0}
+
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(tr, "analytics_session", lambda: FakeSession())
+
+    async def mart(db):
+        running["now"] += 1
+        running["max"] = max(running["max"], running["now"])
+        await asyncio.sleep(0.01)
+        running["now"] -= 1
+        return {"ok": True}
+
+    async def scenario():
+        return await asyncio.gather(*[tr._guarded(f"b{i}", mart) for i in range(13)])
+
+    results = asyncio.run(scenario())
+    assert all(r == {"ok": True} for r in results) and running["max"] == 2
+
+
+def test_guarded_returns_none_on_failure_and_retries_a_busy_pool(monkeypatch):
+    class FakeSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *a):
+            return False
+
+    monkeypatch.setattr(tr, "analytics_session", lambda: FakeSession())
+    calls = {"n": 0}
+
+    class TimeoutError(Exception):  # имя как у sqlalchemy.exc.TimeoutError
+        pass
+
+    async def busy_once(db):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise TimeoutError("QueuePool limit of size 2 overflow 2 reached")
+        return {"ok": 1}
+
+    async def broken(db):
+        raise ValueError("boom")
+
+    async def sleepless(_):
+        return None
+
+    monkeypatch.setattr(tr.asyncio, "sleep", lambda s: sleepless(s))
+    assert asyncio.run(tr._guarded("busy", busy_once)) == {"ok": 1} and calls["n"] == 2
+    assert asyncio.run(tr._guarded("broken", broken)) is None
