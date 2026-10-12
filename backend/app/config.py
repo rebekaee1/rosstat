@@ -140,6 +140,12 @@ class Settings(BaseSettings):
     # внутри окна ETL 19:30–22:30; при расширении охвата переносить на 23:10.
     europe_world_forecast_hour: int = 21
     europe_world_forecast_minute: int = 0
+    # Круг 13: время пакетов США (прежнее 05:20, при потолке 40 минут упирается в окно ETL 05:30–07:30) и «остального
+    # мира» (прежнее 04:50) тоже настраивается; по умолчанию прежнее.
+    us_world_forecast_hour: int = 5
+    us_world_forecast_minute: int = 20
+    rest_world_forecast_hour: int = 4
+    rest_world_forecast_minute: int = 50
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
     # Страны вне США и Европы (Китай, Япония, Индия, Бразилия, Канада,
