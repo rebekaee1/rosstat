@@ -9,6 +9,7 @@ from app.core.cache import get_redis, get_state_redis
 from app.database import get_db
 from app.models import Indicator, IndicatorData, FetchLog, Forecast
 from app.schemas import SystemStatus
+from app.api.analytics import _require_analytics_token
 from app.config import settings
 
 router = APIRouter(tags=["system"])
@@ -326,3 +327,23 @@ async def system_status(db: AsyncSession = Depends(get_db), _=Depends(_check_met
             "created_at": str(last_forecast.created_at),
         } if last_forecast else None,
     )
+
+
+@router.get("/health/freshness")
+async def health_freshness(
+    refresh: bool = Query(False, description="пересчитать сейчас, а не отдать сводку сторожа"),
+    _token: None = Depends(_require_analytics_token),
+    db: AsyncSession = Depends(get_db),
+):
+    """Сводка свежести публичных рядов (под токеном аналитических health-ручек).
+
+    Берёт последний расчёт сторожа из state-Redis; если его нет или запрошен
+    ``refresh=1`` — считает по базе (чистое чтение).
+    """
+    from app.services.freshness import collect_freshness, load_summary, store_summary
+
+    summary = None if refresh else await load_summary()
+    if summary is None:
+        summary = (await collect_freshness(db)).as_dict()
+        await store_summary(summary)
+    return {"watchdog_enabled": settings.freshness_watchdog_enabled, **summary}
