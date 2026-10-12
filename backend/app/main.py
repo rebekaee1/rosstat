@@ -1224,6 +1224,19 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
+        # Прогрев кэша SSR и API первого экрана: первый посетитель после истечения TTL ждёт 1–10 с (замер круга 12).
+        # Интервал короче TTL главной (300 с); сама задача ничего не делает, пока ssr_warm_enabled выключен.
+        from app.services.ssr_warm import ssr_warm_job
+        scheduler.add_job(
+            locked_job(ssr_warm_job, "ssr_warm", ttl_seconds=120),
+            trigger=IntervalTrigger(seconds=45),
+            id="ssr_warm",
+            name="SSR/API first-screen cache warm-up (every 45 s, flag ssr_warm_enabled)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+        )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без
