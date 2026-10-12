@@ -54,7 +54,7 @@ function useScrollMore(ref, deps) {
 
 export default function DataTable({
   data, title, dateFormat = 'full', unit = '%', valueDigits,
-  showUnitInValues = true, loading = false, exportMeta = null,
+  showUnitInValues = true, loading = false, exportMeta = null, pageSize = PAGE_SIZE,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -172,9 +172,9 @@ export default function DataTable({
     };
   }, [data, rate, valueDigits, locale]);
 
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const totalPages = Math.ceil(filtered.length / pageSize);
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
-  const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
+  const pageData = filtered.slice(visiblePage * pageSize, (visiblePage + 1) * pageSize);
   const tableUnit = unitSuffix(unit);
   // Ряд уже «изменение за год, %»: в строках стоит короткий «%», полная единица один раз в заголовке (круг 9, W10).
   const rowUnit = isPercentChangeUnit(unit) ? '%' : unit;

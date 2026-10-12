@@ -81,6 +81,21 @@
   }
 }
 
+/* Круг 13 (находка симулятора-2 №2): планшет 744–1023 (iPad mini, iPad вертикально, ноутбук при приближении ×1,5) — большое число стоит
+   отдельной стеклянной вставкой под названием (в одну колонку: справа не помещается), строка «США: 30,8 трлн $» на этих ширинах скрыта.
+   Телефон (до 743 px) и ноутбук (от 1024 px) не меняются. Звезда и колокольчик лежат в строке над названием, вставка идёт ниже и не задевает их. */
+@media (min-width: 744px) and (max-width: 1023px) {
+  .z4-hero[data-has-value='true'] .z4-hero__line { display: none; }
+  .z4-hero[data-has-value='true'] .z4-hero__aside {
+    display: block;
+    margin-top: 14px;
+    padding: 14px 20px 14px;
+    border-radius: 20px;
+    background: var(--fe-glass-l2, rgba(255, 255, 255, 0.55));
+    box-shadow: var(--fe-shadow-l2, 0 10px 26px -20px rgba(32, 42, 60, 0.32)), var(--fe-inset-glint, inset 0 1px 0 rgba(255, 255, 255, 0.85));
+  }
+}
+
 /* Главное число: золотой градиент, мини-график справа, изменение плашкой. */
 .z4-hv { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
 .z4-hv__label {
@@ -638,19 +653,17 @@
 /* Число индекса без слова «индекс» рядом с цифрой: пояснение тихой строкой под ним. */
 .z4-hv__basis { margin: 0; color: var(--color-text-tertiary); font-size: 12.5px; font-weight: 500; line-height: 1.3; }
 
-/* ===== Круг 12, зона UI2: С1 карточка прогноза не растягивается по высоте таблицы истории ================================= */
-/* Проверка 12.10 (ИПЦ, «Вклады физических лиц»): таблица истории 1137 px, список прогноза 12 строк, ниже в карточке пустое поле 330–570 px.
-   От 1024 px карточка прогноза занимает ровно свою высоту и, как «О показателе» на мировой странице (круг 11), липнет к верху окна,
-   пока читатель листает таблицу слева: пустого белого поля нет ни в карточке, ни рядом с ней на экране. Липнет сама карточка, а не
-   колонка: колонка тянется на высоту таблицы и держит карточку в своих пределах, так что внизу она не заезжает на «Методологию»
-   (липкий блок ограничен ближайшим родителем, а не ячейкой сетки). */
+/* ===== Круг 13, зона UI3: С1 карточка прогноза и таблица истории одной высоты, без пустого поля ===================================== */
+/* Круг 12 сделал карточку «по своей высоте» и липкой: рядом с таблицей на 20 строк оставалось пустое поле 330–570 px (проверка 12.10 на 1440
+   и 1920 его подтвердила). Теперь таблица рядом с прогнозом показывает страницу из 12 строк (IndicatorDataTableSection, pairedWithForecast),
+   как у прогноза на 12 месяцев, карточка прогноза тянется на высоту ряда, а строки делят остаток поровну. «Методология» идёт ниже на всю ширину (area `method`). */
 @media (min-width: 1024px) {
-  :root .z4-lower[data-lower='wide'] .z4-lower__aside:not(:has(.z4-lower__side)) > [data-block='forecast'] {
-    flex: 0 0 auto;
-    align-self: flex-start;
-    width: 100%;
-    position: sticky;
-    top: calc(var(--fe-shell-top, 116px) + 16px);
+  .z4-lower[data-lower='wide'] .z4-lower__aside:not(:has(.z4-lower__side)) { display: flex; flex-direction: column; }
+  .z4-lower[data-lower='wide'] .z4-lower__aside:not(:has(.z4-lower__side)) > [data-block='forecast'] > .k5-table {
+    display: flex; flex: 1 1 auto; flex-direction: column;
   }
-  :root .z4-lower[data-lower='wide'] .z4-lower__aside > [data-block='forecast'] > .k5-table { flex: 0 0 auto; }
+  .z4-lower[data-lower='wide'] .z4-lower__aside:not(:has(.z4-lower__side)) > [data-block='forecast'] > .k5-table > .overflow-x-auto {
+    flex: 1 1 auto; display: flex; flex-direction: column;
+  }
+  .z4-lower[data-lower='wide'] .z4-lower__aside:not(:has(.z4-lower__side)) .fe-fc-table { height: 100%; }
 }

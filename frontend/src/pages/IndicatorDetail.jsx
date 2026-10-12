@@ -818,6 +818,7 @@ export default function IndicatorDetail() {
         periodMonthlyDataPoints={periodMonthlyDataPoints}
         periodWeeklyDataPoints={periodWeeklyDataPoints}
         loading={Boolean(loadingInd || chartLoading || loadingData || loadingInflation)}
+        pairedWithForecast={forecastEnabled && showForecast && hasForecastDataForSection}
       />
         </div>
         <div className="z4-lower__aside">

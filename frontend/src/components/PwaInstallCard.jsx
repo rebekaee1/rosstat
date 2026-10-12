@@ -2,7 +2,7 @@
 // в PwaInstallPrompt и lib/pwaPolicy.js.
 //   platform="android" — кнопка «Установить» (системное окно через beforeinstallprompt);
 //   platform="ios"     — подсказка «Поделиться → На экран «Домой» → Добавить» с иконками.
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, PlusSquare, Share, Smartphone, X } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -47,14 +47,47 @@ export default function PwaInstallCard({
   const ios = platform === 'ios';
   const [stepsOpen, setStepsOpen] = useState(false);
   const slim = ios && floating && !stepsOpen;
+  const ref = useRef(null);
+  // Круг 13 (планшет): от 744 px карточка — нижняя полоса во всю ширину (стили `.fe-pwa-card` в z1-tokens.css), а не плавающее окно
+  // поверх подписей графика. Пока полоса на экране, её высота лежит в `--fe-pwa-h`, а на корне стоит `data-fe-pwa-bar`:
+  // страница получает нижний запас и доскролливается выше полосы, плавающие кнопки поднимаются над ней.
+  useEffect(() => {
+    const el = ref.current;
+    if (!floating || !el || typeof document === 'undefined') return undefined;
+    const root = document.documentElement;
+    const measure = () => {
+      const bar = el.getBoundingClientRect().width >= window.innerWidth - 1 && window.innerWidth >= 744;
+      if (bar) {
+        root.style.setProperty('--fe-pwa-h', `${Math.ceil(el.getBoundingClientRect().height)}px`);
+        root.setAttribute('data-fe-pwa-bar', '');
+      } else {
+        root.style.removeProperty('--fe-pwa-h');
+        root.removeAttribute('data-fe-pwa-bar');
+      }
+    };
+    measure();
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
+    ro?.observe(el);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', measure);
+      root.style.removeProperty('--fe-pwa-h');
+      root.removeAttribute('data-fe-pwa-bar');
+    };
+  }, [floating, slim, stepsOpen, platform]);
   return (
     <aside
+      ref={ref}
       role="dialog"
       aria-label={t('pwa.card.aria')}
       data-fe-floating="pwa-install"
       data-testid="pwa-install-card"
       data-slim={slim ? 'true' : undefined}
+      data-platform={platform}
+      data-steps={stepsOpen ? 'open' : undefined}
       className={cn(
+        floating && 'fe-pwa-card',
         'fe-reveal [--fe-duration:0.22s] [--fe-rise:10px] print:hidden',
         floating && 'fixed inset-x-3 bottom-[calc(var(--fe-bottom-clear,env(safe-area-inset-bottom,0px))+12px)] z-40 mx-auto max-w-md',
         'rounded-2xl fe-glass-pop shadow-2xl',
@@ -78,7 +111,7 @@ export default function PwaInstallCard({
         </div>
       ) : (
         <>
-          <div className="flex items-start gap-3">
+          <div className="fe-pwa-card__head flex items-start gap-3">
             <img src="/icons/icon-192.png" alt="" width="44" height="44" className="h-11 w-11 shrink-0 rounded-xl" />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-text-primary">{t(ios ? 'pwa.ios.title' : 'pwa.card.title')}</p>
@@ -94,7 +127,7 @@ export default function PwaInstallCard({
             </button>
           </div>
           {ios && <div className="mt-3"><IosHint /></div>}
-          <div className="mt-3 flex items-center gap-2">
+          <div className="fe-pwa-card__acts mt-3 flex items-center gap-2">
             {ios ? (
               <Button onClick={onAck} className="flex-1">{t('pwa.ios.ok')}</Button>
             ) : (

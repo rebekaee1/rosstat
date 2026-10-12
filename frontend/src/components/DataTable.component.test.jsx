@@ -13,6 +13,14 @@ function renderTable(ui) {
 }
 
 describe('DataTable', () => {
+  it('размер страницы: 20 строк по умолчанию, 12 рядом с карточкой прогноза (круг 13, С1)', () => {
+    const many = Array.from({ length: 30 }, (_, i) => ({ date: `2024-${String((i % 12) + 1).padStart(2, '0')}-01`, value: 100 + i }));
+    const { container, rerender } = renderTable(<DataTable data={many} unit="%" valueDigits={1} />);
+    expect(container.querySelectorAll('tbody tr').length).toBe(20);
+    rerender(<LocaleProvider><DataTable data={many} unit="%" valueDigits={1} pageSize={12} /></LocaleProvider>);
+    expect(container.querySelectorAll('tbody tr').length).toBe(12);
+  });
+
   it('может показывать единицу только в заголовке', () => {
     renderTable(
       <DataTable
