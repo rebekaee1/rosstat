@@ -215,6 +215,23 @@ class WorldCountry(Base):
     )
 
 
+class WorldCountryListedCount(Base):
+    """Материализованный счётчик публичных рядов по странам (круг 12, SPEED3).
+
+    `SELECT country_id, count(*) FROM world_indicators WHERE is_listed GROUP BY country_id` читает 280 тыс. строк;
+    на боевом при нагрузке на диск это 15–30 с (таймаут запроса 30 с). Таблицу целиком (≈ 55 строк) обновляет
+    `services/world_listed_counts.py` по расписанию и после загрузок данных; читатели берут её только при включённом
+    флаге `world_listed_counts_enabled`, иначе считают как раньше.
+    """
+    __tablename__ = "world_country_listed_counts"
+
+    country_id: Mapped[int] = mapped_column(
+        ForeignKey("world_countries.id", ondelete="CASCADE"), primary_key=True,
+    )
+    listed_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
 class WorldIndicator(Base):
     __tablename__ = "world_indicators"
     __table_args__ = (
@@ -232,6 +249,10 @@ class WorldIndicator(Base):
             postgresql_include=("id", "code", "name_ru"),
             postgresql_where=text("is_listed"),
         ),
+        # Узкий индекс для счётчиков «сколько публичных рядов у страны» (главная, рейтинги): 2 МБ против 90 МБ у
+        # покрывающего ix_world_indicators_listed_signal; на боевом холодный COUNT по широкому индексу занимал 15–30 с
+        # (круг 12, SPEED3). Миграция 20261012c_world_listed_cnt.
+        Index("ix_world_indicators_listed_country", "country_id", postgresql_where=text("is_listed")),
         # Соседи карточки (world_card_siblings): country_id + provider +
         # (dataset_id = stem OR dataset_id LIKE 'stem\_%'). pattern_ops даёт
         # префиксный LIKE по btree; без него планировщик шёл по uq-индексу

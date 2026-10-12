@@ -598,14 +598,33 @@ def _concept_allowed_datasets(concept: WorldConcept) -> set[str]:
     return allowed
 
 
-async def _world_rating_countries(db: AsyncSession) -> list[WorldCountry]:
+async def _active_countries_with_listed_counts(db: AsyncSession) -> list[tuple[WorldCountry, int]]:
+    """Активные страны в порядке каталога и число их публичных рядов (круг 12, SPEED3).
+
+    Числа берутся из материализованной `world_country_listed_counts`, если флаг включён и таблица свежая
+    (`services/world_listed_counts.py`); иначе — прежний подзапрос с `GROUP BY` (результат тот же). Страны без
+    публичных рядов отдаются с нулём — отсекает вызывающий.
+    """
+    from app.services.world_listed_counts import read_listed_counts
+
+    materialized = await read_listed_counts(db)
+    if materialized is not None:
+        countries = (
+            await db.execute(
+                select(WorldCountry)
+                .where(WorldCountry.is_active.is_(True))
+                .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
+            )
+        ).scalars().all()
+        return [(country, materialized.get(int(country.id), 0)) for country in countries]
     counts_q = (
         select(
             WorldIndicator.country_id,
             func.count().label("cnt"),
         )
-        # Голая колонка (не `IS TRUE`): только так планировщик берёт partial ix_world_indicators_listed_signal
+        # Голая колонка (не `IS TRUE`): только так планировщик берёт partial-индекс по `is_listed`
         # (index-only scan вместо seq scan по 691 МБ: 0,57 с -> 0,19 с на стенде; круг 12, SPEED2). is_listed NOT NULL.
+        # С SPEED3 это узкий ix_world_indicators_listed_country (2 МБ), а не покрывающий ix_..._listed_signal (90 МБ).
         .where(WorldIndicator.is_listed)
         .group_by(WorldIndicator.country_id)
         .subquery()
@@ -618,7 +637,11 @@ async def _world_rating_countries(db: AsyncSession) -> list[WorldCountry]:
             .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
         )
     ).all()
-    return [country for country, cnt in rows if int(cnt or 0) > 0]
+    return [(country, int(cnt or 0)) for country, cnt in rows]
+
+
+async def _world_rating_countries(db: AsyncSession) -> list[WorldCountry]:
+    return [country for country, cnt in await _active_countries_with_listed_counts(db) if cnt > 0]
 
 
 async def _world_rating_members(
@@ -865,32 +888,13 @@ async def listed_country_links(db: AsyncSession) -> tuple[tuple[str, str], ...]:
 
     Каталог стран живёт на главной; список нужен и её SSR-копии, и sitemap-логике.
     """
-    counts_q = (
-        select(
-            WorldIndicator.country_id,
-            func.count().label("cnt"),
-        )
-        # Голая колонка (не `IS TRUE`): только так планировщик берёт partial ix_world_indicators_listed_signal
-        # (index-only scan вместо seq scan по 691 МБ: 0,57 с -> 0,19 с на стенде; круг 12, SPEED2). is_listed NOT NULL.
-        .where(WorldIndicator.is_listed)
-        .group_by(WorldIndicator.country_id)
-        .subquery()
-    )
-    rows = (
-        await db.execute(
-            select(WorldCountry, counts_q.c.cnt)
-            .outerjoin(counts_q, WorldCountry.id == counts_q.c.country_id)
-            .where(WorldCountry.is_active.is_(True))
-            .order_by(WorldCountry.sort_order, WorldCountry.name_ru)
-        )
-    ).all()
     return tuple(
         (
             paths.country(country.slug),
-            f"{_country_label(country)} — {_n_indicators_phrase(int(cnt or 0))}",
+            f"{_country_label(country)} — {_n_indicators_phrase(cnt)}",
         )
-        for country, cnt in rows
-        if int(cnt or 0) > 0
+        for country, cnt in await _active_countries_with_listed_counts(db)
+        if cnt > 0
     )
 
 

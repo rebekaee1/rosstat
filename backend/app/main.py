@@ -1292,6 +1292,21 @@ async def lifespan(app: FastAPI):
             coalesce=True,
         )
 
+        # Круг 12, SPEED3: материализованный счётчик публичных рядов по странам (каталог на главной, рейтинги).
+        # Раз в 15 минут и сразу после запуска; без флага world_listed_counts_enabled задача не регистрируется.
+        if settings.world_listed_counts_enabled:
+            from app.services.world_listed_counts import world_listed_counts_job
+            scheduler.add_job(
+                locked_job(world_listed_counts_job, "world_listed_counts", ttl_seconds=600),
+                trigger=IntervalTrigger(minutes=15),
+                id="world_listed_counts",
+                name="World listed-series counts per country (every 15 min, flag world_listed_counts_enabled)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+                next_run_time=datetime.now(dt_timezone.utc) + timedelta(seconds=20),
+            )
+
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 
         # «New indicator initial ETL trap» + forecast gap-fill (steps>0 без

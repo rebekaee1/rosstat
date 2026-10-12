@@ -206,6 +206,13 @@ class Settings(BaseSettings):
     ssr_swr_base_url: str = ""
     ssr_swr_token: str = ""
 
+    # Материализованный счётчик публичных рядов по странам (services/world_listed_counts.py, круг 12, SPEED3):
+    # главная и рейтинги берут числа из таблицы world_country_listed_counts, а не считают COUNT по 280 тыс. строк
+    # (на боевом 15–30 с под нагрузкой). Выключено по умолчанию: включать после миграции 20261012c_world_listed_cnt
+    # (RUSTATS_WORLD_LISTED_COUNTS_ENABLED=true в scheduler и backend). Таблица старше max_age = сбой чтения, расчёт по-старому.
+    world_listed_counts_enabled: bool = False
+    world_listed_counts_max_age_seconds: int = 6 * 3600
+
     # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
     # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.
     indexnow_enabled: bool = True
