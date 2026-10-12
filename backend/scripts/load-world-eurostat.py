@@ -67,7 +67,7 @@ from app.services.eurostat_parser import (  # noqa: E402
     make_indicator_code,
 )
 from app.core.cache import bump_namespaces  # noqa: E402
-from app.data.world_superseded import is_superseded_dataset  # noqa: E402
+from app.data.world_superseded import should_unlist_superseded  # noqa: E402
 from app.services.eurostat_structure import (  # noqa: E402
     ExistingSlice,
     StructureVerdict,
@@ -347,8 +347,11 @@ async def upsert_indicator_meta(
         listed = False
     if listed and is_derived_change_unit(result.unit):
         listed = False
-    # Круг 12: остановленные у источника дубли (HICP cind/cann/cmon) не листингуем.
-    if listed and is_superseded_dataset(result.dataset_id):
+    # Круги 12–13: остановленные у источника дубли (HICP cind/cann/cmon/fp, prc_ppp_ind) не листингуем.
+    if listed and await should_unlist_superseded(
+        db, country_id, result.dataset_id, code, result.slice_, result.unit,
+        points[0][0] if points else None,
+    ):
         listed = False
     if listed and not meets_listing_depth(result.frequency, len(points)):
         listed = False

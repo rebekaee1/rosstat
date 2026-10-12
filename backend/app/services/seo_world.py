@@ -231,12 +231,22 @@ _KEY_CATEGORY_ORDER = (
 def _display_name(ind: WorldIndicator) -> str:
     from app.services.locale import get_locale
 
+    from app.data.world_indicator_titles_ru import (
+        public_indicator_name,
+        title_override_en_for_code,
+    )
+
     if get_locale() == "en" and (ind.name_en or "").strip():
         from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
+        override = title_override_en_for_code(ind.code)
+        if override:
+            return override
         base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
         return append_en_slice_to_title(base, ind.slice_json)
-    return strip_world_frequency_suffix(ind.name_ru) or ind.name_ru
+    # То же имя, что отдаёт API карточки (display_name): точечные переименования рядов
+    # (первые публикации, постоянные налоги) обязаны совпасть в SSR и на странице.
+    return public_indicator_name(ind.name_ru, ind.code) or ind.name_ru
 
 
 def _category_label(category_ru: str | None, *, fallback: str | None = None) -> str:

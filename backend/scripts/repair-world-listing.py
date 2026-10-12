@@ -39,6 +39,7 @@ from app.data.eurostat_listing import (  # noqa: E402
     normalize_frequency,
     varying_narrowing_dims,
 )
+from app.data.world_superseded import should_unlist_superseded  # noqa: E402
 from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
     country_prepositional,
@@ -185,6 +186,12 @@ async def retitle_all() -> tuple[int, dict[str, int]]:
             elif ok and is_derived_change_unit(unit):
                 ok = False
                 reasons["derived-change-mode"] += 1
+            elif ok and await should_unlist_superseded(
+                db, ind.country_id, ind.dataset_id, ind.code, ind.slice_json, ind.unit,
+                ind.history_start,
+            ):
+                ok = False
+                reasons["superseded-duplicate"] += 1
 
             siblings = by_card.get(ind_card_key[ind.id]) or [ind]
             avail_freqs = sorted({

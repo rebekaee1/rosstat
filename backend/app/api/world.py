@@ -198,10 +198,14 @@ def _region_display(region_ru: str | None) -> str:
 def _indicator_display_name(ind: WorldIndicator) -> str:
     """Locale-facing indicator title for country catalog / card."""
     from app.data.legacy_redirects import strip_world_frequency_suffix
+    from app.data.world_indicator_titles_ru import title_override_en_for_code
 
     if get_locale() == "en" and (ind.name_en or "").strip():
         from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
+        override = title_override_en_for_code(ind.code)
+        if override:
+            return override
         base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
         return append_en_slice_to_title(base, ind.slice_json)
     return display_name(ind.name_ru, ind.code)
@@ -212,9 +216,14 @@ def _indicator_name_en(ind: WorldIndicator) -> str:
     from app.data.legacy_redirects import strip_world_frequency_suffix
     from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
+    from app.data.world_indicator_titles_ru import title_override_en_for_code
+
     en_raw = (ind.name_en or "").strip()
     if not en_raw:
         return ""
+    override = title_override_en_for_code(ind.code)
+    if override:
+        return override
     base = strip_world_frequency_suffix(en_raw) or en_raw
     return append_en_slice_to_title(base, ind.slice_json)
 
