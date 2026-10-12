@@ -39,6 +39,7 @@ from app.services.search_language import measure_matches, relevance_bonus, title
 from app.services.search_language_sql import measure_constraints, _pattern_clause
 from app.services.search_units import UNIT_RULES, UNIT_EXCLUDES, DENOMINATOR_RULES, unit_metadata, denominator_metadata
 from app.services.search_dimensions import dimension_constraints, dimension_metadata, native_dimension_labels, native_dimension_match_clause, native_dimension_text
+from app.services.search_variants import collapse_equivalent, disambiguate_titles
 from app.services.search_paths import russia_family_base, russia_search_path, russia_year_search_path, world_search_paths
 from app.services.seo_i18n import localize_category_name, public_indicator_fields, region_display_name, region_indicator_copy
 from app.services.world_subnational_ingest import country_has_subnational
@@ -1197,6 +1198,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
         if result["key"] not in seen:
             unique.append(result)
             seen.add(result["key"])
+    # U14: ряды одного понятия реестра (две выгрузки Евростата одного индекса) — одна строка с `variants`.
+    unique = collapse_equivalent(unique, world_rows)
     final, position = [], 0
     while position < len(unique) and len(final) <= limit:
         batch = unique[position:position + limit + 1 - len(final)]
@@ -1211,6 +1214,8 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
                     continue
                 result["path"], result["navigation"] = _period_path(canonical, intent, world=True)
             final.append(result)
+    # U15: одинаковое название у разных рядов страны различается периодом, единицей или срезом.
+    disambiguate_titles(final[:limit], world_rows, locale)
     response = {"results": final[:limit], "total": min(len(final), limit),
         "has_more": len(final) > limit or world_clipped or regions_clipped or sub_clipped,
         "version": SEARCH_VERSION, "intent": summary}
