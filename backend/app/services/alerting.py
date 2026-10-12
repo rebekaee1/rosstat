@@ -129,6 +129,15 @@ def site_version_label(locale: str | None) -> str:
     return "—"
 
 
+def method_label(method: str | None) -> str:
+    """«OAuth (yandex)» и «yandex» → «Яндекс»; незнакомое значение остаётся как есть."""
+    from app.services.signup_attribution import METHOD_LABELS_RU, normalize_method
+
+    raw = str(method or "").strip()
+    key = normalize_method(raw)
+    return METHOD_LABELS_RU.get(key, raw) if key else raw
+
+
 _DEVICE_RU = {"mobile": "телефон", "tablet": "планшет", "desktop": "компьютер", "bot": "робот"}
 
 
@@ -221,7 +230,7 @@ async def notify_new_user(info: dict) -> None:
     lines = [
         "🆕 <b>Новый пользователь</b>",
         f"Версия сайта: {site_version_label(info.get('locale'))}",
-        f"Способ входа: {esc(info.get('method'))}",
+        f"Способ входа: {esc(method_label(info.get('method')))}",
         f"Email: {esc(info.get('email'))}",
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
@@ -252,7 +261,7 @@ async def notify_login(info: dict) -> None:
 
     lines = [
         "🔑 <b>Вход</b>",
-        f"Способ входа: {esc(info.get('method'))}",
+        f"Способ входа: {esc(method_label(info.get('method')))}",
         f"Email: {esc(info.get('email'))}",
         f"Телефон: {esc(info.get('phone'))}",
         f"Имя: {esc(info.get('display_name'))}",
