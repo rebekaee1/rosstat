@@ -13,8 +13,10 @@
 @media (pointer: coarse) {
   .c11b-act--icon { width: 44px; min-width: 44px; }
 }
-.fe-chip.c11b-on,
-.fe-chip.c11b-on:hover:not(:disabled) {
+/* Включённое состояние держится и под курсором: общий `.fe-chip:hover` из index.css весит столько же и грузится позже, поэтому вес
+   поднят (`.c11b-act`), иначе звезда и колокольчик при наведении мыши выглядели выключенными. */
+.fe-chip.c11b-act.c11b-on,
+.fe-chip.c11b-act.c11b-on:hover:not(:disabled) {
   color: #2c4a8a;
   background: rgba(44, 74, 138, 0.12);
   box-shadow: 0 6px 16px -12px rgba(30, 58, 110, 0.5), var(--fe-inset-glint);
@@ -183,6 +185,8 @@ a.c11b-row__main:hover .c11b-row__title { color: var(--color-champagne-ink, #1e3
 }
 
 .c11b-field { margin-bottom: 18px; }
+.c11b-prefs > .c11b-hint:first-child { margin: 0 0 16px; }
+.c13-export { margin-top: 18px; }
 .c11b-field__label { margin-bottom: 8px; color: var(--color-text-secondary); font-size: 13px; font-weight: 600; }
 .c11b-select { width: 100%; max-width: 20rem; min-height: 44px; padding: 0 12px; border-radius: 12px; color: var(--color-text-primary); font-size: 14px; }
 .c11b-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 14px; }

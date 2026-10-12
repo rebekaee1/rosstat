@@ -2,6 +2,7 @@
 // (раньше была частью надбровки капсом через дефис и ломалась на две строки).
 import { Link } from 'react-router-dom';
 import { russiaIndicatorPath } from '../lib/sitePaths';
+import { numberTag } from '../lib/format';
 import { useLocale, useT } from '../i18n';
 import '../styles/w5-tools.css';
 import { numberTag } from '../lib/format';

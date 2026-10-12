@@ -12,12 +12,14 @@ const clean = (title) => (typeof title === 'string' ? title.trim().slice(0, 200)
 
 /**
  * Российский показатель (`/russia/indicator/{code}`). `only: 'watch'` просит нарисовать один колокольчик «Следить»
- * без «В избранное» (событие календаря).
+ * без «В избранное» (событие календаря); `variant: 'button'` рисует колокольчик с подписью «Следить» (в карточке события одинокая
+ * иконка не поясняла, что она делает).
  */
-export function russiaIndicatorSubject(code, title, { only = null } = {}) {
+export function russiaIndicatorSubject(code, title, { only = null, variant = null } = {}) {
   if (!code) return null;
   return {
     ...(only ? { only } : {}),
+    ...(variant ? { variant } : {}),
     kind: 'indicator',
     itemKey: String(code),
     title: clean(title),

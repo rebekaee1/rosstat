@@ -28,6 +28,7 @@ import { COMPARE_MAX, toggleCompareSlug } from '../lib/regionCompareTable';
 import { formatRegionCompact, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
 import { rememberScroll, useRestoreScroll } from '../lib/keepScroll';
 import { plural } from '../lib/calcFormat';
+import { numberTag } from '../lib/format';
 import MobileNavSelect from '../components/MobileNavSelect';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionsTrail } from '../lib/breadcrumbs';

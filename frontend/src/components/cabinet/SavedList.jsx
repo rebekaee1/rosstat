@@ -178,7 +178,13 @@ export default function SavedList({ mode = 'favorites' }) {
           </ul>
         </section>
       ))}
-      {limit ? <p className="c11b-hint">{t('c11b.saved.count', { n: items.length, max: limit })}</p> : null}
+      {limit ? (
+        <p className="c11b-hint">
+          {comparisons
+            ? t('c11b.saved.countShared', { n: visible.length, total: items.length, max: limit })
+            : t('c11b.saved.count', { n: items.length, max: limit })}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -119,7 +119,7 @@ export default function WatchList() {
         <p className="c11b-hint">{t('c11b.watch.noMail')}</p>
       </section>
 
-      <CalendarFeed />
+      <CalendarFeed hasRussian={feed.watches.some((w) => w.subject_kind === 'indicator')} />
     </div>
   );
 }

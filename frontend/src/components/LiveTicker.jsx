@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { cn, numberTag } from '../lib/format';
+import { usePrefs } from '../lib/cabinetPrefs';
 import { russiaCategoryPath, russiaIndicatorPath } from '../lib/sitePaths';
 import { tickerLaneFor } from '../lib/tickerLane';
 import { tickerRefetchInterval } from '../lib/tickerPoll';
@@ -306,6 +307,8 @@ function usePhoneWidth() {
 }
 
 export default function LiveTicker() {
+  // Настройка кабинета «Формат чисел» меняет и бегущую строку: подписка на настройки перерисовывает её без перезапуска запроса.
+  usePrefs();
   const t = useT();
   const phone = usePhoneWidth();
   const { locale } = useLocale();

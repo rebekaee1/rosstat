@@ -276,7 +276,8 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           )}
           {!isPast && linkedIndicators.length === 1 && (
             <CabinetActionsSlot
-              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch' })}
+              className="fe-cabinet-actions--flush"
+              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch', variant: 'button' })}
             />
           )}
           {!isPast && event.scheduled_date && (

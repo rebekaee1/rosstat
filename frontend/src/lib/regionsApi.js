@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import api from './api';
 import { resolveBrowserLocale } from '../i18n/locale';
 import { t } from '../i18n/messages';
+import { numberTag } from './format';
 
 const STALE = 10 * 60 * 1000;
 const GC = 30 * 60 * 1000;
