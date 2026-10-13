@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2183,
-    "code_files": 1780,
-    "current_reviews": 2183,
+    "files": 2185,
+    "code_files": 1782,
+    "current_reviews": 2185,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 1972
+      "reviewed": 1974
     },
-    "definitions": 14040,
-    "annotated_definitions": 14040,
+    "definitions": 14059,
+    "annotated_definitions": 14059,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -179,8 +179,8 @@
     },
     {
       "path": ".env.example",
-      "sha256": "7dfe744922846d9ea3d8cd582d5dea5033fd0b3375d450d598f78428cfe77dc9",
-      "bytes": 23443,
+      "sha256": "054c895ad7293447492ecb268ab73b9ab7bb63ec069d9057fc0b4404815410c4",
+      "bytes": 23445,
       "lines": 341,
       "code": false,
       "status": "reviewed",
@@ -1622,9 +1622,9 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "6de588b828352e559d499dac006d263c6b5ae6850b294732fa66206e58f1ffe6",
-      "bytes": 38675,
-      "lines": 534,
+      "sha256": "4048dc5ea1350944821131afbfe986d6ccbe231e61bae049649b178248e003bf",
+      "bytes": 39003,
+      "lines": 536,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6249,6 +6249,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/scripts/fix-world-country-prepositions.py",
+      "sha256": "0c952ab392025cc2ccd4b6b97c86c049fb91c93f9376ae81be402ab15686af36",
+      "bytes": 13148,
+      "lines": 255,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 9,
+      "annotated_definitions": 9,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/scripts/gen-forecast-snapshots.py",
       "sha256": "1017794dc0cfb11862e583088798f028a76bdf425965d0646d675fe5e427e3fb",
       "bytes": 4696,
@@ -8261,6 +8274,19 @@
       "issues": [],
       "definitions": 27,
       "annotated_definitions": 27,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_fix_world_country_prepositions.py",
+      "sha256": "073d0619558ea49e5ef2d1b03e55058983f9bde41e54a3539167f084d8fb9b98",
+      "bytes": 7529,
+      "lines": 138,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 10,
+      "annotated_definitions": 10,
       "missing_definitions": []
     },
     {
@@ -11008,8 +11034,8 @@
     },
     {
       "path": "backend/tests/test_world_official_forecast.py",
-      "sha256": "c4fc23a940584788c3ae065879dbbfb67c45bd798e929798ea8db8ea69e9c8da",
-      "bytes": 14016,
+      "sha256": "200932d826248c04506bcbc55b24ae10010913f4086bd5715ba296dc7d473f62",
+      "bytes": 14017,
       "lines": 317,
       "code": true,
       "status": "reviewed",
@@ -11476,8 +11502,8 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "2bcf88e64524f84b69298284403391e5993fc67e738a588bcfd3476f04cc8f77",
-      "bytes": 32894,
+      "sha256": "af80f08af1b0ed3ea86589b35f3d44c9fbd0eb101d1716e712742cabd9b2c770",
+      "bytes": 32895,
       "lines": 509,
       "code": false,
       "status": "reviewed",
@@ -12672,7 +12698,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "2fe0e0b42b1d0c866820b8a95e4ddcea6aaeaf105838b72119038a938dde7a8d",
+      "sha256": "345cbcc3941b3884081e172a92f9bb1dd72cdfd399d090ee6cd78ae145eac01b",
       "bytes": 2919235,
       "lines": 105634,
       "code": false,
@@ -12724,9 +12750,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "9635988e12b3b7969a0218a198536354754f97c8918dfbd15757673462cdf666",
-      "bytes": 10743030,
-      "lines": 324059,
+      "sha256": "2921159cbe869526efc073480f2af2680568e1a6a4e9819cc5cb80a7af7544bf",
+      "bytes": 10759789,
+      "lines": 324545,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12737,9 +12763,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "a82538b7dc964fb1cdcae1c5bee7fc89ffcf0bdf65ef8e80831b9938fa186353",
-      "bytes": 531543,
-      "lines": 3019,
+      "sha256": "e06437a31707e412cff13a6392a17465c79ad814ef9644ec347d1e33c65522ec",
+      "bytes": 531747,
+      "lines": 3020,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13465,9 +13491,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "8deb2f6d5ef72b6a6703f48e8713ac01f7558c6b6d807143be87204849250de7",
-      "bytes": 114448,
-      "lines": 626,
+      "sha256": "19f639381e44fbb96dabc0c4a14bf316ef967571fae9089b729434039c8aa202",
+      "bytes": 120476,
+      "lines": 627,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -28415,17 +28441,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9ee629175dd8fb7699712fb2946508a2a3d886aeb76296e9e56a3b835ce03159",
+  "ledger_sha256": "d19e9b59214015202de034b9d4ab8b54a84b61979bcbfa913a764786e701a7a7",
   "javascript_inventory_sha256": "b86674b74bd83215c37173d2153ac2161014c42456b8f12fa3e75246b88c0e21",
-  "baseline_commit": "eba7dca71d76c17addd5e20968973e3f35b0e3a2",
-  "branch": "circle13/int",
+  "baseline_commit": "7b90514d92eac1eddfbcde6e64577657b3017930",
+  "branch": "circle13/fix",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
     "docs/indicator-index.json",
-    "docs/indicator-index.md",
     "docs/mechanism-inventory.json",
     "docs/mechanism-inventory.md"
   ]

@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `eba7dca71d76c17addd5e20968973e3f35b0e3a2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `7b90514d92eac1eddfbcde6e64577657b3017930`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2183 |
-| Код, шаблоны и стили | 1780 |
-| Актуальные рецензии без пропусков guard | 2183 |
-| Именованные определения Python/JS: с аннотацией / всего | 14040 / 14040 |
+| Файлы в явно определённом scope | 2185 |
+| Код, шаблоны и стили | 1782 |
+| Актуальные рецензии без пропусков guard | 2185 |
+| Именованные определения Python/JS: с аннотацией / всего | 14059 / 14059 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -516,6 +516,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/create-admin.py](../backend/scripts/create-admin.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/export-design-gallery.py](../backend/scripts/export-design-gallery.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/export_seo_demand_quarter.py](../backend/scripts/export_seo_demand_quarter.py) | reviewed | 6/6 | актуально |
+| [backend/scripts/fix-world-country-prepositions.py](../backend/scripts/fix-world-country-prepositions.py) | reviewed | 9/9 | актуально |
 | [backend/scripts/gen-forecast-snapshots.py](../backend/scripts/gen-forecast-snapshots.py) | reviewed | 1/1 | актуально |
 | [backend/scripts/google-search-console.py](../backend/scripts/google-search-console.py) | reviewed | 9/9 | актуально |
 | [backend/scripts/indexnow-ping-all.py](../backend/scripts/indexnow-ping-all.py) | reviewed | 4/4 | актуально |
@@ -671,6 +672,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_export_render.py](../backend/tests/test_export_render.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_external_debt_seo.py](../backend/tests/test_external_debt_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_fd_leak.py](../backend/tests/test_fd_leak.py) | reviewed | 27/27 | актуально |
+| [backend/tests/test_fix_world_country_prepositions.py](../backend/tests/test_fix_world_country_prepositions.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_forecast_catch_up.py](../backend/tests/test_forecast_catch_up.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_forecast_constraints.py](../backend/tests/test_forecast_constraints.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_forecast_partial_actual.py](../backend/tests/test_forecast_partial_actual.py) | reviewed | 2/2 | актуально |
