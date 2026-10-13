@@ -1,15 +1,13 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "93d35c49ece89168364e602038de984fc3d9da6a",
+  "baseline_commit": "9e4b35f9fb81cc622633815c59763beccf8298a0",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/adr/0021-freshness-watchdog-and-superseded-series.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
     "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/data-contracts.md"
+    "docs/code-review/reviews.jsonl"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -1824,7 +1822,7 @@
     {"path": "frontend/public/brand/light-leak.webp", "kind": "asset/data/config", "bytes": 42574, "lines": null, "sha256": "a0e31da7e5f3a19bc565977095b43e0ebbe17ab7157c1d74cc54e2f11aaa5bdf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/public/brand/manifest.json", "kind": "asset/data/config", "bytes": 13764, "lines": 361, "sha256": "a3efaeb92d037d5fdd53ee1883a169795ea25c3fea8a0c3e8ee0e82dd7088304", "symlink": false, "nodes": 305, "extraction": "nodes", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/public/brand/ribbon.webp", "kind": "asset/data/config", "bytes": 96616, "lines": null, "sha256": "b6c60be3861ae9cd23abc38949644ef6915298927c12eb3a5d2c7f639136399e", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
-    {"path": "frontend/public/consent.js", "kind": "code", "bytes": 20710, "lines": 384, "sha256": "d06e5507b495ff16a3ab919039bd294222c9c2c9087e54d7c00777da2c5b37ab", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
+    {"path": "frontend/public/consent.js", "kind": "code", "bytes": 20706, "lines": 384, "sha256": "6e8396dc72c84eb3316f60612344c44265a84bc5bc14ca8b397fab4c1f0a398f", "symlink": false, "nodes": 17, "extraction": "nodes", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/public/favicon-32.png", "kind": "asset/data/config", "bytes": 2044, "lines": null, "sha256": "83f3b3054ed28f625cf1d04f56796df7dda72f5d62c38cfa79a2a5b536352fb0", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/public/favicon-512.png", "kind": "asset/data/config", "bytes": 156539, "lines": null, "sha256": "93fab759f36216f8b7ee42ebccd0758cd989300c7d36097f49f16131b0e0dcae", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},
     {"path": "frontend/public/favicon.ico", "kind": "asset/data/config", "bytes": 6561, "lines": null, "sha256": "0b440cd535690de59468dc93ab988a2bcbbc3664afc56df896ee971a753cb2bf", "symlink": false, "nodes": 0, "extraction": "inventory_only", "layer": "assets", "semantic_evidence": false, "semantic_current": null},

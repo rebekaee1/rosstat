@@ -21,7 +21,7 @@
   "counts": {
     "files": 2185,
     "code_files": 1782,
-    "current_reviews": 2185,
+    "current_reviews": 2184,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
@@ -30,7 +30,7 @@
     },
     "definitions": 14059,
     "annotated_definitions": 14059,
-    "files_needing_attention": 0
+    "files_needing_attention": 1
   },
   "orphan_reviews": [],
   "files": [
@@ -14414,13 +14414,15 @@
     },
     {
       "path": "frontend/public/consent.js",
-      "sha256": "d06e5507b495ff16a3ab919039bd294222c9c2c9087e54d7c00777da2c5b37ab",
-      "bytes": 20710,
+      "sha256": "6e8396dc72c84eb3316f60612344c44265a84bc5bc14ca8b397fab4c1f0a398f",
+      "bytes": 20706,
       "lines": 384,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "javascript_inventory_stale"
+      ],
       "definitions": 19,
       "annotated_definitions": 19,
       "missing_definitions": []
@@ -28441,12 +28443,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "26cdef5d20efecf2103efa7b3ea928c1408d3f4746af5c50b91f52031b9d99e0",
+  "ledger_sha256": "29e871dedc201d383bf7225ec241a4c467244941f9e06565ce29a0142d97897d",
   "javascript_inventory_sha256": "b86674b74bd83215c37173d2153ac2161014c42456b8f12fa3e75246b88c0e21",
-  "baseline_commit": "93d35c49ece89168364e602038de984fc3d9da6a",
+  "baseline_commit": "9e4b35f9fb81cc622633815c59763beccf8298a0",
   "branch": "circle13/int",
-  "unstaged_at_capture": [
-    "docs/adr/0021-freshness-watchdog-and-superseded-series.md",
-    "docs/data-contracts.md"
-  ]
+  "unstaged_at_capture": []
 }
