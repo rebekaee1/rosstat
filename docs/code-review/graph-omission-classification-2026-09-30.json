@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "bc96e5fb17f5f7859b0a1ae8b59ace6580865cb718f1fee0fafaa059f520b983",
-  "extraction_sha256": "e551963e2022fbbecb84e9100fe4c21e31ccad9c2187ad3c3e06510540a32b37",
-  "terrain_baseline_commit": "a9124b96413d8568c1a6af7df13634bc26ca5702",
+  "terrain_sha256": "88e4a2a445e89ee3f6f0742189e310c4932d69fca35b5d478d84a364cdf1cabc",
+  "extraction_sha256": "5f3528fff4ff38a1addc37c3c02d27e6513d1741c56cf8ea5f9dcdee6921cbdc",
+  "terrain_baseline_commit": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
   "counts": {
     "external_or_unresolved_file": 2905,
     "missing_endpoint": 3951
@@ -195,7 +195,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_analytics_api_inventory_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_analytics_api_inventory_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -222,7 +222,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "context",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "CONTEXT.md",
@@ -521,7 +521,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "README.md",
@@ -160467,7 +160467,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_agent_orchestration",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/agent-orchestration.md",
@@ -160822,7 +160822,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture_history",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture-history.md",
@@ -161066,7 +161066,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_architecture",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/architecture.md",
@@ -161531,7 +161531,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_circle_playbook",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_agent_briefs_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_agent_briefs_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/circle-playbook.md",
@@ -161855,7 +161855,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -161936,7 +161936,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_data_contracts",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_caddyfile_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_caddyfile_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/data-contracts.md",
@@ -162072,7 +162072,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_design_art_prompts_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_design_art_prompts_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -162099,7 +162099,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_design_readme",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_design_local_acceptance_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_design_local_acceptance_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/design/README.md",
@@ -162952,7 +162952,7 @@
       "explanation": "Graphify encodes a directory/extensionless document link as .md; source paths exist, encoded node id does not.",
       "edge": {
         "source": "docs_workflow",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_docs_adr_md",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_docs_adr_md",
         "relation": "references",
         "confidence": "EXTRACTED",
         "source_file": "docs/workflow.md",
@@ -186617,7 +186617,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_frontend_node_modules_vite_dist_node_index_build",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_frontend_node_modules_vite_dist_node_index_build",
         "relation": "imports",
         "context": "import",
         "confidence": "EXTRACTED",
@@ -186673,7 +186673,7 @@
       "explanation": "Local module import is resolved separately in the client inventory; this extracted symbol endpoint is absent.",
       "edge": {
         "source": "scripts_e2e_asset_retention",
-        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_fix_frontend_node_modules_playwright_index_chromium",
+        "target": "users_iprofi_tradingeconomics_rosstat_artifacts_circle_13_wt_int_frontend_node_modules_playwright_index_chromium",
         "relation": "imports",
         "context": "import",
         "confidence": "EXTRACTED",
