@@ -64,6 +64,22 @@ _PERIOD_LABEL_EN = {
 
 # Locale-facing money units (storage stays Russian abbreviations).
 _UNIT_EN = {
+    # Единицы биржевых и товарных рядов (круг 13: оставались русскими в английской версии).
+    "USD/баррель": "USD/barrel",
+    "USD/млн БТЕ": "USD/mmBtu",
+    "USD/т": "USD/tonne",
+    "USD/унция": "USD/ounce",
+    "USD/фунт": "USD/pound",
+    "US¢/бушель": "US¢/bushel",
+    "млн $": "mln USD",
+    "млн кв.м": "mln sq m",
+    "чел.": "people",
+    "тыс. чел.": "ths people",
+    "млн чел.": "mln people",
+    "ед.": "units",
+    "% от среднего по ЕС на душу населения": "% of EU average per capita",
+    "тыс. тонн в год": "thousand tonnes per year",
+    "индекс (1 кв. 1980 = 100)": "index (Q1 1980 = 100)",
     "руб.": "RUB",
     "руб": "RUB",
     "млн руб.": "mln RUB",

@@ -4,7 +4,7 @@ import { glueDate, periodPhrase, sincePhrase } from '../lib/periodPhrase';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { formatPercentChange, growthDigits } from '../lib/indicatorSummary';
 import { pluralRu } from '../lib/worldApi';
-import { splitUnit } from '../lib/countryFlag';
+import { parenUnit, splitUnit } from '../lib/countryFlag';
 import { useLocale, useT } from '../i18n';
 import DeltaBadge from './DeltaBadge';
 import WorldCountUp from './WorldCountUp';
@@ -50,8 +50,8 @@ export function WorldHeroLine({ summary, place, dateFormat, frequency = '' }) {
       <strong className="fe-hero-line__value">
         {shown.text}
         {unitParts.short && !plainIndex ? <span className="fe-hero-line__unit">{' '}{unitParts.short}</span> : null}
-        {plainIndex ? <span className="fe-hero-line__unit">{' '}({unitParts.short})</span> : null}
-        {!unitParts.short && unitParts.long ? <span className="fe-hero-line__unit">{' '}({unitParts.long})</span> : null}
+        {plainIndex ? <span className="fe-hero-line__unit">{' '}{parenUnit(unitParts.short)}</span> : null}
+        {!unitParts.short && unitParts.long ? <span className="fe-hero-line__unit">{' '}{parenUnit(unitParts.long)}</span> : null}
       </strong>
       {when ? <span className="fe-hero-line__when">{' '}{when}</span> : null}
       {yearChange ? (

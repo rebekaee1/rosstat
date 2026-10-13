@@ -97,6 +97,10 @@ const SOURCE_EN = {
     'Ministry of Statistics and Programme Implementation',
   'Резервный банк Индии': 'Reserve Bank of India',
   'Международный валютный фонд': 'International Monetary Fund',
+  'Управление энергетической информации США (EIA)': 'U.S. Energy Information Administration (EIA)',
+  'Европейский центральный банк': 'European Central Bank',
+  'Министерство финансов США': 'U.S. Department of the Treasury',
+  'Совет управляющих Федеральной резервной системы США': 'Board of Governors of the Federal Reserve System',
 };
 
 export function localizeViewModeLabel(label, locale) {

@@ -54,6 +54,10 @@ GLOSSARY_EN: dict[str, str] = {
     "Бразильский институт географии и статистики (IBGE)": (
         "Brazilian Institute of Geography and Statistics (IBGE)"
     ),
+    "Управление энергетической информации США (EIA)": "U.S. Energy Information Administration (EIA)",
+    "Европейский центральный банк": "European Central Bank",
+    "Министерство финансов США": "U.S. Department of the Treasury",
+    "Совет управляющих Федеральной резервной системы США": "Board of Governors of the Federal Reserve System",
     "Россия": "Russia",
     "Регионы": "Regions",
     "Регионы России": "Regions of Russia",
