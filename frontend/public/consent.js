@@ -323,7 +323,7 @@
     window.yaContextCb = window.yaContextCb || [];
     if (immediate) { injectAds(); return; }
     var age = 0;
-    try { age = window.performance && typeof window.performance.now === 'function' ? window.performance.now() : 0; } catch (e) { age = 0; }
+    try { age = window.performance && typeof window.performance.now === 'function' ? window.performance.now() : 0; } catch { age = 0; }
     var run = function () {
       if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(injectAds, { timeout: 3000 });
       else injectAds();
