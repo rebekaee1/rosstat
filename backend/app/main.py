@@ -751,7 +751,10 @@ async def lifespan(app: FastAPI):
                     limit=settings.europe_world_forecast_daily_limit,
                     acquire_lock=False,
                     eligible_only=True,
-                    max_seconds=settings.world_forecast_max_run_seconds,
+                    max_seconds=(
+                        settings.europe_world_forecast_max_run_seconds
+                        or settings.world_forecast_max_run_seconds
+                    ),
                 )
 
             scheduler.add_job(

@@ -154,6 +154,10 @@ class Settings(BaseSettings):
     europe_world_forecast_minute: int = 0
     # Круг 13: время пакетов США (прежнее 05:20, при потолке 40 минут упирается в окно ETL 05:30–07:30) и «остального
     # мира» (прежнее 04:50) тоже настраивается; по умолчанию прежнее.
+    # Круг 13: потолок времени пакета Европы отдельно от общего (0 = общий world_forecast_max_run_seconds). Очередь
+    # ≈ 157 тыс. ни разу не считавшихся рядов упирается во время, а не в число рядов: ночью с 23:10 до ≈ 02:00 (до
+    # национальных паспортов 02:10 и Евростата 02:20) сервер свободен.
+    europe_world_forecast_max_run_seconds: int = 0
     us_world_forecast_hour: int = 5
     us_world_forecast_minute: int = 20
     rest_world_forecast_hour: int = 4
