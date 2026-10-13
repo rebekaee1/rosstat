@@ -3721,6 +3721,12 @@ export default {
   'c13u.delta.last24h': 'over the past 24 hours',
   'c13u.globe.showMap': 'Show the map',
   'c13u.globe.slow': 'The globe is still loading: it is a 3D scene and takes longer on a slow connection. The site has not frozen.',
+  'c13b.ticker.brentExchangeNote': 'Brent crude: nearest {contract} futures contract on the Moscow Exchange, US dollars per barrel',
+  'c13b.ticker.delayed': 'quote delayed by about {minutes} minutes',
+  'c13b.brentLive.title': 'On the exchange now',
+  'c13b.brentLive.body': 'Nearest Brent crude futures ({contract}) on the Moscow Exchange: {price} per barrel. Delayed by about {minutes} minutes, as of {time} Moscow time.',
+  'c13b.brentLive.bodyClosed': 'Nearest Brent crude futures ({contract}) on the Moscow Exchange: {price} per barrel, session close of {date}. The market is closed now.',
+  'c13b.brentLive.tail': 'The chart below shows the daily spot price from the US Energy Information Administration, which is published once a week.',
   'c13u.ticker.brentNote': 'Brent crude price as of the date shown. Source: US Energy Information Administration (EIA), which publishes once a week, so the price lags by a few days',
   'c13u.ticker.change24h': '24-hour change',
 };

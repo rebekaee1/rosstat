@@ -1,0 +1,44 @@
+{
+ "securities": {
+  "columns": [
+   "SECID",
+   "SHORTNAME",
+   "LASTTRADEDATE",
+   "PREVSETTLEPRICE",
+   "DECIMALS"
+  ],
+  "data": [
+   [
+    "BRX6",
+    "BR-11.26",
+    "2026-11-02",
+    104.62,
+    2
+   ]
+  ]
+ },
+ "marketdata": {
+  "columns": [
+   "SECID",
+   "BOARDID",
+   "LAST",
+   "SETTLEPRICE",
+   "LASTCHANGEPRCNT",
+   "UPDATETIME",
+   "SYSTIME",
+   "TRADEDATE"
+  ],
+  "data": [
+   [
+    "BRX6",
+    "RFUD",
+    106.57,
+    106.62,
+    -0.02,
+    "20:17:34",
+    "2026-10-12 20:32:35",
+    "2026-10-12"
+   ]
+  ]
+ }
+}

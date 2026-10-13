@@ -1860,11 +1860,10 @@ async def og_image_world_indicator(
                 or _world_subject(indicator.name_ru)
             name = f"{subject} in {country.name_en}"
         else:
-            from app.data.eurostat_titles_ru import country_prepositional
+            from app.data.eurostat_titles_ru import country_in
 
             subject = _world_subject(indicator.name_ru)
-            prep = country_prepositional(country.slug, country.name_ru)
-            name = f"{subject} в {prep}"
+            name = f"{subject} {country_in(country.slug, country.name_ru)}"
         await release_session(db)  # не держать соединение во время Pillow-рендера
         png = await render_og_async(
             render_indicator_og,
@@ -1902,7 +1901,7 @@ async def og_image_world_indicator_year(
     """
     if not paths.is_public_year(year):
         return Response(status_code=404)
-    from app.data.eurostat_titles_ru import country_prepositional
+    from app.data.eurostat_titles_ru import country_in
     from app.data.legacy_redirects import is_retired_world_hicp
     from app.data.eurostat_units_ru import unit_suffix
     from app.models import WorldCountry, WorldDataPoint, WorldIndicator
@@ -2018,8 +2017,7 @@ async def og_image_world_indicator_year(
             name = f"{subject} in {country.name_en}"
         else:
             subject = _world_subject(indicator.name_ru)
-            prep = country_prepositional(country.slug, country.name_ru)
-            name = f"{subject} в {prep}"
+            name = f"{subject} {country_in(country.slug, country.name_ru)}"
 
         await release_session(db)  # не держать соединение во время Pillow-рендера
         png = await render_og_async(

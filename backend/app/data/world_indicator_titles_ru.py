@@ -48,7 +48,34 @@ TITLE_BY_CODE_FRAGMENT: tuple[tuple[str, str], ...] = (
     ("-prc_hicp_iw-", "Веса товаров и услуг в гармонизированном индексе потребительских цен"),
     ("-prc_hicp_inw-", "Веса товаров и услуг в гармонизированном индексе потребительских цен"),
     ("-prc_hicp_fpd-", "Гармонизированный индекс потребительских цен, первые публикации"),
+    # Круг 13: ИПЦ при постоянных налоговых ставках (ct) носил то же имя, что основной индекс
+    # (minr): две одинаковые плитки у страны. Различает смысл, адрес не меняется.
+    ("-prc_hicp_ct-", "Гармонизированный индекс потребительских цен при постоянных налоговых ставках"),
+    # Среднегодовой ГИПЦ: у прежнего набора (aind) база 2015=100, у нового (ainr, ECOICOP ver.2)
+    # 2025=100 — по данным 34 и 36 стран. Название у обоих было одно и то же.
+    ("-prc_hicp_aind-", "Гармонизированный индекс потребительских цен, среднегодовой (2015 = 100)"),
+    ("-prc_hicp_ainr-total-inx-", "Гармонизированный индекс потребительских цен, среднегодовой (2025 = 100)"),
 )
+
+# Английские пары к тем же рядам: сырые названия Евростата ("... ECOICOP ver.2 - indices and rates
+# of change at constant tax rates, monthly data") длинны и не совпадают с русской подписью.
+TITLE_EN_BY_CODE_FRAGMENT: tuple[tuple[str, str], ...] = (
+    ("-prc_hicp_fpd-", "Harmonised index of consumer prices, first releases"),
+    ("-prc_hicp_ct-", "Harmonised index of consumer prices at constant tax rates"),
+    ("-prc_hicp_aind-", "Harmonised index of consumer prices, annual average (2015 = 100)"),
+    ("-prc_hicp_ainr-total-inx-", "Harmonised index of consumer prices, annual average (2025 = 100)"),
+)
+
+
+def title_override_en_for_code(code: str | None) -> str | None:
+    """Английское имя по фрагменту кода (см. TITLE_EN_BY_CODE_FRAGMENT) или None."""
+    code_key = (code or "").strip().lower()
+    if not code_key:
+        return None
+    for fragment, title in TITLE_EN_BY_CODE_FRAGMENT:
+        if fragment in code_key:
+            return title
+    return None
 
 
 def title_override_for_code(code: str | None) -> str | None:

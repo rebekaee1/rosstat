@@ -138,7 +138,10 @@ def add_freshness(snap: dict, now: datetime) -> None:
     age = max((now.astimezone(timezone.utc).date() - day).days, 0)
     snap["as_of_day"] = day.isoformat()
     snap["age_days"] = age
-    snap["stale"] = age > STALE_AFTER_DAYS_BY_CODE.get(str(snap.get("code") or ""), STALE_AFTER_DAYS)
+    # Недельный порог нефти относится к споту EIA; биржевое значение (флаг moex_brent_live_enabled) стареет как остальные.
+    exchange = snap.get("source_kind") == "market" or source_kind(snap.get("source")) == "market"
+    limit = STALE_AFTER_DAYS if exchange else STALE_AFTER_DAYS_BY_CODE.get(str(snap.get("code") or ""), STALE_AFTER_DAYS)
+    snap["stale"] = age > limit
 
 
 # Рублёвые пары, у которых есть и биржевая котировка (лента), и официальный курс ЦБ (страница, конвертер).
