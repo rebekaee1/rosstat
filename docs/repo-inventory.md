@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2026  ·  **Строк:** 1 297 208  ·  **Токенов (≈):** 12 292 120
+**Файлов:** 2026  ·  **Строк:** 1 297 211  ·  **Токенов (≈):** 12 292 445
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 811 | 278 347 | 3 067 160 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 16 | 872 | 10 822 |
-| `docs` | 137 | 826 532 | 7 034 152 |
-| `frontend` | 925 | 165 252 | 1 839 388 |
+| `docs` | 137 | 826 535 | 7 034 478 |
+| `frontend` | 925 | 165 252 | 1 839 387 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 120 | 22 959 | 273 161 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 324 545 | 2 643 039 |
-| `docs/client-mechanism-inventory.json` | 239 761 | 1 694 598 |
+| `docs/client-mechanism-inventory.json` | 239 761 | 1 694 597 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -50,7 +50,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
-| `docs/data-contracts.md` | 932 | 44 612 |
+| `docs/data-contracts.md` | 934 | 44 835 |
 | `frontend/src/pages/AdminBI.jsx` | 3 043 | 43 122 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `CONTEXT.md` | 1 312 | 42 374 |
@@ -329,8 +329,8 @@
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
 | `backend/app/services/webmaster_indexing_daily.py` | 387 | 4 363 |
 | `docs/agent-recipes.md` | 220 | 4 352 |
-| `frontend/public/consent.js` | 384 | 4 349 |
 | `frontend/src/pages/DemographicsPage.jsx` | 421 | 4 349 |
+| `frontend/public/consent.js` | 384 | 4 348 |
 | `backend/tests/test_scrape_guard.py` | 463 | 4 333 |
 | `frontend/src/lib/cabinetStore.js` | 461 | 4 327 |
 | `frontend/src/styles/world.css` | 347 | 4 320 |
@@ -687,6 +687,7 @@
 | `backend/tests/test_search_candidate_budget.py` | 141 | 2 071 |
 | `backend/tests/test_eurostat_publication.py` | 192 | 2 064 |
 | `scripts/dev/perf_cold_trace.py` | 192 | 2 059 |
+| `docs/adr/0021-freshness-watchdog-and-superseded-series.md` | 46 | 2 055 |
 | `backend/tests/test_api_interest.py` | 225 | 2 053 |
 | `backend/app/services/ticker_sources/moex_iss.py` | 217 | 2 049 |
 | `backend/tests/test_world_listed_counts.py` | 193 | 2 046 |
@@ -723,7 +724,6 @@
 | `scripts/seo-audit.py` | 198 | 1 961 |
 | `frontend/src/components/cabinet/cabinet.c13.component.test.jsx` | 156 | 1 959 |
 | `frontend/src/components/cabinet/SavedList.jsx` | 190 | 1 956 |
-| `docs/adr/0021-freshness-watchdog-and-superseded-series.md` | 45 | 1 951 |
 | `frontend/src/lib/api.test.js` | 176 | 1 930 |
 | `backend/tests/test_action_apply_idempotency.py` | 227 | 1 928 |
 | `backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json` | 560 | 1 926 |

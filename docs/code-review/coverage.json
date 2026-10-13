@@ -21,7 +21,7 @@
   "counts": {
     "files": 2185,
     "code_files": 1782,
-    "current_reviews": 2184,
+    "current_reviews": 2185,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
@@ -30,7 +30,7 @@
     },
     "definitions": 14059,
     "annotated_definitions": 14059,
-    "files_needing_attention": 1
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -12126,8 +12126,8 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "c084072000add932d4fba4b5473863d6f3c34e15ad3244fb99b4ff03baf2259d",
-      "bytes": 6810109,
+      "sha256": "f1b8930e27fa29a72ed996527499d0093bd7b96ca388e7dd76e914974176a08f",
+      "bytes": 6810105,
       "lines": 239761,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -14419,10 +14419,8 @@
       "lines": 384,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "javascript_inventory_stale"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 19,
       "annotated_definitions": 19,
       "missing_definitions": []
@@ -28443,9 +28441,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "29e871dedc201d383bf7225ec241a4c467244941f9e06565ce29a0142d97897d",
-  "javascript_inventory_sha256": "b86674b74bd83215c37173d2153ac2161014c42456b8f12fa3e75246b88c0e21",
-  "baseline_commit": "9e4b35f9fb81cc622633815c59763beccf8298a0",
+  "ledger_sha256": "01347e0f1db6eee564da595bf3604d60829d166899e66102c11a69631b65c27d",
+  "javascript_inventory_sha256": "e51ec06a1df8314abf62c504aa31db2785f92be30274d50fb1f1f2f09c45530d",
+  "baseline_commit": "dd060cfc027e65cad148117b2ac0bad47a520ab7",
   "branch": "circle13/int",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json"
+  ]
 }

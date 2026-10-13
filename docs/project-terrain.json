@@ -1,11 +1,13 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "9e4b35f9fb81cc622633815c59763beccf8298a0",
+  "baseline_commit": "dd060cfc027e65cad148117b2ac0bad47a520ab7",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
+    "docs/code-review/javascript-symbols.json",
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl"
   ],
@@ -1646,7 +1648,7 @@
     {"path": "docs/architecture.md", "kind": "document", "bytes": 95985, "lines": 465, "sha256": "f3eafeae0a912c2ca049139f5e9b0a0fdac2fec5318425408e806874eb446948", "symlink": false, "nodes": 32, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/backlog.md", "kind": "document", "bytes": 564985, "lines": 2842, "sha256": "6520bb2122bb3cae4bd5648b1e9c94053861713e7c0c2eaf239230ca240a4ff2", "symlink": false, "nodes": 153, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/circle-playbook.md", "kind": "document", "bytes": 26180, "lines": 124, "sha256": "157a0677237f20afde22faf1bb85e95c88802c3a9bbb30742831a68485bc7daf", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 6810109, "lines": 239761, "sha256": "c084072000add932d4fba4b5473863d6f3c34e15ad3244fb99b4ff03baf2259d", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/client-mechanism-inventory.json", "kind": "asset/data/config", "bytes": 6810105, "lines": 239761, "sha256": "f1b8930e27fa29a72ed996527499d0093bd7b96ca388e7dd76e914974176a08f", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/client-mechanism-inventory.md", "kind": "document", "bytes": 13325, "lines": 136, "sha256": "4aec9b77413db9216f5ccd80c12ca23a8f0029cb8f500752b49d2f6c4ce42236", "symlink": false, "nodes": 4, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/code-review-findings.md", "kind": "document", "bytes": 31882, "lines": 161, "sha256": "f17d8bb86c1c88887aae5b246aed5093301de74605538b969c4812dd2e633a13", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/data-contracts.md", "kind": "document", "bytes": 262551, "lines": 934, "sha256": "822694d4e342bb6f231d602d8b6d4a85e00b955023663514791c1d792c65a37e", "symlink": false, "nodes": 78, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},

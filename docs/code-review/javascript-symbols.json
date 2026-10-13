@@ -35,7 +35,7 @@
     "anonymous_functions": 0
   },
   "frontend/public/consent.js": {
-    "sha256": "d06e5507b495ff16a3ab919039bd294222c9c2c9087e54d7c00777da2c5b37ab",
+    "sha256": "6e8396dc72c84eb3316f60612344c44265a84bc5bc14ca8b397fab4c1f0a398f",
     "definitions": [
       {
         "name": "stripParams",

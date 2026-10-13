@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `9e4b35f9fb81cc622633815c59763beccf8298a0`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `dd060cfc027e65cad148117b2ac0bad47a520ab7`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2185 |
 | Код, шаблоны и стили | 1782 |
-| Актуальные рецензии без пропусков guard | 2184 |
+| Актуальные рецензии без пропусков guard | 2185 |
 | Именованные определения Python/JS: с аннотацией / всего | 14059 / 14059 |
-| Файлы, требующие внимания | 1 |
+| Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -1144,7 +1144,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/brand/light-leak.webp](../frontend/public/brand/light-leak.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/brand/manifest.json](../frontend/public/brand/manifest.json) | data_schema_reviewed | 0/0 | актуально |
 | [frontend/public/brand/ribbon.webp](../frontend/public/brand/ribbon.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/consent.js](../frontend/public/consent.js) | reviewed | 19/19 | javascript_inventory_stale |
+| [frontend/public/consent.js](../frontend/public/consent.js) | reviewed | 19/19 | актуально |
 | [frontend/public/favicon-32.png](../frontend/public/favicon-32.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/favicon-512.png](../frontend/public/favicon-512.png) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/favicon.ico](../frontend/public/favicon.ico) | asset_metadata_reviewed | 0/0 | актуально |
