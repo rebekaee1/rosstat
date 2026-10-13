@@ -28456,13 +28456,7 @@
   "input_scope": "tracked",
   "ledger_sha256": "c83623b65b54740823b2bb5d4f1b8f9346bbbd1319ccc735af75ea7f1c8f7ac5",
   "javascript_inventory_sha256": "fcae5f0e7f0d0f28cbefe15bb103e713180a0729c8779afb6d24c53d9a1edd4e",
-  "baseline_commit": "44bfeec08de4d2c422665b03a2cab95205228adc",
+  "baseline_commit": "a9124b96413d8568c1a6af7df13634bc26ca5702",
   "branch": "circle13/fix",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
