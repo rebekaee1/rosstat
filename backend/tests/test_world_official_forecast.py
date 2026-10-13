@@ -287,7 +287,7 @@ def test_forecast_job_times_are_configurable_and_default_to_the_old_schedule():
     fields = Settings.model_fields
     assert (fields["us_world_forecast_hour"].default, fields["us_world_forecast_minute"].default) == (5, 20)
     assert (fields["rest_world_forecast_hour"].default, fields["rest_world_forecast_minute"].default) == (4, 50)
-    assert (fields["europe_world_forecast_hour"].default, fields["europe_world_forecast_minute"].default) == (21, 0)
+    assert (fields["europe_world_forecast_hour"].default, fields["europe_world_forecast_minute"].default) == (23, 10)
     assert fields["world_forecast_max_age_days_annual"].default == 0
     assert fields["world_forecast_max_age_days_quarterly"].default == 0
 

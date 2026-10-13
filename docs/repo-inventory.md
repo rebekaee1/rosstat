@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2024  ·  **Строк:** 1 296 325  ·  **Токенов (≈):** 12 282 358
+**Файлов:** 2026  ·  **Строк:** 1 297 208  ·  **Токенов (≈):** 12 292 120
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 701 | 62 015 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 809 | 277 952 | 3 062 616 |
+| `backend` | 811 | 278 347 | 3 067 160 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 16 | 872 | 10 822 |
-| `docs` | 137 | 826 044 | 7 028 934 |
+| `docs` | 137 | 826 532 | 7 034 152 |
 | `frontend` | 925 | 165 252 | 1 839 388 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 120 | 22 959 | 273 161 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 324 059 | 2 638 849 |
+| `docs/mechanism-inventory.json` | 324 545 | 2 643 039 |
 | `docs/client-mechanism-inventory.json` | 239 761 | 1 694 598 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -37,7 +37,7 @@
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
-| `docs/mechanism-inventory.md` | 3 019 | 131 681 |
+| `docs/mechanism-inventory.md` | 3 020 | 131 732 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
 | `docs/backlog.md` | 2 842 | 94 681 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
@@ -66,8 +66,8 @@
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/services/site_urls.py` | 2 252 | 22 005 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
+| `docs/workflow.md` | 627 | 21 171 |
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
-| `docs/workflow.md` | 626 | 20 194 |
 | `backend/app/services/seo_world.py` | 2 142 | 20 015 |
 | `backend/app/main.py` | 1 884 | 19 547 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
@@ -170,7 +170,7 @@
 | `backend/tests/test_world_cards.py` | 834 | 7 525 |
 | `backend/app/services/world_subnational_ingest.py` | 779 | 7 476 |
 | `frontend/src/styles/indicator-russia.css` | 755 | 7 438 |
-| `backend/app/config.py` | 534 | 7 370 |
+| `backend/app/config.py` | 536 | 7 424 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
 | `frontend/src/lib/pageMeta.generated.json` | 513 | 7 205 |
 | `docs/design/local-acceptance/inventory.json` | 1 430 | 7 192 |
@@ -512,6 +512,7 @@
 | `frontend/src/pages/CalculatorsC11e.component.test.jsx` | 227 | 2 865 |
 | `backend/app/services/rosstat_gdp_parser.py` | 319 | 2 859 |
 | `frontend/src/lib/chartImage.js` | 296 | 2 857 |
+| `backend/scripts/fix-world-country-prepositions.py` | 255 | 2 854 |
 | `frontend/src/pages/WorldRatingPage.w6d.component.test.jsx` | 229 | 2 852 |
 | `backend/app/data/world_national_core/ca.yaml` | 293 | 2 838 |
 | `frontend/src/components/ChartControls.component.test.jsx` | 257 | 2 838 |
@@ -830,6 +831,7 @@
 | `backend/tests/test_year_mode_crawl_policy.py` | 133 | 1 642 |
 | `backend/tests/test_rosstat_wages_backfill.py` | 167 | 1 641 |
 | `backend/scripts/resend-missed-summary.py` | 138 | 1 639 |
+| `backend/tests/test_fix_world_country_prepositions.py` | 138 | 1 636 |
 | `frontend/src/lib/footerNav.js` | 175 | 1 636 |
 | `backend/tests/test_us_br_pop_adapter.py` | 190 | 1 635 |
 | `frontend/src/styles/k1-scene.test.js` | 124 | 1 632 |
