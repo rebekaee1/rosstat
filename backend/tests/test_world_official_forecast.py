@@ -297,3 +297,21 @@ def test_europe_forecast_time_ceiling_has_its_own_setting_defaulting_to_the_comm
 
     assert Settings.model_fields["europe_world_forecast_max_run_seconds"].default == 0  # 0 = общий потолок
     assert Settings.model_fields["world_forecast_max_run_seconds"].default == 2400
+
+
+def test_compose_passes_every_world_forecast_knob_the_plan_relies_on():
+    """Значение из .env хоста попадает в контейнер только если compose его перечисляет (backend/.dockerignore не берёт .env в образ).
+    Стенд 12.10: RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY=1000 в .env молча не действовал, плановый пакет сбрасывал кэш мира каждые 200 записей."""
+    from pathlib import Path
+
+    compose = (Path(__file__).resolve().parents[2] / "docker-compose.yml").read_text(encoding="utf-8")
+    for name in (
+        "RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY",
+        "RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL",
+        "RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY",
+        "RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS",
+        "RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT",
+        "RUSTATS_US_WORLD_FORECAST_HOUR",
+        "RUSTATS_REST_WORLD_FORECAST_HOUR",
+    ):
+        assert f"{name}: ${{{name}:-" in compose, name
