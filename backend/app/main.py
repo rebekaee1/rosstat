@@ -211,7 +211,22 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
             self._record(500, request.url.path)
             raise
         self._record(status, request.url.path)
+        self._note_bot(request, status)
         return response
+
+    @staticmethod
+    def _note_bot(request: Request, status: int) -> None:
+        """Счётчик ответов поисковым роботам для недельного SEO-отчёта (флаг выключен — нулевая цена)."""
+        if not settings.seo_weekly_report_enabled:
+            return
+        ua = request.headers.get("user-agent")
+        if not ua or "bot" not in ua.lower() and "yandex" not in ua.lower() and "google" not in ua.lower():
+            return
+        try:
+            from app.services.seo_weekly_report import record_bot_status
+            asyncio.get_running_loop().create_task(record_bot_status(ua, status))
+        except Exception:
+            pass
 
     @classmethod
     def _record(cls, status: int, path: str) -> None:
@@ -228,7 +243,7 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
                 try:
                     from app.services.alerting import send_telegram
                     asyncio.get_running_loop().create_task(send_telegram(
-                        f"🔴 <b>5xx spike</b>\n{len(cls._recent_5xx)} ответов 5xx "
+                        f"🔴 <b>Всплеск ошибок сервера (5xx)</b>\n{len(cls._recent_5xx)} ответов 5xx "
                         f"за {cls.SPIKE_WINDOW // 60} мин (последний путь: {path[:120]})",
                         kind="http_5xx_spike",
                     ))
@@ -292,16 +307,16 @@ def _scheduler_event_listener(event) -> None:
             return
 
         if getattr(event, "exception", None):
-            kind = "🔴 <b>Scheduler job failed</b>"
+            kind = "🔴 <b>Сбой фоновой задачи</b>"
             detail = escape(str(event.exception)[:300])
         else:
-            kind = "🟡 <b>Scheduler job missed</b>"
-            detail = "misfire (job не запустилась в срок)"
+            kind = "🟡 <b>Пропуск фоновой задачи</b>"
+            detail = "задача не запустилась в срок"
         job = scheduler.get_job(event.job_id)
         next_run = getattr(job, "next_run_time", None)
         msg = (
-            f"{kind}\nJob: <code>{escape(str(event.job_id))}</code>\n"
-            f"{detail}\nNext run: {next_run or '—'}"
+            f"{kind}\nЗадача: <code>{escape(str(event.job_id))}</code>\n"
+            f"{detail}\nСледующий запуск: {next_run or '—'}"
         )
         logger.error("Scheduler event: job=%s exc=%s", event.job_id,
                      getattr(event, "exception", None))
@@ -707,7 +722,11 @@ async def lifespan(app: FastAPI):
                     "us_world_forecast",
                     ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
                 ),
-                trigger=CronTrigger(hour=5, minute=20, timezone="Europe/Moscow"),
+                trigger=CronTrigger(
+                    hour=settings.us_world_forecast_hour,
+                    minute=settings.us_world_forecast_minute,
+                    timezone="Europe/Moscow",
+                ),
                 id="us_world_forecast",
                 name="US quality-gated national forecasts",
                 replace_existing=True,
@@ -732,7 +751,10 @@ async def lifespan(app: FastAPI):
                     limit=settings.europe_world_forecast_daily_limit,
                     acquire_lock=False,
                     eligible_only=True,
-                    max_seconds=settings.world_forecast_max_run_seconds,
+                    max_seconds=(
+                        settings.europe_world_forecast_max_run_seconds
+                        or settings.world_forecast_max_run_seconds
+                    ),
                 )
 
             scheduler.add_job(
@@ -778,7 +800,11 @@ async def lifespan(app: FastAPI):
                     "rest_world_forecast",
                     ttl_seconds=WORLD_FORECAST_JOB_LOCK_TTL_SECONDS,
                 ),
-                trigger=CronTrigger(hour=4, minute=50, timezone="Europe/Moscow"),
+                trigger=CronTrigger(
+                    hour=settings.rest_world_forecast_hour,
+                    minute=settings.rest_world_forecast_minute,
+                    timezone="Europe/Moscow",
+                ),
                 id="rest_world_forecast",
                 name="Rest-of-world quality-gated forecasts (bounded daily batch)",
                 replace_existing=True,
@@ -1039,6 +1065,24 @@ async def lifespan(app: FastAPI):
                 settings.telegram_digest_cron_minute,
             )
 
+        if settings.seo_weekly_report_enabled:
+            from app.services.seo_weekly_report import seo_weekly_report_job
+            scheduler.add_job(
+                locked_job(seo_weekly_report_job, "seo_weekly_report", ttl_seconds=20 * 60),
+                trigger=CronTrigger(
+                    day_of_week="mon",
+                    hour=settings.seo_weekly_report_cron_hour,
+                    minute=settings.seo_weekly_report_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="seo_weekly_report",
+                name="Telegram weekly SEO report (Mon, MSK)",
+                replace_existing=True,
+                misfire_grace_time=DAILY_REPORT_MISFIRE_GRACE_S,
+            )
+            logger.info("SEO weekly report enabled: Mon %02d:%02d MSK",
+                        settings.seo_weekly_report_cron_hour, settings.seo_weekly_report_cron_minute)
+
         if settings.telegram_weekly_enabled:
             from app.services.telegram_reports import weekly_report_job
             scheduler.add_job(
@@ -1291,6 +1335,21 @@ async def lifespan(app: FastAPI):
             max_instances=1,
             coalesce=True,
         )
+
+        # Круг 12, SPEED3: материализованный счётчик публичных рядов по странам (каталог на главной, рейтинги).
+        # Раз в 15 минут и сразу после запуска; без флага world_listed_counts_enabled задача не регистрируется.
+        if settings.world_listed_counts_enabled:
+            from app.services.world_listed_counts import world_listed_counts_job
+            scheduler.add_job(
+                locked_job(world_listed_counts_job, "world_listed_counts", ttl_seconds=600),
+                trigger=IntervalTrigger(minutes=15),
+                id="world_listed_counts",
+                name="World listed-series counts per country (every 15 min, flag world_listed_counts_enabled)",
+                replace_existing=True,
+                max_instances=1,
+                coalesce=True,
+                next_run_time=datetime.now(dt_timezone.utc) + timedelta(seconds=20),
+            )
 
         asyncio.create_task(_cleanup_stuck_fetch_logs())
 

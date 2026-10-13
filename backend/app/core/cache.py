@@ -337,6 +337,13 @@ async def fresh_world_catalog_key(rest: str) -> str:
 
 async def bump_namespaces(*namespaces: str) -> None:
     """Invalidate DB0 namespaces and atomically advance durable catalogue state."""
+    if "world-catalog" in namespaces:
+        # Счётчик публичных рядов по странам пересчитывается ДО смены версии кэша: страницы новой версии строятся
+        # по свежим числам (круг 12, SPEED3). Без флага world_listed_counts_enabled — мгновенный no-op; сбой не
+        # пробрасывается (сброс кэша важнее, расписание догонит).
+        from app.services.world_listed_counts import refresh_before_catalog_bump
+
+        await refresh_before_catalog_bump()
     cache_namespaces = [ns for ns in namespaces if ns != "world-catalog"]
     try:
         if cache_namespaces:

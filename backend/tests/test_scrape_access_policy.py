@@ -54,14 +54,32 @@ def test_crawler_exemption_needs_published_network_and_indexing_ua():
 
 def test_og_resource_caps_remain_and_cover_direct_api():
     config = nginx_directives()
-    assert "limit_req_zone $server_name zone=ogall:1m rate=8r/s;" in config
-    assert "limit_conn_zone $server_name zone=ogconn:1m;" in config
+    # Общий потолок на картинки остаётся для всех, кроме проверенного индексирующего робота.
+    assert "limit_req_zone $og_shared_key zone=ogall:1m rate=8r/s;" in config
+    assert "limit_conn_zone $og_shared_key zone=ogconn:1m;" in config
     for location in ("location ^~ /og/", "location ^~ /api/v1/og-image/"):
         block = config.split(location, 1)[1].split("\n    }", 1)[0]
         assert "limit_req zone=ssrstrict burst=10 nodelay;" in block
         assert "limit_req zone=ogall burst=16 nodelay;" in block
         assert "limit_conn ogconn 4;" in block
         assert "limit_conn perip 8;" in block
+        # Робот получает свой серверный бюджет: очередь вместо отказа и страховка по параллельности.
+        assert "limit_req zone=ogbot burst=120;" in block
+        assert "limit_conn ogbotconn 8;" in block
+
+
+def test_verified_crawler_leaves_shared_og_bucket_but_keeps_its_own_budget():
+    """Googlebot-Image получал 429 из общего ведра картинок (12.10.2026: 113 из 1365)."""
+    config = nginx_directives()
+    shared = config.split("map $verified_search_crawler $og_shared_key {", 1)[1].split("}", 1)[0]
+    own = config.split("map $verified_search_crawler $og_crawler_key {", 1)[1].split("}", 1)[0]
+    # Проверенный робот: пустой ключ в общем ведре (nginx его не считает), $server_name в своём.
+    assert '1 "";' in shared and "default $server_name;" in shared
+    assert "1 $server_name;" in own and 'default "";' in own
+    # Своё ведро без nodelay: запросы ждут в очереди, а не отклоняются.
+    assert "limit_req_zone $og_crawler_key zone=ogbot:1m rate=6r/s;" in config
+    assert "limit_conn_zone $og_crawler_key zone=ogbotconn:1m;" in config
+    assert "zone=ogbot burst=120 nodelay" not in config
 
 
 def test_nginx_does_not_deny_browser_variants_by_ua():

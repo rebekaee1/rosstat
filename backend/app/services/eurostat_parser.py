@@ -411,17 +411,109 @@ def extract_dimensions(payload: dict) -> dict[str, list[str]]:
     return dims
 
 
+_INDEX_UNIT_RE = re.compile(r"^I(\d{4}|\d{2})(?:_([A-Z0-9_]+))?$")
+
+
+def index_base_year(unit: str | None) -> int | None:
+    """Базовый год индексной единицы Евростата: I15 → 2015, I2021 → 2021, I21_SCA → 2021.
+
+    None — не индекс с базой в коде (INX, PC, PCH_SM, MIO_EUR …).
+    """
+    match = _INDEX_UNIT_RE.match((unit or "").strip().upper())
+    if not match:
+        return None
+    raw = match.group(1)
+    if len(raw) == 4:
+        return int(raw)
+    yy = int(raw)
+    return 1900 + yy if yy >= 90 else 2000 + yy
+
+
+def index_unit_suffix(unit: str | None) -> str:
+    """Хвост единицы без базы: I15_Q → «Q», I21 → «»; разные хвосты — разные меры."""
+    match = _INDEX_UNIT_RE.match((unit or "").strip().upper())
+    return (match.group(2) or "") if match else ""
+
+
+def replace_dead_index_unit(
+    picked: str | None, members: list[str], live: set[str] | None,
+) -> str | None:
+    """Индекс с остановленной базой → тот же индекс на новой живой базе.
+
+    Евростат с 2024 пересчитывает индексы короткосрочной статистики на 2021=100
+    (I21), а старую базу (I15) оставляет в кодлисте набора без новых данных.
+    Приоритет по порядку кодов выбирал бы I15 вечно. Здесь: если выбранная единица —
+    индекс с базой в коде, у неё нет ни одного наблюдения в последнем периоде набора
+    (``live``), а в наборе есть живой индекс с тем же хвостом и более новой базой —
+    берём самую новую живую базу. Живая единица или не-индекс не меняются.
+    """
+    if picked is None or not live:
+        return picked
+    live_upper = {m.upper() for m in live}
+    base = index_base_year(picked)
+    if base is None or picked.upper() in live_upper:
+        return picked
+    suffix = index_unit_suffix(picked)
+    newer = [
+        m for m in members
+        if m.upper() in live_upper
+        and (index_base_year(m) or 0) > base
+        and index_unit_suffix(m) == suffix
+    ]
+    if not newer:
+        return picked
+    return max(newer, key=lambda m: index_base_year(m) or 0)
+
+
+def extract_live_members(payload: dict, dim: str) -> set[str]:
+    """Члены измерения ``dim``, у которых есть хотя бы одно наблюдение в ответе JSON-stat."""
+    ids = list(payload.get("id") or [])
+    sizes = list(payload.get("size") or [])
+    if dim not in ids or len(ids) != len(sizes):
+        return set()
+    members = extract_dimensions(payload).get(dim) or []
+    if not members:
+        return set()
+    pos = ids.index(dim)
+    stride = 1
+    for size in sizes[pos + 1:]:
+        stride *= int(size)
+    dim_size = int(sizes[pos])
+    value = payload.get("value")
+    if isinstance(value, dict):
+        keys = [int(k) for k, v in value.items() if v is not None]
+    elif isinstance(value, list):
+        keys = [i for i, v in enumerate(value) if v is not None]
+    else:
+        return set()
+    live: set[str] = set()
+    for key in keys:
+        idx = (key // stride) % dim_size
+        if idx < len(members):
+            live.add(members[idx])
+            if len(live) == len(members):
+                break
+    return live
+
+
 def choose_headline_slice(
     dims: dict[str, list[str]],
     *,
     dataset_id: str | None = None,
+    live: dict[str, set[str]] | None = None,
 ) -> dict[str, str]:
-    """Pin every dim except geo/time to a headline member."""
+    """Pin every dim except geo/time to a headline member.
+
+    ``live`` — dim → члены с наблюдениями в последнем периоде набора (если проба
+    их дала): мёртвая база индекса заменяется живой (``replace_dead_index_unit``).
+    """
     slice_: dict[str, str] = {}
     for dim, members in dims.items():
         if dim.lower() in _SKIP_DIMS:
             continue
         picked = pick_headline_member(dim, members, dataset_id=dataset_id)
+        if picked is not None and dim.lower() == "unit":
+            picked = replace_dead_index_unit(picked, members, (live or {}).get(dim))
         if picked is not None:
             slice_[dim] = picked
     return slice_
@@ -639,11 +731,53 @@ def fetch_dataset_structure_dsd(
 
 def fetch_dataset_structure(dataset_id: str, session: requests.Session | None = None) -> dict[str, list[str]]:
     """Structure probe: compact JSON → geo-pinned JSON → full DSD XML."""
+    return fetch_dataset_structure_live(dataset_id, session=session)[0]
+
+
+def _structure_and_live(payload: dict) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
+    dims = extract_dimensions(payload)
+    live = {dim: extract_live_members(payload, dim) for dim in dims if dim.lower() == "unit"}
+    return dims, {dim: members for dim, members in live.items() if members}
+
+
+def fetch_dataset_structure_live(
+    dataset_id: str, session: requests.Session | None = None, *, use_cache: bool = True,
+    honor_flag: bool = True,
+) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
+    dims, live = _fetch_structure_live(dataset_id, session, use_cache)
+    if honor_flag:
+        from app.config import settings
+
+        if not settings.eurostat_rebase_enabled:
+            live = {}
+        elif not live.get("unit"):
+            bases = [m for m in dims.get("unit") or [] if index_base_year(m) is not None]
+            if len(bases) >= 2:
+                # Несколько баз индекса, а какая жива, неизвестно (проба через DSD или
+                # без наблюдений): молча взять привычную нельзя, набор уйдёт на повтор.
+                raise RuntimeError(
+                    f"{dataset_id}: живая база индекса не определена ({', '.join(bases)}), повтор позже"
+                )
+    return dims, live
+
+
+def _fetch_structure_live(
+    dataset_id: str, session: requests.Session | None, use_cache: bool,
+) -> tuple[dict[str, list[str]], dict[str, set[str]]]:
+    """Структура набора и живые члены измерения unit (с наблюдением в последнем периоде).
+
+    Живость нужна, чтобы не закреплять срез на остановленной базе индекса.
+    Пробы через DSD живость не дают (пустой словарь): поведение прежнее.
+    Пока ``RUSTATS_EUROSTAT_REBASE_ENABLED`` выключен, живость не отдаётся и срез
+    выбирается по прежнему приоритету (``honor_flag=False`` — для сухого прогона плана).
+    ``use_cache=False`` обязателен для обновления по расписанию: проба «последний период»
+    меняется с каждым выпуском, а кэш на диске ключуется только адресом и не стареет.
+    """
     with _session_scope(session) as sess:
         # 1) cheap: last period, all geos
         try:
             url = build_data_url(dataset_id, {}, last_time_period=1)
-            return extract_dimensions(http_get_json(url, session=sess))
+            return _structure_and_live(http_get_json(url, session=sess, use_cache=use_cache))
         except EurostatHttpError as exc:
             if exc.status_code not in (413, 414):
                 logger.warning("structure JSON failed %s: %s — trying geo pin / DSD", dataset_id, exc)
@@ -658,15 +792,17 @@ def fetch_dataset_structure(dataset_id: str, session: requests.Session | None = 
                 url = build_data_url(
                     dataset_id, {"geo": geo}, last_time_period=1, pin_geo=True
                 )
-                dims = extract_dimensions(http_get_json(url, session=sess))
+                dims, live = _structure_and_live(
+                    http_get_json(url, session=sess, use_cache=use_cache)
+                )
                 if dims:
-                    return dims
+                    return dims, live
             except Exception as exc:  # noqa: BLE001
                 logger.debug("structure geo=%s failed %s: %s", geo, dataset_id, exc)
 
         # 3) full DSD
         logger.info("structure fallback DSD for %s", dataset_id)
-        return fetch_dataset_structure_dsd(dataset_id, session=sess)
+        return fetch_dataset_structure_dsd(dataset_id, session=sess), {}
 
 
 def _fetch_jsonstat_payload(
@@ -738,11 +874,11 @@ def fetch_and_parse_dataset(
     вместо единственного headline TOTAL).
     """
     with _session_scope(session) as sess:
-        dims = fetch_dataset_structure(dataset_id, session=sess)
+        dims, live = fetch_dataset_structure_live(dataset_id, session=sess, use_cache=use_cache)
         slice_ = (
             dict(forced_slice)
             if forced_slice
-            else choose_headline_slice(dims, dataset_id=dataset_id)
+            else choose_headline_slice(dims, dataset_id=dataset_id, live=live)
         )
 
         # Prefer catalog frequency if freq dim absent / mismatched
@@ -812,6 +948,19 @@ def fetch_and_parse_dataset(
         )
 
 
+# Доля не загруженных срезов, выше которой перенос на новую базу индекса уходит на повтор.
+MAX_SLICE_FAIL_SHARE = 0.10
+
+
+def _base_moved(dims: dict[str, list[str]], dataset_id: str, live: dict[str, set[str]]) -> bool:
+    """Живость единиц сменила выбор базы индекса (I15 → I21)."""
+    if not (live or {}).get("unit"):
+        return False
+    before = choose_headline_slice(dims, dataset_id=dataset_id).get("unit")
+    after = choose_headline_slice(dims, dataset_id=dataset_id, live=live).get("unit")
+    return before != after
+
+
 def fetch_deep_slices(
     dataset_id: str,
     *,
@@ -822,14 +971,15 @@ def fetch_deep_slices(
     from app.data.eurostat_deep_expand import resolve_slice_specs
 
     with _session_scope(session) as sess:
-        dims = fetch_dataset_structure(dataset_id, session=sess)
-        plan = resolve_slice_specs(dataset_id, dims)
+        dims, live = fetch_dataset_structure_live(dataset_id, session=sess, use_cache=use_cache)
+        plan = resolve_slice_specs(dataset_id, dims, live=live)
         for skip in plan.skips:
             logger.info(
                 "deep-expand skip %s dim=%s n=%s reason=%s",
                 skip.dataset_id, skip.dim, skip.non_total_count, skip.reason,
             )
         out: list[DatasetParseResult] = []
+        failed = 0
         for spec in plan.specs:
             try:
                 out.append(
@@ -842,7 +992,14 @@ def fetch_deep_slices(
                     )
                 )
             except Exception as exc:  # noqa: BLE001
+                failed += 1
                 logger.warning("deep slice %s %s failed: %s", dataset_id, spec, exc)
+        if failed and out and _base_moved(dims, dataset_id, live) and failed > MAX_SLICE_FAIL_SHARE * len(plan.specs):
+            # Перенос на живую базу индекса с дырами не засчитываем: состояние набора стало бы
+            # «ok» до следующей смены оглавления. Лучше повтор следующим прогоном.
+            raise RuntimeError(
+                f"{dataset_id}: не загружено {failed} из {len(plan.specs)} срезов при смене базы индекса, повтор позже"
+            )
         if out:
             return out
         return [

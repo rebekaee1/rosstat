@@ -255,3 +255,78 @@ def test_target_uses_original_uri_only_for_seo_paths(monkeypatch):
 def test_flag_off_binds_nothing(monkeypatch):
     monkeypatch.setattr(settings, "ssr_swr_enabled", False)
     assert ssr_swr.bind_request(_Req({"host": "x"})) == ()
+
+
+def test_cache_state_is_reported_as_response_header(swr_on, monkeypatch):
+    """X-FE-Cache: miss -> hit -> stale; по нему SWR проверяют на живом сайте (круг 12, SPEED3)."""
+    replays.clear()
+    seen: list[str | None] = []
+
+    async def render():
+        return 200, "<html>v1</html>"
+
+    async def one():
+        seo_pages._cache_state.set(None)
+        status, html = await seo_pages._cached_html("world", "world:germany:ru", 300, render)
+        response = seo_pages._html_response(status, html)
+        seen.append(response.headers.get("x-fe-cache"))
+
+    async def go():
+        _target(monkeypatch)
+        await one()
+        await one()
+        for k in [k async for k in swr_on[1].scan_iter(match="*:fresh")]:
+            await swr_on[1].delete(k)
+        await one()
+
+    asyncio.run(go())
+    assert seen == ["miss", "hit", "stale"]
+
+
+def test_failed_revalidation_keeps_stale_record_and_retries_only_after_lock(swr_on, monkeypatch):
+    """504 при пересчёте не затирает запись; повтор — не раньше конца замка и один на ключ."""
+    import httpx
+
+    attempts: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        attempts.append(request.url.path)
+        return httpx.Response(504)
+
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(
+        ssr_swr.httpx, "AsyncClient", lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw),
+    )
+    monkeypatch.setattr(settings, "ssr_warm_base_url", "http://frontend")
+    renders = {"n": 0}
+
+    async def render():
+        renders["n"] += 1
+        return 200, "<html>old</html>"
+
+    async def stale_visit():
+        status, html = await seo_pages._cached_html("world", "world:germany:ru", 300, render)
+        for _ in range(5):
+            await asyncio.sleep(0)
+        return status, html
+
+    async def go():
+        _target(monkeypatch)
+        monkeypatch.setattr(ssr_swr, "_replay", _real_replay)
+        await seo_pages._cached_html("world", "world:germany:ru", 300, render)
+        for k in [k async for k in swr_on[1].scan_iter(match="*:fresh")]:
+            await swr_on[1].delete(k)
+        first = await stale_visit()
+        await asyncio.sleep(0.05)
+        second = await stale_visit()  # замок пересчёта ещё держится: нового запроса нет
+        await asyncio.sleep(0.05)
+        keys = [k async for k in swr_on[1].scan_iter(match="*:ssr:*") if not k.endswith(b":fresh")]
+        value, fresh = await cache_mod.ssr_cache_get_swr(keys[0]) if keys else (None, None)
+        return first, second, (value, fresh)
+
+    _real_replay = ssr_swr._replay
+    first, second, stored = asyncio.run(go())
+    assert first == second == (200, "<html>old</html>")
+    assert renders["n"] == 1, "запись отдана без рендера в пути запроса"
+    assert len(attempts) == 1, "один пересчёт на ключ, повтор держит замок"
+    assert stored == ("<html>old</html>", False), "ошибка пересчёта не стирает старую запись и не делает её свежей"

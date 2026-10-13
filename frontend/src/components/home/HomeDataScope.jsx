@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { numberTag } from '../../lib/format';
 import { Link } from 'react-router-dom';
 import { BarChart3, Globe2, History } from 'lucide-react';
 import { homeScopeCountriesCount } from '../../lib/homeWorkbench';
@@ -11,7 +12,7 @@ import '../../styles/shell.css';
 import '../../styles/z3-home.css';
 
 const groupDigits = (locale) => {
-  const formatter = new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'ru-RU');
+  const formatter = new Intl.NumberFormat(numberTag(locale));
   return (n) => formatter.format(Math.round(n));
 };
 

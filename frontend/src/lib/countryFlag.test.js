@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { countryFlag, splitUnit, uniformDigits, POPULAR_COUNTRY_SLUGS } from './countryFlag';
+import { countryFlag, flatUnit, parenUnit, splitUnit, uniformDigits, POPULAR_COUNTRY_SLUGS } from './countryFlag';
 
 describe('countryFlag', () => {
   it('builds regional indicator pairs', () => {
@@ -63,5 +63,26 @@ describe('splitUnit: процент (круг 9, Q3)', () => {
   });
   it('индекс с базой процентом не считается', () => {
     expect(splitUnit('индекс 2015 = 100, процентов')).toEqual({ short: '', long: 'индекс 2015 = 100, процентов' });
+  });
+});
+
+describe('parenUnit / flatUnit: единица в скобках без вложенных (круг 13)', () => {
+  const plain = (text) => text.replace(/\u00A0/g, ' ');
+  it('«индекс (2015 = 100)» → «(индекс, 2015 = 100)» и то же по-английски', () => {
+    expect(plain(parenUnit('индекс (2015 = 100)'))).toBe('(индекс, 2015 = 100)');
+    expect(plain(parenUnit('Index (1982–84 = 100)'))).toBe('(Index, 1982–84 = 100)');
+    expect(plain(parenUnit('индекс (1982–84 = 100)'))).toBe('(индекс, 1982–84 = 100)');
+  });
+  it('без скобок только оборачивает, пустое остаётся пустым', () => {
+    expect(parenUnit('в текущих ценах, млн евро')).toBe('(в текущих ценах, млн евро)');
+    expect(parenUnit('')).toBe('');
+    expect(parenUnit(null)).toBe('');
+    expect(flatUnit('индекс (2015 = 100)')).not.toMatch(/[()]/);
+  });
+  it('«= 100» склеено неразрывными пробелами: перенос посреди «(2015 = 100)» невозможен', () => {
+    expect(parenUnit('индекс (2015 = 100)')).toContain('2015\u00A0=\u00A0100');
+  });
+  it('вложенность любой глубины схлопывается', () => {
+    expect(flatUnit('индекс (база (2015) = 100)')).not.toMatch(/\(/);
   });
 });

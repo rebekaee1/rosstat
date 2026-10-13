@@ -36,6 +36,7 @@ from app.data.eurostat_titles_ru import (  # noqa: E402
     build_public_name,
     category_for_dataset,
     country_prepositional,
+    in_place,
     dataset_title_en,
     is_listed_for_quality,
     public_description,
@@ -66,11 +67,17 @@ from app.services.eurostat_parser import (  # noqa: E402
     make_indicator_code,
 )
 from app.core.cache import bump_namespaces  # noqa: E402
-from app.data.world_superseded import is_superseded_dataset  # noqa: E402
+from app.data.world_superseded import should_unlist_superseded  # noqa: E402
 from app.services.eurostat_structure import (  # noqa: E402
     ExistingSlice,
     StructureVerdict,
     plan_structure_migration,
+)
+from app.services.eurostat_rebase import (  # noqa: E402
+    REBASE_EVENTS,
+    RebaseContext,
+    describe_summary,
+    summarize_events,
 )
 
 logging.basicConfig(
@@ -96,6 +103,8 @@ _UPSERT_CHUNK = 3000
 EXIT_STRUCTURE_BLOCKED = 3
 # Машиночитаемый итог сверки для world_eurostat_ingest (последние строки вывода).
 STRUCTURE_VERDICT_PREFIX = "STRUCTURE_VERDICT "
+# Итог смены базы индекса по набору (журнал загрузки и сообщение в Telegram).
+REBASE_VERDICT_PREFIX = "REBASE_VERDICT "
 
 
 async def publish_committed_changes(*, catalog_changed: bool = True) -> None:
@@ -338,8 +347,11 @@ async def upsert_indicator_meta(
         listed = False
     if listed and is_derived_change_unit(result.unit):
         listed = False
-    # Круг 12: остановленные у источника дубли (HICP cind/cann/cmon) не листингуем.
-    if listed and is_superseded_dataset(result.dataset_id):
+    # Круги 12–13: остановленные у источника дубли (HICP cind/cann/cmon/fp, prc_ppp_ind) не листингуем.
+    if listed and await should_unlist_superseded(
+        db, country_id, result.dataset_id, code, result.slice_, result.unit,
+        points[0][0] if points else None,
+    ):
         listed = False
     if listed and not meets_listing_depth(result.frequency, len(points)):
         listed = False
@@ -373,7 +385,7 @@ async def upsert_indicator_meta(
         name_ru, country_prep=prep, country_name_ru=country_name_ru
     )
     seo_kw = (
-        f"{name_ru}, {country_name_ru}, {name_ru} в {prep}, "
+        f"{name_ru}, {country_name_ru}, {name_ru} {in_place(prep)}, "
         f"{country_name_ru} статистика, график"
     )
 
@@ -485,6 +497,11 @@ async def persist_result(
     changes: set[str] = set()
     async with async_session() as db:
         async with db.begin():
+            # Смена базы индекса (I15 → I21): прежняя карточка страны переезжает на
+            # новый срез на месте, а не остаётся замороженной рядом с новой.
+            rebase = await RebaseContext.load(
+                db, result.dataset_id, result.slice_, result.slice_hash,
+            )
             for geo, points in result.series_by_geo.items():
                 cid = country_ids.get(geo)
                 if cid is None:
@@ -503,6 +520,14 @@ async def persist_result(
 
                 name_ru = country_names.get(geo) or WORLD_COUNTRIES[geo][1]
                 slug = (WORLD_COUNTRIES.get(geo) or (None,))[0]
+                rebase_event = (
+                    await rebase.retarget(db, country_id=cid, points=points)
+                    if rebase is not None else None
+                )
+                if rebase_event is not None and rebase_event.kind == "skipped":
+                    continue
+                if rebase_event is not None:
+                    changes.update(("metadata", "catalog"))
                 iid, _ = await upsert_indicator_meta(
                     db,
                     country_id=cid,
@@ -516,6 +541,11 @@ async def persist_result(
                 # The country catalogue counts listed rows with nonzero signal;
                 # point revisions that keep that signal do not change its payload.
                 indicator = await db.get(WorldIndicator, iid)
+                if rebase is not None:
+                    await rebase.retire_twins(
+                        db, rebase_event, new_id=iid, new_listed=bool(indicator.is_listed),
+                        new_end=points[-1][0] if points else None,
+                    )
                 signal_query = select(select(WorldDataPoint.id).where(
                     WorldDataPoint.indicator_id == iid, WorldDataPoint.value != literal_column("0"),
                 ).exists())
@@ -715,6 +745,9 @@ async def run(args: argparse.Namespace) -> int:
         for e in stats["errors"][:30]:
             log.info("  %s", e)
     # Последними строками: world_eurostat_ingest читает хвост вывода.
+    for summary in summarize_events(REBASE_EVENTS):
+        summary["note"] = describe_summary(summary)
+        print(REBASE_VERDICT_PREFIX + json.dumps(summary, ensure_ascii=False), flush=True)
     for verdict in verdicts:
         print(STRUCTURE_VERDICT_PREFIX + json.dumps(verdict, ensure_ascii=False), flush=True)
     if stats["datasets_ok"]:

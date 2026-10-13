@@ -4,7 +4,7 @@ import { MessageSquare, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../context/authContext';
 import { track, events } from '../../lib/track';
 import {
-  logoutUser, logoutAll, deleteAccount, submitFeedback, updateNewsletter, updateProfile,
+  logoutUser, logoutAll, deleteAccount, submitFeedback, updateNewsletter, updateProfile, fetchAccountExport,
 } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/apiErrorMessage';
 import { useT } from '../../i18n';
@@ -47,6 +47,27 @@ export default function ProfilePanel() {
   }, [location.hash]);
 
   if (!user) return null;
+
+  // Выгрузка своих данных одним файлом: JSON собирается в браузере из ответа сервера, на диск идёт только по нажатию.
+  const doExport = async () => {
+    setBusy(true); setBusyKey('export'); setErr(null); setMsg(null);
+    try {
+      const data = await fetchAccountExport();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'forecast-economy-my-data.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      setErr(t('c13.account.exportFail'));
+    } finally {
+      setBusy(false); setBusyKey(null);
+    }
+  };
 
   const run = async (fn, okMsg, refresh = true, key = null) => {
     setBusy(true); setBusyKey(key); setErr(null); setMsg(null);
@@ -306,6 +327,13 @@ export default function ProfilePanel() {
           </Button>
         </div>
         <p className="text-xs text-text-tertiary mt-2">{t('account.logoutAllTitle')}</p>
+
+        <div className="c13-export">
+          <Button variant="secondary" onClick={doExport} disabled={busy} loading={busyKey === 'export'} data-testid="account-export">
+            {t('c13.account.exportCta')}
+          </Button>
+          <p className="text-xs text-text-tertiary mt-2">{t('c13.account.exportHint')}</p>
+        </div>
 
         <div className="c11b-danger">
           {delOpen ? (

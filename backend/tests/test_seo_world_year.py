@@ -378,6 +378,18 @@ def test_russian_year_metadata_identifies_country(frequency, n_rows, current):
     assert "Показатель в Германии в 2026 году" in desc
 
 
+@pytest.mark.parametrize("country_prep,phrase", [
+    ("Франции", "во Франции"), ("Кипре", "на Кипре"), ("Вьетнаме", "во Вьетнаме"),
+])
+def test_russian_year_metadata_preposition_by_country(country_prep, phrase):
+    from app.services.seo_world_year import _title_desc
+    title, desc = _title_desc(name="Показатель", country_name=country_prep, year=2026,
+        frequency="monthly", n_rows=12, current_year=False, period_note="",
+        summary_label="Значение", summary_text="123", source="Eurostat", en=False, yt=lambda key: None)
+    assert f"Показатель {phrase} в 2026 году" in title
+    assert f"Показатель {phrase} в 2026 году" in desc
+
+
 @pytest.mark.parametrize("locale", ["ru", "en"])
 @pytest.mark.parametrize("frequency,months,coverage", [
     ("monthly", list(range(1, 13)), "12"),

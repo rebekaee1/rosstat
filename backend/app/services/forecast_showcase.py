@@ -406,6 +406,7 @@ async def _russia_items(db, locale: str) -> list[dict[str, Any]]:
                 items.append(item)
         except Exception:  # noqa: BLE001 — одна карточка не должна ронять витрину
             logger.warning("forecast showcase: Russia item %s skipped", spec["id"], exc_info=True)
+            await _recover_session(db)
     return items
 
 
@@ -433,8 +434,8 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
     from app.models import WorldCountry, WorldDataPoint, WorldForecast, WorldForecastValue, WorldIndicator
     from app.services import site_paths as paths
     from app.services.seo_i18n import translate_source
-    from app.services.world_forecast_pipeline import world_forecast_source_ready
-    from app.services.world_forecaster import PUBLISHED_GATE_STATUSES, publishable_world_forecast
+    from app.services.world_forecast_gate import world_forecast_source_ready
+    from app.services.world_forecast_gate import PUBLISHED_GATE_STATUSES, publishable_world_forecast
     from app.services.world_official_forecast import is_official_forecast
 
     items: list[dict[str, Any]] = []
@@ -542,7 +543,18 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
                     items.append(item)
         except Exception:  # noqa: BLE001
             logger.warning("forecast showcase: world theme %s skipped", spec["theme"], exc_info=True)
+            await _recover_session(db)
     return items
+
+
+async def _recover_session(db) -> None:
+    """После сбоя запроса (таймаут на боевой) транзакция сессии «оборвана»: все следующие запросы падают с
+    InFailedSQLTransactionError, и из-за одной темы пропадали все остальные карточки мира (боевой журнал 12.10).
+    Откат возвращает сессию в рабочее состояние; сама витрина только читает, терять нечего."""
+    try:
+        await db.rollback()
+    except Exception:  # noqa: BLE001
+        logger.warning("forecast showcase: rollback after a failed theme did not succeed", exc_info=True)
 
 
 def _world_unit(indicator: Any, locale: str) -> str:

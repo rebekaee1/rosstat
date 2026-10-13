@@ -12,16 +12,18 @@ import Chip from '../Chip';
 import ChipGroup from '../ChipGroup';
 import Spinner from '../Spinner';
 
-const LOCALES = ['ru', 'en'];
 const NUMBER_FORMATS = ['ru', 'en'];
-const UNITS = ['source', 'short'];
-const CURRENCIES = ['USD', 'EUR', 'RUB', 'CNY'];
-const TOPICS = ['inflation', 'rates', 'currencies', 'calendar'];
+// Рубль в списке не нужен: конвертер и так открывается парой «USD → RUB», выбор «RUB» ничего не менял бы (круг 13).
+const CURRENCIES = ['USD', 'EUR', 'CNY'];
 
-/** Оставляет только поля, которые принимает сервер (он отвечает 422 на любое чужое). */
+/**
+ * Оставляет только поля, которые принимает сервер (он отвечает 422 на любое чужое).
+ * Поля `locale`, `units`, `newsletter_topics` из формы убраны (круг 13), но ранее сохранённые значения проходят насквозь:
+ * сохранение не стирает то, что человек выбрал раньше, и сервер по-прежнему принимает все шесть полей.
+ */
 function pickPrefs(data) {
   const out = {};
-  if (LOCALES.includes(data?.locale)) out.locale = data.locale;
+  if (data?.locale === 'ru' || data?.locale === 'en') out.locale = data.locale;
   if (typeof data?.units === 'string' && data.units) out.units = data.units;
   if (typeof data?.number_format === 'string' && data.number_format) out.number_format = data.number_format;
   if (/^[A-Z]{3}$/.test(data?.currency || '')) out.currency = data.currency;
@@ -40,9 +42,10 @@ function Field({ label, children }) {
 }
 
 /**
- * Настройки: язык по умолчанию, формат чисел, единицы, валюта, главная страна, темы рассылки.
- * Применяются формат чисел, валюта конвертера и главная страна (`lib/cabinetPrefs.js`); язык, единицы и темы рассылки пока только
- * хранятся. Темы рассылки не заменяют согласие: оно остаётся в разделе «Профиль», письма пока не отправляются.
+ * Настройки: формат чисел, валюта конвертера, главная страна. Все три действуют на сайте (`lib/cabinetPrefs.js`).
+ * Круг 13 (C2): поля «язык по умолчанию» (язык задаёт адрес страницы, ADR-0003/0013), «единицы» (общего переключателя единиц
+ * в данных нет) и «темы рассылки» (письма по темам не отправляются, согласие живёт в «Профиле») убраны из формы: поле, которое
+ * ничего не меняет, обманывает человека.
  */
 export default function PrefsForm() {
   const t = useT();
@@ -80,10 +83,6 @@ export default function PrefsForm() {
   if (state.status === 'error') return <div role="alert" className="c11b-empty">{t('c11b.err.generic')}</div>;
 
   const set = (patch) => { setSaved(false); setDraft((d) => ({ ...d, ...patch })); };
-  const toggleTopic = (topic) => {
-    const now = draft.newsletter_topics || [];
-    set({ newsletter_topics: now.includes(topic) ? now.filter((x) => x !== topic) : [...now, topic] });
-  };
   const dirty = JSON.stringify(pickPrefs(draft)) !== JSON.stringify(state.data);
 
   const submit = (event) => {
@@ -111,19 +110,9 @@ export default function PrefsForm() {
   return (
     <form onSubmit={submit} className="c11b-prefs">
       <p className="c11b-hint">{t('c12u.prefs.intro')}</p>
-      <Field label={t('c11b.prefs.locale')}>
-        <ChipGroup label={t('c11b.prefs.locale')}>
-          {LOCALES.map((v) => pick('locale', v, t(`c11b.prefs.locale.${v}`)))}
-        </ChipGroup>
-      </Field>
       <Field label={t('c11b.prefs.numbers')}>
         <ChipGroup label={t('c11b.prefs.numbers')}>
           {NUMBER_FORMATS.map((v) => pick('number_format', v, t(`c11b.prefs.numbers.${v}`)))}
-        </ChipGroup>
-      </Field>
-      <Field label={t('c11b.prefs.units')}>
-        <ChipGroup label={t('c11b.prefs.units')}>
-          {UNITS.map((v) => pick('units', v, t(`c11b.prefs.units.${v}`)))}
         </ChipGroup>
       </Field>
       <Field label={t('c11b.prefs.currency')}>
@@ -141,16 +130,6 @@ export default function PrefsForm() {
           <option value="">{t('c11b.prefs.countryNone')}</option>
           {options.map((o) => <option key={o.slug} value={o.slug}>{o.name}</option>)}
         </select>
-      </Field>
-      <Field label={t('c11b.prefs.topics')}>
-        <ChipGroup label={t('c11b.prefs.topics')}>
-          {TOPICS.map((topic) => (
-            <Chip key={topic} active={(draft.newsletter_topics || []).includes(topic)} onClick={() => toggleTopic(topic)}>
-              {t(`c11b.prefs.topics.${topic}`)}
-            </Chip>
-          ))}
-        </ChipGroup>
-        <p className="c11b-hint">{t('c11b.prefs.topicsNote')}</p>
       </Field>
       <div className="c11b-foot">
         <Button type="submit" pending={saving} disabled={!dirty}>{t('common.save')}</Button>

@@ -279,6 +279,24 @@ describe('LiveTicker: понятные подписи, единые знаки �
     expect(text).not.toMatch(/USD\/CNY/);
     const cny = screen.getByText('6.70').closest('a');
     expect(cny.getAttribute('title')).toContain('c10t.ticker.rate');
-    expect(screen.getByText('125.44').closest('a').getAttribute('title')).toContain('c10t.ticker.brentNote');
+    expect(screen.getByText('125.44').closest('a').getAttribute('title')).toContain('c13u.ticker.brentNote');
+  });
+  it('круг 13, R-BRENT: нефть с биржи подписана задержкой и биржевой заметкой, а не недельным EIA; задержка не делает её «давней»', async () => {
+    const quoteAt = new Date(Date.now() - 16 * 60 * 1000).toISOString();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        snapshots: [
+          { code: 'brent', price: 106.57, change_pct: 1.86, market_open: true, fetched_at: quoteAt, as_of: quoteAt, source: 'MOEX', delay_minutes: 15, contract: 'BR-11.26' },
+        ],
+      }),
+    }));
+    renderTicker({ locale: 'ru', route: '/' });
+    const cell = (await screen.findByText('106,57')).closest('a');
+    const title = cell.getAttribute('title');
+    expect(title).toContain('c13b.ticker.brentExchangeNote');
+    expect(title).toContain('c13b.ticker.delayed');
+    expect(title).not.toContain('c13u.ticker.brentNote');
+    expect(cell.className).not.toContain('opacity-60');
   });
 });

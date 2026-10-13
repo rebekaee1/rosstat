@@ -143,6 +143,20 @@ describe('WorldStatTiles и заголовок со значением', () => {
     expect(container.textContent.replace(/\u00A0/g, ' ')).toBe('Германия: 2,3 % за 2025 год');
   });
 
+  it.each([
+    ['индекс (2015 = 100)', 'ru', 'Франция: 129,11 (индекс, 2015 = 100) за август 2026'],
+    ['Index (1982–84 = 100)', 'en', 'France: 129.11 (Index, 1982–84 = 100) for August 2026'],
+  ])('единица-индекс «%s» в строке под заголовком без вложенных скобок (%s)', (unit, locale, expected) => {
+    const s = buildIndicatorSummary({
+      points: [{ date: '2026-07-01', value: 128.17 }, { date: '2026-08-01', value: 129.11 }],
+      frequency: 'monthly', unit, modeType: 'level', dataDigits: 2, locale, now: NOW,
+    });
+    const { container } = wrap(<WorldHeroLine summary={s} place={locale === 'en' ? 'France' : 'Франция'} dateFormat="monthly" />);
+    const text = container.textContent.replace(/\u00A0/g, ' ');
+    expect(text).not.toMatch(/\(\s*[^()]*\([^()]*\)\s*\)/);
+    expect(text).toContain(expected.split(' за ')[0].split(' for ')[0]);
+  });
+
   it('заголовок: для оценки года так и пишет', () => {
     const { container } = wrap(<WorldHeroLine summary={gdpSummary()} place="США" dateFormat="annual" />);
     expect(container.textContent.replace(/\u00A0/g, ' ')).toContain('31,2 трлн $ оценка на 2026');
@@ -250,6 +264,12 @@ describe('WorldChartSection', () => {
     expect(note.textContent).toContain('25 сентября 2025');
     expect(note.textContent).toContain('не пересчитываем');
     expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
+  });
+
+  it('пока данные идут, подпись под графиком ничего не утверждает (у официального прогноза она другая)', () => {
+    renderSection({ forecastEnabled: true, forecastGateStatus: 'passed', chartLoading: true });
+    expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
+    expect(screen.queryByText(/Официальный прогноз Международного валютного фонда/)).toBeNull();
   });
 
   it('одна кнопка «Скачать» вместо россыпи кнопок', () => {

@@ -41,5 +41,9 @@ export function formatDeltaWithUnit(delta, unit, { pct = false, digits = 2, loca
   if (flat) return { flat: true, text: '' };
   if (pct) return { flat: false, text: `${text}${NBSP}%` };
   const suffix = deltaUnit(unit, locale, { plain });
-  return { flat: false, text: suffix ? `${text}${NBSP}${suffix}` : text };
+  // Круг 13: длинная подпись («+0.34 percentage points») должна уметь переноситься, иначе плашка шире карточки (кадр se-34).
+  // Число со знаком от слов не отрываем неразрывным пробелом только у короткой единицы; у длинной — обычный пробел.
+  const gap = suffix && suffix.length > 8 ? ' ' : NBSP;
+  const glued = suffix && suffix.length > 8 ? suffix.replace(/ /g, NBSP) : suffix;
+  return { flat: false, text: suffix ? `${text}${gap}${glued}` : text };
 }

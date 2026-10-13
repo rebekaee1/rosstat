@@ -84,12 +84,12 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_view_modes import is_signed_or_zero_crossing
-from app.services.world_forecaster import (
+from app.services.world_forecast_gate import (
     PUBLISHED_GATE_STATUSES,
     WORLD_FORECAST_METHOD_VERSION,
     publishable_world_forecast,
+    world_forecast_source_ready,
 )
-from app.services.world_forecast_pipeline import world_forecast_source_ready
 from app.services.world_official_forecast import official_forecast_info
 from app.services.world_rank_values import (
     apply_rank_series,
@@ -198,10 +198,14 @@ def _region_display(region_ru: str | None) -> str:
 def _indicator_display_name(ind: WorldIndicator) -> str:
     """Locale-facing indicator title for country catalog / card."""
     from app.data.legacy_redirects import strip_world_frequency_suffix
+    from app.data.world_indicator_titles_ru import title_override_en_for_code
 
     if get_locale() == "en" and (ind.name_en or "").strip():
         from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
+        override = title_override_en_for_code(ind.code)
+        if override:
+            return override
         base = strip_world_frequency_suffix(ind.name_en) or ind.name_en
         return append_en_slice_to_title(base, ind.slice_json)
     return display_name(ind.name_ru, ind.code)
@@ -212,9 +216,14 @@ def _indicator_name_en(ind: WorldIndicator) -> str:
     from app.data.legacy_redirects import strip_world_frequency_suffix
     from app.data.eurostat_dim_labels_en import append_en_slice_to_title
 
+    from app.data.world_indicator_titles_ru import title_override_en_for_code
+
     en_raw = (ind.name_en or "").strip()
     if not en_raw:
         return ""
+    override = title_override_en_for_code(ind.code)
+    if override:
+        return override
     base = strip_world_frequency_suffix(en_raw) or en_raw
     return append_en_slice_to_title(base, ind.slice_json)
 
@@ -235,6 +244,25 @@ def _passthrough_unit_en(indicator: WorldIndicator) -> str:
     return ranking_public_unit("yoy", "", locale="en")
 
 
+def _weo_circle12_unit_en(indicator: WorldIndicator) -> str | None:
+    """Английская единица двух рядов МВФ круга 12 (рост реального ВВП, счёт текущих операций).
+
+    В хранилище у них коды `PC` и `PC_GDP`: «PC» проходил как английская проза и выводился в заголовке
+    («Real GDP growth, India: last 10 years, PC»), а `PC_GDP` разворачивался в длинное «Percentage of gross
+    domestic product (GDP)». Берём готовую подпись из описания ряда.
+    """
+    if str(indicator.provider or "").lower() != "imf" or "-weo-" not in str(indicator.code or ""):
+        return None
+    from app.services.imf_weo_adapter import WEO_CIRCLE12_CODES, WEO_SERIES
+
+    suffix = str(indicator.code).split("-weo-", 1)[1]
+    for weo_code in WEO_CIRCLE12_CODES:
+        meta = WEO_SERIES[weo_code]
+        if meta["code_suffix"] == suffix:
+            return meta.get("unit_en") or None
+    return None
+
+
 def _concept_unit_for_indicator(concept, indicator: WorldIndicator) -> str:
     """Единица ряда в ответах данных: витринная единица понятия, но не для уже процентного ряда.
 
@@ -242,7 +270,7 @@ def _concept_unit_for_indicator(concept, indicator: WorldIndicator) -> str:
     `PCPIPCH` (инфляция за год, %) того же понятия не должен подписываться индексом:
     раньше из-за этого заголовок гласил «0,05 (индекс 2015 = 100)» вместо процентов.
     """
-    if concept is None or _is_percent_passthrough(indicator):
+    if concept is None or _is_percent_passthrough(indicator) or _weo_circle12_unit_en(indicator):
         return _indicator_public_unit(indicator)
     return concept_public_unit(concept)
 
@@ -252,6 +280,9 @@ def _indicator_public_unit(indicator: WorldIndicator) -> str:
     ru = (indicator.unit_ru or indicator.unit or "").strip()
     if get_locale() != "en":
         return ru
+    weo_unit = _weo_circle12_unit_en(indicator)
+    if weo_unit:
+        return weo_unit
     concept = concept_for_indicator(indicator)
     if concept is not None:
         from app.data.eurostat_listing import measure_class
@@ -2305,6 +2336,7 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
     )
     forecast_available = any(mode.get("forecastable") for mode in modes)
 
+    from app.services.freshness_note import world_freshness_note
     from app.services.seo_i18n import localize_category_name, translate_source
 
     cat_ru = listing_category_ru(
@@ -2338,6 +2370,11 @@ async def indicator_meta(slug: str, code: str, db: AsyncSession = Depends(get_db
             "points_count": ind.points_count,
             "archived": is_stale_history(ind.history_end),
             "concept_slug": compare_concept_slug,
+            # Круг 12: у устаревшего ряда без живого двойника — причина и ближайший
+            # актуальный показатель (контракт: app/services/freshness_note.py).
+            "freshness": await world_freshness_note(
+                db, ind, locale=get_locale(), country_slug=country.slug,
+            ),
         },
         "primary_code": primary.code,
         "frequencies": frequencies_payload(by_freq),

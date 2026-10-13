@@ -29,6 +29,7 @@
  *   --human           как у человека: navigator.webdriver=false, поэтому показывается фирменная заставка.
  *                     По умолчанию как у Lighthouse/ботов: заставки нет, виден серверный текст.
  *   --waterfall N     сколько строк водопада печатать для первого прогона (0)
+ *   --block RE        не загружать адреса, подходящие под регулярное выражение (опыт «что даст отсрочка/удаление X»)
  *   --label TEXT      подпись в отчёте; --out FILE.json — все прогоны; --md FILE — добавить таблицу медиан
  *   --browser PATH    свой Chromium/Chrome вместо кэша playwright; --headed
  *   --settle MS       сколько ждать тишины после загрузки (3000); --max MS  потолок прогона (60000)
@@ -80,7 +81,7 @@ const median = (a) => {
 
 /** Скрипт, который ставится до любого кода страницы: собирает paint/LCP/CLS/долгие задачи. */
 const INIT_SCRIPT = `(() => {
-  const w = window; w.__perf = { paints: {}, lcp: 0, cls: 0, long: [], shifts: 0 };
+  const w = window; w.__perf = { paints: {}, lcp: 0, cls: 0, long: [], shifts: 0, lcpList: [] };
   try {
     // момент монтирования приложения и момент, когда SPA стало видимым (html.fe-js)
     let mounted; Object.defineProperty(w, '__feAppMounted', { configurable: true, get() { return mounted; }, set(v) { mounted = v; w.__perf.mountedAt = performance.now(); } });
@@ -90,7 +91,7 @@ const INIT_SCRIPT = `(() => {
   try {
     new PerformanceObserver((l) => { for (const e of l.getEntries()) w.__perf.paints[e.name] = e.startTime; })
       .observe({ type: 'paint', buffered: true });
-    new PerformanceObserver((l) => { for (const e of l.getEntries()) { w.__perf.lcp = e.startTime; const el = e.element; w.__perf.lcpInfo = { tag: el && el.tagName, cls: el ? String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').slice(0, 70) : '', url: (e.url || '').slice(-60), size: e.size, text: el && el.textContent ? el.textContent.trim().slice(0, 40) : '' }; } })
+    new PerformanceObserver((l) => { for (const e of l.getEntries()) { w.__perf.lcpList.push([Math.round(e.startTime), e.element && e.element.tagName, e.size]); w.__perf.lcp = e.startTime; const el = e.element; w.__perf.lcpInfo = { tag: el && el.tagName, cls: el ? String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').slice(0, 70) : '', url: (e.url || '').slice(-60), size: e.size, text: el && el.textContent ? el.textContent.trim().slice(0, 40) : '' }; } })
       .observe({ type: 'largest-contentful-paint', buffered: true });
     new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) { w.__perf.cls += e.value; w.__perf.shifts++; } })
       .observe({ type: 'layout-shift', buffered: true });
@@ -168,6 +169,7 @@ function computeTti(fcp, longTasks, reqs, endObserved) {
 
 async function measure(ctx, helper, url) {
   const page = await ctx.newPage();
+  if (args.block) { const re = new RegExp(String(args.block)); await page.route((u) => re.test(u.toString()), (r) => r.abort()); }
   const cdp = await ctx.newCDPSession(page);
   await cdp.send('Network.enable');
   await cdp.send('Page.enable');
@@ -286,6 +288,7 @@ async function measure(ctx, helper, url) {
     fcp,
     lcp: perf?.lcp || null,
     lcpInfo: perf?.lcpInfo || null,
+    lcpList: perf?.lcpList || null,
     speedIndex: si?.si ?? null,
     vc95: si?.vc95 ?? null,
     firstFrame: si?.firstPaint ?? null,

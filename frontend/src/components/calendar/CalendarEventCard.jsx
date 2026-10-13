@@ -170,7 +170,7 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
         {linkedIndicators.length === 1 ? (
           <Link
             to={russiaIndicatorPath(linkedIndicators[0].code)}
-            className={cn(FOCUS_RING_SURFACE, 'text-champagne hover:text-champagne-muted rounded-md')}
+            className={cn(FOCUS_RING_SURFACE, '-m-[11px] inline-flex h-9 w-9 shrink-0 items-center justify-center text-champagne hover:text-champagne-muted rounded-md')}
             title={linkedIndicators[0].name}
             aria-label={t('calendar.event.goTo', { name: linkedIndicators[0].name })}
           >
@@ -276,7 +276,8 @@ export default function CalendarEventCard({ event, isPast, isToday, index = 0, f
           )}
           {!isPast && linkedIndicators.length === 1 && (
             <CabinetActionsSlot
-              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch' })}
+              className="fe-cabinet-actions--flush"
+              subject={russiaIndicatorSubject(linkedIndicators[0].code, linkedIndicators[0].name, { only: 'watch', variant: 'button' })}
             />
           )}
           {!isPast && event.scheduled_date && (

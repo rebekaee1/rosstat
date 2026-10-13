@@ -37,6 +37,7 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
+from app.services.world_forecast_gate import world_forecast_source_ready  # noqa: F401 — реэкспорт (SPEED3)
 from app.services.world_forecaster import (
     PUBLISHED_GATE_STATUSES,
     WORLD_FORECAST_METHOD_VERSION,
@@ -164,6 +165,15 @@ def _naive_now() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
+def effective_max_age_days(frequency: str | None, default: int) -> int:
+    """Срок «не старше» для ряда своей частоты: годовые и квартальные могут иметь свой, иначе общий."""
+    override = {
+        "annual": int(settings.world_forecast_max_age_days_annual or 0),
+        "quarterly": int(settings.world_forecast_max_age_days_quarterly or 0),
+    }.get((frequency or "").strip().lower(), 0)
+    return override if override > 0 else int(default)
+
+
 def forecast_is_unchanged(
     latest: object | None,
     *,
@@ -188,7 +198,7 @@ def forecast_is_unchanged(
         return False
     created_at = _as_naive(created_at)
     now = _as_naive(now)
-    if now - created_at > timedelta(days=int(max_age_days)):
+    if now - created_at > timedelta(days=effective_max_age_days(frequency, max_age_days)):
         return False
     expected = forecast_fingerprint(
         history_end=history_end, points_count=points_count,
@@ -339,23 +349,6 @@ async def _deactivate_current(
     for row in rows:
         row.is_current = False
     return len(rows)
-
-
-async def world_forecast_source_ready(
-    db: AsyncSession,
-    indicator: WorldIndicator,
-    *,
-    forecast: WorldForecast | None = None,
-) -> bool:
-    """Eurostat forecast requires a successfully applied source revision."""
-    if (indicator.provider or "").lower() != "eurostat":
-        return True
-    state = await db.get(WorldDatasetState, ("eurostat", indicator.dataset_id))
-    if state is None or state.status != "ok" or state.last_success_at is None:
-        return False
-    if forecast is not None and _as_naive(state.last_success_at) > _as_naive(forecast.created_at):
-        return False
-    return True
 
 
 def _model_params_for(

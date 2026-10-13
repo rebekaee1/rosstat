@@ -112,6 +112,18 @@ describe('Android: окно «Установить приложение»', () =
     ]);
   });
 
+  it('карточка несёт класс и платформу для планшетной полосы (круг 13); корень документа без хвостов', async () => {
+    secondVisit(); await enable(); window.dispatchEvent(prompt());
+    renderCard();
+    await advance(DATA_PAGE_DWELL_MS + 2000);
+    const card = screen.getByTestId('pwa-install-card');
+    expect(card.classList.contains('fe-pwa-card')).toBe(true);
+    expect(card.dataset.platform).toBe('android');
+    cleanup();
+    expect(document.documentElement.hasAttribute('data-fe-pwa-bar')).toBe(false);
+    expect(document.documentElement.style.getPropertyValue('--fe-pwa-h')).toBe('');
+  });
+
   it('полезное действие на первом визите открывает окно, но с задержкой', async () => {
     await enable();
     writeState({ ..._store.state, visits: 1, firstSeen: T0 });

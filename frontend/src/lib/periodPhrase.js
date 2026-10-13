@@ -14,9 +14,10 @@ export function periodPhrase(t, dateStr, dateFmt, locale) {
   if (!dateStr) return undefined;
   const date = glueDate(formatDate(dateStr, dateFmt, locale));
   if (date === '—') return undefined;
-  if (dateFmt === 'day' || dateFmt === 'weekly') return t('w3.tele.asOf', { date });
-  if (dateFmt === 'annual') return t('w3.tele.forYear', { date });
-  return t('w3.tele.forPeriod', { date });
+  // Круг 13, V4: предлог и дата — одно целое («за август 2026»), «за» не повисает в конце строки после «руб.».
+  if (dateFmt === 'day' || dateFmt === 'weekly') return glueDate(t('w3.tele.asOf', { date }));
+  if (dateFmt === 'annual') return glueDate(t('w3.tele.forYear', { date }));
+  return glueDate(t('w3.tele.forPeriod', { date }));
 }
 
 /**

@@ -18,6 +18,31 @@ def utcnow_naive() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
+def describe_exception(exc: BaseException) -> str:
+    """Текст сбоя для журнала синхронизаций: тип обязателен.
+
+    У сетевых ошибок httpx (ConnectTimeout, ReadTimeout) ``str(exc)`` пустой —
+    без типа в журнале остаётся пустая строка и причину не найти.
+    """
+    text = str(exc).strip()
+    return f"{type(exc).__name__}: {text}"[:500] if text else type(exc).__name__
+
+
+async def record_failed_sync_run(
+    db: AsyncSession,
+    *,
+    source: str,
+    job_type: str,
+    exc: BaseException,
+    date_from: date | None = None,
+    date_to: date | None = None,
+) -> AnalyticsSyncRun:
+    """Следы сбоя до начала работы (токен, сеть): иначе «задание не запускалось»
+    неотличимо от «запускалось и упало» (Вебмастер, 11–12.10.2026)."""
+    run = await start_sync_run(db, source=source, job_type=job_type, date_from=date_from, date_to=date_to)
+    return await finish_sync_run(db, run, status="failed", error_message=describe_exception(exc))
+
+
 async def start_sync_run(
     db: AsyncSession,
     *,

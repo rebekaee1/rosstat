@@ -7,7 +7,10 @@ request external API call, no rate-limit issues at scale).
 
 Brent and gold always come from the same DB series as their indicator cards
 (`brent`, `gold-price`). Live MOEX futures/spot must not appear in the bar —
-that contradicted the cards on the home page (P0).
+that contradicted the cards on the home page (P0) и нарушало условия биржи (ISS «для ознакомления»).
+Единственное исключение — флаг `moex_brent_live_enabled` (по умолчанию выключен, включается только после
+договора с Мосбиржей): тогда `brent` берётся с биржи с подписью задержки, а при сбое или устаревании
+остаётся спот EIA из ряда карточки.
 
 Design notes:
   - The scheduler-enabled process registers the configured interval;
@@ -30,6 +33,7 @@ import logging
 import time
 from datetime import date
 
+from app.config import settings
 from app.core.cache import get_redis
 from app.services.ticker_sources.binance import fetch_all as binance_fetch_all
 from app.services.ticker_sources.moex_iss import fetch_all as moex_fetch_all
@@ -121,6 +125,23 @@ async def _brent_db_fallback():
     return await _series_db_snapshot("brent", "brent", "EIA")
 
 
+async def _moex_brent_live():
+    """Биржевая нефть Brent или None. Флаг выключен: на биржу не ходим вовсе."""
+    if not settings.moex_brent_live_enabled:
+        return None
+    from app.services.ticker_sources.moex_brent import fetch_brent
+
+    try:
+        snap = await fetch_brent(settings.moex_brent_delay_minutes)
+    except Exception:
+        logger.warning("ticker_pull_job: MOEX Brent failed, fallback to EIA", exc_info=True)
+        return None
+    if snap is not None:
+        _source_last_ok["moex_brent"] = time.monotonic()
+    _check_source_staleness("moex_brent")
+    return snap
+
+
 async def ticker_pull_job() -> None:
     """Fetch live sources + card series; write snapshots to Redis."""
     import asyncio
@@ -150,6 +171,7 @@ async def ticker_pull_job() -> None:
             logger.warning("ticker_pull_job: source failed: %s", src)
         _check_source_staleness(name)
 
+    brent_live = await _moex_brent_live()
     series_snaps = await asyncio.gather(
         *[_series_db_snapshot(ind, tick, src) for ind, tick, src in _SERIES_TICKER_SPECS],
         return_exceptions=True,
@@ -162,6 +184,11 @@ async def ticker_pull_job() -> None:
             continue
         if snap is not None:
             snapshots.append(snap)
+
+    if brent_live is not None:
+        # Биржевая нефть заменяет недельный спот EIA; без неё (флаг выключен, сбой, устаревание) остаётся EIA.
+        snapshots = [s for s in snapshots if s.code != "brent"]
+        snapshots.append(brent_live)
 
     if not snapshots:
         logger.info("ticker_pull_job: no snapshots fetched, skipping Redis write")

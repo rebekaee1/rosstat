@@ -53,6 +53,10 @@ class Settings(BaseSettings):
     analytics_db_idle_in_transaction_timeout_ms: int = 120_000
     # Каталог статических sitemap (ночной job → nginx try_files).
     sitemap_dir: str = "/var/www/sitemaps"
+    # Круг 13 (SEO): размер приоритетного шарда sitemap-priority.xml (первым в
+    # sitemap.xml); 0 = шард не публиковать. Не флаг: без него шард только
+    # добавляет порядок обхода, остальные шарды не меняются.
+    sitemap_priority_max_urls: int = 20_000
     # Google Search Console: meta google-site-verification (пусто = не эмитить).
     google_site_verification: str = ""
     # Bing Webmaster meta msvalidate.01.
@@ -114,6 +118,14 @@ class Settings(BaseSettings):
     scheduler_late_fred_hour: int = 23
     scheduler_late_fred_minute: int = 30
     ticker_pull_interval_seconds: int = 8
+    # Живая котировка нефти Brent с Московской биржи (ближайший фьючерс BR). ВЫКЛЮЧЕНО до договора с биржей:
+    # бесплатные данные ISS разрешены только «для ознакомления», показ на сайте с рекламой и подпиской требует
+    # договора (docs/data_sources.md, «Brent, дневной источник»). Включать только после подписания.
+    # Выключено или сбой/устаревание биржи — в ленте прежний недельный спот EIA.
+    moex_brent_live_enabled: bool = False
+    # Минимальная задержка (минуты), которая подписывается на ленте и странице. Фактическая задержка берётся из ответа
+    # биржи, если она больше; по условиям договора её нужно будет сверить.
+    moex_brent_delay_minutes: int = 15
     # Eurostat world block — отдельный opt-in job. Eurostat-часть до двух
     # успешных shadow прогонов не меняет world_*; национальные паспорта
     # (world_national_core) пишут данные сразу и идут до длинной Eurostat-
@@ -122,6 +134,9 @@ class Settings(BaseSettings):
     # Automatic two-run shadow gate is enforced per database. This flag can
     # force shadow mode during source incidents without disabling polling.
     world_eurostat_ingest_shadow: bool = False
+    # Круг 12: перенос карточек Евростата на живую базу индекса (I15 -> I21). Выкл. по
+    # умолчанию: релиз в два шага (схема и код, затем флаг + scripts/rebase-world-eurostat.py).
+    eurostat_rebase_enabled: bool = False
     world_eurostat_ingest_hour: int = 2
     world_eurostat_ingest_minute: int = 20
     # Прогнозы world_* изолированы от российского pipeline и выключены до
@@ -135,8 +150,20 @@ class Settings(BaseSettings):
     europe_world_forecast_daily_limit: int = 3000
     # Время запуска пакета Европы (МСК). По умолчанию прежнее 21:00, что лежит
     # внутри окна ETL 19:30–22:30; при расширении охвата переносить на 23:10.
-    europe_world_forecast_hour: int = 21
-    europe_world_forecast_minute: int = 0
+    # 23:10 МСК: вне окон ETL 05:30–07:30 и 19:30–22:30; до национальных паспортов (02:10) и Евростата (02:20)
+    # остаётся пакет с потолком до 9 000 с. Прежние 21:00 лежали внутри вечернего окна ETL (аудит 13.10).
+    europe_world_forecast_hour: int = 23
+    europe_world_forecast_minute: int = 10
+    # Круг 13: время пакетов США (прежнее 05:20, при потолке 40 минут упирается в окно ETL 05:30–07:30) и «остального
+    # мира» (прежнее 04:50) тоже настраивается; по умолчанию прежнее.
+    # Круг 13: потолок времени пакета Европы отдельно от общего (0 = общий world_forecast_max_run_seconds). Очередь
+    # ≈ 157 тыс. ни разу не считавшихся рядов упирается во время, а не в число рядов: ночью с 23:10 до ≈ 02:00 (до
+    # национальных паспортов 02:10 и Евростата 02:20) сервер свободен.
+    europe_world_forecast_max_run_seconds: int = 0
+    us_world_forecast_hour: int = 5
+    us_world_forecast_minute: int = 20
+    rest_world_forecast_hour: int = 4
+    rest_world_forecast_minute: int = 50
     world_forecast_hour: int = 4
     world_forecast_minute: int = 20
     # Страны вне США и Европы (Китай, Япония, Индия, Бразилия, Канада,
@@ -158,6 +185,12 @@ class Settings(BaseSettings):
     # Инкрементальный world job: не переобучать ряд, если последняя запись
     # world_forecasts с тем же отпечатком данных не старше N дней.
     world_forecast_max_age_days: int = 30
+    # Круг 13: срок, после которого ряд пересчитывается и при неизменных данных, по частотам. 0 = как общий срок
+    # выше (поведение прежнее). Годовой ряд меняется раз в год, а новая точка и так меняет отпечаток и возвращает
+    # ряд в очередь сразу, поэтому ему хватает 180 суток, квартальному 90: ежедневная потребность очереди Европы
+    # падает с ≈ 6 600 до ≈ 1 850 рядов и лимит 3 000 в день перестаёт съедаться обновлением уже готовых.
+    world_forecast_max_age_days_annual: int = 0
+    world_forecast_max_age_days_quarterly: int = 0
     # bump_namespaces("world", "ssr-world") каждые N успешных записей и в конце.
     world_forecast_cache_bump_every: int = 200
     # Порядок обхода: эти slug'и world_countries первыми, затем остальные.
@@ -205,6 +238,13 @@ class Settings(BaseSettings):
     # из адреса базы данных (общий для всех процессов деплоя и неизвестный снаружи).
     ssr_swr_base_url: str = ""
     ssr_swr_token: str = ""
+
+    # Материализованный счётчик публичных рядов по странам (services/world_listed_counts.py, круг 12, SPEED3):
+    # главная и рейтинги берут числа из таблицы world_country_listed_counts, а не считают COUNT по 280 тыс. строк
+    # (на боевом 15–30 с под нагрузкой). Выключено по умолчанию: включать после миграции 20261012c_world_listed_cnt
+    # (RUSTATS_WORLD_LISTED_COUNTS_ENABLED=true в scheduler и backend). Таблица старше max_age = сбой чтения, расчёт по-старому.
+    world_listed_counts_enabled: bool = False
+    world_listed_counts_max_age_seconds: int = 6 * 3600
 
     # IndexNow — мгновенное уведомление поисковиков (Яндекс/Bing) об
     # обновлённых URL после ETL. Key-файл: frontend/public/{key}.txt.
@@ -348,10 +388,19 @@ class Settings(BaseSettings):
     # v2 дайджеста добавляет блоки «Регистрации», «Что делали», «Воронка», «Сайт» и
     # кнопки бота «Регистрации», «Воронка», «Цели».
     telegram_digest_v2_enabled: bool = False
+    # Получатели недельного и месячного отчётов (comma-separated chat_id). Пусто = как у дайджеста
+    # (владелец + `telegram_digest_chat_ids`). Нужен для первого включения: указать здесь один
+    # тестовый чат или чат владельца, чтобы отчёты не ушли остальным адресатам дайджеста.
+    telegram_reports_chat_ids: str = ""
     # Недельный отчёт (понедельник) и месячный (1-го числа) об аудитории.
     telegram_weekly_enabled: bool = False
     telegram_weekly_cron_hour: int = 9
     telegram_weekly_cron_minute: int = 20
+    # Круг 13 (SEO6): недельный SEO-отчёт (показы, клики, позиции, ошибки sitemap,
+    # доля 5xx поисковым роботам). Выключен по умолчанию; включать после проверки текста.
+    seo_weekly_report_enabled: bool = False
+    seo_weekly_report_cron_hour: int = 9
+    seo_weekly_report_cron_minute: int = 40
     telegram_monthly_enabled: bool = False
     telegram_monthly_cron_hour: int = 9
     telegram_monthly_cron_minute: int = 45

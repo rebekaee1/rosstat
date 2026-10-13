@@ -52,6 +52,8 @@ _NOT_COUNTRY_SHAPED = "JSON-stat missing geo/time dims"
 # наборы из оглавления он не берёт. Это не сбой набора (круг 12: 15 недельных и
 # дневных наборов demo_r_mw*, ert_*_d каждую ночь числились «ошибкой»).
 _NOT_IN_LOADER_SCOPE = "Selected 0 datasets"
+# Меньше записей в оглавлении — ответ неполный, исчезнувшими наборы не считаем.
+MIN_TRUSTED_TOC_ENTRIES = 5000
 MAX_DATASETS_PER_RUN = 200
 MAX_RUN_SECONDS = 3 * 3600
 
@@ -91,10 +93,24 @@ def parse_toc(raw: str) -> dict[str, TocEntry]:
     return result
 
 
+TOC_ATTEMPTS = 3
+
+
 def _fetch_toc_sync() -> dict[str, TocEntry]:
-    response = requests.get(TOC_URL, timeout=120)
-    response.raise_for_status()
-    return parse_toc(response.content.decode("utf-8", "replace"))
+    """Оглавление Евростата. Холодный запрос иногда обрывается (`RemoteDisconnected`, замечено на стенде круга 13): без повтора
+    рушилась вся ночная задача («Каталог не получен»), хотя повтор через секунды отвечает."""
+    last: Exception | None = None
+    for attempt in range(TOC_ATTEMPTS):
+        try:
+            response = requests.get(TOC_URL, timeout=120)
+            response.raise_for_status()
+            return parse_toc(response.content.decode("utf-8", "replace"))
+        except requests.RequestException as exc:
+            last = exc
+            logger.warning("Eurostat TOC fetch failed (attempt %d/%d): %s", attempt + 1, TOC_ATTEMPTS, exc)
+            time.sleep(2.0 * (attempt + 1))
+    assert last is not None
+    raise last
 
 
 async def fetch_toc() -> dict[str, TocEntry]:
@@ -197,6 +213,7 @@ async def _record_dataset(
     error: str | None = None,
     update_state: bool,
     rows_fetched: int = 0,
+    note: str | None = None,
 ) -> None:
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     async with async_session() as db:
@@ -209,6 +226,7 @@ async def _record_dataset(
             structure_changed_at=entry.structure_changed_at,
             rows_fetched=rows_fetched,
             error_message=error[:2000] if error else None,
+            note=note[:2000] if note else None,
         ))
         if update_state:
             state = await db.get(
@@ -323,6 +341,20 @@ def format_dataset_list(
 
 
 _VERDICT_RE = re.compile(r"^STRUCTURE_VERDICT (\{.*\})$", re.MULTILINE)
+_REBASE_RE = re.compile(r"^REBASE_VERDICT (\{.*\})$", re.MULTILINE)
+
+
+def _rebase_verdicts(detail: str) -> list[dict]:
+    """Смена базы индекса в выводе loader'а: одна запись на набор (журнал и сводка)."""
+    out: list[dict] = []
+    for raw in _REBASE_RE.findall(detail or ""):
+        try:
+            item = json.loads(raw)
+        except ValueError:
+            continue
+        if isinstance(item, dict):
+            out.append(item)
+    return out
 
 
 def _structure_verdict(detail: str) -> dict | None:
@@ -386,7 +418,8 @@ async def world_eurostat_ingest_job(
         run_id = run.id
 
     try:
-        changed = await select_changed_datasets(await fetch_toc())
+        toc = await fetch_toc()
+        changed = await select_changed_datasets(toc)
     except Exception as exc:  # noqa: BLE001
         async with async_session() as db:
             run = await db.get(WorldIngestRun, run_id)
@@ -404,6 +437,12 @@ async def world_eurostat_ingest_job(
             changed_label="Успешно обновлено наборов",
         )
         raise
+
+    # Набор, исчезнувший из оглавления, больше не обновится: публичные карточки остаются
+    # (история не теряется), но владелец узнаёт об этом сразу, а не по значку «Устарело».
+    vanished: list[tuple[str, str]] = []
+    if len(toc) > MIN_TRUSTED_TOC_ENTRIES:
+        vanished = [(ds, "") for ds in sorted(await _listed_dataset_ids() - set(toc))]
 
     total_changed = len(changed)
     if not shadow and changed:
@@ -440,6 +479,9 @@ async def world_eurostat_ingest_job(
     skipped_datasets: list[tuple[str, str]] = []
     remapped_total = 0
     orphans_total = 0
+    rebase_datasets = 0
+    rebase_cards = 0
+    rebase_twins = 0
     for entry in changed:
         if not shadow and processed and time.monotonic() - run_clock >= MAX_RUN_SECONDS:
             pending += len(changed) - processed
@@ -479,6 +521,12 @@ async def world_eurostat_ingest_job(
                 entry.dataset_id, verdict.get("reason"),
             )
             continue
+        rebase_items = _rebase_verdicts(detail) if ok else []
+        if rebase_items:
+            rebase_datasets += 1
+            rebase_cards += sum(int(i.get("rebased") or 0) for i in rebase_items)
+            rebase_twins += sum(int(i.get("twins") or 0) for i in rebase_items)
+        rebase_note = "; ".join(str(i.get("note") or "") for i in rebase_items) or None
         if ok and verdict is not None:
             structure_accepted += 1
             remapped_total += int(verdict.get("remapped") or 0)
@@ -495,6 +543,7 @@ async def world_eurostat_ingest_job(
                 status="ok",
                 update_state=True,
                 rows_fetched=await _persisted_rows(entry.dataset_id, entry.provider),
+                note=rebase_note,
             )
         elif _NOT_COUNTRY_SHAPED in detail or _NOT_IN_LOADER_SCOPE in detail:
             skipped += 1
@@ -539,6 +588,8 @@ async def world_eurostat_ingest_job(
         "skipped": skipped,
         "structure_accepted": structure_accepted,
         "structure_blocked": structure_blocked,
+        "rebase_datasets": rebase_datasets,
+        "rebase_cards": rebase_cards,
         "shadow": int(shadow),
         "pending": pending,
     }
@@ -568,6 +619,15 @@ async def world_eurostat_ingest_job(
                 f"Смена структуры сверена и принята: {structure_accepted} "
                 f"(переподключено рядов: {remapped_total}, без замены: {orphans_total}). "
                 if structure_accepted else ""
+            )
+            + (
+                f"Смена базы индекса: наборов {rebase_datasets}, карточек перенесено на месте "
+                f"{rebase_cards}, заменено новой {rebase_twins}. "
+                if rebase_datasets else ""
+            )
+            + (
+                format_dataset_list("Нет в оглавлении Евростата (карточки остаются, не обновятся)", vanished)
+                if vanished else ""
             )
             + (
                 format_dataset_list(

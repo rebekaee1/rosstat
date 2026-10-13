@@ -1,10 +1,13 @@
 import { useParams } from 'react-router-dom';
 import DataTable from './DataTable';
+import useMediaQuery from '../lib/useMediaQuery';
 
 import { resolveDateFormat, chartValueDigits } from '../lib/format';
 import { chartSeriesForViewMode } from '../lib/chartSeriesForViewMode';
 import { useLocale } from '../i18n';
 import { resolveTableTitle } from '../i18n/resolveViewModeCopy';
+
+const PAIRED_PAGE_SIZE = 12;
 
 /**
  * Финальная секция страницы — таблица всех исторических точек выбранного
@@ -31,8 +34,11 @@ export default function IndicatorDataTableSection({
   periodMonthlyDataPoints,
   periodWeeklyDataPoints,
   loading = false,
+  pairedWithForecast = false,
 }) {
   const { locale } = useLocale();
+  // Круг 13 (С1): рядом с таблицей стоит карточка прогноза на 12 строк (от 1024 px, одна высота ряда): страница таблицы тоже на 12 строк, иначе под прогнозом пустое поле.
+  const sideBySide = useMediaQuery('(min-width: 1024px)');
   // Страница года (/…/indicator/{code}/2024): таблица показывает только этот год, а не всю историю.
   const { year } = useParams();
   const yearFilter = /^\d{4}$/.test(year || '') ? year : null;
@@ -63,6 +69,7 @@ export default function IndicatorDataTableSection({
   return (
     <section>
       <DataTable
+        pageSize={pairedWithForecast && sideBySide ? PAIRED_PAGE_SIZE : undefined}
         key={`${indicator?.code}-${chartMode}`}
         loading={loading}
         data={data}

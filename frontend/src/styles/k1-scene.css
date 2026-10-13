@@ -355,8 +355,8 @@ html.fe-scene-on #root {
    F видна в зазорах и у края, а не под текстом. Главная и профиль страны (свои F) режим «all» не используют. */
 .fe-scene__f[data-fe-f-mode="all"] { top: 30vh; right: clamp(-6vw, -2vw, 0px); }
 .fe-scene__f[data-fe-f-mode="all"].is-ready { opacity: var(--fe-scene-f-data-opacity, 0.16); }
-.fe-scene__f picture,
-.fe-scene__f img { display: block; width: 100%; height: 100%; object-fit: contain; }
+/* Кадр F — <canvas> (круг 13, S1): декор не должен становиться крупнейшим элементом страницы (LCP). Размер canvas — размер кадра, показ как у img. */
+.fe-scene__f canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
 @media (max-width: 767px) {
   .fe-scene__f {
     right: -3vw;

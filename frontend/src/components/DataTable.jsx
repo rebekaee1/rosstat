@@ -24,6 +24,7 @@ import '../styles/w6e-indicator.css';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
 import '../styles/c11c-charts.css';
+import { flatUnit } from '../lib/countryFlag';
 
 const PAGE_SIZE = 20;
 // Блок появляется средствами CSS сразу, без задержки (раньше gsap скрывал таблицу на ~1.3 с).
@@ -54,7 +55,7 @@ function useScrollMore(ref, deps) {
 
 export default function DataTable({
   data, title, dateFormat = 'full', unit = '%', valueDigits,
-  showUnitInValues = true, loading = false, exportMeta = null,
+  showUnitInValues = true, loading = false, exportMeta = null, pageSize = PAGE_SIZE,
 }) {
   const t = useT();
   const { locale } = useLocale();
@@ -172,9 +173,9 @@ export default function DataTable({
     };
   }, [data, rate, valueDigits, locale]);
 
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const totalPages = Math.ceil(filtered.length / pageSize);
   const visiblePage = Math.min(page, Math.max(0, totalPages - 1));
-  const pageData = filtered.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
+  const pageData = filtered.slice(visiblePage * pageSize, (visiblePage + 1) * pageSize);
   const tableUnit = unitSuffix(unit);
   // Ряд уже «изменение за год, %»: в строках стоит короткий «%», полная единица один раз в заголовке (круг 9, W10).
   const rowUnit = isPercentChangeUnit(unit) ? '%' : unit;
@@ -201,7 +202,7 @@ export default function DataTable({
     const first = String(exportRows[0].date).slice(0, 10);
     const last = String(exportRows[exportRows.length - 1].date).slice(0, 10);
     const ext = format === 'csv' ? 'csv' : 'xlsx';
-    const valueHead = tableUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value');
+    const valueHead = tableUnit ? t('table.valueWithUnit', { unit: flatUnit(tableUnit) }) : t('table.value');
     try {
       await downloadGrid({
         format,
@@ -338,9 +339,9 @@ export default function DataTable({
               <th
                 scope="col"
                 className="fe-histtable__valhead text-right px-5 py-3 text-[13px] font-semibold text-text-secondary"
-                title={tableUnit && longUnit ? t('table.valueWithUnit', { unit: tableUnit }) : undefined}
+                title={tableUnit && longUnit ? t('table.valueWithUnit', { unit: flatUnit(tableUnit) }) : undefined}
               >
-                {tableUnit && !longUnit ? t('table.valueWithUnit', { unit: tableUnit }) : t('table.value')}
+                {tableUnit && !longUnit ? t('table.valueWithUnit', { unit: flatUnit(tableUnit) }) : t('table.value')}
               </th>
               <th
                 scope="col"

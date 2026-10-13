@@ -20,6 +20,8 @@ import '../styles/k5-pages.css';
  * остаётся строка под названием (её рисует WorldHeroLine), а блок скрыт стилями.
  *
  * `summary` — результат buildIndicatorSummary; `points` — тот же ряд для мини-графика.
+ * `liveChangePct` (круг 13, Биткоин) — изменение живой котировки к цене 24 часа назад, ровно то, что показывает лента курсов: когда оно
+ * задано, шапка показывает его с подписью `deltaSuffix` вместо расчёта «к значению предыдущего дня» (две базы давали «0,0 %» против «+0,6 %»).
  */
 export default function IndicatorHeroValue({
   summary,
@@ -28,6 +30,7 @@ export default function IndicatorHeroValue({
   polarity = 'neutral',
   frequency,
   deltaSuffix = '',
+  liveChangePct = null,
   loading = false,
 }) {
   const t = useT();
@@ -57,7 +60,17 @@ export default function IndicatorHeroValue({
 
   // Изменение к прошлому значению: у процентов в пунктах, у остальных в процентах; нулевое после округления: «без изменений».
   let delta = null;
-  if (prev) {
+  if (liveChangePct != null && Number.isFinite(Number(liveChangePct))) {
+    const liveText = formatPercentChangeFine(liveChangePct, locale);
+    delta = liveText == null ? (
+      <p className="z4-hv__delta"><DeltaBadge delta={0}>{t('w6e.delta.flat')}</DeltaBadge></p>
+    ) : (
+      <p className="z4-hv__delta">
+        <DeltaBadge delta={Number(liveChangePct)} polarity={polarity}>{liveText}</DeltaBadge>
+        {deltaSuffix ? <span className="z4-hv__since">{deltaSuffix}</span> : null}
+      </p>
+    );
+  } else if (prev) {
     const useAbs = kind === 'rate';
     const unitText = unitParts.short;
     const abs = useAbs

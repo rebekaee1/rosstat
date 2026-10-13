@@ -44,27 +44,91 @@ def test_period_end_and_levels():
     assert fr.normalize_frequency("weird") == "monthly"
 
 
-def _g(domain, source, total, stale, causes, examples):
+def _g(domain, source, total, stale, causes, examples, counts=None, ages=None):
     g = fr.FreshnessGroup(domain, source)
     g.total, g.stale = total, stale
     g.causes.update(causes)
     g.examples = examples
+    g.example_counts = dict(counts or {})
+    g.example_ages = dict(ages or {})
     return g
 
 
 def test_message_is_one_grouped_text_with_sources_counts_and_examples():
     report = fr.FreshnessReport("t", TODAY.isoformat(), [
         _g("world", "Мир · eurostat", 1000, 300, {"parser": 280, "source": 20}, ["sts_trtu_m", "ei_isrt_m"]),
-        _g("ru", "Россия · Росстат", 200, 7, {"source": 7}, ["birth-rate"]),
+        _g("ru", "Россия · Росстат", 200, 12, {"source": 12}, ["birth-rate"]),
         _g("ru", "Россия · ЦБ", 100, 0, {}, []),
-    ])
+    ], )
     text = fr.format_message(report)
     assert text.count("Сторож свежести") == 1
-    assert "Просрочено 307 из 1300" in text
+    assert "Просрочено 312 из 1300" in text
     assert "Мир · eurostat: 300 из 1000" in text and "sts_trtu_m" in text
-    assert "Россия · Росстат: 7 из 200" in text
+    assert "Россия · Росстат: 12 из 200" in text
     assert "Россия · ЦБ" not in text            # здоровые источники не перечисляются
     assert text.index("eurostat") < text.index("Росстат")   # крупные сверху
+
+
+def test_message_examples_say_how_many_series_and_how_old_and_small_sources_are_one_line():
+    report = fr.FreshnessReport("t", TODAY.isoformat(), [
+        _g("world", "Мир · eurostat", 1000, 300, {"parser": 280, "source": 20}, ["sts_trtu_m", "tec00134"],
+           counts={"sts_trtu_m": 250, "tec00134": 1}, ages={"sts_trtu_m": 1015, "tec00134": 400}),
+        _g("world", "Мир · fred", 62, 2, {"source": 2}, ["DEXUSEU"]),
+        _g("world", "Мир · abs", 10, 1, {"source": 1}, ["RT"]),
+    ])
+    text = fr.format_message(report, previous={"stale": 400, "signature": "x", "sent_at": "2026-10-10T10:30:00"})
+    assert "<code>sts_trtu_m</code> ×250 (старейший 1015 дн.)" in text
+    assert "<code>tec00134</code> 400 дн." in text
+    assert "Мир · fred" not in text and "Мир · abs" not in text           # мелочь не перечисляется
+    assert "Мелких источников с отдельными рядами за порогом: 2 (3 рядов)" in text
+    assert "В прошлом сообщении: 400 (−97)" in text
+    assert len(text) < 4096
+
+
+def _sent(report, days_ago=1):
+    return {
+        "signature": report.signature(), "digest": report.digest(), "stale": report.stale,
+        "sent_at": datetime(2026, 10, 12 - days_ago, 10, 30).isoformat(),
+    }
+
+
+def test_noise_threshold_small_sources_flicker_does_not_resend_but_real_changes_do():
+    now = datetime(2026, 10, 12, 10, 30)
+    big = _g("world", "Мир · eurostat", 20000, 6000, {"parser": 5800, "source": 200}, ["sts_trtu_m"])
+    first = fr.FreshnessReport("t", TODAY.isoformat(), [big])
+    previous = _sent(first)
+    assert fr.decide_send(first, min_stale=25, previous=previous, now=now) == (False, "unchanged")
+
+    # один ряд FRED пересёк порог «Устарело»: заметной группы не появилось, молчим
+    flicker = fr.FreshnessReport("t", TODAY.isoformat(), [big, _g("world", "Мир · fred", 62, 2, {"source": 2}, ["DEXUSEU"])])
+    assert fr.decide_send(flicker, min_stale=25, previous=previous, now=now) == (False, "unchanged")
+    # малая причина (3 ряда из 6000) не меняет набор причин
+    tiny_cause = fr.FreshnessReport("t", TODAY.isoformat(), [
+        _g("world", "Мир · eurostat", 20000, 6003, {"parser": 5800, "source": 200, "schedule": 3}, ["sts_trtu_m"])])
+    assert fr.decide_send(tiny_cause, min_stale=25, previous=previous, now=now) == (False, "unchanged")
+    # колебание на 10 %: мельче четверти
+    wobble = fr.FreshnessReport("t", TODAY.isoformat(), [_g("world", "Мир · eurostat", 20000, 6500, {"parser": 6300, "source": 200}, ["a"])])
+    assert fr.decide_send(wobble, min_stale=25, previous=previous, now=now) == (False, "unchanged")
+
+    # настоящее улучшение (после исправления среза) — сообщаем
+    better = fr.FreshnessReport("t", TODAY.isoformat(), [_g("world", "Мир · eurostat", 20000, 800, {"source": 800}, ["a"])])
+    assert fr.decide_send(better, min_stale=25, previous=previous, now=now) == (True, "changed:size")
+    # размер тот же, но поменялась главная причина (парсер починили, остался только источник)
+    swapped = fr.FreshnessReport("t", TODAY.isoformat(), [_g("world", "Мир · eurostat", 20000, 6000, {"source": 6000}, ["a"])])
+    assert fr.decide_send(swapped, min_stale=25, previous=previous, now=now) == (True, "changed:causes")
+    shrink = fr.FreshnessReport("t", TODAY.isoformat(), [_g("world", "Мир · eurostat", 20000, 3000, {"parser": 2800, "source": 200}, ["a"])])
+    assert fr.decide_send(shrink, min_stale=25, previous=previous, now=now) == (True, "changed:size")
+    # источник встал целиком (мало рядов, но вся группа) — это заметная новая группа
+    stopped = fr.FreshnessReport("t", TODAY.isoformat(), [big, _g("world", "Мир · banxico_sie", 6, 4, {"schedule": 4}, ["SF43718"])])
+    assert fr.decide_send(stopped, min_stale=25, previous=previous, now=now) == (True, "changed:whole")
+    # мелкая группа у границы порога (9 -> 10 рядов из 5000) сообщения не вызывает
+    edge = fr.FreshnessReport("t", TODAY.isoformat(), [big, _g("ru", "Россия · Росстат", 5000, 10, {"source": 10}, ["x"])])
+    assert fr.decide_send(edge, min_stale=25, previous=previous, now=now) == (False, "unchanged")
+    # а крупная новая группа (20+ рядов) вызывает
+    grown = fr.FreshnessReport("t", TODAY.isoformat(), [big, _g("ru", "Россия · Росстат", 5000, 30, {"source": 30}, ["x"])])
+    assert fr.decide_send(grown, min_stale=25, previous=previous, now=now) == (True, "changed:size")
+    # без изменений неделю — напоминание
+    assert fr.decide_send(first, min_stale=25, previous=_sent(first, days_ago=8), now=now) == (True, "reminder")
 
 
 def test_decide_send_threshold_change_and_reminder():

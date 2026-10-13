@@ -61,6 +61,17 @@ EXAMPLES_PER_GROUP = 3
 MAX_GROUPS_IN_MESSAGE = 12
 REMINDER_DAYS = 7
 
+# Порог шума (круг 13). Без него сообщение приходило бы через день: на стенде при неизменных данных подпись менялась 15 раз за 30 суток,
+# потому что мелкие источники по одному ряду переходят границу «Устарело» и появляются в списке. Теперь в подпись и в решение «слать»
+# входят только заметные группы, а изменение считается с запасом (гистерезис), от последнего отправленного сообщения.
+MATERIAL_MIN_STALE = 10        # группа заметна, если просрочено не меньше стольких рядов
+MATERIAL_SHARE = 0.5           # ... или просрочена половина группы (не меньше MATERIAL_SHARE_MIN рядов): источник целиком встал
+MATERIAL_SHARE_MIN = 3
+CHANGE_RATIO = 0.25            # группа «изменилась», если просрочено на четверть больше или меньше, чем в прошлом сообщении
+CHANGE_MIN_ABS = 5             # ... и не меньше, чем на столько рядов
+CHANGE_MIN_SIZE = 20           # ... и если в группе (сейчас или тогда) не меньше стольких просроченных: мелочь у границы не считается
+MAJOR_CAUSE_SHARE = 0.2        # причина учитывается, если за ней не меньше пятой доли просроченных группы
+
 
 def normalize_frequency(freq: str | None) -> str:
     f = (freq or "").strip().lower()
@@ -112,6 +123,7 @@ class FreshnessGroup:
     causes: dict[str, int] = field(default_factory=lambda: defaultdict(int))
     examples: list[str] = field(default_factory=list)
     example_ages: dict[str, int] = field(default_factory=dict)
+    example_counts: dict[str, int] = field(default_factory=dict)
     _candidates: list[tuple[int, int, str]] = field(default_factory=list, repr=False)
 
     def add(self, total: int, stale: int, cause: str | None = None, example: str | None = None,
@@ -126,16 +138,32 @@ class FreshnessGroup:
 
     def finalize(self) -> "FreshnessGroup":
         best = sorted(self._candidates, key=lambda c: (-c[0], -c[1], c[2]))
-        self.examples, self.example_ages = [], {}
-        for _weight, age, name in best:
+        self.examples, self.example_ages, self.example_counts = [], {}, {}
+        for weight, age, name in best:
             if name in self.example_ages or name in self.examples:
                 continue
             self.examples.append(name)
+            self.example_counts[name] = weight
             if age:
                 self.example_ages[name] = age
             if len(self.examples) >= EXAMPLES_PER_GROUP:
                 break
         return self
+
+    def is_material(self) -> bool:
+        """Заметная группа: достаточно просроченных рядов либо источник встал целиком."""
+        if self.stale >= MATERIAL_MIN_STALE:
+            return True
+        return self.stale >= MATERIAL_SHARE_MIN and self.total > 0 and self.stale / self.total >= MATERIAL_SHARE
+
+    def is_whole_source(self) -> bool:
+        """Источник встал целиком: просрочена половина его рядов (не меньше трёх)."""
+        return self.stale >= MATERIAL_SHARE_MIN and self.total > 0 and self.stale / self.total >= MATERIAL_SHARE
+
+    def major_causes(self) -> list[str]:
+        if not self.stale:
+            return []
+        return sorted(c for c, n in self.causes.items() if n / self.stale >= MAJOR_CAUSE_SHARE)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -143,6 +171,7 @@ class FreshnessGroup:
             "source": self.source,
             "total": self.total,
             "stale": self.stale,
+            "material": self.is_material(),
             "share": round(self.stale / self.total, 4) if self.total else 0.0,
             "causes": dict(self.causes),
             "examples": list(self.examples),
@@ -186,13 +215,49 @@ class FreshnessReport:
             "fresh_groups": sum(1 for g in self.groups if not g.stale),
         }
 
+    def material_groups(self) -> list[FreshnessGroup]:
+        return [g for g in self.stale_groups() if g.is_material()]
+
+    def digest(self) -> dict[str, dict[str, Any]]:
+        """Все группы с просроченными рядами: ключ «домен|источник» → число, главные причины, «источник встал целиком».
+
+        Хранится рядом с последним отправленным сообщением и служит точкой отсчёта для гистерезиса (``digest_changed``).
+        """
+        return {
+            f"{g.domain}|{g.source}": {"stale": g.stale, "causes": g.major_causes(), "whole": g.is_whole_source()}
+            for g in self.stale_groups()
+        }
+
     def signature(self) -> str:
-        """Устойчивая подпись состава проблем: источник, причины, порядок величины."""
+        """Устойчивая подпись состава заметных проблем: источник, главные причины, порядок величины."""
         parts = []
-        for g in self.stale_groups():
+        for g in self.material_groups():
             bucket = len(str(g.stale))      # порядок величины, не точное число
-            parts.append((g.domain, g.source, bucket, tuple(sorted(g.causes))))
+            parts.append((g.domain, g.source, bucket, tuple(g.major_causes())))
         return hashlib.sha1(json.dumps(parts, ensure_ascii=False).encode()).hexdigest()[:16]
+
+
+def digest_changed(current: dict[str, dict[str, Any]], previous: dict[str, dict[str, Any]]) -> str | None:
+    """Чем текущая картина заметно отличается от той, о которой сообщали в последний раз (None — ничем).
+
+    Меняется только то, что заметно: источник встал целиком либо снова ожил (``whole``); число просроченных в группе
+    выросло или упало на CHANGE_RATIO и не меньше чем на CHANGE_MIN_ABS рядов, когда в группе (сейчас или тогда)
+    не меньше CHANGE_MIN_SIZE; в такой группе поменялись главные причины. Мелкая группа у границы порога
+    (9 ↔ 10 рядов) сообщения не вызывает.
+    """
+    empty = {"stale": 0, "causes": [], "whole": False}
+    for key in sorted(set(current) | set(previous)):
+        cur, prev = current.get(key, empty), previous.get(key, empty)
+        if bool(cur.get("whole")) != bool(prev.get("whole")):
+            return "whole"
+        a, b = int(cur.get("stale") or 0), int(prev.get("stale") or 0)
+        if max(a, b) < CHANGE_MIN_SIZE:
+            continue
+        if abs(a - b) >= CHANGE_MIN_ABS and abs(a - b) >= CHANGE_RATIO * max(b, 1):
+            return "size"
+        if list(cur.get("causes") or []) != list(prev.get("causes") or []):
+            return "causes"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -435,19 +500,38 @@ def _html(text: str) -> str:
     return escape(str(text))
 
 
-def format_message(report: FreshnessReport, *, limit: int = MAX_GROUPS_IN_MESSAGE) -> str:
-    """Одно сгруппированное сообщение: источник · рядов · примеры · причины."""
-    groups = report.stale_groups()
-    lines = [
-        "🟡 <b>Сторож свежести</b>",
+def _example_text(g: FreshnessGroup, name: str) -> str:
+    n = g.example_counts.get(name, 1)
+    age = g.example_ages.get(name)
+    tail = ""
+    if n > 1:
+        tail = f" ×{n}" + (f" (старейший {age} дн.)" if age else "")
+    elif age:
+        tail = f" {age} дн."
+    return f"<code>{_html(name)}</code>{tail}"
+
+
+def format_message(
+    report: FreshnessReport, *, limit: int = MAX_GROUPS_IN_MESSAGE, previous: dict | None = None,
+) -> str:
+    """Одно сгруппированное сообщение: источник · рядов · примеры · причины.
+
+    Заметные группы перечислены по одной, мелкие (один-два ряда на границе порога) одной строкой «ещё N».
+    ``previous`` — запись последнего отправленного сообщения: показываем, как изменилась картина.
+    """
+    groups = report.material_groups()
+    small = [g for g in report.stale_groups() if not g.is_material()]
+    head = (
         f"Просрочено {report.stale} из {report.total} публичных рядов "
-        f"(правило как у значка «Устарело» на страницах).",
-    ]
+        f"(правило как у значка «Устарело» на страницах)."
+    )
+    prev_stale = (previous or {}).get("stale")
+    if isinstance(prev_stale, int) and prev_stale != report.stale:
+        diff = report.stale - prev_stale
+        head += f" В прошлом сообщении: {prev_stale} ({'+' if diff > 0 else '−'}{abs(diff)})."
+    lines = ["🟡 <b>Сторож свежести</b>", head]
     for g in groups[:limit]:
-        examples = ", ".join(
-            f"<code>{_html(e)}</code>" + (f" {g.example_ages[e]} дн." if e in g.example_ages else "")
-            for e in g.examples
-        )
+        examples = ", ".join(_example_text(g, e) for e in g.examples)
         causes = ", ".join(
             f"{_html(CAUSE_LABELS.get(c, c))} {n}"
             for c, n in sorted(g.causes.items(), key=lambda kv: -kv[1])
@@ -457,9 +541,14 @@ def format_message(report: FreshnessReport, *, limit: int = MAX_GROUPS_IN_MESSAG
             + (f" — {examples}" if examples else "")
             + (f" [{causes}]" if causes else "")
         )
-    if len(groups) > limit:
-        rest = sum(g.stale for g in groups[limit:])
-        lines.append(f"…ещё {len(groups) - limit} источников ({rest} рядов)")
+    hidden = groups[limit:]
+    if hidden:
+        lines.append(f"…ещё {len(hidden)} источников ({sum(g.stale for g in hidden)} рядов)")
+    if small:
+        lines.append(
+            f"Мелких источников с отдельными рядами за порогом: {len(small)} ({sum(g.stale for g in small)} рядов), "
+            "в сообщении не перечислены; полный список: /api/v1/health/freshness."
+        )
     return "\n".join(lines)
 
 
@@ -473,15 +562,24 @@ def decide_send(
     """(слать?, причина). Одно и то же не повторяем чаще напоминания раз в неделю.
 
     * просрочено меньше порога — молчим;
-    * подпись состава проблем (источники, причины, порядок величины) изменилась — шлём;
-    * прежняя подпись, но напоминание старше REMINDER_DAYS суток — шлём;
-    * иначе молчим.
+    * сообщений ещё не было — шлём;
+    * картина заметно изменилась относительно **последнего отправленного** сообщения
+      (``digest_changed``: появилась или исчезла заметная группа, поменялись главные причины,
+      группа выросла или сократилась на четверть и не меньше чем на 5 рядов) — шлём;
+    * иначе, если напоминание старше REMINDER_DAYS суток — шлём;
+    * иначе молчим (мелкие колебания на границе порога не считаются).
+    Состояние старого формата (только подпись) сравнивается по подписи.
     """
     if report.stale < min_stale:
         return False, "below_threshold"
     if not previous:
         return True, "first"
-    if previous.get("signature") != report.signature():
+    prev_digest = previous.get("digest")
+    if isinstance(prev_digest, dict):
+        change = digest_changed(report.digest(), prev_digest)
+        if change:
+            return True, f"changed:{change}"
+    elif previous.get("signature") != report.signature():
         return True, "changed"
     try:
         sent_at = datetime.fromisoformat(previous.get("sent_at", ""))
@@ -505,14 +603,22 @@ async def load_last_sent() -> dict | None:
         return None
 
 
-async def store_last_sent(signature: str, now: datetime) -> None:
+async def store_last_sent(
+    signature: str, now: datetime, digest: dict | None = None, stale: int | None = None,
+) -> None:
     try:
         from app.core.cache import get_state_redis
 
         r = await get_state_redis()
         await r.set(
             LAST_SENT_KEY,
-            json.dumps({"signature": signature, "sent_at": now.replace(microsecond=0).isoformat()}),
+            json.dumps(
+                {
+                    "signature": signature, "sent_at": now.replace(microsecond=0).isoformat(),
+                    "digest": digest, "stale": stale,
+                },
+                ensure_ascii=False,
+            ),
             ex=30 * 24 * 3600,
         )
     except Exception:  # noqa: BLE001

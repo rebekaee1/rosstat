@@ -39,6 +39,10 @@ class TickerSnapshot:
     source      — короткая метка источника для атрибуции в UI tooltip.
     as_of_date  — календарная дата значения (для не-внутридневных рядов);
                   None у живых котировок.
+    quote_time  — момент биржевого значения, если он отличается от момента pull'а
+                  (котировка с задержкой): отдаётся клиенту как `as_of`.
+    delay_minutes — на сколько минут котировка отстаёт от биржи (None: задержка не раскрывается).
+    contract    — короткое имя контракта для подписи («BR-11.26»), только у фьючерсов.
     """
 
     code: str
@@ -48,6 +52,9 @@ class TickerSnapshot:
     fetched_at: datetime
     source: str
     as_of_date: date | None = None
+    quote_time: datetime | None = None
+    delay_minutes: int | None = None
+    contract: str | None = None
 
     def as_dict(self) -> dict:
         out = {
@@ -61,7 +68,14 @@ class TickerSnapshot:
         }
         if self.as_of_date is not None:
             out["as_of_date"] = self.as_of_date.isoformat()
-        out["as_of"] = out.get("as_of_date") or out["fetched_at"]
+        if self.delay_minutes is not None:
+            out["delay_minutes"] = self.delay_minutes
+        if self.contract:
+            out["contract"] = self.contract
+        if self.quote_time is not None and self.as_of_date is None:
+            out["as_of"] = self.quote_time.isoformat()
+        else:
+            out["as_of"] = out.get("as_of_date") or out["fetched_at"]
         return out
 
 

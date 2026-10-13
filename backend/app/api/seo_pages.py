@@ -22,6 +22,7 @@ HTML-кэш (П-14/П-15, риск Р-5): готовый SSR HTML кэшируе
 """
 
 import asyncio
+from contextvars import ContextVar
 import hashlib
 import re
 from datetime import date as _date
@@ -154,6 +155,9 @@ async def _ssr_key(namespace: str, variant: str, sig: str) -> str:
 # должен выполниться один раз, остальные ждут результат (in-process singleflight).
 _render_locks: dict[str, asyncio.Lock] = {}
 _RENDER_LOCKS_MAX = 2000
+# Состояние SSR-кэша для текущего запроса: hit (свежая запись), stale (устаревшая, пересчёт в фоне), miss (рендер
+# на запросе). Уходит заголовком `X-FE-Cache`, чтобы проверять stale-while-revalidate на живом сайте (круг 12, SPEED3).
+_cache_state: ContextVar[str | None] = ContextVar("fe_ssr_cache_state", default=None)
 # Параллельные miss'ы разных URL не должны забрать весь QueuePool.
 _RENDER_SEM = asyncio.Semaphore(6)
 
@@ -201,12 +205,14 @@ async def _peek_cached_html(namespace: str, variant: str) -> str | None:
             return None  # фоновый пересчёт: идём в рендер и перезаписываем ключ
         cached, fresh = await cache_get_swr(key)
         if isinstance(cached, str) and cached:
+            _cache_state.set("hit" if fresh else "stale")
             if not fresh:
                 await ssr_swr.schedule_revalidate(key)
             return cached
         return None
     cached = await cache_get(key)
     if isinstance(cached, str) and cached:
+        _cache_state.set("hit")
         return cached
     return None
 
@@ -243,12 +249,14 @@ async def _cached_html(
     if swr and not forced:
         cached, fresh = await cache_get_swr(key)
         if isinstance(cached, str) and cached:
+            _cache_state.set("hit" if fresh else "stale")
             if not fresh:
                 await ssr_swr.schedule_revalidate(key)
             return 200, cached
     elif not swr:
         cached = await cache_get(key)
         if isinstance(cached, str) and cached:
+            _cache_state.set("hit")
             return 200, cached
 
     if len(_render_locks) > _RENDER_LOCKS_MAX:
@@ -261,11 +269,14 @@ async def _cached_html(
             if not forced:
                 cached, fresh = await cache_get_swr(key)
                 if isinstance(cached, str) and cached and fresh:
+                    _cache_state.set("hit")
                     return 200, cached
         else:
             cached = await cache_get(key)  # мог появиться, пока ждали лок
             if isinstance(cached, str) and cached:
+                _cache_state.set("hit")
                 return 200, cached
+        _cache_state.set("miss")
         async with _RENDER_SEM:
             try:
                 status, html = await render_coro_factory()
@@ -320,6 +331,9 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         # проходит proxy без intercept и раньше уходил только с meta.
         headers["X-Robots-Tag"] = "noindex, follow"
     if status_code == 200:
+        state = _cache_state.get()
+        if state:
+            headers["X-FE-Cache"] = state
         etag = f'W/"{hashlib.md5(html.encode()).hexdigest()}"'
         headers["ETag"] = etag
         if request is not None and request.headers.get("if-none-match") == etag:

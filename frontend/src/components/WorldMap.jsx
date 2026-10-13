@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { valueExtent } from '../lib/regionsMapColors';
 import { substantialPolygons } from '../lib/planetAtlas';
-import { formatValue } from '../lib/format';
+import { formatValue, numberTag } from '../lib/format';
 import { formatWorldValue } from '../lib/worldApi';
 import {
   displayWorldGeometry, mainlandWorldGeometry, outlinePointCount,
@@ -21,7 +21,7 @@ import {
   loadWorldFeatures, numericId, WORLD_FEATURE_BY_ID, WORLD_FEATURES,
 } from '../lib/worldTopology';
 import {
-  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_SELECT_FILL, WORLD_SELECT_HALO, WORLD_SELECT_INK,
+  buildWorldColorModel, WORLD_NO_DATA, WORLD_OCEAN_COLOR, WORLD_SELECT_HALO, WORLD_SELECT_HALO_PX, WORLD_SELECT_INK,
 } from '../lib/worldMapColors';
 import { useLocale, useT } from '../i18n';
 import { t as translateStandalone } from '../i18n/messages';
@@ -171,7 +171,7 @@ function formatLegendValue(value) {
   const locale = resolveBrowserLocale();
   const numeric = Number(value);
   const abs = Math.abs(numeric);
-  const numberLocale = locale === 'en' ? 'en-US' : 'ru-RU';
+  const numberLocale = numberTag(locale);
   const compact = (divisor, suffix) => `${(numeric / divisor).toLocaleString(numberLocale, {
     maximumFractionDigits: 1,
   })}\u00A0${suffix}`;
@@ -593,6 +593,8 @@ export default function WorldMap({
     if (item.hasValue) return colorModel.colorFor(item.value);
     return item.active ? WORLD_NO_DATA : WORLD_OUTSIDE;
   };
+  // Цвет ступени выбранной страны: она остаётся своего цвета, различается обводкой и тенью.
+  const selectedFill = selectedGeometry && selectedCode ? fillFor(describe(selectedCode)) : WORLD_NO_DATA;
   const labelFor = (item) => {
     if (!item.active) return undefined;
     return item.hasValue
@@ -676,21 +678,27 @@ export default function WorldMap({
         />
       )}
       {selectedGeometry && (
-        // Круг 10 (К2): выбранная страна видна на любой ступени шкалы: светлая заливка-«льдина», белое гало и тёмная кромка.
-        // Раньше был тонкий контур цвета самой тёмной ступени (#1E3A6E) и почти прозрачная заливка: на тёмных странах его не было видно.
-        <g pointerEvents="none" aria-hidden="true">
+        // Круг 13 (замечание симулятора «выбранная страна теряет цвет ступени»): страна остаётся СВОЕГО цвета ступени.
+        // Порядок: белое гало (видно только снаружи, внутри его закрывает сама страна) → страна своим цветом шкалы поверх соседей →
+        // тёмная кромка; вся группа приподнята мягкой тенью. Раньше сверху лежала белая заливка 40 %, и цвет ступени выцветал в серо-бежевый.
+        <g
+          pointerEvents="none"
+          aria-hidden="true"
+          style={{ filter: 'drop-shadow(0 1px 2.2px rgba(22,38,79,0.55))' }}
+          data-selected-lift="true"
+        >
           <path
             d={path(selectedGeometry) || ''}
-            fill={WORLD_SELECT_FILL}
+            fill="none"
             stroke={WORLD_SELECT_HALO}
-            strokeWidth={4.4}
+            strokeWidth={WORLD_SELECT_HALO_PX}
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
             data-selected-halo="true"
           />
           <path
             d={path(selectedGeometry) || ''}
-            fill="none"
+            fill={selectedFill}
             stroke={WORLD_SELECT_INK}
             strokeWidth={1.8}
             strokeLinejoin="round"
@@ -715,11 +723,21 @@ export default function WorldMap({
             onMouseLeave={leave}
           >
             <circle cx={marker.x} cy={marker.y} r={MARKER_HIT_PX * unitsPerPx} fill="transparent" />
+            {selected && (
+              // Выбранная точка-«кроха» остаётся цвета ступени; белое кольцо снаружи и тёмная кромка отделяют её от соседей.
+              <circle
+                cx={marker.x}
+                cy={marker.y}
+                r={(MARKER_RADIUS_PX + 2.2) * unitsPerPx}
+                fill={WORLD_SELECT_HALO}
+                data-selected-marker-halo="true"
+              />
+            )}
             <circle
               cx={marker.x}
               cy={marker.y}
               r={MARKER_RADIUS_PX * unitsPerPx}
-              fill={selected ? WORLD_SELECT_HALO : fillFor(item)}
+              fill={fillFor(item)}
               stroke={selected || isHover ? WORLD_SELECT_INK : 'rgba(30,38,56,0.65)'}
               strokeWidth={selected || isHover ? 2.2 : 1}
               vectorEffect="non-scaling-stroke"

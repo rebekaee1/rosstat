@@ -60,6 +60,7 @@ import { isPeopleUnit } from '../lib/populationFacts';
 import Breadcrumbs from '../components/Breadcrumbs';
 import CabinetActionsSlot from '../components/CabinetActionsSlot';
 import IndicatorPeers from '../components/IndicatorPeers';
+import FreshnessNote from '../components/FreshnessNote';
 import { worldIndicatorSubject } from '../lib/cabinetSubjects';
 import { useScrollFadesWithin } from '../lib/useScrollFades';
 import { SkeletonBox } from '../components/Skeleton';
@@ -623,6 +624,8 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
             </div>
           </header>
 
+          <FreshnessNote freshness={indicator.freshness} />
+
           <ViewModesPanel>
             {variantGroup && (
               <VariantGroupPicker
@@ -743,17 +746,9 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                 </details>
               )}
               {!dataQ.data?.forecast?.official && dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
-                <details className="w2-details w2-details--card" aria-label={locale === 'en' ? 'Forecast methodology' : 'Методология прогноза'}>
-                  <summary>{locale === 'en' ? 'How our forecast is checked' : 'Как мы проверяем наш прогноз'}</summary>
-                  <p>
-                    {locale === 'en'
-                      ? 'We test the full forecast horizon on rolling historical windows against a seasonal-naive benchmark. Our forecast is published only when MASE is below 1 and the error is at least 2% lower.'
-                      : 'Мы проверяем весь горизонт прогноза на последовательных исторических отрезках и сравниваем с сезонной наивной моделью. Наш прогноз публикуется только при MASE ниже 1 и ошибке минимум на 2% меньше ориентира.'}
-                  </p>
-                  <p className="mt-2 text-sm">
-                    {dataQ.data.forecast.model_name}
-                    {' — '}MASE {Number(dataQ.data.forecast.quality.mase).toFixed(2)}
-                  </p>
+                <details className="w2-details w2-details--card" aria-label={t('c13f.forecast.checkedTitle')}>
+                  <summary>{t('c13f.forecast.checkedTitle')}</summary>
+                  <p>{t('c13f.forecast.checkedBody')}</p>
                 </details>
               )}
 

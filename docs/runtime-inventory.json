@@ -7178,6 +7178,165 @@
       },
       "limits": "Не проверялось: включение флагов на сервере, alembic upgrade head по цепочке на PostgreSQL, фактическое значение любого флага на боевом и тестовом серверах, эффект прогрева и SWR на TTFB, работа brotli за Caddy, deploy/test-nginx-config.sh (нужен Docker), нагрузка пакета rest_world_forecast на планировщик с 1 vCPU.",
       "gap": "RUSTATS_SSR_SWR_TOKEN и RUSTATS_SSR_SWR_BASE_URL в docker-compose.yml не перечислены (compose передаёт в backend только явный список переменных): значения из корневого .env не дойдут до контейнеров, пока их не добавят; по умолчанию секрет выводится сам, адрес берётся из ssr_warm_base_url. Сверено чтением docker-compose.yml, 12.10.2026."
+    },
+    {
+      "id": "circle13-code-flags-2026-10-12",
+      "observed_date_msk": "2026-10-13",
+      "local_source_commit": "f0572bf9",
+      "kind": "code defaults and stand/readonly observations, not a production state",
+      "scope": "Флаги и значения по умолчанию в коде ветки circle13/int (включая зоны fix, brent, brent2, fcst) (config.py, docker-compose.yml, .env.example), плюс разовые наблюдения зон круга 13: чтение боевого (короткие запросы, значения секретов не читались) и прогоны на тестовом стенде 176.57.220.170. Что включено на боевом, неизвестно; код выкладкой флаги не включает. Порядок включения — docs/workflow.md#circle13-2026-10-12.",
+      "settings": [
+        {
+          "env": "RUSTATS_EUROSTAT_REBASE_ENABLED",
+          "setting": "eurostat_rebase_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "перенос карточек Евростата на живую базу индекса (I15→I21) на месте, ADR-0023; без флага поведение прежнее"
+        },
+        {
+          "env": "RUSTATS_WORLD_LISTED_COUNTS_ENABLED",
+          "setting": "world_listed_counts_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "читатели берут число публичных рядов страны из world_country_listed_counts; планировщик обновляет таблицу раз в 15 минут и перед сбросом world-catalog"
+        },
+        {
+          "env": "RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS",
+          "setting": "world_listed_counts_max_age_seconds",
+          "default": 21600,
+          "passed_by_compose": true,
+          "effect": "таблица старше этого срока считается недоступной, читатель считает по-старому"
+        },
+        {
+          "env": "RUSTATS_SEO_WEEKLY_REPORT_ENABLED",
+          "setting": "seo_weekly_report_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "недельный SEO-отчёт в Telegram (понедельник 09:40 МСК) с блоком «Индексация» и счётчиком ответов роботам в middleware"
+        },
+        {
+          "env": "RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR / _MINUTE",
+          "setting": "seo_weekly_report_cron_hour / seo_weekly_report_cron_minute",
+          "default": "9 / 40",
+          "passed_by_compose": false,
+          "effect": "время недельного SEO-отчёта (МСК); в compose не перечислены"
+        },
+        {
+          "env": "RUSTATS_SITEMAP_PRIORITY_MAX_URLS",
+          "setting": "sitemap_priority_max_urls",
+          "default": 20000,
+          "passed_by_compose": true,
+          "effect": "размер sitemap-priority.xml (первым в sitemap.xml); 0 = не публиковать; не флаг, шард включён по умолчанию"
+        },
+        {
+          "env": "RUSTATS_TELEGRAM_REPORTS_CHAT_IDS",
+          "setting": "telegram_reports_chat_ids",
+          "default": "",
+          "passed_by_compose": true,
+          "effect": "получатели недельного и месячного отчётов (comma-separated chat_id); пусто = как у дайджеста"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL / _QUARTERLY",
+          "setting": "world_forecast_max_age_days_annual / world_forecast_max_age_days_quarterly",
+          "default": "0 / 0",
+          "passed_by_compose": true,
+          "effect": "срок повторного счёта годовых и квартальных рядов; 0 = общий срок (30 суток); рекомендация 180 и 90"
+        },
+        {
+          "env": "RUSTATS_US_WORLD_FORECAST_HOUR / _MINUTE",
+          "setting": "us_world_forecast_hour / us_world_forecast_minute",
+          "default": "5 / 20",
+          "passed_by_compose": true,
+          "effect": "время пакета США (МСК); при потолке 40 минут пакет заходит в окно ETL 05:30; рекомендация 04:35"
+        },
+        {
+          "env": "RUSTATS_REST_WORLD_FORECAST_HOUR / _MINUTE",
+          "setting": "rest_world_forecast_hour / rest_world_forecast_minute",
+          "default": "4 / 50",
+          "passed_by_compose": true,
+          "effect": "время пакета «остального мира» (МСК); рекомендация 03:50"
+        },
+        {
+          "env": "RUSTATS_MOEX_BRENT_LIVE_ENABLED",
+          "setting": "moex_brent_live_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "живая котировка нефти Brent (ближайший фьючерс BR, Московская биржа) в ленте и блоке «Сейчас на бирже»; читает scheduler. ВЫКЛЮЧЕНО до договора с биржей (ADR-0025): при false на биржу за нефтью не уходит ни одного запроса, в ленте недельный спот EIA; при сбое или устаревании биржевого значения тоже EIA"
+        },
+        {
+          "env": "RUSTATS_MOEX_BRENT_DELAY_MINUTES",
+          "setting": "moex_brent_delay_minutes",
+          "default": 15,
+          "passed_by_compose": true,
+          "effect": "минимальная задержка в подписи котировки (минуты); фактическая берётся из ответа биржи, если больше; сверить с договором"
+        },
+        {
+          "env": "RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS",
+          "setting": "europe_world_forecast_max_run_seconds",
+          "default": 0,
+          "passed_by_compose": true,
+          "effect": "потолок времени пакета прогнозов Европы отдельно от общего (0 = RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS, 2400 с); рекомендация на время догона очереди — 9000 с в ночном окне 23:10–01:40 МСК вместе с лимитом 15000 и сроками повторного счёта 180/90; после выбора очереди вернуть 0"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY",
+          "setting": "world_forecast_cache_bump_every",
+          "default": 200,
+          "passed_by_compose": true,
+          "effect": "через сколько записей прогнозов сбрасывать кэш мира; при больших ночных пакетах рекомендация 3000 (для ручных партий — -e 2000); в compose проброшен коммитом 45ddb391"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES",
+          "setting": "world_forecast_priority_countries",
+          "default": "united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland",
+          "passed_by_compose": true,
+          "effect": "порядок обхода стран очередью прогнозов; до круга 13 в compose не перечислялась, значение из .env хоста в контейнер не доходило (backend/.dockerignore исключает .env, compose передаёт только environment); равенство config.py = compose = .env.example проверяет test_world_forecast_priority_config.py"
+        },
+        {
+          "env": "UVICORN_WORKER_HEALTHCHECK_TIMEOUT",
+          "setting": "— (читает backend/entrypoint.sh)",
+          "default": "",
+          "passed_by_compose": true,
+          "effect": "секунды ожидания pong воркера у супервизора uvicorn; пусто = запуск без параметра (5 с); требует образ с uvicorn 0.37.0"
+        }
+      ],
+      "schema": {
+        "alembic_chain_unreleased": [
+          "20260930_session_reviews",
+          "20261004_session_changes",
+          "20261005_push_subscriptions",
+          "20261009_user_cabinet",
+          "20261009b_analytics_signups",
+          "20261009c_session_perf",
+          "20261012b_world_dset_lower_idx",
+          "20261012c_world_listed_cnt",
+          "20261012_world_ingest_note"
+        ],
+        "alembic_head_in_code": "20261012_world_ingest_note",
+        "server_head_last_observed": "20260927_world_nonzero_idx (30.09.2026)",
+        "note": "Новых миграций круг 13 не добавил; цепочка 9c → 12b → 12c → ingest_note собрана в одну голову коммитом 5d1e8749. 12b и 12c строят индексы CONCURRENTLY, заранее на старом коде; ingest_note добавляет nullable-колонку world_ingest_dataset_logs.note."
+      },
+      "data_observations_readonly": {
+        "source": "боевая база и контейнер, короткие запросы на чтение, 12.10.2026 (зоны DATA, FORECAST, SEO); значения секретов не читались",
+        "banxico_ecos_estat_keys_set_on_prod": false,
+        "banxico_last_success": "2026-08-12",
+        "uvicorn_worker_deaths": "в журнале боевого backend «Child process [N] died» 12:36–13:02 UTC 12.10 на фоне iowait 25–69 %",
+        "googlebot_429": "все 429 приходились на Googlebot-Image и /og/ (общее ведро); страницам 429 не отдавалось",
+        "webmaster_api": "api.webmaster.yandex.net:443 недоступен по TCP с боевого, стенда и ноутбука 11–12.10",
+        "metrika_counter_107136069": "отчёты пусты с 11.10 03:20 МСК; сторона Яндекса (решение владельца)",
+        "limits": "значения сняты разово и не обновляются"
+      },
+      "stand_observations": {
+        "host": "176.57.220.170 (2 vCPU, 3,9 ГБ; scheduler 0,8 vCPU / 700 МБ), снимок боевых данных от 03.10.2026, код circle13/stand",
+        "eurostat_rebase": "63 набора, 8 231 карточка; свежими или стареющими стали 5 528 из 7 798 рядов когорты; просроченных публичных рядов мира 22 623 → 16 693; карточек перенесено на месте 6 353, заменено новой с 301 — 523, в карантине 2 набора",
+        "forecasts": "публичных прогнозов 9 275 → 10 614 (12.10: официальных МВФ +485, наших +854) → 19 309 (13.10, дополнение «везде, где позволяет алгоритм»; страны первой линии закрыты полностью, хвост Европы ≈ 141 тыс. рядов ждёт очереди)",
+        "perf_phone_390x844_cpu4x": "главная FCP 0,43–0,49 с; LCP России 5,1 → 0,4–1,9 с; LCP страны 2,5 с; TTI ≤ 4 с не достигнут",
+        "sitemap": "на стенде статичен (lastmod 2026-10-05, 9 921 110 URL в 1 022 файлах), снятие и рост карточек и sitemap-priority.xml не отражает",
+        "limits": "стенд медленнее боевого в 4–7 раз по планировщику, IPv4 до Евростата с хоста не работает, tunnel Cloudflare шумит 0,4–3,8 с; цифры стенда не переносить на боевой без пересчёта",
+        "forecast_resources": "scheduler стенда поднят до 1 ГБ / 1 vCPU (как на боевом), docker-compose.override.yml; измеренные цены ряда на 1 vCPU: годовой 0,095 с, квартальный 0,65 с, месячный 2,6 с; полный хвост ≈ 17 часов процессора; пик памяти ручной партии по стране ≈ 707 МБ из 1024; инцидент 12.10 22:17 UTC: OOM при двух процессах, замки sched:lock:world_forecast и sched:lock:europe_world_forecast остались на сутки",
+        "oil_sources": "12.10.2026: ISS Мосбиржи отдаёт BR с задержкой 15 минут (флаг не включали); EIA спот Brent выходит раз в неделю (последнее значение 06.10 = 125,44); opec.org за проверкой Cloudflare (403 скриптам), условия запрещают коммерческий показ без письменного разрешения"
+      },
+      "limits": "Не проверялось: включение флагов на боевом, alembic upgrade head по цепочке на PostgreSQL боевого размера, фактические значения флагов на боевом и стенде, скорость загрузки 63 наборов Евростата на боевом, эффект счётчика страны и памяти воркера на боевом, реальный вызов URL Inspection из контейнера, отправка отчётов Telegram, deploy/test-nginx-config.sh (нужен Docker). Не проверялось (дополнение 13.10): флаг RUSTATS_MOEX_BRENT_LIVE_ENABLED на живом сервере, работа ISS в клиринг, ночью и в выходные; снятие дублей (301) на стенде и боевом после выкладки кода; боевая скорость пакета Европы и вечернего ETL.",
+      "gap": "RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR/_MINUTE и RUSTATS_SITEMAP_PRIORITY_MAX_URLS: первая пара в compose не перечислена; RUSTATS_SSR_SWR_TOKEN и RUSTATS_SSR_SWR_BASE_URL по-прежнему не перечислены (см. запись круга 12)."
     }
   ]
 }

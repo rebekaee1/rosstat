@@ -169,3 +169,7 @@ Local tests: `backend/.venv/bin/python -m pytest backend/tests/test_gsc_client.p
 Provider acceptance passed locally on 2026-09-21: successful OAuth refresh followed
 by real Sites, Sitemaps and web/image Search Analytics exports. URL Inspection is
 implemented and unit-tested; it was not called in this initial live acceptance.
+
+## 2026-10-12 — URL Inspection в недельном SEO-отчёте и приоритетный sitemap (круг 13)
+
+`services/seo_index_control.py` вызывает URL Inspection (раньше только unit-тесты) по **фиксированной выборке из 20 адресов** (10 путей × 2 хоста; `/russia/calendar` и `/russia/region`, а не 301-алиасы `/calendar` и `/regions`) **один раз в неделю** в рамках недельного SEO-отчёта (`RUSTATS_SEO_WEEKLY_REPORT_ENABLED`, по умолчанию выключен); история проверки хранится в state-Redis, повторный запуск в тот же день берёт сохранённое, сбой API не ломает отчёт. Реальный вызов из контейнера не выполнялся (проверено на fakeredis и фиктивном клиенте, 9 тестов). Данные `gsc_search_queries` легли в основание приоритетного шарда `sitemap-priority.xml` ([ADR-0022](../adr/0022-priority-sitemap-and-index-control.md)): страницы с показами за 90 дней (`_GSC_LIMIT` 30 000, вес клика 25 показов). Квота «Запросить индексирование» около 10 адресов в сутки на ресурс — только вручную в интерфейсе. Базовые числа Google для эксперимента: годовые страницы 33 074 показа, 39 кликов, 0,118 %, позиция 19,7 за 14 дней до выкладки.

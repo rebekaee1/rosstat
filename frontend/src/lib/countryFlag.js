@@ -44,6 +44,31 @@ export function splitUnit(unit) {
   return { short: '', long: text };
 }
 
+/**
+ * Единица внутри скобок без вложенных: «индекс (2015 = 100)» → «(индекс, 2015 = 100)», «Index (1982–84 = 100)» →
+ * «(Index, 1982–84 = 100)». Одно правило для RU и EN; «=» и числа склеены неразрывными пробелами, поэтому
+ * «(1982–84 = 100)» не переносится посреди и в начале строки не оказывается «= 100)».
+ * Единица без скобок остаётся как есть, только оборачивается.
+ */
+export function flatUnit(unit, { glue = false } = {}) {
+  const NB = '\u00A0';
+  let text = String(unit ?? '').trim();
+  if (!text) return '';
+  let guard = 0;
+  while (/\([^()]*\)/.test(text) && guard < 5) {
+    text = text.replace(/\s*\(([^()]*)\)/g, (_m, inner) => `, ${inner.trim()}`);
+    guard += 1;
+  }
+  text = text.replace(/^[,\s]+/, '');
+  return glue ? text.replace(/\s*=\s*/g, `${NB}=${NB}`) : text;
+}
+
+/** Единица в скобках: `(индекс, 2015 = 100)`; пустая единица даёт пустую строку. */
+export function parenUnit(unit) {
+  const flat = flatUnit(unit, { glue: true });
+  return flat ? `(${flat})` : '';
+}
+
 /** Страны, которые чаще всего ищут: порядок показа в «Популярных странах» на главной. */
 export const POPULAR_COUNTRY_SLUGS = Object.freeze({
   ru: ['russia', 'united-states', 'china', 'germany', 'japan', 'united-kingdom', 'india', 'france', 'brazil', 'turkey'],

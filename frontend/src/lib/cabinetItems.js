@@ -12,7 +12,7 @@
  */
 import {
   comparePath, countryPath, indicatorPath, regionIndicatorPath, regionPath, regionRatingPath,
-  russiaIndicatorPath, worldRatingPath, WORLD_RATING_DEFAULT_CONCEPT,
+  russiaIndicatorPath, worldRatingPath, worldRatingYearPath, WORLD_RATING_DEFAULT_CONCEPT,
 } from './sitePaths';
 
 export const SAVED_KINDS = Object.freeze(['indicator', 'world', 'country', 'region', 'comparison', 'calc', 'rating_view']);
@@ -130,4 +130,23 @@ export function cabinetErrorKey(code) {
     case 'unauthorized': return 'c11b.err.unauthorized';
     default: return 'c11b.err.generic';
   }
+}
+
+/**
+ * Куда вести строку «Открыть страницу»: адрес, сохранённый при выгрузке (`params.href`); у старых записей, сделанных до того,
+ * как адрес стал записываться, его восстанавливаем по источнику: сравнение (коды рядов) и рейтинг («показатель:год»).
+ */
+export function exportHref(row) {
+  const p = row.params || {};
+  const direct = safePath(p.href);
+  if (direct) return direct;
+  if (row.source === 'compare' && Array.isArray(p.codes) && p.codes.length) {
+    const rep = typeof p.rep === 'string' && p.rep ? `&rep=${encodeURIComponent(p.rep)}` : '';
+    return safePath(`/compare?codes=${p.codes.map((c) => encodeURIComponent(c)).join(',')}${rep}`);
+  }
+  if (row.source === 'rating' && typeof row.subject_key === 'string') {
+    const [concept, year] = row.subject_key.split(':');
+    if (/^[a-z0-9-]+$/.test(concept || '')) return safePath(worldRatingYearPath(concept, year));
+  }
+  return null;
 }

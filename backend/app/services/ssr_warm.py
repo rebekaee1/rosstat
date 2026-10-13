@@ -20,6 +20,7 @@ import asyncio
 import logging
 import re
 import time
+from urllib.parse import urlsplit
 
 import httpx
 from sqlalchemy import text
@@ -36,7 +37,10 @@ WARM_PATHS = (
     "/russia",
     "/russia/indicator/cpi",
     "/compare",
-    "/world/rating",
+    # Канон рейтинга — страница показателя по умолчанию: `/world/rating` отвечает 301 на неё (backend, WORLD_RATING_DEFAULT_CONCEPT),
+    # и прогрев каждые 45 с тратил два запроса впустую (журнал боевого 12.10.2026: «ssr warm …/world/rating -> 301»).
+    # Совпадение с редиректом backend держит тест test_ssr_warm.
+    "/world/rating/gdp-usd",
     "/api/v1/indicators",
     "/api/v1/world/rating/concepts",
     "/api/v1/world/compare/snapshot/gdp-usd",
@@ -54,6 +58,29 @@ _PATH_RE = re.compile(r"^/[A-Za-z0-9._~/%-]{0,120}$")
 _SKIP_PREFIXES = ("/api", "/og", "/login", "/register", "/cabinet", "/admin", "/account", "/auth", "/embed", "/static")
 _RUN_BUDGET_SECONDS = 240.0
 _runs = 0
+_REDIRECT_STATUSES = (301, 302, 307, 308)
+# (хост, адрес из аналитики) -> канонический адрес после одного редиректа того же хоста: следующие проходы идут сразу на него.
+_known_redirects: dict[tuple[str, str], str] = {}
+
+
+def _normalise_top_path(page: str) -> str:
+    """Адрес из аналитики без хвостового слэша (`/path/` у nginx — редирект на `/path`)."""
+    page = (page or "").strip()
+    if len(page) > 1:
+        page = page.rstrip("/") or "/"
+    return page
+
+
+def _same_host_target(location: str | None, host: str) -> str | None:
+    """Путь, на который ведёт редирект того же хоста (без query), иначе None."""
+    if not location:
+        return None
+    parts = urlsplit(location)
+    if parts.netloc and parts.netloc.lower() != host.lower():
+        return None
+    if parts.query or not _PATH_RE.match(parts.path or ""):
+        return None
+    return parts.path
 
 
 async def top_paths(limit: int) -> list[str]:
@@ -90,10 +117,11 @@ async def top_paths(limit: int) -> list[str]:
     first_screen = set(WARM_PATHS)
     paths: list[str] = []
     for page, _views in rows:
-        page = (page or "").strip()
+        page = _normalise_top_path(page)
         if (
             not page
             or page in first_screen
+            or page in paths
             or page == "/"
             or not _PATH_RE.match(page)
             or page.startswith(_SKIP_PREFIXES)
@@ -121,8 +149,9 @@ async def country_slugs() -> set[str]:
         return set()
 
 
-async def _get(client: httpx.AsyncClient, host: str, path: str, *, strict: bool) -> bool:
+async def _get(client: httpx.AsyncClient, host: str, path: str, *, strict: bool, _followed: bool = False) -> bool:
     base = settings.ssr_warm_base_url.rstrip("/")
+    path = _known_redirects.get((host, path), path) if not strict else path
     try:
         response = await client.get(
             f"{base}{path}",
@@ -135,6 +164,13 @@ async def _get(client: httpx.AsyncClient, host: str, path: str, *, strict: bool)
         )
         if response.status_code == 200:
             return True
+        # Адреса из аналитики могут быть неканоническими: один редирект того же хоста прогреваем по месту назначения
+        # (и запоминаем), чтобы запрос не пропал впустую. Первый экран редиректов не имеет — там это ошибка списка.
+        if not strict and not _followed and response.status_code in _REDIRECT_STATUSES:
+            target = _same_host_target(response.headers.get("location"), host)
+            if target and target != path:
+                _known_redirects[(host, path)] = target
+                return await _get(client, host, target, strict=False, _followed=True)
         # Первый экран обязан отвечать 200; адреса из аналитики (мусорные, редиректы) — нет.
         if strict:
             logger.warning("ssr warm %s%s -> %s", host, path, response.status_code)

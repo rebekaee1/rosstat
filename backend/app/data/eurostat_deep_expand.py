@@ -123,6 +123,7 @@ def expand_independent_slices(
 def resolve_slice_specs(
     dataset_id: str,
     dims: dict[str, list[str]],
+    live: dict[str, set[str]] | None = None,
 ) -> SlicePlan:
     """Manual DEEP wins; иначе independent expand от headline."""
     from app.data.eurostat_listing import DEEP_DATASET_SLICES
@@ -138,7 +139,7 @@ def resolve_slice_specs(
             skips=[],
         )
 
-    headline = choose_headline_slice(dims, dataset_id=ds)
+    headline = choose_headline_slice(dims, dataset_id=ds, live=live)
     specs, skips = expand_independent_slices(headline, dims, dataset_id=ds)
     source: Literal["independent_expand", "headline_only"] = (
         "independent_expand" if len(specs) > 1 else "headline_only"
@@ -147,7 +148,7 @@ def resolve_slice_specs(
 
 
 def plan_dataset_slices(dataset_id: str, *, session: Any = None) -> SlicePlan:
-    from app.services.eurostat_parser import fetch_dataset_structure
+    from app.services.eurostat_parser import fetch_dataset_structure_live
 
-    dims = fetch_dataset_structure(dataset_id, session=session)
-    return resolve_slice_specs(dataset_id, dims)
+    dims, live = fetch_dataset_structure_live(dataset_id, session=session)
+    return resolve_slice_specs(dataset_id, dims, live=live)

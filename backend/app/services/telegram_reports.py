@@ -54,7 +54,22 @@ SURFACE_LABELS = {
     "rating": "рейтинг", "compare": "сравнение", "country": "страница страны", "calculator": "калькулятор",
     "home": "главная", "world_home": "мировой раздел", "embed": "виджеты", "chart_menu": "меню графика",
     "category": "категория", "demographics": "демография", "calendar": "календарь", "today": "сегодня",
-    "other": "другое",
+    "other": "остальные страницы",
+}
+# Цели ценности (макро и микро), которые не входят в группы «Что делали»: рассылка, обратная связь,
+# заявка на API, вход, виджеты. «signup» и «pwa_installed» здесь нет: они в блоках «Регистрации»
+# и «Установки приложения». Тест требует подпись для каждой такой цели.
+OTHER_GOAL_LABELS = {
+    "newsletter_opt_in": "подписка на рассылку",
+    "feedback_submit": "обратная связь",
+    "api_interest_submit": "заявка на API",
+    "login_success": "входы",
+    "embed_code_copy": "код виджета скопирован",
+    "contact_email": "письмо нам",
+    "calc_copy_result": "результат расчёта скопирован",
+}
+SERVER_ERROR_GROUPS = {
+    "seo": "страницы для поисковиков", "api": "запросы к данным", "og": "картинки превью", "other": "остальное",
 }
 FUNNEL_SHORT = {
     "visitors": "посетители", "viewed": "смотрели показатель", "wall": "лимит",
@@ -199,10 +214,11 @@ def signups_lines(sig: dict | None, prev: dict | None = None) -> list[str]:
         head += f" ({change})"
     known_origin = sig.get("origin", {})
     foreign = int(known_origin.get("foreign", 0))
+    countries = count_list(country_counts(sig.get("foreign_countries")), limit=3, show_unknown=False)
     lines = [_line(
         head,
         count_list(sig.get("locale"), LOCALE_LABELS, limit=3),
-        f"вне РФ: {fmt_int(foreign)}" if foreign else "",
+        (f"вне РФ: {fmt_int(foreign)}" + (f" ({countries})" if countries else "")) if foreign else "",
     )]
     where = _line(
         count_list(sig.get("channel"), CHANNEL_LABELS, limit=4),
@@ -237,7 +253,8 @@ def usage_lines(usage: dict | None, prev: dict | None = None) -> list[str]:
             csv = events.get("download_csv", 0)
             xls = events.get("download_excel", 0)
             if csv or xls:
-                text += f" (CSV {fmt_int(csv)}, Excel {fmt_int(xls)})"
+                other = max(actions - csv - xls, 0)  # картинки графиков и сравнений, календарь, карта
+                text += f" (CSV {fmt_int(csv)}, Excel {fmt_int(xls)}" + (f", прочее {fmt_int(other)}" if other else "") + ")"
         if prev and prev.get("has_data"):
             before = (prev.get("groups") or {}).get(group, {}).get("actions")
             change = delta_text(actions, before)
@@ -272,6 +289,38 @@ def weakest_text(funnel: dict | None) -> str:
             f"({fmt_pct(weak['rate_pct'], 0)})")
 
 
+def locale_coverage_note(funnel: dict | None) -> str:
+    """Предупреждение, если язык сайта записан не у всех посетителей (деление по версиям неполное)."""
+    coverage = (funnel or {}).get("locale_coverage_pct")
+    if coverage is None or coverage >= 90:
+        return ""
+    return (f"Деление по версиям неполное: язык сайта записан у {fmt_pct(coverage, 0)} посетителей, "
+            "поэтому числа посетителей по версиям не показаны")
+
+
+def _locale_coverage_low(funnel: dict | None) -> bool:
+    coverage = (funnel or {}).get("locale_coverage_pct")
+    return coverage is not None and coverage < 90
+
+
+def locale_lines(funnel: dict | None) -> list[str]:
+    """Воронка по версиям сайта. Если язык записан не у всех посетителей, число «посетителей» по версии
+    не показываем: оно несравнимо с остальными шагами (те считаются по адресу события)."""
+    out = []
+    low = _locale_coverage_low(funnel)
+    for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
+        cell = (funnel.get("by_locale") or {}).get(locale) or {} if funnel else {}
+        # посетителей по версии нет или их меньше, чем смотревших (разные источники): число не показываем
+        hide_visitors = low or (cell.get("visitors") or 0) < (cell.get("viewed") or 0)
+        parts = [f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v and not (hide_visitors and k == "visitors")]
+        if parts:
+            out.append(f"{label}: " + ", ".join(parts))
+    note = locale_coverage_note(funnel)
+    if note:
+        out.append(note)
+    return out
+
+
 def dropped_text(funnel: dict | None) -> str:
     dropped = (funnel or {}).get("dropped_at") or {}
     if not dropped:
@@ -281,16 +330,58 @@ def dropped_text(funnel: dict | None) -> str:
     return "ушли на шаге: " + ", ".join(pieces) if pieces else ""
 
 
+def other_goals_line(adoption: dict | None, prev: dict | None = None) -> str:
+    """Цели ценности вне групп «Что делали» (рассылка, обратная связь, заявка на API, входы, виджеты).
+
+    Источник — `mart_feature_adoption` (rollup `daily_goals` без роботов и своих). Пустую строку
+    возвращаем, если таких целей не было: нули не показываем.
+    """
+    if not adoption:
+        return ""
+    now = {f["event"]: int(f.get("count") or 0) for f in adoption.get("features", [])}
+    before = {f["event"]: int(f.get("count") or 0) for f in (prev or {}).get("features", [])} if prev else None
+    parts = []
+    for event, count in sorted(((e, now.get(e, 0)) for e in OTHER_GOAL_LABELS), key=lambda kv: -kv[1]):
+        if not count:
+            continue
+        text = f"{OTHER_GOAL_LABELS[event]} {fmt_int(count)}"
+        change = delta_text(count, before.get(event, 0)) if before is not None else ""
+        if change:
+            text += f" ({change})"
+        parts.append(text)
+    return "🏁 Прочие цели: " + " · ".join(parts) if parts else ""
+
+
+def _server_errors_bit(rel: dict) -> str:
+    spikes = rel.get("server_5xx_spikes") or {}
+    count = int(spikes.get("count") or 0)
+    if not count:
+        return ""
+    where = ", ".join(SERVER_ERROR_GROUPS.get(k, k) for k in list(spikes.get("by_group") or {})[:2])
+    return f"всплесков ошибок сервера (5xx): {fmt_int(count)}" + (f" ({where})" if where else "")
+
+
 def reliability_line(rel: dict | None) -> str:
     if not rel:
         return ""
-    own_errors = sum(int(item.get("count", 0)) for item in rel.get("js_errors_own", []))
+    # Если витрина разделила ошибки кода и «не загрузился файл», показываем их раздельно.
+    split = "js_errors_real_own" in rel
+    own_errors = sum(int(item.get("count", 0)) for item in rel.get("js_errors_real_own" if split else "js_errors_own", []))
+    files_failed = int((rel.get("js_files_failed_own") or {}).get("total") or 0)
     lcp = (rel.get("vitals_p75") or {}).get("LCP")
     api = rel.get("api_p75_ms")
     worst = next((c for c in rel.get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and c.get("lcp_p75_ms")), None)
     bits = []
     if own_errors:
         bits.append(f"ошибок своих скриптов {fmt_int(own_errors)}")
+    if files_failed:
+        bits.append(f"не загрузились файлы сайта {fmt_int(files_failed)}")
+    server = _server_errors_bit(rel)
+    if server:
+        bits.append(server)
+    seen_5xx = int(rel.get("api_5xx_sampled") or 0)
+    if seen_5xx:
+        bits.append(f"людям пришла ошибка 5xx (выборка) {fmt_int(seen_5xx)}")
     if lcp is not None:
         bits.append(f"LCP p75 {fmt_seconds(lcp)}")
     if api is not None:
@@ -307,7 +398,29 @@ def _split_block(title: str, mapping: dict | None, labels: dict[str, str], limit
     return f"{title}: {text}" if text else ""
 
 
-def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | None) -> list[str]:
+def reliability_details(rel: dict | None) -> list[str]:
+    """Причины для строки «Сайт»: самые частые ошибки своих скриптов и самые медленные страницы."""
+    from app.services.pii_scrub import scrub_text
+
+    out: list[str] = []
+    key = "js_errors_real_own" if "js_errors_real_own" in (rel or {}) else "js_errors_own"
+    errors = [item for item in (rel or {}).get(key, []) if item.get("count")]
+    if errors:
+        out.append("Частые ошибки скриптов: " + "; ".join(
+            f"{escape(scrub_text(str(item['error']))[:70], quote=False)} ×{fmt_int(item['count'])}" for item in errors[:3]))
+    files = ((rel or {}).get("js_files_failed_own") or {}).get("top") or {}
+    if files:
+        out.append("Не загрузились файлы: " + ", ".join(f"{escape(name)} ×{fmt_int(n)}" for name, n in list(files.items())[:3]))
+    slow = [c for c in (rel or {}).get("page_device", []) if (c.get("lcp_samples") or 0) >= 5 and (c.get("lcp_p75_ms") or 0) >= 2500]
+    if slow:
+        out.append("Медленные страницы (LCP p75): " + "; ".join(
+            f"{SURFACE_LABELS.get(c['page_group'], c['page_group'])}, {DEVICE_LABELS.get(c['device'], c['device'])} "
+            f"{fmt_seconds(c['lcp_p75_ms'])} (выборка {fmt_int(c['lcp_samples'])})" for c in slow[:3]))
+    return out
+
+
+def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | None,
+                         rel: dict | None = None) -> list[str]:
     """Подробности под спойлер: каналы, поверхности упоров и выгрузок, ушедшие, языки воронки."""
     out: list[str] = []
     if sig and sig.get("total"):
@@ -317,7 +430,10 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
             line = _split_block(title, data, labels, 6)
             if line:
                 out.append(line)
-        landing = ", ".join(f"{escape(page)} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
+        sources = count_list(sig.get("referrer"), limit=6, show_unknown=False)
+        if sources:
+            out.append(f"Переходы с сайтов: {sources}")
+        landing = ", ".join(f"{escape(_short_path(page))} ×{n}" for page, n in (sig.get("landing_top") or {}).items())
         if landing:
             out.append(f"Первые страницы: {landing}")
     if usage and usage.get("has_data"):
@@ -330,12 +446,13 @@ def detail_lines_for_day(sig: dict | None, usage: dict | None, funnel: dict | No
         for item in (dropped_text(funnel), weakest_text(funnel)):
             if item:
                 out.append(item[0].upper() + item[1:])
-        for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
-            cell = (funnel.get("by_locale") or {}).get(locale) or {}
-            if any(cell.values()):
-                out.append(f"{label}: " + ", ".join(
-                    f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v))
+        out += locale_lines(funnel)
+    out += reliability_details(rel)
     return out
+
+
+def _short_path(page: str, limit: int = 48) -> str:
+    return page if len(page) <= limit else page[: limit - 1] + "…"
 
 
 def expandable(lines: list[str]) -> str:
@@ -344,18 +461,22 @@ def expandable(lines: list[str]) -> str:
 
 def format_digest_v2(
     *, signups: dict | None, usage: dict | None, funnel: dict | None, reliability: dict | None,
+    adoption: dict | None = None,
 ) -> list[str]:
     """Строки блоков v2 для ежедневного дайджеста (вставляются после блока пользователей)."""
     lines: list[str] = []
     lines += signups_lines(signups)
     lines += usage_lines(usage)
+    goals = other_goals_line(adoption)
+    if goals:
+        lines.append(goals)
     funnel_text = funnel_line(funnel)
     if funnel_text:
         lines.append(funnel_text)
     site = reliability_line(reliability)
     if site:
         lines.append(site)
-    details = expandable(detail_lines_for_day(signups, usage, funnel))
+    details = expandable(detail_lines_for_day(signups, usage, funnel, reliability))
     if details:
         lines.append(details)
     return lines
@@ -372,8 +493,8 @@ def conversion_by_channel(sig: dict | None, visitors_by_channel: dict[str, int] 
     reg = sig.get("channel") or {}
     parts = []
     for channel, visitors in sorted(visitors_by_channel.items(), key=lambda kv: -kv[1]):
-        if visitors < min_visitors or channel == "unknown":
-            continue
+        if visitors < min_visitors or channel == "unknown" or not reg.get(channel):
+            continue  # каналы без регистраций («0%») строку только раздувают
         parts.append(f"{CHANNEL_LABELS.get(channel, channel)} {fmt_pct(100 * reg.get(channel, 0) / visitors, 1)}")
     return ", ".join(parts[:5])
 
@@ -432,7 +553,9 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
                     back_line += f" · за 30 дней: {fmt_int(back30['returned'])} из {fmt_int(back30['eligible'])} ({fmt_pct(back30['pct'], 0)})"
             parts.append(back_line)
         if sig.get("median_days_to_signup") is not None:
-            parts.append(f"⏳ Дней от первого визита до регистрации (медиана): {fmt_pct(sig['median_days_to_signup'], 1).rstrip('%')}")
+            days = sig["median_days_to_signup"]
+            parts.append("⏳ Регистрируются в день первого визита (медиана)" if days == 0 else
+                         f"⏳ Дней от первого визита до регистрации (медиана): {fmt_pct(days, 1).rstrip('%')}")
     else:
         notes.append("регистрации: данных нет")
 
@@ -448,6 +571,9 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
         parts += usage_lines(usage, prev_usage)
     else:
         notes.append("использование функций: данных нет")
+    goals = other_goals_line(data.get("adoption"), data.get("prev_adoption"))
+    if goals:
+        parts.append(goals)
 
     pwa = data.get("pwa")
     if pwa:
@@ -471,16 +597,16 @@ def format_period_report(data: dict[str, Any], *, kind: str) -> str:
 
     if kind == "monthly" and sig:
         cohort_bits = []
-        landing = ", ".join(f"{escape(page)} ×{n}" for page, n in list((sig.get("landing_top") or {}).items())[:5])
+        landing = ", ".join(f"{escape(_short_path(page))} ×{n}" for page, n in list((sig.get("landing_top") or {}).items())[:5])
         if landing:
             cohort_bits.append(f"лучшие первые страницы: {landing}")
         if cohort_bits:
-            parts.append("🧲 " + "; ".join(cohort_bits))
+            parts.append("🧲 " + "; ".join(cohort_bits)[:1].upper() + "; ".join(cohort_bits)[1:])
 
     if notes:
         parts.append("ℹ️ " + "; ".join(notes))
 
-    details = detail_lines_for_day(sig, usage, funnel)
+    details = detail_lines_for_day(sig, usage, funnel, rel)
     if kind == "monthly" and usage and usage.get("has_data"):
         for group in ("share", "favorite", "subscribe"):
             bucket = (usage["groups"].get(group) or {}).get("surface") or {}
@@ -537,12 +663,7 @@ def format_funnel_reply(funnel: dict | None, period: Period) -> str:
     for text in (dropped_text(funnel), weakest_text(funnel)):
         if text:
             lines.append(text[0].upper() + text[1:])
-    details = []
-    for locale, label in (("ru", "Русская версия"), ("en", "Английская версия")):
-        cell = (funnel.get("by_locale") or {}).get(locale) or {}
-        if any(cell.values()):
-            details.append(f"{label}: " + ", ".join(f"{FUNNEL_SHORT[k]} {fmt_int(v)}" for k, v in cell.items() if v))
-    block = expandable(details)
+    block = expandable(locale_lines(funnel))
     return "\n".join(lines) + ("\n" + block if block else "")
 
 
@@ -577,17 +698,40 @@ def format_goals_reply(windows: dict[str, dict | None]) -> str:
 # Сборка данных
 # ---------------------------------------------------------------------------
 
+# Пул соединений аналитики мал (2 + 2 переполнения, ожидание 15 с), а отчёт запускает до 13 витрин.
+# Без очереди часть блоков молча падала бы на «QueuePool limit … timed out» (найдено на боевых объёмах,
+# круг 13): витрины идут по две, таймаут блока отсчитывается после получения очереди.
+_BLOCK_SLOTS = 2
+_slots: dict[int, asyncio.Semaphore] = {}
+
+
+def _slot() -> asyncio.Semaphore:
+    loop_id = id(asyncio.get_running_loop())
+    if loop_id not in _slots:
+        _slots.clear()
+        _slots[loop_id] = asyncio.Semaphore(_BLOCK_SLOTS)
+    return _slots[loop_id]
+
+
 async def _guarded(name: str, factory: Callable[[Any], Awaitable[Any]], timeout: float = BLOCK_TIMEOUT_S) -> Any:
-    """Одна витрина в своей сессии: сбой и таймаут дают None, отчёт продолжается."""
+    """Одна витрина в своей сессии: сбой и таймаут дают None, отчёт продолжается.
+    Если пул соединений занят другой задачей, один раз повторяем."""
     async def run():
         async with analytics_session() as db:
             return await factory(db)
 
-    try:
-        return await asyncio.wait_for(run(), timeout)
-    except Exception:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
-        logger.warning("Telegram report block %s failed", name, exc_info=True)
-        return None
+    async with _slot():
+        for attempt in (1, 2):
+            try:
+                return await asyncio.wait_for(run(), timeout)
+            except Exception as exc:  # noqa: BLE001 — в т.ч. asyncio.TimeoutError
+                pool_busy = type(exc).__name__ == "TimeoutError" and "QueuePool" in str(exc)
+                if pool_busy and attempt == 1:
+                    await asyncio.sleep(5)
+                    continue
+                logger.warning("Telegram report block %s failed", name, exc_info=True)
+                return None
+    return None
 
 
 def day_period(day: date) -> Period:
@@ -616,13 +760,15 @@ async def collect_digest_v2(day: date) -> dict[str, Any]:
     from app.services import analytics_marts as m
 
     period = day_period(day)
-    signups, usage, funnel, reliability = await asyncio.gather(
+    signups, usage, funnel, reliability, adoption = await asyncio.gather(
         _guarded("signups", lambda db: m.mart_signups(db, period)),
         _guarded("usage", lambda db: m.mart_goal_usage(db, period)),
         _guarded("funnel", lambda db: m.mart_signup_funnel(db, period)),
         _guarded("reliability", lambda db: m.mart_reliability(db, period)),
+        _guarded("adoption", lambda db: m.mart_feature_adoption(db, period)),
     )
-    return {"signups": signups, "usage": usage, "funnel": funnel, "reliability": reliability}
+    return {"signups": signups, "usage": usage, "funnel": funnel, "reliability": reliability,
+            "adoption": adoption}
 
 
 async def digest_v2_lines(day: date) -> list[str]:
@@ -650,21 +796,26 @@ async def _visitors_by_channel(db, period: Period) -> dict[str, int]:
 def _english_summary(sig: dict | None, funnel: dict | None, audience: dict | None) -> str:
     bits = []
     en_visitors = ((funnel or {}).get("by_locale") or {}).get("en", {})
-    if en_visitors.get("visitors"):
+    if en_visitors.get("visitors") and not _locale_coverage_low(funnel):
         bits.append(f"посетители {fmt_int(en_visitors['visitors'])}")
+    elif en_visitors.get("viewed"):
+        bits.append(f"смотрели показатель {fmt_int(en_visitors['viewed'])}")
     en_signups = ((sig or {}).get("locale") or {}).get("en")
     if en_signups:
         bits.append(f"регистрации {fmt_int(en_signups)}")
     if en_visitors.get("wall"):
         bits.append(f"упёрлись в лимит {fmt_int(en_visitors['wall'])}")
-    return ", ".join(bits)
+    text = ", ".join(bits)
+    if text and locale_coverage_note(funnel):
+        text += " (язык сайта записан не у всех посетителей, цифры неполные)"
+    return text
 
 
 async def collect_period_report(period: Period, prev: Period) -> dict[str, Any]:
     from app.services import analytics_marts as m
 
-    (signups, prev_signups, audience, prev_audience, funnel, usage, prev_usage, reliability, pwa, gaps, by_channel
-     ) = await asyncio.gather(
+    (signups, prev_signups, audience, prev_audience, funnel, usage, prev_usage, reliability, pwa, gaps, by_channel,
+     adoption, prev_adoption) = await asyncio.gather(
         _guarded("signups", lambda db: m.mart_signups(db, period)),
         _guarded("prev_signups", lambda db: m.mart_signups(db, prev)),
         _guarded("audience", lambda db: m.mart_audience_geo(db, period)),
@@ -676,12 +827,15 @@ async def collect_period_report(period: Period, prev: Period) -> dict[str, Any]:
         _guarded("pwa", lambda db: m.mart_pwa_installs(db, period)),
         _guarded("search_gaps", lambda db: m.mart_search_gaps(db, period)),
         _guarded("visitors_by_channel", lambda db: _visitors_by_channel(db, period)),
+        _guarded("adoption", lambda db: m.mart_feature_adoption(db, period)),
+        _guarded("prev_adoption", lambda db: m.mart_feature_adoption(db, prev)),
     )
     return {
         "period": period, "prev_period": prev, "signups": signups, "prev_signups": prev_signups,
         "audience": audience, "prev_audience": prev_audience, "funnel": funnel, "usage": usage,
         "prev_usage": prev_usage, "reliability": reliability, "pwa": pwa, "search_gaps": gaps,
         "visitors_by_channel": by_channel, "english": _english_summary(signups, funnel, audience),
+        "adoption": adoption, "prev_adoption": prev_adoption,
     }
 
 
@@ -699,10 +853,11 @@ async def build_monthly_report(today: date | None = None) -> str:
 
 
 async def _send_to_recipients(text: str, kind: str) -> dict[str, bool]:
-    """Всем получателям дайджеста; `kind` различает виды сообщений для досылки и архива."""
-    from app.services.alerting import digest_recipients, send_telegram
+    """Получателям отчётов (по умолчанию как у дайджеста; `telegram_reports_chat_ids` сужает до тестового
+    чата); `kind` различает виды сообщений для досылки и архива."""
+    from app.services.alerting import report_recipients, send_telegram
 
-    return {cid: await send_telegram(text, chat_id=cid, kind=kind) for cid in digest_recipients()}
+    return {cid: await send_telegram(text, chat_id=cid, kind=kind) for cid in report_recipients()}
 
 
 async def weekly_report_job() -> None:

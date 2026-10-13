@@ -189,6 +189,19 @@ def digest_recipients() -> list[str]:
     return out
 
 
+def report_recipients() -> list[str]:
+    """Получатели недельного и месячного отчётов (круг 13).
+
+    `telegram_reports_chat_ids` непустой — только эти чаты (первое включение: один тестовый чат
+    или чат владельца); пустой — те же, что у дайджеста.
+    """
+    explicit = [c.strip() for c in (settings.telegram_reports_chat_ids or "").split(",") if c.strip()]
+    if not explicit:
+        return digest_recipients()
+    seen: set[str] = set()
+    return [c for c in explicit if not (c in seen or seen.add(c))]
+
+
 async def send_telegram_digest(message: str, reply_markup: Optional[dict] = None) -> dict[str, bool]:
     """Рассылка дайджеста всем получателям. Возвращает {chat_id: ok}.
 
@@ -382,8 +395,8 @@ async def alert_zero_parse(indicator_code: str, existing_points: int) -> None:
         logger.info("Zero-parse muted for %s", indicator_code)
         return
     await send_telegram(
-        "🟡 <b>Zero-parse regression</b>\n"
-        f"Indicator: <code>{escape(indicator_code)}</code>\n"
+        "🟡 <b>Парсер вернул ноль точек</b>\n"
+        f"Показатель: <code>{escape(indicator_code)}</code>\n"
         f"Парсер вернул 0 точек при {existing_points} точках истории — "
         "вероятна смена layout источника.",
         kind="zero_parse",
@@ -391,8 +404,8 @@ async def alert_zero_parse(indicator_code: str, existing_points: int) -> None:
 
 
 _DEGRADED_LABELS = {
-    "parsed_zero": "Parsed zero (layout?)",
-    "fallback_used": "Fallback source",
+    "parsed_zero": "Парсер вернул ноль (смена вёрстки источника?)",
+    "fallback_used": "Запасной источник",
     "deadline_skipped": "Not run (job time ceiling)",
 }
 
@@ -412,14 +425,14 @@ async def alert_etl_summary(
     n_problems = sum(len(v) for v in degraded.values())
     status = "🔴" if failed else ("🟡" if n_problems else "🟢")
     parts = [
-        f"{status} <b>Daily ETL Complete</b>",
-        f"Total: {total} | Updated: {updated} | Failed: {len(failed)}"
-        f" | Problems: {n_problems}",
+        f"{status} <b>Ежедневная выгрузка данных завершена</b>",
+        f"Всего: {total} · обновлено: {updated} · с ошибкой: {len(failed)}"
+        f" · с замечаниями: {n_problems}",
     ]
     if duration_sec is not None:
-        parts.append(f"Duration: {duration_sec:.0f}s")
+        parts.append(f"Длительность: {duration_sec:.0f} с")
     if failed:
-        parts.append(f"Failed: {escape(', '.join(failed))}")
+        parts.append(f"С ошибкой: {escape(', '.join(failed))}")
     for key, codes in degraded.items():
         label = _DEGRADED_LABELS.get(key, key)
         parts.append(f"{escape(label)} ({len(codes)}): {escape(', '.join(codes))}")

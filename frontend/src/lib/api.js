@@ -281,6 +281,18 @@ function defaultExportHistory(source) {
 }
 
 /**
+ * Явная `history` у вызывающего часто без адреса страницы (сравнение, рейтинг): добавляем `params.href`, чтобы строка
+ * в «Выгрузках» кабинета открывала ту же страницу (круг 13). Уже заданный `href` не трогаем.
+ */
+function withExportHref(history, source) {
+  const base = defaultExportHistory(source);
+  if (!history) return base;
+  const params = history.params && typeof history.params === 'object' ? history.params : {};
+  if (params.href) return history;
+  return { ...base, ...history, params: { ...base.params, ...params } };
+}
+
+/**
  * POST выгрузки с ответом-файлом. Возвращает Blob и остаток гостевых выгрузок;
  * при 403 download_limit бросает ошибку с code='download_limit' (тело ошибки приходит как Blob).
  */
@@ -317,7 +329,7 @@ async function postExportBlob(url, body) {
  */
 export const exportTable = ({ format, filename, valueLabel, points, meta, history }) =>
   postExportBlob('/export/table', {
-    format, filename, value_label: valueLabel, points, meta, history: history ?? defaultExportHistory('table'),
+    format, filename, value_label: valueLabel, points, meta, history: withExportHref(history, 'table'),
   });
 
 /**
@@ -327,7 +339,13 @@ export const exportTable = ({ format, filename, valueLabel, points, meta, histor
  */
 export const exportGrid = ({ format, filename, title, columns, rows, meta, history }) =>
   postExportBlob('/export/grid', {
-    format, filename, title, columns, rows, meta, history: history ?? defaultExportHistory('grid'),
+    format, filename, title, columns, rows, meta, history: withExportHref(history, 'grid'),
   });
+
+/**
+ * «Скачать мои данные» (152-ФЗ): всё, что сайт хранит о человеке, одним JSON (`GET /auth/account/export`, нужна сессия).
+ * Круг 13: ручка была, кнопки в кабинете не было.
+ */
+export const fetchAccountExport = () => api.get('/auth/account/export').then((r) => r.data);
 
 export default api;

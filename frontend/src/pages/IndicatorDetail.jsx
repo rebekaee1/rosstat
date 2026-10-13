@@ -9,6 +9,7 @@ import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
 import IndicatorDetailHeader from '../components/IndicatorDetailHeader';
 import IndicatorHeroValue from '../components/IndicatorHeroValue';
+import FreshnessNote from '../components/FreshnessNote';
 import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import VariantGroupPicker from '../components/VariantGroupPicker';
 import CpiIndicatorControls from '../components/CpiIndicatorControls';
@@ -636,6 +637,8 @@ export default function IndicatorDetail() {
 
       {provenance && <p role="note" className="mb-4 text-sm text-text-secondary">{provenance}</p>}
 
+      <FreshnessNote freshness={indicator?.freshness} />
+
       {/* Оба переключателя — НАД графиком, сверху вниз:
           1) «Состав» (категории-родственники: cpi → cpi-food / housing-primary →
              housing-secondary и т.д.) — меняет сам индикатор и весь набор данных.
@@ -818,6 +821,7 @@ export default function IndicatorDetail() {
         periodMonthlyDataPoints={periodMonthlyDataPoints}
         periodWeeklyDataPoints={periodWeeklyDataPoints}
         loading={Boolean(loadingInd || chartLoading || loadingData || loadingInflation)}
+        pairedWithForecast={forecastEnabled && showForecast && hasForecastDataForSection}
       />
         </div>
         <div className="z4-lower__aside">

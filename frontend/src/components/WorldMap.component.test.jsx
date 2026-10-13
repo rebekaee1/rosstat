@@ -302,7 +302,7 @@ describe('WorldMap embedded in the planet stage', () => {
     expect(container.querySelector('[data-selected-outline]').getAttribute('d')).toBeTruthy();
   });
 
-  it('К2: выбранная страна видна на любой ступени шкалы: белое гало под тёмной кромкой и светлая заливка', () => {
+  it('круг 13: выбранная страна видна на любой ступени шкалы и сохраняет цвет своей ступени: белое гало под тёмной кромкой, без белой заливки', () => {
     const { container, rerender } = renderMap(embedded());
     expect(container.querySelector('[data-selected-halo]')).toBeNull();
     rerender(<LocaleProvider>{embedded({ selectedCode: 'DE' })}</LocaleProvider>);
@@ -310,7 +310,12 @@ describe('WorldMap embedded in the planet stage', () => {
     const ink = container.querySelector('[data-selected-outline]');
     expect(halo.getAttribute('d')).toBe(ink.getAttribute('d'));
     expect(halo.getAttribute('stroke')).toBe('#FFFFFF');
-    expect(halo.getAttribute('fill')).toMatch(/^rgba\(255,255,255/);
+    expect(halo.getAttribute('fill')).toBe('none');
+    // Заливка выбранной страны — тот же цвет ступени, что у неё в основном слое, а не белёсая смесь.
+    const base = container.querySelector('path[role="button"][aria-label^="Германия"]');
+    expect(ink.getAttribute('fill')).toBe(base.getAttribute('fill'));
+    expect(ink.getAttribute('fill')).not.toBe('#E6E3DC');
+    expect(ink.getAttribute('fill')).not.toMatch(/rgba|#FFFFFF/i);
     expect(ink.getAttribute('stroke')).toBe('#16264F');
     // Гало шире кромки и лежит под ней.
     expect(Number(halo.getAttribute('stroke-width'))).toBeGreaterThan(Number(ink.getAttribute('stroke-width')));
@@ -461,8 +466,8 @@ describe('WorldMap: заливка России (круг 9, H1)', () => {
     };
     const smallest = fillOf(container, 'Турция');
     const largest = fillOf(container, 'США');
-    expect(smallest).toBe('#1D3A82');
-    expect(['#8C5F42', '#52311F']).toContain(largest); // на пяти странах верхняя полоса — предпоследняя ступень, у шкалы всё равно коричневая сторона
+    expect(smallest).toBe('#0B306B');
+    expect(['#8F5C3A', '#523121']).toContain(largest); // на пяти странах верхняя полоса — предпоследняя ступень, у шкалы всё равно коричневая сторона
     expect(hue(smallest)).toBeGreaterThan(200); // синий
     expect(hue(largest)).toBeLessThan(30); // коричневый, не золото (около 41)
   });

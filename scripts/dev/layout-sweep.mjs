@@ -8,7 +8,7 @@
  *   - truncated: название обрезано многоточием или line-clamp (читатель не видит, что за показатель);
  *   - overlap: два текстовых блока одного родителя налезают друг на друга;
  *   - tap-target: кнопка или ссылка меньше 36 px на телефоне и планшете;
- *   - tiny-text: текст мельче 11 px;
+ *   - tiny-text: текст мельче 11 px (кроме aria-hidden: подпись логотипа, стрелка в бусине — рисунок, не текст);
  *   - console/network: ошибки консоли и ответы 4xx/5xx (кроме ожидаемого 401 у гостя).
  *
  * Не заменяет глаза на настоящем устройстве (safe-area, жесты, шрифты iOS), но за минуты проходит десятки
@@ -29,6 +29,7 @@
  *   --shots           сохранять кадр для каждого случая с находками
  *   --concurrency N   параллельных страниц (по умолчанию 3; прод держит 4 vCPU, не ставь больше 4)
  *   --browser PATH    свой исполняемый файл Chromium (по умолчанию тот, что поставил playwright)
+ *   --insecure        принимать самоподписанный сертификат (локальный стенд perf-serve.mjs)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -199,6 +200,9 @@ function inPage(isTouch) {
   const w2 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let n = w2.nextNode(); n && tiny < 6; n = w2.nextNode()) {
     if (!n.textContent.trim() || !n.parentElement || !visible(n.parentElement)) continue;
+    // Надпись, скрытая от вспомогательных технологий (aria-hidden), — часть рисунка (подпись логотипа,
+    // стрелка в цветной бусине), а не текст для чтения: у неё есть подпись/число рядом. Не считаем.
+    if (n.parentElement.closest('[aria-hidden="true"]')) continue;
     const fs = parseFloat(getComputedStyle(n.parentElement).fontSize);
     if (fs < 11) { tiny += 1; out.push({ kind: 'tiny-text', sel: sel(n.parentElement), text: short(n.textContent, 40), detail: `${fs}px` }); }
   }
@@ -216,7 +220,11 @@ async function scrollThrough(page) {
   });
 }
 
-const browser = await chromium.launch(args.browser ? { executablePath: String(args.browser) } : {});
+// --insecure: самоподписанный сертификат локального стенда (scripts/dev/perf-serve.mjs); хосты *.localhost Chrome ведёт на петлю сам.
+const browser = await chromium.launch({
+  ...(args.browser ? { executablePath: String(args.browser) } : {}),
+  ...(args.insecure ? { args: ['--ignore-certificate-errors'] } : {}),
+});
 if (SELF_TEST) {
   // Проверка самого инструмента: страница с заведомыми дефектами должна дать находки каждого вида.
   const ctx = await browser.newContext({ viewport: { width: 300, height: 600 }, hasTouch: true });
@@ -250,6 +258,7 @@ async function worker() {
       deviceScaleFactor: touch ? 2 : 1,
       isMobile: w <= 820,
       hasTouch: touch,
+      ignoreHTTPSErrors: Boolean(args.insecure),
       locale: BASE.includes('ru.') || BASE.includes('ru.localhost') ? 'ru-RU' : 'en-US',
     });
     const page = await ctx.newPage();

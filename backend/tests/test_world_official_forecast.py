@@ -243,3 +243,75 @@ def test_circle12_flags_are_off_by_default():
         "rest_world_forecast_enabled",
     ):
         assert Settings.model_fields[name].default is False  # выпуск в два шага
+
+
+def test_weo_categories_have_english_names():
+    """Группы показателей МВФ (в том числе «Внешний сектор») в английском каталоге страны без кириллицы."""
+    import re
+
+    from app.services.imf_weo_adapter import WEO_SERIES
+    from app.services.seo_i18n import localize_category_name
+
+    for weo_code, meta in WEO_SERIES.items():
+        name = localize_category_name(meta["category_ru"], locale="en")
+        assert name and not re.search(r"[А-Яа-яЁё]", name), (weo_code, name)
+
+
+def test_new_weo_series_have_readable_english_units(monkeypatch):
+    """Рост реального ВВП и счёт текущих операций в EN: не «PC» и не «Percentage of gross domestic product (GDP)»."""
+    from types import SimpleNamespace
+
+    import app.api.world as world_api
+
+    monkeypatch.setattr(world_api, "get_locale", lambda: "en")
+    growth = SimpleNamespace(
+        provider="imf", code="in-weo-ngdp-rpch", unit="PC", unit_ru="изменение за год, %",
+        dataset_id="WEO", slice_json=None,
+    )
+    bca = SimpleNamespace(
+        provider="imf", code="in-weo-bca", unit="PC_GDP", unit_ru="% ВВП", dataset_id="WEO", slice_json=None,
+    )
+    assert world_api._indicator_public_unit(growth) == "annual change, %"
+    assert world_api._indicator_public_unit(bca) == "% of GDP"
+    # В заголовках данных единица тоже не из понятия.
+    assert world_api._concept_unit_for_indicator(object(), growth) == "annual change, %"
+    assert world_api._concept_unit_for_indicator(object(), bca) == "% of GDP"
+    monkeypatch.setattr(world_api, "get_locale", lambda: "ru")
+    assert world_api._indicator_public_unit(bca) == "% ВВП"
+
+
+def test_forecast_job_times_are_configurable_and_default_to_the_old_schedule():
+    """Круг 13: время пакетов США и «остального мира» вынесено в настройки, по умолчанию прежнее (05:20 и 04:50 МСК)."""
+    from app.config import Settings
+
+    fields = Settings.model_fields
+    assert (fields["us_world_forecast_hour"].default, fields["us_world_forecast_minute"].default) == (5, 20)
+    assert (fields["rest_world_forecast_hour"].default, fields["rest_world_forecast_minute"].default) == (4, 50)
+    assert (fields["europe_world_forecast_hour"].default, fields["europe_world_forecast_minute"].default) == (23, 10)
+    assert fields["world_forecast_max_age_days_annual"].default == 0
+    assert fields["world_forecast_max_age_days_quarterly"].default == 0
+
+
+def test_europe_forecast_time_ceiling_has_its_own_setting_defaulting_to_the_common_one():
+    from app.config import Settings
+
+    assert Settings.model_fields["europe_world_forecast_max_run_seconds"].default == 0  # 0 = общий потолок
+    assert Settings.model_fields["world_forecast_max_run_seconds"].default == 2400
+
+
+def test_compose_passes_every_world_forecast_knob_the_plan_relies_on():
+    """Значение из .env хоста попадает в контейнер только если compose его перечисляет (backend/.dockerignore не берёт .env в образ).
+    Стенд 12.10: RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY=1000 в .env молча не действовал, плановый пакет сбрасывал кэш мира каждые 200 записей."""
+    from pathlib import Path
+
+    compose = (Path(__file__).resolve().parents[2] / "docker-compose.yml").read_text(encoding="utf-8")
+    for name in (
+        "RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY",
+        "RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL",
+        "RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY",
+        "RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS",
+        "RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT",
+        "RUSTATS_US_WORLD_FORECAST_HOUR",
+        "RUSTATS_REST_WORLD_FORECAST_HOUR",
+    ):
+        assert f"{name}: ${{{name}:-" in compose, name

@@ -10,6 +10,11 @@ TOC Eurostat сообщает дату «last table structure change». Карт
 - Срез пропал (код переименован, добавлено измерение) → ищется единственный
   НОВЫЙ срез той же страны и частоты, чья история совпадает по значениям;
   карточка переподключается к нему с прежним кодом/URL.
+- Срез пропал, но в новой версии есть тот же срез на более новой базе индекса
+  (I15 → I21, «смена базы») → ожидаемое событие, не разлом: карточка переедет на
+  новый срез на месте (если пересчёт подтверждается) либо будет заменена новой
+  карточкой с 301. В карантин такие наборы не отправляются; событие попадает в
+  ``verdict.rebased`` и в журнал загрузки.
 - Замены нет → ряд больше не публикуется в этой форме: карточка остаётся с
   прежней историей. Если таких публичных карточек много — это разлом набора,
   и он остаётся в карантине с конкретным отчётом (не вслепую).
@@ -50,6 +55,9 @@ class StructureVerdict:
     accept: bool
     kept: int = 0
     remapped: dict[int, tuple[dict, str]] = field(default_factory=dict)
+    # Смена базы индекса: карточка → (новый срез, хеш). Запись делает loader
+    # (eurostat_rebase), здесь только признаём событие ожидаемым.
+    rebased: dict[int, tuple[dict, str]] = field(default_factory=dict)
     orphans: list[int] = field(default_factory=list)
     orphans_listed: int = 0
     reason: str = ""
@@ -59,6 +67,7 @@ class StructureVerdict:
             "accept": self.accept,
             "kept": self.kept,
             "remapped": len(self.remapped),
+            "rebased": len(self.rebased),
             "orphans": len(self.orphans),
             "orphans_listed": self.orphans_listed,
             "reason": self.reason,
@@ -110,6 +119,28 @@ def plan_structure_migration(
             missing.append(item)
 
     taken: set[tuple[str, str]] = set(claimed)
+
+    # Смена базы индекса: пропавший срез имеет двойника на более новой базе.
+    from app.services.eurostat_rebase import rebase_twin_slice
+
+    still_missing: list[ExistingSlice] = []
+    for item in missing:
+        twin = next(
+            (
+                (new_hash, new_slice)
+                for (geo, new_hash), (new_slice, _points) in new_series.items()
+                if geo == item.geo and (geo, new_hash) not in taken
+                and rebase_twin_slice(item.slice_json, new_slice)
+            ),
+            None,
+        )
+        if twin is None:
+            still_missing.append(item)
+            continue
+        verdict.rebased[item.indicator_id] = (twin[1], twin[0])
+        taken.add((item.geo, twin[0]))
+    missing = still_missing
+
     for item in missing:
         history = old_points.get(item.indicator_id) or []
         candidates = []
@@ -142,7 +173,7 @@ def plan_structure_migration(
     else:
         verdict.reason = (
             f"срезов сохранено {verdict.kept}, переподключено {len(verdict.remapped)}, "
-            f"без замены {len(verdict.orphans)}"
+            f"смена базы индекса {len(verdict.rebased)}, без замены {len(verdict.orphans)}"
         )
     return verdict
 

@@ -832,3 +832,19 @@ def test_apply_resolved_forecast_yoy_uses_aggregated_level():
     points = apply_resolved_forecast(actual, forecast, resolved)
     assert [d for d, *_ in points] == [date(2025, 1, 1)]
     assert points[0][1] == 10.0
+
+
+def test_variant_label_keeps_parenthesised_comma_in_name():
+    """Великобритания, EN: «Economic activity rate (aged 16 and over, SA)» не должна превращаться в «SA)»."""
+    from types import SimpleNamespace
+
+    from app.services.world_cards import _name_tail, variant_label
+
+    assert _name_tail("Economic activity rate (aged 16 and over, SA)") == "Economic activity rate (aged 16 and over, SA)"
+    assert _name_tail("Housing, rent (index, 2015 = 100), monthly") == "monthly"
+    ind = SimpleNamespace(
+        slice_json={}, unit="PC", unit_ru="%", code="uk-participation-rate",
+        name_en="Economic activity rate (aged 16 and over, SA)", name_ru="Уровень экономической активности",
+    )
+    assert variant_label(ind, locale="en") == "Economic activity rate (aged 16 and over, SA)"
+    assert variant_label(ind, locale="ru") == "Уровень экономической активности"
