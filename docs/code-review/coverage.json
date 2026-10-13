@@ -11775,9 +11775,9 @@
     },
     {
       "path": "docs/adr/0021-freshness-watchdog-and-superseded-series.md",
-      "sha256": "b3802b8246d98ea56245d752ea07cd873fda4a7d2dfdf9461603ba97045823e0",
-      "bytes": 11937,
-      "lines": 45,
+      "sha256": "76b869c4ac670f23051353735264a15aa81b9f342fb50de3595d70d448b843ba",
+      "bytes": 12576,
+      "lines": 46,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12165,9 +12165,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "431539db64a2a02ce526f6404abacb1033971e15a3981b038316ce5c945f3142",
-      "bytes": 261175,
-      "lines": 932,
+      "sha256": "822694d4e342bb6f231d602d8b6d4a85e00b955023663514791c1d792c65a37e",
+      "bytes": 262551,
+      "lines": 934,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -28441,13 +28441,12 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "d19e9b59214015202de034b9d4ab8b54a84b61979bcbfa913a764786e701a7a7",
+  "ledger_sha256": "26cdef5d20efecf2103efa7b3ea928c1408d3f4746af5c50b91f52031b9d99e0",
   "javascript_inventory_sha256": "b86674b74bd83215c37173d2153ac2161014c42456b8f12fa3e75246b88c0e21",
-  "baseline_commit": "7b90514d92eac1eddfbcde6e64577657b3017930",
-  "branch": "circle13/fix",
+  "baseline_commit": "93d35c49ece89168364e602038de984fc3d9da6a",
+  "branch": "circle13/int",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/adr/0021-freshness-watchdog-and-superseded-series.md",
+    "docs/data-contracts.md"
   ]
 }

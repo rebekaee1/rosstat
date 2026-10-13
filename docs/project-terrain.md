@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `7b90514d92ea`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `93d35c49ece8`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -111,7 +111,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/adr/0018-crystal-without-borders-design-system.md](../docs/adr/0018-crystal-without-borders-design-system.md) | 62 | nodes |
 | [docs/adr/0019-personal-cabinet-behind-flag.md](../docs/adr/0019-personal-cabinet-behind-flag.md) | 40 | nodes |
 | [docs/adr/0020-stale-while-revalidate-and-cache-warm.md](../docs/adr/0020-stale-while-revalidate-and-cache-warm.md) | 45 | nodes |
-| [docs/adr/0021-freshness-watchdog-and-superseded-series.md](../docs/adr/0021-freshness-watchdog-and-superseded-series.md) | 45 | nodes |
+| [docs/adr/0021-freshness-watchdog-and-superseded-series.md](../docs/adr/0021-freshness-watchdog-and-superseded-series.md) | 46 | nodes |
 | [docs/adr/0022-priority-sitemap-and-index-control.md](../docs/adr/0022-priority-sitemap-and-index-control.md) | 26 | nodes |
 | [docs/adr/0023-eurostat-index-base-rebase-in-place.md](../docs/adr/0023-eurostat-index-base-rebase-in-place.md) | 28 | nodes |
 | [docs/adr/0024-telegram-report-modes.md](../docs/adr/0024-telegram-report-modes.md) | 26 | nodes |
@@ -139,7 +139,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/circle-playbook.md](../docs/circle-playbook.md) | 124 | nodes |
 | [docs/client-mechanism-inventory.md](../docs/client-mechanism-inventory.md) | 136 | nodes |
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | 161 | nodes |
-| [docs/data-contracts.md](../docs/data-contracts.md) | 932 | nodes |
+| [docs/data-contracts.md](../docs/data-contracts.md) | 934 | nodes |
 | [docs/data_sources.md](../docs/data_sources.md) | 666 | nodes |
 | [docs/dead-code-report.md](../docs/dead-code-report.md) | 82 | nodes |
 | [docs/design-system.md](../docs/design-system.md) | 491 | nodes |
