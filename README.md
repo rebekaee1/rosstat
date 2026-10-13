@@ -232,7 +232,7 @@ rosstat/
 │   ├── seo-audit.py
 │   └── analytics-smoke.py
 ├── docs/
-│   ├── adr/                # архитектурные решения (ADR-0001..0018)
+│   ├── adr/                # архитектурные решения (ADR-0001..0025)
 │   ├── design-system.md    # дизайн-система «хрусталь без границ»
 │   ├── agent-orchestration.md  # круги критиков, оценщик, зоны, приёмка на iOS-симуляторах
 │   ├── analytics_api_inventory/  # инвентарь Yandex API (Metrika, Webmaster, …)
