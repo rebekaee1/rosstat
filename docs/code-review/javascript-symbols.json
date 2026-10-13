@@ -4453,24 +4453,24 @@
     "anonymous_functions": 32
   },
   "frontend/src/components/DataTable.jsx": {
-    "sha256": "6842095c44f958937efe86df57e41e3428802b07a26e922a8b33bd387f39ccbc",
+    "sha256": "3e914c32139e50888b790222ed0d196a8583fe838747285ce8e5d26b62142d0b",
     "definitions": [
       {
         "name": "useScrollMore",
-        "line": 33,
-        "end_line": 53,
+        "line": 34,
+        "end_line": 54,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DataTable",
-        "line": 55,
-        "end_line": 432,
+        "line": 56,
+        "end_line": 433,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "DataTable.runExport",
-        "line": 199,
-        "end_line": 230,
+        "line": 200,
+        "end_line": 231,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -4562,6 +4562,10 @@
       {
         "source": "../styles/c11c-charts.css",
         "line": 26
+      },
+      {
+        "source": "../lib/countryFlag",
+        "line": 27
       }
     ],
     "exports": [
@@ -4569,7 +4573,7 @@
         "names": [
           "default"
         ],
-        "line": 55
+        "line": 56
       }
     ],
     "anonymous_functions": 39
@@ -5306,18 +5310,18 @@
     "anonymous_functions": 3
   },
   "frontend/src/components/ForecastTable.jsx": {
-    "sha256": "f30ff64547192b2fd19663290132a589669c0e9ede233bee3ffd2ed99d256c6b",
+    "sha256": "55ce1a8eb99b3dcec743b13cdcd0d7c30bf51ba955939f1246da78941de4a7a3",
     "definitions": [
       {
         "name": "ForecastTable",
-        "line": 5,
-        "end_line": 100,
+        "line": 6,
+        "end_line": 101,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ForecastTable.barShare",
-        "line": 51,
-        "end_line": 55,
+        "line": 52,
+        "end_line": 56,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -5333,6 +5337,10 @@
       {
         "source": "../styles/k5-pages.css",
         "line": 3
+      },
+      {
+        "source": "../lib/countryFlag",
+        "line": 4
       }
     ],
     "exports": [
@@ -5340,7 +5348,7 @@
         "names": [
           "default"
         ],
-        "line": 5
+        "line": 6
       }
     ],
     "anonymous_functions": 6
@@ -13307,7 +13315,7 @@
     "anonymous_functions": 21
   },
   "frontend/src/components/W6eIndicator.component.test.jsx": {
-    "sha256": "abafef18c60362b0063cbc7262abfe34cc1d75eb3329e85b4e66b9dbcbdab402",
+    "sha256": "e6145df7e1372b9f8b1e1808c07f2a1d2f8dba28f59d8a3567651c00b72b807f",
     "definitions": [
       {
         "name": "get",
@@ -13329,8 +13337,8 @@
       },
       {
         "name": "renderSection",
-        "line": 174,
-        "end_line": 177,
+        "line": 188,
+        "end_line": 191,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -13381,7 +13389,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 30
+    "anonymous_functions": 31
   },
   "frontend/src/components/W7P.component.test.jsx": {
     "sha256": "8eb46d164ce189742543d0bd720ed964986a1c7cc23e9f19c50cbf121571ab24",
@@ -14390,7 +14398,7 @@
     "anonymous_functions": 12
   },
   "frontend/src/components/WorldStatTiles.jsx": {
-    "sha256": "22d50827b058ff0b7c87dde776c9bbd02787bdd86fc1f8e7a222b4bfa668a8fb",
+    "sha256": "5dbef9e546426a4f9bf1ff66f4b40288c4d4df28be9c7df9a23715d6b35bdcd5",
     "definitions": [
       {
         "name": "useYearsWord",
@@ -21689,18 +21697,18 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/viewModeLabels.js": {
-    "sha256": "e5a84261aa1aa201529ed93d63ff415a3f189af75db9f0e9d30b10edde2cb67c",
+    "sha256": "587d5f7e31c422d29ac01af94937d97df398273745dba9ede5e1535556516623",
     "definitions": [
       {
         "name": "localizeViewModeLabel",
-        "line": 102,
-        "end_line": 105,
+        "line": 106,
+        "end_line": 109,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeSource",
-        "line": 116,
-        "end_line": 134,
+        "line": 120,
+        "end_line": 138,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -21710,32 +21718,44 @@
         "names": [
           "localizeViewModeLabel"
         ],
-        "line": 102
+        "line": 106
       },
       {
         "names": [
           "localizeSource"
         ],
-        "line": 116
+        "line": 120
       }
     ],
     "anonymous_functions": 3
   },
   "frontend/src/i18n/viewModeLabels.test.js": {
-    "sha256": "4e331734997d915369c2c6d72ec7c4350c345620c72ed153f746d3e0702c5db1",
+    "sha256": "282c3c3f6cd2604b66da67f142f434e92cba69fead632ea9723a112d2dcdb918",
     "definitions": [],
     "imports": [
       {
-        "source": "vitest",
+        "source": "node:fs",
         "line": 1
       },
       {
-        "source": "./viewModeLabels.js",
+        "source": "node:path",
         "line": 2
+      },
+      {
+        "source": "node:url",
+        "line": 3
+      },
+      {
+        "source": "vitest",
+        "line": 4
+      },
+      {
+        "source": "./viewModeLabels.js",
+        "line": 5
       }
     ],
     "exports": [],
-    "anonymous_functions": 7
+    "anonymous_functions": 12
   },
   "frontend/src/lib/absoluteAuthNext.test.js": {
     "sha256": "1d7dcf2e37342d39e39a2f8e644efe949101c62b72f91a87a3b85e5d9f91490e",
@@ -29409,7 +29429,7 @@
     "anonymous_functions": 15
   },
   "frontend/src/lib/countryFlag.js": {
-    "sha256": "556cfb72c797813c4f0508a0f3806181ca2bdf25b195c67d16edf3eaf0a70cd7",
+    "sha256": "b451d5416badb70fa94fd7525e4cf1ec3b670e8d24bb3fdd5a7d810e55850479",
     "definitions": [
       {
         "name": "countryFlag",
@@ -29427,6 +29447,18 @@
         "name": "splitUnit",
         "line": 37,
         "end_line": 45,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "flatUnit",
+        "line": 53,
+        "end_line": 64,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "parenUnit",
+        "line": 67,
+        "end_line": 70,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -29452,16 +29484,35 @@
       },
       {
         "names": [
+          "flatUnit"
+        ],
+        "line": 53
+      },
+      {
+        "names": [
+          "parenUnit"
+        ],
+        "line": 67
+      },
+      {
+        "names": [
           "POPULAR_COUNTRY_SLUGS"
         ],
-        "line": 48
+        "line": 73
       }
     ],
-    "anonymous_functions": 1
+    "anonymous_functions": 2
   },
   "frontend/src/lib/countryFlag.test.js": {
-    "sha256": "7fa412d0aca653e3a52a2bef62fde187941bf9cdeaa7b1e8d1b53dd16ffeca43",
-    "definitions": [],
+    "sha256": "1609d10fedb57f3e661eb36eb5d846794a12a445772cef6e66b9e6c0a660f38d",
+    "definitions": [
+      {
+        "name": "plain",
+        "line": 70,
+        "end_line": 70,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
     "imports": [
       {
         "source": "vitest",
@@ -29473,7 +29524,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 15
+    "anonymous_functions": 20
   },
   "frontend/src/lib/countryIndicatorGroups.js": {
     "sha256": "af35934120b942d290757dcf14bff99345b258626844d927e70a0ed7fbfaa586",

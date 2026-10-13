@@ -485,8 +485,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "sha256": "47c85e7d4da7247a0e14c9b9e0734f0b3e7d072790fa13fd050f3bfbc0f61b1a",
-      "lines": 72
+      "sha256": "3fca757bb10f6cc5de2d3e45d443efc25e023bc5f0a20b25d3a0a19d08ab2dc1",
+      "lines": 76
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
@@ -975,8 +975,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "sha256": "b3736998e3f808fdf5e1f3058b86c9b1912d2b854425192276666e43719a6493",
-      "lines": 593
+      "sha256": "c34f2efce4bd7cf9123ac07c48ec97f99fcbcdfd48d38230cc2a9a9520044a31",
+      "lines": 609
     },
     {
       "path": "backend/app/services/ecb_fx_parser.py",
@@ -1835,8 +1835,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "sha256": "2857518295af5b1b0f9a68b296803e473f4d64dd79d193c98d500722f80b5158",
-      "lines": 808
+      "sha256": "4912108420332942b78f51f318e134842e177f8c7e49b56879e05b4ede0fe10d",
+      "lines": 825
     },
     {
       "path": "backend/app/services/world_compare.py",
@@ -58119,7 +58119,7 @@
     {
       "path": "backend/app/data/i18n/glossary_en.py",
       "line": 10,
-      "end_line": 64,
+      "end_line": 68,
       "owner": "<module>",
       "conditions": [],
       "name": "GLOSSARY_EN",
@@ -58168,6 +58168,10 @@
         "'Резервный банк Индии'",
         "'Бюро переписи населения США'",
         "'Бразильский институт географии и статистики (IBGE)'",
+        "'Управление энергетической информации США (EIA)'",
+        "'Европейский центральный банк'",
+        "'Министерство финансов США'",
+        "'Совет управляющих Федеральной резервной системы США'",
         "'Россия'",
         "'Регионы'",
         "'Регионы России'",
@@ -58472,6 +58476,34 @@
           "ast_sha256": "2ce5cae27671d42ce599d96bc760eab0e8e39ce596698168f84c678664bcc585"
         },
         {
+          "key": "'Управление энергетической информации США (EIA)'",
+          "expression": "'U.S. Energy Information Administration (EIA)'",
+          "expression_truncated": false,
+          "expression_chars": 46,
+          "ast_sha256": "df0be7c3cec7b2444d7f247982a1aa234d30870439867934931b7bdfe767b522"
+        },
+        {
+          "key": "'Европейский центральный банк'",
+          "expression": "'European Central Bank'",
+          "expression_truncated": false,
+          "expression_chars": 23,
+          "ast_sha256": "93348e8e11f7f65eecf02f340fc08085fb7d132b7d84de94dcb4f62072b982da"
+        },
+        {
+          "key": "'Министерство финансов США'",
+          "expression": "'U.S. Department of the Treasury'",
+          "expression_truncated": false,
+          "expression_chars": 33,
+          "ast_sha256": "c61155034632a950bc8c547dd4387378e0ffbd6f7d59360c086f0212705b3f40"
+        },
+        {
+          "key": "'Совет управляющих Федеральной резервной системы США'",
+          "expression": "'Board of Governors of the Federal Reserve System'",
+          "expression_truncated": false,
+          "expression_chars": 50,
+          "ast_sha256": "3506839098c2c92022ec6dbdf128fbc6be2c07342d9298e74051f0388acd120a"
+        },
+        {
           "key": "'Россия'",
           "expression": "'Russia'",
           "expression_truncated": false,
@@ -58521,10 +58553,10 @@
           "ast_sha256": "7c8496c3b8fc60ed4a5ae3ac364c82021eea6f42c156f08a4b9dfe53242805d6"
         }
       ],
-      "expression": "{'Инфляция': 'Inflation', 'ИПЦ': 'CPI', 'Индекс потребительских цен': 'Consumer Price Index', 'Ключевая ставка': 'Key rate', 'Безработица': 'Unemployment rate', 'Уровень безработицы': 'Unemployment rate', 'ВВП': 'GDP', 'Номинальный ВВП': 'Nominal GDP', 'Реальный ВВП': 'Real GDP', 'Заработная плата': 'Wages', 'г/г': 'YoY', 'м/м': 'MoM', 'кв/кв': 'QoQ', 'Росстат': 'Rosstat', 'Банк России': 'Bank of Russia', 'Минфин': 'Ministry of Finance', 'Минфин России': 'Ministry of Finance', 'Московская биржа': 'Moscow Exchange', 'Евростат': 'Eurostat', 'Международный валютный фонд': 'International Monetary Fund', 'Всемирный банк': 'World Bank', 'Рыночные котировки': 'Market quotes', 'Статистическое управление Канады': 'Statistics Canada', 'Банк Канады': 'Bank of Canada', 'Австралийское бюро статистики': 'Australian Bureau of Statistics', 'Резервный банк Австралии': 'Reserve Bank of Australia', 'Управление национальной статистики Великобритании': 'Office for National Statistics', 'Банк Англии': 'Bank of England', 'Федеральный резервный банк Сент-Луиса': 'Federal Reserve Bank of St. Louis', 'Бюро трудовой статистики США': 'U.S. Bureau of Labor Statistics', 'Бюро экономического анализа США': 'U.S. Bureau of Economic Analysis', 'Банк Японии': 'Bank of Japan', 'Статистическое бюро Японии': 'Statistics Bureau of Japan', 'Банк Кореи': 'Bank of Korea', 'Банк Бразилии': 'Central Bank of Brazil', 'Банк Мексики': 'Bank of Mexico', 'Национальное статистическое бюро Китая': 'National Bureau of Statistics of China', 'Китайская система валютных торгов': 'China Foreign Exchange Trade System', 'Министерство статистики и программной реализации Индии': 'Ministry of Statistics and Programme Implementation', 'Резервный банк Индии': 'Reserve Bank of India', 'Бюро переписи населения США': 'U.S. Census Bureau', 'Бразильский институт географии и статистики (IBGE)': 'Brazilian Institute of Geography and Statistics (IBGE)', 'Россия': 'Russia', 'Регионы': 'Regions', 'Регионы России': 'Regions of Russia', 'С",
+      "expression": "{'Инфляция': 'Inflation', 'ИПЦ': 'CPI', 'Индекс потребительских цен': 'Consumer Price Index', 'Ключевая ставка': 'Key rate', 'Безработица': 'Unemployment rate', 'Уровень безработицы': 'Unemployment rate', 'ВВП': 'GDP', 'Номинальный ВВП': 'Nominal GDP', 'Реальный ВВП': 'Real GDP', 'Заработная плата': 'Wages', 'г/г': 'YoY', 'м/м': 'MoM', 'кв/кв': 'QoQ', 'Росстат': 'Rosstat', 'Банк России': 'Bank of Russia', 'Минфин': 'Ministry of Finance', 'Минфин России': 'Ministry of Finance', 'Московская биржа': 'Moscow Exchange', 'Евростат': 'Eurostat', 'Международный валютный фонд': 'International Monetary Fund', 'Всемирный банк': 'World Bank', 'Рыночные котировки': 'Market quotes', 'Статистическое управление Канады': 'Statistics Canada', 'Банк Канады': 'Bank of Canada', 'Австралийское бюро статистики': 'Australian Bureau of Statistics', 'Резервный банк Австралии': 'Reserve Bank of Australia', 'Управление национальной статистики Великобритании': 'Office for National Statistics', 'Банк Англии': 'Bank of England', 'Федеральный резервный банк Сент-Луиса': 'Federal Reserve Bank of St. Louis', 'Бюро трудовой статистики США': 'U.S. Bureau of Labor Statistics', 'Бюро экономического анализа США': 'U.S. Bureau of Economic Analysis', 'Банк Японии': 'Bank of Japan', 'Статистическое бюро Японии': 'Statistics Bureau of Japan', 'Банк Кореи': 'Bank of Korea', 'Банк Бразилии': 'Central Bank of Brazil', 'Банк Мексики': 'Bank of Mexico', 'Национальное статистическое бюро Китая': 'National Bureau of Statistics of China', 'Китайская система валютных торгов': 'China Foreign Exchange Trade System', 'Министерство статистики и программной реализации Индии': 'Ministry of Statistics and Programme Implementation', 'Резервный банк Индии': 'Reserve Bank of India', 'Бюро переписи населения США': 'U.S. Census Bureau', 'Бразильский институт географии и статистики (IBGE)': 'Brazilian Institute of Geography and Statistics (IBGE)', 'Управление энергетической информации США (EIA)': 'U.S. Energy Information Administ",
       "expression_truncated": true,
-      "expression_chars": 2096,
-      "ast_sha256": "c3848ba985cda2cbf3d912da81551dd87356d98522633dbee3571669ba2274ea",
+      "expression_chars": 2422,
+      "ast_sha256": "4064ae39412846d46f4c87fa4e0484245294ce2e128194fafbea33813bba504d",
       "runtime_expansion": false
     },
     {
@@ -81258,13 +81290,28 @@
     {
       "path": "backend/app/services/display.py",
       "line": 66,
-      "end_line": 237,
+      "end_line": 253,
       "owner": "<module>",
       "conditions": [],
       "name": "_UNIT_EN",
       "symbol": "app.services.display._UNIT_EN",
       "kind": "Dict",
       "literal_keys": [
+        "'USD/баррель'",
+        "'USD/млн БТЕ'",
+        "'USD/т'",
+        "'USD/унция'",
+        "'USD/фунт'",
+        "'US¢/бушель'",
+        "'млн $'",
+        "'млн кв.м'",
+        "'чел.'",
+        "'тыс. чел.'",
+        "'млн чел.'",
+        "'ед.'",
+        "'% от среднего по ЕС на душу населения'",
+        "'тыс. тонн в год'",
+        "'индекс (1 кв. 1980 = 100)'",
         "'руб.'",
         "'руб'",
         "'млн руб.'",
@@ -81430,6 +81477,111 @@
         "'отношение'"
       ],
       "entries": [
+        {
+          "key": "'USD/баррель'",
+          "expression": "'USD/barrel'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "940bcbcd6ceab52d1f0aeafc9d79c693744ea6acb23311fd48fddc87f8d1b312"
+        },
+        {
+          "key": "'USD/млн БТЕ'",
+          "expression": "'USD/mmBtu'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "aafca7aa739fee081f28b2a6872b8e38eaff7a52b29dab4e2751cae7882844fa"
+        },
+        {
+          "key": "'USD/т'",
+          "expression": "'USD/tonne'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "d7934b4e1fcdf0c45f6c241de8ed3538a76bf2fa27d50e6a2e39721588b236a6"
+        },
+        {
+          "key": "'USD/унция'",
+          "expression": "'USD/ounce'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "19a5c853ecd8e302ab96c90fc913aec2986f390b5e5e8426db735c479cce93d1"
+        },
+        {
+          "key": "'USD/фунт'",
+          "expression": "'USD/pound'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "6739dc5f8a49887c01eb7e2c54650b82101f82807eb91265acc4e7e08626189d"
+        },
+        {
+          "key": "'US¢/бушель'",
+          "expression": "'US¢/bushel'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "2d54ae341a4c44bb25ca396d6116ad28afa4738fbd8cce3322d96455e956dcb8"
+        },
+        {
+          "key": "'млн $'",
+          "expression": "'mln USD'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "1d12fc8f8570037aa0edcff27e9f9bd863c356195a966b6c105fd071c6bfa3b2"
+        },
+        {
+          "key": "'млн кв.м'",
+          "expression": "'mln sq m'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "2ee00ada9d29a74b617fa9fffeac56f0ca97026223e4a6bb21f68538c65f2366"
+        },
+        {
+          "key": "'чел.'",
+          "expression": "'people'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "7d7665ecc9187992f4e18dfdb4549e33eb8b93d282c4eaf94db51328cc31aa77"
+        },
+        {
+          "key": "'тыс. чел.'",
+          "expression": "'ths people'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "25a19d95895004f0e3efa6fe23150b3f918c4634fc033a0d9d33d4e2f2f7a24a"
+        },
+        {
+          "key": "'млн чел.'",
+          "expression": "'mln people'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "81c5a48298d2e9b0007354d3f4932b982b2e1151e61e468db8223a8196d59c02"
+        },
+        {
+          "key": "'ед.'",
+          "expression": "'units'",
+          "expression_truncated": false,
+          "expression_chars": 7,
+          "ast_sha256": "5dbcf29ef2aaf904d6e2bf2c8c8f36aac2de699b013896dfbcdc0ca95162dc38"
+        },
+        {
+          "key": "'% от среднего по ЕС на душу населения'",
+          "expression": "'% of EU average per capita'",
+          "expression_truncated": false,
+          "expression_chars": 28,
+          "ast_sha256": "78cdd7a76b41424fd7183982921d5d33a9f5b6ae67008d7e09030a15ca4dee24"
+        },
+        {
+          "key": "'тыс. тонн в год'",
+          "expression": "'thousand tonnes per year'",
+          "expression_truncated": false,
+          "expression_chars": 26,
+          "ast_sha256": "6176ca969946a0bfa7ce1053e9d7185f355e7e08269fbd62fd6342945b8fc1aa"
+        },
+        {
+          "key": "'индекс (1 кв. 1980 = 100)'",
+          "expression": "'index (Q1 1980 = 100)'",
+          "expression_truncated": false,
+          "expression_chars": 23,
+          "ast_sha256": "55b9ab1baab337549781524923f48576684acd0cc4107f03255ca75dbab41f6c"
+        },
         {
           "key": "'руб.'",
           "expression": "'RUB'",
@@ -82572,16 +82724,16 @@
           "ast_sha256": "c64759417a90dd70f5bbd101adca81b95e402659a9767fca1dc12a3821e847e5"
         }
       ],
-      "expression": "{'руб.': 'RUB', 'руб': 'RUB', 'млн руб.': 'mln RUB', 'млн руб': 'mln RUB', 'млрд руб.': 'bln RUB', 'млрд руб': 'bln RUB', 'трлн руб.': 'trln RUB', 'трлн руб': 'trln RUB', 'руб./л': 'RUB/l', 'руб./г': 'RUB/g', 'тыс. руб.': 'ths RUB', 'тыс. руб': 'ths RUB', 'км²': 'km²', 'км2': 'km²', 'человек': 'people', 'чел. на км²': 'people per km²', 'п.п.': 'pp', 'п.п': 'pp', 'п. п.': 'pp', 'пункт': 'point', 'пункты': 'points', 'пунктов': 'points', 'изменение за месяц, п.п.': 'monthly change, pp', 'изменение за месяц': 'monthly change', 'изменение за квартал, п.п.': 'quarterly change, pp', 'изменение за год, п.п.': 'annual change, pp', '% ВВП': '% of GDP', 'млн евро': 'million EUR', 'в текущих ценах, млн евро': 'million EUR, current prices', 'в постоянных ценах 2015 года, млн евро': 'million EUR, 2015 constant prices', 'в постоянных ценах 2010 года, млн евро': 'million EUR, 2010 constant prices', 'ППС на душу населения': 'PPS per capita', 'тысяча рублей': 'thousand RUB', 'тысяч рублей': 'thousand RUB', 'тысяч тонн': 'thousand tonnes', 'рублей за литр': 'RUB per litre', 'тыс. тонн': 'thousand tonnes', 'тыс. т н. э.': 'thousand tonnes of oil equivalent', 'кг н. э.': 'kg of oil equivalent', 'евро за кг н. э.': 'EUR per kg of oil equivalent', 'евро': 'EUR', 'тыс. евро': 'thousand EUR', 'млн евро, с сезонной корректировкой': 'million EUR, seasonally adjusted', 'млн евро, в постоянных ценах': 'million EUR, constant prices', 'в постоянных ценах 2020 года, евро на душу населения': 'EUR per capita, 2020 constant prices', 'на душу населения, евро': 'EUR per capita', '% экономически активного населения': '% of the labour force', '% населения': '% of population', '% населения ЕС': '% of EU population', '% занятости': '% of employment', '% от итога': '% of total', '% к ожидаемому уровню': '% of expected level', 'изменение к предыдущему периоду': 'change over previous period', 'изменение к тому же периоду прошлого года': 'change over same period previous year', 'темп изменения к предыдущему пе",
+      "expression": "{'USD/баррель': 'USD/barrel', 'USD/млн БТЕ': 'USD/mmBtu', 'USD/т': 'USD/tonne', 'USD/унция': 'USD/ounce', 'USD/фунт': 'USD/pound', 'US¢/бушель': 'US¢/bushel', 'млн $': 'mln USD', 'млн кв.м': 'mln sq m', 'чел.': 'people', 'тыс. чел.': 'ths people', 'млн чел.': 'mln people', 'ед.': 'units', '% от среднего по ЕС на душу населения': '% of EU average per capita', 'тыс. тонн в год': 'thousand tonnes per year', 'индекс (1 кв. 1980 = 100)': 'index (Q1 1980 = 100)', 'руб.': 'RUB', 'руб': 'RUB', 'млн руб.': 'mln RUB', 'млн руб': 'mln RUB', 'млрд руб.': 'bln RUB', 'млрд руб': 'bln RUB', 'трлн руб.': 'trln RUB', 'трлн руб': 'trln RUB', 'руб./л': 'RUB/l', 'руб./г': 'RUB/g', 'тыс. руб.': 'ths RUB', 'тыс. руб': 'ths RUB', 'км²': 'km²', 'км2': 'km²', 'человек': 'people', 'чел. на км²': 'people per km²', 'п.п.': 'pp', 'п.п': 'pp', 'п. п.': 'pp', 'пункт': 'point', 'пункты': 'points', 'пунктов': 'points', 'изменение за месяц, п.п.': 'monthly change, pp', 'изменение за месяц': 'monthly change', 'изменение за квартал, п.п.': 'quarterly change, pp', 'изменение за год, п.п.': 'annual change, pp', '% ВВП': '% of GDP', 'млн евро': 'million EUR', 'в текущих ценах, млн евро': 'million EUR, current prices', 'в постоянных ценах 2015 года, млн евро': 'million EUR, 2015 constant prices', 'в постоянных ценах 2010 года, млн евро': 'million EUR, 2010 constant prices', 'ППС на душу населения': 'PPS per capita', 'тысяча рублей': 'thousand RUB', 'тысяч рублей': 'thousand RUB', 'тысяч тонн': 'thousand tonnes', 'рублей за литр': 'RUB per litre', 'тыс. тонн': 'thousand tonnes', 'тыс. т н. э.': 'thousand tonnes of oil equivalent', 'кг н. э.': 'kg of oil equivalent', 'евро за кг н. э.': 'EUR per kg of oil equivalent', 'евро': 'EUR', 'тыс. евро': 'thousand EUR', 'млн евро, с сезонной корректировкой': 'million EUR, seasonally adjusted', 'млн евро, в постоянных ценах': 'million EUR, constant prices', 'в постоянных ценах 2020 года, евро на душу населения': 'EUR per capita, 2020 constant prices', 'на душу населе",
       "expression_truncated": true,
-      "expression_chars": 6614,
-      "ast_sha256": "95eab74217298783c75b20a5e2e4dbd32252cd09448b6bd3aaeda55086fa9106",
+      "expression_chars": 7075,
+      "ast_sha256": "a9d905cadc8bcd989614841d2b4392e9af12d700cf2ababfaa3bb5d7b9d3de93",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 239,
-      "end_line": 242,
+      "line": 255,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "_RU_MONTHS_GEN",
@@ -82597,8 +82749,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 243,
-      "end_line": 246,
+      "line": 259,
+      "end_line": 262,
       "owner": "<module>",
       "conditions": [],
       "name": "_RU_MONTHS_NOM",
@@ -82614,8 +82766,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 286,
-      "end_line": 288,
+      "line": 302,
+      "end_line": 304,
       "owner": "<module>",
       "conditions": [],
       "name": "_CHAIN_LINKED_YEAR_RE",
@@ -82631,8 +82783,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 289,
-      "end_line": 289,
+      "line": 305,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "_CHAIN_LINKED_RE",
@@ -82648,8 +82800,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 333,
-      "end_line": 333,
+      "line": 349,
+      "end_line": 349,
       "owner": "<module>",
       "conditions": [],
       "name": "_CYRILLIC_RE",
@@ -82665,8 +82817,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 454,
-      "end_line": 468,
+      "line": 470,
+      "end_line": 484,
       "owner": "<module>",
       "conditions": [],
       "name": "_EN_MONTHS_NOM",
@@ -82682,8 +82834,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 556,
-      "end_line": 559,
+      "line": 572,
+      "end_line": 575,
       "owner": "<module>",
       "conditions": [],
       "name": "_TEMPLATE_ANNUAL_KIND",
@@ -135951,8 +136103,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "line": 787,
-      "end_line": 787,
+      "line": 804,
+      "end_line": 804,
       "owner": "build_variants",
       "conditions": [],
       "operation": "set",
@@ -136021,8 +136173,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "line": 795,
-      "end_line": 795,
+      "line": 812,
+      "end_line": 812,
       "owner": "build_variants",
       "conditions": [],
       "operation": "add",
@@ -136067,8 +136219,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 745,
+      "end_line": 745,
       "owner": "variant_label",
       "conditions": [
         "'age' in sl",
@@ -136085,8 +136237,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 747,
+      "end_line": 747,
       "owner": "variant_label",
       "conditions": [
         "'age' in sl",
@@ -252687,8 +252839,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "line": 67,
-      "end_line": 72,
+      "line": 71,
+      "end_line": 76,
       "owner": "<module>",
       "conditions": [],
       "name": "term",
@@ -260430,8 +260582,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 249,
-      "end_line": 250,
+      "line": 265,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "is_cpi_index",
@@ -260439,8 +260591,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 253,
-      "end_line": 260,
+      "line": 269,
+      "end_line": 276,
       "owner": "<module>",
       "conditions": [],
       "name": "display_value",
@@ -260448,8 +260600,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 263,
-      "end_line": 265,
+      "line": 279,
+      "end_line": 281,
       "owner": "<module>",
       "conditions": [],
       "name": "display_sign",
@@ -260457,8 +260609,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 268,
-      "end_line": 283,
+      "line": 284,
+      "end_line": 299,
       "owner": "<module>",
       "conditions": [],
       "name": "period_label",
@@ -260466,8 +260618,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 292,
-      "end_line": 299,
+      "line": 308,
+      "end_line": 315,
       "owner": "<module>",
       "conditions": [],
       "name": "plain_unit_en",
@@ -260475,8 +260627,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 302,
-      "end_line": 331,
+      "line": 318,
+      "end_line": 347,
       "owner": "<module>",
       "conditions": [],
       "name": "localize_unit",
@@ -260484,8 +260636,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 336,
-      "end_line": 338,
+      "line": 352,
+      "end_line": 354,
       "owner": "<module>",
       "conditions": [],
       "name": "contains_cyrillic",
@@ -260493,8 +260645,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 341,
-      "end_line": 352,
+      "line": 357,
+      "end_line": 368,
       "owner": "<module>",
       "conditions": [],
       "name": "is_english_unit_prose",
@@ -260502,8 +260654,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 355,
-      "end_line": 374,
+      "line": 371,
+      "end_line": 390,
       "owner": "<module>",
       "conditions": [],
       "name": "public_unit_en",
@@ -260511,8 +260663,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 377,
-      "end_line": 419,
+      "line": 393,
+      "end_line": 435,
       "owner": "<module>",
       "conditions": [],
       "name": "format_number_ru",
@@ -260520,8 +260672,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 422,
-      "end_line": 444,
+      "line": 438,
+      "end_line": 460,
       "owner": "<module>",
       "conditions": [],
       "name": "display_value_text",
@@ -260529,8 +260681,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 447,
-      "end_line": 451,
+      "line": 463,
+      "end_line": 467,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_ru",
@@ -260538,8 +260690,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 471,
-      "end_line": 506,
+      "line": 487,
+      "end_line": 522,
       "owner": "<module>",
       "conditions": [],
       "name": "value_period_phrase",
@@ -260547,8 +260699,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 509,
-      "end_line": 513,
+      "line": 525,
+      "end_line": 529,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_ru",
@@ -260556,8 +260708,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 516,
-      "end_line": 527,
+      "line": 532,
+      "end_line": 543,
       "owner": "<module>",
       "conditions": [],
       "name": "format_month_year",
@@ -260565,8 +260717,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 530,
-      "end_line": 546,
+      "line": 546,
+      "end_line": 562,
       "owner": "<module>",
       "conditions": [],
       "name": "format_date_locale",
@@ -260574,8 +260726,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 562,
-      "end_line": 573,
+      "line": 578,
+      "end_line": 589,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary_kind",
@@ -260583,8 +260735,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 576,
-      "end_line": 593,
+      "line": 592,
+      "end_line": 609,
       "owner": "<module>",
       "conditions": [],
       "name": "annual_summary",
@@ -280149,7 +280301,16 @@
     {
       "path": "backend/app/services/world_cards.py",
       "line": 644,
-      "end_line": 772,
+      "end_line": 658,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_name_tail",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_cards.py",
+      "line": 661,
+      "end_line": 789,
       "owner": "<module>",
       "conditions": [],
       "name": "variant_label",
@@ -280157,8 +280318,8 @@
     },
     {
       "path": "backend/app/services/world_cards.py",
-      "line": 775,
-      "end_line": 808,
+      "line": 792,
+      "end_line": 825,
       "owner": "<module>",
       "conditions": [],
       "name": "build_variants",
@@ -298340,8 +298501,8 @@
     },
     {
       "path": "backend/app/data/i18n/glossary_en.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 74,
+      "end_line": 74,
       "owner": "term",
       "conditions": [],
       "symbol": "app.data.i18n.glossary_en.GLOSSARY_EN"
@@ -301358,32 +301519,32 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 266,
+      "end_line": 266,
       "owner": "is_cpi_index",
       "conditions": [],
       "symbol": "app.services.display.CPI_INDEX_CODES"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 298,
+      "end_line": 298,
       "owner": "period_label",
       "conditions": [],
       "symbol": "app.services.display._PERIOD_LABEL_EN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 298,
+      "end_line": 298,
       "owner": "period_label",
       "conditions": [],
       "symbol": "app.services.display._PERIOD_LABEL"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 314,
+      "end_line": 314,
       "owner": "plain_unit_en",
       "conditions": [],
       "symbol": "app.services.display._CHAIN_LINKED_YEAR_RE"
@@ -301398,48 +301559,48 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 340,
+      "end_line": 340,
       "owner": "localize_unit",
       "conditions": [],
       "symbol": "app.services.display._UNIT_EN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 340,
+      "end_line": 340,
       "owner": "localize_unit",
       "conditions": [],
       "symbol": "app.services.display._UNIT_EN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 467,
+      "end_line": 467,
       "owner": "format_date_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_GEN"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 513,
-      "end_line": 513,
+      "line": 529,
+      "end_line": 529,
       "owner": "format_month_ru",
       "conditions": [],
       "symbol": "app.services.display._RU_MONTHS_NOM"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 584,
+      "end_line": 584,
       "owner": "annual_summary_kind",
       "conditions": [],
       "symbol": "app.data.view_model_families.FAMILY_BY_BASE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 572,
-      "end_line": 572,
+      "line": 588,
+      "end_line": 588,
       "owner": "annual_summary_kind",
       "conditions": [
         "fam is not None"
@@ -301448,24 +301609,24 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 315,
+      "end_line": 315,
       "owner": "plain_unit_en",
       "conditions": [],
       "symbol": "app.services.display._CHAIN_LINKED_RE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 354,
+      "end_line": 354,
       "owner": "contains_cyrillic",
       "conditions": [],
       "symbol": "app.services.display._CYRILLIC_RE"
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 521,
+      "end_line": 521,
       "owner": "value_period_phrase",
       "conditions": [
         "freq.startswith('month')"
@@ -301474,8 +301635,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 542,
+      "end_line": 542,
       "owner": "format_month_year",
       "conditions": [
         "loc == 'en'"
@@ -301484,8 +301645,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 561,
+      "end_line": 561,
       "owner": "format_date_locale",
       "conditions": [
         "loc == 'en'"
@@ -301494,8 +301655,8 @@
     },
     {
       "path": "backend/app/services/display.py",
-      "line": 498,
-      "end_line": 498,
+      "line": 514,
+      "end_line": 514,
       "owner": "value_period_phrase",
       "conditions": [
         "loc == 'en'",
