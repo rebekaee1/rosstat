@@ -1003,7 +1003,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/components/Brand.jsx": {
-    "sha256": "064733e28a889cace0cd8d12d8b09e11b6da6c03b9fb959194a382c4f0b33bbd",
+    "sha256": "cad13c7ee0ff15d1216997f511ee30bebe52786e21e07b00da044d59f5baf6e9",
     "definitions": [
       {
         "name": "Brand",
@@ -1121,6 +1121,89 @@
     ],
     "exports": [],
     "anonymous_functions": 2
+  },
+  "frontend/src/components/BrentLiveNote.component.test.jsx": {
+    "sha256": "6f3bd3bbb3711d34ca13515a287b8ff89e5e21094e625a5129725d6146968ece",
+    "definitions": [
+      {
+        "name": "useLiveQuote",
+        "line": 6,
+        "end_line": 6,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useLocale",
+        "line": 8,
+        "end_line": 8,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "useT",
+        "line": 9,
+        "end_line": 9,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./BrentLiveNote",
+        "line": 12
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 10
+  },
+  "frontend/src/components/BrentLiveNote.jsx": {
+    "sha256": "0b1263c2c32ef5f45a6917f9768b342bdb15a201065f40e7a18cd4fcdd2d74be",
+    "definitions": [
+      {
+        "name": "money",
+        "line": 10,
+        "end_line": 14,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "BrentLiveNote",
+        "line": 16,
+        "end_line": 53,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "../lib/tickerLive",
+        "line": 5
+      },
+      {
+        "source": "../lib/tickerFormat",
+        "line": 6
+      },
+      {
+        "source": "../i18n",
+        "line": 7
+      },
+      {
+        "source": "../styles/c13d-fresh-note.css",
+        "line": 8
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 16
+      }
+    ],
+    "anonymous_functions": 0
   },
   "frontend/src/components/Button.component.test.jsx": {
     "sha256": "a9d22f694b1888934072265400f2ca398dc6b12a2d1bd028225011963e52206a",
@@ -5473,18 +5556,18 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/GenericIndicatorView.jsx": {
-    "sha256": "df249a517c9d3000382baab915a8410d4b79a26c4f88ed89722b6b96a92abece",
+    "sha256": "72f8af3fbc4d24ea92de99f8ff245bd867a9b7c471d697d270b37259f0d21579",
     "definitions": [
       {
         "name": "IDENTITY",
-        "line": 77,
-        "end_line": 77,
+        "line": 78,
+        "end_line": 78,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "GenericIndicatorView",
-        "line": 79,
-        "end_line": 339,
+        "line": 80,
+        "end_line": 341,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -5594,36 +5677,40 @@
         "line": 26
       },
       {
-        "source": "../lib/cabinetSubjects",
+        "source": "./BrentLiveNote",
         "line": 27
       },
       {
-        "source": "../lib/deltaTone",
+        "source": "../lib/cabinetSubjects",
         "line": 28
       },
       {
-        "source": "../styles/z4-indicator.css",
+        "source": "../lib/deltaTone",
         "line": 29
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "../styles/z4-indicator.css",
         "line": 30
       },
       {
-        "source": "../lib/track",
+        "source": "../styles/k5-pages.css",
         "line": 31
       },
       {
-        "source": "../i18n",
+        "source": "../lib/track",
         "line": 32
       },
       {
-        "source": "./ApiRetryBanner",
+        "source": "../i18n",
         "line": 33
       },
       {
-        "source": "./LoadingNote",
+        "source": "./ApiRetryBanner",
         "line": 34
+      },
+      {
+        "source": "./LoadingNote",
+        "line": 35
       }
     ],
     "exports": [
@@ -5631,7 +5718,7 @@
         "names": [
           "default"
         ],
-        "line": 79
+        "line": 80
       }
     ],
     "anonymous_functions": 13
@@ -8083,7 +8170,7 @@
     "anonymous_functions": 22
   },
   "frontend/src/components/LiveTicker.component.test.jsx": {
-    "sha256": "d3d26751ed53f536d45f0a929f2a684cdd376601c9173a4a6540d3d0d26178b0",
+    "sha256": "d295b7d3349360f5fce44469f2998654d7d6606f1936bb21e75fcfc5e078bd00",
     "definitions": [
       {
         "name": "renderTicker",
@@ -8162,6 +8249,12 @@
         "line": 262,
         "end_line": 269,
         "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "json",
+        "line": 288,
+        "end_line": 292,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
@@ -8191,10 +8284,10 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 30
+    "anonymous_functions": 31
   },
   "frontend/src/components/LiveTicker.jsx": {
-    "sha256": "9a56e7c10b21ad4d8164f1215d2db67ab0437446cc5566f904f1a2a5e98861e3",
+    "sha256": "24a69c557c54babbc486aca5822d4ab2bf351d98a6a4cf1d90b42b085cc3bf91",
     "definitions": [
       {
         "name": "currenciesPath",
@@ -8235,49 +8328,49 @@
       {
         "name": "TickerCell",
         "line": 107,
-        "end_line": 239,
+        "end_line": 246,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useEdgeFade",
-        "line": 245,
-        "end_line": 293,
+        "line": 252,
+        "end_line": 300,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useEdgeFade.cancel",
-        "line": 269,
-        "end_line": 269,
+        "line": 276,
+        "end_line": 276,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "usePhoneWidth",
-        "line": 296,
-        "end_line": 307,
+        "line": 303,
+        "end_line": 314,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "usePhoneWidth.apply",
-        "line": 301,
-        "end_line": 301,
+        "line": 308,
+        "end_line": 308,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "LiveTicker",
-        "line": 309,
-        "end_line": 408,
+        "line": 316,
+        "end_line": 415,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "LiveTicker.queryFn",
-        "line": 318,
-        "end_line": 318,
+        "line": 325,
+        "end_line": 325,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "LiveTicker.apply",
-        "line": 341,
-        "end_line": 344,
+        "line": 348,
+        "end_line": 351,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -8360,7 +8453,7 @@
         "names": [
           "default"
         ],
-        "line": 309
+        "line": 316
       }
     ],
     "anonymous_functions": 18
@@ -20999,7 +21092,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "b82cb3658bd6065f4768bd312963f8d565d061cab4c3b448b23b9ec5de279570",
+    "sha256": "b3cb1f5802194b9cb40294af3541418bc2798b1a1eab56d9228feeebe1012b60",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -21107,7 +21200,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "9adcebdb8dd2968e4e4f0443a155e77b818ae3d29b554af73f63fa9becc6a568",
+    "sha256": "be1075ad27417fcdaad62b31de79b926393513b7517fa41ac400979463273eee",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -41323,7 +41416,7 @@
     "anonymous_functions": 63
   },
   "frontend/src/lib/searchText.js": {
-    "sha256": "54127de2f8fdad79e041a2c4b44995ae5e66b6e158d9a914d52ceae13f711b82",
+    "sha256": "ead70227f6cfc83fd495346f17ce8d2bf015e5e0962d9ff0d9f4a20260dd662b",
     "definitions": [
       {
         "name": "word",
@@ -41357,50 +41450,50 @@
       },
       {
         "name": "inCountry",
-        "line": 118,
-        "end_line": 123,
+        "line": 119,
+        "end_line": 124,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "inflationTitle",
-        "line": 126,
-        "end_line": 129,
+        "line": 127,
+        "end_line": 130,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "searchTopic",
-        "line": 148,
-        "end_line": 152,
+        "line": 149,
+        "end_line": 153,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isGlobalMarketRow",
-        "line": 155,
-        "end_line": 158,
+        "line": 156,
+        "end_line": 159,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isIndexUnit",
-        "line": 163,
-        "end_line": 165,
+        "line": 164,
+        "end_line": 166,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "openingLabel",
-        "line": 171,
-        "end_line": 183,
+        "line": 172,
+        "end_line": 184,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupByTopic",
-        "line": 186,
-        "end_line": 196,
+        "line": 187,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isReadableCorrection",
-        "line": 202,
-        "end_line": 206,
+        "line": 203,
+        "end_line": 207,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -41422,55 +41515,55 @@
         "names": [
           "inCountry"
         ],
-        "line": 118
+        "line": 119
       },
       {
         "names": [
           "inflationTitle"
         ],
-        "line": 126
+        "line": 127
       },
       {
         "names": [
           "searchTopic"
         ],
-        "line": 148
+        "line": 149
       },
       {
         "names": [
           "isGlobalMarketRow"
         ],
-        "line": 155
+        "line": 156
       },
       {
         "names": [
           "isIndexUnit"
         ],
-        "line": 163
+        "line": 164
       },
       {
         "names": [
           "openingLabel"
         ],
-        "line": 171
+        "line": 172
       },
       {
         "names": [
           "groupByTopic"
         ],
-        "line": 186
+        "line": 187
       },
       {
         "names": [
           "isReadableCorrection"
         ],
-        "line": 202
+        "line": 203
       }
     ],
     "anonymous_functions": 5
   },
   "frontend/src/lib/searchText.test.js": {
-    "sha256": "1ff2f0840a84caa42e85e2da0579cc60cd09e1744fa3adff903636b64aca5320",
+    "sha256": "7e029c108d89c9fc6df883bd8ba431891a7ea261e5118379ed2eb634fb5d2397",
     "definitions": [
       {
         "name": "ru",
@@ -41500,7 +41593,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 14
+    "anonymous_functions": 15
   },
   "frontend/src/lib/searchView.js": {
     "sha256": "04fcdf0d1e2ebd56db24ae5daef07b29473da6d0e2e6c6fef37b3e28cc5bdc0a",
@@ -58282,6 +58375,30 @@
     "exports": [],
     "anonymous_functions": 6
   },
+  "frontend/src/styles/c13-tap-targets.test.js": {
+    "sha256": "ae0c708cbfd8de5bc00bd25873ec92b2694c44a91e57529d6f05d899298276a7",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "node:fs",
+        "line": 4
+      },
+      {
+        "source": "node:path",
+        "line": 5
+      },
+      {
+        "source": "node:url",
+        "line": 6
+      },
+      {
+        "source": "vitest",
+        "line": 7
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
+  },
   "frontend/src/styles/c13v-ui3.test.js": {
     "sha256": "902b290f67860cc0182e2c18a2bea24ee1bb64336f56d7c9f0f8f0f15f1a1965",
     "definitions": [
@@ -59440,7 +59557,7 @@
     "anonymous_functions": 6
   },
   "scripts/dev/layout-sweep.mjs": {
-    "sha256": "d6b639b42b09d2b36971a1c4003f2bf7b95f88d3afbe9d37a7089223e38da90a",
+    "sha256": "7e385f65eac022f1b56765a9259a445658779f5190542cb7894b958afbb34edc",
     "definitions": [
       {
         "name": "loadPlaywright",
@@ -59451,7 +59568,7 @@
       {
         "name": "inPage",
         "line": 71,
-        "end_line": 207,
+        "end_line": 210,
         "kind": "FunctionDeclaration"
       },
       {
@@ -59486,26 +59603,26 @@
       },
       {
         "name": "scrollThrough",
-        "line": 209,
-        "end_line": 218,
+        "line": 212,
+        "end_line": 221,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "scrollThrough.h",
-        "line": 211,
-        "end_line": 211,
+        "line": 214,
+        "end_line": 214,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "worker",
-        "line": 249,
-        "end_line": 286,
+        "line": 252,
+        "end_line": 289,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worker.short",
-        "line": 265,
-        "end_line": 265,
+        "line": 268,
+        "end_line": 268,
         "kind": "FunctionDeclaration"
       }
     ],

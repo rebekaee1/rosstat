@@ -8,15 +8,15 @@
 - HTTP reachable paths: **187**
 - ORM tables: **68**
 - DTO schemas (own fields + resolved inherited bases): **49**
-- Settings fields: **227**
-- Settings reads: **538**
+- Settings fields: **230**
+- Settings reads: **542**
 - Direct environment reads: **34**
 - Jobs: **50**
 - Middleware: **6**
-- Registry declarations: **1115**
-- Registry references: **2093**
+- Registry declarations: **1123**
+- Registry references: **2106**
 - Migration operations: **444**
-- Candidate effects: **2507**
+- Candidate effects: **2505**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -61,8 +61,8 @@
 | POST | /api/v1/analytics/actions/{action_id}/apply | app.api.analytics.apply_action | [backend/app/api/analytics.py:262](../backend/app/api/analytics.py#L262) |
 | POST | /api/v1/analytics/events | app.api.analytics.collect_event | [backend/app/api/analytics.py:335](../backend/app/api/analytics.py#L335) |
 | POST | /api/v1/analytics/behavior | app.api.analytics.collect_behavior_batch | [backend/app/api/analytics.py:683](../backend/app/api/analytics.py#L683) |
-| GET | /api/v1/ticker/rates/{pair} | app.api.ticker.get_rate_basis | [backend/app/api/ticker.py:166](../backend/app/api/ticker.py#L166) |
-| GET | /api/v1/ticker/live | app.api.ticker.get_live_ticker | [backend/app/api/ticker.py:234](../backend/app/api/ticker.py#L234) |
+| GET | /api/v1/ticker/rates/{pair} | app.api.ticker.get_rate_basis | [backend/app/api/ticker.py:169](../backend/app/api/ticker.py#L169) |
+| GET | /api/v1/ticker/live | app.api.ticker.get_live_ticker | [backend/app/api/ticker.py:237](../backend/app/api/ticker.py#L237) |
 | POST | /api/v1/auth/register | app.api.auth.register | [backend/app/api/auth.py:121](../backend/app/api/auth.py#L121) |
 | POST | /api/v1/auth/login | app.api.auth.login | [backend/app/api/auth.py:176](../backend/app/api/auth.py#L176) |
 | POST | /api/v1/auth/logout | app.api.auth.logout | [backend/app/api/auth.py:219](../backend/app/api/auth.py#L219) |
@@ -101,17 +101,17 @@
 | GET | /api/v1/analytics/replay/config | app.api.session_replay.replay_config | [backend/app/api/session_replay.py:102](../backend/app/api/session_replay.py#L102) |
 | POST | /api/v1/analytics/replay | app.api.session_replay.collect_replay | [backend/app/api/session_replay.py:109](../backend/app/api/session_replay.py#L109) |
 | GET | /api/v1/admin/bi/session-analysis/sessions/{session_id}/replay | app.api.session_replay.read_replay | [backend/app/api/session_replay.py:171](../backend/app/api/session_replay.py#L171) |
-| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:996](../backend/app/api/world.py#L996) |
-| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1097](../backend/app/api/world.py#L1097) |
-| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1129](../backend/app/api/world.py#L1129) |
-| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1287](../backend/app/api/world.py#L1287) |
-| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1344](../backend/app/api/world.py#L1344) |
-| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1431](../backend/app/api/world.py#L1431) |
-| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1523](../backend/app/api/world.py#L1523) |
-| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:1884](../backend/app/api/world.py#L1884) |
-| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2140](../backend/app/api/world.py#L2140) |
-| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2393](../backend/app/api/world.py#L2393) |
-| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2595](../backend/app/api/world.py#L2595) |
+| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:1005](../backend/app/api/world.py#L1005) |
+| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1106](../backend/app/api/world.py#L1106) |
+| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1138](../backend/app/api/world.py#L1138) |
+| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1296](../backend/app/api/world.py#L1296) |
+| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1353](../backend/app/api/world.py#L1353) |
+| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1440](../backend/app/api/world.py#L1440) |
+| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1532](../backend/app/api/world.py#L1532) |
+| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:1893](../backend/app/api/world.py#L1893) |
+| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2149](../backend/app/api/world.py#L2149) |
+| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2402](../backend/app/api/world.py#L2402) |
+| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2604](../backend/app/api/world.py#L2604) |
 | GET | /api/v1/world/{country_slug}/regions | app.api.world_subnational.list_regions | [backend/app/api/world_subnational.py:192](../backend/app/api/world_subnational.py#L192) |
 | GET | /api/v1/world/{country_slug}/regions/map/{code} | app.api.world_subnational.map_values | [backend/app/api/world_subnational.py:270](../backend/app/api/world_subnational.py#L270) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
@@ -166,16 +166,16 @@
 | GET | /api/v1/og-image/world-rating/{concept_slug}.png | app.api.sitemap.og_image_world_rating | [backend/app/api/sitemap.py:1674](../backend/app/api/sitemap.py#L1674) |
 | GET | /api/v1/og-image/world-rating/{concept_slug}/{year}.png | app.api.sitemap.og_image_world_rating_year | [backend/app/api/sitemap.py:1729](../backend/app/api/sitemap.py#L1729) |
 | GET | /api/v1/og-image/world/{slug}/{code}.png | app.api.sitemap.og_image_world_indicator | [backend/app/api/sitemap.py:1796](../backend/app/api/sitemap.py#L1796) |
-| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1890](../backend/app/api/sitemap.py#L1890) |
-| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2049](../backend/app/api/sitemap.py#L2049) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2121](../backend/app/api/sitemap.py#L2121) |
-| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2201](../backend/app/api/sitemap.py#L2201) |
-| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2287](../backend/app/api/sitemap.py#L2287) |
-| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2423](../backend/app/api/sitemap.py#L2423) |
-| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2529](../backend/app/api/sitemap.py#L2529) |
-| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2536](../backend/app/api/sitemap.py#L2536) |
-| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2543](../backend/app/api/sitemap.py#L2543) |
-| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2552](../backend/app/api/sitemap.py#L2552) |
+| GET | /api/v1/og-image/world/{country_slug}/{code}/{year}.png | app.api.sitemap.og_image_world_indicator_year | [backend/app/api/sitemap.py:1889](../backend/app/api/sitemap.py#L1889) |
+| GET | /api/v1/og-image/world-region-vs/{country}/{slug_a}-vs-{slug_b}.png | app.api.sitemap.og_image_world_region_vs | [backend/app/api/sitemap.py:2047](../backend/app/api/sitemap.py#L2047) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}/{year}.png | app.api.sitemap.og_image_world_region_indicator_year | [backend/app/api/sitemap.py:2119](../backend/app/api/sitemap.py#L2119) |
+| GET | /api/v1/og-image/world-region/{country}/{region}/{indicator}.png | app.api.sitemap.og_image_world_region_indicator | [backend/app/api/sitemap.py:2199](../backend/app/api/sitemap.py#L2199) |
+| GET | /api/v1/og-image/world-region/{country}/{region}.png | app.api.sitemap.og_image_world_region_profile | [backend/app/api/sitemap.py:2285](../backend/app/api/sitemap.py#L2285) |
+| GET | /api/v1/og-image/world-regions/{country}.png | app.api.sitemap.og_image_world_regions_hub | [backend/app/api/sitemap.py:2421](../backend/app/api/sitemap.py#L2421) |
+| GET | /api/v1/og/indicator/{code} | app.api.sitemap.og_indicator | [backend/app/api/sitemap.py:2527](../backend/app/api/sitemap.py#L2527) |
+| GET | /api/v1/og/category/{slug} | app.api.sitemap.og_category | [backend/app/api/sitemap.py:2534](../backend/app/api/sitemap.py#L2534) |
+| GET | /api/v1/og/page/{page} | app.api.sitemap.og_page | [backend/app/api/sitemap.py:2541](../backend/app/api/sitemap.py#L2541) |
+| GET | /api/v1/og-image/demographics.png | app.api.sitemap.og_image_demographics | [backend/app/api/sitemap.py:2550](../backend/app/api/sitemap.py#L2550) |
 | GET/HEAD | /manifest.webmanifest | app.api.pwa.manifest | [backend/app/api/pwa.py:87](../backend/app/api/pwa.py#L87) |
 | GET/HEAD | /offline.html | app.api.pwa.offline_page | [backend/app/api/pwa.py:133](../backend/app/api/pwa.py#L133) |
 | GET/HEAD | /seo/not-found | app.api.seo_pages.seo_not_found | [backend/app/api/seo_pages.py:351](../backend/app/api/seo_pages.py#L351) |
@@ -216,12 +216,12 @@
 
 | Order | Class | Source |
 | --- | --- | --- |
-| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:1846](../backend/app/main.py#L1846) |
-| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:1847](../backend/app/main.py#L1847) |
-| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:1848](../backend/app/main.py#L1848) |
-| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:1849](../backend/app/main.py#L1849) |
-| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:1850](../backend/app/main.py#L1850) |
-| 6 | app.main.LocaleMiddleware | [backend/app/main.py:1866](../backend/app/main.py#L1866) |
+| 1 | app.services.og_webp.OgWebpMiddleware | [backend/app/main.py:1849](../backend/app/main.py#L1849) |
+| 2 | app.main.RateLimitMiddleware | [backend/app/main.py:1850](../backend/app/main.py#L1850) |
+| 3 | app.main.HttpStatusCounterMiddleware | [backend/app/main.py:1851](../backend/app/main.py#L1851) |
+| 4 | app.main.ScrapeGuardMiddleware | [backend/app/main.py:1852](../backend/app/main.py#L1852) |
+| 5 | fastapi.middleware.cors.CORSMiddleware | [backend/app/main.py:1853](../backend/app/main.py#L1853) |
+| 6 | app.main.LocaleMiddleware | [backend/app/main.py:1869](../backend/app/main.py#L1869) |
 
 ## Table `session_replay_chunks`
 
@@ -1582,49 +1582,49 @@ Relationships: `[]`
 | late_fred_etl | app.tasks.scheduler.late_fred_etl_job | CronTrigger(hour=settings.scheduler_late_fred_hour, minute=settings.scheduler_late_fred_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'late_fred_etl'", 'ttl_expression': '3600'} | [backend/app/main.py:589](../backend/app/main.py#L589) |
 | emiss_regional | app.tasks.scheduler.emiss_regional_job | CronTrigger(hour=7, minute=40, day=25, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'emiss_regional'", 'ttl_expression': '2 * 3600'} | [backend/app/main.py:606](../backend/app/main.py#L606) |
 | world_national_core | app.services.world_national_ingest.run_national_core_ingest | CronTrigger(hour=settings.world_eurostat_ingest_hour, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'world_national_core'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:622](../backend/app/main.py#L622) |
-| staleness_check | app.tasks.scheduler.staleness_check_job | CronTrigger(hour=10, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:858](../backend/app/main.py#L858) |
-| ticker_live_pull | app.tasks.ticker_worker.ticker_pull_job | IntervalTrigger(seconds=settings.ticker_pull_interval_seconds) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:867](../backend/app/main.py#L867) |
-| analytics_rollups_15min | app.tasks.analytics_rollups.rollups_15min_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled'] | {'id_expression': "'analytics_rollups_15min'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1187](../backend/app/main.py#L1187) |
-| analytics_rollups_daily | app.tasks.analytics_rollups.rollups_daily_job | CronTrigger(hour=4, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1196](../backend/app/main.py#L1196) |
-| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1266](../backend/app/main.py#L1266) |
-| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1277](../backend/app/main.py#L1277) |
-| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1288](../backend/app/main.py#L1288) |
-| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1299](../backend/app/main.py#L1299) |
-| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1326](../backend/app/main.py#L1326) |
+| staleness_check | app.tasks.scheduler.staleness_check_job | CronTrigger(hour=10, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:861](../backend/app/main.py#L861) |
+| ticker_live_pull | app.tasks.ticker_worker.ticker_pull_job | IntervalTrigger(seconds=settings.ticker_pull_interval_seconds) ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:870](../backend/app/main.py#L870) |
+| analytics_rollups_15min | app.tasks.analytics_rollups.rollups_15min_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled'] | {'id_expression': "'analytics_rollups_15min'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1190](../backend/app/main.py#L1190) |
+| analytics_rollups_daily | app.tasks.analytics_rollups.rollups_daily_job | CronTrigger(hour=4, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | unresolved | [backend/app/main.py:1199](../backend/app/main.py#L1199) |
+| sitemap_build | app.services.sitemap_static.sitemap_build_job | CronTrigger(hour=3, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'sitemap_build'", 'ttl_expression': '3 * 3600'} | [backend/app/main.py:1269](../backend/app/main.py#L1269) |
+| webmaster_indexing_daily | app.services.webmaster_indexing_daily.webmaster_indexing_daily_job | CronTrigger(hour=8, minute=50, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'webmaster_indexing_daily'", 'ttl_expression': '1800'} | [backend/app/main.py:1280](../backend/app/main.py#L1280) |
+| gsc_search_queries | app.services.gsc_client.gsc_search_queries_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled'] | {'id_expression': "'gsc_search_queries'", 'ttl_expression': '1800'} | [backend/app/main.py:1291](../backend/app/main.py#L1291) |
+| forecast_showcase_warm | app.api.forecast_showcase.forecast_showcase_warm_job | IntervalTrigger(minutes=20) ['settings.scheduler_enabled'] | {'id_expression': "'forecast_showcase_warm'", 'ttl_expression': '900'} | [backend/app/main.py:1302](../backend/app/main.py#L1302) |
+| ssr_warm | app.services.ssr_warm.ssr_warm_job | IntervalTrigger(seconds=45) ['settings.scheduler_enabled'] | {'id_expression': "'ssr_warm'", 'ttl_expression': '420'} | [backend/app/main.py:1329](../backend/app/main.py#L1329) |
 | world_eurostat_ingest | app.services.world_eurostat_ingest.world_eurostat_ingest_job | CronTrigger(hour=settings.world_eurostat_ingest_hour, minute=settings.world_eurostat_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:645](../backend/app/main.py#L645) |
 | world_eurostat_ingest_afternoon | app.main.afternoon_eurostat_ingest | CronTrigger(hour=14, minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_eurostat_ingest_enabled'] | {'id_expression': "'world_eurostat_ingest'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:666](../backend/app/main.py#L666) |
 | world_forecast | app.services.world_forecast_pipeline.scheduled_world_forecast_job | CronTrigger(hour=settings.world_forecast_hour, minute=settings.world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_forecast_enabled'] | {'id_expression': "'world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:686](../backend/app/main.py#L686) |
 | us_world_forecast | app.main.scheduled_us_world_forecasts | CronTrigger(hour=settings.us_world_forecast_hour, minute=settings.us_world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.us_world_forecast_enabled and (not settings.world_forecast_enabled)'] | {'id_expression': "'us_world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:719](../backend/app/main.py#L719) |
-| europe_world_forecast | app.main.scheduled_europe_world_forecasts | CronTrigger(hour=settings.europe_world_forecast_hour, minute=settings.europe_world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.europe_world_forecast_enabled and (not settings.world_forecast_enabled)'] | {'id_expression': "'europe_world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:757](../backend/app/main.py#L757) |
-| rest_world_forecast | app.main.scheduled_rest_world_forecasts | CronTrigger(hour=settings.rest_world_forecast_hour, minute=settings.rest_world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.rest_world_forecast_enabled and (not settings.world_forecast_enabled)'] | {'id_expression': "'rest_world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:794](../backend/app/main.py#L794) |
-| world_subnational_ingest | app.services.world_subnational_ingest.world_subnational_ingest_job | CronTrigger(hour=settings.world_subnational_ingest_hour, minute=settings.world_subnational_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_subnational_ingest_enabled'] | {'id_expression': "'world_subnational_ingest'", 'ttl_expression': '4 * 3600'} | [backend/app/main.py:815](../backend/app/main.py#L815) |
-| world_bea_regional | app.services.world_bea_regional.world_bea_regional_job | CronTrigger(day_of_week='tue', hour=settings.world_bea_regional_ingest_hour, minute=settings.world_bea_regional_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_bea_regional_ingest_enabled'] | {'id_expression': "'world_bea_regional'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:836](../backend/app/main.py#L836) |
-| analytics_hourly | app.tasks.analytics_scheduler.analytics_hourly_job | CronTrigger(minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_scheduler_enabled'] | unresolved | [backend/app/main.py:890](../backend/app/main.py#L890) |
-| analytics_daily | app.tasks.analytics_scheduler.analytics_daily_job | CronTrigger(hour=settings.analytics_scheduler_cron_hour, minute=settings.analytics_scheduler_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_scheduler_enabled'] | unresolved | [backend/app/main.py:897](../backend/app/main.py#L897) |
-| acquisition_daily | app.tasks.analytics_scheduler.acquisition_daily_job | CronTrigger(hour='8,14,20', minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_enabled and settings.yandex_metrika_read_token'] | unresolved | [backend/app/main.py:923](../backend/app/main.py#L923) |
-| webmaster_recrawl | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:938](../backend/app/main.py#L938) |
-| partner_revenue_daily | app.tasks.analytics_scheduler.partner_revenue_daily_job | CronTrigger(hour=8, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'partner_configured()'] | unresolved | [backend/app/main.py:978](../backend/app/main.py#L978) |
-| webmaster_queries_daily | app.tasks.analytics_scheduler.webmaster_queries_daily_job | CronTrigger(hour=8, minute=40, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:991](../backend/app/main.py#L991) |
-| indexing_report_weekly | app.services.webmaster_indexing_report.indexing_report_job | CronTrigger(day_of_week='mon', hour=9, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:1004](../backend/app/main.py#L1004) |
-| indexnow_drain | app.services.indexnow.indexnow_drain_job | CronTrigger(minute='*/10', timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1020](../backend/app/main.py#L1020) |
-| indexnow_warm | app.services.indexnow.indexnow_warm_job | CronTrigger(day_of_week='tue', hour=6, minute=40, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1027](../backend/app/main.py#L1027) |
-| indexnow_history | app.services.indexnow.indexnow_history_job | CronTrigger(hour=4, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1034](../backend/app/main.py#L1034) |
-| telegram_daily_digest | app.tasks.analytics_scheduler.telegram_daily_digest_job | CronTrigger(hour=settings.telegram_digest_cron_hour, minute=settings.telegram_digest_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_digest_enabled'] | unresolved | [backend/app/main.py:1047](../backend/app/main.py#L1047) |
-| seo_weekly_report | app.services.seo_weekly_report.seo_weekly_report_job | CronTrigger(day_of_week='mon', hour=settings.seo_weekly_report_cron_hour, minute=settings.seo_weekly_report_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.seo_weekly_report_enabled'] | {'id_expression': "'seo_weekly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1067](../backend/app/main.py#L1067) |
-| telegram_weekly_report | app.services.telegram_reports.weekly_report_job | CronTrigger(day_of_week='mon', hour=settings.telegram_weekly_cron_hour, minute=settings.telegram_weekly_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_weekly_enabled'] | {'id_expression': "'telegram_weekly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1085](../backend/app/main.py#L1085) |
-| telegram_monthly_report | app.services.telegram_reports.monthly_report_job | CronTrigger(day=1, hour=settings.telegram_monthly_cron_hour, minute=settings.telegram_monthly_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_monthly_enabled'] | {'id_expression': "'telegram_monthly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1105](../backend/app/main.py#L1105) |
-| pulse_snapshot | app.services.pulse_report.pulse_snapshot_job | CronTrigger(hour=23, minute=57, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.pulse_enabled'] | unresolved | [backend/app/main.py:1125](../backend/app/main.py#L1125) |
-| pulse_report | app.services.pulse_report.pulse_report_job | CronTrigger(hour=settings.pulse_report_cron_hour, minute=settings.pulse_report_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.pulse_enabled'] | unresolved | [backend/app/main.py:1132](../backend/app/main.py#L1132) |
-| behavior_retention | app.tasks.analytics_scheduler.behavior_retention_job | CronTrigger(hour=4, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.behavior_events_enabled'] | unresolved | [backend/app/main.py:1152](../backend/app/main.py#L1152) |
-| session_analysis | app.tasks.session_analysis.session_analysis_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.behavior_events_enabled and settings.session_analysis_enabled'] | {'id_expression': "'session_analysis'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1164](../backend/app/main.py#L1164) |
-| session_replay_retention | app.api.session_replay.replay_retention_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.session_replay_enabled'] | {'id_expression': "'session_replay_retention'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1173](../backend/app/main.py#L1173) |
-| geoip_monthly_update | app.services.geoip.download_geoip_db | CronTrigger(day=3, hour=5, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.geoip_auto_download'] | unresolved | [backend/app/main.py:1209](../backend/app/main.py#L1209) |
-| clickhouse_sync | app.services.clickhouse_sync.clickhouse_sync_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled', 'settings.clickhouse_enabled'] | {'id_expression': "'clickhouse_sync'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1221](../backend/app/main.py#L1221) |
-| telegram_poll | app.services.telegram_bot.telegram_poll_job | IntervalTrigger(seconds=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled'] | unresolved | [backend/app/main.py:1234](../backend/app/main.py#L1234) |
-| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1254](../backend/app/main.py#L1254) |
-| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1311](../backend/app/main.py#L1311) |
-| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1340](../backend/app/main.py#L1340) |
-| webmaster_recrawl_ru | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token', 'settings.apex_locale_en'] | unresolved | [backend/app/main.py:951](../backend/app/main.py#L951) |
+| europe_world_forecast | app.main.scheduled_europe_world_forecasts | CronTrigger(hour=settings.europe_world_forecast_hour, minute=settings.europe_world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.europe_world_forecast_enabled and (not settings.world_forecast_enabled)'] | {'id_expression': "'europe_world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:760](../backend/app/main.py#L760) |
+| rest_world_forecast | app.main.scheduled_rest_world_forecasts | CronTrigger(hour=settings.rest_world_forecast_hour, minute=settings.rest_world_forecast_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.rest_world_forecast_enabled and (not settings.world_forecast_enabled)'] | {'id_expression': "'rest_world_forecast'", 'ttl_expression': 'WORLD_FORECAST_JOB_LOCK_TTL_SECONDS'} | [backend/app/main.py:797](../backend/app/main.py#L797) |
+| world_subnational_ingest | app.services.world_subnational_ingest.world_subnational_ingest_job | CronTrigger(hour=settings.world_subnational_ingest_hour, minute=settings.world_subnational_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_subnational_ingest_enabled'] | {'id_expression': "'world_subnational_ingest'", 'ttl_expression': '4 * 3600'} | [backend/app/main.py:818](../backend/app/main.py#L818) |
+| world_bea_regional | app.services.world_bea_regional.world_bea_regional_job | CronTrigger(day_of_week='tue', hour=settings.world_bea_regional_ingest_hour, minute=settings.world_bea_regional_ingest_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.world_bea_regional_ingest_enabled'] | {'id_expression': "'world_bea_regional'", 'ttl_expression': '6 * 3600'} | [backend/app/main.py:839](../backend/app/main.py#L839) |
+| analytics_hourly | app.tasks.analytics_scheduler.analytics_hourly_job | CronTrigger(minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_scheduler_enabled'] | unresolved | [backend/app/main.py:893](../backend/app/main.py#L893) |
+| analytics_daily | app.tasks.analytics_scheduler.analytics_daily_job | CronTrigger(hour=settings.analytics_scheduler_cron_hour, minute=settings.analytics_scheduler_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_scheduler_enabled'] | unresolved | [backend/app/main.py:900](../backend/app/main.py#L900) |
+| acquisition_daily | app.tasks.analytics_scheduler.acquisition_daily_job | CronTrigger(hour='8,14,20', minute=20, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.analytics_enabled and settings.yandex_metrika_read_token'] | unresolved | [backend/app/main.py:926](../backend/app/main.py#L926) |
+| webmaster_recrawl | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:941](../backend/app/main.py#L941) |
+| partner_revenue_daily | app.tasks.analytics_scheduler.partner_revenue_daily_job | CronTrigger(hour=8, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'partner_configured()'] | unresolved | [backend/app/main.py:981](../backend/app/main.py#L981) |
+| webmaster_queries_daily | app.tasks.analytics_scheduler.webmaster_queries_daily_job | CronTrigger(hour=8, minute=40, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:994](../backend/app/main.py#L994) |
+| indexing_report_weekly | app.services.webmaster_indexing_report.indexing_report_job | CronTrigger(day_of_week='mon', hour=9, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.yandex_webmaster_token'] | unresolved | [backend/app/main.py:1007](../backend/app/main.py#L1007) |
+| indexnow_drain | app.services.indexnow.indexnow_drain_job | CronTrigger(minute='*/10', timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1023](../backend/app/main.py#L1023) |
+| indexnow_warm | app.services.indexnow.indexnow_warm_job | CronTrigger(day_of_week='tue', hour=6, minute=40, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1030](../backend/app/main.py#L1030) |
+| indexnow_history | app.services.indexnow.indexnow_history_job | CronTrigger(hour=4, minute=30, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.indexnow_enabled and settings.indexnow_key'] | unresolved | [backend/app/main.py:1037](../backend/app/main.py#L1037) |
+| telegram_daily_digest | app.tasks.analytics_scheduler.telegram_daily_digest_job | CronTrigger(hour=settings.telegram_digest_cron_hour, minute=settings.telegram_digest_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_digest_enabled'] | unresolved | [backend/app/main.py:1050](../backend/app/main.py#L1050) |
+| seo_weekly_report | app.services.seo_weekly_report.seo_weekly_report_job | CronTrigger(day_of_week='mon', hour=settings.seo_weekly_report_cron_hour, minute=settings.seo_weekly_report_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.seo_weekly_report_enabled'] | {'id_expression': "'seo_weekly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1070](../backend/app/main.py#L1070) |
+| telegram_weekly_report | app.services.telegram_reports.weekly_report_job | CronTrigger(day_of_week='mon', hour=settings.telegram_weekly_cron_hour, minute=settings.telegram_weekly_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_weekly_enabled'] | {'id_expression': "'telegram_weekly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1088](../backend/app/main.py#L1088) |
+| telegram_monthly_report | app.services.telegram_reports.monthly_report_job | CronTrigger(day=1, hour=settings.telegram_monthly_cron_hour, minute=settings.telegram_monthly_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.telegram_monthly_enabled'] | {'id_expression': "'telegram_monthly_report'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1108](../backend/app/main.py#L1108) |
+| pulse_snapshot | app.services.pulse_report.pulse_snapshot_job | CronTrigger(hour=23, minute=57, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.pulse_enabled'] | unresolved | [backend/app/main.py:1128](../backend/app/main.py#L1128) |
+| pulse_report | app.services.pulse_report.pulse_report_job | CronTrigger(hour=settings.pulse_report_cron_hour, minute=settings.pulse_report_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.pulse_enabled'] | unresolved | [backend/app/main.py:1135](../backend/app/main.py#L1135) |
+| behavior_retention | app.tasks.analytics_scheduler.behavior_retention_job | CronTrigger(hour=4, minute=10, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.behavior_events_enabled'] | unresolved | [backend/app/main.py:1155](../backend/app/main.py#L1155) |
+| session_analysis | app.tasks.session_analysis.session_analysis_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.behavior_events_enabled and settings.session_analysis_enabled'] | {'id_expression': "'session_analysis'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1167](../backend/app/main.py#L1167) |
+| session_replay_retention | app.api.session_replay.replay_retention_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.session_replay_enabled'] | {'id_expression': "'session_replay_retention'", 'ttl_expression': '4 * 60'} | [backend/app/main.py:1176](../backend/app/main.py#L1176) |
+| geoip_monthly_update | app.services.geoip.download_geoip_db | CronTrigger(day=3, hour=5, minute=0, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.geoip_auto_download'] | unresolved | [backend/app/main.py:1212](../backend/app/main.py#L1212) |
+| clickhouse_sync | app.services.clickhouse_sync.clickhouse_sync_job | IntervalTrigger(minutes=15, start_date=_analytics_start) ['settings.scheduler_enabled', 'settings.clickhouse_enabled'] | {'id_expression': "'clickhouse_sync'", 'ttl_expression': '14 * 60'} | [backend/app/main.py:1224](../backend/app/main.py#L1224) |
+| telegram_poll | app.services.telegram_bot.telegram_poll_job | IntervalTrigger(seconds=30) ['settings.scheduler_enabled', 'settings.telegram_poller_enabled'] | unresolved | [backend/app/main.py:1237](../backend/app/main.py#L1237) |
+| telegram_resend | app.services.telegram_resend.telegram_resend_job | IntervalTrigger(minutes=5) ['settings.scheduler_enabled', 'settings.telegram_resend_enabled and settings.telegram_bot_token and settings.telegram_chat_id and (settings.telegram_digest_enabled or settings.telegram_realtime_alerts_enabled)'] | unresolved | [backend/app/main.py:1257](../backend/app/main.py#L1257) |
+| freshness_watchdog | app.tasks.freshness_watchdog.freshness_watchdog_job | CronTrigger(hour=settings.freshness_watchdog_cron_hour, minute=settings.freshness_watchdog_cron_minute, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.freshness_watchdog_enabled'] | {'id_expression': "'freshness_watchdog'", 'ttl_expression': '20 * 60'} | [backend/app/main.py:1314](../backend/app/main.py#L1314) |
+| world_listed_counts | app.services.world_listed_counts.world_listed_counts_job | IntervalTrigger(minutes=15) ['settings.scheduler_enabled', 'settings.world_listed_counts_enabled'] | {'id_expression': "'world_listed_counts'", 'ttl_expression': '600'} | [backend/app/main.py:1343](../backend/app/main.py#L1343) |
+| webmaster_recrawl_ru | app.services.webmaster_recrawl.recrawl_daily_job | CronTrigger(hour=9, minute=15, timezone='Europe/Moscow') ['settings.scheduler_enabled', 'settings.webmaster_recrawl_enabled and settings.yandex_webmaster_token', 'settings.apex_locale_en'] | unresolved | [backend/app/main.py:954](../backend/app/main.py#L954) |
 
 ## Settings declarations
 
@@ -1685,178 +1685,181 @@ Relationships: `[]`
 | RUSTATS_SCHEDULER_LATE_FRED_HOUR | int = 23 | 1 | [backend/app/config.py:118](../backend/app/config.py#L118) |
 | RUSTATS_SCHEDULER_LATE_FRED_MINUTE | int = 30 | 1 | [backend/app/config.py:119](../backend/app/config.py#L119) |
 | RUSTATS_TICKER_PULL_INTERVAL_SECONDS | int = 8 | 2 | [backend/app/config.py:120](../backend/app/config.py#L120) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:125](../backend/app/config.py#L125) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW | bool = False | 1 | [backend/app/config.py:128](../backend/app/config.py#L128) |
-| RUSTATS_EUROSTAT_REBASE_ENABLED | bool = False | 2 | [backend/app/config.py:131](../backend/app/config.py#L131) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_HOUR | int = 2 | 2 | [backend/app/config.py:132](../backend/app/config.py#L132) |
-| RUSTATS_WORLD_EUROSTAT_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:133](../backend/app/config.py#L133) |
-| RUSTATS_WORLD_FORECAST_ENABLED | bool = False | 4 | [backend/app/config.py:136](../backend/app/config.py#L136) |
-| RUSTATS_US_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:139](../backend/app/config.py#L139) |
-| RUSTATS_EUROPE_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:140](../backend/app/config.py#L140) |
-| RUSTATS_US_WORLD_FORECAST_DAILY_LIMIT | int = 500 | 1 | [backend/app/config.py:141](../backend/app/config.py#L141) |
-| RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT | int = 3000 | 1 | [backend/app/config.py:142](../backend/app/config.py#L142) |
-| RUSTATS_EUROPE_WORLD_FORECAST_HOUR | int = 21 | 1 | [backend/app/config.py:145](../backend/app/config.py#L145) |
-| RUSTATS_EUROPE_WORLD_FORECAST_MINUTE | int = 0 | 1 | [backend/app/config.py:146](../backend/app/config.py#L146) |
-| RUSTATS_US_WORLD_FORECAST_HOUR | int = 5 | 1 | [backend/app/config.py:149](../backend/app/config.py#L149) |
-| RUSTATS_US_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:150](../backend/app/config.py#L150) |
-| RUSTATS_REST_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:151](../backend/app/config.py#L151) |
-| RUSTATS_REST_WORLD_FORECAST_MINUTE | int = 50 | 1 | [backend/app/config.py:152](../backend/app/config.py#L152) |
-| RUSTATS_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:153](../backend/app/config.py#L153) |
-| RUSTATS_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:154](../backend/app/config.py#L154) |
-| RUSTATS_REST_WORLD_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:158](../backend/app/config.py#L158) |
-| RUSTATS_REST_WORLD_FORECAST_DAILY_LIMIT | int = 400 | 1 | [backend/app/config.py:159](../backend/app/config.py#L159) |
-| RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED | bool = False | 2 | [backend/app/config.py:163](../backend/app/config.py#L163) |
-| RUSTATS_WORLD_IMF_OFFICIAL_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:166](../backend/app/config.py#L166) |
-| RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS | int = 2400 | 3 | [backend/app/config.py:170](../backend/app/config.py#L170) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS | int = 30 | 1 | [backend/app/config.py:173](../backend/app/config.py#L173) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL | int = 0 | 1 | [backend/app/config.py:178](../backend/app/config.py#L178) |
-| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY | int = 0 | 1 | [backend/app/config.py:179](../backend/app/config.py#L179) |
-| RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY | int = 200 | 1 | [backend/app/config.py:181](../backend/app/config.py#L181) |
-| RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES | str = 'united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland' | 1 | [backend/app/config.py:184](../backend/app/config.py#L184) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:189](../backend/app/config.py#L189) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_HOUR | int = 3 | 1 | [backend/app/config.py:190](../backend/app/config.py#L190) |
-| RUSTATS_WORLD_SUBNATIONAL_INGEST_MINUTE | int = 40 | 1 | [backend/app/config.py:191](../backend/app/config.py#L191) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:192](../backend/app/config.py#L192) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:193](../backend/app/config.py#L193) |
-| RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:194](../backend/app/config.py#L194) |
-| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 1 | [backend/app/config.py:199](../backend/app/config.py#L199) |
-| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 13 | [backend/app/config.py:202](../backend/app/config.py#L202) |
-| RUSTATS_TELEGRAM_CHAT_ID | str = '' | 12 | [backend/app/config.py:203](../backend/app/config.py#L203) |
-| RUSTATS_FORECAST_STEPS | int = 12 | 2 | [backend/app/config.py:206](../backend/app/config.py#L206) |
-| RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:209](../backend/app/config.py#L209) |
-| RUSTATS_SSR_WARM_ENABLED | bool = False | 2 | [backend/app/config.py:212](../backend/app/config.py#L212) |
-| RUSTATS_SSR_WARM_BASE_URL | str = 'http://frontend' | 2 | [backend/app/config.py:213](../backend/app/config.py#L213) |
-| RUSTATS_SSR_WARM_TOP_N | int = 50 | 2 | [backend/app/config.py:216](../backend/app/config.py#L216) |
-| RUSTATS_SSR_SWR_ENABLED | bool = False | 1 | [backend/app/config.py:220](../backend/app/config.py#L220) |
-| RUSTATS_SSR_SWR_STALE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:221](../backend/app/config.py#L221) |
-| RUSTATS_SSR_SWR_BASE_URL | str = '' | 1 | [backend/app/config.py:225](../backend/app/config.py#L225) |
-| RUSTATS_SSR_SWR_TOKEN | str = '' | 1 | [backend/app/config.py:226](../backend/app/config.py#L226) |
-| RUSTATS_WORLD_LISTED_COUNTS_ENABLED | bool = False | 4 | [backend/app/config.py:232](../backend/app/config.py#L232) |
-| RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:233](../backend/app/config.py#L233) |
-| RUSTATS_INDEXNOW_ENABLED | bool = True | 7 | [backend/app/config.py:237](../backend/app/config.py#L237) |
-| RUSTATS_INDEXNOW_KEY | str = 'a7c41d92e85f4b06b3d8f17c29e6a504' | 11 | [backend/app/config.py:238](../backend/app/config.py#L238) |
-| RUSTATS_INDEXNOW_ENDPOINT | str = 'https://yandex.com/indexnow' | 2 | [backend/app/config.py:239](../backend/app/config.py#L239) |
-| RUSTATS_INDEXNOW_DAILY_SEND_CAP | int = 30000 | 1 | [backend/app/config.py:241](../backend/app/config.py#L241) |
-| RUSTATS_INDEXNOW_HISTORY_DAILY_CAP | int = 30000 | 1 | [backend/app/config.py:244](../backend/app/config.py#L244) |
-| RUSTATS_INDEXNOW_HISTORY_YEAR_MIN | int = 2018 | 1 | [backend/app/config.py:245](../backend/app/config.py#L245) |
-| RUSTATS_WEBMASTER_RECRAWL_ENABLED | bool = True | 1 | [backend/app/config.py:249](../backend/app/config.py#L249) |
-| RUSTATS_METRICS_TOKEN | str = '' | 2 | [backend/app/config.py:252](../backend/app/config.py#L252) |
-| RUSTATS_FRONTEND_EVENTS_ENABLED | bool = True | 1 | [backend/app/config.py:259](../backend/app/config.py#L259) |
-| RUSTATS_BEHAVIOR_EVENTS_ENABLED | bool = True | 5 | [backend/app/config.py:265](../backend/app/config.py#L265) |
-| RUSTATS_BEHAVIOR_BATCH_MAX_EVENTS | int = 500 | 1 | [backend/app/config.py:266](../backend/app/config.py#L266) |
-| RUSTATS_BEHAVIOR_RAW_RETENTION_DAYS | int = 0 | 1 | [backend/app/config.py:267](../backend/app/config.py#L267) |
-| RUSTATS_GEOIP_DB_PATH | str = '/app/geoip/dbip-city-lite.mmdb' | 3 | [backend/app/config.py:272](../backend/app/config.py#L272) |
-| RUSTATS_GEOIP_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:273](../backend/app/config.py#L273) |
-| RUSTATS_GEOIP_ASN_DB_PATH | str = '/app/geoip/dbip-asn-lite.mmdb' | 2 | [backend/app/config.py:276](../backend/app/config.py#L276) |
-| RUSTATS_GEOIP_ASN_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-asn-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:277](../backend/app/config.py#L277) |
-| RUSTATS_GEOIP_AUTO_DOWNLOAD | bool = True | 1 | [backend/app/config.py:280](../backend/app/config.py#L280) |
-| RUSTATS_CLICKHOUSE_ENABLED | bool = False | 7 | [backend/app/config.py:284](../backend/app/config.py#L284) |
-| RUSTATS_CLICKHOUSE_HOST | str = 'clickhouse' | 1 | [backend/app/config.py:285](../backend/app/config.py#L285) |
-| RUSTATS_CLICKHOUSE_PORT | int = 8123 | 1 | [backend/app/config.py:286](../backend/app/config.py#L286) |
-| RUSTATS_CLICKHOUSE_DB | str = 'analytics' | 1 | [backend/app/config.py:287](../backend/app/config.py#L287) |
-| RUSTATS_CLICKHOUSE_USER | str = 'default' | 1 | [backend/app/config.py:288](../backend/app/config.py#L288) |
-| RUSTATS_CLICKHOUSE_PASSWORD | str = '' | 1 | [backend/app/config.py:289](../backend/app/config.py#L289) |
-| RUSTATS_DIRECT_API_TOKEN | str = '' | 1 | [backend/app/config.py:292](../backend/app/config.py#L292) |
-| RUSTATS_YANDEX_PARTNER_CLIENT_ID | str = '' | 0 | [backend/app/config.py:294](../backend/app/config.py#L294) |
-| RUSTATS_YANDEX_PARTNER_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:295](../backend/app/config.py#L295) |
-| RUSTATS_YANDEX_PARTNER_TOKEN | str = '' | 1 | [backend/app/config.py:296](../backend/app/config.py#L296) |
-| RUSTATS_ANALYTICS_ENABLED | bool = False | 7 | [backend/app/config.py:299](../backend/app/config.py#L299) |
-| RUSTATS_ANALYTICS_SCHEDULER_ENABLED | bool = False | 2 | [backend/app/config.py:300](../backend/app/config.py#L300) |
-| RUSTATS_ANALYTICS_SCHEDULER_CRON_HOUR | int = 7 | 2 | [backend/app/config.py:301](../backend/app/config.py#L301) |
-| RUSTATS_ANALYTICS_SCHEDULER_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:302](../backend/app/config.py#L302) |
-| RUSTATS_ANALYTICS_API_TOKEN | str = '' | 3 | [backend/app/config.py:303](../backend/app/config.py#L303) |
-| RUSTATS_ANALYTICS_BASE_URL | str = 'https://forecasteconomy.com' | 2 | [backend/app/config.py:306](../backend/app/config.py#L306) |
-| RUSTATS_ANALYTICS_ALLOWED_COUNTER_IDS | str = '107136069' | 9 | [backend/app/config.py:307](../backend/app/config.py#L307) |
-| RUSTATS_ANALYTICS_ALLOWED_HOSTS | str = 'forecasteconomy.com,ru.forecasteconomy.com' | 2 | [backend/app/config.py:308](../backend/app/config.py#L308) |
-| RUSTATS_ANALYTICS_DEFAULT_RETENTION_DAYS | int = 180 | 0 | [backend/app/config.py:309](../backend/app/config.py#L309) |
-| RUSTATS_ANALYTICS_RAW_LOG_RETENTION_DAYS | int = 90 | 0 | [backend/app/config.py:310](../backend/app/config.py#L310) |
-| RUSTATS_ANALYTICS_BACKFILL_DAYS | int = 30 | 0 | [backend/app/config.py:311](../backend/app/config.py#L311) |
-| RUSTATS_ANALYTICS_REQUEST_TIMEOUT | int = 30 | 1 | [backend/app/config.py:312](../backend/app/config.py#L312) |
-| RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED | bool = False | 2 | [backend/app/config.py:313](../backend/app/config.py#L313) |
-| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 10 | [backend/app/config.py:315](../backend/app/config.py#L315) |
-| RUSTATS_YANDEX_METRIKA_WRITE_TOKEN | str = '' | 3 | [backend/app/config.py:316](../backend/app/config.py#L316) |
-| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 10 | [backend/app/config.py:317](../backend/app/config.py#L317) |
-| RUSTATS_AUTH_SESSION_TTL_SECONDS | int = 60 * 60 * 24 * 30 | 3 | [backend/app/config.py:320](../backend/app/config.py#L320) |
-| RUSTATS_AUTH_COOKIE_SECURE | bool = False | 7 | [backend/app/config.py:321](../backend/app/config.py#L321) |
-| RUSTATS_AUTH_COOKIE_DOMAIN | str = '' | 4 | [backend/app/config.py:322](../backend/app/config.py#L322) |
-| RUSTATS_AUTH_OAUTH_STATE_TTL_SECONDS | int = 600 | 2 | [backend/app/config.py:323](../backend/app/config.py#L323) |
-| RUSTATS_AUTH_LOGIN_MAX_FAILS | int = 8 | 1 | [backend/app/config.py:324](../backend/app/config.py#L324) |
-| RUSTATS_AUTH_LOGIN_LOCKOUT_SECONDS | int = 900 | 1 | [backend/app/config.py:325](../backend/app/config.py#L325) |
-| RUSTATS_AUTH_FAKE_PROVIDER_ENABLED | bool = False | 3 | [backend/app/config.py:327](../backend/app/config.py#L327) |
-| RUSTATS_AUTH_PUBLIC_BASE_URL | str = 'http://localhost:5173' | 4 | [backend/app/config.py:329](../backend/app/config.py#L329) |
-| RUSTATS_OAUTH_GOOGLE_CLIENT_ID | str = '' | 2 | [backend/app/config.py:332](../backend/app/config.py#L332) |
-| RUSTATS_OAUTH_GOOGLE_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:333](../backend/app/config.py#L333) |
-| RUSTATS_OAUTH_GOOGLE_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:334](../backend/app/config.py#L334) |
-| RUSTATS_OAUTH_YANDEX_CLIENT_ID | str = '' | 2 | [backend/app/config.py:337](../backend/app/config.py#L337) |
-| RUSTATS_OAUTH_YANDEX_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:338](../backend/app/config.py#L338) |
-| RUSTATS_OAUTH_YANDEX_SCOPE | str = '' | 1 | [backend/app/config.py:339](../backend/app/config.py#L339) |
-| RUSTATS_OAUTH_VK_CLIENT_ID | str = '' | 2 | [backend/app/config.py:341](../backend/app/config.py#L341) |
-| RUSTATS_OAUTH_VK_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:342](../backend/app/config.py#L342) |
-| RUSTATS_OAUTH_VK_SERVICE_KEY | str = '' | 0 | [backend/app/config.py:343](../backend/app/config.py#L343) |
-| RUSTATS_OAUTH_VK_SCOPE | str = '' | 1 | [backend/app/config.py:344](../backend/app/config.py#L344) |
-| RUSTATS_OAUTH_YANDEX_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:347](../backend/app/config.py#L347) |
-| RUSTATS_OAUTH_VK_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:348](../backend/app/config.py#L348) |
-| RUSTATS_DOWNLOAD_ANON_LIMIT | int = 0 | 4 | [backend/app/config.py:351](../backend/app/config.py#L351) |
-| RUSTATS_DOWNLOAD_ANON_WINDOW_SECONDS | int = 60 * 60 * 24 | 2 | [backend/app/config.py:352](../backend/app/config.py#L352) |
-| RUSTATS_DOWNLOAD_ANON_HISTORY_YEARS | int = 3 | 3 | [backend/app/config.py:356](../backend/app/config.py#L356) |
-| RUSTATS_TELEGRAM_DIGEST_ENABLED | bool = False | 2 | [backend/app/config.py:359](../backend/app/config.py#L359) |
-| RUSTATS_TELEGRAM_DIGEST_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:360](../backend/app/config.py#L360) |
-| RUSTATS_TELEGRAM_DIGEST_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:361](../backend/app/config.py#L361) |
-| RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:365](../backend/app/config.py#L365) |
-| RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:368](../backend/app/config.py#L368) |
-| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:371](../backend/app/config.py#L371) |
-| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:376](../backend/app/config.py#L376) |
-| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:380](../backend/app/config.py#L380) |
-| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:382](../backend/app/config.py#L382) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:383](../backend/app/config.py#L383) |
-| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:384](../backend/app/config.py#L384) |
-| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:387](../backend/app/config.py#L387) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:388](../backend/app/config.py#L388) |
-| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:389](../backend/app/config.py#L389) |
-| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:390](../backend/app/config.py#L390) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:391](../backend/app/config.py#L391) |
-| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:392](../backend/app/config.py#L392) |
-| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:395](../backend/app/config.py#L395) |
-| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:399](../backend/app/config.py#L399) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:400](../backend/app/config.py#L400) |
-| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:401](../backend/app/config.py#L401) |
-| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:405](../backend/app/config.py#L405) |
-| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:406](../backend/app/config.py#L406) |
-| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:407](../backend/app/config.py#L407) |
-| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:408](../backend/app/config.py#L408) |
-| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:409](../backend/app/config.py#L409) |
-| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:413](../backend/app/config.py#L413) |
-| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:414](../backend/app/config.py#L414) |
-| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:415](../backend/app/config.py#L415) |
-| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:416](../backend/app/config.py#L416) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 4 | [backend/app/config.py:418](../backend/app/config.py#L418) |
-| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:422](../backend/app/config.py#L422) |
-| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:423](../backend/app/config.py#L423) |
-| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:424](../backend/app/config.py#L424) |
-| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:425](../backend/app/config.py#L425) |
-| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:426](../backend/app/config.py#L426) |
-| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:427](../backend/app/config.py#L427) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 3 | [backend/app/config.py:428](../backend/app/config.py#L428) |
-| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 3 | [backend/app/config.py:434](../backend/app/config.py#L434) |
-| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:438](../backend/app/config.py#L438) |
-| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:441](../backend/app/config.py#L441) |
-| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 1 | [backend/app/config.py:445](../backend/app/config.py#L445) |
-| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:450](../backend/app/config.py#L450) |
-| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:451](../backend/app/config.py#L451) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:452](../backend/app/config.py#L452) |
-| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:453](../backend/app/config.py#L453) |
-| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:455](../backend/app/config.py#L455) |
-| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:461](../backend/app/config.py#L461) |
-| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:469](../backend/app/config.py#L469) |
-| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:476](../backend/app/config.py#L476) |
-| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:477](../backend/app/config.py#L477) |
-| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:488](../backend/app/config.py#L488) |
-| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:489](../backend/app/config.py#L489) |
-| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:490](../backend/app/config.py#L490) |
-| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:491](../backend/app/config.py#L491) |
-| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:492](../backend/app/config.py#L492) |
-| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:493](../backend/app/config.py#L493) |
-| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:497](../backend/app/config.py#L497) |
+| RUSTATS_MOEX_BRENT_LIVE_ENABLED | bool = False | 1 | [backend/app/config.py:125](../backend/app/config.py#L125) |
+| RUSTATS_MOEX_BRENT_DELAY_MINUTES | int = 15 | 1 | [backend/app/config.py:128](../backend/app/config.py#L128) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:133](../backend/app/config.py#L133) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_SHADOW | bool = False | 1 | [backend/app/config.py:136](../backend/app/config.py#L136) |
+| RUSTATS_EUROSTAT_REBASE_ENABLED | bool = False | 2 | [backend/app/config.py:139](../backend/app/config.py#L139) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_HOUR | int = 2 | 2 | [backend/app/config.py:140](../backend/app/config.py#L140) |
+| RUSTATS_WORLD_EUROSTAT_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:141](../backend/app/config.py#L141) |
+| RUSTATS_WORLD_FORECAST_ENABLED | bool = False | 4 | [backend/app/config.py:144](../backend/app/config.py#L144) |
+| RUSTATS_US_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:147](../backend/app/config.py#L147) |
+| RUSTATS_EUROPE_WORLD_FORECAST_ENABLED | bool = True | 1 | [backend/app/config.py:148](../backend/app/config.py#L148) |
+| RUSTATS_US_WORLD_FORECAST_DAILY_LIMIT | int = 500 | 1 | [backend/app/config.py:149](../backend/app/config.py#L149) |
+| RUSTATS_EUROPE_WORLD_FORECAST_DAILY_LIMIT | int = 3000 | 1 | [backend/app/config.py:150](../backend/app/config.py#L150) |
+| RUSTATS_EUROPE_WORLD_FORECAST_HOUR | int = 21 | 1 | [backend/app/config.py:153](../backend/app/config.py#L153) |
+| RUSTATS_EUROPE_WORLD_FORECAST_MINUTE | int = 0 | 1 | [backend/app/config.py:154](../backend/app/config.py#L154) |
+| RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS | int = 0 | 1 | [backend/app/config.py:160](../backend/app/config.py#L160) |
+| RUSTATS_US_WORLD_FORECAST_HOUR | int = 5 | 1 | [backend/app/config.py:161](../backend/app/config.py#L161) |
+| RUSTATS_US_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:162](../backend/app/config.py#L162) |
+| RUSTATS_REST_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:163](../backend/app/config.py#L163) |
+| RUSTATS_REST_WORLD_FORECAST_MINUTE | int = 50 | 1 | [backend/app/config.py:164](../backend/app/config.py#L164) |
+| RUSTATS_WORLD_FORECAST_HOUR | int = 4 | 1 | [backend/app/config.py:165](../backend/app/config.py#L165) |
+| RUSTATS_WORLD_FORECAST_MINUTE | int = 20 | 1 | [backend/app/config.py:166](../backend/app/config.py#L166) |
+| RUSTATS_REST_WORLD_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:170](../backend/app/config.py#L170) |
+| RUSTATS_REST_WORLD_FORECAST_DAILY_LIMIT | int = 400 | 1 | [backend/app/config.py:171](../backend/app/config.py#L171) |
+| RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED | bool = False | 2 | [backend/app/config.py:175](../backend/app/config.py#L175) |
+| RUSTATS_WORLD_IMF_OFFICIAL_FORECAST_ENABLED | bool = False | 1 | [backend/app/config.py:178](../backend/app/config.py#L178) |
+| RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS | int = 2400 | 3 | [backend/app/config.py:182](../backend/app/config.py#L182) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS | int = 30 | 2 | [backend/app/config.py:185](../backend/app/config.py#L185) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_ANNUAL | int = 0 | 1 | [backend/app/config.py:190](../backend/app/config.py#L190) |
+| RUSTATS_WORLD_FORECAST_MAX_AGE_DAYS_QUARTERLY | int = 0 | 1 | [backend/app/config.py:191](../backend/app/config.py#L191) |
+| RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY | int = 200 | 1 | [backend/app/config.py:193](../backend/app/config.py#L193) |
+| RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES | str = 'united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland' | 1 | [backend/app/config.py:196](../backend/app/config.py#L196) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:201](../backend/app/config.py#L201) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_HOUR | int = 3 | 1 | [backend/app/config.py:202](../backend/app/config.py#L202) |
+| RUSTATS_WORLD_SUBNATIONAL_INGEST_MINUTE | int = 40 | 1 | [backend/app/config.py:203](../backend/app/config.py#L203) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_ENABLED | bool = True | 1 | [backend/app/config.py:204](../backend/app/config.py#L204) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_HOUR | int = 4 | 1 | [backend/app/config.py:205](../backend/app/config.py#L205) |
+| RUSTATS_WORLD_BEA_REGIONAL_INGEST_MINUTE | int = 20 | 1 | [backend/app/config.py:206](../backend/app/config.py#L206) |
+| RUSTATS_CALENDAR_ROSSTAT_PLAN_ENABLED | bool = True | 1 | [backend/app/config.py:211](../backend/app/config.py#L211) |
+| RUSTATS_TELEGRAM_BOT_TOKEN | str = '' | 13 | [backend/app/config.py:214](../backend/app/config.py#L214) |
+| RUSTATS_TELEGRAM_CHAT_ID | str = '' | 12 | [backend/app/config.py:215](../backend/app/config.py#L215) |
+| RUSTATS_FORECAST_STEPS | int = 12 | 2 | [backend/app/config.py:218](../backend/app/config.py#L218) |
+| RUSTATS_SEO_APP_SHELL_URL | str = 'http://frontend/__spa-index.html' | 2 | [backend/app/config.py:221](../backend/app/config.py#L221) |
+| RUSTATS_SSR_WARM_ENABLED | bool = False | 2 | [backend/app/config.py:224](../backend/app/config.py#L224) |
+| RUSTATS_SSR_WARM_BASE_URL | str = 'http://frontend' | 2 | [backend/app/config.py:225](../backend/app/config.py#L225) |
+| RUSTATS_SSR_WARM_TOP_N | int = 50 | 2 | [backend/app/config.py:228](../backend/app/config.py#L228) |
+| RUSTATS_SSR_SWR_ENABLED | bool = False | 1 | [backend/app/config.py:232](../backend/app/config.py#L232) |
+| RUSTATS_SSR_SWR_STALE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:233](../backend/app/config.py#L233) |
+| RUSTATS_SSR_SWR_BASE_URL | str = '' | 1 | [backend/app/config.py:237](../backend/app/config.py#L237) |
+| RUSTATS_SSR_SWR_TOKEN | str = '' | 1 | [backend/app/config.py:238](../backend/app/config.py#L238) |
+| RUSTATS_WORLD_LISTED_COUNTS_ENABLED | bool = False | 4 | [backend/app/config.py:244](../backend/app/config.py#L244) |
+| RUSTATS_WORLD_LISTED_COUNTS_MAX_AGE_SECONDS | int = 6 * 3600 | 1 | [backend/app/config.py:245](../backend/app/config.py#L245) |
+| RUSTATS_INDEXNOW_ENABLED | bool = True | 7 | [backend/app/config.py:249](../backend/app/config.py#L249) |
+| RUSTATS_INDEXNOW_KEY | str = 'a7c41d92e85f4b06b3d8f17c29e6a504' | 11 | [backend/app/config.py:250](../backend/app/config.py#L250) |
+| RUSTATS_INDEXNOW_ENDPOINT | str = 'https://yandex.com/indexnow' | 2 | [backend/app/config.py:251](../backend/app/config.py#L251) |
+| RUSTATS_INDEXNOW_DAILY_SEND_CAP | int = 30000 | 1 | [backend/app/config.py:253](../backend/app/config.py#L253) |
+| RUSTATS_INDEXNOW_HISTORY_DAILY_CAP | int = 30000 | 1 | [backend/app/config.py:256](../backend/app/config.py#L256) |
+| RUSTATS_INDEXNOW_HISTORY_YEAR_MIN | int = 2018 | 1 | [backend/app/config.py:257](../backend/app/config.py#L257) |
+| RUSTATS_WEBMASTER_RECRAWL_ENABLED | bool = True | 1 | [backend/app/config.py:261](../backend/app/config.py#L261) |
+| RUSTATS_METRICS_TOKEN | str = '' | 2 | [backend/app/config.py:264](../backend/app/config.py#L264) |
+| RUSTATS_FRONTEND_EVENTS_ENABLED | bool = True | 1 | [backend/app/config.py:271](../backend/app/config.py#L271) |
+| RUSTATS_BEHAVIOR_EVENTS_ENABLED | bool = True | 5 | [backend/app/config.py:277](../backend/app/config.py#L277) |
+| RUSTATS_BEHAVIOR_BATCH_MAX_EVENTS | int = 500 | 1 | [backend/app/config.py:278](../backend/app/config.py#L278) |
+| RUSTATS_BEHAVIOR_RAW_RETENTION_DAYS | int = 0 | 1 | [backend/app/config.py:279](../backend/app/config.py#L279) |
+| RUSTATS_GEOIP_DB_PATH | str = '/app/geoip/dbip-city-lite.mmdb' | 3 | [backend/app/config.py:284](../backend/app/config.py#L284) |
+| RUSTATS_GEOIP_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-city-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:285](../backend/app/config.py#L285) |
+| RUSTATS_GEOIP_ASN_DB_PATH | str = '/app/geoip/dbip-asn-lite.mmdb' | 2 | [backend/app/config.py:288](../backend/app/config.py#L288) |
+| RUSTATS_GEOIP_ASN_DOWNLOAD_URL_TEMPLATE | str = 'https://download.db-ip.com/free/dbip-asn-lite-{yyyy}-{mm}.mmdb.gz' | 1 | [backend/app/config.py:289](../backend/app/config.py#L289) |
+| RUSTATS_GEOIP_AUTO_DOWNLOAD | bool = True | 1 | [backend/app/config.py:292](../backend/app/config.py#L292) |
+| RUSTATS_CLICKHOUSE_ENABLED | bool = False | 7 | [backend/app/config.py:296](../backend/app/config.py#L296) |
+| RUSTATS_CLICKHOUSE_HOST | str = 'clickhouse' | 1 | [backend/app/config.py:297](../backend/app/config.py#L297) |
+| RUSTATS_CLICKHOUSE_PORT | int = 8123 | 1 | [backend/app/config.py:298](../backend/app/config.py#L298) |
+| RUSTATS_CLICKHOUSE_DB | str = 'analytics' | 1 | [backend/app/config.py:299](../backend/app/config.py#L299) |
+| RUSTATS_CLICKHOUSE_USER | str = 'default' | 1 | [backend/app/config.py:300](../backend/app/config.py#L300) |
+| RUSTATS_CLICKHOUSE_PASSWORD | str = '' | 1 | [backend/app/config.py:301](../backend/app/config.py#L301) |
+| RUSTATS_DIRECT_API_TOKEN | str = '' | 1 | [backend/app/config.py:304](../backend/app/config.py#L304) |
+| RUSTATS_YANDEX_PARTNER_CLIENT_ID | str = '' | 0 | [backend/app/config.py:306](../backend/app/config.py#L306) |
+| RUSTATS_YANDEX_PARTNER_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:307](../backend/app/config.py#L307) |
+| RUSTATS_YANDEX_PARTNER_TOKEN | str = '' | 1 | [backend/app/config.py:308](../backend/app/config.py#L308) |
+| RUSTATS_ANALYTICS_ENABLED | bool = False | 7 | [backend/app/config.py:311](../backend/app/config.py#L311) |
+| RUSTATS_ANALYTICS_SCHEDULER_ENABLED | bool = False | 2 | [backend/app/config.py:312](../backend/app/config.py#L312) |
+| RUSTATS_ANALYTICS_SCHEDULER_CRON_HOUR | int = 7 | 2 | [backend/app/config.py:313](../backend/app/config.py#L313) |
+| RUSTATS_ANALYTICS_SCHEDULER_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:314](../backend/app/config.py#L314) |
+| RUSTATS_ANALYTICS_API_TOKEN | str = '' | 3 | [backend/app/config.py:315](../backend/app/config.py#L315) |
+| RUSTATS_ANALYTICS_BASE_URL | str = 'https://forecasteconomy.com' | 2 | [backend/app/config.py:318](../backend/app/config.py#L318) |
+| RUSTATS_ANALYTICS_ALLOWED_COUNTER_IDS | str = '107136069' | 9 | [backend/app/config.py:319](../backend/app/config.py#L319) |
+| RUSTATS_ANALYTICS_ALLOWED_HOSTS | str = 'forecasteconomy.com,ru.forecasteconomy.com' | 2 | [backend/app/config.py:320](../backend/app/config.py#L320) |
+| RUSTATS_ANALYTICS_DEFAULT_RETENTION_DAYS | int = 180 | 0 | [backend/app/config.py:321](../backend/app/config.py#L321) |
+| RUSTATS_ANALYTICS_RAW_LOG_RETENTION_DAYS | int = 90 | 0 | [backend/app/config.py:322](../backend/app/config.py#L322) |
+| RUSTATS_ANALYTICS_BACKFILL_DAYS | int = 30 | 0 | [backend/app/config.py:323](../backend/app/config.py#L323) |
+| RUSTATS_ANALYTICS_REQUEST_TIMEOUT | int = 30 | 1 | [backend/app/config.py:324](../backend/app/config.py#L324) |
+| RUSTATS_ANALYTICS_LIVE_WRITES_ENABLED | bool = False | 2 | [backend/app/config.py:325](../backend/app/config.py#L325) |
+| RUSTATS_YANDEX_METRIKA_READ_TOKEN | str = '' | 10 | [backend/app/config.py:327](../backend/app/config.py#L327) |
+| RUSTATS_YANDEX_METRIKA_WRITE_TOKEN | str = '' | 3 | [backend/app/config.py:328](../backend/app/config.py#L328) |
+| RUSTATS_YANDEX_WEBMASTER_TOKEN | str = '' | 10 | [backend/app/config.py:329](../backend/app/config.py#L329) |
+| RUSTATS_AUTH_SESSION_TTL_SECONDS | int = 60 * 60 * 24 * 30 | 3 | [backend/app/config.py:332](../backend/app/config.py#L332) |
+| RUSTATS_AUTH_COOKIE_SECURE | bool = False | 7 | [backend/app/config.py:333](../backend/app/config.py#L333) |
+| RUSTATS_AUTH_COOKIE_DOMAIN | str = '' | 4 | [backend/app/config.py:334](../backend/app/config.py#L334) |
+| RUSTATS_AUTH_OAUTH_STATE_TTL_SECONDS | int = 600 | 2 | [backend/app/config.py:335](../backend/app/config.py#L335) |
+| RUSTATS_AUTH_LOGIN_MAX_FAILS | int = 8 | 1 | [backend/app/config.py:336](../backend/app/config.py#L336) |
+| RUSTATS_AUTH_LOGIN_LOCKOUT_SECONDS | int = 900 | 1 | [backend/app/config.py:337](../backend/app/config.py#L337) |
+| RUSTATS_AUTH_FAKE_PROVIDER_ENABLED | bool = False | 3 | [backend/app/config.py:339](../backend/app/config.py#L339) |
+| RUSTATS_AUTH_PUBLIC_BASE_URL | str = 'http://localhost:5173' | 4 | [backend/app/config.py:341](../backend/app/config.py#L341) |
+| RUSTATS_OAUTH_GOOGLE_CLIENT_ID | str = '' | 2 | [backend/app/config.py:344](../backend/app/config.py#L344) |
+| RUSTATS_OAUTH_GOOGLE_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:345](../backend/app/config.py#L345) |
+| RUSTATS_OAUTH_GOOGLE_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:346](../backend/app/config.py#L346) |
+| RUSTATS_OAUTH_YANDEX_CLIENT_ID | str = '' | 2 | [backend/app/config.py:349](../backend/app/config.py#L349) |
+| RUSTATS_OAUTH_YANDEX_CLIENT_SECRET | str = '' | 2 | [backend/app/config.py:350](../backend/app/config.py#L350) |
+| RUSTATS_OAUTH_YANDEX_SCOPE | str = '' | 1 | [backend/app/config.py:351](../backend/app/config.py#L351) |
+| RUSTATS_OAUTH_VK_CLIENT_ID | str = '' | 2 | [backend/app/config.py:353](../backend/app/config.py#L353) |
+| RUSTATS_OAUTH_VK_CLIENT_SECRET | str = '' | 0 | [backend/app/config.py:354](../backend/app/config.py#L354) |
+| RUSTATS_OAUTH_VK_SERVICE_KEY | str = '' | 0 | [backend/app/config.py:355](../backend/app/config.py#L355) |
+| RUSTATS_OAUTH_VK_SCOPE | str = '' | 1 | [backend/app/config.py:356](../backend/app/config.py#L356) |
+| RUSTATS_OAUTH_YANDEX_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:359](../backend/app/config.py#L359) |
+| RUSTATS_OAUTH_VK_REDIRECT_URI | str = '' | 0 | [backend/app/config.py:360](../backend/app/config.py#L360) |
+| RUSTATS_DOWNLOAD_ANON_LIMIT | int = 0 | 4 | [backend/app/config.py:363](../backend/app/config.py#L363) |
+| RUSTATS_DOWNLOAD_ANON_WINDOW_SECONDS | int = 60 * 60 * 24 | 2 | [backend/app/config.py:364](../backend/app/config.py#L364) |
+| RUSTATS_DOWNLOAD_ANON_HISTORY_YEARS | int = 3 | 3 | [backend/app/config.py:368](../backend/app/config.py#L368) |
+| RUSTATS_TELEGRAM_DIGEST_ENABLED | bool = False | 2 | [backend/app/config.py:371](../backend/app/config.py#L371) |
+| RUSTATS_TELEGRAM_DIGEST_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:372](../backend/app/config.py#L372) |
+| RUSTATS_TELEGRAM_DIGEST_CRON_MINUTE | int = 0 | 2 | [backend/app/config.py:373](../backend/app/config.py#L373) |
+| RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:377](../backend/app/config.py#L377) |
+| RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:380](../backend/app/config.py#L380) |
+| RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:383](../backend/app/config.py#L383) |
+| RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:388](../backend/app/config.py#L388) |
+| RUSTATS_TELEGRAM_REPORTS_CHAT_IDS | str = '' | 1 | [backend/app/config.py:392](../backend/app/config.py#L392) |
+| RUSTATS_TELEGRAM_WEEKLY_ENABLED | bool = False | 1 | [backend/app/config.py:394](../backend/app/config.py#L394) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:395](../backend/app/config.py#L395) |
+| RUSTATS_TELEGRAM_WEEKLY_CRON_MINUTE | int = 20 | 2 | [backend/app/config.py:396](../backend/app/config.py#L396) |
+| RUSTATS_SEO_WEEKLY_REPORT_ENABLED | bool = False | 4 | [backend/app/config.py:399](../backend/app/config.py#L399) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:400](../backend/app/config.py#L400) |
+| RUSTATS_SEO_WEEKLY_REPORT_CRON_MINUTE | int = 40 | 2 | [backend/app/config.py:401](../backend/app/config.py#L401) |
+| RUSTATS_TELEGRAM_MONTHLY_ENABLED | bool = False | 1 | [backend/app/config.py:402](../backend/app/config.py#L402) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:403](../backend/app/config.py#L403) |
+| RUSTATS_TELEGRAM_MONTHLY_CRON_MINUTE | int = 45 | 2 | [backend/app/config.py:404](../backend/app/config.py#L404) |
+| RUSTATS_TELEGRAM_NEW_ALERTS_ENABLED | bool = False | 2 | [backend/app/config.py:407](../backend/app/config.py#L407) |
+| RUSTATS_TELEGRAM_SEND_MAX_ATTEMPTS | int = 3 | 1 | [backend/app/config.py:411](../backend/app/config.py#L411) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BASE_SECONDS | float = 1.0 | 1 | [backend/app/config.py:412](../backend/app/config.py#L412) |
+| RUSTATS_TELEGRAM_SEND_RETRY_BUDGET_SECONDS | float = 45.0 | 1 | [backend/app/config.py:413](../backend/app/config.py#L413) |
+| RUSTATS_TELEGRAM_RESEND_ENABLED | bool = True | 1 | [backend/app/config.py:417](../backend/app/config.py#L417) |
+| RUSTATS_TELEGRAM_RESEND_MIN_AGE_MINUTES | int = 10 | 1 | [backend/app/config.py:418](../backend/app/config.py#L418) |
+| RUSTATS_TELEGRAM_RESEND_WINDOW_HOURS | int = 6 | 1 | [backend/app/config.py:419](../backend/app/config.py#L419) |
+| RUSTATS_TELEGRAM_RESEND_MAX_PER_RUN | int = 10 | 1 | [backend/app/config.py:420](../backend/app/config.py#L420) |
+| RUSTATS_TELEGRAM_RESEND_MAX_TRIES | int = 3 | 1 | [backend/app/config.py:421](../backend/app/config.py#L421) |
+| RUSTATS_PULSE_ENABLED | bool = False | 1 | [backend/app/config.py:425](../backend/app/config.py#L425) |
+| RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:426](../backend/app/config.py#L426) |
+| RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:427](../backend/app/config.py#L427) |
+| RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:428](../backend/app/config.py#L428) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 4 | [backend/app/config.py:430](../backend/app/config.py#L430) |
+| RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:434](../backend/app/config.py#L434) |
+| RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:435](../backend/app/config.py#L435) |
+| RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:436](../backend/app/config.py#L436) |
+| RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:437](../backend/app/config.py#L437) |
+| RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:438](../backend/app/config.py#L438) |
+| RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:439](../backend/app/config.py#L439) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 3 | [backend/app/config.py:440](../backend/app/config.py#L440) |
+| RUSTATS_OPENROUTER_PROXY_URL | str = '' | 3 | [backend/app/config.py:446](../backend/app/config.py#L446) |
+| RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:450](../backend/app/config.py#L450) |
+| RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:453](../backend/app/config.py#L453) |
+| RUSTATS_ETL_JOB_MAX_SECONDS | int = 7200 | 1 | [backend/app/config.py:457](../backend/app/config.py#L457) |
+| RUSTATS_FRESHNESS_WATCHDOG_ENABLED | bool = False | 2 | [backend/app/config.py:462](../backend/app/config.py#L462) |
+| RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE | int = 25 | 1 | [backend/app/config.py:463](../backend/app/config.py#L463) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_HOUR | int = 10 | 1 | [backend/app/config.py:464](../backend/app/config.py#L464) |
+| RUSTATS_FRESHNESS_WATCHDOG_CRON_MINUTE | int = 30 | 1 | [backend/app/config.py:465](../backend/app/config.py#L465) |
+| RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:467](../backend/app/config.py#L467) |
+| RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:473](../backend/app/config.py#L473) |
+| RUSTATS_CABINET_ENABLED | bool = False | 5 | [backend/app/config.py:481](../backend/app/config.py#L481) |
+| RUSTATS_PWA_ENABLED | bool = True | 3 | [backend/app/config.py:488](../backend/app/config.py#L488) |
+| RUSTATS_PWA_INSTALL_PROMPT_ENABLED | bool = True | 1 | [backend/app/config.py:489](../backend/app/config.py#L489) |
+| RUSTATS_PUSH_SUBSCRIBE_ENABLED | bool = False | 2 | [backend/app/config.py:500](../backend/app/config.py#L500) |
+| RUSTATS_PUSH_SEND_ENABLED | bool = False | 2 | [backend/app/config.py:501](../backend/app/config.py#L501) |
+| RUSTATS_PUSH_DRY_RUN | bool = True | 1 | [backend/app/config.py:502](../backend/app/config.py#L502) |
+| RUSTATS_VAPID_PUBLIC_KEY | str = '' | 3 | [backend/app/config.py:503](../backend/app/config.py#L503) |
+| RUSTATS_VAPID_PRIVATE_KEY | str = '' | 2 | [backend/app/config.py:504](../backend/app/config.py#L504) |
+| RUSTATS_VAPID_SUBJECT | str = '' | 2 | [backend/app/config.py:505](../backend/app/config.py#L505) |
+| RUSTATS_ADMIN_EMAILS | str = 'admin_forecasteconomy@forecasteconomy.com' | 3 | [backend/app/config.py:509](../backend/app/config.py#L509) |
 
 ## Registries and declarations
 
@@ -1910,15 +1913,15 @@ Relationships: `[]`
 | app.api.ticker.TICKER_SETS | Dict | 'russia', 'world' | [backend/app/api/ticker.py:86](../backend/app/api/ticker.py#L86) |
 | app.api.ticker.TICKER_CODES | Call | computed source expression | [backend/app/api/ticker.py:91](../backend/app/api/ticker.py#L91) |
 | app.api.ticker.STALE_AFTER_DAYS_BY_CODE | Dict | 'brent' | [backend/app/api/ticker.py:103](../backend/app/api/ticker.py#L103) |
-| app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:145](../backend/app/api/ticker.py#L145) |
-| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:728](../backend/app/api/world.py#L728) |
-| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:773](../backend/app/api/world.py#L773) |
-| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:780](../backend/app/api/world.py#L780) |
-| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:842](../backend/app/api/world.py#L842) |
-| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1809](../backend/app/api/world.py#L1809) |
-| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1811](../backend/app/api/world.py#L1811) |
-| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1846](../backend/app/api/world.py#L1846) |
-| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1847](../backend/app/api/world.py#L1847) |
+| app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:148](../backend/app/api/ticker.py#L148) |
+| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:737](../backend/app/api/world.py#L737) |
+| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:782](../backend/app/api/world.py#L782) |
+| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:789](../backend/app/api/world.py#L789) |
+| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:851](../backend/app/api/world.py#L851) |
+| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1818](../backend/app/api/world.py#L1818) |
+| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1820](../backend/app/api/world.py#L1820) |
+| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1855](../backend/app/api/world.py#L1855) |
+| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1856](../backend/app/api/world.py#L1856) |
 | app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:446](../backend/app/core/cache.py#L446) |
 | app.data.bi_targets.NORTH_STAR_MILESTONES | List | sequence/source expression | [backend/app/data/bi_targets.py:12](../backend/app/data/bi_targets.py#L12) |
 | app.data.bi_targets.TARGETS | Dict | 'visits_per_day', 'acquisition_search_share', 'engagement_rate', 'micro_conversion_rate', 'macro_conversion_rate', 'retention_7d' | [backend/app/data/bi_targets.py:14](../backend/app/data/bi_targets.py#L14) |
@@ -2030,7 +2033,10 @@ Relationships: `[]`
 | app.data.eurostat_titles_ru._MONTH_NOMINATIVE | Tuple | sequence/source expression | [backend/app/data/eurostat_titles_ru.py:1469](../backend/app/data/eurostat_titles_ru.py#L1469) |
 | app.data.eurostat_titles_ru._FREQ_TAIL_MARKERS | Tuple | sequence/source expression | [backend/app/data/eurostat_titles_ru.py:1474](../backend/app/data/eurostat_titles_ru.py#L1474) |
 | app.data.eurostat_titles_ru.TEMPLATE_STUB_RE | Call | computed source expression | [backend/app/data/eurostat_titles_ru.py:1483](../backend/app/data/eurostat_titles_ru.py#L1483) |
-| app.data.eurostat_titles_ru.DATASET_EXPLAINERS_RU | Dict | 'prc_hpi_cow', 'prc_hpi_oocow', 'prc_hpi_inw', 'prc_hpi_ooinw', 'prc_hpi_q', 'prc_hpi_a', 'prc_hpi_ooq', 'lfsq_sup_age', 'nrg_ind_ep', 'nrg_ind_esr', 'road_eqs_carhab', 'ilc_li10', 'ilc_pnp2', 'nama_10_fcs', 'sdg_13_10', 'lfsi_dwl_a', 'prc_hicp_minr', 'prc_hicp_ainr' | [backend/app/data/eurostat_titles_ru.py:1551](../backend/app/data/eurostat_titles_ru.py#L1551) |
+| app.data.eurostat_titles_ru._ON_PLACE_FORMS | Call | computed source expression | [backend/app/data/eurostat_titles_ru.py:1497](../backend/app/data/eurostat_titles_ru.py#L1497) |
+| app.data.eurostat_titles_ru._RU_VOWELS | Call | computed source expression | [backend/app/data/eurostat_titles_ru.py:1502](../backend/app/data/eurostat_titles_ru.py#L1502) |
+| app.data.eurostat_titles_ru._RU_LETTERS | Call | computed source expression | [backend/app/data/eurostat_titles_ru.py:1503](../backend/app/data/eurostat_titles_ru.py#L1503) |
+| app.data.eurostat_titles_ru.DATASET_EXPLAINERS_RU | Dict | 'prc_hpi_cow', 'prc_hpi_oocow', 'prc_hpi_inw', 'prc_hpi_ooinw', 'prc_hpi_q', 'prc_hpi_a', 'prc_hpi_ooq', 'lfsq_sup_age', 'nrg_ind_ep', 'nrg_ind_esr', 'road_eqs_carhab', 'ilc_li10', 'ilc_pnp2', 'nama_10_fcs', 'sdg_13_10', 'lfsi_dwl_a', 'prc_hicp_minr', 'prc_hicp_ainr' | [backend/app/data/eurostat_titles_ru.py:1664](../backend/app/data/eurostat_titles_ru.py#L1664) |
 | app.data.eurostat_units_ru.SENSITIVE_TOPIC_DATASET_IDS | Call | computed source expression | [backend/app/data/eurostat_units_ru.py:32](../backend/app/data/eurostat_units_ru.py#L32) |
 | app.data.eurostat_units_ru._VAGUE_EN_LABELS | Call | computed source expression | [backend/app/data/eurostat_units_ru.py:40](../backend/app/data/eurostat_units_ru.py#L40) |
 | app.data.eurostat_units_ru.DATASET_UNIT_RU | Dict | 'demo_minfind', 'demo_r_minfind', 'tps00027', 'demo_frate', 'demo_r_frate2', 'tps00199', 'tps00206', 'tps00019', 'tps00204', 'tps00029', 'demo_pjan', 'demo_pjanbroad', 'demo_pjangroup', 'demo_pjanedu', 'demo_pjanmarsta', 'demo_urespop', 'demo_fmonth', 'demo_mmonth', 'demo_fagec', 'demo_fager', 'demo_fasec', 'demo_fordagec', 'demo_facbc', 'demo_faczc', 'demo_faeduc', 'demo_magec', 'demo_mager', 'demo_macbc', 'demo_maczc', 'demo_maeduc', 'demo_marstac', 'demo_minf', 'demo_minfs', 'demo_r_minf', 'demo_r_births', 'demo_r_deaths', 'demo_nmsta', 'demo_nmsta2', 'demo_ndivdur', 'demo_nsinagec', 'demo_marcb', 'demo_marcz', 'demo_divcb', 'demo_divcz', 'demo_fweight', 'demo_pjanind', 'demo_r_pjanind2', 'demo_r_pjanind3', 'tps00198', 'tps00028', 'demo_ndivind', 'demo_nind', 'demo_nsinrt', 'demo_mlifetable', 'demo_r_mlife', 'demo_gind', 'demo_mexrt', 'demo_r_d3dens', 'sdg_16_50', 'educ_uoe_enra01', 'educ_uoe_enra02', 'educ_uoe_enrp01', 'educ_uoe_enrp02', 'educ_uoe_enrp04', 'educ_uoe_enrp05', 'educ_uoe_enrs01', 'educ_uoe_enrs04', 'educ_uoe_enrt01', 'educ_uoe_enrt02', 'educ_uoe_ent01', 'hlth_rs_phys', 'hlth_rs_bds1', 'sdg_10_10', 'ei_mfir_m', 'irt_st_m', 'irt_lt_mcby_m', 'irt_lt_mcby_q', 'irt_lt_mcby_a', 'nama_10_pc', 'ei_lmjv_q_r2', 'ei_lmjv_m_r2', 'ilc_di11', 'ilc_di12', 'ei_bsee_m_r2', 'ei_bslh_m_r2', 'ei_bsin_q_r2', 'ei_bsbu_m_r2', 'ei_bssi_m_r2', 'teibs030', 'educ_uoe_enra07', 'demo_fordager', 'hlth_rs_grd2', 'hlth_rs_prs2', 'prc_hpi_hsnq', 'prc_hpi_cow', 'prc_hpi_inw', 'prc_hpi_oocow', 'prc_hpi_ooinw', 'nrg_chdd_m', 'nrg_chdd_a', 'nrg_chddr2_m', 'nrg_chddr2_a', 'nrg_stk_oem', 'road_eqs_busage', 'road_eqs_busveh', 'road_eqs_carage', 'road_eqs_carmot', 'road_eqs_carpda', 'road_eqs_unlweig', 'road_eqr_carmot', 'road_eqr_unlweig', 'lfsi_abt_q', 'lfsi_lea_q', 'lfsi_sta_q', 'lfsi_long_q', 'lfsq_ewhais', 'lfsq_ewhan2', 'lfsq_ewhuis', 'lfsq_ewhun2', 'lfsq_ewh2n2', 'nrg_cb_cosm', 'teibp010', 'teibp040', 'teibp041', 'teibp050', 'teibp110' | [backend/app/data/eurostat_units_ru.py:56](../backend/app/data/eurostat_units_ru.py#L56) |
@@ -2078,7 +2084,7 @@ Relationships: `[]`
 | app.data.legacy_redirects.LEGACY_REGION_SLUG_PREFIXES | Tuple | sequence/source expression | [backend/app/data/legacy_redirects.py:91](../backend/app/data/legacy_redirects.py#L91) |
 | app.data.legacy_redirects._WORLD_FREQ_SUFFIX_RE | Call | computed source expression | [backend/app/data/legacy_redirects.py:93](../backend/app/data/legacy_redirects.py#L93) |
 | app.data.legacy_redirects._WORLD_FREQ_RANK | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/data/legacy_redirects.py:101](../backend/app/data/legacy_redirects.py#L101) |
-| app.data.legacy_redirects._MERGE_MODE_TYPE_BY_UNIT | Dict | 'RCH_A', 'PCH_SM', 'PCH_SAME', 'RCH_MV12MAVR', 'RCH_A_AVG', 'RCH_M', 'RT1', 'RT1_SCA', 'PCH_PRE', 'RT_M_DIF' | [backend/app/data/legacy_redirects.py:534](../backend/app/data/legacy_redirects.py#L534) |
+| app.data.legacy_redirects._MERGE_MODE_TYPE_BY_UNIT | Dict | 'RCH_A', 'PCH_SM', 'PCH_SAME', 'RCH_MV12MAVR', 'RCH_A_AVG', 'RCH_M', 'RT1', 'RT1_SCA', 'PCH_PRE', 'RT_M_DIF' | [backend/app/data/legacy_redirects.py:533](../backend/app/data/legacy_redirects.py#L533) |
 | app.data.region_indicator_polarity.LOWER_BETTER_CODES | Call | computed source expression | [backend/app/data/region_indicator_polarity.py:24](../backend/app/data/region_indicator_polarity.py#L24) |
 | app.data.region_indicator_polarity.LOWER_BETTER_TABLE_CODES | Call | computed source expression | [backend/app/data/region_indicator_polarity.py:78](../backend/app/data/region_indicator_polarity.py#L78) |
 | app.data.view_model_families.GRAN_ORDER | Tuple | sequence/source expression | [backend/app/data/view_model_families.py:44](../backend/app/data/view_model_families.py#L44) |
@@ -2138,17 +2144,18 @@ Relationships: `[]`
 | app.data.world_forecast_policy.OFFICIAL_PROVIDER_POLICIES | DictComp | computed source expression | [backend/app/data/world_forecast_policy.py:96](../backend/app/data/world_forecast_policy.py#L96) |
 | app.data.world_indicator_titles_ru.TITLE_BY_CODE | Dict | 'br-cpi-ipca', 'br-cpi-ipca-yoy', 'br-gdp-ibc-br', 'cn-shibor-1w', 'cn-shibor-on', 'cn-lpr-1y', 'cn-lpr-5y', 'mx-tiie-28', 'mx-fx-usd-mxn', 'ca-m2-plus', 'jp-m2', 'jp-m3' | [backend/app/data/world_indicator_titles_ru.py:18](../backend/app/data/world_indicator_titles_ru.py#L18) |
 | app.data.world_indicator_titles_ru.TITLE_BY_CODE_FRAGMENT | Tuple | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:39](../backend/app/data/world_indicator_titles_ru.py#L39) |
-| app.data.world_indicator_titles_ru._LATIN_CLEANUPS | List | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:66](../backend/app/data/world_indicator_titles_ru.py#L66) |
+| app.data.world_indicator_titles_ru.TITLE_EN_BY_CODE_FRAGMENT | Tuple | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:62](../backend/app/data/world_indicator_titles_ru.py#L62) |
+| app.data.world_indicator_titles_ru._LATIN_CLEANUPS | List | sequence/source expression | [backend/app/data/world_indicator_titles_ru.py:93](../backend/app/data/world_indicator_titles_ru.py#L93) |
 | app.data.world_simple_names.SIMPLE_NAMES | Dict | 'hicp-index', 'unemployment-rate', 'gdp-volume-quarterly', 'gdp-volume-annual', 'gdp-usd', 'gdp-per-capita-usd', 'gdp-per-capita-eu', 'budget-balance-gdp', 'government-debt-gdp', 'population', 'long-term-interest-rate', 'activity-rate' | [backend/app/data/world_simple_names.py:18](../backend/app/data/world_simple_names.py#L18) |
-| app.data.world_superseded.SUPERSEDED_WORLD_DATASETS | Dict | 'prc_hicp_cind', 'prc_hicp_cann', 'prc_hicp_cmon' | [backend/app/data/world_superseded.py:33](../backend/app/data/world_superseded.py#L33) |
-| app.data.world_superseded._MODE_BY_UNIT | Dict | 'RCH_A', 'RCH_M', 'RCH_MV12MAVR' | [backend/app/data/world_superseded.py:50](../backend/app/data/world_superseded.py#L50) |
-| app.data.world_superseded._HEADLINE_COICOP | Call | computed source expression | [backend/app/data/world_superseded.py:54](../backend/app/data/world_superseded.py#L54) |
-| app.data.world_superseded._CODE_PREFIX_RE | Call | computed source expression | [backend/app/data/world_superseded.py:56](../backend/app/data/world_superseded.py#L56) |
+| app.data.world_superseded.SUPERSEDED_WORLD_DATASETS | Dict | 'prc_hicp_cind', 'prc_hicp_cann', 'prc_hicp_cmon', 'prc_hicp_fp', 'prc_ppp_ind', 'nama_10_co3_p3' | [backend/app/data/world_superseded.py:54](../backend/app/data/world_superseded.py#L54) |
+| app.data.world_superseded._MODE_BY_UNIT | Dict | 'RCH_A', 'RCH_M', 'RCH_MV12MAVR' | [backend/app/data/world_superseded.py:95](../backend/app/data/world_superseded.py#L95) |
+| app.data.world_superseded._HEADLINE_COICOP | Call | computed source expression | [backend/app/data/world_superseded.py:99](../backend/app/data/world_superseded.py#L99) |
+| app.data.world_superseded._CODE_PREFIX_RE | Call | computed source expression | [backend/app/data/world_superseded.py:101](../backend/app/data/world_superseded.py#L101) |
 | app.database._PUBLIC_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:25](../backend/app/database.py#L25) |
 | app.database._ANALYTICS_SERVER_SETTINGS | Dict | 'statement_timeout', 'idle_in_transaction_session_timeout' | [backend/app/database.py:48](../backend/app/database.py#L48) |
 | app.main._TRUSTED_PROXY_NETS | Call | computed source expression | [backend/app/main.py:45](../backend/app/main.py#L45) |
-| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1485](../backend/app/main.py#L1485) |
-| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1488](../backend/app/main.py#L1488) |
+| app.main._GEO_EXCLUDED_PREFIXES | Tuple | sequence/source expression | [backend/app/main.py:1488](../backend/app/main.py#L1488) |
+| app.main._GEO_EXCLUDED_EXACT | Call | computed source expression | [backend/app/main.py:1491](../backend/app/main.py#L1491) |
 | app.services.account_erasure.TIME_WINDOW | Call | computed source expression | [backend/app/services/account_erasure.py:46](../backend/app/services/account_erasure.py#L46) |
 | app.services.action_policy.DENIED_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:22](../backend/app/services/action_policy.py#L22) |
 | app.services.action_policy.HIGH_RISK_ACTIONS | Set | sequence/source expression | [backend/app/services/action_policy.py:33](../backend/app/services/action_policy.py#L33) |
@@ -2333,7 +2340,8 @@ Relationships: `[]`
 | app.services.freshness_note._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/freshness_note.py:36](../backend/app/services/freshness_note.py#L36) |
 | app.services.freshness_note._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/freshness_note.py:40](../backend/app/services/freshness_note.py#L40) |
 | app.services.freshness_note._REPRESENTATION_DIMS | Call | computed source expression | [backend/app/services/freshness_note.py:125](../backend/app/services/freshness_note.py#L125) |
-| app.services.freshness_note._WORD_RE | Call | computed source expression | [backend/app/services/freshness_note.py:206](../backend/app/services/freshness_note.py#L206) |
+| app.services.freshness_note._RENAMED_DIMS | Dict | 'coicop18', 'ppp_cat18', 'indic_ppp' | [backend/app/services/freshness_note.py:132](../backend/app/services/freshness_note.py#L132) |
+| app.services.freshness_note._WORD_RE | Call | computed source expression | [backend/app/services/freshness_note.py:232](../backend/app/services/freshness_note.py#L232) |
 | app.services.goal_taxonomy.TIERS | Tuple | sequence/source expression | [backend/app/services/goal_taxonomy.py:33](../backend/app/services/goal_taxonomy.py#L33) |
 | app.services.goal_taxonomy.TIER_WEIGHTS | Dict | TIER_MACRO, TIER_MICRO, TIER_INTENT, TIER_ENGAGEMENT, TIER_TECHNICAL | [backend/app/services/goal_taxonomy.py:36](../backend/app/services/goal_taxonomy.py#L36) |
 | app.services.goal_taxonomy._MACRO | Set | sequence/source expression | [backend/app/services/goal_taxonomy.py:45](../backend/app/services/goal_taxonomy.py#L45) |
@@ -2590,13 +2598,13 @@ Relationships: `[]`
 | app.services.seo_world._WORLD_RATING_LOW_FIRST | Call | computed source expression | [backend/app/services/seo_world.py:90](../backend/app/services/seo_world.py#L90) |
 | app.services.seo_world._WORLD_RATING_MONEY_CONCEPTS | Call | computed source expression | [backend/app/services/seo_world.py:91](../backend/app/services/seo_world.py#L91) |
 | app.services.seo_world.COUNTRY_GENITIVE | Dict | 'austria', 'belgium', 'bulgaria', 'croatia', 'cyprus', 'czechia', 'denmark', 'estonia', 'finland', 'france', 'germany', 'greece', 'hungary', 'ireland', 'italy', 'latvia', 'lithuania', 'luxembourg', 'malta', 'netherlands', 'poland', 'portugal', 'romania', 'slovakia', 'slovenia', 'spain', 'sweden', 'iceland', 'norway', 'switzerland', 'united-kingdom', 'turkey', 'serbia', 'montenegro', 'north-macedonia', 'albania', 'bosnia', 'kosovo', 'ukraine', 'moldova', 'georgia', 'armenia', 'azerbaijan', 'united-states', 'canada', 'japan', 'south-korea', 'china', 'india', 'brazil', 'mexico', 'australia', 'new-zealand', 'south-africa', 'israel' | [backend/app/services/seo_world.py:102](../backend/app/services/seo_world.py#L102) |
-| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:197](../backend/app/services/seo_world.py#L197) |
-| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:205](../backend/app/services/seo_world.py#L205) |
-| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:214](../backend/app/services/seo_world.py#L214) |
-| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:291](../backend/app/services/seo_world.py#L291) |
-| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:299](../backend/app/services/seo_world.py#L299) |
-| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:399](../backend/app/services/seo_world.py#L399) |
-| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:493](../backend/app/services/seo_world.py#L493) |
+| app.services.seo_world._FREQ_RU | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:202](../backend/app/services/seo_world.py#L202) |
+| app.services.seo_world._FREQ_EN | Dict | 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/seo_world.py:210](../backend/app/services/seo_world.py#L210) |
+| app.services.seo_world._KEY_CATEGORY_ORDER | Tuple | sequence/source expression | [backend/app/services/seo_world.py:219](../backend/app/services/seo_world.py#L219) |
+| app.services.seo_world._FREQ_LINK_LABEL_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:306](../backend/app/services/seo_world.py#L306) |
+| app.services.seo_world._FREQ_LINK_LABEL_EN | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/seo_world.py:314](../backend/app/services/seo_world.py#L314) |
+| app.services.seo_world._SOURCE_BY_PROVIDER | Dict | 'eurostat', 'statcan', 'boc_valet', 'abs', 'rba', 'ons', 'boe_iadb', 'fred', 'bls', 'bea', 'boj', 'estat', 'ecos', 'bcb_sgs', 'banxico_sie', 'nbs', 'cfets', 'mospi', 'rbi', 'imf', 'census', 'ibge' | [backend/app/services/seo_world.py:414](../backend/app/services/seo_world.py#L414) |
+| app.services.seo_world._PROVIDER_OPEN_LABEL | DictComp | computed source expression | [backend/app/services/seo_world.py:508](../backend/app/services/seo_world.py#L508) |
 | app.services.seo_world_subnational._NOT_FOUND | Tuple | sequence/source expression | [backend/app/services/seo_world_subnational.py:37](../backend/app/services/seo_world_subnational.py#L37) |
 | app.services.seo_year_ui._SHORT_CELL_UNITS | Call | computed source expression | [backend/app/services/seo_year_ui.py:24](../backend/app/services/seo_year_ui.py#L24) |
 | app.services.session_analysis._PARAM_KEYS | Call | computed source expression | [backend/app/services/session_analysis.py:33](../backend/app/services/session_analysis.py#L33) |
@@ -2676,8 +2684,9 @@ Relationships: `[]`
 | app.services.telegram_retry.RETRYABLE_EXCEPTIONS | Tuple | sequence/source expression | [backend/app/services/telegram_retry.py:33](../backend/app/services/telegram_retry.py#L33) |
 | app.services.telegram_text._BLOCKQUOTE_RE | Call | computed source expression | [backend/app/services/telegram_text.py:14](../backend/app/services/telegram_text.py#L14) |
 | app.services.telegram_text._BLOCKQUOTE_OPEN_RE | Call | computed source expression | [backend/app/services/telegram_text.py:15](../backend/app/services/telegram_text.py#L15) |
-| app.services.ticker_sources.SOURCE_KIND_LABELS | Dict | 'market', 'central_bank', 'ecb' | [backend/app/services/ticker_sources/__init__.py:81](../backend/app/services/ticker_sources/__init__.py#L81) |
+| app.services.ticker_sources.SOURCE_KIND_LABELS | Dict | 'market', 'central_bank', 'ecb' | [backend/app/services/ticker_sources/__init__.py:95](../backend/app/services/ticker_sources/__init__.py#L95) |
 | app.services.ticker_sources.binance._HOSTS | List | sequence/source expression | [backend/app/services/ticker_sources/binance.py:26](../backend/app/services/ticker_sources/binance.py#L26) |
+| app.services.ticker_sources.moex_brent._MSK | Call | computed source expression | [backend/app/services/ticker_sources/moex_brent.py:37](../backend/app/services/ticker_sources/moex_brent.py#L37) |
 | app.services.ticker_sources.moex_iss._FX_INSTRUMENTS | List | sequence/source expression | [backend/app/services/ticker_sources/moex_iss.py:48](../backend/app/services/ticker_sources/moex_iss.py#L48) |
 | app.services.traffic_channel._SEARCH_HOSTS | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:24](../backend/app/services/traffic_channel.py#L24) |
 | app.services.traffic_channel._YANDEX_SERVICE_PREFIXES | Tuple | sequence/source expression | [backend/app/services/traffic_channel.py:29](../backend/app/services/traffic_channel.py#L29) |
@@ -2819,7 +2828,7 @@ Relationships: `[]`
 | app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:104](../backend/app/tasks/analytics_rollups.py#L104) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |
-| app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:43](../backend/app/tasks/ticker_worker.py#L43) |
+| app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:47](../backend/app/tasks/ticker_worker.py#L47) |
 | scripts.audit-groups-submodes.ACTIVE | SetComp | computed source expression | [backend/scripts/audit-groups-submodes.py:25](../backend/scripts/audit-groups-submodes.py#L25) |
 | scripts.audit-groups-submodes.NAME | DictComp | computed source expression | [backend/scripts/audit-groups-submodes.py:26](../backend/scripts/audit-groups-submodes.py#L26) |
 | scripts.audit-groups-submodes.GROUP_LABELS | Dict | 'level', 'avg', 'flow', 'pop', 'yoy', 'index', 'inflation', 'step' | [backend/scripts/audit-groups-submodes.py:28](../backend/scripts/audit-groups-submodes.py#L28) |
@@ -2837,12 +2846,12 @@ Relationships: `[]`
 | scripts.export_seo_demand_quarter.BUCKET_RULES | List | sequence/source expression | [backend/scripts/export_seo_demand_quarter.py:26](../backend/scripts/export_seo_demand_quarter.py#L26) |
 | scripts.gen-forecast-snapshots.TARGETS | Dict | 'ppi_monthly', 'gdp_nominal_quarterly', 'generic_quarterly', 'signed_quarterly', 'generic_ols' | [backend/scripts/gen-forecast-snapshots.py:31](../backend/scripts/gen-forecast-snapshots.py#L31) |
 | scripts.indexnow-ping-all._VOLATILE_PREFIXES | Tuple | sequence/source expression | [backend/scripts/indexnow-ping-all.py:50](../backend/scripts/indexnow-ping-all.py#L50) |
-| scripts.load-world-eurostat.PRIORITY_PREFIXES | Tuple | sequence/source expression | [backend/scripts/load-world-eurostat.py:95](../backend/scripts/load-world-eurostat.py#L95) |
+| scripts.load-world-eurostat.PRIORITY_PREFIXES | Tuple | sequence/source expression | [backend/scripts/load-world-eurostat.py:96](../backend/scripts/load-world-eurostat.py#L96) |
 | scripts.metrika-goals-redesign._GOAL_NAMES | Dict | 'signup', 'newsletter_opt_in', 'feedback_submit', 'login_success', 'download_csv', 'download_excel', 'download_ical', 'demographics_csv', 'chart_image_download', 'compare_image_download', 'compare_add', 'compare_change', 'region_compare_add', 'calc_share', 'calc_copy_result', 'calc_mortgage', 'calc_compound', 'embed_code_copy', 'contact_email' | [backend/scripts/metrika-goals-redesign.py:39](../backend/scripts/metrika-goals-redesign.py#L39) |
 | scripts.metrika-goals-redesign._FUNNELS | List | sequence/source expression | [backend/scripts/metrika-goals-redesign.py:61](../backend/scripts/metrika-goals-redesign.py#L61) |
 | scripts.rebase-world-eurostat.PROBE_GEOS | Tuple | sequence/source expression | [backend/scripts/rebase-world-eurostat.py:56](../backend/scripts/rebase-world-eurostat.py#L56) |
 | scripts.render-telegram-reports._BULLET_RE | Call | computed source expression | [backend/scripts/render-telegram-reports.py:30](../backend/scripts/render-telegram-reports.py#L30) |
-| scripts.repair-world-listing._NATIONAL_PASSPORT_CODES | Call | computed source expression | [backend/scripts/repair-world-listing.py:513](../backend/scripts/repair-world-listing.py#L513) |
+| scripts.repair-world-listing._NATIONAL_PASSPORT_CODES | Call | computed source expression | [backend/scripts/repair-world-listing.py:521](../backend/scripts/repair-world-listing.py#L521) |
 | scripts.repair_ppi_housing_2026.PPI_BASE_MONTH | Call | computed source expression | [backend/scripts/repair_ppi_housing_2026.py:81](../backend/scripts/repair_ppi_housing_2026.py#L81) |
 | scripts.repair_ppi_housing_2026.PPI_REPORTS | ListComp | computed source expression | [backend/scripts/repair_ppi_housing_2026.py:82](../backend/scripts/repair_ppi_housing_2026.py#L82) |
 | scripts.repair_ppi_housing_2026.PPI_EXPECTED_MONTHS | ListComp | computed source expression | [backend/scripts/repair_ppi_housing_2026.py:83](../backend/scripts/repair_ppi_housing_2026.py#L83) |
@@ -2858,6 +2867,8 @@ Relationships: `[]`
 | scripts.verify-world-deep-expand.OUT | Call | computed source expression | [backend/scripts/verify-world-deep-expand.py:27](../backend/scripts/verify-world-deep-expand.py#L27) |
 | scripts.world-forecast-coverage-bench.TODAY | Call | computed source expression | [backend/scripts/world-forecast-coverage-bench.py:49](../backend/scripts/world-forecast-coverage-bench.py#L49) |
 | scripts.world-forecast-coverage-bench._RULES | Dict | 'after', 'strict', 'none' | [backend/scripts/world-forecast-coverage-bench.py:50](../backend/scripts/world-forecast-coverage-bench.py#L50) |
+| scripts.world-forecast-gap-audit.FIRST_LINE | Tuple | sequence/source expression | [backend/scripts/world-forecast-gap-audit.py:48](../backend/scripts/world-forecast-gap-audit.py#L48) |
+| scripts.world-forecast-gap-audit.SQL | Call | computed source expression | [backend/scripts/world-forecast-gap-audit.py:50](../backend/scripts/world-forecast-gap-audit.py#L50) |
 | seed_data.INDICATORS | List | sequence/source expression | [backend/seed_data.py:53](../backend/seed_data.py#L53) |
 | seed_data._PARENT_META | DictComp | computed source expression | [backend/seed_data.py:5013](../backend/seed_data.py#L5013) |
 | seed_data._EXISTING_CODES | Call | computed source expression | [backend/seed_data.py:5014](../backend/seed_data.py#L5014) |
