@@ -7181,10 +7181,10 @@
     },
     {
       "id": "circle13-code-flags-2026-10-12",
-      "observed_date_msk": "2026-10-12",
+      "observed_date_msk": "2026-10-13",
       "local_source_commit": "f0572bf9",
       "kind": "code defaults and stand/readonly observations, not a production state",
-      "scope": "Флаги и значения по умолчанию в коде ветки circle13/int (config.py, docker-compose.yml, .env.example), плюс разовые наблюдения зон круга 13: чтение боевого (короткие запросы, значения секретов не читались) и прогоны на тестовом стенде 176.57.220.170. Что включено на боевом, неизвестно; код выкладкой флаги не включает. Порядок включения — docs/workflow.md#circle13-2026-10-12.",
+      "scope": "Флаги и значения по умолчанию в коде ветки circle13/int (включая зоны fix, brent, brent2, fcst) (config.py, docker-compose.yml, .env.example), плюс разовые наблюдения зон круга 13: чтение боевого (короткие запросы, значения секретов не читались) и прогоны на тестовом стенде 176.57.220.170. Что включено на боевом, неизвестно; код выкладкой флаги не включает. Порядок включения — docs/workflow.md#circle13-2026-10-12.",
       "settings": [
         {
           "env": "RUSTATS_EUROSTAT_REBASE_ENABLED",
@@ -7257,6 +7257,41 @@
           "effect": "время пакета «остального мира» (МСК); рекомендация 03:50"
         },
         {
+          "env": "RUSTATS_MOEX_BRENT_LIVE_ENABLED",
+          "setting": "moex_brent_live_enabled",
+          "default": false,
+          "passed_by_compose": true,
+          "effect": "живая котировка нефти Brent (ближайший фьючерс BR, Московская биржа) в ленте и блоке «Сейчас на бирже»; читает scheduler. ВЫКЛЮЧЕНО до договора с биржей (ADR-0025): при false на биржу за нефтью не уходит ни одного запроса, в ленте недельный спот EIA; при сбое или устаревании биржевого значения тоже EIA"
+        },
+        {
+          "env": "RUSTATS_MOEX_BRENT_DELAY_MINUTES",
+          "setting": "moex_brent_delay_minutes",
+          "default": 15,
+          "passed_by_compose": true,
+          "effect": "минимальная задержка в подписи котировки (минуты); фактическая берётся из ответа биржи, если больше; сверить с договором"
+        },
+        {
+          "env": "RUSTATS_EUROPE_WORLD_FORECAST_MAX_RUN_SECONDS",
+          "setting": "europe_world_forecast_max_run_seconds",
+          "default": 0,
+          "passed_by_compose": true,
+          "effect": "потолок времени пакета прогнозов Европы отдельно от общего (0 = RUSTATS_WORLD_FORECAST_MAX_RUN_SECONDS, 2400 с); рекомендация на время догона очереди — 9000 с в ночном окне 23:10–01:40 МСК вместе с лимитом 15000 и сроками повторного счёта 180/90; после выбора очереди вернуть 0"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_CACHE_BUMP_EVERY",
+          "setting": "world_forecast_cache_bump_every",
+          "default": 200,
+          "passed_by_compose": true,
+          "effect": "через сколько записей прогнозов сбрасывать кэш мира; при больших ночных пакетах рекомендация 3000 (для ручных партий — -e 2000); в compose проброшен коммитом 45ddb391"
+        },
+        {
+          "env": "RUSTATS_WORLD_FORECAST_PRIORITY_COUNTRIES",
+          "setting": "world_forecast_priority_countries",
+          "default": "united-states,china,japan,germany,france,united-kingdom,india,brazil,turkey,italy,spain,austria,canada,mexico,australia,south-korea,netherlands,poland",
+          "passed_by_compose": true,
+          "effect": "порядок обхода стран очередью прогнозов; до круга 13 в compose не перечислялась, значение из .env хоста в контейнер не доходило (backend/.dockerignore исключает .env, compose передаёт только environment); равенство config.py = compose = .env.example проверяет test_world_forecast_priority_config.py"
+        },
+        {
           "env": "UVICORN_WORKER_HEALTHCHECK_TIMEOUT",
           "setting": "— (читает backend/entrypoint.sh)",
           "default": "",
@@ -7293,12 +7328,14 @@
       "stand_observations": {
         "host": "176.57.220.170 (2 vCPU, 3,9 ГБ; scheduler 0,8 vCPU / 700 МБ), снимок боевых данных от 03.10.2026, код circle13/stand",
         "eurostat_rebase": "63 набора, 8 231 карточка; свежими или стареющими стали 5 528 из 7 798 рядов когорты; просроченных публичных рядов мира 22 623 → 16 693; карточек перенесено на месте 6 353, заменено новой с 301 — 523, в карантине 2 набора",
-        "forecasts": "публичных прогнозов 9 275 → 10 614 (официальных МВФ +485, наших +854)",
+        "forecasts": "публичных прогнозов 9 275 → 10 614 (12.10: официальных МВФ +485, наших +854) → 19 309 (13.10, дополнение «везде, где позволяет алгоритм»; страны первой линии закрыты полностью, хвост Европы ≈ 141 тыс. рядов ждёт очереди)",
         "perf_phone_390x844_cpu4x": "главная FCP 0,43–0,49 с; LCP России 5,1 → 0,4–1,9 с; LCP страны 2,5 с; TTI ≤ 4 с не достигнут",
         "sitemap": "на стенде статичен (lastmod 2026-10-05, 9 921 110 URL в 1 022 файлах), снятие и рост карточек и sitemap-priority.xml не отражает",
-        "limits": "стенд медленнее боевого в 4–7 раз по планировщику, IPv4 до Евростата с хоста не работает, tunnel Cloudflare шумит 0,4–3,8 с; цифры стенда не переносить на боевой без пересчёта"
+        "limits": "стенд медленнее боевого в 4–7 раз по планировщику, IPv4 до Евростата с хоста не работает, tunnel Cloudflare шумит 0,4–3,8 с; цифры стенда не переносить на боевой без пересчёта",
+        "forecast_resources": "scheduler стенда поднят до 1 ГБ / 1 vCPU (как на боевом), docker-compose.override.yml; измеренные цены ряда на 1 vCPU: годовой 0,095 с, квартальный 0,65 с, месячный 2,6 с; полный хвост ≈ 17 часов процессора; пик памяти ручной партии по стране ≈ 707 МБ из 1024; инцидент 12.10 22:17 UTC: OOM при двух процессах, замки sched:lock:world_forecast и sched:lock:europe_world_forecast остались на сутки",
+        "oil_sources": "12.10.2026: ISS Мосбиржи отдаёт BR с задержкой 15 минут (флаг не включали); EIA спот Brent выходит раз в неделю (последнее значение 06.10 = 125,44); opec.org за проверкой Cloudflare (403 скриптам), условия запрещают коммерческий показ без письменного разрешения"
       },
-      "limits": "Не проверялось: включение флагов на боевом, alembic upgrade head по цепочке на PostgreSQL боевого размера, фактические значения флагов на боевом и стенде, скорость загрузки 63 наборов Евростата на боевом, эффект счётчика страны и памяти воркера на боевом, реальный вызов URL Inspection из контейнера, отправка отчётов Telegram, deploy/test-nginx-config.sh (нужен Docker).",
+      "limits": "Не проверялось: включение флагов на боевом, alembic upgrade head по цепочке на PostgreSQL боевого размера, фактические значения флагов на боевом и стенде, скорость загрузки 63 наборов Евростата на боевом, эффект счётчика страны и памяти воркера на боевом, реальный вызов URL Inspection из контейнера, отправка отчётов Telegram, deploy/test-nginx-config.sh (нужен Docker). Не проверялось (дополнение 13.10): флаг RUSTATS_MOEX_BRENT_LIVE_ENABLED на живом сервере, работа ISS в клиринг, ночью и в выходные; снятие дублей (301) на стенде и боевом после выкладки кода; боевая скорость пакета Европы и вечернего ETL.",
       "gap": "RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR/_MINUTE и RUSTATS_SITEMAP_PRIORITY_MAX_URLS: первая пара в compose не перечислена; RUSTATS_SSR_SWR_TOKEN и RUSTATS_SSR_SWR_BASE_URL по-прежнему не перечислены (см. запись круга 12)."
     }
   ]
