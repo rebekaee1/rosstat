@@ -1,6 +1,7 @@
 import { formatDate, formatValueWithUnit, unitSuffix, chartValueDigits } from '../lib/format';
 import { useT } from '../i18n';
 import '../styles/k5-pages.css';
+import { flatUnit } from '../lib/countryFlag';
 
 export default function ForecastTable({ mode = 'inflation', inflation, forecastData, actualPoints, unit = '%', dateFormat = 'full' }) {
   const t = useT();
@@ -41,7 +42,7 @@ export default function ForecastTable({ mode = 'inflation', inflation, forecastD
       : mode === 'annual' ? t('forecast.value.annual')
         : mode === 'weekly' ? t('forecast.value.weekly')
           : mode === 'index' ? t('forecast.value.index')
-            : (suffix ? t('forecast.value.withUnit', { unit: suffix }) : t('forecast.value.generic'));
+            : (suffix ? t('forecast.value.withUnit', { unit: flatUnit(suffix) }) : t('forecast.value.generic'));
 
   // Круг 13, V4: между датой и значением была пустая полоса (карточка шире содержимого). Теперь там тонкая полоса «насколько значение
   // выше или ниже остальных точек прогноза»: каждой дате одно число и одна полоса, диапазона (от и до) нигде не показывается.

@@ -641,6 +641,23 @@ def attach_mode_forecastable(
     return out
 
 
+def _name_tail(name: str) -> str:
+    """Последний отрезок названия по запятой верхнего уровня; запятые внутри скобок не делят.
+
+    Раньше брали `name.split(",")[-1]`: у «Economic activity rate (aged 16 and over, SA)» выходило «SA)»
+    (одинаково у четырёх рядов Великобритании, в плашке «Chart view» вместо названия).
+    """
+    depth, cut = 0, -1
+    for i, ch in enumerate(name):
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        elif ch == "," and depth == 0:
+            cut = i
+    return name[cut + 1:].strip()
+
+
 def variant_label(ind: Any, *, locale: str | None = None) -> str:
     """Подпись variant-pill по отличающимся измерениям среза.
 
@@ -750,10 +767,10 @@ def variant_label(ind: Any, *, locale: str | None = None) -> str:
         if en:
             name_en = (getattr(ind, "name_en", None) or "").strip()
             if name_en:
-                return name_en.split(",")[-1].strip()[:48]
+                return _name_tail(name_en)[:48]
             return ind.code or fallback_slice
         name = (getattr(ind, "name_ru", None) or "").strip()
-        return name.split(",")[-1].strip()[:48] if name else (ind.code or fallback_slice)
+        return _name_tail(name)[:48] if name else (ind.code or fallback_slice)
 
     # TOTAL-якорь домохозяйств — только если bits ещё не отражают срез hhcomp
     # и нет других содержательных подписей (иначе затирали бы nace/indic).
