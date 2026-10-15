@@ -365,13 +365,13 @@
     },
     {
       "path": "backend/app/api/world_subnational.py",
-      "sha256": "2911a74289649e2488265654304a8363e214169779b0b4c035cdeed40c9b8c82",
+      "sha256": "403172003dc6a15ed5eae1d446b2d3d99559f15b58f7240d4c992709464d287c",
       "lines": 648
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "4048dc5ea1350944821131afbfe986d6ccbe231e61bae049649b178248e003bf",
-      "lines": 536
+      "sha256": "c21655a0aad16587cfe06e5d87cb5a88e6f9c2dd35d997c11f9583968b797915",
+      "lines": 542
     },
     {
       "path": "backend/app/core/__init__.py",
@@ -595,8 +595,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "sha256": "4c25f9b1b3c3d87245228e56c5d7faa24d3c174fb972696386e1eb7fe59968e6",
-      "lines": 146
+      "sha256": "66289b346aa799581d8c75f9a20455372ce3fe1f42390e5a7676a9b4da928076",
+      "lines": 156
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
@@ -1030,8 +1030,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "sha256": "903939f31df1db784cad3f38050e0d09e6a505b8ad44cae95dab96179bbdb363",
-      "lines": 591
+      "sha256": "daca805e194604b4daab12a516ee193d425081ded3cde06b835cffd3ac033da8",
+      "lines": 592
     },
     {
       "path": "backend/app/services/forecast_strategies/__init__.py",
@@ -1855,18 +1855,18 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "sha256": "a507b2706f2b454a2bab6f6a6705506d47346b87766daf897725d9832e529764",
-      "lines": 50
+      "sha256": "7b7a9986496f5404dae2036c6d7d7f4bd47939e7de76e05b90ee275ab54bf079",
+      "lines": 63
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "sha256": "1332d43f58c8cb9aa77e0e0b6ad8f297f887f75fb4991615753f61ce56a2a840",
-      "lines": 878
+      "sha256": "2e36e6c1d9343f1801d3c9806482809cca73d2144583097a4fa04a98a537eafa",
+      "lines": 890
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "sha256": "c9ac0cfd5880b682a8086549dd54d9c5297e9c7b16750cf277faff27d5255c5a",
-      "lines": 746
+      "sha256": "ec2f8824671bc31d8bdfbcee16ebff6d24bf4742b037697c91323473a2973f3c",
+      "lines": 849
     },
     {
       "path": "backend/app/services/world_imf_ingest.py",
@@ -1915,8 +1915,8 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "sha256": "3ead6dc0e5a2addb866e5a815ef8c579675e14a3dd3169f7c2db084ebf6e587b",
-      "lines": 84
+      "sha256": "9589d1b1a2c0c992207b0855cb509de9a14f23e17a9c05b27cbfcbef5b907b6a",
+      "lines": 95
     },
     {
       "path": "backend/app/services/world_subnational_ingest.py",
@@ -2195,8 +2195,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "sha256": "63e189aa0802d3e51b5b3216586d47d60e6a68fdfa78d647ae237517beed29c4",
-      "lines": 139
+      "sha256": "398cf2b3b90c29c3c0ea9340d479f872dcc326cb273735cade6e550a82f2fecf",
+      "lines": 149
     },
     {
       "path": "backend/seed_data.py",
@@ -29666,8 +29666,19 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 180,
-      "end_line": 180,
+      "line": 183,
+      "end_line": 183,
+      "owner": "Settings",
+      "conditions": [],
+      "name": "world_forecast_publish_all",
+      "env_name": "RUSTATS_WORLD_FORECAST_PUBLISH_ALL",
+      "annotation": "bool",
+      "default": "True"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 186,
+      "end_line": 186,
       "owner": "Settings",
       "conditions": [],
       "name": "world_imf_official_forecast_enabled",
@@ -29677,8 +29688,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 190,
+      "end_line": 190,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_run_seconds",
@@ -29688,8 +29699,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 187,
-      "end_line": 187,
+      "line": 193,
+      "end_line": 193,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days",
@@ -29699,8 +29710,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 198,
+      "end_line": 198,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days_annual",
@@ -29710,8 +29721,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 199,
+      "end_line": 199,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_max_age_days_quarterly",
@@ -29721,8 +29732,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 201,
+      "end_line": 201,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_cache_bump_every",
@@ -29732,8 +29743,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 198,
-      "end_line": 202,
+      "line": 204,
+      "end_line": 208,
       "owner": "Settings",
       "conditions": [],
       "name": "world_forecast_priority_countries",
@@ -29743,8 +29754,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 203,
-      "end_line": 203,
+      "line": 209,
+      "end_line": 209,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_enabled",
@@ -29754,8 +29765,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_hour",
@@ -29765,8 +29776,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 211,
+      "end_line": 211,
       "owner": "Settings",
       "conditions": [],
       "name": "world_subnational_ingest_minute",
@@ -29776,8 +29787,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 206,
-      "end_line": 206,
+      "line": 212,
+      "end_line": 212,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_enabled",
@@ -29787,8 +29798,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 207,
-      "end_line": 207,
+      "line": 213,
+      "end_line": 213,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_hour",
@@ -29798,8 +29809,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 214,
+      "end_line": 214,
       "owner": "Settings",
       "conditions": [],
       "name": "world_bea_regional_ingest_minute",
@@ -29809,8 +29820,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 219,
+      "end_line": 219,
       "owner": "Settings",
       "conditions": [],
       "name": "calendar_rosstat_plan_enabled",
@@ -29820,8 +29831,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 216,
-      "end_line": 216,
+      "line": 222,
+      "end_line": 222,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -29831,8 +29842,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 223,
+      "end_line": 223,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -29842,8 +29853,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 220,
-      "end_line": 220,
+      "line": 226,
+      "end_line": 226,
       "owner": "Settings",
       "conditions": [],
       "name": "forecast_steps",
@@ -29853,8 +29864,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 223,
-      "end_line": 223,
+      "line": 229,
+      "end_line": 229,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_app_shell_url",
@@ -29864,8 +29875,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 232,
+      "end_line": 232,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_enabled",
@@ -29875,8 +29886,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 233,
+      "end_line": 233,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_base_url",
@@ -29886,8 +29897,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 236,
+      "end_line": 236,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_warm_top_n",
@@ -29897,8 +29908,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 240,
+      "end_line": 240,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_enabled",
@@ -29908,8 +29919,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 235,
-      "end_line": 235,
+      "line": 241,
+      "end_line": 241,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_stale_seconds",
@@ -29919,8 +29930,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 239,
-      "end_line": 239,
+      "line": 245,
+      "end_line": 245,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_base_url",
@@ -29930,8 +29941,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 246,
+      "end_line": 246,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_token",
@@ -29941,8 +29952,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 252,
+      "end_line": 252,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_enabled",
@@ -29952,8 +29963,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 253,
+      "end_line": 253,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_max_age_seconds",
@@ -29963,8 +29974,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 257,
+      "end_line": 257,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_enabled",
@@ -29974,8 +29985,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 258,
+      "end_line": 258,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_key",
@@ -29985,8 +29996,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 259,
+      "end_line": 259,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_endpoint",
@@ -29996,8 +30007,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 261,
+      "end_line": 261,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_daily_send_cap",
@@ -30007,8 +30018,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 264,
+      "end_line": 264,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_daily_cap",
@@ -30018,8 +30029,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 265,
+      "end_line": 265,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_year_min",
@@ -30029,8 +30040,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 263,
-      "end_line": 263,
+      "line": 269,
+      "end_line": 269,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_recrawl_enabled",
@@ -30040,8 +30051,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 266,
-      "end_line": 266,
+      "line": 272,
+      "end_line": 272,
       "owner": "Settings",
       "conditions": [],
       "name": "metrics_token",
@@ -30051,8 +30062,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 279,
+      "end_line": 279,
       "owner": "Settings",
       "conditions": [],
       "name": "frontend_events_enabled",
@@ -30062,8 +30073,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 279,
-      "end_line": 279,
+      "line": 285,
+      "end_line": 285,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_events_enabled",
@@ -30073,8 +30084,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 286,
+      "end_line": 286,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_batch_max_events",
@@ -30084,8 +30095,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 281,
-      "end_line": 281,
+      "line": 287,
+      "end_line": 287,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -30095,8 +30106,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 292,
+      "end_line": 292,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_db_path",
@@ -30106,8 +30117,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 287,
-      "end_line": 289,
+      "line": 293,
+      "end_line": 295,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_download_url_template",
@@ -30117,8 +30128,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 296,
+      "end_line": 296,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_db_path",
@@ -30128,8 +30139,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 291,
-      "end_line": 293,
+      "line": 297,
+      "end_line": 299,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_download_url_template",
@@ -30139,8 +30150,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 300,
+      "end_line": 300,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_auto_download",
@@ -30150,8 +30161,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 304,
+      "end_line": 304,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_enabled",
@@ -30161,8 +30172,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 305,
+      "end_line": 305,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_host",
@@ -30172,8 +30183,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 306,
+      "end_line": 306,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_port",
@@ -30183,8 +30194,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 307,
+      "end_line": 307,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_db",
@@ -30194,8 +30205,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 302,
-      "end_line": 302,
+      "line": 308,
+      "end_line": 308,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_user",
@@ -30205,8 +30216,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 309,
+      "end_line": 309,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_password",
@@ -30216,8 +30227,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 312,
+      "end_line": 312,
       "owner": "Settings",
       "conditions": [],
       "name": "direct_api_token",
@@ -30227,8 +30238,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 314,
+      "end_line": 314,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_id",
@@ -30238,8 +30249,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 315,
+      "end_line": 315,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_secret",
@@ -30249,8 +30260,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 316,
+      "end_line": 316,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_token",
@@ -30260,8 +30271,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 319,
+      "end_line": 319,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_enabled",
@@ -30271,8 +30282,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 320,
+      "end_line": 320,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_enabled",
@@ -30282,8 +30293,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 321,
+      "end_line": 321,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_hour",
@@ -30293,8 +30304,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 322,
+      "end_line": 322,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_minute",
@@ -30304,8 +30315,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 323,
+      "end_line": 323,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_api_token",
@@ -30315,8 +30326,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 326,
+      "end_line": 326,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_base_url",
@@ -30326,8 +30337,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 327,
+      "end_line": 327,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -30337,8 +30348,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 328,
+      "end_line": 328,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_hosts",
@@ -30348,8 +30359,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 329,
+      "end_line": 329,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_default_retention_days",
@@ -30359,8 +30370,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 330,
+      "end_line": 330,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_raw_log_retention_days",
@@ -30370,8 +30381,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 331,
+      "end_line": 331,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_backfill_days",
@@ -30381,8 +30392,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 332,
+      "end_line": 332,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_request_timeout",
@@ -30392,8 +30403,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 333,
+      "end_line": 333,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_live_writes_enabled",
@@ -30403,8 +30414,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 335,
+      "end_line": 335,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -30414,8 +30425,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 336,
+      "end_line": 336,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_write_token",
@@ -30425,8 +30436,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 337,
+      "end_line": 337,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -30436,8 +30447,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 340,
+      "end_line": 340,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_session_ttl_seconds",
@@ -30447,8 +30458,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 341,
+      "end_line": 341,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_secure",
@@ -30458,8 +30469,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 336,
-      "end_line": 336,
+      "line": 342,
+      "end_line": 342,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_domain",
@@ -30469,8 +30480,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 343,
+      "end_line": 343,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_oauth_state_ttl_seconds",
@@ -30480,8 +30491,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 344,
+      "end_line": 344,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_max_fails",
@@ -30491,8 +30502,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 345,
+      "end_line": 345,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_lockout_seconds",
@@ -30502,8 +30513,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 347,
+      "end_line": 347,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_fake_provider_enabled",
@@ -30513,8 +30524,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 349,
+      "end_line": 349,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_public_base_url",
@@ -30524,8 +30535,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 346,
-      "end_line": 346,
+      "line": 352,
+      "end_line": 352,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_id",
@@ -30535,8 +30546,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 353,
+      "end_line": 353,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_secret",
@@ -30546,8 +30557,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 354,
+      "end_line": 354,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_redirect_uri",
@@ -30557,8 +30568,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 357,
+      "end_line": 357,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_id",
@@ -30568,8 +30579,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 352,
-      "end_line": 352,
+      "line": 358,
+      "end_line": 358,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_secret",
@@ -30579,8 +30590,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 353,
-      "end_line": 353,
+      "line": 359,
+      "end_line": 359,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_scope",
@@ -30590,8 +30601,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 361,
+      "end_line": 361,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_id",
@@ -30601,8 +30612,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 356,
-      "end_line": 356,
+      "line": 362,
+      "end_line": 362,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_secret",
@@ -30612,8 +30623,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 363,
+      "end_line": 363,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_service_key",
@@ -30623,8 +30634,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 358,
-      "end_line": 358,
+      "line": 364,
+      "end_line": 364,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_scope",
@@ -30634,8 +30645,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 367,
+      "end_line": 367,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_redirect_uri",
@@ -30645,8 +30656,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 362,
-      "end_line": 362,
+      "line": 368,
+      "end_line": 368,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_redirect_uri",
@@ -30656,8 +30667,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 371,
+      "end_line": 371,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_limit",
@@ -30667,8 +30678,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 366,
-      "end_line": 366,
+      "line": 372,
+      "end_line": 372,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_window_seconds",
@@ -30678,8 +30689,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 370,
-      "end_line": 370,
+      "line": 376,
+      "end_line": 376,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_history_years",
@@ -30689,8 +30700,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 373,
-      "end_line": 373,
+      "line": 379,
+      "end_line": 379,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_enabled",
@@ -30700,8 +30711,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 380,
+      "end_line": 380,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_hour",
@@ -30711,8 +30722,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 381,
+      "end_line": 381,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_minute",
@@ -30722,8 +30733,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 379,
-      "end_line": 379,
+      "line": 385,
+      "end_line": 385,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_chat_ids",
@@ -30733,8 +30744,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 388,
+      "end_line": 388,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_proxy_url",
@@ -30744,8 +30755,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 391,
+      "end_line": 391,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -30755,8 +30766,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 390,
-      "end_line": 390,
+      "line": 396,
+      "end_line": 396,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -30766,8 +30777,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 394,
-      "end_line": 394,
+      "line": 400,
+      "end_line": 400,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_reports_chat_ids",
@@ -30777,8 +30788,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 402,
+      "end_line": 402,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_enabled",
@@ -30788,8 +30799,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 397,
-      "end_line": 397,
+      "line": 403,
+      "end_line": 403,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_hour",
@@ -30799,8 +30810,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 398,
-      "end_line": 398,
+      "line": 404,
+      "end_line": 404,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_minute",
@@ -30810,8 +30821,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 407,
+      "end_line": 407,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_enabled",
@@ -30821,8 +30832,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 408,
+      "end_line": 408,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_hour",
@@ -30832,8 +30843,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 409,
+      "end_line": 409,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_minute",
@@ -30843,8 +30854,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 404,
-      "end_line": 404,
+      "line": 410,
+      "end_line": 410,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_enabled",
@@ -30854,8 +30865,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 411,
+      "end_line": 411,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_hour",
@@ -30865,8 +30876,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 406,
-      "end_line": 406,
+      "line": 412,
+      "end_line": 412,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_minute",
@@ -30876,8 +30887,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 409,
-      "end_line": 409,
+      "line": 415,
+      "end_line": 415,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_new_alerts_enabled",
@@ -30887,8 +30898,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 413,
-      "end_line": 413,
+      "line": 419,
+      "end_line": 419,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_max_attempts",
@@ -30898,8 +30909,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 414,
-      "end_line": 414,
+      "line": 420,
+      "end_line": 420,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_base_seconds",
@@ -30909,8 +30920,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 421,
+      "end_line": 421,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_budget_seconds",
@@ -30920,8 +30931,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 425,
+      "end_line": 425,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_enabled",
@@ -30931,8 +30942,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 420,
-      "end_line": 420,
+      "line": 426,
+      "end_line": 426,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_min_age_minutes",
@@ -30942,8 +30953,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 427,
+      "end_line": 427,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_window_hours",
@@ -30953,8 +30964,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 428,
+      "end_line": 428,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_per_run",
@@ -30964,8 +30975,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 423,
-      "end_line": 423,
+      "line": 429,
+      "end_line": 429,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_tries",
@@ -30975,8 +30986,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 433,
+      "end_line": 433,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_enabled",
@@ -30986,8 +30997,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 434,
+      "end_line": 434,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -30997,8 +31008,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 435,
+      "end_line": 435,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_hour",
@@ -31008,8 +31019,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 430,
-      "end_line": 430,
+      "line": 436,
+      "end_line": 436,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_minute",
@@ -31019,8 +31030,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 432,
-      "end_line": 432,
+      "line": 438,
+      "end_line": 438,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -31030,8 +31041,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 442,
+      "end_line": 442,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_enabled",
@@ -31041,8 +31052,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 443,
+      "end_line": 443,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_ai_enabled",
@@ -31052,8 +31063,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 444,
+      "end_line": 444,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_batch_size",
@@ -31063,8 +31074,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 445,
+      "end_line": 445,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_enabled",
@@ -31074,8 +31085,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 440,
-      "end_line": 440,
+      "line": 446,
+      "end_line": 446,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_retention_days",
@@ -31085,8 +31096,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 447,
+      "end_line": 447,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_max_recording_bytes",
@@ -31096,8 +31107,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 448,
+      "end_line": 448,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_model",
@@ -31107,8 +31118,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 454,
+      "end_line": 454,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -31118,8 +31129,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 452,
-      "end_line": 452,
+      "line": 458,
+      "end_line": 458,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -31129,8 +31140,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 461,
+      "end_line": 461,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -31140,8 +31151,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 465,
+      "end_line": 465,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_job_max_seconds",
@@ -31151,8 +31162,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 470,
+      "end_line": 470,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_enabled",
@@ -31162,8 +31173,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 471,
+      "end_line": 471,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_min_stale",
@@ -31173,8 +31184,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 472,
+      "end_line": 472,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_hour",
@@ -31184,8 +31195,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 467,
-      "end_line": 467,
+      "line": 473,
+      "end_line": 473,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_minute",
@@ -31195,8 +31206,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 475,
+      "end_line": 475,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_poller_enabled",
@@ -31206,8 +31217,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 481,
+      "end_line": 481,
       "owner": "Settings",
       "conditions": [],
       "name": "api_interest_enabled",
@@ -31217,8 +31228,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 489,
+      "end_line": 489,
       "owner": "Settings",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -31228,8 +31239,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 496,
+      "end_line": 496,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_enabled",
@@ -31239,8 +31250,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 497,
+      "end_line": 497,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_install_prompt_enabled",
@@ -31250,8 +31261,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 508,
+      "end_line": 508,
       "owner": "Settings",
       "conditions": [],
       "name": "push_subscribe_enabled",
@@ -31261,8 +31272,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 509,
+      "end_line": 509,
       "owner": "Settings",
       "conditions": [],
       "name": "push_send_enabled",
@@ -31272,8 +31283,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 510,
+      "end_line": 510,
       "owner": "Settings",
       "conditions": [],
       "name": "push_dry_run",
@@ -31283,8 +31294,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 511,
+      "end_line": 511,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_public_key",
@@ -31294,8 +31305,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 506,
-      "end_line": 506,
+      "line": 512,
+      "end_line": 512,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_private_key",
@@ -31305,8 +31316,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 507,
-      "end_line": 507,
+      "line": 513,
+      "end_line": 513,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_subject",
@@ -31316,8 +31327,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 517,
+      "end_line": 517,
       "owner": "Settings",
       "conditions": [],
       "name": "admin_emails",
@@ -32039,8 +32050,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 528,
-      "end_line": 528,
+      "line": 534,
+      "end_line": 534,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -32048,8 +32059,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 528,
-      "end_line": 528,
+      "line": 534,
+      "end_line": 534,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "public_host",
@@ -32057,8 +32068,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 524,
+      "end_line": 524,
       "owner": "Settings.public_origin",
       "conditions": [],
       "name": "public_base_url",
@@ -32066,8 +32077,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 529,
+      "end_line": 529,
       "owner": "Settings.public_host",
       "conditions": [],
       "name": "public_base_url",
@@ -32141,6 +32152,18 @@
       ],
       "name": "redis_url",
       "expression": "settings.redis_url"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 115,
+      "end_line": 115,
+      "owner": "forecast_eligibility_for",
+      "conditions": [
+        "publish_all is None"
+      ],
+      "name": "world_forecast_publish_all",
+      "expression": "getattr(settings, 'world_forecast_publish_all', False)",
+      "dynamic": false
     },
     {
       "path": "backend/app/database.py",
@@ -35977,9 +36000,19 @@
       "expression": "settings.world_eurostat_ingest_shadow"
     },
     {
+      "path": "backend/app/services/world_forecast_gate.py",
+      "line": 27,
+      "end_line": 27,
+      "owner": "publish_all_enabled",
+      "conditions": [],
+      "name": "world_forecast_publish_all",
+      "expression": "getattr(settings, 'world_forecast_publish_all', False)",
+      "dynamic": false
+    },
+    {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 91,
-      "end_line": 91,
+      "line": 95,
+      "end_line": 95,
       "owner": "parse_priority_countries",
       "conditions": [],
       "name": "world_forecast_priority_countries",
@@ -35987,8 +36020,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 219,
+      "end_line": 219,
       "owner": "forecast_is_unchanged",
       "conditions": [],
       "name": "world_forecast_candidates_enabled",
@@ -35996,8 +36029,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 447,
+      "end_line": 447,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "name": "world_forecast_candidates_enabled",
@@ -36005,8 +36038,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 694,
-      "end_line": 694,
+      "line": 706,
+      "end_line": 706,
       "owner": "load_world_forecast_plan",
       "conditions": [],
       "name": "world_forecast_max_age_days",
@@ -36014,8 +36047,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 786,
-      "end_line": 786,
+      "line": 798,
+      "end_line": 798,
       "owner": "world_forecast_job",
       "conditions": [],
       "name": "world_forecast_cache_bump_every",
@@ -36023,8 +36056,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 171,
-      "end_line": 171,
+      "line": 175,
+      "end_line": 175,
       "owner": "effective_max_age_days",
       "conditions": [],
       "name": "world_forecast_max_age_days_annual",
@@ -36032,8 +36065,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 176,
+      "end_line": 176,
       "owner": "effective_max_age_days",
       "conditions": [],
       "name": "world_forecast_max_age_days_quarterly",
@@ -36564,8 +36597,18 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 93,
-      "end_line": 93,
+      "line": 82,
+      "end_line": 82,
+      "owner": "classify",
+      "conditions": [],
+      "name": "world_forecast_publish_all",
+      "expression": "getattr(settings, 'world_forecast_publish_all', False)",
+      "dynamic": false
+    },
+    {
+      "path": "backend/scripts/world-forecast-gap-audit.py",
+      "line": 103,
+      "end_line": 103,
       "owner": "classify",
       "conditions": [],
       "name": "world_forecast_max_age_days",
@@ -75755,8 +75798,51 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 57,
+      "end_line": 57,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "FREQ_MIN_POINTS_PUBLISH_ALL",
+      "symbol": "app.data.world_forecast_policy.FREQ_MIN_POINTS_PUBLISH_ALL",
+      "kind": "Dict",
+      "literal_keys": [
+        "'monthly'",
+        "'quarterly'",
+        "'annual'"
+      ],
+      "entries": [
+        {
+          "key": "'monthly'",
+          "expression": "36",
+          "expression_truncated": false,
+          "expression_chars": 2,
+          "ast_sha256": "e64c8f2ee75e8aa5b22200662b6db1f7045fca2b8e1055360e8e43d537d777c5"
+        },
+        {
+          "key": "'quarterly'",
+          "expression": "24",
+          "expression_truncated": false,
+          "expression_chars": 2,
+          "ast_sha256": "2e53e925e0b8e70bb040aab31a07463c3ace2097b2eb593e8b1872c5d40bfe44"
+        },
+        {
+          "key": "'annual'",
+          "expression": "10",
+          "expression_truncated": false,
+          "expression_chars": 2,
+          "ast_sha256": "a2838193f927321540fb9a36355934a87e15ba202009114f32bc7e4a1f2ec794"
+        }
+      ],
+      "expression": "{'monthly': 36, 'quarterly': 24, 'annual': 10}",
+      "expression_truncated": false,
+      "expression_chars": 46,
+      "ast_sha256": "2ec782b117fc49d9f4af8ac4d8d03bad05750d68dff68d582074152b42b02378",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 58,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "name": "WORLD_FORECAST_HORIZONS",
@@ -75798,8 +75884,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 55,
-      "end_line": 55,
+      "line": 59,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_SEASONS",
@@ -75841,8 +75927,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 60,
+      "end_line": 60,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_MAX_AGE_DAYS",
@@ -75884,8 +75970,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 72,
-      "end_line": 94,
+      "line": 76,
+      "end_line": 98,
       "owner": "<module>",
       "conditions": [],
       "name": "_OFFICIAL_PROVIDERS",
@@ -75901,8 +75987,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 96,
-      "end_line": 98,
+      "line": 100,
+      "end_line": 102,
       "owner": "<module>",
       "conditions": [],
       "name": "OFFICIAL_PROVIDER_POLICIES",
@@ -103450,12 +103536,12 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 17,
-      "end_line": 17,
+      "line": 18,
+      "end_line": 18,
       "owner": "<module>",
       "conditions": [],
-      "name": "PUBLISHED_GATE_STATUSES",
-      "symbol": "app.services.world_forecast_gate.PUBLISHED_GATE_STATUSES",
+      "name": "CHECKED_GATE_STATUSES",
+      "symbol": "app.services.world_forecast_gate.CHECKED_GATE_STATUSES",
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
@@ -103466,9 +103552,26 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/world_forecast_gate.py",
+      "line": 21,
+      "end_line": 21,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "PUBLISHED_GATE_STATUSES",
+      "symbol": "app.services.world_forecast_gate.PUBLISHED_GATE_STATUSES",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "frozenset({'passed', 'advisory'})",
+      "expression_truncated": false,
+      "expression_chars": 33,
+      "ast_sha256": "e8301ec2edff0ef45449a4c9297af5b2f4c048ee9eb8f0e2470a0e45b478c98d",
+      "runtime_expansion": true
+    },
+    {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 50,
-      "end_line": 50,
+      "line": 51,
+      "end_line": 51,
       "owner": "<module>",
       "conditions": [],
       "name": "WORLD_FORECAST_CACHE_NAMESPACES",
@@ -103484,8 +103587,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 54,
-      "end_line": 54,
+      "line": 58,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "name": "_FREQ_RANK",
@@ -103527,8 +103630,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 83,
-      "end_line": 83,
+      "line": 85,
+      "end_line": 85,
       "owner": "<module>",
       "conditions": [],
       "name": "MAX_GAP_STEPS",
@@ -103570,8 +103673,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 464,
-      "end_line": 468,
+      "line": 466,
+      "end_line": 470,
       "owner": "<module>",
       "conditions": [],
       "name": "RETRYABLE_QUALITY_REASONS",
@@ -103587,8 +103690,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 471,
+      "end_line": 471,
       "owner": "<module>",
       "conditions": [],
       "name": "_SELECTION_ORIGINS",
@@ -103627,6 +103730,23 @@
       "expression_chars": 58,
       "ast_sha256": "e55b28f408a2f3a898658b7d366738c23cf575b19cbf6bea1079305a64f65b06",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/world_forecaster.py",
+      "line": 685,
+      "end_line": 695,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "UNCHECKED_FALLBACK_REASONS",
+      "symbol": "app.services.world_forecaster.UNCHECKED_FALLBACK_REASONS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "frozenset({'mase_not_below_one', 'not_better_than_seasonal_naive', 'candidate_model_failed', 'history_too_short', 'not_enough_backtest_origins', 'recent_history_gap', 'constant_or_unscaled_series', 'invalid_backtest_dates', 'non_finite_backtest'})",
+      "expression_truncated": false,
+      "expression_chars": 247,
+      "ast_sha256": "2fc03a294de033a25c3387f27f8e76fb4488db30f8e8cc4b8917d11ddd8c2ca9",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
@@ -104605,8 +104725,8 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "line": 17,
-      "end_line": 21,
+      "line": 19,
+      "end_line": 23,
       "owner": "<module>",
       "conditions": [],
       "name": "FREQUENCIES",
@@ -106222,8 +106342,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 48,
-      "end_line": 48,
+      "line": 54,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "FIRST_LINE",
@@ -106239,8 +106359,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 50,
-      "end_line": 70,
+      "line": 56,
+      "end_line": 78,
       "owner": "<module>",
       "conditions": [],
       "name": "SQL",
@@ -106248,10 +106368,10 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "text(\"\\n    with last as (\\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\\n               (model_params->>'method_version' is not null) as p_mv\\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\\n    pub as (select distinct world_indicator_id from world_forecasts where is_current and gate_status = 'passed')\\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\\n           i.points_count, i.history_end, i.category_ru,\\n           s.status as src_status, s.last_success_at as src_ok,\\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\\n           (p.world_indicator_id is not null) as has_public\\n    from world_indicators i\\n    join world_countries c on c.id = i.country_id\\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\\n    left join last l on l.world_indicator_id = i.id\\n    left join pub p on p.world_indicator_id = i.id\\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\\n    \")",
+      "expression": "text(\"\\n    with last as (\\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\\n               (model_params->>'method_version' is not null) as p_mv,\\n               model_params->>'publication_policy' as p_policy\\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\\n    pub as (select world_indicator_id, bool_or(gate_status = 'passed') as checked from world_forecasts\\n            where is_current and gate_status in ('passed', 'advisory') group by world_indicator_id)\\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\\n           i.points_count, i.history_end, i.category_ru,\\n           s.status as src_status, s.last_success_at as src_ok,\\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\\n           l.p_policy, (p.world_indicator_id is not null) as has_public, coalesce(p.checked, false) as public_checked\\n    from world_indicators i\\n    join world_countries c on c.id = i.country_id\\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\\n    left join last l on l.world_indicator_id = i.id\\n    left join pub p on p.world_indicator_id = i.id\\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\\n    \")",
       "expression_truncated": false,
-      "expression_chars": 1267,
-      "ast_sha256": "33dc48872e65c36d35ed05a865ee4980394af76aecb35d85d82ad9920c840370",
+      "expression_chars": 1481,
+      "ast_sha256": "25d2ecae01c18138d18a4c928e2be4bb83cd4fdd21c4671b0081a0104702b232",
       "runtime_expansion": true
     },
     {
@@ -118668,10 +118788,10 @@
       "operation": "versioned_key",
       "receiver": null,
       "symbol": "app.core.cache.versioned_key",
-      "expression": "versioned_key('world', f'subnat:forecast:v4:{country_slug}:{slug}:{code}:{get_locale()}')",
+      "expression": "versioned_key('world', f'subnat:forecast:v5:{country_slug}:{slug}:{code}:{get_locale()}')",
       "expression_truncated": false,
       "expression_chars": 89,
-      "ast_sha256": "8da92fc84d39acfe402352db3b18de9d640a5aeb7fd447a82be7d3bcd3aa7006"
+      "ast_sha256": "104eb3315b300d608cbda64551e45a887aab66c02f47cb73b95e803770bdba0b"
     },
     {
       "path": "backend/app/api/world_subnational.py",
@@ -125990,8 +126110,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 448,
+      "end_line": 448,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -126004,8 +126124,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 473,
+      "end_line": 473,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -126018,8 +126138,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 555,
-      "end_line": 555,
+      "line": 556,
+      "end_line": 556,
       "owner": "_recover_session",
       "conditions": [],
       "operation": "rollback",
@@ -126032,8 +126152,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 450,
+      "end_line": 450,
       "owner": "_world_items",
       "conditions": [],
       "operation": "set",
@@ -126046,8 +126166,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 481,
-      "end_line": 481,
+      "line": 482,
+      "end_line": 482,
       "owner": "_world_items",
       "conditions": [],
       "operation": "add",
@@ -126074,17 +126194,17 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 459,
-      "end_line": 470,
+      "line": 460,
+      "end_line": 471,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
       "receiver": "db",
       "symbol": "app.services.forecast_showcase.db.execute",
-      "expression": "db.execute(select(WorldForecast, WorldIndicator, WorldCountry).join(WorldIndicator, WorldForecast.world_indicator_id == WorldIndicator.id).join(WorldCountry, WorldIndicator.country_id == WorldCountry.id).where(WorldForecast.is_current, WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES), WorldIndicator.is_listed, or_(*conditions)).order_by(WorldForecast.created_at.desc()))",
+      "expression": "db.execute(select(WorldForecast, WorldIndicator, WorldCountry).join(WorldIndicator, WorldForecast.world_indicator_id == WorldIndicator.id).join(WorldCountry, WorldIndicator.country_id == WorldCountry.id).where(WorldForecast.is_current, WorldForecast.gate_status.in_(CHECKED_GATE_STATUSES), WorldIndicator.is_listed, or_(*conditions)).order_by(WorldForecast.created_at.desc()))",
       "expression_truncated": false,
-      "expression_chars": 378,
-      "ast_sha256": "2b239826e48966a4e9f9ffccc4b21307fd96fe3a8991c8720fc948eef1d819d8"
+      "expression_chars": 376,
+      "ast_sha256": "61cc57ac91c2e3e68eb9d16a4b1854f3d4b9c60be2578e3d4ac81b0e57997858"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
@@ -126120,8 +126240,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 500,
-      "end_line": 505,
+      "line": 501,
+      "end_line": 506,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
@@ -126150,8 +126270,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 492,
-      "end_line": 496,
+      "line": 493,
+      "end_line": 497,
       "owner": "_world_items",
       "conditions": [],
       "operation": "execute",
@@ -136591,8 +136711,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 111,
-      "end_line": 111,
+      "line": 115,
+      "end_line": 115,
       "owner": "concept_priority_sets",
       "conditions": [],
       "operation": "set",
@@ -136605,8 +136725,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 512,
+      "end_line": 512,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "operation": "add",
@@ -136619,8 +136739,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 630,
-      "end_line": 630,
+      "line": 642,
+      "end_line": 642,
       "owner": "classify_unchanged",
       "conditions": [],
       "operation": "set",
@@ -136633,8 +136753,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 715,
-      "end_line": 715,
+      "line": 727,
+      "end_line": 727,
       "owner": "_empty_counts",
       "conditions": [],
       "operation": "update",
@@ -136647,8 +136767,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 117,
+      "end_line": 117,
       "owner": "concept_priority_sets",
       "conditions": [],
       "operation": "update",
@@ -136661,8 +136781,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 372,
-      "end_line": 383,
+      "line": 380,
+      "end_line": 391,
       "owner": "_model_params_for",
       "conditions": [
         "eligibility is not None"
@@ -136677,8 +136797,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 395,
+      "end_line": 395,
       "owner": "_model_params_for",
       "conditions": [
         "extra"
@@ -136693,8 +136813,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 405,
-      "end_line": 421,
+      "line": 415,
+      "end_line": 431,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [
         "eligibility is None"
@@ -136709,8 +136829,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 513,
+      "end_line": 513,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "operation": "flush",
@@ -136723,8 +136843,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 665,
-      "end_line": 665,
+      "line": 677,
+      "end_line": 677,
       "owner": "select_forecast_batch",
       "conditions": [],
       "operation": "set",
@@ -136737,8 +136857,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 701,
-      "end_line": 701,
+      "line": 713,
+      "end_line": 713,
       "owner": "_bump_world_forecast_cache",
       "conditions": [],
       "operation": "bump_namespaces",
@@ -136751,8 +136871,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 115,
-      "end_line": 115,
+      "line": 119,
+      "end_line": 119,
       "owner": "concept_priority_sets",
       "conditions": [],
       "operation": "update",
@@ -136765,8 +136885,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 504,
-      "end_line": 510,
+      "line": 516,
+      "end_line": 522,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [
         "gate.result is not None"
@@ -136781,8 +136901,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 664,
+      "end_line": 664,
       "owner": "classify_unchanged",
       "conditions": [
         "forecast_is_unchanged(latest, history_end=row.history_end, points_count=row.points_count, history_digest=row.history_digest, source_ready=row.source_ready, now=now, max_age_days=max_age_days, force=force, frequency=row.frequency)"
@@ -136797,8 +136917,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 859,
-      "end_line": 859,
+      "line": 871,
+      "end_line": 871,
       "owner": "world_forecast_job",
       "conditions": [],
       "operation": "release",
@@ -136811,8 +136931,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 303,
+      "end_line": 303,
       "owner": "_WorldForecastLock.acquire",
       "conditions": [],
       "operation": "get_state_redis",
@@ -136825,8 +136945,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 296,
-      "end_line": 301,
+      "line": 304,
+      "end_line": 309,
       "owner": "_WorldForecastLock.acquire",
       "conditions": [],
       "operation": "set",
@@ -136839,8 +136959,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 339,
+      "end_line": 339,
       "owner": "_WorldForecastLock.release",
       "conditions": [],
       "operation": "eval",
@@ -136853,8 +136973,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 570,
+      "end_line": 570,
       "owner": "_load_candidates",
       "conditions": [],
       "operation": "execute",
@@ -136867,8 +136987,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 752,
-      "end_line": 752,
+      "line": 764,
+      "end_line": 764,
       "owner": "world_forecast_job",
       "conditions": [
         "acquire_lock and (not dry_run)"
@@ -136883,8 +137003,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 320,
-      "end_line": 323,
+      "line": 328,
+      "end_line": 331,
       "owner": "_WorldForecastLock.refresh",
       "conditions": [
         "current == self.token"
@@ -136899,8 +137019,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 342,
-      "end_line": 347,
+      "line": 350,
+      "end_line": 355,
       "owner": "_deactivate_current",
       "conditions": [],
       "operation": "execute",
@@ -136913,8 +137033,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 425,
-      "end_line": 429,
+      "line": 435,
+      "end_line": 439,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "operation": "execute",
@@ -136927,8 +137047,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 608,
-      "end_line": 617,
+      "line": 620,
+      "end_line": 629,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "operation": "execute",
@@ -136941,8 +137061,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 866,
-      "end_line": 871,
+      "line": 878,
+      "end_line": 883,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "operation": "execute",
@@ -136955,8 +137075,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 814,
-      "end_line": 814,
+      "line": 826,
+      "end_line": 826,
       "owner": "world_forecast_job",
       "conditions": [
         "row.id not in unchanged_ids",
@@ -136972,8 +137092,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 621,
-      "end_line": 625,
+      "line": 623,
+      "end_line": 627,
       "owner": "_candidate_gate",
       "conditions": [],
       "operation": "update",
@@ -144124,8 +144244,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 33,
-      "end_line": 33,
+      "line": 34,
+      "end_line": 34,
       "owner": "<module>",
       "conditions": [],
       "operation": "insert",
@@ -192579,8 +192699,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -192590,8 +192710,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 456,
+      "end_line": 456,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -192601,8 +192721,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -192612,8 +192732,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 456,
+      "end_line": 456,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -192623,8 +192743,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 454,
+      "end_line": 454,
       "owner": "_world_items",
       "conditions": [
         "datasets"
@@ -192634,8 +192754,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 456,
+      "end_line": 456,
       "owner": "_world_items",
       "conditions": [
         "codes"
@@ -192654,8 +192774,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 470,
+      "end_line": 470,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at.desc",
@@ -192681,8 +192801,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 465,
+      "end_line": 465,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.is_current",
@@ -192690,8 +192810,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 467,
+      "end_line": 467,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed",
@@ -192699,8 +192819,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 470,
+      "end_line": 470,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at",
@@ -192719,21 +192839,12 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 464,
-      "end_line": 464,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldForecast",
-      "expression": "WorldForecast"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
       "line": 465,
       "end_line": 465,
       "owner": "_world_items",
       "conditions": [],
-      "symbol": "app.models.WorldForecast.gate_status.in_",
-      "expression": "WorldForecast.gate_status.in_"
+      "symbol": "app.models.WorldForecast",
+      "expression": "WorldForecast"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
@@ -192741,13 +192852,22 @@
       "end_line": 466,
       "owner": "_world_items",
       "conditions": [],
+      "symbol": "app.models.WorldForecast.gate_status.in_",
+      "expression": "WorldForecast.gate_status.in_"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 467,
+      "end_line": 467,
+      "owner": "_world_items",
+      "conditions": [],
       "symbol": "app.models.WorldIndicator",
       "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 470,
+      "end_line": 470,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -192755,8 +192875,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 496,
+      "end_line": 496,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue.date",
@@ -192797,8 +192917,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 463,
+      "end_line": 463,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -192806,8 +192926,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 466,
+      "end_line": 466,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.gate_status",
@@ -192815,8 +192935,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 496,
+      "end_line": 496,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue",
@@ -192824,8 +192944,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 504,
+      "end_line": 504,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date.desc",
@@ -192866,8 +192986,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 463,
+      "end_line": 463,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.country_id",
@@ -192875,8 +192995,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 463,
+      "end_line": 463,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry.id",
@@ -192884,8 +193004,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 466,
+      "end_line": 466,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -192893,8 +193013,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 504,
+      "end_line": 504,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -192946,15 +193066,6 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 461,
-      "end_line": 461,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
       "line": 462,
       "end_line": 462,
       "owner": "_world_items",
@@ -192964,8 +193075,17 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 463,
+      "end_line": 463,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 463,
+      "end_line": 463,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -192973,8 +193093,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 495,
+      "end_line": 495,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecastValue.forecast_id",
@@ -192982,8 +193102,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 503,
+      "end_line": 503,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -192991,8 +193111,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 503,
-      "end_line": 503,
+      "line": 504,
+      "end_line": 504,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -193088,8 +193208,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 462,
+      "end_line": 462,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast.world_indicator_id",
@@ -193097,21 +193217,12 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 462,
+      "end_line": 462,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.id",
       "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/services/forecast_showcase.py",
-      "line": 493,
-      "end_line": 493,
-      "owner": "_world_items",
-      "conditions": [],
-      "symbol": "app.models.WorldForecastValue",
-      "expression": "WorldForecastValue"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
@@ -193124,8 +193235,17 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 495,
+      "end_line": 495,
+      "owner": "_world_items",
+      "conditions": [],
+      "symbol": "app.models.WorldForecastValue",
+      "expression": "WorldForecastValue"
+    },
+    {
+      "path": "backend/app/services/forecast_showcase.py",
+      "line": 502,
+      "end_line": 502,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -193133,8 +193253,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 502,
+      "end_line": 502,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -193142,8 +193262,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 502,
-      "end_line": 502,
+      "line": 503,
+      "end_line": 503,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -193184,8 +193304,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -193193,8 +193313,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -193202,8 +193322,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 460,
-      "end_line": 460,
+      "line": 461,
+      "end_line": 461,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -193211,8 +193331,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 462,
+      "end_line": 462,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -193220,8 +193340,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 462,
+      "end_line": 462,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -193229,8 +193349,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 502,
+      "end_line": 502,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -193238,8 +193358,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 501,
-      "end_line": 501,
+      "line": 502,
+      "end_line": 502,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -228394,8 +228514,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 38,
-      "end_line": 38,
+      "line": 51,
+      "end_line": 51,
       "owner": "world_forecast_source_ready",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -228403,8 +228523,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 40,
-      "end_line": 40,
+      "line": 53,
+      "end_line": 53,
       "owner": "world_forecast_source_ready",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -228412,8 +228532,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 45,
-      "end_line": 45,
+      "line": 58,
+      "end_line": 58,
       "owner": "world_forecast_source_ready",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState",
@@ -228421,8 +228541,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 355,
-      "end_line": 355,
+      "line": 363,
+      "end_line": 363,
       "owner": "_model_params_for",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -228430,8 +228550,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 401,
+      "end_line": 401,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -228439,8 +228559,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 481,
+      "end_line": 481,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -228448,8 +228568,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 595,
-      "end_line": 595,
+      "line": 607,
+      "end_line": 607,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -228457,8 +228577,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 564,
+      "end_line": 564,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -228466,8 +228586,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 565,
+      "end_line": 565,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.frequency.in_",
@@ -228475,8 +228595,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 613,
+      "end_line": 613,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.is_listed.is_",
@@ -228484,8 +228604,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 614,
+      "end_line": 614,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldIndicator.frequency.in_",
@@ -228493,8 +228613,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 405,
-      "end_line": 405,
+      "line": 415,
+      "end_line": 415,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [
         "eligibility is None"
@@ -228504,8 +228624,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 448,
+      "end_line": 448,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -228513,8 +228633,573 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 538,
+      "end_line": 538,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 559,
+      "end_line": 559,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDatasetState",
+      "expression": "WorldDatasetState"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 564,
+      "end_line": 564,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 565,
+      "end_line": 565,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.frequency",
+      "expression": "WorldIndicator.frequency"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 569,
+      "end_line": 569,
+      "owner": "_load_candidates",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry.slug.in_",
+      "expression": "WorldCountry.slug.in_"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 611,
+      "end_line": 611,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 613,
+      "end_line": 613,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.is_listed",
+      "expression": "WorldIndicator.is_listed"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 614,
+      "end_line": 614,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.frequency",
+      "expression": "WorldIndicator.frequency"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "_latest_forecasts_map",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry.slug.in_",
+      "expression": "WorldCountry.slug.in_"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 516,
+      "end_line": 516,
+      "owner": "retrain_world_indicator_forecast",
+      "conditions": [
+        "gate.result is not None"
+      ],
+      "symbol": "app.models.WorldForecastValue",
+      "expression": "WorldForecastValue"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 564,
+      "end_line": 564,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 565,
+      "end_line": 565,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 569,
+      "end_line": 569,
+      "owner": "_load_candidates",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 611,
+      "end_line": 611,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 611,
+      "end_line": 611,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 613,
+      "end_line": 613,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 614,
+      "end_line": 614,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "_latest_forecasts_map",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 557,
+      "end_line": 557,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 560,
+      "end_line": 560,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDatasetState.provider",
+      "expression": "WorldDatasetState.provider"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 560,
+      "end_line": 560,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.provider",
+      "expression": "WorldIndicator.provider"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 561,
+      "end_line": 561,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDatasetState.dataset_id",
+      "expression": "WorldDatasetState.dataset_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 561,
+      "end_line": 561,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.dataset_id",
+      "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 569,
+      "end_line": 569,
+      "owner": "_load_candidates",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 610,
+      "end_line": 610,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 611,
+      "end_line": 611,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 611,
+      "end_line": 611,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "_latest_forecasts_map",
+      "conditions": [
+        "country_slugs"
+      ],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.indicator_id",
+      "expression": "WorldDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 557,
+      "end_line": 557,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.country_id",
+      "expression": "WorldIndicator.country_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 557,
+      "end_line": 557,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.id",
+      "expression": "WorldCountry.id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 560,
+      "end_line": 560,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDatasetState",
+      "expression": "WorldDatasetState"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 560,
+      "end_line": 560,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 561,
+      "end_line": 561,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDatasetState",
+      "expression": "WorldDatasetState"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 561,
+      "end_line": 561,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 610,
+      "end_line": 610,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 353,
+      "end_line": 353,
+      "owner": "_deactivate_current",
+      "conditions": [],
+      "symbol": "app.models.WorldForecast.is_current",
+      "expression": "WorldForecast.is_current"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 438,
+      "end_line": 438,
+      "owner": "retrain_world_indicator_forecast",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint.date",
+      "expression": "WorldDataPoint.date"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 537,
+      "end_line": 537,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 543,
+      "end_line": 543,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.id",
+      "expression": "WorldIndicator.id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 544,
+      "end_line": 544,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry.slug",
+      "expression": "WorldCountry.slug"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 545,
+      "end_line": 545,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.provider",
+      "expression": "WorldIndicator.provider"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 546,
+      "end_line": 546,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.dataset_id",
+      "expression": "WorldIndicator.dataset_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 547,
+      "end_line": 547,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.code",
+      "expression": "WorldIndicator.code"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 548,
+      "end_line": 548,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.frequency",
+      "expression": "WorldIndicator.frequency"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 549,
+      "end_line": 549,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.history_end",
+      "expression": "WorldIndicator.history_end"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 550,
+      "end_line": 550,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.points_count",
+      "expression": "WorldIndicator.points_count"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 552,
+      "end_line": 552,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.name_quality",
+      "expression": "WorldIndicator.name_quality"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 553,
+      "end_line": 553,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator.unit",
+      "expression": "WorldIndicator.unit"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 557,
+      "end_line": 557,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 557,
+      "end_line": 557,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 625,
+      "end_line": 625,
+      "owner": "_latest_forecasts_map",
+      "conditions": [],
+      "symbol": "app.models.WorldForecast.world_indicator_id",
+      "expression": "WorldForecast.world_indicator_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 819,
+      "end_line": 819,
+      "owner": "world_forecast_job",
+      "conditions": [
+        "row.id not in unchanged_ids"
+      ],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 352,
+      "end_line": 352,
+      "owner": "_deactivate_current",
+      "conditions": [],
+      "symbol": "app.models.WorldForecast.world_indicator_id",
+      "expression": "WorldForecast.world_indicator_id"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 353,
+      "end_line": 353,
+      "owner": "_deactivate_current",
+      "conditions": [],
+      "symbol": "app.models.WorldForecast",
+      "expression": "WorldForecast"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 438,
+      "end_line": 438,
+      "owner": "retrain_world_indicator_forecast",
+      "conditions": [],
+      "symbol": "app.models.WorldDataPoint",
+      "expression": "WorldDataPoint"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 543,
+      "end_line": 543,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 544,
+      "end_line": 544,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldCountry",
+      "expression": "WorldCountry"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 545,
+      "end_line": 545,
+      "owner": "_load_candidates",
+      "conditions": [],
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
+    },
+    {
+      "path": "backend/app/services/world_forecast_pipeline.py",
+      "line": 546,
+      "end_line": 546,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -228526,86 +229211,35 @@
       "end_line": 547,
       "owner": "_load_candidates",
       "conditions": [],
-      "symbol": "app.models.WorldDatasetState",
-      "expression": "WorldDatasetState"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 552,
-      "end_line": 552,
+      "line": 548,
+      "end_line": 548,
       "owner": "_load_candidates",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 549,
+      "end_line": 549,
       "owner": "_load_candidates",
       "conditions": [],
-      "symbol": "app.models.WorldIndicator.frequency",
-      "expression": "WorldIndicator.frequency"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 557,
-      "end_line": 557,
+      "line": 550,
+      "end_line": 550,
       "owner": "_load_candidates",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry.slug.in_",
-      "expression": "WorldCountry.slug.in_"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 599,
-      "end_line": 599,
-      "owner": "_latest_forecasts_map",
       "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 601,
-      "end_line": 601,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.is_listed",
-      "expression": "WorldIndicator.is_listed"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 602,
-      "end_line": 602,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.frequency",
-      "expression": "WorldIndicator.frequency"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 606,
-      "end_line": 606,
-      "owner": "_latest_forecasts_map",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry.slug.in_",
-      "expression": "WorldCountry.slug.in_"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 504,
-      "end_line": 504,
-      "owner": "retrain_world_indicator_forecast",
-      "conditions": [
-        "gate.result is not None"
-      ],
-      "symbol": "app.models.WorldForecastValue",
-      "expression": "WorldForecastValue"
+      "symbol": "app.models.WorldIndicator",
+      "expression": "WorldIndicator"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
@@ -228627,522 +229261,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 557,
-      "end_line": 557,
-      "owner": "_load_candidates",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry.slug",
-      "expression": "WorldCountry.slug"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 599,
-      "end_line": 599,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 599,
-      "end_line": 599,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 601,
-      "end_line": 601,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 602,
-      "end_line": 602,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 606,
-      "end_line": 606,
-      "owner": "_latest_forecasts_map",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry.slug",
-      "expression": "WorldCountry.slug"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 545,
-      "end_line": 545,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 548,
-      "end_line": 548,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDatasetState.provider",
-      "expression": "WorldDatasetState.provider"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 548,
-      "end_line": 548,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.provider",
-      "expression": "WorldIndicator.provider"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 549,
-      "end_line": 549,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDatasetState.dataset_id",
-      "expression": "WorldDatasetState.dataset_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 549,
-      "end_line": 549,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.dataset_id",
-      "expression": "WorldIndicator.dataset_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 557,
-      "end_line": 557,
-      "owner": "_load_candidates",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 598,
-      "end_line": 598,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 599,
-      "end_line": 599,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 599,
-      "end_line": 599,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 606,
-      "end_line": 606,
-      "owner": "_latest_forecasts_map",
-      "conditions": [
-        "country_slugs"
-      ],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 525,
-      "end_line": 525,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.indicator_id",
-      "expression": "WorldDataPoint.indicator_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 525,
-      "end_line": 525,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 545,
-      "end_line": 545,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.country_id",
-      "expression": "WorldIndicator.country_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 545,
-      "end_line": 545,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.id",
-      "expression": "WorldCountry.id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 548,
-      "end_line": 548,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDatasetState",
-      "expression": "WorldDatasetState"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 548,
-      "end_line": 548,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 549,
-      "end_line": 549,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDatasetState",
-      "expression": "WorldDatasetState"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 549,
-      "end_line": 549,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 598,
-      "end_line": 598,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 345,
-      "end_line": 345,
-      "owner": "_deactivate_current",
-      "conditions": [],
-      "symbol": "app.models.WorldForecast.is_current",
-      "expression": "WorldForecast.is_current"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 428,
-      "end_line": 428,
-      "owner": "retrain_world_indicator_forecast",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint.date",
-      "expression": "WorldDataPoint.date"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 525,
-      "end_line": 525,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 525,
-      "end_line": 525,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 531,
-      "end_line": 531,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.id",
-      "expression": "WorldIndicator.id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 532,
-      "end_line": 532,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry.slug",
-      "expression": "WorldCountry.slug"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 533,
-      "end_line": 533,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.provider",
-      "expression": "WorldIndicator.provider"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 534,
-      "end_line": 534,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.dataset_id",
-      "expression": "WorldIndicator.dataset_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 535,
-      "end_line": 535,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.code",
-      "expression": "WorldIndicator.code"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 536,
-      "end_line": 536,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.frequency",
-      "expression": "WorldIndicator.frequency"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 537,
-      "end_line": 537,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.history_end",
-      "expression": "WorldIndicator.history_end"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 538,
-      "end_line": 538,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.points_count",
-      "expression": "WorldIndicator.points_count"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 540,
-      "end_line": 540,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.name_quality",
-      "expression": "WorldIndicator.name_quality"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 541,
-      "end_line": 541,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator.unit",
-      "expression": "WorldIndicator.unit"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 545,
-      "end_line": 545,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 545,
-      "end_line": 545,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 613,
-      "end_line": 613,
-      "owner": "_latest_forecasts_map",
-      "conditions": [],
-      "symbol": "app.models.WorldForecast.world_indicator_id",
-      "expression": "WorldForecast.world_indicator_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 807,
-      "end_line": 807,
-      "owner": "world_forecast_job",
-      "conditions": [
-        "row.id not in unchanged_ids"
-      ],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 344,
-      "end_line": 344,
-      "owner": "_deactivate_current",
-      "conditions": [],
-      "symbol": "app.models.WorldForecast.world_indicator_id",
-      "expression": "WorldForecast.world_indicator_id"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 345,
-      "end_line": 345,
-      "owner": "_deactivate_current",
-      "conditions": [],
-      "symbol": "app.models.WorldForecast",
-      "expression": "WorldForecast"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 428,
-      "end_line": 428,
-      "owner": "retrain_world_indicator_forecast",
-      "conditions": [],
-      "symbol": "app.models.WorldDataPoint",
-      "expression": "WorldDataPoint"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 531,
-      "end_line": 531,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 532,
-      "end_line": 532,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldCountry",
-      "expression": "WorldCountry"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 533,
-      "end_line": 533,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 534,
-      "end_line": 534,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 535,
-      "end_line": 535,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 536,
-      "end_line": 536,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 537,
-      "end_line": 537,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 538,
-      "end_line": 538,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 540,
-      "end_line": 540,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 541,
-      "end_line": 541,
-      "owner": "_load_candidates",
-      "conditions": [],
-      "symbol": "app.models.WorldIndicator",
-      "expression": "WorldIndicator"
-    },
-    {
-      "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 554,
+      "end_line": 554,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState.status.label",
@@ -229150,8 +229270,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 555,
+      "end_line": 555,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState.last_success_at.label",
@@ -229159,8 +229279,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 613,
-      "end_line": 613,
+      "line": 625,
+      "end_line": 625,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229168,8 +229288,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 614,
-      "end_line": 614,
+      "line": 626,
+      "end_line": 626,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at.desc",
@@ -229177,8 +229297,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 627,
+      "end_line": 627,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.id.desc",
@@ -229186,8 +229306,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 351,
+      "end_line": 351,
       "owner": "_deactivate_current",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229195,8 +229315,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 352,
+      "end_line": 352,
       "owner": "_deactivate_current",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229204,8 +229324,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 554,
+      "end_line": 554,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState.status",
@@ -229213,8 +229333,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 555,
+      "end_line": 555,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState.last_success_at",
@@ -229222,8 +229342,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 611,
-      "end_line": 611,
+      "line": 623,
+      "end_line": 623,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.world_indicator_id",
@@ -229231,8 +229351,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 614,
-      "end_line": 614,
+      "line": 626,
+      "end_line": 626,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.created_at",
@@ -229240,8 +229360,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 627,
+      "end_line": 627,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.id",
@@ -229249,8 +229369,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 868,
-      "end_line": 868,
+      "line": 880,
+      "end_line": 880,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -229258,8 +229378,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 437,
+      "end_line": 437,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.indicator_id",
@@ -229267,8 +229387,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 535,
+      "end_line": 535,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -229276,8 +229396,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 542,
-      "end_line": 542,
+      "line": 554,
+      "end_line": 554,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState",
@@ -229285,8 +229405,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 555,
+      "end_line": 555,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDatasetState",
@@ -229294,8 +229414,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 611,
-      "end_line": 611,
+      "line": 623,
+      "end_line": 623,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229303,8 +229423,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 614,
-      "end_line": 614,
+      "line": 626,
+      "end_line": 626,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229312,8 +229432,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 627,
+      "end_line": 627,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229321,8 +229441,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 879,
+      "end_line": 879,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry.slug",
@@ -229330,8 +229450,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 868,
-      "end_line": 868,
+      "line": 880,
+      "end_line": 880,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -229339,8 +229459,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 869,
-      "end_line": 869,
+      "line": 881,
+      "end_line": 881,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry.region_ru",
@@ -229348,8 +229468,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 436,
+      "end_line": 436,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -229357,8 +229477,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 437,
+      "end_line": 437,
       "owner": "retrain_world_indicator_forecast",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -229366,8 +229486,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 534,
+      "end_line": 534,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.value",
@@ -229375,8 +229495,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 523,
-      "end_line": 523,
+      "line": 535,
+      "end_line": 535,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -229384,8 +229504,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 879,
+      "end_line": 879,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -229393,8 +229513,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 869,
-      "end_line": 869,
+      "line": 881,
+      "end_line": 881,
       "owner": "rest_of_world_slugs",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -229402,8 +229522,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 534,
+      "end_line": 534,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint.date",
@@ -229411,8 +229531,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 534,
+      "end_line": 534,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -229420,8 +229540,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 622,
+      "end_line": 622,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.world_indicator_id.in_",
@@ -229429,8 +229549,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 522,
-      "end_line": 522,
+      "line": 534,
+      "end_line": 534,
       "owner": "_load_candidates",
       "conditions": [],
       "symbol": "app.models.WorldDataPoint",
@@ -229438,8 +229558,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 609,
-      "end_line": 609,
+      "line": 621,
+      "end_line": 621,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -229447,8 +229567,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 622,
+      "end_line": 622,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast.world_indicator_id",
@@ -229456,8 +229576,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 622,
+      "end_line": 622,
       "owner": "_latest_forecasts_map",
       "conditions": [],
       "symbol": "app.models.WorldForecast",
@@ -245501,12 +245621,12 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 50,
-      "end_line": 70,
+      "line": 56,
+      "end_line": 78,
       "owner": "<module>",
       "conditions": [],
-      "literal": "\n    with last as (\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\n               (model_params->>'method_version' is not null) as p_mv\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\n    pub as (select distinct world_indicator_id from world_forecasts where is_current and gate_status = 'passed')\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\n           i.points_count, i.history_end, i.category_ru,\n           s.status as src_status, s.last_success_at as src_ok,\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\n           (p.world_indicator_id is not null) as has_public\n    from world_indicators i\n    join world_countries c on c.id = i.country_id\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\n    left join last l on l.world_indicator_id = i.id\n    left join pub p on p.world_indicator_id = i.id\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\n    ",
-      "expression": "\"\\n    with last as (\\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\\n               (model_params->>'method_version' is not null) as p_mv\\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\\n    pub as (select distinct world_indicator_id from world_forecasts where is_current and gate_status = 'passed')\\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\\n           i.points_count, i.history_end, i.category_ru,\\n           s.status as src_status, s.last_success_at as src_ok,\\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\\n           (p.world_indicator_id is not null) as has_public\\n    from world_indicators i\\n    join world_countries c on c.id = i.country_id\\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\\n    left join last l on l.world_indicator_id = i.id\\n    left join pub p on p.world_indicator_id = i.id\\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\\n    \"",
+      "literal": "\n    with last as (\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\n               (model_params->>'method_version' is not null) as p_mv,\n               model_params->>'publication_policy' as p_policy\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\n    pub as (select world_indicator_id, bool_or(gate_status = 'passed') as checked from world_forecasts\n            where is_current and gate_status in ('passed', 'advisory') group by world_indicator_id)\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\n           i.points_count, i.history_end, i.category_ru,\n           s.status as src_status, s.last_success_at as src_ok,\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\n           l.p_policy, (p.world_indicator_id is not null) as has_public, coalesce(p.checked, false) as public_checked\n    from world_indicators i\n    join world_countries c on c.id = i.country_id\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\n    left join last l on l.world_indicator_id = i.id\n    left join pub p on p.world_indicator_id = i.id\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\n    ",
+      "expression": "\"\\n    with last as (\\n        select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,\\n               model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,\\n               (model_params->>'method_version' is not null) as p_mv,\\n               model_params->>'publication_policy' as p_policy\\n        from world_forecasts order by world_indicator_id, created_at desc, id desc),\\n    pub as (select world_indicator_id, bool_or(gate_status = 'passed') as checked from world_forecasts\\n            where is_current and gate_status in ('passed', 'advisory') group by world_indicator_id)\\n    select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,\\n           i.points_count, i.history_end, i.category_ru,\\n           s.status as src_status, s.last_success_at as src_ok,\\n           l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,\\n           l.p_policy, (p.world_indicator_id is not null) as has_public, coalesce(p.checked, false) as public_checked\\n    from world_indicators i\\n    join world_countries c on c.id = i.country_id\\n    left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id\\n    left join last l on l.world_indicator_id = i.id\\n    left join pub p on p.world_indicator_id = i.id\\n    where i.is_listed and i.frequency in ('monthly', 'quarterly', 'annual')\\n    \"",
       "resolved_text_constructor": "sqlalchemy.text"
     },
     {
@@ -251391,7 +251511,7 @@
     {
       "path": "backend/app/config.py",
       "line": 6,
-      "end_line": 533,
+      "end_line": 539,
       "owner": "<module>",
       "conditions": [],
       "name": "Settings",
@@ -251399,8 +251519,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 516,
-      "end_line": 518,
+      "line": 522,
+      "end_line": 524,
       "owner": "Settings",
       "conditions": [],
       "name": "public_origin",
@@ -251408,8 +251528,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 521,
-      "end_line": 523,
+      "line": 527,
+      "end_line": 529,
       "owner": "Settings",
       "conditions": [],
       "name": "public_host",
@@ -251417,8 +251537,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 526,
-      "end_line": 528,
+      "line": 532,
+      "end_line": 534,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -251426,8 +251546,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 530,
-      "end_line": 533,
+      "line": 536,
+      "end_line": 539,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -254000,8 +254120,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 59,
-      "end_line": 67,
+      "line": 63,
+      "end_line": 71,
       "owner": "<module>",
       "conditions": [],
       "name": "_official_policy",
@@ -254009,8 +254129,8 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 101,
-      "end_line": 146,
+      "line": 105,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast_eligibility_for",
@@ -261888,7 +262008,7 @@
     {
       "path": "backend/app/services/forecast_showcase.py",
       "line": 429,
-      "end_line": 547,
+      "end_line": 548,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_items",
@@ -261896,8 +262016,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 550,
-      "end_line": 557,
+      "line": 551,
+      "end_line": 558,
       "owner": "<module>",
       "conditions": [],
       "name": "_recover_session",
@@ -261905,8 +262025,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 560,
-      "end_line": 572,
+      "line": 561,
+      "end_line": 573,
       "owner": "<module>",
       "conditions": [],
       "name": "_world_unit",
@@ -261914,8 +262034,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 575,
-      "end_line": 579,
+      "line": 576,
+      "end_line": 580,
       "owner": "<module>",
       "conditions": [],
       "name": "_theme_order",
@@ -261923,8 +262043,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 582,
-      "end_line": 591,
+      "line": 583,
+      "end_line": 592,
       "owner": "<module>",
       "conditions": [],
       "name": "build_showcase",
@@ -280714,8 +280834,17 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 20,
+      "line": 24,
       "end_line": 27,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "publish_all_enabled",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_forecast_gate.py",
+      "line": 30,
+      "end_line": 40,
       "owner": "<module>",
       "conditions": [],
       "name": "publishable_world_forecast",
@@ -280723,8 +280852,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 30,
-      "end_line": 33,
+      "line": 43,
+      "end_line": 46,
       "owner": "<module>",
       "conditions": [],
       "name": "_as_naive",
@@ -280732,8 +280861,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 36,
-      "end_line": 50,
+      "line": 49,
+      "end_line": 63,
       "owner": "<module>",
       "conditions": [],
       "name": "world_forecast_source_ready",
@@ -280741,8 +280870,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 62,
-      "end_line": 74,
+      "line": 66,
+      "end_line": 78,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldForecastCandidate",
@@ -280750,8 +280879,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 78,
-      "end_line": 87,
+      "line": 82,
+      "end_line": 91,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldForecastRunSummary",
@@ -280759,8 +280888,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 90,
-      "end_line": 92,
+      "line": 94,
+      "end_line": 96,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_priority_countries",
@@ -280768,8 +280897,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 95,
-      "end_line": 102,
+      "line": 99,
+      "end_line": 106,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_country_slugs",
@@ -280777,8 +280906,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 106,
-      "end_line": 121,
+      "line": 110,
+      "end_line": 125,
       "owner": "<module>",
       "conditions": [],
       "name": "concept_priority_sets",
@@ -280786,8 +280915,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 124,
-      "end_line": 137,
+      "line": 128,
+      "end_line": 141,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast_fingerprint",
@@ -280795,8 +280924,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 140,
-      "end_line": 155,
+      "line": 144,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "_stored_fingerprint",
@@ -280804,8 +280933,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 158,
-      "end_line": 161,
+      "line": 162,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "_as_naive",
@@ -280813,8 +280942,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 164,
-      "end_line": 165,
+      "line": 168,
+      "end_line": 169,
       "owner": "<module>",
       "conditions": [],
       "name": "_naive_now",
@@ -280822,8 +280951,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 168,
-      "end_line": 174,
+      "line": 172,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "effective_max_age_days",
@@ -280831,8 +280960,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 177,
-      "end_line": 221,
+      "line": 181,
+      "end_line": 229,
       "owner": "<module>",
       "conditions": [],
       "name": "forecast_is_unchanged",
@@ -280840,8 +280969,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 224,
-      "end_line": 250,
+      "line": 232,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "world_forecast_sort_key",
@@ -280849,8 +280978,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 253,
-      "end_line": 269,
+      "line": 261,
+      "end_line": 277,
       "owner": "<module>",
       "conditions": [],
       "name": "sort_world_forecast_candidates",
@@ -280858,8 +280987,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 272,
-      "end_line": 279,
+      "line": 280,
+      "end_line": 287,
       "owner": "<module>",
       "conditions": [],
       "name": "_format_eta",
@@ -280867,8 +280996,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 282,
-      "end_line": 334,
+      "line": 290,
+      "end_line": 342,
       "owner": "<module>",
       "conditions": [],
       "name": "_WorldForecastLock",
@@ -280876,8 +281005,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 337,
-      "end_line": 351,
+      "line": 345,
+      "end_line": 359,
       "owner": "<module>",
       "conditions": [],
       "name": "_deactivate_current",
@@ -280885,8 +281014,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 354,
-      "end_line": 386,
+      "line": 362,
+      "end_line": 396,
       "owner": "<module>",
       "conditions": [],
       "name": "_model_params_for",
@@ -280894,8 +281023,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 389,
-      "end_line": 511,
+      "line": 399,
+      "end_line": 523,
       "owner": "<module>",
       "conditions": [],
       "name": "retrain_world_indicator_forecast",
@@ -280903,8 +281032,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 514,
-      "end_line": 588,
+      "line": 526,
+      "end_line": 600,
       "owner": "<module>",
       "conditions": [],
       "name": "_load_candidates",
@@ -280912,8 +281041,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 591,
-      "end_line": 619,
+      "line": 603,
+      "end_line": 631,
       "owner": "<module>",
       "conditions": [],
       "name": "_latest_forecasts_map",
@@ -280921,8 +281050,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 622,
-      "end_line": 653,
+      "line": 634,
+      "end_line": 665,
       "owner": "<module>",
       "conditions": [],
       "name": "classify_unchanged",
@@ -280930,8 +281059,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 656,
-      "end_line": 665,
+      "line": 668,
+      "end_line": 677,
       "owner": "<module>",
       "conditions": [],
       "name": "select_forecast_batch",
@@ -280939,8 +281068,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 671,
-      "end_line": 697,
+      "line": 683,
+      "end_line": 709,
       "owner": "<module>",
       "conditions": [],
       "name": "load_world_forecast_plan",
@@ -280948,8 +281077,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 700,
-      "end_line": 701,
+      "line": 712,
+      "end_line": 713,
       "owner": "<module>",
       "conditions": [],
       "name": "_bump_world_forecast_cache",
@@ -280957,8 +281086,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 704,
-      "end_line": 716,
+      "line": 716,
+      "end_line": 728,
       "owner": "<module>",
       "conditions": [],
       "name": "_empty_counts",
@@ -280966,8 +281095,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 719,
-      "end_line": 730,
+      "line": 731,
+      "end_line": 742,
       "owner": "<module>",
       "conditions": [],
       "name": "_summary_from_counts",
@@ -280975,8 +281104,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 733,
-      "end_line": 859,
+      "line": 745,
+      "end_line": 871,
       "owner": "<module>",
       "conditions": [],
       "name": "world_forecast_job",
@@ -280984,8 +281113,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 862,
-      "end_line": 873,
+      "line": 874,
+      "end_line": 885,
       "owner": "<module>",
       "conditions": [],
       "name": "rest_of_world_slugs",
@@ -280993,8 +281122,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 876,
-      "end_line": 878,
+      "line": 888,
+      "end_line": 890,
       "owner": "<module>",
       "conditions": [],
       "name": "scheduled_world_forecast_job",
@@ -281002,8 +281131,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 285,
-      "end_line": 288,
+      "line": 293,
+      "end_line": 296,
       "owner": "_WorldForecastLock",
       "conditions": [],
       "name": "__init__",
@@ -281011,8 +281140,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 290,
-      "end_line": 312,
+      "line": 298,
+      "end_line": 320,
       "owner": "_WorldForecastLock",
       "conditions": [],
       "name": "acquire",
@@ -281020,8 +281149,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 314,
-      "end_line": 325,
+      "line": 322,
+      "end_line": 333,
       "owner": "_WorldForecastLock",
       "conditions": [],
       "name": "refresh",
@@ -281029,8 +281158,8 @@
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 327,
-      "end_line": 334,
+      "line": 335,
+      "end_line": 342,
       "owner": "_WorldForecastLock",
       "conditions": [],
       "name": "release",
@@ -281038,8 +281167,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 40,
-      "end_line": 42,
+      "line": 42,
+      "end_line": 44,
       "owner": "<module>",
       "conditions": [],
       "name": "is_percentage_unit",
@@ -281047,8 +281176,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 46,
-      "end_line": 55,
+      "line": 48,
+      "end_line": 57,
       "owner": "<module>",
       "conditions": [],
       "name": "WorldForecastGate",
@@ -281056,8 +281185,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 58,
-      "end_line": 59,
+      "line": 60,
+      "end_line": 61,
       "owner": "<module>",
       "conditions": [],
       "name": "_month_index",
@@ -281065,8 +281194,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 62,
-      "end_line": 71,
+      "line": 64,
+      "end_line": 73,
       "owner": "<module>",
       "conditions": [],
       "name": "_contiguous_tail_start",
@@ -281074,8 +281203,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 88,
-      "end_line": 93,
+      "line": 90,
+      "end_line": 95,
       "owner": "<module>",
       "conditions": [],
       "name": "_RegularSeries",
@@ -281083,8 +281212,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 96,
-      "end_line": 131,
+      "line": 98,
+      "end_line": 133,
       "owner": "<module>",
       "conditions": [],
       "name": "_regularize_tail",
@@ -281092,8 +281221,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 134,
-      "end_line": 161,
+      "line": 136,
+      "end_line": 163,
       "owner": "<module>",
       "conditions": [],
       "name": "_seasonal_projection",
@@ -281101,8 +281230,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 164,
-      "end_line": 165,
+      "line": 166,
+      "end_line": 167,
       "owner": "<module>",
       "conditions": [],
       "name": "_mae",
@@ -281110,8 +281239,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 168,
-      "end_line": 176,
+      "line": 170,
+      "end_line": 178,
       "owner": "<module>",
       "conditions": [],
       "name": "_scale",
@@ -281119,8 +281248,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 179,
-      "end_line": 191,
+      "line": 181,
+      "end_line": 193,
       "owner": "<module>",
       "conditions": [],
       "name": "_resolve_primary_strategy",
@@ -281128,8 +281257,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 194,
-      "end_line": 233,
+      "line": 196,
+      "end_line": 235,
       "owner": "<module>",
       "conditions": [],
       "name": "_run_primary_strategy",
@@ -281137,8 +281266,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 236,
-      "end_line": 242,
+      "line": 238,
+      "end_line": 244,
       "owner": "<module>",
       "conditions": [],
       "name": "_backtest_layout",
@@ -281146,8 +281275,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 245,
-      "end_line": 437,
+      "line": 247,
+      "end_line": 439,
       "owner": "<module>",
       "conditions": [],
       "name": "_train_primary_gate",
@@ -281155,8 +281284,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 478,
-      "end_line": 485,
+      "line": 480,
+      "end_line": 487,
       "owner": "<module>",
       "conditions": [],
       "name": "_candidate_forecast",
@@ -281164,8 +281293,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 488,
-      "end_line": 538,
+      "line": 490,
+      "end_line": 540,
       "owner": "<module>",
       "conditions": [],
       "name": "_score_candidates",
@@ -281173,8 +281302,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 541,
-      "end_line": 545,
+      "line": 543,
+      "end_line": 547,
       "owner": "<module>",
       "conditions": [],
       "name": "_beats_naive",
@@ -281182,8 +281311,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 548,
-      "end_line": 664,
+      "line": 550,
+      "end_line": 666,
       "owner": "<module>",
       "conditions": [],
       "name": "_candidate_gate",
@@ -281191,8 +281320,17 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 667,
-      "end_line": 706,
+      "line": 698,
+      "end_line": 756,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_train_unchecked",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_forecaster.py",
+      "line": 759,
+      "end_line": 809,
       "owner": "<module>",
       "conditions": [],
       "name": "train_quality_gated_world_forecast",
@@ -281200,8 +281338,8 @@
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 709,
-      "end_line": 746,
+      "line": 812,
+      "end_line": 849,
       "owner": "<module>",
       "conditions": [],
       "name": "_gate_with_fallbacks",
@@ -282226,8 +282364,8 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "line": 24,
-      "end_line": 84,
+      "line": 26,
+      "end_line": 95,
       "owner": "<module>",
       "conditions": [],
       "name": "state_forecast",
@@ -285556,8 +285694,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 73,
-      "end_line": 98,
+      "line": 81,
+      "end_line": 108,
       "owner": "<module>",
       "conditions": [],
       "name": "classify",
@@ -285565,8 +285703,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 101,
-      "end_line": 135,
+      "line": 111,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -285574,8 +285712,8 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 45,
-      "end_line": 46,
+      "line": 51,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "effective_max_age_days",
@@ -299817,43 +299955,11 @@
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 101,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.data.world_forecast_policy._OFFICIAL_PROVIDERS"
-    },
-    {
-      "path": "backend/app/data/world_forecast_policy.py",
-      "line": 62,
-      "end_line": 62,
-      "owner": "_official_policy",
-      "conditions": [],
-      "symbol": "app.data.world_forecast_policy._FREQ_STRATEGIES"
-    },
-    {
-      "path": "backend/app/data/world_forecast_policy.py",
-      "line": 63,
-      "end_line": 63,
-      "owner": "_official_policy",
-      "conditions": [],
-      "symbol": "app.data.world_forecast_policy._FREQ_MIN_POINTS"
-    },
-    {
-      "path": "backend/app/data/world_forecast_policy.py",
-      "line": 64,
-      "end_line": 64,
-      "owner": "_official_policy",
-      "conditions": [],
-      "symbol": "app.data.world_forecast_policy.WORLD_FORECAST_HORIZONS"
-    },
-    {
-      "path": "backend/app/data/world_forecast_policy.py",
-      "line": 65,
-      "end_line": 65,
-      "owner": "_official_policy",
-      "conditions": [],
-      "symbol": "app.data.world_forecast_policy._FREQ_SEASONS"
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
@@ -299861,15 +299967,55 @@
       "end_line": 66,
       "owner": "_official_policy",
       "conditions": [],
+      "symbol": "app.data.world_forecast_policy._FREQ_STRATEGIES"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 67,
+      "end_line": 67,
+      "owner": "_official_policy",
+      "conditions": [],
+      "symbol": "app.data.world_forecast_policy._FREQ_MIN_POINTS"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 68,
+      "end_line": 68,
+      "owner": "_official_policy",
+      "conditions": [],
+      "symbol": "app.data.world_forecast_policy.WORLD_FORECAST_HORIZONS"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 69,
+      "end_line": 69,
+      "owner": "_official_policy",
+      "conditions": [],
+      "symbol": "app.data.world_forecast_policy._FREQ_SEASONS"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 70,
+      "end_line": 70,
+      "owner": "_official_policy",
+      "conditions": [],
       "symbol": "app.data.world_forecast_policy._FREQ_MAX_AGE_DAYS"
     },
     {
       "path": "backend/app/data/world_forecast_policy.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 117,
+      "end_line": 117,
       "owner": "forecast_eligibility_for",
       "conditions": [],
       "symbol": "app.data.world_forecast_policy.OFFICIAL_PROVIDER_POLICIES"
+    },
+    {
+      "path": "backend/app/data/world_forecast_policy.py",
+      "line": 131,
+      "end_line": 131,
+      "owner": "forecast_eligibility_for",
+      "conditions": [],
+      "symbol": "app.data.world_forecast_policy.FREQ_MIN_POINTS_PUBLISH_ALL"
     },
     {
       "path": "backend/app/data/world_indicator_titles_ru.py",
@@ -302076,8 +302222,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 443,
+      "end_line": 443,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.WORLD_THEMES"
@@ -302092,16 +302238,16 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 576,
-      "end_line": 576,
+      "line": 577,
+      "end_line": 577,
       "owner": "_theme_order",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.THEMES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 580,
+      "end_line": 580,
       "owner": "_theme_order",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.THEMES"
@@ -302124,8 +302270,8 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 445,
+      "end_line": 445,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.data.world_concepts.CONCEPT_BY_SLUG"
@@ -302148,19 +302294,19 @@
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 498,
-      "end_line": 498,
+      "line": 499,
+      "end_line": 499,
       "owner": "_world_items",
       "conditions": [],
       "symbol": "app.services.forecast_showcase.HISTORY_POINTS"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 466,
+      "end_line": 466,
       "owner": "_world_items",
       "conditions": [],
-      "symbol": "app.services.world_forecast_gate.PUBLISHED_GATE_STATUSES"
+      "symbol": "app.services.world_forecast_gate.CHECKED_GATE_STATUSES"
     },
     {
       "path": "backend/app/services/forecast_showcase.py",
@@ -309762,72 +309908,80 @@
     },
     {
       "path": "backend/app/services/world_forecast_gate.py",
-      "line": 24,
-      "end_line": 24,
+      "line": 38,
+      "end_line": 38,
       "owner": "publishable_world_forecast",
       "conditions": [],
-      "symbol": "app.services.world_forecast_gate.PUBLISHED_GATE_STATUSES"
+      "symbol": "app.services.world_forecast_gate.CHECKED_GATE_STATUSES"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 112,
-      "end_line": 112,
+      "line": 116,
+      "end_line": 116,
       "owner": "concept_priority_sets",
       "conditions": [],
       "symbol": "app.data.world_concepts.WORLD_CONCEPTS"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 249,
-      "end_line": 249,
+      "line": 257,
+      "end_line": 257,
       "owner": "world_forecast_sort_key",
       "conditions": [],
       "symbol": "app.services.world_forecast_pipeline._FREQ_RANK"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 140,
+      "end_line": 140,
       "owner": "forecast_fingerprint",
       "conditions": [],
       "symbol": "app.data.world_forecast_policy.WORLD_FORECAST_HORIZONS"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 701,
-      "end_line": 701,
+      "line": 713,
+      "end_line": 713,
       "owner": "_bump_world_forecast_cache",
       "conditions": [],
       "symbol": "app.services.world_forecast_pipeline.WORLD_FORECAST_CACHE_NAMESPACES"
     },
     {
       "path": "backend/app/services/world_forecast_pipeline.py",
-      "line": 118,
-      "end_line": 118,
+      "line": 122,
+      "end_line": 122,
       "owner": "concept_priority_sets",
       "conditions": [],
       "symbol": "app.data.world_concept_national.NATIONAL_CONCEPT_INDICATOR_CODES"
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 571,
-      "end_line": 571,
+      "line": 573,
+      "end_line": 573,
       "owner": "_candidate_gate",
       "conditions": [],
       "symbol": "app.services.world_forecaster._SELECTION_ORIGINS"
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 739,
-      "end_line": 739,
+      "line": 801,
+      "end_line": 801,
+      "owner": "train_quality_gated_world_forecast",
+      "conditions": [],
+      "symbol": "app.services.world_forecaster.UNCHECKED_FALLBACK_REASONS"
+    },
+    {
+      "path": "backend/app/services/world_forecaster.py",
+      "line": 842,
+      "end_line": 842,
       "owner": "_gate_with_fallbacks",
       "conditions": [],
       "symbol": "app.services.world_forecaster.RETRYABLE_QUALITY_REASONS"
     },
     {
       "path": "backend/app/services/world_forecaster.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 111,
+      "end_line": 111,
       "owner": "_regularize_tail",
       "conditions": [],
       "symbol": "app.services.world_forecaster.MAX_GAP_STEPS"
@@ -310008,11 +310162,19 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "line": 31,
-      "end_line": 31,
+      "line": 33,
+      "end_line": 33,
       "owner": "state_forecast",
       "conditions": [],
       "symbol": "app.services.world_subnational_forecast.FREQUENCIES"
+    },
+    {
+      "path": "backend/app/services/world_subnational_forecast.py",
+      "line": 37,
+      "end_line": 37,
+      "owner": "state_forecast",
+      "conditions": [],
+      "symbol": "app.data.world_forecast_policy.FREQ_MIN_POINTS_PUBLISH_ALL"
     },
     {
       "path": "backend/app/services/world_subnational_ingest.py",
@@ -311394,24 +311556,24 @@
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 123,
-      "end_line": 123,
+      "line": 133,
+      "end_line": 133,
       "owner": "main",
       "conditions": [],
       "symbol": "scripts.world-forecast-gap-audit.FIRST_LINE"
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 115,
-      "end_line": 115,
+      "line": 125,
+      "end_line": 125,
       "owner": "main",
       "conditions": [],
       "symbol": "scripts.world-forecast-gap-audit.SQL"
     },
     {
       "path": "backend/scripts/world-forecast-gap-audit.py",
-      "line": 120,
-      "end_line": 120,
+      "line": 130,
+      "end_line": 130,
       "owner": "main",
       "conditions": [],
       "symbol": "scripts.world-forecast-gap-audit.FIRST_LINE"

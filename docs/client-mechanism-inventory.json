@@ -101366,7 +101366,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "b3cb1f5802194b9cb40294af3541418bc2798b1a1eab56d9228feeebe1012b60",
+      "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -101789,7 +101789,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "be1075ad27417fcdaad62b31de79b926393513b7517fa41ac400979463273eee",
+      "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846",
       "imports": [],
       "routes": [],
       "functions": [],

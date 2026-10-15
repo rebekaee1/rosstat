@@ -4681,9 +4681,9 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "af7ecad56ec9ab9c15cc397cce8189dcdbf97d5f0372ef5a21cabdb9635d2d4e",
-        "bytes": 30677
+        "date": "2026-10-15",
+        "sha256": "2f60aff8f309ee77fb5459b28b29a8c66e7e569b4e5eae9c1d06d8e2b33048a3",
+        "bytes": 35732
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -4693,11 +4693,17 @@
           "mode": "previous_full_read_plus_reviewed_delta",
           "base_commit": "506122b",
           "previous_sha256": "216069cac210c9dd09690e4b8973ccf2b734533709713944bb7ac46b856973ad",
-          "reviewer": "root; independent reconciliation_review",
-          "method": "Prior complete document reading retained; root authored and read all packet additions, actual source contracts/tests and independent review."
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "date": "2026-10-15",
+          "prior_sha256": "af7ecad56ec9ab9c15cc397cce8189dcdbf97d5f0372ef5a21cabdb9635d2d4e",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "af7ecad56ec9ab9c15cc397cce8189dcdbf97d5f0372ef5a21cabdb9635d2d4e"
+        "sha256": "2f60aff8f309ee77fb5459b28b29a8c66e7e569b4e5eae9c1d06d8e2b33048a3"
       },
       "canonical_source": "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
       "linked_mechanisms": null,
@@ -7550,26 +7556,26 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "6fa8e1321814c55ad2d36e8943baa0c0d57a2abcb9dfcff78bdb02c282557d5c",
-        "bytes": 61072
+        "date": "2026-10-15",
+        "sha256": "d240fc0bb77deee88fdde8defacaff6ec662913044c324f6f2af6ee940348e0e",
+        "bytes": 61645
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "a2b27956855ec20caf499c52d0b0ede6cacf528a001e425eaed40396315c540c",
-          "prior_commit": "0ad80ce4c08d11cffed86fd6d325342a268ba2c2",
-          "delta": "Добавлена запись 2026-10-06 о круге 6.",
-          "head": "d4edefad",
-          "branch": "integration/all-20261002"
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "6fa8e1321814c55ad2d36e8943baa0c0d57a2abcb9dfcff78bdb02c282557d5c",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "6fa8e1321814c55ad2d36e8943baa0c0d57a2abcb9dfcff78bdb02c282557d5c"
+        "sha256": "d240fc0bb77deee88fdde8defacaff6ec662913044c324f6f2af6ee940348e0e"
       },
       "canonical_source": "docs/architecture-history.md",
       "linked_mechanisms": "history/recovery index",
@@ -8897,26 +8903,26 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "6520bb2122bb3cae4bd5648b1e9c94053861713e7c0c2eaf239230ca240a4ff2",
-        "bytes": 564985
+        "date": "2026-10-15",
+        "sha256": "0377a4c363ce7534e66fe954f1abd42094433a1b4c0af0d29ad32c78e1e4b9e3",
+        "bytes": 567079
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "1608b99f925e094fa019638bd59734814ba115553dd6e0a5f13291e7f9dff9ec",
-          "prior_commit": "d002e0063bd471f2638ad7383aa1e4506213606f",
-          "delta": "Пункт 4: быстрые SSR-страницы холодные, остались золотые акценты.",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "6520bb2122bb3cae4bd5648b1e9c94053861713e7c0c2eaf239230ca240a4ff2",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "6520bb2122bb3cae4bd5648b1e9c94053861713e7c0c2eaf239230ca240a4ff2"
+        "sha256": "0377a4c363ce7534e66fe954f1abd42094433a1b4c0af0d29ad32c78e1e4b9e3"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -10263,15 +10269,15 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "f8fc29a44529e412734fc0442156784efad728f3fd5eea09ad36cdd4c81abbf9",
+        "sha256": "e05b8d8ac8ac2a20d820636dd365c7233b2891212e610a385154dd0334605d2a",
         "canonical_source": "docs/client-mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "f8fc29a44529e412734fc0442156784efad728f3fd5eea09ad36cdd4c81abbf9",
+        "date": "2026-10-15",
+        "sha256": "e05b8d8ac8ac2a20d820636dd365c7233b2891212e610a385154dd0334605d2a",
         "bytes": 6815497
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -12405,15 +12411,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "3e67ab4a7ce60c12d483e2e6596b74f8563a79282c362eb6917ac51d4294eebe",
-        "bytes": 831559
+        "date": "2026-10-15",
+        "sha256": "52225dd474dbeec388508669fdff0746fb637fb866c1754b398b877039e5cb51",
+        "bytes": 831961
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "3e67ab4a7ce60c12d483e2e6596b74f8563a79282c362eb6917ac51d4294eebe",
+        "sha256": "52225dd474dbeec388508669fdff0746fb637fb866c1754b398b877039e5cb51",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -14027,16 +14033,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "4f940f36f1b867e7141a246fa6b841faca9cf4afaba545ddd34d3ee724710e79",
+        "sha256": "146610f84a9e188fd3bbdf051e23b8db900098c262a3a265799a4863040d1093",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "4f940f36f1b867e7141a246fa6b841faca9cf4afaba545ddd34d3ee724710e79",
-        "bytes": 7224199
+        "date": "2026-10-15",
+        "sha256": "146610f84a9e188fd3bbdf051e23b8db900098c262a3a265799a4863040d1093",
+        "bytes": 7231229
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -15760,15 +15766,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "fcae5f0e7f0d0f28cbefe15bb103e713180a0729c8779afb6d24c53d9a1edd4e",
+        "date": "2026-10-15",
+        "sha256": "2c8f436f32cb266c6e1d321fceb94e87682879671ce679af1d3e88c70c2bf41d",
         "bytes": 1240439
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "fcae5f0e7f0d0f28cbefe15bb103e713180a0729c8779afb6d24c53d9a1edd4e",
+        "sha256": "2c8f436f32cb266c6e1d321fceb94e87682879671ce679af1d3e88c70c2bf41d",
         "canonical_source": "scripts/code-review-symbols.mjs"
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
@@ -17189,15 +17195,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "c83623b65b54740823b2bb5d4f1b8f9346bbbd1319ccc735af75ea7f1c8f7ac5",
-        "bytes": 21705719
+        "date": "2026-10-15",
+        "sha256": "1654ae0ffa77eb74d5aeae195e7eabf14fd50b935f4e1ee48d9a288a4475122b",
+        "bytes": 21737325
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "c83623b65b54740823b2bb5d4f1b8f9346bbbd1319ccc735af75ea7f1c8f7ac5",
+        "sha256": "1654ae0ffa77eb74d5aeae195e7eabf14fd50b935f4e1ee48d9a288a4475122b",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -18787,26 +18793,26 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "822694d4e342bb6f231d602d8b6d4a85e00b955023663514791c1d792c65a37e",
-        "bytes": 262551
+        "date": "2026-10-15",
+        "sha256": "dfd6e6a4580aedd2b1e441aaeec7d1314150f28ef5e557110a7b45d91164f5c2",
+        "bytes": 266200
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "4e63a096df4b878756371fbbac66cd4cefd10ec3d5cd1ca2f6cc146b4e77d24c",
-          "prior_commit": "81a31144baf34d891385fe200a47a73c8c3cfb54",
-          "delta": "Новый раздел «Быстрые ссылки: мост на платформу и название приложения».",
-          "head": "24a40bcd",
-          "branch": "integration/all-20261002"
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "822694d4e342bb6f231d602d8b6d4a85e00b955023663514791c1d792c65a37e",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "822694d4e342bb6f231d602d8b6d4a85e00b955023663514791c1d792c65a37e"
+        "sha256": "dfd6e6a4580aedd2b1e441aaeec7d1314150f28ef5e557110a7b45d91164f5c2"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -20071,15 +20077,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "076902c3f5780005b077ec94c22d2aa2d510ecaa7183a48959fc6b2e7274e4e8",
+        "date": "2026-10-15",
+        "sha256": "d94c6916205ce46715531c8e2c4310b14fa66d5cd48367ca03db3abead959b4e",
         "bytes": 12346
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "076902c3f5780005b077ec94c22d2aa2d510ecaa7183a48959fc6b2e7274e4e8",
+        "sha256": "d94c6916205ce46715531c8e2c4310b14fa66d5cd48367ca03db3abead959b4e",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -22834,15 +22840,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "88999653e670161f1ba5b132548a665b35c9f5767f88b385c68173809dbdb15c",
-        "bytes": 2918989
+        "date": "2026-10-15",
+        "sha256": "5fdcfba9cd469d364f1f1d7de9c0d3a5753a46497ef523efdbb44b01d5a4c39d",
+        "bytes": 2918990
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "88999653e670161f1ba5b132548a665b35c9f5767f88b385c68173809dbdb15c",
+        "sha256": "5fdcfba9cd469d364f1f1d7de9c0d3a5753a46497ef523efdbb44b01d5a4c39d",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -30836,15 +30842,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "ca9c719ce16900156cc4b826f173d0d9c92f51721d780ceeeb75697a71f93dd5",
+        "date": "2026-10-15",
+        "sha256": "9921fd7ef762167f0f1d4c9a7858ef0a00ee3ec305f0982300478f916a3fcb75",
         "bytes": 98628
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "ca9c719ce16900156cc4b826f173d0d9c92f51721d780ceeeb75697a71f93dd5",
+        "sha256": "9921fd7ef762167f0f1d4c9a7858ef0a00ee3ec305f0982300478f916a3fcb75",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -31103,25 +31109,25 @@
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после круга 6)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые разделы переписаны и перечитаны автором, неизменные перенесены по совпадению текста",
-          "prior_sha256": "5a4f85f5b5a9eab92fda544b09103989d201cdc2aec417eacaa6938ca17459ef",
-          "prior_commit": "849a0373c4ea3202f8192380d20b59d31e0f67e2",
-          "delta": "U10: hero-desktop не удалён.",
-          "head": "204af55a",
-          "branch": "integration/all-20261002"
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "0e14496b1847b7e57347742ec266a9da33b001f284deb97aec4aeb95787532fd",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "0e14496b1847b7e57347742ec266a9da33b001f284deb97aec4aeb95787532fd"
+        "sha256": "6a915475f1bfe6caa35d597d98b0ac81e3f294ea59804d043bd590a9e0aabc1e"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "0e14496b1847b7e57347742ec266a9da33b001f284deb97aec4aeb95787532fd",
-        "bytes": 52411
+        "date": "2026-10-15",
+        "sha256": "6a915475f1bfe6caa35d597d98b0ac81e3f294ea59804d043bd590a9e0aabc1e",
+        "bytes": 53777
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -31899,16 +31905,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "e0d48af2b5e24b624bb16f3499dd5952e1eb06ba8203f9d03bc683ed3102de5d",
+        "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca",
         "canonical_source": "docs/mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "e0d48af2b5e24b624bb16f3499dd5952e1eb06ba8203f9d03bc683ed3102de5d",
-        "bytes": 10766188
+        "date": "2026-10-15",
+        "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca",
+        "bytes": 10772191
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -32449,16 +32455,16 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "fc5eb5f131f8184cc6483c212179067385a69b6c99f9e4a796fe599c6af358f8",
+        "sha256": "4d1574d612d6622340117cae3e2a1f76339da45e96558e54dcdc6449fc819292",
         "canonical_source": "docs/mechanism-inventory.md"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "fc5eb5f131f8184cc6483c212179067385a69b6c99f9e4a796fe599c6af358f8",
-        "bytes": 532377
+        "date": "2026-10-15",
+        "sha256": "4d1574d612d6622340117cae3e2a1f76339da45e96558e54dcdc6449fc819292",
+        "bytes": 533095
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -37986,26 +37992,26 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "19f639381e44fbb96dabc0c4a14bf316ef967571fae9089b729434039c8aa202",
-        "bytes": 120476
+        "date": "2026-10-15",
+        "sha256": "f05c0c9eecb69710643012118b3a211ac2f5117f86a37daf11e8745cd3d8d438",
+        "bytes": 124679
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-06",
-          "reviewer": "Claude Sonnet 5.5 (автор правки, docs-раунд после дизайн-раундов 2-4)",
-          "method": "прежнее полное чтение + содержательная дельта: изменённые диапазоны прочитаны и сверены с кодом, неизменные разделы перенесены по совпадению текста",
-          "prior_sha256": "97e2508be6fa0f09acc9e5f2d9134f141c21b00eb764fcbbf4e9b5b14ceae25d",
-          "prior_commit": "324c8cbbe4921949fce9e2a5bc117a78a0d0fd5e",
-          "delta": "2026-10-06: изменён при актуализации знаний после дизайн-раундов 2-4 (дизайн-система, ADR-0018, контракты /forecasts, ticker, SSR «Главное», 404, лимиты).",
-          "head": "0ad80ce4",
-          "branch": "integration/all-20261002"
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "19f639381e44fbb96dabc0c4a14bf316ef967571fae9089b729434039c8aa202",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты.",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "19f639381e44fbb96dabc0c4a14bf316ef967571fae9089b729434039c8aa202"
+        "sha256": "f05c0c9eecb69710643012118b3a211ac2f5117f86a37daf11e8745cd3d8d438"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
@@ -42357,29 +42363,33 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "b3cb1f5802194b9cb40294af3541418bc2798b1a1eab56d9228feeebe1012b60",
-        "bytes": 210567
+        "date": "2026-10-15",
+        "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e",
+        "bytes": 210546
       },
       "review_status": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-13",
-          "reviewer": "Claude Sonnet 5.5 (исполнитель второго цикла знаний круга 13)",
-          "head": "eba7dca7",
-          "branch": "circle13/int",
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz",
           "mode": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
           "previous_sha256": "b82cb3658bd6065f4768bd312963f8d565d061cab4c3b448b23b9ec5de279570",
           "old_commit": "77400715 (первый цикл знаний круга 13)",
           "delta_evidence": "Diff: ключи c13b.ticker.* и c13b.brentLive.* (английские тексты биржевой нефти).",
           "freshly_read_definitions": 0,
           "reanchored_definitions": 0,
-          "reanchored_nondefinition_blocks": 0
+          "reanchored_nondefinition_blocks": 0,
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "b3cb1f5802194b9cb40294af3541418bc2798b1a1eab56d9228feeebe1012b60",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты."
         },
         "status_in_review": "reviewed",
-        "sha256": "b3cb1f5802194b9cb40294af3541418bc2798b1a1eab56d9228feeebe1012b60"
+        "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -43669,29 +43679,33 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "be1075ad27417fcdaad62b31de79b926393513b7517fa41ac400979463273eee",
-        "bytes": 299940
+        "date": "2026-10-15",
+        "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846",
+        "bytes": 299869
       },
       "review_status": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "proposal": "docs/code-review/reviews.jsonl",
         "review_provenance": {
-          "date": "2026-10-13",
-          "reviewer": "Claude Sonnet 5.5 (исполнитель второго цикла знаний круга 13)",
-          "head": "eba7dca7",
-          "branch": "circle13/int",
+          "date": "2026-10-15",
+          "reviewer": "Claude (исполнитель круга 14, прогноз на всех рядах стран)",
+          "head": "3d600127a6bc",
+          "branch": "claude/modest-mayer-7v8whz",
           "mode": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
           "previous_sha256": "9adcebdb8dd2968e4e4f0443a155e77b818ae3d29b554af73f63fa9becc6a568",
           "old_commit": "77400715 (первый цикл знаний круга 13)",
           "delta_evidence": "Diff: ключи c13b.ticker.* и c13b.brentLive.* (русские тексты биржевой нефти без слов ISS/API).",
           "freshly_read_definitions": 0,
           "reanchored_definitions": 0,
-          "reanchored_nondefinition_blocks": 0
+          "reanchored_nondefinition_blocks": 0,
+          "method": "прежнее полное чтение + содержательная дельта круга 14 (или пересборка генератором с просмотром diff)",
+          "prior_sha256": "be1075ad27417fcdaad62b31de79b926393513b7517fa41ac400979463273eee",
+          "prior_commit": "3d600127a6bc",
+          "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты."
         },
         "status_in_review": "reviewed",
-        "sha256": "be1075ad27417fcdaad62b31de79b926393513b7517fa41ac400979463273eee"
+        "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",

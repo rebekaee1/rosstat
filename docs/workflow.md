@@ -458,6 +458,18 @@ docker exec rosstat-postgres-1 sh -c 'pg_restore -L /tmp/product.list --no-owner
 
 **Что проверять после выкладки целиком.** `GET /api/v1/health/freshness` (токен аналитики); `GET /api/v1/world/countries/germany?slim=1`; главная и `/russia` отвечают за 0,05–0,1 с на кэше; страницы `/…/prc_hicp_cind…` дают 301; страница устаревшего ряда показывает блок «Актуальные данные» (после выкладки frontend); в журнале scheduler нет «Not run (job time ceiling)» без причины.
 
+<a id="circle14-2026-10-15"></a>
+
+### Пачка 15.10.2026 (круг 14): прогноз на всех рядах стран
+
+Код ветки `claude/modest-mayer-7v8whz` поверх круга 13 (`3d60012`), на боевой не выкладывался; миграций нет. Решение — [ADR-0012, 2026-10-15](adr/0012-world-multi-provider-official-first-forecasts.md#2026-10-15--прогноз-нашей-модели-на-всех-рядах-стран-круг-14), контракт — [data-contracts](data-contracts.md#прогноз-на-всех-рядах-стран-круг-14-1510). Состояние боевого на 15.10 не читалось: прошлая сессия остановилась на шаге 8 круга 13 (МВФ включён, 485 прогнозов; перенос Евростата применён; настройки пакетов Европы — неизвестно).
+
+1. **Условия круга 13** («Условия для любого шага» выше) действуют: вне окон ETL, один тяжёлый процесс в `scheduler`, `docker diff` перед пересозданием, копия `.env`. Деплой — только SHA из `deploy/approved-shas.txt` по слову владельца.
+2. **Флаг** `RUSTATS_WORLD_FORECAST_PUBLISH_ALL` по умолчанию `true` (compose); после выкладки backend и scheduler новое правило действует сразу: ежедневные пакеты США, Европы и «остального мира» сами возвращают в очередь прежние отказы и пропуски без метки `publication_policy` и пишут `advisory`. Задача «остальной мир» (`RUSTATS_REST_WORLD_FORECAST_ENABLED`) и кандидатные модели (`RUSTATS_WORLD_FORECAST_CANDIDATES_ENABLED`) включаются отдельно по шагу 8 круга 13; без них Китай, Япония, Индия, Бразилия очередь не получают.
+3. **Объём.** Очередь растёт на ряды с отказом проверки (≈ 41 % каталога M/Q/A на стенде 13.10) и короткие (≈ 29 %, из них часть короче минимума модели); у отказа добавляется одна подгонка модели на полной истории (≈ доля секунды для годового ряда, несколько секунд для месячного на 1 vCPU — оценка по замерам R-FCST, не измерено на новом коде). Для догона используются настройки круга 13 (ночное окно Европы 23:10, лимит и потолок времени), затем возврат к суточным значениям.
+4. **Проверка.** `docker compose exec -T -e PYTHONPATH=/app scheduler python /app/scripts/world-forecast-gap-audit.py --out /tmp/gap.json` до и через сутки: растут `published_unchecked` и `published`, падают `gate:*` и `policy:history_too_short`; на карточке ряда с прежним отказом виден пунктир прогноза и подпись «Прогноз построен нашей моделью…» (RU и EN), блока «Как мы проверяем» у такой карточки нет; `/forecasts` не изменился. Пример из жалобы руководителя: ИПЦ США (месячный, индекс 1982–84 = 100).
+5. **Откат:** `RUSTATS_WORLD_FORECAST_PUBLISH_ALL=false`, `docker compose up -d backend scheduler`, сброс кэша `world`/`ssr-world` (`docker compose exec backend python -c "import asyncio; from app.core.cache import bump_namespaces; asyncio.run(bump_namespaces('world','ssr-world'))"`, то же делает `world_forecast_pipeline._bump_world_forecast_cache`). Записи `advisory` остаются в базе и скрываются; повторное включение показывает их без пересчёта.
+
 ### Нагрузочная проверка
 
 `scripts/test-server/loadtest.py` (stdlib) запускается на самом стенде против `127.0.0.1`; результаты и оговорки (2 vCPU ≠ 4 vCPU боевого) —

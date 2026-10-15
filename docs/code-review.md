@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `e5efa028921ca51517e6fb0bb3853e8b9328f397`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `3d600127a6bcd42ecf8dea2bf23c205869d6edfd`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2186 |
-| Код, шаблоны и стили | 1783 |
-| Актуальные рецензии без пропусков guard | 2186 |
-| Именованные определения Python/JS: с аннотацией / всего | 14068 / 14068 |
+| Файлы в явно определённом scope | 2187 |
+| Код, шаблоны и стили | 1784 |
+| Актуальные рецензии без пропусков guard | 2187 |
+| Именованные определения Python/JS: с аннотацией / всего | 14084 / 14084 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -464,9 +464,9 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/world_eurostat_ingest.py](../backend/app/services/world_eurostat_ingest.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/world_forecast_candidates.py](../backend/app/services/world_forecast_candidates.py) | reviewed | 12/12 | актуально |
-| [backend/app/services/world_forecast_gate.py](../backend/app/services/world_forecast_gate.py) | reviewed | 3/3 | актуально |
+| [backend/app/services/world_forecast_gate.py](../backend/app/services/world_forecast_gate.py) | reviewed | 4/4 | актуально |
 | [backend/app/services/world_forecast_pipeline.py](../backend/app/services/world_forecast_pipeline.py) | reviewed | 33/33 | актуально |
-| [backend/app/services/world_forecaster.py](../backend/app/services/world_forecaster.py) | reviewed | 19/19 | актуально |
+| [backend/app/services/world_forecaster.py](../backend/app/services/world_forecaster.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/world_imf_ingest.py](../backend/app/services/world_imf_ingest.py) | reviewed | 5/5 | актуально |
 | [backend/app/services/world_listed_counts.py](../backend/app/services/world_listed_counts.py) | reviewed | 6/6 | актуально |
 | [backend/app/services/world_national_ingest.py](../backend/app/services/world_national_ingest.py) | reviewed | 40/40 | актуально |
@@ -877,6 +877,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_forecast.py](../backend/tests/test_world_forecast.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_world_forecast_candidates.py](../backend/tests/test_world_forecast_candidates.py) | reviewed | 17/17 | актуально |
 | [backend/tests/test_world_forecast_priority_config.py](../backend/tests/test_world_forecast_priority_config.py) | reviewed | 4/4 | актуально |
+| [backend/tests/test_world_forecast_publish_all.py](../backend/tests/test_world_forecast_publish_all.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_world_fred_adapter.py](../backend/tests/test_world_fred_adapter.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_world_listed_counts.py](../backend/tests/test_world_listed_counts.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_world_mospi_adapter.py](../backend/tests/test_world_mospi_adapter.py) | reviewed | 9/9 | актуально |
