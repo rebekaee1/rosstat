@@ -3,6 +3,7 @@
 Для каждого показателя M/Q/A с ``is_listed`` определяется ОДНА главная причина из списка в порядке проверки:
 
   published            есть публичный прогноз (passed, is_current); у провайдера imf это официальный прогноз фонда
+  published_unchecked  есть публичный прогноз нашей модели без подтверждения проверкой (advisory, круг 14)
   imf_projection_only  ряд МВФ без официального прогноза (у фонда нет проекции или она не прошла согласованность)
   policy:<причина>     политика не допускает ряд к обучению (``forecast_eligibility_for``): история короче порога
                        (месячный 72, квартальный 32, годовой 14), ряд устарел, имя не отредактировано, провайдер не утверждён
@@ -39,6 +40,11 @@ from app.database import async_session, set_local_statement_timeout  # noqa: E40
 from app.config import settings  # noqa: E402
 from app.services.world_forecast_pipeline import forecast_fingerprint  # noqa: E402
 
+try:  # метка правила «прогноз на всех рядах» есть в коде круга 14
+    from app.services.world_forecast_pipeline import WORLD_FORECAST_PUBLICATION_POLICY
+except ImportError:  # pragma: no cover
+    WORLD_FORECAST_PUBLICATION_POLICY = None
+
 try:  # срок по частотам есть в коде круга 13; на более старой сборке — общий срок
     from app.services.world_forecast_pipeline import effective_max_age_days
 except ImportError:  # pragma: no cover
@@ -52,14 +58,16 @@ SQL = text(
     with last as (
         select distinct on (world_indicator_id) world_indicator_id, gate_status, gate_reason, strategy, created_at,
                model_params->>'history_end' as p_end, model_params->>'points_count' as p_pts,
-               (model_params->>'method_version' is not null) as p_mv
+               (model_params->>'method_version' is not null) as p_mv,
+               model_params->>'publication_policy' as p_policy
         from world_forecasts order by world_indicator_id, created_at desc, id desc),
-    pub as (select distinct world_indicator_id from world_forecasts where is_current and gate_status = 'passed')
+    pub as (select world_indicator_id, bool_or(gate_status = 'passed') as checked from world_forecasts
+            where is_current and gate_status in ('passed', 'advisory') group by world_indicator_id)
     select i.id, c.slug, c.region_ru, i.provider, i.dataset_id, i.frequency, i.unit, i.name_quality,
            i.points_count, i.history_end, i.category_ru,
            s.status as src_status, s.last_success_at as src_ok,
            l.gate_status, l.gate_reason, l.strategy, l.created_at as f_created, l.p_end, l.p_pts, l.p_mv,
-           (p.world_indicator_id is not null) as has_public
+           l.p_policy, (p.world_indicator_id is not null) as has_public, coalesce(p.checked, false) as public_checked
     from world_indicators i
     join world_countries c on c.id = i.country_id
     left join world_dataset_state s on s.provider = i.provider and s.dataset_id = i.dataset_id
@@ -71,8 +79,9 @@ SQL = text(
 
 
 def classify(row, today: date, now: datetime) -> str:
+    publish_all = bool(getattr(settings, "world_forecast_publish_all", False))
     if row.has_public:
-        return "published"
+        return "published" if row.public_checked or not publish_all else "published_unchecked"
     provider = str(row.provider or "").lower()
     if provider == "imf":
         return "imf_projection_only"
@@ -86,14 +95,15 @@ def classify(row, today: date, now: datetime) -> str:
         return "source_not_ready"
     if row.gate_status is None:
         return "queue_never_tried"
+    policy_due = publish_all and row.p_policy != WORLD_FORECAST_PUBLICATION_POLICY
     if row.gate_status == "skipped":
-        return "skipped"
+        return "queue_retrain_due" if policy_due else "skipped"
     created = row.f_created
     stale = created is None or (now - created) > timedelta(
         days=effective_max_age_days(row.frequency, int(settings.world_forecast_max_age_days)))
     expected_end = row.history_end.isoformat() if row.history_end else None
     changed = (row.p_end != expected_end or int(row.p_pts or 0) != int(row.points_count or 0))
-    if stale or changed or not row.p_mv:
+    if stale or changed or not row.p_mv or (row.gate_status == "failed" and policy_due):
         return "queue_retrain_due"
     return f"gate:{row.gate_reason or row.gate_status}"
 

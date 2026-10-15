@@ -435,7 +435,8 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
     from app.services import site_paths as paths
     from app.services.seo_i18n import translate_source
     from app.services.world_forecast_gate import world_forecast_source_ready
-    from app.services.world_forecast_gate import PUBLISHED_GATE_STATUSES, publishable_world_forecast
+    # Витрина — только прогнозы, прошедшие проверку на прошлых данных; advisory (круг 14) сюда не попадают.
+    from app.services.world_forecast_gate import CHECKED_GATE_STATUSES, publishable_world_forecast
     from app.services.world_official_forecast import is_official_forecast
 
     items: list[dict[str, Any]] = []
@@ -462,7 +463,7 @@ async def _world_items(db, locale: str) -> list[dict[str, Any]]:
                     .join(WorldCountry, WorldIndicator.country_id == WorldCountry.id)
                     .where(
                         WorldForecast.is_current,
-                        WorldForecast.gate_status.in_(PUBLISHED_GATE_STATUSES),
+                        WorldForecast.gate_status.in_(CHECKED_GATE_STATUSES),
                         WorldIndicator.is_listed,
                         or_(*conditions),
                     )

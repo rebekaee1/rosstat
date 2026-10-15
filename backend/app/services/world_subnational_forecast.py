@@ -12,6 +12,8 @@ import asyncio
 from datetime import date
 from typing import Sequence
 
+from app.data.world_forecast_policy import FREQ_MIN_POINTS_PUBLISH_ALL
+from app.services.world_forecast_gate import publish_all_enabled
 from app.services.world_forecaster import train_quality_gated_world_forecast
 
 FREQUENCIES = {
@@ -30,9 +32,12 @@ async def state_forecast(
     reason = None
     policy = FREQUENCIES.get(frequency)
     today = today or date.today()
+    # Круг 14: прогноз нашей модели и без подтверждения проверкой (как у рядов стран), см. world_forecaster.
+    publish_all = publish_all_enabled()
+    min_points = (FREQ_MIN_POINTS_PUBLISH_ALL.get(frequency, 0) if publish_all else policy[0]) if policy else 0
     if policy is None:
         reason = "unsupported_frequency"
-    elif len(dates) != len(values) or len(dates) < policy[0]:
+    elif len(dates) != len(values) or len(dates) < min_points:
         reason = "history_too_short"
     elif dates[-1] > today:
         reason = "future_observation"
@@ -45,9 +50,9 @@ async def state_forecast(
     gate = await asyncio.to_thread(
         train_quality_gated_world_forecast,
         dates, values, frequency=frequency, horizon=horizon, season=season,
-        strategy=strategy, strict=True,
+        strategy=strategy, strict=True, publish_all=publish_all,
     )
-    if gate.status != "passed" or gate.result is None:
+    if gate.status not in ({"passed", "advisory"} if publish_all else {"passed"}) or gate.result is None:
         return {
             "available": False, "reason": gate.reason, "points": [],
             "quality": {"gate_status": gate.status, "mase": gate.mase,
@@ -58,7 +63,7 @@ async def state_forecast(
     if "%" in unit and min(values) >= 0 and max(values) <= 100:
         if any(point.value < 0 or point.value > 100 for point in gate.result.points):
             return {"available": False, "reason": "out_of_range", "points": []}
-    methodology = (
+    checked_methodology = (
         "Our forecast uses a separate Python model for the series frequency. "
         "We test its full horizon on rolling historical windows against a seasonal-naive benchmark; "
         "only a model with MASE below 1 and at least 2% lower error is shown."
@@ -68,6 +73,12 @@ async def state_forecast(
         "с сезонной наивной моделью. Публикуем результат только при MASE ниже 1 "
         "и ошибке минимум на 2% меньше ориентира."
     )
+    unchecked_methodology = (
+        "The forecast is built by our model from official data and shows the expected trend."
+        if en else
+        "Прогноз построен нашей моделью по официальным данным и показывает ожидаемую тенденцию."
+    )
+    methodology = checked_methodology if gate.status == "passed" else unchecked_methodology
     return {
         "available": True,
         "model_name": gate.result.model_name,

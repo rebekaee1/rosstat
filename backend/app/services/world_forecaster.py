@@ -3,7 +3,9 @@
 Кандидат строится теми же зарегистрированными multi-window стратегиями, что
 используются для российских рядов: ``monthly_auto`` / ``annual_auto`` и
 ``generic_quarterly``/``signed_quarterly``. Rolling-origin MASE сохраняется
-в метаданных. Публичным является только прогноз, прошедший гейт качества.
+в метаданных. Публичным является прогноз, прошедший гейт качества, а при
+``world_forecast_publish_all`` (круг 14) — и прогноз главной модели без
+подтверждения проверкой (``advisory``), см. ``_train_unchecked``.
 """
 
 from __future__ import annotations
@@ -664,6 +666,96 @@ def _candidate_gate(
     )
 
 
+# ---------------------------------------------------------------------------
+# Прогноз без подтверждения проверкой (круг 14, ``world_forecast_publish_all``)
+# ---------------------------------------------------------------------------
+#
+# Решение владельца 15.10: у каждого ряда страны должен быть прогноз нашей
+# модели. Если ни главная модель, ни дополнительные не прошли проверку на
+# прошлых данных или ряд слишком короток для самой проверки, главная модель
+# (та же, что у российских рядов) обучается на всей истории и её прогноз
+# публикуется со статусом ``advisory``: подпись на карточке нейтральная, без
+# слов «проверен». Порог проверки не меняется: ``passed`` по-прежнему означает
+# MASE < 1 и ошибку минимум на 2% ниже сезонного наивного.
+#
+# Не публикуются и теперь: нерегулярный календарь, нечисловая история, отказ
+# самой модели на полной истории, выход за смысловые границы (проценты 0..100)
+# и взрывная экстраполяция (больше пяти максимумов истории).
+
+UNCHECKED_FALLBACK_REASONS = frozenset({
+    "mase_not_below_one",
+    "not_better_than_seasonal_naive",
+    "candidate_model_failed",
+    "history_too_short",
+    "not_enough_backtest_origins",
+    "recent_history_gap",
+    "constant_or_unscaled_series",
+    "invalid_backtest_dates",
+    "non_finite_backtest",
+})
+
+
+def _train_unchecked(
+    dates: Sequence[date],
+    values: Sequence[float],
+    *,
+    frequency: str,
+    horizon: int,
+    season: int,
+    strategy: str,
+    checked: WorldForecastGate,
+    bounds: tuple[float, float] | None,
+    fill_gaps: bool,
+) -> WorldForecastGate | None:
+    """Главная модель на всей (регулярной) истории без допуска по качеству; None — посчитать нельзя."""
+    step_months = _backtest_layout(frequency, season, horizon)[0]
+    if horizon < 1 or len(dates) != len(values) or not values:
+        return None
+    if any(not math.isfinite(float(value)) for value in values):
+        return None
+    regular = _regularize_tail(dates, values, step_months, fill_gaps=fill_gaps)
+    if regular is None:
+        return None
+    dates, values = regular.dates, regular.values
+    resolved_strategy = _resolve_primary_strategy(strategy, values)
+    result = _run_primary_strategy(
+        dates, values, frequency=frequency, horizon=horizon, strategy_name=resolved_strategy,
+    )
+    if result is None:
+        return None
+    if any(
+        _month_index(point.date) - _month_index(dates[-1]) != step_months * step
+        for step, point in enumerate(result.points, start=1)
+    ):
+        return None
+    predictions = [float(point.value) for point in result.points]
+    max_history = max(abs(float(value)) for value in values) or 1.0
+    if any(abs(value) > max_history * 5 for value in predictions):
+        return None
+    if bounds is not None and any(not bounds[0] <= value <= bounds[1] for value in predictions):
+        return None
+    details = dict(checked.details or {})
+    details["publication"] = "unchecked"
+    if regular.imputed:
+        details["imputed_points"] = regular.imputed
+    # Диапазон на сайте не показывается; границы равны значению, чтобы не выдумывать неопределённость без проверки.
+    points = [
+        ForecastPoint(date=point.date, value=float(point.value),
+                      lower_bound=float(point.value), upper_bound=float(point.value))
+        for point in result.points
+    ]
+    # Ошибка проверки сохраняется, только если она относится к этой же главной модели.
+    same_model = checked.strategy == resolved_strategy
+    return WorldForecastGate(
+        "advisory", checked.reason, resolved_strategy,
+        checked.mase if same_model else None,
+        checked.baseline_mase if same_model else None,
+        checked.origins if same_model else 0,
+        ForecastResult(model_name=result.model_name, aic=result.aic, bic=result.bic, points=points),
+        details,
+    )
+
+
 def train_quality_gated_world_forecast(
     dates: Sequence[date],
     values: Sequence[float],
@@ -676,12 +768,15 @@ def train_quality_gated_world_forecast(
     candidates: bool = True,
     bounds: tuple[float, float] | None = None,
     fill_gaps: bool = True,
+    publish_all: bool = False,
 ) -> WorldForecastGate:
     """Главная модель, затем (если не прошла по качеству) кандидатный путь.
 
     ``bounds`` — допустимый диапазон значений (для процентов 0..100): прогноз
     вне него не публикуется. Применяется и к главной модели.
     ``fill_gaps=False`` возвращает прежнее поведение: любая дыра режет историю.
+    ``publish_all`` — если проверку не прошла ни одна модель (или ряд для неё
+    короток), прогноз главной модели на всей истории со статусом ``advisory``.
     """
     gate = _gate_with_fallbacks(
         dates, values,
@@ -703,6 +798,14 @@ def train_quality_gated_world_forecast(
         )
         if legacy.result is not None:
             return legacy
+    if publish_all and gate.result is None and gate.reason in UNCHECKED_FALLBACK_REASONS:
+        unchecked = _train_unchecked(
+            dates, values,
+            frequency=frequency, horizon=horizon, season=season, strategy=strategy,
+            checked=gate, bounds=bounds, fill_gaps=fill_gaps,
+        )
+        if unchecked is not None:
+            return unchecked
     return gate
 
 

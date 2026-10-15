@@ -226,7 +226,11 @@ def test_backtest_scale_uses_only_training_prefix(monkeypatch):
     assert max(lengths) <= len(values) - 2
 
 
-def test_old_gate_or_advisory_never_public():
+def test_old_gate_or_advisory_never_public(monkeypatch):
+    from app.config import settings
+
+    # Прежнее правило (флаг круга 14 выключен): advisory не публичен.
+    monkeypatch.setattr(settings, "world_forecast_publish_all", False)
     assert is_percentage_unit("PERCENT")
     assert is_percentage_unit("%")
     assert not publishable_world_forecast(SimpleNamespace(
@@ -443,6 +447,8 @@ def test_world_forecast_unchanged_skip_by_fingerprint_and_force(monkeypatch):
     from app.config import settings
 
     monkeypatch.setattr(settings, "world_forecast_candidates_enabled", True)
+    # Пересчёт отказов по правилу круга 14 проверяется отдельным тестом.
+    monkeypatch.setattr(settings, "world_forecast_publish_all", False)
 
     from app.services.world_forecast_pipeline import (
         forecast_fingerprint,

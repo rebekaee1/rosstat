@@ -14,17 +14,30 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import WorldDatasetState, WorldForecast, WorldIndicator
 
 WORLD_FORECAST_METHOD_VERSION = 2
-PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed"})
+# Прошедшие проверку на прошлых данных (витрина прогнозов и подпись «проверен» — только они).
+CHECKED_GATE_STATUSES: frozenset[str] = frozenset({"passed"})
+# Круг 14 (решение владельца 15.10): прогноз нашей модели показывается у каждого ряда, где она смогла посчитать;
+# не прошедший проверку («advisory») — с нейтральной подписью, пока включено ``world_forecast_publish_all``.
+PUBLISHED_GATE_STATUSES: frozenset[str] = frozenset({"passed", "advisory"})
+
+
+def publish_all_enabled() -> bool:
+    from app.config import settings
+
+    return bool(getattr(settings, "world_forecast_publish_all", False))
 
 
 def publishable_world_forecast(forecast: object) -> bool:
-    """Old gate versions did not backtest the full published horizon."""
+    """Old gate versions did not backtest the full published horizon.
+
+    ``advisory`` показывается только при ``world_forecast_publish_all``: выключение флага прячет такие прогнозы
+    сразу, без пересчёта.
+    """
     params = getattr(forecast, "model_params", None)
-    return (
-        getattr(forecast, "gate_status", None) in PUBLISHED_GATE_STATUSES
-        and isinstance(params, dict)
-        and params.get("method_version") == WORLD_FORECAST_METHOD_VERSION
-    )
+    status = getattr(forecast, "gate_status", None)
+    if status not in CHECKED_GATE_STATUSES and not (status == "advisory" and publish_all_enabled()):
+        return False
+    return isinstance(params, dict) and params.get("method_version") == WORLD_FORECAST_METHOD_VERSION
 
 
 def _as_naive(value: datetime) -> datetime:

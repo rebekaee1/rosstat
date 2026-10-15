@@ -37,6 +37,7 @@ from app.models import (
     WorldIndicator,
 )
 from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
+from app.services.world_forecast_gate import publish_all_enabled
 from app.services.world_forecast_gate import world_forecast_source_ready  # noqa: F401 — реэкспорт (SPEED3)
 from app.services.world_forecaster import (
     PUBLISHED_GATE_STATUSES,
@@ -51,6 +52,9 @@ WORLD_FORECAST_CACHE_NAMESPACES = ("world", "ssr-world")
 WORLD_FORECAST_JOB_LOCK_KEY = "sched:lock:world_forecast"
 WORLD_FORECAST_JOB_LOCK_TTL_SECONDS = 24 * 3600
 _PROGRESS_EVERY = 100
+# Круг 14: метка правила публикации в model_params. Отказы и пропуски, записанные до «прогноза на всех рядах»,
+# один раз пересчитываются по новому правилу (уже опубликованные прогнозы не трогаются).
+WORLD_FORECAST_PUBLICATION_POLICY = "all-v1"
 _FREQ_RANK = {"monthly": 0, "quarterly": 1, "annual": 2}
 _RELEASE_LUA = (
     "if redis.call('GET', KEYS[1]) == ARGV[1] then "
@@ -218,6 +222,10 @@ def forecast_is_unchanged(
         params = getattr(latest, "model_params", None)
         if not isinstance(params, dict) or params.get("candidate_set") != WORLD_CANDIDATE_SET_VERSION:
             return False
+    if publish_all_enabled() and getattr(latest, "gate_status", None) in {"failed", "skipped"}:
+        params = getattr(latest, "model_params", None)
+        if not isinstance(params, dict) or params.get("publication_policy") != WORLD_FORECAST_PUBLICATION_POLICY:
+            return False
     return True
 
 
@@ -381,6 +389,8 @@ def _model_params_for(
             "gate": "rolling_origin_mase",
             "benchmark": "seasonal_naive",
         })
+    if publish_all_enabled():
+        params["publication_policy"] = WORLD_FORECAST_PUBLICATION_POLICY
     if extra:
         params.update(extra)
     return params
@@ -462,6 +472,8 @@ async def retrain_world_indicator_forecast(
             bounds=bounds,
             candidates=extended,
             fill_gaps=extended,
+            # Круг 14: прогноз главной модели и там, где проверка не пройдена или невозможна (advisory).
+            publish_all=publish_all_enabled(),
         )
     )
 

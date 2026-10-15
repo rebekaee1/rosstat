@@ -51,6 +51,10 @@ _FREQ_STRATEGIES = {
     "annual": "annual_auto",
 }
 _FREQ_MIN_POINTS = {"monthly": 72, "quarterly": 32, "annual": 14}
+# Круг 14 (``world_forecast_publish_all``): минимум, на котором наши модели вообще считают — защиты в
+# ``train_monthly_auto`` (36), ``train_generic_quarterly``/``train_signed_quarterly`` (24) и ``train_annual_auto`` (10).
+# Ряд короче проверки на прошлых данных получает прогноз без неё (advisory).
+FREQ_MIN_POINTS_PUBLISH_ALL = {"monthly": 36, "quarterly": 24, "annual": 10}
 WORLD_FORECAST_HORIZONS = {"monthly": 12, "quarterly": 4, "annual": 1}
 _FREQ_SEASONS = {"monthly": 12, "quarterly": 4, "annual": 1}
 _FREQ_MAX_AGE_DAYS = {"monthly": 150, "quarterly": 260, "annual": 1400}
@@ -102,7 +106,13 @@ def forecast_eligibility_for(
     indicator: Any,
     *,
     today: date | None = None,
+    publish_all: bool | None = None,
 ) -> tuple[WorldForecastEligibility | None, str]:
+    """Допуск ряда к обучению. ``publish_all=None`` — по настройке ``world_forecast_publish_all``."""
+    if publish_all is None:
+        from app.config import settings
+
+        publish_all = bool(getattr(settings, "world_forecast_publish_all", False))
     provider = str(getattr(indicator, "provider", "") or "").strip().lower()
     policy = OFFICIAL_PROVIDER_POLICIES.get(provider)
     if policy is None:
@@ -118,7 +128,7 @@ def forecast_eligibility_for(
         return None, "name_quality_gate"
 
     points_count = int(getattr(indicator, "points_count", 0) or 0)
-    min_points = policy.min_points[frequency]
+    min_points = (FREQ_MIN_POINTS_PUBLISH_ALL if publish_all else policy.min_points)[frequency]
     if points_count < min_points:
         return None, "history_too_short"
 
