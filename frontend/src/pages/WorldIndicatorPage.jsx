@@ -664,11 +664,6 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                 forecastEnabled={forecastAvailable && !derived}
                 forecastDerivedFrom={dataQ.data?.forecast?.derived_from || null}
                 forecastOfficial={dataQ.data?.forecast?.official || null}
-                forecastGateStatus={
-                  dataQ.data?.forecast?.quality?.gate_status
-                  || metaQ.data?.forecast_gate_status
-                  || (forecastAvailable ? 'passed' : null)
-                }
                 showForecast={showForecast}
                 onToggleForecast={() => setShowForecast((current) => !current)}
                 chartLoading={dataLoading}
@@ -743,12 +738,6 @@ export default function WorldIndicatorPage({ renderActions = null } = {}) {
                       date: formatOfficialVintage(dataQ.data.forecast.official.vintage, locale),
                     })}
                   </p>
-                </details>
-              )}
-              {!dataQ.data?.forecast?.official && dataQ.data?.forecast?.quality?.gate_status === 'passed' && (
-                <details className="w2-details w2-details--card" aria-label={t('c13f.forecast.checkedTitle')}>
-                  <summary>{t('c13f.forecast.checkedTitle')}</summary>
-                  <p>{t('c13f.forecast.checkedBody')}</p>
                 </details>
               )}
 

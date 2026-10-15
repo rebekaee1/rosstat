@@ -394,7 +394,7 @@ export default function WorldRegionIndicatorPage() {
               nationalLabel={t('world.regions.vsCountry', { country: countryName })}
               forecastSeries={!showYoY && forecastQ.data?.available ? forecastQ.data.points : null}
             />
-            {forecastQ.data?.available && !showYoY && (
+            {forecastQ.data?.available && forecastQ.data?.methodology && !showYoY && (
               <div className="mt-2 rounded-lg bg-champagne/5 px-3 py-2 text-xs leading-relaxed text-text-secondary fe-shadow-2">
                 <strong className="text-champagne-ink">{locale === 'en' ? 'Our forecast' : 'Наш прогноз'}</strong>
                 <p className="mt-1">{forecastQ.data.methodology}</p>

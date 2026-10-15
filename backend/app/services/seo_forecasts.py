@@ -36,7 +36,6 @@ _COPY = {
         "change": "Изменение",
         "caption": "Прогноз на год вперёд, {theme}",
         "model": "Считает платформа по официальным данным.",
-        "checked": "Для стран мира прогноз сначала проверен на прошлых данных.",
         "source": "Источник данных: {source}.",
         "updated": "Прогноз от {date}.",
     },
@@ -47,7 +46,6 @@ _COPY = {
         "change": "Change",
         "caption": "One-year-ahead forecast, {theme}",
         "model": "Built by the platform from official data.",
-        "checked": "For countries outside Russia the forecast is first tested on past data.",
         "source": "Data source: {source}.",
         "updated": "Forecast of {date}.",
     },
@@ -96,7 +94,7 @@ def _sections(payload: dict, locale: str) -> str:
         )
     if not out:
         return ""
-    foot = f'<p class="seo-note">{escape(copy["model"])} {escape(copy["checked"])}</p>'
+    foot = f'<p class="seo-note">{escape(copy["model"])}</p>'
     return "".join(out) + foot
 
 

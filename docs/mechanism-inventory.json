@@ -1460,7 +1460,7 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "6ed5c3a5db6c2877449da3f3195f2fdd25a20743ec3d15c781d3dbd4b9ca84e1",
+      "sha256": "83c994eace8ac4e4e8ca1e32b4c06b505596b8e5c9f77af30c57d8d7cf55a120",
       "lines": 652
     },
     {
@@ -1485,8 +1485,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "sha256": "208ce5e8c56863e7dc5d7d079d8ad413b5051a7a6efbf57da1ece33f9f4a52ec",
-      "lines": 127
+      "sha256": "0d9c74194b56e3dfc9ed654f47530c5da56b920dc6a386d3d4c56fff6459cff1",
+      "lines": 125
     },
     {
       "path": "backend/app/services/seo_i18n.py",
@@ -1915,8 +1915,8 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "sha256": "9589d1b1a2c0c992207b0855cb509de9a14f23e17a9c05b27cbfcbef5b907b6a",
-      "lines": 95
+      "sha256": "6013f2f45f1b091190c3b04911db6523a5150bc3d59da885be2218a543681d85",
+      "lines": 79
     },
     {
       "path": "backend/app/services/world_subnational_ingest.py",
@@ -93609,8 +93609,8 @@
           "key": "'forecasts'",
           "expression": "PageSeo(slug='forecasts', path='/forecasts', title='Прогнозы экономики на год вперёд: инфляция, ВВП, безработица', description='Прогнозы платформы на год вперёд по России и странам мира: цены, ВВП, безработица, ставки, зарплаты. Расчёт по официальным данным: сколько сейчас и какое значение ожидается",
           "expression_truncated": true,
-          "expression_chars": 1487,
-          "ast_sha256": "aa9f12f511748ba7d648514edcd0b175eba5f66129cbd0d8ad770aaaadd6e414"
+          "expression_chars": 1445,
+          "ast_sha256": "1b8b8a65a96c787a246333f31fae22a36af91779b9e3c23018d9c01edee8fac2"
         },
         {
           "key": "'calculator'",
@@ -93671,8 +93671,8 @@
       ],
       "expression": "{'home': PageSeo(slug='home', path='/', title='Forecast Economy — макроэкономические индикаторы стран и России', description='Официальные макроэкономические индикаторы по странам, России и её регионам: графики, таблицы, сравнения и статистические прогнозы по данным ведомств статистики и центральных банков.', h1='Экономика стран — в одном месте', intro='Forecast Economy собирает макроэкономические индикаторы стран по данным национальных статистических ведомств, центральных банков, Евростата и МВФ. Данные поступают только из официальных первоисточников и показаны в виде графиков, таблиц, сравнений и прогнозов. По России покрытие особенно глубокое. Просмотр открыт всем; скачивание доступно после бесплатной регистрации.', keywords='макроэкономические показатели стран, статистика по странам, экономика России, макроэкономика России, ВВП России, инфляция в России, ИПЦ, ключевая ставка ЦБ, курс доллара, курс евро, курсы валют ЦБ, Росстат данные, Банк России, Евростат, прогноз инфляции, экономические данные России, статистика России, статистика стран', links=((paths.today(), 'Экономика сегодня: курсы, ставка, инфляция'), (paths.russia_indicator('cpi'), 'Индекс потребительских цен'), (paths.region_hub(), 'Регионы России'), (paths.world_rating('gdp-usd'), 'Рейтинг стран'), (paths.demographics(), 'Возрастная структура населения'), ('/calculator', 'Калькулятор инфляции'), ('/compare', 'Сравнение индикаторов'), (paths.calendar(), 'Календарь публикаций')), blocks=(SeoBlock('О платформе', 'Официальные показатели по странам мира, по России и её регионам, а также по штатам США. К каждому показателю — график, таблица и вся история; прогноз показываем только там, где ему можно доверять.'), SeoBlock('Источники данных', 'Только официальные первоисточники: Евростат, МВФ, национальные статистические ведомства подключённых стран, Бюро экономического анализа США, Бюро трудовой статистики США, Росстат, Банк России и Минфин России.'))), 'about': PageSeo(slug='about', path='/about', title='О пр",
       "expression_truncated": true,
-      "expression_chars": 16031,
-      "ast_sha256": "c1d85f9064ef3340c178ece686f029af35ffab7f03f4d1403a415878a558060a",
+      "expression_chars": 15989,
+      "ast_sha256": "3136d139b2be65b727b6ba938b30b1afa0fe0f776ceae1c0d2a2d92dd007d15c",
       "runtime_expansion": false
     },
     {
@@ -94303,7 +94303,7 @@
     {
       "path": "backend/app/services/seo_forecasts.py",
       "line": 31,
-      "end_line": 54,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "_COPY",
@@ -94316,23 +94316,23 @@
       "entries": [
         {
           "key": "'ru'",
-          "expression": "{'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данных: {source}.', 'upda",
-          "expression_truncated": true,
-          "expression_chars": 327,
-          "ast_sha256": "5143a8b96dd446cd1bd6b678ed5d8485b29737754939ee7a35fd969d216bbf51"
+          "expression": "{'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'source': 'Источник данных: {source}.', 'updated': 'Прогноз от {date}.'}",
+          "expression_truncated": false,
+          "expression_chars": 254,
+          "ast_sha256": "0e8cd5357c894b5a31cfda9f73a007073c6156ad391c5eb8bcbfe3d3a4ec02f1"
         },
         {
           "key": "'en'",
-          "expression": "{'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data source: {source}.', ",
-          "expression_truncated": true,
-          "expression_chars": 333,
-          "ast_sha256": "10331342596124390cb2fe2693fd700de4e0b76ae5b4a766136cd92e9321f87f"
+          "expression": "{'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'source': 'Data source: {source}.', 'updated': 'Forecast of {date}.'}",
+          "expression_truncated": false,
+          "expression_chars": 247,
+          "ast_sha256": "8f98ff40fb9885831c4645d7fc36441a8e875aa2708a3c682b0bb758fac37b7a"
         }
       ],
-      "expression": "{'ru': {'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'checked': 'Для стран мира прогноз сначала проверен на прошлых данных.', 'source': 'Источник данных: {source}.', 'updated': 'Прогноз от {date}.'}, 'en': {'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'checked': 'For countries outside Russia the forecast is first tested on past data.', 'source': 'Data source: {source}.', 'updated': 'Forecast of {date}.'}}",
+      "expression": "{'ru': {'name': 'Показатель', 'now': 'Сейчас', 'year': 'Через год', 'change': 'Изменение', 'caption': 'Прогноз на год вперёд, {theme}', 'model': 'Считает платформа по официальным данным.', 'source': 'Источник данных: {source}.', 'updated': 'Прогноз от {date}.'}, 'en': {'name': 'Indicator', 'now': 'Now', 'year': 'In a year', 'change': 'Change', 'caption': 'One-year-ahead forecast, {theme}', 'model': 'Built by the platform from official data.', 'source': 'Data source: {source}.', 'updated': 'Forecast of {date}.'}}",
       "expression_truncated": false,
-      "expression_chars": 676,
-      "ast_sha256": "48c3446bd49e5cc33d18eb5deda187988cdb7ff0925e5953088cc97d2b0bbf0c",
+      "expression_chars": 517,
+      "ast_sha256": "c017b3d8ee828fb84c630adbebed4e8a8488c17e27fb6d91faa211be766d8836",
       "runtime_expansion": false
     },
     {
@@ -269623,8 +269623,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 57,
-      "end_line": 60,
+      "line": 55,
+      "end_line": 58,
       "owner": "<module>",
       "conditions": [],
       "name": "_value_text",
@@ -269632,8 +269632,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 63,
-      "end_line": 76,
+      "line": 61,
+      "end_line": 74,
       "owner": "<module>",
       "conditions": [],
       "name": "_item_row",
@@ -269641,8 +269641,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 79,
-      "end_line": 100,
+      "line": 77,
+      "end_line": 98,
       "owner": "<module>",
       "conditions": [],
       "name": "_sections",
@@ -269650,8 +269650,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 103,
-      "end_line": 127,
+      "line": 101,
+      "end_line": 125,
       "owner": "<module>",
       "conditions": [],
       "name": "render_forecasts_html",
@@ -282365,7 +282365,7 @@
     {
       "path": "backend/app/services/world_subnational_forecast.py",
       "line": 26,
-      "end_line": 95,
+      "end_line": 79,
       "owner": "<module>",
       "conditions": [],
       "name": "state_forecast",
@@ -306365,8 +306365,8 @@
     },
     {
       "path": "backend/app/services/seo_forecasts.py",
-      "line": 80,
-      "end_line": 80,
+      "line": 78,
+      "end_line": 78,
       "owner": "_sections",
       "conditions": [],
       "symbol": "app.services.seo_forecasts._COPY"
@@ -310162,16 +310162,16 @@
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "line": 33,
-      "end_line": 33,
+      "line": 32,
+      "end_line": 32,
       "owner": "state_forecast",
       "conditions": [],
       "symbol": "app.services.world_subnational_forecast.FREQUENCIES"
     },
     {
       "path": "backend/app/services/world_subnational_forecast.py",
-      "line": 37,
-      "end_line": 37,
+      "line": 36,
+      "end_line": 36,
       "owner": "state_forecast",
       "conditions": [],
       "symbol": "app.data.world_forecast_policy.FREQ_MIN_POINTS_PUBLISH_ALL"

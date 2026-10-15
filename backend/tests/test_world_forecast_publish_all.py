@@ -241,5 +241,5 @@ def test_subnational_state_forecast_follows_flag(monkeypatch):
     on = asyncio.run(state_forecast(dates, values, frequency="annual", unit="USD", locale="ru", today=today))
     assert on["available"] is True
     assert on["quality"]["gate_status"] == "advisory"
-    assert "MASE" not in on["methodology"]
+    assert on["methodology"] is None  # о качестве прогноза на странице не пишем
     assert len(on["points"]) == 1

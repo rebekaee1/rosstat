@@ -3034,9 +3034,9 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "6ed5c3a5db6c2877449da3f3195f2fdd25a20743ec3d15c781d3dbd4b9ca84e1",
-        "bytes": 45574
+        "date": "2026-10-15",
+        "sha256": "83c994eace8ac4e4e8ca1e32b4c06b505596b8e5c9f77af30c57d8d7cf55a120",
+        "bytes": 45497
       },
       "review_status": "прежнее полное чтение + содержательная дельта: файл прочитан целиком, дифф от старой версии прочитан, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению тел",
       "body_reviewed_in_this_pass": false,
@@ -3055,7 +3055,7 @@
           "reanchored_definitions": 3
         },
         "status_in_review": "reviewed",
-        "sha256": "6ed5c3a5db6c2877449da3f3195f2fdd25a20743ec3d15c781d3dbd4b9ca84e1"
+        "sha256": "83c994eace8ac4e4e8ca1e32b4c06b505596b8e5c9f77af30c57d8d7cf55a120"
       },
       "canonical_source": "backend/app/services/seo_content.py",
       "linked_mechanisms": null,
@@ -4682,8 +4682,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "2f60aff8f309ee77fb5459b28b29a8c66e7e569b4e5eae9c1d06d8e2b33048a3",
-        "bytes": 35732
+        "sha256": "f2eda87628fa748ea3553ba9b82e6947be89203ece5b540a1c8d78e1db3b7f38",
+        "bytes": 36427
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -4703,7 +4703,7 @@
           "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "2f60aff8f309ee77fb5459b28b29a8c66e7e569b4e5eae9c1d06d8e2b33048a3"
+        "sha256": "f2eda87628fa748ea3553ba9b82e6947be89203ece5b540a1c8d78e1db3b7f38"
       },
       "canonical_source": "docs/adr/0012-world-multi-provider-official-first-forecasts.md",
       "linked_mechanisms": null,
@@ -8904,8 +8904,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "0377a4c363ce7534e66fe954f1abd42094433a1b4c0af0d29ad32c78e1e4b9e3",
-        "bytes": 567079
+        "sha256": "7c7cd525652e6b1275e9cc4dd23763dee290e720a3f576bc03f4c583005a89a1",
+        "bytes": 567253
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -8922,7 +8922,7 @@
           "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "0377a4c363ce7534e66fe954f1abd42094433a1b4c0af0d29ad32c78e1e4b9e3"
+        "sha256": "7c7cd525652e6b1275e9cc4dd23763dee290e720a3f576bc03f4c583005a89a1"
       },
       "canonical_source": "docs/backlog.md",
       "linked_mechanisms": "one execution backlog",
@@ -10269,7 +10269,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "e05b8d8ac8ac2a20d820636dd365c7233b2891212e610a385154dd0334605d2a",
+        "sha256": "6011827fc1387008adcd645461f1a8d7e18988cd64ea08179b702d419f3a1b25",
         "canonical_source": "docs/client-mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -10277,8 +10277,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "e05b8d8ac8ac2a20d820636dd365c7233b2891212e610a385154dd0334605d2a",
-        "bytes": 6815497
+        "sha256": "6011827fc1387008adcd645461f1a8d7e18988cd64ea08179b702d419f3a1b25",
+        "bytes": 6815496
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -12412,14 +12412,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "dcf23f5cb474ccebf1aaa44f90339885da588f78cc4b9647947deef09fb88f7e",
+        "sha256": "3e0660dbee30782f1aeb0f24fb71fa9f6cdcc0904e54dd46a30e31ab8da203c7",
         "bytes": 831961
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "dcf23f5cb474ccebf1aaa44f90339885da588f78cc4b9647947deef09fb88f7e",
+        "sha256": "3e0660dbee30782f1aeb0f24fb71fa9f6cdcc0904e54dd46a30e31ab8da203c7",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -14033,7 +14033,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "11e216ba6c6d5fe0edbd250a891346831475c6b1c75ee9d90e841475fc16127e",
+        "sha256": "e9cc9d8ae653c06f25279e711f3f6d635d10eeccf7af59612b8417c94a66a482",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -14041,7 +14041,7 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "11e216ba6c6d5fe0edbd250a891346831475c6b1c75ee9d90e841475fc16127e",
+        "sha256": "e9cc9d8ae653c06f25279e711f3f6d635d10eeccf7af59612b8417c94a66a482",
         "bytes": 7231229
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -15767,14 +15767,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "2c8f436f32cb266c6e1d321fceb94e87682879671ce679af1d3e88c70c2bf41d",
+        "sha256": "a5aaa1b4c26fb8f1a5f25bb07dea9c7c535be8e1c10ecd4e433605180d73e5b3",
         "bytes": 1240439
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "2c8f436f32cb266c6e1d321fceb94e87682879671ce679af1d3e88c70c2bf41d",
+        "sha256": "a5aaa1b4c26fb8f1a5f25bb07dea9c7c535be8e1c10ecd4e433605180d73e5b3",
         "canonical_source": "scripts/code-review-symbols.mjs"
       },
       "canonical_source": "scripts/code-review-symbols.mjs",
@@ -17196,14 +17196,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "7cfc84cadf4b547a9efe2d717fd827825e84287956bd24081699460b4ed121b5",
-        "bytes": 21737885
+        "sha256": "2db5825fbf1f35f54024e4f6898acb090a4d3556a2094c7c244106eed7df920d",
+        "bytes": 21735938
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "7cfc84cadf4b547a9efe2d717fd827825e84287956bd24081699460b4ed121b5",
+        "sha256": "2db5825fbf1f35f54024e4f6898acb090a4d3556a2094c7c244106eed7df920d",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -18794,8 +18794,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "dfd6e6a4580aedd2b1e441aaeec7d1314150f28ef5e557110a7b45d91164f5c2",
-        "bytes": 266200
+        "sha256": "ea0d848c8ff9e86629b391deb8b64e5efff523ba6646b10bb9be62d47c9b1dee",
+        "bytes": 267102
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -18812,7 +18812,7 @@
           "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "dfd6e6a4580aedd2b1e441aaeec7d1314150f28ef5e557110a7b45d91164f5c2"
+        "sha256": "ea0d848c8ff9e86629b391deb8b64e5efff523ba6646b10bb9be62d47c9b1dee"
       },
       "canonical_source": "docs/data-contracts.md",
       "linked_mechanisms": "data and boundary contracts",
@@ -22841,14 +22841,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "5fdcfba9cd469d364f1f1d7de9c0d3a5753a46497ef523efdbb44b01d5a4c39d",
+        "sha256": "764043b2efd2893becde358a8c1e9a8283b61616bd8f28d501df2b10b488f1fe",
         "bytes": 2918990
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "5fdcfba9cd469d364f1f1d7de9c0d3a5753a46497ef523efdbb44b01d5a4c39d",
+        "sha256": "764043b2efd2893becde358a8c1e9a8283b61616bd8f28d501df2b10b488f1fe",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -31905,7 +31905,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca",
+        "sha256": "6621f4cf0c13eb40c73da305bc7e86a25ca393ffde352ab41dedc754e52c4276",
         "canonical_source": "docs/mechanism-inventory.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -31913,8 +31913,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca",
-        "bytes": 10772191
+        "sha256": "6621f4cf0c13eb40c73da305bc7e86a25ca393ffde352ab41dedc754e52c4276",
+        "bytes": 10771845
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -37993,8 +37993,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "f05c0c9eecb69710643012118b3a211ac2f5117f86a37daf11e8745cd3d8d438",
-        "bytes": 124679
+        "sha256": "1cd437fe235444adfe0535bceaa643f83c2e4d40a6d72a47c258736b00d0feea",
+        "bytes": 124700
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -38011,7 +38011,7 @@
           "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "f05c0c9eecb69710643012118b3a211ac2f5117f86a37daf11e8745cd3d8d438"
+        "sha256": "1cd437fe235444adfe0535bceaa643f83c2e4d40a6d72a47c258736b00d0feea"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",
@@ -42364,8 +42364,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e",
-        "bytes": 210546
+        "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b",
+        "bytes": 209969
       },
       "review_status": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
       "body_reviewed_in_this_pass": false,
@@ -42389,7 +42389,7 @@
           "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты."
         },
         "status_in_review": "reviewed",
-        "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e"
+        "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b"
       },
       "canonical_source": "frontend/src/i18n/messages.en.js",
       "linked_mechanisms": "English UI dictionary fully read: navigation, data/forecast states, comparison controls, auth/consent, calculators, country/region surfaces and methodology. New shared-base, official-cadence and loading wording matches changed consumers.",
@@ -43680,8 +43680,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846",
-        "bytes": 299869
+        "sha256": "00a436635a91b2f43c290c2f1a44ee6505dc799b21f6858cb4825b906ba57802",
+        "bytes": 298870
       },
       "review_status": "дельта после первого цикла знаний круга 13: прочитан diff 77400715..HEAD и новые определения, остальное — прежнее полное чтение",
       "body_reviewed_in_this_pass": false,
@@ -43705,7 +43705,7 @@
           "delta": "2026-10-15: круг 14 — прогноз нашей модели на всех рядах стран (advisory за флагом world_forecast_publish_all), документы и пересобранные карты."
         },
         "status_in_review": "reviewed",
-        "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846"
+        "sha256": "00a436635a91b2f43c290c2f1a44ee6505dc799b21f6858cb4825b906ba57802"
       },
       "canonical_source": "frontend/src/i18n/messages.ru.js",
       "linked_mechanisms": "Russian UI delta updates Russia-only regional scope and comparison shared-date/official-frequency/HICP/empty/loading explanations alongside English keys.",
@@ -45856,15 +45856,15 @@
       "source_version": {
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "4ac45974d57b98efda733744ea037a806506c6e28a0a3b5428e8c5b5e6c770ed",
-        "bytes": 36917
+        "date": "2026-10-15",
+        "sha256": "115d03efde17f47b6310aeb05079d6f7a76ffd07a17c0b1b878a3a0a46a684ef",
+        "bytes": 36840
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "4ac45974d57b98efda733744ea037a806506c6e28a0a3b5428e8c5b5e6c770ed",
+        "sha256": "115d03efde17f47b6310aeb05079d6f7a76ffd07a17c0b1b878a3a0a46a684ef",
         "canonical_source": "scripts/export-page-meta.py"
       },
       "canonical_source": "scripts/export-page-meta.py",

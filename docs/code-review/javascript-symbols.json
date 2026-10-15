@@ -13315,7 +13315,7 @@
     "anonymous_functions": 21
   },
   "frontend/src/components/W6eIndicator.component.test.jsx": {
-    "sha256": "e6145df7e1372b9f8b1e1808c07f2a1d2f8dba28f59d8a3567651c00b72b807f",
+    "sha256": "17685dfa66fd20b3e09d7802cf02a6d32c3b05e664ca0413e0029594c5a07f86",
     "definitions": [
       {
         "name": "get",
@@ -13488,7 +13488,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/components/WorldChartSection.jsx": {
-    "sha256": "b50503984cc349655b816cff563f197d0f5dfdec780e07f077a5201531f52822",
+    "sha256": "26a02b10133acd2dc7516d54dc294109f07cf5c0609a39914ea1f6f067b6c217",
     "definitions": [
       {
         "name": "lastAbs",
@@ -13499,13 +13499,13 @@
       {
         "name": "WorldChartSection",
         "line": 48,
-        "end_line": 383,
+        "end_line": 382,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldChartSection.handleDownloadImage",
-        "line": 145,
-        "end_line": 170,
+        "line": 144,
+        "end_line": 169,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -21100,7 +21100,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "efa89168d1393d2005678a444ddc4fbf84aeffce233f9209e0553f73edef200e",
+    "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -21208,7 +21208,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "a2232f0ec19f7e9038967417815648809b9aacf0e162f130a3093b325cf8a846",
+    "sha256": "00a436635a91b2f43c290c2f1a44ee6505dc799b21f6858cb4825b906ba57802",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -32003,7 +32003,7 @@
     "anonymous_functions": 15
   },
   "frontend/src/lib/forecastPublicText.test.js": {
-    "sha256": "7fea6ed35339ac1f4f3cc1e4d15689648f94df2e24e6507ddb6cd2ff5e7330cd",
+    "sha256": "7e0dfcba9df8a0172a053cc5228219bd7ff49b28a22bf2c05d83d836aaf989a7",
     "definitions": [
       {
         "name": "read",
@@ -52396,7 +52396,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/ForecastsPage.component.test.jsx": {
-    "sha256": "79673388d32c0a51d44609c6427d4c27a54c5127c6ecc6ce9bf4e68bb183e67d",
+    "sha256": "c606dba66c2fdba8a67c32304c01b9524cf5740e93434bee1fd5cd571cf2dee8",
     "definitions": [
       {
         "name": "series",
@@ -56726,12 +56726,12 @@
     "anonymous_functions": 33
   },
   "frontend/src/pages/WorldIndicatorPage.jsx": {
-    "sha256": "8a74d77a0fb28d6be24446e05c265dc4f5545b75b3725714c6e5d7b5856f7c4e",
+    "sha256": "3abb18f4373fb2657a0b8fc10bdeb13a92d78515017cc44af4f408f993883310",
     "definitions": [
       {
         "name": "WorldIndicatorPage",
         "line": 85,
-        "end_line": 850,
+        "end_line": 839,
         "kind": "FunctionDeclaration"
       },
       {
@@ -57650,7 +57650,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/pages/WorldRegionIndicatorPage.jsx": {
-    "sha256": "b254a663a15a3c7a8d13667a0d28ccb14fde3727913848cb0934ee6e76b0f17a",
+    "sha256": "811ddd8ebee6175dcb240119544bf3365d0ad04222b36f4325b034e22d14d3f1",
     "definitions": [
       {
         "name": "toYoYSeries",

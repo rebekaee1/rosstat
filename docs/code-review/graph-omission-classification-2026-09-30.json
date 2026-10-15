@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "b913bd260428b2d1bce5c956aa77d57fa690b1d6f46a6a21582a58da92d48ac3",
-  "extraction_sha256": "f04368361b626578cb0cfebd55bcdab41ff5486004552ce273bca24a1b46ae7d",
-  "terrain_baseline_commit": "301396e0076209b84ea2cf697855e0ddda30e8fa",
+  "terrain_sha256": "c141d90de8f1085d95c6200eeb8b804f78e7a047d6b2863de18c88b9f23bb062",
+  "extraction_sha256": "e096188e0d2471346186dffb5edf0518462ea1f0cde06a39901aee58f569e5f9",
+  "terrain_baseline_commit": "f8d3e63a72122a7aa17a37850046c6db0651cc96",
   "counts": {
     "external_or_unresolved_file": 2909,
     "missing_endpoint": 3954
@@ -76658,14 +76658,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/seo_forecasts.py",
-        "source_location": "L103",
+        "source_location": "L101",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "render_forecasts_html()",
         "source_file": "backend/app/services/seo_forecasts.py",
-        "source_location": "L103"
+        "source_location": "L101"
       },
       "target_endpoint": {
         "label": "AsyncSession",

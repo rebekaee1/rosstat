@@ -27,8 +27,7 @@ async def state_forecast(
     dates: Sequence[date], values: Sequence[float], *, frequency: str, unit: str,
     locale: str, today: date | None = None,
 ) -> dict:
-    """Return a public forecast only after strict MASE and plausibility gates."""
-    en = locale == "en"
+    """Public forecast of a state series: checked, or (publish_all) our model without the check; plausibility gates kept."""
     reason = None
     policy = FREQUENCIES.get(frequency)
     today = today or date.today()
@@ -63,27 +62,12 @@ async def state_forecast(
     if "%" in unit and min(values) >= 0 and max(values) <= 100:
         if any(point.value < 0 or point.value > 100 for point in gate.result.points):
             return {"available": False, "reason": "out_of_range", "points": []}
-    checked_methodology = (
-        "Our forecast uses a separate Python model for the series frequency. "
-        "We test its full horizon on rolling historical windows against a seasonal-naive benchmark; "
-        "only a model with MASE below 1 and at least 2% lower error is shown."
-        if en else
-        "Наш прогноз строит отдельная Python-модель для частоты ряда. "
-        "Мы проверяем весь её горизонт на последовательных исторических отрезках и сравниваем "
-        "с сезонной наивной моделью. Публикуем результат только при MASE ниже 1 "
-        "и ошибке минимум на 2% меньше ориентира."
-    )
-    unchecked_methodology = (
-        "The forecast is built by our model from official data and shows the expected trend."
-        if en else
-        "Прогноз построен нашей моделью по официальным данным и показывает ожидаемую тенденцию."
-    )
-    methodology = checked_methodology if gate.status == "passed" else unchecked_methodology
+    # Круг 14 (решение владельца 15.10): о качестве и способе проверки прогноза на странице ничего не пишем.
     return {
         "available": True,
         "model_name": gate.result.model_name,
         "strategy": gate.strategy,
-        "methodology": methodology,
+        "methodology": None,
         "quality": {"gate_status": gate.status, "mase": gate.mase,
                     "baseline_mase": gate.baseline_mase, "origins": gate.origins},
         "points": [

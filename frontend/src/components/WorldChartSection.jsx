@@ -52,7 +52,6 @@ export default function WorldChartSection({
   dataPoints,
   forecastData = [],
   forecastEnabled = false,
-  forecastGateStatus = null,
   forecastDerivedFrom = null,
   forecastOfficial = null,
   showForecast = false,
@@ -121,13 +120,13 @@ export default function WorldChartSection({
     || aggregation?.source_frequency === 'weekly'
     || aggregation?.source_frequency === 'daily';
   const noForecastReason = highFreqNative ? t('world.chart.forecastHighFreq') : t('world.chart.forecastGate');
+  // Круг 14 (решение владельца 15.10): о качестве прогноза под графиком ничего не пишем — только источник
+  // официального прогноза и пояснение расчётной частоты.
   const forecastNote = forecastOfficial
     ? t('world.chart.forecastOfficial', { date: formatOfficialVintage(forecastOfficial.vintage, locale) })
     : forecastDerivedFrom
     ? t('world.chart.forecastDerived')
-    : (forecastGateStatus === 'advisory'
-      ? t('world.chart.forecastAdvisory')
-      : t('world.chart.forecastPassed'));
+    : null;
 
   // Страны на одной оси, но размеры отличаются вдвое и больше: линия меньшей почти плоская. Предлагаем рост в процентах.
   const suggestPercent = useMemo(() => {
@@ -332,7 +331,7 @@ export default function WorldChartSection({
           // «проверен на прошлых данных» не должна мелькать под скелетом. Пустая строка держит высоту.
           <p className="mb-3 text-[13px] leading-5" aria-hidden="true">{'\u00A0'}</p>
         )}
-        {forecastEnabled && !chartLoading && (
+        {forecastEnabled && !chartLoading && forecastNote && (
           <p className="mb-3 text-[13px] leading-5 text-text-secondary">
             {forecastNote}
             {' '}

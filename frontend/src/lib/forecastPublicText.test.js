@@ -11,14 +11,17 @@ const here = dirname(fileURLToPath(import.meta.url));
 const read = (rel) => readFileSync(join(here, '..', rel), 'utf8');
 
 describe('публичный текст прогноза world', () => {
-  it('блок «как мы проверяем» на странице показателя без MASE и названия модели', () => {
+  it('страница показателя без MASE, названия модели и слов о качестве прогноза (круг 14)', () => {
     const page = read('pages/WorldIndicatorPage.jsx');
+    const chart = read('components/WorldChartSection.jsx');
     expect(page).not.toMatch(/MASE/);
     expect(page).not.toMatch(/forecast\.model_name/);
+    expect(page).not.toMatch(/c13f\.forecast\.checked|gate_status/);
+    expect(chart).not.toMatch(/forecastPassed|forecastAdvisory|forecastGateStatus/);
     for (const dict of [ru, en]) {
-      expect(dict['c13f.forecast.checkedTitle']).toBeTruthy();
-      expect(dict['c13f.forecast.checkedBody']).toBeTruthy();
-      expect(dict['c13f.forecast.checkedBody']).not.toMatch(/MASE/);
+      for (const key of ['c13f.forecast.checkedTitle', 'c13f.forecast.checkedBody', 'world.chart.forecastPassed', 'world.chart.forecastAdvisory']) {
+        expect(dict[key]).toBeUndefined();
+      }
     }
   });
 

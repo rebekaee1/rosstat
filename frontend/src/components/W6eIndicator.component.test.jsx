@@ -249,15 +249,16 @@ describe('WorldChartSection', () => {
   });
 
   it('есть прогноз: переключатель включён по умолчанию', () => {
-    renderSection({ forecastEnabled: true, forecastGateStatus: 'passed' });
+    renderSection({ forecastEnabled: true });
     expect(screen.getByRole('switch').getAttribute('aria-checked')).toBe('true');
     expect(screen.queryByText('Прогноз для этого показателя пока не строится')).toBeNull();
+    // Круг 14: о качестве нашего прогноза под графиком ничего не пишется.
+    expect(screen.queryByText(/проверен на прошлых данных|точнее|тенденци/)).toBeNull();
   });
 
   it('официальный прогноз МВФ: подпись с выпуском и датой, без слов «проверен на прошлых данных»', () => {
     renderSection({
       forecastEnabled: true,
-      forecastGateStatus: 'passed',
       forecastOfficial: { provider: 'imf', publication: 'World Economic Outlook', vintage: '2025-09-25' },
     });
     const note = screen.getByText(/Официальный прогноз Международного валютного фонда/);
@@ -267,7 +268,7 @@ describe('WorldChartSection', () => {
   });
 
   it('пока данные идут, подпись под графиком ничего не утверждает (у официального прогноза она другая)', () => {
-    renderSection({ forecastEnabled: true, forecastGateStatus: 'passed', chartLoading: true });
+    renderSection({ forecastEnabled: true, chartLoading: true });
     expect(screen.queryByText(/проверен на прошлых данных/)).toBeNull();
     expect(screen.queryByText(/Официальный прогноз Международного валютного фонда/)).toBeNull();
   });
