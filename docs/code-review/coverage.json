@@ -12776,8 +12776,8 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca",
-      "bytes": 10772191,
+      "sha256": "8d71db802abb1f1a4aaece5db2692f152a7f867b7987c03460adc7a2ef1cffd8",
+      "bytes": 10772069,
       "lines": 324868,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -28467,9 +28467,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "1654ae0ffa77eb74d5aeae195e7eabf14fd50b935f4e1ee48d9a288a4475122b",
+  "ledger_sha256": "edde4af706732fc6248c0e081dc796dde2a0e26a052704a4258fe79d96c76da1",
   "javascript_inventory_sha256": "2c8f436f32cb266c6e1d321fceb94e87682879671ce679af1d3e88c70c2bf41d",
-  "baseline_commit": "3d600127a6bcd42ecf8dea2bf23c205869d6edfd",
+  "baseline_commit": "17850f086e29cd825591ac8c9b0078bf316c7adb",
   "branch": "claude/modest-mayer-7v8whz",
   "unstaged_at_capture": []
 }

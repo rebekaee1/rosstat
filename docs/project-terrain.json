@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "3d600127a6bcd42ecf8dea2bf23c205869d6edfd",
+  "baseline_commit": "17850f086e29cd825591ac8c9b0078bf316c7adb",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [],
   "untracked_at_capture": [],
@@ -1691,7 +1691,7 @@
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 98628, "lines": 1086, "sha256": "9921fd7ef762167f0f1d4c9a7858ef0a00ee3ec305f0982300478f916a3fcb75", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 53777, "lines": 112, "sha256": "6a915475f1bfe6caa35d597d98b0ac81e3f294ea59804d043bd590a9e0aabc1e", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 10772191, "lines": 324868, "sha256": "30540051e67510d1af2ede8cbc26f534678d5a08993a3783dfc57d90d0c94aca", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 10772069, "lines": 324868, "sha256": "8d71db802abb1f1a4aaece5db2692f152a7f867b7987c03460adc7a2ef1cffd8", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 533095, "lines": 3024, "sha256": "4d1574d612d6622340117cae3e2a1f76339da45e96558e54dcdc6449fc819292", "symlink": false, "nodes": 78, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/planet-view.md", "kind": "document", "bytes": 95974, "lines": 590, "sha256": "f07c5398732aa47da4df27ce0e1fc00db13594ccda146eec7dfa67f295540381", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
