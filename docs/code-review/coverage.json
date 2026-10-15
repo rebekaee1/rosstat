@@ -11320,9 +11320,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "51d8036c104a95b999491b37a6f851659e77a87290f93866c1aac0dd81f6c708",
-      "bytes": 14220,
-      "lines": 142,
+      "sha256": "9a9499b04207500d7c2766ce4d0ec23c13ae01ebe46e8977926ee7b88626309b",
+      "bytes": 14746,
+      "lines": 143,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12724,7 +12724,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "effaa00b88db846a5696136e9997f08d9ee8e6a80c5e420e3444c970992c3e4f",
+      "sha256": "9071ab785503e6c81ab97e93c2a211e2a4f6e2ba9115c979897891f1609fecdc",
       "bytes": 2918990,
       "lines": 105624,
       "code": false,
@@ -13517,9 +13517,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "1cd437fe235444adfe0535bceaa643f83c2e4d40a6d72a47c258736b00d0feea",
-      "bytes": 124700,
-      "lines": 639,
+      "sha256": "b9c67f7850e4c3f10ef9ad28e720a2b0d164e50df1b0bb1ae643b01fcc60a233",
+      "bytes": 125568,
+      "lines": 640,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -27297,9 +27297,9 @@
     },
     {
       "path": "scripts/deploy.sh",
-      "sha256": "9fba0ce420bb1d244e9fc800a7efec945dc2f619f00a7d26484e5f33fa0978e3",
-      "bytes": 38692,
-      "lines": 693,
+      "sha256": "f950409b63f67d19185c8f8091654374bc0a3f6b5333fa2f10825a97cd2a3cfa",
+      "bytes": 39541,
+      "lines": 705,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28467,9 +28467,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2e10e2ad420866d9b4acd011f2cd58db79d1a9e019b2de80360255de3e56210c",
+  "ledger_sha256": "f033a279a9b73c60753075b6b1b69db68f888ba66adf9e43b36acecbc9564c5b",
   "javascript_inventory_sha256": "a5aaa1b4c26fb8f1a5f25bb07dea9c7c535be8e1c10ecd4e433605180d73e5b3",
-  "baseline_commit": "8de29855481ee139534370f78bdb732dc9c0431d",
+  "baseline_commit": "3926a2d7aafaaf27cf18d0cd585dec03e575aa85",
   "branch": "claude/modest-mayer-7v8whz",
   "unstaged_at_capture": []
 }

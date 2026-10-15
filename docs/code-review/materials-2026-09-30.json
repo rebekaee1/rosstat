@@ -12412,14 +12412,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "aa18f7f826257f9354b0adc4c70eaed81c05ffe96804a59950d1c6306af069ed",
+        "sha256": "662dc087030801a8415e50ef936972c146c352d63cc923a1c50032405758fece",
         "bytes": 831961
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "aa18f7f826257f9354b0adc4c70eaed81c05ffe96804a59950d1c6306af069ed",
+        "sha256": "662dc087030801a8415e50ef936972c146c352d63cc923a1c50032405758fece",
         "canonical_source": "scripts/audit-code-documentation.py"
       },
       "canonical_source": "scripts/audit-code-documentation.py",
@@ -14033,7 +14033,7 @@
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "190b891f67dc82fff7fc86f4fa29e26214adfbd7199df8e285d5a9779295ff6d",
+        "sha256": "99109d89a3b131039b5f7ee75e49d9723da5c00dd9b31e1efe562b68e3e4bf25",
         "canonical_source": "docs/code-review/graph-omission-classification-2026-09-30.json"
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
@@ -14041,7 +14041,7 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "190b891f67dc82fff7fc86f4fa29e26214adfbd7199df8e285d5a9779295ff6d",
+        "sha256": "99109d89a3b131039b5f7ee75e49d9723da5c00dd9b31e1efe562b68e3e4bf25",
         "bytes": 7231229
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -17196,14 +17196,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "2e10e2ad420866d9b4acd011f2cd58db79d1a9e019b2de80360255de3e56210c",
-        "bytes": 21745419
+        "sha256": "f033a279a9b73c60753075b6b1b69db68f888ba66adf9e43b36acecbc9564c5b",
+        "bytes": 21746252
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "2e10e2ad420866d9b4acd011f2cd58db79d1a9e019b2de80360255de3e56210c",
+        "sha256": "f033a279a9b73c60753075b6b1b69db68f888ba66adf9e43b36acecbc9564c5b",
         "canonical_source": "docs/code-review/reviews.jsonl"
       },
       "canonical_source": "docs/code-review/reviews.jsonl",
@@ -22841,14 +22841,14 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "effaa00b88db846a5696136e9997f08d9ee8e6a80c5e420e3444c970992c3e4f",
+        "sha256": "9071ab785503e6c81ab97e93c2a211e2a4f6e2ba9115c979897891f1609fecdc",
         "bytes": 2918990
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
       "review_basis": {
         "method": "Current generated artifact bytes recorded; no new body/value review",
-        "sha256": "effaa00b88db846a5696136e9997f08d9ee8e6a80c5e420e3444c970992c3e4f",
+        "sha256": "9071ab785503e6c81ab97e93c2a211e2a4f6e2ba9115c979897891f1609fecdc",
         "canonical_source": "scripts/build-indicator-index.py"
       },
       "canonical_source": "scripts/build-indicator-index.py",
@@ -37993,8 +37993,8 @@
         "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
         "scope": "tracked/index",
         "date": "2026-10-15",
-        "sha256": "1cd437fe235444adfe0535bceaa643f83c2e4d40a6d72a47c258736b00d0feea",
-        "bytes": 124700
+        "sha256": "b9c67f7850e4c3f10ef9ad28e720a2b0d164e50df1b0bb1ae643b01fcc60a233",
+        "bytes": 125568
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -38011,7 +38011,7 @@
           "branch": "claude/modest-mayer-7v8whz"
         },
         "status_in_review": "reviewed",
-        "sha256": "1cd437fe235444adfe0535bceaa643f83c2e4d40a6d72a47c258736b00d0feea"
+        "sha256": "b9c67f7850e4c3f10ef9ad28e720a2b0d164e50df1b0bb1ae643b01fcc60a233"
       },
       "canonical_source": "docs/workflow.md",
       "linked_mechanisms": "dev/release procedures",

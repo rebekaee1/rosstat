@@ -514,12 +514,24 @@ echo " ok"
 # The first g2 catalogue release has no durable mirror yet. Warm both locales
 # under the new backend and require real countries before declaring success.
 # A second short probe checks that the warmed path remains responsive.
+# 15.10.2026 (круг 14): холодная сборка EN упала по statement timeout (30 с) сразу после бэкапа и сброса SSR-кэша,
+# хотя код каталога не менялся; одна попытка откатывала выпуск. Теперь до 4 попыток с паузой 20 с: 503 «rebuilding»
+# или таймаут SQL под пиковой нагрузкой не означают поломку, а настоящая поломка не проходит ни одной попытки.
+catalog_ok() {
+  curl -fsS --max-time 60 -A 'YandexBot/3.0' -H "Host: $1" \
+      http://localhost:8000/api/v1/world/countries \
+      | python3 -c 'import json,sys; p=json.load(sys.stdin); assert p["total"] == len(p["countries"]) and p["total"] > 0 and p["world_indicators_count"] > 0'
+}
 for locale in ru en; do
   echo "==> smoke: world countries ${locale} cold + warm"
   catalog_host="${locale}.forecasteconomy.com"
-  if ! curl -fsS --max-time 60 -A 'YandexBot/3.0' -H "Host: ${catalog_host}" \
-      http://localhost:8000/api/v1/world/countries \
-      | python3 -c 'import json,sys; p=json.load(sys.stdin); assert p["total"] == len(p["countries"]) and p["total"] > 0 and p["world_indicators_count"] > 0'; then
+  catalog_built=0
+  for attempt in 1 2 3 4; do
+    if catalog_ok "${catalog_host}"; then catalog_built=1; break; fi
+    echo "    попытка ${attempt}: каталог ${locale} ещё не собран, повтор через 20 с"
+    sleep 20
+  done
+  if [ "${catalog_built}" != 1 ]; then
     echo "FAIL: world countries ${locale} cold build"
     rollback
   fi

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2028  ·  **Строк:** 1 298 459  ·  **Токенов (≈):** 12 308 323
+**Файлов:** 2028  ·  **Строк:** 1 298 474  ·  **Токенов (≈):** 12 308 834
 
 ## По верхним папкам
 
@@ -18,11 +18,11 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 813 | 278 896 | 3 073 904 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 16 | 875 | 11 019 |
-| `docs` | 137 | 827 150 | 7 042 478 |
+| `deploy` | 16 | 876 | 11 110 |
+| `docs` | 137 | 827 152 | 7 042 749 |
 | `frontend` | 925 | 165 328 | 1 840 219 |
 | `mcp` | 3 | 158 | 1 120 |
-| `scripts` | 120 | 22 959 | 273 161 |
+| `scripts` | 120 | 22 971 | 273 310 |
 
 ## Все файлы (по убыванию токенов)
 
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 728 | 52 030 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 948 | 45 661 |
+| `docs/data-contracts.md` | 949 | 45 739 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 043 | 43 122 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
@@ -64,8 +64,8 @@
 | `backend/app/services/analytics_marts.py` | 2 292 | 25 414 |
 | `backend/app/models.py` | 1 804 | 23 483 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
+| `docs/workflow.md` | 640 | 22 036 |
 | `backend/app/services/site_urls.py` | 2 252 | 22 005 |
-| `docs/workflow.md` | 639 | 21 883 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
 | `backend/app/services/seo_world.py` | 2 169 | 20 310 |
@@ -135,15 +135,15 @@
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 924 | 8 826 |
 | `backend/app/services/derived_ops.py` | 840 | 8 754 |
 | `frontend/src/i18n/viewModeContent.en.js` | 901 | 8 696 |
+| `docs/knowledge-unknowns.md` | 112 | 8 671 |
 | `docs/indicator-family-playbook.md` | 618 | 8 645 |
 | `scripts/build-mechanism-inventory.py` | 492 | 8 645 |
-| `docs/knowledge-unknowns.md` | 112 | 8 631 |
 | `frontend/src/styles/k3-shell.css` | 746 | 8 629 |
 | `backend/app/services/search_vocabulary.py` | 366 | 8 527 |
+| `scripts/deploy.sh` | 705 | 8 526 |
 | `frontend/src/pages/WorldRatingPage.component.test.jsx` | 824 | 8 520 |
 | `frontend/src/styles/k7-home.css` | 712 | 8 492 |
 | `backend/app/api/analytics.py` | 801 | 8 459 |
-| `scripts/deploy.sh` | 693 | 8 377 |
 | `backend/app/services/imf_weo_adapter.py` | 905 | 8 337 |
 | `backend/app/services/world_forecaster.py` | 849 | 8 270 |
 | `backend/app/services/indexnow.py` | 875 | 8 269 |
@@ -437,6 +437,7 @@
 | `backend/tests/test_world_official_forecast.py` | 317 | 3 316 |
 | `frontend/src/lib/indicatorSummary.js` | 323 | 3 302 |
 | `backend/tests/test_og_hub_portrait.py` | 241 | 3 300 |
+| `deploy/approved-shas.txt` | 143 | 3 298 |
 | `scripts/audit-world-country-coverage.py` | 345 | 3 293 |
 | `backend/app/data/world_national_core/uk.yaml` | 312 | 3 288 |
 | `frontend/src/lib/compareRepresentation.js` | 302 | 3 288 |
@@ -453,7 +454,6 @@
 | `scripts/dev/check-raster-dpr.py` | 303 | 3 219 |
 | `backend/app/services/analytics_backfill.py` | 343 | 3 211 |
 | `frontend/src/pages/Account.test.jsx` | 242 | 3 211 |
-| `deploy/approved-shas.txt` | 142 | 3 207 |
 | `frontend/src/components/Footer.jsx` | 349 | 3 207 |
 | `backend/app/services/dataset_inventory.py` | 294 | 3 190 |
 | `docs/research/search-accuracy-2026-10-04.md` | 206 | 3 161 |
