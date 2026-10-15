@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2028  ·  **Строк:** 1 298 352  ·  **Токенов (≈):** 12 307 294
+**Файлов:** 2028  ·  **Строк:** 1 298 459  ·  **Токенов (≈):** 12 308 323
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 706 | 62 120 |
 | `.github` | 3 | 295 | 3 015 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 813 | 278 842 | 3 073 307 |
+| `backend` | 813 | 278 896 | 3 073 904 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 16 | 874 | 10 938 |
-| `docs` | 137 | 827 098 | 7 042 127 |
+| `deploy` | 16 | 875 | 11 019 |
+| `docs` | 137 | 827 150 | 7 042 478 |
 | `frontend` | 925 | 165 328 | 1 840 219 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 120 | 22 959 | 273 161 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 324 868 | 2 645 973 |
+| `docs/mechanism-inventory.json` | 324 920 | 2 646 324 |
 | `docs/client-mechanism-inventory.json` | 239 948 | 1 695 904 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -68,7 +68,7 @@
 | `docs/workflow.md` | 639 | 21 883 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
-| `backend/app/services/seo_world.py` | 2 142 | 20 015 |
+| `backend/app/services/seo_world.py` | 2 169 | 20 310 |
 | `backend/app/main.py` | 1 884 | 19 547 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/components/PlanetView.component.test.jsx` | 1 234 | 19 476 |
@@ -99,9 +99,9 @@
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
 | `backend/app/services/world_national_ingest.py` | 1 385 | 12 319 |
 | `frontend/src/lib/behavior.js` | 1 214 | 12 143 |
+| `backend/tests/test_seo_world.py` | 1 107 | 11 928 |
 | `frontend/src/components/WorldMap.jsx` | 1 128 | 11 713 |
 | `backend/tests/test_seo_og.py` | 1 221 | 11 689 |
-| `backend/tests/test_seo_world.py` | 1 080 | 11 626 |
 | `backend/app/data/eurostat_unit_codelist_en.json` | 760 | 11 604 |
 | `frontend/src/components/IndicatorChart.jsx` | 1 087 | 11 462 |
 | `docs/research/competitor-tradingeconomics-2026-10-04.md` | 445 | 11 353 |
@@ -453,6 +453,7 @@
 | `scripts/dev/check-raster-dpr.py` | 303 | 3 219 |
 | `backend/app/services/analytics_backfill.py` | 343 | 3 211 |
 | `frontend/src/pages/Account.test.jsx` | 242 | 3 211 |
+| `deploy/approved-shas.txt` | 142 | 3 207 |
 | `frontend/src/components/Footer.jsx` | 349 | 3 207 |
 | `backend/app/services/dataset_inventory.py` | 294 | 3 190 |
 | `docs/research/search-accuracy-2026-10-04.md` | 206 | 3 161 |
@@ -461,7 +462,6 @@
 | `frontend/src/lib/useCountryComparison.js` | 331 | 3 134 |
 | `backend/tests/test_search_intent_candidate_roles.py` | 228 | 3 131 |
 | `frontend/src/lib/viewModeFamilies.js` | 295 | 3 128 |
-| `deploy/approved-shas.txt` | 141 | 3 126 |
 | `backend/app/services/goal_taxonomy.py` | 342 | 3 122 |
 | `backend/app/services/rosstat_science_parser.py` | 353 | 3 121 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |

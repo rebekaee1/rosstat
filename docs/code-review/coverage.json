@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 1976
     },
-    "definitions": 14084,
-    "annotated_definitions": 14084,
+    "definitions": 14087,
+    "annotated_definitions": 14087,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4742,15 +4742,15 @@
     },
     {
       "path": "backend/app/services/seo_world.py",
-      "sha256": "25e7fc4c251754b7d675018b5e9f411675948c7c6205181db8ef98c1f45e351a",
-      "bytes": 89250,
-      "lines": 2142,
+      "sha256": "b1429df13eb16c81c8b694f90b68f071a30ad8231950e5fe83efa24d61374214",
+      "bytes": 90652,
+      "lines": 2169,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 46,
-      "annotated_definitions": 46,
+      "definitions": 48,
+      "annotated_definitions": 48,
       "missing_definitions": []
     },
     {
@@ -10046,15 +10046,15 @@
     },
     {
       "path": "backend/tests/test_seo_world.py",
-      "sha256": "fefb139384e1c7aee94a8874a20bcb2fbfd9ca8b3ecceca13c89e33695fbe04f",
-      "bytes": 51465,
-      "lines": 1080,
+      "sha256": "6e8816258a145da0c22dab65f04b04d6c8e699eecae1896690a03f33505396d7",
+      "bytes": 52780,
+      "lines": 1107,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 32,
-      "annotated_definitions": 32,
+      "definitions": 33,
+      "annotated_definitions": 33,
       "missing_definitions": []
     },
     {
@@ -11320,9 +11320,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "88cd5f92abbcbc0f6a9cd17b04156d7acf2fde2997feab7330c02360e44c6784",
-      "bytes": 13758,
-      "lines": 141,
+      "sha256": "51d8036c104a95b999491b37a6f851659e77a87290f93866c1aac0dd81f6c708",
+      "bytes": 14220,
+      "lines": 142,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12191,9 +12191,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "ea0d848c8ff9e86629b391deb8b64e5efff523ba6646b10bb9be62d47c9b1dee",
-      "bytes": 267102,
-      "lines": 948,
+      "sha256": "f9624efcf94bbb9570892f60fd2bfbbe7f272a92f218008f6c674ddd15cf07a4",
+      "bytes": 267499,
+      "lines": 949,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12724,7 +12724,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "764043b2efd2893becde358a8c1e9a8283b61616bd8f28d501df2b10b488f1fe",
+      "sha256": "effaa00b88db846a5696136e9997f08d9ee8e6a80c5e420e3444c970992c3e4f",
       "bytes": 2918990,
       "lines": 105624,
       "code": false,
@@ -12750,8 +12750,8 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "6a915475f1bfe6caa35d597d98b0ac81e3f294ea59804d043bd590a9e0aabc1e",
-      "bytes": 53777,
+      "sha256": "b49108acf78fe63a1d14d7571cd1cd784aee14d0e522351a7204251d98001e77",
+      "bytes": 53976,
       "lines": 112,
       "code": false,
       "status": "reviewed",
@@ -12776,9 +12776,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "6621f4cf0c13eb40c73da305bc7e86a25ca393ffde352ab41dedc754e52c4276",
-      "bytes": 10771845,
-      "lines": 324868,
+      "sha256": "a25cac8feb06d1e948f2f576b8bdc90632465a896f50e1c0f92d80b57649573d",
+      "bytes": 10773248,
+      "lines": 324920,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12789,7 +12789,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "4d1574d612d6622340117cae3e2a1f76339da45e96558e54dcdc6449fc819292",
+      "sha256": "ca97ddc78ec973449acf5ad7f2d0f01f720d3a06f030f95b0c0e92c6d75d34fb",
       "bytes": 533095,
       "lines": 3024,
       "code": false,
@@ -28467,9 +28467,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2db5825fbf1f35f54024e4f6898acb090a4d3556a2094c7c244106eed7df920d",
+  "ledger_sha256": "2e10e2ad420866d9b4acd011f2cd58db79d1a9e019b2de80360255de3e56210c",
   "javascript_inventory_sha256": "a5aaa1b4c26fb8f1a5f25bb07dea9c7c535be8e1c10ecd4e433605180d73e5b3",
-  "baseline_commit": "f8d3e63a72122a7aa17a37850046c6db0651cc96",
+  "baseline_commit": "8de29855481ee139534370f78bdb732dc9c0431d",
   "branch": "claude/modest-mayer-7v8whz",
   "unstaged_at_capture": []
 }

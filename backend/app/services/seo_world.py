@@ -380,14 +380,41 @@ async def _frequency_links_html(
     )
 
 
+def _weo_circle12_unit_en(ind: WorldIndicator) -> str | None:
+    """Английская единица рядов МВФ круга 12 (рост реального ВВП, счёт текущих операций).
+
+    В хранилище у них коды ``PC`` и ``PC_GDP``; ``PC`` проходил как английская проза, и заголовок EN гласил
+    «4.9959 PC» (найдено на боевом 13.10). Та же подпись, что в API (``api.world._weo_circle12_unit_en``).
+    """
+    if str(ind.provider or "").lower() != "imf" or "-weo-" not in str(ind.code or ""):
+        return None
+    from app.services.imf_weo_adapter import WEO_CIRCLE12_CODES, WEO_SERIES
+
+    suffix = str(ind.code).split("-weo-", 1)[1]
+    for weo_code in WEO_CIRCLE12_CODES:
+        meta = WEO_SERIES[weo_code]
+        if meta["code_suffix"] == suffix:
+            return meta.get("unit_en") or None
+    return None
+
+
 def _unit_of(ind: WorldIndicator) -> str:
     """Locale-facing полная единица ряда: на EN — без кириллицы (BEA prose / map)."""
     from app.services.display import public_unit_en
     from app.services.locale import get_locale
 
     if get_locale() == "en":
-        return public_unit_en(ind.unit_ru, unit_storage=ind.unit)
+        return _weo_circle12_unit_en(ind) or public_unit_en(ind.unit_ru, unit_storage=ind.unit)
     return (ind.unit_ru or ind.unit or "").strip()
+
+
+def _unit_sfx_of(ind: WorldIndicator) -> str:
+    """Единица справа от числа для ряда: у рядов МВФ круга 12 на EN — из русской единицы («%», «% of GDP»)."""
+    from app.services.locale import get_locale
+
+    if get_locale() == "en" and _weo_circle12_unit_en(ind) and ind.unit_ru:
+        return _unit_sfx(ind.unit_ru)
+    return _unit_sfx(_unit_of(ind))
 
 
 def _unit_sfx(unit: str) -> str:
@@ -1398,7 +1425,7 @@ async def render_world_country_html(slug: str, db: AsyncSession) -> tuple[int, s
         (
             f"<tr><td><a href=\"{escape(paths.indicator(slug, ind.code))}\">"
             f"{escape(_display_name(ind))}</a></td>"
-            f"<td>{_fmt(latest[ind.id][1])}{escape(_unit_sfx(_unit_of(ind)))}</td>"
+            f"<td>{_fmt(latest[ind.id][1])}{escape(_unit_sfx_of(ind))}</td>"
             f"<td>{escape(_period_label(latest[ind.id][0], ind.frequency))}</td></tr>"
         )
         for ind in key_inds
@@ -1725,7 +1752,7 @@ async def render_world_indicator_html(
     first_date, first_value = series[0]
     last_date, last_value = series[-1]
     unit = _unit_of(indicator)
-    unit_sfx = _unit_sfx(unit)
+    unit_sfx = _unit_sfx_of(indicator)
     source = _source_label(indicator.source, indicator.provider)
     display = _display_name(indicator)
     period = _date_range_ru(first_date, last_date) or (

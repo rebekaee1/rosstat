@@ -1078,3 +1078,30 @@ def test_russia_name_in_ranking_links_to_regions(russia_gdp_method_client, local
     country_links = [a for a in soup.select("table a[href]") if a.get_text(strip=True) == label]
     assert country_links
     assert {a["href"] for a in country_links} == {f"/russia/region?preview_locale={locale}"}
+
+
+def test_weo_circle12_units_on_english_pages_are_human():
+    """Круг 14: «4.9959 PC» в EN-заголовке роста ВВП МВФ (боевой 13.10) — единица из описания ряда."""
+    from types import SimpleNamespace
+
+    from app.services import seo_world
+    from app.services.locale import reset_locale, set_locale
+
+    growth = SimpleNamespace(provider="imf", code="india-weo-ngdp-rpch", unit="PC", unit_ru="изменение за год, %")
+    current = SimpleNamespace(provider="imf", code="india-weo-bca", unit="PC_GDP", unit_ru="% ВВП")
+    other = SimpleNamespace(provider="eurostat", code="de-une-rt-m", unit="PC_ACT", unit_ru="% активного населения")
+    token = set_locale("en")
+    try:
+        assert seo_world._unit_of(growth) == "annual change, %"
+        assert seo_world._unit_sfx_of(growth) == " %"
+        assert seo_world._unit_of(current) == "% of GDP"
+        assert "PC" not in seo_world._unit_sfx_of(current)
+        assert seo_world._weo_circle12_unit_en(other) is None
+    finally:
+        reset_locale(token)
+    token = set_locale("ru")
+    try:
+        assert seo_world._unit_of(growth) == "изменение за год, %"
+        assert seo_world._unit_sfx_of(growth) == " %"
+    finally:
+        reset_locale(token)
