@@ -444,7 +444,7 @@ describe('PlanetView interaction contract', () => {
     render(<PlanetView countries={countries} />);
     await screen.findByTestId('planet-scene');
     expect(scene.props.touchNavigation).toBe(true);
-    expect(scene.props.interactive).toBe(false);
+    expect(scene.props.interactive).toBe(true);
     expect(screen.queryByRole('button', { name: 'planet.rotate' })).toBeNull();
   });
 

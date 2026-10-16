@@ -206,7 +206,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
     const current = activeResources.current;
     if (!current || !size.height) return;
     const compactLayout = compact || size.width < 600;
-    const fontPixels = compactLayout ? 13 : 14.5;
+    const fontPixels = compactLayout ? 15.5 : 14.5;
     const fontScale = fontPixels / current.fontPixels;
     const halfFrustum = Math.tan(camera.fov * Math.PI / 360);
     const selectedKey = normalizePlanetCountryCode(selectedCode);
@@ -242,7 +242,7 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
     const visible = layoutPlanetLabels(candidates, {
       width: size.width, height: size.height,
       cameraDistance: camera.position.length(), selectedCode, hoverCode,
-      maxVisible: compactLayout ? 8 : MAX_LABELS,
+      maxVisible: compactLayout ? 10 : MAX_LABELS,
       selectionOnly,
       centered: true,
       globe,
