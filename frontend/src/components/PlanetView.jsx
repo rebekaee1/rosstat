@@ -781,7 +781,7 @@ export default function PlanetView({
               <SceneBoundary key={sceneGeneration} onError={handleError}><Suspense fallback={null}>
                 <PlanetScene countries={availableCountries} valuesByCode={displayValues} unit={displayUnit} showValues={hasMetric} colorModel={colorModel} mode={mode} selectedCode={selectedCountry?.code || null}
                   valueDigits={digits} onHover={handleHover} onSelect={handleSceneSelect} onReady={handleReady} onError={handleError} cameraCommand={cameraCommand} defaultScope={defaultScope}
-                  interactive={!touchNavigation} touchNavigation={touchNavigation}
+                  interactive touchNavigation={touchNavigation}
                   autoRotate={!engaged && sceneStatus === 'ready'} startFocus={startFocus} onInteract={handleInteract} onView={handleView} onOcean={handleOcean} />
               </Suspense></SceneBoundary>
               <PlanetOrb />
