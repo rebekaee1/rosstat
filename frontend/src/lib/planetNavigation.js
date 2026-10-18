@@ -11,12 +11,13 @@ export function planetFitDistance({ fov = 40, aspect = 1, radius = 1, padding = 
 
 /**
  * Bound pixel work, independently of a high-density display's native DPR.
- * На телефоне холст маленький, а подписи стран рисуются в нём же: при 1,25 вместо реальных 3 они выходили размытыми.
+ * На телефоне холст маленький, а подписи стран рисуются в нём же: при 1,25 вместо реальных 3 они выходили размытыми;
+ * потолок 3 даёт родную чёткость экранов iPhone (холст ~1100 × 900 физических пикселей, это немного для GPU).
  */
 export function planetRenderBudget({ compact = false, deviceMemory, saveData = false } = {}) {
   const constrained = saveData || (Number.isFinite(deviceMemory) && deviceMemory <= 4);
   return {
-    maxDpr: constrained ? 1 : compact ? 2 : 1.5,
+    maxDpr: constrained ? 1 : compact ? 3 : 1.5,
     materialDetail: !saveData,
     sphereSegments: compact || constrained ? [64, 48] : [96, 64],
   };

@@ -249,13 +249,20 @@ export default function PlanetLabels({ entries, locale = 'ru', valuesByCode, uni
       keepOut,
     });
     current.mesh.count = visible.length;
+    // Подпись ложится углами ровно на физические пиксели экрана: между пикселями буквы размываются, даже когда холст рисуется в полную плотность.
+    const pixelRatio = Math.max(1, gl?.getPixelRatio?.() || 1);
+    const snap = (value) => Math.round(value * pixelRatio) / pixelRatio;
     visible.forEach((label, index) => {
+      const width = Math.max(1 / pixelRatio, snap(label.width));
+      const height = Math.max(1 / pixelRatio, snap(label.height));
+      const labelX = snap(label.labelX - width / 2) + width / 2;
+      const labelY = snap(label.labelY - height / 2) + height / 2;
       // Move the camera-facing quad upward in screen space, clear of the marker.
       scratch.point.set(...label.position).applyMatrix4(camera.matrixWorldInverse);
-      scratch.point.y += (label.y - label.labelY) * label.worldPerPixel;
-      scratch.point.x += (label.labelX - label.x) * label.worldPerPixel;
+      scratch.point.y += (label.y - labelY) * label.worldPerPixel;
+      scratch.point.x += (labelX - label.x) * label.worldPerPixel;
       scratch.point.applyMatrix4(camera.matrixWorld);
-      scratch.matrix.makeScale(label.width * label.worldPerPixel, label.height * label.worldPerPixel, 1);
+      scratch.matrix.makeScale(width * label.worldPerPixel, height * label.worldPerPixel, 1);
       scratch.matrix.setPosition(scratch.point);
       current.mesh.setMatrixAt(index, scratch.matrix);
       current.uv.setXYZW(index, ...(label.full ? label.uv : label.uvName));
