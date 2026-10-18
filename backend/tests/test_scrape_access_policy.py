@@ -106,6 +106,20 @@ def test_scraper_networks_denied_by_real_ip_but_robots_stays_open():
     assert server.index("real_ip_header X-Forwarded-For;") < deny
 
 
+def test_exact_farm_user_agent_denied_only_by_full_string_and_robots_stays_open():
+    # Ферма 14–18.10.2026: резидентные IP, поэтому сетью её не закрыть; закрыта по ТОЧНОЙ строке UA.
+    config = nginx_directives()
+    farm = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    block = config.split("map $http_user_agent $scraper_ua {", 1)[1].split("}", 1)[0]
+    assert f'"{farm}" 1;' in block
+    assert "default 0;" in block
+    assert "~" not in block, "UA закрывается только полным совпадением, без регулярных выражений"
+    assert 'map "$scraper_ua:$crawler_policy_document" $deny_scraper_ua' in config
+    server = config.split("server {", 1)[1]
+    deny = server.index("if ($deny_scraper_ua)")
+    assert server.index("real_ip_header X-Forwarded-For;") < deny
+
+
 @pytest.mark.parametrize("peer", ["8.8.8.8", "2606:4700:4700::1111", "testclient"])
 def test_untrusted_socket_peer_cannot_spoof_ip(peer):
     assert pick_client_ip("1.1.1.1, 10.0.0.1", peer) == peer
