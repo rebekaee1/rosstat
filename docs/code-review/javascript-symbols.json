@@ -9877,7 +9877,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/PlanetLabels.jsx": {
-    "sha256": "6a1e7ccedb4371de35d9da5c092650d055a8e9e51da17cf8cafbd6ceb79fcf86",
+    "sha256": "7f59719f2dcd8ac5f063723901138544a5f9444266acf333f44538fa5183c998",
     "definitions": [
       {
         "name": "createLabelAtlas",
@@ -9912,8 +9912,14 @@
       {
         "name": "PlanetLabels",
         "line": 176,
-        "end_line": 270,
+        "end_line": 277,
         "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "PlanetLabels.snap",
+        "line": 254,
+        "end_line": 254,
+        "kind": "ArrowFunctionExpression"
       }
     ],
     "imports": [
@@ -36700,7 +36706,7 @@
     "anonymous_functions": 72
   },
   "frontend/src/lib/planetNavigation.js": {
-    "sha256": "e796a27f86ae3291e9f8cd982dc57f54a37857daa9d3558efa0b1844956d1eab",
+    "sha256": "89fc1b9c833852d8f607cd823176018bb1d794ec249349c30e5f139f1e0da69c",
     "definitions": [
       {
         "name": "planetFitDistance",
@@ -36710,38 +36716,38 @@
       },
       {
         "name": "planetRenderBudget",
-        "line": 16,
-        "end_line": 23,
+        "line": 17,
+        "end_line": 24,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createPlanetPointerState",
-        "line": 25,
-        "end_line": 27,
+        "line": 26,
+        "end_line": 28,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "validPointer",
-        "line": 29,
-        "end_line": 32,
+        "line": 30,
+        "end_line": 33,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "beginPlanetPointer",
-        "line": 35,
-        "end_line": 48,
+        "line": 36,
+        "end_line": 49,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "movePlanetPointer",
-        "line": 51,
-        "end_line": 55,
+        "line": 52,
+        "end_line": 56,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "endPlanetPointer",
-        "line": 57,
-        "end_line": 71,
+        "line": 58,
+        "end_line": 72,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -36757,37 +36763,37 @@
         "names": [
           "planetRenderBudget"
         ],
-        "line": 16
+        "line": 17
       },
       {
         "names": [
           "createPlanetPointerState"
         ],
-        "line": 25
+        "line": 26
       },
       {
         "names": [
           "beginPlanetPointer"
         ],
-        "line": 35
+        "line": 36
       },
       {
         "names": [
           "movePlanetPointer"
         ],
-        "line": 51
+        "line": 52
       },
       {
         "names": [
           "endPlanetPointer"
         ],
-        "line": 57
+        "line": 58
       }
     ],
     "anonymous_functions": 1
   },
   "frontend/src/lib/planetNavigation.test.js": {
-    "sha256": "b5d0cb8c00ce6c10de9fc3c8c3f73f470b0c1011cf4213a7e11965141d31906f",
+    "sha256": "475ab44b9909f8b0d47a0227eb2e3e432e6a4a39dfb3b2f8f851a23d8bfeecfa",
     "definitions": [
       {
         "name": "pointer",

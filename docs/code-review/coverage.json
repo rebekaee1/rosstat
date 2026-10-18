@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 1976
     },
-    "definitions": 14087,
-    "annotated_definitions": 14087,
+    "definitions": 14088,
+    "annotated_definitions": 14088,
     "files_needing_attention": 1
   },
   "orphan_reviews": [],
@@ -11320,9 +11320,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "9a3fe9dfd2cd9e49152d543b04e99199c7a752dae60a9ab1de119434b4e3f5f2",
-      "bytes": 15737,
-      "lines": 146,
+      "sha256": "cb47d8da890927400ef3cf8cd97f0d8174f3370eb33f30e0ddc5d633339e2e9a",
+      "bytes": 16066,
+      "lines": 147,
       "code": false,
       "status": "reviewed",
       "current": false,
@@ -12818,9 +12818,9 @@
     },
     {
       "path": "docs/planet-view.md",
-      "sha256": "b330f334ece601085107996ef44931e54f65c5da198cbd43a9d4839bab8dc2d2",
-      "bytes": 96264,
-      "lines": 592,
+      "sha256": "734f228d975268e7c0eade45272be4df6549d4df43d9ae9bbfaa2661ce241a92",
+      "bytes": 96534,
+      "lines": 594,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -17134,15 +17134,15 @@
     },
     {
       "path": "frontend/src/components/PlanetLabels.jsx",
-      "sha256": "6a1e7ccedb4371de35d9da5c092650d055a8e9e51da17cf8cafbd6ceb79fcf86",
-      "bytes": 12650,
-      "lines": 270,
+      "sha256": "7f59719f2dcd8ac5f063723901138544a5f9444266acf333f44538fa5183c998",
+      "bytes": 13292,
+      "lines": 277,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 6,
-      "annotated_definitions": 6,
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -22295,9 +22295,9 @@
     },
     {
       "path": "frontend/src/lib/planetNavigation.js",
-      "sha256": "e796a27f86ae3291e9f8cd982dc57f54a37857daa9d3558efa0b1844956d1eab",
-      "bytes": 3247,
-      "lines": 71,
+      "sha256": "89fc1b9c833852d8f607cd823176018bb1d794ec249349c30e5f139f1e0da69c",
+      "bytes": 3427,
+      "lines": 72,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22308,7 +22308,7 @@
     },
     {
       "path": "frontend/src/lib/planetNavigation.test.js",
-      "sha256": "b5d0cb8c00ce6c10de9fc3c8c3f73f470b0c1011cf4213a7e11965141d31906f",
+      "sha256": "475ab44b9909f8b0d47a0227eb2e3e432e6a4a39dfb3b2f8f851a23d8bfeecfa",
       "bytes": 5353,
       "lines": 118,
       "code": true,
@@ -28470,9 +28470,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "363649c53c7e7ff0e502a5e28c9f7723bfec9d4228ac8a05f7832fb5b255a023",
-  "javascript_inventory_sha256": "a79253a64ff423ccbab2cea0a1dac730f69d0f7a2291e39eecd77a6d947841b9",
-  "baseline_commit": "90eb3b8aba7bd9be05069719fa9ee48dbd3dc912",
+  "ledger_sha256": "7637b3dc7b54bd6ba4e5b9b43d4c1ae4cc0b903aaa04ce060e1e1c53fe9cdfe0",
+  "javascript_inventory_sha256": "cd87b0fce4beece7031dc0c45a8ce672a8a50534facd2b34d4ecc9306f4b0069",
+  "baseline_commit": "40d6d99e09f9afb3103b4867527f3a2a7cfa6656",
   "branch": "main",
   "unstaged_at_capture": []
 }

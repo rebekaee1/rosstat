@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `90eb3b8aba7bd9be05069719fa9ee48dbd3dc912`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `40d6d99e09f9afb3103b4867527f3a2a7cfa6656`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2187 |
 | Код, шаблоны и стили | 1784 |
 | Актуальные рецензии без пропусков guard | 2186 |
-| Именованные определения Python/JS: с аннотацией / всего | 14087 / 14087 |
+| Именованные определения Python/JS: с аннотацией / всего | 14088 / 14088 |
 | Файлы, требующие внимания | 1 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1353,7 +1353,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/components/PageProgress.jsx](../frontend/src/components/PageProgress.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/components/PasswordField.jsx](../frontend/src/components/PasswordField.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/components/PickerParts.jsx](../frontend/src/components/PickerParts.jsx) | reviewed | 3/3 | актуально |
-| [frontend/src/components/PlanetLabels.jsx](../frontend/src/components/PlanetLabels.jsx) | reviewed | 6/6 | актуально |
+| [frontend/src/components/PlanetLabels.jsx](../frontend/src/components/PlanetLabels.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/components/PlanetPlaceholder.component.test.jsx](../frontend/src/components/PlanetPlaceholder.component.test.jsx) | reviewed | 0/0 | актуально |
 | [frontend/src/components/PlanetPlaceholder.jsx](../frontend/src/components/PlanetPlaceholder.jsx) | reviewed | 2/2 | актуально |
 | [frontend/src/components/PlanetScene.jsx](../frontend/src/components/PlanetScene.jsx) | reviewed | 38/38 | актуально |
