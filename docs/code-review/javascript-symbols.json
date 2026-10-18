@@ -9877,7 +9877,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/components/PlanetLabels.jsx": {
-    "sha256": "f28df27ce34b5f1b38c8e04492e6464ce16629148797780c61b84909ab8c4b87",
+    "sha256": "6a1e7ccedb4371de35d9da5c092650d055a8e9e51da17cf8cafbd6ceb79fcf86",
     "definitions": [
       {
         "name": "createLabelAtlas",
@@ -10319,7 +10319,7 @@
     "anonymous_functions": 75
   },
   "frontend/src/components/PlanetView.component.test.jsx": {
-    "sha256": "11b2f523bb8abc5b6ea3ff64b4730ddb6d348813c52a69249e6b6256929b141d",
+    "sha256": "e9db9c434820ad8c1cdd901329490829d0dbc25edb880a8802344c4bf5a61dcd",
     "definitions": [
       {
         "name": "useT",
@@ -10468,7 +10468,7 @@
     "anonymous_functions": 173
   },
   "frontend/src/components/PlanetView.jsx": {
-    "sha256": "fa86a96987276e722203b635c6f6a2d1878707309a2f67b99a4ac6f786b3d93a",
+    "sha256": "3d7765084b3196b7005815ab7d1eb46ec7ab4068c304b14d370df26ee127e86c",
     "definitions": [
       {
         "name": "PlanetLink",
@@ -21208,7 +21208,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "00a436635a91b2f43c290c2f1a44ee6505dc799b21f6858cb4825b906ba57802",
+    "sha256": "42a8cad7432485e4e963af205f787cd95c9ce4557315a16d56a1bfd24af0bd8d",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -36700,7 +36700,7 @@
     "anonymous_functions": 72
   },
   "frontend/src/lib/planetNavigation.js": {
-    "sha256": "9b3ecf18d89651a79bd292e9f76b5df0369ceae4af0821e05d495e119ff69d4a",
+    "sha256": "e796a27f86ae3291e9f8cd982dc57f54a37857daa9d3558efa0b1844956d1eab",
     "definitions": [
       {
         "name": "planetFitDistance",
@@ -36710,38 +36710,38 @@
       },
       {
         "name": "planetRenderBudget",
-        "line": 13,
-        "end_line": 20,
+        "line": 16,
+        "end_line": 23,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "createPlanetPointerState",
-        "line": 22,
-        "end_line": 24,
+        "line": 25,
+        "end_line": 27,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "validPointer",
-        "line": 26,
-        "end_line": 29,
+        "line": 29,
+        "end_line": 32,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "beginPlanetPointer",
-        "line": 32,
-        "end_line": 45,
+        "line": 35,
+        "end_line": 48,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "movePlanetPointer",
-        "line": 48,
-        "end_line": 52,
+        "line": 51,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "endPlanetPointer",
-        "line": 54,
-        "end_line": 68,
+        "line": 57,
+        "end_line": 71,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -36757,37 +36757,37 @@
         "names": [
           "planetRenderBudget"
         ],
-        "line": 13
+        "line": 16
       },
       {
         "names": [
           "createPlanetPointerState"
         ],
-        "line": 22
+        "line": 25
       },
       {
         "names": [
           "beginPlanetPointer"
         ],
-        "line": 32
+        "line": 35
       },
       {
         "names": [
           "movePlanetPointer"
         ],
-        "line": 48
+        "line": 51
       },
       {
         "names": [
           "endPlanetPointer"
         ],
-        "line": 54
+        "line": 57
       }
     ],
     "anonymous_functions": 1
   },
   "frontend/src/lib/planetNavigation.test.js": {
-    "sha256": "7880bec0f8ab83579781ea8c427a1f7e5483ce81c7437e6038cc36e691c98c12",
+    "sha256": "b5d0cb8c00ce6c10de9fc3c8c3f73f470b0c1011cf4213a7e11965141d31906f",
     "definitions": [
       {
         "name": "pointer",
@@ -51882,7 +51882,7 @@
     "anonymous_functions": 9
   },
   "frontend/src/pages/Dashboard.component.test.jsx": {
-    "sha256": "98348bfa766427391400cd8952147f6d2a63fa657a7ab5ad0afd76471b4d8c5b",
+    "sha256": "5b497b195f8fe75c66a2a96f5785e6835bee0c62c3b17d696d88aceb51af5e8b",
     "definitions": [],
     "imports": [
       {
