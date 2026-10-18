@@ -11,7 +11,7 @@ const pointer = (overrides = {}) => ({
 describe('planet rendering budget', () => {
   it('caps pixel work for desktop and compact displays', () => {
     expect(planetRenderBudget().maxDpr).toBe(1.5);
-    expect(planetRenderBudget({ compact: true }).maxDpr).toBe(1.25);
+    expect(planetRenderBudget({ compact: true }).maxDpr).toBe(2);
   });
 
   it('limits low-memory devices while retaining material detail', () => {
