@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 1976
     },
-    "definitions": 14088,
-    "annotated_definitions": 14088,
+    "definitions": 14089,
+    "annotated_definitions": 14089,
     "files_needing_attention": 1
   },
   "orphan_reviews": [],
@@ -283,9 +283,9 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "8166f1916074faf0658b9603935bdd2148b1a5202c5e21683e0f94bfaacd61a9",
-      "bytes": 242949,
-      "lines": 1312,
+      "sha256": "12b01ca630bc9570590368d110bb8cb7e203473e9cc3def38af688f69d255906",
+      "bytes": 244739,
+      "lines": 1313,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -9474,15 +9474,15 @@
     },
     {
       "path": "backend/tests/test_scrape_access_policy.py",
-      "sha256": "f1d76ce2c462e4d5960838af7c0df299409887c012eb8558cebfee152b9fe71a",
-      "bytes": 9599,
-      "lines": 198,
+      "sha256": "f4cb20cceda99efee06b856e7a13e88a6e545bfe867d57a2dbf1b99947439cd3",
+      "bytes": 10560,
+      "lines": 212,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 21,
-      "annotated_definitions": 21,
+      "definitions": 22,
+      "annotated_definitions": 22,
       "missing_definitions": []
     },
     {
@@ -11320,9 +11320,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "cb47d8da890927400ef3cf8cd97f0d8174f3370eb33f30e0ddc5d633339e2e9a",
-      "bytes": 16066,
-      "lines": 147,
+      "sha256": "95e548f70532280dd78428a03ff515f61ea659139aab5256d71b2cc367e4289d",
+      "bytes": 16467,
+      "lines": 148,
       "code": false,
       "status": "reviewed",
       "current": false,
@@ -13624,9 +13624,9 @@
     },
     {
       "path": "frontend/nginx.conf",
-      "sha256": "2208a61d89b6ead809fa200a783f6d827d3a121d691327467283ee50719af869",
-      "bytes": 63030,
-      "lines": 1227,
+      "sha256": "2771a71869afdc121ad97ae46e17bfa56424e54fd4fe435b8e1776d7df7e3ae6",
+      "bytes": 64565,
+      "lines": 1249,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -28470,9 +28470,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "7637b3dc7b54bd6ba4e5b9b43d4c1ae4cc0b903aaa04ce060e1e1c53fe9cdfe0",
+  "ledger_sha256": "88dbec492a8ccb77dba28fec3c77bc86632c44bf5de33e97dbb9376d642783aa",
   "javascript_inventory_sha256": "cd87b0fce4beece7031dc0c45a8ce672a8a50534facd2b34d4ecc9306f4b0069",
-  "baseline_commit": "40d6d99e09f9afb3103b4867527f3a2a7cfa6656",
+  "baseline_commit": "5340f32ddf7c2548ddbf294543b271a25de73765",
   "branch": "main",
   "unstaged_at_capture": []
 }

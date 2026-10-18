@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `40d6d99e09f9afb3103b4867527f3a2a7cfa6656`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `5340f32ddf7c2548ddbf294543b271a25de73765`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2187 |
 | Код, шаблоны и стили | 1784 |
 | Актуальные рецензии без пропусков guard | 2186 |
-| Именованные определения Python/JS: с аннотацией / всего | 14088 / 14088 |
+| Именованные определения Python/JS: с аннотацией / всего | 14089 / 14089 |
 | Файлы, требующие внимания | 1 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -764,7 +764,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_ruonia_seo.py](../backend/tests/test_ruonia_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_russia_world_compare.py](../backend/tests/test_russia_world_compare.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_russia_year_modes.py](../backend/tests/test_russia_year_modes.py) | reviewed | 22/22 | актуально |
-| [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 21/21 | актуально |
+| [backend/tests/test_scrape_access_policy.py](../backend/tests/test_scrape_access_policy.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_scrape_guard.py](../backend/tests/test_scrape_guard.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_search_candidate_budget.py](../backend/tests/test_search_candidate_budget.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_search_context_roles.py](../backend/tests/test_search_context_roles.py) | reviewed | 16/16 | актуально |
