@@ -105,6 +105,11 @@ class Settings(BaseSettings):
 
     # Scheduler
     scheduler_enabled: bool = True
+    # Плановый перезапуск разросшегося web-воркера (services/worker_recycle.py): порог веса RSS+своп в МБ,
+    # 0 = выключено. На проде воркеры за 9 суток растут с ~400 до ~870 МБ; ориентир для .env — 750.
+    worker_recycle_mb: int = 0
+    # Не чаще одного перезапуска воркера за этот интервал (замок в state-Redis).
+    worker_recycle_min_gap_seconds: int = 300
     scheduler_cron_hour: int = 6
     scheduler_cron_minute: int = 0
     # Второй полный прогон ETL вечером: многие источники (Росстат, ЦБ, биржи)

@@ -1357,11 +1357,23 @@ async def lifespan(app: FastAPI):
         # текущего прогноза). Фоном, чтобы не блокировать uvicorn ready.
         asyncio.create_task(_startup_data_catch_up())
 
+    recycle_task: asyncio.Task | None = None
+    if not settings.scheduler_enabled and settings.worker_recycle_mb > 0:
+        from app.services.worker_recycle import recycle_loop
+
+        recycle_task = asyncio.create_task(recycle_loop(
+            limit_mb=settings.worker_recycle_mb,
+            min_gap_seconds=settings.worker_recycle_min_gap_seconds,
+            workers=int(os.environ.get("UVICORN_WORKERS", "1") or 1),
+        ))
+
     yield
 
     # Shutdown
     global _shutting_down
     _shutting_down = True
+    if recycle_task is not None:
+        recycle_task.cancel()
     if scheduler.running:
         scheduler.shutdown(wait=False)
     await engine.dispose()

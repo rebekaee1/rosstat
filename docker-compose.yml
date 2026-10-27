@@ -161,7 +161,9 @@ services:
           # 3 воркера × ~350-450 MiB RSS; планировщик вынесен в `scheduler`
           # (1 CPU / 1G). Итого backend 2.25G + scheduler 1G против прежних
           # 1.5G; это лимиты, не измеренный запас хоста. PostgreSQL уже имеет 3G.
-          memory: 2304M
+          # Переопределяется из .env (BACKEND_MEM_LIMIT): 27.10.2026 cgroup упирался в потолок 224 тыс. раз, ~0,9 ГиБ в
+          # свопе. Сумма лимитов ≈ 7,4 ГиБ при 7,9 ГиБ хоста — повышать только за счёт postgres (кэш страниц).
+          memory: ${BACKEND_MEM_LIMIT:-2304M}
           cpus: '3.0'
     environment: &backend_env
       # F13: runtime-роль приложения. По умолчанию = bootstrap-роль `rustats` (как раньше); после
@@ -178,6 +180,9 @@ services:
       # Web-воркеры планировщик не запускают (иначе джобы ×N воркеров).
       RUSTATS_SCHEDULER_ENABLED: "false"
       UVICORN_WORKERS: ${UVICORN_WORKERS:-3}
+      # Плановый перезапуск разросшегося воркера (services/worker_recycle.py). 0 = выключено; ориентир 750 (МБ RSS+своп).
+      RUSTATS_WORKER_RECYCLE_MB: ${RUSTATS_WORKER_RECYCLE_MB:-0}
+      RUSTATS_WORKER_RECYCLE_MIN_GAP_SECONDS: ${RUSTATS_WORKER_RECYCLE_MIN_GAP_SECONDS:-300}
       # S2 (круг 13): сколько секунд супервизор uvicorn ждёт ответ воркера на ping, прежде чем убить его SIGKILL (в 0.34 зашито 5 с;
       # под нагрузкой на медленном диске воркер не успевал, запросы в полёте получали 503/обрыв). Пусто = старое поведение (5 с).
       # На боевом задать 30 в .env. Параметр есть с uvicorn 0.37 (в образе с 0.34 запуск с ним падает: сначала пересобрать образ).
@@ -412,7 +417,9 @@ services:
         limits:
           # ETL/прогнозы/sitemap (стрим 5M URL) — раньше жили внутри 1.5G
           # вместе с витриной; пиковая RSS джоб ~600-800 MiB.
-          memory: 1024M
+          # SCHEDULER_MEM_LIMIT из .env: 27.10.2026 anon ~1,1 ГиБ при лимите 1 ГиБ (695 МБ в свопе, 91–97 % в окна
+          # обучения мировых прогнозов).
+          memory: ${SCHEDULER_MEM_LIMIT:-1024M}
           cpus: '1.0'
     environment:
       <<: *backend_env

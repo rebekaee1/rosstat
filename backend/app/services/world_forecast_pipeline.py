@@ -36,6 +36,7 @@ from app.models import (
     WorldForecastValue,
     WorldIndicator,
 )
+from app.services.memory_trim import process_footprint_bytes, trim_memory
 from app.services.world_forecast_candidates import WORLD_CANDIDATE_SET_VERSION
 from app.services.world_forecast_gate import publish_all_enabled
 from app.services.world_forecast_gate import world_forecast_source_ready  # noqa: F401 — реэкспорт (SPEED3)
@@ -52,6 +53,9 @@ WORLD_FORECAST_CACHE_NAMESPACES = ("world", "ssr-world")
 WORLD_FORECAST_JOB_LOCK_KEY = "sched:lock:world_forecast"
 WORLD_FORECAST_JOB_LOCK_TTL_SECONDS = 24 * 3600
 _PROGRESS_EVERY = 100
+# Возврат памяти ОС между рядами (gc + malloc_trim): scheduler с лимитом 1 ГиБ уходил в 91–97 % в окна обучения
+# (23:10 МСК Европа и 04:50–05:20 МСК остальные), glibc не отдаёт кучу numpy/statsmodels сам.
+_TRIM_EVERY = 25
 # Круг 14: метка правила публикации в model_params. Отказы и пропуски, записанные до «прогноза на всех рядах»,
 # один раз пересчитываются по новому правилу (уже опубликованные прогнозы не трогаются).
 WORLD_FORECAST_PUBLICATION_POLICY = "all-v1"
@@ -835,6 +839,9 @@ async def world_forecast_job(
                     counts["errors"] += 1
                     logger.exception("World forecast failed for indicator_id=%s", row.id)
 
+            if row.id not in unchanged_ids and done % _TRIM_EVERY == 0:
+                await asyncio.to_thread(trim_memory)
+
             if done % _PROGRESS_EVERY == 0 or done == total:
                 elapsed = time.monotonic() - started
                 if elapsed >= 1:
@@ -848,7 +855,7 @@ async def world_forecast_job(
                 logger.info(
                     "World forecast progress %s/%s "
                     "passed=%s advisory=%s failed=%s skipped=%s unchanged=%s errors=%s "
-                    "rate=%s eta=%s",
+                    "rate=%s eta=%s footprint=%dMB",
                     done,
                     total,
                     counts["passed"],
@@ -859,11 +866,13 @@ async def world_forecast_job(
                     counts["errors"],
                     rate_s,
                     eta_s,
+                    process_footprint_bytes() // 1048576,
                 )
                 await lock.refresh()
 
         if changed:
             await _bump_world_forecast_cache()
+        await asyncio.to_thread(trim_memory)
         summary = _summary_from_counts(counts)
         logger.info("World forecast run completed: %s", summary)
         return summary
