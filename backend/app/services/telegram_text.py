@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import re
+from html import unescape
 
 _TG_TEXT_LIMIT = 4000  # запас от жёсткого лимита Bot API (4096)
 _BLOCKQUOTE_RE = re.compile(r"<blockquote(?:\s[^>]*)?>.*?</blockquote>", re.DOTALL)
@@ -97,3 +98,14 @@ def _split_telegram_text(text: str, limit: int = _TG_TEXT_LIMIT) -> list[str]:
 def split_telegram_text(text: str, limit: int = _TG_TEXT_LIMIT) -> list[str]:
     """Публичное имя для `_split_telegram_text` (используется отчётами)."""
     return _split_telegram_text(text, limit)
+
+
+# Telegram отверг HTML-разметку целиком (400 «can't parse entities»): повтор текстом.
+PARSE_ENTITIES_ERROR = "can't parse entities"
+# Только настоящие теги (буква сразу после «<»): «норма < 2500» тегом не считается.
+_HTML_TAG_RE = re.compile(r"</?[a-zA-Z][^<>]*>")
+
+
+def plain_fallback(chunk: str) -> str:
+    """Текст для повторной отправки без разметки: теги убираем, сущности раскрываем."""
+    return unescape(_HTML_TAG_RE.sub("", chunk))

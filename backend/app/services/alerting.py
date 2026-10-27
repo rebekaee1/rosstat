@@ -1,6 +1,7 @@
 """Telegram alerting for ETL failures and critical events."""
 
 import logging
+from contextvars import ContextVar
 from html import escape
 from typing import Optional
 
@@ -8,7 +9,7 @@ import httpx
 
 from app.config import settings
 from app.services.telegram_retry import request_with_retry
-from app.services.telegram_text import split_telegram_text
+from app.services.telegram_text import PARSE_ENTITIES_ERROR, plain_fallback, split_telegram_text
 
 logger = logging.getLogger(__name__)
 # httpx logs the full request URL at INFO; Telegram's URL embeds the bot token.
@@ -17,6 +18,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 
 _TELEGRAM_API = "https://api.telegram.org/bot{token}/sendMessage"
+# Причина последнего неуспеха `_send_one` в текущем контексте: по ней `send_telegram`
+# решает, ждать ли досылки упавшей части (сеть) или слать остальные (постоянная ошибка).
+_last_send_error: ContextVar[Optional[str]] = ContextVar("tg_last_send_error", default=None)
 
 # Антиспам повторяющихся технических алертов (state-Redis DB 1).
 # Daily ETL + evening + late-Minfin иначе шлют один и тот же budget-*/coal
@@ -67,14 +71,35 @@ async def send_telegram(
     # E3 (круг 11): длинный текст режется на части под лимит Bot API; клавиатура
     # вешается на последнюю часть, в архиве — по строке на каждую часть (как у
     # telegram_bot.send_message), поэтому досылка работает по частям.
+    from app.services.telegram_outbox import archive_unsent_parts, should_hold_next_parts  # против цикла
+
     chunks = split_telegram_text(message)
     all_ok = True
     for index, chunk in enumerate(chunks):
         payload: dict = {"chat_id": cid, "text": chunk, "parse_mode": "HTML"}
         if reply_markup and index == len(chunks) - 1:
             payload["reply_markup"] = reply_markup
-        if not await _send_one(token, payload, kind):
-            all_ok = False
+        _last_send_error.set(None)
+        if await _send_one(token, payload, kind):
+            continue
+        all_ok = False
+        if should_hold_next_parts(_last_send_error.get()):
+            # Часть уйдёт досылкой: остальные вперёд неё не шлём (хвост пришёл бы раньше
+            # начала), а пишем в архив неотправленными — досылка пойдёт по порядку.
+            rest = [
+                (c, {"chat_id": cid, "text": c, "parse_mode": "HTML",
+                     **({"reply_markup": reply_markup} if reply_markup and j == len(chunks) - 1 else {})})
+                for j, c in enumerate(chunks) if j > index
+            ]
+            if rest:
+                logger.warning(
+                    "Telegram: часть %d из %d не ушла, остальные %d ждут досылки (kind=%s)",
+                    index + 1, len(chunks), len(rest), kind,
+                )
+                await archive_unsent_parts(
+                    chat_id=str(cid), method="sendMessage", kind=kind, parts=rest,
+                )
+            break
     return all_ok
 
 
@@ -102,6 +127,15 @@ async def _send_one(token: str, payload: dict, kind: str) -> bool:
             resp, error, _attempts = await request_with_retry(
                 lambda: client.post(url, json=payload)
             )
+            if error is not None and PARSE_ENTITIES_ERROR in error:
+                # Telegram не разобрал HTML (сырой «<» в тексте): повтор без разметки —
+                # сообщение доходит, а не теряется (как у telegram_bot.send_message).
+                logger.warning("Telegram: HTML не разобран, повтор текстом (kind=%s)", kind)
+                plain = {k: v for k, v in payload.items() if k != "parse_mode"}
+                plain["text"] = plain_fallback(payload["text"])
+                resp, error, _attempts = await request_with_retry(
+                    lambda: client.post(url, json=plain)
+                )
         if error is None and resp is not None:
             ok = True
             try:
@@ -116,6 +150,7 @@ async def _send_one(token: str, payload: dict, kind: str) -> bool:
         logger.warning("Telegram alert failed", exc_info=True)
 
     await archive_finish(row_id, ok=ok, telegram_message_id=tg_message_id, error=error)
+    _last_send_error.set(error)
     return ok
 
 

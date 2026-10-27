@@ -17,7 +17,8 @@
 
 Антиспам: не чаще одного алерта каждого типа в 2 часа (state-Redis DB 1 —
 переживает FLUSHDB кэша); для шумных видов своё охлаждение (`_alert_cooldown`:
-JS-всплеск — 3 часа, память — 6 часов, sitemap/обход Вебмастера — сутки). Канал доставки — общий send_telegram (архивируется
+JS-всплеск — один на эпизод (охлаждение 3 часа), память — 6 часов, sitemap/обход Вебмастера — сутки,
+хроническое «нет данных» Вебмастера и расхождение целей Метрики — неделя). Канал доставки — общий send_telegram (архивируется
 в telegram_outbox, как всё исходящее).
 """
 from __future__ import annotations
@@ -44,6 +45,12 @@ _ALERT_COOLDOWN = {
     "webmaster_sitemap_errors": 24 * 3600,
     "webmaster_crawl_drop": 24 * 3600,
     "webmaster_in_search_drop": 24 * 3600,
+    # Хроническое «нет данных» Вебмастера (in_search с 07.10, crawled_2xx с 09.10) слали каждое
+    # утро по 4 раза: напоминание раз в неделю, исправление данных гасит его само.
+    "webmaster_data_missing": 7 * 24 * 3600,
+    # Расхождение целей Метрики с таксономией: ключ содержит набор событий (см. sync_metrika_goals),
+    # поэтому новое расхождение придёт сразу, а то же самое — раз в неделю (слали каждую ночь 21 день).
+    "metrika_goals_stray": 7 * 24 * 3600,
 }
 TRAFFIC_DROP_RATIO = 0.4
 TRAFFIC_MIN_BASE = 30          # человеческих просмотров в базовом окне
@@ -58,6 +65,12 @@ _BEHAVIOR_INGEST_WATERMARK = "fe:beh:last_ingest_unix"
 MEMORY_ALERT_RATIO = 0.85
 MEMORY_CLEAR_RATIO = 0.75
 _MEMORY_STICKY_KEY = "fe:alerts:memory_pressure_episode"
+# Всплеск JS-ошибок: один алерт на эпизод (вместо повторов с разным N каждые 3 часа).
+JS_ERROR_ALERT_MIN = 10
+JS_ERROR_CLEAR_BELOW = 3
+_JS_ERROR_STICKY_KEY = "fe:alerts:js_error_episode"
+_JS_ERROR_STICKY_TTL = 12 * 3600  # потеряли «восстановилось» — через 12 часов эпизод закрывается сам
+_JS_TOP_MESSAGES = 3
 _THIRD_PARTY_HOST_SUFFIXES = (
     "webvisor.com", "yastatic.net", "adfox.ru", "yandexadexchange.net",
 )
@@ -135,6 +148,28 @@ def memory_pressure_episode(ratio: float | None, *, sticky: bool) -> str:
     if sticky and ratio < MEMORY_CLEAR_RATIO:
         return "clear"
     return "hold"
+
+
+def js_error_episode(count: int, *, sticky: bool) -> str:
+    """alert — новый эпизод; clear — спад ниже порога; hold — молчим (идёт тот же эпизод или тихо)."""
+    if count >= JS_ERROR_ALERT_MIN:
+        return "hold" if sticky else "alert"
+    if sticky and count < JS_ERROR_CLEAR_BELOW:
+        return "clear"
+    return "hold"
+
+
+def js_error_top_messages(rows: list, limit: int = _JS_TOP_MESSAGES) -> list[tuple[str, int]]:
+    """Самые частые тексты собственных JS-ошибок (для алерта: какая именно ошибка)."""
+    from collections import Counter
+
+    counter: Counter[str] = Counter()
+    for params in rows:
+        if not js_error_counts_for_alert(params):
+            continue
+        msg = " ".join(str(params.get("msg") or params.get("kind") or "").split())[:90]
+        counter[msg or "без текста"] += 1
+    return counter.most_common(limit)
 
 
 def traffic_drop_due(
@@ -241,6 +276,27 @@ async def _set_memory_sticky(active: bool) -> None:
         logger.debug("memory_pressure sticky update skipped", exc_info=True)
 
 
+async def _episode_sticky(key: str) -> bool:
+    try:
+        from app.core.cache import get_state_redis
+        redis = await get_state_redis()
+        return bool(await redis.get(key))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+async def _set_episode_sticky(key: str, active: bool, ttl: int | None = None) -> None:
+    try:
+        from app.core.cache import get_state_redis
+        redis = await get_state_redis()
+        if active:
+            await redis.set(key, "1", ex=ttl)
+        else:
+            await redis.delete(key)
+    except Exception:  # noqa: BLE001
+        logger.debug("alert episode flag update skipped: %s", key, exc_info=True)
+
+
 async def _muted(alert_key: str) -> bool:
     try:
         from app.core.cache import get_state_redis
@@ -320,8 +376,18 @@ async def check_anomalies() -> None:
         # 2. Resource failures and third-party scripts are not own JS regressions.
         error_rows = (await db.execute(_own_js_error_params_query(now))).scalars().all()
         errors_15m = sum(js_error_counts_for_alert(params) for params in error_rows)
-        if errors_15m >= 10:
-            await _alert("js_error_spike", f"Всплеск JS-ошибок: {errors_15m} за 15 минут.")
+        js_episode = js_error_episode(errors_15m, sticky=await _episode_sticky(_JS_ERROR_STICKY_KEY))
+        if js_episode == "alert":
+            from html import escape
+            top = js_error_top_messages(error_rows)
+            top_text = (
+                " Чаще всего: " + "; ".join(f"«{escape(msg)}» ×{n}" for msg, n in top) + "."
+                if top else ""
+            )
+            if await _alert("js_error_spike", f"Всплеск JS-ошибок: {errors_15m} за 15 минут.{top_text}"):
+                await _set_episode_sticky(_JS_ERROR_STICKY_KEY, True, _JS_ERROR_STICKY_TTL)
+        elif js_episode == "clear":
+            await _set_episode_sticky(_JS_ERROR_STICKY_KEY, False)
 
         # 3. Тишина собственного сбора при живом сайте.
         last_ingest, probe_failed = await _last_collection_seen(db, now)

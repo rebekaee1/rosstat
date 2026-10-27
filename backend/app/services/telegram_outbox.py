@@ -133,3 +133,31 @@ async def archive(
             await db.commit()
     except Exception:
         logger.warning("telegram_outbox archive failed (send not affected)", exc_info=True)
+
+
+# Пометка частей длинного сообщения, которые не отправлены, потому что перед ними
+# упала часть (иначе хвост пришёл бы раньше начала: Пульс 27.10 — «Аудитория» в 06:08,
+# сводка в 06:22). Строка — обычная неудачная отправка: досылка заберёт её по порядку id.
+UNSENT_PART_ERROR = "not sent: previous part failed (order kept for resend)"
+
+
+def should_hold_next_parts(error: str | None) -> bool:
+    """Упавшая часть будет досылаться (сеть, 5xx, 429) — следующие части ждут её.
+
+    Постоянная ошибка (HTTP 400/403/404) досылкой не лечится: ждать нечего,
+    остальные части отправляем сразу, как раньше.
+    """
+    from app.services.telegram_resend import is_permanent_failure
+
+    return not is_permanent_failure(error)
+
+
+async def archive_unsent_parts(
+    *, chat_id: str, method: str, kind: str, parts: list[tuple[str, dict[str, Any]]],
+) -> None:
+    """Записать неотправленные части как `ok=false` в исходном порядке. Не бросает исключений."""
+    for text, payload in parts:
+        await archive(
+            chat_id=chat_id, method=method, kind=kind, text=text, payload=payload,
+            ok=False, error=UNSENT_PART_ERROR,
+        )

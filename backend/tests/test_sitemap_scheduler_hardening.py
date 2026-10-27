@@ -467,6 +467,7 @@ def test_scheduler_listener_dedups_repeated_failures(monkeypatch):
     monkeypatch.setattr(main, "_shutting_down", False)
     monkeypatch.setattr(main.scheduler, "get_job", lambda job_id: None)
     main._scheduler_alert_last.clear()
+    main._scheduler_transient_streak.clear()
 
     def event(job, exc):
         class _Event:
@@ -478,16 +479,21 @@ def test_scheduler_listener_dedups_repeated_failures(monkeypatch):
         main._scheduler_event_listener(ev)
         await asyncio.sleep(0)
 
+    # Таймаут Redis — кратковременный сбой среды: алерт со второго подряд падения (первый
+    # одиночный таймаут ждёт следующего запуска), дальше — не чаще раза в час.
     for n in (1, 2, 3):
         asyncio.run(run(event("telegram_poll", TimeoutError(f"Timeout reading from redis-state:6379 #{n}"))))
     assert len(sent) == 1
 
     asyncio.run(run(event("indexnow_drain", TimeoutError("Timeout reading from redis-state:6379"))))
+    assert len(sent) == 1  # одиночный таймаут другой задачи молчит
     asyncio.run(run(event("telegram_poll", RuntimeError("other failure"))))
-    assert len(sent) == 3
+    assert len(sent) == 2  # ошибка кода — сразу
 
     # Через час тот же сбой снова виден.
     for key in list(main._scheduler_alert_last):
         main._scheduler_alert_last[key] -= 3601
     asyncio.run(run(event("telegram_poll", TimeoutError("Timeout reading from redis-state:6379"))))
-    assert len(sent) == 4
+    assert len(sent) == 2  # после ошибки кода серия таймаутов началась заново
+    asyncio.run(run(event("telegram_poll", TimeoutError("Timeout reading from redis-state:6379"))))
+    assert len(sent) == 3

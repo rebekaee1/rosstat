@@ -29,6 +29,8 @@ from datetime import date, datetime, timezone
 from html import escape, unescape
 
 import httpx
+from redis.exceptions import ConnectionError as RedisConnectionError
+from redis.exceptions import TimeoutError as RedisTimeoutError
 from sqlalchemy import func, select
 
 from collections import Counter
@@ -38,11 +40,14 @@ from app.services.alerting import interactive_authorized_ids
 from app.services.telegram_text import (  # noqa: F401 — реэкспорт для обратной совместимости
     _BLOCKQUOTE_OPEN_RE,
     _BLOCKQUOTE_RE,
+    _HTML_TAG_RE,
     _TG_TEXT_LIMIT,
     _split_blockquote,
     _split_plain_text,
     _split_telegram_text,
 )
+from app.services.telegram_text import PARSE_ENTITIES_ERROR as _PARSE_ENTITIES_ERROR
+from app.services.telegram_text import plain_fallback as _plain_fallback
 from app.services.telegram_retry import request_with_retry
 from app.core.cache import get_state_redis
 from app.database import async_session
@@ -52,6 +57,9 @@ logger = logging.getLogger(__name__)
 
 _API = "https://api.telegram.org/bot{token}/{method}"
 _OFFSET_KEY = "fe:tg:offset"
+# Копия смещения getUpdates в процессе (см. telegram_poll_job): единственный поллер — scheduler.
+_offset_mem: str | None = None
+_REDIS_TRANSIENT = (RedisTimeoutError, RedisConnectionError, TimeoutError)
 
 
 # ---------------------------------------------------------------------------
@@ -141,7 +149,9 @@ async def send_message(
     Длинный текст режется на несколько сообщений (см. `_split_telegram_text`);
     клавиатура вешается на последнюю часть.
     """
-    from app.services.telegram_outbox import archive_begin, archive_finish
+    from app.services.telegram_outbox import (
+        archive_begin, archive_finish, archive_unsent_parts, should_hold_next_parts,
+    )
 
     chunks = _split_telegram_text(text)
     ok_any = False
@@ -163,23 +173,31 @@ async def send_message(
             if "reply_markup" in payload:
                 plain["reply_markup"] = payload["reply_markup"]
             data = await _api("sendMessage", plain)
+        error = None if data is not None else (_last_api_error.get() or "send failed (см. логи)")
         await archive_finish(
             row_id, ok=data is not None,
             telegram_message_id=(data or {}).get("result", {}).get("message_id"),
-            error=None if data is not None else (_last_api_error.get() or "send failed (см. логи)"),
+            error=error,
         )
         ok_any = ok_any or data is not None
+        if data is None and should_hold_next_parts(error):
+            # Часть уйдёт досылкой. Остальные вперёд неё не шлём — иначе читатель получит
+            # хвост раньше начала; пишем их в архив неотправленными, досылка пойдёт по порядку.
+            rest = [
+                (c, {"chat_id": chat_id, "text": c, "parse_mode": "HTML",
+                     **({"reply_markup": reply_markup} if reply_markup and j == len(chunks) - 1 else {})})
+                for j, c in enumerate(chunks) if j > i
+            ]
+            if rest:
+                logger.warning(
+                    "Telegram sendMessage: часть %d из %d не ушла, остальные %d ждут досылки (kind=%s)",
+                    i + 1, len(chunks), len(rest), kind,
+                )
+                await archive_unsent_parts(
+                    chat_id=str(chat_id), method="sendMessage", kind=kind, parts=rest,
+                )
+            break
     return ok_any
-
-
-_PARSE_ENTITIES_ERROR = "can't parse entities"
-# Только настоящие теги (буква сразу после «<»): «норма < 2500» тегом не считается.
-_HTML_TAG_RE = re.compile(r"</?[a-zA-Z][^<>]*>")
-
-
-def _plain_fallback(chunk: str) -> str:
-    """Текст для повторной отправки без разметки: теги убираем, сущности раскрываем."""
-    return unescape(_HTML_TAG_RE.sub("", chunk))
 
 
 async def send_document(
@@ -197,6 +215,11 @@ async def send_document(
     )
     _last_api_error.set(None)
     data = await _api("sendDocument", payload, files=files)
+    if data is None and caption and _PARSE_ENTITIES_ERROR in (_last_api_error.get() or ""):
+        # Подпись с битой разметкой: файл не должен пропасть из-за неё (как у sendMessage).
+        logger.warning("Telegram sendDocument: HTML подписи не разобран, повтор без разметки (kind=%s)", kind)
+        plain = {"chat_id": chat_id, "caption": _plain_fallback(caption)}
+        data = await _api("sendDocument", plain, files=files)
     await archive_finish(
         row_id, ok=data is not None,
         telegram_message_id=(data or {}).get("result", {}).get("message_id"),
@@ -469,10 +492,23 @@ async def _handle_message(msg: dict) -> None:
 
 async def telegram_poll_job() -> None:
     """Разовый цикл getUpdates (запускается APScheduler'ом каждые 30 с)."""
+    global _offset_mem
     if not (settings.telegram_bot_token and interactive_authorized_ids()):
         return
+    # Смещение живёт в state-Redis, но таймаут Redis (scheduler упирается в CPU/память) не должен
+    # ни ронять задачу с алертом, ни повторно разбирать уже обработанные нажатия: держим копию
+    # смещения в процессе и берём её, если Redis не ответил.
     r = await get_state_redis()
-    offset = await r.get(_OFFSET_KEY)
+    try:
+        offset = await r.get(_OFFSET_KEY)
+    except _REDIS_TRANSIENT as exc:
+        if _offset_mem is None:
+            logger.warning("Telegram poll: state-Redis не ответил, цикл пропущен: %s", exc)
+            return
+        logger.warning("Telegram poll: state-Redis не ответил, смещение из памяти процесса: %s", exc)
+        offset = _offset_mem
+    if _offset_mem and (not offset or int(_offset_mem) > int(offset)):
+        offset = _offset_mem  # запись в Redis прошлого цикла не дошла — память новее
     payload: dict = {"timeout": 20, "allowed_updates": ["message", "callback_query"]}
     if offset:
         payload["offset"] = int(offset)
@@ -489,4 +525,8 @@ async def telegram_poll_job() -> None:
         except Exception:
             logger.warning("Telegram update %s failed", upd.get("update_id"), exc_info=True)
     if updates:
-        await r.set(_OFFSET_KEY, str(updates[-1]["update_id"] + 1))
+        _offset_mem = str(updates[-1]["update_id"] + 1)
+        try:
+            await r.set(_OFFSET_KEY, _offset_mem)
+        except _REDIS_TRANSIENT as exc:
+            logger.warning("Telegram poll: смещение не записано в Redis (останется в памяти): %s", exc)

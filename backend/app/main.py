@@ -10,7 +10,7 @@ from datetime import datetime, timedelta, timezone as dt_timezone
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
-from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
+from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED, EVENT_JOB_MISSED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
@@ -284,6 +284,33 @@ _shutting_down = False
 _SCHEDULER_ALERT_DEDUP_SEC = 3600
 _scheduler_alert_last: dict[str, float] = {}
 
+# Кратковременные сбои среды (таймаут Redis/сети) у частых задач лечатся сами:
+# 27.10 telegram_poll и indexnow_drain по одному разу за ночь падали с «Timeout reading
+# from redis-state», пока scheduler упирался в CPU/память (обучение прогнозов 23:10 МСК,
+# сборка sitemap 03:10 МСК), и следующий запуск проходил. Алерт — только если задача
+# упала подряд `_TRANSIENT_ALERT_AFTER` раз; успешный запуск обнуляет счётчик.
+_TRANSIENT_ALERT_AFTER = 2
+_scheduler_transient_streak: dict[str, int] = {}
+
+
+def _is_transient_infra_error(exc: BaseException | None) -> bool:
+    """Таймаут/обрыв Redis или сети: не ошибка кода, повтор по расписанию вероятнее всего пройдёт."""
+    if exc is None:
+        return False
+    import httpx
+    from redis.exceptions import ConnectionError as RedisConnectionError
+    from redis.exceptions import TimeoutError as RedisTimeoutError
+
+    return isinstance(
+        exc,
+        (RedisTimeoutError, RedisConnectionError, asyncio.TimeoutError,
+         httpx.TimeoutException, httpx.ConnectError),
+    )
+
+
+def _scheduler_job_succeeded_listener(event) -> None:
+    _scheduler_transient_streak.pop(str(event.job_id), None)
+
 
 def _scheduler_alert_signature(job_id: str, exc: BaseException | None) -> str:
     import re
@@ -320,6 +347,14 @@ def _scheduler_event_listener(event) -> None:
         )
         logger.error("Scheduler event: job=%s exc=%s", event.job_id,
                      getattr(event, "exception", None))
+        exc = getattr(event, "exception", None)
+        if _is_transient_infra_error(exc):
+            streak = _scheduler_transient_streak.get(str(event.job_id), 0) + 1
+            _scheduler_transient_streak[str(event.job_id)] = streak
+            if streak < _TRANSIENT_ALERT_AFTER:
+                return  # одиночный таймаут: ждём следующего запуска, в лог он уже записан
+        else:
+            _scheduler_transient_streak.pop(str(event.job_id), None)
         signature = _scheduler_alert_signature(
             str(event.job_id), getattr(event, "exception", None)
         )
@@ -334,6 +369,7 @@ def _scheduler_event_listener(event) -> None:
 
 
 scheduler.add_listener(_scheduler_event_listener, EVENT_JOB_ERROR | EVENT_JOB_MISSED)
+scheduler.add_listener(_scheduler_job_succeeded_listener, EVENT_JOB_EXECUTED)
 
 
 async def _cleanup_stuck_fetch_logs() -> None:

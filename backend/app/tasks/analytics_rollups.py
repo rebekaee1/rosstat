@@ -1101,11 +1101,17 @@ async def sync_metrika_goals(db) -> int:
 
     if stray_events:
         try:
+            import hashlib
+
             from app.services.analytics_alerts import _alert
+            names = sorted(set(stray_events))
+            # Ключ с набором событий: тот же набор — раз в неделю (охлаждение вида), новое событие — сразу.
+            digest = hashlib.sha1(",".join(names).encode("utf-8")).hexdigest()[:8]
             await _alert(
-                "metrika_goals_stray",
-                "Цели Метрики разошлись с goal_taxonomy (не macro/micro): "
-                + ", ".join(sorted(set(stray_events))[:10]),
+                f"metrika_goals_stray:{digest}",
+                f"Цели Метрики разошлись с goal_taxonomy (не macro/micro): {', '.join(names[:10])}"
+                + (f" и ещё {len(names) - 10}" if len(names) > 10 else "")
+                + ". Либо убрать эти цели в Метрике, либо отнести события к macro/micro.",
             )
         except Exception:  # noqa: BLE001
             logger.warning("Stray Metrika goals (не macro/micro): %s", stray_events)

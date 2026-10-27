@@ -185,12 +185,19 @@ async def telegram_resend_job() -> dict[str, int]:
     )
     stats["candidates"] = len(plan)
 
+    # Порядок внутри одного потока (чат + вид): если часть не ушла, следующие её части
+    # в этом запуске не шлём — иначе хвост Пульса снова обогнал бы начало.
+    blocked_streams: set[tuple[str, str]] = set()
     for row, failed_ids in plan:
+        stream = (row.chat_id, row.kind)
+        if stream in blocked_streams:
+            continue
         reply_markup: Any = (row.payload or {}).get("reply_markup")
         ok = await send_telegram(row.text, chat_id=row.chat_id,
                                  reply_markup=reply_markup, kind=row.kind)
         if not ok:
             stats["failed"] += 1
+            blocked_streams.add(stream)
             continue
         stats["resent"] += 1
         try:  # прежние неудачные попытки получают понятную пометку

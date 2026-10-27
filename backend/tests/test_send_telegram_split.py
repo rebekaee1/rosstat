@@ -63,11 +63,13 @@ def test_long_digest_is_split_keeps_keyboard_on_last_and_archives_each_part(monk
 
 
 def test_split_return_is_false_if_any_part_fails(monkeypatch):
+    """Постоянная ошибка части (HTTP 400): ждать досылки нечего, остальные части уходят."""
     posted, archived = _install(monkeypatch)
     calls = {"n": 0}
 
     async def flaky(token, payload, kind):
         calls["n"] += 1
+        alerting._last_send_error.set("HTTP 400: Bad Request" if calls["n"] == 2 else None)
         return calls["n"] != 2
 
     monkeypatch.setattr(alerting, "_send_one", flaky)
