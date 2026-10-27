@@ -180,6 +180,7 @@ def _fetch_latest_ind(session) -> tuple[bytes, str]:
             y -= 1
         candidates.append(f"ind_{m:02d}-{y}.xlsx")
 
+    net_failures = 0
     for fn in candidates:
         url = BASE_URL + fn
         try:
@@ -193,8 +194,13 @@ def _fetch_latest_ind(session) -> tuple[bytes, str]:
                 return resp.content, url
         except Exception as e:
             logger.debug("Download failed for %s: %s", url, e)
+            net_failures += 1
             continue
 
+    if net_failures == len(candidates):
+        from app.services.rosstat_sdds_fetcher import RosstatUnreachable
+
+        raise RosstatUnreachable("Rosstat unreachable: ind XLSX requests failed on network")
     raise ValueError(f"ind XLSX not found (tried {candidates})")
 
 

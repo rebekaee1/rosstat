@@ -65,6 +65,14 @@ def _get_session() -> requests.Session:
     return _session
 
 
+class RosstatUnreachable(RuntimeError):
+    """Росстат не ответил ни на один запрос попытки (сеть/бан/предохранитель хоста), а не «файла нет».
+
+    Раньше сетевой отказ глотался, и итог выглядел как «file not found (tried=...)»: вечерний ETL 27.10.2026 показал
+    21 ошибку двух «разных» видов, хотя причина одна (rosstat.gov.ru недоступен на всех хопах).
+    """
+
+
 def mediabank_url(filename: str) -> str:
     return f"{_ROSSTAT_MEDIA}/{filename.lstrip('/')}"
 
@@ -73,6 +81,7 @@ def list_mediabank_filenames_from_page(
     page_url: str,
     *,
     session: requests.Session | None = None,
+    net_failures: list[str] | None = None,
 ) -> list[str]:
     """Собрать имена файлов mediabank со страницы раздела Росстата.
 
@@ -84,6 +93,8 @@ def list_mediabank_filenames_from_page(
         resp = sess.get(page_url, timeout=settings.rosstat_request_timeout)
     except requests.RequestException as exc:
         logger.warning("Rosstat catalog page %s fetch failed: %s", page_url, exc)
+        if net_failures is not None:
+            net_failures.append(page_url)
         return []
     if resp.status_code != 200:
         logger.warning("Rosstat catalog page %s: HTTP %d", page_url, resp.status_code)
@@ -128,6 +139,7 @@ def download_mediabank_bytes(
     filename: str,
     *,
     session: requests.Session | None = None,
+    net_failures: list[str] | None = None,
 ) -> tuple[bytes, str] | None:
     """Скачать mediabank-файл; принять .xlsx/.xls, отвергнуть HTML-заглушки."""
     sess = session or _get_session()
@@ -136,6 +148,8 @@ def download_mediabank_bytes(
         resp = sess.get(url, timeout=settings.rosstat_request_timeout)
     except requests.RequestException as exc:
         logger.debug("Mediabank download failed for %s: %s", url, exc)
+        if net_failures is not None:
+            net_failures.append(url)
         return None
     if resp.status_code != 200:
         return None
@@ -163,10 +177,11 @@ def resolve_mediabank_file(
     sess = session or _get_session()
     candidates: list[str] = []
     seen: set[str] = set()
+    net_failures: list[str] = []
 
     for page_url in catalog_urls:
         picked = pick_mediabank_filename(
-            list_mediabank_filenames_from_page(page_url, session=sess),
+            list_mediabank_filenames_from_page(page_url, session=sess, net_failures=net_failures),
             name_patterns,
             prefer_max_year=True,
         )
@@ -182,12 +197,18 @@ def resolve_mediabank_file(
     tried: list[str] = []
     for name in candidates:
         tried.append(name)
-        got = download_mediabank_bytes(name, session=sess)
+        got = download_mediabank_bytes(name, session=sess, net_failures=net_failures)
         if got:
             content, url = got
             logger.info("Resolved Rosstat mediabank file %s (%d KB)", name, len(content) // 1024)
             return content, url
 
+    # Каждый запрос попытки (страницы каталога и скачивания) закончился сетевым отказом: файл не искали по существу.
+    if net_failures and len(net_failures) >= len(catalog_urls) + len(tried):
+        raise RosstatUnreachable(
+            f"Rosstat unreachable: all {len(net_failures)} requests failed on network "
+            f"(patterns={name_patterns})"
+        )
     raise RuntimeError(
         f"Rosstat mediabank file not found (patterns={name_patterns}, tried={tried})"
     )
@@ -264,6 +285,7 @@ def fetch_rosstat_okpopul() -> tuple[bytes, str]:
     """
     now_year = datetime.now().year
     session = _get_session()
+    net_failures = 0
 
     for year in (now_year, now_year - 1):
         url = f"{_ROSSTAT_MEDIA}/OkPopul_Comp{year}_Site.xlsx"
@@ -279,7 +301,10 @@ def fetch_rosstat_okpopul() -> tuple[bytes, str]:
             return resp.content, url
         except requests.RequestException as e:
             logger.warning("OkPopul %d fetch error: %s", year, e)
+            net_failures += 1
 
+    if net_failures == 2:
+        raise RosstatUnreachable("Rosstat unreachable: OkPopul requests failed on network")
     raise RuntimeError(f"OkPopul: no file found for years {now_year} or {now_year - 1}")
 
 
@@ -298,6 +323,7 @@ def fetch_latest_socioeconomic_report_pdf() -> tuple[bytes, str]:
     for month in range(12, 0, -1):
         attempts.append((now.year - 1, month))
 
+    net_failures = 0
     for year, month in attempts:
         url = f"{_ROSSTAT_MEDIA}/osn-{month:02d}-{year}.pdf"
         try:
@@ -316,5 +342,8 @@ def fetch_latest_socioeconomic_report_pdf() -> tuple[bytes, str]:
             return resp.content, url
         except requests.RequestException as e:
             logger.warning("Rosstat socioeconomic report %s fetch error: %s", url, e)
+            net_failures += 1
 
+    if net_failures == len(attempts):
+        raise RosstatUnreachable("Rosstat unreachable: socioeconomic report requests failed on network")
     raise RuntimeError("Rosstat socioeconomic report PDF not found")
