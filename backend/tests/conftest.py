@@ -44,8 +44,12 @@ def _no_ssr_cache(monkeypatch: pytest.MonkeyPatch):
     async def _plain_key(ns, rest):
         return f"fe:{ns}:v0:{rest}"
 
+    async def _admit(key, window):
+        return True  # допуск «со второго раза» в тестах не ходит в Redis: пишем сразу
+
     monkeypatch.setattr(seo_pages, "cache_get", _miss)
     monkeypatch.setattr(seo_pages, "cache_set", _skip)
+    monkeypatch.setattr(seo_pages, "admit_seen", _admit)
     # versioned_key (П-11) ходит в Redis за версией namespace — в тестах
     # версия фиксированная, чтобы не трогать реальный localhost-Redis.
     monkeypatch.setattr(seo_pages, "versioned_key", _plain_key)

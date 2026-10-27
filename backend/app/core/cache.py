@@ -269,6 +269,55 @@ async def ssr_cache_get_swr(key: str) -> tuple[Optional[Any], bool]:
     return None, False
 
 
+# --- Допуск в кэш «со второго раза» (27.10.2026) ------------------------------
+#
+# Длинный хвост страниц (годовые лендинги, карточки рядов) обходят распределённые краулеры: ~97 % адресов за
+# десять минут уникальны, повторов нет. Запись такой страницы в Redis только вытесняет полезные ключи. Фильтр допуска:
+# адрес запоминается при первом рендере (в кэш HTML не идёт), при втором в окне — страница записывается.
+# Запоминание — фильтр Блума в двух битовых картах Redis (текущее и предыдущее окно): одна карта 2^22 бит = 512 КиБ,
+# три хеша; при 150 тыс. адресов за окно ложных «уже видел» ≈ 0,15 % (последствие безобидно: страница
+# кэшируется с первого раза). Память постоянная, ключи на адрес не создаются.
+_ADMIT_BITS = 1 << 22
+_ADMIT_HASHES = 3
+
+
+def _admit_offsets(key: str) -> list[int]:
+    digest = hashlib.blake2b(key.encode("utf-8"), digest_size=4 * _ADMIT_HASHES).digest()
+    return [
+        int.from_bytes(digest[i * 4:(i + 1) * 4], "big") % _ADMIT_BITS
+        for i in range(_ADMIT_HASHES)
+    ]
+
+
+async def admit_seen(key: str, window: int) -> bool:
+    """True — адрес уже встречался в этом или прошлом окне (страницу пора класть в кэш); иначе запоминает его.
+
+    ``window`` — длина окна в секундах; память помнит от одного до двух окон. Сбой Redis — fail-open: True
+    (страница кэшируется, как до появления фильтра).
+    """
+    window = max(int(window), 60)
+    bucket = int(time.time()) // window
+    cur, prev = f"fe:admit:{bucket}", f"fe:admit:{bucket - 1}"
+    offsets = _admit_offsets(key)
+    try:
+        r = await get_redis()
+        async with r.pipeline(transaction=False) as pipe:
+            for off in offsets:
+                pipe.getbit(cur, off)
+            for off in offsets:
+                pipe.getbit(prev, off)
+            for off in offsets:
+                pipe.setbit(cur, off, 1)
+            pipe.expire(cur, 2 * window + 3600)
+            results = await pipe.execute()
+        in_cur = results[:_ADMIT_HASHES]
+        in_prev = results[_ADMIT_HASHES:2 * _ADMIT_HASHES]
+        return all(in_cur) or all(in_prev)
+    except Exception:
+        _note_cache_failure("cache_get", key)
+        return True
+
+
 # --- П-11: версионированные namespace вместо pattern-delete -----------------
 #
 # Инвалидация раньше делала 6 SCAN-проходов по всему keyspace на КАЖДЫЙ

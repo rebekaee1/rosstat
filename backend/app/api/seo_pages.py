@@ -34,6 +34,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # SSR HTML хранится zlib-сжатым (perf batch 2); имена cache_get/cache_set
 # сохранены — тесты подменяют их на модуле.
 from app.core.cache import (
+    admit_seen,
     ssr_cache_get as cache_get,
     ssr_cache_get_swr as cache_get_swr,
     ssr_cache_set as cache_set,
@@ -260,7 +261,7 @@ async def _peek_cached_html(namespace: str, variant: str) -> str | None:
 
 async def _cached_html(
     namespace: str, variant: str, ttl: int, render_coro_factory,
-    *, db: AsyncSession | None = None,
+    *, db: AsyncSession | None = None, admit_on_repeat: bool = False,
 ):
     """Вернуть (status, html) из кэша или отрендерить и закэшировать.
 
@@ -269,6 +270,13 @@ async def _cached_html(
 
     Кэшируются только 200-е ответы: 404 не должен «прилипать» на TTL
     (индикатор мог появиться после деплоя/seed).
+
+    ``admit_on_repeat`` — для длинного хвоста (годовые и месячные лендинги, карточки рядов стран и регионов): HTML
+    кладётся в кэш, только если этот же адрес уже просили за окно `ssr_admit_window_seconds` (см. `admit_seen`).
+    Замер на боевом 27.10.2026: из 288 страниц, которые читал кэш за 17 секунд, 284 были промахами; ни одну из 334
+    выбранных записей не прочитали повторно после записи; распределённый обход (~4000 адресов за 10 минут) гонял
+    вытеснение со скоростью ~13 ключей в секунду, и кэш помнил только последние ~45 минут. Первый визит рендерится и отдаётся,
+    но память не занимает; второй — кладёт в кэш. Фоновый пересчёт устаревшей записи пишет всегда.
 
     Preview-локаль (``?preview_locale=`` / X-FE-Locale override) всегда
     рендерится свежим ходом и в кэш не попадает: иначе страница с
@@ -333,6 +341,9 @@ async def _cached_html(
         finally:
             _RENDER_SEM.release()
         if status == 200:
+            if admit_on_repeat and not forced and settings.ssr_admit_on_repeat_enabled:
+                if not await admit_seen(key, settings.ssr_admit_window_seconds):
+                    return status, html  # первый визит окна: отдаём, в кэш не кладём
             if swr:
                 await cache_set(key, html, ttl, stale_ttl=ssr_swr.stale_window())
             else:
@@ -564,6 +575,7 @@ async def seo_region_indicator(
         "ssr-region", f"region:{slug}:{code}:{get_locale()}", _SSR_TTL_REGIONAL,
         lambda: render_region_indicator_html(slug, code, db),
         db=db,
+        admit_on_repeat=True,
     )
     if status == 404:
         canonical = await _canonical_region_slug(slug, db)
@@ -673,6 +685,7 @@ async def seo_indicator_year(
         _year_ttl(year, _SSR_TTL_INDICATOR),
         lambda: render_indicator_year_html(code, year, db, mode=mode),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -695,6 +708,7 @@ async def seo_indicator_month(
         code, f"indicator-month:{code}:{period}:{get_locale()}", _SSR_TTL_INDICATOR,
         lambda: render_indicator_month_html(code, int(period[:4]), int(period[5:]), db),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -843,6 +857,7 @@ async def seo_world_subnational_indicator_year(
         _year_ttl(year, _SSR_TTL_WORLD),
         lambda: render_subnational_indicator_year_html(slug, region_slug, code, int(year), db),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -861,6 +876,7 @@ async def seo_world_subnational_indicator(
         _SSR_TTL_WORLD,
         lambda: render_subnational_indicator_html(slug, region_slug, code, db),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -928,6 +944,7 @@ async def seo_world_indicator(
         "ssr-world", variant, _SSR_TTL_WORLD,
         lambda: render_world_indicator_html(slug, code, db),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -964,6 +981,7 @@ async def seo_world_indicator_year(
         "ssr-world", variant, _year_ttl(year, _SSR_TTL_WORLD),
         lambda: render_world_indicator_year_html(slug, code, int(year), db),
         db=db,
+        admit_on_repeat=True,
     )
     return _html_response(status, html, request)
 
@@ -1018,6 +1036,7 @@ async def seo_region_indicator_year(
         _year_ttl(year, _SSR_TTL_REGIONAL),
         lambda: render_region_indicator_year_html(slug, code, int(year), db),
         db=db,
+        admit_on_repeat=True,
     )
     # А-2: короткий слаг региона → канонический с префиксом («tatarstan» →
     # «respublika-tatarstan»), тот же guard, что у двухсегментной карточки.

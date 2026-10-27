@@ -264,6 +264,36 @@ def test_year_out_of_data_404(world_year_client):
     ).status_code == 404
 
 
+def test_year_without_data_404_does_not_read_whole_series(world_year_client, auth_env):
+    """Перебор лет роботами: 404 по одному запросу существования, ряд целиком не читается (27.10.2026)."""
+    from sqlalchemy import event
+
+    from app.services.seo_world_year import render_world_indicator_year_html
+
+    async def _run(year):
+        async with auth_env["session_maker"]() as db:
+            statements: list[str] = []
+            engine = db.get_bind()  # sync Engine под AsyncSession
+
+            def _capture(conn, cursor, statement, *args):
+                statements.append(statement)
+
+            event.listen(engine, "before_cursor_execute", _capture)
+            try:
+                result = await render_world_indicator_year_html("germany", CODE_MONTHLY, year, db)
+            finally:
+                event.remove(engine, "before_cursor_execute", _capture)
+        return result, [s for s in statements if "world_data_points" in s]
+
+    (status, _html), reads = asyncio.run(_run(2010))
+    assert status == 404
+    assert len(reads) == 1 and "ORDER BY" not in reads[0]  # только проверка существования года, без выборки ряда
+
+    (status, _html), reads = asyncio.run(_run(2024))
+    assert status == 200
+    assert any("ORDER BY" in s for s in reads)  # живой год по-прежнему читает ряд
+
+
 def test_unknown_country_and_unlisted_404(world_year_client):
     assert world_year_client.get(
         f"/seo/world-indicator-year/no-such-country/{CODE_ANNUAL}/2023"

@@ -229,6 +229,23 @@ async def render_world_indicator_year_html(
     if indicator is None or not (indicator.is_listed or is_retired_world_hicp(slug, code)):
         return 404, "Not found"
 
+    # Год без данных (перебор лет роботами) отвечает 404 по одному запросу по индексу (indicator_id, date), без чтения
+    # всего ряда: 404 не кэшируется, и раньше каждый такой адрес читал ряд целиком (у дневных рядов — тысячи строк).
+    if 1 <= year < 9999:
+        has_year = (
+            await db.execute(
+                select(WorldDataPoint.date)
+                .where(
+                    WorldDataPoint.indicator_id == indicator.id,
+                    WorldDataPoint.date >= date(year, 1, 1),
+                    WorldDataPoint.date < date(year + 1, 1, 1),
+                )
+                .limit(1)
+            )
+        ).first()
+        if has_year is None:
+            return 404, "Not found"
+
     rows = (
         await db.execute(
             select(WorldDataPoint.date, WorldDataPoint.value)
