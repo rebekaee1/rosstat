@@ -114,9 +114,10 @@ CH session-метрики не имеют гарантии равенства PG
 pool-size принимается Settings, затем зависит от consumer/library validation.
 
 `PUBLIC_HOST` не читает нынешний Caddy. В root `.env` этого Compose также не передаются
-metrics token, scheduler cron hour/minute, forecast steps, world forecast max-age/cache-bump/
-priority и webmaster recrawl flag. Требуется явный service mapping/override; существующий
-empty metrics token закрывает endpoint403. Banxico aliases читаются direct os.environ,
+scheduler cron hour/minute, forecast steps, world forecast max-age/cache-bump/
+priority и webmaster recrawl flag. Требуется явный service mapping/override. Токен метрик
+(`RUSTATS_METRICS_TOKEN`) с 27.10.2026 передаётся compose в backend и scheduler; пустой токен
+закрывает endpoint (403). Banxico aliases читаются direct os.environ,
 а не неизвестным Settings dotenv-field. `VITE_SENTRY_DSN` source-reader существует,
 но в нынешние Docker build args не включён. `debug=false` даёт warn diagnostics;
 fake-provider при `!debug` — настоящий hard startup fail.
@@ -158,6 +159,8 @@ source/журнал с credentials в Git. Санитизированный ме
 ```bash
 test -f .env || cp .env.example .env
 ```
+
+В `docker-compose.yml` нет паролей по умолчанию (с 27.10.2026): без непустых `POSTGRES_PASSWORD`, `REDIS_PASSWORD`, `CLICKHOUSE_PASSWORD` любая команда `docker compose` завершается ошибкой «required variable … is missing». Копия `.env.example` их содержит (значения для локальной машины, порты на 127.0.0.1), поэтому профиль выше работает как раньше. В CI (`e2e`) пароли генерируются на время прогона; на сервере (боевой и стенд) эти три ключа должны быть в `.env`.
 
 Перед стартом проверить локальные значения. Шаблон содержит production origin и включённые locale-флаги; он не является готовым изолированным dev-профилем. Для обычной разработки установить в локальном `.env`:
 
@@ -578,8 +581,10 @@ SELECT indexrelid::regclass, indisvalid AND indisready FROM pg_index WHERE index
 ```
 docker stats --no-stream
 docker compose exec postgres psql -c "select datname, state, now()-state_change as idle, query from pg_stat_activity where state <> 'idle' order by state_change"
-# /api/v1/metrics требует непустой RUSTATS_METRICS_TOKEN и query token;
-# 30.09 effective token web пуст, поэтому endpoint закрыт (403).
+# /api/v1/metrics и /api/v1/system/status требуют непустой RUSTATS_METRICS_TOKEN и заголовок
+# X-Metrics-Token (или Authorization: Bearer); `?token=` с 27.10.2026 не принимается — query
+# попадал в access-логи nginx/Caddy. Токен на боевом .env не задан (проверено 27.10), поэтому endpoint закрыт (403):
+# curl -H "X-Metrics-Token: $TOKEN" http://127.0.0.1:8000/api/v1/metrics
 ```
 
 Дополнительно: пул/FD/pressure gauges в коде существуют, но scrape требует отдельно настроенного токена/коллектора. Токен не помещать в общий журнал/документ. Readiness, Docker stats и pg_stat_activity доступны для диагностики; один снимок не измеряет swap-in/out или latency во времени.

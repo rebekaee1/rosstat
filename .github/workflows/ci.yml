@@ -145,6 +145,11 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Start stack
         run: |
+          # В docker-compose.yml нет паролей по умолчанию: задаём одноразовые на время прогона.
+          for v in POSTGRES_PASSWORD REDIS_PASSWORD CLICKHOUSE_PASSWORD; do
+            echo "$v=$(openssl rand -hex 16)" >> "$GITHUB_ENV"
+          done
+          set -a; source "$GITHUB_ENV"; set +a
           # Bind-mount target for frontend honeypot/security logs. Docker creates
           # a missing host path as root; nginx in the image runs as uid 101 and
           # then cannot open honeypot.log (emerg → e2e smoke fails).

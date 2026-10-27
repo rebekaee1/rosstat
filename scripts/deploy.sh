@@ -142,10 +142,15 @@ pg_restart_blocker() {
   fi
   local pass
   pass="$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d '"' | tr -d "'" || true)"
+  if [ -z "$pass" ]; then
+    # Дефолтного пароля в compose больше нет: без пароля локи не прочитать — считаем, что джобы могут идти.
+    echo "REDIS_PASSWORD не найден в .env: локи фоновых джоб проверить нельзя"
+    return 0
+  fi
   # State-Redis: выделенный redis-state (DB 0) или DB 1 кэш-инстанса — смотрим оба.
-  locks="$(docker compose exec -T -e REDISCLI_AUTH="${pass:-changeme}" redis-state \
+  locks="$(docker compose exec -T -e REDISCLI_AUTH="${pass}" redis-state \
              redis-cli -n 0 --scan --pattern 'sched:lock:*' 2>/dev/null || true)
-$(docker compose exec -T -e REDISCLI_AUTH="${pass:-changeme}" redis \
+$(docker compose exec -T -e REDISCLI_AUTH="${pass}" redis \
              redis-cli -n 1 --scan --pattern 'sched:lock:*' 2>/dev/null || true)"
   locks="$(printf '%s\n' "$locks" | sed '/^[[:space:]]*$/d' | tr '\n' ' ')"
   if [ -n "$locks" ]; then
@@ -272,7 +277,7 @@ PY
 REDIS_PASSWORD="$(grep '^REDIS_PASSWORD=' .env 2>/dev/null | cut -d= -f2- | tr -d '\"' | tr -d "'" || true)"
 invalidate_release_cache() {
   docker compose exec -T \
-    -e REDISCLI_AUTH="${REDIS_PASSWORD:-changeme}" \
+    -e REDISCLI_AUTH="${REDIS_PASSWORD}" \
     -e PATTERNS="fe:*:ssr:* ${DEPLOY_CACHE_EXTRA_PATTERNS:-}" \
     -e BUMP_NS="${DEPLOY_CACHE_BUMP_NAMESPACES:-}" \
     redis sh -ec '

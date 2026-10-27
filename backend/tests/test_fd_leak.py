@@ -123,8 +123,30 @@ def test_metrics_exposes_open_fds_gauge(auth_client, monkeypatch):
     from app.config import settings
 
     monkeypatch.setattr(settings, "metrics_token", "fd-test-token")
-    response = auth_client.get("/api/v1/metrics", params={"token": "fd-test-token"})
+    response = auth_client.get("/api/v1/metrics", headers={"X-Metrics-Token": "fd-test-token"})
     assert response.status_code == 200
     text = response.text
     assert "fe_process_open_fds " in text
     assert "fe_process_open_fds_limit " in text
+
+
+def test_metrics_token_header_only(auth_client, monkeypatch):
+    """Токен метрик принимается в заголовках; `?token=` (попадал в логи nginx) — нет."""
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "metrics_token", "fd-test-token")
+    for path in ("/api/v1/metrics", "/api/v1/system/status"):
+        assert auth_client.get(path).status_code == 403
+        assert auth_client.get(path, params={"token": "fd-test-token"}).status_code == 403
+        assert auth_client.get(path, headers={"X-Metrics-Token": "wrong"}).status_code == 403
+        assert auth_client.get(path, headers={"Authorization": "Bearer wrong"}).status_code == 403
+        assert auth_client.get(path, headers={"X-Metrics-Token": "fd-test-token"}).status_code == 200
+        assert auth_client.get(path, headers={"Authorization": "Bearer fd-test-token"}).status_code == 200
+
+
+def test_metrics_closed_when_token_not_configured(auth_client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "metrics_token", "")
+    assert auth_client.get("/api/v1/metrics", headers={"X-Metrics-Token": ""}).status_code == 403
+    assert auth_client.get("/api/v1/metrics", headers={"Authorization": "Bearer "}).status_code == 403

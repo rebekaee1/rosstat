@@ -160,7 +160,7 @@ Base URL: `/api/v1` (за исключением SSR-эндпоинтов `/seo/
 | `/dashboard/sparklines` | bundle sparkline'ов главной |
 | `/analytics/*` | Forecast Analytics OS (Yandex.* через MCP, требует токен) |
 | `/seo/*`, `/sitemap.xml`, `/og/*` | SSR-meta-bundle, sitemap, OpenGraph-картинки (источник: ADR-0003) |
-| `/health`, `/system/status` | liveness + сводка по ETL и расписанию (`/system/status` — по токену метрик) |
+| `/health`, `/system/status` | liveness + сводка по ETL и расписанию (`/system/status` — по токену метрик в заголовке `X-Metrics-Token`) |
 
 ## Индикаторы
 

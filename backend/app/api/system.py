@@ -1,7 +1,9 @@
+import hmac
+import logging
 import time
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request, Response
 from sqlalchemy import select, func, desc, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +15,7 @@ from app.api.analytics import _require_analytics_token
 from app.config import settings
 
 router = APIRouter(tags=["system"])
+logger = logging.getLogger(__name__)
 
 _START_TIME = time.time()
 
@@ -175,9 +178,34 @@ async def health_ready(response: Response, db: AsyncSession = Depends(get_db)):
     }
 
 
-def _check_metrics_token(token: str = Query("", alias="token")):
-    if not settings.metrics_token or token != settings.metrics_token:
+def _check_metrics_token(
+    request: Request,
+    x_metrics_token: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    token: str = Query("", alias="token"),
+):
+    """Токен метрик — только в заголовке (`X-Metrics-Token` или `Authorization: Bearer`).
+
+    Токен в `?token=` попадал в access-логи nginx/Caddy (поле `$request` содержит query),
+    поэтому он больше не принимается; при попытке в лог пишется предупреждение без значения.
+    Пустая настройка закрывает endpoint (403). Сравнение — постоянное по времени.
+    """
+    expected = settings.metrics_token
+    if not expected:
         raise HTTPException(status_code=403, detail="Forbidden")
+    candidate = x_metrics_token or ""
+    if not candidate and authorization:
+        scheme, _, value = authorization.partition(" ")
+        if scheme.lower() == "bearer":
+            candidate = value.strip()
+    if candidate and hmac.compare_digest(candidate.encode(), expected.encode()):
+        return
+    if token:
+        logger.warning(
+            "metrics token в query string больше не принимается (%s): передавайте X-Metrics-Token",
+            request.url.path,
+        )
+    raise HTTPException(status_code=403, detail="Forbidden")
 
 
 @router.get("/metrics", include_in_schema=False)
