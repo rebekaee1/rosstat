@@ -48967,7 +48967,7 @@
     "anonymous_functions": 11
   },
   "frontend/src/pages/AdminBI.jsx": {
-    "sha256": "dd5054378b8f1519954470682bfae7dca3f0a17536a644863aa386bc5e27afce",
+    "sha256": "07c1b918e52aa4b121850fb400096c97df22d4c1550f4b305bb564fb6cbe2681",
     "definitions": [
       {
         "name": "eventLabel",
@@ -49331,74 +49331,74 @@
       },
       {
         "name": "BotnessCard",
-        "line": 2636,
-        "end_line": 2680,
+        "line": 2637,
+        "end_line": 2682,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "BotnessCard.inCorridor",
-        "line": 2639,
-        "end_line": 2639,
+        "line": 2641,
+        "end_line": 2641,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AcquisitionFullTab",
-        "line": 2683,
-        "end_line": 2790,
+        "line": 2685,
+        "end_line": 2792,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AcquisitionFullTab.fmtRub",
-        "line": 2690,
-        "end_line": 2690,
+        "line": 2692,
+        "end_line": 2692,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "TermsLegend",
-        "line": 2797,
-        "end_line": 2829,
+        "line": 2799,
+        "end_line": 2831,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin",
-        "line": 2833,
-        "end_line": 2878,
+        "line": 2835,
+        "end_line": 2880,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminLogin.submit",
-        "line": 2839,
-        "end_line": 2851,
+        "line": 2841,
+        "end_line": 2853,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI",
-        "line": 2898,
-        "end_line": 3043,
+        "line": 2900,
+        "end_line": 3045,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AdminBI.queryFn",
-        "line": 2917,
-        "end_line": 2921,
+        "line": 2919,
+        "end_line": 2923,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refetchInterval",
-        "line": 2923,
-        "end_line": 2928,
+        "line": 2925,
+        "end_line": 2930,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.refreshNow",
-        "line": 2936,
-        "end_line": 2940,
+        "line": 2938,
+        "end_line": 2942,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AdminBI.openSlices",
-        "line": 2953,
-        "end_line": 2953,
+        "line": 2955,
+        "end_line": 2955,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -49453,7 +49453,7 @@
         "names": [
           "default"
         ],
-        "line": 2898
+        "line": 2900
       }
     ],
     "anonymous_functions": 202

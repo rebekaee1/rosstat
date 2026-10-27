@@ -1762,11 +1762,11 @@
       "role": "product overview",
       "classification": "current",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "384dd98cd3b4eaf0fce45c48ea73824b560f8e48e9a0803144e70778ff82dc3f",
-        "bytes": 24676
+        "date": "2026-10-27",
+        "sha256": "08ea198901fd58a8d27781d009f5379ff2496927e4fa9d073a0e2dcea89fc9da",
+        "bytes": 24716
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -4395,11 +4395,11 @@
       "role": "dated decision and later additions",
       "classification": "current_document",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "5582e433016200aa7aaba8c538bea556211839aef970c743529dbcd724869309",
-        "bytes": 26542
+        "date": "2026-10-27",
+        "sha256": "f89d81726c06b6856ece65f38bacae82bfdd5692addc1e06f9fb2a657c8dfebe",
+        "bytes": 28291
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -8155,11 +8155,11 @@
       "role": "system topology/scenarios",
       "classification": "current",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "f3eafeae0a912c2ca049139f5e9b0a0fdac2fec5318425408e806874eb446948",
-        "bytes": 95985
+        "date": "2026-10-27",
+        "sha256": "039ef30b5d82a9302d7c1e2fd777ad70948ebf08a355d1252ddaf297a8c989cf",
+        "bytes": 97266
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -8904,8 +8904,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "0b8acccee2e90b2d10aa128bccf5c30a9b090ee2a258d890b1038ef724088ad6",
-        "bytes": 582146
+        "sha256": "2a47f1fbebf83895cd7e20457b03d4d13e26272f87901721be7a8995e8d23b9b",
+        "bytes": 608130
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -10277,7 +10277,7 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "1cbd031fab053cb462ad16140b7a36e9118690d09fc8c60ba8d48f1e58a120a7",
+        "sha256": "8f594d06a38ef3e67b2f40d719b96bbaa0d37cdbe47f2c34ef96db1a54ec3540",
         "bytes": 6816375
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -12412,8 +12412,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "83c750b1848bfa0d81320bea1fd31601a27bad1f35e73778d9d67c61de065161",
-        "bytes": 834213
+        "sha256": "68feac607f9cd800fb4f078cd732a2ba5de79c47767b5e79ad9da4d629e246dc",
+        "bytes": 841772
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -14041,8 +14041,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "b7d683971bfb069d159c4a4cd756d9a08a0dd07f1aee2e7b649c3e5e0c9632d3",
-        "bytes": 7239398
+        "sha256": "637ab8d7f2b3b1d51bb90b63cf9106e3a961f453aab5342fbf713b6afde67d08",
+        "bytes": 7319092
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -15767,7 +15767,7 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "cd87b0fce4beece7031dc0c45a8ce672a8a50534facd2b34d4ecc9306f4b0069",
+        "sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
         "bytes": 1240581
       },
       "review_status": "generated_snapshot",
@@ -17196,8 +17196,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "b0bdb632042636e6f3eb264761cebfdeaa28df1a076f2899486a90673e72233b",
-        "bytes": 21763722
+        "sha256": "c6caad091493bdc26c55b4d78bc577368b7a4f35a6b01d616998e9409bb04433",
+        "bytes": 22083979
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -18791,11 +18791,11 @@
       "role": "data and boundary contracts",
       "classification": "current",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-10-15",
-        "sha256": "f9624efcf94bbb9570892f60fd2bfbbe7f272a92f218008f6c674ddd15cf07a4",
-        "bytes": 267499
+        "date": "2026-10-27",
+        "sha256": "cd230bf950d288aedf4023f451d71e432175d27b0af6c156102654989513b490",
+        "bytes": 270172
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -19685,11 +19685,11 @@
       "role": "official source mappings",
       "classification": "current",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "d385b882b3cf1b9d89ad4d148eb93bee348fd28a62e5e31ff4a7cb4c4c668b4a",
-        "bytes": 91612
+        "date": "2026-10-27",
+        "sha256": "9819c5851d72a5dcfb4b6868f4d24c0957559e09e83f6fcaa560741c427918d1",
+        "bytes": 98422
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
       "body_reviewed_in_this_pass": false,
@@ -22470,11 +22470,11 @@
       "role": "operational acceptance and recovery",
       "classification": "current",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "009b2c4681081ac3b40f0d4169c6eaa3932d95a9f7163e83a29ddb5d1ad1938f",
-        "bytes": 37066
+        "date": "2026-10-27",
+        "sha256": "eea32fd3b51ee5689b14465f41a95241c649b9731edc542a9c69df014f7cfbf2",
+        "bytes": 37339
       },
       "review_status": "предыдущая рецензия плюс прочитанная содержательная дельта",
       "body_reviewed_in_this_pass": false,
@@ -22841,8 +22841,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "2623bcd2631df9fc6d405ad0fc4825c075d9633d95966a8d2b4f106f42f4b54d",
-        "bytes": 2920856
+        "sha256": "81572e2d526c9fa8e1185f0497cd1fdc1eda083139106566b4cd4ea627938a47",
+        "bytes": 2921880
       },
       "review_status": "generated_snapshot",
       "body_reviewed_in_this_pass": false,
@@ -31123,11 +31123,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-10-15",
-        "sha256": "b49108acf78fe63a1d14d7571cd1cd784aee14d0e522351a7204251d98001e77",
-        "bytes": 53976
+        "date": "2026-10-27",
+        "sha256": "4f0447a3ade0ae4a6bcbff0bc4238f7c8b01aed3d5bf35e3542630f402b8309c",
+        "bytes": 55950
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -31913,8 +31913,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "317703b4f2b2260910aa4c188ef3370b342eee9b0305317f72730f20ec15aa51",
-        "bytes": 10781210
+        "sha256": "10eb15457a0422fd33d4bdf85b8604e25c6e057ee060feaab68054b059a0a80f",
+        "bytes": 10848382
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -32463,8 +32463,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "c4056149141123261ab04f2064a7467ccc1e55800fab2480cfc4ab07f6f9cf21",
-        "bytes": 533737
+        "sha256": "e0a7fffa34a74f18ecbbb8378def79b8f1b9f8a8934ffc3a4213de14b55672c9",
+        "bytes": 536300
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -37685,11 +37685,11 @@
       },
       "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
       "source_version": {
-        "main": "e5efa028921ca51517e6fb0bb3853e8b9328f397",
+        "main": "9b99a904ca",
         "scope": "tracked/index",
-        "date": "2026-09-30",
-        "sha256": "893bb21466c35e9c64a25d077b72c36430e1db41459c715791cf49f191cedd87",
-        "bytes": 7526
+        "date": "2026-10-27",
+        "sha256": "e55ccbf2f242c6687f8e32047fbd9fad9f3efa6a8caa3a8346bac2d32dfde4d8",
+        "bytes": 14120
       },
       "current_delta_reviewed_in_this_pass": false,
       "prior_version_evidence": [
@@ -37993,8 +37993,8 @@
         "main": "9b99a904ca",
         "scope": "tracked/index",
         "date": "2026-10-27",
-        "sha256": "cb4d3387b99394260907cb0439b396e97499e45e8a09c9a01bdf4afee051b3f6",
-        "bytes": 127419
+        "sha256": "b2663bdf71c106461866cbe8f3879b3418f7eb035f4516dca2b0afa6b4012c3e",
+        "bytes": 134475
       },
       "review_status": "exact_version_review_in_ledger",
       "body_reviewed_in_this_pass": false,
@@ -46109,6 +46109,38 @@
         }
       ],
       "current_delta_reviewed_in_this_pass": false
+    },
+    {
+      "id": "docs/offsite-backup-runbook.md",
+      "location": "/Users/iprofi/tradingeconomics/rosstat/docs/offsite-backup-runbook.md",
+      "repository_path": "docs/offsite-backup-runbook.md",
+      "format": ".md",
+      "role": "project material",
+      "classification": "current",
+      "canonical_source": "docs/offsite-backup-runbook.md",
+      "linked_mechanisms": null,
+      "review_status": "exact_version_review_in_ledger",
+      "body_reviewed_in_this_pass": false,
+      "review_basis": {
+        "proposal": "docs/code-review/reviews.jsonl",
+        "review_provenance": {
+          "method": "Написан агентом №21 (Sonnet) в круге починки 27.10.2026; строка ledger от автора, оркестратор сверил назначение",
+          "date": "2026-10-27",
+          "branch": "integ/fix-2026-10-27"
+        },
+        "status_in_review": "reviewed",
+        "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9"
+      },
+      "update_action": "Keep current metadata and reviewer proof distinct; use prior_version_evidence for old versions.",
+      "source_version": {
+        "main": "9b99a904ca",
+        "scope": "tracked/index",
+        "date": "2026-10-27",
+        "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9",
+        "bytes": 8720
+      },
+      "current_delta_reviewed_in_this_pass": false,
+      "prior_version_evidence": []
     }
   ],
   "external_sources": [
@@ -62463,6 +62495,7 @@
       "docs/repo-inventory.md"
     ],
     "limit": "SHA refresh does not promote review; external discovery and foreign untracked observations are unchanged.",
-    "2026-10-27": "Identity refresh on integ/agents-2026-10-27 (base 9b99a904): CONTEXT.md, backend/app/services/seo_content.py, docs/backlog.md, docs/client-mechanism-inventory.json, docs/client-mechanism-inventory.md, docs/code-review/coverage.json, docs/code-review/graph-omission-classification-2026-09-30.json, docs/code-review/javascript-symbols.json, docs/code-review/reviews.jsonl, docs/dead-code-report.md, docs/indicator-index.json, docs/indicator-index.md, docs/mechanism-inventory.json, docs/mechanism-inventory.md, docs/planet-view.md, docs/workflow.md, frontend/src/i18n/messages.ru.js, frontend/src/lib/pageMeta.generated.json. Hash only; review_status unchanged; ledger rows for code/docs re-read in the same pass."
+    "2026-10-27": "Identity refresh on integ/agents-2026-10-27 (base 9b99a904): CONTEXT.md, backend/app/services/seo_content.py, docs/backlog.md, docs/client-mechanism-inventory.json, docs/client-mechanism-inventory.md, docs/code-review/coverage.json, docs/code-review/graph-omission-classification-2026-09-30.json, docs/code-review/javascript-symbols.json, docs/code-review/reviews.jsonl, docs/dead-code-report.md, docs/indicator-index.json, docs/indicator-index.md, docs/mechanism-inventory.json, docs/mechanism-inventory.md, docs/planet-view.md, docs/workflow.md, frontend/src/i18n/messages.ru.js, frontend/src/lib/pageMeta.generated.json. Hash only; review_status unchanged; ledger rows for code/docs re-read in the same pass.",
+    "2026-10-27-fix": "Identity refresh on integ/fix-2026-10-27 (repair circle): hash only; review_status unchanged."
   }
 }
