@@ -301,6 +301,112 @@ def test_recrawl_job_uses_published_registry_not_db_registry(published, monkeypa
     assert "/about?x=1&y=2" in redis.members  # неканон помечен без POST
 
 
+def _run_recrawl(monkeypatch, submit):
+    """Прогон recrawl_daily_job на опубликованной генерации с подменённой подачей; возвращает (результат, redis, алерты)."""
+    import app.services.webmaster_recrawl as wr
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "yandex_webmaster_token", "t")
+    monkeypatch.setattr(settings, "analytics_live_writes_enabled", True)
+
+    class _Resp:
+        def __init__(self, data):
+            self.data = data
+
+    class _Client:
+        async def user(self):
+            return _Resp({"user_id": 1})
+
+        async def recrawl_quota(self, user_id, host_id):
+            return _Resp({"quota_remainder": 3})
+
+        async def submit_recrawl(self, user_id, host_id, url, approved=False):
+            return await submit(url)
+
+    class _Redis:
+        def __init__(self):
+            self.members = {"/"}
+
+        async def smembers(self, key):
+            return set(self.members)
+
+        async def sadd(self, key, *values):
+            self.members.update(values)
+
+        async def sismember(self, key, value):
+            return value in self.members
+
+        async def delete(self, key):
+            self.members.clear()
+
+        async def scard(self, key):
+            return len(self.members)
+
+    redis = _Redis()
+
+    async def get_redis():
+        return redis
+
+    class _Session:
+        async def commit(self):
+            return None
+
+    @asynccontextmanager
+    async def session():
+        yield _Session()
+
+    async def demand(db, days, limit, host):
+        return []
+
+    alerts = []
+
+    async def alert(text):
+        alerts.append(text)
+
+    monkeypatch.setattr(wr, "YandexWebmasterClient", _Client)
+    monkeypatch.setattr(wr, "get_state_redis", get_redis)
+    monkeypatch.setattr(wr, "async_session", session)
+    monkeypatch.setattr(wr, "_alert_recrawl", alert)
+    monkeypatch.setattr("app.services.demand_router.priority_recrawl_paths", demand)
+    result = asyncio.run(wr.recrawl_daily_job(origin="https://ru.forecasteconomy.com", host_id="h", submitted_key="k"))
+    return result, redis, alerts
+
+
+def test_recrawl_unknown_rejections_stop_run_and_keep_cursor(published, monkeypatch):
+    """07–27.10.2026: каждый POST получал отказ без тела, и 470 адресов в сутки уходили в «поданные»."""
+    from app.services.yandex_client import YandexApiError
+
+    calls = []
+
+    async def submit(url):
+        calls.append(url)
+        raise YandexApiError("Yandex API returned HTTP 403", status_code=403, payload="")
+
+    result, redis, alerts = _run_recrawl(monkeypatch, submit)
+    assert len(calls) == 3  # остановка после трёх отказов подряд, а не по всей квоте
+    assert result["submitted"] == 0 and result["aborted"] and "403" in result["aborted"]
+    assert redis.members == {"/", "/about?x=1&y=2"}  # курсор не сдвинут; неканон помечен без POST
+    assert len(alerts) == 1 and "403" in alerts[0]
+
+
+def test_recrawl_soft_rejection_marks_url_but_is_not_counted_as_submitted(published, monkeypatch):
+    from app.services.yandex_client import YandexApiError
+
+    calls = []
+
+    async def submit(url):
+        calls.append(url)
+        if len(calls) == 1:
+            raise YandexApiError("HTTP 409", status_code=409, payload={"error_code": "URL_ALREADY_ADDED"})
+
+    result, redis, alerts = _run_recrawl(monkeypatch, submit)
+    assert result["submitted"] == 3 and result["soft_rejected"] == 1 and result["aborted"] is None
+    assert len(calls) == 4  # отказ по адресу не тратит квоту: подано ровно три принятых
+    assert calls[0].endswith("/france/indicator/gdp/1960")
+    assert "/france/indicator/gdp/1960" in redis.members
+    assert alerts == []
+
+
 # --- 3. Ошибки job видны планировщику; прерывание рестартом не алертится -------
 
 def test_calendar_refresh_failure_propagates_to_scheduler(monkeypatch, caplog):

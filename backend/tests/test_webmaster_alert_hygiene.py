@@ -106,3 +106,13 @@ def test_webmaster_noisy_alerts_cool_down_for_a_day():
 
     for kind in ("webmaster_sitemap_errors", "webmaster_crawl_drop", "webmaster_in_search_drop"):
         assert _alert_cooldown(f"{kind}:forecasteconomy.com") == 24 * 3600
+
+
+def test_host_verification_problem_only_when_verified_is_explicitly_false():
+    """С 07.10.2026 Вебмастер отдаёт пустые истории и отказывает в переобходе: тревога о правах на хост только при явном `verified: false`."""
+    from app.services.webmaster_indexing_daily import host_verification_problem
+
+    assert "не подтверждены" in host_verification_problem({"host_id": "h", "verified": False})
+    assert host_verification_problem({"host_id": "h", "verified": True}) is None
+    assert host_verification_problem({"host_id": "h"}) is None  # нет поля — нет суждения
+    assert host_verification_problem(None) is None and host_verification_problem("x") is None

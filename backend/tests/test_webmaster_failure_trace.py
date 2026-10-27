@@ -51,3 +51,60 @@ def test_api_unreachable_leaves_a_failed_run_row(monkeypatch):
     runs = list({id(o): o for o in db.added if getattr(o, "job_type", "") == "daily_search_queries"}.values())
     assert len(runs) == 1
     assert runs[0].status == "failed" and runs[0].error_message == "ConnectTimeout"
+
+
+def _patched_client(monkeypatch, outcomes):
+    """YandexOAuthClient с подменённым httpx.AsyncClient: outcomes — исключения или ответы по очереди."""
+    from app.services import yandex_client
+
+    calls = []
+    sleeps = []
+
+    class _Response:
+        status_code = 200
+        headers = {"content-type": "application/json"}
+
+        def json(self):
+            return {"ok": True}
+
+    class _AsyncClient:
+        def __init__(self, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def request(self, *args, **kwargs):
+            calls.append(1)
+            outcome = outcomes[len(calls) - 1]
+            if isinstance(outcome, Exception):
+                raise outcome
+            return _Response()
+
+    async def fake_sleep(seconds):
+        sleeps.append(seconds)
+
+    monkeypatch.setattr(yandex_client.httpx, "AsyncClient", _AsyncClient)
+    monkeypatch.setattr(yandex_client.asyncio, "sleep", fake_sleep)
+    return yandex_client.YandexOAuthClient("t", "https://example.invalid"), calls, sleeps
+
+
+def test_connect_timeout_is_retried_and_then_succeeds(monkeypatch):
+    """Разовый провал установки соединения с Вебмастером не должен стоить задаче целого дня."""
+    client, calls, sleeps = _patched_client(monkeypatch, [httpx.ConnectTimeout(""), httpx.ConnectError(""), None])
+    response = asyncio.run(client.request("GET", "/v4/user/"))
+    assert response.data == {"ok": True} and len(calls) == 3 and sleeps == [2.0, 5.0]
+
+
+def test_connect_timeout_after_all_attempts_raises_and_read_timeout_is_not_retried(monkeypatch):
+    client, calls, _ = _patched_client(monkeypatch, [httpx.ConnectTimeout("")] * 3)
+    with pytest.raises(httpx.ConnectTimeout):
+        asyncio.run(client.request("POST", "/x", json_body={}))
+    assert len(calls) == 3
+    client, calls, _ = _patched_client(monkeypatch, [httpx.ReadTimeout("")])
+    with pytest.raises(httpx.ReadTimeout):
+        asyncio.run(client.request("GET", "/x"))
+    assert len(calls) == 1

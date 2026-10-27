@@ -63,6 +63,13 @@ async def sync_webmaster_indexing_daily(day: date | None = None, *, alert: bool 
                 payload["errors"]["in-search/history"] = "fetch_or_parse_failed"
                 logger.warning("in-search/history failed host=%s", host, exc_info=True)
             try:
+                # Состояние самого хоста (подтверждение прав, зеркало): с 07.10.2026 Вебмастер отдаёт пустые
+                # истории и отказывает в переобходе, а причина на стороне хоста в записях не сохранялась.
+                payload["host"] = (await client.host(user_id, host_id)).data
+            except Exception:
+                payload["errors"]["host"] = "fetch_or_parse_failed"
+                logger.warning("host info failed host=%s", host, exc_info=True)
+            try:
                 idx = (await client.indexing_history(
                     user_id, host_id, date_from=day.isoformat(), date_to=(day + timedelta(days=1)).isoformat(), indexing_indicator="DOWNLOADED",
                 )).data
@@ -132,6 +139,17 @@ async def sync_webmaster_indexing_daily(day: date | None = None, *, alert: bool 
     if alert:
         await _alerting(day)
     return stored
+
+
+def host_verification_problem(host_payload) -> str | None:
+    """Текст тревоги, если Вебмастер сообщает, что права на хост не подтверждены (`verified` явно false).
+
+    Нет поля или ответа — нет суждения: отсутствие данных не считаем проблемой.
+    """
+    if isinstance(host_payload, dict) and host_payload.get("verified") is False:
+        return ("права на хост не подтверждены, поэтому Яндекс не отдаёт историю обхода и отказывает "
+                "в переобходе. Подтвердите хост в Вебмастере.")
+    return None
 
 
 def _history_for_day(payload: dict, day: date) -> dict:
@@ -331,6 +349,9 @@ async def _alert_host(day: date, host: str) -> None:
                              "Отсутствие данных не означает ноль.")
         if row is None:
             return
+        problem = host_verification_problem((row.raw_json or {}).get("host"))
+        if problem:
+            await _alert(f"webmaster_host_unverified:{host}", f"{host}, Вебмастер: {problem}")
         if (row.crawled_5xx or 0) > 20:
             await _alert(
                 f"webmaster_5xx:{host}",

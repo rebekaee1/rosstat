@@ -29,6 +29,22 @@ from app.services.yandex_webmaster_client import YandexWebmasterClient
 logger = logging.getLogger(__name__)
 
 _SUBMITTED_KEY = "wm:recrawl:submitted"
+_MAX_UNKNOWN_REJECTS = 3  # подряд отказов без понятной причины, после чего подача прекращается
+_MAX_SOFT_REJECTS_PER_RUN = 300  # потолок «уже в очереди» за запуск: не крутить реестр впустую
+
+
+def is_soft_recrawl_reject(exc: Exception) -> bool:
+    """Отказ по конкретному адресу (уже в очереди, неверный адрес): 400/409/422 и непустая причина.
+
+    Всё остальное (пустое тело, 401/403, 5xx) говорит о канале или правах, не об адресе.
+    """
+    status = getattr(exc, "status_code", None)
+    payload = getattr(exc, "payload", None)
+    if status not in (400, 409, 422):
+        return False
+    if isinstance(payload, dict):
+        return bool(payload.get("error_code") or payload.get("error_message") or payload.get("message"))
+    return bool(str(payload or "").strip())
 
 
 async def _alert_recrawl(text: str) -> None:
@@ -121,7 +137,7 @@ async def recrawl_daily_job(
         # count(*) мировых лет по 16 млн world_data_points.
         already = set(await redis.smembers(cursor_key))
         scan = await asyncio.to_thread(
-            _scan_published_registry, base, {p for p, _lost in demand}, already, remaining,
+            _scan_published_registry, base, {p for p, _lost in demand}, already, remaining + _MAX_SOFT_REJECTS_PER_RUN,
         )
         eligible = scan["regular"]
         eligible_total = scan["eligible_total"]
@@ -145,64 +161,85 @@ async def recrawl_daily_job(
 
     submitted = 0
     demand_submitted = 0
+    soft_rejected = 0
+    unknown_rejects = 0  # подряд, сбрасывается успешной подачей
+    abort_reason: str | None = None
+    attempts = 0
+    max_attempts = remaining + _MAX_SOFT_REJECTS_PER_RUN
 
     demand_first_set = set(demand_first)
 
-    async def _submit(path: str) -> bool:
+    async def _submit(path: str) -> str:
+        """ok | soft | unknown | quota | error. В курсор попадает только ok и soft."""
+        nonlocal unknown_rejects, abort_reason
         url = f"{base}{path}"
         try:
             await client.submit_recrawl(user_id, wm_host_id, url, approved=True)
             await redis.sadd(cursor_key, path)
-            return True
+            unknown_rejects = 0
+            return "ok"
         except YandexApiError as exc:
             err = str(exc.payload)[:200].upper()
             if "QUOTA" in err:
                 logger.info("Recrawl job: quota hit mid-run after %d", submitted)
-                return False
-            # URL_ALREADY_ADDED и прочие мягкие отказы — помечаем и идём дальше.
-            await redis.sadd(cursor_key, path)
-            # В лог — HTTP-статус и текст исключения: пустой payload (тело ответа
-            # не JSON и пустое) без них не даёт понять причину отказа.
+                return "quota"
+            if is_soft_recrawl_reject(exc):
+                # URL_ALREADY_ADDED и другие отказы по конкретному адресу: адрес считаем обработанным.
+                await redis.sadd(cursor_key, path)
+                logger.info("Recrawl submit %s skipped: status=%s payload=%s", url, exc.status_code, err)
+                return "soft"
+            # Пустое тело, 401/403, 5xx и т.п. — это отказ всего канала, а не адреса. Курсор НЕ двигаем:
+            # 07–27.10.2026 каждый POST получал отказ без тела, 940 адресов в сутки уходили в «обработанные».
+            unknown_rejects += 1
             logger.warning(
                 "Recrawl submit %s rejected: status=%s payload=%s error=%s",
                 url, exc.status_code, err, str(exc)[:200],
             )
-            return True
+            if unknown_rejects >= _MAX_UNKNOWN_REJECTS:
+                abort_reason = f"HTTP {exc.status_code}, тело ответа: {err or 'пусто'}"
+                return "error"
+            return "unknown"
         except Exception:
             logger.exception("Recrawl submit failed for %s", url)
-            return False
+            return "error"
 
-    for path in demand_first:
-        if submitted >= remaining:
+    ordered = [*demand_first, *(path for path in eligible if path not in demand_first_set)]
+    for path in ordered:
+        if submitted >= remaining or attempts >= max_attempts or abort_reason:
             break
         if await redis.sismember(cursor_key, path):
             continue
-        if not await _submit(path):
+        attempts += 1
+        result = await _submit(path)
+        if result in ("quota", "error"):
             break
-        submitted += 1
-        demand_submitted += 1
-    for path in eligible:
-        if submitted >= remaining:
-            break
-        if path in demand_first_set:
-            continue
-        if await redis.sismember(cursor_key, path):
-            continue
-        if not await _submit(path):
-            break
-        submitted += 1
+        if result == "soft":
+            soft_rejected += 1
+        elif result == "ok":
+            submitted += 1
+            if path in demand_first_set:
+                demand_submitted += 1
     else:
         # Прошли весь eligible-реестр — все URL уже подавались. Начинаем новый цикл.
-        if submitted < remaining:
+        if submitted < remaining and attempts < max_attempts and not abort_reason:
             await redis.delete(cursor_key)
+
+    if abort_reason:
+        await _alert_recrawl(
+            f"Яндекс отклоняет подачу в переобход подряд {_MAX_UNKNOWN_REJECTS} раза ({abort_reason}). "
+            "Подача остановлена, курсор не сдвинут: адреса не считаются поданными. "
+            "Проверьте права на хост и его статус в Вебмастере."
+        )
 
     total_submitted = int(await redis.scard(cursor_key))
     logger.info(
         "Recrawl job: submitted %d URL(s) (quota %d), demand-priority %d, "
-        "skipped_noncanonical %d, cursor at %d/%d host_id=%s",
+        "soft_rejected %d, aborted=%s, skipped_noncanonical %d, cursor at %d/%d host_id=%s",
         submitted,
         remaining,
         demand_submitted,
+        soft_rejected,
+        abort_reason,
         len(skipped),
         total_submitted,
         eligible_total,
@@ -211,6 +248,8 @@ async def recrawl_daily_job(
     return {
         "submitted": submitted,
         "demand_priority": demand_submitted,
+        "soft_rejected": soft_rejected,
+        "aborted": abort_reason,
         "quota": remaining,
         "cursor": total_submitted,
         "skipped_noncanonical": len(skipped),
