@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `5340f32ddf7c2548ddbf294543b271a25de73765`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `9b99a904744d49527e35651262cf94a606193a59`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,9 +12,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2187 |
-| Код, шаблоны и стили | 1784 |
-| Актуальные рецензии без пропусков guard | 2186 |
+| Файлы в явно определённом scope | 2189 |
+| Код, шаблоны и стили | 1785 |
+| Актуальные рецензии без пропусков guard | 2188 |
 | Именованные определения Python/JS: с аннотацией / всего | 14089 / 14089 |
 | Файлы, требующие внимания | 1 |
 
@@ -909,6 +909,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [deploy/approved-shas.txt](../deploy/approved-shas.txt) | reviewed | 0/0 | source_changed, read_range_gap |
 | [deploy/crawler-status.sh](../deploy/crawler-status.sh) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban-install.sh](../deploy/fail2ban-install.sh) | reviewed | 0/0 | актуально |
+| [deploy/fail2ban/fail2ban.local](../deploy/fail2ban/fail2ban.local) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban/filter.d-honeytrap.conf](../deploy/fail2ban/filter.d-honeytrap.conf) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban/filter.d-nginx-429.conf](../deploy/fail2ban/filter.d-nginx-429.conf) | reviewed | 0/0 | актуально |
 | [deploy/fail2ban/filter.d-nginx-volume.conf](../deploy/fail2ban/filter.d-nginx-volume.conf) | reviewed | 0/0 | актуально |
@@ -2181,6 +2182,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/frontend-asset-archive.py](../scripts/frontend-asset-archive.py) | reviewed | 4/4 | актуально |
 | [scripts/generate-vapid-keys.py](../scripts/generate-vapid-keys.py) | reviewed | 3/3 | актуально |
 | [scripts/insert-gdp-q1-2026-estimate.py](../scripts/insert-gdp-q1-2026-estimate.py) | reviewed | 1/1 | актуально |
+| [scripts/install-host-disk-hygiene.sh](../scripts/install-host-disk-hygiene.sh) | reviewed | 0/0 | актуально |
 | [scripts/install-host-logrotate.sh](../scripts/install-host-logrotate.sh) | reviewed | 0/0 | актуально |
 | [scripts/locate-indicator.py](../scripts/locate-indicator.py) | reviewed | 5/5 | актуально |
 | [scripts/metrika-baseline-snapshot.py](../scripts/metrika-baseline-snapshot.py) | reviewed | 8/8 | актуально |

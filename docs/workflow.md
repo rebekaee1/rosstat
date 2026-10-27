@@ -133,6 +133,20 @@ SSR/assets; client JS был прежнего local image. Все6 своих co
 На сервере source logrotate и effective host config отличаются: main rotate7/nocompress/
 rename+USR1, host rotate14/compress/copytruncate. Выпуск/замена host-config — отдельное
 разрешённое действие; `deploy.sh` не устанавливает fail2ban/logrotate install bundle сам.
+
+**Диск боевого хоста (замер 27.10.2026, 77 ГБ, занято 88 %, свободно ~10 ГБ).** Тома Docker 25 ГБ
+(sitemap_static 10,4 — два поколения `generations/`, в каждом сырой `.xml` + `.gz`: сырой нужен nginx
+`try_files` и backend `iter_published_paths`, поэтому не убирается; postgres 9,5; og_cache 2,8), кэш сборки
+Docker 16,1 ГБ при 0 активных записях, бэкапы `/opt/rosstat/backups` 13 ГБ (25 дампов по ~0,5 ГБ: ежедневный
++ по одному на каждую выкатку), nginx-логи ~1 ГБ (`security.log` ~390 МБ/сутки), `fail2ban.log` ~800 МБ,
+journald 2,0 ГБ. Причина роста кэша сборки: `scripts/docker-cleanup.sh` вызывал `builder prune` без `-a`
+и не стоял в cron — исправлено в репозитории (`-a`, возраст 168 ч, резерв 3 ГБ, lock деплоя), на хост ещё
+не выпущено. Потолок journald и еженедельный cron ставит `scripts/install-host-disk-hygiene.sh` (`--dry-run`
+сначала); `loglevel = NOTICE` для fail2ban — `deploy/fail2ban/fail2ban.local`, ставится
+`deploy/fail2ban-install.sh`. Эффект: кэш сборки от 4 ГБ (сумма размеров записей) до 16 ГБ («reclaimable»
+по `docker system df`) — точную цифру даёт только запуск; journald ~1,5 ГБ; fail2ban ~100 МБ/сутки.
+Offsite-копия бэкапов (`OFFSITE_S3_BUCKET`) на хосте не задана и `aws` не установлен: копии лежат на том
+же диске, что и БД (копирование на Mac — отдельный механизм из backlog).
 Host `tor-http-bridge.service` вне Git обеспечивает gateway8888→Tor9050. Hardcoded Basic
 credential и логирование headers — текущая известная проблема; не копировать private
 source/журнал с credentials в Git. Санитизированный механизм и исходныйSHA — в ops JSON.

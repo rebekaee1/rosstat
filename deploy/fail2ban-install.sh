@@ -20,6 +20,8 @@ chown 101:101 /var/log/rosstat-nginx
 
 echo "==> конфиги fail2ban"
 install -m 0644 deploy/fail2ban/jail.local /etc/fail2ban/jail.local
+# Журнал fail2ban только с Ban/Unban (NOTICE): на INFO он копил ~100 МБ/сутки.
+install -m 0644 deploy/fail2ban/fail2ban.local /etc/fail2ban/fail2ban.local
 install -m 0644 deploy/fail2ban/filter.d-nginx-429.conf /etc/fail2ban/filter.d/nginx-429.conf
 install -m 0644 deploy/fail2ban/filter.d-nginx-volume.conf /etc/fail2ban/filter.d/nginx-volume.conf
 install -m 0644 deploy/fail2ban/filter.d-honeytrap.conf /etc/fail2ban/filter.d/honeytrap.conf

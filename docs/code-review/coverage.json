@@ -19,14 +19,14 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2187,
-    "code_files": 1784,
-    "current_reviews": 2186,
+    "files": 2189,
+    "code_files": 1785,
+    "current_reviews": 2188,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 1976
+      "reviewed": 1978
     },
     "definitions": 14089,
     "annotated_definitions": 14089,
@@ -11320,9 +11320,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "95e548f70532280dd78428a03ff515f61ea659139aab5256d71b2cc367e4289d",
-      "bytes": 16467,
-      "lines": 148,
+      "sha256": "4b5a39f3e3ba703326972ee64a9dd58e6d5cf1f1882621ca5242a924ce29a8e9",
+      "bytes": 16806,
+      "lines": 149,
       "code": false,
       "status": "reviewed",
       "current": false,
@@ -11349,10 +11349,23 @@
     },
     {
       "path": "deploy/fail2ban-install.sh",
-      "sha256": "bb335d7a0a8b5de89b43cd1005212020346478df872dbbea654ed0844246d4ee",
-      "bytes": 2815,
-      "lines": 66,
+      "sha256": "2ee43268ca7d9bafa8b54e47a3e2ff10ecc66d36df380d5abd986a999aa06771",
+      "bytes": 2999,
+      "lines": 68,
       "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "deploy/fail2ban/fail2ban.local",
+      "sha256": "b618bb47f654280eee2ce8206e0ab2fe5883453c46271416e21571cdcbc69973",
+      "bytes": 630,
+      "lines": 8,
+      "code": false,
       "status": "reviewed",
       "current": true,
       "issues": [],
@@ -13520,9 +13533,9 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "b9c67f7850e4c3f10ef9ad28e720a2b0d164e50df1b0bb1ae643b01fcc60a233",
-      "bytes": 125568,
-      "lines": 640,
+      "sha256": "cb4d3387b99394260907cb0439b396e97499e45e8a09c9a01bdf4afee051b3f6",
+      "bytes": 127419,
+      "lines": 654,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -27560,9 +27573,9 @@
     },
     {
       "path": "scripts/docker-cleanup.sh",
-      "sha256": "c6e4d353407bbd4299fea72706673597ab7063ca437727ea60604ae0f6f4f862",
-      "bytes": 249,
-      "lines": 8,
+      "sha256": "5ed9d99b7bae9ecd0f27ec8f8a8e3da2ed506f4d1aa194c37320938fd7b6a4e3",
+      "bytes": 2830,
+      "lines": 46,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -27894,6 +27907,19 @@
       "issues": [],
       "definitions": 1,
       "annotated_definitions": 1,
+      "missing_definitions": []
+    },
+    {
+      "path": "scripts/install-host-disk-hygiene.sh",
+      "sha256": "1e00fe7cf821450f3f16d11c606037480fd15f0ecf08b9f3e98a63b4b5ea2cd5",
+      "bytes": 2412,
+      "lines": 44,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
@@ -28470,9 +28496,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "88dbec492a8ccb77dba28fec3c77bc86632c44bf5de33e97dbb9376d642783aa",
+  "ledger_sha256": "304cd2d832b5818321c4ba04a134a677f815a929158a5cdf36f5a3af90eec01c",
   "javascript_inventory_sha256": "cd87b0fce4beece7031dc0c45a8ce672a8a50534facd2b34d4ecc9306f4b0069",
-  "baseline_commit": "5340f32ddf7c2548ddbf294543b271a25de73765",
-  "branch": "main",
-  "unstaged_at_capture": []
+  "baseline_commit": "9b99a904744d49527e35651262cf94a606193a59",
+  "branch": "worktree-agent-a9576dac2c58d2b54",
+  "unstaged_at_capture": [
+    "deploy/fail2ban-install.sh",
+    "docs/workflow.md",
+    "scripts/docker-cleanup.sh"
+  ]
 }
