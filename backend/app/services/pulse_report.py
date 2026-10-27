@@ -38,6 +38,43 @@ from app.services.telegram_bot import main_menu_keyboard, send_message
 
 logger = logging.getLogger(__name__)
 
+# Telegram parse_mode=HTML принимает только свои теги; всё прочее (в том числе «<» из
+# текста LLM, например «норма < 2500 мс») обязано быть экранировано, иначе Bot API
+# отвечает HTTP 400 «can't parse entities» и дайджест не уходит (2026-10-17: два адресата).
+_TG_ALLOWED_TAG_RE = re.compile(
+    r"</?(?:b|i|u|s|code|pre|blockquote|tg-spoiler)(?:\s[^<>]*)?>|<a\s[^<>]*>|</a>",
+    re.IGNORECASE,
+)
+_HTML_ENTITY_RE = re.compile(r"&(?:#\d+|#[xX][0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);")
+
+
+def _escape_text_run(text: str) -> str:
+    """Экранирует «<», «>», «&» в обычном тексте, существующие сущности («&amp;») не трогает."""
+    out: list[str] = []
+    pos = 0
+    for m in _HTML_ENTITY_RE.finditer(text):
+        out.append(_escape_plain(text[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(_escape_plain(text[pos:]))
+    return "".join(out)
+
+
+def _escape_plain(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def sanitize_llm_html(text: str) -> str:
+    """Оставляет разрешённые Telegram-теги, остальной текст экранирует для parse_mode=HTML."""
+    out: list[str] = []
+    pos = 0
+    for m in _TG_ALLOWED_TAG_RE.finditer(text):
+        out.append(_escape_text_run(text[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(_escape_text_run(text[pos:]))
+    return "".join(out)
+
 _OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 _SYSTEM_PROMPT = """Ты — аналитик forecasteconomy.com (экономическая статистика России). Раз в
@@ -426,7 +463,7 @@ async def send_pulse_report(report_date: date | None = None) -> bool:
     # Н-22: fallback без пометки маскировал недоступность LLM — владелец
     # читал детерминированную сводку, думая, что это аналитик (и гипотезы
     # молча не обновлялись).
-    body = summary or (
+    body = sanitize_llm_html(summary) if summary else (
         "⚠️ <i>LLM-аналитик недоступен — детерминированная сводка без гипотез.</i>\n\n"
         + _fallback_summary(snapshot)
     )
