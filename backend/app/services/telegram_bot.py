@@ -26,7 +26,7 @@ import logging
 import re
 from contextvars import ContextVar
 from datetime import date, datetime, timezone
-from html import escape
+from html import escape, unescape
 
 import httpx
 from sqlalchemy import func, select
@@ -154,6 +154,15 @@ async def send_message(
         )
         _last_api_error.set(None)
         data = await _api("sendMessage", payload)
+        if data is None and _PARSE_ENTITIES_ERROR in (_last_api_error.get() or ""):
+            # Telegram отверг разметку целиком (400 «can't parse entities»: «сырой» «<» или
+            # незакрытый тег в тексте, например из LLM-сводки). Повтор без parse_mode, без тегов —
+            # отчёт доходит, а не теряется (см. telegram_outbox: pulse_digest 17.10, 27.10).
+            logger.warning("Telegram sendMessage: HTML не разобран, повтор текстом (kind=%s)", kind)
+            plain: dict = {"chat_id": chat_id, "text": _plain_fallback(chunk)}
+            if "reply_markup" in payload:
+                plain["reply_markup"] = payload["reply_markup"]
+            data = await _api("sendMessage", plain)
         await archive_finish(
             row_id, ok=data is not None,
             telegram_message_id=(data or {}).get("result", {}).get("message_id"),
@@ -161,6 +170,16 @@ async def send_message(
         )
         ok_any = ok_any or data is not None
     return ok_any
+
+
+_PARSE_ENTITIES_ERROR = "can't parse entities"
+# Только настоящие теги (буква сразу после «<»): «норма < 2500» тегом не считается.
+_HTML_TAG_RE = re.compile(r"</?[a-zA-Z][^<>]*>")
+
+
+def _plain_fallback(chunk: str) -> str:
+    """Текст для повторной отправки без разметки: теги убираем, сущности раскрываем."""
+    return unescape(_HTML_TAG_RE.sub("", chunk))
 
 
 async def send_document(
