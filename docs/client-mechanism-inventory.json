@@ -47391,7 +47391,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetLabels.jsx": {
-      "sha256": "f28df27ce34b5f1b38c8e04492e6464ce16629148797780c61b84909ab8c4b87",
+      "sha256": "7f59719f2dcd8ac5f063723901138544a5f9444266acf333f44538fa5183c998",
       "imports": [
         {
           "line": 1,
@@ -47536,7 +47536,7 @@
         },
         {
           "line": 176,
-          "end_line": 270,
+          "end_line": 277,
           "owner": "<module>",
           "name": "PlanetLabels",
           "kind": "FunctionDeclaration",
@@ -47608,7 +47608,7 @@
         },
         {
           "line": 205,
-          "end_line": 267,
+          "end_line": 274,
           "owner": "PlanetLabels",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -47623,8 +47623,16 @@
           "callback_context": "current.items.map"
         },
         {
-          "line": 252,
-          "end_line": 263,
+          "line": 254,
+          "end_line": 254,
+          "owner": "PlanetLabels.<callback@205>",
+          "name": "snap",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 255,
+          "end_line": 270,
           "owner": "PlanetLabels.<callback@205>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -47710,11 +47718,11 @@
         },
         {
           "line": 205,
-          "end_line": 267,
+          "end_line": 274,
           "owner": "PlanetLabels",
           "callee": "useFrame",
           "arguments": [
-            "() => {\n    const current = activeResources.current;\n    if (!current || !size.height) return;\n    const compactLayout = compact || size.width < 600;\n    const fontPixels = compactLayout ? 13 : 14.5;\n    const fontScale = fontPixels / current.fontPixels;\n    const halfFrustum = Math.tan(camera.fov * Math.PI / 360);\n    const selectedKey = normalizePlanetCountryCode(selectedCode);\n    const hoverKey = normalizePlanetCountryCode(hoverCode);\n    const candidates = current.items.map((label) => {\n      // The value is printed only for the selected (or hovered) country; every other name stands alone.\n      const full = showValues && label.valueLines.length > 0 && (label.code === selectedKey || label.code === hoverKey);\n      scratch.point.set(...label.position);\n      scratch.normal.copy(scratch.point).normalize();\n      scratch.eye.copy(camera.position).sub(scratch.point).normalize();\n      const facing = scratch.normal.dot(scratch.eye);\n      scratch.projected.copy(scratch.point).project(camera);\n      scratch.local.copy(scratch.point).applyMatrix4(camera.matrixWorldInverse);\n      return {\n        ...label,\n        x: (scratch.projected.x + 1) * size.width / 2,\n        y: (1 - scratch.projected.y) * size.height / 2,\n        depth: scratch.projected.z,\n        facing,\n        worldPerPixel: 2 * halfFrustum * -scratch.local.z / size.height,\n        full,\n        width: (full ? label.width : label.nameWidth) * fontScale,\n        height: (full ? label.height : label.nameHeight) * fontScale,\n      };\n    });\n    const keepOut = overlayKeepOut(gl?.domElement);\n    scratch.projected.set(0, 0, 0).project(camera);\n    const globe = {\n      x: (scratch.projected.x + 1) * size.width / 2,\n      y: (1 - scratch.projected.y) * size.height / 2,\n      radius: size.height / (2 * halfFrustum * Math.sqrt(Math.max(0.0001, camera.position.lengthSq() - 1))),\n    };\n    const visible = layoutPlanetLabels(candidates, {\n      width: size.width, height: size.height,\n      cameraDistance: camera.position.length(), selectedCode, hoverCode,\n      maxVisible: compactLayout ? 8 : MAX_LABELS,\n      selectionOnly,\n      centered: true,\n      globe,\n      keepOut,\n    });\n    current.mesh.count = visible.length;\n    visible.forEach((label, index) => {\n      // Move the camera-facing quad upward in screen space, clear of the marker.\n      scratch.point.set(...label.position).applyMatrix4(camera.matrixWorldInverse);\n      scratch.point.y += (label.y - label.labelY) * label.worldPerPixel;\n      scratch.point.x += (label.labelX - label.x) * label.worldPerPixel;\n      scratch.point.applyMatrix4(camera.matrixWorld);\n      scratch.matrix.makeScale(label.width * label.worldPerPixel, label.height * label.worldPerPixel, 1);\n      scratch.matrix.setPosition(scratch.point);\n      current.mesh.setMatrixAt(index, scratch.matrix);\n      current.uv.setXYZW(index, ...(label.full ? label.uv : label.uvName));\n      current.active.setX(index, label.active);\n    });\n    current.mesh.instanceMatrix.needsUpdate = true;\n    current.uv.needsUpdate = true;\n    current.active.needsUpdate = true;\n  }"
+            "() => {\n    const current = activeResources.current;\n    if (!current || !size.height) return;\n    const compactLayout = compact || size.width < 600;\n    const fontPixels = compactLayout ? 15.5 : 14.5;\n    const fontScale = fontPixels / current.fontPixels;\n    const halfFrustum = Math.tan(camera.fov * Math.PI / 360);\n    const selectedKey = normalizePlanetCountryCode(selectedCode);\n    const hoverKey = normalizePlanetCountryCode(hoverCode);\n    const candidates = current.items.map((label) => {\n      // The value is printed only for the selected (or hovered) country; every other name stands alone.\n      const full = showValues && label.valueLines.length > 0 && (label.code === selectedKey || label.code === hoverKey);\n      scratch.point.set(...label.position);\n      scratch.normal.copy(scratch.point).normalize();\n      scratch.eye.copy(camera.position).sub(scratch.point).normalize();\n      const facing = scratch.normal.dot(scratch.eye);\n      scratch.projected.copy(scratch.point).project(camera);\n      scratch.local.copy(scratch.point).applyMatrix4(camera.matrixWorldInverse);\n      return {\n        ...label,\n        x: (scratch.projected.x + 1) * size.width / 2,\n        y: (1 - scratch.projected.y) * size.height / 2,\n        depth: scratch.projected.z,\n        facing,\n        worldPerPixel: 2 * halfFrustum * -scratch.local.z / size.height,\n        full,\n        width: (full ? label.width : label.nameWidth) * fontScale,\n        height: (full ? label.height : label.nameHeight) * fontScale,\n      };\n    });\n    const keepOut = overlayKeepOut(gl?.domElement);\n    scratch.projected.set(0, 0, 0).project(camera);\n    const globe = {\n      x: (scratch.projected.x + 1) * size.width / 2,\n      y: (1 - scratch.projected.y) * size.height / 2,\n      radius: size.height / (2 * halfFrustum * Math.sqrt(Math.max(0.0001, camera.position.lengthSq() - 1))),\n    };\n    const visible = layoutPlanetLabels(candidates, {\n      width: size.width, height: size.height,\n      cameraDistance: camera.position.length(), selectedCode, hoverCode,\n      maxVisible: compactLayout ? 10 : MAX_LABELS,\n      selectionOnly,\n      centered: true,\n      globe,\n      keepOut,\n    });\n    current.mesh.count = visible.length;\n    // Подпись ложится углами ровно на физические пиксели экрана: между пикселями буквы размываются, даже когда холст рисуется в полную плотность.\n    const pixelRatio = Math.max(1, gl?.getPixelRatio?.() || 1);\n    const snap = (value) => Math.round(value * pixelRatio) / pixelRatio;\n    visible.forEach((label, index) => {\n      const width = Math.max(1 / pixelRatio, snap(label.width));\n      const height = Math.max(1 / pixelRatio, snap(label.height));\n      const labelX = snap(label.labelX - width / 2) + width / 2;\n      const labelY = snap(label.labelY - height / 2) + height / 2;\n      // Move the camera-facing quad upward in screen space, clear of the marker.\n      scratch.point.set(...label.position).applyMatrix4(camera.matrixWorldInverse);\n      scratch.point.y += (label.y - labelY) * label.worldPerPixel;\n      scratch.point.x += (labelX - label.x) * label.worldPerPixel;\n      scratch.point.applyMatrix4(camera.matrixWorld);\n      scratch.matrix.makeScale(width * label.worldPerPixel, height * label.worldPerPixel, 1);\n      scratch.matrix.setPosition(scratch.point);\n      current.mesh.setMatrixAt(index, scratch.matrix);\n      current.uv.setXYZW(index, ...(label.full ? label.uv : label.uvName));\n      current.active.setX(index, label.active);\n    });\n    current.mesh.instanceMatrix.needsUpdate = true;\n    current.uv.needsUpdate = true;\n    current.active.needsUpdate = true;\n  }"
           ]
         }
       ],
@@ -50248,7 +50256,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetView.component.test.jsx": {
-      "sha256": "11b2f523bb8abc5b6ea3ff64b4730ddb6d348813c52a69249e6b6256929b141d",
+      "sha256": "e9db9c434820ad8c1cdd901329490829d0dbc25edb880a8802344c4bf5a61dcd",
       "imports": [
         {
           "line": 1,
@@ -52224,7 +52232,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetView.jsx": {
-      "sha256": "fa86a96987276e722203b635c6f6a2d1878707309a2f67b99a4ac6f786b3d93a",
+      "sha256": "3d7765084b3196b7005815ab7d1eb46ec7ab4068c304b14d370df26ee127e86c",
       "imports": [
         {
           "line": 1,
@@ -101789,7 +101797,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "00a436635a91b2f43c290c2f1a44ee6505dc799b21f6858cb4825b906ba57802",
+      "sha256": "42a8cad7432485e4e963af205f787cd95c9ce4557315a16d56a1bfd24af0bd8d",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -141443,7 +141451,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/planetNavigation.js": {
-      "sha256": "9b3ecf18d89651a79bd292e9f76b5df0369ceae4af0821e05d495e119ff69d4a",
+      "sha256": "89fc1b9c833852d8f607cd823176018bb1d794ec249349c30e5f139f1e0da69c",
       "imports": [],
       "routes": [],
       "functions": [
@@ -141456,56 +141464,56 @@
           "callback_context": null
         },
         {
-          "line": 13,
-          "end_line": 20,
+          "line": 17,
+          "end_line": 24,
           "owner": "<module>",
           "name": "planetRenderBudget",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 22,
-          "end_line": 24,
+          "line": 26,
+          "end_line": 28,
           "owner": "<module>",
           "name": "createPlanetPointerState",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 26,
-          "end_line": 29,
+          "line": 30,
+          "end_line": 33,
           "owner": "<module>",
           "name": "validPointer",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 32,
-          "end_line": 45,
+          "line": 36,
+          "end_line": 49,
           "owner": "<module>",
           "name": "beginPlanetPointer",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 48,
-          "end_line": 52,
+          "line": 52,
+          "end_line": 56,
           "owner": "<module>",
           "name": "movePlanetPointer",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 54,
-          "end_line": 68,
+          "line": 58,
+          "end_line": 72,
           "owner": "<module>",
           "name": "endPlanetPointer",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 59,
-          "end_line": 59,
+          "line": 63,
+          "end_line": 63,
           "owner": "endPlanetPointer",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -141521,7 +141529,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/planetNavigation.test.js": {
-      "sha256": "7880bec0f8ab83579781ea8c427a1f7e5483ce81c7437e6038cc36e691c98c12",
+      "sha256": "475ab44b9909f8b0d47a0227eb2e3e432e6a4a39dfb3b2f8f851a23d8bfeecfa",
       "imports": [
         {
           "line": 1,
@@ -198825,7 +198833,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Dashboard.component.test.jsx": {
-      "sha256": "98348bfa766427391400cd8952147f6d2a63fa657a7ab5ad0afd76471b4d8c5b",
+      "sha256": "5b497b195f8fe75c66a2a96f5785e6835bee0c62c3b17d696d88aceb51af5e8b",
       "imports": [
         {
           "line": 1,
@@ -239934,7 +239942,7 @@
   "totals": {
     "imports": 4457,
     "routes": 94,
-    "functions": 14408,
+    "functions": 14409,
     "hooks": 2662,
     "http": 114,
     "storage": 218,

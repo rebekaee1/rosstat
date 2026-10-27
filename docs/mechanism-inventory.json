@@ -335,8 +335,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "sha256": "7062cb38b09f884e959278fcab6da326f409f95bdcd9bc1e5cbc7eb1fae99d4e",
-      "lines": 974
+      "sha256": "1499116d784d22b61ae78a4ed7fe4ec48b9662dddb8bdbaa0c0d367a986e2347",
+      "lines": 1028
     },
     {
       "path": "backend/app/api/session_replay.py",
@@ -370,8 +370,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "c21655a0aad16587cfe06e5d87cb5a88e6f9c2dd35d997c11f9583968b797915",
-      "lines": 542
+      "sha256": "a077f4bfa291b2405ce640dcc49a887d2ac9d308e80f9dbfb27e3dcc2e080ef6",
+      "lines": 546
     },
     {
       "path": "backend/app/core/__init__.py",
@@ -675,7 +675,7 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "28a14c64bef5d0e346805486ed530267c3ac5796f38d3814add2b238f10f2ba0",
+      "sha256": "db6ee447cfd987019c4449a01c4a2a527779c30623f077b6ed935ac5f1a490ed",
       "lines": 1884
     },
     {
@@ -735,8 +735,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "sha256": "c59879cfd4ae93e2df1466d83a221a03bc9e655326357c272d1239cc61de0e15",
-      "lines": 480
+      "sha256": "aecdf5a69298fb84a267006410e81be6ce6e0443d8bbfe18c178a830a69e87ca",
+      "lines": 498
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -1315,8 +1315,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "sha256": "a6d76682169ddf5004a4341a2789b37d0d9d12fdeb11e7ca41f7a356ac3d5540",
-      "lines": 476
+      "sha256": "4b1a0097a5e4363d215367cf88a6405a28562a48b104d478329ec083cf799bb4",
+      "lines": 513
     },
     {
       "path": "backend/app/services/region_compare_data.py",
@@ -1355,8 +1355,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "sha256": "5bb8d53eb2c6421ab873ba4717bbb60b9b48c9d7ae67c96fee48ddd51601f075",
-      "lines": 289
+      "sha256": "c7f78ccd9d1c2302b41c367c944ec14a065cf00638a53220880cc41985dbdb64",
+      "lines": 295
     },
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
@@ -1385,8 +1385,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "sha256": "4e90fe179ecdb1c87e547ad11c1ff43c49a5be0465ace842792a14df12c5288b",
-      "lines": 320
+      "sha256": "9561bf555f6dca80f1cbc116657f024554a51caca9061697ed8871239474f8cd",
+      "lines": 349
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
@@ -1630,13 +1630,13 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "sha256": "ae638f308d798673374d3f508859f9adbf30703603ad9728f8c1b1366154e85a",
-      "lines": 343
+      "sha256": "db2eccb5d31eb973969d2b2bfb1c78d967e05f40c2b67261fd10a12e5604269d",
+      "lines": 348
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "46f220b9eb479a8a0bb86cfbcfae0270dea644fc437082bc49fc27c264217ef7",
-      "lines": 473
+      "sha256": "11c75ac38c29f5ebf65f6cf3dc8c75259590c51ff7581ca659a45f186dcba537",
+      "lines": 492
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
@@ -1725,8 +1725,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "sha256": "d176ef600b8879ec9624d5d826b036986106e1daba94aac68afe37f39fa779f6",
-      "lines": 249
+      "sha256": "a0047375e5d894d237917c08d8fab3f23bc4ce387241bdb5066c4f277c4b7120",
+      "lines": 255
     },
     {
       "path": "backend/app/services/world_adapters/__init__.py",
@@ -6741,8 +6741,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 95,
-      "end_line": 95,
+      "line": 96,
+      "end_line": 96,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.api.seo_pages.router",
@@ -10674,8 +10674,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 405,
+      "end_line": 405,
       "owner": "seo_not_found",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_not_found",
@@ -10690,8 +10690,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 352,
-      "handler_end_line": 362,
+      "handler_line": 406,
+      "handler_end_line": 416,
       "parameters": [
         {
           "name": "request",
@@ -10703,8 +10703,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 419,
+      "end_line": 419,
       "owner": "seo_home",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_home",
@@ -10719,8 +10719,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 366,
-      "handler_end_line": 374,
+      "handler_line": 420,
+      "handler_end_line": 428,
       "parameters": [
         {
           "name": "request",
@@ -10737,8 +10737,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 431,
+      "end_line": 431,
       "owner": "seo_forecasts",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_forecasts",
@@ -10753,8 +10753,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 378,
-      "handler_end_line": 388,
+      "handler_line": 432,
+      "handler_end_line": 442,
       "parameters": [
         {
           "name": "request",
@@ -10771,8 +10771,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 445,
+      "end_line": 445,
       "owner": "seo_page",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_page",
@@ -10787,8 +10787,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 392,
-      "handler_end_line": 398,
+      "handler_line": 446,
+      "handler_end_line": 452,
       "parameters": [
         {
           "name": "page",
@@ -10810,8 +10810,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 455,
+      "end_line": 455,
       "owner": "seo_categories_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_categories_hub",
@@ -10826,8 +10826,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 402,
-      "handler_end_line": 404,
+      "handler_line": 456,
+      "handler_end_line": 458,
       "parameters": [
         {
           "name": "request",
@@ -10844,8 +10844,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 461,
+      "end_line": 461,
       "owner": "seo_category",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_category",
@@ -10860,8 +10860,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 408,
-      "handler_end_line": 413,
+      "handler_line": 462,
+      "handler_end_line": 467,
       "parameters": [
         {
           "name": "slug",
@@ -10883,8 +10883,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 416,
-      "end_line": 416,
+      "line": 470,
+      "end_line": 470,
       "owner": "seo_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator",
@@ -10899,8 +10899,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 417,
-      "handler_end_line": 445,
+      "handler_line": 471,
+      "handler_end_line": 499,
       "parameters": [
         {
           "name": "code",
@@ -10927,8 +10927,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 502,
+      "end_line": 502,
       "owner": "seo_regions",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_regions",
@@ -10943,8 +10943,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 449,
-      "handler_end_line": 461,
+      "handler_line": 503,
+      "handler_end_line": 515,
       "parameters": [
         {
           "name": "request",
@@ -10961,8 +10961,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 518,
+      "end_line": 518,
       "owner": "seo_regions_map",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_regions_map",
@@ -10977,8 +10977,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 465,
-      "handler_end_line": 473,
+      "handler_line": 519,
+      "handler_end_line": 527,
       "parameters": [
         {
           "name": "code",
@@ -11000,8 +11000,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 545,
+      "end_line": 545,
       "owner": "seo_region",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region",
@@ -11016,8 +11016,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 492,
-      "handler_end_line": 502,
+      "handler_line": 546,
+      "handler_end_line": 556,
       "parameters": [
         {
           "name": "slug",
@@ -11039,8 +11039,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 559,
+      "end_line": 559,
       "owner": "seo_region_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_indicator",
@@ -11055,8 +11055,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 506,
-      "handler_end_line": 518,
+      "handler_line": 560,
+      "handler_end_line": 572,
       "parameters": [
         {
           "name": "slug",
@@ -11083,8 +11083,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 575,
+      "end_line": 575,
       "owner": "seo_region_ratings_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_ratings_hub",
@@ -11099,8 +11099,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 522,
-      "handler_end_line": 528,
+      "handler_line": 576,
+      "handler_end_line": 582,
       "parameters": [
         {
           "name": "request",
@@ -11117,8 +11117,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 585,
+      "end_line": 585,
       "owner": "seo_region_rating",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_rating",
@@ -11133,8 +11133,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 532,
-      "handler_end_line": 538,
+      "handler_line": 586,
+      "handler_end_line": 592,
       "parameters": [
         {
           "name": "code",
@@ -11156,8 +11156,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 541,
-      "end_line": 541,
+      "line": 595,
+      "end_line": 595,
       "owner": "seo_region_vs",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_vs",
@@ -11172,8 +11172,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 542,
-      "handler_end_line": 550,
+      "handler_line": 596,
+      "handler_end_line": 604,
       "parameters": [
         {
           "name": "slug_a",
@@ -11200,8 +11200,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 607,
+      "end_line": 607,
       "owner": "seo_today_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_today_hub",
@@ -11216,8 +11216,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 554,
-      "handler_end_line": 556,
+      "handler_line": 608,
+      "handler_end_line": 610,
       "parameters": [
         {
           "name": "request",
@@ -11234,8 +11234,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 613,
+      "end_line": 613,
       "owner": "seo_today_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_today_indicator",
@@ -11250,8 +11250,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 560,
-      "handler_end_line": 568,
+      "handler_line": 614,
+      "handler_end_line": 622,
       "parameters": [
         {
           "name": "code",
@@ -11273,8 +11273,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 571,
-      "end_line": 571,
+      "line": 625,
+      "end_line": 625,
       "owner": "seo_calendar_month",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_calendar_month",
@@ -11289,8 +11289,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 572,
-      "handler_end_line": 576,
+      "handler_line": 626,
+      "handler_end_line": 630,
       "parameters": [
         {
           "name": "year",
@@ -11317,8 +11317,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 633,
+      "end_line": 633,
       "owner": "seo_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator_year",
@@ -11333,8 +11333,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 580,
-      "handler_end_line": 623,
+      "handler_line": 634,
+      "handler_end_line": 677,
       "parameters": [
         {
           "name": "code",
@@ -11366,8 +11366,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 626,
-      "end_line": 629,
+      "line": 680,
+      "end_line": 683,
       "owner": "seo_indicator_month",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator_month",
@@ -11382,8 +11382,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 630,
-      "handler_end_line": 645,
+      "handler_line": 684,
+      "handler_end_line": 699,
       "parameters": [
         {
           "name": "code",
@@ -11410,8 +11410,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 648,
-      "end_line": 648,
+      "line": 702,
+      "end_line": 702,
       "owner": "seo_world_home",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_home",
@@ -11426,8 +11426,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 649,
-      "handler_end_line": 655,
+      "handler_line": 703,
+      "handler_end_line": 709,
       "parameters": [
         {
           "name": "request",
@@ -11439,8 +11439,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 712,
+      "end_line": 712,
       "owner": "seo_world_rating_default",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating_default",
@@ -11455,8 +11455,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 659,
-      "handler_end_line": 660,
+      "handler_line": 713,
+      "handler_end_line": 714,
       "parameters": [
         {
           "name": "request",
@@ -11468,8 +11468,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 732,
+      "end_line": 732,
       "owner": "seo_world_rating",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating",
@@ -11484,8 +11484,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 679,
-      "handler_end_line": 713,
+      "handler_line": 733,
+      "handler_end_line": 767,
       "parameters": [
         {
           "name": "concept_slug",
@@ -11507,8 +11507,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 716,
-      "end_line": 719,
+      "line": 770,
+      "end_line": 773,
       "owner": "seo_world_rating_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating_year",
@@ -11523,8 +11523,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 720,
-      "handler_end_line": 739,
+      "handler_line": 774,
+      "handler_end_line": 793,
       "parameters": [
         {
           "name": "concept_slug",
@@ -11551,8 +11551,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 742,
-      "end_line": 742,
+      "line": 796,
+      "end_line": 796,
       "owner": "seo_world_subnational_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_hub",
@@ -11567,8 +11567,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 743,
-      "handler_end_line": 751,
+      "handler_line": 797,
+      "handler_end_line": 805,
       "parameters": [
         {
           "name": "slug",
@@ -11590,8 +11590,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 754,
-      "end_line": 757,
+      "line": 808,
+      "end_line": 811,
       "owner": "seo_world_subnational_compare",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_compare",
@@ -11606,8 +11606,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 758,
-      "handler_end_line": 773,
+      "handler_line": 812,
+      "handler_end_line": 827,
       "parameters": [
         {
           "name": "slug",
@@ -11639,8 +11639,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 776,
-      "end_line": 779,
+      "line": 830,
+      "end_line": 833,
       "owner": "seo_world_subnational_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_indicator_year",
@@ -11655,8 +11655,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 780,
-      "handler_end_line": 793,
+      "handler_line": 834,
+      "handler_end_line": 847,
       "parameters": [
         {
           "name": "slug",
@@ -11693,8 +11693,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 796,
-      "end_line": 799,
+      "line": 850,
+      "end_line": 853,
       "owner": "seo_world_subnational_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_indicator",
@@ -11709,8 +11709,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 800,
-      "handler_end_line": 811,
+      "handler_line": 854,
+      "handler_end_line": 865,
       "parameters": [
         {
           "name": "slug",
@@ -11742,8 +11742,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 814,
-      "end_line": 817,
+      "line": 868,
+      "end_line": 871,
       "owner": "seo_world_subnational_region",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_region",
@@ -11758,8 +11758,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 818,
-      "handler_end_line": 826,
+      "handler_line": 872,
+      "handler_end_line": 880,
       "parameters": [
         {
           "name": "slug",
@@ -11786,8 +11786,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 829,
-      "end_line": 829,
+      "line": 883,
+      "end_line": 883,
       "owner": "seo_world_country",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_country",
@@ -11802,8 +11802,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 830,
-      "handler_end_line": 840,
+      "handler_line": 884,
+      "handler_end_line": 894,
       "parameters": [
         {
           "name": "slug",
@@ -11825,8 +11825,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 843,
-      "end_line": 843,
+      "line": 897,
+      "end_line": 897,
       "owner": "seo_world_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_indicator",
@@ -11841,8 +11841,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 844,
-      "handler_end_line": 878,
+      "handler_line": 898,
+      "handler_end_line": 932,
       "parameters": [
         {
           "name": "slug",
@@ -11869,8 +11869,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 881,
-      "end_line": 884,
+      "line": 935,
+      "end_line": 938,
       "owner": "seo_world_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_indicator_year",
@@ -11885,8 +11885,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 885,
-      "handler_end_line": 914,
+      "handler_line": 939,
+      "handler_end_line": 968,
       "parameters": [
         {
           "name": "slug",
@@ -11918,8 +11918,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 971,
+      "end_line": 971,
       "owner": "seo_world_vs",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_vs",
@@ -11934,8 +11934,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 918,
-      "handler_end_line": 950,
+      "handler_line": 972,
+      "handler_end_line": 1004,
       "parameters": [
         {
           "name": "pair",
@@ -11962,8 +11962,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 953,
-      "end_line": 956,
+      "line": 1007,
+      "end_line": 1010,
       "owner": "seo_region_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_indicator_year",
@@ -11978,8 +11978,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 957,
-      "handler_end_line": 974,
+      "handler_line": 1011,
+      "handler_end_line": 1028,
       "parameters": [
         {
           "name": "slug",
@@ -29934,6 +29934,17 @@
       "end_line": 245,
       "owner": "Settings",
       "conditions": [],
+      "name": "ssr_render_queue_timeout_seconds",
+      "env_name": "RUSTATS_SSR_RENDER_QUEUE_TIMEOUT_SECONDS",
+      "annotation": "float",
+      "default": "22.0"
+    },
+    {
+      "path": "backend/app/config.py",
+      "line": 249,
+      "end_line": 249,
+      "owner": "Settings",
+      "conditions": [],
       "name": "ssr_swr_base_url",
       "env_name": "RUSTATS_SSR_SWR_BASE_URL",
       "annotation": "str",
@@ -29941,8 +29952,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 250,
+      "end_line": 250,
       "owner": "Settings",
       "conditions": [],
       "name": "ssr_swr_token",
@@ -29952,8 +29963,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 256,
+      "end_line": 256,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_enabled",
@@ -29963,8 +29974,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 253,
-      "end_line": 253,
+      "line": 257,
+      "end_line": 257,
       "owner": "Settings",
       "conditions": [],
       "name": "world_listed_counts_max_age_seconds",
@@ -29974,8 +29985,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 261,
+      "end_line": 261,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_enabled",
@@ -29985,8 +29996,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 262,
+      "end_line": 262,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_key",
@@ -29996,8 +30007,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 263,
+      "end_line": 263,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_endpoint",
@@ -30007,8 +30018,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 265,
+      "end_line": 265,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_daily_send_cap",
@@ -30018,8 +30029,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 268,
+      "end_line": 268,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_daily_cap",
@@ -30029,8 +30040,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "Settings",
       "conditions": [],
       "name": "indexnow_history_year_min",
@@ -30040,8 +30051,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 273,
+      "end_line": 273,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_recrawl_enabled",
@@ -30051,8 +30062,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 276,
+      "end_line": 276,
       "owner": "Settings",
       "conditions": [],
       "name": "metrics_token",
@@ -30062,8 +30073,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 279,
-      "end_line": 279,
+      "line": 283,
+      "end_line": 283,
       "owner": "Settings",
       "conditions": [],
       "name": "frontend_events_enabled",
@@ -30073,8 +30084,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 289,
+      "end_line": 289,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_events_enabled",
@@ -30084,8 +30095,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 286,
-      "end_line": 286,
+      "line": 290,
+      "end_line": 290,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_batch_max_events",
@@ -30095,8 +30106,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 287,
-      "end_line": 287,
+      "line": 291,
+      "end_line": 291,
       "owner": "Settings",
       "conditions": [],
       "name": "behavior_raw_retention_days",
@@ -30106,8 +30117,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 296,
+      "end_line": 296,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_db_path",
@@ -30117,8 +30128,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 293,
-      "end_line": 295,
+      "line": 297,
+      "end_line": 299,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_download_url_template",
@@ -30128,8 +30139,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 296,
-      "end_line": 296,
+      "line": 300,
+      "end_line": 300,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_db_path",
@@ -30139,8 +30150,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 297,
-      "end_line": 299,
+      "line": 301,
+      "end_line": 303,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_asn_download_url_template",
@@ -30150,8 +30161,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 304,
+      "end_line": 304,
       "owner": "Settings",
       "conditions": [],
       "name": "geoip_auto_download",
@@ -30161,8 +30172,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 308,
+      "end_line": 308,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_enabled",
@@ -30172,8 +30183,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 309,
+      "end_line": 309,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_host",
@@ -30183,8 +30194,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 310,
+      "end_line": 310,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_port",
@@ -30194,8 +30205,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 307,
-      "end_line": 307,
+      "line": 311,
+      "end_line": 311,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_db",
@@ -30205,8 +30216,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 312,
+      "end_line": 312,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_user",
@@ -30216,8 +30227,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 313,
+      "end_line": 313,
       "owner": "Settings",
       "conditions": [],
       "name": "clickhouse_password",
@@ -30227,8 +30238,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 312,
-      "end_line": 312,
+      "line": 316,
+      "end_line": 316,
       "owner": "Settings",
       "conditions": [],
       "name": "direct_api_token",
@@ -30238,8 +30249,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 318,
+      "end_line": 318,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_id",
@@ -30249,8 +30260,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 315,
-      "end_line": 315,
+      "line": 319,
+      "end_line": 319,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_client_secret",
@@ -30260,8 +30271,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 320,
+      "end_line": 320,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_partner_token",
@@ -30271,8 +30282,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 323,
+      "end_line": 323,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_enabled",
@@ -30282,8 +30293,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 324,
+      "end_line": 324,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_enabled",
@@ -30293,8 +30304,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 325,
+      "end_line": 325,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_hour",
@@ -30304,8 +30315,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 326,
+      "end_line": 326,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_scheduler_cron_minute",
@@ -30315,8 +30326,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_api_token",
@@ -30326,8 +30337,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 330,
+      "end_line": 330,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_base_url",
@@ -30337,8 +30348,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 331,
+      "end_line": 331,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_counter_ids",
@@ -30348,8 +30359,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 332,
+      "end_line": 332,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_allowed_hosts",
@@ -30359,8 +30370,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 333,
+      "end_line": 333,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_default_retention_days",
@@ -30370,8 +30381,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 334,
+      "end_line": 334,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_raw_log_retention_days",
@@ -30381,8 +30392,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 331,
-      "end_line": 331,
+      "line": 335,
+      "end_line": 335,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_backfill_days",
@@ -30392,8 +30403,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 332,
-      "end_line": 332,
+      "line": 336,
+      "end_line": 336,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_request_timeout",
@@ -30403,8 +30414,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 333,
-      "end_line": 333,
+      "line": 337,
+      "end_line": 337,
       "owner": "Settings",
       "conditions": [],
       "name": "analytics_live_writes_enabled",
@@ -30414,8 +30425,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 339,
+      "end_line": 339,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_read_token",
@@ -30425,8 +30436,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 336,
-      "end_line": 336,
+      "line": 340,
+      "end_line": 340,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_metrika_write_token",
@@ -30436,8 +30447,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 341,
+      "end_line": 341,
       "owner": "Settings",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -30447,8 +30458,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 344,
+      "end_line": 344,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_session_ttl_seconds",
@@ -30458,8 +30469,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 345,
+      "end_line": 345,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_secure",
@@ -30469,8 +30480,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 342,
-      "end_line": 342,
+      "line": 346,
+      "end_line": 346,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_cookie_domain",
@@ -30480,8 +30491,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 343,
-      "end_line": 343,
+      "line": 347,
+      "end_line": 347,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_oauth_state_ttl_seconds",
@@ -30491,8 +30502,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 344,
-      "end_line": 344,
+      "line": 348,
+      "end_line": 348,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_max_fails",
@@ -30502,8 +30513,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 349,
+      "end_line": 349,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_login_lockout_seconds",
@@ -30513,8 +30524,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 351,
+      "end_line": 351,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_fake_provider_enabled",
@@ -30524,8 +30535,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 349,
-      "end_line": 349,
+      "line": 353,
+      "end_line": 353,
       "owner": "Settings",
       "conditions": [],
       "name": "auth_public_base_url",
@@ -30535,8 +30546,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 352,
-      "end_line": 352,
+      "line": 356,
+      "end_line": 356,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_id",
@@ -30546,8 +30557,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 353,
-      "end_line": 353,
+      "line": 357,
+      "end_line": 357,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_client_secret",
@@ -30557,8 +30568,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 354,
-      "end_line": 354,
+      "line": 358,
+      "end_line": 358,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_google_redirect_uri",
@@ -30568,8 +30579,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 361,
+      "end_line": 361,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_id",
@@ -30579,8 +30590,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 358,
-      "end_line": 358,
+      "line": 362,
+      "end_line": 362,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_client_secret",
@@ -30590,8 +30601,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 363,
+      "end_line": 363,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_scope",
@@ -30601,8 +30612,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 361,
-      "end_line": 361,
+      "line": 365,
+      "end_line": 365,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_id",
@@ -30612,8 +30623,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 362,
-      "end_line": 362,
+      "line": 366,
+      "end_line": 366,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_client_secret",
@@ -30623,8 +30634,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 363,
-      "end_line": 363,
+      "line": 367,
+      "end_line": 367,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_service_key",
@@ -30634,8 +30645,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 364,
-      "end_line": 364,
+      "line": 368,
+      "end_line": 368,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_scope",
@@ -30645,8 +30656,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 367,
-      "end_line": 367,
+      "line": 371,
+      "end_line": 371,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_yandex_redirect_uri",
@@ -30656,8 +30667,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 368,
-      "end_line": 368,
+      "line": 372,
+      "end_line": 372,
       "owner": "Settings",
       "conditions": [],
       "name": "oauth_vk_redirect_uri",
@@ -30667,8 +30678,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 375,
+      "end_line": 375,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_limit",
@@ -30678,8 +30689,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 376,
+      "end_line": 376,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_window_seconds",
@@ -30689,8 +30700,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 380,
+      "end_line": 380,
       "owner": "Settings",
       "conditions": [],
       "name": "download_anon_history_years",
@@ -30700,8 +30711,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 379,
-      "end_line": 379,
+      "line": 383,
+      "end_line": 383,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_enabled",
@@ -30711,8 +30722,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 384,
+      "end_line": 384,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_hour",
@@ -30722,8 +30733,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 381,
-      "end_line": 381,
+      "line": 385,
+      "end_line": 385,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_cron_minute",
@@ -30733,8 +30744,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 389,
+      "end_line": 389,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_chat_ids",
@@ -30744,8 +30755,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 388,
-      "end_line": 388,
+      "line": 392,
+      "end_line": 392,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_proxy_url",
@@ -30755,8 +30766,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 395,
+      "end_line": 395,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -30766,8 +30777,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 396,
-      "end_line": 396,
+      "line": 400,
+      "end_line": 400,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_digest_v2_enabled",
@@ -30777,8 +30788,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 404,
+      "end_line": 404,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_reports_chat_ids",
@@ -30788,8 +30799,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 402,
-      "end_line": 402,
+      "line": 406,
+      "end_line": 406,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_enabled",
@@ -30799,8 +30810,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 403,
-      "end_line": 403,
+      "line": 407,
+      "end_line": 407,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_hour",
@@ -30810,8 +30821,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 404,
-      "end_line": 404,
+      "line": 408,
+      "end_line": 408,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_weekly_cron_minute",
@@ -30821,8 +30832,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 411,
+      "end_line": 411,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_enabled",
@@ -30832,8 +30843,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 412,
+      "end_line": 412,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_hour",
@@ -30843,8 +30854,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 409,
-      "end_line": 409,
+      "line": 413,
+      "end_line": 413,
       "owner": "Settings",
       "conditions": [],
       "name": "seo_weekly_report_cron_minute",
@@ -30854,8 +30865,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 414,
+      "end_line": 414,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_enabled",
@@ -30865,8 +30876,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 411,
-      "end_line": 411,
+      "line": 415,
+      "end_line": 415,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_hour",
@@ -30876,8 +30887,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 416,
+      "end_line": 416,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_monthly_cron_minute",
@@ -30887,8 +30898,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 419,
+      "end_line": 419,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_new_alerts_enabled",
@@ -30898,8 +30909,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 419,
-      "end_line": 419,
+      "line": 423,
+      "end_line": 423,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_max_attempts",
@@ -30909,8 +30920,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 420,
-      "end_line": 420,
+      "line": 424,
+      "end_line": 424,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_base_seconds",
@@ -30920,8 +30931,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 421,
-      "end_line": 421,
+      "line": 425,
+      "end_line": 425,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_send_retry_budget_seconds",
@@ -30931,8 +30942,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 429,
+      "end_line": 429,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_enabled",
@@ -30942,8 +30953,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 430,
+      "end_line": 430,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_min_age_minutes",
@@ -30953,8 +30964,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 427,
-      "end_line": 427,
+      "line": 431,
+      "end_line": 431,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_window_hours",
@@ -30964,8 +30975,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 432,
+      "end_line": 432,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_per_run",
@@ -30975,8 +30986,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 429,
-      "end_line": 429,
+      "line": 433,
+      "end_line": 433,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_resend_max_tries",
@@ -30986,8 +30997,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 433,
-      "end_line": 433,
+      "line": 437,
+      "end_line": 437,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_enabled",
@@ -30997,8 +31008,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 434,
-      "end_line": 434,
+      "line": 438,
+      "end_line": 438,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -31008,8 +31019,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 439,
+      "end_line": 439,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_hour",
@@ -31019,8 +31030,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 436,
-      "end_line": 436,
+      "line": 440,
+      "end_line": 440,
       "owner": "Settings",
       "conditions": [],
       "name": "pulse_report_cron_minute",
@@ -31030,8 +31041,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 442,
+      "end_line": 442,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -31041,8 +31052,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 446,
+      "end_line": 446,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_enabled",
@@ -31052,8 +31063,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 447,
+      "end_line": 447,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_ai_enabled",
@@ -31063,8 +31074,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 444,
-      "end_line": 444,
+      "line": 448,
+      "end_line": 448,
       "owner": "Settings",
       "conditions": [],
       "name": "session_analysis_batch_size",
@@ -31074,8 +31085,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 445,
-      "end_line": 445,
+      "line": 449,
+      "end_line": 449,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_enabled",
@@ -31085,8 +31096,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 450,
+      "end_line": 450,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_retention_days",
@@ -31096,8 +31107,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 447,
-      "end_line": 447,
+      "line": 451,
+      "end_line": 451,
       "owner": "Settings",
       "conditions": [],
       "name": "session_replay_max_recording_bytes",
@@ -31107,8 +31118,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 452,
+      "end_line": 452,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_model",
@@ -31118,8 +31129,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 454,
-      "end_line": 454,
+      "line": 458,
+      "end_line": 458,
       "owner": "Settings",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -31129,8 +31140,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 462,
+      "end_line": 462,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -31140,8 +31151,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 465,
+      "end_line": 465,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -31151,8 +31162,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 469,
+      "end_line": 469,
       "owner": "Settings",
       "conditions": [],
       "name": "etl_job_max_seconds",
@@ -31162,8 +31173,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 474,
+      "end_line": 474,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_enabled",
@@ -31173,8 +31184,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 475,
+      "end_line": 475,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_min_stale",
@@ -31184,8 +31195,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 476,
+      "end_line": 476,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_hour",
@@ -31195,8 +31206,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 477,
+      "end_line": 477,
       "owner": "Settings",
       "conditions": [],
       "name": "freshness_watchdog_cron_minute",
@@ -31206,8 +31217,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 479,
+      "end_line": 479,
       "owner": "Settings",
       "conditions": [],
       "name": "telegram_poller_enabled",
@@ -31217,8 +31228,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 481,
-      "end_line": 481,
+      "line": 485,
+      "end_line": 485,
       "owner": "Settings",
       "conditions": [],
       "name": "api_interest_enabled",
@@ -31228,8 +31239,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 493,
+      "end_line": 493,
       "owner": "Settings",
       "conditions": [],
       "name": "cabinet_enabled",
@@ -31239,8 +31250,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 496,
-      "end_line": 496,
+      "line": 500,
+      "end_line": 500,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_enabled",
@@ -31250,8 +31261,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 497,
-      "end_line": 497,
+      "line": 501,
+      "end_line": 501,
       "owner": "Settings",
       "conditions": [],
       "name": "pwa_install_prompt_enabled",
@@ -31261,8 +31272,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 512,
+      "end_line": 512,
       "owner": "Settings",
       "conditions": [],
       "name": "push_subscribe_enabled",
@@ -31272,8 +31283,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 509,
-      "end_line": 509,
+      "line": 513,
+      "end_line": 513,
       "owner": "Settings",
       "conditions": [],
       "name": "push_send_enabled",
@@ -31283,8 +31294,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 514,
+      "end_line": 514,
       "owner": "Settings",
       "conditions": [],
       "name": "push_dry_run",
@@ -31294,8 +31305,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 515,
+      "end_line": 515,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_public_key",
@@ -31305,8 +31316,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 516,
+      "end_line": 516,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_private_key",
@@ -31316,8 +31327,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 513,
-      "end_line": 513,
+      "line": 517,
+      "end_line": 517,
       "owner": "Settings",
       "conditions": [],
       "name": "vapid_subject",
@@ -31327,8 +31338,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 521,
+      "end_line": 521,
       "owner": "Settings",
       "conditions": [],
       "name": "admin_emails",
@@ -31932,6 +31943,15 @@
       "expression": "settings.cache_ttl_data"
     },
     {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 180,
+      "end_line": 180,
+      "owner": "_acquire_render_slot",
+      "conditions": [],
+      "name": "ssr_render_queue_timeout_seconds",
+      "expression": "settings.ssr_render_queue_timeout_seconds"
+    },
+    {
       "path": "backend/app/api/session_replay.py",
       "line": 105,
       "end_line": 105,
@@ -32050,8 +32070,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 538,
+      "end_line": 538,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -32059,8 +32079,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 538,
+      "end_line": 538,
       "owner": "Settings.webmaster_host_id",
       "conditions": [],
       "name": "public_host",
@@ -32068,8 +32088,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 528,
+      "end_line": 528,
       "owner": "Settings.public_origin",
       "conditions": [],
       "name": "public_base_url",
@@ -32077,8 +32097,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 529,
-      "end_line": 529,
+      "line": 533,
+      "end_line": 533,
       "owner": "Settings.public_host",
       "conditions": [],
       "name": "public_base_url",
@@ -33842,8 +33862,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 199,
+      "end_line": 199,
       "owner": "digest_recipients",
       "conditions": [],
       "name": "telegram_chat_id",
@@ -33851,8 +33871,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 244,
+      "end_line": 244,
       "owner": "interactive_authorized_ids",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -33869,8 +33889,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 256,
+      "end_line": 256,
       "owner": "notify_new_user",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -33878,8 +33898,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 269,
-      "end_line": 269,
+      "line": 287,
+      "end_line": 287,
       "owner": "notify_login",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -33887,8 +33907,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 309,
+      "end_line": 309,
       "owner": "notify_feedback",
       "conditions": [],
       "name": "telegram_realtime_alerts_enabled",
@@ -33896,8 +33916,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 245,
+      "end_line": 245,
       "owner": "interactive_authorized_ids",
       "conditions": [
         "settings.pulse_chat_id"
@@ -33916,8 +33936,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 200,
+      "end_line": 200,
       "owner": "digest_recipients",
       "conditions": [],
       "name": "telegram_digest_chat_ids",
@@ -33925,8 +33945,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 198,
-      "end_line": 198,
+      "line": 216,
+      "end_line": 216,
       "owner": "report_recipients",
       "conditions": [],
       "name": "telegram_reports_chat_ids",
@@ -35070,8 +35090,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 262,
+      "end_line": 262,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -35079,8 +35099,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 271,
+      "end_line": 271,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_model",
@@ -35088,8 +35108,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 479,
+      "end_line": 479,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -35097,8 +35117,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 445,
+      "end_line": 445,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -35106,8 +35126,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 408,
-      "end_line": 408,
+      "line": 445,
+      "end_line": 445,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -35115,8 +35135,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 479,
+      "end_line": 479,
       "owner": "send_pulse_report",
       "conditions": [],
       "name": "pulse_chat_id",
@@ -35124,8 +35144,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 282,
+      "end_line": 282,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -35133,8 +35153,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 288,
+      "end_line": 288,
       "owner": "_llm_summary",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -35160,8 +35180,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 210,
+      "end_line": 210,
       "owner": "_download_latest_ind",
       "conditions": [],
       "name": "rosstat_ca_cert",
@@ -35189,8 +35209,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 229,
+      "end_line": 229,
       "owner": "fetch_rosstat_static_xlsx",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35198,8 +35218,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 84,
-      "end_line": 84,
+      "line": 93,
+      "end_line": 93,
       "owner": "list_mediabank_filenames_from_page",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35207,8 +35227,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 148,
+      "end_line": 148,
       "owner": "download_mediabank_bytes",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35216,8 +35236,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 264,
+      "end_line": 264,
       "owner": "fetch_rosstat_ipi_current",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35225,8 +35245,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 271,
-      "end_line": 271,
+      "line": 293,
+      "end_line": 293,
       "owner": "fetch_rosstat_okpopul",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35234,8 +35254,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 330,
+      "end_line": 330,
       "owner": "fetch_latest_socioeconomic_report_pdf",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35666,8 +35686,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 453,
-      "end_line": 453,
+      "line": 472,
+      "end_line": 472,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -35684,8 +35704,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 423,
-      "end_line": 423,
+      "line": 442,
+      "end_line": 442,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -35953,8 +35973,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 57,
+      "end_line": 57,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "name": "yandex_webmaster_token",
@@ -35962,8 +35982,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 62,
-      "end_line": 62,
+      "line": 63,
+      "end_line": 63,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "name": "analytics_live_writes_enabled",
@@ -35971,8 +35991,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 75,
+      "end_line": 75,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -38075,6 +38095,24 @@
       "symbol": "asyncio.ensure_future"
     },
     {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 56,
+      "end_line": 56,
+      "owner": "_escape_text_run",
+      "conditions": [],
+      "call": "m.start()",
+      "symbol": "app.services.pulse_report.m.start"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 72,
+      "end_line": 72,
+      "owner": "sanitize_llm_html",
+      "conditions": [],
+      "call": "m.start()",
+      "symbol": "app.services.pulse_report.m.start"
+    },
+    {
       "path": "backend/app/services/search_intent.py",
       "line": 286,
       "end_line": 286,
@@ -39489,8 +39527,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 163,
+      "end_line": 163,
       "owner": "<module>",
       "conditions": [],
       "name": "_RENDER_SEM",
@@ -76686,8 +76724,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 159,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "_DEVICE_RU",
@@ -76737,8 +76775,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 313,
-      "end_line": 321,
+      "line": 331,
+      "end_line": 339,
       "owner": "<module>",
       "conditions": [],
       "name": "API_INTEREST_USE_CASES",
@@ -76812,8 +76850,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 340,
+      "end_line": 340,
       "owner": "<module>",
       "conditions": [],
       "name": "_API_INTEREST_SOURCES",
@@ -76847,8 +76885,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 406,
-      "end_line": 410,
+      "line": 424,
+      "end_line": 428,
       "owner": "<module>",
       "conditions": [],
       "name": "_DEGRADED_LABELS",
@@ -87851,6 +87889,40 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 44,
+      "end_line": 47,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_TG_ALLOWED_TAG_RE",
+      "symbol": "app.services.pulse_report._TG_ALLOWED_TAG_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('</?(?:b|i|u|s|code|pre|blockquote|tg-spoiler)(?:\\\\s[^<>]*)?>|<a\\\\s[^<>]*>|</a>', re.IGNORECASE)",
+      "expression_truncated": false,
+      "expression_chars": 107,
+      "ast_sha256": "80202679bcb22d9314216c230c490dcc687e53190d857c589dc6d11c77397cff",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 48,
+      "end_line": 48,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HTML_ENTITY_RE",
+      "symbol": "app.services.pulse_report._HTML_ENTITY_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('&(?:#\\\\d+|#[xX][0-9a-fA-F]+|[A-Za-z][A-Za-z0-9]*);')",
+      "expression_truncated": false,
+      "expression_chars": 64,
+      "ast_sha256": "653a738502587df8fc993b2ecb72266c1c73ff15df63acd5be99cfb1c3c2b207",
+      "runtime_expansion": true
+    },
+    {
       "path": "backend/app/services/rosstat_cpi_parser.py",
       "line": 91,
       "end_line": 126,
@@ -88618,8 +88690,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 210,
-      "end_line": 215,
+      "line": 216,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "SHEET_MAP",
@@ -97842,7 +97914,7 @@
     {
       "path": "backend/app/services/staleness.py",
       "line": 37,
-      "end_line": 43,
+      "end_line": 48,
       "owner": "<module>",
       "conditions": [],
       "name": "STALENESS_SLA_DAYS",
@@ -97886,22 +97958,22 @@
         },
         {
           "key": "'annual'",
-          "expression": "550",
+          "expression": "930",
           "expression_truncated": false,
           "expression_chars": 3,
-          "ast_sha256": "bd509c60540488027d0e69a5333ced77a2cf9b38573d40a13af2854412c8eaec"
+          "ast_sha256": "143ae84b5095af2dd509c7ee61208e3959b378d579ef38df995b87027c62f321"
         }
       ],
-      "expression": "{'daily': 7, 'weekly': 21, 'monthly': 75, 'quarterly': 150, 'annual': 550}",
+      "expression": "{'daily': 7, 'weekly': 21, 'monthly': 75, 'quarterly': 150, 'annual': 930}",
       "expression_truncated": false,
       "expression_chars": 74,
-      "ast_sha256": "189b173024b1991bf9dcfa583bca526c84e25347f027321336f2a26c57a5748c",
+      "ast_sha256": "1bd1fe5ccc2c4ab2dfe78f279a0374531b67ae047f483c2baa59aebafb857a68",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 48,
-      "end_line": 54,
+      "line": 53,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "PERIOD_DAYS",
@@ -97959,8 +98031,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 63,
-      "end_line": 65,
+      "line": 68,
+      "end_line": 70,
       "owner": "<module>",
       "conditions": [],
       "name": "UNHEALTHY_FETCH_STATUSES",
@@ -97976,8 +98048,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 71,
-      "end_line": 74,
+      "line": 76,
+      "end_line": 79,
       "owner": "<module>",
       "conditions": [],
       "name": "_KIND_LABEL",
@@ -98024,6 +98096,23 @@
       "expression_truncated": false,
       "expression_chars": 42,
       "ast_sha256": "cc969afd39deea0d167d9f7220e17e8195eba1fcad42eeead8356a54cb19fb7f",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 177,
+      "end_line": 177,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HTML_TAG_RE",
+      "symbol": "app.services.telegram_bot._HTML_TAG_RE",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('</?[a-zA-Z][^<>]*>')",
+      "expression_truncated": false,
+      "expression_chars": 32,
+      "ast_sha256": "58f1bec2787f80f9258c009862cfb2b593ad3d83457f88a3b6f2939e38e2214b",
       "runtime_expansion": true
     },
     {
@@ -115832,8 +115921,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 149,
-      "end_line": 151,
+      "line": 150,
+      "end_line": 152,
       "owner": "_ssr_key",
       "conditions": [],
       "operation": "versioned_key",
@@ -115846,8 +115935,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 213,
-      "end_line": 213,
+      "line": 254,
+      "end_line": 254,
       "owner": "_peek_cached_html",
       "conditions": [],
       "operation": "cache_get",
@@ -115860,8 +115949,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 215,
-      "end_line": 215,
+      "line": 256,
+      "end_line": 256,
       "owner": "_peek_cached_html",
       "conditions": [
         "isinstance(cached, str) and cached"
@@ -115876,8 +115965,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 279,
-      "end_line": 279,
+      "line": 321,
+      "end_line": 321,
       "owner": "_cached_html",
       "conditions": [],
       "operation": "set",
@@ -115890,8 +115979,24 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 208,
-      "end_line": 208,
+      "line": 182,
+      "end_line": 182,
+      "owner": "_acquire_render_slot",
+      "conditions": [
+        "budget <= 0"
+      ],
+      "operation": "acquire",
+      "receiver": "_RENDER_SEM",
+      "symbol": "app.api.seo_pages._RENDER_SEM.acquire",
+      "expression": "_RENDER_SEM.acquire()",
+      "expression_truncated": false,
+      "expression_chars": 21,
+      "ast_sha256": "a7bf2e0082006b995fa0140e390149b9259d630e8aa2d489a19b44fdd2a55edd"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 249,
+      "end_line": 249,
       "owner": "_peek_cached_html",
       "conditions": [
         "ssr_swr.swr_enabled()",
@@ -115907,8 +116012,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 294,
+      "end_line": 294,
       "owner": "_cached_html",
       "conditions": [
         "swr and (not forced)",
@@ -115924,8 +116029,22 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 334,
+      "end_line": 334,
+      "owner": "_cached_html",
+      "conditions": [],
+      "operation": "release",
+      "receiver": "_RENDER_SEM",
+      "symbol": "app.api.seo_pages._RENDER_SEM.release",
+      "expression": "_RENDER_SEM.release()",
+      "expression_truncated": false,
+      "expression_chars": 21,
+      "ast_sha256": "fe68d8ab6c5cb5cefc16470c29abcb9204f7bf76c74b65dafbfbeb626bcb9545"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 539,
+      "end_line": 539,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "operation": "execute",
@@ -115938,8 +116057,22 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 181,
-      "end_line": 181,
+      "line": 186,
+      "end_line": 186,
+      "owner": "_acquire_render_slot",
+      "conditions": [],
+      "operation": "acquire",
+      "receiver": "_RENDER_SEM",
+      "symbol": "app.api.seo_pages._RENDER_SEM.acquire",
+      "expression": "_RENDER_SEM.acquire()",
+      "expression_truncated": false,
+      "expression_chars": 21,
+      "ast_sha256": "a7bf2e0082006b995fa0140e390149b9259d630e8aa2d489a19b44fdd2a55edd"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 222,
+      "end_line": 222,
       "owner": "_release_db",
       "conditions": [
         "db.in_transaction()"
@@ -115954,8 +116087,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 257,
-      "end_line": 257,
+      "line": 299,
+      "end_line": 299,
       "owner": "_cached_html",
       "conditions": [
         "not (swr and (not forced))",
@@ -115971,8 +116104,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 301,
+      "end_line": 301,
       "owner": "_cached_html",
       "conditions": [
         "not (swr and (not forced))",
@@ -115989,8 +116122,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 275,
-      "end_line": 275,
+      "line": 317,
+      "end_line": 317,
       "owner": "_cached_html",
       "conditions": [
         "not (swr)"
@@ -116005,8 +116138,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 319,
+      "end_line": 319,
       "owner": "_cached_html",
       "conditions": [
         "not (swr)",
@@ -116022,8 +116155,22 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 947,
-      "end_line": 947,
+      "line": 325,
+      "end_line": 325,
+      "owner": "_cached_html",
+      "conditions": [],
+      "operation": "set",
+      "receiver": "_cache_state",
+      "symbol": "app.api.seo_pages._cache_state.set",
+      "expression": "_cache_state.set('shed')",
+      "expression_truncated": false,
+      "expression_chars": 24,
+      "ast_sha256": "9be142a16c2972bbbf52ba16b94b09031770c5eb273c072b7652ee0bab83a6b0"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 1001,
+      "end_line": 1001,
       "owner": "seo_world_vs",
       "conditions": [
         "status == 200",
@@ -116039,8 +116186,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 949,
-      "end_line": 949,
+      "line": 1003,
+      "end_line": 1003,
       "owner": "seo_world_vs",
       "conditions": [
         "status == 200",
@@ -116056,8 +116203,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 225,
+      "end_line": 225,
       "owner": "_release_db",
       "conditions": [],
       "operation": "rollback",
@@ -116070,8 +116217,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 314,
+      "end_line": 314,
       "owner": "_cached_html",
       "conditions": [
         "swr",
@@ -116088,8 +116235,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 288,
-      "end_line": 288,
+      "line": 337,
+      "end_line": 337,
       "owner": "_cached_html",
       "conditions": [
         "status == 200",
@@ -116105,8 +116252,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 339,
+      "end_line": 339,
       "owner": "_cached_html",
       "conditions": [
         "status == 200",
@@ -121343,8 +121490,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 201,
+      "end_line": 201,
       "owner": "digest_recipients",
       "conditions": [],
       "operation": "set",
@@ -121357,8 +121504,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 219,
+      "end_line": 219,
       "owner": "report_recipients",
       "conditions": [],
       "operation": "set",
@@ -121371,8 +121518,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 243,
+      "end_line": 243,
       "owner": "interactive_authorized_ids",
       "conditions": [],
       "operation": "set",
@@ -121385,8 +121532,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 227,
-      "end_line": 227,
+      "line": 245,
+      "end_line": 245,
       "owner": "interactive_authorized_ids",
       "conditions": [
         "settings.pulse_chat_id"
@@ -121401,8 +121548,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 324,
+      "end_line": 324,
       "owner": "notify_feedback",
       "conditions": [
         "contact"
@@ -121445,8 +121592,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 187,
-      "end_line": 187,
+      "line": 205,
+      "end_line": 205,
       "owner": "digest_recipients",
       "conditions": [
         "cid and cid not in seen"
@@ -121461,8 +121608,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 220,
+      "end_line": 220,
       "owner": "report_recipients",
       "conditions": [],
       "operation": "add",
@@ -128560,8 +128707,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 443,
-      "end_line": 443,
+      "line": 480,
+      "end_line": 480,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -128574,8 +128721,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 479,
+      "end_line": 479,
       "owner": "send_pulse_report",
       "conditions": [],
       "operation": "set",
@@ -128588,8 +128735,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 221,
+      "end_line": 221,
       "owner": "_apply_hypothesis_updates",
       "conditions": [],
       "operation": "commit",
@@ -128602,8 +128749,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 214,
+      "end_line": 214,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -128618,8 +128765,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 143,
-      "end_line": 146,
+      "line": 180,
+      "end_line": 183,
       "owner": "_open_hypotheses",
       "conditions": [],
       "operation": "execute",
@@ -128879,8 +129026,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 92,
-      "end_line": 92,
+      "line": 103,
+      "end_line": 103,
       "owner": "list_mediabank_filenames_from_page",
       "conditions": [],
       "operation": "set",
@@ -128893,8 +129040,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 179,
+      "end_line": 179,
       "owner": "resolve_mediabank_file",
       "conditions": [],
       "operation": "set",
@@ -128907,8 +129054,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 109,
+      "end_line": 109,
       "owner": "list_mediabank_filenames_from_page",
       "conditions": [],
       "operation": "add",
@@ -128921,8 +129068,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 174,
-      "end_line": 174,
+      "line": 189,
+      "end_line": 189,
       "owner": "resolve_mediabank_file",
       "conditions": [
         "picked and picked not in seen"
@@ -128937,8 +129084,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 194,
+      "end_line": 194,
       "owner": "resolve_mediabank_file",
       "conditions": [
         "name not in seen"
@@ -134707,8 +134854,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 162,
+      "end_line": 162,
       "owner": "derived_roots",
       "conditions": [],
       "operation": "set",
@@ -134721,8 +134868,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 161,
+      "end_line": 161,
       "owner": "derived_roots",
       "conditions": [
         "not sources or code in _seen"
@@ -134737,8 +134884,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 167,
+      "end_line": 167,
       "owner": "derived_roots",
       "conditions": [
         "not (src in derived_sources)"
@@ -134753,8 +134900,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 330,
+      "end_line": 330,
       "owner": "load_known_flagged",
       "conditions": [],
       "operation": "get_state_redis",
@@ -134767,8 +134914,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 337,
-      "end_line": 337,
+      "line": 342,
+      "end_line": 342,
       "owner": "store_known_flagged",
       "conditions": [],
       "operation": "get_state_redis",
@@ -134781,8 +134928,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 338,
-      "end_line": 338,
+      "line": 343,
+      "end_line": 343,
       "owner": "store_known_flagged",
       "conditions": [],
       "operation": "delete",
@@ -134795,8 +134942,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 345,
+      "end_line": 345,
       "owner": "store_known_flagged",
       "conditions": [],
       "operation": "sadd",
@@ -134809,8 +134956,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 346,
+      "end_line": 346,
       "owner": "store_known_flagged",
       "conditions": [],
       "operation": "expire",
@@ -134837,8 +134984,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 198,
+      "end_line": 198,
       "owner": "send_document",
       "conditions": [],
       "operation": "set",
@@ -134865,8 +135012,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 474,
+      "end_line": 474,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -134925,8 +135072,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 473,
-      "end_line": 473,
+      "line": 492,
+      "end_line": 492,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -134941,8 +135088,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 203,
-      "end_line": 205,
+      "line": 222,
+      "end_line": 224,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -134955,8 +135102,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 242,
-      "end_line": 245,
+      "line": 261,
+      "end_line": 264,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -134969,8 +135116,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 246,
-      "end_line": 248,
+      "line": 265,
+      "end_line": 267,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -134983,8 +135130,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 249,
-      "end_line": 253,
+      "line": 268,
+      "end_line": 272,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -134997,8 +135144,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 259,
-      "end_line": 264,
+      "line": 278,
+      "end_line": 283,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -135011,8 +135158,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 325,
-      "end_line": 327,
+      "line": 344,
+      "end_line": 346,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -135025,8 +135172,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 199,
-      "end_line": 201,
+      "line": 218,
+      "end_line": 220,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -135039,8 +135186,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 321,
-      "end_line": 323,
+      "line": 340,
+      "end_line": 342,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -135053,8 +135200,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 196,
-      "end_line": 198,
+      "line": 215,
+      "end_line": 217,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -135067,8 +135214,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 339,
+      "end_line": 339,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -135081,8 +135228,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 346,
-      "end_line": 348,
+      "line": 365,
+      "end_line": 367,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "operation": "execute",
@@ -135761,8 +135908,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 148,
-      "end_line": 148,
+      "line": 149,
+      "end_line": 149,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "operation": "set",
@@ -135775,8 +135922,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 231,
-      "end_line": 231,
+      "line": 237,
+      "end_line": 237,
       "owner": "_scan_published_registry",
       "conditions": [],
       "operation": "set",
@@ -135789,8 +135936,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 113,
-      "end_line": 113,
+      "line": 114,
+      "end_line": 114,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -135803,8 +135950,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 121,
-      "end_line": 121,
+      "line": 122,
+      "end_line": 122,
       "owner": "recrawl_daily_job",
       "conditions": [
         "has_published_generation(base)"
@@ -135819,8 +135966,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 137,
+      "end_line": 137,
       "owner": "recrawl_daily_job",
       "conditions": [
         "not (has_published_generation(base))"
@@ -135835,8 +135982,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 111,
-      "end_line": 111,
+      "line": 112,
+      "end_line": 112,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "operation": "commit",
@@ -135849,8 +135996,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 144,
+      "end_line": 144,
       "owner": "recrawl_daily_job",
       "conditions": [
         "skipped"
@@ -135865,8 +136012,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 246,
+      "end_line": 246,
       "owner": "_scan_published_registry",
       "conditions": [
         "path in demand"
@@ -135881,8 +136028,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 154,
-      "end_line": 154,
+      "line": 155,
+      "end_line": 155,
       "owner": "recrawl_daily_job._submit",
       "conditions": [],
       "operation": "sadd",
@@ -135895,8 +136042,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 197,
+      "end_line": 197,
       "owner": "recrawl_daily_job",
       "conditions": [
         "submitted < remaining"
@@ -135911,8 +136058,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 163,
+      "end_line": 163,
       "owner": "recrawl_daily_job._submit",
       "conditions": [],
       "operation": "sadd",
@@ -156490,8 +156637,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 539,
+      "end_line": 539,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -156499,8 +156646,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 539,
+      "end_line": 539,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -156508,8 +156655,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 539,
+      "end_line": 539,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -156517,8 +156664,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 539,
+      "end_line": 539,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -198584,8 +198731,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 176,
-      "end_line": 176,
+      "line": 213,
+      "end_line": 213,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "h is None"
@@ -198595,8 +198742,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 172,
-      "end_line": 172,
+      "line": 209,
+      "end_line": 209,
       "owner": "_apply_hypothesis_updates",
       "conditions": [
         "upd.get('id') is not None"
@@ -198606,8 +198753,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 182,
+      "end_line": 182,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.created_at",
@@ -198615,8 +198762,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 145,
-      "end_line": 145,
+      "line": 182,
+      "end_line": 182,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -198624,8 +198771,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 181,
+      "end_line": 181,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict.is_",
@@ -198633,8 +198780,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 181,
+      "end_line": 181,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -198642,8 +198789,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 181,
+      "end_line": 181,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis.verdict",
@@ -198651,8 +198798,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 144,
-      "end_line": 144,
+      "line": 181,
+      "end_line": 181,
       "owner": "_open_hypotheses",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -199299,8 +199446,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 224,
-      "end_line": 224,
+      "line": 230,
+      "end_line": 230,
       "owner": "RosstatIndParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -199308,8 +199455,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 226,
-      "end_line": 226,
+      "line": 232,
+      "end_line": 232,
       "owner": "RosstatIndParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -199317,8 +199464,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 258,
+      "end_line": 258,
       "owner": "RosstatIndParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -199326,8 +199473,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 260,
+      "end_line": 260,
       "owner": "RosstatIndParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -199335,8 +199482,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 278,
+      "end_line": 278,
       "owner": "RosstatIndParser._after_storage",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -199344,8 +199491,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 274,
-      "end_line": 274,
+      "line": 280,
+      "end_line": 280,
       "owner": "RosstatIndParser._after_storage",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -225148,8 +225295,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 236,
-      "end_line": 236,
+      "line": 255,
+      "end_line": 255,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225157,8 +225304,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 259,
+      "end_line": 259,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -225166,8 +225313,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 223,
+      "end_line": 223,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -225175,8 +225322,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 223,
+      "end_line": 223,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -225184,8 +225331,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 259,
+      "end_line": 259,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -225193,8 +225340,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 259,
+      "end_line": 259,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225202,8 +225349,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 275,
+      "end_line": 275,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
@@ -225211,8 +225358,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 275,
+      "end_line": 275,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -225220,8 +225367,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -225229,8 +225376,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -225238,8 +225385,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
@@ -225247,8 +225394,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 219,
+      "end_line": 219,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -225256,8 +225403,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 219,
+      "end_line": 219,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -225265,8 +225412,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 223,
+      "end_line": 223,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225274,8 +225421,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 223,
+      "end_line": 223,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225283,8 +225430,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 259,
+      "end_line": 259,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225292,8 +225439,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 263,
+      "end_line": 263,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -225301,8 +225448,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.user_id",
@@ -225310,8 +225457,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 275,
+      "end_line": 275,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225319,8 +225466,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 256,
-      "end_line": 256,
+      "line": 275,
+      "end_line": 275,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225328,8 +225475,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 341,
+      "end_line": 341,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -225337,8 +225484,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 341,
+      "end_line": 341,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -225346,8 +225493,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225355,8 +225502,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225364,8 +225511,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 345,
+      "end_line": 345,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225373,8 +225520,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 219,
+      "end_line": 219,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225382,8 +225529,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 219,
+      "end_line": 219,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225391,8 +225538,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -225400,8 +225547,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.email",
@@ -225409,8 +225556,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
@@ -225418,8 +225565,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 244,
-      "end_line": 244,
+      "line": 263,
+      "end_line": 263,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225427,8 +225574,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.kind",
@@ -225436,8 +225583,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.granted",
@@ -225445,8 +225592,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -225454,8 +225601,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 274,
+      "end_line": 274,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.id",
@@ -225463,8 +225610,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 339,
+      "end_line": 339,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -225472,8 +225619,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 341,
+      "end_line": 341,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225481,8 +225628,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 341,
+      "end_line": 341,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -225490,8 +225637,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 197,
-      "end_line": 197,
+      "line": 216,
+      "end_line": 216,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User.created_at.desc",
@@ -225499,8 +225646,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225508,8 +225655,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225517,8 +225664,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 243,
-      "end_line": 243,
+      "line": 262,
+      "end_line": 262,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -225526,8 +225673,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -225535,8 +225682,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 247,
+      "line": 266,
+      "end_line": 266,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -225544,8 +225691,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 271,
+      "end_line": 271,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts.desc",
@@ -225553,8 +225700,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 274,
+      "end_line": 274,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225562,8 +225709,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 281,
+      "end_line": 281,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at.desc",
@@ -225571,8 +225718,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 339,
+      "end_line": 339,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225580,8 +225727,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 197,
-      "end_line": 197,
+      "line": 216,
+      "end_line": 216,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225589,8 +225736,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 197,
-      "end_line": 197,
+      "line": 216,
+      "end_line": 216,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -225598,8 +225745,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 271,
+      "end_line": 271,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -225607,8 +225754,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 281,
+      "end_line": 281,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -225616,8 +225763,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 320,
-      "end_line": 320,
+      "line": 339,
+      "end_line": 339,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225625,8 +225772,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 197,
-      "end_line": 197,
+      "line": 216,
+      "end_line": 216,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -225634,8 +225781,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 270,
+      "end_line": 270,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
@@ -225643,8 +225790,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 252,
-      "end_line": 252,
+      "line": 271,
+      "end_line": 271,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225652,8 +225799,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 280,
+      "end_line": 280,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.user_id",
@@ -225661,8 +225808,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 262,
-      "end_line": 262,
+      "line": 281,
+      "end_line": 281,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225670,8 +225817,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 366,
+      "end_line": 366,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at.desc",
@@ -225679,8 +225826,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -225688,8 +225835,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ip",
@@ -225697,8 +225844,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -225706,8 +225853,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 270,
+      "end_line": 270,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225715,8 +225862,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.event_name",
@@ -225724,8 +225871,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.params_json",
@@ -225733,8 +225880,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -225742,8 +225889,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 280,
+      "end_line": 280,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225751,8 +225898,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 366,
+      "end_line": 366,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -225760,8 +225907,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 366,
+      "end_line": 366,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis.updated_at",
@@ -225769,8 +225916,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225778,8 +225925,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225787,8 +225934,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 250,
+      "line": 269,
+      "end_line": 269,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -225796,8 +225943,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225805,8 +225952,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225814,8 +225961,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 260,
-      "end_line": 260,
+      "line": 279,
+      "end_line": 279,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -225823,8 +225970,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 347,
-      "end_line": 347,
+      "line": 366,
+      "end_line": 366,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -249664,8 +249811,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 112,
-      "end_line": 120,
+      "line": 113,
+      "end_line": 121,
       "owner": "<module>",
       "conditions": [],
       "name": "_year_ttl",
@@ -249673,8 +249820,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 123,
-      "end_line": 129,
+      "line": 124,
+      "end_line": 130,
       "owner": "<module>",
       "conditions": [],
       "name": "_asset_sig",
@@ -249682,8 +249829,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 132,
-      "end_line": 151,
+      "line": 133,
+      "end_line": 152,
       "owner": "<module>",
       "conditions": [],
       "name": "_ssr_key",
@@ -249691,8 +249838,35 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 165,
-      "end_line": 186,
+      "line": 166,
+      "end_line": 167,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RenderQueueTimeout",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 170,
+      "end_line": 188,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_acquire_render_slot",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 191,
+      "end_line": 203,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_render_busy_html",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 206,
+      "end_line": 227,
       "owner": "<module>",
       "conditions": [],
       "name": "_release_db",
@@ -249700,8 +249874,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 189,
-      "end_line": 217,
+      "line": 230,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "_peek_cached_html",
@@ -249709,8 +249883,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 220,
-      "end_line": 291,
+      "line": 261,
+      "end_line": 340,
       "owner": "<module>",
       "conditions": [],
       "name": "_cached_html",
@@ -249718,8 +249892,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 294,
-      "end_line": 310,
+      "line": 343,
+      "end_line": 359,
       "owner": "<module>",
       "conditions": [],
       "name": "_permanent_redirect",
@@ -249727,8 +249901,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 313,
-      "end_line": 317,
+      "line": 362,
+      "end_line": 366,
       "owner": "<module>",
       "conditions": [],
       "name": "_requested_path",
@@ -249736,8 +249910,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 320,
-      "end_line": 346,
+      "line": 369,
+      "end_line": 400,
       "owner": "<module>",
       "conditions": [],
       "name": "_html_response",
@@ -249745,8 +249919,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 352,
-      "end_line": 362,
+      "line": 406,
+      "end_line": 416,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_not_found",
@@ -249754,8 +249928,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 366,
-      "end_line": 374,
+      "line": 420,
+      "end_line": 428,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_home",
@@ -249763,8 +249937,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 378,
-      "end_line": 388,
+      "line": 432,
+      "end_line": 442,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_forecasts",
@@ -249772,8 +249946,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 392,
-      "end_line": 398,
+      "line": 446,
+      "end_line": 452,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_page",
@@ -249781,8 +249955,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 402,
-      "end_line": 404,
+      "line": 456,
+      "end_line": 458,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_categories_hub",
@@ -249790,8 +249964,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 408,
-      "end_line": 413,
+      "line": 462,
+      "end_line": 467,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_category",
@@ -249799,8 +249973,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 417,
-      "end_line": 445,
+      "line": 471,
+      "end_line": 499,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_indicator",
@@ -249808,8 +249982,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 449,
-      "end_line": 461,
+      "line": 503,
+      "end_line": 515,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_regions",
@@ -249817,8 +249991,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 465,
-      "end_line": 473,
+      "line": 519,
+      "end_line": 527,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_regions_map",
@@ -249826,8 +250000,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 476,
-      "end_line": 488,
+      "line": 530,
+      "end_line": 542,
       "owner": "<module>",
       "conditions": [],
       "name": "_canonical_region_slug",
@@ -249835,8 +250009,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 492,
-      "end_line": 502,
+      "line": 546,
+      "end_line": 556,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region",
@@ -249844,8 +250018,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 506,
-      "end_line": 518,
+      "line": 560,
+      "end_line": 572,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region_indicator",
@@ -249853,8 +250027,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 522,
-      "end_line": 528,
+      "line": 576,
+      "end_line": 582,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region_ratings_hub",
@@ -249862,8 +250036,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 532,
-      "end_line": 538,
+      "line": 586,
+      "end_line": 592,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region_rating",
@@ -249871,8 +250045,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 542,
-      "end_line": 550,
+      "line": 596,
+      "end_line": 604,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region_vs",
@@ -249880,8 +250054,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 554,
-      "end_line": 556,
+      "line": 608,
+      "end_line": 610,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_today_hub",
@@ -249889,8 +250063,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 560,
-      "end_line": 568,
+      "line": 614,
+      "end_line": 622,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_today_indicator",
@@ -249898,8 +250072,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 572,
-      "end_line": 576,
+      "line": 626,
+      "end_line": 630,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_calendar_month",
@@ -249907,8 +250081,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 580,
-      "end_line": 623,
+      "line": 634,
+      "end_line": 677,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_indicator_year",
@@ -249916,8 +250090,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 630,
-      "end_line": 645,
+      "line": 684,
+      "end_line": 699,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_indicator_month",
@@ -249925,8 +250099,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 649,
-      "end_line": 655,
+      "line": 703,
+      "end_line": 709,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_home",
@@ -249934,8 +250108,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 659,
-      "end_line": 660,
+      "line": 713,
+      "end_line": 714,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_rating_default",
@@ -249943,8 +250117,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 663,
-      "end_line": 675,
+      "line": 717,
+      "end_line": 729,
       "owner": "<module>",
       "conditions": [],
       "name": "_rating_year_info",
@@ -249952,8 +250126,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 679,
-      "end_line": 713,
+      "line": 733,
+      "end_line": 767,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_rating",
@@ -249961,8 +250135,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 720,
-      "end_line": 739,
+      "line": 774,
+      "end_line": 793,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_rating_year",
@@ -249970,8 +250144,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 743,
-      "end_line": 751,
+      "line": 797,
+      "end_line": 805,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_subnational_hub",
@@ -249979,8 +250153,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 758,
-      "end_line": 773,
+      "line": 812,
+      "end_line": 827,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_subnational_compare",
@@ -249988,8 +250162,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 780,
-      "end_line": 793,
+      "line": 834,
+      "end_line": 847,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_subnational_indicator_year",
@@ -249997,8 +250171,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 800,
-      "end_line": 811,
+      "line": 854,
+      "end_line": 865,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_subnational_indicator",
@@ -250006,8 +250180,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 818,
-      "end_line": 826,
+      "line": 872,
+      "end_line": 880,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_subnational_region",
@@ -250015,8 +250189,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 830,
-      "end_line": 840,
+      "line": 884,
+      "end_line": 894,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_country",
@@ -250024,8 +250198,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 844,
-      "end_line": 878,
+      "line": 898,
+      "end_line": 932,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_indicator",
@@ -250033,8 +250207,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 885,
-      "end_line": 914,
+      "line": 939,
+      "end_line": 968,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_indicator_year",
@@ -250042,8 +250216,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 918,
-      "end_line": 950,
+      "line": 972,
+      "end_line": 1004,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_world_vs",
@@ -250051,8 +250225,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 957,
-      "end_line": 974,
+      "line": 1011,
+      "end_line": 1028,
       "owner": "<module>",
       "conditions": [],
       "name": "seo_region_indicator_year",
@@ -250060,8 +250234,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 368,
-      "end_line": 369,
+      "line": 422,
+      "end_line": 423,
       "owner": "seo_home",
       "conditions": [],
       "name": "_render",
@@ -250069,8 +250243,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 382,
-      "end_line": 383,
+      "line": 436,
+      "end_line": 437,
       "owner": "seo_forecasts",
       "conditions": [],
       "name": "_render",
@@ -251529,7 +251703,7 @@
     {
       "path": "backend/app/config.py",
       "line": 6,
-      "end_line": 539,
+      "end_line": 543,
       "owner": "<module>",
       "conditions": [],
       "name": "Settings",
@@ -251537,8 +251711,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 522,
-      "end_line": 524,
+      "line": 526,
+      "end_line": 528,
       "owner": "Settings",
       "conditions": [],
       "name": "public_origin",
@@ -251546,8 +251720,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 527,
-      "end_line": 529,
+      "line": 531,
+      "end_line": 533,
       "owner": "Settings",
       "conditions": [],
       "name": "public_host",
@@ -251555,8 +251729,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 532,
-      "end_line": 534,
+      "line": 536,
+      "end_line": 538,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id",
@@ -251564,8 +251738,8 @@
     },
     {
       "path": "backend/app/config.py",
-      "line": 536,
-      "end_line": 539,
+      "line": 540,
+      "end_line": 543,
       "owner": "Settings",
       "conditions": [],
       "name": "webmaster_host_id_for",
@@ -256068,7 +256242,16 @@
     {
       "path": "backend/app/services/alerting.py",
       "line": 122,
-      "end_line": 129,
+      "end_line": 137,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "exception_reason",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/alerting.py",
+      "line": 140,
+      "end_line": 147,
       "owner": "<module>",
       "conditions": [],
       "name": "site_version_label",
@@ -256076,8 +256259,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 132,
-      "end_line": 138,
+      "line": 150,
+      "end_line": 156,
       "owner": "<module>",
       "conditions": [],
       "name": "method_label",
@@ -256085,8 +256268,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 144,
-      "end_line": 155,
+      "line": 162,
+      "end_line": 173,
       "owner": "<module>",
       "conditions": [],
       "name": "visitor_country_line",
@@ -256094,8 +256277,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 158,
-      "end_line": 171,
+      "line": 176,
+      "end_line": 189,
       "owner": "<module>",
       "conditions": [],
       "name": "visitor_device_line",
@@ -256103,8 +256286,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 174,
-      "end_line": 189,
+      "line": 192,
+      "end_line": 207,
       "owner": "<module>",
       "conditions": [],
       "name": "digest_recipients",
@@ -256112,8 +256295,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 192,
-      "end_line": 202,
+      "line": 210,
+      "end_line": 220,
       "owner": "<module>",
       "conditions": [],
       "name": "report_recipients",
@@ -256121,8 +256304,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 205,
-      "end_line": 214,
+      "line": 223,
+      "end_line": 232,
       "owner": "<module>",
       "conditions": [],
       "name": "send_telegram_digest",
@@ -256130,8 +256313,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 217,
-      "end_line": 228,
+      "line": 235,
+      "end_line": 246,
       "owner": "<module>",
       "conditions": [],
       "name": "interactive_authorized_ids",
@@ -256139,8 +256322,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 231,
-      "end_line": 259,
+      "line": 249,
+      "end_line": 277,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_new_user",
@@ -256148,8 +256331,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 262,
-      "end_line": 286,
+      "line": 280,
+      "end_line": 304,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_login",
@@ -256157,8 +256340,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 289,
-      "end_line": 308,
+      "line": 307,
+      "end_line": 326,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_feedback",
@@ -256166,8 +256349,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 325,
-      "end_line": 347,
+      "line": 343,
+      "end_line": 365,
       "owner": "<module>",
       "conditions": [],
       "name": "format_api_interest_message",
@@ -256175,8 +256358,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 350,
-      "end_line": 363,
+      "line": 368,
+      "end_line": 381,
       "owner": "<module>",
       "conditions": [],
       "name": "notify_api_interest",
@@ -256184,8 +256367,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 366,
-      "end_line": 373,
+      "line": 384,
+      "end_line": 391,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_forecast_issue",
@@ -256193,8 +256376,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 376,
-      "end_line": 389,
+      "line": 394,
+      "end_line": 407,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_etl_failure",
@@ -256202,8 +256385,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 392,
-      "end_line": 403,
+      "line": 410,
+      "end_line": 421,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_zero_parse",
@@ -256211,8 +256394,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 413,
-      "end_line": 439,
+      "line": 431,
+      "end_line": 457,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_etl_summary",
@@ -256220,8 +256403,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 446,
-      "end_line": 480,
+      "line": 464,
+      "end_line": 498,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_world_ingest_summary",
@@ -256229,8 +256412,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 240,
-      "end_line": 241,
+      "line": 258,
+      "end_line": 259,
       "owner": "notify_new_user",
       "conditions": [],
       "name": "esc",
@@ -256238,8 +256421,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 272,
-      "end_line": 273,
+      "line": 290,
+      "end_line": 291,
       "owner": "notify_login",
       "conditions": [],
       "name": "esc",
@@ -256247,8 +256430,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 293,
-      "end_line": 294,
+      "line": 311,
+      "end_line": 312,
       "owner": "notify_feedback",
       "conditions": [],
       "name": "esc",
@@ -256256,8 +256439,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 332,
-      "end_line": 333,
+      "line": 350,
+      "end_line": 351,
       "owner": "format_api_interest_message",
       "conditions": [],
       "name": "esc",
@@ -266336,8 +266519,35 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 140,
-      "end_line": 150,
+      "line": 51,
+      "end_line": 60,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_escape_text_run",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 63,
+      "end_line": 64,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_escape_plain",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 67,
+      "end_line": 76,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "sanitize_llm_html",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 177,
+      "end_line": 187,
       "owner": "<module>",
       "conditions": [],
       "name": "_open_hypotheses",
@@ -266345,8 +266555,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 153,
-      "end_line": 185,
+      "line": 190,
+      "end_line": 222,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_hypothesis_updates",
@@ -266354,8 +266564,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 188,
-      "end_line": 202,
+      "line": 225,
+      "end_line": 239,
       "owner": "<module>",
       "conditions": [],
       "name": "_split_llm_output",
@@ -266363,8 +266573,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 205,
-      "end_line": 219,
+      "line": 242,
+      "end_line": 256,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_user_content",
@@ -266372,8 +266582,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 222,
-      "end_line": 278,
+      "line": 259,
+      "end_line": 315,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_summary",
@@ -266381,8 +266591,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 281,
-      "end_line": 326,
+      "line": 318,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "_acquisition_lines",
@@ -266390,8 +266600,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 329,
-      "end_line": 350,
+      "line": 366,
+      "end_line": 387,
       "owner": "<module>",
       "conditions": [],
       "name": "_fallback_summary",
@@ -266399,8 +266609,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 353,
-      "end_line": 403,
+      "line": 390,
+      "end_line": 440,
       "owner": "<module>",
       "conditions": [],
       "name": "_raw_digits_block",
@@ -266408,8 +266618,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 406,
-      "end_line": 452,
+      "line": 443,
+      "end_line": 489,
       "owner": "<module>",
       "conditions": [],
       "name": "send_pulse_report",
@@ -266417,8 +266627,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 455,
-      "end_line": 467,
+      "line": 492,
+      "end_line": 504,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_snapshot_job",
@@ -266426,8 +266636,8 @@
     },
     {
       "path": "backend/app/services/pulse_report.py",
-      "line": 470,
-      "end_line": 476,
+      "line": 507,
+      "end_line": 513,
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
@@ -266940,7 +267150,7 @@
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
       "line": 171,
-      "end_line": 198,
+      "end_line": 204,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_latest_ind",
@@ -266948,8 +267158,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 201,
-      "end_line": 207,
+      "line": 207,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "_download_latest_ind",
@@ -266957,8 +267167,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 218,
-      "end_line": 289,
+      "line": 224,
+      "end_line": 295,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatIndParser",
@@ -266966,8 +267176,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 221,
-      "end_line": 236,
+      "line": 227,
+      "end_line": 242,
       "owner": "RosstatIndParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -266975,8 +267185,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 238,
-      "end_line": 247,
+      "line": 244,
+      "end_line": 253,
       "owner": "RosstatIndParser",
       "conditions": [],
       "name": "_validate",
@@ -266984,8 +267194,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 249,
-      "end_line": 267,
+      "line": 255,
+      "end_line": 273,
       "owner": "RosstatIndParser",
       "conditions": [],
       "name": "_post_upsert",
@@ -266993,8 +267203,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 269,
-      "end_line": 289,
+      "line": 275,
+      "end_line": 295,
       "owner": "RosstatIndParser",
       "conditions": [],
       "name": "_after_storage",
@@ -267480,7 +267690,16 @@
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
       "line": 68,
-      "end_line": 69,
+      "end_line": 73,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "RosstatUnreachable",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 76,
+      "end_line": 77,
       "owner": "<module>",
       "conditions": [],
       "name": "mediabank_url",
@@ -267488,8 +267707,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 72,
-      "end_line": 100,
+      "line": 80,
+      "end_line": 111,
       "owner": "<module>",
       "conditions": [],
       "name": "list_mediabank_filenames_from_page",
@@ -267497,8 +267716,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 103,
-      "end_line": 105,
+      "line": 114,
+      "end_line": 116,
       "owner": "<module>",
       "conditions": [],
       "name": "_filename_year",
@@ -267506,8 +267725,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 108,
-      "end_line": 124,
+      "line": 119,
+      "end_line": 135,
       "owner": "<module>",
       "conditions": [],
       "name": "pick_mediabank_filename",
@@ -267515,8 +267734,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 127,
-      "end_line": 149,
+      "line": 138,
+      "end_line": 163,
       "owner": "<module>",
       "conditions": [],
       "name": "download_mediabank_bytes",
@@ -267524,8 +267743,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 152,
-      "end_line": 193,
+      "line": 166,
+      "end_line": 214,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_mediabank_file",
@@ -267533,8 +267752,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 196,
-      "end_line": 217,
+      "line": 217,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_static_xlsx",
@@ -267542,8 +267761,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 220,
-      "end_line": 255,
+      "line": 241,
+      "end_line": 276,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_ipi_current",
@@ -267551,8 +267770,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 258,
-      "end_line": 283,
+      "line": 279,
+      "end_line": 308,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_okpopul",
@@ -267560,8 +267779,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 286,
-      "end_line": 320,
+      "line": 311,
+      "end_line": 349,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_latest_socioeconomic_report_pdf",
@@ -274930,8 +275149,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 80,
-      "end_line": 81,
+      "line": 85,
+      "end_line": 86,
       "owner": "<module>",
       "conditions": [],
       "name": "sla_days",
@@ -274939,8 +275158,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 84,
-      "end_line": 85,
+      "line": 89,
+      "end_line": 90,
       "owner": "<module>",
       "conditions": [],
       "name": "period_days",
@@ -274948,8 +275167,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 88,
-      "end_line": 105,
+      "line": 93,
+      "end_line": 110,
       "owner": "<module>",
       "conditions": [],
       "name": "find_stale",
@@ -274957,8 +275176,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 109,
-      "end_line": 116,
+      "line": 114,
+      "end_line": 121,
       "owner": "<module>",
       "conditions": [],
       "name": "StaleRow",
@@ -274966,8 +275185,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 120,
-      "end_line": 125,
+      "line": 125,
+      "end_line": 130,
       "owner": "<module>",
       "conditions": [],
       "name": "StaleItem",
@@ -274975,8 +275194,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 129,
-      "end_line": 141,
+      "line": 134,
+      "end_line": 146,
       "owner": "<module>",
       "conditions": [],
       "name": "StalenessReport",
@@ -274984,8 +275203,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 144,
-      "end_line": 147,
+      "line": 149,
+      "end_line": 152,
       "owner": "<module>",
       "conditions": [],
       "name": "family_label",
@@ -274993,8 +275212,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 150,
-      "end_line": 163,
+      "line": 155,
+      "end_line": 168,
       "owner": "<module>",
       "conditions": [],
       "name": "derived_roots",
@@ -275002,8 +275221,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 166,
-      "end_line": 171,
+      "line": 171,
+      "end_line": 176,
       "owner": "<module>",
       "conditions": [],
       "name": "_fetch_unhealthy",
@@ -275011,8 +275230,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 174,
-      "end_line": 218,
+      "line": 179,
+      "end_line": 223,
       "owner": "<module>",
       "conditions": [],
       "name": "build_report",
@@ -275020,8 +275239,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 221,
-      "end_line": 228,
+      "line": 226,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "_group",
@@ -275029,8 +275248,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 231,
-      "end_line": 248,
+      "line": 236,
+      "end_line": 253,
       "owner": "<module>",
       "conditions": [],
       "name": "_format_groups",
@@ -275038,8 +275257,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 251,
-      "end_line": 261,
+      "line": 256,
+      "end_line": 266,
       "owner": "<module>",
       "conditions": [],
       "name": "_counters_line",
@@ -275047,8 +275266,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 264,
-      "end_line": 309,
+      "line": 269,
+      "end_line": 314,
       "owner": "<module>",
       "conditions": [],
       "name": "plan_staleness_message",
@@ -275056,8 +275275,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 321,
-      "end_line": 330,
+      "line": 326,
+      "end_line": 335,
       "owner": "<module>",
       "conditions": [],
       "name": "load_known_flagged",
@@ -275065,8 +275284,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 333,
-      "end_line": 343,
+      "line": 338,
+      "end_line": 348,
       "owner": "<module>",
       "conditions": [],
       "name": "store_known_flagged",
@@ -275074,8 +275293,8 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 140,
-      "end_line": 141,
+      "line": 145,
+      "end_line": 146,
       "owner": "StalenessReport",
       "conditions": [],
       "name": "flagged_codes",
@@ -275102,7 +275321,7 @@
     {
       "path": "backend/app/services/telegram_bot.py",
       "line": 136,
-      "end_line": 163,
+      "end_line": 172,
       "owner": "<module>",
       "conditions": [],
       "name": "send_message",
@@ -275110,8 +275329,17 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 166,
-      "end_line": 186,
+      "line": 180,
+      "end_line": 182,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_plain_fallback",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 185,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "send_document",
@@ -275119,8 +275347,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 193,
-      "end_line": 231,
+      "line": 212,
+      "end_line": 250,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_overview",
@@ -275128,8 +275356,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 234,
-      "end_line": 315,
+      "line": 253,
+      "end_line": 334,
       "owner": "<module>",
       "conditions": [],
       "name": "_user_card",
@@ -275137,8 +275365,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 318,
-      "end_line": 339,
+      "line": 337,
+      "end_line": 358,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_csv",
@@ -275146,8 +275374,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 342,
-      "end_line": 359,
+      "line": 361,
+      "end_line": 378,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypotheses_overview",
@@ -275155,8 +275383,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 366,
-      "end_line": 436,
+      "line": 385,
+      "end_line": 455,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_callback",
@@ -275164,8 +275392,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 439,
-      "end_line": 448,
+      "line": 458,
+      "end_line": 467,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -275173,8 +275401,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 451,
-      "end_line": 473,
+      "line": 470,
+      "end_line": 492,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -276784,8 +277012,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 33,
-      "end_line": 38,
+      "line": 34,
+      "end_line": 39,
       "owner": "<module>",
       "conditions": [],
       "name": "_alert_recrawl",
@@ -276793,8 +277021,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 41,
-      "end_line": 213,
+      "line": 42,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "recrawl_daily_job",
@@ -276802,8 +277030,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 216,
-      "end_line": 249,
+      "line": 222,
+      "end_line": 255,
       "owner": "<module>",
       "conditions": [],
       "name": "_scan_published_registry",
@@ -276811,8 +277039,8 @@
     },
     {
       "path": "backend/app/services/webmaster_recrawl.py",
-      "line": 150,
-      "end_line": 167,
+      "line": 151,
+      "end_line": 173,
       "owner": "recrawl_daily_job",
       "conditions": [],
       "name": "_submit",
@@ -296870,17 +297098,35 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 537,
+      "end_line": 537,
       "owner": "_canonical_region_slug",
       "conditions": [],
       "symbol": "app.data.legacy_redirects.LEGACY_REGION_SLUG_PREFIXES"
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 182,
+      "end_line": 182,
+      "owner": "_acquire_render_slot",
+      "conditions": [
+        "budget <= 0"
+      ],
+      "symbol": "app.api.seo_pages._RENDER_SEM"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 334,
+      "end_line": 334,
       "owner": "_cached_html",
+      "conditions": [],
+      "symbol": "app.api.seo_pages._RENDER_SEM"
+    },
+    {
+      "path": "backend/app/api/seo_pages.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "_acquire_render_slot",
       "conditions": [],
       "symbol": "app.api.seo_pages._RENDER_SEM"
     },
@@ -300312,40 +300558,40 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 170,
-      "end_line": 170,
+      "line": 188,
+      "end_line": 188,
       "owner": "visitor_device_line",
       "conditions": [],
       "symbol": "app.services.alerting._DEVICE_RU"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 138,
-      "end_line": 138,
+      "line": 156,
+      "end_line": 156,
       "owner": "method_label",
       "conditions": [],
       "symbol": "app.services.signup_attribution.METHOD_LABELS_RU"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 437,
-      "end_line": 437,
+      "line": 455,
+      "end_line": 455,
       "owner": "alert_etl_summary",
       "conditions": [],
       "symbol": "app.services.alerting._DEGRADED_LABELS"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 357,
+      "end_line": 357,
       "owner": "format_api_interest_message",
       "conditions": [],
       "symbol": "app.services.alerting.API_INTEREST_USE_CASES"
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 340,
-      "end_line": 340,
+      "line": 358,
+      "end_line": 358,
       "owner": "format_api_interest_message",
       "conditions": [],
       "symbol": "app.services.alerting._API_INTEREST_SOURCES"
@@ -304238,6 +304484,22 @@
       "symbol": "app.services.pulse.ETL_ERROR_STATUSES"
     },
     {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "_escape_text_run",
+      "conditions": [],
+      "symbol": "app.services.pulse_report._HTML_ENTITY_RE"
+    },
+    {
+      "path": "backend/app/services/pulse_report.py",
+      "line": 71,
+      "end_line": 71,
+      "owner": "sanitize_llm_html",
+      "conditions": [],
+      "symbol": "app.services.pulse_report._TG_ALLOWED_TAG_RE"
+    },
+    {
       "path": "backend/app/services/region_compare_data.py",
       "line": 14,
       "end_line": 14,
@@ -304373,8 +304635,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ind_parser.py",
-      "line": 229,
-      "end_line": 229,
+      "line": 235,
+      "end_line": 235,
       "owner": "RosstatIndParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.services.rosstat_ind_parser.SHEET_MAP"
@@ -304519,24 +304781,24 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 94,
-      "end_line": 94,
+      "line": 105,
+      "end_line": 105,
       "owner": "list_mediabank_filenames_from_page",
       "conditions": [],
       "symbol": "app.services.rosstat_sdds_fetcher._MEDIA_HREF_RE"
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 203,
-      "end_line": 203,
+      "line": 224,
+      "end_line": 224,
       "owner": "fetch_rosstat_static_xlsx",
       "conditions": [],
       "symbol": "app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS"
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 104,
-      "end_line": 104,
+      "line": 115,
+      "end_line": 115,
       "owner": "_filename_year",
       "conditions": [],
       "symbol": "app.services.rosstat_sdds_fetcher._YEAR_IN_NAME_RE"
@@ -308121,35 +308383,43 @@
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 172,
+      "end_line": 172,
       "owner": "_fetch_unhealthy",
       "conditions": [],
       "symbol": "app.services.staleness.UNHEALTHY_FETCH_STATUSES"
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 81,
-      "end_line": 81,
+      "line": 86,
+      "end_line": 86,
       "owner": "sla_days",
       "conditions": [],
       "symbol": "app.services.staleness.STALENESS_SLA_DAYS"
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 85,
-      "end_line": 85,
+      "line": 90,
+      "end_line": 90,
       "owner": "period_days",
       "conditions": [],
       "symbol": "app.services.staleness.PERIOD_DAYS"
     },
     {
       "path": "backend/app/services/staleness.py",
-      "line": 240,
-      "end_line": 240,
+      "line": 245,
+      "end_line": 245,
       "owner": "_format_groups",
       "conditions": [],
       "symbol": "app.services.staleness._KIND_LABEL"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 182,
+      "end_line": 182,
+      "owner": "_plain_fallback",
+      "conditions": [],
+      "symbol": "app.services.telegram_bot._HTML_TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -322988,8 +323258,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 405,
+      "end_line": 405,
       "owner": "seo_not_found",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_not_found",
@@ -323004,8 +323274,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 352,
-      "handler_end_line": 362,
+      "handler_line": 406,
+      "handler_end_line": 416,
       "parameters": [
         {
           "name": "request",
@@ -323031,8 +323301,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 365,
-      "end_line": 365,
+      "line": 419,
+      "end_line": 419,
       "owner": "seo_home",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_home",
@@ -323047,8 +323317,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 366,
-      "handler_end_line": 374,
+      "handler_line": 420,
+      "handler_end_line": 428,
       "parameters": [
         {
           "name": "request",
@@ -323079,8 +323349,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 431,
+      "end_line": 431,
       "owner": "seo_forecasts",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_forecasts",
@@ -323095,8 +323365,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 378,
-      "handler_end_line": 388,
+      "handler_line": 432,
+      "handler_end_line": 442,
       "parameters": [
         {
           "name": "request",
@@ -323127,8 +323397,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 445,
+      "end_line": 445,
       "owner": "seo_page",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_page",
@@ -323143,8 +323413,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 392,
-      "handler_end_line": 398,
+      "handler_line": 446,
+      "handler_end_line": 452,
       "parameters": [
         {
           "name": "page",
@@ -323180,8 +323450,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 455,
+      "end_line": 455,
       "owner": "seo_categories_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_categories_hub",
@@ -323196,8 +323466,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 402,
-      "handler_end_line": 404,
+      "handler_line": 456,
+      "handler_end_line": 458,
       "parameters": [
         {
           "name": "request",
@@ -323228,8 +323498,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 407,
-      "end_line": 407,
+      "line": 461,
+      "end_line": 461,
       "owner": "seo_category",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_category",
@@ -323244,8 +323514,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 408,
-      "handler_end_line": 413,
+      "handler_line": 462,
+      "handler_end_line": 467,
       "parameters": [
         {
           "name": "slug",
@@ -323281,8 +323551,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 416,
-      "end_line": 416,
+      "line": 470,
+      "end_line": 470,
       "owner": "seo_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator",
@@ -323297,8 +323567,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 417,
-      "handler_end_line": 445,
+      "handler_line": 471,
+      "handler_end_line": 499,
       "parameters": [
         {
           "name": "code",
@@ -323339,8 +323609,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 448,
-      "end_line": 448,
+      "line": 502,
+      "end_line": 502,
       "owner": "seo_regions",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_regions",
@@ -323355,8 +323625,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 449,
-      "handler_end_line": 461,
+      "handler_line": 503,
+      "handler_end_line": 515,
       "parameters": [
         {
           "name": "request",
@@ -323387,8 +323657,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 518,
+      "end_line": 518,
       "owner": "seo_regions_map",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_regions_map",
@@ -323403,8 +323673,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 465,
-      "handler_end_line": 473,
+      "handler_line": 519,
+      "handler_end_line": 527,
       "parameters": [
         {
           "name": "code",
@@ -323440,8 +323710,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 545,
+      "end_line": 545,
       "owner": "seo_region",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region",
@@ -323456,8 +323726,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 492,
-      "handler_end_line": 502,
+      "handler_line": 546,
+      "handler_end_line": 556,
       "parameters": [
         {
           "name": "slug",
@@ -323493,8 +323763,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 559,
+      "end_line": 559,
       "owner": "seo_region_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_indicator",
@@ -323509,8 +323779,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 506,
-      "handler_end_line": 518,
+      "handler_line": 560,
+      "handler_end_line": 572,
       "parameters": [
         {
           "name": "slug",
@@ -323551,8 +323821,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 575,
+      "end_line": 575,
       "owner": "seo_region_ratings_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_ratings_hub",
@@ -323567,8 +323837,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 522,
-      "handler_end_line": 528,
+      "handler_line": 576,
+      "handler_end_line": 582,
       "parameters": [
         {
           "name": "request",
@@ -323599,8 +323869,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 531,
-      "end_line": 531,
+      "line": 585,
+      "end_line": 585,
       "owner": "seo_region_rating",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_rating",
@@ -323615,8 +323885,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 532,
-      "handler_end_line": 538,
+      "handler_line": 586,
+      "handler_end_line": 592,
       "parameters": [
         {
           "name": "code",
@@ -323652,8 +323922,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 541,
-      "end_line": 541,
+      "line": 595,
+      "end_line": 595,
       "owner": "seo_region_vs",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_vs",
@@ -323668,8 +323938,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 542,
-      "handler_end_line": 550,
+      "handler_line": 596,
+      "handler_end_line": 604,
       "parameters": [
         {
           "name": "slug_a",
@@ -323710,8 +323980,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 553,
-      "end_line": 553,
+      "line": 607,
+      "end_line": 607,
       "owner": "seo_today_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_today_hub",
@@ -323726,8 +323996,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 554,
-      "handler_end_line": 556,
+      "handler_line": 608,
+      "handler_end_line": 610,
       "parameters": [
         {
           "name": "request",
@@ -323758,8 +324028,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 613,
+      "end_line": 613,
       "owner": "seo_today_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_today_indicator",
@@ -323774,8 +324044,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 560,
-      "handler_end_line": 568,
+      "handler_line": 614,
+      "handler_end_line": 622,
       "parameters": [
         {
           "name": "code",
@@ -323811,8 +324081,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 571,
-      "end_line": 571,
+      "line": 625,
+      "end_line": 625,
       "owner": "seo_calendar_month",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_calendar_month",
@@ -323827,8 +324097,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 572,
-      "handler_end_line": 576,
+      "handler_line": 626,
+      "handler_end_line": 630,
       "parameters": [
         {
           "name": "year",
@@ -323869,8 +324139,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 633,
+      "end_line": 633,
       "owner": "seo_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator_year",
@@ -323885,8 +324155,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 580,
-      "handler_end_line": 623,
+      "handler_line": 634,
+      "handler_end_line": 677,
       "parameters": [
         {
           "name": "code",
@@ -323932,8 +324202,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 626,
-      "end_line": 629,
+      "line": 680,
+      "end_line": 683,
       "owner": "seo_indicator_month",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_indicator_month",
@@ -323948,8 +324218,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 630,
-      "handler_end_line": 645,
+      "handler_line": 684,
+      "handler_end_line": 699,
       "parameters": [
         {
           "name": "code",
@@ -323990,8 +324260,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 648,
-      "end_line": 648,
+      "line": 702,
+      "end_line": 702,
       "owner": "seo_world_home",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_home",
@@ -324006,8 +324276,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 649,
-      "handler_end_line": 655,
+      "handler_line": 703,
+      "handler_end_line": 709,
       "parameters": [
         {
           "name": "request",
@@ -324033,8 +324303,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 712,
+      "end_line": 712,
       "owner": "seo_world_rating_default",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating_default",
@@ -324049,8 +324319,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 659,
-      "handler_end_line": 660,
+      "handler_line": 713,
+      "handler_end_line": 714,
       "parameters": [
         {
           "name": "request",
@@ -324076,8 +324346,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 732,
+      "end_line": 732,
       "owner": "seo_world_rating",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating",
@@ -324092,8 +324362,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 679,
-      "handler_end_line": 713,
+      "handler_line": 733,
+      "handler_end_line": 767,
       "parameters": [
         {
           "name": "concept_slug",
@@ -324129,8 +324399,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 716,
-      "end_line": 719,
+      "line": 770,
+      "end_line": 773,
       "owner": "seo_world_rating_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_rating_year",
@@ -324145,8 +324415,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 720,
-      "handler_end_line": 739,
+      "handler_line": 774,
+      "handler_end_line": 793,
       "parameters": [
         {
           "name": "concept_slug",
@@ -324187,8 +324457,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 742,
-      "end_line": 742,
+      "line": 796,
+      "end_line": 796,
       "owner": "seo_world_subnational_hub",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_hub",
@@ -324203,8 +324473,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 743,
-      "handler_end_line": 751,
+      "handler_line": 797,
+      "handler_end_line": 805,
       "parameters": [
         {
           "name": "slug",
@@ -324240,8 +324510,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 754,
-      "end_line": 757,
+      "line": 808,
+      "end_line": 811,
       "owner": "seo_world_subnational_compare",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_compare",
@@ -324256,8 +324526,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 758,
-      "handler_end_line": 773,
+      "handler_line": 812,
+      "handler_end_line": 827,
       "parameters": [
         {
           "name": "slug",
@@ -324303,8 +324573,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 776,
-      "end_line": 779,
+      "line": 830,
+      "end_line": 833,
       "owner": "seo_world_subnational_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_indicator_year",
@@ -324319,8 +324589,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 780,
-      "handler_end_line": 793,
+      "handler_line": 834,
+      "handler_end_line": 847,
       "parameters": [
         {
           "name": "slug",
@@ -324371,8 +324641,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 796,
-      "end_line": 799,
+      "line": 850,
+      "end_line": 853,
       "owner": "seo_world_subnational_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_indicator",
@@ -324387,8 +324657,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 800,
-      "handler_end_line": 811,
+      "handler_line": 854,
+      "handler_end_line": 865,
       "parameters": [
         {
           "name": "slug",
@@ -324434,8 +324704,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 814,
-      "end_line": 817,
+      "line": 868,
+      "end_line": 871,
       "owner": "seo_world_subnational_region",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_subnational_region",
@@ -324450,8 +324720,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 818,
-      "handler_end_line": 826,
+      "handler_line": 872,
+      "handler_end_line": 880,
       "parameters": [
         {
           "name": "slug",
@@ -324492,8 +324762,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 829,
-      "end_line": 829,
+      "line": 883,
+      "end_line": 883,
       "owner": "seo_world_country",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_country",
@@ -324508,8 +324778,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 830,
-      "handler_end_line": 840,
+      "handler_line": 884,
+      "handler_end_line": 894,
       "parameters": [
         {
           "name": "slug",
@@ -324545,8 +324815,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 843,
-      "end_line": 843,
+      "line": 897,
+      "end_line": 897,
       "owner": "seo_world_indicator",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_indicator",
@@ -324561,8 +324831,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 844,
-      "handler_end_line": 878,
+      "handler_line": 898,
+      "handler_end_line": 932,
       "parameters": [
         {
           "name": "slug",
@@ -324603,8 +324873,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 881,
-      "end_line": 884,
+      "line": 935,
+      "end_line": 938,
       "owner": "seo_world_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_indicator_year",
@@ -324619,8 +324889,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 885,
-      "handler_end_line": 914,
+      "handler_line": 939,
+      "handler_end_line": 968,
       "parameters": [
         {
           "name": "slug",
@@ -324666,8 +324936,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 917,
-      "end_line": 917,
+      "line": 971,
+      "end_line": 971,
       "owner": "seo_world_vs",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_world_vs",
@@ -324682,8 +324952,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 918,
-      "handler_end_line": 950,
+      "handler_line": 972,
+      "handler_end_line": 1004,
       "parameters": [
         {
           "name": "pair",
@@ -324724,8 +324994,8 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "line": 953,
-      "end_line": 956,
+      "line": 1007,
+      "end_line": 1010,
       "owner": "seo_region_indicator_year",
       "conditions": [],
       "handler": "app.api.seo_pages.seo_region_indicator_year",
@@ -324740,8 +325010,8 @@
         "methods": "['GET', 'HEAD']",
         "include_in_schema": "False"
       },
-      "handler_line": 957,
-      "handler_end_line": 974,
+      "handler_line": 1011,
+      "handler_end_line": 1028,
       "parameters": [
         {
           "name": "slug",
