@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Копия в Git; живой файл: ~/Library/LaunchAgents/com.forecasteconomy.backup-pull.plist.
+     Запуск каждые 30 мин, а не раз в день в 08:15: ноутбук с закрытой крышкой просыпается на
+     ~2 с каждые ~16 мин, и единственный дневной запуск попадал в такое окно (27.10.2026).
+     Если дамп за сегодня уже скачан и проверен, запуск завершается до SSH. -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.forecasteconomy.backup-pull</string>
+  <key>ProgramArguments</key>
+  <array><string>/bin/bash</string><string>/Users/iprofi/bin/fe-backup-pull.sh</string></array>
+  <key>StartInterval</key><integer>1800</integer>
+  <key>RunAtLoad</key><true/>
+  <key>ProcessType</key><string>Standard</string>
+  <key>StandardOutPath</key><string>/Users/iprofi/Backups/forecasteconomy/launchd.out.log</string>
+  <key>StandardErrorPath</key><string>/Users/iprofi/Backups/forecasteconomy/launchd.err.log</string>
+</dict>
+</plist>

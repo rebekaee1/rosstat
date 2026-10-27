@@ -106,33 +106,55 @@ mv "$IDENTITY_FILE.partial" "$IDENTITY_FILE"
 ISIZE=$(du -h "$IDENTITY_FILE" | cut -f1)
 echo "[$(date)] Identity backup: $IDENTITY_FILE ($ISIZE)"
 
-# О-1: offsite-копия в S3-совместимое хранилище (Яндекс Object Storage).
+# О-1: offsite-копия в S3-совместимое хранилище (Яндекс Object Storage и т. п.).
 # Бэкапы на том же диске, что и БД, — потеря диска теряет всё; offsite чинит.
-# Включение — три переменные в /opt/rosstat/.env (или окружении cron):
+# Включение — две переменные в /opt/rosstat/.env (или окружении cron):
 #   OFFSITE_S3_BUCKET=s3://имя-бакета/pg-backups
 #   OFFSITE_S3_ENDPOINT=https://storage.yandexcloud.net
 #   + креды для aws cli (AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY в env,
-#     либо профиль в ~/.aws/credentials).
-# Без переменных шаг пропускается (dev). Сбой заливки ловит trap ERR → алерт.
+#     либо профиль в ~/.aws/credentials). Пошагово: docs/offsite-backup-runbook.md.
+# Без переменных шаг пропускается (dev). Сбой offsite НЕ роняет скрипт (локальный дамп уже
+# есть, deploy.sh не должен вставать из-за чужого хранилища), но и не выдаётся за успех:
+# вместо зелёного heartbeat уходит жёлтое сообщение с причиной (OFFSITE_NOTE).
 if [ -z "${OFFSITE_S3_BUCKET:-}" ] && [ -f "$COMPOSE_DIR/.env" ]; then
   OFFSITE_S3_BUCKET=$(grep -E '^OFFSITE_S3_BUCKET=' "$COMPOSE_DIR/.env" | cut -d= -f2- || true)
   OFFSITE_S3_ENDPOINT=$(grep -E '^OFFSITE_S3_ENDPOINT=' "$COMPOSE_DIR/.env" | cut -d= -f2- || true)
 fi
+
+# Заливает файл и сверяет размер объекта с локальным. Возвращает 0 только если оба прошли.
+offsite_upload() {
+  local file="$1" name remote_size local_size
+  name=$(basename "$file")
+  aws s3 cp "$file" "$OFFSITE_S3_BUCKET/" ${OFFSITE_S3_ENDPOINT:+--endpoint-url "$OFFSITE_S3_ENDPOINT"} --only-show-errors || return 1
+  remote_size=$(aws s3 ls "$OFFSITE_S3_BUCKET/$name" ${OFFSITE_S3_ENDPOINT:+--endpoint-url "$OFFSITE_S3_ENDPOINT"} | awk '{print $3}' | head -1)
+  local_size=$(wc -c < "$file" | tr -d ' ')
+  [ -n "$remote_size" ] && [ "$remote_size" = "$local_size" ] || { echo "[$(date)] Offsite size mismatch for $name: remote=${remote_size:-none} local=$local_size" >&2; return 1; }
+}
+
+OFFSITE_NOTE=""
 if [ -n "${OFFSITE_S3_BUCKET:-}" ]; then
-  if command -v aws >/dev/null 2>&1; then
-    aws s3 cp "$FILE" "$OFFSITE_S3_BUCKET/" ${OFFSITE_S3_ENDPOINT:+--endpoint-url "$OFFSITE_S3_ENDPOINT"} --only-show-errors
-    aws s3 cp "$IDENTITY_FILE" "$OFFSITE_S3_BUCKET/" ${OFFSITE_S3_ENDPOINT:+--endpoint-url "$OFFSITE_S3_ENDPOINT"} --only-show-errors
-    echo "[$(date)] Offsite copy uploaded to $OFFSITE_S3_BUCKET"
+  if ! command -v aws >/dev/null 2>&1; then
+    OFFSITE_NOTE="offsite НЕ выполнен: aws cli не установлен"
+  elif offsite_upload "$FILE" && offsite_upload "$IDENTITY_FILE"; then
+    echo "[$(date)] Offsite copy uploaded and size-checked: $OFFSITE_S3_BUCKET"
+    OFFSITE_NOTE="offsite ok"
   else
-    tg_notify "🟡 pg-backup: OFFSITE_S3_BUCKET задан, но aws cli не установлен — offsite-копии нет"
+    OFFSITE_NOTE="offsite НЕ выполнен: загрузка в $OFFSITE_S3_BUCKET не прошла или размер не совпал"
   fi
+  case "$OFFSITE_NOTE" in
+    *"НЕ выполнен"*) echo "[$(date)] WARN: $OFFSITE_NOTE" >&2 ;;
+  esac
 fi
 
 rotate_old
 echo "[$(date)] Cleaned backups older than $KEEP_DAYS days"
 
 # Heartbeat: успех виден в Telegram, а не только в логе на сервере.
-tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE ($(date '+%F %T'))"
+case "$OFFSITE_NOTE" in
+  *"НЕ выполнен"*) tg_notify "🟡 pg-backup: локально ok (full $SIZE, identity $ISIZE), но $OFFSITE_NOTE ($(date '+%F %T'))" ;;
+  "offsite ok") tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE, offsite ok ($(date '+%F %T'))" ;;
+  *) tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE ($(date '+%F %T'))" ;;
+esac
 
 # Durable operational state: cache Redis is cleared during deployments. Use
 # the application's canonical state-Redis URL (dedicated service OR logical DB1).
