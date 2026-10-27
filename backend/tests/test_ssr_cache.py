@@ -397,3 +397,76 @@ def test_world_catalog_build_lock_is_shared(fake_world_catalog_redis):
             return third
 
     assert asyncio.run(run())
+
+
+# --- 2026-10-27: очередь холодных рендеров ограничена по времени -------------
+
+
+def test_render_queue_sheds_instead_of_waiting_forever(mem_cache, fixed_sig, monkeypatch):
+    """Волна уникальных холодных URL: кто не получил слот за бюджет, получает 503 и НЕ запускает рендер."""
+    monkeypatch.setattr(seo_pages.settings, "ssr_render_queue_timeout_seconds", 0.1)
+    monkeypatch.setattr(seo_pages, "_RENDER_SEM", asyncio.Semaphore(1))
+    started: list[str] = []
+
+    async def make_render(name):
+        async def render():
+            started.append(name)
+            await asyncio.sleep(0.4)
+            return 200, f"<html>{name}</html>"
+        return render
+
+    async def run():
+        first = asyncio.create_task(
+            seo_pages._cached_html("world", "w:a", 900, await make_render("a"))
+        )
+        await asyncio.sleep(0.02)  # a держит единственный слот
+        second = await seo_pages._cached_html("world", "w:b", 900, await make_render("b"))
+        return await first, second
+
+    first, second = asyncio.run(run())
+    assert first == (200, "<html>a</html>")
+    assert second[0] == 503 and "<html" in second[1]
+    assert started == ["a"], "рендер b не должен начинаться ради отклонённого запроса"
+    assert not any(k.endswith(":b") or ":w:b" in k for k in mem_cache), "503 не кэшируется"
+
+
+def test_render_queue_zero_budget_keeps_waiting(mem_cache, fixed_sig, monkeypatch):
+    """0 = прежнее поведение: ждём слот сколько нужно."""
+    monkeypatch.setattr(seo_pages.settings, "ssr_render_queue_timeout_seconds", 0)
+    monkeypatch.setattr(seo_pages, "_RENDER_SEM", asyncio.Semaphore(1))
+
+    async def render():
+        await asyncio.sleep(0.15)
+        return 200, "<html>ok</html>"
+
+    async def run():
+        return await asyncio.gather(
+            seo_pages._cached_html("world", "w:a", 900, render),
+            seo_pages._cached_html("world", "w:b", 900, render),
+        )
+
+    assert all(r[0] == 200 for r in asyncio.run(run()))
+
+
+def test_render_slot_released_after_render_error(mem_cache, fixed_sig, monkeypatch):
+    """Падение рендера не должно терять слот семафора (иначе очередь встанет насовсем)."""
+    sem = asyncio.Semaphore(1)
+    monkeypatch.setattr(seo_pages, "_RENDER_SEM", sem)
+
+    async def boom():
+        raise RuntimeError("render failed")
+
+    async def run():
+        with pytest.raises(RuntimeError):
+            await seo_pages._cached_html("world", "w:x", 900, boom)
+        return sem._value
+
+    assert asyncio.run(run()) == 1
+
+
+def test_html_response_503_carries_retry_after():
+    resp = seo_pages._html_response(503, seo_pages._render_busy_html())
+    assert resp.status_code == 503
+    assert resp.headers["Retry-After"] == "30"
+    assert resp.headers["Cache-Control"] == "no-store"
+    assert resp.headers["X-Robots-Tag"] == "noindex"

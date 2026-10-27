@@ -39,6 +39,7 @@ from app.core.cache import (
     ssr_cache_set as cache_set,
     versioned_key,
 )
+from app.config import settings
 from app.services import ssr_swr
 from app.services import site_paths as paths
 from app.services.attribution_query import merge_attribution_query
@@ -162,6 +163,46 @@ _cache_state: ContextVar[str | None] = ContextVar("fe_ssr_cache_state", default=
 _RENDER_SEM = asyncio.Semaphore(6)
 
 
+class _RenderQueueTimeout(Exception):
+    """Очередь холодных рендеров не дала слот за отведённое время (запрос отклонён, рендер не начат)."""
+
+
+async def _acquire_render_slot(started: float) -> None:
+    """Занять слот `_RENDER_SEM`, но не дольше бюджета очереди (`ssr_render_queue_timeout_seconds`).
+
+    Инцидент 2026-10-27 (18:25-18:35 UTC): ~1700 запросов с ~1000 IP, по одному на уникальную холодную страницу
+    `/united-states/region/*`, встали в очередь к семафору. nginx обрывает ответ через 30 с (504), но обработчик
+    продолжал стоять в очереди и рендерил страницу, которую уже никто не ждёт, поэтому очередь разгребалась
+    дольше, а общие запросы (роботы, люди) ждали позади. Теперь запрос, не получивший слот за бюджет, отклоняется
+    сразу (503 + Retry-After), а рендер ради ушедшего клиента не начинается. 0 или меньше - прежнее поведение
+    (ждать без предела). Время отсчитывается от входа в `_cached_html`, то есть включает ожидание singleflight-лока.
+    """
+    budget = settings.ssr_render_queue_timeout_seconds
+    if budget <= 0:
+        await _RENDER_SEM.acquire()
+        return
+    remaining = budget - (asyncio.get_running_loop().time() - started)
+    try:
+        await asyncio.wait_for(_RENDER_SEM.acquire(), timeout=max(remaining, 0.05))
+    except asyncio.TimeoutError:
+        raise _RenderQueueTimeout from None
+
+
+def _render_busy_html() -> str:
+    """Короткая нейтральная страница для отклонённого запроса (без технических подробностей)."""
+    en = get_locale() == "en"
+    if en:
+        title, text = "Page is busy", "Many people are opening this page right now. Please try again in a minute."
+    else:
+        title, text = "Страница занята", "Сейчас эту страницу открывают очень многие. Повторите, пожалуйста, через минуту."
+    return (
+        f'<!doctype html><html lang="{"en" if en else "ru"}"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        f'<meta name="robots" content="noindex"><title>{title}</title></head>'
+        f"<body><h1>{title}</h1><p>{text}</p></body></html>"
+    )
+
+
 async def _release_db(db: AsyncSession | None) -> None:
     """Вернуть соединение запроса в пул до ожидания кэша/лока/семафора.
 
@@ -239,6 +280,7 @@ async def _cached_html(
     if is_preview_locale():
         return await render_coro_factory()
 
+    started = asyncio.get_running_loop().time()
     await _release_db(db)
     sig = await _asset_sig()
     key = await _ssr_key(namespace, variant, sig)
@@ -277,12 +319,19 @@ async def _cached_html(
                 _cache_state.set("hit")
                 return 200, cached
         _cache_state.set("miss")
-        async with _RENDER_SEM:
+        try:
+            await _acquire_render_slot(started)
+        except _RenderQueueTimeout:
+            _cache_state.set("shed")
+            return 503, _render_busy_html()
+        try:
             try:
                 status, html = await render_coro_factory()
             finally:
                 # Не держать соединение во время cache_set / ответа.
                 await _release_db(db)
+        finally:
+            _RENDER_SEM.release()
         if status == 200:
             if swr:
                 await cache_set(key, html, ttl, stale_ttl=ssr_swr.stale_window())
@@ -326,6 +375,11 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         # Один заголовок и одна помощь для любого пути: раньше «Страна не
         # найдена» / «Страница не найдена» зависели от рендерера (N46).
         html = render_not_found_html(path=_requested_path(request))
+    if status_code == 503:
+        # Очередь холодных рендеров переполнена (`_acquire_render_slot`): роботам и клиентам - повторить позже.
+        headers["Cache-Control"] = "no-store"
+        headers["Retry-After"] = "30"
+        headers["X-Robots-Tag"] = "noindex"
     if status_code == 404:
         # nginx error_page ставит этот заголовок сам; ответ парсера 404
         # проходит proxy без intercept и раньше уходил только с meta.
