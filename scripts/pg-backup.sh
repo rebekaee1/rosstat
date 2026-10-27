@@ -62,7 +62,18 @@ tg_notify() {
     --data-urlencode text="$1" || true
 }
 
+# Ротация: чистим всё старше KEEP_DAYS. Вызывается и при успехе, и при сбое (см. on_error).
+rotate_old() {
+  find "$BACKUP_DIR" -name "*.dump" -mtime +"$KEEP_DAYS" -delete
+  find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$KEEP_DAYS" -delete
+}
+
 on_error() {
+  # Незавершённый дамп этого запуска (.partial) удаляем сразу: полный файл .dump появляется
+  # только после успешного pg_dump. Ротацию делаем всегда: раньше сбой (упавший дамп, сбой
+  # offsite) пропускал её, и старые копии копились, пока диск не заполнялся.
+  rm -f "${FILE:-/nonexistent}.partial" "${IDENTITY_FILE:-/nonexistent}.partial" 2>/dev/null || true
+  rotate_old || true
   tg_notify "🔴 pg-backup FAILED on $(hostname) at $(date '+%F %T') (line $1). Проверь /var/log/pg-backup.log"
 }
 trap 'on_error $LINENO' ERR
@@ -73,13 +84,16 @@ STAMP=$(date +%Y%m%d_%H%M%S)
 FILE="$BACKUP_DIR/${DB_NAME}_${STAMP}.dump"
 IDENTITY_FILE="$BACKUP_DIR/${DB_NAME}_${STAMP}.identity.sql.gz"
 
-dc() { docker compose -f "$COMPOSE_DIR/docker-compose.yml" "$@"; }
+# Не функция: ERR-trap bash не срабатывает на падение вызова функции под set -e, и сбой pg_dump
+# тогда не шлёт алерт и не запускает on_error. Прямой вызов docker — обычная команда, trap срабатывает.
+DC=(docker compose -f "$COMPOSE_DIR/docker-compose.yml")
 
 # 1) Полный бэкап всей БД (включает identity-таблицы).
 # Записи сессий посетителей (session_replay_chunks) — крупные, короткоживущие (retention) и
 # воспроизводимы из событий только частично; в ежедневный дамп и в его копию на Mac они
 # не попадают: структура таблицы сохраняется, строки — нет (docs/research/session-replay-review-2026-10-04.md).
-dc exec -T postgres pg_dump -Fc -U "$DB_USER" --exclude-table-data=session_replay_chunks "$DB_NAME" > "$FILE"
+"${DC[@]}" exec -T postgres pg_dump -Fc -U "$DB_USER" --exclude-table-data=session_replay_chunks "$DB_NAME" > "$FILE.partial"
+mv "$FILE.partial" "$FILE"
 SIZE=$(du -h "$FILE" | cut -f1)
 echo "[$(date)] Full backup: $FILE ($SIZE)"
 
@@ -87,8 +101,9 @@ echo "[$(date)] Full backup: $FILE ($SIZE)"
 TABLE_FLAGS=""
 for t in $IDENTITY_TABLES; do TABLE_FLAGS="$TABLE_FLAGS -t $t"; done
 # shellcheck disable=SC2086
-dc exec -T postgres pg_dump -U "$DB_USER" "$DB_NAME" --data-only --no-owner --column-inserts $TABLE_FLAGS \
-  | gzip > "$IDENTITY_FILE"
+"${DC[@]}" exec -T postgres pg_dump -U "$DB_USER" "$DB_NAME" --data-only --no-owner --column-inserts $TABLE_FLAGS \
+  | gzip > "$IDENTITY_FILE.partial"
+mv "$IDENTITY_FILE.partial" "$IDENTITY_FILE"
 ISIZE=$(du -h "$IDENTITY_FILE" | cut -f1)
 echo "[$(date)] Identity backup: $IDENTITY_FILE ($ISIZE)"
 
@@ -114,9 +129,7 @@ if [ -n "${OFFSITE_S3_BUCKET:-}" ]; then
   fi
 fi
 
-# Ротация: чистим всё старше KEEP_DAYS.
-find "$BACKUP_DIR" -name "*.dump" -mtime +"$KEEP_DAYS" -delete
-find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$KEEP_DAYS" -delete
+rotate_old
 echo "[$(date)] Cleaned backups older than $KEEP_DAYS days"
 
 # Heartbeat: успех виден в Telegram, а не только в логе на сервере.
@@ -125,7 +138,7 @@ tg_notify "🟢 pg-backup ok: full $SIZE, identity $ISIZE ($(date '+%F %T'))"
 # Durable operational state: cache Redis is cleared during deployments. Use
 # the application's canonical state-Redis URL (dedicated service OR logical DB1).
 # A backend outage must not invalidate an otherwise successful database backup.
-if ! dc exec -T backend python -c '
+if ! "${DC[@]}" exec -T backend python -c '
 import time
 from app.core.cache import get_state_redis_sync
 get_state_redis_sync().set("fe:ops:pg_backup_last_ok", str(time.time()))
