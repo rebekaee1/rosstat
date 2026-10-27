@@ -12789,7 +12789,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "e75af3b94de998fce3a3e19bf50d55d81cb19231d42bc0cd849c14dfb09a1d91",
+      "sha256": "2623bcd2631df9fc6d405ad0fc4825c075d9633d95966a8d2b4f106f42f4b54d",
       "bytes": 2920856,
       "lines": 105704,
       "code": false,
@@ -28545,17 +28545,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "4c6fc22c448ed56eebc797f1d43443200811b3c0c48fe46e533d7ca655219258",
+  "ledger_sha256": "b0bdb632042636e6f3eb264761cebfdeaa28df1a076f2899486a90673e72233b",
   "javascript_inventory_sha256": "cd87b0fce4beece7031dc0c45a8ce672a8a50534facd2b34d4ecc9306f4b0069",
-  "baseline_commit": "4a7931cd5b2674979a7f7876e04f88bd999c5b6d",
+  "baseline_commit": "503585a909a5cb1542a17a6ea4c2dade3d3908b6",
   "branch": "integ/agents-2026-10-27",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }

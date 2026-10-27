@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2034  ·  **Строк:** 1 299 447  ·  **Токенов (≈):** 12 321 405
+**Файлов:** 2034  ·  **Строк:** 1 299 455  ·  **Токенов (≈):** 12 321 595
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 817 | 279 364 | 3 078 859 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 17 | 892 | 11 614 |
-| `docs` | 137 | 827 501 | 7 047 860 |
+| `docs` | 137 | 827 509 | 7 048 050 |
 | `frontend` | 925 | 165 361 | 1 840 677 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 121 | 23 065 | 274 455 |
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 325 190 | 2 648 315 |
-| `docs/client-mechanism-inventory.json` | 239 948 | 1 695 904 |
+| `docs/client-mechanism-inventory.json` | 239 956 | 1 696 094 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
