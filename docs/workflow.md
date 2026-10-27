@@ -131,8 +131,10 @@ Current code исполнялся поверх существующего local 
 SSR/assets; client JS был прежнего local image. Все6 своих containers/volume/network
 удалены после ownership checks,15 других container IDs сохранены.
 
-На сервере source logrotate и effective host config отличаются: main rotate7/nocompress/
-rename+USR1, host rotate14/compress/copytruncate. Выпуск/замена host-config — отдельное
+На сервере source logrotate и effective host config отличались (27.10.2026 host всё ещё rotate14/compress/copytruncate);
+с 27.10.2026 source = rename+USR1, rotate14, сжатие на следующие сутки с `ionice -c3 nice -n19 gzip -6`
+(проверено на logrotate 3.21 в контейнере, на хост не ставилось; подготовка хоста — раздел «Круг починки 27.10.2026» в
+[server-hardening-runbook](server-hardening-runbook-2026-10-04.md): ufw, F10, Zabbix, logrotate, чистка Docker/journald). Выпуск/замена host-config — отдельное
 разрешённое действие; `deploy.sh` не устанавливает fail2ban/logrotate install bundle сам.
 
 **Диск боевого хоста (замер 27.10.2026, 77 ГБ, занято 88 %, свободно ~10 ГБ).** Тома Docker 25 ГБ

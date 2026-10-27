@@ -3,6 +3,7 @@
 # Запускать на сервере из /opt/rosstat под root. Идемпотентен.
 #   scripts/install-host-disk-hygiene.sh --dry-run   # показать, что будет установлено
 #   scripts/install-host-disk-hygiene.sh             # установить
+#   scripts/install-host-disk-hygiene.sh --rollback  # убрать drop-in journald и cron (удалённые журналы и кэш не вернуть)
 #
 # Основание (замеры 2026-10-27, диск 77 ГБ, занято 88 %): кэш сборки Docker 16,1 ГБ
 # без единой активной записи (docker-cleanup.sh не стоял в cron и не чистил без -a),
@@ -19,6 +20,14 @@ DRY=0
 
 JOURNALD_DROPIN=/etc/systemd/journald.conf.d/rosstat.conf
 CRON_FILE=/etc/cron.d/rosstat-docker-cleanup
+
+if [[ "${1:-}" == "--rollback" ]]; then
+  [[ $EUID -eq 0 ]] || { echo "нужен root" >&2; exit 1; }
+  rm -f "$JOURNALD_DROPIN" "$CRON_FILE"
+  systemctl restart systemd-journald
+  echo "Убраны $JOURNALD_DROPIN и $CRON_FILE; journald снова с лимитами по умолчанию."
+  exit 0
+fi
 
 JOURNALD_BODY='[Journal]
 # Потолок журнала systemd: 2,0 ГБ без предела на диске, общем с Postgres.
@@ -40,5 +49,8 @@ install -d -m 0755 /etc/systemd/journald.conf.d
 printf '%s' "$JOURNALD_BODY" > "$JOURNALD_DROPIN"; chmod 0644 "$JOURNALD_DROPIN"
 printf '%s' "$CRON_BODY" > "$CRON_FILE"; chmod 0644 "$CRON_FILE"
 systemctl restart systemd-journald
+# Вакуум стирает самые старые журналы systemd (в том числе строки ssh/сервисов) сверх 500 МБ — это и есть цель.
 journalctl --vacuum-size=500M || true
 echo "Готово. Диск:"; df -h / | tail -1
+echo "Первую большую чистку кэша сборки Docker (4–16 ГБ) делает владелец вручную и с замером:"
+echo "  scripts/docker-cleanup.sh --dry-run   # затем   scripts/docker-cleanup.sh   и   df -h /" 

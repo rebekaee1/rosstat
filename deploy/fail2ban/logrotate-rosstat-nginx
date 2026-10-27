@@ -1,12 +1,19 @@
 /var/log/rosstat-nginx/*.log {
     daily
-    rotate 7
+    rotate 14
     missingok
     notifempty
-    # security.log растёт на сотни МиБ в сутки. На общем с Postgres диске
-    # gzip + copytruncate держали I/O несколько минут и роняли SQL-запросы.
-    # Временный предел хранения — 7 несжатых дней; объём контролировать на хосте.
-    nocompress
+    # F08 (редакция 2026-10-27). История: старый конфиг хоста = copytruncate + compress: копия и gzip
+    # ~360 МБ security.log в 00:00 держали I/O общего с Postgres диска и роняли SQL (см. backlog);
+    # первая редакция F08 ушла в nocompress на 7 суток (~2,7 ГБ несжатых). Теперь: rename (без копии),
+    # а сжатие откладывается на сутки (delaycompress) и идёт процессом с самым низким приоритетом
+    # CPU и диска: ionice -c3 (idle) + nice -n19 + gzip -6, вход и выход через stdin/stdout.
+    # Итог: 1 несжатый «.1» (~400 МБ) + 14 сжатых по ~30 МБ.
+    compress
+    delaycompress
+    compresscmd /usr/bin/ionice
+    compressoptions -c3 nice -n19 gzip -6
+    compressext .gz
     create 0644 101 101
     # Rename не копирует большой лог; nginx master открывает новый файл по USR1.
     sharedscripts

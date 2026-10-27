@@ -10,7 +10,19 @@
 Файлы репозитория: `tor_http_bridge.py` (секреты только из окружения, заголовки не логируются, сравнение за постоянное время),
 `tor-http-bridge.service` (читает `/etc/tor-http-bridge.env`, права 0600). Тесты: `scripts/tests/test_tor_http_bridge.py`.
 
-## Выполнение на сервере (требует разрешения владельца; около 3 минут, окна простоя нет — резерв не на боевом пути)
+## Замер 2026-10-27 (только чтение) и скрипт
+
+На хосте до сих пор работает старый мост: `/opt/tor-http-bridge/tor_http_bridge.py` (0644, зашитые логин/пароль),
+`/etc/tor-http-bridge.env` нет, в журнале юнита 7 строк `Proxy-Authorization` (все от 2026-08-27), мост простаивает.
+**Пароль из `RUSTATS_OPENROUTER_PROXY_URL` (боевой relay `5.129.210.89:8888`) совпадает со старым паролем моста**
+(сравнение хэшей на хосте, значение не выводилось): смена пароля моста относится только к резерву, пароль самого relay
+владелец меняет отдельно на том сервере и затем в `/opt/rosstat/.env`.
+
+Все шаги ниже собраны в `scripts/host-tor-bridge-f10.sh` (`--dry-run` по умолчанию, `--apply [--purge-journal]`, `--verify`,
+`--rollback`): резервные копии `*.before-f10`, пароль не печатается, проверка сырым CONNECT (без пароля 407, с паролем 200).
+Скрипт проверен локально с настоящим `tor_http_bridge.py` против поддельного SOCKS5; на хосте не запускался.
+
+## Выполнение на сервере вручную (требует разрешения владельца; около 3 минут, окна простоя нет — резерв не на боевом пути)
 
 ```bash
 ssh fe-prod
@@ -24,8 +36,9 @@ umask 077
 printf 'BRIDGE_AUTH_USER=pulse_relay\nBRIDGE_AUTH_PASS=%s\n' "$(openssl rand -hex 24)" > /etc/tor-http-bridge.env
 chmod 600 /etc/tor-http-bridge.env
 systemctl daemon-reload && systemctl restart tor-http-bridge && systemctl is-active tor-http-bridge
-# 3. убрать след старого пароля из журнала (он уже недействителен)
-journalctl --rotate && journalctl --vacuum-time=1d
+# 3. убрать след старого пароля из журнала (он уже недействителен). Строки от 2026-08-27 — старше 14 суток,
+#    поэтому хватает --vacuum-time=14d (1d стёрло бы историю всех служб за 13 лишних суток)
+journalctl --rotate && journalctl --vacuum-time=14d
 ```
 
 ## Проверка
