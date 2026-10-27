@@ -60,6 +60,13 @@ HOST_BREAKER_COOLDOWN_S = 20 * 60
 
 _breaker_lock = threading.Lock()
 _host_down_until: dict[str, float] = {}
+# Предохранитель хопа (2026-10-27): прокси-хоп, не принявший соединение к хосту, пропускается `HOP_BREAKER_COOLDOWN_S`.
+# Tor с прода не доходит до rosstat.gov.ru вообще (проверка 27.10: прямой запрос 0,3 с, через Tor 000 за 40 с), а
+# Росстат на закрытый файл текущего месяца (`ind_baza_2023_09-2026.xlsx`, `osn-MM-YYYY.pdf`) отвечает прямым 403
+# со страницей «лимит подключений»: 403 уводил запрос в Tor, тот молчал 60 с, `ConnectionError` взводил предохранитель
+# ХОСТА на 20 минут, и все остальные ряды Росстата вечернего ETL падали мгновенно (16.10, 22.10, 27.10).
+HOP_BREAKER_COOLDOWN_S = 20 * 60
+_hop_down_until: dict[tuple[str, str], float] = {}
 
 
 # Журнал сетевых сбоев текущего прогона парсера (circle 12, 2026-10-12).
@@ -114,6 +121,30 @@ def _mark_host_down(host: str) -> None:
         _host_down_until[host] = time.monotonic() + HOST_BREAKER_COOLDOWN_S
 
 
+def _hop_down_remaining(host: str, hop_url: str) -> float:
+    with _breaker_lock:
+        until = _hop_down_until.get((host, hop_url))
+        if until is None:
+            return 0.0
+        left = until - time.monotonic()
+        if left <= 0:
+            _hop_down_until.pop((host, hop_url), None)
+            return 0.0
+        return left
+
+
+def _mark_hop_down(host: str, hop_url: str) -> None:
+    with _breaker_lock:
+        _hop_down_until[(host, hop_url)] = time.monotonic() + HOP_BREAKER_COOLDOWN_S
+
+
+def host_down_max_remaining() -> float:
+    """Сколько секунд до снятия самого долгого предохранителя хоста (0 - ни один не взведён)."""
+    with _breaker_lock:
+        now = time.monotonic()
+        return max([u - now for u in _host_down_until.values() if u > now] or [0.0])
+
+
 def _mark_host_up(host: str) -> None:
     with _breaker_lock:
         _host_down_until.pop(host, None)
@@ -123,6 +154,7 @@ def _reset_host_breaker() -> None:
     """Для тестов: снять все отметки."""
     with _breaker_lock:
         _host_down_until.clear()
+        _hop_down_until.clear()
 
 
 class _TimeoutAdapter(HTTPAdapter):
@@ -242,6 +274,9 @@ class ProxyFallbackSession(requests.Session):
             if caller_proxies or hop >= len(fallbacks):
                 raise
             nxt = fallbacks[hop]
+            if _hop_down_remaining(_host(url), nxt):
+                logger.info("ETL %s %s: %s hop skipped (down recently)", method, url, nxt.split("://", 1)[0])
+                raise
             logger.warning(
                 "ETL %s %s failed (%s) — retry via %s",
                 method,
@@ -249,13 +284,7 @@ class ProxyFallbackSession(requests.Session):
                 type(exc).__name__,
                 nxt.split("://", 1)[0],
             )
-            return self._request_hop(
-                method,
-                url,
-                _proxy_hop=hop + 1,
-                proxies=_proxy_dict(nxt),
-                **kwargs,
-            )
+            return self._via_next_hop(method, url, hop, nxt, kwargs, banned_resp=None)
 
         if (
             not caller_proxies
@@ -263,6 +292,12 @@ class ProxyFallbackSession(requests.Session):
             and resp.status_code in _PROXY_FALLBACK_STATUSES
         ):
             nxt = fallbacks[hop]
+            if _hop_down_remaining(_host(url), nxt):
+                logger.info(
+                    "ETL %s %s → HTTP %s; %s hop skipped (down recently)",
+                    method, url, resp.status_code, nxt.split("://", 1)[0],
+                )
+                return resp
             logger.warning(
                 "ETL %s %s → HTTP %s — retry via %s",
                 method,
@@ -270,13 +305,7 @@ class ProxyFallbackSession(requests.Session):
                 resp.status_code,
                 nxt.split("://", 1)[0],
             )
-            return self._request_hop(
-                method,
-                url,
-                _proxy_hop=hop + 1,
-                proxies=_proxy_dict(nxt),
-                **kwargs,
-            )
+            return self._via_next_hop(method, url, hop, nxt, kwargs, banned_resp=resp)
         # HTTP/SOCKS hop returned ban-status → try next fallback if any
         if (
             caller_proxies
@@ -284,19 +313,44 @@ class ProxyFallbackSession(requests.Session):
             and resp.status_code in _PROXY_FALLBACK_STATUSES
         ):
             nxt = fallbacks[hop]
+            if _hop_down_remaining(_host(url), nxt):
+                return resp
             logger.warning(
                 "ETL proxy hop failed HTTP %s — retry via %s",
                 resp.status_code,
                 nxt.split("://", 1)[0],
             )
-            return self._request_hop(
-                method,
-                url,
-                _proxy_hop=hop + 1,
-                proxies=_proxy_dict(nxt),
-                **kwargs,
-            )
+            return self._via_next_hop(method, url, hop, nxt, kwargs, banned_resp=resp)
         return resp
+
+    def _via_next_hop(
+        self,
+        method: str,
+        url: str,
+        hop: int,
+        nxt: str,
+        kwargs: dict[str, Any],
+        *,
+        banned_resp: requests.Response | None,
+    ) -> requests.Response:
+        """Выполнить следующий хоп. Если прокси не принял соединение, пометить хоп недоступным для хоста.
+
+        Когда прежний хоп УЖЕ получил ответ хоста (бан-статус, например 403 Росстата), отказ прокси не делает хост
+        недоступным: возвращаем исходный ответ вместо `ConnectionError`, иначе сработает предохранитель хоста.
+        """
+        try:
+            return self._request_hop(
+                method, url, _proxy_hop=hop + 1, proxies=_proxy_dict(nxt), **kwargs,
+            )
+        except _PROXY_FALLBACK_EXC:
+            _mark_hop_down(_host(url), nxt)
+            if banned_resp is not None:
+                logger.warning(
+                    "ETL %s %s: %s hop unreachable — keeping HTTP %s from the previous hop",
+                    method, url, nxt.split("://", 1)[0], banned_resp.status_code,
+                )
+                return banned_resp
+            raise
 
 
 def create_session(

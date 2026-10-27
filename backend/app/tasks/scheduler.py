@@ -186,6 +186,78 @@ async def run_etl_for_indicator_status(indicator_code: str) -> tuple[bool, str |
             raise
 
 
+def _is_network_failure(exc: BaseException) -> bool:
+    """Сбой источника сетевого рода (хост не ответил / предохранитель хоста), а не ошибка данных или разметки.
+
+    `BaseParser.run` теряет тип исключения (кладёт текст в `fetch_log` и поднимает `RuntimeError`), поэтому
+    кроме типов проверяется слово «unreachable» из `ProxyFallbackSession` и `RosstatUnreachable`.
+    """
+    import requests
+
+    from app.services.rosstat_sdds_fetcher import RosstatUnreachable
+
+    if isinstance(exc, (requests.RequestException, RosstatUnreachable)):
+        return True
+    return "unreachable" in str(exc).lower()
+
+
+# Повтор после остывания предохранителя хоста (2026-10-27): вечерний ETL 16.10, 22.10 и 27.10 терял 17-25 рядов
+# Росстата из-за одного сбоя в начале и ждал следующего прогона 10-14 часов. Теперь сбои сетевого рода
+# повторяются один раз после остывания предохранителя, если это укладывается в потолок времени ETL.
+ETL_NETWORK_RETRY_MARGIN_S = 120
+
+
+async def _retry_network_failures(
+    retry_tasks: list[dict],
+    t0: float,
+    updated_codes: list[str],
+    failed_codes: list[str],
+    degraded: dict[str, list[str]],
+) -> int:
+    """Один повторный проход по рядам, упавшим из-за недоступности хоста. Возвращает число вылеченных."""
+    from app.config import settings
+    from app.services.http_client import host_down_max_remaining
+
+    if not retry_tasks:
+        return 0
+    wait = host_down_max_remaining()
+    limit = int(getattr(settings, "etl_job_max_seconds", 0) or 0)
+    if wait > 0:
+        if limit > 0 and (time.monotonic() - t0) + wait + ETL_NETWORK_RETRY_MARGIN_S >= limit:
+            logger.warning(
+                "Daily ETL: network retry skipped, breaker needs %.0fs more and the job ceiling leaves no room", wait,
+            )
+            return 0
+        logger.info("Daily ETL: waiting %.0fs for host breaker, then retrying %d network failure(s)", wait, len(retry_tasks))
+        await asyncio.sleep(wait + 5)
+    healed = 0
+    for task in retry_tasks:
+        code = task["code"]
+        if etl_job_deadline_exceeded(t0):
+            break
+        async with _lock:
+            if code in _running_locks:
+                continue
+            _running_locks.add(code)
+        try:
+            had_new, status = await _run_etl_with_timeout(code, etl_timeout_for(task["parser_type"]))
+        except Exception as e:  # noqa: BLE001 — остаётся в failed_codes
+            logger.warning("Daily ETL: network retry for '%s' failed again: %s", code, str(e)[:200])
+            continue
+        finally:
+            async with _lock:
+                _running_locks.discard(code)
+        if code in failed_codes:
+            failed_codes.remove(code)
+        if had_new:
+            updated_codes.append(code)
+        if status in degraded:
+            degraded[status].append(code)
+        healed += 1
+    logger.info("Daily ETL: network retry healed %d of %d", healed, len(retry_tasks))
+    return healed
+
+
 async def daily_update_job():
     """Плановая задача: обновить все активные индикаторы, затем пересчитать производные."""
     async with async_session() as db:
@@ -210,6 +282,7 @@ async def daily_update_job():
     failed_codes: list[str] = []
     degraded: dict[str, list[str]] = {s: [] for s in DEGRADED_STATUSES}
     degraded["deadline_skipped"] = []
+    network_retry: list[dict] = []
     for task in indicator_tasks:
         code = task["code"]
         if task["parser_type"] == "derived":
@@ -244,9 +317,13 @@ async def daily_update_job():
         except Exception as e:
             logger.exception("Failed to update indicator '%s'", code)
             failed_codes.append(code)
+            if _is_network_failure(e):
+                network_retry.append(task)
         finally:
             async with _lock:
                 _running_locks.discard(code)
+
+    await _retry_network_failures(network_retry, t0, updated_codes, failed_codes, degraded)
 
     if updated_codes:
         source_codes = _updated_source_codes(updated_codes)

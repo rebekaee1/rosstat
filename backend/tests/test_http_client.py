@@ -244,3 +244,68 @@ def test_host_breaker_ignores_ssl_errors(monkeypatch):
 def test_default_retry_limits_connect_attempts():
     assert http_client._RETRY_STRATEGY.connect == 1
     assert http_client._RETRY_STRATEGY.total == 3
+
+
+# --- 2026-10-27: 403 Росстата + молчащий Tor не взводят предохранитель хоста ---
+
+
+def _resp(status):
+    r = MagicMock(spec=requests.Response)
+    r.status_code = status
+    return r
+
+
+def _tor_only_session(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "etl_http_proxy_url", "off")
+    monkeypatch.setattr(settings, "etl_socks_proxy_url", "socks5h://172.18.0.1:9050")
+    return create_session(proxy=False, socks=True, retry=Retry(total=0, raise_on_status=False))
+
+
+def test_ban_status_with_dead_proxy_hop_returns_403_and_keeps_host_up(monkeypatch):
+    s = _tor_only_session(monkeypatch)
+    calls = []
+
+    def fake_request(self, method, url, **kwargs):
+        px = (kwargs.get("proxies") or {}).get("https")
+        calls.append(px)
+        if px:
+            raise requests.exceptions.ConnectTimeout("tor silent")
+        return _resp(403)
+
+    with patch.object(requests.Session, "request", fake_request):
+        resp = s.get("https://rosstat.gov.ru/storage/mediabank/ind_baza_2023_09-2026.xlsx")
+        assert resp.status_code == 403  # ответ хоста, не ConnectionError
+        assert http_client._host_down_remaining("rosstat.gov.ru") == 0  # хост жив
+        # второй такой же запрос: Tor-хоп пропущен, лишней минуты ожидания нет
+        calls.clear()
+        resp2 = s.get("https://rosstat.gov.ru/storage/mediabank/osn-10-2026.pdf")
+    assert resp2.status_code == 403
+    assert calls == [None]
+
+
+def test_other_files_still_work_after_403_and_dead_tor(monkeypatch):
+    s = _tor_only_session(monkeypatch)
+
+    def fake_request(self, method, url, **kwargs):
+        if (kwargs.get("proxies") or {}).get("https"):
+            raise requests.exceptions.ConnectTimeout("tor silent")
+        return _resp(403 if "09-2026" in url else 200)
+
+    with patch.object(requests.Session, "request", fake_request):
+        assert s.get("https://rosstat.gov.ru/storage/mediabank/ind_baza_2023_09-2026.xlsx").status_code == 403
+        assert s.get("https://rosstat.gov.ru/storage/mediabank/ind_baza_2023_08-2026.xlsx").status_code == 200
+
+
+def test_direct_and_proxy_both_down_still_arms_host_breaker(monkeypatch):
+    s = _tor_only_session(monkeypatch)
+
+    def fake_request(self, method, url, **kwargs):
+        raise requests.exceptions.ConnectTimeout("down")
+
+    with patch.object(requests.Session, "request", fake_request):
+        with pytest.raises(requests.ConnectionError):
+            s.get("https://rosstat.gov.ru/x")
+    assert http_client._host_down_remaining("rosstat.gov.ru") > 0
+    assert http_client.host_down_max_remaining() > 0
