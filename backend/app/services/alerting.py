@@ -119,6 +119,24 @@ async def _send_one(token: str, payload: dict, kind: str) -> bool:
     return ok
 
 
+def exception_reason(exc: BaseException | None, limit: int = 300) -> str:
+    """Причина сбоя для текста алерта: `str(exc)` либо, если он пуст, имя класса (и причина-цепочка).
+
+    У таймаутов httpx/requests и ряда сетевых исключений `str(exc)` пустой: алерты «Сбой webmaster_queries_daily»
+    и «Квота/пользователь недоступны:» приходили без причины ежедневно с 14.10.2026 (Вебмастер Яндекса, ConnectTimeout).
+    """
+    if exc is None:
+        return "причина не указана"
+    text = str(exc).strip()
+    if not text:
+        text = type(exc).__name__
+        cause = exc.__cause__ or exc.__context__
+        if cause is not None:
+            detail = str(cause).strip()
+            text += f" ({type(cause).__name__}: {detail})" if detail else f" ({type(cause).__name__})"
+    return text[:limit]
+
+
 def site_version_label(locale: str | None) -> str:
     """Человеческая подпись версии сайта в Telegram: русская / английская."""
     code = (locale or "").strip().lower()

@@ -22,6 +22,7 @@ import logging
 from app.config import settings
 from app.core.cache import get_state_redis
 from app.database import async_session
+from app.services.alerting import exception_reason
 from app.services.seo_content import DOMAIN
 from app.services.yandex_webmaster_client import YandexWebmasterClient
 
@@ -84,7 +85,7 @@ async def recrawl_daily_job(
         # Н-24: живой токен + недоступный API = дневная квота переобхода
         # потеряна; молчаливый лог откладывал обнаружение на недели.
         logger.exception("Recrawl job: quota/user fetch failed")
-        await _alert_recrawl(f"Квота/пользователь недоступны: {str(exc)[:200]}")
+        await _alert_recrawl(f"Квота/пользователь недоступны: {exception_reason(exc, 200)}")
         return {"submitted": 0, "quota": 0}
 
     if remaining <= 0:

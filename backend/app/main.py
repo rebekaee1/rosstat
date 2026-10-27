@@ -299,7 +299,7 @@ def _scheduler_event_listener(event) -> None:
     try:
         from html import escape
 
-        from app.services.alerting import send_telegram
+        from app.services.alerting import exception_reason, send_telegram
 
         if _shutting_down and getattr(event, "exception", None):
             logger.warning("Scheduler job interrupted by shutdown: job=%s exc=%s",
@@ -308,7 +308,7 @@ def _scheduler_event_listener(event) -> None:
 
         if getattr(event, "exception", None):
             kind = "🔴 <b>Сбой фоновой задачи</b>"
-            detail = escape(str(event.exception)[:300])
+            detail = escape(exception_reason(event.exception))
         else:
             kind = "🟡 <b>Пропуск фоновой задачи</b>"
             detail = "задача не запустилась в срок"
