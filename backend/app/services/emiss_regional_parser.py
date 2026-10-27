@@ -34,8 +34,27 @@ excluded.value``. Если точки и границы истории в мет
 прогон не инвалидирует кэш. Каждый изменившийся месяц публикуется после
 его commit, поэтому ошибка последующего месяца не скрывает сохранённые цены.
 
-Обновление: ежемесячный job ``emiss_regional_job`` (25-е число, 07:40 МСК —
-после фактической публикации цен за отчётный месяц в середине следующего).
+Обновление: job ``emiss_regional_job`` (15, 20, 25 и 28-е число, 07:40 МСК —
+Росстат публикует цены за отчётный месяц в середине следующего; прогон
+идемпотентен и стоит три-четыре запроса, поэтому лишние запуски дёшевы, а один
+неудачный не откладывает загрузку на месяц).
+
+Круг починки 27.10.2026 (цены стояли на 2026-07, алерт «парсер упал» приходил
+25.09 и 25.10):
+
+- живой ответ несёт в ``dim57831`` НАЗВАНИЕ территории («Центральный федеральный
+  округ»), а не ОКАТО-oid; справочник строился только по oid, и каждый месяц
+  разбирался в 0 точек (проверено на ответе источника 27.10.2026: август и
+  сентябрь 2026 опубликованы, 94 строки, ни одна не сопоставлялась). Теперь
+  справочник знает и oid, и названия (``emiss_dimnames.json`` лежит рядом с
+  ``emiss_okato_31448.json``: ``scripts/`` в образ backend не попадает);
+- запрос шёл прямым ``httpx`` мимо ETL-сессии (прямой ход → HTTP-прокси → SOCKS),
+  а fedstat отвечает серверу прода 403 (проверено с хоста 27.10.2026); теперь
+  запрос идёт через ``create_session`` как у остальных ETL-источников. 403/404
+  не повторяются (бан не оживает повтором), 5xx/429/сетевые сбои — повторяются;
+- ответ со строками, но без единой разобранной цены, — признак смены формата:
+  предупреждение и ``unparsed`` в статистике вместо тихого нуля;
+- в алерт о падении попадает причина.
 """
 
 from __future__ import annotations
@@ -48,7 +67,6 @@ from datetime import date
 from pathlib import Path
 from typing import Callable, Sequence
 
-import httpx
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -56,6 +74,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.cache import publish_committed_regional_changes
 from app.database import async_session
 from app.models import Region, RegionIndicator, RegionMonthlyPoint
+from app.services.http_client import create_session
 from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds
 
 logger = logging.getLogger(__name__)
@@ -84,16 +103,38 @@ MONTH_OIDS = {
 # регионального контекста: backend — отдельный build context Docker
 # (docker-compose.yml), scripts/ в образ не попадает.
 _OKATO_PATH = Path(__file__).resolve().parents[1] / "data" / "regional" / "emiss_okato_31448.json"
+# «Название территории в ответе dataGrid.do → slug» (в ответе dim57831 — название, не oid).
+_DIMNAMES_PATH = Path(__file__).resolve().parents[1] / "data" / "regional" / "emiss_dimnames.json"
 
 _FETCH_TIMEOUT = 60.0
 _ATTEMPTS = 4
 _PAUSE_BETWEEN_REQUESTS = 0.4
+# Статусы, которые повтором не лечатся: бан по адресу, отсутствие ресурса, ошибка запроса.
+_NO_RETRY_STATUSES = frozenset({400, 401, 403, 404, 405})
+
+
+class EmissFormatError(RuntimeError):
+    """Источник ответил строками, но ни одна цена не разобрана: вероятно, сменился формат ответа."""
 
 
 def load_territory_ids(path: Path = _OKATO_PATH) -> list[str]:
     """ОКАТО-коды территорий витрины 31448 из справочника (85 субъектов + РФ)."""
     mapping = json.loads(path.read_text(encoding="utf-8"))
     return sorted(set(mapping.values()) | {_RUSSIA_ID})
+
+
+def load_dimnames(
+    okato_path: Path = _OKATO_PATH, names_path: Path = _DIMNAMES_PATH,
+) -> dict[str, str]:
+    """Справочник территории витрины → slug: и по ОКАТО-oid, и по названию из ответа.
+
+    Живой ответ кладёт в ``dim57831`` название («Центральный федеральный округ»), в запросе
+    территории задаются oid; одна карта обслуживает оба вида ключа.
+    """
+    okato = json.loads(okato_path.read_text(encoding="utf-8"))
+    out = {str(oid): slug for slug, oid in okato.items()}
+    out.update(json.loads(names_path.read_text(encoding="utf-8")))
+    return out
 
 
 def parse_ru_float(raw) -> float | None:
@@ -129,12 +170,14 @@ def parse_grid_response(
     Каноническая РФ-строка (1688487) схлопывается в slug ``russia`` — тот же,
     куда пишет витрина «без новых субъектов» с 2023 года.
     """
-    points: list[tuple[str, str, int, float]] = []
+    # Ключ (товар, регион, период) уникален: «РФ» приходит под двумя названиями (до и после 2023), и
+    # дубль в одном INSERT … ON CONFLICT DO UPDATE уронил бы весь месяц.
+    unique: dict[tuple[str, str, int], float] = {}
     period = year * 100 + month
     for row in payload.get("results", []):
-        okato = str(row.get("dim57831") or "")
-        slug = dimnames.get(okato)
-        if okato == _RUSSIA_LEGACY:
+        territory = str(row.get("dim57831") or "").strip()
+        slug = dimnames.get(territory)
+        if territory == _RUSSIA_LEGACY:
             slug = "russia"
         if not slug:
             continue
@@ -148,8 +191,8 @@ def parse_grid_response(
             value = parse_ru_float(raw)
             if value is None or value <= 0:
                 continue
-            points.append((code, slug, period, value))
-    return points
+            unique[(code, slug, period)] = value
+    return [(code, slug, per, value) for (code, slug, per), value in unique.items()]
 
 
 async def fetch_month_points(
@@ -181,11 +224,48 @@ async def fetch_month_points(
     if year <= 2022:
         params.append(("selectedFilterIds", f"57831_{_RUSSIA_LEGACY}"))
     payload = await post_grid(_INDICATOR_ID, params)
-    return parse_grid_response(payload, year=year, month=month, dimnames=dimnames)
+    points = parse_grid_response(payload, year=year, month=month, dimnames=dimnames)
+    rows = payload.get("results") or []
+    if rows and not points:
+        sample = str((rows[0] or {}).get("dim57831") or "")[:60]
+        raise EmissFormatError(
+            f"{year}-{month:02d}: ответ содержит {len(rows)} строк, ни одна цена не разобрана "
+            f"(первая территория: {sample!r})"
+        )
+    return points
+
+
+def _post_grid_sync(indicator_id: int, body: bytes, headers: dict[str, str]) -> dict:
+    """POST dataGrid.do через ETL-сессию (прямой ход → HTTP-прокси → SOCKS), с повтором транзиентных сбоев."""
+    import requests
+
+    session = create_session(timeout=int(_FETCH_TIMEOUT))
+    last_err: Exception | None = None
+    try:
+        for attempt in range(_ATTEMPTS):
+            try:
+                resp = session.post(
+                    f"{DATA_GRID_URL}?id={indicator_id}", data=body, headers=headers,
+                    timeout=_FETCH_TIMEOUT,
+                )
+                if resp.status_code in _NO_RETRY_STATUSES:
+                    # Бан и ошибка запроса повтором не лечатся: сразу наружу, с кодом.
+                    last_err = RuntimeError(f"HTTP {resp.status_code}")
+                    break
+                resp.raise_for_status()
+                return resp.json()
+            except (requests.RequestException, ValueError) as exc:
+                last_err = exc
+                if attempt < _ATTEMPTS - 1:
+                    time.sleep(2 * (attempt + 1))
+    finally:
+        session.close()
+    detail = f"{type(last_err).__name__}: {last_err}" if last_err else "нет ответа"
+    raise RuntimeError(f"dataGrid.do?id={indicator_id}: {detail}")
 
 
 async def _post_grid(indicator_id: int, params: list[tuple[str, str]]) -> dict:
-    """POST dataGrid.do с ретраями транзиентных сбоев (сетевой источник нестабилен)."""
+    """POST dataGrid.do (сетевой источник нестабилен; адрес сервера прода fedstat режет 403)."""
     import urllib.parse
 
     encoded = urllib.parse.urlencode(params).encode()
@@ -195,21 +275,7 @@ async def _post_grid(indicator_id: int, params: list[tuple[str, str]]) -> dict:
         "User-Agent": _UA,
         "Referer": f"https://www.fedstat.ru/indicator/{indicator_id}",
     }
-    last_err: Exception | None = None
-    async with httpx.AsyncClient(timeout=_FETCH_TIMEOUT, follow_redirects=True) as client:
-        for attempt in range(_ATTEMPTS):
-            try:
-                resp = await client.post(
-                    f"{DATA_GRID_URL}?id={indicator_id}",
-                    content=encoded,
-                    headers=headers,
-                )
-                resp.raise_for_status()
-                return resp.json()
-            except Exception as exc:  # noqa: BLE001 — ретрай транзиентных сбоев
-                last_err = exc
-                await asyncio.sleep(2 * (attempt + 1))
-    raise RuntimeError(f"dataGrid.do?id={indicator_id}: {last_err}")
+    return await asyncio.to_thread(_post_grid_sync, indicator_id, encoded, headers)
 
 
 def months_to_fetch(
@@ -269,11 +335,8 @@ async def run_emiss_regional_update(
     публикуется только если и точки, и границы фактической истории неизменны.
     """
     if dimnames is None:
-        # Справочник «ОКАТО-oid → slug»: и территориальные id, и сопоставление
-        # slug'ов — из одного файла (одна точка истины, emiss_dimnames.json в
-        # scripts/regional — dev-копия того же маппинга).
-        mapping = json.loads(_OKATO_PATH.read_text(encoding="utf-8"))
-        dimnames = {str(oid): slug for slug, oid in mapping.items()}
+        # oid → slug (из запроса) и название → slug (из ответа): живой dataGrid.do отдаёт в dim57831 название.
+        dimnames = load_dimnames()
     if territory_ids is None:
         territory_ids = load_territory_ids()
 
@@ -311,10 +374,18 @@ async def run_emiss_regional_update(
         return {"months": 0, "added": 0, "updated": 0}
 
     added = updated = 0
+    unparsed: list[str] = []
     for year, month in plan:
-        points = await fetch_month_points(
-            year, month, territory_ids, dimnames, post_grid=post_grid,
-        )
+        try:
+            points = await fetch_month_points(
+                year, month, territory_ids, dimnames, post_grid=post_grid,
+            )
+        except EmissFormatError as exc:
+            # Формат ответа сменился для этого месяца: остальные месяцы всё равно пробуем, итог — в статистике.
+            logger.warning("emiss_regional: %s", exc)
+            unparsed.append(f"{year}-{month:02d}")
+            await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
+            continue
         by_code: dict[str, list[tuple[str, int, float]]] = {}
         for code, slug, period, value in points:
             by_code.setdefault(code, []).append((slug, period, value))
@@ -350,7 +421,10 @@ async def run_emiss_regional_update(
         )
         await asyncio.sleep(_PAUSE_BETWEEN_REQUESTS)
 
-    return {"months": len(plan), "added": added, "updated": updated}
+    stats = {"months": len(plan), "added": added, "updated": updated}
+    if unparsed:
+        stats["unparsed"] = len(unparsed)
+    return stats
 
 
 async def _upsert_monthly_points(
@@ -387,6 +461,9 @@ def literal_inserted():
     return literal_column("(xmax = 0)").label("inserted")
 
 
+_ALERT_MUTE_S = 3 * 24 * 3600
+
+
 async def emiss_regional_job() -> dict[str, int]:
     """Точка входа планировщика: обновление региональных цен на топливо."""
     started = time.monotonic()
@@ -402,19 +479,34 @@ async def emiss_regional_job() -> dict[str, int]:
                 f"ревизий: {stats['updated']}",
                 kind="etl_summary",
             )
+        if stats.get("unparsed"):
+            from app.services.alerting import alert_muted, send_telegram
+
+            if not await alert_muted("emiss_regional:unparsed", _ALERT_MUTE_S):
+                await send_telegram(
+                    "🟡 <b>Региональные цены на топливо: ответ получен, цены не разобраны</b> — "
+                    f"месяцев без разбора: {stats['unparsed']}. Вероятно, источник сменил формат ответа.",
+                    kind="etl_alert",
+                )
         logger.info(
             "emiss_regional_job done in %.1fs: %s", time.monotonic() - started, stats,
         )
         return stats
-    except Exception:
+    except Exception as exc:
         logger.exception("emiss_regional_job failed")
-        from app.services.alerting import send_telegram
+        from html import escape
+
+        from app.services.alerting import alert_muted, exception_reason, send_telegram
 
         try:
-            await send_telegram(
-                "🔴 <b>Парсер региональных цен на топливо упал</b> — смотри логи backend",
-                kind="etl_alert",
-            )
+            # Прогон бывает несколько раз в месяц (15/20/25/28), а причина обычно одна и та же (доступ к
+            # источнику): один алерт на трое суток.
+            if not await alert_muted("emiss_regional:failed", _ALERT_MUTE_S):
+                await send_telegram(
+                    "🔴 <b>Парсер региональных цен на топливо упал</b>\n"
+                    f"Причина: {escape(exception_reason(exc, 300))}",
+                    kind="etl_alert",
+                )
         except Exception:  # noqa: BLE001 — алерт не должен маскировать исключение
             pass
         raise

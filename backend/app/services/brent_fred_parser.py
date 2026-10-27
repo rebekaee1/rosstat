@@ -31,7 +31,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fetch_failed
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +116,9 @@ class BrentDailyFredParser(BaseParser):
                 for d, v in _parse_yahoo(payload):
                     by_date[d] = v
         except Exception as e:
-            fetch_log.error_message = f"Yahoo {symbol} fetch failed: {e}"[:500]
+            reason = f"Yahoo {symbol} fetch failed: {type(e).__name__}: {e}"[:500]
+            fetch_log.error_message = reason
+            mark_fetch_failed(fetch_log, reason)
             return [], url
 
         return sorted(by_date.items()), url

@@ -93,6 +93,30 @@ def parse_toc(raw: str) -> dict[str, TocEntry]:
     return result
 
 
+# Набор, который Евростат переименовал: старый код исчез из оглавления, но API по нему продолжает отдавать
+# свежие данные (27.10.2026: `tec00116` «Номинальная производительность труда на занятого» обновлён 22.10,
+# значения совпадают со срезом `na_item=NLPR_PER` набора-преемника `tesem160` до последнего знака; 33 публичные
+# карточки не обновлялись бы вечно, а ночная сводка писала «нет в оглавлении»). Дату версии берём у преемника,
+# грузим по прежнему коду, чтобы адреса и история карточек сохранились. Если API перестанет отдавать
+# старый код, загрузка набора даст ошибку и сводка её покажет.
+TOC_SUCCESSOR_ALIASES: dict[str, str] = {"tec00116": "tesem160"}
+
+
+def toc_entry_for(toc: dict[str, "TocEntry"], dataset_id: str) -> "TocEntry | None":
+    """Запись оглавления набора; для переименованного набора — версия его преемника под прежним кодом."""
+    entry = toc.get(dataset_id)
+    if entry is not None:
+        return entry
+    successor = toc.get(TOC_SUCCESSOR_ALIASES.get(dataset_id, ""))
+    if successor is None:
+        return None
+    return TocEntry(
+        dataset_id=dataset_id,
+        updated_at=successor.updated_at,
+        structure_changed_at=successor.structure_changed_at,
+    )
+
+
 TOC_ATTEMPTS = 3
 
 
@@ -187,7 +211,7 @@ async def select_changed_datasets(toc: dict[str, TocEntry]) -> list[TocEntry]:
 
     selected: list[TocEntry] = []
     for dataset_id in sorted(candidates):
-        entry = toc.get(dataset_id)
+        entry = toc_entry_for(toc, dataset_id)
         if entry is None:
             continue
         state = states.get(dataset_id)
@@ -442,7 +466,11 @@ async def world_eurostat_ingest_job(
     # (история не теряется), но владелец узнаёт об этом сразу, а не по значку «Устарело».
     vanished: list[tuple[str, str]] = []
     if len(toc) > MIN_TRUSTED_TOC_ENTRIES:
-        vanished = [(ds, "") for ds in sorted(await _listed_dataset_ids() - set(toc))]
+        vanished = [
+            (ds, "")
+            for ds in sorted(await _listed_dataset_ids() - set(toc))
+            if toc_entry_for(toc, ds) is None
+        ]
 
     total_changed = len(changed)
     if not shadow and changed:

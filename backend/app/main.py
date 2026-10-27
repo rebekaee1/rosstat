@@ -635,13 +635,14 @@ async def lifespan(app: FastAPI):
         )
 
         # Помесячные региональные витрины ЕМИСС (цены на топливо, ADR-0008):
-        # Росстат публикует цены за отчётный месяц в середине следующего —
-        # 25-е число даёт запас на дозалив и ревизии задним числом.
+        # Росстат публикует цены за отчётный месяц в середине следующего. Прогон идемпотентен и стоит
+        # три-четыре запроса, поэтому 15/20/25/28-е: сбой доступа к источнику (с 25.09 и 25.10.2026 fedstat
+        # режет адрес прода 403) не откладывает загрузку на месяц; 25-е остаётся запасом на дозалив.
         from app.tasks.scheduler import emiss_regional_job as _emiss_regional
 
         scheduler.add_job(
             locked_job(_emiss_regional, "emiss_regional", ttl_seconds=2 * 3600),
-            trigger=CronTrigger(hour=7, minute=40, day=25, timezone="Europe/Moscow"),
+            trigger=CronTrigger(hour=7, minute=40, day="15,20,25,28", timezone="Europe/Moscow"),
             id="emiss_regional",
             name="Monthly EMISS regional fuel prices (region_monthly_data)",
             replace_existing=True,

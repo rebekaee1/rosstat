@@ -49,7 +49,7 @@ from typing import ClassVar
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fetch_failed
 from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
@@ -136,7 +136,9 @@ class EcbFxParser(BaseParser):
         try:
             text = await asyncio.to_thread(_fetch_exr_csv, currency)
         except Exception as exc:
-            fetch_log.error_message = f"ECB EXR {currency} fetch failed: {exc}"[:500]
+            reason = f"ECB EXR {currency} fetch failed: {type(exc).__name__}: {exc}"[:500]
+            fetch_log.error_message = reason
+            mark_fetch_failed(fetch_log, reason)
             return [], url
 
         points = _parse_exr_csv(text, backfill_from=backfill_from)

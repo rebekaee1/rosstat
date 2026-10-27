@@ -38,7 +38,7 @@ CASES = [
          "purpose": ["TOTAL", "PER"], "c_dest": ["EU27_2020_FOR", "NEU27_2020_FOR", "DOM", "FOR", "WORLD"],
          "statinfo": ["TOTAL", "AVG_TRP"], "unit": ["EUR"], "geo": ["FR"], "time": ["2024"]},
         {"freq": "A", "unit": "EUR", "c_dest": "DOM", "purpose": "TOTAL", "accommod": "TOTAL",
-         "duration": "N1-3", "statinfo": "TOTAL"},
+         "duration": "N_GE1", "statinfo": "TOTAL"},
     ),
 ]
 
@@ -55,3 +55,30 @@ def test_without_pins_the_new_unit_flips_the_slice():
     dims = {"freq": ["Q"], "purchase": ["TOTAL"], "unit": ["I15_Q", "I25_Q", "RCH_Q", "RCH_A"],
             "geo": ["FR"], "time": ["2026-Q2"]}
     assert choose_headline_slice(dims, dataset_id="some_new_hpi")["unit"] == "RCH_A"
+
+
+def test_tour_dem_exac_expansion_reproduces_all_five_published_slices():
+    """Круг починки 27.10.2026: план срезов набора совпадает с пятью срезами карточек на проде.
+
+    Закрепление duration=N1-3 (круг 12) давало (N1-3, AVG_NGT/AVG_TRP) вместо опубликованных
+    (N_GE1, AVG_NGT/AVG_TRP): 58 из 145 карточек без среза, карантин с 26.09. Измерения — как в API 27.10.2026.
+    """
+    from app.data.eurostat_deep_expand import resolve_slice_specs
+
+    dims = {
+        "freq": ["A"],
+        "accommod": ["TOTAL", "TOT_R", "R_HOT", "R_CAMP", "R_APT", "R_OTH", "TOT_NR", "NR_OWN", "NR_RF", "NR_OTH"],
+        "duration": ["N_GE1", "N1-3", "N_GE4"],
+        "purpose": ["TOTAL", "PER", "PROF"],
+        "c_dest": ["EU27_2020_FOR", "NEU27_2020_FOR", "DOM", "FOR", "WORLD"],
+        "statinfo": ["TOTAL", "AVG_TRP", "AVG_NGT"],
+        "unit": ["EUR"], "geo": ["FR"], "time": ["2025"],
+    }
+    plan = resolve_slice_specs("tour_dem_exac", dims)
+    got = {(s["duration"], s["statinfo"]) for s in plan.specs}
+    published = {
+        ("N_GE1", "TOTAL"), ("N1-3", "TOTAL"), ("N_GE4", "TOTAL"),
+        ("N_GE1", "AVG_NGT"), ("N_GE1", "AVG_TRP"),
+    }
+    assert got == published
+    assert {s["c_dest"] for s in plan.specs} == {"DOM"}

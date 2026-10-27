@@ -91,6 +91,7 @@ DEGRADED_STATUSES: tuple[str, ...] = (STATUS_PARSED_ZERO, STATUS_FALLBACK_USED)
 
 _EXPECTED_EMPTY_ATTR = "_etl_expected_empty_reason"
 _FALLBACK_ATTR = "_etl_fallback_reason"
+_FETCH_FAILED_ATTR = "_etl_fetch_failed_reason"
 _COMMITTED_ATTR = "_etl_storage_committed"
 
 
@@ -121,6 +122,22 @@ def mark_fallback_used(fetch_log: FetchLog, reason: str) -> None:
     новее покрытия резервного снимка (`replace_series`).
     """
     setattr(fetch_log, _FALLBACK_ATTR, reason)
+
+
+def mark_fetch_failed(fetch_log: FetchLog, reason: str) -> None:
+    """Парсер сообщает: источник не ответил (или ответил не тем), поэтому точек нет.
+
+    Раньше парсеры (IMF WEO, FRED, Pink Sheet, ECB) ловили сетевую ошибку, клали текст в
+    ``fetch_log.error_message`` и возвращали ``[]``: ETL писал ``parsed_zero`` и рассылал
+    «вероятна смена layout источника» (23.10.2026 IMF 401 по трём рядам, 18.10 Pink Sheet
+    TLS-таймаут). С пометкой пустой результат без точек получает ``failed`` и честную причину;
+    алерт zero_parse не шлётся. Атрибут транзиентный, живёт только в текущем прогоне.
+    """
+    setattr(fetch_log, _FETCH_FAILED_ATTR, reason)
+
+
+def fetch_failed_reason(fetch_log: FetchLog) -> str | None:
+    return getattr(fetch_log, _FETCH_FAILED_ATTR, None)
 
 
 def expected_empty_reason(fetch_log: FetchLog) -> str | None:
@@ -169,13 +186,17 @@ class BaseParser(ABC):
 
             points = self._validate(points, cfg)
 
-            if not points and fetch_issues and not expected_empty_reason(fetch_log):
+            failed_reason = fetch_failed_reason(fetch_log)
+            if not points and (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log):
                 # Источник не ответил, а не «вёрстка сменилась»: честный failed,
                 # а не parsed_zero с ложным «смена layout». Данные в БД целы.
                 fetch_log.status = STATUS_FAILED
-                fetch_log.error_message = (
-                    "Source unreachable, 0 points: " + "; ".join(dict.fromkeys(fetch_issues))
-                )[:500]
+                if failed_reason:
+                    fetch_log.error_message = f"Source fetch failed, 0 points: {failed_reason}"[:500]
+                else:
+                    fetch_log.error_message = (
+                        "Source unreachable, 0 points: " + "; ".join(dict.fromkeys(fetch_issues))
+                    )[:500]
                 fetch_log.completed_at = _utcnow_naive()
                 await db.commit()
                 mark_storage_committed(fetch_log)

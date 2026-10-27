@@ -19,6 +19,14 @@ TOC Eurostat сообщает дату «last table structure change». Карт
   прежней историей. Если таких публичных карточек много — это разлом набора,
   и он остаётся в карантине с конкретным отчётом (не вслепую).
 
+Карточка без замены, чей ряд УЖЕ устарел до смены структуры (последняя точка отстаёт от самой свежей
+точки новой версии набора больше чем на год для месячных, ~1,5 года для квартальных, ~2 года для годовых),
+в порог разлома не считается: ломать там нечего, у источника ряд закончился раньше (27.10.2026
+`ei_isin_m`: Германия, Люксембург, Румыния, Словакия, Финляндия, Исландия перестали сдавать
+индексы заработной платы, часов и занятости после 2023 года, 14 публичных карточек «Устарело» с декабря 2023
+держали набор в карантине, а вместе с ним и 36 живых рядов на базе 2021). Такая карточка остаётся как есть,
+с прежней историей, и отражается в ``orphans_stale``.
+
 Проверено на проде 2026-09-29: у 5 из 21 набора, ушедших в вечный карантин
 24–28 сентября, ни один срез не пропал — структура менялась добавлением кодов.
 """
@@ -40,6 +48,11 @@ _ABS_TOL = 1e-9
 _ORPHAN_ABS = 2
 _ORPHAN_SHARE = 0.2
 
+# Отставание последней точки карточки от самой свежей точки новой версии набора, после которого
+# карточка считается «уже устаревшей до смены структуры» (по частоте среза; по умолчанию год).
+_STALE_AFTER_DAYS = {"A": 800, "Q": 550}
+_STALE_AFTER_DEFAULT_DAYS = 366
+
 
 @dataclass(frozen=True)
 class ExistingSlice:
@@ -60,6 +73,8 @@ class StructureVerdict:
     rebased: dict[int, tuple[dict, str]] = field(default_factory=dict)
     orphans: list[int] = field(default_factory=list)
     orphans_listed: int = 0
+    # Публичные карточки без замены, чей ряд закончился у источника ещё до смены структуры.
+    orphans_stale: int = 0
     reason: str = ""
 
     def as_dict(self) -> dict:
@@ -70,6 +85,7 @@ class StructureVerdict:
             "rebased": len(self.rebased),
             "orphans": len(self.orphans),
             "orphans_listed": self.orphans_listed,
+            "orphans_stale": self.orphans_stale,
             "reason": self.reason,
         }
 
@@ -96,6 +112,24 @@ def _slice_similarity(a: dict, b: dict) -> int:
 
 def _freq(slice_json: dict | None) -> str:
     return str((slice_json or {}).get("freq") or "").upper()
+
+
+def _newest_new_point(
+    new_series: dict[tuple[str, str], tuple[dict, list[tuple[date, float]]]],
+) -> date | None:
+    ends = [max(d for d, _v in points) for _slice, points in new_series.values() if points]
+    return max(ends) if ends else None
+
+
+def _already_stale(
+    item: ExistingSlice, history: list[tuple[date, float]], newest: date | None,
+) -> bool:
+    """Ряд карточки закончился у источника задолго до свежих данных набора: смена структуры его не ломала."""
+    if newest is None or not history:
+        return False
+    lag = (newest - max(d for d, _v in history)).days
+    limit = _STALE_AFTER_DAYS.get(_freq(item.slice_json), _STALE_AFTER_DEFAULT_DAYS)
+    return lag > limit
 
 
 def plan_structure_migration(
@@ -141,6 +175,7 @@ def plan_structure_migration(
         taken.add((item.geo, twin[0]))
     missing = still_missing
 
+    newest = _newest_new_point(new_series)
     for item in missing:
         history = old_points.get(item.indicator_id) or []
         candidates = []
@@ -160,7 +195,10 @@ def plan_structure_migration(
                 continue
         verdict.orphans.append(item.indicator_id)
         if item.is_listed:
-            verdict.orphans_listed += 1
+            if _already_stale(item, history, newest):
+                verdict.orphans_stale += 1
+            else:
+                verdict.orphans_listed += 1
 
     listed_total = sum(1 for e in existing if e.is_listed)
     allowed = max(_ORPHAN_ABS, int(_ORPHAN_SHARE * listed_total))
@@ -174,6 +212,7 @@ def plan_structure_migration(
         verdict.reason = (
             f"срезов сохранено {verdict.kept}, переподключено {len(verdict.remapped)}, "
             f"смена базы индекса {len(verdict.rebased)}, без замены {len(verdict.orphans)}"
+            + (f" (из них уже устаревших до смены структуры {verdict.orphans_stale})" if verdict.orphans_stale else "")
         )
     return verdict
 

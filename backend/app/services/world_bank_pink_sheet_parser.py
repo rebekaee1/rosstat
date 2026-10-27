@@ -34,7 +34,7 @@ import openpyxl
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fetch_failed
 
 logger = logging.getLogger(__name__)
 
@@ -183,7 +183,9 @@ class WorldBankPinkSheetParser(BaseParser):
                 return [], _LANDING_URL
             content = await asyncio.to_thread(_fetch_xlsx_bytes, xlsx_url)
         except Exception as exc:
-            fetch_log.error_message = f"Pink Sheet fetch failed: {exc}"[:500]
+            reason = f"Pink Sheet fetch failed: {type(exc).__name__}: {exc}"[:500]
+            fetch_log.error_message = reason
+            mark_fetch_failed(fetch_log, reason)  # сбой сети/TLS (18.10.2026) — не «смена layout»
             return [], _LANDING_URL
 
         points = _parse_pink_sheet_monthly(

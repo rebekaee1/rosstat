@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from typing import Any, AsyncIterator, Iterable, Mapping, Sequence
@@ -780,18 +781,55 @@ def _payload_hash(payload: Mapping[str, Any]) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
+# 23.10.2026 в 03:11 UTC шлюз IMF трижды подряд (по трём российским рядам) ответил «401 Unauthorized» на
+# публичный адрес без ключа, а все остальные запросы суток, включая ночной мировой ingest, прошли. Это сбой шлюза,
+# а не смена доступа: разовый ответ 401/403/429/5xx и сетевой обрыв повторяем с паузой, прежде чем считать сбой.
+_RETRY_STATUSES = frozenset({401, 403, 408, 425, 429, 500, 502, 503, 504})
+_RETRY_DELAYS_S = (5.0, 20.0, 60.0)
+
+
+def _sleep(seconds: float) -> None:
+    time.sleep(seconds)
+
+
+def _retry_after_s(response: httpx.Response, default: float) -> float:
+    raw = (response.headers.get("retry-after") or "").strip()
+    if raw.isdigit():
+        return min(max(float(raw), default), 120.0)
+    return default
+
+
 def _fetch_weo_json(url: str) -> dict[str, Any]:
-    with httpx.Client(
-        timeout=60.0,
-        headers={"User-Agent": _UA, "Accept": "application/json"},
-        follow_redirects=True,
-    ) as client:
-        response = client.get(url)
-        response.raise_for_status()
-        data = response.json()
-    if not isinstance(data, dict):
-        raise ValueError("IMF WEO response is not a JSON object")
-    return data
+    last_exc: Exception | None = None
+    attempts = len(_RETRY_DELAYS_S) + 1
+    for attempt in range(attempts):
+        delay = _RETRY_DELAYS_S[attempt] if attempt < len(_RETRY_DELAYS_S) else 0.0
+        try:
+            with httpx.Client(
+                timeout=60.0,
+                headers={"User-Agent": _UA, "Accept": "application/json"},
+                follow_redirects=True,
+            ) as client:
+                response = client.get(url)
+            if response.status_code in _RETRY_STATUSES and attempt < attempts - 1:
+                last_exc = httpx.HTTPStatusError(
+                    f"HTTP {response.status_code}", request=response.request, response=response,
+                )
+                _sleep(_retry_after_s(response, delay))
+                continue
+            response.raise_for_status()
+            data = response.json()
+        except (httpx.TransportError, json.JSONDecodeError) as exc:
+            last_exc = exc
+            if attempt < attempts - 1:
+                _sleep(delay)
+                continue
+            raise
+        if not isinstance(data, dict):
+            raise ValueError("IMF WEO response is not a JSON object")
+        return data
+    assert last_exc is not None
+    raise last_exc
 
 
 class ImfWeoAdapter:

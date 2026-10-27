@@ -30,6 +30,7 @@ import asyncio
 import csv
 import io
 import logging
+import time
 from datetime import date
 from typing import ClassVar
 
@@ -37,7 +38,7 @@ import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fetch_failed
 from app.services.http_client import create_session
 
 logger = logging.getLogger(__name__)
@@ -125,6 +126,35 @@ def _parse_fred_csv(text: str, *, backfill_from: date | None = None) -> list[tup
     return out
 
 
+# 21.10 17:11 UTC — 22.10 03:09 UTC три ряда FRED (DGS10, DHHNGSP, DTWEXBGS) подряд в трёх прогонах дали
+# «Parser returned 0 data points» без текста ошибки, а Brent (через EIA) работал: FRED вернул тело, из которого
+# не разобралась ни одна строка (причина не сохранилась: заголовок/страница вместо CSV пишется только в warning
+# и в общий журнал). Затем 22.10 17:09 ряды ожили сами. Теперь пустой разбор повторяется с паузой, а если и
+# после повторов точек нет — в fetch_log пишется начало тела, а статус `failed` (не ложный «смена layout»).
+_EMPTY_RETRY_DELAYS_S = (4.0, 15.0)
+_BODY_HEAD_CHARS = 120
+
+
+def _describe_bad_csv(text: str) -> str:
+    head = " ".join((text or "")[:_BODY_HEAD_CHARS].split())
+    return f"len={len(text or '')}, начало: {head!r}"
+
+
+def _fetch_fred_points(series_id: str, *, sleep=time.sleep) -> list[tuple[date, float]]:
+    """Полный ряд FRED (без обрезки backfill); пустой/нераспознанный ответ — повтор, затем ValueError."""
+    last = ""
+    for attempt in range(len(_EMPTY_RETRY_DELAYS_S) + 1):
+        text = _fetch_fred_csv(series_id)
+        points = _parse_fred_csv(text)
+        if points:
+            return points
+        last = _describe_bad_csv(text)
+        logger.warning("FRED %s: пустой или нераспознанный ответ (попытка %d): %s", series_id, attempt + 1, last)
+        if attempt < len(_EMPTY_RETRY_DELAYS_S):
+            sleep(_EMPTY_RETRY_DELAYS_S[attempt])
+    raise ValueError(f"FRED {series_id}: ответ без единой строки данных ({last})")
+
+
 class FredCsvParser(BaseParser):
     parser_type: ClassVar[str] = "fred_csv"
     # FRED отдаёт полный снимок ряда — даты вне ответа источника (например
@@ -165,10 +195,13 @@ class FredCsvParser(BaseParser):
                 logger.warning("Direct EIA Brent fetch failed; trying FRED mirror: %s", exc)
 
         try:
-            text = await asyncio.to_thread(_fetch_fred_csv, series_id)
+            points = await asyncio.to_thread(_fetch_fred_points, series_id)
         except Exception as exc:
-            fetch_log.error_message = f"FRED {series_id} fetch failed: {exc}"[:500]
+            reason = f"FRED {series_id} fetch failed: {type(exc).__name__}: {exc}"[:500]
+            fetch_log.error_message = reason
+            mark_fetch_failed(fetch_log, reason)
             return [], url
 
-        points = _parse_fred_csv(text, backfill_from=backfill_from)
+        if backfill_from is not None:
+            points = [point for point in points if point[0] >= backfill_from]
         return points, url

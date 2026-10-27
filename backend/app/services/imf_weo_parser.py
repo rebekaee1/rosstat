@@ -18,7 +18,7 @@ from typing import ClassVar
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import FetchLog, Indicator
-from app.services.base_parser import BaseParser
+from app.services.base_parser import BaseParser, mark_fetch_failed
 from app.services.imf_weo_adapter import (
     PUBLIC_SOURCE_URL,
     WEO_SERIES,
@@ -54,7 +54,10 @@ class ImfWeoParser(BaseParser):
         try:
             parsed = await asyncio.to_thread(adapter.fetch_weo_code, weo_code, [iso3])
         except Exception as exc:  # noqa: BLE001
-            fetch_log.error_message = f"IMF WEO {iso3} {weo_code} fetch failed: {exc}"[:500]
+            reason = f"IMF WEO {iso3} {weo_code} fetch failed: {type(exc).__name__}: {exc}"[:500]
+            fetch_log.error_message = reason
+            # Сбой источника — не «смена layout»: статус failed, без алерта zero_parse (23.10.2026, 401).
+            mark_fetch_failed(fetch_log, reason)
             return [], url
 
         backfill_from: date | None = None
