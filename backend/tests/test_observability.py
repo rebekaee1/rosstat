@@ -62,7 +62,7 @@ def test_find_stale_respects_frequency_sla():
         ("cpi", "monthly", today - timedelta(days=50)),         # свежий (SLA 75)
         ("gdp-nominal", "quarterly", today - timedelta(days=200)),  # stale (SLA 150)
         ("empty-code", "monthly", None),                        # без точек — пропуск
-        ("key-rate", "irregular", today - timedelta(days=300)),  # дефолт 550 — свежий
+        ("key-rate", "irregular", today - timedelta(days=300)),  # дефолт 930 — свежий
     ]
     stale = dict(find_stale(rows, today))
     assert set(stale) == {"gold-price", "gdp-nominal"}

@@ -26,15 +26,15 @@ def _row(code, freq, age, *, parser="rosstat_demo", source="Росстат",
 
 def test_find_stale_reexported_thresholds_unchanged():
     assert STALENESS_SLA_DAYS == {
-        "daily": 7, "weekly": 21, "monthly": 75, "quarterly": 150, "annual": 550,
+        "daily": 7, "weekly": 21, "monthly": 75, "quarterly": 150, "annual": 930,
     }
     rows = [
-        ("a", "annual", TODAY - timedelta(days=551)),
-        ("b", "annual", TODAY - timedelta(days=550)),
-        ("c", "irregular", TODAY - timedelta(days=551)),
+        ("a", "annual", TODAY - timedelta(days=931)),
+        ("b", "annual", TODAY - timedelta(days=930)),
+        ("c", "irregular", TODAY - timedelta(days=931)),
         ("d", "monthly", None),
     ]
-    assert dict(find_stale(rows, TODAY)) == {"a": 551, "c": 551}
+    assert dict(find_stale(rows, TODAY)) == {"a": 931, "c": 931}
 
 
 def test_period_days_cover_sla_frequencies():
@@ -42,8 +42,8 @@ def test_period_days_cover_sla_frequencies():
 
 
 def test_healthy_fetch_within_one_period_over_sla_is_not_reported():
-    # годовой ряд: SLA 550, период 366 -> до 916 дней это обычный лаг публикации
-    report = build_report([_row("births", "annual", 700)], {}, today=TODAY, now=NOW)
+    # годовой ряд: SLA 930, период 366 -> до 1296 дней это обычный лаг публикации
+    report = build_report([_row("births", "annual", 1000)], {}, today=TODAY, now=NOW)
     assert report.total_stale == 1
     assert report.within_lag == 1
     assert not report.attention and not report.frozen
@@ -64,8 +64,8 @@ def test_threshold_boundary_between_lag_and_frozen():
 
 def test_healthy_fetch_beyond_one_missed_release_is_frozen_counter_only():
     rows = [
-        _row("births", "annual", 999),
-        _row("pop-over-working-age", "annual", 1364),
+        _row("births", "annual", 1300),
+        _row("pop-over-working-age", "annual", 1700),
     ]
     report = build_report(rows, {}, today=TODAY, now=NOW)
     assert {i.code for i in report.frozen} == {"births", "pop-over-working-age"}
@@ -127,8 +127,8 @@ def test_daily_message_reports_only_new_overdue():
     rows = [
         _row("old-1", "daily", 40, parser="cbr_fx_xml", source="Банк России", status="failed"),
         _row("new-1", "daily", 9, parser="cbr_fx_xml", source="Банк России", status="failed"),
-        _row("old-frozen", "annual", 999),
-        _row("new-frozen", "annual", 1000),
+        _row("old-frozen", "annual", 1300),
+        _row("new-frozen", "annual", 1301),
     ]
     report = build_report(rows, {}, today=TODAY, now=NOW)
     known = {"old-1", "old-frozen"}
@@ -207,3 +207,21 @@ def test_fd_line_is_appended():
     assert plan_staleness_message(
         report, None, weekly_due=True, fd_line="\nfd 10/100",
     ).endswith("fd 10/100")
+
+
+def test_derived_annual_last_full_year_is_not_orphan_in_autumn():
+    """27.10.2026: `key-rate-eop-year` (последняя точка 2025-01-01, возраст 665 дн.) при свежем
+    дневном `key-rate` метился «пересчёт сломан»; годовая точка за прошлый год законно остаётся
+    последней до января следующего года."""
+    rows = [
+        _row("key-rate", "daily", 0, parser="cbr_keyrate_html", source="Банк России"),
+        _row("key-rate-eop-year", "annual", 665, parser="derived", source="Банк России"),
+    ]
+    report = build_report(rows, {"key-rate-eop-year": ["key-rate"]}, today=TODAY, now=NOW)
+    assert report.total_stale == 0 and not report.attention
+    # а настоящая поломка (пропущен и январский пересчёт) всё ещё ловится
+    broken = build_report(
+        [rows[0], _row("key-rate-eop-year", "annual", 1000, parser="derived", source="Банк России")],
+        {"key-rate-eop-year": ["key-rate"]}, today=TODAY, now=NOW,
+    )
+    assert [i.code for i in broken.attention] == ["key-rate-eop-year"]
