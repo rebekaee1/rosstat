@@ -20,7 +20,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import case, func, or_, select
+from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import load_only
 
@@ -163,6 +163,33 @@ def metrika_visit_not_headless():
     return func.lower(func.coalesce(
         RawMetrikaVisit.raw_json["ym:s:browser"].as_string(), ""
     )).notlike(f"{HEADLESS_BROWSER_PREFIX}%")
+
+
+# Сверка со счётчиком Метрики. Сырые визиты Метрики включают роботов-«прямые»
+# заходы (фермы 20.09–27.10: Сингапур/США, 0 с, 1 страница, direct), которых наш
+# счётчик не видит или считает по-другому. Измерено 14–26.10.2026: по
+# недирект-каналам (поиск, реклама, ссылки, соцсети) наши небот-сессии стабильно
+# 115–123% от визитов Метрики; по direct отношение гуляет от 32% до 261% из-за
+# ферм. Поэтому сверка доставки — по сопоставимой популяции без direct/internal.
+CALIBRATION_EXCLUDED_CHANNELS = ("direct", "internal")
+CALIBRATION_CORRIDOR_PCT = (80, 150)
+
+
+def metrika_visit_comparable():
+    """Визит Метрики, пригодный для сверки доставки: не headless, не direct/internal."""
+    return and_(
+        metrika_visit_not_headless(),
+        func.coalesce(RawMetrikaVisit.traffic_source, "").notin_(CALIBRATION_EXCLUDED_CHANNELS),
+    )
+
+
+def own_session_comparable():
+    """Наша небот-сессия из каналов, которые Метрика считает сопоставимо."""
+    return and_(
+        ServerSession.is_bot.is_(False),
+        ServerSession.is_internal.is_(False),
+        func.coalesce(ServerSession.channel, "direct").notin_(CALIBRATION_EXCLUDED_CHANNELS),
+    )
 
 
 # SQL-разворот goals_json (формат Logs API: {"goals": "[123,456]"} | list).
@@ -1036,7 +1063,20 @@ async def mart_collection_quality(db: AsyncSession, period: Period | int = 7) ->
         select(func.count()).select_from(RawMetrikaVisit).where(
             RawMetrikaVisit.visit_date == yesterday)
     ) or 0
+    own_comparable = await db.scalar(
+        select(func.count()).select_from(ServerSession).where(
+            ServerSession.day == yesterday, own_session_comparable())
+    ) or 0
+    metrika_comparable = await db.scalar(
+        select(func.count()).select_from(RawMetrikaVisit).where(
+            RawMetrikaVisit.visit_date == yesterday, metrika_visit_comparable())
+    ) or 0
+    # Сопоставимая популяция (без direct/internal и headless); сырое отношение к
+    # всем визитам Метрики сохранено как есть — оно раздувается фермами.
     calibration = (
+        round(own_comparable / metrika_comparable, 2) if metrika_comparable else None
+    )
+    calibration_raw = (
         round(own_yesterday / metrika_yesterday, 2) if metrika_yesterday else None
     )
 
@@ -1079,8 +1119,11 @@ async def mart_collection_quality(db: AsyncSession, period: Period | int = 7) ->
             round(dwell_with_active / dwell_total * 100, 1) if dwell_total else None
         ),
         "calibration_vs_metrika": calibration,
+        "calibration_vs_metrika_raw": calibration_raw,
         "calibration_note": (
-            f"небот-сессии {own_yesterday} / визиты Метрики {metrika_yesterday} за {yesterday.isoformat()}"
+            f"сопоставимые (без direct/internal/headless): небот-сессии {own_comparable} / визиты Метрики "
+            f"{metrika_comparable} за {yesterday.isoformat()}; все небот-сессии {own_yesterday} / все визиты "
+            f"Метрики {metrika_yesterday} (с роботами-direct, не сопоставимо)"
             if metrika_yesterday else "нет визитов Метрики за вчера (лаг Logs API)"
         ),
         "ssr_pageviews": int(ssr_pv),
@@ -1113,11 +1156,27 @@ async def mart_botness(db: AsyncSession, period: Period | int = 7) -> dict[str, 
         .group_by(RawMetrikaVisit.visit_date)
     )).all())
 
+    metrika_comparable_by_day = dict((await db.execute(
+        select(RawMetrikaVisit.visit_date, func.count())
+        .where(RawMetrikaVisit.visit_date >= p.start_date,
+               RawMetrikaVisit.visit_date <= p.end_date,
+               metrika_visit_comparable())
+        .group_by(RawMetrikaVisit.visit_date)
+    )).all())
+    own_comparable_by_day = dict((await db.execute(
+        select(ServerSession.day, func.count())
+        .where(ServerSession.day >= p.start_date, ServerSession.day <= p.end_date,
+               own_session_comparable())
+        .group_by(ServerSession.day)
+    )).all())
+
     days = []
     for day, total, bots in rows:
         total, bots = int(total or 0), int(bots or 0)
         humans = total - bots
         metrika = int(metrika_by_day.get(day, 0))
+        metrika_cmp = int(metrika_comparable_by_day.get(day, 0))
+        own_cmp = int(own_comparable_by_day.get(day, 0))
         days.append({
             "day": day.isoformat() if hasattr(day, "isoformat") else str(day),
             "sessions": total,
@@ -1126,6 +1185,9 @@ async def mart_botness(db: AsyncSession, period: Period | int = 7) -> dict[str, 
             "bot_share_pct": round(bots / total * 100, 1) if total else None,
             "metrika_visits": metrika or None,
             "ratio_pct": round(humans / metrika * 100) if metrika else None,
+            "metrika_comparable": metrika_cmp or None,
+            "ours_comparable": own_cmp,
+            "comparable_ratio_pct": round(own_cmp / metrika_cmp * 100) if metrika_cmp else None,
         })
 
     # Распределение счёта — видно, на чём срабатывает антибот.
@@ -1150,7 +1212,14 @@ async def mart_botness(db: AsyncSession, period: Period | int = 7) -> dict[str, 
         "bot_share_pct": round(total_bots / total_all * 100, 1) if total_all else None,
         "days": days,
         "score_histogram": histogram,
-        "note": "Коридор приёмки: небот-сессии в пределах ±15% к визитам Метрики за полный день.",
+        "corridor_pct": list(CALIBRATION_CORRIDOR_PCT),
+        "note": (
+            "Сверка доставки по сопоставимой популяции: небот-сессии и визиты Метрики без каналов "
+            "direct/internal и без headless; коридор "
+            f"{CALIBRATION_CORRIDOR_PCT[0]}–{CALIBRATION_CORRIDOR_PCT[1]}% (измерено 14–26.10.2026: 115–123%). "
+            "Отношение ко всем визитам Метрики (ratio_pct) раздувается и обваливается из-за роботов-direct "
+            "и не является мерой потерь."
+        ),
     }
 
 

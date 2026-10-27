@@ -56,6 +56,9 @@ class SessionSignals:
     screen_w: int | None = None
     screen_h: int | None = None
     cpu_cores: int | None = None
+    # Сколько клиентских сессий в тот же МСК-день имели ТОЧНО такой же портрет
+    # устройства (`portrait_fingerprint`) — считает сессионизация по окну.
+    portrait_cluster: int = 0
 
 
 # Больше стольких логических ядер у потребительских устройств не бывает
@@ -73,6 +76,35 @@ def _square_desktop_screen(s: SessionSignals) -> bool:
     return bool(
         s.has_portrait and s.device_type == "desktop"
         and s.screen_w and s.screen_w >= 600 and s.screen_w == s.screen_h
+    )
+
+
+# Ферма 2026-10 (Windows Chrome 1920×1080 и 1280×1200, пояс Asia/Shanghai вне
+# Китая, случайные cpu/memory): один и тот же портрет повторяется десятки раз
+# за день без единого движения, клика и скролла. Измерено 23–26.10.2026: из 1828
+# сессий в кластерах ≥10 следы ввода были у 11, и все 11 — из России (люди);
+# в кластерах ≥10 живут 5–70% десктопных сессий дня, у русских — единицы.
+PORTRAIT_CLUSTER_MIN = 10
+
+
+def portrait_fingerprint(day: str, p: Any) -> tuple | None:
+    """Ключ «одинаковое устройство» для десктопного портрета; None — не считать.
+
+    День — МСК-день (строка ГГГГ-ММ-ДД). Мобильные не учитываем: у iPhone одной
+    модели портрет совпадает честно. dpr/память приводим к float, чтобы ключ
+    не зависел от Decimal/float драйвера.
+    """
+    if p is None or getattr(p, "device_type", None) != "desktop":
+        return None
+    def num(v):
+        return None if v is None else float(v)
+    return (
+        str(day), getattr(p, "screen_w", None), getattr(p, "screen_h", None),
+        getattr(p, "viewport_w", None), getattr(p, "viewport_h", None),
+        num(getattr(p, "dpr", None)), getattr(p, "cpu_cores", None),
+        num(getattr(p, "device_memory", None)), getattr(p, "conn_type", None),
+        getattr(p, "color_scheme", None), getattr(p, "language", None),
+        getattr(p, "timezone", None),
     )
 
 
@@ -112,6 +144,9 @@ HEURISTICS: tuple[tuple[str, int, Any], ...] = (
     # headless-фермы подменяют первой.
     ("square_desktop_screen", 60, _square_desktop_screen),
     ("server_cpu", 60, lambda s: s.cpu_cores is not None and s.cpu_cores > SERVER_CPU_CORES),
+    # Тот же портрет ≥10 раз за день и ни одного следа ввода: клонированный
+    # профиль. Сигнал не зависит от UA и IP; ввод (даже один клик) его снимает.
+    ("portrait_cluster", 60, lambda s: s.portrait_cluster >= PORTRAIT_CLUSTER_MIN and _no_input_traces(s)),
     # Неконсистентность устройства: мобильный UA без touch или нулевой экран.
     ("device_mismatch", 20, lambda s: s.has_portrait and (
         (s.device_type == "mobile" and s.touch is False)

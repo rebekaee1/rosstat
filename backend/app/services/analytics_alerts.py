@@ -108,9 +108,16 @@ def _error_host(params: dict) -> str:
 
 
 def js_error_counts_for_alert(params: object) -> bool:
-    """Ignore resource failures, stale-tab chunk errors and ad/analytics domains."""
+    """Ignore resource failures, stale-tab chunk errors, ad/analytics domains and stackless foreign rejections."""
     payload = params if isinstance(params, dict) else {}
     if payload.get("kind") not in ("error", "rejection"):
+        return False
+    # Отказ без стека — не Error, а «голое» значение reject(): так себя ведут
+    # внедрённые сторонние скрипты (27.10.2026: «Object Not Found Matching Id:N,
+    # MethodName:update, ParamCount:4» — 12 за 15 минут от почтового сканера
+    # ссылок/фермы Windows Chrome, в нашем коде такой строки нет). Наш код и
+    # Axios/fetch отклоняются Error-объектами со стеком.
+    if payload.get("kind") == "rejection" and not str(payload.get("stack") or "").strip():
         return False
     if _STALE_TAB_RE.search(f"{payload.get('msg') or ''} {str(payload.get('stack') or '')[:200]}"):
         return False
@@ -452,14 +459,22 @@ async def _check_host_pressure() -> None:
         logger.debug("idle_in_tx check skipped", exc_info=True)
 
 
-BOT_CALIBRATION_TOLERANCE_PCT = 15  # сигнал для сверки, не критерий точности антибота
+BOT_CALIBRATION_MIN_VISITS = 50  # недирект-визитов Метрики в день ≈ 150–340; меньше — шум
 
 
 async def check_bot_calibration() -> dict | None:
-    """Суточная сверка: небот-сессии против визитов Метрики за последний
-    полный МСК-день. Это сверка доставки разных популяций, НЕ качество антибота.
-    Raw Logs содержит роботов; подгонять к нему количество людей нельзя."""
+    """Суточная сверка доставки: небот-сессии против визитов Метрики за последний
+    полный МСК-день, по СОПОСТАВИМОЙ популяции — без каналов direct/internal и без
+    headless (`analytics_marts.metrika_visit_comparable` / `own_session_comparable`).
+    Сырые визиты Метрики включают роботов-direct (фермы), из-за них прежнее
+    отношение гуляло 32–261% при неизменной доставке. Измерено 14–26.10.2026:
+    сопоставимое отношение 115–123%. Алерт — при выходе из коридора
+    CALIBRATION_CORRIDOR_PCT: ниже — теряем сессии, выше — задваиваем или пропускаем
+    роботов. Это сверка доставки, НЕ качество антибота; веса антибота к Метрике не подгонять."""
     from app.models import ServerSession
+    from app.services.analytics_marts import (
+        CALIBRATION_CORRIDOR_PCT, metrika_visit_comparable, own_session_comparable,
+    )
     from app.services.analytics_period import msk_day
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
@@ -474,24 +489,31 @@ async def check_bot_calibration() -> dict | None:
             return None
         metrika_visits = int(await db.scalar(
             select(func.count()).select_from(RawMetrikaVisit)
-            .where(RawMetrikaVisit.visit_date == last_metrika_day)
+            .where(RawMetrikaVisit.visit_date == last_metrika_day, metrika_visit_comparable())
         ) or 0)
         our_sessions = int(await db.scalar(
             select(func.count()).select_from(ServerSession)
-            .where(ServerSession.day == last_metrika_day, ServerSession.is_bot.is_(False), ServerSession.is_internal.is_(False))
+            .where(ServerSession.day == last_metrika_day, own_session_comparable())
         ) or 0)
 
-    if metrika_visits < 20:  # малая база — сверка статистически пуста
-        return {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "skipped": True}
+    population = {
+        "comparable_populations": True,
+        "metrika_population": "visits_not_headless_not_direct_not_internal",
+        "own_population": "nonbot_noninternal_sessions_not_direct",
+    }
+    if metrika_visits < BOT_CALIBRATION_MIN_VISITS:  # малая база — сверка статистически пуста
+        return {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "skipped": True, **population}
 
     ratio_pct = round(our_sessions / metrika_visits * 100)
-    out = {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "ratio_pct": ratio_pct, "comparable_populations": False, "metrika_population": "all_raw_visits_including_robots", "own_population": "nonbot_noninternal_sessions"}
-    if abs(ratio_pct - 100) > BOT_CALIBRATION_TOLERANCE_PCT:
+    low, high = CALIBRATION_CORRIDOR_PCT
+    out = {"day": str(last_metrika_day), "metrika": metrika_visits, "ours": our_sessions, "ratio_pct": ratio_pct, **population}
+    if not (low <= ratio_pct <= high):
         await _alert(
             "bot_calibration",
-            f"Сверка сбора за {last_metrika_day}: наши небот-сессии {our_sessions} "
-            f"против {metrika_visits} сырых визитов Метрики, включая роботов ({ratio_pct}%). "
-            "Популяции различаются: проверить доставку и состав трафика, не подгонять веса антибота.",
+            f"Сверка сбора за {last_metrika_day}: наши небот-сессии {our_sessions} против "
+            f"{metrika_visits} визитов Метрики без direct/internal/headless ({ratio_pct}%, коридор "
+            f"{low}–{high}%). Ниже коридора — теряем сессии, выше — задваиваем или не отсекаем роботов; "
+            "проверить доставку и состав трафика, не подгонять веса антибота.",
         )
     logger.info("Bot calibration: %s", out)
     return out

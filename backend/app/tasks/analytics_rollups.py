@@ -401,7 +401,7 @@ class _SessionAccumulator:
             self.admin_page |= event.page.startswith("/admin")
         self.user_id = self.user_id or event.user_id
 
-    def finish(self, admin_users, admin_visitors):
+    def finish(self, admin_users, admin_visitors, portrait_clusters=None):
         # A fixed-size adapter keeps the established finalizer/score semantics.
         def event(kind, *, page=None, params=None, weight=1, sid=None, user=None, ended=False):
             return SimpleNamespace(event_type=kind, occurred_at=self.ended if ended else self.started,
@@ -416,9 +416,56 @@ class _SessionAccumulator:
                event("boundary", page=self.exit, ended=True)]
         row = _finalize_session(self.visitor, evs, {sid: self.own} if self.own else {}, {},
             set() if self.is_new else {self.visitor}, self.visitor_sessions,
-            fallback_portrait=self.fallback, goal_counts=self.goals)
+            fallback_portrait=self.fallback, goal_counts=self.goals, portrait_clusters=portrait_clusters)
         row["is_internal"] = self.admin_page or self.visitor in admin_visitors or self.user_id in admin_users
         return row
+
+
+_PORTRAIT_FP_COLUMNS = (
+    BehaviorSession.screen_w, BehaviorSession.screen_h, BehaviorSession.viewport_w, BehaviorSession.viewport_h,
+    BehaviorSession.dpr, BehaviorSession.cpu_cores, BehaviorSession.device_memory, BehaviorSession.conn_type,
+    BehaviorSession.color_scheme, BehaviorSession.language, BehaviorSession.timezone,
+)
+
+
+async def _portrait_cluster_sizes(db, since: datetime, stop: datetime) -> dict:
+    """Размеры кластеров одинаковых десктопных портретов по МСК-дням окна.
+
+    Окно сессионизации начинается с `since`, но кластер считается за ЦЕЛЫЙ МСК-день,
+    поэтому нижняя граница — начало МСК-суток `since`. Верхняя — `stop`: сегодняшний
+    день неполный, последние 2 суток пересчитываются каждые 15 минут. Ключи — как в
+    `bot_score.portrait_fingerprint`; в словаре только кластеры от PORTRAIT_CLUSTER_MIN.
+    """
+    from app.services.analytics_period import msk_day_start_utc
+    from app.services.bot_score import PORTRAIT_CLUSTER_MIN
+
+    dialect = db.bind.dialect.name
+    day = msk_day_expr(BehaviorSession.started_at, dialect)
+    lower = msk_day_start_utc(msk_day(since))
+    rows = (await db.execute(
+        select(day, *_PORTRAIT_FP_COLUMNS, func.count())
+        .where(BehaviorSession.started_at >= lower, BehaviorSession.started_at < stop,
+               BehaviorSession.device_type == "desktop")
+        .group_by(day, *_PORTRAIT_FP_COLUMNS)
+        .having(func.count() >= PORTRAIT_CLUSTER_MIN)
+    )).all()
+
+    def num(v):
+        return None if v is None else float(v)
+    return {
+        (str(r[0]), r[1], r[2], r[3], r[4], num(r[5]), r[6], num(r[7]), r[8], r[9], r[10], r[11]): int(r[12])
+        for r in rows
+    }
+
+
+def _portrait_cluster_for(portrait, clusters, fingerprint) -> int:
+    if not portrait or not clusters:
+        return 0
+    started = getattr(portrait, "started_at", None)
+    if started is None:
+        return 0
+    key = fingerprint(msk_day(started).isoformat(), portrait)
+    return clusters.get(key, 0) if key else 0
 
 
 async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
@@ -451,6 +498,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
             await db.execute(CreateTable(previous))
         history = await _prepare_session_history(db, since, stop, temporary)
         admin_users, admin_visitors = await admin_identity(db)
+        clusters = await _portrait_cluster_sizes(db, since, stop)
         details = await _prepare_session_details(db, history, since, temporary)
         result = await db.stream(_session_source_query(db, since, stop, history, details).execution_options(yield_per=_STREAM_BATCH))
         current = None
@@ -464,13 +512,15 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
                     BehaviorSession.utm_source, BehaviorSession.utm_medium, BehaviorSession.yclid,
                     BehaviorSession.device_type, BehaviorSession.is_webdriver, BehaviorSession.ua_raw,
                     BehaviorSession.touch, BehaviorSession.screen_w, BehaviorSession.screen_h, BehaviorSession.cpu_cores,
-                    BehaviorSession.site_locale,
+                    BehaviorSession.site_locale, BehaviorSession.viewport_w, BehaviorSession.viewport_h,
+                    BehaviorSession.dpr, BehaviorSession.device_memory, BehaviorSession.conn_type,
+                    BehaviorSession.color_scheme, BehaviorSession.language, BehaviorSession.timezone,
                 ).where(BehaviorSession.session_id_hash.in_(needed)))).all()} if needed else {}
                 for event in part:
                     key = (event.visitor, event.logical_start)
                     if current is None or (current.visitor, current.started) != key:
                         if current is not None:
-                            output.append(current.finish(admin_users, admin_visitors))
+                            output.append(current.finish(admin_users, admin_visitors, clusters))
                             owned += current.started >= since
                         current = _SessionAccumulator(event, portraits)
                     current.add(event, portraits)
@@ -478,7 +528,7 @@ async def sessionize(db, since: datetime, until: datetime | None = None) -> int:
                         await db.execute(stage.insert(), output)
                         output.clear()
             if current is not None:
-                output.append(current.finish(admin_users, admin_visitors))
+                output.append(current.finish(admin_users, admin_visitors, clusters))
                 owned += current.started >= since
             if output:
                 await db.execute(stage.insert(), output)
@@ -561,8 +611,9 @@ def _infer_from_pageviews(evs) -> tuple[str | None, str | None, bool]:
 
 
 def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
-                      visitor_sessions: int = 1, fallback_portrait=None, goal_counts=None) -> dict[str, Any]:
-    from app.services.bot_score import BOT_THRESHOLD, SessionSignals, score_session
+                      visitor_sessions: int = 1, fallback_portrait=None, goal_counts=None,
+                      portrait_clusters=None) -> dict[str, Any]:
+    from app.services.bot_score import BOT_THRESHOLD, SessionSignals, portrait_fingerprint, score_session
 
     started, ended = evs[0].occurred_at, evs[-1].occurred_at
     pageviews = sum(getattr(e, "weight", 1) for e in evs if e.event_type == "pageview")
@@ -650,6 +701,7 @@ def _finalize_session(visitor, evs, portraits, goals_by_session, known_visitors,
         screen_w=portrait.screen_w if portrait else None,
         screen_h=portrait.screen_h if portrait else None,
         cpu_cores=portrait.cpu_cores if portrait else None,
+        portrait_cluster=_portrait_cluster_for(portrait, portrait_clusters, portrait_fingerprint),
     ))
     return {
         "day": msk_day(started),  # день сессии — МСК (BI 2.1)

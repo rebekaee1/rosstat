@@ -2632,14 +2632,16 @@ function ReliabilityTab({ d }) {
   );
 }
 
-// Витрина роботности: сколько отсеял антибот и калибровка к Метрике (±15%).
+// Витрина роботности: сколько отсеял антибот и сверка доставки с Метрикой по
+// сопоставимой популяции (без direct/internal/headless; коридор приходит с сервера).
 function BotnessCard({ d }) {
   const b = d.botness || {};
   const days = b.days || [];
-  const inCorridor = (r) => r != null && Math.abs(r - 100) <= 15;
+  const [lo, hi] = Array.isArray(b.corridor_pct) ? b.corridor_pct : [80, 150];
+  const inCorridor = (r) => r != null && r >= lo && r <= hi;
   return (
     <Card title="Роботность: антибот-скоринг сессий" icon={ShieldCheck} source="own" window={b.period}
-      hint="Каждая сессия получает балл по эвристикам: webdriver-флаг, отсутствие движений мыши и касаний при одном просмотре, синтетические клики, известные боты по подписи браузера, аномальная частота сессий с одного посетителя. Сумма выше порога — сессия помечается ботом."
+      hint="Каждая сессия получает балл по эвристикам: webdriver-флаг, отсутствие движений мыши и касаний при одном просмотре, синтетические клики, известные боты по подписи браузера, аномальная частота сессий с одного посетителя, одинаковый портрет устройства десятки раз за день без единого движения. Сумма выше порога — сессия помечается ботом."
       insight={`Порог bot_score ≥ ${b.threshold ?? 60} — сессия исключается из всех витрин. ${b.note || ''}`}>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
         <Kpi label="Сессий за окно" value={fmtInt(b.sessions)} />
@@ -2654,8 +2656,8 @@ function BotnessCard({ d }) {
                 <th className="py-1 pr-3 font-medium">День (МСК)</th>
                 <th className="py-1 pr-3 font-medium text-right">Люди</th>
                 <th className="py-1 pr-3 font-medium text-right">Боты</th>
-                <th className="py-1 pr-3 font-medium text-right">Метрика</th>
-                <th className="py-1 font-medium text-right">Наши / Метрика</th>
+                <th className="py-1 pr-3 font-medium text-right" title="Визиты Метрики без direct, internal и headless">Метрика, сопост.</th>
+                <th className="py-1 font-medium text-right" title="Наши небот-сессии без direct к визитам Метрики той же популяции">Наши / Метрика</th>
               </tr>
             </thead>
             <tbody>
@@ -2664,10 +2666,10 @@ function BotnessCard({ d }) {
                   <td className="py-1 pr-3 text-text-secondary">{r.day}</td>
                   <td className="py-1 pr-3 text-right tabular-nums">{fmtInt(r.humans)}</td>
                   <td className="py-1 pr-3 text-right tabular-nums text-text-tertiary">{fmtInt(r.bots)}</td>
-                  <td className="py-1 pr-3 text-right tabular-nums">{r.metrika_visits != null ? fmtInt(r.metrika_visits) : '—'}</td>
+                  <td className="py-1 pr-3 text-right tabular-nums">{r.metrika_comparable != null ? fmtInt(r.metrika_comparable) : '—'}</td>
                   <td className="py-1 text-right tabular-nums font-medium"
-                    style={{ color: r.ratio_pct == null ? 'rgba(26,26,46,0.4)' : inCorridor(r.ratio_pct) ? GREEN : RED }}>
-                    {r.ratio_pct != null ? `${r.ratio_pct}%` : 'нет повизитки'}
+                    style={{ color: r.comparable_ratio_pct == null ? 'rgba(26,26,46,0.4)' : inCorridor(r.comparable_ratio_pct) ? GREEN : RED }}>
+                    {r.comparable_ratio_pct != null ? `${r.comparable_ratio_pct}%` : 'нет повизитки'}
                   </td>
                 </tr>
               ))}
