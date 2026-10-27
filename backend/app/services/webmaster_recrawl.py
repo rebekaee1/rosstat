@@ -161,7 +161,12 @@ async def recrawl_daily_job(
                 return False
             # URL_ALREADY_ADDED и прочие мягкие отказы — помечаем и идём дальше.
             await redis.sadd(cursor_key, path)
-            logger.warning("Recrawl submit %s rejected: %s", url, err)
+            # В лог — HTTP-статус и текст исключения: пустой payload (тело ответа
+            # не JSON и пустое) без них не даёт понять причину отказа.
+            logger.warning(
+                "Recrawl submit %s rejected: status=%s payload=%s error=%s",
+                url, exc.status_code, err, str(exc)[:200],
+            )
             return True
         except Exception:
             logger.exception("Recrawl submit failed for %s", url)
