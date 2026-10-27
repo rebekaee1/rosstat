@@ -62,7 +62,8 @@ tg_notify() {
     --data-urlencode text="$1" || true
 }
 
-# Ротация: чистим всё старше KEEP_DAYS. Вызывается и при успехе, и при сбое (см. on_error).
+# Ротация: чистим всё старше KEEP_DAYS. Только после успешного дампа: при череде сбоев
+# ротация стёрла бы последние рабочие копии, а новых бы не появилось.
 rotate_old() {
   find "$BACKUP_DIR" -name "*.dump" -mtime +"$KEEP_DAYS" -delete
   find "$BACKUP_DIR" -name "*.sql.gz" -mtime +"$KEEP_DAYS" -delete
@@ -70,10 +71,8 @@ rotate_old() {
 
 on_error() {
   # Незавершённый дамп этого запуска (.partial) удаляем сразу: полный файл .dump появляется
-  # только после успешного pg_dump. Ротацию делаем всегда: раньше сбой (упавший дамп, сбой
-  # offsite) пропускал её, и старые копии копились, пока диск не заполнялся.
+  # только после успешного pg_dump.
   rm -f "${FILE:-/nonexistent}.partial" "${IDENTITY_FILE:-/nonexistent}.partial" 2>/dev/null || true
-  rotate_old || true
   tg_notify "🔴 pg-backup FAILED on $(hostname) at $(date '+%F %T') (line $1). Проверь /var/log/pg-backup.log"
 }
 trap 'on_error $LINENO' ERR
