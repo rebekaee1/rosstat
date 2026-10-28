@@ -12360,8 +12360,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "f7af15dca268c5332a58464a523b6acd4d00df3e59c6a6d38d55b32181e7d503",
-      "bytes": 614369,
+      "sha256": "74fb7dae77a89b46e8bd2c80bab1922bdb6b1eafd2c188db112275064bbb6c98",
+      "bytes": 615002,
       "lines": 2992,
       "code": false,
       "status": "reviewed",
@@ -28805,22 +28805,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "539c646b81041f272d7c4ed58c0b2805abf165c2dd61f5eb041de0ad5a82f9fe",
+  "ledger_sha256": "24e4fa3cf3fc2d658bdf70f832d7534dd63ce6fba6c37ae86e1a71d2309ab414",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "d94a9abdef9e8575c323505a4c388e483ccc1d83",
+  "baseline_commit": "6fc8ea0d7e8f165699f3ae5732def68ee3344770",
   "branch": "main",
   "unstaged_at_capture": [
-    "backend/app/services/world_national_ingest.py",
-    "backend/tests/test_world_national_core_job.py",
-    "backend/tests/test_world_national_ingest.py",
-    "backend/tests/test_world_national_state_accumulation.py",
-    "docs/backlog.md",
-    "docs/data-contracts.md",
-    "docs/data_sources.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/backlog.md"
   ]
 }

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2054  ·  **Строк:** 1 306 262  ·  **Токенов (≈):** 12 398 985
+**Файлов:** 2054  ·  **Строк:** 1 306 262  ·  **Токенов (≈):** 12 399 092
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 830 | 282 914 | 3 116 293 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 17 | 912 | 11 994 |
-| `docs` | 138 | 829 955 | 7 077 346 |
+| `docs` | 138 | 829 955 | 7 077 453 |
 | `frontend` | 925 | 165 363 | 1 840 783 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 827 | 283 938 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 043 | 132 812 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 2 992 | 102 872 |
+| `docs/backlog.md` | 2 992 | 102 979 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
