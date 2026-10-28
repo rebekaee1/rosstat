@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2213,
-    "code_files": 1806,
-    "current_reviews": 2213,
+    "files": 2214,
+    "code_files": 1807,
+    "current_reviews": 2214,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 2002
+      "reviewed": 2003
     },
-    "definitions": 14512,
-    "annotated_definitions": 14512,
+    "definitions": 14550,
+    "annotated_definitions": 14550,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4274,9 +4274,9 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "sha256": "7a36e33c6853b5a2b05be4275389fea1db88638e736a0fa4168d0bd3feaecc48",
-      "bytes": 12277,
-      "lines": 319,
+      "sha256": "9ac4d8fbabe6be49dedcd0fb7d3a0dad0353a4afd5df6ef49ae0d671f99f0ba5",
+      "bytes": 12483,
+      "lines": 323,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4313,9 +4313,9 @@
     },
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
-      "sha256": "a9fc411be4f1d6a94f0c7592a995a6e4643bc9736b21c8f7426c43cfd534b83e",
-      "bytes": 7812,
-      "lines": 207,
+      "sha256": "7b6cf4cb294a69641ec513b65fb55592fdbe76c670d5ff8df9e8c56af4c513fe",
+      "bytes": 8323,
+      "lines": 203,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4378,15 +4378,15 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "sha256": "9561bf555f6dca80f1cbc116657f024554a51caca9061697ed8871239474f8cd",
-      "bytes": 14584,
-      "lines": 349,
+      "sha256": "9a64ddee463be907639f8660d426b109e736eb275b290389d1be3770508f02a2",
+      "bytes": 17628,
+      "lines": 404,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 12,
-      "annotated_definitions": 12,
+      "definitions": 14,
+      "annotated_definitions": 14,
       "missing_definitions": []
     },
     {
@@ -5327,15 +5327,15 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "sha256": "23c72685abed04c1f5b0defc532e31a8a283a384b818046addb2443574fec201",
-      "bytes": 18218,
-      "lines": 518,
+      "sha256": "92548310e2a4100c4cfa8fbbad9084d965cdd61e08d87b730889bbe172397ee7",
+      "bytes": 21794,
+      "lines": 567,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 19,
-      "annotated_definitions": 19,
+      "definitions": 21,
+      "annotated_definitions": 21,
       "missing_definitions": []
     },
     {
@@ -7923,6 +7923,19 @@
       "issues": [],
       "definitions": 3,
       "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_data_loading_c28.py",
+      "sha256": "3e50a370a26ad882bc5a737ef75bad30989b925a80ef1a4198f05f98aa576af5",
+      "bytes": 11875,
+      "lines": 257,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 34,
+      "annotated_definitions": 34,
       "missing_definitions": []
     },
     {
@@ -12360,9 +12373,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "74fb7dae77a89b46e8bd2c80bab1922bdb6b1eafd2c188db112275064bbb6c98",
-      "bytes": 615002,
-      "lines": 2992,
+      "sha256": "80b3b7d5d91759f964561a00802703804c99c3d2990130b93f7497d1423f3aad",
+      "bytes": 618362,
+      "lines": 2998,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12438,9 +12451,9 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "c7e5b35a2028c29af80c2513f74719b810d932c2d825bc0d68d944eb989defe7",
-      "bytes": 99946,
-      "lines": 678,
+      "sha256": "f291e03206ef28c905d94d29cf444c59ae6dece0ce3537d77291511e77bd5521",
+      "bytes": 101996,
+      "lines": 680,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12958,9 +12971,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "6e8e8fc3077d704c994cac9d278584c1f7c34c5f6d410d05f3a35d699d8588d2",
-      "bytes": 2922657,
-      "lines": 105779,
+      "sha256": "ac0e8249149bcd57e360c82c200893974c2a18e13becbdb7738effb84f3d653c",
+      "bytes": 2924489,
+      "lines": 105859,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13010,9 +13023,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "c4874ad8a3bace58b95911f7db9f594763a9c9bc71a5bc39eb95d0b7b3c61044",
-      "bytes": 10850529,
-      "lines": 327383,
+      "sha256": "3cae7f5e120b83feed0d09c55fef7f733e46f9b25dabc5f4b6fe8c0c9365dc2b",
+      "bytes": 10854246,
+      "lines": 327502,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13023,9 +13036,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "6d9a9f904302d8a790b20088da46d5b49ef459b6d8b34a11f2c788bcfc2a6f02",
-      "bytes": 536300,
-      "lines": 3043,
+      "sha256": "a2e65920d384379c2db56dc0cff2e0c458c2b2258fabb07adf29c48daceeb094",
+      "bytes": 536725,
+      "lines": 3045,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -28805,11 +28818,15 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "24e4fa3cf3fc2d658bdf70f832d7534dd63ce6fba6c37ae86e1a71d2309ab414",
+  "ledger_sha256": "5d8d3e2d510a3ee08415ee5ed4cd0046c90ea486ca22ca27ac29e669fc939ab5",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "6fc8ea0d7e8f165699f3ae5732def68ee3344770",
+  "baseline_commit": "65a1022e0d068d19f3cb6dc0955ae2cb7a7b234a",
   "branch": "main",
   "unstaged_at_capture": [
-    "docs/backlog.md"
+    "docs/backlog.md",
+    "docs/data_sources.md",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

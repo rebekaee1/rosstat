@@ -9,12 +9,12 @@
 - ORM tables: **68**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **236**
-- Settings reads: **552**
+- Settings reads: **553**
 - Direct environment reads: **35**
 - Jobs: **50**
 - Middleware: **6**
-- Registry declarations: **1141**
-- Registry references: **2147**
+- Registry declarations: **1143**
+- Registry references: **2152**
 - Migration operations: **444**
 - Candidate effects: **2548**
 - Unresolved syntax: **1**
@@ -1676,7 +1676,7 @@ Relationships: `[]`
 | RUSTATS_ROSSTAT_CPI_TEMPLATE | str = 'ipc_mes_{mm}-{yyyy}.xlsx' | 1 | [backend/app/config.py:101](../backend/app/config.py#L101) |
 | RUSTATS_ROSSTAT_CA_CERT | str = str(Path(__file__).parent.parent / 'certs' / 'russiantrustedca2024.pem') | 7 | [backend/app/config.py:102](../backend/app/config.py#L102) |
 | RUSTATS_ROSSTAT_MAX_MONTHS_BACK | int = 6 | 2 | [backend/app/config.py:103](../backend/app/config.py#L103) |
-| RUSTATS_ROSSTAT_REQUEST_TIMEOUT | int = 30 | 9 | [backend/app/config.py:104](../backend/app/config.py#L104) |
+| RUSTATS_ROSSTAT_REQUEST_TIMEOUT | int = 30 | 10 | [backend/app/config.py:104](../backend/app/config.py#L104) |
 | RUSTATS_SCHEDULER_ENABLED | bool = True | 3 | [backend/app/config.py:107](../backend/app/config.py#L107) |
 | RUSTATS_WORKER_RECYCLE_MB | int = 0 | 2 | [backend/app/config.py:110](../backend/app/config.py#L110) |
 | RUSTATS_WORKER_RECYCLE_MIN_GAP_SECONDS | int = 300 | 1 | [backend/app/config.py:112](../backend/app/config.py#L112) |
@@ -2442,11 +2442,11 @@ Relationships: `[]`
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
 | app.services.rosstat_cpi_parser.PARSER_REGISTRY | Dict | RosstatCpiParser.parser_type, CbrKeyRateParser.parser_type, CbrFxParser.parser_type, CbrRuoniaParser.parser_type, CbrMonetaryParser.parser_type, CbrDataServiceParser.parser_type, RosstatLaborParser.parser_type, RosstatGdpParser.parser_type, CbrDataServiceSumParser.parser_type, MinfinBudgetParser.parser_type, RosstatWeeklyCpiParser.parser_type, RosstatIpiParser.parser_type, RosstatHousingParser.parser_type, RosstatPopulationParser.parser_type, RosstatPpiParser.parser_type, CbrBopParser.parser_type, CbrTradeGoodsMonthlyParser.parser_type, CbrTradeServicesMonthlyParser.parser_type, CbrReservesParser.parser_type, CbrDebtParser.parser_type, CbrGoldParser.parser_type, RosstatDemoParser.parser_type, RosstatIndParser.parser_type, RosstatScienceParser.parser_type, RosstatFixedAssetsParser.parser_type, BinanceBtcUsdtParser.parser_type, BrentDailyFredParser.parser_type, FredCsvParser.parser_type, WorldBankPinkSheetParser.parser_type, EcbFxParser.parser_type, ImfWeoParser.parser_type, CbrMonetaryAggParser.parser_type, MoexIndexParser.parser_type, RosstatWeeklyPriceParser.parser_type | [backend/app/services/rosstat_cpi_parser.py:91](../backend/app/services/rosstat_cpi_parser.py#L91) |
 | app.services.rosstat_demo_parser.DEMO_FILES | Dict | 'births', 'deaths', 'birth-rate', 'death-rate', 'working-age-population', 'pop-under-working-age', 'pop-over-working-age', 'pensioners' | [backend/app/services/rosstat_demo_parser.py:278](../backend/app/services/rosstat_demo_parser.py#L278) |
-| app.services.rosstat_gdp_parser._Q_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:46](../backend/app/services/rosstat_gdp_parser.py#L46) |
-| app.services.rosstat_gdp_parser._YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:47](../backend/app/services/rosstat_gdp_parser.py#L47) |
-| app.services.rosstat_gdp_parser.QUARTER_MONTH | Dict | 1, 2, 3, 4 | [backend/app/services/rosstat_gdp_parser.py:56](../backend/app/services/rosstat_gdp_parser.py#L56) |
-| app.services.rosstat_gdp_parser._FOOTNOTE_SUFFIX_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:72](../backend/app/services/rosstat_gdp_parser.py#L72) |
-| app.services.rosstat_gdp_parser._QUARTER_NAME_TO_MONTH | Dict | 'i квартал', 'ii квартал', 'iii квартал', 'iv квартал' | [backend/app/services/rosstat_gdp_parser.py:114](../backend/app/services/rosstat_gdp_parser.py#L114) |
+| app.services.rosstat_gdp_parser._Q_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:49](../backend/app/services/rosstat_gdp_parser.py#L49) |
+| app.services.rosstat_gdp_parser._YEAR_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:50](../backend/app/services/rosstat_gdp_parser.py#L50) |
+| app.services.rosstat_gdp_parser.QUARTER_MONTH | Dict | 1, 2, 3, 4 | [backend/app/services/rosstat_gdp_parser.py:59](../backend/app/services/rosstat_gdp_parser.py#L59) |
+| app.services.rosstat_gdp_parser._FOOTNOTE_SUFFIX_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:75](../backend/app/services/rosstat_gdp_parser.py#L75) |
+| app.services.rosstat_gdp_parser._QUARTER_NAME_TO_MONTH | Dict | 'i квартал', 'ii квартал', 'iii квартал', 'iv квартал' | [backend/app/services/rosstat_gdp_parser.py:117](../backend/app/services/rosstat_gdp_parser.py#L117) |
 | app.services.rosstat_housing_parser._ROMAN_TO_QUARTER | Dict | 'I', 'II', 'III', 'IV' | [backend/app/services/rosstat_housing_parser.py:57](../backend/app/services/rosstat_housing_parser.py#L57) |
 | app.services.rosstat_housing_parser._QUARTER_END_MONTH | Dict | 1, 2, 3, 4 | [backend/app/services/rosstat_housing_parser.py:58](../backend/app/services/rosstat_housing_parser.py#L58) |
 | app.services.rosstat_housing_parser._QOQ_PAIR_COMPACT_RE | Call | computed source expression | [backend/app/services/rosstat_housing_parser.py:63](../backend/app/services/rosstat_housing_parser.py#L63) |
@@ -2734,8 +2734,10 @@ Relationships: `[]`
 | app.services.world_adapters.banxico_sie._DEFAULT_DATE_FROM | Call | computed source expression | [backend/app/services/world_adapters/banxico_sie.py:55](../backend/app/services/world_adapters/banxico_sie.py#L55) |
 | app.services.world_adapters.banxico_sie._MISSING | Set | sequence/source expression | [backend/app/services/world_adapters/banxico_sie.py:56](../backend/app/services/world_adapters/banxico_sie.py#L56) |
 | app.services.world_adapters.banxico_sie.DEFAULT_BANXICO_SERIES | Tuple | sequence/source expression | [backend/app/services/world_adapters/banxico_sie.py:76](../backend/app/services/world_adapters/banxico_sie.py#L76) |
-| app.services.world_adapters.bcb_sgs._DEFAULT_DATE_FROM | Call | computed source expression | [backend/app/services/world_adapters/bcb_sgs.py:53](../backend/app/services/world_adapters/bcb_sgs.py#L53) |
-| app.services.world_adapters.bcb_sgs.DEFAULT_BCB_SERIES | Tuple | sequence/source expression | [backend/app/services/world_adapters/bcb_sgs.py:90](../backend/app/services/world_adapters/bcb_sgs.py#L90) |
+| app.services.world_adapters.bcb_sgs._DEFAULT_DATE_FROM | Call | computed source expression | [backend/app/services/world_adapters/bcb_sgs.py:54](../backend/app/services/world_adapters/bcb_sgs.py#L54) |
+| app.services.world_adapters.bcb_sgs._DAILY_DEFAULT_DATE_FROM | Call | computed source expression | [backend/app/services/world_adapters/bcb_sgs.py:62](../backend/app/services/world_adapters/bcb_sgs.py#L62) |
+| app.services.world_adapters.bcb_sgs._TRANSIENT_RETRY_DELAYS_S | Tuple | sequence/source expression | [backend/app/services/world_adapters/bcb_sgs.py:65](../backend/app/services/world_adapters/bcb_sgs.py#L65) |
+| app.services.world_adapters.bcb_sgs.DEFAULT_BCB_SERIES | Tuple | sequence/source expression | [backend/app/services/world_adapters/bcb_sgs.py:105](../backend/app/services/world_adapters/bcb_sgs.py#L105) |
 | app.services.world_adapters.bea_api.DEFAULT_BEA_SERIES | Tuple | sequence/source expression | [backend/app/services/world_adapters/bea_api.py:74](../backend/app/services/world_adapters/bea_api.py#L74) |
 | app.services.world_adapters.bls_api.DEFAULT_BLS_SERIES | Tuple | sequence/source expression | [backend/app/services/world_adapters/bls_api.py:61](../backend/app/services/world_adapters/bls_api.py#L61) |
 | app.services.world_adapters.boc_valet._DEFAULT_DATE_FROM | Call | computed source expression | [backend/app/services/world_adapters/boc_valet.py:49](../backend/app/services/world_adapters/boc_valet.py#L49) |

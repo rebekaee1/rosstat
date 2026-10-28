@@ -1355,8 +1355,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "sha256": "7a36e33c6853b5a2b05be4275389fea1db88638e736a0fa4168d0bd3feaecc48",
-      "lines": 319
+      "sha256": "9ac4d8fbabe6be49dedcd0fb7d3a0dad0353a4afd5df6ef49ae0d671f99f0ba5",
+      "lines": 323
     },
     {
       "path": "backend/app/services/rosstat_housing_parser.py",
@@ -1370,8 +1370,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
-      "sha256": "a9fc411be4f1d6a94f0c7592a995a6e4643bc9736b21c8f7426c43cfd534b83e",
-      "lines": 207
+      "sha256": "7b6cf4cb294a69641ec513b65fb55592fdbe76c670d5ff8df9e8c56af4c513fe",
+      "lines": 203
     },
     {
       "path": "backend/app/services/rosstat_labor_parser.py",
@@ -1395,8 +1395,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "sha256": "9561bf555f6dca80f1cbc116657f024554a51caca9061697ed8871239474f8cd",
-      "lines": 349
+      "sha256": "9a64ddee463be907639f8660d426b109e736eb275b290389d1be3770508f02a2",
+      "lines": 404
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
@@ -1760,8 +1760,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "sha256": "23c72685abed04c1f5b0defc532e31a8a283a384b818046addb2443574fec201",
-      "lines": 518
+      "sha256": "92548310e2a4100c4cfa8fbbad9084d965cdd61e08d87b730889bbe172397ee7",
+      "lines": 567
     },
     {
       "path": "backend/app/services/world_adapters/bea_api.py",
@@ -35451,8 +35451,17 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 274,
+      "end_line": 274,
+      "owner": "fetch_rosstat_gdp_use_latest",
+      "conditions": [],
+      "name": "rosstat_request_timeout",
+      "expression": "settings.rosstat_request_timeout"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 316,
+      "end_line": 316,
       "owner": "fetch_rosstat_ipi_current",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35460,8 +35469,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 293,
-      "end_line": 293,
+      "line": 348,
+      "end_line": 348,
       "owner": "fetch_rosstat_okpopul",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35469,8 +35478,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 385,
+      "end_line": 385,
       "owner": "fetch_latest_socioeconomic_report_pdf",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -88696,8 +88705,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 46,
-      "end_line": 46,
+      "line": 49,
+      "end_line": 49,
       "owner": "<module>",
       "conditions": [],
       "name": "_Q_RE",
@@ -88713,8 +88722,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 47,
-      "end_line": 47,
+      "line": 50,
+      "end_line": 50,
       "owner": "<module>",
       "conditions": [],
       "name": "_YEAR_RE",
@@ -88730,8 +88739,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 56,
-      "end_line": 56,
+      "line": 59,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "QUARTER_MONTH",
@@ -88781,8 +88790,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 72,
-      "end_line": 72,
+      "line": 75,
+      "end_line": 75,
       "owner": "<module>",
       "conditions": [],
       "name": "_FOOTNOTE_SUFFIX_RE",
@@ -88798,8 +88807,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 114,
-      "end_line": 119,
+      "line": 117,
+      "end_line": 122,
       "owner": "<module>",
       "conditions": [],
       "name": "_QUARTER_NAME_TO_MONTH",
@@ -101238,8 +101247,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 53,
-      "end_line": 53,
+      "line": 54,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "_DEFAULT_DATE_FROM",
@@ -101255,8 +101264,42 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 90,
-      "end_line": 146,
+      "line": 62,
+      "end_line": 62,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_DAILY_DEFAULT_DATE_FROM",
+      "symbol": "app.services.world_adapters.bcb_sgs._DAILY_DEFAULT_DATE_FROM",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "date(1984, 1, 1)",
+      "expression_truncated": false,
+      "expression_chars": 16,
+      "ast_sha256": "ce2b2472fb7ba97869bb25e1be5db76dc4053db2cb0681091057076071990672",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_TRANSIENT_RETRY_DELAYS_S",
+      "symbol": "app.services.world_adapters.bcb_sgs._TRANSIENT_RETRY_DELAYS_S",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "(2.0, 6.0)",
+      "expression_truncated": false,
+      "expression_chars": 10,
+      "ast_sha256": "9635bd85ead875e9c904bd2a4c65ae86f6cb37b76722537b841d04534f2155fb",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 105,
+      "end_line": 161,
       "owner": "<module>",
       "conditions": [],
       "name": "DEFAULT_BCB_SERIES",
@@ -200421,8 +200464,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 277,
-      "end_line": 277,
+      "line": 280,
+      "end_line": 280,
       "owner": "RosstatGdpParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -200430,8 +200473,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 279,
-      "end_line": 279,
+      "line": 282,
+      "end_line": 282,
       "owner": "RosstatGdpParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -268743,8 +268786,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 51,
-      "end_line": 53,
+      "line": 54,
+      "end_line": 56,
       "owner": "<module>",
       "conditions": [],
       "name": "DataPoint",
@@ -268752,8 +268795,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 59,
-      "end_line": 69,
+      "line": 62,
+      "end_line": 72,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_quarter_header",
@@ -268761,8 +268804,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 75,
-      "end_line": 98,
+      "line": 78,
+      "end_line": 101,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_ru_number",
@@ -268770,8 +268813,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 101,
-      "end_line": 111,
+      "line": 104,
+      "end_line": 114,
       "owner": "<module>",
       "conditions": [],
       "name": "_extract_year",
@@ -268779,8 +268822,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 122,
-      "end_line": 164,
+      "line": 125,
+      "end_line": 167,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_rosstat_gdp_quarter_grid_xlsx",
@@ -268788,8 +268831,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 167,
-      "end_line": 216,
+      "line": 170,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_rosstat_gdp_use_xls",
@@ -268797,8 +268840,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 219,
-      "end_line": 268,
+      "line": 222,
+      "end_line": 271,
       "owner": "<module>",
       "conditions": [],
       "name": "splice_at_overlap",
@@ -268806,8 +268849,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 271,
-      "end_line": 319,
+      "line": 274,
+      "end_line": 323,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatGdpParser",
@@ -268815,8 +268858,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 274,
-      "end_line": 316,
+      "line": 277,
+      "end_line": 320,
       "owner": "RosstatGdpParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -268824,8 +268867,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 318,
-      "end_line": 319,
+      "line": 322,
+      "end_line": 323,
       "owner": "RosstatGdpParser",
       "conditions": [],
       "name": "_validate",
@@ -269113,7 +269156,7 @@
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
       "line": 173,
-      "end_line": 207,
+      "end_line": 203,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatIpiParser",
@@ -269122,7 +269165,7 @@
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
       "line": 176,
-      "end_line": 204,
+      "end_line": 200,
       "owner": "RosstatIpiParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -269130,8 +269173,8 @@
     },
     {
       "path": "backend/app/services/rosstat_ipi_parser.py",
-      "line": 206,
-      "end_line": 207,
+      "line": 202,
+      "end_line": 203,
       "owner": "RosstatIpiParser",
       "conditions": [],
       "name": "_validate",
@@ -269625,8 +269668,26 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 241,
-      "end_line": 276,
+      "line": 246,
+      "end_line": 264,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "gdp_use_candidate_urls",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 267,
+      "end_line": 289,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "fetch_rosstat_gdp_use_latest",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 292,
+      "end_line": 331,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_ipi_current",
@@ -269634,8 +269695,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 279,
-      "end_line": 308,
+      "line": 334,
+      "end_line": 363,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_okpopul",
@@ -269643,8 +269704,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 311,
-      "end_line": 349,
+      "line": 366,
+      "end_line": 404,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_latest_socioeconomic_report_pdf",
@@ -279425,8 +279486,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 58,
-      "end_line": 70,
+      "line": 69,
+      "end_line": 81,
       "owner": "<module>",
       "conditions": [],
       "name": "_date_windows",
@@ -279434,8 +279495,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 73,
-      "end_line": 74,
+      "line": 84,
+      "end_line": 85,
       "owner": "<module>",
       "conditions": [],
       "name": "BcbSgsError",
@@ -279443,8 +279504,17 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 78,
-      "end_line": 87,
+      "line": 88,
+      "end_line": 89,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "BcbSgsTransientError",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 93,
+      "end_line": 102,
       "owner": "<module>",
       "conditions": [],
       "name": "BcbSeriesSpec",
@@ -279452,8 +279522,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 149,
-      "end_line": 155,
+      "line": 164,
+      "end_line": 170,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize_series_id",
@@ -279461,8 +279531,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 158,
-      "end_line": 160,
+      "line": 173,
+      "end_line": 175,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize_dataset_id",
@@ -279470,8 +279540,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 163,
-      "end_line": 165,
+      "line": 178,
+      "end_line": 180,
       "owner": "<module>",
       "conditions": [],
       "name": "observations_url",
@@ -279479,8 +279549,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 168,
-      "end_line": 174,
+      "line": 183,
+      "end_line": 189,
       "owner": "<module>",
       "conditions": [],
       "name": "recent_observations_url",
@@ -279488,8 +279558,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 177,
-      "end_line": 178,
+      "line": 192,
+      "end_line": 193,
       "owner": "<module>",
       "conditions": [],
       "name": "format_br_date",
@@ -279497,8 +279567,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 181,
-      "end_line": 196,
+      "line": 196,
+      "end_line": 211,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_observation_date",
@@ -279506,8 +279576,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 199,
-      "end_line": 227,
+      "line": 214,
+      "end_line": 242,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_sgs_observations",
@@ -279515,8 +279585,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 230,
-      "end_line": 462,
+      "line": 245,
+      "end_line": 511,
       "owner": "<module>",
       "conditions": [],
       "name": "BcbSgsAdapter",
@@ -279524,8 +279594,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 465,
-      "end_line": 518,
+      "line": 514,
+      "end_line": 567,
       "owner": "<module>",
       "conditions": [],
       "name": "create_adapter",
@@ -279533,8 +279603,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 236,
-      "end_line": 272,
+      "line": 251,
+      "end_line": 287,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "__init__",
@@ -279542,8 +279612,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 274,
-      "end_line": 281,
+      "line": 289,
+      "end_line": 296,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "list_datasets",
@@ -279551,8 +279621,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 283,
-      "end_line": 292,
+      "line": 298,
+      "end_line": 307,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "list_series",
@@ -279560,8 +279630,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 294,
-      "end_line": 404,
+      "line": 309,
+      "end_line": 435,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "fetch_series",
@@ -279569,8 +279639,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 406,
-      "end_line": 425,
+      "line": 437,
+      "end_line": 448,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "_get_json",
@@ -279578,8 +279648,17 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 427,
-      "end_line": 446,
+      "line": 450,
+      "end_line": 474,
+      "owner": "BcbSgsAdapter",
+      "conditions": [],
+      "name": "_get_json_once",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 476,
+      "end_line": 495,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "_get_observations_sync",
@@ -279587,8 +279666,8 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 448,
-      "end_line": 462,
+      "line": 497,
+      "end_line": 511,
       "owner": "BcbSgsAdapter",
       "conditions": [],
       "name": "_series_ref",
@@ -306670,16 +306749,16 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 63,
-      "end_line": 63,
+      "line": 66,
+      "end_line": 66,
       "owner": "_parse_quarter_header",
       "conditions": [],
       "symbol": "app.services.rosstat_gdp_parser._Q_RE"
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 68,
-      "end_line": 68,
+      "line": 71,
+      "end_line": 71,
       "owner": "_parse_quarter_header",
       "conditions": [
         "1 <= q <= 4 and 1990 <= y <= 2100"
@@ -306688,8 +306767,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 110,
+      "end_line": 110,
       "owner": "_extract_year",
       "conditions": [
         "not (isinstance(cell, (int, float)) and (not isinstance(cell, bool)))"
@@ -306698,24 +306777,24 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 153,
-      "end_line": 153,
+      "line": 156,
+      "end_line": 156,
       "owner": "parse_rosstat_gdp_quarter_grid_xlsx",
       "conditions": [],
       "symbol": "app.services.rosstat_gdp_parser._QUARTER_NAME_TO_MONTH"
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 208,
+      "end_line": 208,
       "owner": "parse_rosstat_gdp_use_xls",
       "conditions": [],
       "symbol": "app.services.rosstat_gdp_parser._QUARTER_NAME_TO_MONTH"
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 91,
-      "end_line": 91,
+      "line": 94,
+      "end_line": 94,
       "owner": "_parse_ru_number",
       "conditions": [],
       "symbol": "app.services.rosstat_gdp_parser._FOOTNOTE_SUFFIX_RE"
@@ -306921,6 +307000,14 @@
       "owner": "RosstatScienceParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.services.rosstat_science_parser.SCIENCE_CONFIG"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 261,
+      "end_line": 261,
+      "owner": "gdp_use_candidate_urls",
+      "conditions": [],
+      "symbol": "app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS"
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
@@ -311443,19 +311530,51 @@
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 246,
-      "end_line": 246,
+      "line": 261,
+      "end_line": 261,
       "owner": "BcbSgsAdapter.__init__",
       "conditions": [],
       "symbol": "app.services.world_adapters.bcb_sgs.DEFAULT_BCB_SERIES"
     },
     {
       "path": "backend/app/services/world_adapters/bcb_sgs.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 325,
+      "end_line": 325,
+      "owner": "BcbSgsAdapter.fetch_series",
+      "conditions": [],
+      "symbol": "app.services.world_adapters.bcb_sgs._DAILY_DEFAULT_DATE_FROM"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 325,
+      "end_line": 325,
       "owner": "BcbSgsAdapter.fetch_series",
       "conditions": [],
       "symbol": "app.services.world_adapters.bcb_sgs._DEFAULT_DATE_FROM"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 438,
+      "end_line": 438,
+      "owner": "BcbSgsAdapter._get_json",
+      "conditions": [],
+      "symbol": "app.services.world_adapters.bcb_sgs._TRANSIENT_RETRY_DELAYS_S"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 442,
+      "end_line": 442,
+      "owner": "BcbSgsAdapter._get_json",
+      "conditions": [],
+      "symbol": "app.services.world_adapters.bcb_sgs._TRANSIENT_RETRY_DELAYS_S"
+    },
+    {
+      "path": "backend/app/services/world_adapters/bcb_sgs.py",
+      "line": 447,
+      "end_line": 447,
+      "owner": "BcbSgsAdapter._get_json",
+      "conditions": [],
+      "symbol": "app.services.world_adapters.bcb_sgs._TRANSIENT_RETRY_DELAYS_S"
     },
     {
       "path": "backend/app/services/world_adapters/bea_api.py",

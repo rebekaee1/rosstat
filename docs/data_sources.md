@@ -270,11 +270,13 @@ Multi-source merge:
 |-----------|------------|------|--------------|---------------|-----|
 | `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `2` | `1` | — |
 | `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `9` | `3` | — |
-| `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 7 |
-| `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 8 |
-| `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995_1kv-2026.xls` | `2` | `1` | 11 |
+| `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 7 |
+| `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 8 |
+| `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 11 |
 
 История ВВП: 1995-Q1 → present (~125 точек на каждый индикатор после Q1-2026).
+
+**Trap (ВВП по использованию, 2026-10-28):** имя файла несёт номер последнего квартала, и Росстат кладёт новый файл рядом со старым. Зашитый `..._1kv-2026.xls` отдавал 200 и после выхода II квартала: `gdp-consumption`, `gdp-government`, `gdp-investment` стояли на 2026-03-01, когда `gdp-nominal` и `gdp-real` уже были на II квартале. `fetch_rosstat_gdp_use_latest` перебирает 6 кварталов вниз от текущего, затем зафиксированный адрес; сетевой отказ — `RosstatUnreachable`, а не «файл не найден».
 
 **Trap (имя файла, 2026-07):** на `/statistics/accounts` канон — `VVP_kvartal_s-1995-2026.xlsx` (дефис после `s`). Старый URL `VVP_kvartal_s_1995-2026.xlsx` (подчёркивание) всё ещё 200, но без I кв. 2026 — ETL молча `no_new_data`. URL в `ROSSTAT_STATIC_URLS['gdp_quarterly']`. Аналогично use-side: канон `GDP-quarters-of-use-1995_1kv-2026.xls`; старый `…-4kv-2025.xls` остаётся без I кв. 2026.
 
@@ -286,7 +288,7 @@ Chain MoM% из двух XLSX (база 2018 + база 2023).
 
 | Индикатор | okved_section | Files |
 |-----------|---------------|-------|
-| `ipi` | `BCDE` | `mediabank/ind_baza_2018_12-2025.xlsx` (history) + `mediabank/ind_baza_2023_{MM}-{YYYY}.xlsx` (current) |
+| `ipi` | `BCDE` | `mediabank/ind_baza_2018_12-2025.xlsx` (history) + `mediabank/ind_baza_2023_{MM}-{YYYY}.xlsx` (current; с 28.10.2026 обязателен — сбой текущего файла = `failed`, история в БД не трогается) |
 | `ipi-mining` | `B` | те же файлы |
 | `ipi-manufacturing` | `C` | те же файлы |
 | `ipi-energy` | `D` | те же файлы |
@@ -476,7 +478,7 @@ scheduler `RUSTATS_BANXICO_API_TOKEN`, `RUSTATS_ECOS_API_KEY`, `RUSTATS_ESTAT_AP
 `run_national_core_ingest` коммитит после ряда (`ingest_country(..., commit_each_series=True)`);
 до этого транзакция страны ждала медленный BCB SGS дольше `idle_in_transaction_session_timeout`
 (120 с), Postgres рвал соединение (`PendingRollbackError`), и данные Бразилии откатывались целиком
-(запуски `world_ingest_runs` 158, 170, 174 — 23, 26, 27.10). Тесты — `test_world_national_core_job.py` + 17 файлов
+(запуски `world_ingest_runs` 158, 170, 174 — 23, 26, 27.10). **BCB SGS (28.10.2026):** дневные окна по 3 года начиная с 1984 (раньше 10 лет с 1900: шлюз BCB считает окно в 10 лет дольше ~30 с и отвечает HTML вместо JSON); временные сбои (5xx, 429, не-JSON, обрыв) повторяются 2 раза, свежее окно обязательно, старые при стойком сбое пропускаются с WARNING и догружаются в следующий прогон; «мягко» пропускаются только явные «значений нет» (404, «Value(s) not found»). До этого не-JSON окно пропускалось молча, и у `br-policy-rate` (Selic) в проде осталась дыра 2000–2018. Тесты — `test_world_national_core_job.py` + 17 файлов
 `test_world_<provider>_adapter.py`.
 
 **Площадь территории (карточка страны):** курируемый справочник
