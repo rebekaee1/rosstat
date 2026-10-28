@@ -542,6 +542,146 @@ def test_ingest_series_applies_value_scale(auth_env, monkeypatch):
     asyncio.run(_run())
 
 
+def _hermetic_abs_specs():
+    from app.services.world_national_ingest import NationalSeriesSpec
+
+    def spec(suffix: str, series_id: str) -> NationalSeriesSpec:
+        return NationalSeriesSpec(
+            code_suffix=suffix,
+            name_ru=suffix,
+            name_en=None,
+            category_ru="Население",
+            unit="PERSONS",
+            unit_ru="человек",
+            frequency="quarterly",
+            provider="abs",
+            dataset_id="ERP_COMP_Q",
+            series_id=series_id,
+        )
+
+    return spec("population", "10.AUS.Q"), spec("population-male", "1.AUS.Q")
+
+
+def _hermetic_abs_adapter(on_fetch=None):
+    from datetime import date, datetime, timezone
+
+    from app.services.world_national_ingest import WorldSeriesPayload
+    from app.services.world_source_adapter import WorldObservation
+
+    class _Adapter:
+        provider = "abs"
+        public_source_name = "Австралийское бюро статистики"
+
+        async def fetch_series(self, ref, *, date_from=None, date_to=None):
+            if on_fetch is not None:
+                on_fetch()
+            return WorldSeriesPayload(
+                ref=ref,
+                observations=[WorldObservation(period=date(2025, 1, 1), value=1.0)],
+                fetched_at=datetime.now(timezone.utc),
+            )
+
+    return _Adapter()
+
+
+def _patch_sqlite_reconcile(monkeypatch):
+    import app.services.world_national_ingest as ingest_mod
+    from app.models import WorldDataPoint
+
+    async def _sqlite_reconcile(
+        db, indicator_id, points, *, is_complete=False, coverage_start=None, coverage_end=None,
+    ):
+        from sqlalchemy.dialects.sqlite import insert as sqlite_insert
+
+        for d, v in points:
+            stmt = sqlite_insert(WorldDataPoint).values(indicator_id=indicator_id, date=d, value=v)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=["indicator_id", "date"], set_={"value": stmt.excluded.value},
+            )
+            await db.execute(stmt)
+        return len(points), 0
+
+    monkeypatch.setattr(ingest_mod, "reconcile_points", _sqlite_reconcile)
+
+
+def test_ingest_series_fetches_outside_db_transaction(auth_env, monkeypatch):
+    """Сеть читается до SAVEPOINT: пока адаптер ходит за рядом, транзакции БД нет.
+
+    Иначе медленный источник (BCB SGS — до двух минут на ряд) простаивает «в
+    транзакции» дольше idle_in_transaction_session_timeout (120 с), Postgres рвёт
+    соединение, и откатывается вся страна (прод 22–27.10, br).
+    """
+    import asyncio
+
+    from app.services.world_national_ingest import ensure_country, ingest_series
+
+    _patch_sqlite_reconcile(monkeypatch)
+    spec, _ = _hermetic_abs_specs()
+    in_transaction_at_fetch: list[bool] = []
+
+    async def _run() -> None:
+        async with auth_env["session_maker"]() as db:
+            country = await ensure_country(
+                db, code="AU", slug="australia", name_ru="Австралия",
+                name_en="Australia", region_ru="Океания",
+            )
+            await db.commit()
+            adapter = _hermetic_abs_adapter(
+                on_fetch=lambda: in_transaction_at_fetch.append(db.in_transaction()),
+            )
+            result = await ingest_series(db, country=country, spec=spec, adapter=adapter)
+            assert result.error is None, result.error
+
+    asyncio.run(_run())
+    assert in_transaction_at_fetch == [False]
+
+
+@pytest.mark.parametrize("commit_each_series,expected_indicators", [(True, 2), (False, 0)])
+def test_commit_each_series_keeps_loaded_series_after_later_failure(
+    auth_env, monkeypatch, commit_each_series, expected_indicators,
+):
+    """С ``commit_each_series`` сбой после цикла (или обрыв соединения) не стоит страны
+    уже загруженных рядов; без флага вызывающий владеет транзакцией и откат её стирает."""
+    import asyncio
+
+    from sqlalchemy import func, select
+
+    from app.models import WorldIndicator
+    from app.services.world_national_ingest import (
+        CountryIngestStats,
+        _ingest_country_series,
+        ensure_country,
+    )
+
+    _patch_sqlite_reconcile(monkeypatch)
+    specs = _hermetic_abs_specs()
+
+    async def _run() -> int:
+        async with auth_env["session_maker"]() as db:
+            country = await ensure_country(
+                db, code="AU", slug="australia", name_ru="Австралия",
+                name_en="Australia", region_ru="Океания",
+            )
+            if commit_each_series:
+                await db.commit()
+            stats = await _ingest_country_series(
+                db,
+                country_row=country,
+                selected=specs,
+                adapters={"abs": _hermetic_abs_adapter()},
+                adapter_errors={},
+                stats=CountryIngestStats(country_code="AU"),
+                dry_run=False,
+                commit_each_series=commit_each_series,
+            )
+            assert stats.series_ok == 2 and stats.series_err == 0
+            await db.rollback()
+        async with auth_env["session_maker"]() as db:
+            return int(await db.scalar(select(func.count()).select_from(WorldIndicator)))
+
+    assert asyncio.run(_run()) == expected_indicators
+
+
 def test_national_indicator_metadata_change_without_point_changes(auth_env):
     """A YAML card edit is a real public change even when source data is identical."""
     import asyncio

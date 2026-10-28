@@ -2,12 +2,12 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-10-27
+**Сгенерировано:** 2026-10-28
 
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2054  ·  **Строк:** 1 306 011  ·  **Токенов (≈):** 12 395 459
+**Файлов:** 2054  ·  **Строк:** 1 306 262  ·  **Токенов (≈):** 12 398 985
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 741 | 63 135 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 830 | 282 754 | 3 114 741 |
+| `backend` | 830 | 282 914 | 3 116 293 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 17 | 912 | 11 994 |
-| `docs` | 138 | 829 864 | 7 075 372 |
+| `docs` | 138 | 829 955 | 7 077 346 |
 | `frontend` | 925 | 165 363 | 1 840 783 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 827 | 283 938 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 327 320 | 2 664 610 |
+| `docs/mechanism-inventory.json` | 327 383 | 2 665 147 |
 | `docs/client-mechanism-inventory.json` | 239 956 | 1 696 094 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 043 | 132 812 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 2 973 | 101 810 |
+| `docs/backlog.md` | 2 992 | 102 872 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 728 | 52 030 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 953 | 46 174 |
+| `docs/data-contracts.md` | 953 | 46 276 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
@@ -75,9 +75,9 @@
 | `backend/app/services/search.py` | 1 229 | 18 924 |
 | `backend/app/data/i18n/indicator_copy_en.py` | 1 073 | 18 290 |
 | `backend/app/data/i18n/seo_en.py` | 1 614 | 18 070 |
+| `docs/data_sources.md` | 678 | 17 858 |
 | `docs/architecture.md` | 467 | 17 668 |
 | `backend/app/data/eurostat_titles_ru.py` | 1 902 | 17 591 |
-| `docs/data_sources.md` | 669 | 17 585 |
 | `frontend/src/lib/regionsMap.json` | 1 | 16 837 |
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 401 | 16 504 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
@@ -97,7 +97,7 @@
 | `frontend/src/components/IndicatorSearch.jsx` | 1 026 | 13 070 |
 | `docs/research/our-state-2026-10-05.md` | 431 | 12 982 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
-| `backend/app/services/world_national_ingest.py` | 1 385 | 12 319 |
+| `backend/app/services/world_national_ingest.py` | 1 405 | 12 579 |
 | `frontend/src/lib/behavior.js` | 1 214 | 12 143 |
 | `backend/tests/test_seo_world.py` | 1 107 | 11 928 |
 | `frontend/src/components/WorldMap.jsx` | 1 128 | 11 713 |
@@ -175,6 +175,7 @@
 | `backend/app/services/world_subnational_ingest.py` | 779 | 7 476 |
 | `frontend/src/styles/indicator-russia.css` | 755 | 7 438 |
 | `scripts/e2e/liquid-glass-acceptance.mjs` | 351 | 7 284 |
+| `backend/tests/test_world_national_ingest.py` | 731 | 7 217 |
 | `frontend/src/lib/pageMeta.generated.json` | 513 | 7 194 |
 | `docs/design/local-acceptance/inventory.json` | 1 430 | 7 192 |
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 549 | 7 181 |
@@ -224,7 +225,6 @@
 | `backend/app/services/seo_world_compare.py` | 624 | 5 998 |
 | `backend/scripts/export_seo_demand_quarter.py` | 554 | 5 996 |
 | `backend/app/services/forecast_showcase.py` | 592 | 5 943 |
-| `backend/tests/test_world_national_ingest.py` | 591 | 5 930 |
 | `frontend/src/pages/WorldRegionsHome.jsx` | 561 | 5 929 |
 | `docs/adr/0012-world-multi-provider-official-first-forecasts.md` | 245 | 5 783 |
 | `frontend/src/styles/k1-scene.css` | 587 | 5 773 |
@@ -832,8 +832,8 @@
 | `backend/app/services/session_change_log.py` | 148 | 1 665 |
 | `frontend/src/styles/k6-country.test.js` | 124 | 1 664 |
 | `frontend/src/lib/behaviorEvidence.js` | 154 | 1 659 |
+| `backend/tests/test_world_national_state_accumulation.py` | 179 | 1 658 |
 | `frontend/src/components/home/HomeDataScope.component.test.jsx` | 143 | 1 657 |
-| `backend/tests/test_world_national_state_accumulation.py` | 179 | 1 656 |
 | `backend/app/api/pwa.py` | 155 | 1 655 |
 | `frontend/src/lib/calendarGrouping.test.js` | 182 | 1 655 |
 | `docs/analytics_api_inventory/README.md` | 81 | 1 651 |
@@ -907,8 +907,8 @@
 | `backend/tests/test_world_bcb_sgs_adapter.py` | 203 | 1 500 |
 | `frontend/src/components/RatingExtras.jsx` | 133 | 1 499 |
 | `scripts/locate-indicator.py` | 167 | 1 498 |
+| `backend/tests/test_world_national_core_job.py` | 155 | 1 496 |
 | `deploy/tor-http-bridge/tor_http_bridge.py` | 160 | 1 494 |
-| `backend/tests/test_world_national_core_job.py` | 155 | 1 493 |
 | `frontend/src/lib/worldApi.test.js` | 143 | 1 493 |
 | `docs/traffic-platform-2026-09-10.md` | 47 | 1 486 |
 | `backend/tests/test_rosstat_population.py` | 185 | 1 483 |

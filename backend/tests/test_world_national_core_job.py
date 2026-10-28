@@ -73,7 +73,7 @@ def test_committed_national_data_reports_cache_invalidation_failure(auth_env, mo
 
     monkeypatch.setattr(ingest_mod, "async_session", auth_env["session_maker"])
 
-    async def fake_ingest_country(db, country, *, dry_run):
+    async def fake_ingest_country(db, country, *, dry_run, **_):
         assert country == "us"
         assert dry_run is False
         return CountryIngestStats(
@@ -126,7 +126,7 @@ def test_national_catalog_bumps_without_touched_points(
 
     monkeypatch.setattr(ingest_mod, "async_session", auth_env["session_maker"])
 
-    async def fake_ingest_country(db, country, *, dry_run):
+    async def fake_ingest_country(db, country, *, dry_run, **_):
         return CountryIngestStats(
             country_code="US", series_ok=1, indicators_upserted=1,
             metadata_changed=metadata_changed, points_removed=points_removed,

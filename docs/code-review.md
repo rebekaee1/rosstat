@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `3c1fc05050d7a9493f3b97e5b9df2eb0e6e745b2`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `d94a9abdef9e8575c323505a4c388e483ccc1d83`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2213 |
 | Код, шаблоны и стили | 1806 |
 | Актуальные рецензии без пропусков guard | 2213 |
-| Именованные определения Python/JS: с аннотацией / всего | 14501 / 14501 |
+| Именованные определения Python/JS: с аннотацией / всего | 14512 / 14512 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -899,7 +899,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_listed_counts.py](../backend/tests/test_world_listed_counts.py) | reviewed | 22/22 | актуально |
 | [backend/tests/test_world_mospi_adapter.py](../backend/tests/test_world_mospi_adapter.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_world_national_core_job.py](../backend/tests/test_world_national_core_job.py) | reviewed | 12/12 | актуально |
-| [backend/tests/test_world_national_ingest.py](../backend/tests/test_world_national_ingest.py) | reviewed | 34/34 | актуально |
+| [backend/tests/test_world_national_ingest.py](../backend/tests/test_world_national_ingest.py) | reviewed | 45/45 | актуально |
 | [backend/tests/test_world_national_reconcile_pg.py](../backend/tests/test_world_national_reconcile_pg.py) | reviewed | 27/27 | актуально |
 | [backend/tests/test_world_national_state_accumulation.py](../backend/tests/test_world_national_state_accumulation.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_world_nbs_adapter.py](../backend/tests/test_world_nbs_adapter.py) | reviewed | 5/5 | актуально |

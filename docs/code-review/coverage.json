@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2002
     },
-    "definitions": 14501,
-    "annotated_definitions": 14501,
+    "definitions": 14512,
+    "annotated_definitions": 14512,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -5678,9 +5678,9 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "sha256": "2d3400f5a2644105da87e05818898ffd101e4809b3bfd4dfb1dad0ee68c09cae",
-      "bytes": 52208,
-      "lines": 1385,
+      "sha256": "13a94c10a416a0197303e586c7ea510c6f16e37d3cf44eb8349969c7cad7fee1",
+      "bytes": 53630,
+      "lines": 1405,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -11216,8 +11216,8 @@
     },
     {
       "path": "backend/tests/test_world_national_core_job.py",
-      "sha256": "cc74b921581c9dcd48b00f5cbd48fddb4f0a885ee1b78fe19a1d9c8778ed8006",
-      "bytes": 6337,
+      "sha256": "36998a53a58c33f626cd22d79b79f2a659dbed2fab94f4367bc367f00dffe03e",
+      "bytes": 6347,
       "lines": 155,
       "code": true,
       "status": "reviewed",
@@ -11229,15 +11229,15 @@
     },
     {
       "path": "backend/tests/test_world_national_ingest.py",
-      "sha256": "9713d496800bd54c44b9a235703b46c8120ab5ad19f5da1d12f68f8fbc4b02d7",
-      "bytes": 25087,
-      "lines": 591,
+      "sha256": "d78dc406ba0e4882dab598281278450438fe893a1b2a551e37e7ea943c5cd8a3",
+      "bytes": 30591,
+      "lines": 731,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 34,
-      "annotated_definitions": 34,
+      "definitions": 45,
+      "annotated_definitions": 45,
       "missing_definitions": []
     },
     {
@@ -11255,8 +11255,8 @@
     },
     {
       "path": "backend/tests/test_world_national_state_accumulation.py",
-      "sha256": "0ae5690db3e497c36e0da2e6d858ea3526ad2b7e931b3716c2e4b0816e2f5378",
-      "bytes": 6945,
+      "sha256": "93ffa47708034524659180795aba6422c22972fe2edc057c6961516ec1f3115e",
+      "bytes": 6950,
       "lines": 179,
       "code": true,
       "status": "reviewed",
@@ -12360,9 +12360,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "2a47f1fbebf83895cd7e20457b03d4d13e26272f87901721be7a8995e8d23b9b",
-      "bytes": 608130,
-      "lines": 2973,
+      "sha256": "f7af15dca268c5332a58464a523b6acd4d00df3e59c6a6d38d55b32181e7d503",
+      "bytes": 614369,
+      "lines": 2992,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12425,8 +12425,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "cd230bf950d288aedf4023f451d71e432175d27b0af6c156102654989513b490",
-      "bytes": 270172,
+      "sha256": "2e819e7478f8a1b3401d8a48ec5fc25e453ac13baaea50f2db68fbffde84b875",
+      "bytes": 270796,
       "lines": 953,
       "code": false,
       "status": "reviewed",
@@ -12438,9 +12438,9 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "9819c5851d72a5dcfb4b6868f4d24c0957559e09e83f6fcaa560741c427918d1",
-      "bytes": 98422,
-      "lines": 669,
+      "sha256": "c7e5b35a2028c29af80c2513f74719b810d932c2d825bc0d68d944eb989defe7",
+      "bytes": 99946,
+      "lines": 678,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12451,7 +12451,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "43962dc0eef15b94dac1655b292faeb9d3fd1a7f84c67ba9e3ef61f153cfc5dd",
+      "sha256": "bb1f44a0e6ba25a8ded8d71439f0db6325190c67a768de310413f2372bced8f4",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -12958,9 +12958,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "81572e2d526c9fa8e1185f0497cd1fdc1eda083139106566b4cd4ea627938a47",
-      "bytes": 2921880,
-      "lines": 105744,
+      "sha256": "6e8e8fc3077d704c994cac9d278584c1f7c34c5f6d410d05f3a35d699d8588d2",
+      "bytes": 2922657,
+      "lines": 105779,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -12971,7 +12971,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "11798f0b460fd6619840b71a2c574a8220cebbbabd56572828ce31e200ef4aa4",
+      "sha256": "ac485086a85197a16d6b02f6773ca44ce8fa6a76259a56243aa3a1167463a11f",
       "bytes": 98628,
       "lines": 1086,
       "code": false,
@@ -13010,9 +13010,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "10eb15457a0422fd33d4bdf85b8604e25c6e057ee060feaab68054b059a0a80f",
-      "bytes": 10848382,
-      "lines": 327320,
+      "sha256": "c4874ad8a3bace58b95911f7db9f594763a9c9bc71a5bc39eb95d0b7b3c61044",
+      "bytes": 10850529,
+      "lines": 327383,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13023,7 +13023,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "e0a7fffa34a74f18ecbbb8378def79b8f1b9f8a8934ffc3a4213de14b55672c9",
+      "sha256": "6d9a9f904302d8a790b20088da46d5b49ef459b6d8b34a11f2c788bcfc2a6f02",
       "bytes": 536300,
       "lines": 3043,
       "code": false,
@@ -28805,9 +28805,22 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "c6caad091493bdc26c55b4d78bc577368b7a4f35a6b01d616998e9409bb04433",
+  "ledger_sha256": "539c646b81041f272d7c4ed58c0b2805abf165c2dd61f5eb041de0ad5a82f9fe",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "3c1fc05050d7a9493f3b97e5b9df2eb0e6e745b2",
-  "branch": "integ/fix-2026-10-27",
-  "unstaged_at_capture": []
+  "baseline_commit": "d94a9abdef9e8575c323505a4c388e483ccc1d83",
+  "branch": "main",
+  "unstaged_at_capture": [
+    "backend/app/services/world_national_ingest.py",
+    "backend/tests/test_world_national_core_job.py",
+    "backend/tests/test_world_national_ingest.py",
+    "backend/tests/test_world_national_state_accumulation.py",
+    "docs/backlog.md",
+    "docs/data-contracts.md",
+    "docs/data_sources.md",
+    "docs/dead-code-report.md",
+    "docs/indicator-index.json",
+    "docs/indicator-index.md",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }

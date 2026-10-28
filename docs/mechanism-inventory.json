@@ -1895,8 +1895,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "sha256": "2d3400f5a2644105da87e05818898ffd101e4809b3bfd4dfb1dad0ee68c09cae",
-      "lines": 1385
+      "sha256": "13a94c10a416a0197303e586c7ea510c6f16e37d3cf44eb8349969c7cad7fee1",
+      "lines": 1405
     },
     {
       "path": "backend/app/services/world_official_forecast.py",
@@ -104798,8 +104798,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1030,
-      "end_line": 1091,
+      "line": 1034,
+      "end_line": 1095,
       "owner": "<module>",
       "conditions": [],
       "name": "_COUNTRY_DEFAULTS",
@@ -104897,8 +104897,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1241,
-      "end_line": 1243,
+      "line": 1257,
+      "end_line": 1259,
       "owner": "<module>",
       "conditions": [],
       "name": "NATIONAL_CORE_COUNTRIES",
@@ -138535,8 +138535,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1261,
-      "end_line": 1261,
+      "line": 1277,
+      "end_line": 1277,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "add",
@@ -138608,8 +138608,24 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1262,
-      "end_line": 1262,
+      "line": 1121,
+      "end_line": 1121,
+      "owner": "ingest_country",
+      "conditions": [
+        "commit_each_series and (not dry_run)"
+      ],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.world_national_ingest.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 1278,
+      "end_line": 1278,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "commit",
@@ -138622,8 +138638,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1337,
-      "end_line": 1337,
+      "line": 1357,
+      "end_line": 1357,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "operation": "commit",
@@ -138709,8 +138725,24 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1308,
-      "end_line": 1308,
+      "line": 1214,
+      "end_line": 1214,
+      "owner": "_ingest_country_series",
+      "conditions": [
+        "commit_each_series and (not dry_run)"
+      ],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.world_national_ingest.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 1328,
+      "end_line": 1328,
       "owner": "run_national_core_ingest",
       "conditions": [
         "points_touched or points_removed or metadata_changed"
@@ -138775,6 +138807,37 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
+      "line": 1201,
+      "end_line": 1201,
+      "owner": "_ingest_country_series",
+      "conditions": [
+        "adapter is None and (not dry_run)",
+        "commit_each_series"
+      ],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.world_national_ingest.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
+      "line": 1297,
+      "end_line": 1297,
+      "owner": "run_national_core_ingest",
+      "conditions": [],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.world_national_ingest.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/world_national_ingest.py",
       "line": 636,
       "end_line": 642,
       "owner": "reconcile_points",
@@ -138803,8 +138866,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1301,
-      "end_line": 1301,
+      "line": 1321,
+      "end_line": 1321,
       "owner": "run_national_core_ingest",
       "conditions": [
         "run is not None"
@@ -231538,8 +231601,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1148,
-      "end_line": 1148,
+      "line": 1159,
+      "end_line": 1159,
       "owner": "_ingest_country_series",
       "conditions": [],
       "symbol": "app.models.WorldCountry",
@@ -231585,8 +231648,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1260,
-      "end_line": 1260,
+      "line": 1276,
+      "end_line": 1276,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -231615,8 +231678,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1320,
-      "end_line": 1320,
+      "line": 1340,
+      "end_line": 1340,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -231642,8 +231705,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 975,
-      "end_line": 975,
+      "line": 979,
+      "end_line": 979,
       "owner": "ingest_series",
       "conditions": [],
       "symbol": "app.models.WorldIndicator",
@@ -231768,8 +231831,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1298,
-      "end_line": 1298,
+      "line": 1318,
+      "end_line": 1318,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.models.WorldIngestRun",
@@ -283854,7 +283917,7 @@
     {
       "path": "backend/app/services/world_national_ingest.py",
       "line": 925,
-      "end_line": 1027,
+      "end_line": 1031,
       "owner": "<module>",
       "conditions": [],
       "name": "ingest_series",
@@ -283862,8 +283925,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1094,
-      "end_line": 1142,
+      "line": 1098,
+      "end_line": 1153,
       "owner": "<module>",
       "conditions": [],
       "name": "ingest_country",
@@ -283871,8 +283934,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1145,
-      "end_line": 1217,
+      "line": 1156,
+      "end_line": 1233,
       "owner": "<module>",
       "conditions": [],
       "name": "_ingest_country_series",
@@ -283880,8 +283943,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1220,
-      "end_line": 1238,
+      "line": 1236,
+      "end_line": 1254,
       "owner": "<module>",
       "conditions": [],
       "name": "format_failed_series",
@@ -283889,8 +283952,8 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1246,
-      "end_line": 1385,
+      "line": 1262,
+      "end_line": 1405,
       "owner": "<module>",
       "conditions": [],
       "name": "run_national_core_ingest",
@@ -312490,16 +312553,16 @@
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1103,
-      "end_line": 1103,
+      "line": 1111,
+      "end_line": 1111,
       "owner": "ingest_country",
       "conditions": [],
       "symbol": "app.services.world_national_ingest._COUNTRY_DEFAULTS"
     },
     {
       "path": "backend/app/services/world_national_ingest.py",
-      "line": 1258,
-      "end_line": 1258,
+      "line": 1274,
+      "end_line": 1274,
       "owner": "run_national_core_ingest",
       "conditions": [],
       "symbol": "app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES"

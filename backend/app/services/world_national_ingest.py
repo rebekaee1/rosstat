@@ -939,20 +939,24 @@ async def ingest_series(
         dataset_id=spec.dataset_id,
     )
     try:
-        async with db.begin_nested():
-            adapter_obj = adapter or resolve_adapter(spec.provider)
-            source_ru = public_source_for_provider(spec.provider, adapter_obj)
-            if dry_run:
-                result.observations = 0
-                return result
+        adapter_obj = adapter or resolve_adapter(spec.provider)
+        source_ru = public_source_for_provider(spec.provider, adapter_obj)
+        if dry_run:
+            result.observations = 0
+            return result
 
-            payload = await adapter_obj.fetch_series(ref)
-            if payload.ref.slice_hash != ref.slice_hash:
-                raise ValueError("Source payload identity does not match requested series")
-            points = observations_to_points(payload)
-            if spec.value_scale != 1.0:
-                points = [(d, v * spec.value_scale) for d, v in points]
-            result.observations = len(points)
+        # Сеть — до SAVEPOINT: пока адаптер ходит за рядом (BCB SGS собирает историю
+        # окнами по 10 лет, ряд — до двух минут), транзакция БД не должна стоять
+        # открытой. Postgres рвёт её по idle_in_transaction_session_timeout (120 с),
+        # и откатывается вся страна (прод, 22–27.10: в медленные ночи br не сохранялась).
+        payload = await adapter_obj.fetch_series(ref)
+        if payload.ref.slice_hash != ref.slice_hash:
+            raise ValueError("Source payload identity does not match requested series")
+        points = observations_to_points(payload)
+        if spec.value_scale != 1.0:
+            points = [(d, v * spec.value_scale) for d, v in points]
+        result.observations = len(points)
+        async with db.begin_nested():
             change_state: dict[str, bool] = {}
             iid, created = await upsert_national_indicator(
                 db,
@@ -1098,7 +1102,11 @@ async def ingest_country(
     base_dir: Path | None = None,
     dry_run: bool = False,
     only_suffix: str | None = None,
+    commit_each_series: bool = False,
 ) -> CountryIngestStats:
+    """``commit_each_series``: коммит после каждого ряда, чтобы сеть следующего не
+    держала транзакцию открытой (планировщик); по умолчанию вызывающий владеет
+    транзакцией страны целиком."""
     manifest = load_national_core_yaml(country, base_dir=base_dir)
     defaults = _COUNTRY_DEFAULTS.get(manifest.country_code, {})
     country_row = await ensure_country(
@@ -1109,6 +1117,8 @@ async def ingest_country(
         name_en=defaults.get("name_en"),
         region_ru=defaults.get("region_ru", "Америка"),
     )
+    if commit_each_series and not dry_run:
+        await db.commit()
 
     stats = CountryIngestStats(country_code=manifest.country_code)
     selected = manifest.series
@@ -1136,6 +1146,7 @@ async def ingest_country(
             stats=stats,
             dry_run=dry_run,
             tracker=tracker,
+            commit_each_series=commit_each_series,
         )
     finally:
         for adapter in adapters.values():
@@ -1152,6 +1163,7 @@ async def _ingest_country_series(
     stats: CountryIngestStats,
     dry_run: bool,
     tracker: DatasetRunTracker | None = None,
+    commit_each_series: bool = False,
 ) -> CountryIngestStats:
     for spec in selected:
         if spec.provider not in adapters and spec.provider not in adapter_errors:
@@ -1185,6 +1197,8 @@ async def _ingest_country_series(
                 tracker=tracker,
                 series_code=res.code,
             )
+            if commit_each_series:
+                await db.commit()
             continue
 
         res = await ingest_series(
@@ -1196,6 +1210,8 @@ async def _ingest_country_series(
             tracker=tracker,
         )
         stats.results.append(res)
+        if commit_each_series and not dry_run:
+            await db.commit()
         if res.error:
             stats.series_err += 1
             logger.error("FAIL %s: %s", res.code, res.error)
@@ -1273,8 +1289,12 @@ async def run_national_core_ingest(
     for cc in countries:
         try:
             async with async_session() as db:
-                async with db.begin():
-                    stats = await ingest_country(db, cc, dry_run=False)
+                # Коммит после каждого ряда: медленный источник одной страны не
+                # откатывает уже загруженные ряды (см. ingest_series).
+                stats = await ingest_country(
+                    db, cc, dry_run=False, commit_each_series=True,
+                )
+                await db.commit()
             per_country[cc] = {
                 "ok": stats.series_ok,
                 "err": stats.series_err,

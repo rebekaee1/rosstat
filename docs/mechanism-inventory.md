@@ -16,7 +16,7 @@
 - Registry declarations: **1141**
 - Registry references: **2147**
 - Migration operations: **444**
-- Candidate effects: **2544**
+- Candidate effects: **2548**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2828,8 +2828,8 @@ Relationships: `[]`
 | app.services.world_national_ingest._FREQ_ALIASES | Dict | 'm', 'q', 'a', 'y', 'yearly', 'd', 'w', 'monthly', 'quarterly', 'annual', 'daily', 'weekly' | [backend/app/services/world_national_ingest.py:96](../backend/app/services/world_national_ingest.py#L96) |
 | app.services.world_national_ingest._FREQ_ADJ_RU | Dict | 'monthly', 'quarterly', 'annual', 'weekly', 'daily' | [backend/app/services/world_national_ingest.py:111](../backend/app/services/world_national_ingest.py#L111) |
 | app.services.world_national_ingest._CODE_RE | Call | computed source expression | [backend/app/services/world_national_ingest.py:119](../backend/app/services/world_national_ingest.py#L119) |
-| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:1030](../backend/app/services/world_national_ingest.py#L1030) |
-| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1241](../backend/app/services/world_national_ingest.py#L1241) |
+| app.services.world_national_ingest._COUNTRY_DEFAULTS | Dict | 'CA', 'AU', 'UK', 'US', 'JP', 'KR', 'BR', 'MX', 'CN', 'IN' | [backend/app/services/world_national_ingest.py:1034](../backend/app/services/world_national_ingest.py#L1034) |
+| app.services.world_national_ingest.NATIONAL_CORE_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_national_ingest.py:1257](../backend/app/services/world_national_ingest.py#L1257) |
 | app.services.world_official_forecast._POSITIVE_CODES | Call | computed source expression | [backend/app/services/world_official_forecast.py:54](../backend/app/services/world_official_forecast.py#L54) |
 | app.services.world_official_forecast._PERCENT_BOUND_CODES | Call | computed source expression | [backend/app/services/world_official_forecast.py:55](../backend/app/services/world_official_forecast.py#L55) |
 | app.services.world_rank_values._FORCE_YOY_CONCEPTS | Call | computed source expression | [backend/app/services/world_rank_values.py:48](../backend/app/services/world_rank_values.py#L48) |

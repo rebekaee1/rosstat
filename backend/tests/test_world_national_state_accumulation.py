@@ -141,7 +141,7 @@ def test_summary_names_failed_series_and_counts_them(auth_env, monkeypatch):
 
     monkeypatch.setattr(ingest_mod, "async_session", auth_env["session_maker"])
 
-    async def fake_ingest_country(db, country, *, dry_run):
+    async def fake_ingest_country(db, country, *, dry_run, **_):
         stats = CountryIngestStats(
             country_code="CN", series_ok=1, series_err=2, indicators_upserted=1,
         )
