@@ -31,6 +31,7 @@ import asyncio
 import hashlib
 import json
 import logging
+import time
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from typing import Any, AsyncIterator, Mapping, Sequence
@@ -51,8 +52,18 @@ DEFAULT_TIMEOUT_SEC = 60
 DEFAULT_RECENT_N = 10_000
 DEFAULT_COUNTRY_CODE = "BR"
 _DEFAULT_DATE_FROM = date(1900, 1, 1)
-# BCB daily series: max query window is 10 years (HTTP 406 otherwise).
-_DAILY_MAX_SPAN_DAYS = 3650
+# BCB daily series: max query window is 10 years (HTTP 406 otherwise). Но на «холодный» запрос шлюз BCB отвечает
+# не дольше ~30 с, а считает его ~9 мс на строку: окно в 10 лет (3650 строк) упирается в таймаут и возвращает HTML
+# вместо JSON (28.10.2026: окна Selic 2009-2019 и 2009-2014 падали стабильно, 2014-2019 за 17 с проходило). Окно
+# в 3 года (~1100 строк, ~10 с) укладывается с запасом.
+_DAILY_MAX_SPAN_DAYS = 1095
+# Самая ранняя дневная серия SGS (USD/BRL) начинается 28.11.1984. С 1900 года окон было 13 (десять из них - пустые 404),
+# и один ряд грузился 105-115 с; с 1984 года окон 5.
+_DAILY_DEFAULT_DATE_FROM = date(1984, 1, 1)
+# Повторы временных сбоев (5xx, 429, не-JSON страница вместо ответа, обрыв): 28.10.2026 окно 2009-2019 ряда Selic
+# вернуло HTML, раньше оно молча пропускалось, и в БД остались дыры 2000-2018.
+_TRANSIENT_RETRY_DELAYS_S = (2.0, 6.0)
+_sleep = time.sleep
 
 
 def _date_windows(start: date, end: date, *, max_span_days: int) -> list[tuple[date, date]]:
@@ -72,6 +83,10 @@ def _date_windows(start: date, end: date, *, max_span_days: int) -> list[tuple[d
 
 class BcbSgsError(RuntimeError):
     """Raised when SGS returns an unusable payload or HTTP error."""
+
+
+class BcbSgsTransientError(BcbSgsError):
+    """Временный сбой источника (5xx, 429, не-JSON страница, обрыв сети): повторяется и никогда не «мягкий пропуск»."""
 
 
 @dataclass(frozen=True)
@@ -305,14 +320,16 @@ class BcbSgsAdapter:
         series_id = normalize_series_id(series.series_id)
         fetched_at = datetime.now(timezone.utc)
 
-        start = date_from or _DEFAULT_DATE_FROM
+        freq = (series.frequency or "").strip().lower()
+        start = date_from or (
+            _DAILY_DEFAULT_DATE_FROM if freq == "daily" else _DEFAULT_DATE_FROM
+        )
         end = date_to or date.today()
         if end < start:
             raise BcbSgsError(
                 f"date_to {end.isoformat()} is before date_from {start.isoformat()}"
             )
 
-        freq = (series.frequency or "").strip().lower()
         # ``ultimos/{N}`` capped at N≤20 by BCB; prefer date windows.
         # Daily SGS series reject windows longer than 10 years (HTTP 406).
         if freq == "daily":
@@ -321,7 +338,9 @@ class BcbSgsAdapter:
             windows = [(start, end)]
 
         raw_rows: list[Any] = []
-        for w_start, w_end in windows:
+        failed_windows: list[str] = []
+        for index, (w_start, w_end) in enumerate(windows):
+            is_latest = index == len(windows) - 1
             try:
                 chunk = await asyncio.to_thread(
                     self._get_observations_sync,
@@ -330,12 +349,11 @@ class BcbSgsAdapter:
                     end_date=w_end,
                 )
             except BcbSgsError as exc:
-                # Empty / invalid historical windows (daily from 1900, HTML error pages).
+                # Мягко пропускаем окна, в которых источник ЯВНО сообщает «значений нет» (до начала ряда).
                 msg = str(exc)
-                soft = (
+                soft = not isinstance(exc, BcbSgsTransientError) and (
                     "HTTP 404" in msg
                     or "Value(s) not found" in msg
-                    or "non-JSON" in msg
                     or "Requisição inválida" in msg
                     or "Requisicao invalida" in msg
                 )
@@ -347,11 +365,24 @@ class BcbSgsAdapter:
                         w_end.isoformat(),
                     )
                     continue
-                raise
+                # Временный сбой, не прошедший повторов. Свежее окно обязательно: без него ряд не обновится, а
+                # прогон выглядел бы успешным - это ошибка ряда. Старое окно уже лежит в БД с прежних прогонов:
+                # пропускаем его громко (WARNING) и догружаем в следующий прогон, чтобы не терять свежесть.
+                if is_latest or not isinstance(exc, BcbSgsTransientError):
+                    raise
+                failed_windows.append(f"{w_start.isoformat()}..{w_end.isoformat()}")
+                continue
             if isinstance(chunk, list):
                 raw_rows.extend(chunk)
             elif chunk:
                 raw_rows.append(chunk)
+
+        if failed_windows:
+            logger.warning(
+                "BCB SGS %s: исторические окна не загружены (будут повторены в следующем прогоне): %s",
+                series_id,
+                ", ".join(failed_windows),
+            )
 
         if not raw_rows:
             raise BcbSgsError(
@@ -404,6 +435,19 @@ class BcbSgsAdapter:
         )
 
     def _get_json(self, url: str, *, params: Mapping[str, str] | None = None) -> Any:
+        for attempt in range(len(_TRANSIENT_RETRY_DELAYS_S) + 1):
+            try:
+                return self._get_json_once(url, params=params)
+            except BcbSgsTransientError as exc:
+                if attempt >= len(_TRANSIENT_RETRY_DELAYS_S):
+                    raise
+                logger.warning(
+                    "BCB SGS transient failure (attempt %d): %s", attempt + 1, str(exc)[:200]
+                )
+                _sleep(_TRANSIENT_RETRY_DELAYS_S[attempt])
+        raise AssertionError("unreachable")  # pragma: no cover
+
+    def _get_json_once(self, url: str, *, params: Mapping[str, str] | None = None) -> Any:
         try:
             response = self._session.get(
                 url,
@@ -412,15 +456,20 @@ class BcbSgsAdapter:
                 headers={"Accept": "application/json"},
             )
         except requests.RequestException as exc:
-            raise BcbSgsError(f"SGS GET {url} failed: {exc}") from exc
+            raise BcbSgsTransientError(f"SGS GET {url} failed: {exc}") from exc
         if response.status_code >= 400:
-            raise BcbSgsError(
+            error_cls = (
+                BcbSgsTransientError
+                if response.status_code >= 500 or response.status_code == 429
+                else BcbSgsError
+            )
+            raise error_cls(
                 f"SGS GET {url} HTTP {response.status_code}: {response.text[:300]}"
             )
         try:
             return response.json()
         except ValueError as exc:
-            raise BcbSgsError(
+            raise BcbSgsTransientError(
                 f"SGS GET {url} returned non-JSON: {response.text[:300]}"
             ) from exc
 

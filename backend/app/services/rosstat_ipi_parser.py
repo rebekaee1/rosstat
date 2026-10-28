@@ -186,18 +186,14 @@ class RosstatIpiParser(BaseParser):
         )
         hist_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, hist_content, section)
 
-        sources_url = hist_url
-        cur_mom: dict[date, float] = {}
-        try:
-            cur_content, cur_url = await asyncio.to_thread(fetch_rosstat_ipi_current)
-            cur_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, cur_content, section)
-            sources_url = f"{hist_url}; {cur_url}"
-        except Exception as e:
-            logger.warning(
-                "Rosstat IPI current ind_baza_2023_*.xlsx fetch failed (свежие месяцы могут "
-                "отсутствовать пока rosstat не опубликует новый файл): %s",
-                e,
-            )
+        # Текущий файл (база 2023) обязателен: fetch_rosstat_ipi_current сам идёт назад на 6 месяцев, поэтому «ещё не
+        # опубликован» его не роняет. Раньше любой сбой (сеть, 403 «лимит подключений») глотался, цепочка строилась
+        # по одному историческому файлу, и 86-131 существующих точки каждого из пяти рядов молча перезаписывались
+        # значениями другой цепочки (расхождение до 5,5 пункта у ipi-water; 27.10.2026 вечером `ipi` ушёл в success
+        # с 86 ревизиями, а на следующий день вернулся). Теперь сбой = failed, данные в БД остаются прежними.
+        cur_content, cur_url = await asyncio.to_thread(fetch_rosstat_ipi_current)
+        cur_mom = await asyncio.to_thread(parse_rosstat_ipi_mom_xlsx, cur_content, section)
+        sources_url = f"{hist_url}; {cur_url}"
 
         merged_mom = merge_mom_dicts(hist_mom, cur_mom)
         points = chain_mom_to_index_2023_base(merged_mom)

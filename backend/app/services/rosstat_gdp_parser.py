@@ -39,7 +39,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
-from app.services.rosstat_sdds_fetcher import fetch_rosstat_static_xlsx
+from app.services.rosstat_sdds_fetcher import (
+    fetch_rosstat_gdp_use_latest,
+    fetch_rosstat_static_xlsx,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -294,7 +297,8 @@ class RosstatGdpParser(BaseParser):
             else:
                 points = modern
         elif gdp_source == "official_use":
-            content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_use_quarterly")
+            # Имя файла несёт последний квартал: берём самый свежий из опубликованных, а не зашитый 1kv-2026.
+            content, final_url = await asyncio.to_thread(fetch_rosstat_gdp_use_latest)
             sheet_name = str(cfg.get("gdp_sheet", "2"))
             row_index = int(cfg.get("gdp_row_index", 4))
             modern = await asyncio.to_thread(

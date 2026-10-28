@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import logging
 import re
-from datetime import datetime
+from datetime import date, datetime
 from urllib.parse import unquote
 
 import requests
@@ -238,6 +238,57 @@ def fetch_rosstat_static_xlsx(key: str) -> tuple[bytes, str]:
     return resp.content, url
 
 
+_GDP_USE_URL_TMPL = _ROSSTAT_MEDIA + "/GDP-quarters-of-use-1995_{quarter}kv-{year}.xls"
+# Файл ВВП по использованию выходит спустя месяц-два после квартала; шести кварталов хватает с запасом.
+_GDP_USE_LOOKBACK_QUARTERS = 6
+
+
+def gdp_use_candidate_urls(today: date | None = None) -> list[str]:
+    """Адреса файла «ВВП по использованию» от текущего квартала к прошлым, затем зафиксированный канон.
+
+    Имя файла несёт номер последнего квартала (`..._2kv-2026.xls`), и Росстат кладёт новый файл рядом со старым,
+    не заменяя его. Зашитый адрес `..._1kv-2026.xls` отдавал 200 и после выхода II квартала: ряды
+    потребления, госрасходов и инвестиций стояли на квартал позади ВВП (28.10.2026: `2kv-2026` уже отдавался).
+    """
+    today = today or date.today()
+    year, quarter = today.year, (today.month - 1) // 3 + 1
+    urls: list[str] = []
+    for _ in range(_GDP_USE_LOOKBACK_QUARTERS):
+        urls.append(_GDP_USE_URL_TMPL.format(quarter=quarter, year=year))
+        quarter -= 1
+        if quarter == 0:
+            quarter, year = 4, year - 1
+    pinned = ROSSTAT_STATIC_URLS["gdp_use_quarterly"]
+    if pinned not in urls:
+        urls.append(pinned)
+    return urls
+
+
+def fetch_rosstat_gdp_use_latest(today: date | None = None) -> tuple[bytes, str]:
+    """Скачать самый свежий файл «ВВП по использованию» (тот, чей квартал новее; 404 пропускаются)."""
+    session = _get_session()
+    candidates = gdp_use_candidate_urls(today)
+    net_failures = 0
+    for url in candidates:
+        try:
+            resp = session.get(url, timeout=settings.rosstat_request_timeout)
+        except requests.RequestException as exc:
+            logger.warning("Rosstat GDP-by-use %s fetch error: %s", url, exc)
+            net_failures += 1
+            continue
+        if resp.status_code != 200:
+            logger.debug("Rosstat GDP-by-use %s: HTTP %d", url, resp.status_code)
+            continue
+        if resp.content[:4] not in (XLSX_MAGIC, XLS_MAGIC):
+            logger.warning("Rosstat GDP-by-use %s: response is not XLSX/XLS", url)
+            continue
+        logger.info("Downloaded Rosstat GDP-by-use %s: %d KB", url, len(resp.content) // 1024)
+        return resp.content, url
+    if net_failures == len(candidates):
+        raise RosstatUnreachable("Rosstat unreachable: GDP-by-use requests failed on network")
+    raise RuntimeError(f"Rosstat GDP-by-use file not found (tried {len(candidates)} candidates)")
+
+
 def fetch_rosstat_ipi_current() -> tuple[bytes, str]:
     """Download current rosstat IPI XLSX `ind_baza_2023_{MM}-{YYYY}.xlsx`.
 
@@ -251,6 +302,7 @@ def fetch_rosstat_ipi_current() -> tuple[bytes, str]:
     """
     now = datetime.now()
     session = _get_session()
+    net_failures = 0
 
     for month_offset in range(6):
         cur = now.month - month_offset
@@ -272,7 +324,10 @@ def fetch_rosstat_ipi_current() -> tuple[bytes, str]:
             return resp.content, url
         except requests.RequestException as e:
             logger.warning("Rosstat IPI %02d-%d fetch error: %s", cur, cur_year, e)
+            net_failures += 1
 
+    if net_failures == 6:
+        raise RosstatUnreachable("Rosstat unreachable: IPI current-file requests failed on network")
     raise RuntimeError("Rosstat IPI: no current ind_baza_2023_*.xlsx file found in last 6 months")
 
 
