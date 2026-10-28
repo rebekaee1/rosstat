@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `98f6d86748bf4c8d0c9a655673d6845c3fe7a22d`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `a73df4dcadbcd9975fe6d758e50fe3ae50e348b3`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2214 |
 | Код, шаблоны и стили | 1807 |
 | Актуальные рецензии без пропусков guard | 2214 |
-| Именованные определения Python/JS: с аннотацией / всего | 14574 / 14574 |
+| Именованные определения Python/JS: с аннотацией / всего | 14577 / 14577 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -2234,7 +2234,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [scripts/repo-inventory.py](../scripts/repo-inventory.py) | reviewed | 6/6 | актуально |
 | [scripts/search-history-analyze.py](../scripts/search-history-analyze.py) | reviewed | 6/6 | актуально |
 | [scripts/search-history-audit.py](../scripts/search-history-audit.py) | reviewed | 5/5 | актуально |
-| [scripts/seo-audit.py](../scripts/seo-audit.py) | reviewed | 10/10 | актуально |
+| [scripts/seo-audit.py](../scripts/seo-audit.py) | reviewed | 13/13 | актуально |
 | [scripts/sitemap-inventory.py](../scripts/sitemap-inventory.py) | reviewed | 1/1 | актуально |
 | [scripts/sync-local-from-prod.py](../scripts/sync-local-from-prod.py) | reviewed | 5/5 | актуально |
 | [scripts/test-crawler-routing.py](../scripts/test-crawler-routing.py) | reviewed | 6/6 | актуально |

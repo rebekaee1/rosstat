@@ -79,13 +79,16 @@ async def run(args: argparse.Namespace) -> int:
         return 0
 
     async with async_session() as db:
-        async with db.begin():
-            stats = await ingest_country(
-                db,
-                country,
-                dry_run=False,
-                only_suffix=args.only,
-            )
+        # Коммит после каждого ряда: медленный источник (BCB SGS — минуты на ряд) не должен держать
+        # транзакцию дольше idle_in_transaction_session_timeout (120 с), иначе Postgres рвёт соединение.
+        stats = await ingest_country(
+            db,
+            country,
+            dry_run=False,
+            only_suffix=args.only,
+            commit_each_series=True,
+        )
+        await db.commit()
 
     await bump_namespaces("world", "ssr-world", "world-catalog")
 

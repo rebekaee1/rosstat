@@ -11,6 +11,7 @@ import argparse
 import html
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -69,26 +70,73 @@ class SeoParser(HTMLParser):
             self.json_ld_count += 1
 
 
-def fetch(url: str, ua: str) -> tuple[int, str]:
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+def fetch(url: str, ua: str, *, attempts: int = 3, follow: bool = True) -> tuple[int, str]:
+    """GET с повторами: рукопожатие TLS и таймауты на длинном аудите случаются (прод 28.10.2026).
+
+    ``follow=False`` отдаёт 3xx как есть: человек с RU/СНГ-адреса на apex уходит 307 на ``ru.`` (LocaleMiddleware),
+    это задумано; поисковые боты остаются на запрошенном хосте.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "text/html,application/xml"})
-    try:
-        with urllib.request.urlopen(req, timeout=20) as response:
-            body = response.read().decode("utf-8", "replace")
-            return response.status, body
-    except urllib.error.HTTPError as exc:
-        return exc.code, exc.read().decode("utf-8", "replace")
+    opener = urllib.request.build_opener() if follow else urllib.request.build_opener(_NoRedirect)
+    last_exc: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            with opener.open(req, timeout=20) as response:
+                body = response.read().decode("utf-8", "replace")
+                return response.status, body
+        except urllib.error.HTTPError as exc:
+            return exc.code, exc.read().decode("utf-8", "replace")
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            last_exc = exc
+            time.sleep(2 * (attempt + 1))
+    raise RuntimeError(f"{url}: {last_exc}")
 
 
-def sitemap_urls(base_url: str) -> list[str]:
+SITEMAP_NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+
+
+def _locs(body: str) -> tuple[bool, list[str]]:
+    """(это sitemapindex, список loc) для XML карты сайта."""
+    root = ET.fromstring(body)
+    is_index = root.tag.rsplit("}", 1)[-1] == "sitemapindex"
+    locs = [loc.text.strip() for loc in root.findall(".//sm:loc", SITEMAP_NS) if loc.text]
+    if not locs:
+        locs = [loc.text.strip() for loc in root.findall(".//loc") if loc.text]
+    return is_index, locs
+
+
+def sitemap_urls(base_url: str, limit: int = 0, shards: int = 12) -> tuple[list[str], bool]:
+    """URL страниц для аудита и признак выборки.
+
+    Живой sitemap.xml — индекс шардов (~1000 штук), а не список страниц: шарды раскрываются, из них берётся
+    равномерная выборка (первый шард, sitemap-priority.xml, идёт всегда) и поровну страниц с каждого.
+    Без ``limit`` индекс не раскрывается целиком (миллионы URL): берётся 120 страниц.
+    """
     status, body = fetch(urllib.parse.urljoin(base_url, "/sitemap.xml"), HUMAN_UA)
     if status != 200:
         raise RuntimeError(f"sitemap returned HTTP {status}")
-    root = ET.fromstring(body)
-    ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    urls = [loc.text.strip() for loc in root.findall(".//sm:loc", ns) if loc.text]
-    if not urls:
-        urls = [loc.text.strip() for loc in root.findall(".//loc") if loc.text]
-    return urls
+    is_index, locs = _locs(body)
+    if not is_index:
+        return (locs[:limit] if limit else locs), bool(limit)
+    total = limit or 120
+    step = max(1, len(locs) // shards)
+    children = locs[::step][:shards]
+    per_shard = max(1, -(-total // len(children)))
+    urls: list[str] = []
+    for child in children:
+        child_status, child_body = fetch(child, HUMAN_UA)
+        if child_status != 200:
+            raise RuntimeError(f"{child} returned HTTP {child_status}")
+        child_is_index, child_locs = _locs(child_body)
+        if child_is_index:
+            continue
+        urls.extend(child_locs[:per_shard])
+    return urls[:total], True
 
 
 def normalize_internal(base_url: str, href: str) -> str | None:
@@ -149,9 +197,7 @@ def main() -> int:
     args = ap.parse_args()
 
     base_url = args.base_url.rstrip("/")
-    urls = sitemap_urls(base_url)
-    if args.limit:
-        urls = urls[: args.limit]
+    urls, sampled = sitemap_urls(base_url, args.limit)
     sitemap_set = {u.rstrip("/") for u in urls}
     all_errors: list[str] = []
     discovered: set[str] = set()
@@ -159,7 +205,16 @@ def main() -> int:
     for url in urls:
         variants = []
         for label, ua in (("human", HUMAN_UA), ("yandex", YANDEX_UA)):
-            status, body = fetch(url, ua)
+            time.sleep(0.3)  # не упираться в потолок запросов nginx на длинной выборке
+            try:
+                status, body = fetch(url, ua, follow=(label != "human"))
+            except RuntimeError as exc:
+                all_errors.append(f"{url} [{label}]: fetch failed after retries: {str(exc)[-120:]}")
+                variants.append((label, None, []))
+                continue
+            if label == "human" and status in (301, 302, 307, 308):
+                variants.append((label, None, []))  # гео-редирект людей на ru.-хост: так задумано
+                continue
             errors, parsed = audit_html(url, body, status, sitemap_set, base_url)
             variants.append((label, parsed, errors))
             for href in parsed.links:
@@ -169,6 +224,8 @@ def main() -> int:
             for error in errors:
                 all_errors.append(f"{url} [{label}]: {error}")
         human, yandex = variants[0][1], variants[1][1]
+        if human is None or yandex is None:
+            continue
         if human.title.strip() != yandex.title.strip():
             all_errors.append(f"{url}: human/yandex title mismatch")
         if human.description.strip() != yandex.description.strip():
@@ -176,12 +233,13 @@ def main() -> int:
         if human.canonical.rstrip("/") != yandex.canonical.rstrip("/"):
             all_errors.append(f"{url}: human/yandex canonical mismatch")
 
-    orphaned = sorted(sitemap_set - discovered - {base_url})
+    # Сироты считаются только на полном плоском sitemap: в выборке «не найдено по ссылкам» ничего не значит.
+    orphaned = [] if sampled else sorted(sitemap_set - discovered - {base_url})
     if orphaned:
         sample = ", ".join(orphaned[:10])
         all_errors.append(f"{len(orphaned)} sitemap URLs are not discovered from audited HTML links: {sample}")
 
-    print(f"Audited {len(urls)} sitemap URLs from {base_url}")
+    print(f"Audited {len(urls)} sitemap URLs from {base_url}" + (" (sample across shards)" if sampled else ""))
     print(f"Discovered {len(discovered)} internal URLs")
     if all_errors:
         print("SEO audit failed:")

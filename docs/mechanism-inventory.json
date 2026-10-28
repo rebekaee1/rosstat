@@ -2125,8 +2125,8 @@
     },
     {
       "path": "backend/scripts/load-world-national.py",
-      "sha256": "ad277d8d3b1608f050dbce819415f635f77eb07acab56e4a29e4d952ae5f9011",
-      "lines": 140
+      "sha256": "7ff314f683fce386db5e84c8fca0e35b2e9bca426b984c60fa180d3d94512a26",
+      "lines": 143
     },
     {
       "path": "backend/scripts/load-world-subnational.py",
@@ -2450,8 +2450,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "sha256": "adddaceb79de5f6a12e7380794d1eb38165578eb69b2ef164ab03babadec1d01",
-      "lines": 198
+      "sha256": "106086251ff8b2f0cc9065cee1ef86488f6c3a81ce2092ff68e946418e516a12",
+      "lines": 256
     },
     {
       "path": "scripts/sitemap-inventory.py",
@@ -111345,8 +111345,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 20,
-      "end_line": 25,
+      "line": 21,
+      "end_line": 26,
       "owner": "<module>",
       "conditions": [],
       "name": "TRACKING_PARAMS",
@@ -111358,6 +111358,33 @@
       "expression_truncated": false,
       "expression_chars": 268,
       "ast_sha256": "af6e497079721a067c0f6ee5b32a5b898d0f3427a690ca5216c583bbaa968810",
+      "runtime_expansion": false
+    },
+    {
+      "path": "scripts/seo-audit.py",
+      "line": 100,
+      "end_line": 100,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SITEMAP_NS",
+      "symbol": "scripts.seo-audit.SITEMAP_NS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'sm'"
+      ],
+      "entries": [
+        {
+          "key": "'sm'",
+          "expression": "'http://www.sitemaps.org/schemas/sitemap/0.9'",
+          "expression_truncated": false,
+          "expression_chars": 45,
+          "ast_sha256": "fde1e42a1c37c0568e5f2b953e6f85e5d3cfcfd066a84c2f5d02d9819a0923c3"
+        }
+      ],
+      "expression": "{'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}",
+      "expression_truncated": false,
+      "expression_chars": 53,
+      "ast_sha256": "a86a60262606d12fc309eb059ab8b5b6cedbd1a8647a26c688034ea5738fbb22",
       "runtime_expansion": false
     },
     {
@@ -143628,8 +143655,8 @@
     },
     {
       "path": "backend/scripts/load-world-national.py",
-      "line": 90,
-      "end_line": 90,
+      "line": 93,
+      "end_line": 93,
       "owner": "run",
       "conditions": [],
       "operation": "bump_namespaces",
@@ -143639,6 +143666,20 @@
       "expression_truncated": false,
       "expression_chars": 54,
       "ast_sha256": "76ab4ec5d0832008bfbaef0c57350f8006c019b8fa518ac4e06b248089cdab0c"
+    },
+    {
+      "path": "backend/scripts/load-world-national.py",
+      "line": 91,
+      "end_line": 91,
+      "owner": "run",
+      "conditions": [],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "scripts.load-world-national.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
     },
     {
       "path": "backend/scripts/load-world-subnational.py",
@@ -148568,8 +148609,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 157,
-      "end_line": 157,
+      "line": 203,
+      "end_line": 203,
       "owner": "main",
       "conditions": [],
       "operation": "set",
@@ -148582,8 +148623,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 41,
-      "end_line": 41,
+      "line": 42,
+      "end_line": 42,
       "owner": "SeoParser.__init__",
       "conditions": [],
       "operation": "set",
@@ -148596,8 +148637,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 134,
-      "end_line": 134,
+      "line": 182,
+      "end_line": 182,
       "owner": "audit_html",
       "conditions": [],
       "operation": "set",
@@ -148610,8 +148651,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 223,
+      "end_line": 223,
       "owner": "main",
       "conditions": [
         "normalized"
@@ -148626,8 +148667,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 55,
-      "end_line": 55,
+      "line": 56,
+      "end_line": 56,
       "owner": "SeoParser.handle_starttag",
       "conditions": [
         "not (tag == 'title')",
@@ -287425,7 +287466,7 @@
     {
       "path": "backend/scripts/load-world-national.py",
       "line": 51,
-      "end_line": 115,
+      "end_line": 118,
       "owner": "<module>",
       "conditions": [],
       "name": "run",
@@ -287433,8 +287474,8 @@
     },
     {
       "path": "backend/scripts/load-world-national.py",
-      "line": 118,
-      "end_line": 136,
+      "line": 121,
+      "end_line": 139,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -291141,8 +291182,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 32,
-      "end_line": 69,
+      "line": 33,
+      "end_line": 70,
       "owner": "<module>",
       "conditions": [],
       "name": "SeoParser",
@@ -291150,8 +291191,17 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 72,
-      "end_line": 79,
+      "line": 73,
+      "end_line": 75,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_NoRedirect",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "scripts/seo-audit.py",
+      "line": 78,
+      "end_line": 97,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch",
@@ -291159,8 +291209,17 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 82,
-      "end_line": 91,
+      "line": 103,
+      "end_line": 110,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_locs",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/seo-audit.py",
+      "line": 113,
+      "end_line": 139,
       "owner": "<module>",
       "conditions": [],
       "name": "sitemap_urls",
@@ -291168,8 +291227,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 94,
-      "end_line": 102,
+      "line": 142,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "normalize_internal",
@@ -291177,8 +291236,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 105,
-      "end_line": 142,
+      "line": 153,
+      "end_line": 190,
       "owner": "<module>",
       "conditions": [],
       "name": "audit_html",
@@ -291186,8 +291245,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 145,
-      "end_line": 194,
+      "line": 193,
+      "end_line": 252,
       "owner": "<module>",
       "conditions": [],
       "name": "main",
@@ -291195,8 +291254,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 33,
-      "end_line": 42,
+      "line": 34,
+      "end_line": 43,
       "owner": "SeoParser",
       "conditions": [],
       "name": "__init__",
@@ -291204,8 +291263,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 44,
-      "end_line": 57,
+      "line": 45,
+      "end_line": 58,
       "owner": "SeoParser",
       "conditions": [],
       "name": "handle_starttag",
@@ -291213,8 +291272,8 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 59,
-      "end_line": 63,
+      "line": 60,
+      "end_line": 64,
       "owner": "SeoParser",
       "conditions": [],
       "name": "handle_endtag",
@@ -291222,11 +291281,20 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 65,
-      "end_line": 69,
+      "line": 66,
+      "end_line": 70,
       "owner": "SeoParser",
       "conditions": [],
       "name": "handle_data",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "scripts/seo-audit.py",
+      "line": 74,
+      "end_line": 75,
+      "owner": "_NoRedirect",
+      "conditions": [],
+      "name": "redirect_request",
       "kind": "FunctionDef"
     },
     {
@@ -316572,8 +316640,16 @@
     },
     {
       "path": "scripts/seo-audit.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 107,
+      "end_line": 107,
+      "owner": "_locs",
+      "conditions": [],
+      "symbol": "scripts.seo-audit.SITEMAP_NS"
+    },
+    {
+      "path": "scripts/seo-audit.py",
+      "line": 183,
+      "end_line": 183,
       "owner": "audit_html",
       "conditions": [],
       "symbol": "scripts.seo-audit.TRACKING_PARAMS"

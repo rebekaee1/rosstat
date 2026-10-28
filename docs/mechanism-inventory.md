@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **50**
 - Middleware: **6**
-- Registry declarations: **1143**
-- Registry references: **2153**
+- Registry declarations: **1144**
+- Registry references: **2154**
 - Migration operations: **444**
-- Candidate effects: **2548**
+- Candidate effects: **2549**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -3010,7 +3010,8 @@ Relationships: `[]`
 | scripts.repo-inventory.SKIP_RELPATHS | Set | sequence/source expression | [scripts/repo-inventory.py:75](../scripts/repo-inventory.py#L75) |
 | scripts.search-history-audit.SSH | List | sequence/source expression | [scripts/search-history-audit.py:24](../scripts/search-history-audit.py#L24) |
 | scripts.search-history-audit.TABLES | List | sequence/source expression | [scripts/search-history-audit.py:27](../scripts/search-history-audit.py#L27) |
-| scripts.seo-audit.TRACKING_PARAMS | Set | sequence/source expression | [scripts/seo-audit.py:20](../scripts/seo-audit.py#L20) |
+| scripts.seo-audit.TRACKING_PARAMS | Set | sequence/source expression | [scripts/seo-audit.py:21](../scripts/seo-audit.py#L21) |
+| scripts.seo-audit.SITEMAP_NS | Dict | 'sm' | [scripts/seo-audit.py:100](../scripts/seo-audit.py#L100) |
 | scripts.sync-local-from-prod._HERE | Call | computed source expression | [scripts/sync-local-from-prod.py:32](../scripts/sync-local-from-prod.py#L32) |
 | scripts.sync-local-from-prod._CANDIDATES | List | sequence/source expression | [scripts/sync-local-from-prod.py:33](../scripts/sync-local-from-prod.py#L33) |
 | scripts.verify-data-loaded.KNOWN_STRUCTURAL_EMPTY | Set | sequence/source expression | [scripts/verify-data-loaded.py:47](../scripts/verify-data-loaded.py#L47) |
