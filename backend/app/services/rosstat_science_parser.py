@@ -18,6 +18,7 @@ Fallback: прямые probe-имена, если страница раздел�
 from __future__ import annotations
 
 import asyncio
+import io
 import logging
 import math
 import re
@@ -25,6 +26,7 @@ from dataclasses import dataclass
 from datetime import date, datetime
 from typing import ClassVar
 
+import openpyxl
 import xlrd
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -39,6 +41,50 @@ logger = logging.getLogger(__name__)
 SCIENCE_CATALOG_URL = "https://rosstat.gov.ru/statistics/science"
 EDUCATION_CATALOG_URL = "https://rosstat.gov.ru/statistics/education"
 BASE_URL = "https://rosstat.gov.ru/storage/mediabank/"
+
+
+class _XlsxSheet:
+    """Лист .xlsx с интерфейсом xlrd (nrows/ncols/cell_value): числа — float, пустое — ''."""
+
+    def __init__(self, ws) -> None:
+        self.name = ws.title
+        self._rows = [list(row) for row in ws.iter_rows(values_only=True)]
+        self.nrows = len(self._rows)
+        self.ncols = max((len(row) for row in self._rows), default=0)
+
+    def cell_value(self, r: int, c: int):
+        row = self._rows[r]
+        value = row[c] if c < len(row) else None
+        if value is None:
+            return ""
+        if isinstance(value, int) and not isinstance(value, bool):
+            return float(value)
+        return value
+
+
+class _XlsxWorkbook:
+    """Книга .xlsx с интерфейсом xlrd: sheets/sheet_by_index/nsheets/release_resources."""
+
+    def __init__(self, content: bytes) -> None:
+        self._wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+        self._sheets = [_XlsxSheet(ws) for ws in self._wb.worksheets]
+        self.nsheets = len(self._sheets)
+
+    def sheets(self) -> list[_XlsxSheet]:
+        return list(self._sheets)
+
+    def sheet_by_index(self, idx: int) -> _XlsxSheet:
+        return self._sheets[idx]
+
+    def release_resources(self) -> None:
+        self._wb.close()
+
+
+def _open_workbook(content: bytes):
+    """Росстат переводит файлы из .xls в .xlsx под новыми именами (nauka_N_2025.xlsx, 31.08.2026): читаем оба формата."""
+    if content[:2] == b"PK":
+        return _XlsxWorkbook(content)
+    return xlrd.open_workbook(file_contents=content)
 
 
 @dataclass
@@ -81,7 +127,7 @@ def parse_kadry_xls(content: bytes, sheet_idx: int) -> list[DataPoint]:
     Structure: years vertical in col 0, total count in col 1.
     Sheet 1 = grad students, Sheet 4 = doctoral students.
     """
-    wb = xlrd.open_workbook(file_contents=content)
+    wb = _open_workbook(content)
     try:
         ws = wb.sheet_by_index(sheet_idx)
 
@@ -114,7 +160,7 @@ def parse_kadry_xls(content: bytes, sheet_idx: int) -> list[DataPoint]:
 
 def parse_nauka_total_xls(content: bytes, sheet_name: str = "1") -> list[DataPoint]:
     """Parse Nauka_1.xls or nauka_2.xls → total from "всего" row."""
-    wb = xlrd.open_workbook(file_contents=content)
+    wb = _open_workbook(content)
     try:
         ws = None
         for s in wb.sheets():
@@ -164,7 +210,7 @@ def parse_nauka_total_xls(content: bytes, sheet_name: str = "1") -> list[DataPoi
 
 def parse_innov_russia_xls(content: bytes, sheet_name: str = "1") -> list[DataPoint]:
     """Parse innov_*.xls → Russia-level % from first data row after 'Российская Федерация'."""
-    wb = xlrd.open_workbook(file_contents=content)
+    wb = _open_workbook(content)
     try:
         ws = None
         for s in wb.sheets():
@@ -232,15 +278,20 @@ SCIENCE_CONFIG = {
         "parser": "kadry",
         "sheet_idx": 4,
     },
+    # С 31.08.2026 Росстат публикует nauka_N_{YYYY}.xlsx (данные по 2025 год); прежние Nauka_1.xls / nauka_2.xls
+    # продолжают отдавать 200, но остановились на 2024. Год в имени побеждает (pick_mediabank_filename), прежние
+    # имена — только запасные, после перебора лет.
     "rd-organizations": {
         "catalog_urls": [SCIENCE_CATALOG_URL],
-        "name_patterns": [r"(?i)Nauka_1\.xls"],
+        "name_patterns": [r"(?i)nauka_1_(\d{4})\.xlsx?", r"(?i)Nauka_1\.xls"],
+        "fallback_filenames_template": "nauka_1_{y}.xlsx",
         "fallback_filenames": ["Nauka_1.xls"],
         "parser": "nauka_total",
     },
     "rd-personnel": {
         "catalog_urls": [SCIENCE_CATALOG_URL],
-        "name_patterns": [r"(?i)nauka_2\.xls"],
+        "name_patterns": [r"(?i)nauka_2_(\d{4})\.xlsx?", r"(?i)nauka_2\.xls"],
+        "fallback_filenames_template": "nauka_2_{y}.xlsx",
         "fallback_filenames": ["nauka_2.xls"],
         "parser": "nauka_total",
     },
@@ -305,9 +356,11 @@ class RosstatScienceParser(BaseParser):
         if not sci_cfg:
             raise ValueError(f"No science config for {code}")
 
-        fallback = list(sci_cfg.get("fallback_filenames") or [])
-        if not fallback and "fallback_filenames_template" in sci_cfg:
+        # Имена с годом — от нового к старому, явные (прежние) имена — после них.
+        fallback = []
+        if "fallback_filenames_template" in sci_cfg:
             fallback = _year_fallbacks(sci_cfg["fallback_filenames_template"])
+        fallback += [n for n in (sci_cfg.get("fallback_filenames") or []) if n not in fallback]
         # legacy keys from older configs
         if not fallback and sci_cfg.get("files"):
             fallback = list(sci_cfg["files"])

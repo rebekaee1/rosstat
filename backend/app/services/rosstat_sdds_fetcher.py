@@ -264,29 +264,60 @@ def gdp_use_candidate_urls(today: date | None = None) -> list[str]:
     return urls
 
 
-def fetch_rosstat_gdp_use_latest(today: date | None = None) -> tuple[bytes, str]:
-    """Скачать самый свежий файл «ВВП по использованию» (тот, чей квартал новее; 404 пропускаются)."""
+def _fetch_first_available(candidates: list[str], label: str) -> tuple[bytes, str]:
+    """Первый адрес из списка, отдающий 200 с XLS/XLSX; 404 и не-Excel пропускаются.
+
+    Все запросы с сетевым отказом — RosstatUnreachable (файл не искали по существу),
+    иначе RuntimeError «file not found».
+    """
     session = _get_session()
-    candidates = gdp_use_candidate_urls(today)
     net_failures = 0
     for url in candidates:
         try:
             resp = session.get(url, timeout=settings.rosstat_request_timeout)
         except requests.RequestException as exc:
-            logger.warning("Rosstat GDP-by-use %s fetch error: %s", url, exc)
+            logger.warning("Rosstat %s %s fetch error: %s", label, url, exc)
             net_failures += 1
             continue
         if resp.status_code != 200:
-            logger.debug("Rosstat GDP-by-use %s: HTTP %d", url, resp.status_code)
+            logger.debug("Rosstat %s %s: HTTP %d", label, url, resp.status_code)
             continue
         if resp.content[:4] not in (XLSX_MAGIC, XLS_MAGIC):
-            logger.warning("Rosstat GDP-by-use %s: response is not XLSX/XLS", url)
+            logger.warning("Rosstat %s %s: response is not XLSX/XLS", label, url)
             continue
-        logger.info("Downloaded Rosstat GDP-by-use %s: %d KB", url, len(resp.content) // 1024)
+        logger.info("Downloaded Rosstat %s %s: %d KB", label, url, len(resp.content) // 1024)
         return resp.content, url
     if net_failures == len(candidates):
-        raise RosstatUnreachable("Rosstat unreachable: GDP-by-use requests failed on network")
-    raise RuntimeError(f"Rosstat GDP-by-use file not found (tried {len(candidates)} candidates)")
+        raise RosstatUnreachable(f"Rosstat unreachable: {label} requests failed on network")
+    raise RuntimeError(f"Rosstat {label} file not found (tried {len(candidates)} candidates)")
+
+
+def fetch_rosstat_gdp_use_latest(today: date | None = None) -> tuple[bytes, str]:
+    """Скачать самый свежий файл «ВВП по использованию» (тот, чей квартал новее; 404 пропускаются)."""
+    return _fetch_first_available(gdp_use_candidate_urls(today), "GDP-by-use")
+
+
+_GDP_QUARTERLY_URL_TMPL = _ROSSTAT_MEDIA + "/VVP_kvartal_s-1995-{year}.xlsx"
+
+
+def gdp_quarterly_candidate_urls(today: date | None = None) -> list[str]:
+    """Адреса «ВВП по кварталам» VVP_kvartal_s-1995-{YYYY}.xlsx: следующий год, текущий, прошлый, затем канон.
+
+    Имя несёт год последних кварталов (28.10.2026: `...-2026.xlsx` с данными по II кварталу, `...-2027.xlsx` — 404).
+    Со сменой года Росстат может выложить файл под новым именем, а старый продолжит отдавать 200 без свежих кварталов:
+    тот же класс сбоя, что у ВВП по использованию. Поэтому следующий год идёт первым.
+    """
+    today = today or date.today()
+    urls = [_GDP_QUARTERLY_URL_TMPL.format(year=today.year + offset) for offset in (1, 0, -1)]
+    pinned = ROSSTAT_STATIC_URLS["gdp_quarterly"]
+    if pinned not in urls:
+        urls.append(pinned)
+    return urls
+
+
+def fetch_rosstat_gdp_quarterly_latest(today: date | None = None) -> tuple[bytes, str]:
+    """Скачать самый свежий файл «ВВП по кварталам» (имя с наибольшим годом из опубликованных)."""
+    return _fetch_first_available(gdp_quarterly_candidate_urls(today), "GDP-quarterly")
 
 
 def fetch_rosstat_ipi_current() -> tuple[bytes, str]:

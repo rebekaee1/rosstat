@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `65a1022e0d068d19f3cb6dc0955ae2cb7a7b234a`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `98f6d86748bf4c8d0c9a655673d6845c3fe7a22d`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2214 |
 | Код, шаблоны и стили | 1807 |
 | Актуальные рецензии без пропусков guard | 2214 |
-| Именованные определения Python/JS: с аннотацией / всего | 14550 / 14550 |
+| Именованные определения Python/JS: с аннотацией / всего | 14574 / 14574 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -371,8 +371,8 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/rosstat_labor_parser.py](../backend/app/services/rosstat_labor_parser.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/rosstat_population_parser.py](../backend/app/services/rosstat_population_parser.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/rosstat_ppi_parser.py](../backend/app/services/rosstat_ppi_parser.py) | reviewed | 13/13 | актуально |
-| [backend/app/services/rosstat_science_parser.py](../backend/app/services/rosstat_science_parser.py) | reviewed | 11/11 | актуально |
-| [backend/app/services/rosstat_sdds_fetcher.py](../backend/app/services/rosstat_sdds_fetcher.py) | reviewed | 14/14 | актуально |
+| [backend/app/services/rosstat_science_parser.py](../backend/app/services/rosstat_science_parser.py) | reviewed | 20/20 | актуально |
+| [backend/app/services/rosstat_sdds_fetcher.py](../backend/app/services/rosstat_sdds_fetcher.py) | reviewed | 17/17 | актуально |
 | [backend/app/services/rosstat_weekly_inflation_parser.py](../backend/app/services/rosstat_weekly_inflation_parser.py) | reviewed | 25/25 | актуально |
 | [backend/app/services/rosstat_weekly_price_parser.py](../backend/app/services/rosstat_weekly_price_parser.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/scrape_guard.py](../backend/app/services/scrape_guard.py) | reviewed | 20/20 | актуально |
@@ -645,7 +645,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_credit_indicators.py](../backend/tests/test_credit_indicators.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_credit_rate_corp.py](../backend/tests/test_credit_rate_corp.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_credit_rate_ind.py](../backend/tests/test_credit_rate_ind.py) | reviewed | 3/3 | актуально |
-| [backend/tests/test_data_loading_c28.py](../backend/tests/test_data_loading_c28.py) | reviewed | 34/34 | актуально |
+| [backend/tests/test_data_loading_c28.py](../backend/tests/test_data_loading_c28.py) | reviewed | 46/46 | актуально |
 | [backend/tests/test_dataset_inventory.py](../backend/tests/test_dataset_inventory.py) | reviewed | 13/13 | актуально |
 | [backend/tests/test_demand_router.py](../backend/tests/test_demand_router.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_demographics_infographic.py](../backend/tests/test_demographics_infographic.py) | reviewed | 4/4 | актуально |

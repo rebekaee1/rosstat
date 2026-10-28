@@ -40,8 +40,8 @@ from app.models import FetchLog, Indicator
 from app.services.base_parser import BaseParser
 from app.services.data_validator import validate_points
 from app.services.rosstat_sdds_fetcher import (
+    fetch_rosstat_gdp_quarterly_latest,
     fetch_rosstat_gdp_use_latest,
-    fetch_rosstat_static_xlsx,
 )
 
 logger = logging.getLogger(__name__)
@@ -286,7 +286,8 @@ class RosstatGdpParser(BaseParser):
         overlap_year = int(cfg.get("gdp_overlap_year", 2011))
 
         if gdp_source == "official_quarterly":
-            content, final_url = await asyncio.to_thread(fetch_rosstat_static_xlsx, "gdp_quarterly")
+            # Имя файла несёт год последних кварталов: следующий год проверяется первым (см. gdp_quarterly_candidate_urls).
+            content, final_url = await asyncio.to_thread(fetch_rosstat_gdp_quarterly_latest)
             sheet_name = str(cfg.get("gdp_sheet", "9"))
             modern = await asyncio.to_thread(parse_rosstat_gdp_quarter_grid_xlsx, content, sheet_name)
             if history_sheet:

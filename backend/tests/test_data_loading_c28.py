@@ -5,6 +5,10 @@
 3. Росстат IPI: сбой текущего файла глотался, 86-131 точки каждого ряда переписывались значениями
    цепочки по одному историческому файлу.
 (Пункт про лимит простоя транзакции national-core закрыт в main правкой оркестратора 6fc8ea0d.)
+4. «ВВП по кварталам» (`VVP_kvartal_s-1995-{YYYY}.xlsx`) несёт год в имени: со сменой года новый файл не должен
+   оставаться незамеченным (28.10.2026: `-2026` отдаёт II квартал, `-2027` ещё 404).
+5. Росстат (наука): с 31.08.2026 данные по 2025 год лежат в `nauka_1_2025.xlsx` / `nauka_2_2025.xlsx`, а прежние
+   `Nauka_1.xls` / `nauka_2.xls` отдают 200, но остановились на 2024 — rd-organizations и rd-personnel не обновлялись.
 """
 
 from __future__ import annotations
@@ -15,7 +19,9 @@ from types import SimpleNamespace
 
 import pytest
 
+import app.services.rosstat_gdp_parser as gdp_mod
 import app.services.rosstat_ipi_parser as ipi_mod
+import app.services.rosstat_science_parser as sci
 import app.services.rosstat_sdds_fetcher as f
 import app.services.world_adapters.bcb_sgs as bcb
 from app.services.world_source_adapter import WorldSeriesRef
@@ -95,6 +101,59 @@ def test_gdp_use_none_found_is_plain_runtime_error(monkeypatch):
     with pytest.raises(RuntimeError) as exc:
         f.fetch_rosstat_gdp_use_latest(date(2026, 10, 28))
     assert not isinstance(exc.value, f.RosstatUnreachable)
+
+
+def test_gdp_quarterly_candidates_check_next_year_first_then_current_and_previous():
+    urls = f.gdp_quarterly_candidate_urls(date(2026, 10, 28))
+    assert [u.rsplit("-", 1)[1] for u in urls] == ["2027.xlsx", "2026.xlsx", "2025.xlsx"]
+    assert f.ROSSTAT_STATIC_URLS["gdp_quarterly"] in urls  # канон уже в окне, второй раз не добавляется
+    # через два года зашитый адрес выпадает из окна и добавляется последним запасным
+    later = f.gdp_quarterly_candidate_urls(date(2028, 3, 1))
+    assert later[-1] == f.ROSSTAT_STATIC_URLS["gdp_quarterly"]
+    assert len(later) == len(set(later)) == 4
+
+
+def test_gdp_quarterly_takes_next_year_file_when_published(monkeypatch):
+    y27 = f._GDP_QUARTERLY_URL_TMPL.format(year=2027)
+    y26 = f._GDP_QUARTERLY_URL_TMPL.format(year=2026)
+    session = _GdpSession([y27, y26])  # старый файл остаётся рядом и отдаёт 200 без свежих кварталов
+    monkeypatch.setattr(f, "_get_session", lambda: session)
+    _, url = f.fetch_rosstat_gdp_quarterly_latest(date(2026, 12, 20))
+    assert url == y27
+    assert session.calls == [y27]
+
+
+def test_gdp_quarterly_stays_on_current_year_file_while_next_is_missing(monkeypatch):
+    y26 = f._GDP_QUARTERLY_URL_TMPL.format(year=2026)
+    session = _GdpSession([y26])
+    monkeypatch.setattr(f, "_get_session", lambda: session)
+    _, url = f.fetch_rosstat_gdp_quarterly_latest(date(2026, 10, 28))
+    assert url == y26
+    assert session.calls == [f._GDP_QUARTERLY_URL_TMPL.format(year=2027), y26]
+
+
+def test_gdp_quarterly_network_failure_is_unreachable(monkeypatch):
+    import requests
+
+    class _Down:
+        def get(self, *a, **kw):
+            raise requests.ConnectionError("down")
+
+    monkeypatch.setattr(f, "_get_session", lambda: _Down())
+    with pytest.raises(f.RosstatUnreachable):
+        f.fetch_rosstat_gdp_quarterly_latest(date(2026, 10, 28))
+
+
+def test_gdp_parser_official_quarterly_uses_dynamic_file_not_pinned(monkeypatch):
+    calls = []
+    monkeypatch.setattr(gdp_mod, "fetch_rosstat_gdp_quarterly_latest", lambda: calls.append("latest") or (b"x", "latest-url"))
+    monkeypatch.setattr(gdp_mod, "parse_rosstat_gdp_quarter_grid_xlsx", lambda content, sheet: [])
+    points, url = asyncio.run(
+        gdp_mod.RosstatGdpParser()._fetch_and_parse(
+            None, SimpleNamespace(code="gdp-nominal"), {"gdp_source": "official_quarterly"}, SimpleNamespace()
+        )
+    )
+    assert calls == ["latest"] and url == "latest-url" and points == []
 
 
 # ---------------------------------------------------------------- 2. Банк Бразилии
@@ -255,3 +314,70 @@ def test_ipi_current_fetch_reports_network_failure_as_unreachable(monkeypatch):
     monkeypatch.setattr(f, "_get_session", lambda: _Down())
     with pytest.raises(f.RosstatUnreachable):
         f.fetch_rosstat_ipi_current()
+
+
+# ---------------------------------------------------------------- 5. Росстат: наука (nauka_N_{YYYY}.xlsx)
+
+
+def _nauka_xlsx(rows):
+    import io
+
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    wb.active.title = "Содержание"
+    ws = wb.create_sheet("1")
+    for row in rows:
+        ws.append(row)
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+_NAUKA_ROWS = [
+    ["К содержанию"],
+    [],
+    ["Число организаций, выполнявших научные исследования и разработки"],
+    [],
+    [None, 2023, "2024 1)", "2025 1)"],
+    [],
+    ["Число организаций – всего", 4125, 4157, 4281],
+]
+
+
+def test_nauka_xlsx_is_parsed_with_the_latest_year():
+    points = sci.parse_nauka_total_xls(_nauka_xlsx(_NAUKA_ROWS), "1")
+    assert [(p.date, p.value) for p in points] == [
+        (date(2023, 1, 1), 4125.0), (date(2024, 1, 1), 4157.0), (date(2025, 1, 1), 4281.0),
+    ]
+
+
+def test_nauka_year_suffixed_xlsx_wins_over_legacy_xls_in_catalog():
+    listing = ["Nauka_1.xls", "nauka_2.xls", "2-MP-nauka_2025.xlsx", "nauka_1_2025.xlsx", "nauka_2_2025.xlsx"]
+    org = sci.SCIENCE_CONFIG["rd-organizations"]["name_patterns"]
+    staff = sci.SCIENCE_CONFIG["rd-personnel"]["name_patterns"]
+    assert f.pick_mediabank_filename(listing, org) == "nauka_1_2025.xlsx"
+    assert f.pick_mediabank_filename(listing, staff) == "nauka_2_2025.xlsx"
+    # пока новых имён нет, остаются прежние
+    assert f.pick_mediabank_filename(["Nauka_1.xls", "nauka_2.xls"], org) == "Nauka_1.xls"
+    assert f.pick_mediabank_filename(["Nauka_1.xls", "nauka_2.xls"], staff) == "nauka_2.xls"
+
+
+@pytest.mark.parametrize("code,prefix,legacy", [("rd-organizations", "nauka_1_", "Nauka_1.xls"), ("rd-personnel", "nauka_2_", "nauka_2.xls")])
+def test_nauka_fetch_tries_year_names_newest_first_then_legacy(monkeypatch, code, prefix, legacy):
+    seen = {}
+
+    def _download(catalog_urls, name_patterns, fallback):
+        seen["fallback"] = fallback
+        return _nauka_xlsx(_NAUKA_ROWS), "https://rosstat.gov.ru/storage/mediabank/" + fallback[0]
+
+    monkeypatch.setattr(sci, "_download", _download)
+    points, url = asyncio.run(
+        sci.RosstatScienceParser()._fetch_and_parse(None, SimpleNamespace(code=code), {}, SimpleNamespace())
+    )
+    fallback = seen["fallback"]
+    this_year = date.today().year
+    assert fallback[0] == f"{prefix}{this_year + 1}.xlsx"
+    assert fallback[1] == f"{prefix}{this_year}.xlsx"
+    assert fallback[-1] == legacy and fallback.count(legacy) == 1
+    assert max(p.date for p in points) == date(2025, 1, 1)

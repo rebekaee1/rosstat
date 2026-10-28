@@ -1355,8 +1355,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "sha256": "9ac4d8fbabe6be49dedcd0fb7d3a0dad0353a4afd5df6ef49ae0d671f99f0ba5",
-      "lines": 323
+      "sha256": "a73e7fcf11e1c6e8defd4bd9b3f61c64e8db54c15a3876b9e487798f1f786cd5",
+      "lines": 324
     },
     {
       "path": "backend/app/services/rosstat_housing_parser.py",
@@ -1390,13 +1390,13 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "sha256": "f579b088849583b01962499f76b86595ce2a09900e89a174a83772055533b4cc",
-      "lines": 353
+      "sha256": "c6d3ee99d35875a6a537809a3706b4b130d30b2d6021e22bf04a40a30d2bc174",
+      "lines": 406
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "sha256": "9a64ddee463be907639f8660d426b109e736eb275b290389d1be3770508f02a2",
-      "lines": 404
+      "sha256": "d5377f33e894bead37c6f96e05c7526fa68eff140e86bdb7086325b31d5a0010",
+      "lines": 435
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
@@ -35404,8 +35404,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 282,
-      "end_line": 282,
+      "line": 333,
+      "end_line": 333,
       "owner": "_download",
       "conditions": [],
       "name": "rosstat_ca_cert",
@@ -35451,17 +35451,17 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 274,
-      "end_line": 274,
-      "owner": "fetch_rosstat_gdp_use_latest",
+      "line": 277,
+      "end_line": 277,
+      "owner": "_fetch_first_available",
       "conditions": [],
       "name": "rosstat_request_timeout",
       "expression": "settings.rosstat_request_timeout"
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 347,
+      "end_line": 347,
       "owner": "fetch_rosstat_ipi_current",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35469,8 +35469,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 348,
-      "end_line": 348,
+      "line": 379,
+      "end_line": 379,
       "owner": "fetch_rosstat_okpopul",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -35478,8 +35478,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 416,
+      "end_line": 416,
       "owner": "fetch_latest_socioeconomic_report_pdf",
       "conditions": [],
       "name": "rosstat_request_timeout",
@@ -89757,8 +89757,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 220,
-      "end_line": 274,
+      "line": 266,
+      "end_line": 325,
       "owner": "<module>",
       "conditions": [],
       "name": "SCIENCE_CONFIG",
@@ -89790,17 +89790,17 @@
         },
         {
           "key": "'rd-organizations'",
-          "expression": "{'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)Nauka_1\\\\.xls'], 'fallback_filenames': ['Nauka_1.xls'], 'parser': 'nauka_total'}",
+          "expression": "{'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_1_(\\\\d{4})\\\\.xlsx?', '(?i)Nauka_1\\\\.xls'], 'fallback_filenames_template': 'nauka_1_{y}.xlsx', 'fallback_filenames': ['Nauka_1.xls'], 'parser': 'nauka_total'}",
           "expression_truncated": false,
-          "expression_chars": 143,
-          "ast_sha256": "9e4001e2fc898fc5e2da78211fb8c0bdcca85d6f427deb5f4e8deca0ed34914e"
+          "expression_chars": 226,
+          "ast_sha256": "d7edf099b91e7c2f00016b2d2d207c580c0d3b0514fb06d89eb40b85831e1b66"
         },
         {
           "key": "'rd-personnel'",
-          "expression": "{'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_2\\\\.xls'], 'fallback_filenames': ['nauka_2.xls'], 'parser': 'nauka_total'}",
+          "expression": "{'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_2_(\\\\d{4})\\\\.xlsx?', '(?i)nauka_2\\\\.xls'], 'fallback_filenames_template': 'nauka_2_{y}.xlsx', 'fallback_filenames': ['nauka_2.xls'], 'parser': 'nauka_total'}",
           "expression_truncated": false,
-          "expression_chars": 143,
-          "ast_sha256": "7add25593ce2d53a756c1cfc20a4057a83e9b45f4192a6190774ced2061f6402"
+          "expression_chars": 226,
+          "ast_sha256": "2f65c0e2a20e7da6720034b3e298dbbd3baf0dda43051573892878547003a313"
         },
         {
           "key": "'innovation-activity'",
@@ -89824,10 +89824,10 @@
           "ast_sha256": "9defe141037aaa491b8a44e23663dc23e282e1c7f0ad1afcb63e35709178394a"
         }
       ],
-      "expression": "{'grad-students': {'catalog_urls': [EDUCATION_CATALOG_URL], 'name_patterns': ['(?i)Kadry[-_]VO\\\\.xls'], 'fallback_filenames': ['Kadry-VO.xls', 'Kadry_VO.xls'], 'parser': 'kadry', 'sheet_idx': 1}, 'doctoral-students': {'catalog_urls': [EDUCATION_CATALOG_URL], 'name_patterns': ['(?i)Kadry[-_]VO\\\\.xls'], 'fallback_filenames': ['Kadry-VO.xls', 'Kadry_VO.xls'], 'parser': 'kadry', 'sheet_idx': 4}, 'rd-organizations': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)Nauka_1\\\\.xls'], 'fallback_filenames': ['Nauka_1.xls'], 'parser': 'nauka_total'}, 'rd-personnel': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_2\\\\.xls'], 'fallback_filenames': ['nauka_2.xls'], 'parser': 'nauka_total'}, 'innovation-activity': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)innov_1_(\\\\d{4})\\\\.xls'], 'fallback_filenames_template': 'innov_1_{y}.xls', 'parser': 'innov_russia', 'min_year': 2018}, 'tech-innovation-share': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)innov_2_(\\\\d{4})\\\\.xls'], 'fallback_filenames_template': 'innov_2_{y}.xls', 'parser': 'innov_russia', 'min_year': 2018}, 'small-business-innovation': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)Innov[_-]mp_1\\\\.xls', '(?i)innov-mp_1\\\\.xls'], 'fallback_filenames': ['Innov_mp_1.xls', 'innov-mp_1.xls'], 'parser': 'innov_russia', 'sheet': '5'}}",
+      "expression": "{'grad-students': {'catalog_urls': [EDUCATION_CATALOG_URL], 'name_patterns': ['(?i)Kadry[-_]VO\\\\.xls'], 'fallback_filenames': ['Kadry-VO.xls', 'Kadry_VO.xls'], 'parser': 'kadry', 'sheet_idx': 1}, 'doctoral-students': {'catalog_urls': [EDUCATION_CATALOG_URL], 'name_patterns': ['(?i)Kadry[-_]VO\\\\.xls'], 'fallback_filenames': ['Kadry-VO.xls', 'Kadry_VO.xls'], 'parser': 'kadry', 'sheet_idx': 4}, 'rd-organizations': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_1_(\\\\d{4})\\\\.xlsx?', '(?i)Nauka_1\\\\.xls'], 'fallback_filenames_template': 'nauka_1_{y}.xlsx', 'fallback_filenames': ['Nauka_1.xls'], 'parser': 'nauka_total'}, 'rd-personnel': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)nauka_2_(\\\\d{4})\\\\.xlsx?', '(?i)nauka_2\\\\.xls'], 'fallback_filenames_template': 'nauka_2_{y}.xlsx', 'fallback_filenames': ['nauka_2.xls'], 'parser': 'nauka_total'}, 'innovation-activity': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)innov_1_(\\\\d{4})\\\\.xls'], 'fallback_filenames_template': 'innov_1_{y}.xls', 'parser': 'innov_russia', 'min_year': 2018}, 'tech-innovation-share': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)innov_2_(\\\\d{4})\\\\.xls'], 'fallback_filenames_template': 'innov_2_{y}.xls', 'parser': 'innov_russia', 'min_year': 2018}, 'small-business-innovation': {'catalog_urls': [SCIENCE_CATALOG_URL], 'name_patterns': ['(?i)Innov[_-]mp_1\\\\.xls', '(?i)innov-mp_1\\\\.xls'], 'fallback_filenames': ['Innov_mp_1.xls', 'innov-mp_1.xls'], 'parser': 'innov_russia', 'sheet': '5'}}",
       "expression_truncated": false,
-      "expression_chars": 1376,
-      "ast_sha256": "0bde735b217780d9a9ff38abd90667d0db7d06f9c0fb98bc98604b9a7634f3f5",
+      "expression_chars": 1542,
+      "ast_sha256": "154574ed61263e6d3a3592382287fd3281f060cd36b10f58d65ac44697b6111a",
       "runtime_expansion": false
     },
     {
@@ -129703,8 +129703,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 89,
-      "end_line": 89,
+      "line": 135,
+      "end_line": 135,
       "owner": "parse_kadry_xls",
       "conditions": [],
       "operation": "set",
@@ -129717,8 +129717,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 107,
-      "end_line": 107,
+      "line": 153,
+      "end_line": 153,
       "owner": "parse_kadry_xls",
       "conditions": [
         "val is not None and val > 0"
@@ -200770,8 +200770,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 299,
-      "end_line": 299,
+      "line": 350,
+      "end_line": 350,
       "owner": "RosstatScienceParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -200779,8 +200779,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 352,
+      "end_line": 352,
       "owner": "RosstatScienceParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -268850,7 +268850,7 @@
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
       "line": 274,
-      "end_line": 323,
+      "end_line": 324,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatGdpParser",
@@ -268859,7 +268859,7 @@
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
       "line": 277,
-      "end_line": 320,
+      "end_line": 321,
       "owner": "RosstatGdpParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -268867,8 +268867,8 @@
     },
     {
       "path": "backend/app/services/rosstat_gdp_parser.py",
-      "line": 322,
-      "end_line": 323,
+      "line": 323,
+      "end_line": 324,
       "owner": "RosstatGdpParser",
       "conditions": [],
       "name": "_validate",
@@ -269488,8 +269488,35 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 45,
-      "end_line": 47,
+      "line": 46,
+      "end_line": 62,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_XlsxSheet",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 65,
+      "end_line": 80,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_XlsxWorkbook",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 83,
+      "end_line": 87,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_open_workbook",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 91,
+      "end_line": 93,
       "owner": "<module>",
       "conditions": [],
       "name": "DataPoint",
@@ -269497,8 +269524,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 50,
-      "end_line": 59,
+      "line": 96,
+      "end_line": 105,
       "owner": "<module>",
       "conditions": [],
       "name": "_to_float",
@@ -269506,8 +269533,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 62,
-      "end_line": 75,
+      "line": 108,
+      "end_line": 121,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_year_row_xls",
@@ -269515,8 +269542,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 78,
-      "end_line": 112,
+      "line": 124,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_kadry_xls",
@@ -269524,8 +269551,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 115,
-      "end_line": 162,
+      "line": 161,
+      "end_line": 208,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_nauka_total_xls",
@@ -269533,8 +269560,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 165,
-      "end_line": 212,
+      "line": 211,
+      "end_line": 258,
       "owner": "<module>",
       "conditions": [],
       "name": "parse_innov_russia_xls",
@@ -269542,8 +269569,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 215,
-      "end_line": 217,
+      "line": 261,
+      "end_line": 263,
       "owner": "<module>",
       "conditions": [],
       "name": "_year_fallbacks",
@@ -269551,8 +269578,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 277,
-      "end_line": 290,
+      "line": 328,
+      "end_line": 341,
       "owner": "<module>",
       "conditions": [],
       "name": "_download",
@@ -269560,8 +269587,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 293,
-      "end_line": 353,
+      "line": 344,
+      "end_line": 406,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatScienceParser",
@@ -269569,8 +269596,62 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 296,
-      "end_line": 341,
+      "line": 49,
+      "end_line": 53,
+      "owner": "_XlsxSheet",
+      "conditions": [],
+      "name": "__init__",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 55,
+      "end_line": 62,
+      "owner": "_XlsxSheet",
+      "conditions": [],
+      "name": "cell_value",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 68,
+      "end_line": 71,
+      "owner": "_XlsxWorkbook",
+      "conditions": [],
+      "name": "__init__",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 73,
+      "end_line": 74,
+      "owner": "_XlsxWorkbook",
+      "conditions": [],
+      "name": "sheets",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 76,
+      "end_line": 77,
+      "owner": "_XlsxWorkbook",
+      "conditions": [],
+      "name": "sheet_by_index",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 79,
+      "end_line": 80,
+      "owner": "_XlsxWorkbook",
+      "conditions": [],
+      "name": "release_resources",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_science_parser.py",
+      "line": 347,
+      "end_line": 394,
       "owner": "RosstatScienceParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -269578,8 +269659,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 343,
-      "end_line": 353,
+      "line": 396,
+      "end_line": 406,
       "owner": "RosstatScienceParser",
       "conditions": [],
       "name": "_validate",
@@ -269678,7 +269759,16 @@
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
       "line": 267,
-      "end_line": 289,
+      "end_line": 292,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_fetch_first_available",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 295,
+      "end_line": 297,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_gdp_use_latest",
@@ -269686,8 +269776,26 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 292,
-      "end_line": 331,
+      "line": 303,
+      "end_line": 315,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "gdp_quarterly_candidate_urls",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 318,
+      "end_line": 320,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "fetch_rosstat_gdp_quarterly_latest",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 323,
+      "end_line": 362,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_ipi_current",
@@ -269695,8 +269803,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 334,
-      "end_line": 363,
+      "line": 365,
+      "end_line": 394,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_rosstat_okpopul",
@@ -269704,8 +269812,8 @@
     },
     {
       "path": "backend/app/services/rosstat_sdds_fetcher.py",
-      "line": 366,
-      "end_line": 404,
+      "line": 397,
+      "end_line": 435,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_latest_socioeconomic_report_pdf",
@@ -306995,8 +307103,8 @@
     },
     {
       "path": "backend/app/services/rosstat_science_parser.py",
-      "line": 304,
-      "end_line": 304,
+      "line": 355,
+      "end_line": 355,
       "owner": "RosstatScienceParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.services.rosstat_science_parser.SCIENCE_CONFIG"
@@ -307006,6 +307114,14 @@
       "line": 261,
       "end_line": 261,
       "owner": "gdp_use_candidate_urls",
+      "conditions": [],
+      "symbol": "app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS"
+    },
+    {
+      "path": "backend/app/services/rosstat_sdds_fetcher.py",
+      "line": 312,
+      "end_line": 312,
+      "owner": "gdp_quarterly_candidate_urls",
       "conditions": [],
       "symbol": "app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS"
     },

@@ -14,7 +14,7 @@
 - Jobs: **50**
 - Middleware: **6**
 - Registry declarations: **1143**
-- Registry references: **2152**
+- Registry references: **2153**
 - Migration operations: **444**
 - Candidate effects: **2548**
 - Unresolved syntax: **1**
@@ -2468,7 +2468,7 @@ Relationships: `[]`
 | app.services.rosstat_population_parser.COMPONENT_SERIES_MAP | Dict | 'population-total-growth', 'population-natural-growth', 'population-migration' | [backend/app/services/rosstat_population_parser.py:252](../backend/app/services/rosstat_population_parser.py#L252) |
 | app.services.rosstat_ppi_parser.MONTHS_LOCATIVE_RU | Dict | 'январе', 'феврале', 'марте', 'апреле', 'мае', 'июне', 'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре' | [backend/app/services/rosstat_ppi_parser.py:58](../backend/app/services/rosstat_ppi_parser.py#L58) |
 | app.services.rosstat_ppi_parser._PPI_MOM_COMPACT_RE | Call | computed source expression | [backend/app/services/rosstat_ppi_parser.py:65](../backend/app/services/rosstat_ppi_parser.py#L65) |
-| app.services.rosstat_science_parser.SCIENCE_CONFIG | Dict | 'grad-students', 'doctoral-students', 'rd-organizations', 'rd-personnel', 'innovation-activity', 'tech-innovation-share', 'small-business-innovation' | [backend/app/services/rosstat_science_parser.py:220](../backend/app/services/rosstat_science_parser.py#L220) |
+| app.services.rosstat_science_parser.SCIENCE_CONFIG | Dict | 'grad-students', 'doctoral-students', 'rd-organizations', 'rd-personnel', 'innovation-activity', 'tech-innovation-share', 'small-business-innovation' | [backend/app/services/rosstat_science_parser.py:266](../backend/app/services/rosstat_science_parser.py#L266) |
 | app.services.rosstat_sdds_fetcher._MEDIA_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:40](../backend/app/services/rosstat_sdds_fetcher.py#L40) |
 | app.services.rosstat_sdds_fetcher._YEAR_IN_NAME_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:44](../backend/app/services/rosstat_sdds_fetcher.py#L44) |
 | app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS | Dict | 'popul_components', 'population_history', 'gdp_quarterly', 'gdp_use_quarterly', 'ipi_historical_2018', 'age_groups' | [backend/app/services/rosstat_sdds_fetcher.py:46](../backend/app/services/rosstat_sdds_fetcher.py#L46) |

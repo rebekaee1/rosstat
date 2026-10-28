@@ -268,8 +268,8 @@ Multi-source merge:
 
 | Индикатор | gdp_source | File | Modern sheet | History sheet | Row |
 |-----------|------------|------|--------------|---------------|-----|
-| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `2` | `1` | — |
-| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s-1995-2026.xlsx` | `9` | `3` | — |
+| `gdp-nominal` | official_quarterly | `mediabank/VVP_kvartal_s-1995-{YYYY}.xlsx` (следующий год → текущий → прошлый; зафиксирован `-2026`) | `2` | `1` | — |
+| `gdp-real` | official_quarterly | `mediabank/VVP_kvartal_s-1995-{YYYY}.xlsx` (как выше) | `9` | `3` | — |
 | `gdp-consumption` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 7 |
 | `gdp-government` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 8 |
 | `gdp-investment` | official_use | `mediabank/GDP-quarters-of-use-1995_{N}kv-{YYYY}.xls` (самый свежий из 6 кварталов вниз от текущего; зафиксирован `1kv-2026`) | `2` | `1` | 11 |
@@ -277,6 +277,8 @@ Multi-source merge:
 История ВВП: 1995-Q1 → present (~125 точек на каждый индикатор после Q1-2026).
 
 **Trap (ВВП по использованию, 2026-10-28):** имя файла несёт номер последнего квартала, и Росстат кладёт новый файл рядом со старым. Зашитый `..._1kv-2026.xls` отдавал 200 и после выхода II квартала: `gdp-consumption`, `gdp-government`, `gdp-investment` стояли на 2026-03-01, когда `gdp-nominal` и `gdp-real` уже были на II квартале. `fetch_rosstat_gdp_use_latest` перебирает 6 кварталов вниз от текущего, затем зафиксированный адрес; сетевой отказ — `RosstatUnreachable`, а не «файл не найден».
+
+**Trap (год в имени «ВВП по кварталам», 2026-10-28):** имя несёт год последних кварталов (`-2026` отдаёт II квартал, `-2027` ещё 404). Со сменой года Росстат может выложить файл под новым именем, а старый продолжит отдавать 200 без свежих кварталов, поэтому `fetch_rosstat_gdp_quarterly_latest` проверяет следующий год первым; зафиксированный адрес — запасной.
 
 **Trap (имя файла, 2026-07):** на `/statistics/accounts` канон — `VVP_kvartal_s-1995-2026.xlsx` (дефис после `s`). Старый URL `VVP_kvartal_s_1995-2026.xlsx` (подчёркивание) всё ещё 200, но без I кв. 2026 — ETL молча `no_new_data`. URL в `ROSSTAT_STATIC_URLS['gdp_quarterly']`. Аналогично use-side: канон `GDP-quarters-of-use-1995_1kv-2026.xls`; старый `…-4kv-2025.xls` остаётся без I кв. 2026.
 
@@ -381,8 +383,8 @@ Multi-source merge: история (1897+) + components (1990+) + latest акт�
 |-----------|------|-----------|
 | `grad-students` | `mediabank/Kadry-VO.xls` (fallback `Kadry_VO.xls`) | sheet 1 |
 | `doctoral-students` | то же | sheet 4 |
-| `rd-organizations` | `mediabank/Nauka_1.xls` | sheet 1, "всего" row |
-| `rd-personnel` | `mediabank/nauka_2.xls` | sheet 1, "всего" row |
+| `rd-organizations` | `mediabank/nauka_1_{YYYY}.xlsx` (с 31.08.2026, данные по 2025 год; прежний `Nauka_1.xls` — запасной, остановился на 2024) | sheet 1, "всего" row |
+| `rd-personnel` | `mediabank/nauka_2_{YYYY}.xlsx` (с 31.08.2026, данные по 2025 год; прежний `nauka_2.xls` — запасной, остановился на 2024) | sheet 1, "всего" row |
 | `innovation-activity` | `mediabank/innov_1_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
 | `tech-innovation-share` | `mediabank/innov_2_{YYYY}.xls` | sheet 1, RF row; `min_year=2018` |
 | `small-business-innovation` | `mediabank/Innov_mp_1.xls` (fallback `innov-mp_1.xls`) | sheet 5, RF row |
