@@ -8,6 +8,12 @@ Proxy fallback chain (2026-07-12):
 Ban-like statuses (403/407/429/503) and connection/timeout errors trigger the
 next hop. Direct success never uses a proxy. SOCKS needs PySocks installed.
 
+Заглушка «технические работы» (2026-11-02): 01-02.11.2026 rosstat.gov.ru стал отвечать на любой адрес одной
+страницей «Сайт Росстата временно недоступен» (главная 200, остальное 404, 33 821 байт). Парсеры читали это как
+«файл не найден», и вечерний ETL показал 45 разных ошибок вместо одной причины. Теперь такой ответ — `SourceMaintenance`
+(`ConnectionError`, в тексте «unreachable»): взводится предохранитель хоста, ряды получают сетевой повтор и догрузку
+после возвращения сайта (`tasks/scheduler.rosstat_recovery_job`).
+
 Connect timeout and host breaker (2026-10-08): 07.10 rosstat.gov.ru 8 ч не
 принимал соединения; `timeout=90` действовал и на connect, 4 попытки × 2 хопа ×
 6 файлов-кандидатов ≈ час на индикатор, daily ETL шёл 9 ч. Теперь connect
@@ -51,6 +57,29 @@ _PROXY_FALLBACK_EXC = (
     requests.Timeout,
     requests.exceptions.RetryError,
 )
+
+
+# Хосты, у которых заглушка вместо данных - сбой источника, а не «файла нет». Метки - UTF-8 текста страницы.
+_MAINTENANCE_HOSTS = ("rosstat.gov.ru", "gks.ru")
+_MAINTENANCE_MARKERS = ("временно недоступен".encode(), "технические работы".encode())
+_MAINTENANCE_SCAN_BYTES = 200_000
+
+
+class SourceMaintenance(requests.ConnectionError):
+    """Источник отвечает страницей-заглушкой «технические работы» вместо данных (не сетевой отказ и не «файла нет»)."""
+
+
+def _is_maintenance_stub(host: str, resp: requests.Response) -> bool:
+    """HTML-ответ хоста из `_MAINTENANCE_HOSTS` с обеими метками заглушки. Настоящие страницы и файлы их не содержат."""
+    if not any(host == h or host.endswith("." + h) for h in _MAINTENANCE_HOSTS):
+        return False
+    headers = getattr(resp, "headers", None)
+    ctype = headers.get("content-type", "") if headers is not None else ""
+    body = getattr(resp, "content", None)
+    if not isinstance(ctype, str) or "html" not in ctype.lower() or not isinstance(body, (bytes, bytearray)):
+        return False
+    body = body[:_MAINTENANCE_SCAN_BYTES]
+    return all(marker in body for marker in _MAINTENANCE_MARKERS)
 
 
 CONNECT_TIMEOUT_DIRECT = 15
@@ -255,6 +284,14 @@ class ProxyFallbackSession(requests.Session):
         except requests.Timeout as exc:
             record_fetch_issue(f"{host or url} timeout: {type(exc).__name__}")
             raise
+        if host and not kwargs.get("stream") and _is_maintenance_stub(host, resp):
+            _mark_host_down(host)
+            logger.warning(
+                "ETL host %s отвечает страницей «технические работы» — fail fast for %ds",
+                host, HOST_BREAKER_COOLDOWN_S,
+            )
+            record_fetch_issue(f"{host} unreachable: сайт на технических работах")
+            raise SourceMaintenance(f"{host} unreachable: site is under maintenance (stub page instead of data)")
         if host:
             _mark_host_up(host)
         # 404 при переборе имён файлов — норма; сбой источника — 5xx и бан-статусы.

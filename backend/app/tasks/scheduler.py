@@ -9,7 +9,7 @@ ETL scheduler: ежедневный прогон **всех активных** �
 import asyncio
 import logging
 import time
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import func, select, update
 
@@ -258,8 +258,12 @@ async def _retry_network_failures(
     return healed
 
 
-async def daily_update_job():
-    """Плановая задача: обновить все активные индикаторы, затем пересчитать производные."""
+async def daily_update_job(only_codes: set[str] | None = None, *, recovery: bool = False):
+    """Плановая задача: обновить все активные индикаторы, затем пересчитать производные.
+
+    `only_codes` - обновить только эти ряды, `recovery=True` - догрузка после возвращения источника
+    (`rosstat_recovery_job`): без повторов по сетевым сбоям, молча, если ничего не загрузилось.
+    """
     async with async_session() as db:
         active_q = await db.execute(
             select(Indicator).where(Indicator.is_active.is_(True)).order_by(Indicator.code)
@@ -268,6 +272,7 @@ async def daily_update_job():
         indicator_tasks = [
             {"code": ind.code, "parser_type": ind.parser_type}
             for ind in active_indicators
+            if only_codes is None or ind.code in only_codes
         ]
 
     codes = [t["code"] for t in indicator_tasks]
@@ -323,7 +328,19 @@ async def daily_update_job():
             async with _lock:
                 _running_locks.discard(code)
 
-    await _retry_network_failures(network_retry, t0, updated_codes, failed_codes, degraded)
+    await _retry_network_failures([] if recovery else network_retry, t0, updated_codes, failed_codes, degraded)
+    # Источник так и не ответил: ряды не «сломаны», их догонит `rosstat_recovery_job`; в итоге они отдельной строкой.
+    unreachable = [t["code"] for t in network_retry if t["code"] in failed_codes]
+    failed_codes = [c for c in failed_codes if c not in unreachable]
+    # Недельные парсеры глотают сетевой сбой и отвечают «0 точек»: это не «смена вёрстки», а тот же недоступный источник.
+    if degraded.get("parsed_zero"):
+        moved = set(await _rosstat_unreachable_codes(degraded["parsed_zero"], rosstat_only=False))
+        if moved:
+            unreachable += [c for c in degraded["parsed_zero"] if c in moved]
+            degraded["parsed_zero"] = [c for c in degraded["parsed_zero"] if c not in moved]
+    if recovery and not updated_codes:
+        logger.info("Rosstat recovery: nothing loaded yet (%d still unreachable, %d failed)", len(unreachable), len(failed_codes))
+        return
 
     if updated_codes:
         source_codes = _updated_source_codes(updated_codes)
@@ -366,8 +383,89 @@ async def daily_update_job():
         )
     await alert_etl_summary(
         total_non_derived, len(updated_codes), failed_codes, duration, degraded=degraded,
+        unreachable=unreachable, recovery=recovery,
     )
     logger.info("Daily ETL update complete in %.0fs.", duration)
+
+
+# Догрузка Росстата (2026-11-02): 01-02.11 сайт rosstat.gov.ru стоял на технических работах, ряды ждали следующего
+# планового ETL (06:00 или 20:00 МСК, до 14 часов после возвращения сайта). Теперь раз в 30 минут проверяем: есть ли
+# активные ряды Росстата, чей последний прогон закончился «unreachable», и отвечает ли главная страница сайта. Если да,
+# догружаем именно эти ряды (с производными, IndexNow и итогом). Пока сайт молчит, джоба стоит одного запроса.
+ROSSTAT_PROBE_URL = "https://rosstat.gov.ru/"
+ROSSTAT_RECOVERY_NOTHING_LOADED_PAUSE_S = 2 * 3600
+_rosstat_recovery_paused_until = 0.0
+
+
+async def _rosstat_unreachable_codes(codes=None, *, rosstat_only: bool = True) -> list[str]:
+    """Активные ряды (по умолчанию Росстата), чей последний прогон не дошёл до источника (в тексте ошибки «unreachable»).
+
+    `codes` - ограничить этими рядами; `rosstat_only=False` - любой источник (для разбора итога ETL).
+    """
+    since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=7)
+    ranked = (
+        select(
+            FetchLog.indicator_id.label("indicator_id"),
+            FetchLog.status.label("status"),
+            FetchLog.error_message.label("error_message"),
+            func.row_number().over(
+                partition_by=FetchLog.indicator_id, order_by=(FetchLog.started_at.desc(), FetchLog.id.desc()),
+            ).label("rn"),
+        )
+        .where(FetchLog.started_at >= since)
+    ).subquery()
+    query = (
+        select(Indicator.code)
+        .join(ranked, ranked.c.indicator_id == Indicator.id)
+        .where(
+            Indicator.is_active.is_(True),
+            ranked.c.rn == 1,
+            ranked.c.status.in_(("failed", "parsed_zero")),
+            func.lower(func.coalesce(ranked.c.error_message, "")).like("%unreachable%"),
+        )
+        .order_by(Indicator.code)
+    )
+    if rosstat_only:
+        query = query.where(Indicator.parser_type.like("rosstat\\_%", escape="\\"))
+    if codes is not None:
+        query = query.where(Indicator.code.in_(list(codes)))
+    async with async_session() as db:
+        return [r[0] for r in (await db.execute(query)).all()]
+
+
+def _rosstat_site_answers() -> bool:
+    """Главная страница Росстата открылась настоящей страницей (не заглушкой «технические работы», не сетевым отказом)."""
+    import requests
+
+    from app.config import settings
+    from app.services.http_client import create_session
+
+    session = create_session(timeout=20)
+    session.verify = settings.rosstat_ca_cert
+    try:
+        return session.get(ROSSTAT_PROBE_URL, timeout=(10, 20)).status_code == 200
+    except requests.RequestException:
+        return False
+
+
+async def rosstat_recovery_job() -> dict:
+    """Догрузить ряды Росстата, не загрузившиеся из-за недоступности сайта, как только он ответит."""
+    global _rosstat_recovery_paused_until
+    pending = await _rosstat_unreachable_codes()
+    if not pending:
+        return {"pending": 0}
+    if time.monotonic() < _rosstat_recovery_paused_until:
+        return {"pending": len(pending), "site": "paused"}
+    if not await asyncio.to_thread(_rosstat_site_answers):
+        logger.info("Rosstat recovery: site still unavailable, %d series wait", len(pending))
+        return {"pending": len(pending), "site": "down"}
+    logger.info("Rosstat recovery: site answers, loading %d series: %s", len(pending), ", ".join(pending))
+    await daily_update_job(set(pending), recovery=True)
+    still = await _rosstat_unreachable_codes()
+    if len(still) >= len(pending):
+        # Главная открылась, а файлов нет: не гоняем все ряды каждые полчаса.
+        _rosstat_recovery_paused_until = time.monotonic() + ROSSTAT_RECOVERY_NOTHING_LOADED_PAUSE_S
+    return {"pending": len(pending), "site": "up", "still_pending": len(still)}
 
 
 async def _retrain_recalculated_derived(db, derived_codes: list[str]) -> None:

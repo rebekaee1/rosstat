@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `d6b36ef8fcbaee63e455dd631bc4b6802c29846c`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `f9f1d905fd58330bfc82465d79cf635a5013f55f`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2216 |
-| Код, шаблоны и стили | 1809 |
-| Актуальные рецензии без пропусков guard | 2216 |
-| Именованные определения Python/JS: с аннотацией / всего | 14605 / 14605 |
+| Файлы в явно определённом scope | 2217 |
+| Код, шаблоны и стили | 1810 |
+| Актуальные рецензии без пропусков guard | 2217 |
+| Именованные определения Python/JS: с аннотацией / всего | 14647 / 14647 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -325,7 +325,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/geoip.py](../backend/app/services/geoip.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/goal_taxonomy.py](../backend/app/services/goal_taxonomy.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/gsc_client.py](../backend/app/services/gsc_client.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 25/25 | актуально |
+| [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/http_error_monitor.py](../backend/app/services/http_error_monitor.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
 | [backend/app/services/identity/__init__.py](../backend/app/services/identity/__init__.py) | reviewed | 0/0 | актуально |
@@ -496,7 +496,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/tasks/analytics_rollups.py](../backend/app/tasks/analytics_rollups.py) | reviewed | 40/40 | актуально |
 | [backend/app/tasks/analytics_scheduler.py](../backend/app/tasks/analytics_scheduler.py) | reviewed | 16/16 | актуально |
 | [backend/app/tasks/freshness_watchdog.py](../backend/app/tasks/freshness_watchdog.py) | reviewed | 1/1 | актуально |
-| [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 21/21 | актуально |
+| [backend/app/tasks/scheduler.py](../backend/app/tasks/scheduler.py) | reviewed | 24/24 | актуально |
 | [backend/app/tasks/session_analysis.py](../backend/app/tasks/session_analysis.py) | reviewed | 5/5 | актуально |
 | [backend/app/tasks/ticker_worker.py](../backend/app/tasks/ticker_worker.py) | reviewed | 6/6 | актуально |
 | [backend/certs/russian_trusted_root_ca_gost_2025.cer](../backend/certs/russian_trusted_root_ca_gost_2025.cer) | asset_metadata_reviewed | 0/0 | актуально |
@@ -772,6 +772,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_rosstat_plan.py](../backend/tests/test_rosstat_plan.py) | reviewed | 34/34 | актуально |
 | [backend/tests/test_rosstat_population.py](../backend/tests/test_rosstat_population.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_rosstat_ppi.py](../backend/tests/test_rosstat_ppi.py) | reviewed | 10/10 | актуально |
+| [backend/tests/test_rosstat_recovery.py](../backend/tests/test_rosstat_recovery.py) | reviewed | 37/37 | актуально |
 | [backend/tests/test_rosstat_unreachable.py](../backend/tests/test_rosstat_unreachable.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_rosstat_wages_backfill.py](../backend/tests/test_rosstat_wages_backfill.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_rosstat_weekly_inflation.py](../backend/tests/test_rosstat_weekly_inflation.py) | reviewed | 26/26 | актуально |

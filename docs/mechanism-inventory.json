@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "7fb244fae6d4d9cd6687c97ebdfbe2a9a4bc1e428df9eabbd4b3717006462953",
-      "lines": 1920
+      "sha256": "aa24d1016b804d4390f40001b41f8bef8253cf68cfde3beeb4e7feab3208e213",
+      "lines": 1929
     },
     {
       "path": "backend/app/models.py",
@@ -740,8 +740,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "sha256": "b1013daa477d4afd3bc485ab2e622a29c391b068224ceaff9e81413f97f6a56b",
-      "lines": 533
+      "sha256": "c5785df8b3e4e0d1df14f3bbf8177771d36f6be3822609f8d4ca3664605df4fa",
+      "lines": 550
     },
     {
       "path": "backend/app/services/analytics_alerts.py",
@@ -1160,8 +1160,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "24c45da61e448d8528f309c3b6fc74dfa86c64b208b846a07c6afff3a129f4a1",
-      "lines": 393
+      "sha256": "26ecaa24c472c0ae13d9614ab1f5aa7a9f47d4fcaf2eebdf8f2a7d8dbcd2cba5",
+      "lines": 430
     },
     {
       "path": "backend/app/services/http_error_monitor.py",
@@ -1220,8 +1220,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "sha256": "8f5f747da7ef68792613f909bda56596d072971d602ae8d0b6898d19330f796d",
-      "lines": 203
+      "sha256": "dc6f41622a7a349b1f72cd7dc0f5147f4b383d9e98ed21786a0d08306e209266",
+      "lines": 205
     },
     {
       "path": "backend/app/services/locale.py",
@@ -2015,8 +2015,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "sha256": "b246edf0c3f5cb25cba0c00647f22f10acd8c62de847067921d213ca011ea152",
-      "lines": 726
+      "sha256": "5ca6219a74319eeccd1a04688640f82674cb2b6948be9440be32178dcb294768",
+      "lines": 824
     },
     {
       "path": "backend/app/tasks/session_analysis.py",
@@ -6940,8 +6940,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1409,
-      "end_line": 1417,
+      "line": 1418,
+      "end_line": 1426,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.main.app",
@@ -7228,8 +7228,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1907,
-      "end_line": 1907,
+      "line": 1916,
+      "end_line": 1916,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7239,8 +7239,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1910,
-      "end_line": 1910,
+      "line": 1919,
+      "end_line": 1919,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7250,8 +7250,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1913,
-      "end_line": 1913,
+      "line": 1922,
+      "end_line": 1922,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7261,8 +7261,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1917,
-      "end_line": 1917,
+      "line": 1926,
+      "end_line": 1926,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7272,8 +7272,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1920,
-      "end_line": 1920,
+      "line": 1929,
+      "end_line": 1929,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -14141,8 +14141,8 @@
   "middleware": [
     {
       "path": "backend/app/main.py",
-      "line": 1885,
-      "end_line": 1885,
+      "line": 1894,
+      "end_line": 1894,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14152,8 +14152,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1886,
-      "end_line": 1886,
+      "line": 1895,
+      "end_line": 1895,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14163,8 +14163,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1887,
-      "end_line": 1887,
+      "line": 1896,
+      "end_line": 1896,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14174,8 +14174,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1888,
-      "end_line": 1888,
+      "line": 1897,
+      "end_line": 1897,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14185,8 +14185,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1889,
-      "end_line": 1903,
+      "line": 1898,
+      "end_line": 1912,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14201,8 +14201,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1905,
-      "end_line": 1905,
+      "line": 1914,
+      "end_line": 1914,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -32529,8 +32529,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 666,
-      "end_line": 666,
+      "line": 675,
+      "end_line": 675,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32540,8 +32540,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 704,
-      "end_line": 704,
+      "line": 713,
+      "end_line": 713,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32551,8 +32551,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 839,
-      "end_line": 839,
+      "line": 848,
+      "end_line": 848,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32562,8 +32562,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 860,
-      "end_line": 860,
+      "line": 869,
+      "end_line": 869,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32573,8 +32573,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 915,
-      "end_line": 915,
+      "line": 924,
+      "end_line": 924,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32584,8 +32584,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1016,
-      "end_line": 1016,
+      "line": 1025,
+      "end_line": 1025,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32595,8 +32595,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1029,
-      "end_line": 1029,
+      "line": 1038,
+      "end_line": 1038,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32606,8 +32606,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1072,
-      "end_line": 1072,
+      "line": 1081,
+      "end_line": 1081,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32617,8 +32617,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1092,
-      "end_line": 1092,
+      "line": 1101,
+      "end_line": 1101,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32628,8 +32628,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1110,
-      "end_line": 1110,
+      "line": 1119,
+      "end_line": 1119,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32639,8 +32639,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1130,
-      "end_line": 1130,
+      "line": 1139,
+      "end_line": 1139,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32650,8 +32650,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1150,
-      "end_line": 1150,
+      "line": 1159,
+      "end_line": 1159,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32661,8 +32661,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1177,
-      "end_line": 1177,
+      "line": 1186,
+      "end_line": 1186,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32672,8 +32672,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1198,
-      "end_line": 1198,
+      "line": 1207,
+      "end_line": 1207,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32683,8 +32683,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1233,
-      "end_line": 1233,
+      "line": 1242,
+      "end_line": 1242,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32694,8 +32694,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1246,
-      "end_line": 1246,
+      "line": 1255,
+      "end_line": 1255,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32705,8 +32705,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1259,
-      "end_line": 1259,
+      "line": 1268,
+      "end_line": 1268,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32716,8 +32716,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1336,
-      "end_line": 1336,
+      "line": 1345,
+      "end_line": 1345,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32727,8 +32727,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1365,
-      "end_line": 1365,
+      "line": 1374,
+      "end_line": 1374,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32738,8 +32738,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1410,
-      "end_line": 1410,
+      "line": 1419,
+      "end_line": 1419,
       "owner": "<module>",
       "conditions": [],
       "name": "app_name",
@@ -32747,8 +32747,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1454,
-      "end_line": 1454,
+      "line": 1463,
+      "end_line": 1463,
       "owner": "_set_locale_preference_cookie",
       "conditions": [],
       "name": "auth_cookie_secure",
@@ -32756,8 +32756,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1462,
-      "end_line": 1462,
+      "line": 1471,
+      "end_line": 1471,
       "owner": "_set_locale_preference_cookie",
       "conditions": [],
       "name": "locale_preference_cookie",
@@ -32765,8 +32765,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1599,
-      "end_line": 1599,
+      "line": 1608,
+      "end_line": 1608,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "apex_locale_en",
@@ -32774,8 +32774,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1658,
-      "end_line": 1658,
+      "line": 1667,
+      "end_line": 1667,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "geo_locale_redirect_enabled",
@@ -32783,8 +32783,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1698,
-      "end_line": 1698,
+      "line": 1707,
+      "end_line": 1707,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "name": "apex_locale_en",
@@ -32843,8 +32843,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 737,
+      "end_line": 737,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32854,8 +32854,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 761,
-      "end_line": 761,
+      "line": 770,
+      "end_line": 770,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32865,8 +32865,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 802,
-      "end_line": 802,
+      "line": 811,
+      "end_line": 811,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32876,8 +32876,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 909,
-      "end_line": 909,
+      "line": 918,
+      "end_line": 918,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32887,8 +32887,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 910,
-      "end_line": 910,
+      "line": 919,
+      "end_line": 919,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32898,8 +32898,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 911,
-      "end_line": 911,
+      "line": 920,
+      "end_line": 920,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32909,8 +32909,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 912,
-      "end_line": 912,
+      "line": 921,
+      "end_line": 921,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32920,8 +32920,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 913,
-      "end_line": 913,
+      "line": 922,
+      "end_line": 922,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32931,8 +32931,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 953,
+      "end_line": 953,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32942,8 +32942,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 944,
-      "end_line": 944,
+      "line": 953,
+      "end_line": 953,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32953,8 +32953,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 963,
-      "end_line": 963,
+      "line": 972,
+      "end_line": 972,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32964,8 +32964,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 963,
-      "end_line": 963,
+      "line": 972,
+      "end_line": 972,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32975,8 +32975,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 976,
-      "end_line": 976,
+      "line": 985,
+      "end_line": 985,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -32987,8 +32987,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1041,
-      "end_line": 1041,
+      "line": 1050,
+      "end_line": 1050,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -32998,8 +32998,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1041,
-      "end_line": 1041,
+      "line": 1050,
+      "end_line": 1050,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33009,8 +33009,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1189,
-      "end_line": 1189,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33020,8 +33020,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1189,
-      "end_line": 1189,
+      "line": 1198,
+      "end_line": 1198,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33031,8 +33031,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1275,
-      "end_line": 1275,
+      "line": 1284,
+      "end_line": 1284,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33042,8 +33042,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1276,
-      "end_line": 1276,
+      "line": 1285,
+      "end_line": 1285,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33053,8 +33053,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1277,
-      "end_line": 1277,
+      "line": 1286,
+      "end_line": 1286,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33064,8 +33064,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1385,
-      "end_line": 1385,
+      "line": 1394,
+      "end_line": 1394,
       "owner": "lifespan",
       "conditions": [],
       "name": "scheduler_enabled",
@@ -33073,8 +33073,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1385,
-      "end_line": 1385,
+      "line": 1394,
+      "end_line": 1394,
       "owner": "lifespan",
       "conditions": [],
       "name": "worker_recycle_mb",
@@ -33082,8 +33082,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1414,
-      "end_line": 1414,
+      "line": 1423,
+      "end_line": 1423,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33091,8 +33091,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1415,
-      "end_line": 1415,
+      "line": 1424,
+      "end_line": 1424,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33100,8 +33100,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1416,
-      "end_line": 1416,
+      "line": 1425,
+      "end_line": 1425,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33109,8 +33109,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1892,
-      "end_line": 1892,
+      "line": 1901,
+      "end_line": 1901,
       "owner": "<module>",
       "conditions": [],
       "name": "public_origin",
@@ -33129,8 +33129,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 737,
+      "end_line": 737,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33140,8 +33140,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 761,
-      "end_line": 761,
+      "line": 770,
+      "end_line": 770,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33151,8 +33151,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 802,
-      "end_line": 802,
+      "line": 811,
+      "end_line": 811,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33162,8 +33162,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 937,
-      "end_line": 937,
+      "line": 946,
+      "end_line": 946,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33174,8 +33174,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 938,
-      "end_line": 938,
+      "line": 947,
+      "end_line": 947,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33186,8 +33186,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1088,
-      "end_line": 1088,
+      "line": 1097,
+      "end_line": 1097,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33198,8 +33198,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1089,
-      "end_line": 1089,
+      "line": 1098,
+      "end_line": 1098,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33210,8 +33210,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1108,
-      "end_line": 1108,
+      "line": 1117,
+      "end_line": 1117,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33222,8 +33222,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1108,
-      "end_line": 1108,
+      "line": 1117,
+      "end_line": 1117,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33234,8 +33234,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1127,
-      "end_line": 1127,
+      "line": 1136,
+      "end_line": 1136,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33246,8 +33246,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1127,
-      "end_line": 1127,
+      "line": 1136,
+      "end_line": 1136,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33258,8 +33258,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1147,
-      "end_line": 1147,
+      "line": 1156,
+      "end_line": 1156,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33270,8 +33270,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1147,
-      "end_line": 1147,
+      "line": 1156,
+      "end_line": 1156,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33282,8 +33282,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1173,
-      "end_line": 1173,
+      "line": 1182,
+      "end_line": 1182,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33294,8 +33294,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1174,
-      "end_line": 1174,
+      "line": 1183,
+      "end_line": 1183,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33306,8 +33306,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1278,
-      "end_line": 1278,
+      "line": 1287,
+      "end_line": 1287,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33317,8 +33317,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1278,
-      "end_line": 1278,
+      "line": 1287,
+      "end_line": 1287,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33328,8 +33328,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1389,
-      "end_line": 1389,
+      "line": 1398,
+      "end_line": 1398,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -33339,8 +33339,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1390,
-      "end_line": 1390,
+      "line": 1399,
+      "end_line": 1399,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -33350,8 +33350,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1439,
-      "end_line": 1439,
+      "line": 1448,
+      "end_line": 1448,
       "owner": "_locale_preference",
       "conditions": [],
       "name": "locale_preference_cookie",
@@ -33359,8 +33359,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1537,
-      "end_line": 1537,
+      "line": 1546,
+      "end_line": 1546,
       "owner": "_geo_ru_country_codes",
       "conditions": [
         "_GEO_RU_CODES is None"
@@ -33370,8 +33370,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1893,
-      "end_line": 1893,
+      "line": 1902,
+      "end_line": 1902,
       "owner": "<module>",
       "conditions": [],
       "name": "public_host",
@@ -33435,8 +33435,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 624,
+      "end_line": 624,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33446,8 +33446,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 625,
+      "end_line": 625,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33457,8 +33457,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 653,
-      "end_line": 653,
+      "line": 662,
+      "end_line": 662,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33468,8 +33468,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 896,
-      "end_line": 896,
+      "line": 905,
+      "end_line": 905,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33479,8 +33479,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 676,
-      "end_line": 676,
+      "line": 685,
+      "end_line": 685,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33491,8 +33491,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 677,
-      "end_line": 677,
+      "line": 686,
+      "end_line": 686,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33503,8 +33503,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 717,
-      "end_line": 717,
+      "line": 726,
+      "end_line": 726,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33515,8 +33515,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 727,
+      "end_line": 727,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33527,8 +33527,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 746,
+      "end_line": 746,
       "owner": "lifespan.scheduled_us_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33539,8 +33539,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 740,
-      "end_line": 740,
+      "line": 749,
+      "end_line": 749,
       "owner": "lifespan.scheduled_us_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33551,8 +33551,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 750,
-      "end_line": 750,
+      "line": 759,
+      "end_line": 759,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33563,8 +33563,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 751,
-      "end_line": 751,
+      "line": 760,
+      "end_line": 760,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33575,8 +33575,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 775,
-      "end_line": 775,
+      "line": 784,
+      "end_line": 784,
       "owner": "lifespan.scheduled_europe_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33587,8 +33587,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 800,
+      "end_line": 800,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33599,8 +33599,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 792,
-      "end_line": 792,
+      "line": 801,
+      "end_line": 801,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33611,8 +33611,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 815,
-      "end_line": 815,
+      "line": 824,
+      "end_line": 824,
       "owner": "lifespan.scheduled_rest_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33623,8 +33623,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 818,
-      "end_line": 818,
+      "line": 827,
+      "end_line": 827,
       "owner": "lifespan.scheduled_rest_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33635,8 +33635,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 828,
-      "end_line": 828,
+      "line": 837,
+      "end_line": 837,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33647,8 +33647,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 829,
-      "end_line": 829,
+      "line": 838,
+      "end_line": 838,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33659,8 +33659,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 849,
-      "end_line": 849,
+      "line": 858,
+      "end_line": 858,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33671,8 +33671,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 850,
-      "end_line": 850,
+      "line": 859,
+      "end_line": 859,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33683,8 +33683,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 871,
-      "end_line": 871,
+      "line": 880,
+      "end_line": 880,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33695,8 +33695,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 872,
-      "end_line": 872,
+      "line": 881,
+      "end_line": 881,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33707,8 +33707,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 927,
-      "end_line": 927,
+      "line": 936,
+      "end_line": 936,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33719,8 +33719,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 928,
-      "end_line": 928,
+      "line": 937,
+      "end_line": 937,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33731,8 +33731,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1077,
-      "end_line": 1077,
+      "line": 1086,
+      "end_line": 1086,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33743,8 +33743,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1078,
-      "end_line": 1078,
+      "line": 1087,
+      "end_line": 1087,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33755,8 +33755,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1098,
-      "end_line": 1098,
+      "line": 1107,
+      "end_line": 1107,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33767,8 +33767,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1099,
-      "end_line": 1099,
+      "line": 1108,
+      "end_line": 1108,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33779,8 +33779,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1116,
-      "end_line": 1116,
+      "line": 1125,
+      "end_line": 1125,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33791,8 +33791,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1117,
-      "end_line": 1117,
+      "line": 1126,
+      "end_line": 1126,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33803,8 +33803,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1136,
-      "end_line": 1136,
+      "line": 1145,
+      "end_line": 1145,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33815,8 +33815,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1137,
-      "end_line": 1137,
+      "line": 1146,
+      "end_line": 1146,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33827,8 +33827,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1162,
-      "end_line": 1162,
+      "line": 1171,
+      "end_line": 1171,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33839,8 +33839,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1163,
-      "end_line": 1163,
+      "line": 1172,
+      "end_line": 1172,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33851,8 +33851,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1341,
-      "end_line": 1341,
+      "line": 1350,
+      "end_line": 1350,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33863,8 +33863,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1342,
-      "end_line": 1342,
+      "line": 1351,
+      "end_line": 1351,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33875,8 +33875,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 779,
-      "end_line": 779,
+      "line": 788,
+      "end_line": 788,
       "owner": "lifespan.scheduled_europe_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33887,8 +33887,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 780,
-      "end_line": 780,
+      "line": 789,
+      "end_line": 789,
       "owner": "lifespan.scheduled_europe_world_forecasts",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33899,8 +33899,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 982,
-      "end_line": 982,
+      "line": 991,
+      "end_line": 991,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33912,8 +33912,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1895,
-      "end_line": 1895,
+      "line": 1904,
+      "end_line": 1904,
       "owner": "<module>",
       "conditions": [],
       "name": "public_host",
@@ -34760,8 +34760,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 191,
-      "end_line": 191,
+      "line": 220,
+      "end_line": 220,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "etl_http_proxy_url",
@@ -34769,8 +34769,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 225,
+      "end_line": 225,
       "owner": "resolve_etl_proxy_url",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -34778,8 +34778,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 204,
-      "end_line": 204,
+      "line": 233,
+      "end_line": 233,
       "owner": "resolve_etl_socks_url",
       "conditions": [],
       "name": "etl_socks_proxy_url",
@@ -36575,6 +36575,15 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
+      "line": 444,
+      "end_line": 444,
+      "owner": "_rosstat_site_answers",
+      "conditions": [],
+      "name": "rosstat_ca_cert",
+      "expression": "settings.rosstat_ca_cert"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
       "line": 66,
       "end_line": 66,
       "owner": "etl_job_deadline_exceeded",
@@ -36979,8 +36988,32 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 612,
-      "end_line": 622,
+      "line": 614,
+      "end_line": 620,
+      "owner": "lifespan",
+      "conditions": [
+        "settings.scheduler_enabled"
+      ],
+      "scheduler": "app.main.scheduler",
+      "id": "rosstat_recovery",
+      "callable": "locked_job(rosstat_recovery_job, 'rosstat_recovery', ttl_seconds=3 * 3600)",
+      "resolved_callable": "app.tasks.scheduler.rosstat_recovery_job",
+      "wrapper": "locked_job(rosstat_recovery_job, 'rosstat_recovery', ttl_seconds=3 * 3600)",
+      "lock": {
+        "id_expression": "'rosstat_recovery'",
+        "ttl_expression": "3 * 3600"
+      },
+      "options": {
+        "trigger": "IntervalTrigger(minutes=30)",
+        "id": "'rosstat_recovery'",
+        "name": "'Rosstat recovery pass (loads series that failed while rosstat.gov.ru was unreachable)'",
+        "replace_existing": "True"
+      }
+    },
+    {
+      "path": "backend/app/main.py",
+      "line": 621,
+      "end_line": 631,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37003,8 +37036,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 630,
-      "end_line": 638,
+      "line": 639,
+      "end_line": 647,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37029,8 +37062,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 646,
-      "end_line": 662,
+      "line": 655,
+      "end_line": 671,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37055,8 +37088,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 885,
-      "end_line": 891,
+      "line": 894,
+      "end_line": 900,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37076,8 +37109,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 894,
-      "end_line": 902,
+      "line": 903,
+      "end_line": 911,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37099,8 +37132,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1214,
-      "end_line": 1222,
+      "line": 1223,
+      "end_line": 1231,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37125,8 +37158,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1223,
-      "end_line": 1229,
+      "line": 1232,
+      "end_line": 1238,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37146,8 +37179,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1293,
-      "end_line": 1301,
+      "line": 1302,
+      "end_line": 1310,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37170,8 +37203,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1304,
-      "end_line": 1312,
+      "line": 1313,
+      "end_line": 1321,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37194,8 +37227,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1315,
-      "end_line": 1321,
+      "line": 1324,
+      "end_line": 1330,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37218,8 +37251,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1326,
-      "end_line": 1332,
+      "line": 1335,
+      "end_line": 1341,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37242,8 +37275,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1353,
-      "end_line": 1361,
+      "line": 1362,
+      "end_line": 1370,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37268,8 +37301,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 669,
-      "end_line": 685,
+      "line": 678,
+      "end_line": 694,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37295,8 +37328,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 690,
-      "end_line": 702,
+      "line": 699,
+      "end_line": 711,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37322,8 +37355,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 710,
-      "end_line": 726,
+      "line": 719,
+      "end_line": 735,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37349,8 +37382,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 743,
-      "end_line": 759,
+      "line": 752,
+      "end_line": 768,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37376,8 +37409,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 784,
-      "end_line": 800,
+      "line": 793,
+      "end_line": 809,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37403,8 +37436,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 821,
-      "end_line": 837,
+      "line": 830,
+      "end_line": 846,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37430,8 +37463,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 842,
-      "end_line": 858,
+      "line": 851,
+      "end_line": 867,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37457,8 +37490,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 863,
-      "end_line": 880,
+      "line": 872,
+      "end_line": 889,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37484,8 +37517,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 917,
-      "end_line": 923,
+      "line": 926,
+      "end_line": 932,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37506,8 +37539,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 924,
-      "end_line": 934,
+      "line": 933,
+      "end_line": 943,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37528,8 +37561,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 950,
-      "end_line": 957,
+      "line": 959,
+      "end_line": 966,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37550,8 +37583,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 965,
-      "end_line": 971,
+      "line": 974,
+      "end_line": 980,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37572,8 +37605,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1005,
-      "end_line": 1011,
+      "line": 1014,
+      "end_line": 1020,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37594,8 +37627,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1018,
-      "end_line": 1024,
+      "line": 1027,
+      "end_line": 1033,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37616,8 +37649,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1031,
-      "end_line": 1038,
+      "line": 1040,
+      "end_line": 1047,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37638,8 +37671,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1047,
-      "end_line": 1053,
+      "line": 1056,
+      "end_line": 1062,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37660,8 +37693,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1054,
-      "end_line": 1060,
+      "line": 1063,
+      "end_line": 1069,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37682,8 +37715,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1061,
-      "end_line": 1067,
+      "line": 1070,
+      "end_line": 1076,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37704,8 +37737,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1074,
-      "end_line": 1085,
+      "line": 1083,
+      "end_line": 1094,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37727,8 +37760,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1094,
-      "end_line": 1106,
+      "line": 1103,
+      "end_line": 1115,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37753,8 +37786,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1112,
-      "end_line": 1124,
+      "line": 1121,
+      "end_line": 1133,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37779,8 +37812,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1132,
-      "end_line": 1144,
+      "line": 1141,
+      "end_line": 1153,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37805,8 +37838,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1152,
-      "end_line": 1158,
+      "line": 1161,
+      "end_line": 1167,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37827,8 +37860,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1159,
-      "end_line": 1170,
+      "line": 1168,
+      "end_line": 1179,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37850,8 +37883,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1179,
-      "end_line": 1187,
+      "line": 1188,
+      "end_line": 1196,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37872,8 +37905,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1191,
-      "end_line": 1197,
+      "line": 1200,
+      "end_line": 1206,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37899,8 +37932,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1200,
-      "end_line": 1206,
+      "line": 1209,
+      "end_line": 1215,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37926,8 +37959,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1236,
-      "end_line": 1242,
+      "line": 1245,
+      "end_line": 1251,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37948,8 +37981,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1248,
-      "end_line": 1256,
+      "line": 1257,
+      "end_line": 1265,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37975,8 +38008,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1261,
-      "end_line": 1269,
+      "line": 1270,
+      "end_line": 1278,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -37999,8 +38032,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1281,
-      "end_line": 1289,
+      "line": 1290,
+      "end_line": 1298,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38023,8 +38056,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1338,
-      "end_line": 1348,
+      "line": 1347,
+      "end_line": 1357,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38050,8 +38083,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1367,
-      "end_line": 1376,
+      "line": 1376,
+      "end_line": 1385,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38078,8 +38111,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 978,
-      "end_line": 995,
+      "line": 987,
+      "end_line": 1004,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38190,8 +38223,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 904,
-      "end_line": 904,
+      "line": 913,
+      "end_line": 913,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38201,8 +38234,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1378,
-      "end_line": 1378,
+      "line": 1387,
+      "end_line": 1387,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38212,8 +38245,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1382,
-      "end_line": 1382,
+      "line": 1391,
+      "end_line": 1391,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38223,8 +38256,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1388,
-      "end_line": 1392,
+      "line": 1397,
+      "end_line": 1401,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -38234,8 +38267,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1402,
-      "end_line": 1402,
+      "line": 1411,
+      "end_line": 1411,
       "owner": "lifespan",
       "conditions": [
         "scheduler.running"
@@ -38245,8 +38278,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1403,
-      "end_line": 1403,
+      "line": 1412,
+      "end_line": 1412,
       "owner": "lifespan",
       "conditions": [],
       "call": "engine.dispose()",
@@ -38254,8 +38287,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1404,
-      "end_line": 1404,
+      "line": 1413,
+      "end_line": 1413,
       "owner": "lifespan",
       "conditions": [],
       "call": "analytics_engine.dispose()",
@@ -38272,8 +38305,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1235,
-      "end_line": 1235,
+      "line": 1244,
+      "end_line": 1244,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38325,8 +38358,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 161,
+      "end_line": 161,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "call": "asyncio.create_task(_heartbeat(redis, state, ttl_ms, interval, job_task))",
@@ -38334,8 +38367,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 197,
-      "end_line": 201,
+      "line": 199,
+      "end_line": 203,
       "owner": "_alert_lost",
       "conditions": [],
       "call": "asyncio.get_running_loop().create_task(send_telegram(f'🔴 <b>Потеряна блокировка задачи</b>\\n{escape(job_id)}: задача дошла до конца, но её lease пропал — возможен параллельный запуск.', kind='job_lease_lost'))",
@@ -38343,8 +38376,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 158,
+      "end_line": 158,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "call": "asyncio.ensure_future(fn(*args, **kwargs))",
@@ -76810,8 +76843,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1524,
-      "end_line": 1526,
+      "line": 1533,
+      "end_line": 1535,
       "owner": "<module>",
       "conditions": [],
       "name": "_GEO_EXCLUDED_PREFIXES",
@@ -76827,8 +76860,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1527,
-      "end_line": 1530,
+      "line": 1536,
+      "end_line": 1539,
       "owner": "<module>",
       "conditions": [],
       "name": "_GEO_EXCLUDED_EXACT",
@@ -86050,8 +86083,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 40,
-      "end_line": 46,
+      "line": 46,
+      "end_line": 52,
       "owner": "<module>",
       "conditions": [],
       "name": "_RETRY_STRATEGY",
@@ -86067,8 +86100,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 48,
-      "end_line": 48,
+      "line": 54,
+      "end_line": 54,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_STATUSES",
@@ -86084,8 +86117,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 49,
-      "end_line": 53,
+      "line": 55,
+      "end_line": 59,
       "owner": "<module>",
       "conditions": [],
       "name": "_PROXY_FALLBACK_EXC",
@@ -86097,6 +86130,40 @@
       "expression_truncated": false,
       "expression_chars": 76,
       "ast_sha256": "004c5cfae97d70515f0668428f66d7fcc129c817e8fe1dea04d9999b6438b5a6",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_MAINTENANCE_HOSTS",
+      "symbol": "app.services.http_client._MAINTENANCE_HOSTS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('rosstat.gov.ru', 'gks.ru')",
+      "expression_truncated": false,
+      "expression_chars": 28,
+      "ast_sha256": "172336f791985c901d3b0d84235643cf6776e0a215d17698f324f41dd5fd45fd",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_MAINTENANCE_MARKERS",
+      "symbol": "app.services.http_client._MAINTENANCE_MARKERS",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('временно недоступен'.encode(), 'технические работы'.encode())",
+      "expression_truncated": false,
+      "expression_chars": 63,
+      "ast_sha256": "00871ce2498fc2d7ae159240f12b54f8e8fdab64b88b4b2dd028c51459f6d284",
       "runtime_expansion": false
     },
     {
@@ -86952,8 +87019,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 44,
-      "end_line": 49,
+      "line": 45,
+      "end_line": 51,
       "owner": "<module>",
       "conditions": [],
       "name": "JOB_LOCK_GROUPS",
@@ -86963,7 +87030,8 @@
         "'daily_etl'",
         "'evening_etl'",
         "'late_minfin_etl'",
-        "'late_fred_etl'"
+        "'late_fred_etl'",
+        "'rosstat_recovery'"
       ],
       "entries": [
         {
@@ -86993,12 +87061,19 @@
           "expression_truncated": false,
           "expression_chars": 5,
           "ast_sha256": "27bef0a61a0c7065fe9a3ee6a2d38747404d5bb9d039a3d1a3a792f13618aa06"
+        },
+        {
+          "key": "'rosstat_recovery'",
+          "expression": "'etl'",
+          "expression_truncated": false,
+          "expression_chars": 5,
+          "ast_sha256": "27bef0a61a0c7065fe9a3ee6a2d38747404d5bb9d039a3d1a3a792f13618aa06"
         }
       ],
-      "expression": "{'daily_etl': 'etl', 'evening_etl': 'etl', 'late_minfin_etl': 'etl', 'late_fred_etl': 'etl'}",
+      "expression": "{'daily_etl': 'etl', 'evening_etl': 'etl', 'late_minfin_etl': 'etl', 'late_fred_etl': 'etl', 'rosstat_recovery': 'etl'}",
       "expression_truncated": false,
-      "expression_chars": 92,
-      "ast_sha256": "55b0c05b5d62bc0d514563d94158260e23d4d6fef774a9089f1db1626ed15d10",
+      "expression_chars": 119,
+      "ast_sha256": "a50d8af9edd1b86af2b8a65fe0962ada6ceaa3afb4510b21b0ea6e3e8bcd9582",
       "runtime_expansion": false
     },
     {
@@ -120910,8 +120985,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1378,
-      "end_line": 1378,
+      "line": 1387,
+      "end_line": 1387,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -120926,8 +121001,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1382,
-      "end_line": 1382,
+      "line": 1391,
+      "end_line": 1391,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -120942,8 +121017,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1388,
-      "end_line": 1392,
+      "line": 1397,
+      "end_line": 1401,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -120972,8 +121047,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1235,
-      "end_line": 1235,
+      "line": 1244,
+      "end_line": 1244,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -127874,8 +127949,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 86,
-      "end_line": 86,
+      "line": 115,
+      "end_line": 115,
       "owner": "begin_fetch_issues",
       "conditions": [],
       "operation": "set",
@@ -127888,8 +127963,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 388,
-      "end_line": 392,
+      "line": 425,
+      "end_line": 429,
       "owner": "create_session",
       "conditions": [],
       "operation": "update",
@@ -128545,8 +128620,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 154,
+      "end_line": 154,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "set",
@@ -128559,8 +128634,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 159,
-      "end_line": 159,
+      "line": 161,
+      "end_line": 161,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "create_task",
@@ -128573,8 +128648,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 197,
-      "end_line": 201,
+      "line": 199,
+      "end_line": 203,
       "owner": "_alert_lost",
       "conditions": [],
       "operation": "create_task",
@@ -128587,8 +128662,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 156,
-      "end_line": 156,
+      "line": 158,
+      "end_line": 158,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "ensure_future",
@@ -128601,8 +128676,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 100,
-      "end_line": 100,
+      "line": 102,
+      "end_line": 102,
       "owner": "_heartbeat",
       "conditions": [],
       "operation": "eval",
@@ -128615,8 +128690,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 137,
-      "end_line": 137,
+      "line": 139,
+      "end_line": 139,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "get_state_redis",
@@ -128629,8 +128704,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 138,
-      "end_line": 138,
+      "line": 140,
+      "end_line": 140,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "set",
@@ -128643,8 +128718,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 183,
-      "end_line": 183,
+      "line": 185,
+      "end_line": 185,
       "owner": "locked_job.wrapper",
       "conditions": [],
       "operation": "eval",
@@ -141140,8 +141215,24 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 390,
-      "end_line": 392,
+      "line": 337,
+      "end_line": 337,
+      "owner": "daily_update_job",
+      "conditions": [
+        "degraded.get('parsed_zero')"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.tasks.scheduler.set",
+      "expression": "set(await _rosstat_unreachable_codes(degraded['parsed_zero'], rosstat_only=False))",
+      "expression_truncated": false,
+      "expression_chars": 82,
+      "ast_sha256": "81640a70e11ab0e61510352e861430aaa12c862e5f5c377fb2b965d1e90e7dd6"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 488,
+      "end_line": 490,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "operation": "execute",
@@ -141196,8 +141287,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 264,
-      "end_line": 266,
+      "line": 268,
+      "end_line": 270,
       "owner": "daily_update_job",
       "conditions": [],
       "operation": "execute",
@@ -141210,8 +141301,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 303,
-      "end_line": 303,
+      "line": 308,
+      "end_line": 308,
       "owner": "daily_update_job",
       "conditions": [],
       "operation": "add",
@@ -141224,8 +141315,22 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 437,
-      "end_line": 442,
+      "line": 463,
+      "end_line": 463,
+      "owner": "rosstat_recovery_job",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.tasks.scheduler.set",
+      "expression": "set(pending)",
+      "expression_truncated": false,
+      "expression_chars": 12,
+      "ast_sha256": "d6a8f3700e7f41e386c5748e4891397df3a3df2bc3022fe7a9397aacb67b6ff0"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 535,
+      "end_line": 540,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "execute",
@@ -141238,8 +141343,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 454,
-      "end_line": 456,
+      "line": 552,
+      "end_line": 554,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "execute",
@@ -141252,8 +141357,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 562,
+      "end_line": 562,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "operation": "add",
@@ -141266,8 +141371,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 594,
-      "end_line": 603,
+      "line": 692,
+      "end_line": 701,
       "owner": "staleness_check_job",
       "conditions": [],
       "operation": "execute",
@@ -141280,8 +141385,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 707,
-      "end_line": 714,
+      "line": 805,
+      "end_line": 812,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "execute",
@@ -141294,8 +141399,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 715,
-      "end_line": 715,
+      "line": 813,
+      "end_line": 813,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "commit",
@@ -141308,8 +141413,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 415,
-      "end_line": 415,
+      "line": 513,
+      "end_line": 513,
       "owner": "_catch_up_empty_forecasts_safe",
       "conditions": [],
       "operation": "commit",
@@ -141354,8 +141459,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 351,
+      "end_line": 351,
       "owner": "daily_update_job",
       "conditions": [
         "updated_codes"
@@ -141370,8 +141475,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 400,
-      "end_line": 400,
+      "line": 498,
+      "end_line": 498,
       "owner": "_retrain_recalculated_derived",
       "conditions": [
         "steps > 0 and strategy"
@@ -141386,8 +141491,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 487,
-      "end_line": 487,
+      "line": 585,
+      "end_line": 585,
       "owner": "run_etl_for_parser_type",
       "conditions": [
         "updated_codes"
@@ -141466,8 +141571,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 404,
-      "end_line": 404,
+      "line": 502,
+      "end_line": 502,
       "owner": "_retrain_recalculated_derived",
       "conditions": [
         "steps > 0 and strategy"
@@ -141482,8 +141587,22 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 708,
-      "end_line": 708,
+      "line": 433,
+      "end_line": 433,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.tasks.scheduler.db.execute",
+      "expression": "db.execute(query)",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "9d99f82ebb0254fe47a162b944e4266a05025d8367d89e5e41bab3e740c7e3c7"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 806,
+      "end_line": 806,
       "owner": "_promote_past_events",
       "conditions": [],
       "operation": "update",
@@ -237882,6 +238001,15 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
+      "line": 426,
+      "end_line": 426,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
       "line": 152,
       "end_line": 152,
       "owner": "run_etl_for_indicator_status",
@@ -237891,8 +238019,39 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 426,
+      "end_line": 426,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "rosstat_only"
+      ],
+      "symbol": "app.models.Indicator.parser_type.like",
+      "expression": "Indicator.parser_type.like"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 431,
+      "end_line": 431,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "codes is not None"
+      ],
+      "symbol": "app.models.Indicator.code.in_",
+      "expression": "Indicator.code.in_"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -237900,8 +238059,48 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 415,
+      "end_line": 415,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.started_at",
+      "expression": "FetchLog.started_at"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 421,
+      "end_line": 421,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active.is_",
+      "expression": "Indicator.is_active.is_"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "rosstat_only"
+      ],
+      "symbol": "app.models.Indicator.parser_type",
+      "expression": "Indicator.parser_type"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 431,
+      "end_line": 431,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "codes is not None"
+      ],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 489,
+      "end_line": 489,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -237909,8 +238108,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 539,
+      "end_line": 539,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -237918,8 +238117,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 585,
-      "end_line": 585,
+      "line": 683,
+      "end_line": 683,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -237927,8 +238126,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 591,
-      "end_line": 591,
+      "line": 689,
+      "end_line": 689,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -237936,8 +238135,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 700,
+      "end_line": 700,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -237954,8 +238153,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -237963,8 +238162,48 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 415,
+      "end_line": 415,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 421,
+      "end_line": 421,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active",
+      "expression": "Indicator.is_active"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 429,
+      "end_line": 429,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "rosstat_only"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 431,
+      "end_line": 431,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [
+        "codes is not None"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 489,
+      "end_line": 489,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -237972,8 +238211,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 489,
+      "end_line": 489,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -237981,8 +238220,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 539,
+      "end_line": 539,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -237990,8 +238229,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code.in_",
@@ -237999,8 +238238,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 602,
-      "end_line": 602,
+      "line": 700,
+      "end_line": 700,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238026,8 +238265,53 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 391,
-      "end_line": 391,
+      "line": 408,
+      "end_line": 408,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.indicator_id.label",
+      "expression": "FetchLog.indicator_id.label"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 409,
+      "end_line": 409,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.status.label",
+      "expression": "FetchLog.status.label"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 410,
+      "end_line": 410,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.error_message.label",
+      "expression": "FetchLog.error_message.label"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 419,
+      "end_line": 419,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 421,
+      "end_line": 421,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 489,
+      "end_line": 489,
       "owner": "_retrain_recalculated_derived",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238035,8 +238319,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -238044,8 +238328,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.parser_type",
@@ -238053,8 +238337,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -238062,8 +238346,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 721,
+      "end_line": 721,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -238071,8 +238355,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -238080,8 +238364,53 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 408,
+      "end_line": 408,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.indicator_id",
+      "expression": "FetchLog.indicator_id"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 409,
+      "end_line": 409,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.status",
+      "expression": "FetchLog.status"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 410,
+      "end_line": 410,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.error_message",
+      "expression": "FetchLog.error_message"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 418,
+      "end_line": 418,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 419,
+      "end_line": 419,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 537,
+      "end_line": 537,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -238089,8 +238418,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 440,
-      "end_line": 440,
+      "line": 538,
+      "end_line": 538,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.parser_type",
@@ -238098,8 +238427,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238107,8 +238436,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238116,8 +238445,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 553,
+      "end_line": 553,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238125,8 +238454,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 688,
+      "end_line": 688,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.indicator_id",
@@ -238134,8 +238463,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 688,
+      "end_line": 688,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -238143,8 +238472,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 699,
+      "end_line": 699,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -238152,8 +238481,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 721,
+      "end_line": 721,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -238161,8 +238490,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 808,
+      "end_line": 808,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.status",
@@ -238170,8 +238499,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 809,
+      "end_line": 809,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.actual_value.is_",
@@ -238179,8 +238508,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238188,8 +238517,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -238197,8 +238526,44 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 438,
-      "end_line": 438,
+      "line": 408,
+      "end_line": 408,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 409,
+      "end_line": 409,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 410,
+      "end_line": 410,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 418,
+      "end_line": 418,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 536,
+      "end_line": 536,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238206,8 +238571,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 537,
+      "end_line": 537,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -238215,8 +238580,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 440,
-      "end_line": 440,
+      "line": 538,
+      "end_line": 538,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238224,8 +238589,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 688,
+      "end_line": 688,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -238233,8 +238598,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 590,
-      "end_line": 590,
+      "line": 688,
+      "end_line": 688,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238242,8 +238607,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 698,
+      "end_line": 698,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -238251,8 +238616,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 699,
+      "end_line": 699,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -238260,8 +238625,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 720,
+      "end_line": 720,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -238269,8 +238634,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 721,
+      "end_line": 721,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -238278,8 +238643,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 708,
-      "end_line": 708,
+      "line": 806,
+      "end_line": 806,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -238287,8 +238652,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 710,
-      "end_line": 710,
+      "line": 808,
+      "end_line": 808,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -238296,8 +238661,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 809,
+      "end_line": 809,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent.actual_value",
@@ -238305,8 +238670,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 265,
-      "end_line": 265,
+      "line": 269,
+      "end_line": 269,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238314,8 +238679,17 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.indicator_id",
+      "expression": "FetchLog.indicator_id"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 537,
+      "end_line": 537,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238323,8 +238697,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 583,
-      "end_line": 583,
+      "line": 681,
+      "end_line": 681,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.started_at.desc",
@@ -238332,8 +238706,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 589,
-      "end_line": 589,
+      "line": 687,
+      "end_line": 687,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.started_at",
@@ -238341,8 +238715,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 698,
+      "end_line": 698,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -238350,8 +238724,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 698,
+      "end_line": 698,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -238359,8 +238733,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 601,
-      "end_line": 601,
+      "line": 699,
+      "end_line": 699,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238368,8 +238742,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 720,
+      "end_line": 720,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -238377,8 +238751,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 809,
+      "end_line": 809,
       "owner": "_promote_past_events",
       "conditions": [],
       "symbol": "app.models.EconomicEvent",
@@ -238386,8 +238760,17 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 583,
-      "end_line": 583,
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 681,
+      "end_line": 681,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.started_at",
@@ -238395,8 +238778,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 589,
-      "end_line": 589,
+      "line": 687,
+      "end_line": 687,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -238404,8 +238787,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -238413,8 +238796,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.frequency",
@@ -238422,8 +238805,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 695,
+      "end_line": 695,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.parser_type",
@@ -238431,8 +238814,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 695,
+      "end_line": 695,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.source",
@@ -238440,8 +238823,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 698,
+      "end_line": 698,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -238449,8 +238832,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 698,
+      "end_line": 698,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238458,8 +238841,26 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.started_at.desc",
+      "expression": "FetchLog.started_at.desc"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.id.desc",
+      "expression": "FetchLog.id.desc"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 680,
+      "end_line": 680,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.indicator_id",
@@ -238467,8 +238868,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 680,
+      "end_line": 680,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -238476,8 +238877,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 583,
-      "end_line": 583,
+      "line": 681,
+      "end_line": 681,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -238485,8 +238886,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238494,8 +238895,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238503,8 +238904,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -238512,8 +238913,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 695,
+      "end_line": 695,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238521,8 +238922,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 695,
+      "end_line": 695,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238530,8 +238931,26 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 581,
-      "end_line": 581,
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.started_at",
+      "expression": "FetchLog.started_at"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog.id",
+      "expression": "FetchLog.id"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 679,
+      "end_line": 679,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog.status",
@@ -238539,8 +238958,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 680,
+      "end_line": 680,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -238548,8 +238967,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 680,
+      "end_line": 680,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -238557,8 +238976,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 694,
+      "end_line": 694,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -238566,8 +238985,26 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 581,
-      "end_line": 581,
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 412,
+      "end_line": 412,
+      "owner": "_rosstat_unreachable_codes",
+      "conditions": [],
+      "symbol": "app.models.FetchLog",
+      "expression": "FetchLog"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 679,
+      "end_line": 679,
       "owner": "staleness_check_job",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -256478,7 +256915,7 @@
     {
       "path": "backend/app/main.py",
       "line": 520,
-      "end_line": 1406,
+      "end_line": 1415,
       "owner": "<module>",
       "conditions": [],
       "name": "lifespan",
@@ -256486,8 +256923,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1419,
-      "end_line": 1427,
+      "line": 1428,
+      "end_line": 1436,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_query_params",
@@ -256495,8 +256932,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1430,
-      "end_line": 1439,
+      "line": 1439,
+      "end_line": 1448,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_preference",
@@ -256504,8 +256941,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1442,
-      "end_line": 1448,
+      "line": 1451,
+      "end_line": 1457,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_pref_cookie_domain",
@@ -256513,8 +256950,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1451,
-      "end_line": 1462,
+      "line": 1460,
+      "end_line": 1471,
       "owner": "<module>",
       "conditions": [],
       "name": "_set_locale_preference_cookie",
@@ -256522,8 +256959,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1465,
-      "end_line": 1521,
+      "line": 1474,
+      "end_line": 1530,
       "owner": "<module>",
       "conditions": [],
       "name": "_persist_locale_pref_redirect",
@@ -256531,8 +256968,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1534,
-      "end_line": 1541,
+      "line": 1543,
+      "end_line": 1550,
       "owner": "<module>",
       "conditions": [],
       "name": "_geo_ru_country_codes",
@@ -256540,8 +256977,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1544,
-      "end_line": 1551,
+      "line": 1553,
+      "end_line": 1560,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_html_navigation",
@@ -256549,8 +256986,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1554,
-      "end_line": 1559,
+      "line": 1563,
+      "end_line": 1568,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_request_url",
@@ -256558,8 +256995,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1562,
-      "end_line": 1588,
+      "line": 1571,
+      "end_line": 1597,
       "owner": "<module>",
       "conditions": [],
       "name": "_with_utm_referrer",
@@ -256567,8 +257004,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1591,
-      "end_line": 1669,
+      "line": 1600,
+      "end_line": 1678,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_host_redirect",
@@ -256576,8 +257013,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1672,
-      "end_line": 1674,
+      "line": 1681,
+      "end_line": 1683,
       "owner": "<module>",
       "conditions": [],
       "name": "_geo_locale_redirect",
@@ -256585,8 +257022,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1677,
-      "end_line": 1686,
+      "line": 1686,
+      "end_line": 1695,
       "owner": "<module>",
       "conditions": [],
       "name": "_strip_preview_locale_query",
@@ -256594,8 +257031,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1689,
-      "end_line": 1748,
+      "line": 1698,
+      "end_line": 1757,
       "owner": "<module>",
       "conditions": [],
       "name": "_preview_query_redirect",
@@ -256603,8 +257040,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1751,
-      "end_line": 1758,
+      "line": 1760,
+      "end_line": 1767,
       "owner": "<module>",
       "conditions": [],
       "name": "_merge_vary",
@@ -256612,8 +257049,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1761,
-      "end_line": 1820,
+      "line": 1770,
+      "end_line": 1829,
       "owner": "<module>",
       "conditions": [],
       "name": "LocaleMiddleware",
@@ -256621,8 +257058,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1823,
-      "end_line": 1876,
+      "line": 1832,
+      "end_line": 1885,
       "owner": "<module>",
       "conditions": [],
       "name": "ScrapeGuardMiddleware",
@@ -256684,8 +257121,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1626,
-      "end_line": 1650,
+      "line": 1635,
+      "end_line": 1659,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "_to",
@@ -256693,8 +257130,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1764,
-      "end_line": 1820,
+      "line": 1773,
+      "end_line": 1829,
       "owner": "LocaleMiddleware",
       "conditions": [],
       "name": "dispatch",
@@ -256702,8 +257139,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1826,
-      "end_line": 1876,
+      "line": 1835,
+      "end_line": 1885,
       "owner": "ScrapeGuardMiddleware",
       "conditions": [],
       "name": "dispatch",
@@ -256711,8 +257148,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 687,
-      "end_line": 688,
+      "line": 696,
+      "end_line": 697,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -256723,8 +257160,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 734,
-      "end_line": 741,
+      "line": 743,
+      "end_line": 750,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -256735,8 +257172,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 772,
-      "end_line": 782,
+      "line": 781,
+      "end_line": 791,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -256747,8 +257184,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 809,
-      "end_line": 819,
+      "line": 818,
+      "end_line": 828,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -258236,7 +258673,7 @@
     {
       "path": "backend/app/services/alerting.py",
       "line": 466,
-      "end_line": 492,
+      "end_line": 509,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_etl_summary",
@@ -258244,8 +258681,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 499,
-      "end_line": 533,
+      "line": 516,
+      "end_line": 550,
       "owner": "<module>",
       "conditions": [],
       "name": "alert_world_ingest_summary",
@@ -265534,8 +265971,26 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 84,
-      "end_line": 86,
+      "line": 68,
+      "end_line": 69,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SourceMaintenance",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 72,
+      "end_line": 82,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_is_maintenance_stub",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 113,
+      "end_line": 115,
       "owner": "<module>",
       "conditions": [],
       "name": "begin_fetch_issues",
@@ -265543,8 +265998,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 89,
-      "end_line": 90,
+      "line": 118,
+      "end_line": 119,
       "owner": "<module>",
       "conditions": [],
       "name": "current_fetch_issues",
@@ -265552,8 +266007,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 93,
-      "end_line": 94,
+      "line": 122,
+      "end_line": 123,
       "owner": "<module>",
       "conditions": [],
       "name": "end_fetch_issues",
@@ -265561,8 +266016,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 97,
-      "end_line": 100,
+      "line": 126,
+      "end_line": 129,
       "owner": "<module>",
       "conditions": [],
       "name": "record_fetch_issue",
@@ -265570,8 +266025,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 103,
-      "end_line": 104,
+      "line": 132,
+      "end_line": 133,
       "owner": "<module>",
       "conditions": [],
       "name": "_host",
@@ -265579,47 +266034,11 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 107,
-      "end_line": 116,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_host_down_remaining",
-      "kind": "FunctionDef"
-    },
-    {
-      "path": "backend/app/services/http_client.py",
-      "line": 119,
-      "end_line": 121,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_mark_host_down",
-      "kind": "FunctionDef"
-    },
-    {
-      "path": "backend/app/services/http_client.py",
-      "line": 124,
-      "end_line": 133,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_hop_down_remaining",
-      "kind": "FunctionDef"
-    },
-    {
-      "path": "backend/app/services/http_client.py",
       "line": 136,
-      "end_line": 138,
-      "owner": "<module>",
-      "conditions": [],
-      "name": "_mark_hop_down",
-      "kind": "FunctionDef"
-    },
-    {
-      "path": "backend/app/services/http_client.py",
-      "line": 141,
       "end_line": 145,
       "owner": "<module>",
       "conditions": [],
-      "name": "host_down_max_remaining",
+      "name": "_host_down_remaining",
       "kind": "FunctionDef"
     },
     {
@@ -265628,13 +266047,49 @@
       "end_line": 150,
       "owner": "<module>",
       "conditions": [],
-      "name": "_mark_host_up",
+      "name": "_mark_host_down",
       "kind": "FunctionDef"
     },
     {
       "path": "backend/app/services/http_client.py",
       "line": 153,
-      "end_line": 157,
+      "end_line": 162,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_hop_down_remaining",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 165,
+      "end_line": 167,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_mark_hop_down",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 170,
+      "end_line": 174,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "host_down_max_remaining",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 177,
+      "end_line": 179,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_mark_host_up",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 182,
+      "end_line": 186,
       "owner": "<module>",
       "conditions": [],
       "name": "_reset_host_breaker",
@@ -265642,8 +266097,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 160,
-      "end_line": 180,
+      "line": 189,
+      "end_line": 209,
       "owner": "<module>",
       "conditions": [],
       "name": "_TimeoutAdapter",
@@ -265651,8 +266106,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 183,
-      "end_line": 197,
+      "line": 212,
+      "end_line": 226,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_proxy_url",
@@ -265660,8 +266115,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 200,
-      "end_line": 205,
+      "line": 229,
+      "end_line": 234,
       "owner": "<module>",
       "conditions": [],
       "name": "resolve_etl_socks_url",
@@ -265669,8 +266124,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 208,
-      "end_line": 209,
+      "line": 237,
+      "end_line": 238,
       "owner": "<module>",
       "conditions": [],
       "name": "_proxy_dict",
@@ -265678,8 +266133,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 212,
-      "end_line": 353,
+      "line": 241,
+      "end_line": 390,
       "owner": "<module>",
       "conditions": [],
       "name": "ProxyFallbackSession",
@@ -265687,8 +266142,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 356,
-      "end_line": 393,
+      "line": 393,
+      "end_line": 430,
       "owner": "<module>",
       "conditions": [],
       "name": "create_session",
@@ -265696,8 +266151,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 168,
-      "end_line": 170,
+      "line": 197,
+      "end_line": 199,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "__init__",
@@ -265705,8 +266160,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 172,
-      "end_line": 180,
+      "line": 201,
+      "end_line": 209,
       "owner": "_TimeoutAdapter",
       "conditions": [],
       "name": "send",
@@ -265714,8 +266169,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 215,
-      "end_line": 222,
+      "line": 244,
+      "end_line": 251,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "__init__",
@@ -265723,8 +266178,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 224,
-      "end_line": 229,
+      "line": 253,
+      "end_line": 258,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_fallback_urls",
@@ -265732,8 +266187,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 231,
-      "end_line": 263,
+      "line": 260,
+      "end_line": 300,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "request",
@@ -265741,8 +266196,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 265,
-      "end_line": 324,
+      "line": 302,
+      "end_line": 361,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_request_hop",
@@ -265750,8 +266205,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 326,
-      "end_line": 353,
+      "line": 363,
+      "end_line": 390,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_via_next_hop",
@@ -266641,8 +267096,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 66,
-      "end_line": 67,
+      "line": 68,
+      "end_line": 69,
       "owner": "<module>",
       "conditions": [],
       "name": "JobLeaseLostError",
@@ -266650,8 +267105,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 70,
-      "end_line": 77,
+      "line": 72,
+      "end_line": 79,
       "owner": "<module>",
       "conditions": [],
       "name": "_LeaseState",
@@ -266659,8 +267114,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 85,
-      "end_line": 88,
+      "line": 87,
+      "end_line": 90,
       "owner": "<module>",
       "conditions": [],
       "name": "job_lease_lost",
@@ -266668,8 +267123,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 91,
-      "end_line": 92,
+      "line": 93,
+      "end_line": 94,
       "owner": "<module>",
       "conditions": [],
       "name": "lock_key_for",
@@ -266677,8 +267132,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 95,
-      "end_line": 117,
+      "line": 97,
+      "end_line": 119,
       "owner": "<module>",
       "conditions": [],
       "name": "_heartbeat",
@@ -266686,8 +267141,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 120,
-      "end_line": 188,
+      "line": 122,
+      "end_line": 190,
       "owner": "<module>",
       "conditions": [],
       "name": "locked_job",
@@ -266695,8 +267150,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 191,
-      "end_line": 203,
+      "line": 193,
+      "end_line": 205,
       "owner": "<module>",
       "conditions": [],
       "name": "_alert_lost",
@@ -266704,8 +267159,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 73,
-      "end_line": 77,
+      "line": 75,
+      "end_line": 79,
       "owner": "_LeaseState",
       "conditions": [],
       "name": "__init__",
@@ -266713,8 +267168,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 130,
-      "end_line": 185,
+      "line": 132,
+      "end_line": 187,
       "owner": "locked_job",
       "conditions": [],
       "name": "wrapper",
@@ -286693,7 +287148,7 @@
     {
       "path": "backend/app/tasks/scheduler.py",
       "line": 261,
-      "end_line": 370,
+      "end_line": 388,
       "owner": "<module>",
       "conditions": [],
       "name": "daily_update_job",
@@ -286701,8 +287156,35 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 373,
-      "end_line": 407,
+      "line": 400,
+      "end_line": 433,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_rosstat_unreachable_codes",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 436,
+      "end_line": 448,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_rosstat_site_answers",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 451,
+      "end_line": 468,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "rosstat_recovery_job",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/tasks/scheduler.py",
+      "line": 471,
+      "end_line": 505,
       "owner": "<module>",
       "conditions": [],
       "name": "_retrain_recalculated_derived",
@@ -286710,8 +287192,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 410,
-      "end_line": 426,
+      "line": 508,
+      "end_line": 524,
       "owner": "<module>",
       "conditions": [],
       "name": "_catch_up_empty_forecasts_safe",
@@ -286719,8 +287201,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 429,
-      "end_line": 518,
+      "line": 527,
+      "end_line": 616,
       "owner": "<module>",
       "conditions": [],
       "name": "run_etl_for_parser_type",
@@ -286728,8 +287210,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 521,
-      "end_line": 531,
+      "line": 619,
+      "end_line": 629,
       "owner": "<module>",
       "conditions": [],
       "name": "late_minfin_etl_job",
@@ -286737,8 +287219,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 534,
-      "end_line": 541,
+      "line": 632,
+      "end_line": 639,
       "owner": "<module>",
       "conditions": [],
       "name": "late_fred_etl_job",
@@ -286746,8 +287228,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 544,
-      "end_line": 554,
+      "line": 642,
+      "end_line": 652,
       "owner": "<module>",
       "conditions": [],
       "name": "emiss_regional_job",
@@ -286755,8 +287237,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 568,
-      "end_line": 572,
+      "line": 666,
+      "end_line": 670,
       "owner": "<module>",
       "conditions": [],
       "name": "calculation_engine_specs",
@@ -286764,8 +287246,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 575,
-      "end_line": 701,
+      "line": 673,
+      "end_line": 799,
       "owner": "<module>",
       "conditions": [],
       "name": "staleness_check_job",
@@ -286773,8 +287255,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 704,
-      "end_line": 726,
+      "line": 802,
+      "end_line": 824,
       "owner": "<module>",
       "conditions": [],
       "name": "_promote_past_events",
@@ -295698,8 +296180,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1391,
-      "end_line": 1391,
+      "line": 1400,
+      "end_line": 1400,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -302898,16 +303380,16 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1557,
+      "end_line": 1557,
       "owner": "_is_html_navigation",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_EXACT"
     },
     {
       "path": "backend/app/main.py",
-      "line": 1717,
-      "end_line": 1717,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_EXACT"
@@ -302922,16 +303404,16 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1548,
-      "end_line": 1548,
+      "line": 1557,
+      "end_line": 1557,
       "owner": "_is_html_navigation",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_PREFIXES"
     },
     {
       "path": "backend/app/main.py",
-      "line": 1717,
-      "end_line": 1717,
+      "line": 1726,
+      "end_line": 1726,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_PREFIXES"
@@ -302946,8 +303428,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 769,
-      "end_line": 769,
+      "line": 778,
+      "end_line": 778,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -303041,8 +303523,8 @@
     },
     {
       "path": "backend/app/services/alerting.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 507,
+      "end_line": 507,
       "owner": "alert_etl_summary",
       "conditions": [],
       "symbol": "app.services.alerting._DEGRADED_LABELS"
@@ -305409,51 +305891,67 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 273,
-      "end_line": 273,
+      "line": 310,
+      "end_line": 310,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 345,
-      "end_line": 345,
+      "line": 382,
+      "end_line": 382,
       "owner": "ProxyFallbackSession._via_next_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 261,
-      "end_line": 261,
+      "line": 82,
+      "end_line": 82,
+      "owner": "_is_maintenance_stub",
+      "conditions": [],
+      "symbol": "app.services.http_client._MAINTENANCE_MARKERS"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 298,
+      "end_line": 298,
       "owner": "ProxyFallbackSession.request",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 329,
+      "end_line": 329,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 313,
-      "end_line": 313,
+      "line": 350,
+      "end_line": 350,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 385,
-      "end_line": 385,
+      "line": 422,
+      "end_line": 422,
       "owner": "create_session",
       "conditions": [],
       "symbol": "app.services.http_client._RETRY_STRATEGY"
+    },
+    {
+      "path": "backend/app/services/http_client.py",
+      "line": 74,
+      "end_line": 74,
+      "owner": "_is_maintenance_stub",
+      "conditions": [],
+      "symbol": "app.services.http_client._MAINTENANCE_HOSTS"
     },
     {
       "path": "backend/app/services/http_error_monitor.py",
@@ -305577,8 +306075,8 @@
     },
     {
       "path": "backend/app/services/job_lease.py",
-      "line": 92,
-      "end_line": 92,
+      "line": 94,
+      "end_line": 94,
       "owner": "lock_key_for",
       "conditions": [],
       "symbol": "app.services.job_lease.JOB_LOCK_GROUPS"
@@ -313347,8 +313845,8 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 572,
-      "end_line": 572,
+      "line": 670,
+      "end_line": 670,
       "owner": "calculation_engine_specs",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
@@ -313363,16 +313861,16 @@
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 283,
-      "end_line": 283,
+      "line": 288,
+      "end_line": 288,
       "owner": "daily_update_job",
       "conditions": [],
       "symbol": "app.services.base_parser.DEGRADED_STATUSES"
     },
     {
       "path": "backend/app/tasks/scheduler.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 568,
+      "end_line": 568,
       "owner": "run_etl_for_parser_type",
       "conditions": [],
       "symbol": "app.services.base_parser.DEGRADED_STATUSES"
@@ -317008,8 +317506,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317065,8 +317563,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317137,8 +317635,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317194,8 +317692,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317251,8 +317749,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317308,8 +317806,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317358,8 +317856,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317402,8 +317900,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317446,8 +317944,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317496,8 +317994,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317551,8 +318049,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317608,8 +318106,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317665,8 +318163,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317725,8 +318223,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317812,8 +318310,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317884,8 +318382,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -317941,8 +318439,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318008,8 +318506,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318098,8 +318596,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318173,8 +318671,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318238,8 +318736,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318288,8 +318786,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318348,8 +318846,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318398,8 +318896,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318448,8 +318946,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318498,8 +318996,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318550,8 +319048,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318602,8 +319100,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318669,8 +319167,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318736,8 +319234,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318788,8 +319286,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318840,8 +319338,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318890,8 +319388,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -318947,8 +319445,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319009,8 +319507,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319069,8 +319567,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319129,8 +319627,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319189,8 +319687,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319244,8 +319742,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319311,8 +319809,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319376,8 +319874,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319434,8 +319932,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319499,8 +319997,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319566,8 +320064,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319633,8 +320131,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319700,8 +320198,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319767,8 +320265,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319834,8 +320332,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319901,8 +320399,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -319956,8 +320454,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320023,8 +320521,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320067,8 +320565,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320142,8 +320640,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320202,8 +320700,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320262,8 +320760,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320317,8 +320815,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320387,8 +320885,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320457,8 +320955,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320507,8 +321005,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320557,8 +321055,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320612,8 +321110,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320667,8 +321165,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320727,8 +321225,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320782,8 +321280,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320842,8 +321340,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320902,8 +321400,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320987,8 +321485,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321037,8 +321535,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321102,8 +321600,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321182,8 +321680,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321257,8 +321755,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321322,8 +321820,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321387,8 +321885,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321457,8 +321955,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321501,8 +321999,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321556,8 +322054,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321613,8 +322111,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321663,8 +322161,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321707,8 +322205,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321757,8 +322255,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321817,8 +322315,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321872,8 +322370,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321927,8 +322425,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321987,8 +322485,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322047,8 +322545,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322107,8 +322605,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322187,8 +322685,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322252,8 +322750,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322307,8 +322805,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322372,8 +322870,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322432,8 +322930,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322497,8 +322995,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322562,8 +323060,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322622,8 +323120,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322672,8 +323170,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322727,8 +323225,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322777,8 +323275,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322837,8 +323335,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322897,8 +323395,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322947,8 +323445,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323012,8 +323510,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323079,8 +323577,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323141,8 +323639,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323208,8 +323706,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323270,8 +323768,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323337,8 +323835,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323392,8 +323890,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323459,8 +323957,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323521,8 +324019,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323588,8 +324086,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323643,8 +324141,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323705,8 +324203,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323765,8 +324263,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323827,8 +324325,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323884,8 +324382,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323939,8 +324437,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324001,8 +324499,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324056,8 +324554,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324113,8 +324611,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324170,8 +324668,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324225,8 +324723,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1907,
-          "end_line": 1907,
+          "line": 1916,
+          "end_line": 1916,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324302,8 +324800,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1910,
-          "end_line": 1910,
+          "line": 1919,
+          "end_line": 1919,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324353,8 +324851,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1910,
-          "end_line": 1910,
+          "line": 1919,
+          "end_line": 1919,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324401,8 +324899,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324454,8 +324952,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324491,8 +324989,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324534,8 +325032,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324577,8 +325075,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324625,8 +325123,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324676,8 +325174,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324732,8 +325230,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324788,8 +325286,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324844,8 +325342,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324905,8 +325403,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324961,8 +325459,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325007,8 +325505,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325063,8 +325561,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325124,8 +325622,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325175,8 +325673,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325226,8 +325724,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325282,8 +325780,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325338,8 +325836,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325399,8 +325897,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325460,8 +325958,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325526,8 +326024,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325587,8 +326085,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325643,8 +326141,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325694,8 +326192,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325740,8 +326238,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325786,8 +326284,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325832,8 +326330,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325878,8 +326376,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1913,
-          "end_line": 1913,
+          "line": 1922,
+          "end_line": 1922,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325920,8 +326418,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1917,
-          "end_line": 1917,
+          "line": 1926,
+          "end_line": 1926,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325956,8 +326454,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1917,
-          "end_line": 1917,
+          "line": 1926,
+          "end_line": 1926,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325999,8 +326497,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326047,8 +326545,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326095,8 +326593,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326148,8 +326646,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326196,8 +326694,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326249,8 +326747,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326307,8 +326805,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326355,8 +326853,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326408,8 +326906,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326461,8 +326959,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326519,8 +327017,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326567,8 +327065,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326620,8 +327118,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326678,8 +327176,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326726,8 +327224,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326779,8 +327277,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326837,8 +327335,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326900,8 +327398,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326958,8 +327456,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327001,8 +327499,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327044,8 +327542,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327097,8 +327595,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327155,8 +327653,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327208,8 +327706,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327271,8 +327769,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327339,8 +327837,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327402,8 +327900,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327460,8 +327958,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327513,8 +328011,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327571,8 +328069,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327634,8 +328132,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327692,8 +328190,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327755,8 +328253,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1920,
-          "end_line": 1920,
+          "line": 1929,
+          "end_line": 1929,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",

@@ -37,7 +37,8 @@ logger = logging.getLogger(__name__)
 # блокируется по собственному job_id.
 #
 # "etl": daily_etl и evening_etl — один и тот же daily_update_job; late_minfin_etl
-# и late_fred_etl вызывают run_etl_for_parser_type и пишут в те же таблицы
+# и late_fred_etl вызывают run_etl_for_parser_type, rosstat_recovery (с 02.11.2026) - daily_update_job на части
+# рядов; все пишут в те же таблицы
 # (data_points/etl_runs/кэш карточек), поэтому с полным ETL не пересекаются.
 # Следствие: если полный ETL ещё идёт, позднее окно (15:00/23:30) пропускается
 # с логом «lock held» — полный прогон и так обновит те же источники.
@@ -46,6 +47,7 @@ JOB_LOCK_GROUPS: dict[str, str] = {
     "evening_etl": "etl",
     "late_minfin_etl": "etl",
     "late_fred_etl": "etl",
+    "rosstat_recovery": "etl",
 }
 
 LOCK_KEY_PREFIX = "sched:lock:"

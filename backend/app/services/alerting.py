@@ -470,22 +470,39 @@ async def alert_etl_summary(
     duration_sec: Optional[float] = None,
     *,
     degraded: Optional[dict[str, list[str]]] = None,
+    unreachable: Optional[list[str]] = None,
+    recovery: bool = False,
 ) -> None:
     """Итог daily ETL. `degraded` — {status: [codes]} для parsed_zero /
     fallback_used: прогон «прошёл», но данные могут не обновляться — это
-    проблема (🟡), а не зелёный no_new_data."""
+    проблема (🟡), а не зелёный no_new_data.
+
+    `unreachable` — ряды, не загрузившиеся из-за недоступности источника (сайт Росстата на технических
+    работах, 02.11.2026: 45 рядов выглядели как 45 ошибок). Они не входят в «с ошибкой» и не красят
+    сообщение: одна строка с рядами и обещанием догрузки (`rosstat_recovery_job`). `recovery` -
+    итог догрузки после возвращения источника."""
     degraded = {k: v for k, v in (degraded or {}).items() if v}
+    unreachable = list(unreachable or [])
     n_problems = sum(len(v) for v in degraded.values())
-    status = "🔴" if failed else ("🟡" if n_problems else "🟢")
+    status = "🔴" if failed else ("🟡" if n_problems or unreachable else "🟢")
+    title = "Догрузка данных после недоступности источника завершена" if recovery else "Ежедневная выгрузка данных завершена"
+    counts = f"Всего: {total} · обновлено: {updated} · с ошибкой: {len(failed)}"
+    if unreachable:
+        counts += f" · источник недоступен: {len(unreachable)}"
     parts = [
-        f"{status} <b>Ежедневная выгрузка данных завершена</b>",
-        f"Всего: {total} · обновлено: {updated} · с ошибкой: {len(failed)}"
-        f" · с замечаниями: {n_problems}",
+        f"{status} <b>{title}</b>",
+        f"{counts} · с замечаниями: {n_problems}",
     ]
     if duration_sec is not None:
         parts.append(f"Длительность: {duration_sec:.0f} с")
     if failed:
         parts.append(f"С ошибкой: {escape(', '.join(failed))}")
+    if unreachable:
+        shown = ", ".join(unreachable[:8]) + (f" и ещё {len(unreachable) - 8}" if len(unreachable) > 8 else "")
+        parts.append(
+            f"Источник недоступен ({len(unreachable)}): {escape(shown)}. Данные не потеряны: загрузка "
+            f"повторится сама, как только источник ответит."
+        )
     for key, codes in degraded.items():
         label = _DEGRADED_LABELS.get(key, key)
         parts.append(f"{escape(label)} ({len(codes)}): {escape(', '.join(codes))}")

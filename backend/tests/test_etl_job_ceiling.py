@@ -42,7 +42,7 @@ def test_daily_job_skips_rest_after_ceiling_and_names_them(monkeypatch):
         ran.append(code)
         return False, "no_new_data"
 
-    async def fake_summary(total, updated, failed, duration, *, degraded=None):
+    async def fake_summary(total, updated, failed, duration, *, degraded=None, **_extra):
         summary.update(total=total, failed=failed, degraded=degraded)
 
     async def noop(*_a, **_k):
@@ -95,8 +95,8 @@ def _run_daily(monkeypatch, inds, fake_run, *, breaker_left=0.0, limit=7200):
 
     summary, slept = {}, []
 
-    async def fake_summary(total, updated, failed, duration, *, degraded=None):
-        summary.update(total=total, updated=updated, failed=list(failed))
+    async def fake_summary(total, updated, failed, duration, *, degraded=None, unreachable=None, **_extra):
+        summary.update(total=total, updated=updated, failed=list(failed), unreachable=list(unreachable or []))
 
     async def noop(*_a, **_k):
         return []
@@ -164,10 +164,11 @@ def test_network_retry_skipped_when_ceiling_leaves_no_room(monkeypatch):
         raise RuntimeError("Rosstat unreachable: all 3 requests failed on network")
 
     summary, slept = _run_daily(monkeypatch, inds, fake_run, breaker_left=1200.0, limit=600)
-    assert attempts["a"] == 1 and summary["failed"] == ["a"] and slept == []
+    # сетевой сбой без повтора: ряд не «с ошибкой», а в строке «источник недоступен» (догрузит rosstat_recovery_job)
+    assert attempts["a"] == 1 and summary["failed"] == [] and summary["unreachable"] == ["a"] and slept == []
 
 
-def test_still_failing_after_retry_stays_failed(monkeypatch):
+def test_still_failing_after_retry_is_reported_as_unreachable(monkeypatch):
     inds = [SimpleNamespace(code="a", parser_type="rosstat_demo")]
     attempts = {"a": 0}
 
@@ -176,4 +177,4 @@ def test_still_failing_after_retry_stays_failed(monkeypatch):
         raise RuntimeError("rosstat.gov.ru unreachable on all hops recently")
 
     summary, _ = _run_daily(monkeypatch, inds, fake_run)
-    assert attempts["a"] == 2 and summary["failed"] == ["a"]
+    assert attempts["a"] == 2 and summary["failed"] == [] and summary["unreachable"] == ["a"]

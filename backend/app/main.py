@@ -598,7 +598,7 @@ async def lifespan(app: FastAPI):
             replace_existing=True,
         )
 
-        from app.tasks.scheduler import late_fred_etl_job, late_minfin_etl_job
+        from app.tasks.scheduler import late_fred_etl_job, late_minfin_etl_job, rosstat_recovery_job
 
         scheduler.add_job(
             locked_job(late_minfin_etl_job, "late_minfin_etl", ttl_seconds=3600),
@@ -607,6 +607,15 @@ async def lifespan(app: FastAPI):
             ),
             id="late_minfin_etl",
             name="Late Minfin ETL pass (catches in-place CSV content updates)",
+            replace_existing=True,
+        )
+        # Догрузка рядов Росстата после возвращения сайта (02.11.2026): раз в 30 минут одна проверка; работа - только если
+        # есть ряды с последним прогоном «unreachable» и главная страница отвечает. Группа "etl": не идёт вместе с ETL.
+        scheduler.add_job(
+            locked_job(rosstat_recovery_job, "rosstat_recovery", ttl_seconds=3 * 3600),
+            trigger=IntervalTrigger(minutes=30),
+            id="rosstat_recovery",
+            name="Rosstat recovery pass (loads series that failed while rosstat.gov.ru was unreachable)",
             replace_existing=True,
         )
         scheduler.add_job(
