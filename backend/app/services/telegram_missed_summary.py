@@ -51,6 +51,7 @@ _MONTHS_GENITIVE = ("января", "февраля", "марта", "апрел�
 CATEGORIES = (
     ("anomaly", "⚠️", "Аномалии аналитики"),
     ("spike", "🔴", "Всплески ошибок сервера (5xx)"),
+    ("shed", "🟡", "Сброс нагрузки сервером (503)"),
     ("signup", "🌍", "Новые регистрации"),
     ("job", "🛠", "Сбои фоновых задач"),
     ("pulse", "🛰", "Пульс платформы"),
@@ -62,7 +63,7 @@ CATEGORIES = (
 )
 _KIND_TO_CATEGORY = {
     "analytics_anomaly": "anomaly", "audience_alert": "anomaly",
-    "http_5xx_spike": "spike",
+    "http_5xx_spike": "spike", "load_shed": "shed",
     "new_user": "signup", "login": "signup",
     "scheduler_alert": "job",
     "pulse_digest": "pulse",

@@ -716,8 +716,8 @@ HTTP-путей Telegram (`alerting._send_one`, `telegram_bot._api`). Пусто
 до отправки и rewind файла между попытками сохранены.
 
 `telegram_resend.RESEND_KINDS` теперь включает alert, analytics_anomaly,
-scheduler_alert, http_5xx_spike, rate_limit_alert, prod_config_alert,
-etl_failure, zero_parse, staleness и forecast_issue. Их producers могли
+scheduler_alert, http_5xx_spike, load_shed (с 02.11.2026), rate_limit_alert,
+prod_config_alert, etl_failure, zero_parse, staleness и forecast_issue. Их producers могли
 поставить mute/dedup ещё до неудачного HTTP: архивная досылка закрывает
 последующее молчание. Граница досылки прежняя: sendMessage, 6 часов,
 минимальный возраст 10 минут, до 3 досылок и 10 отправок за запуск.
@@ -830,7 +830,13 @@ SSR-страницы страны и рейтинга вставляют `<pictu
 
 ### Заголовок `X-FE-Cache` и SSR-кэш
 
-SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pages.py`): проверка stale-while-revalidate на живом сайте без чтения Redis. Потолки процессных кэшей карточек (`services/og_image.py`): PNG 24 МБ (`OG_PROC_CACHE_BYTES`), фоны 8, шрифты 128, WebP 96. Веб-воркер больше не импортирует pandas, scipy и statsmodels при старте: лёгкие проверки публикации прогноза вынесены в `services/world_forecast_gate.py`, старые модули реэкспортируют имена (тест `test_web_import_weight`). Прогрев берёт канонический `/world/rating/gdp-usd` (а не 301 `/world/rating`) и идёт по месту назначения редиректа топ-страницы за один шаг. Замеры на стенде: старт воркера 253 → 148 МБ, 6 000 запросов 631 → 506 МБ; ожидание на боевом ≈ 600 МБ на воркер вместо 725 (оценка).
+SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pages.py`): проверка stale-while-revalidate на живом сайте без чтения Redis. Значение `shed` (с 02.11.2026) несёт только 503 «Страница занята» при переполнении очереди холодного рендера (`_acquire_render_slot`); по нему `HttpStatusCounterMiddleware` отличает намеренный сброс от настоящей ошибки сервера. Потолки процессных кэшей карточек (`services/og_image.py`): PNG 24 МБ (`OG_PROC_CACHE_BYTES`), фоны 8, шрифты 128, WebP 96. Веб-воркер больше не импортирует pandas, scipy и statsmodels при старте: лёгкие проверки публикации прогноза вынесены в `services/world_forecast_gate.py`, старые модули реэкспортируют имена (тест `test_web_import_weight`). Прогрев берёт канонический `/world/rating/gdp-usd` (а не 301 `/world/rating`) и идёт по месту назначения редиректа топ-страницы за один шаг. Замеры на стенде: старт воркера 253 → 148 МБ, 6 000 запросов 631 → 506 МБ; ожидание на боевом ≈ 600 МБ на воркер вместо 725 (оценка).
+
+### Алерты 5xx: настоящие ошибки и сброс нагрузки — 2026-11-02
+
+Локально (commit без push и выкладки, до приёмки на проде). До 02.11.2026 `HttpStatusCounterMiddleware` считал 5xx внутри каждого процесса: при `UVICORN_WORKERS=3` один всплеск давал три алерта подряд (00:00:36, :46 и :54), а намеренный сброс очереди рендера (503 + `Retry-After: 30` + `X-Robots-Tag: noindex`) считался такой же ошибкой сервера, как 500.
+
+Теперь `services/http_error_monitor.py` делит ответы на два вида. Настоящие ошибки (500, 502, 504, 503 не из сброса: нехватка соединений БД, каталог стран недоступен): ≥ 10 за 5 минут по **всем** процессам → красный `http_5xx_spike`, антиспам 15 минут. Сброс (`503` с `X-FE-Cache: shed`): ≥ 50 за 5 минут → жёлтый `load_shed` («Сервер сбрасывает нагрузку … защита, а не поломка»), антиспам 1 час. Счёт — минутные корзины `fe:http_spike:{error|shed}:{минута}` в state-Redis (одна цепочка команд за ответ, TTL 7 минут, таймаут 2 с, не больше 64 одновременных); антиспам — общий ключ `fe:alerts:mute:{http_5xx_spike|load_shed}` (`alerting.alert_muted`). Если state-Redis не ответил, работает прежнее окно внутри процесса (дубли возможны, слепоты нет). Формат строки `(последний путь: …)` не менялся: его читает `analytics_marts._server_5xx_spikes`. `/metrics`: `fe_http_responses_total{class="5xx"}` по-прежнему включает сброс, отдельно `fe_http_load_shed_total`. Оба вида входят в `RESEND_KINDS`; в сводке недоставленного `load_shed` — категория «Сброс нагрузки сервером (503)». Пороги — константы модуля, не настройки. Тесты `backend/tests/test_http_error_monitor.py`.
 
 ### Приоритетный sitemap: `sitemap-priority.xml`
 

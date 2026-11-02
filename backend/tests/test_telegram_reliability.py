@@ -377,7 +377,7 @@ def test_resend_job_sends_once_and_marks_redelivered(job_env):
 
 
 @pytest.mark.parametrize("kind", [
-    "alert", "analytics_anomaly", "scheduler_alert", "http_5xx_spike",
+    "alert", "analytics_anomaly", "scheduler_alert", "http_5xx_spike", "load_shed",
     "rate_limit_alert", "prod_config_alert", "etl_failure", "zero_parse",
     "staleness", "forecast_issue",
 ])

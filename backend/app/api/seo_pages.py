@@ -391,6 +391,8 @@ def _html_response(status_code: int, html: str, request: Request | None = None) 
         headers["Cache-Control"] = "no-store"
         headers["Retry-After"] = "30"
         headers["X-Robots-Tag"] = "noindex"
+        # По этой метке `HttpStatusCounterMiddleware` отличает намеренный сброс от настоящей ошибки сервера.
+        headers["X-FE-Cache"] = "shed"
     if status_code == 404:
         # nginx error_page ставит этот заголовок сам; ответ парсера 404
         # проходит proxy без intercept и раньше уходил только с meta.

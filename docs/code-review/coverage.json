@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2214,
-    "code_files": 1807,
-    "current_reviews": 2214,
+    "files": 2216,
+    "code_files": 1809,
+    "current_reviews": 2216,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 2003
+      "reviewed": 2005
     },
-    "definitions": 14577,
-    "annotated_definitions": 14577,
+    "definitions": 14605,
+    "annotated_definitions": 14605,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1245,9 +1245,9 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "sha256": "7ea9a4e6956a5194861ab9efb48ef842af1b5aa0845b85290e0842f19089511c",
-      "bytes": 52504,
-      "lines": 1047,
+      "sha256": "2d199436a5bca83de582f229c7aaf92ec5dfdfdd9adf7af01eda09404aaf40d6",
+      "bytes": 52710,
+      "lines": 1049,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1284,9 +1284,9 @@
     },
     {
       "path": "backend/app/api/system.py",
-      "sha256": "a9d082170883f612dbbc26c31f80226625ea18c37cb67525c86c12dd72c74b82",
-      "bytes": 15596,
-      "lines": 377,
+      "sha256": "fc79ebf5e6b7f5d785f4b3041dfa2437ae1ed569f129e8085e2eed26ad34d196",
+      "bytes": 15857,
+      "lines": 382,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2519,9 +2519,9 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "12cbfdaa187e28e7b8cbdc3c1a648826686ae6147947cee0d6ae96fde63ada5a",
-      "bytes": 87796,
-      "lines": 1933,
+      "sha256": "7fb244fae6d4d9cd6687c97ebdfbe2a9a4bc1e428df9eabbd4b3717006462953",
+      "bytes": 87449,
+      "lines": 1920,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3776,6 +3776,19 @@
       "issues": [],
       "definitions": 25,
       "annotated_definitions": 25,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/http_error_monitor.py",
+      "sha256": "64915c61433b81a2ff567270753a76011ae5548296cd283a3a6c2866db42f68c",
+      "bytes": 6374,
+      "lines": 135,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -5041,9 +5054,9 @@
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
-      "sha256": "afb5676a966a2c175f5cfff132df34aa5ea5250674a49ed3c86f2ccbf38deb6e",
-      "bytes": 20732,
-      "lines": 422,
+      "sha256": "90eaf4e6aba9e8e3dc5c2ae721138b2d82adbeb3d76df5ccacf7c5d9c9048d39",
+      "bytes": 20829,
+      "lines": 423,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5080,8 +5093,8 @@
     },
     {
       "path": "backend/app/services/telegram_resend.py",
-      "sha256": "c44d6dc81d9f53e6995d4e2992f586d863edd37b4287af7e06f8ed9b5873f239",
-      "bytes": 9882,
+      "sha256": "100b0cad5dd39954d3527c5e451c3baa3a7508c85c65163b85e82c7f85de4a37",
+      "bytes": 9895,
       "lines": 216,
       "code": true,
       "status": "reviewed",
@@ -8719,6 +8732,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_http_error_monitor.py",
+      "sha256": "57a37bda18a880f3e071a95732e7d1a9cc369e0b08bd6a5529b42c46bc426653",
+      "bytes": 5929,
+      "lines": 141,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 21,
+      "annotated_definitions": 21,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_i18n_parity.py",
       "sha256": "f137bcb3ff31cb974e54163a95489b631f1d3f07d7e26c5c02ed89832d44c9fb",
       "bytes": 67175,
@@ -10605,8 +10631,8 @@
     },
     {
       "path": "backend/tests/test_telegram_reliability.py",
-      "sha256": "bc03a47432ba4435e7d10a1a43379c217bf75804c2203efa216c4843dcf5e2fc",
-      "bytes": 21829,
+      "sha256": "2d6a5afbdd5f082a4cf36d32e103dbcb52f56848638ab6e02211de3b7ce084b1",
+      "bytes": 21842,
       "lines": 497,
       "code": true,
       "status": "reviewed",
@@ -12373,9 +12399,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "20b439b6a8697bb551bc03eb8aa89a618bfd95f68ca88e173ebeaa54793a123a",
-      "bytes": 626948,
-      "lines": 3020,
+      "sha256": "527502a27fd2a3af55dd801c4933db517cec001829cd60f7a33ee62c78be2430",
+      "bytes": 631716,
+      "lines": 3038,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12438,9 +12464,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "2e819e7478f8a1b3401d8a48ec5fc25e453ac13baaea50f2db68fbffde84b875",
-      "bytes": 270796,
-      "lines": 953,
+      "sha256": "91fd7f1f047356b6ad9e545c8ebbdcefcc1b455c56b9944afe7e30d9cb55a013",
+      "bytes": 273542,
+      "lines": 959,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12464,7 +12490,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "bb1f44a0e6ba25a8ded8d71439f0db6325190c67a768de310413f2372bced8f4",
+      "sha256": "c43f196760a87c314f12fa5a42344e564c4c3b0e6e40bef67ac1d8a0c12fbab1",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -12932,9 +12958,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "eea32fd3b51ee5689b14465f41a95241c649b9731edc542a9c69df014f7cfbf2",
-      "bytes": 37339,
-      "lines": 155,
+      "sha256": "eb78d7cac6453a69f5b5999aeb998c4255ca895dbc64138ece3f7651606e88b6",
+      "bytes": 38543,
+      "lines": 159,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12971,7 +12997,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "9e2c4c0cd7162fd3a668bacd7e063947cd2c84dfcabb9ea0a1ce7e67bd9ccfa7",
+      "sha256": "c83a3a63862aec0125f674ad85e1acd8b6048150ef641c99773df0a294a61edf",
       "bytes": 2926882,
       "lines": 105964,
       "code": false,
@@ -12984,7 +13010,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "ac485086a85197a16d6b02f6773ca44ce8fa6a76259a56243aa3a1167463a11f",
+      "sha256": "3b25ec675ba20eb973f9b52bf10199915cc91c316b1f4052b1fb22a1e9db990d",
       "bytes": 98628,
       "lines": 1086,
       "code": false,
@@ -13023,9 +13049,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "ff52235afd94f401258ac2d318ac6d996c473758c90d0ddabaf2503debe04bda",
-      "bytes": 10859734,
-      "lines": 327694,
+      "sha256": "7e7a545371154f63e24f4ae75bb6a3ee82762180348085c5dab4cd08fb4949ea",
+      "bytes": 10865986,
+      "lines": 327901,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13036,9 +13062,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "e34e4515525b80a99b86683a7b90c12cf4e11731ec04714e31c8a49ee550b22b",
-      "bytes": 536831,
-      "lines": 3046,
+      "sha256": "b7ff3a44b3622927a58bdcebd3cbed7813690eed811b4dad5637b4169527bcc6",
+      "bytes": 537019,
+      "lines": 3047,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -28818,18 +28844,25 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "7fb6d555ea4fa02ffed3b9c25a6eb13f44179e7740b390d9478b06874ea9ba91",
+  "ledger_sha256": "d2dc611ca9a82a05641b039867435197d05401f8af754eceacde2f1d7a09a886",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "a73df4dcadbcd9975fe6d758e50fe3ae50e348b3",
+  "baseline_commit": "d6b36ef8fcbaee63e455dd631bc4b6802c29846c",
   "branch": "main",
   "unstaged_at_capture": [
-    ".env.example",
-    "backend/scripts/load-world-national.py",
+    "backend/app/api/seo_pages.py",
+    "backend/app/api/system.py",
+    "backend/app/main.py",
+    "backend/app/services/telegram_missed_summary.py",
+    "backend/app/services/telegram_resend.py",
+    "backend/tests/test_http_error_monitor.py",
+    "backend/tests/test_telegram_reliability.py",
     "docs/backlog.md",
-    "docs/data_sources.md",
+    "docs/data-contracts.md",
+    "docs/dead-code-report.md",
+    "docs/enterprise_resilience.md",
     "docs/indicator-index.json",
+    "docs/indicator-index.md",
     "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md",
-    "scripts/seo-audit.py"
+    "docs/mechanism-inventory.md"
   ]
 }

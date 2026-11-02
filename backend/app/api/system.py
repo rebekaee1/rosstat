@@ -257,6 +257,11 @@ async def prometheus_metrics(db: AsyncSession = Depends(get_db), _=Depends(_chec
         f'fe_http_responses_total{{class="{cls}"}} {n}'
         for cls, n in HttpStatusCounterMiddleware.counters.items()
     ]
+    lines += [
+        "# HELP fe_http_load_shed_total 503 from the SSR render-queue shed (already included in class=\"5xx\")",
+        "# TYPE fe_http_load_shed_total counter",
+        f"fe_http_load_shed_total {HttpStatusCounterMiddleware.shed_total}",
+    ]
 
     # Н-17/Н-18: деградация Redis — fail-open счётчики кэша и rate-лимитера.
     from app.core.cache import failure_counters

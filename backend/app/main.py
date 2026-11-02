@@ -183,17 +183,14 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
     """Н-13: серверный error-rate. Считаем ответы по классам статусов
     (in-process, отдаются в /metrics) и алертим на всплеск 5xx.
 
-    Спайк-детектор — скользящее окно: >= SPIKE_THRESHOLD ответов 5xx за
-    SPIKE_WINDOW секунд → один Telegram-алерт, дальше молчим COOLDOWN.
+    Спайк-детектор (`services/http_error_monitor.py`) считает по всем процессам сразу и шлёт один алерт.
+    Намеренный сброс очереди холодного рендера (503 с `X-FE-Cache: shed`) он учитывает отдельно от настоящих
+    ошибок: у сброса свой порог и жёлтый алерт `load_shed`. В `counters["5xx"]` сброс по-прежнему входит;
+    его число отдельно — `shed_total`.
     """
 
-    SPIKE_THRESHOLD = 10
-    SPIKE_WINDOW = 300
-    COOLDOWN = 900
-
     counters: dict[str, int] = {"2xx": 0, "3xx": 0, "4xx": 0, "5xx": 0}
-    _recent_5xx: list[float] = []
-    _last_alert_ts: float = 0.0
+    shed_total: int = 0
 
     async def dispatch(self, request: Request, call_next):
         try:
@@ -210,7 +207,7 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
                 )
             self._record(500, request.url.path)
             raise
-        self._record(status, request.url.path)
+        self._record(status, request.url.path, shed=status == 503 and response.headers.get("x-fe-cache") == "shed")
         self._note_bot(request, status)
         return response
 
@@ -229,26 +226,16 @@ class HttpStatusCounterMiddleware(BaseHTTPMiddleware):
             pass
 
     @classmethod
-    def _record(cls, status: int, path: str) -> None:
+    def _record(cls, status: int, path: str, shed: bool = False) -> None:
         bucket = f"{status // 100}xx"
         if bucket in cls.counters:
             cls.counters[bucket] += 1
+        if shed:
+            cls.shed_total += 1
         if status >= 500:
-            now = time.time()
-            cls._recent_5xx = [t for t in cls._recent_5xx if now - t < cls.SPIKE_WINDOW]
-            cls._recent_5xx.append(now)
-            if (len(cls._recent_5xx) >= cls.SPIKE_THRESHOLD
-                    and now - cls._last_alert_ts > cls.COOLDOWN):
-                cls._last_alert_ts = now
-                try:
-                    from app.services.alerting import send_telegram
-                    asyncio.get_running_loop().create_task(send_telegram(
-                        f"🔴 <b>Всплеск ошибок сервера (5xx)</b>\n{len(cls._recent_5xx)} ответов 5xx "
-                        f"за {cls.SPIKE_WINDOW // 60} мин (последний путь: {path[:120]})",
-                        kind="http_5xx_spike",
-                    ))
-                except Exception:
-                    logger.exception("5xx spike alert failed")
+            from app.services import http_error_monitor
+
+            http_error_monitor.schedule(http_error_monitor.KIND_SHED if shed else http_error_monitor.KIND_ERROR, path)
 
 
 # О-14: глобальные дефолты — пропущенный запуск схлопывается в один (coalesce),
