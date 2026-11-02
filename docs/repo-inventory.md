@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2058  ·  **Строк:** 1 308 732  ·  **Токенов (≈):** 12 427 533
+**Файлов:** 2058  ·  **Строк:** 1 308 753  ·  **Токенов (≈):** 12 428 348
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 743 | 63 193 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 834 | 284 229 | 3 130 951 |
+| `backend` | 834 | 284 247 | 3 131 216 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 17 | 913 | 12 090 |
-| `docs` | 138 | 831 049 | 7 090 369 |
+| `deploy` | 17 | 914 | 12 188 |
+| `docs` | 138 | 831 051 | 7 090 821 |
 | `frontend` | 925 | 165 363 | 1 840 783 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 050 | 133 146 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 038 | 105 965 |
+| `docs/backlog.md` | 3 040 | 106 345 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 728 | 52 030 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 967 | 47 354 |
+| `docs/data-contracts.md` | 967 | 47 426 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
@@ -354,10 +354,10 @@
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 158 | 4 201 |
 | `backend/app/api/admin_session_analysis.py` | 249 | 4 173 |
 | `backend/app/tasks/analytics_scheduler.py` | 388 | 4 169 |
+| `backend/app/services/http_client.py` | 432 | 4 168 |
 | `frontend/src/components/LightScene.jsx` | 362 | 4 168 |
 | `backend/app/services/seo_country_figures.py` | 419 | 4 158 |
 | `docs/circle-playbook.md` | 124 | 4 134 |
-| `backend/app/services/http_client.py` | 430 | 4 115 |
 | `frontend/src/lib/worldMocks.js` | 403 | 4 115 |
 | `backend/tests/test_admin_bi.py` | 408 | 4 113 |
 | `backend/tests/test_data_loading_c28.py` | 383 | 4 098 |
@@ -375,6 +375,7 @@
 | `backend/tests/test_world_eurostat_ingest.py` | 411 | 3 878 |
 | `backend/app/services/world_adapters/bea_api.py` | 440 | 3 876 |
 | `backend/tests/test_push.py` | 330 | 3 864 |
+| `deploy/approved-shas.txt` | 151 | 3 851 |
 | `frontend/src/lib/biLabels.js` | 366 | 3 850 |
 | `backend/app/data/world_concepts.py` | 377 | 3 841 |
 | `frontend/src/components/cabinet/ProfilePanel.jsx` | 379 | 3 839 |
@@ -392,7 +393,6 @@
 | `backend/app/services/rosstat_demo_parser.py` | 439 | 3 776 |
 | `frontend/src/components/WorldChartSection.jsx` | 382 | 3 776 |
 | `backend/app/services/calendar_sources/rosstat_plan.py` | 397 | 3 775 |
-| `deploy/approved-shas.txt` | 150 | 3 753 |
 | `backend/tests/test_clickhouse_replication_ch.py` | 296 | 3 741 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 380 | 3 740 |
 | `backend/tests/test_route_smoke.py` | 383 | 3 731 |
@@ -433,6 +433,7 @@
 | `frontend/src/styles/s6-shell.test.js` | 232 | 3 450 |
 | `frontend/src/components/country/CountryIndicatorRow.jsx` | 339 | 3 429 |
 | `frontend/src/lib/track.js` | 345 | 3 423 |
+| `backend/tests/test_rosstat_recovery.py` | 321 | 3 407 |
 | `scripts/build-us-bea-catalog.py` | 263 | 3 407 |
 | `backend/tests/test_perf_batch2.py` | 347 | 3 380 |
 | `frontend/src/styles/k4-charts.css` | 285 | 3 353 |
@@ -462,7 +463,6 @@
 | `backend/app/services/staleness.py` | 348 | 3 207 |
 | `frontend/src/components/Footer.jsx` | 349 | 3 207 |
 | `frontend/src/components/PlanetLabels.jsx` | 277 | 3 197 |
-| `backend/tests/test_rosstat_recovery.py` | 305 | 3 195 |
 | `backend/app/services/dataset_inventory.py` | 294 | 3 190 |
 | `docs/research/search-accuracy-2026-10-04.md` | 206 | 3 161 |
 | `backend/scripts/repair_ppi_housing_2026.py` | 278 | 3 159 |

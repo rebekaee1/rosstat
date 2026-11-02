@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `f9f1d905fd58330bfc82465d79cf635a5013f55f`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `f70af8a98dbcbe53d0c538d51194589014139b11`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2217 |
 | Код, шаблоны и стили | 1810 |
 | Актуальные рецензии без пропусков guard | 2217 |
-| Именованные определения Python/JS: с аннотацией / всего | 14647 / 14647 |
+| Именованные определения Python/JS: с аннотацией / всего | 14648 / 14648 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -772,7 +772,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_rosstat_plan.py](../backend/tests/test_rosstat_plan.py) | reviewed | 34/34 | актуально |
 | [backend/tests/test_rosstat_population.py](../backend/tests/test_rosstat_population.py) | reviewed | 18/18 | актуально |
 | [backend/tests/test_rosstat_ppi.py](../backend/tests/test_rosstat_ppi.py) | reviewed | 10/10 | актуально |
-| [backend/tests/test_rosstat_recovery.py](../backend/tests/test_rosstat_recovery.py) | reviewed | 37/37 | актуально |
+| [backend/tests/test_rosstat_recovery.py](../backend/tests/test_rosstat_recovery.py) | reviewed | 38/38 | актуально |
 | [backend/tests/test_rosstat_unreachable.py](../backend/tests/test_rosstat_unreachable.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_rosstat_wages_backfill.py](../backend/tests/test_rosstat_wages_backfill.py) | reviewed | 14/14 | актуально |
 | [backend/tests/test_rosstat_weekly_inflation.py](../backend/tests/test_rosstat_weekly_inflation.py) | reviewed | 26/26 | актуально |

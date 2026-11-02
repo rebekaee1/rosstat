@@ -59,6 +59,22 @@ def test_stub_page_is_source_maintenance_and_arms_breaker():
     assert len(calls) == 1
 
 
+def test_breaker_refusal_is_recorded_as_fetch_issue_for_parsers_that_swallow_it():
+    """Недельные парсеры глотают ConnectionError: без записи сбоя прогон выглядел как «0 точек, смена вёрстки»."""
+    s = create_session(proxy=False, socks=False)
+    token = http_client.begin_fetch_issues()
+    try:
+        with patch.object(requests.Session, "request", lambda self, m, u, **k: _response(404, STUB_HTML)):
+            for url in ("https://rosstat.gov.ru/storage/mediabank/a.xlsx", "https://rosstat.gov.ru/storage/mediabank/b.xlsx"):
+                with pytest.raises(requests.ConnectionError):
+                    s.get(url)
+        issues = http_client.current_fetch_issues()
+    finally:
+        http_client.end_fetch_issues(token)
+    assert len(issues) == 2 and all("unreachable" in i for i in issues)
+    assert "host breaker" in issues[1]
+
+
 def test_stub_on_homepage_with_status_200_is_also_maintenance():
     s = create_session(proxy=False, socks=False)
     with patch.object(requests.Session, "request", lambda self, m, u, **k: _response(200, STUB_HTML)):

@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2006
     },
-    "definitions": 14647,
-    "annotated_definitions": 14647,
+    "definitions": 14648,
+    "annotated_definitions": 14648,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -3767,9 +3767,9 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "26ecaa24c472c0ae13d9614ab1f5aa7a9f47d4fcaf2eebdf8f2a7d8dbcd2cba5",
-      "bytes": 18670,
-      "lines": 430,
+      "sha256": "9ad6c9e481527421392a4e1186357166d0b7522e45449e40159103df07a00c58",
+      "bytes": 18966,
+      "lines": 432,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -9578,15 +9578,15 @@
     },
     {
       "path": "backend/tests/test_rosstat_recovery.py",
-      "sha256": "757f6ff369553991ef0a717b17120de3370aafeb8a81a0fe4fc161cea85ac82f",
-      "bytes": 13621,
-      "lines": 305,
+      "sha256": "5f7be5a29f6565db9aafaeb4390a3b05f1cfaccfefb76c18355311a809b27acf",
+      "bytes": 14543,
+      "lines": 321,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 37,
-      "annotated_definitions": 37,
+      "definitions": 38,
+      "annotated_definitions": 38,
       "missing_definitions": []
     },
     {
@@ -11593,9 +11593,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "1e9beed66f0b9d87fba008cf69b99f4444dd543e7d9fc08416b32f5b561c02d7",
-      "bytes": 17367,
-      "lines": 150,
+      "sha256": "5647a8fd4f9b5bb5e957e8449f0363c205bca4a93778d674ed85579c62312694",
+      "bytes": 17965,
+      "lines": 151,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12412,9 +12412,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "0a0af9dc3ba4b72500a3ec5230334d5c1c96c66392907a518df3b57214c2d88c",
-      "bytes": 632933,
-      "lines": 3038,
+      "sha256": "128df3ee294fa19291f444758601eb7e2f093adcd9144f4da7fb1f880ae87472",
+      "bytes": 635256,
+      "lines": 3040,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12477,8 +12477,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "5f76d658c7f22bfee4795c20123706028d61404d0b3c1bdf08d1cc4fc8cf5224",
-      "bytes": 277441,
+      "sha256": "ee419945834a3daa74beb6373f285d92f021d73651614703318c953b1ef042ef",
+      "bytes": 277891,
       "lines": 967,
       "code": false,
       "status": "reviewed",
@@ -13010,9 +13010,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "975ebb84c62f921b603dca64ad45b8ddf01596105021919783614fbd869ed876",
-      "bytes": 2929067,
-      "lines": 106049,
+      "sha256": "a323b63b69db0791bf05d9cbd47e6403dda42cab32a16cff1e179840c698b47e",
+      "bytes": 2929176,
+      "lines": 106054,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13062,7 +13062,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "ecc11122e8301497da6efb26398a28081c70af0cf7bff7e4059a3e2d076536c1",
+      "sha256": "5f3d5777b203ca149d21ae35ddea95270467c349a7bfdef2253c725fb14234c8",
       "bytes": 10880621,
       "lines": 328399,
       "code": false,
@@ -28857,22 +28857,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "df81e71b65e7b1f2070d57908f70d532baa8dba0d11673f182b900b498224207",
+  "ledger_sha256": "2f043cce4d56fdebbaef47b797810f92de2fcd25d2429735c5bf41a979ba2f67",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "f9f1d905fd58330bfc82465d79cf635a5013f55f",
+  "baseline_commit": "f70af8a98dbcbe53d0c538d51194589014139b11",
   "branch": "main",
   "unstaged_at_capture": [
-    "backend/app/main.py",
-    "backend/app/services/alerting.py",
     "backend/app/services/http_client.py",
-    "backend/app/services/job_lease.py",
-    "backend/app/tasks/scheduler.py",
-    "backend/tests/test_etl_job_ceiling.py",
+    "backend/tests/test_rosstat_recovery.py",
     "docs/backlog.md",
     "docs/data-contracts.md",
-    "docs/enterprise_resilience.md",
     "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ]
 }

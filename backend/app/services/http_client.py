@@ -263,6 +263,8 @@ class ProxyFallbackSession(requests.Session):
         host = _host(url)
         left = _host_down_remaining(host) if host else 0.0
         if left:
+            # Без записи парсеры, глотающие ошибку (недельные цены, недельная инфляция), давали «0 точек, смена вёрстки?».
+            record_fetch_issue(f"{host} unreachable (host breaker, {left:.0f}s left)")
             raise requests.ConnectionError(
                 f"{host} unreachable on all hops recently; skipping for {left:.0f}s more"
             )

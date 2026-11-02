@@ -1160,8 +1160,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "sha256": "26ecaa24c472c0ae13d9614ab1f5aa7a9f47d4fcaf2eebdf8f2a7d8dbcd2cba5",
-      "lines": 430
+      "sha256": "9ad6c9e481527421392a4e1186357166d0b7522e45449e40159103df07a00c58",
+      "lines": 432
     },
     {
       "path": "backend/app/services/http_error_monitor.py",
@@ -127963,8 +127963,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 425,
-      "end_line": 429,
+      "line": 427,
+      "end_line": 431,
       "owner": "create_session",
       "conditions": [],
       "operation": "update",
@@ -266134,7 +266134,7 @@
     {
       "path": "backend/app/services/http_client.py",
       "line": 241,
-      "end_line": 390,
+      "end_line": 392,
       "owner": "<module>",
       "conditions": [],
       "name": "ProxyFallbackSession",
@@ -266142,8 +266142,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 393,
-      "end_line": 430,
+      "line": 395,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "create_session",
@@ -266188,7 +266188,7 @@
     {
       "path": "backend/app/services/http_client.py",
       "line": 260,
-      "end_line": 300,
+      "end_line": 302,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "request",
@@ -266196,8 +266196,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 302,
-      "end_line": 361,
+      "line": 304,
+      "end_line": 363,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_request_hop",
@@ -266205,8 +266205,8 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 363,
-      "end_line": 390,
+      "line": 365,
+      "end_line": 392,
       "owner": "ProxyFallbackSession",
       "conditions": [],
       "name": "_via_next_hop",
@@ -305891,16 +305891,16 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 312,
+      "end_line": 312,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 384,
+      "end_line": 384,
       "owner": "ProxyFallbackSession._via_next_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_EXC"
@@ -305915,32 +305915,32 @@
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 300,
+      "end_line": 300,
       "owner": "ProxyFallbackSession.request",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 331,
+      "end_line": 331,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 350,
-      "end_line": 350,
+      "line": 352,
+      "end_line": 352,
       "owner": "ProxyFallbackSession._request_hop",
       "conditions": [],
       "symbol": "app.services.http_client._PROXY_FALLBACK_STATUSES"
     },
     {
       "path": "backend/app/services/http_client.py",
-      "line": 422,
-      "end_line": 422,
+      "line": 424,
+      "end_line": 424,
       "owner": "create_session",
       "conditions": [],
       "symbol": "app.services.http_client._RETRY_STRATEGY"
