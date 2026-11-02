@@ -52,9 +52,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.cache import cache_invalidate_indicator, publish_committed_indicator_changes
 from app.models import FetchLog, Indicator, IndicatorData
-from app.services.base_parser import BaseParser, _utcnow_naive, mark_storage_committed
+from app.services.base_parser import (
+    STATUS_FAILED,
+    BaseParser,
+    _utcnow_naive,
+    expected_empty_reason,
+    mark_storage_committed,
+)
 from app.services.forecast_pipeline import retrain_indicator_forecast
-from app.services.http_client import create_session
+from app.services.http_client import begin_fetch_issues, create_session, current_fetch_issues, end_fetch_issues
 from app.services.upsert import bulk_upsert
 
 logger = logging.getLogger(__name__)
@@ -733,7 +739,12 @@ class RosstatWeeklyCpiParser(BaseParser):
         publication_codes: list[str] = []
         try:
             cfg = indicator.model_config_json or {}
-            points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
+            issues_token = begin_fetch_issues()
+            try:
+                points, source_url = await self._fetch_and_parse(db, indicator, cfg, fetch_log)
+                fetch_issues = current_fetch_issues()
+            finally:
+                end_fetch_issues(issues_token)
             if source_url:
                 fetch_log.source_url = source_url[:500]
 
@@ -751,6 +762,18 @@ class RosstatWeeklyCpiParser(BaseParser):
                 fetch_log.records_added = records_added
                 fetch_log.records_updated = records_updated
             elif not any((segment_snapshot or {}).get(s) for s in WEEKLY_SEGMENT_CODES):
+                if fetch_issues and not expected_empty_reason(fetch_log):
+                    # Источник не ответил (сайт на технических работах, предохранитель хоста), а не «вёрстка сменилась»:
+                    # как в BaseParser.run - честный failed без zero_parse-алерта; ряд подхватит rosstat_recovery_job.
+                    fetch_log.status = STATUS_FAILED
+                    fetch_log.error_message = (
+                        "Source unreachable, 0 points: " + "; ".join(dict.fromkeys(fetch_issues))
+                    )[:500]
+                    fetch_log.completed_at = _utcnow_naive()
+                    await db.commit()
+                    mark_storage_committed(fetch_log)
+                    logger.warning("ETL %s: %s", code, fetch_log.error_message)
+                    return
                 logger.warning("No data points parsed for %s", code)
                 fetch_log.status = await self._resolve_zero_parse_status(
                     db, indicator, fetch_log,

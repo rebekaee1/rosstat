@@ -16,7 +16,7 @@
 - Registry declarations: **1147**
 - Registry references: **2157**
 - Migration operations: **444**
-- Candidate effects: **2558**
+- Candidate effects: **2559**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2476,14 +2476,14 @@ Relationships: `[]`
 | app.services.rosstat_sdds_fetcher._MEDIA_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:40](../backend/app/services/rosstat_sdds_fetcher.py#L40) |
 | app.services.rosstat_sdds_fetcher._YEAR_IN_NAME_RE | Call | computed source expression | [backend/app/services/rosstat_sdds_fetcher.py:44](../backend/app/services/rosstat_sdds_fetcher.py#L44) |
 | app.services.rosstat_sdds_fetcher.ROSSTAT_STATIC_URLS | Dict | 'popul_components', 'population_history', 'gdp_quarterly', 'gdp_use_quarterly', 'ipi_historical_2018', 'age_groups' | [backend/app/services/rosstat_sdds_fetcher.py:46](../backend/app/services/rosstat_sdds_fetcher.py#L46) |
-| app.services.rosstat_weekly_inflation_parser.BULLETIN_URL_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:67](../backend/app/services/rosstat_weekly_inflation_parser.py#L67) |
-| app.services.rosstat_weekly_inflation_parser._MONTH_MAP | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/rosstat_weekly_inflation_parser.py:69](../backend/app/services/rosstat_weekly_inflation_parser.py#L69) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:78](../backend/app/services/rosstat_weekly_inflation_parser.py#L78) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:82](../backend/app/services/rosstat_weekly_inflation_parser.py#L82) |
-| app.services.rosstat_weekly_inflation_parser._HEADER_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:84](../backend/app/services/rosstat_weekly_inflation_parser.py#L84) |
-| app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES | Dict | 'food', 'nonfood', 'services' | [backend/app/services/rosstat_weekly_inflation_parser.py:98](../backend/app/services/rosstat_weekly_inflation_parser.py#L98) |
-| app.services.rosstat_weekly_inflation_parser._CPI_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:349](../backend/app/services/rosstat_weekly_inflation_parser.py#L349) |
-| app.services.rosstat_weekly_inflation_parser._BULLETIN_PUB_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:494](../backend/app/services/rosstat_weekly_inflation_parser.py#L494) |
+| app.services.rosstat_weekly_inflation_parser.BULLETIN_URL_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:73](../backend/app/services/rosstat_weekly_inflation_parser.py#L73) |
+| app.services.rosstat_weekly_inflation_parser._MONTH_MAP | Dict | 'января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря' | [backend/app/services/rosstat_weekly_inflation_parser.py:75](../backend/app/services/rosstat_weekly_inflation_parser.py#L75) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:84](../backend/app/services/rosstat_weekly_inflation_parser.py#L84) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:88](../backend/app/services/rosstat_weekly_inflation_parser.py#L88) |
+| app.services.rosstat_weekly_inflation_parser._HEADER_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:90](../backend/app/services/rosstat_weekly_inflation_parser.py#L90) |
+| app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES | Dict | 'food', 'nonfood', 'services' | [backend/app/services/rosstat_weekly_inflation_parser.py:104](../backend/app/services/rosstat_weekly_inflation_parser.py#L104) |
+| app.services.rosstat_weekly_inflation_parser._CPI_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:355](../backend/app/services/rosstat_weekly_inflation_parser.py#L355) |
+| app.services.rosstat_weekly_inflation_parser._BULLETIN_PUB_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_inflation_parser.py:500](../backend/app/services/rosstat_weekly_inflation_parser.py#L500) |
 | app.services.rosstat_weekly_price_parser._FUEL_BULLETIN_TITLE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:71](../backend/app/services/rosstat_weekly_price_parser.py#L71) |
 | app.services.rosstat_weekly_price_parser._BULLETIN_HREF_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:74](../backend/app/services/rosstat_weekly_price_parser.py#L74) |
 | app.services.rosstat_weekly_price_parser._REG_DATE_RE | Call | computed source expression | [backend/app/services/rosstat_weekly_price_parser.py:77](../backend/app/services/rosstat_weekly_price_parser.py#L77) |

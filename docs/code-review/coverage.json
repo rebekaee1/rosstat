@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2006
     },
-    "definitions": 14648,
-    "annotated_definitions": 14648,
+    "definitions": 14653,
+    "annotated_definitions": 14653,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -4404,9 +4404,9 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "sha256": "ba7c058fd5b66ea5927c12d89d5f51b1a10c25bee7df502ed6e4298da6319b5c",
-      "bytes": 38160,
-      "lines": 924,
+      "sha256": "1695a710dda40770cfc865cfffcde0c6d285099e3b9e71b52b83391ab7d3eaa8",
+      "bytes": 39388,
+      "lines": 947,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -9578,15 +9578,15 @@
     },
     {
       "path": "backend/tests/test_rosstat_recovery.py",
-      "sha256": "5f7be5a29f6565db9aafaeb4390a3b05f1cfaccfefb76c18355311a809b27acf",
-      "bytes": 14543,
-      "lines": 321,
+      "sha256": "40772db723b1e0b788e4220976d87b32e44f13ab580fb305add40939afb5c201",
+      "bytes": 15791,
+      "lines": 346,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 38,
-      "annotated_definitions": 38,
+      "definitions": 43,
+      "annotated_definitions": 43,
       "missing_definitions": []
     },
     {
@@ -11593,9 +11593,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "5647a8fd4f9b5bb5e957e8449f0363c205bca4a93778d674ed85579c62312694",
-      "bytes": 17965,
-      "lines": 151,
+      "sha256": "d98c63accf27d6bf5d23a2e5c36047f4d07631e115e933722283c2128b71f4ec",
+      "bytes": 18490,
+      "lines": 152,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12412,9 +12412,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "128df3ee294fa19291f444758601eb7e2f093adcd9144f4da7fb1f880ae87472",
-      "bytes": 635256,
-      "lines": 3040,
+      "sha256": "7c3d8257eecbf98abfb4bda4406a6ed46d50a63eb84c3f5a00e3f1a46ed71378",
+      "bytes": 636554,
+      "lines": 3042,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12477,8 +12477,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "ee419945834a3daa74beb6373f285d92f021d73651614703318c953b1ef042ef",
-      "bytes": 277891,
+      "sha256": "4d7014667fb86ba2be2349819ec942c14c8bf270b026dd4ba8500f09f80a09e3",
+      "bytes": 278220,
       "lines": 967,
       "code": false,
       "status": "reviewed",
@@ -12503,7 +12503,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "c43f196760a87c314f12fa5a42344e564c4c3b0e6e40bef67ac1d8a0c12fbab1",
+      "sha256": "b0f036c1bf149039294ea1bd5ac4451286ddfee32d300af64911d4d0f9f1d14b",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -13010,9 +13010,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "a323b63b69db0791bf05d9cbd47e6403dda42cab32a16cff1e179840c698b47e",
-      "bytes": 2929176,
-      "lines": 106054,
+      "sha256": "c13ad8a53f869be32a773e645dc180b54cb4e53b2383a440a57bb269a9b85f60",
+      "bytes": 2929773,
+      "lines": 106079,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13023,7 +13023,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "3b25ec675ba20eb973f9b52bf10199915cc91c316b1f4052b1fb22a1e9db990d",
+      "sha256": "14588cc284d1981788aed7ed74ceba55f789acf2ac10adfe0be5dec1eab0d575",
       "bytes": 98628,
       "lines": 1086,
       "code": false,
@@ -13062,9 +13062,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "5f3d5777b203ca149d21ae35ddea95270467c349a7bfdef2253c725fb14234c8",
-      "bytes": 10880621,
-      "lines": 328399,
+      "sha256": "d8f868a04ec0fcddbbb9d3e119310fadc0b496837861b5e9e0f05b7b957e9fe1",
+      "bytes": 10881317,
+      "lines": 328417,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13075,8 +13075,8 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "43515c9bb560b53601e45dadbfe82f04497bf4fa58b6a395bb25cdda0bf1df1f",
-      "bytes": 537639,
+      "sha256": "84507b22b84d4e48e70b632f9dc2c809c64738d02b95557366657e8c7337cd3c",
+      "bytes": 537641,
       "lines": 3050,
       "code": false,
       "status": "artifact_schema_reviewed",
@@ -28857,16 +28857,19 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2f043cce4d56fdebbaef47b797810f92de2fcd25d2429735c5bf41a979ba2f67",
+  "ledger_sha256": "21082e207a5495b40322f6be3449a97c6fbd90a89c0517ac84afdfc180b24f93",
   "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "f70af8a98dbcbe53d0c538d51194589014139b11",
+  "baseline_commit": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
   "branch": "main",
   "unstaged_at_capture": [
-    "backend/app/services/http_client.py",
+    "backend/app/services/rosstat_weekly_inflation_parser.py",
     "backend/tests/test_rosstat_recovery.py",
     "docs/backlog.md",
     "docs/data-contracts.md",
+    "docs/dead-code-report.md",
     "docs/indicator-index.json",
-    "docs/mechanism-inventory.json"
+    "docs/indicator-index.md",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

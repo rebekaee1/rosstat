@@ -119,6 +119,31 @@ def test_summary_puts_unreachable_series_on_one_line_without_red():
     assert "источник недоступен" not in plain
 
 
+def test_primary_weekly_cpi_reports_unreachable_source_as_failed_without_zero_parse_alert():
+    """`inflation-weekly` переопределяет run(): раньше при недоступном источнике он ставил parsed_zero и слал zero_parse."""
+    from app.models import FetchLog
+    from app.services import rosstat_weekly_inflation_parser as weekly
+
+    class SwallowedNetworkFailure(weekly.RosstatWeeklyCpiParser):
+        async def _fetch_and_parse(self, db, indicator, cfg, fetch_log):
+            http_client.record_fetch_issue("rosstat.gov.ru unreachable: сайт на технических работах")
+            self._segment_points = None
+            return [], "https://rosstat.gov.ru/storage/mediabank/nedel_Ipc.xlsx"
+
+    class Db:
+        commits = 0
+
+        async def commit(self):
+            self.commits += 1
+
+    db = Db()
+    indicator = SimpleNamespace(code="inflation-weekly", model_config_json={})
+    log = FetchLog(indicator_id=1, status="running")
+    asyncio.run(SwallowedNetworkFailure().run(db, indicator, log))
+    assert log.status == "failed" and db.commits == 1
+    assert log.error_message.startswith("Source unreachable, 0 points:") and "unreachable" in log.error_message
+
+
 # --- daily_update_job: ряды недоступного источника -------------------------------------------------------
 
 
