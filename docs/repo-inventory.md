@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2062  ·  **Строк:** 1 311 472  ·  **Токенов (≈):** 12 459 922
+**Файлов:** 2062  ·  **Строк:** 1 311 475  ·  **Токенов (≈):** 12 460 153
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 836 | 284 916 | 3 139 305 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 17 | 918 | 12 587 |
-| `docs` | 138 | 832 545 | 7 107 049 |
+| `deploy` | 17 | 919 | 12 655 |
+| `docs` | 138 | 832 547 | 7 107 212 |
 | `frontend` | 927 | 165 915 | 1 847 641 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 053 | 133 292 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 093 | 109 193 |
+| `docs/backlog.md` | 3 095 | 109 346 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 725 | 52 014 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 981 | 49 523 |
+| `docs/data-contracts.md` | 981 | 49 533 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
@@ -339,12 +339,12 @@
 | `backend/tests/test_scrape_guard.py` | 463 | 4 333 |
 | `frontend/src/lib/cabinetStore.js` | 461 | 4 327 |
 | `frontend/src/styles/world.css` | 347 | 4 320 |
+| `deploy/approved-shas.txt` | 156 | 4 318 |
 | `frontend/src/lib/searchView.test.js` | 313 | 4 314 |
 | `backend/app/services/seo_indicator_month.py` | 456 | 4 282 |
 | `frontend/src/lib/compareRepresentation.test.js` | 366 | 4 272 |
 | `frontend/src/components/Navbar.menu.component.test.jsx` | 353 | 4 263 |
 | `backend/tests/test_circle9_f.py` | 335 | 4 260 |
-| `deploy/approved-shas.txt` | 155 | 4 250 |
 | `backend/app/services/world_adapters/boc_valet.py` | 457 | 4 233 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 405 | 4 228 |
 | `backend/tests/test_seo_regional_year.py` | 440 | 4 218 |
