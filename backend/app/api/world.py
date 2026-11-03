@@ -110,7 +110,6 @@ from app.services.world_compare import (
     compare_aggregation_policy,
     compare_calculation_allowed,
     compare_target_frequency,
-    official_compare_sibling,
     MONEY_COMPARE_CONCEPTS as _MONEY_COMPARE_CONCEPTS,
     choose_compare_indicator as _choose_compare_indicator,
     concept_members as _concept_members,
@@ -1392,10 +1391,11 @@ async def world_compare_series(
     Индии/Мексики отдаётся их официальный индекс цен (или безработица) с
     родным юнитом, а не 404. Неопределённость состава ряда — 409.
 
-    `frequency=quarterly|annual` (месяц → квартал → год, только вверх): официальный ряд этой частоты, если он есть и
-    не короче расчётного, иначе расчёт по политике ряда (среднее, сумма или значение на конец периода; те же правила,
-    что у карточек). Неполные периоды не выдаются. Тот же или более мелкий период не достраивается: ряд остаётся
-    как есть. Фактическая частота ряда — `meta.frequency`.
+    `frequency=quarterly|annual` (месяц → квартал → год, только вверх): расчёт по политике ряда (среднее, сумма или
+    значение на конец периода; те же правила, что у карточек) из выбранного ряда страны. Ряд другого источника той же
+    частоты (годовая безработица МВФ рядом с месячным Евростатом) расчёт не подменяет: источники не смешиваются, как и
+    на карточках. Неполные периоды не выдаются. Тот же или более мелкий период не достраивается: ряд остаётся как есть.
+    Фактическая частота ряда — `meta.frequency`.
     """
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
@@ -1449,18 +1449,7 @@ async def world_compare_series(
             if compare_calculation_allowed(concept)
             else []
         )
-        official = official_compare_sibling(indicators, concept, national_codes, indicator, target)
-        # Официальный ряд нужной частоты важнее расчётного, если он не заканчивается раньше расчётного.
-        if official is not None and (
-            not calculated
-            or (official.history_end is not None and official.history_end >= calculated[-1][0])
-        ):
-            official_points = await _load_points(db, official.id)
-            if official_points:
-                points = official_points
-                meta["indicator_code"] = official.code
-                meta["frequency"] = target
-        elif calculated:
+        if calculated:
             points = calculated
             meta["frequency"] = target
             meta["aggregated"] = True

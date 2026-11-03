@@ -251,32 +251,6 @@ def compare_target_frequency(requested: str | None, source: str | None) -> str |
     return target
 
 
-def official_compare_sibling(
-    indicators: list[WorldIndicator],
-    concept,
-    national_codes: frozenset[str],
-    native: WorldIndicator,
-    target: str,
-) -> WorldIndicator | None:
-    """Официальный ряд страны той же частоты, что и целевая: он важнее расчётного (как на карточке).
-
-    Берём только тот же по смыслу ряд: та же единица и тот же вид (уровень, а не готовый темп МВФ рядом с
-    месячным индексом Евростата), иначе график молча сменил бы величину.
-    """
-    candidates = [
-        item
-        for item in indicators
-        if item.id != native.id
-        and normalize_frequency(item.frequency) == target
-        and int(item.points_count or 0) > 0
-        and (item.unit or "") == (native.unit or "")
-        and rank_yoy_kind(item) == rank_yoy_kind(native)
-    ]
-    if not candidates:
-        return None
-    return choose_compare_indicator(candidates, concept, national_codes)
-
-
 def aggregate_compare_points(
     points: list[tuple[date, float]],
     *,

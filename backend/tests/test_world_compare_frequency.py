@@ -69,6 +69,13 @@ def frequency_client(auth_env):
                 # Годовой ряд МВФ у Японии: просить у него месяц нельзя.
                 "jp_weo": _world_indicator(jp, "jp-weo-pcpipch", "weo", "imf", {"weo_code": "PCPIPCH"}, "PC",
                                            "изменение за год, %", "annual", date(2025, 1, 1), points=3),
+                # Безработица Германии: месячный Евростат и годовой МВФ (с прогнозом на 2026) — разные источники и методика.
+                "de_une": _world_indicator(de, "de-une_rt_m-total-sa-t-pc-act", "une_rt_m", "eurostat",
+                                           {"age": "TOTAL", "sex": "T", "s_adj": "SA", "unit": "PC_ACT", "freq": "M"},
+                                           "PC_ACT", "% экономически активного населения", "monthly", date(2024, 12, 1), points=24),
+                "de_imf": _world_indicator(de, "de-weo-lur", "weo", "imf", {"weo_code": "LUR"}, "PC_ACT",
+                                           "% экономически активного населения", "annual", date(2026, 1, 1), points=4,
+                                           listed=False),
                 # Квартальный ВВП: реестр разрешает только официальный ряд, расчёта года из кварталов нет.
                 "de_gdp": _world_indicator(de, "de-namq_10_gdp-b1gq-sca-clv15_meur", "namq_10_gdp", "eurostat",
                                            {"na_item": "B1GQ", "s_adj": "SCA", "unit": "CLV15_MEUR"},
@@ -81,6 +88,10 @@ def frequency_client(auth_env):
                 db.add(WorldDataPoint(indicator_id=rows["de_hicp"].id, date=month, value=100.0 + index))
             for year, value in ((2023, 3.2), (2024, 2.8), (2025, 2.5)):
                 db.add(WorldDataPoint(indicator_id=rows["jp_weo"].id, date=date(year, 1, 1), value=value))
+            for index, month in enumerate(_months(2023, 1, 24)):
+                db.add(WorldDataPoint(indicator_id=rows["de_une"].id, date=month, value=3.0 + (index % 12) / 10))
+            for year, value in ((2023, 9.9), (2024, 9.9), (2025, 9.9), (2026, 9.9)):
+                db.add(WorldDataPoint(indicator_id=rows["de_imf"].id, date=date(year, 1, 1), value=value))
             for index in range(8):
                 db.add(WorldDataPoint(
                     indicator_id=rows["de_gdp"].id,
@@ -213,26 +224,13 @@ def test_compare_target_frequency_only_goes_up(requested, source, expected):
     assert compare_target_frequency(requested, source) == expected
 
 
-def test_official_sibling_must_be_the_same_measure():
-    """Официальный ряд нужной частоты берётся, только если это тот же по смыслу ряд (единица и вид)."""
-    from types import SimpleNamespace
-
-    from app.data.world_concepts import CONCEPT_BY_SLUG
-    from app.services.world_compare import official_compare_sibling
-
-    concept = CONCEPT_BY_SLUG["unemployment-rate"]
-
-    def national(ident, code, frequency, unit):
-        return SimpleNamespace(
-            id=ident, code=code, frequency=frequency, unit=unit, points_count=10, history_end=date(2025, 1, 1),
-            dataset_id="national", provider="national", slice_json={}, is_listed=True, unit_ru=unit,
-        )
-
-    monthly = national(1, "zz-unemployment-m", "monthly", "% экономически активного населения")
-    annual_same = national(2, "zz-unemployment-a", "annual", "% экономически активного населения")
-    annual_other_unit = national(3, "zz-unemployment-b", "annual", "тыс. человек")
-    codes = frozenset({"zz-unemployment-m", "zz-unemployment-a", "zz-unemployment-b"})
-    picked = official_compare_sibling([monthly, annual_same, annual_other_unit], concept, codes, monthly, "annual")
-    assert picked is not None and picked.code == "zz-unemployment-a"
-    assert official_compare_sibling([monthly, annual_other_unit], concept, codes, monthly, "annual") is None
-    assert official_compare_sibling([monthly], concept, codes, monthly, "annual") is None
+def test_annual_series_of_another_source_does_not_replace_the_calculation(frequency_client):
+    """Годовой ряд МВФ (с прогнозом на 2026) рядом с месячным Евростатом не подменяет расчёт: источники не смешиваются."""
+    payload = _series(frequency_client, "germany", "unemployment-rate", frequency="annual")
+    assert payload["meta"]["indicator_code"] == "de-une_rt_m-total-sa-t-pc-act"
+    assert payload["meta"]["frequency"] == "annual"
+    assert payload["meta"]["aggregated"] is True
+    assert payload["data"] == [
+        {"date": "2023-01-01", "value": _mean([3.0 + i / 10 for i in range(12)])},
+        {"date": "2024-01-01", "value": _mean([3.0 + i / 10 for i in range(12)])},
+    ]
