@@ -304,8 +304,9 @@ export function worldIndicatorHref(countrySlug, indicatorCode) {
   return indicatorPath(countrySlug, indicatorCode);
 }
 
-export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal } = {}) {
-  return (await api.get(`/world/compare/series/${countrySlug}/${conceptSlug}`, { signal })).data;
+export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal, frequency } = {}) {
+  const params = frequency ? { frequency } : undefined;
+  return (await api.get(`/world/compare/series/${countrySlug}/${conceptSlug}`, { signal, params })).data;
 }
 
 /**
@@ -313,9 +314,9 @@ export async function fetchWorldCompareSeries(countrySlug, conceptSlug, { signal
  * (`unemployment-rate`) or a national indicator code (`us-unemployment-rate`).
  * Concept endpoint first; 404/409 fall through to the country card series.
  */
-export async function fetchWorldCompareOrCard(countrySlug, seriesKey, { signal } = {}) {
+export async function fetchWorldCompareOrCard(countrySlug, seriesKey, { signal, frequency } = {}) {
   try {
-    return await fetchWorldCompareSeries(countrySlug, seriesKey, { signal });
+    return await fetchWorldCompareSeries(countrySlug, seriesKey, { signal, frequency });
   } catch (err) {
     const status = err?.response?.status;
     if (status !== 404 && status !== 409) throw err;

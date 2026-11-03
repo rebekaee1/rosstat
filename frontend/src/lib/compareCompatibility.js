@@ -30,6 +30,16 @@ const MACRO_TWINS = {
   'weo-government-debt-gdp': 'government-debt-gdp',
 };
 
+// Понятия общего набора стран, у которых российский ряд в сравнении берётся из национального каталога:
+// там есть настоящие «Индекс», «К прошлому периоду» и «К прошлому году», а не один готовый годовой темп.
+const RUSSIA_NATIVE_CONCEPTS = { 'hicp-index': 'cpi' };
+
+/** Код национального показателя для `w:russia:{понятие}` (ИПЦ → `cpi`); нет такого: null. */
+export function russiaNativeCompareCode(code) {
+  const parsed = parseWorldCompareCode(code);
+  return parsed?.countrySlug === 'russia' ? RUSSIA_NATIVE_CONCEPTS[parsed.conceptSlug] || null : null;
+}
+
 /** Российские показатели в рублях, которые в общем наборе стран заменяются рядом в долларах США. */
 const RUB_TO_USD_TWINS = new Set(['gdp-nominal']);
 

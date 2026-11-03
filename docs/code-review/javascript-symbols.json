@@ -19347,18 +19347,12 @@
     "anonymous_functions": 25
   },
   "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
-    "sha256": "613f441147e469ed0960c0c79844a28b9aab65e4a4f0f653040f2334b268f36f",
+    "sha256": "571a0bbba31801547d5d0eedd1680366a54f21c768a36f4cc0a749e205a83def",
     "definitions": [
       {
-        "name": "hasLaborBreakdowns",
-        "line": 14,
-        "end_line": 16,
-        "kind": "FunctionDeclaration"
-      },
-      {
         "name": "LaborIndicatorGroups",
-        "line": 18,
-        "end_line": 55,
+        "line": 14,
+        "end_line": 52,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19375,21 +19369,15 @@
     "exports": [
       {
         "names": [
-          "hasLaborBreakdowns"
-        ],
-        "line": 14
-      },
-      {
-        "names": [
           "default"
         ],
-        "line": 18
+        "line": 14
       }
     ],
-    "anonymous_functions": 10
+    "anonymous_functions": 8
   },
   "frontend/src/components/russia/RussiaCategorySection.jsx": {
-    "sha256": "eca422bcc10e4ec0b8ab30b6cc909c620c60907632dcb66d8c6158f518208641",
+    "sha256": "c8b5c4ddd517815593eb6eed34134999d15f1c7842088b21255134ee7f9a9e5c",
     "definitions": [
       {
         "name": "formatNumber",
@@ -19412,7 +19400,7 @@
       {
         "name": "RussiaCategorySection",
         "line": 76,
-        "end_line": 124,
+        "end_line": 126,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -21152,7 +21140,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b",
+    "sha256": "aafd6c34687f29fbbd7cb2ed13b4abb4ef5d5f2eee100c30db1210680cd91c24",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -21260,7 +21248,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "42a8cad7432485e4e963af205f787cd95c9ce4557315a16d56a1bfd24af0bd8d",
+    "sha256": "6861c270b4f4963b054b237bd9af63b9196a0822bf69e324febf73b9a5979f14",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -28166,72 +28154,78 @@
     "anonymous_functions": 11
   },
   "frontend/src/lib/compareCompatibility.js": {
-    "sha256": "a18cc537a1d4e17cc4183cc4d4b5a1df67b90eaf68a3cd1dbb1fa7cbc31886ae",
+    "sha256": "c65cd54fc337bb3a98181417074f21a94027ae6b99b395dfe61ba2f079293f64",
     "definitions": [
       {
+        "name": "russiaNativeCompareCode",
+        "line": 38,
+        "end_line": 41,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "macroTwinConcept",
-        "line": 37,
-        "end_line": 39,
+        "line": 47,
+        "end_line": 49,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "macroTwinCode",
-        "line": 42,
-        "end_line": 45,
+        "line": 52,
+        "end_line": 55,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseWorldCompareCode",
-        "line": 47,
-        "end_line": 51,
+        "line": 57,
+        "end_line": 61,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseSubnationalCompareCode",
-        "line": 54,
-        "end_line": 60,
+        "line": 64,
+        "end_line": 70,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "regionIndicatorCode",
-        "line": 62,
-        "end_line": 67,
+        "line": 72,
+        "end_line": 77,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isAllowedNonWorld",
-        "line": 69,
-        "end_line": 73,
+        "line": 79,
+        "end_line": 83,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareCompatibility",
-        "line": 75,
-        "end_line": 177,
+        "line": 85,
+        "end_line": 187,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareCompatibilityWithTwins",
-        "line": 187,
-        "end_line": 235,
+        "line": 197,
+        "end_line": 245,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "normalizeCompareCodes",
-        "line": 241,
-        "end_line": 254,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "sanitizeCompareCodes",
-        "line": 256,
+        "line": 251,
         "end_line": 264,
         "kind": "FunctionDeclaration"
       },
       {
-        "name": "activeCompatibilityNote",
+        "name": "sanitizeCompareCodes",
         "line": 266,
-        "end_line": 275,
+        "end_line": 274,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "activeCompatibilityNote",
+        "line": 276,
+        "end_line": 285,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28239,57 +28233,63 @@
     "exports": [
       {
         "names": [
+          "russiaNativeCompareCode"
+        ],
+        "line": 38
+      },
+      {
+        "names": [
           "macroTwinConcept"
-        ],
-        "line": 37
-      },
-      {
-        "names": [
-          "macroTwinCode"
-        ],
-        "line": 42
-      },
-      {
-        "names": [
-          "parseWorldCompareCode"
         ],
         "line": 47
       },
       {
         "names": [
+          "macroTwinCode"
+        ],
+        "line": 52
+      },
+      {
+        "names": [
+          "parseWorldCompareCode"
+        ],
+        "line": 57
+      },
+      {
+        "names": [
           "parseSubnationalCompareCode"
         ],
-        "line": 54
+        "line": 64
       },
       {
         "names": [
           "compareCompatibility"
         ],
-        "line": 75
+        "line": 85
       },
       {
         "names": [
           "compareCompatibilityWithTwins"
         ],
-        "line": 187
+        "line": 197
       },
       {
         "names": [
           "normalizeCompareCodes"
         ],
-        "line": 241
+        "line": 251
       },
       {
         "names": [
           "sanitizeCompareCodes"
         ],
-        "line": 256
+        "line": 266
       },
       {
         "names": [
           "activeCompatibilityNote"
         ],
-        "line": 266
+        "line": 276
       }
     ],
     "anonymous_functions": 14
@@ -28483,7 +28483,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/lib/compareRepresentation.js": {
-    "sha256": "9059bfb6b3305ed0d3596c9fe8af8c8e8762930aba1dd369310c8d953a0afc17",
+    "sha256": "eed208dd09066d779b35bab82fc85e807881adea96b71fcc97516d58b69986ca",
     "definitions": [
       {
         "name": "REP_LEVEL",
@@ -28564,69 +28564,75 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "worldRequestedFrequency",
+        "line": 196,
+        "end_line": 200,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "worldCompareTransformFor",
-        "line": 189,
-        "end_line": 193,
+        "line": 202,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveCompareSeries",
-        "line": 199,
-        "end_line": 204,
+        "line": 212,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isIndexableBase",
-        "line": 219,
-        "end_line": 232,
+        "line": 232,
+        "end_line": 245,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "requiresRebasedPriceIndex",
-        "line": 235,
-        "end_line": 242,
+        "line": 248,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rebaseToHundred",
-        "line": 245,
-        "end_line": 247,
+        "line": 258,
+        "end_line": 260,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "commonIndexBase",
-        "line": 254,
-        "end_line": 271,
+        "line": 267,
+        "end_line": 284,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveStepOverride",
-        "line": 288,
-        "end_line": 293,
+        "line": 301,
+        "end_line": 306,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyCompareTransform",
-        "line": 295,
-        "end_line": 333,
+        "line": 308,
+        "end_line": 346,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyCompareTransform.previousDate",
-        "line": 306,
-        "end_line": 322,
+        "line": 319,
+        "end_line": 335,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "compareDifferenceUnit",
-        "line": 336,
-        "end_line": 344,
+        "line": 349,
+        "end_line": 357,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareLegendParts",
-        "line": 346,
-        "end_line": 349,
+        "line": 359,
+        "end_line": 362,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28717,69 +28723,75 @@
       },
       {
         "names": [
+          "worldRequestedFrequency"
+        ],
+        "line": 196
+      },
+      {
+        "names": [
           "worldCompareTransformFor"
         ],
-        "line": 189
+        "line": 202
       },
       {
         "names": [
           "resolveCompareSeries"
         ],
-        "line": 199
+        "line": 212
       },
       {
         "names": [
           "isIndexableBase"
         ],
-        "line": 219
+        "line": 232
       },
       {
         "names": [
           "requiresRebasedPriceIndex"
         ],
-        "line": 235
+        "line": 248
       },
       {
         "names": [
           "rebaseToHundred"
         ],
-        "line": 245
+        "line": 258
       },
       {
         "names": [
           "commonIndexBase"
         ],
-        "line": 254
+        "line": 267
       },
       {
         "names": [
           "resolveStepOverride"
         ],
-        "line": 288
+        "line": 301
       },
       {
         "names": [
           "applyCompareTransform"
         ],
-        "line": 295
+        "line": 308
       },
       {
         "names": [
           "compareDifferenceUnit"
         ],
-        "line": 336
+        "line": 349
       },
       {
         "names": [
           "compareLegendParts"
         ],
-        "line": 346
+        "line": 359
       }
     ],
     "anonymous_functions": 21
   },
   "frontend/src/lib/compareRepresentation.test.js": {
-    "sha256": "78339af23c5aaa66500b52f7c08edc3c6b6d02b1fccb2ffb7a4f4841a2de4fb9",
+    "sha256": "0d46ff3f4652c143d7f03ba1244d7cf1e1ca108227c1d2b5fdf3e23960083a34",
     "definitions": [],
     "imports": [
       {
@@ -28792,7 +28804,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 49
+    "anonymous_functions": 52
   },
   "frontend/src/lib/compareStats.js": {
     "sha256": "4e522e9b557cf39b25ee04c776cd4b82ed27f85a279e8c64961d3b582122b7cf",
@@ -46722,7 +46734,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/worldApi.js": {
-    "sha256": "021dd72e33bfb469d392d3e602107fc2edf24eaeec1252f76c20322a0d421e35",
+    "sha256": "03bd5ecdcf17172a3ab9683f98f03dc1405d105a18dab1c30622646fbdcc953f",
     "definitions": [
       {
         "name": "localeKey",
@@ -46907,127 +46919,127 @@
       {
         "name": "fetchWorldCompareSeries",
         "line": 307,
-        "end_line": 309,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldCompareOrCard",
-        "line": 316,
-        "end_line": 352,
+        "line": 317,
+        "end_line": 353,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSeries",
-        "line": 355,
-        "end_line": 368,
+        "line": 356,
+        "end_line": 369,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSeries.queryFn",
-        "line": 359,
-        "end_line": 359,
+        "line": 360,
+        "end_line": 360,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useWorldCompareSeries.retry",
-        "line": 363,
-        "end_line": 366,
+        "line": 364,
+        "end_line": 367,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchWorldIndicatorMode",
-        "line": 370,
-        "end_line": 377,
+        "line": 371,
+        "end_line": 378,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSnapshot",
-        "line": 379,
-        "end_line": 391,
+        "line": 380,
+        "end_line": 392,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSnapshot.queryFn",
-        "line": 383,
-        "end_line": 385,
+        "line": 384,
+        "end_line": 386,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "worldMapSeriesOptions",
-        "line": 393,
-        "end_line": 404,
+        "line": 394,
+        "end_line": 405,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldMapSeriesOptions.queryFn",
-        "line": 396,
-        "end_line": 398,
+        "line": 397,
+        "end_line": 399,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useWorldMapSeries",
-        "line": 410,
-        "end_line": 416,
+        "line": 411,
+        "end_line": 417,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prefetchWorldMapSeries",
-        "line": 419,
-        "end_line": 422,
+        "line": 420,
+        "end_line": 423,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldAverageSeries",
-        "line": 424,
-        "end_line": 431,
+        "line": 425,
+        "end_line": 432,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatWorldValue",
-        "line": 437,
-        "end_line": 447,
+        "line": 438,
+        "end_line": 448,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitEn",
-        "line": 471,
-        "end_line": 479,
+        "line": 472,
+        "end_line": 480,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitRu",
-        "line": 498,
-        "end_line": 505,
+        "line": 499,
+        "end_line": 506,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeWorldUnit",
-        "line": 508,
-        "end_line": 513,
+        "line": 509,
+        "end_line": 514,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pluralRu",
-        "line": 516,
-        "end_line": 523,
+        "line": 517,
+        "end_line": 524,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionId",
-        "line": 552,
-        "end_line": 556,
+        "line": 553,
+        "end_line": 557,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion",
-        "line": 563,
-        "end_line": 586,
+        "line": 564,
+        "end_line": 587,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion.rank",
-        "line": 575,
-        "end_line": 578,
+        "line": 576,
+        "end_line": 579,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -47168,73 +47180,73 @@
         "names": [
           "fetchWorldCompareOrCard"
         ],
-        "line": 316
+        "line": 317
       },
       {
         "names": [
           "useWorldCompareSeries"
         ],
-        "line": 355
+        "line": 356
       },
       {
         "names": [
           "fetchWorldIndicatorMode"
         ],
-        "line": 370
+        "line": 371
       },
       {
         "names": [
           "useWorldCompareSnapshot"
         ],
-        "line": 379
+        "line": 380
       },
       {
         "names": [
           "useWorldMapSeries"
         ],
-        "line": 410
+        "line": 411
       },
       {
         "names": [
           "prefetchWorldMapSeries"
         ],
-        "line": 419
+        "line": 420
       },
       {
         "names": [
           "fetchWorldAverageSeries"
         ],
-        "line": 424
+        "line": 425
       },
       {
         "names": [
           "formatWorldValue"
         ],
-        "line": 437
+        "line": 438
       },
       {
         "names": [
           "localizeWorldUnit"
         ],
-        "line": 508
+        "line": 509
       },
       {
         "names": [
           "pluralRu"
         ],
-        "line": 516
+        "line": 517
       },
       {
         "names": [
           "countryRegionId"
         ],
-        "line": 552
+        "line": 553
       },
       {
         "names": [
           "groupCountriesByRegion"
         ],
-        "line": 563
+        "line": 564
       }
     ],
     "anonymous_functions": 18
@@ -50975,378 +50987,390 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "f7ede915ff17932278141b8dece07d04cb839121147a847e955469b6919821ab",
+    "sha256": "77b67d84d0ea15e0c249f4cd7c91104cf3b18809fd2fb2b5331a293bbdd6a7dc",
     "definitions": [
       {
         "name": "useViewportHeight",
-        "line": 94,
-        "end_line": 103,
+        "line": 95,
+        "end_line": 104,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useViewportHeight.read",
-        "line": 97,
-        "end_line": 97,
+        "line": 98,
+        "end_line": 98,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "scrollToCompareChart",
-        "line": 106,
-        "end_line": 117,
+        "line": 107,
+        "end_line": 118,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "unitLabel",
-        "line": 120,
-        "end_line": 122,
+        "line": 121,
+        "end_line": 123,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "correlationKey",
-        "line": 125,
-        "end_line": 130,
+        "line": 126,
+        "end_line": 131,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compatText",
-        "line": 132,
-        "end_line": 135,
+        "line": 133,
+        "end_line": 136,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EndPoint",
-        "line": 163,
-        "end_line": 177,
+        "line": 164,
+        "end_line": 178,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "seriesFlag",
-        "line": 180,
-        "end_line": 184,
+        "line": 181,
+        "end_line": 185,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "aggregateToStep",
-        "line": 206,
-        "end_line": 229,
+        "line": 207,
+        "end_line": 230,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "aggregateToStep.keyFor",
-        "line": 208,
-        "end_line": 215,
+        "line": 209,
+        "end_line": 216,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "freqLabel",
-        "line": 240,
-        "end_line": 244,
+        "line": 241,
+        "end_line": 245,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareDateFormat",
-        "line": 247,
-        "end_line": 254,
+        "line": 248,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseCodes",
-        "line": 257,
-        "end_line": 264,
+        "line": 258,
+        "end_line": 265,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "parseReps",
-        "line": 270,
-        "end_line": 281,
+        "line": 271,
+        "end_line": 282,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isRegionCode",
-        "line": 288,
-        "end_line": 290,
+        "line": 289,
+        "end_line": 291,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isWorldCode",
-        "line": 292,
-        "end_line": 294,
+        "line": 293,
+        "end_line": 295,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isSubnationalCode",
-        "line": 296,
-        "end_line": 298,
+        "line": 297,
+        "end_line": 299,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchRegionSeries",
-        "line": 300,
-        "end_line": 314,
+        "line": 301,
+        "end_line": 315,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchSubnationalSeries",
-        "line": 316,
-        "end_line": 343,
+        "line": 317,
+        "end_line": 344,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldSeries",
-        "line": 345,
-        "end_line": 369,
+        "line": 346,
+        "end_line": 370,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "worldAliasInd",
+        "line": 373,
+        "end_line": 381,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddCardHeader",
-        "line": 383,
-        "end_line": 398,
+        "line": 395,
+        "end_line": 410,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSheet",
-        "line": 405,
-        "end_line": 468,
+        "line": 417,
+        "end_line": 480,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSheet.onKey",
-        "line": 413,
-        "end_line": 413,
+        "line": 425,
+        "end_line": 425,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComboSelect",
-        "line": 476,
-        "end_line": 605,
+        "line": 488,
+        "end_line": 617,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComboSelect.getSearchItem",
-        "line": 501,
-        "end_line": 501,
+        "line": 513,
+        "end_line": 513,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CapNotice",
-        "line": 608,
-        "end_line": 625,
+        "line": 620,
+        "end_line": 637,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddRegionSeries",
-        "line": 633,
-        "end_line": 705,
+        "line": 645,
+        "end_line": 717,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddRegionSeries.handlePick",
-        "line": 663,
-        "end_line": 671,
+        "line": 675,
+        "end_line": 683,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AddSubnationalSeries",
-        "line": 707,
-        "end_line": 792,
+        "line": 719,
+        "end_line": 804,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddSubnationalSeries.handlePick",
-        "line": 750,
-        "end_line": 758,
+        "line": 762,
+        "end_line": 770,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "russiaLandingPool",
-        "line": 794,
-        "end_line": 815,
+        "line": 806,
+        "end_line": 827,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddIndicator",
-        "line": 817,
-        "end_line": 907,
+        "line": 829,
+        "end_line": 919,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddIndicator.getSearchItem",
-        "line": 843,
-        "end_line": 843,
+        "line": 855,
+        "end_line": 855,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AddWorldCountrySeries",
-        "line": 916,
-        "end_line": 1013,
+        "line": 928,
+        "end_line": 1025,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "AddWorldCountrySeries.pick",
-        "line": 967,
-        "end_line": 971,
+        "line": 979,
+        "end_line": 983,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "BRANCH_BTN",
-        "line": 1015,
-        "end_line": 1020,
+        "line": 1027,
+        "end_line": 1032,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "AddSeriesButton",
-        "line": 1026,
-        "end_line": 1048,
+        "line": 1038,
+        "end_line": 1060,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "PickerBack",
-        "line": 1051,
-        "end_line": 1062,
+        "line": 1063,
+        "end_line": 1074,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareSeriesPicker",
-        "line": 1067,
-        "end_line": 1458,
+        "line": 1079,
+        "end_line": 1470,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareSeriesPicker.resetCountry",
-        "line": 1199,
-        "end_line": 1204,
+        "line": 1211,
+        "end_line": 1216,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "CompareSeriesPicker.selectCountry",
-        "line": 1206,
-        "end_line": 1211,
+        "line": 1218,
+        "end_line": 1223,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "UpsellModal",
-        "line": 1460,
-        "end_line": 1499,
+        "line": 1472,
+        "end_line": 1511,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tipNumber",
-        "line": 1502,
-        "end_line": 1505,
+        "line": 1514,
+        "end_line": 1517,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CompareTooltip",
-        "line": 1512,
-        "end_line": 1556,
+        "line": 1524,
+        "end_line": 1568,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "textOr",
-        "line": 1559,
-        "end_line": 1562,
+        "line": 1571,
+        "end_line": 1574,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComparePage",
-        "line": 1571,
-        "end_line": 3287,
+        "line": 1583,
+        "end_line": 3324,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComparePage.queryFn",
-        "line": 1907,
-        "end_line": 1913,
+        "line": 1943,
+        "end_line": 1949,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retry",
-        "line": 1915,
-        "end_line": 1919,
+        "line": 1951,
+        "end_line": 1955,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retryFailed",
-        "line": 2119,
-        "end_line": 2119,
+        "line": 2164,
+        "end_line": 2164,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.formatLabel",
-        "line": 2139,
-        "end_line": 2139,
+        "line": 2184,
+        "end_line": 2184,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisFor",
-        "line": 2162,
-        "end_line": 2167,
+        "line": 2207,
+        "end_line": 2212,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ComparePage.plottedFrequency",
+        "line": 2216,
+        "end_line": 2220,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.legendDetail",
-        "line": 2170,
-        "end_line": 2186,
+        "line": 2221,
+        "end_line": 2237,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisValues",
-        "line": 2191,
-        "end_line": 2198,
+        "line": 2242,
+        "end_line": 2249,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.calc",
-        "line": 2210,
-        "end_line": 2217,
+        "line": 2261,
+        "end_line": 2268,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleExport",
-        "line": 2324,
-        "end_line": 2340,
+        "line": 2375,
+        "end_line": 2391,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleDataExport",
-        "line": 2347,
-        "end_line": 2392,
+        "line": 2398,
+        "end_line": 2443,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleShare",
-        "line": 2395,
-        "end_line": 2417,
+        "line": 2446,
+        "end_line": 2468,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.openLimit",
-        "line": 2423,
-        "end_line": 2426,
+        "line": 2474,
+        "end_line": 2477,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.shortSeriesName",
-        "line": 2428,
-        "end_line": 2430,
+        "line": 2479,
+        "end_line": 2481,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleBrush",
-        "line": 2431,
-        "end_line": 2435,
+        "line": 2482,
+        "end_line": 2486,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.chooseScale",
-        "line": 2436,
-        "end_line": 2440,
+        "line": 2487,
+        "end_line": 2491,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.bigDigits",
-        "line": 3188,
-        "end_line": 3188,
+        "line": 3225,
+        "end_line": 3225,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -51549,47 +51573,47 @@
       },
       {
         "source": "../lib/countryOrder",
-        "line": 77
-      },
-      {
-        "source": "../lib/sitePaths",
         "line": 78
       },
       {
-        "source": "../components/Breadcrumbs",
-        "line": 83
+        "source": "../lib/sitePaths",
+        "line": 79
       },
       {
-        "source": "../lib/slugFlags",
+        "source": "../components/Breadcrumbs",
         "line": 84
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/slugFlags",
         "line": 85
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../lib/breadcrumbs",
         "line": 86
       },
       {
-        "source": "../styles/w6-g.css",
+        "source": "../styles/regions-w4.css",
         "line": 87
       },
       {
-        "source": "../styles/z7-compare.css",
+        "source": "../styles/w6-g.css",
         "line": 88
       },
       {
-        "source": "../styles/k5-pages.css",
+        "source": "../styles/z7-compare.css",
         "line": 89
       },
       {
-        "source": "../styles/k4-charts.css",
+        "source": "../styles/k5-pages.css",
         "line": 90
       },
       {
-        "source": "../styles/c11c-charts.css",
+        "source": "../styles/k4-charts.css",
         "line": 91
+      },
+      {
+        "source": "../styles/c11c-charts.css",
+        "line": 92
       }
     ],
     "exports": [
@@ -51597,19 +51621,19 @@
         "names": [
           "CompareTooltip"
         ],
-        "line": 1512
+        "line": 1524
       },
       {
         "names": [
           "default"
         ],
-        "line": 1571
+        "line": 1583
       }
     ],
-    "anonymous_functions": 282
+    "anonymous_functions": 279
   },
   "frontend/src/pages/ComparePage.rates.component.test.jsx": {
-    "sha256": "abf6671a306e4451d5bde97f4f9c9ee0da2eb4eb56feeca8320c7fc2e4c6c69b",
+    "sha256": "295e80c5e017f238c7d7761faaf4bc750e0487f0795e7b059efc833dc3a58570",
     "definitions": [
       {
         "name": "item",
@@ -51625,14 +51649,14 @@
       },
       {
         "name": "mockApis",
-        "line": 74,
-        "end_line": 86,
+        "line": 93,
+        "end_line": 108,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "cardOf",
-        "line": 88,
-        "end_line": 96,
+        "line": 110,
+        "end_line": 118,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -51655,7 +51679,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 8
+    "anonymous_functions": 14
   },
   "frontend/src/pages/ComparePage.states.component.test.jsx": {
     "sha256": "00f20a0c175f8f5fc55223534aba6df8e6f4a4831ba590967ef8e5dda0562df8",
@@ -51687,6 +51711,55 @@
     ],
     "exports": [],
     "anonymous_functions": 15
+  },
+  "frontend/src/pages/ComparePage.step.component.test.jsx": {
+    "sha256": "2e8a6c31bbb028f9491f08bb8d23e12541a495afcc10b58f929b6ddbe0f46c22",
+    "definitions": [
+      {
+        "name": "item",
+        "line": 16,
+        "end_line": 29,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "seriesFor",
+        "line": 46,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "mockApis",
+        "line": 59,
+        "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "seriesCalls",
+        "line": 73,
+        "end_line": 73,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./ComparePage",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 22
   },
   "frontend/src/pages/ComparePage.w6.component.test.jsx": {
     "sha256": "1ecffb1d27bb0f2362b8e43f58afce247fb3d83601d90cfb9c34e97bd1739ee3",

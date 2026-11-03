@@ -186,6 +186,19 @@ export function defaultWorldRepresentation(meta, siblingMetas = []) {
   return hasRateSibling && !isReadyRateMeta(meta) ? REP_YOY : REP_LEVEL;
 }
 
+const FREQUENCY_RANK = { daily: 0, weekly: 1, monthly: 2, quarterly: 3, annual: 4 };
+const STEP_FREQUENCY = { month: 'monthly', quarter: 'quarterly', year: 'annual' };
+
+/**
+ * Частота, которую у сервера просят для мирового ряда при выбранном шаге графика. Только более крупный период, чем у
+ * ряда (месяц → квартал → год): тот же или более мелкий не достраивается, ряд остаётся в частоте источника.
+ */
+export function worldRequestedFrequency(step, nativeFrequency) {
+  const target = STEP_FREQUENCY[step];
+  const rank = FREQUENCY_RANK[String(nativeFrequency || '').toLowerCase().replace('yearly', 'annual')];
+  return target && rank !== undefined && FREQUENCY_RANK[target] > rank ? target : null;
+}
+
 export function worldCompareTransformFor(repId, frequency) {
   if (repId === REP_POP) return `world-pop-${frequency}`;
   if (repId === REP_YOY) return `world-yoy-${frequency}`;

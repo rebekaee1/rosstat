@@ -11,16 +11,13 @@ const TOPICS = [
   ['Образование безработных', 'Education of unemployed people', /^unemployed-higher-education-share(?:-annual)?$/],
 ];
 
-export function hasLaborBreakdowns(indicators) {
-  return indicators.some(({ code }) => TOPICS.some(([, , pattern]) => pattern.test(code)));
-}
-
-export default function LaborIndicatorGroups({ indicators, gridClass, renderIndicator, expandAll }) {
+export default function LaborIndicatorGroups({ indicators, gridClass, renderIndicator, expandAll, fallback }) {
   const { locale } = useLocale();
   const grouped = TOPICS.map(([ru, en, pattern]) => ({
     title: locale === 'en' ? en : ru,
     items: indicators.filter(({ code }) => pattern.test(code)),
   })).filter(({ items }) => items.length > 0);
+  if (grouped.length === 0 && fallback) return fallback;
   const groupedCodes = new Set(grouped.flatMap(({ items }) => items.map(({ code }) => code)));
   const headline = indicators.find(({ code }) => code === 'unemployment');
   const overview = indicators.filter(({ code }) => code !== 'unemployment' && !groupedCodes.has(code));
