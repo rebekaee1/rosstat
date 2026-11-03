@@ -63,7 +63,8 @@ import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
   compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
-  applyCompareTransform, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
+  applyCompareTransform, commonIndexBase, isReadyRateMeta, mergeWorldRepMeta, normalizeRateUnit, rebaseToHundred,
+  requiresRebasedPriceIndex, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
 } from '../lib/compareRepresentation';
 import {
@@ -1674,6 +1675,7 @@ export default function ComparePage({ renderSave = null } = {}) {
       conceptSlug: item.concept_slug,
       unit: item.unit,
       peerMode: item.peer_mode,
+      valueAdjust: item.value_adjust,
     }])),
     [worldCompareCatalog],
   );
@@ -1845,16 +1847,19 @@ export default function ComparePage({ renderSave = null } = {}) {
         meta,
         codes.filter((other) => other !== code).map((other) => worldMetaByCode.get(other)),
       );
-      const options = worldCompareRepresentationsFor(meta);
+      const options = worldCompareRepresentationsFor(mergeWorldRepMeta(meta, null));
       const repId = options.some((item) => item.id === requestedRep)
         ? requestedRep
         : REP_LEVEL;
+      // Индекс «тот же месяц прошлого года = 100» (Китай) — уже темп; чтобы стать процентом, из него вычитается 100.
+      const minus100 = meta?.valueAdjust === 'minus_100';
       return {
         code, ind: null, repId,
         repLabel: options.find((item) => item.id === repId)?.label || t('common.value'),
         fetchCode: code,
-        transform: worldCompareTransformFor(repId, meta?.frequency),
-        unit: repId === REP_LEVEL ? meta?.unit : '%',
+        transform: minus100 ? 'sub100' : worldCompareTransformFor(repId, meta?.frequency),
+        unit: minus100 || repId !== REP_LEVEL ? '%' : meta?.unit,
+        minus100,
         isWorld: true,
       };
     }
@@ -1921,6 +1926,12 @@ export default function ComparePage({ renderSave = null } = {}) {
     const known = r.isWorld
       ? (results[i]?.data?.__worldMeta?.name || worldNameByCode.get(r.code))
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.name : r.ind?.name;
+    // Каталог мог назвать ряд индексом, а сам ряд оказался темпом (МВФ: Япония, Южная Корея и ещё девять стран).
+    // Когда это видно по загруженному ряду, «к прошлому периоду»/«к году» не считаем: темп от темпа — бессмыслица.
+    const loadedMeta = r.isWorld ? results[i]?.data?.__worldMeta : null;
+    const alreadyRate = r.isWorld && r.repId !== REP_LEVEL
+      && isReadyRateMeta(mergeWorldRepMeta(worldMetaByCode.get(r.code), loadedMeta));
+    const repId = alreadyRate ? REP_LEVEL : r.repId;
     return {
     code: r.code,
     // Внутренний код никогда не показываем: пока название не пришло — null (скелетон).
@@ -1930,20 +1941,20 @@ export default function ComparePage({ renderSave = null } = {}) {
     ind: r.isWorld
       ? results[i]?.data?.__worldMeta
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta : r.ind,
-    rep: r.repId,
-    repLabel: r.repLabel,
+    rep: repId,
+    repLabel: alreadyRate ? t('common.value') : r.repLabel,
     unit: r.isWorld
-      ? (r.repId === REP_LEVEL ? results[i]?.data?.__worldMeta?.unit : r.unit)
+      ? (r.minus100 ? '%' : repId === REP_LEVEL ? normalizeRateUnit(loadedMeta?.unit) : r.unit)
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.unit : r.unit,
     isWorld: r.isWorld,
     isSubnational: r.isSubnational,
-    transform: r.transform,
+    transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : r.transform,
     stepDeep: r.stepDeep,
     data: results[i]?.data,
     loading: results[i]?.isLoading || r.waitingCatalog,
     error: results[i]?.isError || r.unknown,
     };
-  }), [resolved, results, worldNameByCode]);
+  }), [resolved, results, worldNameByCode, worldMetaByCode, t]);
 
   // Разные единицы измерения рядов (после резолва представления). Максимум две
   // оси — при 3+ различных единицах корректно показать нельзя, форсим индекс.
@@ -2248,7 +2259,8 @@ export default function ComparePage({ renderSave = null } = {}) {
   const unitsCaption = (() => {
     if (indexed || distinctUnits.length !== 1) return '';
     const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];
-    return unit && unit !== '%' ? t('z7.compare.valuesIn', { unit: String(unitLabel(unit)).replace(/\.$/, '') }) : '';
+    // Одна единица, в том числе «%»: общая подпись про две шкалы («слева и справа») при единственной оси неверна.
+    return unit ? t('z7.compare.valuesIn', { unit: unit === '%' ? '%' : String(unitLabel(unit)).replace(/\.$/, '') }) : '';
   })();
   // Разрыв двух величин словами: «США больше, чем Китай, в 1,6 раза».
   const gap = (() => {
@@ -2545,11 +2557,9 @@ export default function ComparePage({ renderSave = null } = {}) {
         {!isDemo && codes.length > 0 && (
           <div className="fe-compare-picked mt-4">
             {series.map((s) => {
+              // Каталог, уточнённый загруженным рядом: кнопки не должны обещать то, чего ряд не умеет (темп от темпа).
               const reps = s.isWorld
-                ? worldCompareRepresentationsFor({
-                    frequency: s.ind?.frequency,
-                    conceptSlug: s.ind?.conceptSlug,
-                  })
+                ? worldCompareRepresentationsFor(mergeWorldRepMeta(worldMetaByCode.get(s.code), s.ind))
                 : compareRepresentationsFor(s.ind || { code: s.code });
               return (
                 <div

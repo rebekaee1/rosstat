@@ -42,6 +42,20 @@ export const REP_HINT = {
 const LABEL_POP = () => t('compare.rep.pop');
 const LABEL_YOY = () => t('compare.rep.yoy');
 
+const PERCENT_UNIT = /%|‰|процент|percent/i;
+const SAME_MONTH_PREVIOUS_YEAR = /same month previous year|тот же месяц прошлого года/i;
+
+const CHANGE_RATE_UNIT = /year-over-year|year-on-year|за год|change/i;
+
+/**
+ * «Изменение за год, %» (инфляция России) и «%» (США «к прошлому году») — одна величина.
+ * Без приведения подписи разные, и график рисует две шкалы там, где нужна одна.
+ */
+export function normalizeRateUnit(unit) {
+  const text = String(unit || '');
+  return PERCENT_UNIT.test(text) && CHANGE_RATE_UNIT.test(text) ? '%' : unit;
+}
+
 const CPI_CODES = ['cpi', 'cpi-food', 'cpi-nonfood', 'cpi-services'];
 const HOUSING_CODES = ['housing-price-primary', 'housing-price-secondary'];
 
@@ -116,9 +130,41 @@ export function compareRepresentationsFor(indicator) {
   return REP_ORDER.filter((id) => map[id]).map((id) => ({ id, label: map[id].label }));
 }
 
+/**
+ * Мировой ряд уже выражен темпом, а не уровнем: процент (годовой темп России, ставка, доля), индекс «тот же месяц
+ * прошлого года = 100» (Китай) или готовый годовой темп индекса цен, который каталог называет индексом
+ * (МВФ: Япония, Южная Корея, Грузия и ещё девять стран; режим выборки у них `level-*`).
+ */
+export function isReadyRateMeta(meta) {
+  if (!meta) return false;
+  const unit = String(meta.unit || '');
+  if (PERCENT_UNIT.test(unit) || SAME_MONTH_PREVIOUS_YEAR.test(unit)) return true;
+  return meta.conceptSlug === 'hicp-index' && /^level-/.test(String(meta.peerMode || ''));
+}
+
+/**
+ * Метаданные для решения «какие представления у ряда»: каталог даёт частоту, понятие и режим, а единицу
+ * подтверждает сам ряд. Каталог мог назвать ряд индексом, когда это уже процентный темп: верим ряду.
+ */
+export function mergeWorldRepMeta(catalogMeta, loadedMeta) {
+  const base = catalogMeta || {};
+  const loaded = loadedMeta || {};
+  const merged = {
+    ...base,
+    frequency: base.frequency || loaded.frequency,
+    conceptSlug: base.conceptSlug || loaded.conceptSlug,
+    unit: base.unit || loaded.unit,
+  };
+  if (!isReadyRateMeta(merged) && isReadyRateMeta({ unit: loaded.unit })) merged.unit = loaded.unit;
+  return merged;
+}
+
 export function worldCompareRepresentationsFor(meta) {
   const options = [{ id: REP_LEVEL, label: t('compare.rep.value') }];
   if (!meta?.frequency || meta?.conceptSlug === 'budget-balance-gdp') return options;
+  // Ряд уже темп: «к прошлому периоду» дало бы процент от процента (у России 5,6 % к 9,5 % прошлого года —
+  // это −41 %, а не инфляция). Такой ряд показывается только значением.
+  if (isReadyRateMeta(meta)) return options;
   options.push(
     { id: REP_POP, label: LABEL_POP() },
     { id: REP_YOY, label: LABEL_YOY() },
@@ -126,20 +172,18 @@ export function worldCompareRepresentationsFor(meta) {
   return options;
 }
 
-const PERCENT_UNIT = /%|процент|percent/i;
-
 /**
  * Представление по умолчанию для мирового ряда. Индекс цен, который приходит уровнем (Турция, Германия), нельзя
- * честно сравнивать с рядом, уже выраженным в процентах за год (Россия): тогда уровень сразу показываем
+ * честно сравнивать с рядом, уже выраженным темпом за год (Россия): тогда уровень сразу показываем
  * как «% к прошлому году». Иначе остаётся уровень.
  */
 export function defaultWorldRepresentation(meta, siblingMetas = []) {
-  if (!meta || meta.peerMode !== 'yoy-monthly') return REP_LEVEL;
-  const hasPercentSibling = siblingMetas.some((other) => other
+  if (!meta || !/^yoy-/.test(String(meta.peerMode || ''))) return REP_LEVEL;
+  const hasRateSibling = siblingMetas.some((other) => other
     && other !== meta
     && other.conceptSlug === meta.conceptSlug
-    && PERCENT_UNIT.test(String(other.unit || '')));
-  return hasPercentSibling && !PERCENT_UNIT.test(String(meta.unit || '')) ? REP_YOY : REP_LEVEL;
+    && isReadyRateMeta(other));
+  return hasRateSibling && !isReadyRateMeta(meta) ? REP_YOY : REP_LEVEL;
 }
 
 export function worldCompareTransformFor(repId, frequency) {
@@ -189,9 +233,12 @@ export function isIndexableBase(base, { unit, repId, values } = {}) {
 
 /** Разные базы индекса цен нельзя показывать как сопоставимые уровни. */
 export function requiresRebasedPriceIndex(series) {
-  return series.length > 1
-    && series.every((item) => item.isWorld && item.ind?.conceptSlug === 'hicp-index')
-    && new Set(series.map((item) => item.unit)).size > 1;
+  if (!(series.length > 1 && series.every((item) => item.isWorld && item.ind?.conceptSlug === 'hicp-index'))) return false;
+  // База есть только у уровня индекса. Ряд в процентах (годовой темп России, «к прошлому периоду» США) уровнем не является:
+  // его единица отличается от базы 100 по определению и общую базу не требует.
+  const levels = series.filter((item) => (item.rep ?? REP_LEVEL) === REP_LEVEL
+    && !PERCENT_UNIT.test(String(item.unit || '')));
+  return levels.length > 1 && new Set(levels.map((item) => item.unit)).size > 1;
 }
 
 /** Значение ряда, приведённое к базе-100. Вызывать только при isIndexableBase(base). */

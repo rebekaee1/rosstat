@@ -3,7 +3,8 @@ import {
   REP_LEVEL, REP_POP, REP_YOY,
   compareRepresentationsFor, resolveCompareSeries, applyCompareTransform,
   isIndexableBase, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
-  worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
+  worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation, normalizeRateUnit,
+  isReadyRateMeta, mergeWorldRepMeta,
 } from './compareRepresentation';
 
 describe('compareRepresentation — resolver', () => {
@@ -118,6 +119,63 @@ describe('compareRepresentation — transforms', () => {
     )).toEqual([{ date: '2025-01-01', value: 10 }]);
   });
 
+  it('ряд уже в процентах (инфляция России за год, безработица, ставка) показывается только значением', () => {
+    // Россия в мировом наборе — «изменение за год, %»: «к прошлому периоду» дало бы −41 % вместо 5,6 % (5,6 / 9,51 − 1).
+    for (const unit of ['year-over-year change, %', 'изменение за год, %', '% of the labour force', '% годовых']) {
+      expect(worldCompareRepresentationsFor({
+        frequency: 'annual',
+        conceptSlug: 'hicp-index',
+        unit,
+      }).map((item) => item.id)).toEqual([REP_LEVEL]);
+    }
+    // Индекс цен США приходит уровнем — для него темпы остаются.
+    expect(worldCompareRepresentationsFor({
+      frequency: 'monthly',
+      conceptSlug: 'hicp-index',
+      unit: 'index (1982–84 = 100)',
+    }).map((item) => item.id)).toEqual([REP_LEVEL, REP_POP, REP_YOY]);
+  });
+
+  it('годовой темп России и «к прошлому году» США приводятся к одной единице', () => {
+    expect(normalizeRateUnit('year-over-year change, %')).toBe('%');
+    expect(normalizeRateUnit('изменение за год, %')).toBe('%');
+    // Доли и ставки остаются со своей подписью.
+    expect(normalizeRateUnit('% of GDP')).toBe('% of GDP');
+    expect(normalizeRateUnit('% of the labour force')).toBe('% of the labour force');
+    expect(normalizeRateUnit('index (1982–84 = 100)')).toBe('index (1982–84 = 100)');
+    expect(normalizeRateUnit(undefined)).toBe(undefined);
+  });
+
+  it('каталог назвал индексом ряд, который уже темп (МВФ: Япония; Китай «тот же месяц прошлого года = 100»)', () => {
+    // Япония: каталог — «индекс 2015=100», режим level-annual, сам ряд — «изменение за год, %» (jp-weo-pcpipch).
+    const japanCatalog = {
+      frequency: 'annual', conceptSlug: 'hicp-index', unit: 'индекс 2015=100', peerMode: 'level-annual',
+    };
+    expect(isReadyRateMeta(japanCatalog)).toBe(true);
+    expect(worldCompareRepresentationsFor(japanCatalog).map((item) => item.id)).toEqual([REP_LEVEL]);
+    // Китай: индекс к тому же месяцу прошлого года, режим level-monthly, из значения вычитается 100.
+    const chinaCatalog = {
+      frequency: 'monthly', conceptSlug: 'hicp-index', unit: 'индекс (тот же месяц прошлого года = 100)', peerMode: 'level-monthly',
+    };
+    expect(worldCompareRepresentationsFor(chinaCatalog).map((item) => item.id)).toEqual([REP_LEVEL]);
+    // Обычный индекс цен (США, Германия) — уровень, для него темпы считаются.
+    expect(isReadyRateMeta({
+      frequency: 'monthly', conceptSlug: 'hicp-index', unit: 'индекс 2015=100', peerMode: 'yoy-monthly',
+    })).toBe(false);
+    // Ряд сам подтверждает единицу, когда каталог ошибся (нет режима, единица — индекс).
+    const merged = mergeWorldRepMeta(
+      { frequency: 'annual', conceptSlug: 'hicp-index', unit: 'index 2015=100' },
+      { unit: 'year-over-year change, %' },
+    );
+    expect(merged.unit).toBe('year-over-year change, %');
+    expect(worldCompareRepresentationsFor(merged).map((item) => item.id)).toEqual([REP_LEVEL]);
+    // Ряд США рядом с готовым темпом Японии сразу показывается как «% к прошлому году».
+    expect(defaultWorldRepresentation(
+      { frequency: 'monthly', conceptSlug: 'hicp-index', unit: 'индекс (1982–84 = 100)', peerMode: 'yoy-monthly' },
+      [japanCatalog],
+    )).toBe(REP_YOY);
+  });
+
   it('signed budget concept remains level-only', () => {
     expect(worldCompareRepresentationsFor({
       frequency: 'annual',
@@ -172,6 +230,25 @@ describe('compareRepresentation — index base guard', () => {
     expect(requiresRebasedPriceIndex([germany, unitedStates])).toBe(true);
     expect(requiresRebasedPriceIndex([germany, france])).toBe(false);
     expect(requiresRebasedPriceIndex([germany])).toBe(false);
+  });
+
+  it('процентный ряд (Россия за год, США «к прошлому периоду») не заставляет переводить в базу 100', () => {
+    const russia = {
+      isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'изменение за год, %', rep: REP_LEVEL,
+    };
+    const usPop = {
+      isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: '%', rep: REP_POP,
+    };
+    const usLevel = {
+      isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'индекс 1982–84=100', rep: REP_LEVEL,
+    };
+    expect(requiresRebasedPriceIndex([russia, usPop])).toBe(false);
+    expect(requiresRebasedPriceIndex([russia, usLevel])).toBe(false);
+    // Два настоящих индекса с разными базами рядом с процентным рядом база по-прежнему нужна.
+    const germany = {
+      isWorld: true, ind: { conceptSlug: 'hicp-index' }, unit: 'индекс 2015=100', rep: REP_LEVEL,
+    };
+    expect(requiresRebasedPriceIndex([russia, usLevel, germany])).toBe(true);
   });
 
   it('rebaseToHundred приводит к базе-100 без выбросов на валидной базе', () => {

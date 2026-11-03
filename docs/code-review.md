@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `0a913ae1b0c50e36a92f91cc93efcae6902dee90`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `3e2b861dd3792e86cfba81f7d371a03a5366341a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2217 |
-| Код, шаблоны и стили | 1810 |
-| Актуальные рецензии без пропусков guard | 2217 |
-| Именованные определения Python/JS: с аннотацией / всего | 14653 / 14653 |
+| Файлы в явно определённом scope | 2218 |
+| Код, шаблоны и стили | 1811 |
+| Актуальные рецензии без пропусков guard | 2218 |
+| Именованные определения Python/JS: с аннотацией / всего | 14660 / 14660 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1635,7 +1635,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/compareInsight.js](../frontend/src/lib/compareInsight.js) | reviewed | 6/6 | актуально |
 | [frontend/src/lib/compareInsight.test.js](../frontend/src/lib/compareInsight.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/comparePresets.js](../frontend/src/lib/comparePresets.js) | reviewed | 3/3 | актуально |
-| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 21/21 | актуально |
+| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 24/24 | актуально |
 | [frontend/src/lib/compareRepresentation.test.js](../frontend/src/lib/compareRepresentation.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/compareStats.js](../frontend/src/lib/compareStats.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/compareStats.test.js](../frontend/src/lib/compareStats.test.js) | reviewed | 1/1 | актуально |
@@ -1975,6 +1975,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/ComparePage.c9.component.test.jsx](../frontend/src/pages/ComparePage.c9.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/ComparePage.component.test.jsx](../frontend/src/pages/ComparePage.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/ComparePage.jsx](../frontend/src/pages/ComparePage.jsx) | reviewed | 62/62 | актуально |
+| [frontend/src/pages/ComparePage.rates.component.test.jsx](../frontend/src/pages/ComparePage.rates.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/pages/ComparePage.states.component.test.jsx](../frontend/src/pages/ComparePage.states.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/ComparePage.w6.component.test.jsx](../frontend/src/pages/ComparePage.w6.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/ComparePage.z7.component.test.jsx](../frontend/src/pages/ComparePage.z7.component.test.jsx) | reviewed | 6/6 | актуально |

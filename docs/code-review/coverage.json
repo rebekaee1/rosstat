@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2217,
-    "code_files": 1810,
-    "current_reviews": 2217,
+    "files": 2218,
+    "code_files": 1811,
+    "current_reviews": 2218,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 2006
+      "reviewed": 2007
     },
-    "definitions": 14653,
-    "annotated_definitions": 14653,
+    "definitions": 14660,
+    "annotated_definitions": 14660,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -12412,9 +12412,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "7c3d8257eecbf98abfb4bda4406a6ed46d50a63eb84c3f5a00e3f1a46ed71378",
-      "bytes": 636554,
-      "lines": 3042,
+      "sha256": "c5daa61268933280a6ba2861851688a4fb81ea801ab86834467bd1c4738f670d",
+      "bytes": 644230,
+      "lines": 3063,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12438,9 +12438,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "8f594d06a38ef3e67b2f40d719b96bbaa0d37cdbe47f2c34ef96db1a54ec3540",
-      "bytes": 6816375,
-      "lines": 239956,
+      "sha256": "5a87e0513c19537497898559deeecc6a2d1fc5f0271df381dc2f61e83425d976",
+      "bytes": 6826703,
+      "lines": 240273,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12451,7 +12451,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "51253c27c06c995d3a6ecafba92d83c6d1f844e8453891f65cb914eedf787491",
+      "sha256": "bd27f127493753e4a5bf41fe1c67ca3335f329920f10e8b995586d5d6d7c5ba3",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -12477,9 +12477,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "4d7014667fb86ba2be2349819ec942c14c8bf270b026dd4ba8500f09f80a09e3",
-      "bytes": 278220,
-      "lines": 967,
+      "sha256": "4a021fd326dd19d0f74cca720b2c259e25f8c5304325f0af2e4a9435d74a6f77",
+      "bytes": 280966,
+      "lines": 969,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13010,9 +13010,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "c13ad8a53f869be32a773e645dc180b54cb4e53b2383a440a57bb269a9b85f60",
-      "bytes": 2929773,
-      "lines": 106079,
+      "sha256": "e99bb81936747d3c584a561f26f0d34fa8f24b218447eee9cd516fc96cbce8e5",
+      "bytes": 2930010,
+      "lines": 106089,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -20797,22 +20797,22 @@
     },
     {
       "path": "frontend/src/lib/compareRepresentation.js",
-      "sha256": "2a2a25d0921f316a07fb435ee8d1db483c92524039ae6ea84781b139ca031a6c",
-      "bytes": 16020,
-      "lines": 302,
+      "sha256": "9059bfb6b3305ed0d3596c9fe8af8c8e8762930aba1dd369310c8d953a0afc17",
+      "bytes": 19138,
+      "lines": 349,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 21,
-      "annotated_definitions": 21,
+      "definitions": 24,
+      "annotated_definitions": 24,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/compareRepresentation.test.js",
-      "sha256": "acbe8da73391245529de8eba472fbe32b047c6985d63bdd40e061834b511f4c7",
-      "bytes": 12950,
-      "lines": 269,
+      "sha256": "78339af23c5aaa66500b52f7c08edc3c6b6d02b1fccb2ffb7a4f4841a2de4fb9",
+      "bytes": 18093,
+      "lines": 346,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -25204,15 +25204,28 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.jsx",
-      "sha256": "be50e8c0758e4e347a2be80ce5a32faed72772d04845013c8f07c2d05209dda9",
-      "bytes": 156428,
-      "lines": 3277,
+      "sha256": "f7ede915ff17932278141b8dece07d04cb839121147a847e955469b6919821ab",
+      "bytes": 157979,
+      "lines": 3287,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 62,
       "annotated_definitions": 62,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/pages/ComparePage.rates.component.test.jsx",
+      "sha256": "abf6671a306e4451d5bde97f4f9c9ee0da2eb4eb56feeca8320c7fc2e4c6c69b",
+      "bytes": 5552,
+      "lines": 127,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 4,
+      "annotated_definitions": 4,
       "missing_definitions": []
     },
     {
@@ -28857,19 +28870,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "21082e207a5495b40322f6be3449a97c6fbd90a89c0517ac84afdfc180b24f93",
-  "javascript_inventory_sha256": "05529ecf94d248ea33690fca0d8a5d9334e4a10212a795bc395c11431ef300d4",
-  "baseline_commit": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
+  "ledger_sha256": "252e531b06c193de634dd5469234e8cea8b0d34e3af528b44c544cb0fe289774",
+  "javascript_inventory_sha256": "2faf74906a6cf802a4cca1b8e334214e9da58dbad3e6e4e6dc98b6c21903be6c",
+  "baseline_commit": "3e2b861dd3792e86cfba81f7d371a03a5366341a",
   "branch": "main",
   "unstaged_at_capture": [
-    "backend/app/services/rosstat_weekly_inflation_parser.py",
-    "backend/tests/test_rosstat_recovery.py",
-    "docs/backlog.md",
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json"
   ]
 }
