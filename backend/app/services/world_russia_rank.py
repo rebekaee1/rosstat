@@ -24,8 +24,10 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.data.eurostat_listing import normalize_frequency
 from app.data.world_concept_russia import (
     RUSSIA_COUNTRY_PAYLOAD,
+    RUSSIA_CONCEPT_LINKS,
     RussiaConceptLink,
     russia_link_for_concept,
 )
@@ -224,6 +226,62 @@ def _rank_mode_for_link(link: RussiaConceptLink, concept_mode: RankMode) -> Rank
     return concept_mode
 
 
+def russia_link_source(link: RussiaConceptLink, loc: str) -> str:
+    """Подпись источника российского ряда: явная у связки или «Росстат»."""
+    from app.services.seo_i18n import translate_source
+
+    if loc == "en" and (link.source_en or "").strip():
+        return link.source_en
+    if (link.source_ru or "").strip():
+        return translate_source(link.source_ru, loc) or link.source_ru
+    return translate_source("Росстат", loc) or ("Rosstat" if loc == "en" else "Росстат")
+
+
+# Месячные и квартальные национальные ряды (ИПЦ за год, безработица) в сравнении идут как есть, а не одной точкой
+# в год: иначе ряд России кончается декабрём прошлого года и не стыкуется с месячными рядами других стран.
+_NATIVE_COMPARE_FREQUENCIES = frozenset({"monthly", "quarterly"})
+
+
+def russia_compare_is_native(concept_slug: str, indicator_frequency: str | None) -> bool:
+    """Отдаёт ли сравнение российский ряд понятия в его частоте (иначе — годовые значения)."""
+    if concept_slug in _GDP_USD_METHOD_CONCEPTS or russia_link_for_concept(concept_slug) is None:
+        return False
+    return normalize_frequency(indicator_frequency) in _NATIVE_COMPARE_FREQUENCIES
+
+
+async def russia_compare_frequencies(db: AsyncSession) -> dict[str, str]:
+    """Частота российского ряда в сравнении по понятиям: `monthly`/`quarterly` или `annual`."""
+    codes = {link.indicator_code: slug for slug, link in RUSSIA_CONCEPT_LINKS.items()}
+    rows = (
+        await db.execute(
+            select(Indicator.code, Indicator.frequency).where(Indicator.code.in_(sorted(codes)))
+        )
+    ).all()
+    stored = {code: frequency for code, frequency in rows}
+    out: dict[str, str] = {}
+    for slug, link in RUSSIA_CONCEPT_LINKS.items():
+        frequency = stored.get(link.indicator_code)
+        out[slug] = normalize_frequency(frequency) if russia_compare_is_native(slug, frequency) else "annual"
+    return out
+
+
+async def russia_native_compare_series(
+    db: AsyncSession,
+    concept_slug: str,
+) -> tuple[Indicator, list[tuple[date, float]]] | None:
+    """Российский ряд понятия во всей его частоте (после множителя связки) или None, если он годовой."""
+    link = russia_link_for_concept(concept_slug)
+    if link is None:
+        return None
+    loaded = await _load_indicator_series(db, link.indicator_code)
+    if loaded is None:
+        return None
+    indicator, series = loaded
+    if not russia_compare_is_native(concept_slug, indicator.frequency):
+        return None
+    return indicator, _scaled_series(series, link)
+
+
 async def russia_yearly_by_code(
     db: AsyncSession,
     concept_slug: str,
@@ -250,18 +308,10 @@ async def russia_yearly_by_code(
     series = _scaled_series(series, link)
     mode = _rank_mode_for_link(link, concept_mode)
     from app.services.locale import get_locale
-    from app.services.seo_i18n import translate_source
 
     loc = get_locale()
     country_name = "Russia" if loc == "en" else "Россия"
-    if loc == "en" and (link.source_en or "").strip():
-        source = link.source_en
-    elif (link.source_ru or "").strip():
-        source = translate_source(link.source_ru, loc) or link.source_ru
-    else:
-        source = translate_source("Росстат", loc) or (
-            "Rosstat" if loc == "en" else "Росстат"
-        )
+    source = russia_link_source(link, loc)
     out: dict[str, dict[str, Any]] = {}
     for year, (point_date, value) in yearly_last_points(
         series, mode, concept_slug=concept_slug,

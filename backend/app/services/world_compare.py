@@ -191,6 +191,14 @@ def _compare_member_sort_key(
     )
 
 
+def compare_member_sort_key(
+    indicator: WorldIndicator,
+    national_codes: frozenset[str],
+) -> tuple:
+    """Ключ выбора ряда страны для сравнения: меньше — лучше. Общий для каталога и `/compare/series`."""
+    return _compare_member_sort_key(indicator, national_codes)
+
+
 def choose_compare_indicator(
     indicators: list[WorldIndicator],
     concept,

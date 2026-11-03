@@ -19,17 +19,17 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2218,
-    "code_files": 1811,
-    "current_reviews": 2218,
+    "files": 2219,
+    "code_files": 1812,
+    "current_reviews": 2219,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "data_schema_reviewed": 6,
-      "reviewed": 2007
+      "reviewed": 2008
     },
-    "definitions": 14660,
-    "annotated_definitions": 14660,
+    "definitions": 14674,
+    "annotated_definitions": 14674,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -1310,9 +1310,9 @@
     },
     {
       "path": "backend/app/api/world.py",
-      "sha256": "88b9ab34f48eeb9a97638a3fdf3e283a1e8a25f78290f68f0163f9f5d87f2cb9",
-      "bytes": 117111,
-      "lines": 2780,
+      "sha256": "469f56b7cf3bba60092e73d0783e05d9c7b28a3d39280a4eeb65e2d00d8a158a",
+      "bytes": 120959,
+      "lines": 2840,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5587,15 +5587,15 @@
     },
     {
       "path": "backend/app/services/world_compare.py",
-      "sha256": "370bd2ba1f9527b50f12b6880e254584f62cbc99d50a5730f4d9b869b8417974",
-      "bytes": 12223,
-      "lines": 320,
+      "sha256": "2c5b4d343afd095e7b8e218126ac05ace25475a0091ef0824f1cf99c49e46693",
+      "bytes": 12563,
+      "lines": 328,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 9,
-      "annotated_definitions": 9,
+      "definitions": 10,
+      "annotated_definitions": 10,
       "missing_definitions": []
     },
     {
@@ -5756,15 +5756,15 @@
     },
     {
       "path": "backend/app/services/world_russia_rank.py",
-      "sha256": "fcb0474f6bff7e554bac3b942fb843fe5cd055d5a2650e4301e593fcf22cd3f5",
-      "bytes": 12659,
-      "lines": 325,
+      "sha256": "d046850d711f4f05943f48c9ac1df984c38fe248ff33eff23c421c961b4c0677",
+      "bytes": 15339,
+      "lines": 375,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 11,
-      "annotated_definitions": 11,
+      "definitions": 15,
+      "annotated_definitions": 15,
       "missing_definitions": []
     },
     {
@@ -10865,15 +10865,15 @@
     },
     {
       "path": "backend/tests/test_world.py",
-      "sha256": "1268e3b83a42c489345d42ae49ee18e05f48739ae12f9bfce6325af64c594e55",
-      "bytes": 39763,
-      "lines": 957,
+      "sha256": "e9d646b73e86bf19813da15aa9f50ff877f488e115f5d8d04c532cb2f3356c88",
+      "bytes": 40129,
+      "lines": 963,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 41,
-      "annotated_definitions": 41,
+      "definitions": 42,
+      "annotated_definitions": 42,
       "missing_definitions": []
     },
     {
@@ -11043,6 +11043,19 @@
       "issues": [],
       "definitions": 4,
       "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_world_compare_catalog_consistency.py",
+      "sha256": "d05fec9b20aa9be5ad3a99d7768b811e920e30e7b8134052978532b5c7722992",
+      "bytes": 7957,
+      "lines": 151,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 8,
+      "annotated_definitions": 8,
       "missing_definitions": []
     },
     {
@@ -12412,8 +12425,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "c5daa61268933280a6ba2861851688a4fb81ea801ab86834467bd1c4738f670d",
-      "bytes": 644230,
+      "sha256": "7724967712bdf7596aa2dea3128c236248553af724ce701dd1e97e21db0b784a",
+      "bytes": 645277,
       "lines": 3063,
       "code": false,
       "status": "reviewed",
@@ -12477,9 +12490,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "4a021fd326dd19d0f74cca720b2c259e25f8c5304325f0af2e4a9435d74a6f77",
-      "bytes": 280966,
-      "lines": 969,
+      "sha256": "d474dfef52c1154e77938765a63b60a1add9893a7b3b45a7f8679ed455b8470b",
+      "bytes": 283431,
+      "lines": 973,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13010,9 +13023,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "e99bb81936747d3c584a561f26f0d34fa8f24b218447eee9cd516fc96cbce8e5",
-      "bytes": 2930010,
-      "lines": 106089,
+      "sha256": "3e3af5a5d381fffbc97f6a73bb0e5c05345f8093fd74c5b40b17ab03b36c72b8",
+      "bytes": 2932070,
+      "lines": 106159,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13062,9 +13075,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "d8f868a04ec0fcddbbb9d3e119310fadc0b496837861b5e9e0f05b7b957e9fe1",
-      "bytes": 10881317,
-      "lines": 328417,
+      "sha256": "adbade1bf8e49f6aef55bd486f6edeae282fb533b79665fb8ac477815815f057",
+      "bytes": 10894260,
+      "lines": 328841,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13075,9 +13088,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "84507b22b84d4e48e70b632f9dc2c809c64738d02b95557366657e8c7337cd3c",
-      "bytes": 537641,
-      "lines": 3050,
+      "sha256": "74a83f0b70fafd2ae54f5ef27542d920ca5e99a1dc2595fde376abef234cce86",
+      "bytes": 537841,
+      "lines": 3051,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -28870,13 +28883,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "252e531b06c193de634dd5469234e8cea8b0d34e3af528b44c544cb0fe289774",
+  "ledger_sha256": "f6843c95759d4645d14db3128d63210924974eadb6079a356ec58df245ea5ae9",
   "javascript_inventory_sha256": "2faf74906a6cf802a4cca1b8e334214e9da58dbad3e6e4e6dc98b6c21903be6c",
-  "baseline_commit": "3e2b861dd3792e86cfba81f7d371a03a5366341a",
+  "baseline_commit": "345ab81c20b66dfcbaf9986c3415c5a052950e5a",
   "branch": "main",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json"
-  ]
+  "unstaged_at_capture": []
 }

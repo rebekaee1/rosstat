@@ -94,6 +94,7 @@ from app.services.world_official_forecast import official_forecast_info
 from app.services.world_rank_values import (
     apply_rank_series,
     latest_rank_point,
+    YOY_KIND_LEVEL,
     YOY_KIND_PASSTHROUGH,
     rank_yoy_kind,
     ranking_display_name,
@@ -109,12 +110,16 @@ from app.services.world_compare import (
     concept_members as _concept_members,
     concept_member_rank as _concept_member_rank,
     concept_unit_compatible as _concept_unit_compatible,
+    compare_member_sort_key as _compare_member_sort_key,
     peer_fetch_mode as _peer_fetch_mode,
 )
 from app.services.world_russia_rank import (
     merge_russia_into_values_by_year,
+    russia_compare_frequencies,
     russia_latest_snapshot_item,
+    russia_link_source,
     russia_meta_for_concept,
+    russia_native_compare_series,
 )
 from app.services.world_cards import (
     apply_resolved,
@@ -1144,7 +1149,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     Британия/Индия/Мексика в калькуляторе инфляции отдают свой официальный
     индекс цен с родными юнитом и источником, а не 404.
     """
-    cache_key = await versioned_key("world", f"compare:catalog:v8:{get_locale()}")
+    cache_key = await versioned_key("world", f"compare:catalog:v9:{get_locale()}")
     cached = await api_cache_get(cache_key, cache_get)
     if cached:
         return cached
@@ -1183,9 +1188,10 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     def is_national(indicator: WorldIndicator) -> bool:
         return indicator.code in national_code_to_concept
 
-    # Одна страна — один ряд на понятие: национальный crosswalk имеет приоритет
-    # над eurostat-дублем (как в _concept_members).
-    by_country_concept: dict[tuple[str, str], dict] = {}
+    # Одна страна — один ряд на понятие, тот же, что отдаёт `/compare/series` (`choose_compare_indicator`): национальный
+    # crosswalk, затем listed Евростат, затем более свежий хвост истории, затем код.
+    national_by_slug = {slug: national_codes_for_concept(slug) for slug in concepts}
+    by_country_concept: dict[tuple[str, str], tuple[WorldCountry, WorldIndicator, object]] = {}
     for country, indicator in rows:
         if is_national(indicator):
             concept = concepts.get(national_code_to_concept[indicator.code])
@@ -1195,23 +1201,61 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             concept = concept_for_indicator(indicator)
             if concept is None or concept.slug not in concepts:
                 continue
+        key = (concept.slug, country.slug)
+        prev = by_country_concept.get(key)
+        if prev is None or (
+            _compare_member_sort_key(indicator, national_by_slug[concept.slug])
+            < _compare_member_sort_key(prev[1], national_by_slug[concept.slug])
+        ):
+            by_country_concept[key] = (country, indicator, concept)
+
+    # Рядом с listed-рядом не из Евростата (МВФ) может стоять непубличный Евростат того же понятия, и `/compare/series`
+    # отдаёт именно его: месячная безработица Японии глубже годовой оценки фонда. Каталог описывает тот же ряд.
+    needs_unlisted: dict[str, set[int]] = {}
+    for (slug, _country_slug), (country, indicator, _concept) in by_country_concept.items():
+        if _concept_member_rank(indicator, national_by_slug[slug]) >= 3:
+            needs_unlisted.setdefault(slug, set()).add(country.id)
+    for slug, country_ids in needs_unlisted.items():
+        concept = concepts[slug]
+        eurostat_datasets = sorted(
+            str(ds).lower()
+            for ds in ((concept.provider_dataset_ids or {}).get("eurostat") or concept.dataset_ids)
+        )
+        extra_rows = (
+            await db.execute(
+                select(WorldCountry, WorldIndicator)
+                .join(WorldIndicator, WorldIndicator.country_id == WorldCountry.id)
+                .where(
+                    WorldCountry.id.in_(sorted(country_ids)),
+                    WorldIndicator.is_listed.is_(False),
+                    WorldIndicator.points_count > 0,
+                    WorldIndicator.history_end >= date(2020, 1, 1),
+                    func.lower(WorldIndicator.dataset_id).in_(eurostat_datasets),
+                )
+            )
+        ).all()
+        for country, indicator in extra_rows:
+            if concept_for_indicator(indicator) != concept or not _concept_unit_compatible(concept, indicator):
+                continue
+            key = (slug, country.slug)
+            current = by_country_concept[key]
+            if _compare_member_sort_key(indicator, national_by_slug[slug]) < _compare_member_sort_key(
+                current[1], national_by_slug[slug],
+            ):
+                by_country_concept[key] = (country, indicator, concept)
+
+    items = []
+    for country, indicator, concept in by_country_concept.values():
         payload = _compare_series_payload(country, indicator, concept)
         payload["peer_mode"], payload["value_adjust"] = _peer_fetch_mode(concept, indicator)
-        # Юнит национального ряда — родной из его метаданных (разные базы
-        # индекса у FRED/ABS/ONS не притворяются «2015=100»).
-        if is_national(indicator):
+        # Единица ряда, а не понятия, у национальных рядов и у МВФ-инфляции (уже %): так же, как в `/compare/series`.
+        if is_national(indicator) or rank_yoy_kind(indicator) != YOY_KIND_LEVEL:
             payload["unit"] = _indicator_public_unit(indicator)
-        prev = by_country_concept.get((concept.slug, country.slug))
-        if prev is None:
-            by_country_concept[(concept.slug, country.slug)] = payload
-            continue
-        prev_is_national = prev["indicator_code"] in national_code_to_concept
-        if is_national(indicator) and not prev_is_national:
-            by_country_concept[(concept.slug, country.slug)] = payload
+        items.append(payload)
 
-    items = list(by_country_concept.values())
     loc = get_locale()
     russia_name = "Russia" if loc == "en" else "Россия"
+    russia_frequency = await russia_compare_frequencies(db)
     for concept in concepts.values():
         if not russia_eligible(concept.slug):
             continue
@@ -1225,7 +1269,8 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
             "concept_slug": concept.slug,
             "concept_name": concept_public_name(concept),
             "concept_name_en": (concept.name_en or "").strip(),
-            "frequency": "annual",
+            # Частота ряда, который отдаёт `/compare/series/russia/...`: месячная у ИПЦ за год и безработицы, годовая у остальных.
+            "frequency": russia_frequency[concept.slug],
             "unit": ranking_public_unit(
                 "yoy" if link.value_kind == "yoy_ready" else "level",
                 concept_public_unit(concept),
@@ -1239,7 +1284,11 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
 
 
 async def _russia_compare_series(db: AsyncSession, concept) -> dict:
-    """Годовой ряд России из национального расчёта (`russia_yearly_by_code`)."""
+    """Ряд России для сравнения: месячный у ИПЦ за год и безработицы, годовые значения у остальных.
+
+    Месячный ряд идёт как есть (`russia_native_compare_series`), иначе он кончался бы декабрём прошлого года и не
+    стыковался с месячными рядами других стран. Остальные понятия — годовой национальный расчёт (`russia_yearly_by_code`).
+    """
     from app.services.world_russia_rank import russia_meta_for_concept, russia_yearly_by_code
 
     if not russia_eligible(concept.slug):
@@ -1251,30 +1300,41 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
             ),
         )
     public_unit = concept_public_unit(concept)
-    yearly = await russia_yearly_by_code(
-        db, concept.slug, concept_mode="level", public_unit=public_unit,
-    )
-    if not yearly:
-        raise HTTPException(
-            404,
-            api_detail(
-                "Для страны нет сопоставимого ряда",
-                "No comparable series for this country",
-            ),
-        )
-    loc = get_locale()
     link = russia_link_for_concept(concept.slug)
+    loc = get_locale()
+    native = await russia_native_compare_series(db, concept.slug)
+    if native is not None:
+        indicator, series = native
+        data = [{"date": point_date.isoformat(), "value": round(float(value), 4)} for point_date, value in series]
+        freq = normalize_frequency(indicator.frequency)
+        source = russia_link_source(link, loc)
+        indicator_code = link.indicator_code
+    else:
+        yearly = await russia_yearly_by_code(
+            db, concept.slug, concept_mode="level", public_unit=public_unit,
+        )
+        if not yearly:
+            raise HTTPException(
+                404,
+                api_detail(
+                    "Для страны нет сопоставимого ряда",
+                    "No comparable series for this country",
+                ),
+            )
+        data = [
+            {"date": yearly[year]["date"], "value": yearly[year]["value"]}
+            for year in sorted(yearly, key=int)
+        ]
+        sample = next(iter(yearly.values()))
+        # Точка в год: частота ряда годовая, что бы ни хранила исходная карточка (у безработицы она месячная).
+        freq = "annual"
+        source = sample.get("source")
+        indicator_code = link.indicator_code if link else sample.get("indicator_code")
     meta_extra = russia_meta_for_concept(concept.slug) or {}
-    data = [
-        {"date": yearly[year]["date"], "value": yearly[year]["value"]}
-        for year in sorted(yearly, key=int)
-    ]
-    sample = next(iter(yearly.values()))
-    freq = normalize_frequency(sample.get("frequency") or "annual")
     return {
         "meta": {
             "code": f"w:russia:{concept.slug}",
-            "indicator_code": link.indicator_code if link else sample.get("indicator_code"),
+            "indicator_code": indicator_code,
             "country_slug": "russia",
             "country_name": "Russia" if loc == "en" else "Россия",
             "concept_slug": concept.slug,
@@ -1283,10 +1343,10 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
             "unit": (
                 ranking_public_unit("yoy", public_unit)
                 if link and link.value_kind == "yoy_ready"
-                else sample.get("unit") or public_unit
+                else public_unit
             ),
             "note": meta_extra.get("note"),
-            "source": sample.get("source"),
+            "source": source,
             "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
         },
         "data": data,
@@ -1318,7 +1378,7 @@ async def world_compare_series(
 
     if country_slug == "russia":
         cache_key = await versioned_key(
-            "world", f"compare:series:v2:russia:{concept.slug}:{get_locale()}"
+            "world", f"compare:series:v3:russia:{concept.slug}:{get_locale()}"
         )
         cached = await cache_get(cache_key)
         if cached:

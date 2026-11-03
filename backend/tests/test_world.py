@@ -915,10 +915,16 @@ def test_russia_compare_series_labels_ready_yoy_as_percent(monkeypatch):
             "frequency": "annual", "unit": public_unit,
         }}
 
+    async def no_native(_db, _slug):
+        return None
+
     monkeypatch.setattr(world_russia_rank, "russia_yearly_by_code", yearly)
     monkeypatch.setattr(world_russia_rank, "russia_meta_for_concept", lambda _slug: {})
+    # Нет месячного ряда в базе: остаются годовые значения, и частота ряда годовая, как в каталоге.
+    monkeypatch.setattr("app.api.world.russia_native_compare_series", no_native)
     payload = asyncio.run(_russia_compare_series(None, CONCEPT_BY_SLUG["hicp-index"]))
     assert payload["meta"]["unit"] == "изменение за год, %"
+    assert payload["meta"]["frequency"] == "annual"
     assert payload["data"] == [{"date": "2025-12-01", "value": 6.34}]
 
 
