@@ -2482,7 +2482,7 @@
         "main": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "e5b781f753fe4b54b38f82d2d182bdc8cd8f34687e23ddc96a65a5d201b05531",
+        "sha256": "0a686afe1a2709f8bf134b3fb6d0c9cd401604112a2a4699f0558faf0b55825e",
         "bytes": 73303
       },
       "review_status": "прежнее полное чтение + содержательная дельта: diff 7f67fcce..HEAD прочитан по изменённым диапазонам, тела изменённых и новых определений прочитаны, неизменные перенесены по совпадению текста",
@@ -3294,7 +3294,7 @@
         "main": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "61900d4911abe14d9edfaa633df9ed103a51d38c1ffad9c5dc13bc5129a2a797",
+        "sha256": "99377f94b19de840df351ad9d9c73ce6541a5f0f73ad8fb190fc50e83e949886",
         "bytes": 304001
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
@@ -11476,7 +11476,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "4511c07d67e192726be7a1c43f304e2afe02ca0ca47652a60994e7ab7f30a9a8",
+        "sha256": "cd6de7c28c0843d154815db7f1918ad696ae4462381d8a29ccedb80fddf8ba0e",
         "bytes": 298904
       },
       "review_status": "unreviewed_content",
@@ -12679,7 +12679,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "91d5c37323ad0c4604dad0d7662e954e7be6bdf73b012f7ef6ee2d477146c27d",
+        "sha256": "99fb3f463afeb98f8b2d2c57480e49948eefb46ba4c387945bad15ee34f4f86b",
         "bytes": 844058
       },
       "review_status": "generated_snapshot",
@@ -14461,7 +14461,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "dc642b765bf5c1bbd39d5e25fc9a84fe4e9a3ba469babc3c449c66cd298e1c03",
+        "sha256": "e788de297263ad49e1ecdeeed231da2b3b471976da3f27035ae17f5ae1249aa8",
         "bytes": 7360170
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -17769,7 +17769,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "cac9191c25056f1a03b10c2d71c0c32d829b5a8beda4eb8bbf8f98ea73366bc7",
+        "sha256": "105cb96fb42b801e3035046a7252cfd64d12c0fc4a9eb3bf056104d3e66c693e",
         "bytes": 22315761
       },
       "review_status": "generated_snapshot",
@@ -19520,7 +19520,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "86b5a8cbc513764b1ad706f6fea21df42d864eadcee0b227d0f1ceda49f1754c",
+        "sha256": "6c320766010bd210565a714aaa2b73de48e3747ca367e256e4b7a1a767b8d27a",
         "bytes": 283417
       },
       "review_status": "exact_version_review_in_ledger",
@@ -20549,7 +20549,7 @@
         "main": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "6cdeee517dc9a5a723bb8604d9db249861b7e2be692bd14964c6d12277fd7560",
+        "sha256": "33880c3df595f2740275c5b284a160a92a982165dfd544dab18a0bd339172a61",
         "bytes": 104241
       },
       "review_status": "previous_full_read_plus_reviewed_delta",
@@ -23973,7 +23973,7 @@
         "main": "8005aa49cdf047c3600bd71818eb9b54a78406b7",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "3e3af5a5d381fffbc97f6a73bb0e5c05345f8093fd74c5b40b17ab03b36c72b8",
+        "sha256": "aca41c2828a3368191ab634712b09f452a16ecd1673f45a2680e676135b9e86f",
         "bytes": 2932070
       },
       "review_status": "generated_snapshot",
@@ -32111,7 +32111,7 @@
         "main": "0a913ae1b0c50e36a92f91cc93efcae6902dee90",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "14588cc284d1981788aed7ed74ceba55f789acf2ac10adfe0be5dec1eab0d575",
+        "sha256": "668a2bb7dcf0c3699f2234f9bce1e3679b5b5c0d826f593474bd2617ee20c96d",
         "bytes": 98628
       },
       "review_status": "generated_snapshot",
@@ -33232,7 +33232,7 @@
         "main": "8005aa49cdf047c3600bd71818eb9b54a78406b7",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "adbade1bf8e49f6aef55bd486f6edeae282fb533b79665fb8ac477815815f057",
+        "sha256": "1d3880edf21d2a9f5ba8e8fd0491caef2665c1be1a2a015ad0a3b5e625a6c6d4",
         "bytes": 10894260
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -33918,7 +33918,7 @@
         "main": "8005aa49cdf047c3600bd71818eb9b54a78406b7",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "74a83f0b70fafd2ae54f5ef27542d920ca5e99a1dc2595fde376abef234cce86",
+        "sha256": "65df91f7b101b57893023d0d099b302a6f6552e17e75d7efb06e992b87dae4a3",
         "bytes": 537841
       },
       "current_delta_reviewed_in_this_pass": false,
@@ -35072,7 +35072,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "dee559dd9a145d0668a59c3493ac2e428d9ce5cbc0df77050c4a9452a8cbf221",
+        "sha256": "54db30396f824c5a997f7715b558d16501b958b2e71b1d4384234c3df405a0fc",
         "bytes": 5980684
       },
       "review_status": "unreviewed_content",
@@ -35093,7 +35093,7 @@
         "main": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
         "scope": "tracked/index",
         "date": "2026-09-30",
-        "sha256": "314465f3c0a61396cf3daa4d0860e70890534cd6473b67f0300fafe0d4956bb0",
+        "sha256": "61840b1fd08f71be7d9b7df039a8cb041109ded7e9ffcf52f56bd13e9df68fe5",
         "bytes": 20777
       },
       "review_status": "unreviewed_content",

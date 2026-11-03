@@ -27,17 +27,17 @@
 
 ## Сводка
 
-- Всего кодов: **975**
+- Всего кодов: **999**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
-- unresolved (нет ui_stack): **3**
+- unresolved (нет ui_stack): **27**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=927, `housing`=8, `null`=3, `ppi`=5
+По стекам: `cpi`=32, `generic`=927, `housing`=8, `null`=27, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
-`cny-eur`, `gbp-eur`, `steel`
+`cny-eur`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `gbp-eur`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`
 
 ## Все индикаторы
 
@@ -345,6 +345,9 @@
 | `employment-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `employment-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `employment-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
+| `employment-rate-age-25-54` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `employment-rate-age-55-64` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `employment-rate-youth` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `employment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `employment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -669,13 +672,17 @@
 | `kzt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `kzt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `labor-force` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
+| `labor-force-age-25-54` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `labor-force-age-55-64` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `labor-force-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `labor-force-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `labor-force-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
+| `labor-force-youth` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `labor-force-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `labor-force-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `labor-force-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `long-term-unemployed` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `m0` | Финансы | monthly | `generic` | monthly_auto | ✓ | — |
 | `m0-avg-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `m0-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -744,6 +751,7 @@
 | `natural-gas-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `natural-gas-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `natural-gas-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
+| `part-time-employed` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `pensioners` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pensioners-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pensioners-yoy` | Население | annual | `generic` | derived_from_source | — | — |
@@ -773,6 +781,8 @@
 | `rd-personnel` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `rd-personnel-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `rd-personnel-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `registered-unemployment-share` | Рынок труда | annual | `null` | — | ✓ | no-stack |
+| `registered-unemployment-share-quarterly` | Рынок труда | quarterly | `null` | — | ✓ | no-stack |
 | `retail-trade` | Бизнес | monthly | `generic` | monthly_auto | ✓ | — |
 | `retail-trade-mom` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `retail-trade-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
@@ -849,6 +859,7 @@
 | `services-imports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
+| `short-term-unemployed` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `silver` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `silver-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `silver-avg-year` | Товарные рынки | annual | `generic` | — | — | — |
@@ -912,15 +923,28 @@
 | `try-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `try-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `try-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `unemployed-higher-education-share` | Рынок труда | quarterly | `null` | — | ✓ | no-stack |
+| `unemployed-higher-education-share-annual` | Рынок труда | annual | `null` | — | ✓ | no-stack |
 | `unemployment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | shadowed |
+| `unemployment-age-25-54` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-age-25-54-men` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-age-25-54-women` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-age-55-64` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-age-55-64-men` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-age-55-64-women` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `unemployment-annual` | Рынок труда | monthly | `generic` | — | — | — |
 | `unemployment-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
 | `unemployment-eop-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-eop-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `unemployment-men` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `unemployment-mom` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `unemployment-qoq` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-quarterly` | Рынок труда | quarterly | `generic` | — | — | — |
+| `unemployment-women` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-youth` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-youth-men` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
+| `unemployment-youth-women` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `unemployment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `unemployment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -1029,7 +1053,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **125** · с полной матрицей: **110** · с пробелами: **15**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 111, 'orphan': 3}.
+Корней-семейств: **149** · с полной матрицей: **110** · с пробелами: **39**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 111, 'orphan': 27}.
 
 ## Систематические пробелы по типам
 
@@ -1057,6 +1081,10 @@
 | generic/T9 | gdp | quarter | 10 | — |
 | generic/T9s | signed-flow | quarter | 3 | — |
 | orphan/- | avg-level | day | 3 | `pop:month`, `pop:quarter`, `value:month`, `value:quarter`, `value:week`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | avg-level | month | 6 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | rate | month | 14 | `pop:month`, `pop:quarter`, `value:quarter`, `value:year`, `yoy:month`, `yoy:quarter`, `yoy:year` |
+| orphan/- | rate | quarter | 2 | `pop:quarter`, `value:year`, `yoy:quarter`, `yoy:year` |
+| orphan/- | rate | year | 2 | `yoy:year` |
 
 ## Корни с пробелами матрицы
 
@@ -1069,6 +1097,28 @@
 | `cny-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `gbp-eur` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `steel` | orphan/- | avg-level | day | 0.1 | `value:week`, `value:month`, `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | curated |
+| `employment-rate-age-25-54` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `employment-rate-age-55-64` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `employment-rate-youth` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `labor-force-age-25-54` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `labor-force-age-55-64` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `labor-force-youth` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `long-term-unemployed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `part-time-employed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `short-term-unemployed` | orphan/- | avg-level | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-25-54` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-25-54-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-25-54-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-55-64` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-55-64-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-age-55-64-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-youth` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-youth-men` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployment-youth-women` | orphan/- | rate | month | 0.125 | `value:quarter`, `value:year`, `pop:month`, `pop:quarter`, `yoy:month`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `registered-unemployment-share-quarterly` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | generic |
+| `unemployed-higher-education-share` | orphan/- | rate | quarter | 0.2 | `value:year`, `pop:quarter`, `yoy:quarter`, `yoy:year` | full | no | generic |
 | `cpi` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-food` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `cpi-nonfood` | bespoke/CPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
@@ -1076,11 +1126,13 @@
 | `ppi` | bespoke/PPI | index | month | 0.8 | `yoy:quarter`, `yoy:year` | full | yes | curated |
 | `housing-price-primary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
 | `housing-price-secondary` | bespoke/HOUSING | index | quarter | 0.857 | `pop:year` | full | yes | curated |
+| `registered-unemployment-share` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
+| `unemployed-higher-education-share-annual` | orphan/- | rate | year | 0.5 | `yoy:year` | full | no | generic |
 | `wages-real` | generic/T8 | index | month | 0.9 | `pop:year` | full | yes | curated |
 
 ## Измерения паспорта (агрегат)
 
 - **Без полных текстов** (18): `birth-rate`, `death-rate`, `exports-monthly`, `imports-monthly`, `inflation-weekly`, `inflation-weekly-food`, `inflation-weekly-nonfood`, `inflation-weekly-services`, `pensioners`, `pop-over-working-age`, `pop-under-working-age`, `population-migration`, `population-natural-growth`, `population-total-growth`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`, `working-age-population`
-- **Без прогноза** (15): `cny-eur`, `coal`, `copper`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `silver`, `soybean`, `steel`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
-- **SEO не curated** (10): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `services-exports-monthly`, `services-imports-monthly`, `trade-balance-monthly`
+- **Без прогноза** (39): `cny-eur`, `coal`, `copper`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `fuel-ai92`, `fuel-ai95`, `fuel-diesel`, `gbp-eur`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `short-term-unemployed`, `silver`, `soybean`, `steel`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`, `weo-budget-balance-gdp`, `weo-gdp-per-capita-usd`, `weo-gdp-usd`, `weo-government-debt-gdp`, `wheat`
+- **SEO не curated** (34): `cny-eur`, `deposit-rate-long`, `deposit-rate-medium`, `employment-rate-age-25-54`, `employment-rate-age-55-64`, `employment-rate-youth`, `exports-monthly`, `gbp-eur`, `housing-affordability-primary`, `imports-monthly`, `labor-force-age-25-54`, `labor-force-age-55-64`, `labor-force-youth`, `long-term-unemployed`, `part-time-employed`, `registered-unemployment-share`, `registered-unemployment-share-quarterly`, `services-exports-monthly`, `services-imports-monthly`, `short-term-unemployed`, `trade-balance-monthly`, `unemployed-higher-education-share`, `unemployed-higher-education-share-annual`, `unemployment-age-25-54`, `unemployment-age-25-54-men`, `unemployment-age-25-54-women`, `unemployment-age-55-64`, `unemployment-age-55-64-men`, `unemployment-age-55-64-women`, `unemployment-men`, `unemployment-women`, `unemployment-youth`, `unemployment-youth-men`, `unemployment-youth-women`
 

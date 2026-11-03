@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `e5d6f4360a585980f0e296aed70d9b96fc7e29b5`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `612ee83fededa6526e78f68b281602ab510e3959`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2219 |
-| Код, шаблоны и стили | 1812 |
-| Актуальные рецензии без пропусков guard | 2219 |
-| Именованные определения Python/JS: с аннотацией / всего | 14674 / 14674 |
+| Файлы в явно определённом scope | 2222 |
+| Код, шаблоны и стили | 1815 |
+| Актуальные рецензии без пропусков guard | 2222 |
+| Именованные определения Python/JS: с аннотацией / всего | 14683 / 14683 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -167,6 +167,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/__init__.py](../backend/app/data/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/data/bi_targets.py](../backend/app/data/bi_targets.py) | reviewed | 2/2 | актуально |
 | [backend/app/data/cpi_provenance.py](../backend/app/data/cpi_provenance.py) | reviewed | 1/1 | актуально |
+| [backend/app/data/emiss_labor.py](../backend/app/data/emiss_labor.py) | body_reviewed | 4/4 | актуально |
 | [backend/app/data/eurostat_country_visibility.py](../backend/app/data/eurostat_country_visibility.py) | reviewed | 5/5 | актуально |
 | [backend/app/data/eurostat_deep_expand.py](../backend/app/data/eurostat_deep_expand.py) | reviewed | 9/9 | актуально |
 | [backend/app/data/eurostat_dim_labels_en.py](../backend/app/data/eurostat_dim_labels_en.py) | reviewed | 4/4 | актуально |
@@ -291,6 +292,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/derived_ops.py](../backend/app/services/derived_ops.py) | reviewed | 31/31 | актуально |
 | [backend/app/services/display.py](../backend/app/services/display.py) | reviewed | 19/19 | актуально |
 | [backend/app/services/ecb_fx_parser.py](../backend/app/services/ecb_fx_parser.py) | reviewed | 4/4 | актуально |
+| [backend/app/services/emiss_labor_parser.py](../backend/app/services/emiss_labor_parser.py) | body_reviewed | 3/3 | актуально |
 | [backend/app/services/emiss_regional_parser.py](../backend/app/services/emiss_regional_parser.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/eurostat_parser.py](../backend/app/services/eurostat_parser.py) | reviewed | 35/35 | актуально |
 | [backend/app/services/eurostat_rebase.py](../backend/app/services/eurostat_rebase.py) | reviewed | 18/18 | актуально |
@@ -658,6 +660,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_dual_host_release_gate.py](../backend/tests/test_dual_host_release_gate.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_ecb_fx_parser.py](../backend/tests/test_ecb_fx_parser.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_embed_tracking.py](../backend/tests/test_embed_tracking.py) | reviewed | 5/5 | актуально |
+| [backend/tests/test_emiss_labor_parser.py](../backend/tests/test_emiss_labor_parser.py) | body_reviewed | 2/2 | актуально |
 | [backend/tests/test_emiss_regional_live_c27.py](../backend/tests/test_emiss_regional_live_c27.py) | reviewed | 35/35 | актуально |
 | [backend/tests/test_emiss_regional_parser.py](../backend/tests/test_emiss_regional_parser.py) | reviewed | 20/20 | актуально |
 | [backend/tests/test_en_catalog.py](../backend/tests/test_en_catalog.py) | reviewed | 19/19 | актуально |

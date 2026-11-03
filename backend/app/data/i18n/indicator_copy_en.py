@@ -13,6 +13,8 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from app.data.emiss_labor import SERIES
+
 
 class IndicatorCopyEn(TypedDict, total=False):
     name: str
@@ -22,6 +24,15 @@ class IndicatorCopyEn(TypedDict, total=False):
 
 
 INDICATOR_COPY_EN: dict[str, IndicatorCopyEn] = {
+    **{
+        code: {
+            "name": series.name_en,
+            "description": series.explanation_en,
+            "methodology": series.coverage[1],
+            "unit": "%" if series.unit == "%" else "thousand people",
+        }
+        for code, series in SERIES.items()
+    },
     # --- Listed catalogue cards ---
     "cpi": {
         "name": "Consumer Price Index",

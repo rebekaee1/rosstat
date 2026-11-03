@@ -18,6 +18,7 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from app.data.emiss_labor import seed_indicators as emiss_labor_indicators
 from app.data.cpi_provenance import cpi_provenance
 from app.database import async_session
 from app.models import Indicator, IndicatorData, SeedState
@@ -815,7 +816,8 @@ INDICATORS = [
         "is_active": True,
         "category": "Ставки",
     },
-    # ─── Рынок труда (Росстат SDDS) ───
+    # ─── Рынок труда ───
+    *emiss_labor_indicators(),
     {
         "code": "unemployment",
         "name": "Уровень безработицы",

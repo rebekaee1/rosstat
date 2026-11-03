@@ -404,6 +404,11 @@
       "lines": 12
     },
     {
+      "path": "backend/app/data/emiss_labor.py",
+      "sha256": "1bdb29c0eeaf2cec1d14f5e0fd17f74f8638fb73418dd9be907eac84871506ad",
+      "lines": 146
+    },
+    {
       "path": "backend/app/data/eurostat_country_visibility.py",
       "sha256": "e2c21c6d9e5a8b9843d9ee2d6380c35c8494785d9da48d30ab1a1688cce769d0",
       "lines": 119
@@ -490,8 +495,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "sha256": "e5b781f753fe4b54b38f82d2d182bdc8cd8f34687e23ddc96a65a5d201b05531",
-      "lines": 1073
+      "sha256": "0a686afe1a2709f8bf134b3fb6d0c9cd401604112a2a4699f0558faf0b55825e",
+      "lines": 1084
     },
     {
       "path": "backend/app/data/i18n/region_indicators_en.py",
@@ -989,6 +994,11 @@
       "lines": 145
     },
     {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "sha256": "df73ac114c37e767e750df444b5114943480846a1b673a01700b079da2c4d8cc",
+      "lines": 95
+    },
+    {
       "path": "backend/app/services/emiss_regional_parser.py",
       "sha256": "097a82ab65e6812b8ff5f8bae79716b919c652289b967e854dbe8a1cc7ac3554",
       "lines": 512
@@ -1345,8 +1355,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "sha256": "b45e393b80d127752a41897b3acdde483749f6dc6aaade954c65ea8e1a2deddc",
-      "lines": 138
+      "sha256": "c3a8ef8d97285b1628baffac59fbb48a4330f41bcd1e26c146f0be25a9c315f7",
+      "lines": 140
     },
     {
       "path": "backend/app/services/rosstat_demo_parser.py",
@@ -2220,8 +2230,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "sha256": "61900d4911abe14d9edfaa633df9ed103a51d38c1ffad9c5dc13bc5129a2a797",
-      "lines": 5726
+      "sha256": "99377f94b19de840df351ad9d9c73ce6541a5f0f73ad8fb190fc50e83e949886",
+      "lines": 5728
     },
     {
       "path": "backend/seed_regional.py",
@@ -40463,6 +40473,132 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 36,
+      "end_line": 41,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "AGES",
+      "symbol": "app.data.emiss_labor.AGES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'1788561'",
+        "'1744169'",
+        "'1798986'",
+        "'1798984'"
+      ],
+      "entries": [
+        {
+          "key": "'1788561'",
+          "expression": "'15 лет и старше'",
+          "expression_truncated": false,
+          "expression_chars": 17,
+          "ast_sha256": "ccb57a04aa5f14dd7e1912d0fdede2041914ddc88e902c4144df18d6345716ae"
+        },
+        {
+          "key": "'1744169'",
+          "expression": "'15-24 лет'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "09958dd82e5e74c506a34f9325eb5df59bea18c60ebe40f3e0ce4e82f4c3d7ea"
+        },
+        {
+          "key": "'1798986'",
+          "expression": "'25-54 года'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "c70bc784e0778e745490d927b4ad8e565437c32bf0a8ed7255c3858427a9a963"
+        },
+        {
+          "key": "'1798984'",
+          "expression": "'55-64 года'",
+          "expression_truncated": false,
+          "expression_chars": 12,
+          "ast_sha256": "5390ef9eb5950cc6a9144b0cdaaea8a3de4a6cbf12554c396c941f39996e54f5"
+        }
+      ],
+      "expression": "{'1788561': '15 лет и старше', '1744169': '15-24 лет', '1798986': '25-54 года', '1798984': '55-64 года'}",
+      "expression_truncated": false,
+      "expression_chars": 104,
+      "ast_sha256": "832617f2a76900f7993e2f8b9f2ad0d7da56e7aa52e5d29ad32eb9409192ea34",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 47,
+      "end_line": 90,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "SERIES",
+      "symbol": "app.data.emiss_labor.SERIES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'registered-unemployment-share'",
+        "'registered-unemployment-share-quarterly'",
+        "'unemployed-higher-education-share'",
+        "'unemployed-higher-education-share-annual'",
+        "'part-time-employed'",
+        "'long-term-unemployed'",
+        "'short-term-unemployed'"
+      ],
+      "entries": [
+        {
+          "key": "'registered-unemployment-share'",
+          "expression": "LaborSeries(43913, 'Доля зарегистрированных безработных', 'Share of unemployed people registered with employment services', frequency='annual', first_year=2013, sex=None, explanation='Отношение числа зарегистрированных службой занятости безработных к числу безработных по обследованию рабочей силы. П",
+          "expression_truncated": true,
+          "expression_chars": 450,
+          "ast_sha256": "e8c51e1dc7c9d9d6a4db9ed30d3ee3a7b3516e1123d98edea145624477a7436a"
+        },
+        {
+          "key": "'registered-unemployment-share-quarterly'",
+          "expression": "LaborSeries(43913, 'Доля зарегистрированных безработных по кварталам', 'Share of unemployed people registered with employment services, quarterly', frequency='quarterly', first_year=2013, sex=None, explanation='Отношение числа зарегистрированных службой занятости безработных к числу безработных по о",
+          "expression_truncated": true,
+          "expression_chars": 484,
+          "ast_sha256": "3ed07799ee3d8eec8e53d4cf096bcfed50e30c066afdf6119f96b846313fe33a"
+        },
+        {
+          "key": "'unemployed-higher-education-share'",
+          "expression": "LaborSeries(62298, 'Доля безработных с высшим образованием', 'Share of unemployed people with higher education', frequency='quarterly', first_year=2023, sex=None, age='1788561', education='1709712', explanation='Доля людей с высшим образованием среди всех безработных в возрасте 15 лет и старше.', ex",
+          "expression_truncated": true,
+          "expression_chars": 399,
+          "ast_sha256": "79bea8ed30c9360c94cc836d5f7ec4699b803e1be83cab4cbdf2dc32cad400cf"
+        },
+        {
+          "key": "'unemployed-higher-education-share-annual'",
+          "expression": "LaborSeries(62298, 'Доля безработных с высшим образованием за год', 'Annual share of unemployed people with higher education', frequency='annual', first_year=2022, sex=None, age='1788561', education='1709712', explanation='Доля людей с высшим образованием среди всех безработных в возрасте 15 лет и с",
+          "expression_truncated": true,
+          "expression_chars": 424,
+          "ast_sha256": "98f9720c83190a21e31ddbd8c2c89355b6db71d560c88cd1ed21b62aa95dfea6"
+        },
+        {
+          "key": "'part-time-employed'",
+          "expression": "LaborSeries(59197, 'Неполная занятость', 'Part-time employment', unit='тыс. чел.', explanation='Численность работающих в условиях неполной занятости по обследованию рабочей силы Росстата.', explanation_en='Number of people working part-time, as reported in Rosstat’s labour force survey.')",
+          "expression_truncated": false,
+          "expression_chars": 289,
+          "ast_sha256": "029ae0776ead9695a44484b86ee19e268d8683d3d675b2a21bb106a3d5e16176"
+        },
+        {
+          "key": "'long-term-unemployed'",
+          "expression": "LaborSeries(59303, 'Длительная безработица', 'Long-term unemployment', unit='тыс. чел.', explanation='Число безработных, которые ищут работу 12 месяцев или дольше.', explanation_en='Number of unemployed people who have been seeking work for at least 12 months.')",
+          "expression_truncated": false,
+          "expression_chars": 262,
+          "ast_sha256": "88872cac9e78e78ed16aa0f61f6458963a5ef5cca67e668a10c97599b37b40fb"
+        },
+        {
+          "key": "'short-term-unemployed'",
+          "expression": "LaborSeries(59302, 'Краткосрочная безработица', 'Short-term unemployment', unit='тыс. чел.', explanation='Число безработных, которые ищут работу менее 12 месяцев.', explanation_en='Number of unemployed people who have been seeking work for less than 12 months.')",
+          "expression_truncated": false,
+          "expression_chars": 262,
+          "ast_sha256": "1c100192c314b013e024fd55a7685e47c5793b6dda241b47af9305a9728a1889"
+        }
+      ],
+      "expression": "{'registered-unemployment-share': LaborSeries(43913, 'Доля зарегистрированных безработных', 'Share of unemployed people registered with employment services', frequency='annual', first_year=2013, sex=None, explanation='Отношение числа зарегистрированных службой занятости безработных к числу безработных по обследованию рабочей силы. Показатель за год.', explanation_en='Registered unemployed people as a percentage of unemployment measured by the labour force survey. Annual figure.'), 'registered-unemployment-share-quarterly': LaborSeries(43913, 'Доля зарегистрированных безработных по кварталам', 'Share of unemployed people registered with employment services, quarterly', frequency='quarterly', first_year=2013, sex=None, explanation='Отношение числа зарегистрированных службой занятости безработных к числу безработных по обследованию рабочей силы. Показатель за квартал.', explanation_en='Registered unemployed people as a percentage of unemployment measured by the labour force survey. Quarterly figure.'), 'unemployed-higher-education-share': LaborSeries(62298, 'Доля безработных с высшим образованием', 'Share of unemployed people with higher education', frequency='quarterly', first_year=2023, sex=None, age='1788561', education='1709712', explanation='Доля людей с высшим образованием среди всех безработных в возрасте 15 лет и старше.', explanation_en='Share of people with higher education among all unemployed people aged 15 and over.'), 'unemployed-higher-education-share-annual': LaborSeries(62298, 'Доля безработных с высшим образованием за год', 'Annual share of unemployed people with higher education', frequency='annual', first_year=2022, sex=None, age='1788561', education='1709712', explanation='Доля людей с высшим образованием среди всех безработных в возрасте 15 лет и старше за год.', explanation_en='Annual share of people with higher education among all unemployed people aged 15 and over.'), 'part-time-employed': LaborSeries(59197, 'Неполная занятость', 'Part-time emp",
+      "expression_truncated": true,
+      "expression_chars": 2812,
+      "ast_sha256": "427880c5126d210c891babb2cc937c0a293bdb78d1f390bb148356319556ecb7",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/data/eurostat_country_visibility.py",
       "line": 25,
       "end_line": 27,
@@ -58931,14 +59067,15 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 24,
-      "end_line": 1067,
+      "line": 26,
+      "end_line": 1078,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATOR_COPY_EN",
       "symbol": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN",
       "kind": "Dict",
       "literal_keys": [
+        "**unpack",
         "'cpi'",
         "'cpi-food'",
         "'cpi-nonfood'",
@@ -59120,6 +59257,13 @@
         "'weo-government-debt-gdp'"
       ],
       "entries": [
+        {
+          "key": null,
+          "expression": "{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': '%' if series.unit == '%' else 'thousand people'} for code, series in SERIES.items()}",
+          "expression_truncated": false,
+          "expression_chars": 198,
+          "ast_sha256": "6d9e4ae045c2fa198300640747135c912c23bf2954757b4ab1d658f9597c499f"
+        },
         {
           "key": "'cpi'",
           "expression": "{'name': 'Consumer Price Index', 'description': 'The consumer price index (CPI) measures changes in prices of goods and services purchased by households for final consumption. It is the main gauge of consumer inflation and is used to index wages, pensions and social transfers.', 'methodology': 'The ",
@@ -60374,10 +60518,10 @@
           "ast_sha256": "e68f49f997c838bc624c7591ac62edc379287645f1152a67ac35c4534135d834"
         }
       ],
-      "expression": "{'cpi': {'name': 'Consumer Price Index', 'description': 'The consumer price index (CPI) measures changes in prices of goods and services purchased by households for final consumption. It is the main gauge of consumer inflation and is used to index wages, pensions and social transfers.', 'methodology': 'The CPI compares the cost of a fixed basket of goods and services in the current period with its cost in the base period. Rosstat observes prices across a broad sample of localities and items. On the card, the default comparison base is the previous month (100 means no change).', 'unit': '%'}, 'cpi-food': {'name': 'Food CPI', 'description': 'The food CPI tracks prices of foodstuffs in the consumer basket. It shows how much grocery prices contribute to overall inflation and often leads turning points in the headline CPI.', 'methodology': 'Calculated by Rosstat as the price index for food items relative to the previous month (100 means no change). The same observation network and basket weights apply as for the headline CPI, restricted to the food segment. Chart modes on the card (trailing 12-month inflation, month-on-month, weekly, index) reuse this series.', 'unit': '%'}, 'cpi-nonfood': {'name': 'Non-food CPI', 'description': 'The non-food CPI tracks prices of non-food goods in the consumer basket — clothing, durables, fuel at the pump and other merchandise excluding food and services.', 'methodology': 'Rosstat publishes the non-food goods price index relative to the previous month. Coverage matches the non-food part of the CPI basket. Mode switches on the card transform the same official monthly (and weekly) series without changing the underlying source.', 'unit': '%'}, 'cpi-services': {'name': 'Services CPI', 'description': 'The services CPI measures prices of consumer services — housing and utilities, transport, communications, education, healthcare and other paid services in the household basket.', 'methodology': 'Rosstat calculates the services price index relati",
+      "expression": "{**{code: {'name': series.name_en, 'description': series.explanation_en, 'methodology': series.coverage[1], 'unit': '%' if series.unit == '%' else 'thousand people'} for code, series in SERIES.items()}, 'cpi': {'name': 'Consumer Price Index', 'description': 'The consumer price index (CPI) measures changes in prices of goods and services purchased by households for final consumption. It is the main gauge of consumer inflation and is used to index wages, pensions and social transfers.', 'methodology': 'The CPI compares the cost of a fixed basket of goods and services in the current period with its cost in the base period. Rosstat observes prices across a broad sample of localities and items. On the card, the default comparison base is the previous month (100 means no change).', 'unit': '%'}, 'cpi-food': {'name': 'Food CPI', 'description': 'The food CPI tracks prices of foodstuffs in the consumer basket. It shows how much grocery prices contribute to overall inflation and often leads turning points in the headline CPI.', 'methodology': 'Calculated by Rosstat as the price index for food items relative to the previous month (100 means no change). The same observation network and basket weights apply as for the headline CPI, restricted to the food segment. Chart modes on the card (trailing 12-month inflation, month-on-month, weekly, index) reuse this series.', 'unit': '%'}, 'cpi-nonfood': {'name': 'Non-food CPI', 'description': 'The non-food CPI tracks prices of non-food goods in the consumer basket — clothing, durables, fuel at the pump and other merchandise excluding food and services.', 'methodology': 'Rosstat publishes the non-food goods price index relative to the previous month. Coverage matches the non-food part of the CPI basket. Mode switches on the card transform the same official monthly (and weekly) series without changing the underlying source.', 'unit': '%'}, 'cpi-services': {'name': 'Services CPI', 'description': 'The services CPI measures prices of consume",
       "expression_truncated": true,
-      "expression_chars": 64550,
-      "ast_sha256": "6bd35769f1697c5e59585decc693f7434da0cc901976fc34ed1479f78ccfab3c",
+      "expression_chars": 64752,
+      "ast_sha256": "4d887fcebd0173a550dae5442a59354f36f63cf681d31414aaa193827b68cc85",
       "runtime_expansion": false
     },
     {
@@ -83371,6 +83515,84 @@
       "runtime_expansion": false
     },
     {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 21,
+      "end_line": 25,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_PERIODS",
+      "symbol": "app.services.emiss_labor_parser._PERIODS",
+      "kind": "Dict",
+      "literal_keys": [
+        "'monthly'",
+        "'quarterly'",
+        "'annual'"
+      ],
+      "entries": [
+        {
+          "key": "'monthly'",
+          "expression": "MONTH_OIDS",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "2b16a67224da3cc5d6f26efdcad7377f96f710639666ff48030f29eeecf59180"
+        },
+        {
+          "key": "'quarterly'",
+          "expression": "{'1540222': 1, '1540224': 4, '1540226': 7, '1540227': 10}",
+          "expression_truncated": false,
+          "expression_chars": 57,
+          "ast_sha256": "e2bda5452a0212bd053f41403d32ce8df267056e3a54690680a29175a0f5ba45"
+        },
+        {
+          "key": "'annual'",
+          "expression": "{'1558883': 1}",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "c7110f5b5328d22a751260711848fb29af06e96e23648a00f42b2e5613fd0087"
+        }
+      ],
+      "expression": "{'monthly': MONTH_OIDS, 'quarterly': {'1540222': 1, '1540224': 4, '1540226': 7, '1540227': 10}, 'annual': {'1558883': 1}}",
+      "expression_truncated": false,
+      "expression_chars": 121,
+      "ast_sha256": "eabd72b1cf4a0296548efadf15b98af04ad21081407e75232e4e33a44931cd6c",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 26,
+      "end_line": 29,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_TERRITORIES",
+      "symbol": "app.services.emiss_labor_parser._TERRITORIES",
+      "kind": "Dict",
+      "literal_keys": [
+        "'1688487'",
+        "'1849012'"
+      ],
+      "entries": [
+        {
+          "key": "'1688487'",
+          "expression": "'Российская Федерация'",
+          "expression_truncated": false,
+          "expression_chars": 22,
+          "ast_sha256": "1b2d7b9f922d1e61dd7f969a13595daa09d3fcdab40b3f76418cb380ae083883"
+        },
+        {
+          "key": "'1849012'",
+          "expression": "'Российская Федерация без учета новых субъектов (с 01.01.2023)'",
+          "expression_truncated": false,
+          "expression_chars": 63,
+          "ast_sha256": "abf9a369cf2f2d912859041362400ab56ff5e5258bf8a46d114bba0a8e220d31"
+        }
+      ],
+      "expression": "{'1688487': 'Российская Федерация', '1849012': 'Российская Федерация без учета новых субъектов (с 01.01.2023)'}",
+      "expression_truncated": false,
+      "expression_chars": 111,
+      "ast_sha256": "82756ec63e57c1465e489888a8241b57adbf4a6a3747850844ccc4ac7e6bad79",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/emiss_regional_parser.py",
       "line": 89,
       "end_line": 93,
@@ -88443,8 +88665,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 91,
-      "end_line": 126,
+      "line": 92,
+      "end_line": 128,
       "owner": "<module>",
       "conditions": [],
       "name": "PARSER_REGISTRY",
@@ -88457,6 +88679,7 @@
         "CbrRuoniaParser.parser_type",
         "CbrMonetaryParser.parser_type",
         "CbrDataServiceParser.parser_type",
+        "EmissLaborParser.parser_type",
         "RosstatLaborParser.parser_type",
         "RosstatGdpParser.parser_type",
         "CbrDataServiceSumParser.parser_type",
@@ -88528,6 +88751,13 @@
           "expression_truncated": false,
           "expression_chars": 20,
           "ast_sha256": "0e750de614c1505ef04be0aa18b117b760cfacb92b8823de2ebcccefc99f32d4"
+        },
+        {
+          "key": "EmissLaborParser.parser_type",
+          "expression": "EmissLaborParser",
+          "expression_truncated": false,
+          "expression_chars": 16,
+          "ast_sha256": "fd1b2cf0616aa6bb2f2e0d5fb2424989718f97825a2c95c4bb672c9882e04e1a"
         },
         {
           "key": "RosstatLaborParser.parser_type",
@@ -88726,10 +88956,10 @@
           "ast_sha256": "dfcc26707b2a8ce2725ac69feecfe70f684da927c3734693bb68ec1ae297b42c"
         }
       ],
-      "expression": "{RosstatCpiParser.parser_type: RosstatCpiParser, CbrKeyRateParser.parser_type: CbrKeyRateParser, CbrFxParser.parser_type: CbrFxParser, CbrRuoniaParser.parser_type: CbrRuoniaParser, CbrMonetaryParser.parser_type: CbrMonetaryParser, CbrDataServiceParser.parser_type: CbrDataServiceParser, RosstatLaborParser.parser_type: RosstatLaborParser, RosstatGdpParser.parser_type: RosstatGdpParser, CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser, MinfinBudgetParser.parser_type: MinfinBudgetParser, RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser, RosstatIpiParser.parser_type: RosstatIpiParser, RosstatHousingParser.parser_type: RosstatHousingParser, RosstatPopulationParser.parser_type: RosstatPopulationParser, RosstatPpiParser.parser_type: RosstatPpiParser, CbrBopParser.parser_type: CbrBopParser, CbrTradeGoodsMonthlyParser.parser_type: CbrTradeGoodsMonthlyParser, CbrTradeServicesMonthlyParser.parser_type: CbrTradeServicesMonthlyParser, CbrReservesParser.parser_type: CbrReservesParser, CbrDebtParser.parser_type: CbrDebtParser, CbrGoldParser.parser_type: CbrGoldParser, RosstatDemoParser.parser_type: RosstatDemoParser, RosstatIndParser.parser_type: RosstatIndParser, RosstatScienceParser.parser_type: RosstatScienceParser, RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser, BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser, BrentDailyFredParser.parser_type: BrentDailyFredParser, FredCsvParser.parser_type: FredCsvParser, WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser, EcbFxParser.parser_type: EcbFxParser, ImfWeoParser.parser_type: ImfWeoParser, CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser, MoexIndexParser.parser_type: MoexIndexParser, RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser}",
+      "expression": "{RosstatCpiParser.parser_type: RosstatCpiParser, CbrKeyRateParser.parser_type: CbrKeyRateParser, CbrFxParser.parser_type: CbrFxParser, CbrRuoniaParser.parser_type: CbrRuoniaParser, CbrMonetaryParser.parser_type: CbrMonetaryParser, CbrDataServiceParser.parser_type: CbrDataServiceParser, EmissLaborParser.parser_type: EmissLaborParser, RosstatLaborParser.parser_type: RosstatLaborParser, RosstatGdpParser.parser_type: RosstatGdpParser, CbrDataServiceSumParser.parser_type: CbrDataServiceSumParser, MinfinBudgetParser.parser_type: MinfinBudgetParser, RosstatWeeklyCpiParser.parser_type: RosstatWeeklyCpiParser, RosstatIpiParser.parser_type: RosstatIpiParser, RosstatHousingParser.parser_type: RosstatHousingParser, RosstatPopulationParser.parser_type: RosstatPopulationParser, RosstatPpiParser.parser_type: RosstatPpiParser, CbrBopParser.parser_type: CbrBopParser, CbrTradeGoodsMonthlyParser.parser_type: CbrTradeGoodsMonthlyParser, CbrTradeServicesMonthlyParser.parser_type: CbrTradeServicesMonthlyParser, CbrReservesParser.parser_type: CbrReservesParser, CbrDebtParser.parser_type: CbrDebtParser, CbrGoldParser.parser_type: CbrGoldParser, RosstatDemoParser.parser_type: RosstatDemoParser, RosstatIndParser.parser_type: RosstatIndParser, RosstatScienceParser.parser_type: RosstatScienceParser, RosstatFixedAssetsParser.parser_type: RosstatFixedAssetsParser, BinanceBtcUsdtParser.parser_type: BinanceBtcUsdtParser, BrentDailyFredParser.parser_type: BrentDailyFredParser, FredCsvParser.parser_type: FredCsvParser, WorldBankPinkSheetParser.parser_type: WorldBankPinkSheetParser, EcbFxParser.parser_type: EcbFxParser, ImfWeoParser.parser_type: ImfWeoParser, CbrMonetaryAggParser.parser_type: CbrMonetaryAggParser, MoexIndexParser.parser_type: MoexIndexParser, RosstatWeeklyPriceParser.parser_type: RosstatWeeklyPriceParser}",
       "expression_truncated": false,
-      "expression_chars": 1770,
-      "ast_sha256": "f230f08ec0baa725d7bed4df0535ef7dbe4cbae65aa3837f8845118faeb3ab98",
+      "expression_chars": 1818,
+      "ast_sha256": "7f9ca25d47b7566955fa9c66bcbea67093df41892bd608cc8ac0c8ac35c5dc0d",
       "runtime_expansion": false
     },
     {
@@ -107121,8 +107351,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 53,
-      "end_line": 5002,
+      "line": 54,
+      "end_line": 5004,
       "owner": "<module>",
       "conditions": [],
       "name": "INDICATORS",
@@ -107132,14 +107362,14 @@
       "entries": [],
       "expression": "[{'code': 'cpi', 'name': 'Индекс потребительских цен на товары и услуги', 'name_en': 'Consumer Price Index', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': CPI_DESCRIPTION, 'methodology': CPI_METHODOLOGY, 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_active': True, 'category': 'Цены', 'excel_sheet': '01'}, {'code': 'cpi-food', 'name': 'Индекс потребительских цен на продовольственные товары', 'name_en': 'Food CPI', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': 'Индекс потребительских цен на продовольственные товары.', 'methodology': 'Индекс цен на продовольственные товары относительно предыдущего месяца: 100 означает, что цены на продукты питания не изменились. Считает Росстат по той же сети наблюдения и весам корзины, что и общий индекс потребительских цен, но только по продовольственной группе. Режимы на карточке (инфляция за 12 месяцев, к предыдущему периоду, индекс) строятся из этого официального ряда.', 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_active': True, 'category': 'Цены', 'excel_sheet': '02'}, {'code': 'cpi-nonfood', 'name': 'Индекс потребительских цен на непродовольственные товары', 'name_en': 'Non-food CPI', 'unit': '%', 'frequency': 'monthly', 'source': 'Росстат', 'source_url': 'https://rosstat.gov.ru/statistics/price', 'description': 'Индекс потребительских цен на непродовольственные товары.', 'methodology': 'Индекс цен на непродовольственные товары относительно предыдущего месяца. Охват совпадает с непродовольственной частью потребительской корзины Росстата: одежда, товары длительного пользования, топливо на АЗС и прочие непродовольственные товары без услуг. Режимы на карточке преобразуют тот же официальный месячный ряд.', 'parser_type': 'rosstat_cpi_xlsx', 'model_config_json': {'forecast_steps': 12}, 'is_ac",
       "expression_truncated": true,
-      "expression_chars": 144774,
-      "ast_sha256": "ff0aa0503a2485811f4f188361994237d4885084ca4cf378d0168b59edc4bd0d",
+      "expression_chars": 144801,
+      "ast_sha256": "c4736374a3bcd6b745f698c4eb793074d5487a0c112250e2aa7db9349d99e31d",
       "runtime_expansion": false
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5013,
-      "end_line": 5013,
+      "line": 5015,
+      "end_line": 5015,
       "owner": "<module>",
       "conditions": [],
       "name": "_PARENT_META",
@@ -107155,8 +107385,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5014,
-      "end_line": 5014,
+      "line": 5016,
+      "end_line": 5016,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXISTING_CODES",
@@ -107172,8 +107402,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5016,
-      "end_line": 5018,
+      "line": 5018,
+      "end_line": 5020,
       "owner": "<module>",
       "conditions": [],
       "name": "_GRAN_PERIOD",
@@ -107223,8 +107453,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5019,
-      "end_line": 5022,
+      "line": 5021,
+      "end_line": 5024,
       "owner": "<module>",
       "conditions": [],
       "name": "_GRAN_EOP",
@@ -107274,8 +107504,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5121,
-      "end_line": 5121,
+      "line": 5123,
+      "end_line": 5123,
       "owner": "<module>",
       "conditions": [],
       "name": "_FCAST_STEPS_BY_FREQ",
@@ -107317,8 +107547,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5187,
-      "end_line": 5213,
+      "line": 5189,
+      "end_line": 5215,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTHLY_AUTO_FORECAST_CODES",
@@ -107334,8 +107564,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5230,
-      "end_line": 5237,
+      "line": 5232,
+      "end_line": 5239,
       "owner": "<module>",
       "conditions": [],
       "name": "ANNUAL_AUTO_FORECAST_CODES",
@@ -107351,8 +107581,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5340,
-      "end_line": 5340,
+      "line": 5342,
+      "end_line": 5342,
       "owner": "<module>",
       "conditions": [],
       "name": "_SEO_FIELDS",
@@ -111604,6 +111834,46 @@
       "ast_sha256": "73cade97e837630fbbf5967cc692239887a7188a8e1ccdafdefa312dd154b2fe"
     },
     {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 108,
+      "end_line": 113,
+      "owner": "<module>",
+      "conditions": [],
+      "registry": "app.data.emiss_labor.SERIES",
+      "expression": "SERIES[f'unemployment-{suffix}'] = LaborSeries(59301, f'Безработица ({group_ru})', f'Unemployment ({group_en})', first_year=start, sex=sex, age=age, explanation='Доля безработных в рабочей силе этой группы по обследованию Росстата.', explanation_en='Unemployed people as a share of the labour force in this group, from Rosstat’s labour force survey.')",
+      "expression_truncated": false,
+      "expression_chars": 351,
+      "ast_sha256": "44161d8b98a56d8e9df2a413c9435d91fd9dd3b89e4277f0b97104c6d91c4a94"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 116,
+      "end_line": 121,
+      "owner": "<module>",
+      "conditions": [
+        "ru"
+      ],
+      "registry": "app.data.emiss_labor.SERIES",
+      "expression": "SERIES[f'employment-rate-{code}'] = LaborSeries(59194, f'Уровень занятости ({ru})', f'Employment rate ({en})', first_year=start, age=age, explanation='Доля работающих среди населения этой возрастной группы.', explanation_en='Employed people as a share of the population in this age group.')",
+      "expression_truncated": false,
+      "expression_chars": 290,
+      "ast_sha256": "17915dc96f8f800478bf9df243eb90e05d9c31ee54ee351767d283f192e0d528"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 122,
+      "end_line": 127,
+      "owner": "<module>",
+      "conditions": [
+        "ru"
+      ],
+      "registry": "app.data.emiss_labor.SERIES",
+      "expression": "SERIES[f'labor-force-{code}'] = LaborSeries(59191, f'Рабочая сила ({ru})', f'Labour force ({en})', unit='тыс. чел.', first_year=start, age=age, explanation='Численность занятых и безработных в этой возрастной группе.', explanation_en='Number of employed and unemployed people in this age group.')",
+      "expression_truncated": false,
+      "expression_chars": 296,
+      "ast_sha256": "a45d734577156c6bff784bc419bc8610c858db5a9307e025ca2163a0c4414e6a"
+    },
+    {
       "path": "backend/app/data/indicator_seo.py",
       "line": 8721,
       "end_line": 8721,
@@ -111957,8 +112227,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5175,
-      "end_line": 5175,
+      "line": 5177,
+      "end_line": 5177,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING",
@@ -111966,8 +112236,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5177,
-      "end_line": 5177,
+      "line": 5179,
+      "end_line": 5179,
       "owner": "<module>",
       "conditions": [],
       "registry": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING",
@@ -111975,8 +112245,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5170,
-      "end_line": 5170,
+      "line": 5172,
+      "end_line": 5172,
       "owner": "<module>",
       "conditions": [],
       "registry": "seed_data.INDICATORS",
@@ -145674,8 +145944,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5014,
-      "end_line": 5014,
+      "line": 5016,
+      "end_line": 5016,
       "owner": "<module>",
       "conditions": [],
       "operation": "set",
@@ -145688,8 +145958,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5175,
-      "end_line": 5175,
+      "line": 5177,
+      "end_line": 5177,
       "owner": "<module>",
       "conditions": [],
       "operation": "update",
@@ -145702,8 +145972,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5177,
-      "end_line": 5177,
+      "line": 5179,
+      "end_line": 5179,
       "owner": "<module>",
       "conditions": [],
       "operation": "update",
@@ -145716,8 +145986,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5172,
-      "end_line": 5172,
+      "line": 5174,
+      "end_line": 5174,
       "owner": "<module>",
       "conditions": [],
       "operation": "add",
@@ -145730,8 +146000,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5305,
-      "end_line": 5307,
+      "line": 5307,
+      "end_line": 5309,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "set",
@@ -145744,8 +146014,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5331,
-      "end_line": 5332,
+      "line": 5333,
+      "end_line": 5334,
       "owner": "_store_seed_hash",
       "conditions": [
         "row is None"
@@ -145760,8 +146030,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5336,
-      "end_line": 5336,
+      "line": 5338,
+      "end_line": 5338,
       "owner": "_store_seed_hash",
       "conditions": [],
       "operation": "commit",
@@ -145774,8 +146044,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5431,
-      "end_line": 5431,
+      "line": 5433,
+      "end_line": 5433,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "snap_row is None"
@@ -145790,8 +146060,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5322,
-      "end_line": 5324,
+      "line": 5324,
+      "end_line": 5326,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "execute",
@@ -145804,8 +146074,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5485,
-      "end_line": 5485,
+      "line": 5487,
+      "end_line": 5487,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -145818,8 +146088,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5488,
-      "end_line": 5500,
+      "line": 5490,
+      "end_line": 5502,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -145832,8 +146102,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5523,
-      "end_line": 5523,
+      "line": 5525,
+      "end_line": 5525,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -145846,8 +146116,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5552,
-      "end_line": 5552,
+      "line": 5554,
+      "end_line": 5554,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -145860,8 +146130,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5566,
-      "end_line": 5568,
+      "line": 5568,
+      "end_line": 5570,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -145874,8 +146144,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5569,
-      "end_line": 5571,
+      "line": 5571,
+      "end_line": 5573,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -145888,8 +146158,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5585,
-      "end_line": 5585,
+      "line": 5587,
+      "end_line": 5587,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -145902,8 +146172,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5593,
-      "end_line": 5593,
+      "line": 5595,
+      "end_line": 5595,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -145916,8 +146186,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5659,
-      "end_line": 5659,
+      "line": 5661,
+      "end_line": 5661,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -145930,8 +146200,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5678,
-      "end_line": 5678,
+      "line": 5680,
+      "end_line": 5680,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -145944,8 +146214,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5707,
-      "end_line": 5709,
+      "line": 5709,
+      "end_line": 5711,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "execute",
@@ -145958,8 +146228,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5286,
-      "end_line": 5286,
+      "line": 5288,
+      "end_line": 5288,
       "owner": "_stored_seed_hash",
       "conditions": [],
       "operation": "rollback",
@@ -145972,8 +146242,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5397,
-      "end_line": 5400,
+      "line": 5399,
+      "end_line": 5402,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "operation": "execute",
@@ -145986,8 +146256,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
+      "line": 5427,
+      "end_line": 5427,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "updates"
@@ -146002,8 +146272,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5482,
-      "end_line": 5482,
+      "line": 5484,
+      "end_line": 5484,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146016,8 +146286,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5507,
-      "end_line": 5516,
+      "line": 5509,
+      "end_line": 5518,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146030,8 +146300,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5518,
-      "end_line": 5522,
+      "line": 5520,
+      "end_line": 5524,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146044,8 +146314,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5541,
-      "end_line": 5541,
+      "line": 5543,
+      "end_line": 5543,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146058,8 +146328,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5545,
-      "end_line": 5549,
+      "line": 5547,
+      "end_line": 5551,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146072,8 +146342,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5587,
-      "end_line": 5591,
+      "line": 5589,
+      "end_line": 5593,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146086,8 +146356,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5611,
-      "end_line": 5611,
+      "line": 5613,
+      "end_line": 5613,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146100,8 +146370,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5623,
-      "end_line": 5623,
+      "line": 5625,
+      "end_line": 5625,
       "owner": "_seed_full",
       "conditions": [
         "gap_count"
@@ -146116,8 +146386,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5638,
-      "end_line": 5638,
+      "line": 5640,
+      "end_line": 5640,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "commit",
@@ -146130,8 +146400,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5699,
-      "end_line": 5699,
+      "line": 5701,
+      "end_line": 5701,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -146144,8 +146414,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5714,
-      "end_line": 5714,
+      "line": 5716,
+      "end_line": 5716,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "commit",
@@ -146158,8 +146428,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5619,
-      "end_line": 5619,
+      "line": 5621,
+      "end_line": 5621,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146172,8 +146442,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5646,
-      "end_line": 5646,
+      "line": 5648,
+      "end_line": 5648,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "rollback",
@@ -146186,8 +146456,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5674,
-      "end_line": 5674,
+      "line": 5676,
+      "end_line": 5676,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "execute",
@@ -146200,8 +146470,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5704,
-      "end_line": 5704,
+      "line": 5706,
+      "end_line": 5706,
       "owner": "generate_forecasts",
       "conditions": [],
       "operation": "rollback",
@@ -146214,8 +146484,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5585,
-      "end_line": 5585,
+      "line": 5587,
+      "end_line": 5587,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -146228,8 +146498,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5305,
-      "end_line": 5307,
+      "line": 5307,
+      "end_line": 5309,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "execute",
@@ -146242,8 +146512,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5323,
-      "end_line": 5323,
+      "line": 5325,
+      "end_line": 5325,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "operation": "update",
@@ -146256,8 +146526,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5489,
-      "end_line": 5489,
+      "line": 5491,
+      "end_line": 5491,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -146270,8 +146540,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
+      "line": 5427,
+      "end_line": 5427,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "updates"
@@ -146286,8 +146556,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5508,
-      "end_line": 5508,
+      "line": 5510,
+      "end_line": 5510,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -146300,8 +146570,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5519,
-      "end_line": 5519,
+      "line": 5521,
+      "end_line": 5521,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -146314,8 +146584,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5546,
-      "end_line": 5546,
+      "line": 5548,
+      "end_line": 5548,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "delete",
@@ -146328,8 +146598,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5588,
-      "end_line": 5588,
+      "line": 5590,
+      "end_line": 5590,
       "owner": "_seed_full",
       "conditions": [],
       "operation": "update",
@@ -193252,6 +193522,42 @@
       "expression": "FetchLog"
     },
     {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 89,
+      "end_line": 89,
+      "owner": "EmissLaborParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 89,
+      "end_line": 89,
+      "owner": "EmissLaborParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 89,
+      "end_line": 89,
+      "owner": "EmissLaborParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 89,
+      "end_line": 89,
+      "owner": "EmissLaborParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
       "path": "backend/app/services/emiss_regional_parser.py",
       "line": 362,
       "end_line": 362,
@@ -200980,8 +201286,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 38,
-      "end_line": 38,
+      "line": 39,
+      "end_line": 39,
       "owner": "RosstatCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -200989,8 +201295,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 40,
-      "end_line": 40,
+      "line": 41,
+      "end_line": 41,
       "owner": "RosstatCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -243607,8 +243913,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5329,
-      "end_line": 5329,
+      "line": 5331,
+      "end_line": 5331,
       "owner": "_store_seed_hash",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -243616,8 +243922,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5388,
-      "end_line": 5388,
+      "line": 5390,
+      "end_line": 5390,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -243625,8 +243931,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5282,
-      "end_line": 5282,
+      "line": 5284,
+      "end_line": 5284,
       "owner": "_stored_seed_hash",
       "conditions": [],
       "symbol": "app.models.SeedState",
@@ -243634,8 +243940,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5331,
-      "end_line": 5331,
+      "line": 5333,
+      "end_line": 5333,
       "owner": "_store_seed_hash",
       "conditions": [
         "row is None"
@@ -243645,8 +243951,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5431,
-      "end_line": 5431,
+      "line": 5433,
+      "end_line": 5433,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "snap_row is None"
@@ -243656,8 +243962,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243665,8 +243971,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.name",
@@ -243674,8 +243980,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.category",
@@ -243683,8 +243989,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.source",
@@ -243692,8 +243998,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243701,8 +244007,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_title",
@@ -243710,8 +244016,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_description",
@@ -243719,8 +244025,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5399,
-      "end_line": 5399,
+      "line": 5401,
+      "end_line": 5401,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_keywords",
@@ -243728,8 +244034,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5399,
-      "end_line": 5399,
+      "line": 5401,
+      "end_line": 5401,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator.seo_blocks",
@@ -243737,8 +244043,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5473,
-      "end_line": 5473,
+      "line": 5475,
+      "end_line": 5475,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243746,8 +244052,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243755,8 +244061,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243764,8 +244070,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243773,8 +244079,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5570,
-      "end_line": 5570,
+      "line": 5572,
+      "end_line": 5572,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243782,8 +244088,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5659,
-      "end_line": 5659,
+      "line": 5661,
+      "end_line": 5661,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243791,8 +244097,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5708,
-      "end_line": 5708,
+      "line": 5710,
+      "end_line": 5710,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -243800,8 +244106,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243809,8 +244115,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243818,8 +244124,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5398,
-      "end_line": 5398,
+      "line": 5400,
+      "end_line": 5400,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243827,8 +244133,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5399,
-      "end_line": 5399,
+      "line": 5401,
+      "end_line": 5401,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243836,8 +244142,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5399,
-      "end_line": 5399,
+      "line": 5401,
+      "end_line": 5401,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243845,8 +244151,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5541,
-      "end_line": 5541,
+      "line": 5543,
+      "end_line": 5543,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243854,8 +244160,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5585,
-      "end_line": 5585,
+      "line": 5587,
+      "end_line": 5587,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243863,8 +244169,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5611,
-      "end_line": 5611,
+      "line": 5613,
+      "end_line": 5613,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243872,8 +244178,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5659,
-      "end_line": 5659,
+      "line": 5661,
+      "end_line": 5661,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243881,8 +244187,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5659,
-      "end_line": 5659,
+      "line": 5661,
+      "end_line": 5661,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243890,8 +244196,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5708,
-      "end_line": 5708,
+      "line": 5710,
+      "end_line": 5710,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243899,8 +244205,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5708,
-      "end_line": 5708,
+      "line": 5710,
+      "end_line": 5710,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -243908,8 +244214,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5323,
-      "end_line": 5323,
+      "line": 5325,
+      "end_line": 5325,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243917,8 +244223,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5490,
-      "end_line": 5490,
+      "line": 5492,
+      "end_line": 5492,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -243926,8 +244232,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5541,
-      "end_line": 5541,
+      "line": 5543,
+      "end_line": 5543,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -243935,8 +244241,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5541,
-      "end_line": 5541,
+      "line": 5543,
+      "end_line": 5543,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243944,8 +244250,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5548,
-      "end_line": 5548,
+      "line": 5550,
+      "end_line": 5550,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -243953,8 +244259,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5611,
-      "end_line": 5611,
+      "line": 5613,
+      "end_line": 5613,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -243962,8 +244268,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5611,
-      "end_line": 5611,
+      "line": 5613,
+      "end_line": 5613,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243971,8 +244277,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5708,
-      "end_line": 5708,
+      "line": 5710,
+      "end_line": 5710,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243980,8 +244286,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5323,
-      "end_line": 5323,
+      "line": 5325,
+      "end_line": 5325,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243989,8 +244295,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5323,
-      "end_line": 5323,
+      "line": 5325,
+      "end_line": 5325,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -243998,8 +244304,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
+      "line": 5427,
+      "end_line": 5427,
       "owner": "_apply_seo_preserving_overrides",
       "conditions": [
         "updates"
@@ -244009,8 +244315,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5489,
-      "end_line": 5489,
+      "line": 5491,
+      "end_line": 5491,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244018,8 +244324,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5490,
-      "end_line": 5490,
+      "line": 5492,
+      "end_line": 5492,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244027,8 +244333,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5509,
-      "end_line": 5509,
+      "line": 5511,
+      "end_line": 5511,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -244036,8 +244342,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5520,
-      "end_line": 5520,
+      "line": 5522,
+      "end_line": 5522,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -244045,8 +244351,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5541,
-      "end_line": 5541,
+      "line": 5543,
+      "end_line": 5543,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244054,12 +244360,124 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5547,
-      "end_line": 5547,
+      "line": 5549,
+      "end_line": 5549,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
       "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5550,
+      "end_line": 5550,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5591,
+      "end_line": 5591,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5613,
+      "end_line": 5613,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5618,
+      "end_line": 5618,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5673,
+      "end_line": 5673,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5308,
+      "end_line": 5308,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.models.Indicator.is_active.is_",
+      "expression": "Indicator.is_active.is_"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5427,
+      "end_line": 5427,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [
+        "updates"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5427,
+      "end_line": 5427,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [
+        "updates"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5510,
+      "end_line": 5510,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5511,
+      "end_line": 5511,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5521,
+      "end_line": 5521,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5522,
+      "end_line": 5522,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
     },
     {
       "path": "backend/seed_data.py",
@@ -244072,26 +244490,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5589,
-      "end_line": 5589,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator.code",
-      "expression": "Indicator.code"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5611,
-      "end_line": 5611,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5616,
-      "end_line": 5616,
+      "line": 5549,
+      "end_line": 5549,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -244099,48 +244499,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5671,
-      "end_line": 5671,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5306,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active.is_",
-      "expression": "Indicator.is_active.is_"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [
-        "updates"
-      ],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5425,
-      "end_line": 5425,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [
-        "updates"
-      ],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5508,
-      "end_line": 5508,
+      "line": 5590,
+      "end_line": 5590,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244148,8 +244508,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5509,
-      "end_line": 5509,
+      "line": 5591,
+      "end_line": 5591,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244157,62 +244517,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5519,
-      "end_line": 5519,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5520,
-      "end_line": 5520,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5546,
-      "end_line": 5546,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5547,
-      "end_line": 5547,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5588,
-      "end_line": 5588,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5589,
-      "end_line": 5589,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5306,
+      "line": 5308,
+      "end_line": 5308,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -244220,8 +244526,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5306,
+      "line": 5308,
+      "end_line": 5308,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -244229,8 +244535,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5306,
+      "line": 5308,
+      "end_line": 5308,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -244238,8 +244544,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5306,
-      "end_line": 5306,
+      "line": 5308,
+      "end_line": 5308,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -254758,6 +255064,42 @@
       "kind": "FunctionDef"
     },
     {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 7,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "LaborSeries",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 130,
+      "end_line": 146,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "seed_indicators",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 21,
+      "end_line": 29,
+      "owner": "LaborSeries",
+      "conditions": [],
+      "name": "coverage",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 32,
+      "end_line": 33,
+      "owner": "LaborSeries",
+      "conditions": [],
+      "name": "source_url",
+      "kind": "FunctionDef"
+    },
+    {
       "path": "backend/app/data/eurostat_country_visibility.py",
       "line": 30,
       "end_line": 59,
@@ -255785,8 +256127,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 17,
-      "end_line": 21,
+      "line": 19,
+      "end_line": 23,
       "owner": "<module>",
       "conditions": [],
       "name": "IndicatorCopyEn",
@@ -255794,8 +256136,8 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1070,
-      "end_line": 1072,
+      "line": 1081,
+      "end_line": 1083,
       "owner": "<module>",
       "conditions": [],
       "name": "get_indicator_copy_en",
@@ -263833,6 +264175,33 @@
       "kind": "AsyncFunctionDef"
     },
     {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 32,
+      "end_line": 80,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "fetch_year",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 83,
+      "end_line": 95,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "EmissLaborParser",
+      "kind": "ClassDef"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 86,
+      "end_line": 95,
+      "owner": "EmissLaborParser",
+      "conditions": [],
+      "name": "_fetch_and_parse",
+      "kind": "AsyncFunctionDef"
+    },
+    {
       "path": "backend/app/services/emiss_regional_parser.py",
       "line": 116,
       "end_line": 117,
@@ -269639,8 +270008,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 32,
-      "end_line": 61,
+      "line": 33,
+      "end_line": 62,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatCpiParser",
@@ -269648,8 +270017,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 129,
-      "end_line": 138,
+      "line": 131,
+      "end_line": 140,
       "owner": "<module>",
       "conditions": [],
       "name": "get_parser",
@@ -269657,8 +270026,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 35,
-      "end_line": 58,
+      "line": 36,
+      "end_line": 59,
       "owner": "RosstatCpiParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -269666,8 +270035,8 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 60,
-      "end_line": 61,
+      "line": 61,
+      "end_line": 62,
       "owner": "RosstatCpiParser",
       "conditions": [],
       "name": "_validate",
@@ -289303,8 +289672,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5025,
-      "end_line": 5116,
+      "line": 5027,
+      "end_line": 5118,
       "owner": "<module>",
       "conditions": [],
       "name": "_sibling_texts",
@@ -289312,8 +289681,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5249,
-      "end_line": 5277,
+      "line": 5251,
+      "end_line": 5279,
       "owner": "<module>",
       "conditions": [],
       "name": "compute_seed_hash",
@@ -289321,8 +289690,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5280,
-      "end_line": 5287,
+      "line": 5282,
+      "end_line": 5289,
       "owner": "<module>",
       "conditions": [],
       "name": "_stored_seed_hash",
@@ -289330,8 +289699,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5290,
-      "end_line": 5325,
+      "line": 5292,
+      "end_line": 5327,
       "owner": "<module>",
       "conditions": [],
       "name": "_retire_orphan_siblings",
@@ -289339,8 +289708,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5328,
-      "end_line": 5336,
+      "line": 5330,
+      "end_line": 5338,
       "owner": "<module>",
       "conditions": [],
       "name": "_store_seed_hash",
@@ -289348,8 +289717,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5343,
-      "end_line": 5346,
+      "line": 5345,
+      "end_line": 5348,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_fp",
@@ -289357,8 +289726,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5349,
-      "end_line": 5350,
+      "line": 5351,
+      "end_line": 5352,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_empty",
@@ -289366,8 +289735,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5353,
-      "end_line": 5377,
+      "line": 5355,
+      "end_line": 5379,
       "owner": "<module>",
       "conditions": [],
       "name": "_seo_decide",
@@ -289375,8 +289744,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5380,
-      "end_line": 5435,
+      "line": 5382,
+      "end_line": 5437,
       "owner": "<module>",
       "conditions": [],
       "name": "_apply_seo_preserving_overrides",
@@ -289384,8 +289753,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5438,
-      "end_line": 5460,
+      "line": 5440,
+      "end_line": 5462,
       "owner": "<module>",
       "conditions": [],
       "name": "seed",
@@ -289393,8 +289762,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5463,
-      "end_line": 5682,
+      "line": 5465,
+      "end_line": 5684,
       "owner": "<module>",
       "conditions": [],
       "name": "_seed_full",
@@ -289402,8 +289771,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5685,
-      "end_line": 5715,
+      "line": 5687,
+      "end_line": 5717,
       "owner": "<module>",
       "conditions": [],
       "name": "generate_forecasts",
@@ -289411,8 +289780,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5258,
-      "end_line": 5266,
+      "line": 5260,
+      "end_line": 5268,
       "owner": "compute_seed_hash",
       "conditions": [],
       "name": "_canon",
@@ -296904,8 +297273,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5440,
-      "end_line": 5440,
+      "line": 5442,
+      "end_line": 5442,
       "owner": "seed",
       "conditions": [],
       "name": "FORCE_SEED",
@@ -296916,8 +297285,8 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5581,
-      "end_line": 5581,
+      "line": 5583,
+      "end_line": 5583,
       "owner": "_seed_full",
       "conditions": [],
       "name": "FORCE_SEED_SEO",
@@ -300986,6 +301355,42 @@
       "symbol": "app.data.cpi_provenance.CPI_YOY_CODES"
     },
     {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 108,
+      "end_line": 108,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.emiss_labor.SERIES"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 116,
+      "end_line": 116,
+      "owner": "<module>",
+      "conditions": [
+        "ru"
+      ],
+      "symbol": "app.data.emiss_labor.SERIES"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 122,
+      "end_line": 122,
+      "owner": "<module>",
+      "conditions": [
+        "ru"
+      ],
+      "symbol": "app.data.emiss_labor.SERIES"
+    },
+    {
+      "path": "backend/app/data/emiss_labor.py",
+      "line": 131,
+      "end_line": 131,
+      "owner": "seed_indicators",
+      "conditions": [],
+      "symbol": "app.data.emiss_labor.SERIES"
+    },
+    {
       "path": "backend/app/data/eurostat_deep_expand.py",
       "line": 37,
       "end_line": 37,
@@ -302288,11 +302693,19 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "line": 1072,
-      "end_line": 1072,
+      "line": 1083,
+      "end_line": 1083,
       "owner": "get_indicator_copy_en",
       "conditions": [],
       "symbol": "app.data.i18n.indicator_copy_en.INDICATOR_COPY_EN"
+    },
+    {
+      "path": "backend/app/data/i18n/indicator_copy_en.py",
+      "line": 34,
+      "end_line": 34,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.emiss_labor.SERIES"
     },
     {
       "path": "backend/app/data/indicator_seo.py",
@@ -305500,6 +305913,46 @@
       "symbol": "app.services.display._EN_MONTHS_NOM"
     },
     {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 22,
+      "end_line": 22,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.services.emiss_regional_parser.MONTH_OIDS"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 36,
+      "end_line": 36,
+      "owner": "fetch_year",
+      "conditions": [],
+      "symbol": "app.services.emiss_labor_parser._PERIODS"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 39,
+      "end_line": 39,
+      "owner": "fetch_year",
+      "conditions": [],
+      "symbol": "app.data.emiss_labor.AGES"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 39,
+      "end_line": 39,
+      "owner": "fetch_year",
+      "conditions": [],
+      "symbol": "app.services.emiss_labor_parser._TERRITORIES"
+    },
+    {
+      "path": "backend/app/services/emiss_labor_parser.py",
+      "line": 87,
+      "end_line": 87,
+      "owner": "EmissLaborParser._fetch_and_parse",
+      "conditions": [],
+      "symbol": "app.data.emiss_labor.SERIES"
+    },
+    {
       "path": "backend/app/services/emiss_regional_parser.py",
       "line": 166,
       "end_line": 166,
@@ -308022,16 +308475,16 @@
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 130,
-      "end_line": 130,
+      "line": 132,
+      "end_line": 132,
       "owner": "get_parser",
       "conditions": [],
       "symbol": "app.services.rosstat_cpi_parser.PARSER_REGISTRY"
     },
     {
       "path": "backend/app/services/rosstat_cpi_parser.py",
-      "line": 135,
-      "end_line": 135,
+      "line": 137,
+      "end_line": 137,
       "owner": "get_parser",
       "conditions": [
         "cls is None"
@@ -315545,43 +315998,35 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5215,
-      "end_line": 5215,
+      "line": 5217,
+      "end_line": 5217,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5239,
-      "end_line": 5239,
+      "line": 5241,
+      "end_line": 5241,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5014,
-      "end_line": 5014,
+      "line": 5016,
+      "end_line": 5016,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data._PARENT_META"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5013,
-      "end_line": 5013,
+      "line": 5015,
+      "end_line": 5015,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5125,
-      "end_line": 5125,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data._EXISTING_CODES"
     },
     {
       "path": "backend/seed_data.py",
@@ -315589,15 +316034,15 @@
       "end_line": 5127,
       "owner": "<module>",
       "conditions": [],
-      "symbol": "seed_data._PARENT_META"
+      "symbol": "seed_data._EXISTING_CODES"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5175,
-      "end_line": 5175,
+      "line": 5129,
+      "end_line": 5129,
       "owner": "<module>",
       "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+      "symbol": "seed_data._PARENT_META"
     },
     {
       "path": "backend/seed_data.py",
@@ -315609,27 +316054,171 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5219,
-      "end_line": 5219,
+      "line": 5179,
+      "end_line": 5179,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5221,
+      "end_line": 5221,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.MONTHLY_AUTO_FORECAST_CODES"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5240,
-      "end_line": 5240,
+      "line": 5242,
+      "end_line": 5242,
       "owner": "<module>",
       "conditions": [],
       "symbol": "seed_data.ANNUAL_AUTO_FORECAST_CODES"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5313,
-      "end_line": 5313,
+      "line": 5315,
+      "end_line": 5315,
       "owner": "_retire_orphan_siblings",
       "conditions": [],
       "symbol": "app.data.legacy_redirects._SIBLING_SUFFIXES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5411,
+      "end_line": 5411,
+      "owner": "_apply_seo_preserving_overrides",
+      "conditions": [],
+      "symbol": "seed_data._SEO_FIELDS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5474,
+      "end_line": 5474,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "seed_data.INDICATORS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5588,
+      "end_line": 5588,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5029,
+      "end_line": 5029,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._PARENT_META"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5101,
+      "end_line": 5101,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._GRAN_PERIOD"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5102,
+      "end_line": 5102,
+      "owner": "_sibling_texts",
+      "conditions": [],
+      "symbol": "seed_data._GRAN_EOP"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5172,
+      "end_line": 5172,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "seed_data.INDICATORS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5174,
+      "end_line": 5174,
+      "owner": "<module>",
+      "conditions": [],
+      "symbol": "seed_data._EXISTING_CODES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5271,
+      "end_line": 5271,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "seed_data.INDICATORS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5272,
+      "end_line": 5272,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5273,
+      "end_line": 5273,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5274,
+      "end_line": 5274,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5276,
+      "end_line": 5276,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5305,
+      "end_line": 5305,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.data.view_model_families.FAMILIES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5306,
+      "end_line": 5306,
+      "owner": "_retire_orphan_siblings",
+      "conditions": [],
+      "symbol": "app.data.view_model_families.FAMILIES"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5585,
+      "end_line": 5585,
+      "owner": "_seed_full",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
+    },
+    {
+      "path": "backend/seed_data.py",
+      "line": 5275,
+      "end_line": 5275,
+      "owner": "compute_seed_hash",
+      "conditions": [],
+      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
     },
     {
       "path": "backend/seed_data.py",
@@ -315641,208 +316230,72 @@
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5472,
-      "end_line": 5472,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5586,
-      "end_line": 5586,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5027,
-      "end_line": 5027,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._PARENT_META"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5099,
-      "end_line": 5099,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._GRAN_PERIOD"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5100,
-      "end_line": 5100,
-      "owner": "_sibling_texts",
-      "conditions": [],
-      "symbol": "seed_data._GRAN_EOP"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5170,
-      "end_line": 5170,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5172,
-      "end_line": 5172,
-      "owner": "<module>",
-      "conditions": [],
-      "symbol": "seed_data._EXISTING_CODES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5269,
-      "end_line": 5269,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "seed_data.INDICATORS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5270,
-      "end_line": 5270,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5271,
-      "end_line": 5271,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5272,
-      "end_line": 5272,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5274,
-      "end_line": 5274,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5303,
-      "end_line": 5303,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.data.view_model_families.FAMILIES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5304,
-      "end_line": 5304,
-      "owner": "_retire_orphan_siblings",
-      "conditions": [],
-      "symbol": "app.data.view_model_families.FAMILIES"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5583,
-      "end_line": 5583,
+      "line": 5567,
+      "end_line": 5567,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5273,
-      "end_line": 5273,
-      "owner": "compute_seed_hash",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5407,
-      "end_line": 5407,
-      "owner": "_apply_seo_preserving_overrides",
-      "conditions": [],
-      "symbol": "seed_data._SEO_FIELDS"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5565,
-      "end_line": 5565,
-      "owner": "_seed_full",
-      "conditions": [],
-      "symbol": "app.data.indicator_seo.INDICATOR_SEO"
-    },
-    {
-      "path": "backend/seed_data.py",
-      "line": 5578,
-      "end_line": 5578,
+      "line": 5580,
+      "end_line": 5580,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5610,
-      "end_line": 5610,
+      "line": 5612,
+      "end_line": 5612,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.wages_historical.MONTHLY_GAP_FILL"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5696,
-      "end_line": 5696,
+      "line": 5698,
+      "end_line": 5698,
       "owner": "generate_forecasts",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5575,
-      "end_line": 5575,
+      "line": 5577,
+      "end_line": 5577,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_KEYWORDS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5598,
-      "end_line": 5598,
+      "line": 5600,
+      "end_line": 5600,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_SEO_BLOCKS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5599,
-      "end_line": 5599,
+      "line": 5601,
+      "end_line": 5601,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.data.indicator_seo.INDICATOR_HIDDEN_FROM_LISTING"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5636,
-      "end_line": 5636,
+      "line": 5638,
+      "end_line": 5638,
       "owner": "_seed_full",
       "conditions": [],
       "symbol": "app.services.calculation_engine.DERIVED_SPECS"
     },
     {
       "path": "backend/seed_data.py",
-      "line": 5141,
-      "end_line": 5141,
+      "line": 5143,
+      "end_line": 5143,
       "owner": "<module>",
       "conditions": [
         "not (_strategy == 'monthly_auto')",
