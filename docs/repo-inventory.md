@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2060  ·  **Строк:** 1 310 128  ·  **Токенов (≈):** 12 444 207
+**Файлов:** 2060  ·  **Строк:** 1 310 379  ·  **Токенов (≈):** 12 447 789
 
 ## По верхним папкам
 
@@ -19,8 +19,8 @@
 | `backend` | 835 | 284 570 | 3 135 162 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 17 | 916 | 12 404 |
-| `docs` | 138 | 831 840 | 7 099 416 |
-| `frontend` | 926 | 165 624 | 1 843 885 |
+| `docs` | 138 | 831 984 | 7 101 655 |
+| `frontend` | 926 | 165 731 | 1 845 228 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 328 841 | 2 676 089 |
-| `docs/client-mechanism-inventory.json` | 240 273 | 1 698 592 |
+| `docs/client-mechanism-inventory.json` | 240 397 | 1 699 844 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 051 | 133 197 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 063 | 108 074 |
+| `docs/backlog.md` | 3 079 | 108 544 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,14 +49,14 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 728 | 52 030 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 973 | 48 333 |
+| `docs/data-contracts.md` | 977 | 48 850 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `docs/design-system.md` | 491 | 38 836 |
-| `frontend/src/pages/ComparePage.jsx` | 3 287 | 36 211 |
+| `frontend/src/pages/ComparePage.jsx` | 3 329 | 36 752 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
 | `backend/app/api/world.py` | 2 840 | 27 999 |
@@ -558,6 +558,7 @@
 | `backend/tests/test_og_fit.py` | 296 | 2 686 |
 | `frontend/vite.config.js` | 252 | 2 682 |
 | `frontend/src/components/home/HomeWorkbench.jsx` | 279 | 2 680 |
+| `frontend/src/lib/compareCompatibility.js` | 285 | 2 680 |
 | `scripts/seo-audit.py` | 256 | 2 674 |
 | `frontend/src/pages/RegionProfile.jsx` | 250 | 2 673 |
 | `backend/app/services/site_paths.py` | 369 | 2 672 |
@@ -587,7 +588,6 @@
 | `scripts/classify-graph-omissions.py` | 168 | 2 547 |
 | `backend/tests/test_freshness_note.py` | 195 | 2 544 |
 | `backend/tests/test_scrape_access_policy.py` | 212 | 2 540 |
-| `frontend/src/lib/compareCompatibility.js` | 275 | 2 540 |
 | `frontend/src/components/regions/RegionRanking.jsx` | 226 | 2 538 |
 | `backend/app/services/seo_year_ui.py` | 292 | 2 536 |
 | `backend/tests/test_seo_not_found.py` | 230 | 2 531 |
@@ -765,6 +765,7 @@
 | `scripts/dev/perf-profile.mjs` | 117 | 1 860 |
 | `backend/scripts/audit-groups-submodes.py` | 173 | 1 859 |
 | `backend/tests/test_indexnow_reliable_queue.py` | 203 | 1 856 |
+| `frontend/src/pages/ComparePage.rates.component.test.jsx` | 182 | 1 852 |
 | `frontend/src/pages/RegionComparePage.jsx` | 176 | 1 847 |
 | `backend/app/services/cbr_keyrate.py` | 205 | 1 846 |
 | `backend/app/services/world_forecast_candidates.py` | 214 | 1 845 |
@@ -1058,7 +1059,6 @@
 | `frontend/src/components/regions/RegionLeaders.jsx` | 108 | 1 198 |
 | `frontend/src/components/CalcMortgageExtras.jsx` | 112 | 1 197 |
 | `frontend/src/pages/RegionRatingPage.component.test.jsx` | 140 | 1 196 |
-| `frontend/src/pages/ComparePage.rates.component.test.jsx` | 127 | 1 190 |
 | `backend/app/data/eurostat_deep_expand.py` | 154 | 1 189 |
 | `backend/tests/test_search_single_letter.py` | 95 | 1 187 |
 | `docs/research/_fpsr_raw/build_excel.py` | 173 | 1 186 |

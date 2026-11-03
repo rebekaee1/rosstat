@@ -1,6 +1,6 @@
 // Сравнение: ряд, уже выраженный темпом (инфляция России за год, МВФ-ряды Японии и Кореи), не получает «к прошлому периоду».
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within, fireEvent } from '@testing-library/react';
 import ComparePage from './ComparePage';
 import { renderPage, mockApiGet } from '../test/renderPage';
 
@@ -71,11 +71,33 @@ function seriesFor(url) {
   };
 }
 
-function mockApis() {
+// Национальный ИПЦ России: месячный индекс «к прошлому месяцу» (100,x), из него считаются индекс и «к прошлому периоду».
+const CPI_INDICATOR = {
+  code: 'cpi', name: 'Индекс потребительских цен', unit: '%', frequency: 'monthly', source: 'Росстат', is_listed: true,
+};
+const CPI_MONTHLY = {
+  data: [
+    { date: '2024-01-01', value: 100.9 },
+    { date: '2024-02-01', value: 100.7 },
+    { date: '2024-03-01', value: 100.4 },
+  ],
+};
+const CPI_YOY = {
+  data: [
+    { date: '2024-01-01', value: 7.4 },
+    { date: '2024-02-01', value: 7.7 },
+    { date: '2024-03-01', value: 7.7 },
+  ],
+};
+
+function mockApis({ nationalCpi = true } = {}) {
+  const indicators = nationalCpi ? [CPI_INDICATOR] : [];
   return mockApiGet([
     ['/auth/me', { user: null }],
-    [/^\/indicators\?/, []],
-    ['/indicators', []],
+    [/^\/indicators\?/, indicators],
+    ['/indicators', indicators],
+    ['/indicators/cpi/data', CPI_MONTHLY],
+    ['/indicators/cpi-yoy/data', CPI_YOY],
     ['/regions/catalog', { sections: [] }],
     [/^\/regions\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }],
     [/^\/regions/, { districts: [], sections: [] }],
@@ -96,21 +118,54 @@ async function cardOf(name) {
 }
 
 describe('ComparePage: темп не пересчитывается в темп', () => {
-  it('у России нет «к прошлому периоду», даже если ссылка просит его; США сразу «к прошлому году»', async () => {
+  it('у России три настоящих вида, по ссылке — «к прошлому периоду»; США рядом с ней открываются «к прошлому году»', async () => {
     mockApis();
     renderPage(<ComparePage />, {
       path: '/compare',
       route: '/compare?codes=w:russia:hicp-index,w:united-states:hicp-index&rep=w:russia:hicp-index:pop',
     });
     await screen.findAllByText(/Россия/);
-    // Карточка России: только значение, кнопок представлений нет совсем.
     const russiaCard = await cardOf(/Россия/);
-    expect(russiaCard.queryByRole('button', { name: 'К прошлому периоду' })).toBeNull();
-    expect(russiaCard.queryByRole('button', { name: 'К прошлому году' })).toBeNull();
-    // Карточка США: индекс, для него темпы есть, и по соседству с готовым годовым темпом выбран «к прошлому году».
+    expect(russiaCard.getByRole('button', { name: 'Индекс' })).toBeTruthy();
+    expect(russiaCard.getByRole('button', { name: 'К прошлому году' })).toBeTruthy();
+    expect(russiaCard.getByRole('button', { name: 'К прошлому периоду' }).getAttribute('aria-pressed')).toBe('true');
     const usCard = await cardOf(/США/);
     expect(usCard.getByRole('button', { name: 'К прошлому периоду' })).toBeTruthy();
     expect(usCard.getByRole('button', { name: 'К прошлому году' }).getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('Россия без выбора открывается «к прошлому году», а «Индекс» у неё нажимается', async () => {
+    mockApis();
+    renderPage(<ComparePage />, { path: '/compare', route: '/compare?codes=w:russia:hicp-index' });
+    const russiaCard = await cardOf(/Россия/);
+    await waitFor(() => expect(russiaCard.getByRole('button', { name: 'К прошлому году' }).getAttribute('aria-pressed')).toBe('true'));
+    fireEvent.click(russiaCard.getByRole('button', { name: 'Индекс' }));
+    await waitFor(() => expect(russiaCard.getByRole('button', { name: 'Индекс' }).getAttribute('aria-pressed')).toBe('true'));
+  });
+
+  it('«Значение» у США рядом с Россией нажимается и остаётся выбранным', async () => {
+    mockApis();
+    renderPage(<ComparePage />, {
+      path: '/compare',
+      route: '/compare?codes=w:united-states:hicp-index,w:russia:hicp-index&rep=w:united-states:hicp-index:pop',
+    });
+    const usCard = await cardOf(/США/);
+    expect(usCard.getByRole('button', { name: 'К прошлому периоду' }).getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(usCard.getByRole('button', { name: 'Значение' }));
+    await waitFor(() => expect(usCard.getByRole('button', { name: 'Значение' }).getAttribute('aria-pressed')).toBe('true'));
+    expect(usCard.getByRole('button', { name: 'К прошлому году' }).getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('без национального ИПЦ у России остаётся один готовый темп без кнопок', async () => {
+    mockApis({ nationalCpi: false });
+    renderPage(<ComparePage />, {
+      path: '/compare',
+      route: '/compare?codes=w:russia:hicp-index,w:united-states:hicp-index&rep=w:russia:hicp-index:pop',
+    });
+    await screen.findAllByText(/Россия/);
+    const russiaCard = await cardOf(/Россия/);
+    expect(russiaCard.queryByRole('button', { name: 'К прошлому периоду' })).toBeNull();
+    expect(russiaCard.queryByRole('button', { name: 'К прошлому году' })).toBeNull();
   });
 
   it('Япония: каталог назвал ряд индексом, но сам ряд уже темп — кнопок темпа нет', async () => {

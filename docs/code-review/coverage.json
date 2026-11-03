@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2008
     },
-    "definitions": 14674,
-    "annotated_definitions": 14674,
+    "definitions": 14676,
+    "annotated_definitions": 14676,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -12425,9 +12425,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "551bbb005d6bd5c399c61671c1f812b7acaacc9ef707261535f758ff8c23fc01",
-      "bytes": 646248,
-      "lines": 3063,
+      "sha256": "94e4630d71fc39e79c8baf0fb0472d766b2dcea6b7e285bd195d2b9e2c560add",
+      "bytes": 649306,
+      "lines": 3079,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12451,9 +12451,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "5a87e0513c19537497898559deeecc6a2d1fc5f0271df381dc2f61e83425d976",
-      "bytes": 6826703,
-      "lines": 240273,
+      "sha256": "a71632a5df1f765d5f01882407a9cc89a618ae32242f65e2c60313511e24cbbb",
+      "bytes": 6832041,
+      "lines": 240397,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12464,7 +12464,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "bd27f127493753e4a5bf41fe1c67ca3335f329920f10e8b995586d5d6d7c5ba3",
+      "sha256": "d8f0bb3dde71422e709ccef92c201647fddbbc118294f21cb340c2c9718af304",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -12490,9 +12490,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "86b5a8cbc513764b1ad706f6fea21df42d864eadcee0b227d0f1ceda49f1754c",
-      "bytes": 283417,
-      "lines": 973,
+      "sha256": "aa8995a73b00aa78daa5efbe85ec33fa6fd5c82bd24898ef843d9d559ab77892",
+      "bytes": 286617,
+      "lines": 977,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13023,9 +13023,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "3e3af5a5d381fffbc97f6a73bb0e5c05345f8093fd74c5b40b17ab03b36c72b8",
-      "bytes": 2932070,
-      "lines": 106159,
+      "sha256": "4ff489cc1b8827fc5fdab80075128f187fa98cb878842a556a8760939e388a34",
+      "bytes": 2933325,
+      "lines": 106209,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -20745,15 +20745,15 @@
     },
     {
       "path": "frontend/src/lib/compareCompatibility.js",
-      "sha256": "a18cc537a1d4e17cc4183cc4d4b5a1df67b90eaf68a3cd1dbb1fa7cbc31886ae",
-      "bytes": 11273,
-      "lines": 275,
+      "sha256": "c65cd54fc337bb3a98181417074f21a94027ae6b99b395dfe61ba2f079293f64",
+      "bytes": 12052,
+      "lines": 285,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 11,
-      "annotated_definitions": 11,
+      "definitions": 12,
+      "annotated_definitions": 12,
       "missing_definitions": []
     },
     {
@@ -25217,22 +25217,22 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.jsx",
-      "sha256": "f7ede915ff17932278141b8dece07d04cb839121147a847e955469b6919821ab",
-      "bytes": 157979,
-      "lines": 3287,
+      "sha256": "8b50fec8c6e3731db5ffd081a19c019735634dc35e79f65a86077665e99d4016",
+      "bytes": 160554,
+      "lines": 3329,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 62,
-      "annotated_definitions": 62,
+      "definitions": 63,
+      "annotated_definitions": 63,
       "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/ComparePage.rates.component.test.jsx",
-      "sha256": "abf6671a306e4451d5bde97f4f9c9ee0da2eb4eb56feeca8320c7fc2e4c6c69b",
-      "bytes": 5552,
-      "lines": 127,
+      "sha256": "295e80c5e017f238c7d7761faaf4bc750e0487f0795e7b059efc833dc3a58570",
+      "bytes": 8500,
+      "lines": 182,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28883,9 +28883,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "cac9191c25056f1a03b10c2d71c0c32d829b5a8beda4eb8bbf8f98ea73366bc7",
-  "javascript_inventory_sha256": "2faf74906a6cf802a4cca1b8e334214e9da58dbad3e6e4e6dc98b6c21903be6c",
-  "baseline_commit": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
+  "ledger_sha256": "8fa7afe0bf1764ea6e7721db96333e0b0c84caf3479ad8d80658040660b7c851",
+  "javascript_inventory_sha256": "346af61c2a9fc7d7e67802bb52bf86a8f6226ae7ce55fe8902a11ffc26d4376b",
+  "baseline_commit": "612ee83fededa6526e78f68b281602ab510e3959",
   "branch": "main",
-  "unstaged_at_capture": []
+  "unstaged_at_capture": [
+    "docs/indicator-index.json"
+  ]
 }

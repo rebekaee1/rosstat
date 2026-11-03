@@ -62,7 +62,7 @@ import { filterSearchCountries } from '../lib/worldCompareSearch';
 import { exportNodeToPng } from '../lib/chartImage';
 import useScrollDepth from '../lib/useScrollDepth';
 import {
-  compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
+  compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_YOY, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
   applyCompareTransform, commonIndexBase, isReadyRateMeta, mergeWorldRepMeta, normalizeRateUnit, rebaseToHundred,
   requiresRebasedPriceIndex, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
@@ -73,6 +73,7 @@ import {
   normalizeCompareCodes,
   parseSubnationalCompareCode,
   parseWorldCompareCode,
+  russiaNativeCompareCode,
 } from '../lib/compareCompatibility';
 import { orderCountriesByGdp } from '../lib/countryOrder';
 import {
@@ -365,6 +366,17 @@ async function fetchWorldSeries(code, { signal }) {
       category: 'compare.category.world',
       conceptSlug: payload.meta.concept_slug,
     },
+  };
+}
+
+/** Национальный показатель в роли мирового ряда: название страны и понятия берём из каталога стран. */
+function worldAliasInd(nativeInd, meta) {
+  if (!nativeInd) return nativeInd;
+  return {
+    ...nativeInd,
+    conceptSlug: meta?.conceptSlug,
+    conceptName: meta?.conceptName,
+    countryName: meta?.countryName,
   };
 }
 
@@ -1676,8 +1688,10 @@ export default function ComparePage({ renderSave = null } = {}) {
       unit: item.unit,
       peerMode: item.peer_mode,
       valueAdjust: item.value_adjust,
+      conceptName: locale === 'en' ? (item.concept_name_en || item.concept_name) : item.concept_name,
+      countryName: locale === 'en' ? (item.country_name_en || item.country_name) : item.country_name,
     }])),
-    [worldCompareCatalog],
+    [worldCompareCatalog, locale],
   );
 
   // Название мировой серии известно из каталога сразу после выбора — до прихода данных.
@@ -1742,7 +1756,9 @@ export default function ComparePage({ renderSave = null } = {}) {
   const setRep = useCallback((code, rep) => {
     const params = new URLSearchParams(searchParams);
     const nextMap = { ...repByCode, [code]: rep };
-    const entries = Object.entries(nextMap).filter(([, r]) => r && r !== REP_LEVEL);
+    // У мировых рядов вид по умолчанию зависит от соседей (индекс цен рядом с темпом открывается «к году»),
+    // поэтому выбранное «Значение» пишем в адрес явно: иначе клик по нему ничего не меняет.
+    const entries = Object.entries(nextMap).filter(([c, r]) => r && (r !== REP_LEVEL || isWorldCode(c)));
     if (entries.length) params.set('rep', entries.map(([c, r]) => `${c}:${r}`).join(','));
     else params.delete('rep');
     commitParams(params);
@@ -1840,6 +1856,25 @@ export default function ComparePage({ renderSave = null } = {}) {
   // Так каждый ряд грузится в выбранном виде (уровень/к пред./к году), а не в
   // нативном. Резолвер (compareRepresentation.js) знает generic-семьи и bespoke.
   const resolved = useMemo(() => codes.map((code) => {
+    // Россия в понятии «Потребительские цены»: в общем наборе стран у неё один готовый годовой темп, а в национальном
+    // каталоге есть индекс, «к прошлому периоду» и «к году». Берём национальный ряд, имя и код остаются мировыми.
+    const nativeCode = russiaNativeCompareCode(code);
+    if (nativeCode && !indicatorsFetched) {
+      return {
+        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),
+        fetchCode: null, transform: null, unit: null, waitingCatalog: true, worldAlias: true,
+      };
+    }
+    const nativeInd = nativeCode ? indicators?.find((x) => x.code === nativeCode) : null;
+    if (nativeInd) {
+      const repId = repByCode[code] || REP_YOY;
+      const spec = resolveCompareSeries(nativeInd, repId)
+        || { code: nativeCode, transform: null, unit: nativeInd.unit, repId: REP_LEVEL, label: t('common.value') };
+      return {
+        code, ind: nativeInd, repId: spec.repId, repLabel: spec.label,
+        fetchCode: spec.code, transform: spec.transform, unit: spec.unit, worldAlias: true,
+      };
+    }
     if (isWorldCode(code)) {
       const meta = worldMetaByCode.get(code);
       // Индекс цен уровнем рядом с рядом в процентах за год сразу показываем в процентах (круг 9, C1).
@@ -1923,7 +1958,9 @@ export default function ComparePage({ renderSave = null } = {}) {
   });
 
   const series = useMemo(() => resolved.map((r, i) => {
-    const known = r.isWorld
+    const known = r.worldAlias
+      ? worldNameByCode.get(r.code)
+      : r.isWorld
       ? (results[i]?.data?.__worldMeta?.name || worldNameByCode.get(r.code))
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.name : r.ind?.name;
     // Каталог мог назвать ряд индексом, а сам ряд оказался темпом (МВФ: Япония, Южная Корея и ещё девять стран).
@@ -1938,7 +1975,9 @@ export default function ComparePage({ renderSave = null } = {}) {
     name: known || null,
     key: `v${i}`,
     color: PALETTE[i % PALETTE.length],
-    ind: r.isWorld
+    ind: r.worldAlias
+      ? worldAliasInd(r.ind, worldMetaByCode.get(r.code))
+      : r.isWorld
       ? results[i]?.data?.__worldMeta
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta : r.ind,
     rep: repId,
@@ -1946,7 +1985,8 @@ export default function ComparePage({ renderSave = null } = {}) {
     unit: r.isWorld
       ? (r.minus100 ? '%' : repId === REP_LEVEL ? normalizeRateUnit(loadedMeta?.unit) : r.unit)
       : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.unit : r.unit,
-    isWorld: r.isWorld,
+    isWorld: r.isWorld || !!r.worldAlias,
+    worldAlias: !!r.worldAlias,
     isSubnational: r.isSubnational,
     transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : r.transform,
     stepDeep: r.stepDeep,
@@ -2341,7 +2381,7 @@ export default function ComparePage({ renderSave = null } = {}) {
 
   // Выгрузка данных сравнения: все ряды одним файлом (даты строками, ряды колонками), в тех же единицах, что на графике.
   const repString = Object.entries(repByCode)
-    .filter(([code, rep]) => codes.includes(code) && rep && rep !== REP_LEVEL)
+    .filter(([code, rep]) => codes.includes(code) && rep && (rep !== REP_LEVEL || isWorldCode(code)))
     .map(([code, rep]) => `${code}:${rep}`)
     .join(',');
   const handleDataExport = async (format) => {
@@ -2558,7 +2598,9 @@ export default function ComparePage({ renderSave = null } = {}) {
           <div className="fe-compare-picked mt-4">
             {series.map((s) => {
               // Каталог, уточнённый загруженным рядом: кнопки не должны обещать то, чего ряд не умеет (темп от темпа).
-              const reps = s.isWorld
+              const reps = s.worldAlias
+                ? compareRepresentationsFor(s.ind || { code: s.code })
+                : s.isWorld
                 ? worldCompareRepresentationsFor(mergeWorldRepMeta(worldMetaByCode.get(s.code), s.ind))
                 : compareRepresentationsFor(s.ind || { code: s.code });
               return (
