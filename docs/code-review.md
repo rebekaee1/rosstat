@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `612ee83fededa6526e78f68b281602ab510e3959`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `1763514e1609abbe64ac644542a9193c400b0b34`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,10 +12,10 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2219 |
-| Код, шаблоны и стили | 1812 |
-| Актуальные рецензии без пропусков guard | 2219 |
-| Именованные определения Python/JS: с аннотацией / всего | 14676 / 14676 |
+| Файлы в явно определённом scope | 2221 |
+| Код, шаблоны и стили | 1814 |
+| Актуальные рецензии без пропусков guard | 2221 |
+| Именованные определения Python/JS: с аннотацией / всего | 14701 / 14701 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -465,7 +465,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/world_bank_pink_sheet_parser.py](../backend/app/services/world_bank_pink_sheet_parser.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/world_bea_regional.py](../backend/app/services/world_bea_regional.py) | reviewed | 18/18 | актуально |
 | [backend/app/services/world_cards.py](../backend/app/services/world_cards.py) | reviewed | 29/29 | актуально |
-| [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/world_compare.py](../backend/app/services/world_compare.py) | reviewed | 15/15 | актуально |
 | [backend/app/services/world_eurostat_ingest.py](../backend/app/services/world_eurostat_ingest.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/world_forecast_candidates.py](../backend/app/services/world_forecast_candidates.py) | reviewed | 12/12 | актуально |
 | [backend/app/services/world_forecast_gate.py](../backend/app/services/world_forecast_gate.py) | reviewed | 4/4 | актуально |
@@ -886,6 +886,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_world_catalog_merge.py](../backend/tests/test_world_catalog_merge.py) | reviewed | 19/19 | актуально |
 | [backend/tests/test_world_cfets_adapter.py](../backend/tests/test_world_cfets_adapter.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_world_compare_catalog_consistency.py](../backend/tests/test_world_compare_catalog_consistency.py) | reviewed | 8/8 | актуально |
+| [backend/tests/test_world_compare_frequency.py](../backend/tests/test_world_compare_frequency.py) | reviewed | 15/15 | актуально |
 | [backend/tests/test_world_concept_national.py](../backend/tests/test_world_concept_national.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_concepts.py](../backend/tests/test_world_concepts.py) | reviewed | 10/10 | актуально |
 | [backend/tests/test_world_country_markets.py](../backend/tests/test_world_country_markets.py) | reviewed | 5/5 | актуально |
@@ -1636,7 +1637,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/lib/compareInsight.js](../frontend/src/lib/compareInsight.js) | reviewed | 6/6 | актуально |
 | [frontend/src/lib/compareInsight.test.js](../frontend/src/lib/compareInsight.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/comparePresets.js](../frontend/src/lib/comparePresets.js) | reviewed | 3/3 | актуально |
-| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 24/24 | актуально |
+| [frontend/src/lib/compareRepresentation.js](../frontend/src/lib/compareRepresentation.js) | reviewed | 25/25 | актуально |
 | [frontend/src/lib/compareRepresentation.test.js](../frontend/src/lib/compareRepresentation.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/compareStats.js](../frontend/src/lib/compareStats.js) | reviewed | 3/3 | актуально |
 | [frontend/src/lib/compareStats.test.js](../frontend/src/lib/compareStats.test.js) | reviewed | 1/1 | актуально |
@@ -1978,6 +1979,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/ComparePage.jsx](../frontend/src/pages/ComparePage.jsx) | reviewed | 63/63 | актуально |
 | [frontend/src/pages/ComparePage.rates.component.test.jsx](../frontend/src/pages/ComparePage.rates.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/pages/ComparePage.states.component.test.jsx](../frontend/src/pages/ComparePage.states.component.test.jsx) | reviewed | 1/1 | актуально |
+| [frontend/src/pages/ComparePage.step.component.test.jsx](../frontend/src/pages/ComparePage.step.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/pages/ComparePage.w6.component.test.jsx](../frontend/src/pages/ComparePage.w6.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/ComparePage.z7.component.test.jsx](../frontend/src/pages/ComparePage.z7.component.test.jsx) | reviewed | 6/6 | актуально |
 | [frontend/src/pages/CompoundCalculatorPage.jsx](../frontend/src/pages/CompoundCalculatorPage.jsx) | reviewed | 5/5 | актуально |

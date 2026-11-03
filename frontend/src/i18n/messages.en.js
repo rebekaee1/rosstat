@@ -438,9 +438,7 @@ export default {
   'compare.axisLeft': 'left scale',
   'compare.axisRight': 'right scale',
   'compare.stepTitle':
-    'Align series to a common time step. If an indicator has a native series at that frequency (e.g. annual), it is used as-is; otherwise values are averaged',
-  'compare.worldOfficialOnly': 'World series are shown at their official frequency only',
-  'compare.step.official': 'Source frequency',
+    'Data is brought to one time step. If an indicator has an official series at that frequency (for example, annual), it is used; otherwise values are averaged over the period. For country data, incomplete periods are not shown and sparse data is never stretched to a finer step.',
   'compare.indexOnlyUnits': 'With 3+ different units only “Growth from the start” is available',
   'compare.panAria': 'Time window position',
   'compare.upsellTitle': 'Compare up to 10 indicators',
@@ -2895,7 +2893,6 @@ export default {
   'w6g.compare.scale.values': 'As is',
   'w6g.compare.scale.index': 'Growth from the start (start = 100)',
   'w6g.compare.step.auto': 'As in the source',
-  'w6g.compare.step.official': 'As in the source',
   'w6g.compare.saveImage': 'Save as image',
   'w6g.chart.scaleNudge': 'The countries differ a lot in size, so the smaller line looks flat even though it moves.',
   'w6g.chart.showPercent': 'Show as percent',

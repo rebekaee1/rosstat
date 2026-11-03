@@ -5,6 +5,7 @@ import {
   isIndexableBase, commonIndexBase, rebaseToHundred, requiresRebasedPriceIndex, resolveStepOverride,
   worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation, normalizeRateUnit,
   isReadyRateMeta, mergeWorldRepMeta,
+  worldRequestedFrequency,
 } from './compareRepresentation';
 
 describe('compareRepresentation — resolver', () => {
@@ -342,5 +343,24 @@ describe('defaultWorldRepresentation (круг 9, C1)', () => {
     expect(defaultWorldRepresentation(turkey, [])).toBe(REP_LEVEL);
     expect(defaultWorldRepresentation(russia, [turkey])).toBe(REP_LEVEL);
     expect(defaultWorldRepresentation(undefined, [russia])).toBe(REP_LEVEL);
+  });
+});
+
+describe('worldRequestedFrequency', () => {
+  it('просит у сервера только более крупный период, чем у ряда', () => {
+    expect(worldRequestedFrequency('quarter', 'monthly')).toBe('quarterly');
+    expect(worldRequestedFrequency('year', 'monthly')).toBe('annual');
+    expect(worldRequestedFrequency('year', 'quarterly')).toBe('annual');
+    expect(worldRequestedFrequency('year', 'yearly')).toBeNull();
+  });
+
+  it('тот же и более мелкий период, «как в источнике» и неизвестное не просятся', () => {
+    expect(worldRequestedFrequency('month', 'monthly')).toBeNull();
+    expect(worldRequestedFrequency('quarter', 'quarterly')).toBeNull();
+    expect(worldRequestedFrequency('month', 'annual')).toBeNull();
+    expect(worldRequestedFrequency('quarter', 'annual')).toBeNull();
+    expect(worldRequestedFrequency('auto', 'monthly')).toBeNull();
+    expect(worldRequestedFrequency('year', undefined)).toBeNull();
+    expect(worldRequestedFrequency(undefined, 'monthly')).toBeNull();
   });
 });

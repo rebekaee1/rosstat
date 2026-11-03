@@ -105,6 +105,12 @@ from app.services.world_rank_values import (
     yearly_last_points,
 )
 from app.services.world_compare import (
+    COMPARE_FREQUENCIES,
+    aggregate_compare_points,
+    compare_aggregation_policy,
+    compare_calculation_allowed,
+    compare_target_frequency,
+    official_compare_sibling,
     MONEY_COMPARE_CONCEPTS as _MONEY_COMPARE_CONCEPTS,
     choose_compare_indicator as _choose_compare_indicator,
     concept_members as _concept_members,
@@ -1283,7 +1289,7 @@ async def world_compare_catalog(db: AsyncSession = Depends(get_db)):
     return payload
 
 
-async def _russia_compare_series(db: AsyncSession, concept) -> dict:
+async def _russia_compare_series(db: AsyncSession, concept, frequency: str | None = None) -> dict:
     """Ряд России для сравнения: месячный у ИПЦ за год и безработицы, годовые значения у остальных.
 
     Месячный ряд идёт как есть (`russia_native_compare_series`), иначе он кончался бы декабрём прошлого года и не
@@ -1303,12 +1309,29 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
     link = russia_link_for_concept(concept.slug)
     loc = get_locale()
     native = await russia_native_compare_series(db, concept.slug)
+    aggregation = None
     if native is not None:
         indicator, series = native
         data = [{"date": point_date.isoformat(), "value": round(float(value), 4)} for point_date, value in series]
         freq = normalize_frequency(indicator.frequency)
         source = russia_link_source(link, loc)
         indicator_code = link.indicator_code
+        # Квартал и год считаются из месячного ряда: проценты и безработица — средним за период, только полные периоды.
+        target = compare_target_frequency(frequency, freq)
+        if target and compare_calculation_allowed(concept):
+            calculated = aggregate_compare_points(
+                [(point_date, float(value)) for point_date, value in series],
+                source=freq,
+                target=target,
+                policy="mean",
+            )
+            if calculated:
+                data = [
+                    {"date": point_date.isoformat(), "value": round(float(value), 4)}
+                    for point_date, value in calculated
+                ]
+                aggregation = {"source_frequency": freq, "policy": "mean"}
+                freq = target
     else:
         yearly = await russia_yearly_by_code(
             db, concept.slug, concept_mode="level", public_unit=public_unit,
@@ -1348,6 +1371,8 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
             "note": meta_extra.get("note"),
             "source": source,
             "national_method": concept.slug in {"gdp-usd", "gdp-per-capita-usd"},
+            "aggregated": aggregation is not None,
+            "aggregation": aggregation,
         },
         "data": data,
     }
@@ -1357,6 +1382,7 @@ async def _russia_compare_series(db: AsyncSession, concept) -> dict:
 async def world_compare_series(
     country_slug: str,
     concept_slug: str,
+    frequency: str | None = Query(None, max_length=16),
     db: AsyncSession = Depends(get_db),
 ):
     """Фактический официальный ряд одной страны для curated compare concept.
@@ -1365,6 +1391,11 @@ async def world_compare_series(
     crosswalk (`world_concept_national`): у США/Австралии/Канады/Британии/
     Индии/Мексики отдаётся их официальный индекс цен (или безработица) с
     родным юнитом, а не 404. Неопределённость состава ряда — 409.
+
+    `frequency=quarterly|annual` (месяц → квартал → год, только вверх): официальный ряд этой частоты, если он есть и
+    не короче расчётного, иначе расчёт по политике ряда (среднее, сумма или значение на конец периода; те же правила,
+    что у карточек). Неполные периоды не выдаются. Тот же или более мелкий период не достраивается: ряд остаётся
+    как есть. Фактическая частота ряда — `meta.frequency`.
     """
     concept = CONCEPT_BY_SLUG.get(concept_slug)
     if concept is None or "compare" not in concept.enabled_surfaces:
@@ -1376,14 +1407,19 @@ async def world_compare_series(
             ),
         )
 
+    requested = (frequency or "").strip().lower()
+    requested = "annual" if requested == "yearly" else requested
+    if requested not in COMPARE_FREQUENCIES:
+        requested = ""
+
     if country_slug == "russia":
         cache_key = await versioned_key(
-            "world", f"compare:series:v3:russia:{concept.slug}:{get_locale()}"
+            "world", f"compare:series:v4:russia:{concept.slug}:{requested or 'native'}:{get_locale()}"
         )
         cached = await cache_get(cache_key)
         if cached:
             return cached
-        payload = await _russia_compare_series(db, concept)
+        payload = await _russia_compare_series(db, concept, requested)
         await cache_set(cache_key, payload, ttl=_CACHE_TTL)
         return payload
 
@@ -1404,6 +1440,34 @@ async def world_compare_series(
     # Юнит национального ряда и IMF-инфляции (уже %) — родной из метаданных.
     if indicator.code in national_codes or rank_yoy_kind(indicator) != "level":
         meta["unit"] = _indicator_public_unit(indicator)
+    meta["aggregated"] = False
+    target = compare_target_frequency(requested, indicator.frequency)
+    if target:
+        policy = compare_aggregation_policy(indicator, concept)
+        calculated = (
+            aggregate_compare_points(points, source=indicator.frequency, target=target, policy=policy)
+            if compare_calculation_allowed(concept)
+            else []
+        )
+        official = official_compare_sibling(indicators, concept, national_codes, indicator, target)
+        # Официальный ряд нужной частоты важнее расчётного, если он не заканчивается раньше расчётного.
+        if official is not None and (
+            not calculated
+            or (official.history_end is not None and official.history_end >= calculated[-1][0])
+        ):
+            official_points = await _load_points(db, official.id)
+            if official_points:
+                points = official_points
+                meta["indicator_code"] = official.code
+                meta["frequency"] = target
+        elif calculated:
+            points = calculated
+            meta["frequency"] = target
+            meta["aggregated"] = True
+            meta["aggregation"] = {
+                "source_frequency": normalize_frequency(indicator.frequency),
+                "policy": policy,
+            }
     return {
         "meta": meta,
         "data": [{"date": d.isoformat(), "value": value} for d, value in points],

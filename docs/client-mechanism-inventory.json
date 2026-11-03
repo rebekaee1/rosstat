@@ -101374,7 +101374,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b",
+      "sha256": "aafd6c34687f29fbbd7cb2ed13b4abb4ef5d5f2eee100c30db1210680cd91c24",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -101797,7 +101797,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "42a8cad7432485e4e963af205f787cd95c9ce4557315a16d56a1bfd24af0bd8d",
+      "sha256": "6861c270b4f4963b054b237bd9af63b9196a0822bf69e324febf73b9a5979f14",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -119964,7 +119964,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/compareRepresentation.js": {
-      "sha256": "9059bfb6b3305ed0d3596c9fe8af8c8e8762930aba1dd369310c8d953a0afc17",
+      "sha256": "eed208dd09066d779b35bab82fc85e807881adea96b71fcc97516d58b69986ca",
       "imports": [
         {
           "line": 22,
@@ -120174,208 +120174,216 @@
           "callback_context": "siblingMetas.some"
         },
         {
-          "line": 189,
-          "end_line": 193,
+          "line": 196,
+          "end_line": 200,
+          "owner": "<module>",
+          "name": "worldRequestedFrequency",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 202,
+          "end_line": 206,
           "owner": "<module>",
           "name": "worldCompareTransformFor",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 199,
-          "end_line": 204,
+          "line": 212,
+          "end_line": 217,
           "owner": "<module>",
           "name": "resolveCompareSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 219,
-          "end_line": 232,
+          "line": 232,
+          "end_line": 245,
           "owner": "<module>",
           "name": "isIndexableBase",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 228,
-          "end_line": 228,
+          "line": 241,
+          "end_line": 241,
           "owner": "isIndexableBase",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "values.some"
         },
         {
-          "line": 235,
-          "end_line": 242,
+          "line": 248,
+          "end_line": 255,
           "owner": "<module>",
           "name": "requiresRebasedPriceIndex",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 236,
-          "end_line": 236,
+          "line": 249,
+          "end_line": 249,
           "owner": "requiresRebasedPriceIndex",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.every"
         },
         {
-          "line": 239,
-          "end_line": 240,
+          "line": 252,
+          "end_line": 253,
           "owner": "requiresRebasedPriceIndex",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter"
         },
         {
-          "line": 241,
-          "end_line": 241,
+          "line": 254,
+          "end_line": 254,
           "owner": "requiresRebasedPriceIndex",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "levels.map"
         },
         {
-          "line": 245,
-          "end_line": 247,
+          "line": 258,
+          "end_line": 260,
           "owner": "<module>",
           "name": "rebaseToHundred",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 254,
-          "end_line": 271,
+          "line": 267,
+          "end_line": 284,
           "owner": "<module>",
           "name": "commonIndexBase",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 255,
-          "end_line": 259,
+          "line": 268,
+          "end_line": 272,
           "owner": "commonIndexBase",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.flatMap"
         },
         {
-          "line": 256,
-          "end_line": 256,
-          "owner": "commonIndexBase.<callback@255>",
+          "line": 269,
+          "end_line": 269,
+          "owner": "commonIndexBase.<callback@268>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dates.map"
         },
         {
-          "line": 257,
-          "end_line": 257,
-          "owner": "commonIndexBase.<callback@255>",
+          "line": 270,
+          "end_line": 270,
+          "owner": "commonIndexBase.<callback@268>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "values.find"
         },
         {
-          "line": 261,
-          "end_line": 264,
+          "line": 274,
+          "end_line": 277,
           "owner": "commonIndexBase",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dates.find"
         },
         {
-          "line": 261,
-          "end_line": 264,
-          "owner": "commonIndexBase.<callback@261>",
+          "line": 274,
+          "end_line": 277,
+          "owner": "commonIndexBase.<callback@274>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "candidates.every"
         },
         {
-          "line": 269,
-          "end_line": 269,
+          "line": 282,
+          "end_line": 282,
           "owner": "commonIndexBase",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 288,
-          "end_line": 293,
+          "line": 301,
+          "end_line": 306,
           "owner": "<module>",
           "name": "resolveStepOverride",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 295,
-          "end_line": 333,
+          "line": 308,
+          "end_line": 346,
           "owner": "<module>",
           "name": "applyCompareTransform",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 299,
-          "end_line": 299,
+          "line": 312,
+          "end_line": 312,
           "owner": "applyCompareTransform",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 305,
-          "end_line": 305,
+          "line": 318,
+          "end_line": 318,
           "owner": "applyCompareTransform",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 306,
-          "end_line": 322,
+          "line": 319,
+          "end_line": 335,
           "owner": "applyCompareTransform",
           "name": "previousDate",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 323,
-          "end_line": 330,
+          "line": 336,
+          "end_line": 343,
           "owner": "applyCompareTransform",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.flatMap"
         },
         {
-          "line": 336,
-          "end_line": 344,
+          "line": 349,
+          "end_line": 357,
           "owner": "<module>",
           "name": "compareDifferenceUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 346,
-          "end_line": 349,
+          "line": 359,
+          "end_line": 362,
           "owner": "<module>",
           "name": "compareLegendParts",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 347,
-          "end_line": 347,
+          "line": 360,
+          "end_line": 360,
           "owner": "compareLegendParts",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "parts.filter"
         },
         {
-          "line": 348,
-          "end_line": 348,
+          "line": 361,
+          "end_line": 361,
           "owner": "compareLegendParts",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -120441,8 +120449,36 @@
           "initializer": null
         },
         {
-          "line": 275,
-          "end_line": 275,
+          "line": 189,
+          "end_line": 189,
+          "owner": "<module>",
+          "name": "FREQUENCY_RANK",
+          "kind": "ObjectExpression",
+          "entries": [
+            "daily",
+            "weekly",
+            "monthly",
+            "quarterly",
+            "annual"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 190,
+          "end_line": 190,
+          "owner": "<module>",
+          "name": "STEP_FREQUENCY",
+          "kind": "ObjectExpression",
+          "entries": [
+            "month",
+            "quarter",
+            "year"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 288,
+          "end_line": 288,
           "owner": "<module>",
           "name": "STEP_FREQ_KEY",
           "kind": "ObjectExpression",
@@ -120457,7 +120493,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/compareRepresentation.test.js": {
-      "sha256": "78339af23c5aaa66500b52f7c08edc3c6b6d02b1fccb2ffb7a4f4841a2de4fb9",
+      "sha256": "0d46ff3f4652c143d7f03ba1244d7cf1e1ca108227c1d2b5fdf3e23960083a34",
       "imports": [
         {
           "line": 1,
@@ -120474,7 +120510,7 @@
         },
         {
           "line": 2,
-          "end_line": 8,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "./compareRepresentation",
           "category": "owned_source",
@@ -120498,400 +120534,425 @@
             "defaultWorldRepresentation",
             "normalizeRateUnit",
             "isReadyRateMeta",
-            "mergeWorldRepMeta"
+            "mergeWorldRepMeta",
+            "worldRequestedFrequency"
           ]
         }
       ],
       "routes": [],
       "functions": [
         {
-          "line": 10,
-          "end_line": 65,
-          "owner": "<module>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "describe"
-        },
-        {
           "line": 11,
-          "end_line": 22,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 24,
-          "end_line": 26,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 28,
-          "end_line": 36,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 38,
-          "end_line": 43,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 45,
-          "end_line": 52,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 54,
-          "end_line": 59,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 57,
-          "end_line": 57,
-          "owner": "<callback@10>.<callback@54>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "reps.map"
-        },
-        {
-          "line": 61,
-          "end_line": 64,
-          "owner": "<callback@10>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 63,
-          "end_line": 63,
-          "owner": "<callback@10>.<callback@61>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "reps.map"
-        },
-        {
-          "line": 67,
-          "end_line": 185,
+          "end_line": 66,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
+        },
+        {
+          "line": 12,
+          "end_line": 23,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 25,
+          "end_line": 27,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 29,
+          "end_line": 37,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 39,
+          "end_line": 44,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 46,
+          "end_line": 53,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 55,
+          "end_line": 60,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 58,
+          "end_line": 58,
+          "owner": "<callback@11>.<callback@55>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "reps.map"
+        },
+        {
+          "line": 62,
+          "end_line": 65,
+          "owner": "<callback@11>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 64,
+          "end_line": 64,
+          "owner": "<callback@11>.<callback@62>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "reps.map"
         },
         {
           "line": 68,
-          "end_line": 71,
-          "owner": "<callback@67>",
+          "end_line": 186,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 69,
+          "end_line": 72,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 73,
-          "end_line": 76,
-          "owner": "<callback@67>",
+          "line": 74,
+          "end_line": 77,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 78,
-          "end_line": 85,
-          "owner": "<callback@67>",
+          "line": 79,
+          "end_line": 86,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 87,
-          "end_line": 96,
-          "owner": "<callback@67>",
+          "line": 88,
+          "end_line": 97,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
-        },
-        {
-          "line": 92,
-          "end_line": 92,
-          "owner": "<callback@67>.<callback@87>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "out.find"
         },
         {
           "line": 93,
           "end_line": 93,
-          "owner": "<callback@67>.<callback@87>",
+          "owner": "<callback@68>.<callback@88>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "out.find"
         },
         {
-          "line": 98,
-          "end_line": 100,
-          "owner": "<callback@67>",
+          "line": 94,
+          "end_line": 94,
+          "owner": "<callback@68>.<callback@88>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "out.find"
+        },
+        {
+          "line": 99,
+          "end_line": 101,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 102,
-          "end_line": 120,
-          "owner": "<callback@67>",
+          "line": 103,
+          "end_line": 121,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 106,
-          "end_line": 106,
-          "owner": "<callback@67>.<callback@102>",
+          "line": 107,
+          "end_line": 107,
+          "owner": "<callback@68>.<callback@103>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor({\n      frequency: 'monthly',\n      conceptSlug: 'hicp-index',\n    }).map"
         },
         {
-          "line": 122,
-          "end_line": 137,
-          "owner": "<callback@67>",
+          "line": 123,
+          "end_line": 138,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 129,
-          "end_line": 129,
-          "owner": "<callback@67>.<callback@122>",
+          "line": 130,
+          "end_line": 130,
+          "owner": "<callback@68>.<callback@123>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor({\n        frequency: 'annual',\n        conceptSlug: 'hicp-index',\n        unit,\n      }).map"
         },
         {
-          "line": 136,
-          "end_line": 136,
-          "owner": "<callback@67>.<callback@122>",
+          "line": 137,
+          "end_line": 137,
+          "owner": "<callback@68>.<callback@123>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor({\n      frequency: 'monthly',\n      conceptSlug: 'hicp-index',\n      unit: 'index (1982–84 = 100)',\n    }).map"
         },
         {
-          "line": 139,
-          "end_line": 147,
-          "owner": "<callback@67>",
+          "line": 140,
+          "end_line": 148,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 149,
-          "end_line": 177,
-          "owner": "<callback@67>",
+          "line": 150,
+          "end_line": 178,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 155,
-          "end_line": 155,
-          "owner": "<callback@67>.<callback@149>",
+          "line": 156,
+          "end_line": 156,
+          "owner": "<callback@68>.<callback@150>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor(japanCatalog).map"
         },
         {
-          "line": 160,
-          "end_line": 160,
-          "owner": "<callback@67>.<callback@149>",
+          "line": 161,
+          "end_line": 161,
+          "owner": "<callback@68>.<callback@150>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor(chinaCatalog).map"
         },
         {
-          "line": 171,
-          "end_line": 171,
-          "owner": "<callback@67>.<callback@149>",
+          "line": 172,
+          "end_line": 172,
+          "owner": "<callback@68>.<callback@150>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor(merged).map"
         },
         {
-          "line": 179,
-          "end_line": 184,
-          "owner": "<callback@67>",
+          "line": 180,
+          "end_line": 185,
+          "owner": "<callback@68>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 183,
-          "end_line": 183,
-          "owner": "<callback@67>.<callback@179>",
+          "line": 184,
+          "end_line": 184,
+          "owner": "<callback@68>.<callback@180>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareRepresentationsFor({\n      frequency: 'annual',\n      conceptSlug: 'budget-balance-gdp',\n    }).map"
         },
         {
-          "line": 187,
-          "end_line": 294,
-          "owner": "<module>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "describe"
-        },
-        {
           "line": 188,
-          "end_line": 197,
-          "owner": "<callback@187>",
+          "end_line": 295,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 189,
+          "end_line": 198,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 199,
-          "end_line": 209,
-          "owner": "<callback@187>",
+          "line": 200,
+          "end_line": 210,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 211,
-          "end_line": 224,
-          "owner": "<callback@187>",
+          "line": 212,
+          "end_line": 225,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 226,
-          "end_line": 233,
-          "owner": "<callback@187>",
+          "line": 227,
+          "end_line": 234,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 235,
-          "end_line": 252,
-          "owner": "<callback@187>",
+          "line": 236,
+          "end_line": 253,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 254,
-          "end_line": 259,
-          "owner": "<callback@187>",
+          "line": 255,
+          "end_line": 260,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 261,
-          "end_line": 279,
-          "owner": "<callback@187>",
+          "line": 262,
+          "end_line": 280,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 281,
-          "end_line": 293,
-          "owner": "<callback@187>",
+          "line": 282,
+          "end_line": 294,
+          "owner": "<callback@188>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 296,
+          "line": 297,
+          "end_line": 329,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 300,
+          "end_line": 302,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 304,
+          "end_line": 307,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 309,
+          "end_line": 312,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 314,
+          "end_line": 318,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 320,
+          "end_line": 323,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 325,
           "end_line": 328,
+          "owner": "<callback@297>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 332,
+          "end_line": 347,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
         },
         {
-          "line": 299,
-          "end_line": 301,
-          "owner": "<callback@296>",
+          "line": 337,
+          "end_line": 339,
+          "owner": "<callback@332>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 303,
-          "end_line": 306,
-          "owner": "<callback@296>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 308,
-          "end_line": 311,
-          "owner": "<callback@296>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 313,
-          "end_line": 317,
-          "owner": "<callback@296>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 319,
-          "end_line": 322,
-          "owner": "<callback@296>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 324,
-          "end_line": 327,
-          "owner": "<callback@296>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "it"
-        },
-        {
-          "line": 331,
+          "line": 341,
           "end_line": 346,
+          "owner": "<callback@332>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 349,
+          "end_line": 366,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "describe"
         },
         {
-          "line": 336,
-          "end_line": 338,
-          "owner": "<callback@331>",
+          "line": 350,
+          "end_line": 355,
+          "owner": "<callback@349>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
         },
         {
-          "line": 340,
-          "end_line": 345,
-          "owner": "<callback@331>",
+          "line": 357,
+          "end_line": 365,
+          "owner": "<callback@349>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "it"
@@ -171777,7 +171838,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/worldApi.js": {
-      "sha256": "021dd72e33bfb469d392d3e602107fc2edf24eaeec1252f76c20322a0d421e35",
+      "sha256": "03bd5ecdcf17172a3ab9683f98f03dc1405d105a18dab1c30622646fbdcc953f",
       "imports": [
         {
           "line": 4,
@@ -172226,207 +172287,207 @@
         },
         {
           "line": 307,
-          "end_line": 309,
+          "end_line": 310,
           "owner": "<module>",
           "name": "fetchWorldCompareSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 316,
-          "end_line": 352,
+          "line": 317,
+          "end_line": 353,
           "owner": "<module>",
           "name": "fetchWorldCompareOrCard",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 350,
-          "end_line": 350,
+          "line": 351,
+          "end_line": 351,
           "owner": "fetchWorldCompareOrCard",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 355,
-          "end_line": 368,
+          "line": 356,
+          "end_line": 369,
           "owner": "<module>",
           "name": "useWorldCompareSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 359,
-          "end_line": 359,
+          "line": 360,
+          "end_line": 360,
           "owner": "useWorldCompareSeries",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 363,
-          "end_line": 366,
+          "line": 364,
+          "end_line": 367,
           "owner": "useWorldCompareSeries",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 370,
-          "end_line": 377,
+          "line": 371,
+          "end_line": 378,
           "owner": "<module>",
           "name": "fetchWorldIndicatorMode",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 379,
-          "end_line": 391,
+          "line": 380,
+          "end_line": 392,
           "owner": "<module>",
           "name": "useWorldCompareSnapshot",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 383,
-          "end_line": 385,
+          "line": 384,
+          "end_line": 386,
           "owner": "useWorldCompareSnapshot",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 393,
-          "end_line": 404,
+          "line": 394,
+          "end_line": 405,
           "owner": "<module>",
           "name": "worldMapSeriesOptions",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 396,
-          "end_line": 398,
+          "line": 397,
+          "end_line": 399,
           "owner": "worldMapSeriesOptions",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 410,
-          "end_line": 416,
+          "line": 411,
+          "end_line": 417,
           "owner": "<module>",
           "name": "useWorldMapSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 419,
-          "end_line": 422,
+          "line": 420,
+          "end_line": 423,
           "owner": "<module>",
           "name": "prefetchWorldMapSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 421,
-          "end_line": 421,
+          "line": 422,
+          "end_line": 422,
           "owner": "prefetchWorldMapSeries",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "queryClient.prefetchQuery(worldMapSeriesOptions(conceptSlug, lk)).catch"
         },
         {
-          "line": 424,
-          "end_line": 431,
+          "line": 425,
+          "end_line": 432,
           "owner": "<module>",
           "name": "fetchWorldAverageSeries",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 437,
-          "end_line": 447,
+          "line": 438,
+          "end_line": 448,
           "owner": "<module>",
           "name": "formatWorldValue",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 471,
-          "end_line": 479,
+          "line": 472,
+          "end_line": 480,
           "owner": "<module>",
           "name": "tidyUnitEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 498,
-          "end_line": 505,
+          "line": 499,
+          "end_line": 506,
           "owner": "<module>",
           "name": "tidyUnitRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 508,
-          "end_line": 513,
+          "line": 509,
+          "end_line": 514,
           "owner": "<module>",
           "name": "localizeWorldUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 516,
-          "end_line": 523,
+          "line": 517,
+          "end_line": 524,
           "owner": "<module>",
           "name": "pluralRu",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 552,
-          "end_line": 556,
+          "line": 553,
+          "end_line": 557,
           "owner": "<module>",
           "name": "countryRegionId",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 563,
-          "end_line": 586,
+          "line": 564,
+          "end_line": 587,
           "owner": "<module>",
           "name": "groupCountriesByRegion",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 575,
-          "end_line": 578,
+          "line": 576,
+          "end_line": 579,
           "owner": "groupCountriesByRegion",
           "name": "rank",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 580,
-          "end_line": 584,
+          "line": 581,
+          "end_line": 585,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...map.values()]\n    .map"
         },
         {
-          "line": 583,
-          "end_line": 583,
-          "owner": "groupCountriesByRegion.<callback@580>",
+          "line": 584,
+          "end_line": 584,
+          "owner": "groupCountriesByRegion.<callback@581>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...group.countries].sort"
         },
         {
-          "line": 585,
-          "end_line": 585,
+          "line": 586,
+          "end_line": 586,
           "owner": "groupCountriesByRegion",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -172568,15 +172629,15 @@
           ]
         },
         {
-          "line": 356,
-          "end_line": 356,
+          "line": 357,
+          "end_line": 357,
           "owner": "useWorldCompareSeries",
           "callee": "useLocaleKey",
           "arguments": []
         },
         {
-          "line": 357,
-          "end_line": 367,
+          "line": 358,
+          "end_line": 368,
           "owner": "useWorldCompareSeries",
           "callee": "useQuery",
           "arguments": [
@@ -172584,15 +172645,15 @@
           ]
         },
         {
-          "line": 380,
-          "end_line": 380,
+          "line": 381,
+          "end_line": 381,
           "owner": "useWorldCompareSnapshot",
           "callee": "useLocaleKey",
           "arguments": []
         },
         {
-          "line": 381,
-          "end_line": 390,
+          "line": 382,
+          "end_line": 391,
           "owner": "useWorldCompareSnapshot",
           "callee": "useQuery",
           "arguments": [
@@ -172600,15 +172661,15 @@
           ]
         },
         {
-          "line": 411,
-          "end_line": 411,
+          "line": 412,
+          "end_line": 412,
           "owner": "useWorldMapSeries",
           "callee": "useLocaleKey",
           "arguments": []
         },
         {
-          "line": 412,
-          "end_line": 415,
+          "line": 413,
+          "end_line": 416,
           "owner": "useWorldMapSeries",
           "callee": "useQuery",
           "arguments": [
@@ -172678,23 +172739,13 @@
           ]
         },
         {
-          "line": 308,
-          "end_line": 308,
+          "line": 309,
+          "end_line": 309,
           "owner": "fetchWorldCompareSeries",
           "callee": "api.get",
           "arguments": [
             "`/world/compare/series/${countrySlug}/${conceptSlug}`",
-            "{ signal }"
-          ]
-        },
-        {
-          "line": 324,
-          "end_line": 324,
-          "owner": "fetchWorldCompareOrCard",
-          "callee": "api.get",
-          "arguments": [
-            "`/world/indicators/${countrySlug}/${seriesKey}`",
-            "{ signal }"
+            "{ signal, params }"
           ]
         },
         {
@@ -172703,13 +172754,23 @@
           "owner": "fetchWorldCompareOrCard",
           "callee": "api.get",
           "arguments": [
+            "`/world/indicators/${countrySlug}/${seriesKey}`",
+            "{ signal }"
+          ]
+        },
+        {
+          "line": 326,
+          "end_line": 326,
+          "owner": "fetchWorldCompareOrCard",
+          "callee": "api.get",
+          "arguments": [
             "`/world/indicators/${countrySlug}/${seriesKey}/data`",
             "{ signal }"
           ]
         },
         {
-          "line": 372,
-          "end_line": 375,
+          "line": 373,
+          "end_line": 376,
           "owner": "fetchWorldIndicatorMode",
           "callee": "api.get",
           "arguments": [
@@ -172718,9 +172779,9 @@
           ]
         },
         {
-          "line": 384,
-          "end_line": 384,
-          "owner": "useWorldCompareSnapshot.<callback@383>",
+          "line": 385,
+          "end_line": 385,
+          "owner": "useWorldCompareSnapshot.<callback@384>",
           "callee": "api.get",
           "arguments": [
             "`/world/compare/snapshot/${conceptSlug}`",
@@ -172728,9 +172789,9 @@
           ]
         },
         {
-          "line": 397,
-          "end_line": 397,
-          "owner": "worldMapSeriesOptions.<callback@396>",
+          "line": 398,
+          "end_line": 398,
+          "owner": "worldMapSeriesOptions.<callback@397>",
           "callee": "api.get",
           "arguments": [
             "`/world/compare/map-series/${conceptSlug}`",
@@ -172738,8 +172799,8 @@
           ]
         },
         {
-          "line": 426,
-          "end_line": 429,
+          "line": 427,
+          "end_line": 430,
           "owner": "fetchWorldAverageSeries",
           "callee": "api.get",
           "arguments": [
@@ -172753,8 +172814,8 @@
       "jsx_handlers": [],
       "registries": [
         {
-          "line": 449,
-          "end_line": 468,
+          "line": 450,
+          "end_line": 469,
           "owner": "<module>",
           "name": "WORLD_UNIT_EN",
           "kind": "CallExpression",
@@ -172762,8 +172823,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 482,
-          "end_line": 496,
+          "line": 483,
+          "end_line": 497,
           "owner": "<module>",
           "name": "WORLD_UNIT_RU",
           "kind": "CallExpression",
@@ -172771,8 +172832,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 530,
-          "end_line": 541,
+          "line": 531,
+          "end_line": 542,
           "owner": "<module>",
           "name": "REGION_ID_BY_LABEL",
           "kind": "CallExpression",
@@ -172780,8 +172841,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 544,
-          "end_line": 544,
+          "line": 545,
+          "end_line": 545,
           "owner": "<module>",
           "name": "REGION_ORDER",
           "kind": "CallExpression",
@@ -172789,8 +172850,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 550,
-          "end_line": 550,
+          "line": 551,
+          "end_line": 551,
           "owner": "<module>",
           "name": "REGION_ID_BY_CODE",
           "kind": "CallExpression",
@@ -191094,7 +191155,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/ComparePage.jsx": {
-      "sha256": "8b50fec8c6e3731db5ffd081a19c019735634dc35e79f65a86077665e99d4016",
+      "sha256": "3a477eb20b155b23a4428ccb6c51c48be53a005c86c6e5cedf1a6226e6588b54",
       "imports": [
         {
           "line": 1,
@@ -191788,6 +191849,7 @@
             "rebaseToHundred",
             "requiresRebasedPriceIndex",
             "resolveStepOverride",
+            "worldRequestedFrequency",
             "worldCompareRepresentationsFor",
             "worldCompareTransformFor",
             "defaultWorldRepresentation"
@@ -193221,7 +193283,7 @@
         },
         {
           "line": 1583,
-          "end_line": 3329,
+          "end_line": 3318,
           "owner": "<module>",
           "name": "ComparePage",
           "kind": "FunctionDeclaration",
@@ -193332,152 +193394,152 @@
           "callback_context": "indicators?.some"
         },
         {
-          "line": 1679,
-          "end_line": 1679,
+          "line": 1678,
+          "end_line": 1678,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.some"
         },
         {
-          "line": 1681,
-          "end_line": 1681,
+          "line": 1680,
+          "end_line": 1680,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.some"
         },
         {
-          "line": 1685,
-          "end_line": 1693,
+          "line": 1684,
+          "end_line": 1692,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1685,
-          "end_line": 1693,
-          "owner": "ComparePage.<callback@1685>",
+          "line": 1684,
+          "end_line": 1692,
+          "owner": "ComparePage.<callback@1684>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(worldCompareCatalog?.items || []).map"
         },
         {
-          "line": 1698,
-          "end_line": 1702,
+          "line": 1697,
+          "end_line": 1701,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1698,
-          "end_line": 1702,
-          "owner": "ComparePage.<callback@1698>",
+          "line": 1697,
+          "end_line": 1701,
+          "owner": "ComparePage.<callback@1697>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(worldCompareCatalog?.items || []).map"
         },
         {
           "line": 1704,
-          "end_line": 1706,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useEffect"
-        },
-        {
-          "line": 1709,
-          "end_line": 1709,
+          "end_line": 1704,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1714,
-          "end_line": 1724,
+          "line": 1709,
+          "end_line": 1719,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1726,
-          "end_line": 1735,
+          "line": 1721,
+          "end_line": 1730,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1737,
-          "end_line": 1754,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 1746,
+          "line": 1732,
           "end_line": 1749,
-          "owner": "ComparePage.<callback@1737>",
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 1741,
+          "end_line": 1744,
+          "owner": "ComparePage.<callback@1732>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "rawRep.split(',').filter"
         },
         {
-          "line": 1756,
-          "end_line": 1766,
+          "line": 1751,
+          "end_line": 1761,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1761,
-          "end_line": 1761,
-          "owner": "ComparePage.<callback@1756>",
+          "line": 1756,
+          "end_line": 1756,
+          "owner": "ComparePage.<callback@1751>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(nextMap).filter"
         },
         {
-          "line": 1762,
-          "end_line": 1762,
-          "owner": "ComparePage.<callback@1756>",
+          "line": 1757,
+          "end_line": 1757,
+          "owner": "ComparePage.<callback@1751>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "entries.map"
         },
         {
-          "line": 1769,
-          "end_line": 1783,
+          "line": 1764,
+          "end_line": 1778,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1772,
-          "end_line": 1772,
-          "owner": "ComparePage.<callback@1769>",
+          "line": 1767,
+          "end_line": 1767,
+          "owner": "ComparePage.<callback@1764>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "worldCompareItems.find"
         },
         {
-          "line": 1782,
-          "end_line": 1782,
-          "owner": "ComparePage.<callback@1769>",
+          "line": 1777,
+          "end_line": 1777,
+          "owner": "ComparePage.<callback@1764>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "indicators?.find"
         },
         {
-          "line": 1785,
-          "end_line": 1816,
+          "line": 1780,
+          "end_line": 1811,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useCallback"
+        },
+        {
+          "line": 1815,
+          "end_line": 1815,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -193485,96 +193547,88 @@
         },
         {
           "line": 1820,
-          "end_line": 1820,
+          "end_line": 1826,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1825,
-          "end_line": 1831,
+          "line": 1828,
+          "end_line": 1834,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1833,
-          "end_line": 1839,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useCallback"
-        },
-        {
-          "line": 1835,
-          "end_line": 1835,
-          "owner": "ComparePage.<callback@1833>",
+          "line": 1830,
+          "end_line": 1830,
+          "owner": "ComparePage.<callback@1828>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.filter"
         },
         {
-          "line": 1842,
-          "end_line": 1847,
+          "line": 1837,
+          "end_line": 1842,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1850,
-          "end_line": 1853,
+          "line": 1845,
+          "end_line": 1848,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 1858,
-          "end_line": 1937,
+          "line": 1853,
+          "end_line": 1938,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1858,
-          "end_line": 1937,
-          "owner": "ComparePage.<callback@1858>",
+          "line": 1853,
+          "end_line": 1938,
+          "owner": "ComparePage.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.map"
         },
         {
-          "line": 1868,
-          "end_line": 1868,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1863,
+          "end_line": 1863,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "indicators?.find"
         },
         {
-          "line": 1883,
-          "end_line": 1883,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1881,
+          "end_line": 1881,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.filter"
         },
         {
-          "line": 1883,
-          "end_line": 1883,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1881,
+          "end_line": 1881,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "codes.filter((other) => other !== code).map"
         },
         {
-          "line": 1886,
-          "end_line": 1886,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1884,
+          "end_line": 1884,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "options.some"
@@ -193582,338 +193636,306 @@
         {
           "line": 1893,
           "end_line": 1893,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "options.find"
         },
         {
-          "line": 1911,
-          "end_line": 1911,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1912,
+          "end_line": 1912,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "indicators?.find"
         },
         {
-          "line": 1912,
-          "end_line": 1912,
-          "owner": "ComparePage.<callback@1858>.<callback@1858>",
+          "line": 1913,
+          "end_line": 1913,
+          "owner": "ComparePage.<callback@1853>.<callback@1853>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "unlistedIndicators?.find"
         },
         {
-          "line": 1940,
-          "end_line": 1957,
+          "line": 1941,
+          "end_line": 1958,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "resolved.map"
         },
         {
-          "line": 1942,
-          "end_line": 1948,
-          "owner": "ComparePage.<callback@1940>",
+          "line": 1943,
+          "end_line": 1949,
+          "owner": "ComparePage.<callback@1941>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1950,
-          "end_line": 1954,
-          "owner": "ComparePage.<callback@1940>",
+          "line": 1951,
+          "end_line": 1955,
+          "owner": "ComparePage.<callback@1941>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 1960,
-          "end_line": 1997,
+          "line": 1961,
+          "end_line": 2002,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 1960,
-          "end_line": 1997,
-          "owner": "ComparePage.<callback@1960>",
+          "line": 1961,
+          "end_line": 2002,
+          "owner": "ComparePage.<callback@1961>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "resolved.map"
         },
         {
-          "line": 2001,
-          "end_line": 2005,
+          "line": 2006,
+          "end_line": 2010,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2003,
-          "end_line": 2003,
-          "owner": "ComparePage.<callback@2001>",
+          "line": 2008,
+          "end_line": 2008,
+          "owner": "ComparePage.<callback@2006>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2011,
-          "end_line": 2018,
+          "line": 2016,
+          "end_line": 2023,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2014,
-          "end_line": 2014,
-          "owner": "ComparePage.<callback@2011>",
+          "line": 2019,
+          "end_line": 2019,
+          "owner": "ComparePage.<callback@2016>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.some"
         },
         {
-          "line": 2015,
-          "end_line": 2015,
-          "owner": "ComparePage.<callback@2011>",
+          "line": 2020,
+          "end_line": 2020,
+          "owner": "ComparePage.<callback@2016>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2016,
-          "end_line": 2016,
-          "owner": "ComparePage.<callback@2011>",
+          "line": 2021,
+          "end_line": 2021,
+          "owner": "ComparePage.<callback@2016>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "levels.some"
         },
         {
-          "line": 2017,
-          "end_line": 2017,
-          "owner": "ComparePage.<callback@2011>",
+          "line": 2022,
+          "end_line": 2022,
+          "owner": "ComparePage.<callback@2016>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "levels.slice(1).map"
         },
         {
-          "line": 2021,
-          "end_line": 2114,
+          "line": 2026,
+          "end_line": 2119,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2027,
-          "end_line": 2035,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2032,
+          "end_line": 2040,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2034,
-          "end_line": 2034,
-          "owner": "ComparePage.<callback@2021>.<callback@2027>",
+          "line": 2039,
+          "end_line": 2039,
+          "owner": "ComparePage.<callback@2026>.<callback@2032>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "pts.map"
         },
         {
-          "line": 2037,
-          "end_line": 2037,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2042,
+          "end_line": 2042,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "maps.flatMap"
         },
         {
-          "line": 2041,
-          "end_line": 2041,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2046,
+          "end_line": 2046,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RANGE_OPTIONS.find"
         },
         {
-          "line": 2049,
-          "end_line": 2049,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2054,
+          "end_line": 2054,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "allDates.filter"
         },
         {
-          "line": 2058,
-          "end_line": 2058,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2063,
+          "end_line": 2063,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "allDates.map"
         },
         {
-          "line": 2069,
-          "end_line": 2069,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2074,
+          "end_line": 2074,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2071,
-          "end_line": 2071,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2076,
+          "end_line": 2076,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter"
         },
         {
-          "line": 2071,
-          "end_line": 2071,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2076,
+          "end_line": 2076,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter((_, i) => !indexable[i]).map"
         },
         {
-          "line": 2074,
-          "end_line": 2074,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2079,
+          "end_line": 2079,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter"
         },
         {
-          "line": 2074,
-          "end_line": 2074,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2079,
+          "end_line": 2079,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter((_, i) => !indexable[i]).map"
         },
         {
-          "line": 2088,
-          "end_line": 2088,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2093,
+          "end_line": 2093,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "dates.filter"
         },
         {
-          "line": 2089,
-          "end_line": 2109,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2094,
+          "end_line": 2114,
+          "owner": "ComparePage.<callback@2026>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "visibleDates.map"
         },
         {
-          "line": 2091,
-          "end_line": 2107,
-          "owner": "ComparePage.<callback@2021>.<callback@2089>",
+          "line": 2096,
+          "end_line": 2112,
+          "owner": "ComparePage.<callback@2026>.<callback@2094>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "maps.forEach"
         },
         {
-          "line": 2120,
-          "end_line": 2151,
+          "line": 2125,
+          "end_line": 2156,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2121,
-          "end_line": 2137,
-          "owner": "ComparePage.<callback@2120>",
+          "line": 2126,
+          "end_line": 2142,
+          "owner": "ComparePage.<callback@2125>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2123,
-          "end_line": 2123,
-          "owner": "ComparePage.<callback@2120>.<callback@2121>",
+          "line": 2128,
+          "end_line": 2128,
+          "owner": "ComparePage.<callback@2125>.<callback@2126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows\n        .filter"
         },
         {
-          "line": 2124,
-          "end_line": 2124,
-          "owner": "ComparePage.<callback@2120>.<callback@2121>",
+          "line": 2129,
+          "end_line": 2129,
+          "owner": "ComparePage.<callback@2125>.<callback@2126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows\n        .filter((row) => Number.isFinite(Number(row[item.key])))\n        .map"
         },
         {
-          "line": 2133,
-          "end_line": 2133,
-          "owner": "ComparePage.<callback@2120>.<callback@2121>",
+          "line": 2138,
+          "end_line": 2138,
+          "owner": "ComparePage.<callback@2125>.<callback@2126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 2134,
-          "end_line": 2134,
-          "owner": "ComparePage.<callback@2120>.<callback@2121>",
+          "line": 2139,
+          "end_line": 2139,
+          "owner": "ComparePage.<callback@2125>.<callback@2126>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 2141,
-          "end_line": 2148,
-          "owner": "ComparePage.<callback@2120>",
+          "line": 2146,
+          "end_line": 2153,
+          "owner": "ComparePage.<callback@2125>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "metrics.slice(1).map"
         },
         {
-          "line": 2148,
-          "end_line": 2148,
-          "owner": "ComparePage.<callback@2120>",
+          "line": 2153,
+          "end_line": 2153,
+          "owner": "ComparePage.<callback@2125>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "metrics.slice(1).map((metric) => {\n          const result = changeCorrelation(base.points, metric.points);\n          return {\n            item: metric.item,\n            value: result.value,\n            observations: result.observations,\n          };\n        }).filter"
-        },
-        {
-          "line": 2153,
-          "end_line": 2153,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.some"
-        },
-        {
-          "line": 2154,
-          "end_line": 2154,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.some"
-        },
-        {
-          "line": 2155,
-          "end_line": 2155,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.some"
-        },
-        {
-          "line": 2157,
-          "end_line": 2157,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "results.filter"
         },
         {
           "line": 2158,
@@ -193921,341 +193943,365 @@
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "failedQueries.some"
+          "callback_context": "series.some"
         },
         {
           "line": 2159,
           "end_line": 2159,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "series.some"
+        },
+        {
+          "line": 2160,
+          "end_line": 2160,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "series.some"
+        },
+        {
+          "line": 2162,
+          "end_line": 2162,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "results.filter"
+        },
+        {
+          "line": 2163,
+          "end_line": 2163,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "failedQueries.some"
+        },
+        {
+          "line": 2164,
+          "end_line": 2164,
           "owner": "ComparePage",
           "name": "retryFailed",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2159,
-          "end_line": 2159,
+          "line": 2164,
+          "end_line": 2164,
           "owner": "ComparePage.retryFailed",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "failedQueries.forEach"
         },
         {
-          "line": 2174,
-          "end_line": 2174,
+          "line": 2179,
+          "end_line": 2179,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2177,
-          "end_line": 2196,
+          "line": 2182,
+          "end_line": 2201,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2179,
-          "end_line": 2179,
-          "owner": "ComparePage.<callback@2177>",
+          "line": 2184,
+          "end_line": 2184,
+          "owner": "ComparePage.<callback@2182>",
           "name": "formatLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2202,
-          "end_line": 2207,
+          "line": 2207,
+          "end_line": 2212,
           "owner": "ComparePage",
           "name": "axisFor",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2210,
-          "end_line": 2226,
+          "line": 2215,
+          "end_line": 2231,
           "owner": "ComparePage",
           "name": "legendDetail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2219,
-          "end_line": 2219,
+          "line": 2224,
+          "end_line": 2224,
           "owner": "ComparePage.legendDetail",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2231,
-          "end_line": 2238,
+          "line": 2236,
+          "end_line": 2243,
           "owner": "ComparePage",
           "name": "axisValues",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2233,
-          "end_line": 2236,
+          "line": 2238,
+          "end_line": 2241,
           "owner": "ComparePage.axisValues",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2235,
-          "end_line": 2235,
-          "owner": "ComparePage.axisValues.<callback@2233>",
+          "line": 2240,
+          "end_line": 2240,
+          "owner": "ComparePage.axisValues.<callback@2238>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.forEach"
         },
         {
-          "line": 2249,
-          "end_line": 2259,
+          "line": 2254,
+          "end_line": 2264,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    const calc = (id, unit) => {\n      const vals = axisValues(id);\n      const digits = indexed ? 0 : unitDigits(unit);\n      return axisWidthForLabels(\n        axisSampleValues(vals).map((v) => formatAxisTick(v, digits)),\n        { min: narrow ? 42 : 52, perChar: narrow ? 7.4 : 8, pad: 12 },\n      );\n    };\n    return { left: calc('left', leftUnit), right: calc('right', rightUnit) };\n  }"
         },
         {
-          "line": 2250,
-          "end_line": 2257,
-          "owner": "ComparePage.<callback@2249>",
+          "line": 2255,
+          "end_line": 2262,
+          "owner": "ComparePage.<callback@2254>",
           "name": "calc",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2254,
-          "end_line": 2254,
-          "owner": "ComparePage.<callback@2249>.calc",
+          "line": 2259,
+          "end_line": 2259,
+          "owner": "ComparePage.<callback@2254>.calc",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "axisSampleValues(vals).map"
         },
         {
-          "line": 2267,
-          "end_line": 2292,
+          "line": 2272,
+          "end_line": 2297,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (!showEndLabels) return [];\n    const plotTop = 10;\n    const plotHeight = chartHeight - plotTop - 4 - xAxisHeight;\n    const raw = [];\n    series.forEach((s, i) => {\n      for (let r = chartRows.length - 1; r >= 0; r -= 1) {\n        const v = chartRows[r][s.key];\n        if (v == null || !Number.isFinite(Number(v))) continue;\n        const y = yForValue(v, axisScales.left.domain, { top: plotTop, plotHeight });\n        if (y != null) {\n          raw.push({\n            key: s.key, y, color: s.color, value: v, flag: seriesFlag(s),\n            name: compareEndName(labels[i] || t('z2.compare.seriesFallback'), endLabelWidth >= 136 ? 26 : 22),\n          });\n        }\n        break;\n      }\n    });\n    const placed = spreadLabels(raw, { min: 17, max: plotTop + plotHeight + 6, gap: 38 });\n    return raw.map((item) => ({\n      ...item,\n      top: placed[item.key] - 17,\n      text: formatEndValue(item.value, { unit: leftUnit, locale, indexed }),\n    }));\n  }"
         },
         {
-          "line": 2272,
-          "end_line": 2285,
-          "owner": "ComparePage.<callback@2267>",
+          "line": 2277,
+          "end_line": 2290,
+          "owner": "ComparePage.<callback@2272>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2287,
-          "end_line": 2291,
-          "owner": "ComparePage.<callback@2267>",
+          "line": 2292,
+          "end_line": 2296,
+          "owner": "ComparePage.<callback@2272>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "raw.map"
         },
         {
-          "line": 2296,
-          "end_line": 2296,
+          "line": 2301,
+          "end_line": 2301,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.some"
         },
         {
-          "line": 2297,
-          "end_line": 2297,
+          "line": 2302,
+          "end_line": 2302,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2299,
-          "end_line": 2304,
+          "line": 2304,
+          "end_line": 2309,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (indexed || distinctUnits.length !== 1) return '';\n    const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];\n    // Одна единица, в том числе «%»: общая подпись про две шкалы («слева и справа») при единственной оси неверна.\n    return unit ? t('z7.compare.valuesIn', { unit: unit === '%' ? '%' : String(unitLabel(unit)).replace(/\\.$/, '') }) : '';\n  }"
         },
         {
-          "line": 2306,
-          "end_line": 2312,
+          "line": 2311,
+          "end_line": 2317,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (indexed || series.length !== 2 || distinctUnits.length !== 1 || !isAbsoluteUnit(distinctUnits[0])) return null;\n    if (series.some((s) => s.rep !== REP_LEVEL)) return null;\n    const lasts = analysisSummary.metrics.map((m) => m.last?.value);\n    if (lasts.some((v) => v == null)) return null;\n    return gapInsight(series.map((s, i) => ({ label: labels[i], value: lasts[i] })), locale);\n  }"
         },
         {
-          "line": 2308,
-          "end_line": 2308,
-          "owner": "ComparePage.<callback@2306>",
+          "line": 2313,
+          "end_line": 2313,
+          "owner": "ComparePage.<callback@2311>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.some"
         },
         {
-          "line": 2309,
-          "end_line": 2309,
-          "owner": "ComparePage.<callback@2306>",
+          "line": 2314,
+          "end_line": 2314,
+          "owner": "ComparePage.<callback@2311>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.map"
         },
         {
-          "line": 2310,
-          "end_line": 2310,
-          "owner": "ComparePage.<callback@2306>",
+          "line": 2315,
+          "end_line": 2315,
+          "owner": "ComparePage.<callback@2311>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "lasts.some"
         },
         {
-          "line": 2311,
-          "end_line": 2311,
-          "owner": "ComparePage.<callback@2306>",
+          "line": 2316,
+          "end_line": 2316,
+          "owner": "ComparePage.<callback@2311>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2316,
-          "end_line": 2329,
+          "line": 2321,
+          "end_line": 2334,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2331,
-          "end_line": 2349,
+          "line": 2336,
+          "end_line": 2354,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2351,
-          "end_line": 2358,
+          "line": 2356,
+          "end_line": 2363,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2364,
-          "end_line": 2380,
+          "line": 2369,
+          "end_line": 2385,
           "owner": "ComparePage",
           "name": "handleExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2374,
-          "end_line": 2374,
+          "line": 2379,
+          "end_line": 2379,
           "owner": "ComparePage.handleExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "exportNodeToPng(exportRef.current, {\n      filename: `compare_${codes.join('-').replace(/:/g, '_') || 'chart'}.png`,\n      watermark: false,\n    }).catch"
         },
         {
-          "line": 2384,
-          "end_line": 2384,
+          "line": 2389,
+          "end_line": 2389,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(repByCode)\n    .filter"
         },
         {
-          "line": 2385,
-          "end_line": 2385,
+          "line": 2390,
+          "end_line": 2390,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(repByCode)\n    .filter(([code, rep]) => codes.includes(code) && rep && (rep !== REP_LEVEL || isWorldCode(code)))\n    .map"
         },
         {
-          "line": 2387,
-          "end_line": 2432,
+          "line": 2392,
+          "end_line": 2437,
           "owner": "ComparePage",
           "name": "handleDataExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2389,
-          "end_line": 2389,
+          "line": 2394,
+          "end_line": 2394,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter"
         },
         {
-          "line": 2393,
-          "end_line": 2401,
+          "line": 2398,
+          "end_line": 2406,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.map"
         },
         {
-          "line": 2403,
-          "end_line": 2407,
+          "line": 2408,
+          "end_line": 2412,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 2405,
-          "end_line": 2405,
-          "owner": "ComparePage.handleDataExport.<callback@2403>",
+          "line": 2410,
+          "end_line": 2410,
+          "owner": "ComparePage.handleDataExport.<callback@2408>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.forEach"
         },
         {
-          "line": 2408,
-          "end_line": 2408,
+          "line": 2413,
+          "end_line": 2413,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.map"
         },
         {
-          "line": 2435,
-          "end_line": 2457,
+          "line": 2440,
+          "end_line": 2462,
           "owner": "ComparePage",
           "name": "handleShare",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2463,
-          "end_line": 2466,
+          "line": 2468,
+          "end_line": 2471,
           "owner": "ComparePage",
           "name": "openLimit",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2468,
-          "end_line": 2470,
-          "owner": "ComparePage",
-          "name": "shortSeriesName",
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 2471,
+          "line": 2473,
           "end_line": 2475,
           "owner": "ComparePage",
-          "name": "handleBrush",
+          "name": "shortSeriesName",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
@@ -194263,453 +194309,453 @@
           "line": 2476,
           "end_line": 2480,
           "owner": "ComparePage",
+          "name": "handleBrush",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2481,
+          "end_line": 2485,
+          "owner": "ComparePage",
           "name": "chooseScale",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2484,
-          "end_line": 2496,
+          "line": 2489,
+          "end_line": 2501,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (isDemo || !codes.length || !renderSave) return null;\n    const itemKey = repString ? `${codes.join(',')}|${repString}` : codes.join(',');\n    if (itemKey.length > 300) return null;\n    // Названия рядов для строки «Мои сравнения» в кабинете (только то, что уже на экране; кодов там не показываем).\n    const names = series.map((s) => s.name).filter(Boolean).slice(0, 6);\n    return {\n      kind: 'comparison',\n      itemKey,\n      title: String(headline || '').slice(0, 200),\n      payload: { codes: codes.join(','), ...(repString ? { rep: repString } : {}), ...(names.length ? { names } : {}) },\n    };\n  }"
         },
         {
-          "line": 2489,
-          "end_line": 2489,
-          "owner": "ComparePage.<callback@2484>",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.map"
-        },
-        {
-          "line": 2499,
-          "end_line": 2499,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "COMPARE_PRESETS.find"
-        },
-        {
-          "line": 2501,
-          "end_line": 2501,
-          "owner": "ComparePage",
+          "line": 2494,
+          "end_line": 2494,
+          "owner": "ComparePage.<callback@2489>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
           "line": 2504,
-          "end_line": 2513,
+          "end_line": 2504,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "COMPARE_PRESETS.find"
+        },
+        {
+          "line": 2506,
+          "end_line": 2506,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "series.map"
+        },
+        {
+          "line": 2509,
+          "end_line": 2518,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2516,
-          "end_line": 2516,
+          "line": 2521,
+          "end_line": 2521,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.correlations\n    .map"
         },
         {
-          "line": 2526,
-          "end_line": 2526,
+          "line": 2531,
+          "end_line": 2531,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2526,
-          "end_line": 2526,
-          "owner": "ComparePage.<callback@2526>",
+          "line": 2531,
+          "end_line": 2531,
+          "owner": "ComparePage.<callback@2531>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 2530,
-          "end_line": 2530,
+          "line": 2535,
+          "end_line": 2535,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2551,
-          "end_line": 2559,
+          "line": 2556,
+          "end_line": 2564,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparePresetsFor(locale).map"
         },
         {
-          "line": 2555,
-          "end_line": 2555,
-          "owner": "ComparePage.<callback@2551>",
+          "line": 2560,
+          "end_line": 2560,
+          "owner": "ComparePage.<callback@2556>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2589,
-          "end_line": 2589,
+          "line": 2594,
+          "end_line": 2594,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2599,
-          "end_line": 2637,
+          "line": 2604,
+          "end_line": 2642,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2617,
-          "end_line": 2617,
-          "owner": "ComparePage.<callback@2599>",
+          "line": 2622,
+          "end_line": 2622,
+          "owner": "ComparePage.<callback@2604>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2623,
-          "end_line": 2632,
-          "owner": "ComparePage.<callback@2599>",
+          "line": 2628,
+          "end_line": 2637,
+          "owner": "ComparePage.<callback@2604>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "reps.map"
         },
         {
-          "line": 2628,
-          "end_line": 2628,
-          "owner": "ComparePage.<callback@2599>.<callback@2623>",
+          "line": 2633,
+          "end_line": 2633,
+          "owner": "ComparePage.<callback@2604>.<callback@2628>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2668,
-          "end_line": 2668,
+          "line": 2673,
+          "end_line": 2673,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2668,
-          "end_line": 2668,
-          "owner": "ComparePage.<callback@2668>",
+          "line": 2673,
+          "end_line": 2673,
+          "owner": "ComparePage.<callback@2673>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setPickerOpen"
         },
         {
-          "line": 2706,
-          "end_line": 2706,
+          "line": 2711,
+          "end_line": 2711,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2744,
-          "end_line": 2752,
+          "line": 2749,
+          "end_line": 2757,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RANGE_OPTIONS.map"
         },
         {
-          "line": 2748,
-          "end_line": 2748,
-          "owner": "ComparePage.<callback@2744>",
+          "line": 2753,
+          "end_line": 2753,
+          "owner": "ComparePage.<callback@2749>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2772,
-          "end_line": 2772,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 2779,
-          "end_line": 2787,
+          "line": 2769,
+          "end_line": 2777,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "STEP_OPTIONS.map"
         },
         {
-          "line": 2783,
-          "end_line": 2783,
-          "owner": "ComparePage.<callback@2779>",
+          "line": 2773,
+          "end_line": 2773,
+          "owner": "ComparePage.<callback@2769>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2795,
-          "end_line": 2808,
+          "line": 2784,
+          "end_line": 2797,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SCALE_OPTIONS.map"
         },
         {
-          "line": 2802,
-          "end_line": 2802,
-          "owner": "ComparePage.<callback@2795>",
+          "line": 2791,
+          "end_line": 2791,
+          "owner": "ComparePage.<callback@2784>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2856,
-          "end_line": 2856,
+          "line": 2845,
+          "end_line": 2845,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RANGE_OPTIONS.find"
         },
         {
-          "line": 2864,
-          "end_line": 2864,
+          "line": 2853,
+          "end_line": 2853,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2874,
+          "line": 2863,
+          "end_line": 2863,
+          "owner": "ComparePage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2872,
           "end_line": 2874,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 2883,
-          "end_line": 2885,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, 2).map"
         },
         {
-          "line": 2898,
-          "end_line": 2911,
+          "line": 2887,
+          "end_line": 2900,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2917,
-          "end_line": 2928,
+          "line": 2906,
+          "end_line": 2917,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['left', 'right'].map"
         },
         {
-          "line": 2921,
-          "end_line": 2926,
-          "owner": "ComparePage.<callback@2917>",
+          "line": 2910,
+          "end_line": 2915,
+          "owner": "ComparePage.<callback@2906>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2929,
-          "end_line": 2929,
+          "line": 2918,
+          "end_line": 2918,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2929,
-          "end_line": 2929,
-          "owner": "ComparePage.<callback@2929>",
+          "line": 2918,
+          "end_line": 2918,
+          "owner": "ComparePage.<callback@2918>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setAxesSwapped"
         },
         {
-          "line": 2965,
-          "end_line": 2969,
+          "line": 2954,
+          "end_line": 2958,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RIBBON_GRADIENTS.map"
         },
         {
-          "line": 2967,
-          "end_line": 2967,
-          "owner": "ComparePage.<callback@2965>",
+          "line": 2956,
+          "end_line": 2956,
+          "owner": "ComparePage.<callback@2954>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "stops.map"
         },
         {
-          "line": 2970,
-          "end_line": 2975,
+          "line": 2959,
+          "end_line": 2964,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "PALETTE.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 2980,
-          "end_line": 2980,
+          "line": 2969,
+          "end_line": 2969,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2997,
-          "end_line": 2997,
+          "line": 2986,
+          "end_line": 2986,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3009,
-          "end_line": 3009,
+          "line": 2998,
+          "end_line": 2998,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3014,
-          "end_line": 3014,
+          "line": 3003,
+          "end_line": 3003,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 3034,
-          "end_line": 3049,
+          "line": 3023,
+          "end_line": 3038,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 3050,
-          "end_line": 3067,
+          "line": 3039,
+          "end_line": 3056,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 3069,
-          "end_line": 3086,
+          "line": 3058,
+          "end_line": 3075,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 3088,
-          "end_line": 3100,
+          "line": 3077,
+          "end_line": 3089,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "endDots.map"
         },
         {
-          "line": 3096,
-          "end_line": 3098,
-          "owner": "ComparePage.<callback@3088>",
+          "line": 3085,
+          "end_line": 3087,
+          "owner": "ComparePage.<callback@3077>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3104,
-          "end_line": 3117,
+          "line": 3093,
+          "end_line": 3106,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "endLabels.map"
         },
         {
-          "line": 3167,
-          "end_line": 3167,
+          "line": 3156,
+          "end_line": 3156,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3168,
-          "end_line": 3168,
+          "line": 3157,
+          "end_line": 3157,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3210,
-          "end_line": 3210,
+          "line": 3199,
+          "end_line": 3199,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.some"
         },
         {
-          "line": 3226,
-          "end_line": 3226,
+          "line": 3215,
+          "end_line": 3215,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter"
         },
         {
-          "line": 3227,
-          "end_line": 3227,
+          "line": 3216,
+          "end_line": 3216,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter"
         },
         {
-          "line": 3227,
-          "end_line": 3285,
+          "line": 3216,
+          "end_line": 3274,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter((metric) => metric.last).map"
         },
         {
-          "line": 3230,
-          "end_line": 3230,
-          "owner": "ComparePage.<callback@3227>",
+          "line": 3219,
+          "end_line": 3219,
+          "owner": "ComparePage.<callback@3216>",
           "name": "bigDigits",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3295,
-          "end_line": 3304,
+          "line": 3284,
+          "end_line": 3293,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -195609,8 +195655,8 @@
           ]
         },
         {
-          "line": 1684,
-          "end_line": 1695,
+          "line": 1683,
+          "end_line": 1694,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195619,8 +195665,8 @@
           ]
         },
         {
-          "line": 1698,
-          "end_line": 1702,
+          "line": 1697,
+          "end_line": 1701,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195629,18 +195675,8 @@
           ]
         },
         {
-          "line": 1704,
+          "line": 1703,
           "end_line": 1706,
-          "owner": "ComparePage",
-          "callee": "useEffect",
-          "arguments": [
-            "() => {\n    if (hasWorldSeries && step !== 'auto') setStep('auto');\n  }",
-            "[hasWorldSeries, step]"
-          ]
-        },
-        {
-          "line": 1708,
-          "end_line": 1711,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195649,8 +195685,8 @@
           ]
         },
         {
-          "line": 1714,
-          "end_line": 1724,
+          "line": 1709,
+          "end_line": 1719,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195659,8 +195695,8 @@
           ]
         },
         {
-          "line": 1726,
-          "end_line": 1735,
+          "line": 1721,
+          "end_line": 1730,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195669,8 +195705,8 @@
           ]
         },
         {
-          "line": 1737,
-          "end_line": 1754,
+          "line": 1732,
+          "end_line": 1749,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195679,8 +195715,8 @@
           ]
         },
         {
-          "line": 1756,
-          "end_line": 1766,
+          "line": 1751,
+          "end_line": 1761,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195689,8 +195725,8 @@
           ]
         },
         {
-          "line": 1769,
-          "end_line": 1783,
+          "line": 1764,
+          "end_line": 1778,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195699,8 +195735,8 @@
           ]
         },
         {
-          "line": 1785,
-          "end_line": 1816,
+          "line": 1780,
+          "end_line": 1811,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195709,8 +195745,8 @@
           ]
         },
         {
-          "line": 1819,
-          "end_line": 1822,
+          "line": 1814,
+          "end_line": 1817,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195719,8 +195755,8 @@
           ]
         },
         {
-          "line": 1825,
-          "end_line": 1831,
+          "line": 1820,
+          "end_line": 1826,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195729,8 +195765,8 @@
           ]
         },
         {
-          "line": 1833,
-          "end_line": 1839,
+          "line": 1828,
+          "end_line": 1834,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195739,8 +195775,8 @@
           ]
         },
         {
-          "line": 1842,
-          "end_line": 1847,
+          "line": 1837,
+          "end_line": 1842,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195749,8 +195785,8 @@
           ]
         },
         {
-          "line": 1850,
-          "end_line": 1853,
+          "line": 1845,
+          "end_line": 1848,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195759,37 +195795,37 @@
           ]
         },
         {
-          "line": 1858,
-          "end_line": 1937,
+          "line": 1853,
+          "end_line": 1938,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
-            "() => codes.map((code) => {\n    // Россия в понятии «Потребительские цены»: в общем наборе стран у неё один готовый годовой темп, а в национальном\n    // каталоге есть индекс, «к прошлому периоду» и «к году». Берём национальный ряд, имя и код остаются мировыми.\n    const nativeCode = russiaNativeCompareCode(code);\n    if (nativeCode && !indicatorsFetched) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, waitingCatalog: true, worldAlias: true,\n      };\n    }\n    const nativeInd = nativeCode ? indicators?.find((x) => x.code === nativeCode) : null;\n    if (nativeInd) {\n      const repId = repByCode[code] || REP_YOY;\n      const spec = resolveCompareSeries(nativeInd, repId)\n        || { code: nativeCode, transform: null, unit: nativeInd.unit, repId: REP_LEVEL, label: t('common.value') };\n      return {\n        code, ind: nativeInd, repId: spec.repId, repLabel: spec.label,\n        fetchCode: spec.code, transform: spec.transform, unit: spec.unit, worldAlias: true,\n      };\n    }\n    if (isWorldCode(code)) {\n      const meta = worldMetaByCode.get(code);\n      // Индекс цен уровнем рядом с рядом в процентах за год сразу показываем в процентах (круг 9, C1).\n      const requestedRep = repByCode[code] || defaultWorldRepresentation(\n        meta,\n        codes.filter((other) => other !== code).map((other) => worldMetaByCode.get(other)),\n      );\n      const options = worldCompareRepresentationsFor(mergeWorldRepMeta(meta, null));\n      const repId = options.some((item) => item.id === requestedRep)\n        ? requestedRep\n        : REP_LEVEL;\n      // Индекс «тот же месяц прошлого года = 100» (Китай) — уже темп; чтобы стать процентом, из него вычитается 100.\n      const minus100 = meta?.valueAdjust === 'minus_100';\n      return {\n        code, ind: null, repId,\n        repLabel: options.find((item) => item.id === repId)?.label || t('common.value'),\n        fetchCode: code,\n        transform: minus100 ? 'sub100' : worldCompareTransformFor(repId, meta?.frequency),\n        unit: minus100 || repId !== REP_LEVEL ? '%' : meta?.unit,\n        minus100,\n        isWorld: true,\n      };\n    }\n    // Региональный ряд (`r:{slug}:{code}`) и субнациональный (`s:{страна}:{slug}:{code}`):\n    // уровень без представлений, метаданные приходят вместе с данными.\n    if (isRegionCode(code) || isSubnationalCode(code)) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: code, transform: null, unit: null,\n        isRegion: isRegionCode(code),\n        isSubnational: isSubnationalCode(code),\n      };\n    }\n    const ind = indicators?.find((x) => x.code === code)\n      || unlistedIndicators?.find((x) => x.code === code);\n    if (!indicatorsFetched || (!ind && needsUnlisted && !unlistedFetched)) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, waitingCatalog: true,\n      };\n    }\n    if (!ind) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, unknown: true,\n      };\n    }\n    const repId = repByCode[code] || REP_LEVEL;\n    const spec = resolveCompareSeries(ind || { code }, repId)\n      || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: t('common.value') };\n    // Третий слой (compareRepresentation.js::resolveStepOverride): «Шаг»\n    // переключает на реальный более глубокий ряд вместо клиентского\n    // усреднения, если он есть у показателя на этой частоте.\n    const stepAlt = resolveStepOverride(ind, spec.repId, step);\n    return {\n      code, ind, repId: spec.repId, repLabel: spec.label,\n      fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,\n      unit: spec.unit, stepDeep: !!stepAlt,\n    };\n  })",
+            "() => codes.map((code) => {\n    // Россия в понятии «Потребительские цены»: в общем наборе стран у неё один готовый годовой темп, а в национальном\n    // каталоге есть индекс, «к прошлому периоду» и «к году». Берём национальный ряд, имя и код остаются мировыми.\n    const nativeCode = russiaNativeCompareCode(code);\n    if (nativeCode && !indicatorsFetched) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, waitingCatalog: true, worldAlias: true,\n      };\n    }\n    const nativeInd = nativeCode ? indicators?.find((x) => x.code === nativeCode) : null;\n    if (nativeInd) {\n      const repId = repByCode[code] || REP_YOY;\n      const spec = resolveCompareSeries(nativeInd, repId)\n        || { code: nativeCode, transform: null, unit: nativeInd.unit, repId: REP_LEVEL, label: t('common.value') };\n      // Шаг выбирается так же, как у российского показателя: реальный более глубокий ряд, иначе усреднение.\n      const stepAlt = resolveStepOverride(nativeInd, spec.repId, step);\n      return {\n        code, ind: nativeInd, repId: spec.repId, repLabel: spec.label,\n        fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform, unit: spec.unit,\n        stepDeep: !!stepAlt, worldAlias: true,\n      };\n    }\n    if (isWorldCode(code)) {\n      const meta = worldMetaByCode.get(code);\n      // Индекс цен уровнем рядом с рядом в процентах за год сразу показываем в процентах (круг 9, C1).\n      const requestedRep = repByCode[code] || defaultWorldRepresentation(\n        meta,\n        codes.filter((other) => other !== code).map((other) => worldMetaByCode.get(other)),\n      );\n      const options = worldCompareRepresentationsFor(mergeWorldRepMeta(meta, null));\n      const repId = options.some((item) => item.id === requestedRep)\n        ? requestedRep\n        : REP_LEVEL;\n      // Индекс «тот же месяц прошлого года = 100» (Китай) — уже темп; чтобы стать процентом, из него вычитается 100.\n      const minus100 = meta?.valueAdjust === 'minus_100';\n      // Выбранный шаг (квартал, год) считает сервер по правилам карточек; «Как в источнике» и более мелкий шаг — без запроса.\n      const worldFrequency = worldRequestedFrequency(step, meta?.frequency);\n      return {\n        code, ind: null, repId,\n        repLabel: options.find((item) => item.id === repId)?.label || t('common.value'),\n        fetchCode: code,\n        worldFrequency,\n        transform: minus100 ? 'sub100' : worldCompareTransformFor(repId, worldFrequency || meta?.frequency),\n        unit: minus100 || repId !== REP_LEVEL ? '%' : meta?.unit,\n        minus100,\n        isWorld: true,\n      };\n    }\n    // Региональный ряд (`r:{slug}:{code}`) и субнациональный (`s:{страна}:{slug}:{code}`):\n    // уровень без представлений, метаданные приходят вместе с данными.\n    if (isRegionCode(code) || isSubnationalCode(code)) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: code, transform: null, unit: null,\n        isRegion: isRegionCode(code),\n        isSubnational: isSubnationalCode(code),\n      };\n    }\n    const ind = indicators?.find((x) => x.code === code)\n      || unlistedIndicators?.find((x) => x.code === code);\n    if (!indicatorsFetched || (!ind && needsUnlisted && !unlistedFetched)) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, waitingCatalog: true,\n      };\n    }\n    if (!ind) {\n      return {\n        code, ind: null, repId: REP_LEVEL, repLabel: t('common.value'),\n        fetchCode: null, transform: null, unit: null, unknown: true,\n      };\n    }\n    const repId = repByCode[code] || REP_LEVEL;\n    const spec = resolveCompareSeries(ind || { code }, repId)\n      || { code, transform: null, unit: ind?.unit, repId: REP_LEVEL, label: t('common.value') };\n    // Третий слой (compareRepresentation.js::resolveStepOverride): «Шаг»\n    // переключает на реальный более глубокий ряд вместо клиентского\n    // усреднения, если он есть у показателя на этой частоте.\n    const stepAlt = resolveStepOverride(ind, spec.repId, step);\n    return {\n      code, ind, repId: spec.repId, repLabel: spec.label,\n      fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform,\n      unit: spec.unit, stepDeep: !!stepAlt,\n    };\n  })",
             "[codes, indicators, indicatorsFetched, needsUnlisted, unlistedIndicators, unlistedFetched, repByCode, step, worldMetaByCode, t]"
           ]
         },
         {
-          "line": 1939,
-          "end_line": 1958,
+          "line": 1940,
+          "end_line": 1959,
           "owner": "ComparePage",
           "callee": "useQueries",
           "arguments": [
-            "{\n    queries: resolved.map((r) => ({\n      queryKey: ['indicator-data', r.fetchCode, undefined],\n      queryFn: ({ signal }) => (r.isWorld\n        ? fetchWorldSeries(r.fetchCode, { signal })\n        : r.isSubnational\n        ? fetchSubnationalSeries(r.fetchCode, { signal })\n        : r.isRegion\n        ? fetchRegionSeries(r.fetchCode, { signal })\n        : fetchIndicatorData(r.fetchCode, undefined, { signal })),\n      enabled: !!r.fetchCode,\n      retry: (count, err) => {\n        const status = err?.response?.status;\n        if (status && status >= 400 && status < 500 && status !== 429) return false;\n        return count < 1;\n      },\n      staleTime: 60 * 60 * 1000,\n      gcTime: 30 * 60 * 1000,\n    })),\n  }"
+            "{\n    queries: resolved.map((r) => ({\n      queryKey: ['indicator-data', r.fetchCode, r.worldFrequency || undefined],\n      queryFn: ({ signal }) => (r.isWorld\n        ? fetchWorldSeries(r.fetchCode, { signal, frequency: r.worldFrequency })\n        : r.isSubnational\n        ? fetchSubnationalSeries(r.fetchCode, { signal })\n        : r.isRegion\n        ? fetchRegionSeries(r.fetchCode, { signal })\n        : fetchIndicatorData(r.fetchCode, undefined, { signal })),\n      enabled: !!r.fetchCode,\n      retry: (count, err) => {\n        const status = err?.response?.status;\n        if (status && status >= 400 && status < 500 && status !== 429) return false;\n        return count < 1;\n      },\n      staleTime: 60 * 60 * 1000,\n      gcTime: 30 * 60 * 1000,\n    })),\n  }"
           ]
         },
         {
-          "line": 1960,
-          "end_line": 1997,
+          "line": 1961,
+          "end_line": 2002,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
-            "() => resolved.map((r, i) => {\n    const known = r.worldAlias\n      ? worldNameByCode.get(r.code)\n      : r.isWorld\n      ? (results[i]?.data?.__worldMeta?.name || worldNameByCode.get(r.code))\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.name : r.ind?.name;\n    // Каталог мог назвать ряд индексом, а сам ряд оказался темпом (МВФ: Япония, Южная Корея и ещё девять стран).\n    // Когда это видно по загруженному ряду, «к прошлому периоду»/«к году» не считаем: темп от темпа — бессмыслица.\n    const loadedMeta = r.isWorld ? results[i]?.data?.__worldMeta : null;\n    const alreadyRate = r.isWorld && r.repId !== REP_LEVEL\n      && isReadyRateMeta(mergeWorldRepMeta(worldMetaByCode.get(r.code), loadedMeta));\n    const repId = alreadyRate ? REP_LEVEL : r.repId;\n    return {\n    code: r.code,\n    // Внутренний код никогда не показываем: пока название не пришло — null (скелетон).\n    name: known || null,\n    key: `v${i}`,\n    color: PALETTE[i % PALETTE.length],\n    ind: r.worldAlias\n      ? worldAliasInd(r.ind, worldMetaByCode.get(r.code))\n      : r.isWorld\n      ? results[i]?.data?.__worldMeta\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta : r.ind,\n    rep: repId,\n    repLabel: alreadyRate ? t('common.value') : r.repLabel,\n    unit: r.isWorld\n      ? (r.minus100 ? '%' : repId === REP_LEVEL ? normalizeRateUnit(loadedMeta?.unit) : r.unit)\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.unit : r.unit,\n    isWorld: r.isWorld || !!r.worldAlias,\n    worldAlias: !!r.worldAlias,\n    isSubnational: r.isSubnational,\n    transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : r.transform,\n    stepDeep: r.stepDeep,\n    data: results[i]?.data,\n    loading: results[i]?.isLoading || r.waitingCatalog,\n    error: results[i]?.isError || r.unknown,\n    };\n  })",
+            "() => resolved.map((r, i) => {\n    const known = r.worldAlias\n      ? worldNameByCode.get(r.code)\n      : r.isWorld\n      ? (results[i]?.data?.__worldMeta?.name || worldNameByCode.get(r.code))\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.name : r.ind?.name;\n    // Каталог мог назвать ряд индексом, а сам ряд оказался темпом (МВФ: Япония, Южная Корея и ещё девять стран).\n    // Когда это видно по загруженному ряду, «к прошлому периоду»/«к году» не считаем: темп от темпа — бессмыслица.\n    const loadedMeta = r.isWorld ? results[i]?.data?.__worldMeta : null;\n    const alreadyRate = r.isWorld && r.repId !== REP_LEVEL\n      && isReadyRateMeta(mergeWorldRepMeta(worldMetaByCode.get(r.code), loadedMeta));\n    const repId = alreadyRate ? REP_LEVEL : r.repId;\n    // Темп к прошлому периоду считается на частоте, которую сервер действительно отдал (мог оставить родную).\n    const worldTransform = r.isWorld && !r.minus100 && loadedMeta?.frequency\n      ? worldCompareTransformFor(repId, loadedMeta.frequency)\n      : r.transform;\n    return {\n    code: r.code,\n    // Внутренний код никогда не показываем: пока название не пришло — null (скелетон).\n    name: known || null,\n    key: `v${i}`,\n    color: PALETTE[i % PALETTE.length],\n    ind: r.worldAlias\n      ? worldAliasInd(r.ind, worldMetaByCode.get(r.code))\n      : r.isWorld\n      ? results[i]?.data?.__worldMeta\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta : r.ind,\n    rep: repId,\n    repLabel: alreadyRate ? t('common.value') : r.repLabel,\n    unit: r.isWorld\n      ? (r.minus100 ? '%' : repId === REP_LEVEL ? normalizeRateUnit(loadedMeta?.unit) : r.unit)\n      : (r.isRegion || r.isSubnational) ? results[i]?.data?.__regionMeta?.unit : r.unit,\n    isWorld: r.isWorld || !!r.worldAlias,\n    worldAlias: !!r.worldAlias,\n    isSubnational: r.isSubnational,\n    transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : worldTransform,\n    stepDeep: r.stepDeep,\n    data: results[i]?.data,\n    loading: results[i]?.isLoading || r.waitingCatalog,\n    error: results[i]?.isError || r.unknown,\n    };\n  })",
             "[resolved, results, worldNameByCode, worldMetaByCode, t]"
           ]
         },
         {
-          "line": 2001,
-          "end_line": 2005,
+          "line": 2006,
+          "end_line": 2010,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195798,8 +195834,8 @@
           ]
         },
         {
-          "line": 2011,
-          "end_line": 2018,
+          "line": 2016,
+          "end_line": 2023,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195808,18 +195844,18 @@
           ]
         },
         {
-          "line": 2021,
-          "end_line": 2114,
+          "line": 2026,
+          "end_line": 2119,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
-            "() => {\n    const EMPTY = {\n      rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0, baseDate: null, noSharedBase: false,\n      brushRows: [], windowStart: 0, windowEnd: 0,\n    };\n    if (!series.length) return EMPTY;\n    const maps = series.map((s) => {\n      const raw = Array.isArray(s.data?.data) ? s.data.data : [];\n      const transformed = applyCompareTransform(raw, s.transform);\n      // stepDeep: данные уже загружены на нативной частоте нужного шага\n      // (реальный alternate_frequencies ряд) — повторная клиентская\n      // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.\n      const pts = s.stepDeep || s.isWorld || s.isSubnational ? transformed : aggregateToStep(transformed, step);\n      return new Map(pts.map((p) => [p.date, p.value]));\n    });\n\n    const allDates = [...new Set(maps.flatMap((m) => [...m.keys()]))].sort();\n    if (!allDates.length) return EMPTY;\n\n    // Окно: длина — из пресета периода, позиция — из слайдера-панорамы.\n    const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);\n    let windowLen = allDates.length;\n    if (range === 'custom' && customLen > 0) {\n      windowLen = Math.min(allDates.length, customLen);\n    } else if (rangeOpt?.months) {\n      const cutoff = new Date(allDates[allDates.length - 1]);\n      cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);\n      const cutoffStr = cutoff.toISOString().slice(0, 10);\n      windowLen = allDates.filter((d) => d >= cutoffStr).length || allDates.length;\n    }\n    const maxPan = Math.max(0, allDates.length - windowLen);\n    const pan = Math.min(Math.max(0, panOffset), maxPan);\n    const endIdx = allDates.length - pan;\n    const startIdx = Math.max(0, endIdx - windowLen);\n\n    const dates = allDates.slice(startIdx, endIdx);\n    // Уменьшенная копия первого ряда по всей истории: на ней стоят ручки периода.\n    const brushRows = allDates.map((d) => ({ date: d, actual: maps[0]?.get(d) ?? null }));\n\n    // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные\n    // ряды (сальдо, счёт текущих операций, дефицит), %-ряды и представления\n    // «к прошлому периоду»/«к году» (это темпы, не уровни — В-12) к базе-100 не\n    // приводятся: деление на ~0 → выброс, отрицательная база → переворот знака,\n    // «инфляция 5% = 100 пунктов» — смысловой мусор. Такие ряды в режиме общей\n    // базы исключаем и подписываем, а не рисуем.\n    const { date: baseDate, candidates, bases } = indexed\n      ? commonIndexBase(maps, series, dates)\n      : { date: null, candidates: [], bases: [] };\n    const indexable = series.map((_, i) => candidates.includes(i));\n    const nonIndexableNames = indexed\n      ? series.filter((_, i) => !indexable[i]).map((s) => s.name || t('z2.compare.seriesFallback'))\n      : [];\n    const nonIndexableKeys = new Set(\n      indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],\n    );\n    if (indexed && !baseDate) {\n      return {\n        ...EMPTY, nonIndexableNames, nonIndexableKeys, maxPan, noSharedBase: candidates.length > 0,\n      };\n    }\n    const idxUnit = t('compare.indexUnit');\n\n    // В-13 (CTO-аудит 2026-07-06): значение пишется в строку ТОЛЬКО на датах,\n    // где у ряда есть реальная точка. Раньше carry-forward (LOCF) протягивал\n    // последнее значение через даты без данных: тултип показывал «значение»\n    // там, где наблюдения нет, а линия шла ступенькой. Разрывы между точками\n    // соединяет connectNulls на <Line> — честная интерполяция между фактами.\n    const visibleDates = indexed ? dates.filter((date) => date >= baseDate) : dates;\n    const rows = visibleDates.map((d) => {\n      const row = { date: d };\n      maps.forEach((m, i) => {\n        if (!m.has(d)) return;\n        const v = m.get(d);\n        const s = series[i];\n        if (indexed) {\n          if (indexable[i]) {\n            row[s.key] = rebaseToHundred(v, bases[i]);\n            row[`${s.key}_unit`] = idxUnit;\n            // Настоящее значение в тот же день: подсказка показывает его рядом с ростом от старта.\n            row[`${s.key}_raw`] = v;\n            row[`${s.key}_rawUnit`] = s.unit || '%';\n          }\n        } else {\n          row[s.key] = v;\n          row[`${s.key}_unit`] = s.unit || '%';\n        }\n      });\n      return row;\n    });\n    return {\n      rows, nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase: false,\n      brushRows, windowStart: startIdx, windowEnd: endIdx,\n    };\n  }",
+            "() => {\n    const EMPTY = {\n      rows: [], nonIndexableNames: [], nonIndexableKeys: new Set(), maxPan: 0, baseDate: null, noSharedBase: false,\n      brushRows: [], windowStart: 0, windowEnd: 0,\n    };\n    if (!series.length) return EMPTY;\n    const maps = series.map((s) => {\n      const raw = Array.isArray(s.data?.data) ? s.data.data : [];\n      const transformed = applyCompareTransform(raw, s.transform);\n      // stepDeep: данные уже загружены на нативной частоте нужного шага\n      // (реальный alternate_frequencies ряд) — повторная клиентская\n      // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.\n      const pts = s.stepDeep || (s.isWorld && !s.worldAlias) || s.isSubnational ? transformed : aggregateToStep(transformed, step);\n      return new Map(pts.map((p) => [p.date, p.value]));\n    });\n\n    const allDates = [...new Set(maps.flatMap((m) => [...m.keys()]))].sort();\n    if (!allDates.length) return EMPTY;\n\n    // Окно: длина — из пресета периода, позиция — из слайдера-панорамы.\n    const rangeOpt = RANGE_OPTIONS.find((r) => r.key === range);\n    let windowLen = allDates.length;\n    if (range === 'custom' && customLen > 0) {\n      windowLen = Math.min(allDates.length, customLen);\n    } else if (rangeOpt?.months) {\n      const cutoff = new Date(allDates[allDates.length - 1]);\n      cutoff.setUTCMonth(cutoff.getUTCMonth() - rangeOpt.months);\n      const cutoffStr = cutoff.toISOString().slice(0, 10);\n      windowLen = allDates.filter((d) => d >= cutoffStr).length || allDates.length;\n    }\n    const maxPan = Math.max(0, allDates.length - windowLen);\n    const pan = Math.min(Math.max(0, panOffset), maxPan);\n    const endIdx = allDates.length - pan;\n    const startIdx = Math.max(0, endIdx - windowLen);\n\n    const dates = allDates.slice(startIdx, endIdx);\n    // Уменьшенная копия первого ряда по всей истории: на ней стоят ручки периода.\n    const brushRows = allDates.map((d) => ({ date: d, actual: maps[0]?.get(d) ?? null }));\n\n    // К общей базе (=100) приводится ТОЛЬКО положительный уровень. Знакопеременные\n    // ряды (сальдо, счёт текущих операций, дефицит), %-ряды и представления\n    // «к прошлому периоду»/«к году» (это темпы, не уровни — В-12) к базе-100 не\n    // приводятся: деление на ~0 → выброс, отрицательная база → переворот знака,\n    // «инфляция 5% = 100 пунктов» — смысловой мусор. Такие ряды в режиме общей\n    // базы исключаем и подписываем, а не рисуем.\n    const { date: baseDate, candidates, bases } = indexed\n      ? commonIndexBase(maps, series, dates)\n      : { date: null, candidates: [], bases: [] };\n    const indexable = series.map((_, i) => candidates.includes(i));\n    const nonIndexableNames = indexed\n      ? series.filter((_, i) => !indexable[i]).map((s) => s.name || t('z2.compare.seriesFallback'))\n      : [];\n    const nonIndexableKeys = new Set(\n      indexed ? series.filter((_, i) => !indexable[i]).map((s) => s.key) : [],\n    );\n    if (indexed && !baseDate) {\n      return {\n        ...EMPTY, nonIndexableNames, nonIndexableKeys, maxPan, noSharedBase: candidates.length > 0,\n      };\n    }\n    const idxUnit = t('compare.indexUnit');\n\n    // В-13 (CTO-аудит 2026-07-06): значение пишется в строку ТОЛЬКО на датах,\n    // где у ряда есть реальная точка. Раньше carry-forward (LOCF) протягивал\n    // последнее значение через даты без данных: тултип показывал «значение»\n    // там, где наблюдения нет, а линия шла ступенькой. Разрывы между точками\n    // соединяет connectNulls на <Line> — честная интерполяция между фактами.\n    const visibleDates = indexed ? dates.filter((date) => date >= baseDate) : dates;\n    const rows = visibleDates.map((d) => {\n      const row = { date: d };\n      maps.forEach((m, i) => {\n        if (!m.has(d)) return;\n        const v = m.get(d);\n        const s = series[i];\n        if (indexed) {\n          if (indexable[i]) {\n            row[s.key] = rebaseToHundred(v, bases[i]);\n            row[`${s.key}_unit`] = idxUnit;\n            // Настоящее значение в тот же день: подсказка показывает его рядом с ростом от старта.\n            row[`${s.key}_raw`] = v;\n            row[`${s.key}_rawUnit`] = s.unit || '%';\n          }\n        } else {\n          row[s.key] = v;\n          row[`${s.key}_unit`] = s.unit || '%';\n        }\n      });\n      return row;\n    });\n    return {\n      rows, nonIndexableNames, nonIndexableKeys, maxPan, baseDate, noSharedBase: false,\n      brushRows, windowStart: startIdx, windowEnd: endIdx,\n    };\n  }",
             "[series, range, customLen, indexed, step, panOffset, t]"
           ]
         },
         {
-          "line": 2120,
-          "end_line": 2151,
+          "line": 2125,
+          "end_line": 2156,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195828,15 +195864,15 @@
           ]
         },
         {
-          "line": 2161,
-          "end_line": 2161,
+          "line": 2166,
+          "end_line": 2166,
           "owner": "ComparePage",
           "callee": "useViewportHeight",
           "arguments": []
         },
         {
-          "line": 2177,
-          "end_line": 2196,
+          "line": 2182,
+          "end_line": 2201,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195845,8 +195881,8 @@
           ]
         },
         {
-          "line": 2316,
-          "end_line": 2329,
+          "line": 2321,
+          "end_line": 2334,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195855,8 +195891,8 @@
           ]
         },
         {
-          "line": 2331,
-          "end_line": 2349,
+          "line": 2336,
+          "end_line": 2354,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195865,8 +195901,8 @@
           ]
         },
         {
-          "line": 2351,
-          "end_line": 2358,
+          "line": 2356,
+          "end_line": 2363,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195875,8 +195911,8 @@
           ]
         },
         {
-          "line": 2526,
-          "end_line": 2526,
+          "line": 2531,
+          "end_line": 2531,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195951,8 +195987,8 @@
           ]
         },
         {
-          "line": 2368,
-          "end_line": 2368,
+          "line": 2373,
+          "end_line": 2373,
           "owner": "ComparePage.handleExport",
           "callee": "window.dispatchEvent",
           "arguments": [
@@ -196498,264 +196534,256 @@
           "expression": "{onClose}"
         },
         {
-          "line": 2530,
-          "end_line": 2530,
+          "line": 2535,
+          "end_line": 2535,
           "owner": "ComparePage",
           "component": "UpsellModal",
           "event": "onClose",
           "expression": "{() => setUpsellOpen(false)}"
         },
         {
-          "line": 2552,
-          "end_line": 2556,
-          "owner": "ComparePage.<callback@2551>",
+          "line": 2557,
+          "end_line": 2561,
+          "owner": "ComparePage.<callback@2556>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => applyPreset(preset)}"
         },
         {
-          "line": 2561,
-          "end_line": 2561,
+          "line": 2566,
+          "end_line": 2566,
           "owner": "ComparePage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{clearAll}"
         },
         {
-          "line": 2574,
-          "end_line": 2574,
+          "line": 2579,
+          "end_line": 2579,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{startEditing}"
         },
         {
-          "line": 2589,
-          "end_line": 2589,
+          "line": 2594,
+          "end_line": 2594,
           "owner": "ComparePage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }}"
         },
         {
-          "line": 2617,
-          "end_line": 2617,
-          "owner": "ComparePage.<callback@2599>",
+          "line": 2622,
+          "end_line": 2622,
+          "owner": "ComparePage.<callback@2604>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => removeCode(s.code)}"
         },
         {
-          "line": 2624,
-          "end_line": 2629,
-          "owner": "ComparePage.<callback@2599>.<callback@2623>",
+          "line": 2629,
+          "end_line": 2634,
+          "owner": "ComparePage.<callback@2604>.<callback@2628>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setRep(s.code, o.id)}"
         },
         {
-          "line": 2656,
-          "end_line": 2656,
+          "line": 2661,
+          "end_line": 2661,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{undoLast}"
         },
         {
-          "line": 2665,
-          "end_line": 2670,
+          "line": 2670,
+          "end_line": 2675,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setPickerOpen((open) => !open)}"
         },
         {
-          "line": 2678,
-          "end_line": 2690,
+          "line": 2683,
+          "end_line": 2695,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onAdd",
           "expression": "{addCode}"
         },
         {
-          "line": 2678,
-          "end_line": 2690,
+          "line": 2683,
+          "end_line": 2695,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onClear",
           "expression": "{clearAll}"
         },
         {
-          "line": 2678,
-          "end_line": 2690,
+          "line": 2683,
+          "end_line": 2695,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onLimit",
           "expression": "{isAuthed ? undefined : openLimit}"
         },
         {
-          "line": 2706,
-          "end_line": 2706,
+          "line": 2711,
+          "end_line": 2711,
           "owner": "ComparePage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }}"
         },
         {
-          "line": 2724,
-          "end_line": 2724,
+          "line": 2729,
+          "end_line": 2729,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{retryFailed}"
         },
         {
-          "line": 2745,
-          "end_line": 2749,
-          "owner": "ComparePage.<callback@2744>",
+          "line": 2750,
+          "end_line": 2754,
+          "owner": "ComparePage.<callback@2749>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}"
         },
         {
-          "line": 2766,
-          "end_line": 2773,
-          "owner": "ComparePage",
-          "component": "Chip",
-          "event": "onClick",
-          "expression": "{() => {}}"
-        },
-        {
-          "line": 2780,
-          "end_line": 2784,
-          "owner": "ComparePage.<callback@2779>",
+          "line": 2770,
+          "end_line": 2774,
+          "owner": "ComparePage.<callback@2769>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}"
         },
         {
-          "line": 2798,
-          "end_line": 2804,
-          "owner": "ComparePage.<callback@2795>",
+          "line": 2787,
+          "end_line": 2793,
+          "owner": "ComparePage.<callback@2784>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => chooseScale(opt.key)}"
         },
         {
-          "line": 2816,
-          "end_line": 2816,
+          "line": 2805,
+          "end_line": 2805,
           "owner": "ComparePage",
           "component": "EventsChip",
           "event": "onToggle",
           "expression": "{toggleEvents}"
         },
         {
-          "line": 2826,
-          "end_line": 2843,
+          "line": 2815,
+          "end_line": 2832,
           "owner": "ComparePage",
           "component": "CompareChartState",
           "event": "onRetry",
           "expression": "{failedQueries.length > 0 ? retryFailed : undefined}"
         },
         {
-          "line": 2864,
-          "end_line": 2864,
+          "line": 2853,
+          "end_line": 2853,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => chooseScale('index')}"
         },
         {
-          "line": 2874,
-          "end_line": 2874,
+          "line": 2863,
+          "end_line": 2863,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => chooseScale('values')}"
         },
         {
-          "line": 2929,
-          "end_line": 2929,
+          "line": 2918,
+          "end_line": 2918,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setAxesSwapped((value) => !value)}"
         },
         {
-          "line": 2944,
-          "end_line": 2958,
+          "line": 2933,
+          "end_line": 2947,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerDownCapture",
           "expression": "{touchTip.onPointerDownCapture}"
         },
         {
-          "line": 2944,
-          "end_line": 2958,
+          "line": 2933,
+          "end_line": 2947,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerDown",
           "expression": "{handlePointerDown}"
         },
         {
-          "line": 2944,
-          "end_line": 2958,
+          "line": 2933,
+          "end_line": 2947,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerMove",
           "expression": "{handlePointerMove}"
         },
         {
-          "line": 2944,
-          "end_line": 2958,
+          "line": 2933,
+          "end_line": 2947,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerUp",
           "expression": "{handlePointerUp}"
         },
         {
-          "line": 2944,
-          "end_line": 2958,
+          "line": 2933,
+          "end_line": 2947,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerCancel",
           "expression": "{handlePointerUp}"
         },
         {
-          "line": 3133,
-          "end_line": 3144,
+          "line": 3122,
+          "end_line": 3133,
           "owner": "ComparePage",
           "component": "ChartBrush",
           "event": "onChange",
           "expression": "{handleBrush}"
         },
         {
-          "line": 3162,
-          "end_line": 3170,
+          "line": 3151,
+          "end_line": 3159,
           "owner": "ComparePage",
           "component": "ChartDownloadMenu",
           "event": "onCsv",
           "expression": "{() => handleDataExport('csv')}"
         },
         {
-          "line": 3162,
-          "end_line": 3170,
+          "line": 3151,
+          "end_line": 3159,
           "owner": "ComparePage",
           "component": "ChartDownloadMenu",
           "event": "onExcel",
           "expression": "{() => handleDataExport('xlsx')}"
         },
         {
-          "line": 3171,
-          "end_line": 3176,
+          "line": 3160,
+          "end_line": 3165,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{handleExport}"
         },
         {
-          "line": 3180,
-          "end_line": 3186,
+          "line": 3169,
+          "end_line": 3175,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
@@ -196898,9 +196926,9 @@
           "initializer": "Boolean"
         },
         {
-          "line": 2022,
-          "end_line": 2025,
-          "owner": "ComparePage.<callback@2021>",
+          "line": 2027,
+          "end_line": 2030,
+          "owner": "ComparePage.<callback@2026>",
           "name": "EMPTY",
           "kind": "ObjectExpression",
           "entries": [
@@ -197435,6 +197463,305 @@
             "[/^\\/regions\\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }]",
             "[/^\\/regions/, { districts: [], sections: [] }]",
             "['/world/compare/catalog', { items: [], total: 0 }]"
+          ],
+          "initializer": null
+        }
+      ],
+      "mcp_tools": []
+    },
+    "frontend/src/pages/ComparePage.step.component.test.jsx": {
+      "sha256": "1d68d0539cd6809b43cba97ed22cd8489c2405c7437d0a89fe31782f03ae5355",
+      "imports": [
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "it",
+            "expect",
+            "afterEach",
+            "vi"
+          ]
+        },
+        {
+          "line": 3,
+          "end_line": 3,
+          "owner": "<module>",
+          "specifier": "@testing-library/react",
+          "category": "external_package",
+          "target": "@testing-library/react",
+          "bindings": [
+            "screen",
+            "waitFor",
+            "fireEvent"
+          ]
+        },
+        {
+          "line": 4,
+          "end_line": 4,
+          "owner": "<module>",
+          "specifier": "./ComparePage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/pages/ComparePage.jsx"
+          ],
+          "bindings": [
+            "ComparePage"
+          ]
+        },
+        {
+          "line": 5,
+          "end_line": 5,
+          "owner": "<module>",
+          "specifier": "../test/renderPage",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/test/renderPage.jsx"
+          ],
+          "bindings": [
+            "renderPage",
+            "mockApiGet"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 7,
+          "end_line": 10,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "vi.mock"
+        },
+        {
+          "line": 12,
+          "end_line": 12,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "afterEach"
+        },
+        {
+          "line": 16,
+          "end_line": 29,
+          "owner": "<module>",
+          "name": "item",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 46,
+          "end_line": 57,
+          "owner": "<module>",
+          "name": "seriesFor",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 48,
+          "end_line": 48,
+          "owner": "seriesFor",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "CATALOG.items.find"
+        },
+        {
+          "line": 59,
+          "end_line": 71,
+          "owner": "<module>",
+          "name": "mockApis",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 73,
+          "end_line": 73,
+          "owner": "<module>",
+          "name": "seriesCalls",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 73,
+          "end_line": 73,
+          "owner": "seriesCalls",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "spy.mock.calls.filter"
+        },
+        {
+          "line": 75,
+          "end_line": 131,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 76,
+          "end_line": 83,
+          "owner": "<callback@75>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 85,
+          "end_line": 96,
+          "owner": "<callback@75>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 89,
+          "end_line": 89,
+          "owner": "<callback@75>.<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 90,
+          "end_line": 90,
+          "owner": "<callback@75>.<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "seriesCalls(spy, 'germany').every"
+        },
+        {
+          "line": 92,
+          "end_line": 92,
+          "owner": "<callback@75>.<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 92,
+          "end_line": 92,
+          "owner": "<callback@75>.<callback@85>.<callback@92>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "seriesCalls(spy, 'germany').some"
+        },
+        {
+          "line": 93,
+          "end_line": 93,
+          "owner": "<callback@75>.<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 95,
+          "end_line": 95,
+          "owner": "<callback@75>.<callback@85>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 98,
+          "end_line": 106,
+          "owner": "<callback@75>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 104,
+          "end_line": 104,
+          "owner": "<callback@75>.<callback@98>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 105,
+          "end_line": 105,
+          "owner": "<callback@75>.<callback@98>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "seriesCalls(spy, 'japan').every"
+        },
+        {
+          "line": 108,
+          "end_line": 130,
+          "owner": "<callback@75>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 117,
+          "end_line": 120,
+          "owner": "<callback@75>.<callback@108>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [
+        {
+          "line": 31,
+          "end_line": 37,
+          "owner": "<module>",
+          "name": "CATALOG",
+          "kind": "ObjectExpression",
+          "entries": [
+            "items",
+            "total"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 39,
+          "end_line": 42,
+          "owner": "<module>",
+          "name": "MONTHLY",
+          "kind": "ArrayExpression",
+          "entries": [
+            "{ date: '2024-01-01', value: 100 }",
+            "{ date: '2024-02-01', value: 101 }",
+            "{ date: '2024-03-01', value: 102 }",
+            "{ date: '2024-04-01', value: 103 }",
+            "{ date: '2024-05-01', value: 104 }",
+            "{ date: '2024-06-01', value: 105 }"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 43,
+          "end_line": 43,
+          "owner": "<module>",
+          "name": "QUARTERLY",
+          "kind": "ArrayExpression",
+          "entries": [
+            "{ date: '2024-01-01', value: 101 }",
+            "{ date: '2024-04-01', value: 104 }"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 44,
+          "end_line": 44,
+          "owner": "<module>",
+          "name": "ANNUAL",
+          "kind": "ArrayExpression",
+          "entries": [
+            "{ date: '2023-01-01', value: 3.2 }",
+            "{ date: '2024-01-01', value: 2.8 }"
           ],
           "initializer": null
         }
@@ -240381,17 +240708,17 @@
     }
   },
   "totals": {
-    "imports": 4461,
+    "imports": 4465,
     "routes": 94,
-    "functions": 14443,
-    "hooks": 2662,
+    "functions": 14467,
+    "hooks": 2661,
     "http": 114,
     "storage": 218,
     "events": 448,
-    "jsx_handlers": 1170,
-    "registries": 676,
+    "jsx_handlers": 1169,
+    "registries": 682,
     "mcp_tools": 7,
-    "files": 851,
+    "files": 852,
     "parse_errors": 0
   }
 }

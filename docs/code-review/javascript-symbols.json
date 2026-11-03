@@ -21106,7 +21106,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "742ff0e16a7b699e95c8ce6109702e9a7da90f6d16a26a053f5fbb366a5d0e3b",
+    "sha256": "aafd6c34687f29fbbd7cb2ed13b4abb4ef5d5f2eee100c30db1210680cd91c24",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -21214,7 +21214,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "42a8cad7432485e4e963af205f787cd95c9ce4557315a16d56a1bfd24af0bd8d",
+    "sha256": "6861c270b4f4963b054b237bd9af63b9196a0822bf69e324febf73b9a5979f14",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -28449,7 +28449,7 @@
     "anonymous_functions": 3
   },
   "frontend/src/lib/compareRepresentation.js": {
-    "sha256": "9059bfb6b3305ed0d3596c9fe8af8c8e8762930aba1dd369310c8d953a0afc17",
+    "sha256": "eed208dd09066d779b35bab82fc85e807881adea96b71fcc97516d58b69986ca",
     "definitions": [
       {
         "name": "REP_LEVEL",
@@ -28530,69 +28530,75 @@
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "worldRequestedFrequency",
+        "line": 196,
+        "end_line": 200,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "worldCompareTransformFor",
-        "line": 189,
-        "end_line": 193,
+        "line": 202,
+        "end_line": 206,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveCompareSeries",
-        "line": 199,
-        "end_line": 204,
+        "line": 212,
+        "end_line": 217,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "isIndexableBase",
-        "line": 219,
-        "end_line": 232,
+        "line": 232,
+        "end_line": 245,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "requiresRebasedPriceIndex",
-        "line": 235,
-        "end_line": 242,
+        "line": 248,
+        "end_line": 255,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "rebaseToHundred",
-        "line": 245,
-        "end_line": 247,
+        "line": 258,
+        "end_line": 260,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "commonIndexBase",
-        "line": 254,
-        "end_line": 271,
+        "line": 267,
+        "end_line": 284,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "resolveStepOverride",
-        "line": 288,
-        "end_line": 293,
+        "line": 301,
+        "end_line": 306,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyCompareTransform",
-        "line": 295,
-        "end_line": 333,
+        "line": 308,
+        "end_line": 346,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "applyCompareTransform.previousDate",
-        "line": 306,
-        "end_line": 322,
+        "line": 319,
+        "end_line": 335,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "compareDifferenceUnit",
-        "line": 336,
-        "end_line": 344,
+        "line": 349,
+        "end_line": 357,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "compareLegendParts",
-        "line": 346,
-        "end_line": 349,
+        "line": 359,
+        "end_line": 362,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -28683,69 +28689,75 @@
       },
       {
         "names": [
+          "worldRequestedFrequency"
+        ],
+        "line": 196
+      },
+      {
+        "names": [
           "worldCompareTransformFor"
         ],
-        "line": 189
+        "line": 202
       },
       {
         "names": [
           "resolveCompareSeries"
         ],
-        "line": 199
+        "line": 212
       },
       {
         "names": [
           "isIndexableBase"
         ],
-        "line": 219
+        "line": 232
       },
       {
         "names": [
           "requiresRebasedPriceIndex"
         ],
-        "line": 235
+        "line": 248
       },
       {
         "names": [
           "rebaseToHundred"
         ],
-        "line": 245
+        "line": 258
       },
       {
         "names": [
           "commonIndexBase"
         ],
-        "line": 254
+        "line": 267
       },
       {
         "names": [
           "resolveStepOverride"
         ],
-        "line": 288
+        "line": 301
       },
       {
         "names": [
           "applyCompareTransform"
         ],
-        "line": 295
+        "line": 308
       },
       {
         "names": [
           "compareDifferenceUnit"
         ],
-        "line": 336
+        "line": 349
       },
       {
         "names": [
           "compareLegendParts"
         ],
-        "line": 346
+        "line": 359
       }
     ],
     "anonymous_functions": 21
   },
   "frontend/src/lib/compareRepresentation.test.js": {
-    "sha256": "78339af23c5aaa66500b52f7c08edc3c6b6d02b1fccb2ffb7a4f4841a2de4fb9",
+    "sha256": "0d46ff3f4652c143d7f03ba1244d7cf1e1ca108227c1d2b5fdf3e23960083a34",
     "definitions": [],
     "imports": [
       {
@@ -28758,7 +28770,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 49
+    "anonymous_functions": 52
   },
   "frontend/src/lib/compareStats.js": {
     "sha256": "4e522e9b557cf39b25ee04c776cd4b82ed27f85a279e8c64961d3b582122b7cf",
@@ -46688,7 +46700,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/worldApi.js": {
-    "sha256": "021dd72e33bfb469d392d3e602107fc2edf24eaeec1252f76c20322a0d421e35",
+    "sha256": "03bd5ecdcf17172a3ab9683f98f03dc1405d105a18dab1c30622646fbdcc953f",
     "definitions": [
       {
         "name": "localeKey",
@@ -46873,127 +46885,127 @@
       {
         "name": "fetchWorldCompareSeries",
         "line": 307,
-        "end_line": 309,
+        "end_line": 310,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldCompareOrCard",
-        "line": 316,
-        "end_line": 352,
+        "line": 317,
+        "end_line": 353,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSeries",
-        "line": 355,
-        "end_line": 368,
+        "line": 356,
+        "end_line": 369,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSeries.queryFn",
-        "line": 359,
-        "end_line": 359,
+        "line": 360,
+        "end_line": 360,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useWorldCompareSeries.retry",
-        "line": 363,
-        "end_line": 366,
+        "line": 364,
+        "end_line": 367,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchWorldIndicatorMode",
-        "line": 370,
-        "end_line": 377,
+        "line": 371,
+        "end_line": 378,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSnapshot",
-        "line": 379,
-        "end_line": 391,
+        "line": 380,
+        "end_line": 392,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useWorldCompareSnapshot.queryFn",
-        "line": 383,
-        "end_line": 385,
+        "line": 384,
+        "end_line": 386,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "worldMapSeriesOptions",
-        "line": 393,
-        "end_line": 404,
+        "line": 394,
+        "end_line": 405,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "worldMapSeriesOptions.queryFn",
-        "line": 396,
-        "end_line": 398,
+        "line": 397,
+        "end_line": 399,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "useWorldMapSeries",
-        "line": 410,
-        "end_line": 416,
+        "line": 411,
+        "end_line": 417,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "prefetchWorldMapSeries",
-        "line": 419,
-        "end_line": 422,
+        "line": 420,
+        "end_line": 423,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "fetchWorldAverageSeries",
-        "line": 424,
-        "end_line": 431,
+        "line": 425,
+        "end_line": 432,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "formatWorldValue",
-        "line": 437,
-        "end_line": 447,
+        "line": 438,
+        "end_line": 448,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitEn",
-        "line": 471,
-        "end_line": 479,
+        "line": 472,
+        "end_line": 480,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "tidyUnitRu",
-        "line": 498,
-        "end_line": 505,
+        "line": 499,
+        "end_line": 506,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "localizeWorldUnit",
-        "line": 508,
-        "end_line": 513,
+        "line": 509,
+        "end_line": 514,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "pluralRu",
-        "line": 516,
-        "end_line": 523,
+        "line": 517,
+        "end_line": 524,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "countryRegionId",
-        "line": 552,
-        "end_line": 556,
+        "line": 553,
+        "end_line": 557,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion",
-        "line": 563,
-        "end_line": 586,
+        "line": 564,
+        "end_line": 587,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "groupCountriesByRegion.rank",
-        "line": 575,
-        "end_line": 578,
+        "line": 576,
+        "end_line": 579,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -47134,73 +47146,73 @@
         "names": [
           "fetchWorldCompareOrCard"
         ],
-        "line": 316
+        "line": 317
       },
       {
         "names": [
           "useWorldCompareSeries"
         ],
-        "line": 355
+        "line": 356
       },
       {
         "names": [
           "fetchWorldIndicatorMode"
         ],
-        "line": 370
+        "line": 371
       },
       {
         "names": [
           "useWorldCompareSnapshot"
         ],
-        "line": 379
+        "line": 380
       },
       {
         "names": [
           "useWorldMapSeries"
         ],
-        "line": 410
+        "line": 411
       },
       {
         "names": [
           "prefetchWorldMapSeries"
         ],
-        "line": 419
+        "line": 420
       },
       {
         "names": [
           "fetchWorldAverageSeries"
         ],
-        "line": 424
+        "line": 425
       },
       {
         "names": [
           "formatWorldValue"
         ],
-        "line": 437
+        "line": 438
       },
       {
         "names": [
           "localizeWorldUnit"
         ],
-        "line": 508
+        "line": 509
       },
       {
         "names": [
           "pluralRu"
         ],
-        "line": 516
+        "line": 517
       },
       {
         "names": [
           "countryRegionId"
         ],
-        "line": 552
+        "line": 553
       },
       {
         "names": [
           "groupCountriesByRegion"
         ],
-        "line": 563
+        "line": 564
       }
     ],
     "anonymous_functions": 18
@@ -50937,7 +50949,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "8b50fec8c6e3731db5ffd081a19c019735634dc35e79f65a86077665e99d4016",
+    "sha256": "3a477eb20b155b23a4428ccb6c51c48be53a005c86c6e5cedf1a6226e6588b54",
     "definitions": [
       {
         "name": "useViewportHeight",
@@ -51218,103 +51230,103 @@
       {
         "name": "ComparePage",
         "line": 1583,
-        "end_line": 3329,
+        "end_line": 3318,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ComparePage.queryFn",
-        "line": 1942,
-        "end_line": 1948,
+        "line": 1943,
+        "end_line": 1949,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retry",
-        "line": 1950,
-        "end_line": 1954,
+        "line": 1951,
+        "end_line": 1955,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.retryFailed",
-        "line": 2159,
-        "end_line": 2159,
+        "line": 2164,
+        "end_line": 2164,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.formatLabel",
-        "line": 2179,
-        "end_line": 2179,
+        "line": 2184,
+        "end_line": 2184,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisFor",
-        "line": 2202,
-        "end_line": 2207,
+        "line": 2207,
+        "end_line": 2212,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.legendDetail",
-        "line": 2210,
-        "end_line": 2226,
+        "line": 2215,
+        "end_line": 2231,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisValues",
-        "line": 2231,
-        "end_line": 2238,
+        "line": 2236,
+        "end_line": 2243,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.calc",
-        "line": 2250,
-        "end_line": 2257,
+        "line": 2255,
+        "end_line": 2262,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleExport",
-        "line": 2364,
-        "end_line": 2380,
+        "line": 2369,
+        "end_line": 2385,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleDataExport",
-        "line": 2387,
-        "end_line": 2432,
+        "line": 2392,
+        "end_line": 2437,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleShare",
-        "line": 2435,
-        "end_line": 2457,
+        "line": 2440,
+        "end_line": 2462,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.openLimit",
-        "line": 2463,
-        "end_line": 2466,
+        "line": 2468,
+        "end_line": 2471,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.shortSeriesName",
-        "line": 2468,
-        "end_line": 2470,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "ComparePage.handleBrush",
-        "line": 2471,
+        "line": 2473,
         "end_line": 2475,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "ComparePage.chooseScale",
+        "name": "ComparePage.handleBrush",
         "line": 2476,
         "end_line": 2480,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "ComparePage.chooseScale",
+        "line": 2481,
+        "end_line": 2485,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "ComparePage.bigDigits",
-        "line": 3230,
-        "end_line": 3230,
+        "line": 3219,
+        "end_line": 3219,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -51574,7 +51586,7 @@
         "line": 1583
       }
     ],
-    "anonymous_functions": 283
+    "anonymous_functions": 281
   },
   "frontend/src/pages/ComparePage.rates.component.test.jsx": {
     "sha256": "295e80c5e017f238c7d7761faaf4bc750e0487f0795e7b059efc833dc3a58570",
@@ -51655,6 +51667,55 @@
     ],
     "exports": [],
     "anonymous_functions": 15
+  },
+  "frontend/src/pages/ComparePage.step.component.test.jsx": {
+    "sha256": "1d68d0539cd6809b43cba97ed22cd8489c2405c7437d0a89fe31782f03ae5355",
+    "definitions": [
+      {
+        "name": "item",
+        "line": 16,
+        "end_line": 29,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "seriesFor",
+        "line": 46,
+        "end_line": 57,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "mockApis",
+        "line": 59,
+        "end_line": 71,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "seriesCalls",
+        "line": 73,
+        "end_line": 73,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 2
+      },
+      {
+        "source": "@testing-library/react",
+        "line": 3
+      },
+      {
+        "source": "./ComparePage",
+        "line": 4
+      },
+      {
+        "source": "../test/renderPage",
+        "line": 5
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 18
   },
   "frontend/src/pages/ComparePage.w6.component.test.jsx": {
     "sha256": "1ecffb1d27bb0f2362b8e43f58afce247fb3d83601d90cfb9c34e97bd1739ee3",

@@ -18,6 +18,11 @@ from app.data.world_concept_russia import (
     concept_slug_for_russia_code,
     russia_link_for_concept,
 )
+from app.data.world_aggregation import (
+    AggregationPolicy,
+    aggregate_series,
+    aggregation_decision_for,
+)
 from app.data.world_concepts import (
     CONCEPT_BY_SLUG,
     concept_for_indicator,
@@ -224,6 +229,84 @@ def choose_compare_indicator(
     national = [item for item in members if item.code in national_codes]
     pool = national or members
     return min(pool, key=lambda item: _compare_member_sort_key(item, national_codes))
+
+
+# Частоты, которые можно запросить у `/compare/series`: свёртка только вверх (месяц → квартал → год).
+COMPARE_FREQUENCIES = ("monthly", "quarterly", "annual")
+_FREQUENCY_RANK = {"daily": 0, "weekly": 1, "monthly": 2, "quarterly": 3, "annual": 4}
+
+
+def compare_target_frequency(requested: str | None, source: str | None) -> str | None:
+    """Частота свёртки или None, если ряд остаётся как есть.
+
+    Свёртка идёт только к более крупному периоду, чем у ряда; тот же или более мелкий период не достраивается
+    (годовой ряд не превращается в месячный), неизвестное значение игнорируется.
+    """
+    target = normalize_frequency(requested)
+    if target not in COMPARE_FREQUENCIES:
+        return None
+    rank = _FREQUENCY_RANK.get(normalize_frequency(source))
+    if rank is None or _FREQUENCY_RANK[target] <= rank:
+        return None
+    return target
+
+
+def official_compare_sibling(
+    indicators: list[WorldIndicator],
+    concept,
+    national_codes: frozenset[str],
+    native: WorldIndicator,
+    target: str,
+) -> WorldIndicator | None:
+    """Официальный ряд страны той же частоты, что и целевая: он важнее расчётного (как на карточке).
+
+    Берём только тот же по смыслу ряд: та же единица и тот же вид (уровень, а не готовый темп МВФ рядом с
+    месячным индексом Евростата), иначе график молча сменил бы величину.
+    """
+    candidates = [
+        item
+        for item in indicators
+        if item.id != native.id
+        and normalize_frequency(item.frequency) == target
+        and int(item.points_count or 0) > 0
+        and (item.unit or "") == (native.unit or "")
+        and rank_yoy_kind(item) == rank_yoy_kind(native)
+    ]
+    if not candidates:
+        return None
+    return choose_compare_indicator(candidates, concept, national_codes)
+
+
+def aggregate_compare_points(
+    points: list[tuple[date, float]],
+    *,
+    source: str,
+    target: str,
+    policy: AggregationPolicy,
+) -> list[tuple[date, float]]:
+    """Расчётный ряд целевой частоты по политике ряда; только полные календарные периоды, пусто при отказе."""
+    try:
+        return aggregate_series(
+            points,
+            source_frequency=normalize_frequency(source),
+            target_frequency=target,
+            policy=policy,
+        )
+    except ValueError:
+        return []
+
+
+def compare_calculation_allowed(concept) -> bool:
+    """Расчётную частоту реестр разрешает только понятиям `official_then_calculated`; у остальных — лишь официальный ряд."""
+    return getattr(concept, "frequency_policy", "official_only") == "official_then_calculated"
+
+
+def compare_aggregation_policy(indicator: WorldIndicator, concept) -> AggregationPolicy:
+    """Политика свёртки: заданная у понятия, иначе куратор → паспорт национального ряда → смысловой запасной вариант."""
+    declared = getattr(concept, "aggregation_policy", None)
+    if declared in ("mean", "sum", "last"):
+        return declared
+    return aggregation_decision_for(indicator).policy
 
 
 def _country_display_name(country: WorldCountry) -> str:

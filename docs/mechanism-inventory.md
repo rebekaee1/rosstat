@@ -13,8 +13,8 @@
 - Direct environment reads: **35**
 - Jobs: **51**
 - Middleware: **6**
-- Registry declarations: **1148**
-- Registry references: **2161**
+- Registry declarations: **1150**
+- Registry references: **2165**
 - Migration operations: **444**
 - Candidate effects: **2563**
 - Unresolved syntax: **1**
@@ -101,17 +101,17 @@
 | GET | /api/v1/analytics/replay/config | app.api.session_replay.replay_config | [backend/app/api/session_replay.py:102](../backend/app/api/session_replay.py#L102) |
 | POST | /api/v1/analytics/replay | app.api.session_replay.collect_replay | [backend/app/api/session_replay.py:109](../backend/app/api/session_replay.py#L109) |
 | GET | /api/v1/admin/bi/session-analysis/sessions/{session_id}/replay | app.api.session_replay.read_replay | [backend/app/api/session_replay.py:171](../backend/app/api/session_replay.py#L171) |
-| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:1010](../backend/app/api/world.py#L1010) |
-| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1111](../backend/app/api/world.py#L1111) |
-| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1143](../backend/app/api/world.py#L1143) |
-| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1356](../backend/app/api/world.py#L1356) |
-| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1413](../backend/app/api/world.py#L1413) |
-| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1500](../backend/app/api/world.py#L1500) |
-| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1592](../backend/app/api/world.py#L1592) |
-| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:1953](../backend/app/api/world.py#L1953) |
-| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2209](../backend/app/api/world.py#L2209) |
-| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2462](../backend/app/api/world.py#L2462) |
-| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2664](../backend/app/api/world.py#L2664) |
+| GET | /api/v1/world/countries | app.api.world.list_countries | [backend/app/api/world.py:1016](../backend/app/api/world.py#L1016) |
+| GET | /api/v1/world/rating/concepts | app.api.world.world_rating_concepts | [backend/app/api/world.py:1117](../backend/app/api/world.py#L1117) |
+| GET | /api/v1/world/compare/catalog | app.api.world.world_compare_catalog | [backend/app/api/world.py:1149](../backend/app/api/world.py#L1149) |
+| GET | /api/v1/world/compare/series/{country_slug}/{concept_slug} | app.api.world.world_compare_series | [backend/app/api/world.py:1381](../backend/app/api/world.py#L1381) |
+| GET | /api/v1/world/compare/snapshot/{concept_slug} | app.api.world.world_compare_snapshot | [backend/app/api/world.py:1477](../backend/app/api/world.py#L1477) |
+| GET | /api/v1/world/compare/map-series/{concept_slug} | app.api.world.world_compare_map_series | [backend/app/api/world.py:1564](../backend/app/api/world.py#L1564) |
+| GET | /api/v1/world/compare/average/{concept_slug} | app.api.world.world_compare_average_series | [backend/app/api/world.py:1656](../backend/app/api/world.py#L1656) |
+| GET | /api/v1/world/countries/{slug} | app.api.world.country_detail | [backend/app/api/world.py:2017](../backend/app/api/world.py#L2017) |
+| GET | /api/v1/world/indicators/{slug}/{code} | app.api.world.indicator_meta | [backend/app/api/world.py:2273](../backend/app/api/world.py#L2273) |
+| GET | /api/v1/world/indicators/{slug}/{code}/data | app.api.world.indicator_data | [backend/app/api/world.py:2526](../backend/app/api/world.py#L2526) |
+| GET | /api/v1/world/search | app.api.world.search_world | [backend/app/api/world.py:2728](../backend/app/api/world.py#L2728) |
 | GET | /api/v1/world/{country_slug}/regions | app.api.world_subnational.list_regions | [backend/app/api/world_subnational.py:192](../backend/app/api/world_subnational.py#L192) |
 | GET | /api/v1/world/{country_slug}/regions/map/{code} | app.api.world_subnational.map_values | [backend/app/api/world_subnational.py:270](../backend/app/api/world_subnational.py#L270) |
 | GET | /api/v1/world/{country_slug}/regions/region/{slug} | app.api.world_subnational.region_profile | [backend/app/api/world_subnational.py:368](../backend/app/api/world_subnational.py#L368) |
@@ -1921,14 +1921,14 @@ Relationships: `[]`
 | app.api.ticker.TICKER_CODES | Call | computed source expression | [backend/app/api/ticker.py:91](../backend/app/api/ticker.py#L91) |
 | app.api.ticker.STALE_AFTER_DAYS_BY_CODE | Dict | 'brent' | [backend/app/api/ticker.py:103](../backend/app/api/ticker.py#L103) |
 | app.api.ticker._RUB_PAIRS | Dict | 'usd-rub', 'eur-rub', 'cny-rub' | [backend/app/api/ticker.py:148](../backend/app/api/ticker.py#L148) |
-| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:742](../backend/app/api/world.py#L742) |
-| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:787](../backend/app/api/world.py#L787) |
-| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:794](../backend/app/api/world.py#L794) |
-| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:856](../backend/app/api/world.py#L856) |
-| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1878](../backend/app/api/world.py#L1878) |
-| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1880](../backend/app/api/world.py#L1880) |
-| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1915](../backend/app/api/world.py#L1915) |
-| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1916](../backend/app/api/world.py#L1916) |
+| app.api.world._RATING_CATALOG_ORDER | Tuple | sequence/source expression | [backend/app/api/world.py:748](../backend/app/api/world.py#L748) |
+| app.api.world._MEDIAN_BENCHMARK_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:793](../backend/app/api/world.py#L793) |
+| app.api.world._AVERAGE_CONCEPTS | Call | computed source expression | [backend/app/api/world.py:800](../backend/app/api/world.py#L800) |
+| app.api.world._AGGREGATION_SOURCE_TO_TARGET | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/api/world.py:862](../backend/app/api/world.py#L862) |
+| app.api.world._OVERVIEW_PRIORITY | Tuple | sequence/source expression | [backend/app/api/world.py:1942](../backend/app/api/world.py#L1942) |
+| app.api.world._PRICE_BASIS | Dict | 'year_on_year_month', 'annual_average' | [backend/app/api/world.py:1944](../backend/app/api/world.py#L1944) |
+| app.api.world._SLIM_ITEM_DROP | Call | computed source expression | [backend/app/api/world.py:1979](../backend/app/api/world.py#L1979) |
+| app.api.world._SLIM_ITEM_DEFAULTS | Dict | 'simple_name', 'aggregated_frequencies', 'merged_slices', 'last_value', 'last_date', 'prev_value', 'change', 'archived' | [backend/app/api/world.py:1980](../backend/app/api/world.py#L1980) |
 | app.core.cache._WORLD_COUNTRIES_KEY_RE | Call | computed source expression | [backend/app/core/cache.py:495](../backend/app/core/cache.py#L495) |
 | app.data.bi_targets.NORTH_STAR_MILESTONES | List | sequence/source expression | [backend/app/data/bi_targets.py:12](../backend/app/data/bi_targets.py#L12) |
 | app.data.bi_targets.TARGETS | Dict | 'visits_per_day', 'acquisition_search_share', 'engagement_rate', 'micro_conversion_rate', 'macro_conversion_rate', 'retention_7d' | [backend/app/data/bi_targets.py:14](../backend/app/data/bi_targets.py#L14) |
@@ -2806,9 +2806,11 @@ Relationships: `[]`
 | app.services.world_cards.FREQ_LABEL | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/world_cards.py:52](../backend/app/services/world_cards.py#L52) |
 | app.services.world_cards.STEP_LABEL | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/world_cards.py:60](../backend/app/services/world_cards.py#L60) |
 | app.services.world_cards._LEGACY_TO_COMPOSITE | Dict | 'level', 'mom', 'qoq', 'yoy', 'yoy_abs', 'index_first', 'avg_quarter', 'avg_year' | [backend/app/services/world_cards.py:69](../backend/app/services/world_cards.py#L69) |
-| app.services.world_compare.MONEY_COMPARE_CONCEPTS | Call | computed source expression | [backend/app/services/world_compare.py:39](../backend/app/services/world_compare.py#L39) |
-| app.services.world_compare._COMPARE_VIEW_SPEC | Dict | 'hicp-index', 'unemployment-rate', 'population', 'gdp-usd', 'gdp-per-capita-usd', 'budget-balance-gdp', 'government-debt-gdp' | [backend/app/services/world_compare.py:48](../backend/app/services/world_compare.py#L48) |
-| app.services.world_compare._SSR_VS_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_compare.py:90](../backend/app/services/world_compare.py#L90) |
+| app.services.world_compare.MONEY_COMPARE_CONCEPTS | Call | computed source expression | [backend/app/services/world_compare.py:44](../backend/app/services/world_compare.py#L44) |
+| app.services.world_compare._COMPARE_VIEW_SPEC | Dict | 'hicp-index', 'unemployment-rate', 'population', 'gdp-usd', 'gdp-per-capita-usd', 'budget-balance-gdp', 'government-debt-gdp' | [backend/app/services/world_compare.py:53](../backend/app/services/world_compare.py#L53) |
+| app.services.world_compare._SSR_VS_COUNTRIES | Tuple | sequence/source expression | [backend/app/services/world_compare.py:95](../backend/app/services/world_compare.py#L95) |
+| app.services.world_compare.COMPARE_FREQUENCIES | Tuple | sequence/source expression | [backend/app/services/world_compare.py:235](../backend/app/services/world_compare.py#L235) |
+| app.services.world_compare._FREQUENCY_RANK | Dict | 'daily', 'weekly', 'monthly', 'quarterly', 'annual' | [backend/app/services/world_compare.py:236](../backend/app/services/world_compare.py#L236) |
 | app.services.world_eurostat_ingest.LOADER_FREQUENCIES | Tuple | sequence/source expression | [backend/app/services/world_eurostat_ingest.py:48](../backend/app/services/world_eurostat_ingest.py#L48) |
 | app.services.world_eurostat_ingest.TOC_SUCCESSOR_ALIASES | Dict | 'tec00116' | [backend/app/services/world_eurostat_ingest.py:102](../backend/app/services/world_eurostat_ingest.py#L102) |
 | app.services.world_eurostat_ingest._VERDICT_RE | Call | computed source expression | [backend/app/services/world_eurostat_ingest.py:367](../backend/app/services/world_eurostat_ingest.py#L367) |

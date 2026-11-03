@@ -64,7 +64,7 @@ import useScrollDepth from '../lib/useScrollDepth';
 import {
   compareDifferenceUnit, compareLegendParts, REP_LEVEL, REP_YOY, REP_ORDER, REP_HINT, compareRepresentationsFor, resolveCompareSeries,
   applyCompareTransform, commonIndexBase, isReadyRateMeta, mergeWorldRepMeta, normalizeRateUnit, rebaseToHundred,
-  requiresRebasedPriceIndex, resolveStepOverride,
+  requiresRebasedPriceIndex, resolveStepOverride, worldRequestedFrequency,
   worldCompareRepresentationsFor, worldCompareTransformFor, defaultWorldRepresentation,
 } from '../lib/compareRepresentation';
 import {
@@ -343,10 +343,10 @@ async function fetchSubnationalSeries(code, { signal }) {
   };
 }
 
-async function fetchWorldSeries(code, { signal }) {
+async function fetchWorldSeries(code, { signal, frequency }) {
   const parsed = parseWorldCompareCode(code);
   if (!parsed) throw new Error('compare.error.worldCode');
-  const payload = await fetchWorldCompareOrCard(parsed.countrySlug, parsed.conceptSlug, { signal });
+  const payload = await fetchWorldCompareOrCard(parsed.countrySlug, parsed.conceptSlug, { signal, frequency });
   const loc = currentUiLocale();
   const countryName = loc === 'en'
     ? (payload.meta.country_name_en || payload.meta.country_name)
@@ -1674,7 +1674,6 @@ export default function ComparePage({ renderSave = null } = {}) {
   const { data: unlistedIndicators, isFetched: unlistedFetched } = useIndicators({
     includeUnlisted: true, enabled: needsUnlisted,
   });
-  const hasWorldSeries = codes.some(isWorldCode);
   const dataSpacesCount = [
     codes.some((code) => isWorldCode(code) || isSubnationalCode(code)),
     codes.some(isRegionCode),
@@ -1700,10 +1699,6 @@ export default function ComparePage({ renderSave = null } = {}) {
     const country = locale === 'en' ? (item.country_name_en || item.country_name) : item.country_name;
     return [item.code, country ? `${concept} — ${country}` : concept];
   })), [worldCompareCatalog, locale]);
-
-  useEffect(() => {
-    if (hasWorldSeries && step !== 'auto') setStep('auto');
-  }, [hasWorldSeries, step]);
 
   const repByCode = useMemo(
     () => (isDemo ? DEFAULT_COMPARE_PRESET.reps : parseReps(searchParams)),
@@ -1870,9 +1865,12 @@ export default function ComparePage({ renderSave = null } = {}) {
       const repId = repByCode[code] || REP_YOY;
       const spec = resolveCompareSeries(nativeInd, repId)
         || { code: nativeCode, transform: null, unit: nativeInd.unit, repId: REP_LEVEL, label: t('common.value') };
+      // Шаг выбирается так же, как у российского показателя: реальный более глубокий ряд, иначе усреднение.
+      const stepAlt = resolveStepOverride(nativeInd, spec.repId, step);
       return {
         code, ind: nativeInd, repId: spec.repId, repLabel: spec.label,
-        fetchCode: spec.code, transform: spec.transform, unit: spec.unit, worldAlias: true,
+        fetchCode: stepAlt || spec.code, transform: stepAlt ? null : spec.transform, unit: spec.unit,
+        stepDeep: !!stepAlt, worldAlias: true,
       };
     }
     if (isWorldCode(code)) {
@@ -1888,11 +1886,14 @@ export default function ComparePage({ renderSave = null } = {}) {
         : REP_LEVEL;
       // Индекс «тот же месяц прошлого года = 100» (Китай) — уже темп; чтобы стать процентом, из него вычитается 100.
       const minus100 = meta?.valueAdjust === 'minus_100';
+      // Выбранный шаг (квартал, год) считает сервер по правилам карточек; «Как в источнике» и более мелкий шаг — без запроса.
+      const worldFrequency = worldRequestedFrequency(step, meta?.frequency);
       return {
         code, ind: null, repId,
         repLabel: options.find((item) => item.id === repId)?.label || t('common.value'),
         fetchCode: code,
-        transform: minus100 ? 'sub100' : worldCompareTransformFor(repId, meta?.frequency),
+        worldFrequency,
+        transform: minus100 ? 'sub100' : worldCompareTransformFor(repId, worldFrequency || meta?.frequency),
         unit: minus100 || repId !== REP_LEVEL ? '%' : meta?.unit,
         minus100,
         isWorld: true,
@@ -1938,9 +1939,9 @@ export default function ComparePage({ renderSave = null } = {}) {
 
   const results = useQueries({
     queries: resolved.map((r) => ({
-      queryKey: ['indicator-data', r.fetchCode, undefined],
+      queryKey: ['indicator-data', r.fetchCode, r.worldFrequency || undefined],
       queryFn: ({ signal }) => (r.isWorld
-        ? fetchWorldSeries(r.fetchCode, { signal })
+        ? fetchWorldSeries(r.fetchCode, { signal, frequency: r.worldFrequency })
         : r.isSubnational
         ? fetchSubnationalSeries(r.fetchCode, { signal })
         : r.isRegion
@@ -1969,6 +1970,10 @@ export default function ComparePage({ renderSave = null } = {}) {
     const alreadyRate = r.isWorld && r.repId !== REP_LEVEL
       && isReadyRateMeta(mergeWorldRepMeta(worldMetaByCode.get(r.code), loadedMeta));
     const repId = alreadyRate ? REP_LEVEL : r.repId;
+    // Темп к прошлому периоду считается на частоте, которую сервер действительно отдал (мог оставить родную).
+    const worldTransform = r.isWorld && !r.minus100 && loadedMeta?.frequency
+      ? worldCompareTransformFor(repId, loadedMeta.frequency)
+      : r.transform;
     return {
     code: r.code,
     // Внутренний код никогда не показываем: пока название не пришло — null (скелетон).
@@ -1988,7 +1993,7 @@ export default function ComparePage({ renderSave = null } = {}) {
     isWorld: r.isWorld || !!r.worldAlias,
     worldAlias: !!r.worldAlias,
     isSubnational: r.isSubnational,
-    transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : r.transform,
+    transform: alreadyRate ? (r.minus100 ? 'sub100' : null) : worldTransform,
     stepDeep: r.stepDeep,
     data: results[i]?.data,
     loading: results[i]?.isLoading || r.waitingCatalog,
@@ -2030,7 +2035,7 @@ export default function ComparePage({ renderSave = null } = {}) {
       // stepDeep: данные уже загружены на нативной частоте нужного шага
       // (реальный alternate_frequencies ряд) — повторная клиентская
       // агрегация не нужна и исказила бы уже готовые годовые/квартальные точки.
-      const pts = s.stepDeep || s.isWorld || s.isSubnational ? transformed : aggregateToStep(transformed, step);
+      const pts = s.stepDeep || (s.isWorld && !s.worldAlias) || s.isSubnational ? transformed : aggregateToStep(transformed, step);
       return new Map(pts.map((p) => [p.date, p.value]));
     });
 
@@ -2756,37 +2761,21 @@ export default function ComparePage({ renderSave = null } = {}) {
             <div className="min-w-0">
               <div
                 className="mb-1.5 text-xs font-medium text-text-secondary"
-                title={t(hasWorldSeries ? 'compare.worldOfficialOnly' : 'compare.stepTitle')}
+                title={t('compare.stepTitle')}
               >
                 {t('w4.compare.stepLabel')}
               </div>
-              {hasWorldSeries ? (
-                // Частота мировых рядов задана источником и не выбирается: показываем её такой же кнопкой, как остальные, но неактивной.
-                <div className="fe-scroll-row">
+              <div className="fe-scroll-row">
+                {STEP_OPTIONS.map((opt) => (
                   <Chip
-                    active
-                    aria-disabled="true"
-                    aria-pressed={undefined}
-                    data-testid="compare-step-official"
-                    title={t('compare.worldOfficialOnly')}
-                    onClick={() => {}}
+                    key={opt.key}
+                    active={step === opt.key}
+                    onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
                   >
-                    {t('w6g.compare.step.official')}
+                    {t(opt.labelKey === 'compare.step.auto' ? 'w6g.compare.step.auto' : opt.labelKey)}
                   </Chip>
-                </div>
-              ) : (
-                <div className="fe-scroll-row">
-                  {STEP_OPTIONS.map((opt) => (
-                    <Chip
-                      key={opt.key}
-                      active={step === opt.key}
-                      onClick={() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}
-                    >
-                      {t(opt.labelKey === 'compare.step.auto' ? 'w6g.compare.step.auto' : opt.labelKey)}
-                    </Chip>
-                  ))}
-                </div>
-              )}
+                ))}
+              </div>
             </div>
 
             <div className="min-w-0">
