@@ -63,8 +63,8 @@ describe('Footer', () => {
   it('почта подписана по-человечески, адрес — в подсказке и в ссылке', () => {
     renderFooter();
     const mail = within(screen.getByRole('contentinfo')).getByRole('link', { name: 'Написать нам' });
-    expect(mail.getAttribute('href')).toBe('mailto:rebeka.ee@yandex.ru');
-    expect(within(screen.getByRole('contentinfo')).queryByText('rebeka.ee@yandex.ru')).toBeNull();
+    expect(mail.getAttribute('href')).toBe('mailto:info@forecasteconomy.com');
+    expect(within(screen.getByRole('contentinfo')).queryByText('info@forecasteconomy.com')).toBeNull();
   });
 
   it('телефон: реквизиты компании свёрнуты в «Реквизиты»', () => {

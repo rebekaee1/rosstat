@@ -101,7 +101,7 @@ describe('Navbar H-4 menu', () => {
 
     // «О проекте» и «Написать нам» рядом, в конце списка.
     const tail = hrefs(menu).slice(-2);
-    expect(tail).toEqual(['/about', 'mailto:rebeka.ee@yandex.ru']);
+    expect(tail).toEqual(['/about', 'mailto:info@forecasteconomy.com']);
     expect(within(menu).getByRole('link', { name: 'Калькулятор инфляции' })).toBeTruthy();
     expect(within(menu).getByRole('link', { name: 'Ипотечный калькулятор' })).toBeTruthy();
     expect(within(menu).getByRole('link', { name: 'Сложные проценты' })).toBeTruthy();

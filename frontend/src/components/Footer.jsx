@@ -304,9 +304,9 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="mailto:rebeka.ee@yandex.ru"
+                href="mailto:info@forecasteconomy.com"
                 className={footLink}
-                title="rebeka.ee@yandex.ru"
+                title="info@forecasteconomy.com"
                 onClick={() => track(events.CONTACT_EMAIL)}
               >
                 {t('shell.footer.contact')}

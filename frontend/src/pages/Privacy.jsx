@@ -257,20 +257,11 @@ export default function Privacy() {
         <ul className="list-disc pl-5 space-y-1 mb-4">
           <li className={li}>
             <a
-              href="mailto:rebeka.ee@yandex.ru"
+              href="mailto:info@forecasteconomy.com"
               className="text-champagne-ink hover:underline"
               onClick={() => track(events.CONTACT_EMAIL)}
             >
-              rebeka.ee@yandex.ru
-            </a>
-          </li>
-          <li className={li}>
-            <a
-              href="mailto:rebeka.ee@aimpact.ru"
-              className="text-champagne-ink hover:underline"
-              onClick={() => track(events.CONTACT_EMAIL)}
-            >
-              rebeka.ee@aimpact.ru
+              info@forecasteconomy.com
             </a>
           </li>
         </ul>

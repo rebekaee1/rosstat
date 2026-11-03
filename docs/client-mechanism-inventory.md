@@ -4,12 +4,12 @@
 
 - imports: 4469
 - routes: 94
-- functions: 14483
+- functions: 14479
 - hooks: 2662
 - http: 114
 - storage: 218
 - events: 448
-- jsx_handlers: 1169
+- jsx_handlers: 1165
 - registries: 685
 - mcp_tools: 7
 - files: 853

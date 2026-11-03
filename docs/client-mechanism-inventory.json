@@ -23034,7 +23034,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Footer.component.test.jsx": {
-      "sha256": "8825a28f8527dc19867ff33c9243310c49d95938a1b4cbc5fb2800a31b322761",
+      "sha256": "a5875097faa396a850c39c417195a033902a3698aaa1fccb042d439ce481620d",
       "imports": [
         {
           "line": 1,
@@ -23312,7 +23312,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Footer.jsx": {
-      "sha256": "7506f61305cbfe4668c5c5a489bfcc2bc63347fe01c0288584f8aaeb675994b8",
+      "sha256": "31524b923b0be77924174ebae7e62fc6df98316d6e49ac2a0ea7d0f1f8d78a56",
       "imports": [
         {
           "line": 1,
@@ -43342,7 +43342,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Navbar.component.test.jsx": {
-      "sha256": "58af414e9f5a435deb0f7a7dcf4faebe7c240acdc123dfa095dbfca914ef876d",
+      "sha256": "d43fdbe9dd3eff4d18689ae7870b193e4831b88c6db2812623488e2aa3c9583b",
       "imports": [
         {
           "line": 1,
@@ -43734,7 +43734,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Navbar.jsx": {
-      "sha256": "bdfb74170529618ee0c6ef2e36c6c3890699f4c4642ca2ec903fc27e4253d9aa",
+      "sha256": "1b8fb59c67796e2cc6f25e82256fa0f8045af835de6b44631968d4be479da763",
       "imports": [
         {
           "line": 1,
@@ -52232,7 +52232,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/PlanetView.jsx": {
-      "sha256": "3d7765084b3196b7005815ab7d1eb46ec7ab4068c304b14d370df26ee127e86c",
+      "sha256": "c1cd2ef77fcee5a0848a0a92d46dd51a0fddd6e8e90ec1c2028b6f41fb24ab01",
       "imports": [
         {
           "line": 1,
@@ -101066,7 +101066,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/legalPages.en.jsx": {
-      "sha256": "ac9c50edbe362d47477175da4950fc544859368e0388b4cfcffd23bfd38e2ffd",
+      "sha256": "a43fafde39e38511a8a9af1e1edc25180f9177a54e13f1da85d3559921cdcece",
       "imports": [
         {
           "line": 5,
@@ -101156,7 +101156,7 @@
         },
         {
           "line": 27,
-          "end_line": 251,
+          "end_line": 242,
           "owner": "<module>",
           "name": "PrivacyBodyEn",
           "kind": "FunctionDeclaration",
@@ -101171,32 +101171,16 @@
           "callback_context": null
         },
         {
-          "line": 239,
-          "end_line": 239,
-          "owner": "PrivacyBodyEn",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 254,
-          "end_line": 390,
+          "line": 245,
+          "end_line": 373,
           "owner": "<module>",
           "name": "TermsBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 374,
-          "end_line": 374,
-          "owner": "TermsBodyEn",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 382,
-          "end_line": 382,
+          "line": 365,
+          "end_line": 365,
           "owner": "TermsBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -101225,24 +101209,8 @@
           "expression": "{() => track(events.CONTACT_EMAIL)}"
         },
         {
-          "line": 236,
-          "end_line": 240,
-          "owner": "PrivacyBodyEn",
-          "component": "a",
-          "event": "onClick",
-          "expression": "{() => track(events.CONTACT_EMAIL)}"
-        },
-        {
-          "line": 371,
-          "end_line": 375,
-          "owner": "TermsBodyEn",
-          "component": "a",
-          "event": "onClick",
-          "expression": "{() => track(events.CONTACT_EMAIL)}"
-        },
-        {
-          "line": 379,
-          "end_line": 383,
+          "line": 362,
+          "end_line": 366,
           "owner": "TermsBodyEn",
           "component": "a",
           "event": "onClick",
@@ -177722,7 +177690,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/About.jsx": {
-      "sha256": "996c4af76af4bb20fd46425e948df80b78581d68474ce3e20514a26fcf1f63e4",
+      "sha256": "431f3e5c2e665cf86fc1353b3decafb395b938bbf04bfe9771b47c635e8cb2fb",
       "imports": [
         {
           "line": 1,
@@ -206628,7 +206596,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Login.jsx": {
-      "sha256": "3af3c91d4b34c80b69a03bbe3d2fe6d08f4c126c5be428ae18e7e9d549722889",
+      "sha256": "3c1f943cf4b6eb93b9820176057e54b71d2a6f73ed20f2a07fcb695dd6a6d0c0",
       "imports": [
         {
           "line": 1,
@@ -209485,7 +209453,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "4f9ec37010de4d671008989611e94b3ee77db47c1267582b019887062f718dbe",
+      "sha256": "8ab8749729e7520b6dd4297ea5001edaa08baa1e43e1740f38e2636325d4aeb2",
       "imports": [
         {
           "line": 1,
@@ -209688,7 +209656,7 @@
         },
         {
           "line": 44,
-          "end_line": 286,
+          "end_line": 277,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
@@ -209697,14 +209665,6 @@
         {
           "line": 262,
           "end_line": 262,
-          "owner": "Privacy",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 271,
-          "end_line": 271,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -209753,14 +209713,6 @@
         {
           "line": 259,
           "end_line": 263,
-          "owner": "Privacy",
-          "component": "a",
-          "event": "onClick",
-          "expression": "{() => track(events.CONTACT_EMAIL)}"
-        },
-        {
-          "line": 268,
-          "end_line": 272,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",
@@ -219696,7 +219648,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Terms.jsx": {
-      "sha256": "64f2e52eeaec47bf45c81d2e8e750a056cbbfa84f255545ce0979b2750dee850",
+      "sha256": "579997b8275f7fac61abbedd47287b09cc7f110befc15988c8b51c490d2687a0",
       "imports": [
         {
           "line": 1,
@@ -219841,7 +219793,7 @@
       "functions": [
         {
           "line": 25,
-          "end_line": 180,
+          "end_line": 172,
           "owner": "<module>",
           "name": "Terms",
           "kind": "FunctionDeclaration",
@@ -219850,14 +219802,6 @@
         {
           "line": 161,
           "end_line": 161,
-          "owner": "Terms",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": null
-        },
-        {
-          "line": 169,
-          "end_line": 169,
           "owner": "Terms",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -219898,14 +219842,6 @@
         {
           "line": 158,
           "end_line": 162,
-          "owner": "Terms",
-          "component": "a",
-          "event": "onClick",
-          "expression": "{() => track(events.CONTACT_EMAIL)}"
-        },
-        {
-          "line": 166,
-          "end_line": 170,
           "owner": "Terms",
           "component": "a",
           "event": "onClick",
@@ -240956,12 +240892,12 @@
   "totals": {
     "imports": 4469,
     "routes": 94,
-    "functions": 14483,
+    "functions": 14479,
     "hooks": 2662,
     "http": 114,
     "storage": 218,
     "events": 448,
-    "jsx_handlers": 1169,
+    "jsx_handlers": 1165,
     "registries": 685,
     "mcp_tools": 7,
     "files": 853,

@@ -225,20 +225,11 @@ export function PrivacyBodyEn({ t, h1 }) {
       <ul className="list-disc pl-5 space-y-1 mb-4">
         <li className={li}>
           <a
-            href="mailto:rebeka.ee@yandex.ru"
+            href="mailto:info@forecasteconomy.com"
             className="text-champagne hover:underline"
             onClick={() => track(events.CONTACT_EMAIL)}
           >
-            rebeka.ee@yandex.ru
-          </a>
-        </li>
-        <li className={li}>
-          <a
-            href="mailto:rebeka.ee@aimpact.ru"
-            className="text-champagne hover:underline"
-            onClick={() => track(events.CONTACT_EMAIL)}
-          >
-            rebeka.ee@aimpact.ru
+            info@forecasteconomy.com
           </a>
         </li>
       </ul>
@@ -369,19 +360,11 @@ export function TermsBodyEn({ t, h1 }) {
         These terms are governed by the law of the Russian Federation. Questions about the
         Site may be sent to{' '}
         <a
-          href="mailto:rebeka.ee@yandex.ru"
+          href="mailto:info@forecasteconomy.com"
           className="text-champagne hover:underline"
           onClick={() => track(events.CONTACT_EMAIL)}
         >
-          rebeka.ee@yandex.ru
-        </a>{' '}
-        or{' '}
-        <a
-          href="mailto:rebeka.ee@aimpact.ru"
-          className="text-champagne hover:underline"
-          onClick={() => track(events.CONTACT_EMAIL)}
-        >
-          rebeka.ee@aimpact.ru
+          info@forecasteconomy.com
         </a>
         .
       </p>

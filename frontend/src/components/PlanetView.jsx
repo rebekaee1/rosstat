@@ -31,7 +31,7 @@ import './PlanetView.css';
 const WorldMap = lazy(() => import('./WorldMap'));
 
 // Адрес для просьбы добавить страну: тот же, что в подвале сайта.
-const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
+const CONTACT_EMAIL = 'info@forecasteconomy.com';
 const HINT_STORAGE_KEY = 'fe_planet_hint_seen';
 // Круг 9 (P12): подсказка жеста показывается три секунды, а не шесть: она не должна висеть над шаром.
 const HINT_MS = 3000;

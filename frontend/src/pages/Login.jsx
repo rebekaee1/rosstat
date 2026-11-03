@@ -125,7 +125,7 @@ export default function Login() {
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[13px] text-text-secondary">
           <span data-testid="login-remember">{t('w6a.login.remember')}</span>
           <a
-            href={`mailto:rebeka.ee@yandex.ru?subject=${encodeURIComponent(t('w6a.login.forgotSubject'))}`}
+            href={`mailto:info@forecasteconomy.com?subject=${encodeURIComponent(t('w6a.login.forgotSubject'))}`}
             className="inline-flex min-h-11 items-center font-medium text-champagne-ink hover:underline"
             data-testid="login-forgot"
           >

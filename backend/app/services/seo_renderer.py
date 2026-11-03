@@ -596,7 +596,7 @@ def _site_json_ld() -> dict:
                 "@id": f"{origin}/#organization",
                 "name": "Forecast Economy",
                 "url": origin,
-                "email": "rebeka.ee@yandex.ru",
+                "email": "info@forecasteconomy.com",
                 "description": description,
                 "logo": {
                     "@type": "ImageObject", "url": logo, "contentUrl": logo,
@@ -605,7 +605,7 @@ def _site_json_ld() -> dict:
                 "contactPoint": {
                     "@type": "ContactPoint",
                     "contactType": "customer support" if en else "поддержка пользователей",
-                    "email": "rebeka.ee@yandex.ru",
+                    "email": "info@forecasteconomy.com",
                     "availableLanguage": ["ru", "en"],
                 },
             },

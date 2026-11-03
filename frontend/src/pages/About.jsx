@@ -16,7 +16,7 @@ import '../styles/w5-pages.css';
 import '../styles/k8-tools.css';
 import '../styles/k2-brand.css';
 
-const CONTACT_EMAIL = 'rebeka.ee@yandex.ru';
+const CONTACT_EMAIL = 'info@forecasteconomy.com';
 
 /**
  * «О проекте»: короткий лид и карточки-разделы с иконками. Каждая карточка — одна мысль в 1–2

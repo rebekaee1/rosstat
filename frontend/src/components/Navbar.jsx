@@ -590,7 +590,7 @@ export default function Navbar() {
               <span className="fe-mnav-text"><span className="fe-mnav-label">{t('nav.about')}</span></span>
             </NavLink>
             <a
-              href="mailto:rebeka.ee@yandex.ru"
+              href="mailto:info@forecasteconomy.com"
               className={cn(navItemClass(false), 'fe-mnav-link')}
               onClick={() => { track(events.CONTACT_EMAIL); closeAll(); }}
             >
