@@ -11606,9 +11606,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "d98c63accf27d6bf5d23a2e5c36047f4d07631e115e933722283c2128b71f4ec",
-      "bytes": 18490,
-      "lines": 152,
+      "sha256": "493aa79c7388705bcd87392841eb0c60fd5502b646f59cbf479c1cc5acb46b5c",
+      "bytes": 19270,
+      "lines": 153,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12425,8 +12425,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "7724967712bdf7596aa2dea3128c236248553af724ce701dd1e97e21db0b784a",
-      "bytes": 645277,
+      "sha256": "551bbb005d6bd5c399c61671c1f812b7acaacc9ef707261535f758ff8c23fc01",
+      "bytes": 646248,
       "lines": 3063,
       "code": false,
       "status": "reviewed",
@@ -12490,8 +12490,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "d474dfef52c1154e77938765a63b60a1add9893a7b3b45a7f8679ed455b8470b",
-      "bytes": 283431,
+      "sha256": "86b5a8cbc513764b1ad706f6fea21df42d864eadcee0b227d0f1ceda49f1754c",
+      "bytes": 283417,
       "lines": 973,
       "code": false,
       "status": "reviewed",
@@ -28883,9 +28883,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "f6843c95759d4645d14db3128d63210924974eadb6079a356ec58df245ea5ae9",
+  "ledger_sha256": "cac9191c25056f1a03b10c2d71c0c32d829b5a8beda4eb8bbf8f98ea73366bc7",
   "javascript_inventory_sha256": "2faf74906a6cf802a4cca1b8e334214e9da58dbad3e6e4e6dc98b6c21903be6c",
-  "baseline_commit": "345ab81c20b66dfcbaf9986c3415c5a052950e5a",
+  "baseline_commit": "e5d6f4360a585980f0e296aed70d9b96fc7e29b5",
   "branch": "main",
   "unstaged_at_capture": []
 }

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2060  ·  **Строк:** 1 310 127  ·  **Токенов (≈):** 12 443 919
+**Файлов:** 2060  ·  **Строк:** 1 310 128  ·  **Токенов (≈):** 12 444 207
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 835 | 284 570 | 3 135 162 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 17 | 915 | 12 277 |
-| `docs` | 138 | 831 840 | 7 099 255 |
+| `deploy` | 17 | 916 | 12 404 |
+| `docs` | 138 | 831 840 | 7 099 416 |
 | `frontend` | 926 | 165 624 | 1 843 885 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 051 | 133 197 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 063 | 107 916 |
+| `docs/backlog.md` | 3 063 | 108 074 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 728 | 52 030 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 973 | 48 330 |
+| `docs/data-contracts.md` | 973 | 48 333 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
@@ -364,6 +364,7 @@
 | `scripts/search-history-audit.py` | 279 | 4 090 |
 | `backend/tests/test_calendar_seed.py` | 442 | 4 075 |
 | `frontend/src/components/CookieConsent.component.test.jsx` | 353 | 4 068 |
+| `deploy/approved-shas.txt` | 153 | 4 067 |
 | `backend/app/services/world_adapters/estat_api.py` | 438 | 4 057 |
 | `docs/adr/0013-country-first-url-architecture.md` | 309 | 4 041 |
 | `backend/tests/test_telegram_order_and_alert_noise.py` | 446 | 4 038 |
@@ -371,7 +372,6 @@
 | `frontend/src/lib/compareRepresentation.test.js` | 346 | 4 017 |
 | `frontend/src/lib/planetLabels.test.js` | 272 | 4 016 |
 | `frontend/src/components/PwaInstall.component.test.jsx` | 351 | 3 961 |
-| `deploy/approved-shas.txt` | 152 | 3 940 |
 | `backend/app/services/signup_attribution.py` | 390 | 3 933 |
 | `frontend/src/styles/k6-country.css` | 287 | 3 913 |
 | `backend/tests/test_world_eurostat_ingest.py` | 411 | 3 878 |
