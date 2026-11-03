@@ -19346,31 +19346,73 @@
     ],
     "anonymous_functions": 25
   },
+  "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
+    "sha256": "613f441147e469ed0960c0c79844a28b9aab65e4a4f0f653040f2334b268f36f",
+    "definitions": [
+      {
+        "name": "hasLaborBreakdowns",
+        "line": 14,
+        "end_line": 16,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "LaborIndicatorGroups",
+        "line": 18,
+        "end_line": 55,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "lucide-react",
+        "line": 1
+      },
+      {
+        "source": "../../i18n",
+        "line": 2
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "hasLaborBreakdowns"
+        ],
+        "line": 14
+      },
+      {
+        "names": [
+          "default"
+        ],
+        "line": 18
+      }
+    ],
+    "anonymous_functions": 10
+  },
   "frontend/src/components/russia/RussiaCategorySection.jsx": {
-    "sha256": "f77e105b08e30508ee48a6235c014d179f5dc6ce29b96f1ce69aec53074e5f60",
+    "sha256": "eca422bcc10e4ec0b8ab30b6cc909c620c60907632dcb66d8c6158f518208641",
     "definitions": [
       {
         "name": "formatNumber",
-        "line": 21,
-        "end_line": 26,
+        "line": 22,
+        "end_line": 27,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "changeUnit",
-        "line": 28,
-        "end_line": 33,
+        "line": 29,
+        "end_line": 34,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RussiaIndicatorRow",
-        "line": 36,
-        "end_line": 73,
+        "line": 37,
+        "end_line": 74,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RussiaCategorySection",
-        "line": 75,
-        "end_line": 107,
+        "line": 76,
+        "end_line": 124,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19420,16 +19462,20 @@
         "line": 16
       },
       {
-        "source": "../DeltaBadge",
+        "source": "./LaborIndicatorGroups",
         "line": 17
       },
       {
-        "source": "../country/CountryIndicatorRow",
+        "source": "../DeltaBadge",
         "line": 18
       },
       {
-        "source": "../../styles/z5-country.css",
+        "source": "../country/CountryIndicatorRow",
         "line": 19
+      },
+      {
+        "source": "../../styles/z5-country.css",
+        "line": 20
       }
     ],
     "exports": [
@@ -19437,16 +19483,16 @@
         "names": [
           "RussiaIndicatorRow"
         ],
-        "line": 36
+        "line": 37
       },
       {
         "names": [
           "default"
         ],
-        "line": 75
+        "line": 76
       }
     ],
-    "anonymous_functions": 3
+    "anonymous_functions": 6
   },
   "frontend/src/components/russia/RussiaKeyFigures.jsx": {
     "sha256": "1931f10ab279f58516d5ede688096337a9845b52ce5f0724f1c8a8ad0de1b73a",
@@ -50566,115 +50612,119 @@
     "anonymous_functions": 7
   },
   "frontend/src/pages/CategoryPage.jsx": {
-    "sha256": "fed170c775dd1a75bb3b4c296f9128d84ddcb14b9e467430d8f1daa05445d1a0",
+    "sha256": "f35511be1d7cd48b1d2d34a054ef2872361936bdfd3f8452ce65a840db619ece",
     "definitions": [
       {
         "name": "CategoryPage",
-        "line": 48,
-        "end_line": 289,
+        "line": 49,
+        "end_line": 299,
         "kind": "FunctionDeclaration"
       }
     ],
     "imports": [
       {
-        "source": "react",
+        "source": "../components/russia/LaborIndicatorGroups",
         "line": 1
       },
       {
-        "source": "react-router-dom",
+        "source": "react",
         "line": 2
       },
       {
-        "source": "lucide-react",
+        "source": "react-router-dom",
         "line": 3
       },
       {
-        "source": "../lib/hooks",
+        "source": "lucide-react",
         "line": 4
       },
       {
-        "source": "../lib/useMeta",
+        "source": "../lib/hooks",
         "line": 5
       },
       {
-        "source": "../components/IndicatorTile",
+        "source": "../lib/useMeta",
         "line": 6
       },
       {
-        "source": "../lib/tileDates",
+        "source": "../components/IndicatorTile",
         "line": 7
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../lib/tileDates",
         "line": 8
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/Breadcrumbs",
         "line": 9
       },
       {
-        "source": "../lib/categories",
+        "source": "../components/Skeleton",
         "line": 10
       },
       {
-        "source": "../components/ApiRetryBanner",
-        "line": 17
+        "source": "../lib/categories",
+        "line": 11
       },
       {
-        "source": "../components/Button",
+        "source": "../components/ApiRetryBanner",
         "line": 18
       },
       {
-        "source": "../components/IndicatorSearch",
+        "source": "../components/Button",
         "line": 19
       },
       {
-        "source": "../components/CurrencyDesk",
+        "source": "../components/IndicatorSearch",
         "line": 20
       },
       {
-        "source": "../lib/track",
+        "source": "../components/CurrencyDesk",
         "line": 21
       },
       {
-        "source": "../styles/indicator-russia.css",
+        "source": "../lib/track",
         "line": 22
       },
       {
-        "source": "../styles/x2-indicator.css",
+        "source": "../styles/indicator-russia.css",
         "line": 23
       },
       {
-        "source": "../styles/z8-tools.css",
+        "source": "../styles/x2-indicator.css",
         "line": 24
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/z8-tools.css",
         "line": 25
       },
       {
-        "source": "../lib/useScrollDepth",
+        "source": "../styles/k6-country.css",
         "line": 26
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../lib/useScrollDepth",
         "line": 27
       },
       {
-        "source": "../lib/jsonLd",
-        "line": 31
+        "source": "../lib/breadcrumbs",
+        "line": 28
       },
       {
-        "source": "../lib/pageMeta",
+        "source": "../lib/jsonLd",
         "line": 32
       },
       {
-        "source": "../i18n",
+        "source": "../lib/pageMeta",
         "line": 33
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../i18n",
         "line": 34
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 35
       }
     ],
     "exports": [
@@ -50682,10 +50732,10 @@
         "names": [
           "default"
         ],
-        "line": 48
+        "line": 49
       }
     ],
-    "anonymous_functions": 16
+    "anonymous_functions": 17
   },
   "frontend/src/pages/ComparePage.c10.component.test.jsx": {
     "sha256": "7c50bbea955b3fae44ded2841fda25f06d631c64adcfa58188d2293310bf8f2d",

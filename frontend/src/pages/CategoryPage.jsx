@@ -1,3 +1,4 @@
+import LaborIndicatorGroups from '../components/russia/LaborIndicatorGroups';
 import { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Users, ArrowRight } from 'lucide-react';
@@ -213,7 +214,15 @@ export default function CategoryPage({ fixedSlug }) {
             {commonPhrase && (
               <p className="fe-cat-asof">{t('x2.cat.asOf', { phrase: commonPhrase })}</p>
             )}
-            {compactRows ? (
+            {cat.slug === 'labor' ? (
+              <LaborIndicatorGroups
+                indicators={filtered}
+                gridClass="fe-cat-grid"
+                renderIndicator={(ind) => (
+                  <IndicatorTile key={ind.code} commonPhrase={commonPhrase} indicator={ind} surface="category" />
+                )}
+              />
+            ) : compactRows ? (
               <>
                 {!commonPhrase && <p className="fe-cat-asof">{t('y2.cat.rowsNote')}</p>}
                 <div className="fe-trow-list">
@@ -249,6 +258,7 @@ export default function CategoryPage({ fixedSlug }) {
           </>
         )}
       </section>
+
 
       {relatedCategories.length > 0 && (
         <section data-block="related-categories" className="mt-12">

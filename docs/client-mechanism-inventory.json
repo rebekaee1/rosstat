@@ -96272,8 +96272,169 @@
       "registries": [],
       "mcp_tools": []
     },
+    "frontend/src/components/russia/LaborIndicatorGroups.jsx": {
+      "sha256": "613f441147e469ed0960c0c79844a28b9aab65e4a4f0f653040f2334b268f36f",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "lucide-react",
+          "category": "external_package",
+          "target": "lucide-react",
+          "bindings": [
+            "ChevronDown"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "../../i18n",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/i18n/index.js"
+          ],
+          "bindings": [
+            "useLocale"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 14,
+          "end_line": 16,
+          "owner": "<module>",
+          "name": "hasLaborBreakdowns",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "hasLaborBreakdowns",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.some"
+        },
+        {
+          "line": 15,
+          "end_line": 15,
+          "owner": "hasLaborBreakdowns.<callback@15>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "TOPICS.some"
+        },
+        {
+          "line": 18,
+          "end_line": 55,
+          "owner": "<module>",
+          "name": "LaborIndicatorGroups",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 20,
+          "end_line": 23,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "TOPICS.map"
+        },
+        {
+          "line": 22,
+          "end_line": 22,
+          "owner": "LaborIndicatorGroups.<callback@20>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.filter"
+        },
+        {
+          "line": 23,
+          "end_line": 23,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "TOPICS.map(([ru, en, pattern]) => ({\n    title: locale === 'en' ? en : ru,\n    items: indicators.filter(({ code }) => pattern.test(code)),\n  })).filter"
+        },
+        {
+          "line": 24,
+          "end_line": 24,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "grouped.flatMap"
+        },
+        {
+          "line": 24,
+          "end_line": 24,
+          "owner": "LaborIndicatorGroups.<callback@24>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "items.map"
+        },
+        {
+          "line": 25,
+          "end_line": 25,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.find"
+        },
+        {
+          "line": 26,
+          "end_line": 26,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "indicators.filter"
+        },
+        {
+          "line": 38,
+          "end_line": 49,
+          "owner": "LaborIndicatorGroups",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "grouped.map"
+        }
+      ],
+      "hooks": [
+        {
+          "line": 19,
+          "end_line": 19,
+          "owner": "LaborIndicatorGroups",
+          "callee": "useLocale",
+          "arguments": []
+        }
+      ],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [
+        {
+          "line": 4,
+          "end_line": 12,
+          "owner": "<module>",
+          "name": "TOPICS",
+          "kind": "ArrayExpression",
+          "entries": [
+            "['Безработица по возрасту и полу', 'Unemployment by age and sex', /^unemployment-(?:youth|age-25-54|age-55-64)(?:-women|-men)?$|^unemployment-(?:women|men)$/]",
+            "['Занятость по возрасту', 'Employment by age', /^employment-rate-(?:youth|age-25-54|age-55-64)$/]",
+            "['Рабочая сила по возрасту', 'Labour force by age', /^labor-force-(?:youth|age-25-54|age-55-64)$/]",
+            "['Длительность безработицы', 'Unemployment duration', /^(?:long|short)-term-unemployed$/]",
+            "['Неполная занятость', 'Part-time employment', /^part-time-employed$/]",
+            "['Регистрация в службе занятости', 'Registration with employment services', /^registered-unemployment-share(?:-quarterly)?$/]",
+            "['Образование безработных', 'Education of unemployed people', /^unemployed-higher-education-share(?:-annual)?$/]"
+          ],
+          "initializer": null
+        }
+      ],
+      "mcp_tools": []
+    },
     "frontend/src/components/russia/RussiaCategorySection.jsx": {
-      "sha256": "f77e105b08e30508ee48a6235c014d179f5dc6ce29b96f1ce69aec53074e5f60",
+      "sha256": "eca422bcc10e4ec0b8ab30b6cc909c620c60907632dcb66d8c6158f518208641",
       "imports": [
         {
           "line": 2,
@@ -96421,6 +96582,20 @@
           "line": 17,
           "end_line": 17,
           "owner": "<module>",
+          "specifier": "./LaborIndicatorGroups",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/russia/LaborIndicatorGroups.jsx"
+          ],
+          "bindings": [
+            "LaborIndicatorGroups",
+            "hasLaborBreakdowns"
+          ]
+        },
+        {
+          "line": 18,
+          "end_line": 18,
+          "owner": "<module>",
           "specifier": "../DeltaBadge",
           "category": "owned_source",
           "targets": [
@@ -96431,8 +96606,8 @@
           ]
         },
         {
-          "line": 18,
-          "end_line": 18,
+          "line": 19,
+          "end_line": 19,
           "owner": "<module>",
           "specifier": "../country/CountryIndicatorRow",
           "category": "owned_source",
@@ -96444,8 +96619,8 @@
           ]
         },
         {
-          "line": 19,
-          "end_line": 19,
+          "line": 20,
+          "end_line": 20,
           "owner": "<module>",
           "specifier": "../../styles/z5-country.css",
           "category": "owned_source",
@@ -96458,57 +96633,81 @@
       "routes": [],
       "functions": [
         {
-          "line": 21,
-          "end_line": 26,
+          "line": 22,
+          "end_line": 27,
           "owner": "<module>",
           "name": "formatNumber",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 28,
-          "end_line": 33,
+          "line": 29,
+          "end_line": 34,
           "owner": "<module>",
           "name": "changeUnit",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 36,
-          "end_line": 73,
+          "line": 37,
+          "end_line": 74,
           "owner": "<module>",
           "name": "RussiaIndicatorRow",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 75,
-          "end_line": 107,
+          "line": 76,
+          "end_line": 124,
           "owner": "<module>",
           "name": "RussiaCategorySection",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 92,
-          "end_line": 92,
+          "line": 81,
+          "end_line": 81,
           "owner": "RussiaCategorySection",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "rows.map"
+          "callback_context": "group.indicators.find"
         },
         {
-          "line": 99,
-          "end_line": 99,
+          "line": 83,
+          "end_line": 83,
+          "owner": "RussiaCategorySection",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "group.indicators.filter"
+        },
+        {
+          "line": 102,
+          "end_line": 102,
           "owner": "RussiaCategorySection",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 99,
-          "end_line": 99,
-          "owner": "RussiaCategorySection.<callback@99>",
+          "line": 107,
+          "end_line": 107,
+          "owner": "RussiaCategorySection",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "rows.map"
+        },
+        {
+          "line": 114,
+          "end_line": 114,
+          "owner": "RussiaCategorySection",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 114,
+          "end_line": 114,
+          "owner": "RussiaCategorySection.<callback@114>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setOpen"
@@ -96516,36 +96715,36 @@
       ],
       "hooks": [
         {
-          "line": 37,
-          "end_line": 37,
-          "owner": "RussiaIndicatorRow",
-          "callee": "useT",
-          "arguments": []
-        },
-        {
           "line": 38,
           "end_line": 38,
           "owner": "RussiaIndicatorRow",
-          "callee": "useLocale",
+          "callee": "useT",
           "arguments": []
         },
         {
-          "line": 76,
-          "end_line": 76,
-          "owner": "RussiaCategorySection",
-          "callee": "useT",
+          "line": 39,
+          "end_line": 39,
+          "owner": "RussiaIndicatorRow",
+          "callee": "useLocale",
           "arguments": []
         },
         {
           "line": 77,
           "end_line": 77,
           "owner": "RussiaCategorySection",
-          "callee": "useLocale",
+          "callee": "useT",
           "arguments": []
         },
         {
           "line": 78,
           "end_line": 78,
+          "owner": "RussiaCategorySection",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 79,
+          "end_line": 79,
           "owner": "RussiaCategorySection",
           "callee": "useState",
           "arguments": [
@@ -96558,8 +96757,8 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 95,
-          "end_line": 100,
+          "line": 110,
+          "end_line": 115,
           "owner": "RussiaCategorySection",
           "component": "button",
           "event": "onClick",
@@ -188924,11 +189123,24 @@
       "mcp_tools": []
     },
     "frontend/src/pages/CategoryPage.jsx": {
-      "sha256": "fed170c775dd1a75bb3b4c296f9128d84ddcb14b9e467430d8f1daa05445d1a0",
+      "sha256": "f35511be1d7cd48b1d2d34a054ef2872361936bdfd3f8452ce65a840db619ece",
       "imports": [
         {
           "line": 1,
           "end_line": 1,
+          "owner": "<module>",
+          "specifier": "../components/russia/LaborIndicatorGroups",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/components/russia/LaborIndicatorGroups.jsx"
+          ],
+          "bindings": [
+            "LaborIndicatorGroups"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
           "owner": "<module>",
           "specifier": "react",
           "category": "external_package",
@@ -188939,8 +189151,8 @@
           ]
         },
         {
-          "line": 2,
-          "end_line": 2,
+          "line": 3,
+          "end_line": 3,
           "owner": "<module>",
           "specifier": "react-router-dom",
           "category": "external_package",
@@ -188951,8 +189163,8 @@
           ]
         },
         {
-          "line": 3,
-          "end_line": 3,
+          "line": 4,
+          "end_line": 4,
           "owner": "<module>",
           "specifier": "lucide-react",
           "category": "external_package",
@@ -188963,8 +189175,8 @@
           ]
         },
         {
-          "line": 4,
-          "end_line": 4,
+          "line": 5,
+          "end_line": 5,
           "owner": "<module>",
           "specifier": "../lib/hooks",
           "category": "owned_source",
@@ -188977,8 +189189,8 @@
           ]
         },
         {
-          "line": 5,
-          "end_line": 5,
+          "line": 6,
+          "end_line": 6,
           "owner": "<module>",
           "specifier": "../lib/useMeta",
           "category": "owned_source",
@@ -188990,8 +189202,8 @@
           ]
         },
         {
-          "line": 6,
-          "end_line": 6,
+          "line": 7,
+          "end_line": 7,
           "owner": "<module>",
           "specifier": "../components/IndicatorTile",
           "category": "owned_source",
@@ -189003,8 +189215,8 @@
           ]
         },
         {
-          "line": 7,
-          "end_line": 7,
+          "line": 8,
+          "end_line": 8,
           "owner": "<module>",
           "specifier": "../lib/tileDates",
           "category": "owned_source",
@@ -189016,8 +189228,8 @@
           ]
         },
         {
-          "line": 8,
-          "end_line": 8,
+          "line": 9,
+          "end_line": 9,
           "owner": "<module>",
           "specifier": "../components/Breadcrumbs",
           "category": "owned_source",
@@ -189029,8 +189241,8 @@
           ]
         },
         {
-          "line": 9,
-          "end_line": 9,
+          "line": 10,
+          "end_line": 10,
           "owner": "<module>",
           "specifier": "../components/Skeleton",
           "category": "owned_source",
@@ -189042,8 +189254,8 @@
           ]
         },
         {
-          "line": 10,
-          "end_line": 16,
+          "line": 11,
+          "end_line": 17,
           "owner": "<module>",
           "specifier": "../lib/categories",
           "category": "owned_source",
@@ -189059,8 +189271,8 @@
           ]
         },
         {
-          "line": 17,
-          "end_line": 17,
+          "line": 18,
+          "end_line": 18,
           "owner": "<module>",
           "specifier": "../components/ApiRetryBanner",
           "category": "owned_source",
@@ -189072,8 +189284,8 @@
           ]
         },
         {
-          "line": 18,
-          "end_line": 18,
+          "line": 19,
+          "end_line": 19,
           "owner": "<module>",
           "specifier": "../components/Button",
           "category": "owned_source",
@@ -189085,8 +189297,8 @@
           ]
         },
         {
-          "line": 19,
-          "end_line": 19,
+          "line": 20,
+          "end_line": 20,
           "owner": "<module>",
           "specifier": "../components/IndicatorSearch",
           "category": "owned_source",
@@ -189098,8 +189310,8 @@
           ]
         },
         {
-          "line": 20,
-          "end_line": 20,
+          "line": 21,
+          "end_line": 21,
           "owner": "<module>",
           "specifier": "../components/CurrencyDesk",
           "category": "owned_source",
@@ -189111,8 +189323,8 @@
           ]
         },
         {
-          "line": 21,
-          "end_line": 21,
+          "line": 22,
+          "end_line": 22,
           "owner": "<module>",
           "specifier": "../lib/track",
           "category": "owned_source",
@@ -189125,8 +189337,8 @@
           ]
         },
         {
-          "line": 22,
-          "end_line": 22,
+          "line": 23,
+          "end_line": 23,
           "owner": "<module>",
           "specifier": "../styles/indicator-russia.css",
           "category": "owned_source",
@@ -189136,8 +189348,8 @@
           "bindings": []
         },
         {
-          "line": 23,
-          "end_line": 23,
+          "line": 24,
+          "end_line": 24,
           "owner": "<module>",
           "specifier": "../styles/x2-indicator.css",
           "category": "owned_source",
@@ -189147,8 +189359,8 @@
           "bindings": []
         },
         {
-          "line": 24,
-          "end_line": 24,
+          "line": 25,
+          "end_line": 25,
           "owner": "<module>",
           "specifier": "../styles/z8-tools.css",
           "category": "owned_source",
@@ -189158,8 +189370,8 @@
           "bindings": []
         },
         {
-          "line": 25,
-          "end_line": 25,
+          "line": 26,
+          "end_line": 26,
           "owner": "<module>",
           "specifier": "../styles/k6-country.css",
           "category": "owned_source",
@@ -189169,8 +189381,8 @@
           "bindings": []
         },
         {
-          "line": 26,
-          "end_line": 26,
+          "line": 27,
+          "end_line": 27,
           "owner": "<module>",
           "specifier": "../lib/useScrollDepth",
           "category": "owned_source",
@@ -189182,8 +189394,8 @@
           ]
         },
         {
-          "line": 27,
-          "end_line": 30,
+          "line": 28,
+          "end_line": 31,
           "owner": "<module>",
           "specifier": "../lib/breadcrumbs",
           "category": "owned_source",
@@ -189196,8 +189408,8 @@
           ]
         },
         {
-          "line": 31,
-          "end_line": 31,
+          "line": 32,
+          "end_line": 32,
           "owner": "<module>",
           "specifier": "../lib/jsonLd",
           "category": "owned_source",
@@ -189209,8 +189421,8 @@
           ]
         },
         {
-          "line": 32,
-          "end_line": 32,
+          "line": 33,
+          "end_line": 33,
           "owner": "<module>",
           "specifier": "../lib/pageMeta",
           "category": "owned_source",
@@ -189222,8 +189434,8 @@
           ]
         },
         {
-          "line": 33,
-          "end_line": 33,
+          "line": 34,
+          "end_line": 34,
           "owner": "<module>",
           "specifier": "../i18n",
           "category": "owned_source",
@@ -189236,8 +189448,8 @@
           ]
         },
         {
-          "line": 34,
-          "end_line": 37,
+          "line": 35,
+          "end_line": 38,
           "owner": "<module>",
           "specifier": "../lib/sitePaths",
           "category": "owned_source",
@@ -189253,137 +189465,145 @@
       "routes": [],
       "functions": [
         {
-          "line": 48,
-          "end_line": 289,
+          "line": 49,
+          "end_line": 299,
           "owner": "<module>",
           "name": "CategoryPage",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 70,
-          "end_line": 75,
+          "line": 71,
+          "end_line": 76,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 73,
-          "end_line": 73,
-          "owner": "CategoryPage.<callback@70>",
+          "line": 74,
+          "end_line": 74,
+          "owner": "CategoryPage.<callback@71>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cat.relatedSlugs\n      .map"
         },
         {
-          "line": 73,
-          "end_line": 73,
-          "owner": "CategoryPage.<callback@70>.<callback@73>",
+          "line": 74,
+          "end_line": 74,
+          "owner": "CategoryPage.<callback@71>.<callback@74>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "CATEGORIES.find"
         },
         {
-          "line": 74,
-          "end_line": 74,
-          "owner": "CategoryPage.<callback@70>",
+          "line": 75,
+          "end_line": 75,
+          "owner": "CategoryPage.<callback@71>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "cat.relatedSlugs\n      .map((s) => CATEGORIES.find((c) => c.slug === s))\n      .filter"
         },
         {
-          "line": 78,
-          "end_line": 78,
+          "line": 79,
+          "end_line": 79,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 82,
-          "end_line": 84,
+          "line": 83,
+          "end_line": 85,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useEffect"
         },
         {
-          "line": 92,
-          "end_line": 109,
+          "line": 93,
+          "end_line": 110,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 135,
-          "end_line": 135,
+          "line": 136,
+          "end_line": 136,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(indicators ?? []).filter"
         },
         {
-          "line": 142,
-          "end_line": 142,
+          "line": 143,
+          "end_line": 143,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.filter"
         },
         {
-          "line": 159,
-          "end_line": 177,
+          "line": 160,
+          "end_line": 178,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n        const feat = CATEGORY_FEATURES[slug];\n        const Icon = feat.icon;\n        return (\n          <Link\n            to={feat.to}\n            className=\"fe-press group flex items-center gap-5 rounded-[1.5rem] p-5 md:p-6 mb-8 fe-glass-lite fe-float\"\n          >\n            <div className=\"shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl fe-glass-2\">\n              <Icon className=\"w-6 h-6 text-champagne-ink\" />\n            </div>\n            <div className=\"flex-1 min-w-0\">\n              <p className=\"text-sm font-semibold text-text-primary mb-0.5\">{t(feat.titleKey)}</p>\n              <p className=\"text-xs text-text-secondary leading-relaxed\">{t(feat.descKey)}</p>\n            </div>\n            <ArrowRight className=\"w-5 h-5 text-champagne-ink shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all\" />\n          </Link>\n        );\n      }"
         },
         {
-          "line": 194,
-          "end_line": 194,
+          "line": 195,
+          "end_line": 195,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 203,
-          "end_line": 205,
+          "line": 204,
+          "end_line": 206,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...Array(6)].map"
         },
         {
-          "line": 220,
-          "end_line": 231,
+          "line": 221,
+          "end_line": 223,
+          "owner": "CategoryPage",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 229,
+          "end_line": 240,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.map"
         },
         {
-          "line": 236,
-          "end_line": 246,
+          "line": 245,
+          "end_line": 255,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "filtered.map"
         },
         {
-          "line": 262,
-          "end_line": 283,
+          "line": 272,
+          "end_line": 293,
           "owner": "CategoryPage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "relatedCategories.map"
         },
         {
-          "line": 266,
-          "end_line": 270,
-          "owner": "CategoryPage.<callback@262>",
+          "line": 276,
+          "end_line": 280,
+          "owner": "CategoryPage.<callback@272>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
@@ -189391,29 +189611,29 @@
       ],
       "hooks": [
         {
-          "line": 49,
-          "end_line": 49,
+          "line": 50,
+          "end_line": 50,
           "owner": "CategoryPage",
           "callee": "useParams",
-          "arguments": []
-        },
-        {
-          "line": 51,
-          "end_line": 51,
-          "owner": "CategoryPage",
-          "callee": "useLocale",
           "arguments": []
         },
         {
           "line": 52,
           "end_line": 52,
           "owner": "CategoryPage",
+          "callee": "useLocale",
+          "arguments": []
+        },
+        {
+          "line": 53,
+          "end_line": 53,
+          "owner": "CategoryPage",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 56,
-          "end_line": 60,
+          "line": 57,
+          "end_line": 61,
           "owner": "CategoryPage",
           "callee": "useIndicators",
           "arguments": [
@@ -189421,8 +189641,8 @@
           ]
         },
         {
-          "line": 62,
-          "end_line": 66,
+          "line": 63,
+          "end_line": 67,
           "owner": "CategoryPage",
           "callee": "useDocumentMeta",
           "arguments": [
@@ -189430,8 +189650,8 @@
           ]
         },
         {
-          "line": 68,
-          "end_line": 68,
+          "line": 69,
+          "end_line": 69,
           "owner": "CategoryPage",
           "callee": "useScrollDepth",
           "arguments": [
@@ -189439,8 +189659,8 @@
           ]
         },
         {
-          "line": 70,
-          "end_line": 75,
+          "line": 71,
+          "end_line": 76,
           "owner": "CategoryPage",
           "callee": "useMemo",
           "arguments": [
@@ -189449,8 +189669,8 @@
           ]
         },
         {
-          "line": 77,
-          "end_line": 80,
+          "line": 78,
+          "end_line": 81,
           "owner": "CategoryPage",
           "callee": "useMemo",
           "arguments": [
@@ -189459,8 +189679,8 @@
           ]
         },
         {
-          "line": 82,
-          "end_line": 84,
+          "line": 83,
+          "end_line": 85,
           "owner": "CategoryPage",
           "callee": "useEffect",
           "arguments": [
@@ -189469,22 +189689,12 @@
           ]
         },
         {
-          "line": 87,
-          "end_line": 87,
-          "owner": "CategoryPage",
-          "callee": "useInflation",
-          "arguments": [
-            "'cpi'",
-            "{ enabled: isPricesCategory }"
-          ]
-        },
-        {
           "line": 88,
           "end_line": 88,
           "owner": "CategoryPage",
           "callee": "useInflation",
           "arguments": [
-            "'cpi-food'",
+            "'cpi'",
             "{ enabled: isPricesCategory }"
           ]
         },
@@ -189494,7 +189704,7 @@
           "owner": "CategoryPage",
           "callee": "useInflation",
           "arguments": [
-            "'cpi-nonfood'",
+            "'cpi-food'",
             "{ enabled: isPricesCategory }"
           ]
         },
@@ -189504,13 +189714,23 @@
           "owner": "CategoryPage",
           "callee": "useInflation",
           "arguments": [
+            "'cpi-nonfood'",
+            "{ enabled: isPricesCategory }"
+          ]
+        },
+        {
+          "line": 91,
+          "end_line": 91,
+          "owner": "CategoryPage",
+          "callee": "useInflation",
+          "arguments": [
             "'cpi-services'",
             "{ enabled: isPricesCategory }"
           ]
         },
         {
-          "line": 92,
-          "end_line": 109,
+          "line": 93,
+          "end_line": 110,
           "owner": "CategoryPage",
           "callee": "useMemo",
           "arguments": [
@@ -189524,17 +189744,17 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 192,
-          "end_line": 196,
+          "line": 193,
+          "end_line": 197,
           "owner": "CategoryPage",
           "component": "ApiRetryBanner",
           "event": "onRetry",
           "expression": "{() => refetch()}"
         },
         {
-          "line": 263,
-          "end_line": 272,
-          "owner": "CategoryPage.<callback@262>",
+          "line": 273,
+          "end_line": 282,
+          "owner": "CategoryPage.<callback@272>",
           "component": "Link",
           "event": "onClick",
           "expression": "{() => track(events.RELATED_LINK_CLICK, {\n                  from: slug,\n                  to: rel.slug,\n                  surface: 'category-related',\n                })}"
@@ -189542,8 +189762,8 @@
       ],
       "registries": [
         {
-          "line": 39,
-          "end_line": 46,
+          "line": 40,
+          "end_line": 47,
           "owner": "<module>",
           "name": "CATEGORY_FEATURES",
           "kind": "ObjectExpression",
@@ -240257,17 +240477,17 @@
     }
   },
   "totals": {
-    "imports": 4461,
+    "imports": 4465,
     "routes": 94,
-    "functions": 14434,
-    "hooks": 2662,
+    "functions": 14450,
+    "hooks": 2663,
     "http": 114,
     "storage": 218,
     "events": 448,
     "jsx_handlers": 1170,
-    "registries": 672,
+    "registries": 673,
     "mcp_tools": 7,
-    "files": 851,
+    "files": 852,
     "parse_errors": 0
   }
 }

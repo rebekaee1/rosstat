@@ -14,6 +14,7 @@ import { periodPhrase } from '../../lib/periodPhrase';
 import { describeChange, indicatorsCountText } from '../../lib/countryKeyFigures';
 import { russiaIndicatorPath } from '../../lib/sitePaths';
 import { useLocale, useT } from '../../i18n';
+import LaborIndicatorGroups, { hasLaborBreakdowns } from './LaborIndicatorGroups';
 import DeltaBadge from '../DeltaBadge';
 import { FreqBadges } from '../country/CountryIndicatorRow';
 import '../../styles/z5-country.css';
@@ -76,9 +77,14 @@ export default function RussiaCategorySection({ group, label, expandAll = false 
   const t = useT();
   const { locale } = useLocale();
   const [open, setOpen] = useState(false);
-  const total = group.indicators.length;
+  const isLabor = group.category.slug === 'labor';
+  const headline = isLabor && group.indicators.find(({ code }) => code === 'unemployment');
+  const indicators = headline
+    ? [headline, ...group.indicators.filter(({ code }) => code !== 'unemployment')]
+    : group.indicators;
+  const total = indicators.length;
   const showAll = open || expandAll || total <= RUSSIA_CATEGORY_PREVIEW + 1;
-  const rows = showAll ? group.indicators : group.indicators.slice(0, RUSSIA_CATEGORY_PREVIEW);
+  const rows = showAll ? indicators : indicators.slice(0, RUSSIA_CATEGORY_PREVIEW);
   const hidden = total - rows.length;
   return (
     <section id={`cat-${group.category.slug}`} className="z5-section scroll-mt-24" data-testid="russia-section">
@@ -88,19 +94,30 @@ export default function RussiaCategorySection({ group, label, expandAll = false 
         </div>
         <span className="z5-section-count">{indicatorsCountText(group.count, locale, t)}</span>
       </div>
-      <div className="z5-ru-rows">
-        {rows.map((ind) => <RussiaIndicatorRow key={ind.code} indicator={ind} />)}
-      </div>
-      {total > RUSSIA_CATEGORY_PREVIEW + 1 && (
-        <button
-          type="button"
-          className="z5-more-btn fe-press"
-          aria-expanded={showAll}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {hidden > 0 ? t('z5.ru.showMore', { n: hidden }) : t('z5.ru.showLess')}
-          <ChevronDown size={15} aria-hidden="true" className={showAll ? 'z5-more-btn__chev z5-more-btn__chev--up' : 'z5-more-btn__chev'} />
-        </button>
+      {isLabor && hasLaborBreakdowns(indicators) ? (
+        <LaborIndicatorGroups
+          indicators={indicators}
+          gridClass="z5-ru-rows"
+          expandAll={expandAll}
+          renderIndicator={(ind) => <RussiaIndicatorRow key={ind.code} indicator={ind} />}
+        />
+      ) : (
+        <>
+        <div className="z5-ru-rows">
+          {rows.map((ind) => <RussiaIndicatorRow key={ind.code} indicator={ind} />)}
+        </div>
+        {total > RUSSIA_CATEGORY_PREVIEW + 1 && (
+          <button
+            type="button"
+            className="z5-more-btn fe-press"
+            aria-expanded={showAll}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {hidden > 0 ? t('z5.ru.showMore', { n: hidden }) : t('z5.ru.showLess')}
+            <ChevronDown size={15} aria-hidden="true" className={showAll ? 'z5-more-btn__chev z5-more-btn__chev--up' : 'z5-more-btn__chev'} />
+          </button>
+        )}
+        </>
       )}
     </section>
   );

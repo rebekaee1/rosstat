@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2222,
-    "code_files": 1815,
-    "current_reviews": 2222,
+    "files": 2223,
+    "code_files": 1816,
+    "current_reviews": 2223,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
-      "body_reviewed": 3,
+      "body_reviewed": 4,
       "data_schema_reviewed": 6,
       "reviewed": 2008
     },
-    "definitions": 14683,
-    "annotated_definitions": 14683,
+    "definitions": 14685,
+    "annotated_definitions": 14685,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -284,7 +284,7 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "12b01ca630bc9570590368d110bb8cb7e203473e9cc3def38af688f69d255906",
+      "sha256": "542f1d3bf036aacf403e2a702f3dcc9693fa360c19b5a2a97baf8cf3891ebe8c",
       "bytes": 244739,
       "lines": 1313,
       "code": false,
@@ -310,7 +310,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "08ea198901fd58a8d27781d009f5379ff2496927e4fa9d073a0e2dcea89fc9da",
+      "sha256": "e51fe5dbfa372160024d3ff9613734152c3413d6928329279c04b687108b9210",
       "bytes": 24716,
       "lines": 273,
       "code": false,
@@ -12491,9 +12491,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "5a87e0513c19537497898559deeecc6a2d1fc5f0271df381dc2f61e83425d976",
-      "bytes": 6826703,
-      "lines": 240273,
+      "sha256": "75e2754beb857ec829af4e03100bf7f310c80371856169a6692fc89decc0ca43",
+      "bytes": 6833678,
+      "lines": 240493,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12504,7 +12504,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "bd27f127493753e4a5bf41fe1c67ca3335f329920f10e8b995586d5d6d7c5ba3",
+      "sha256": "511a883efce77192a58ba63f304199d465ccb00710e24423bc86c9aa763f7450",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -12530,9 +12530,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "6c320766010bd210565a714aaa2b73de48e3747ca367e256e4b7a1a767b8d27a",
-      "bytes": 284870,
-      "lines": 987,
+      "sha256": "c002bcc92eb475b56ebdbe93f6539060fdfacb9386b9bbce33f2d9dc62f7c475",
+      "bytes": 285278,
+      "lines": 991,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12543,7 +12543,7 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "33880c3df595f2740275c5b284a160a92a982165dfd544dab18a0bd339172a61",
+      "sha256": "c8bfd7a5121ead802d0b1787cd5f1d7d0f1e2e038b684e51e1aa0c6f3cf47238",
       "bytes": 111374,
       "lines": 753,
       "code": false,
@@ -13063,9 +13063,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "aca41c2828a3368191ab634712b09f452a16ecd1673f45a2680e676135b9e86f",
-      "bytes": 2986920,
-      "lines": 108086,
+      "sha256": "9a88c1396d894d30a6192509dfd04390c5b1397ce0e72f7c9edab6a3a52112fb",
+      "bytes": 2989015,
+      "lines": 108161,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -19289,10 +19289,23 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/components/russia/LaborIndicatorGroups.jsx",
+      "sha256": "613f441147e469ed0960c0c79844a28b9aab65e4a4f0f653040f2334b268f36f",
+      "bytes": 3208,
+      "lines": 55,
+      "code": true,
+      "status": "body_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/src/components/russia/RussiaCategorySection.jsx",
-      "sha256": "f77e105b08e30508ee48a6235c014d179f5dc6ce29b96f1ce69aec53074e5f60",
-      "bytes": 5077,
-      "lines": 107,
+      "sha256": "eca422bcc10e4ec0b8ab30b6cc909c620c60907632dcb66d8c6158f518208641",
+      "bytes": 5779,
+      "lines": 124,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -25179,9 +25192,9 @@
     },
     {
       "path": "frontend/src/pages/CategoryPage.jsx",
-      "sha256": "fed170c775dd1a75bb3b4c296f9128d84ddcb14b9e467430d8f1daa05445d1a0",
-      "bytes": 11192,
-      "lines": 289,
+      "sha256": "f35511be1d7cd48b1d2d34a054ef2872361936bdfd3f8452ce65a840db619ece",
+      "bytes": 11620,
+      "lines": 299,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28923,14 +28936,13 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "105cb96fb42b801e3035046a7252cfd64d12c0fc4a9eb3bf056104d3e66c693e",
-  "javascript_inventory_sha256": "2faf74906a6cf802a4cca1b8e334214e9da58dbad3e6e4e6dc98b6c21903be6c",
-  "baseline_commit": "612ee83fededa6526e78f68b281602ab510e3959",
-  "branch": "",
+  "ledger_sha256": "dd35dcabd2df16fd9352ff3e0e37a4908b15a300dfae902d890583453f3b9b74",
+  "javascript_inventory_sha256": "32ff922e89f862a7c31cccda918f9821f05e8127b0e988344a48aed8b8c8af73",
+  "baseline_commit": "34391bc9037c7d444db7790381137672b864246a",
+  "branch": "codex/labor-grouped-release",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/indicator-index.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json"
   ]
 }
