@@ -2212,6 +2212,12 @@ export default function ComparePage({ renderSave = null } = {}) {
   };
   // Короткая подпись легенды: без повтора «Значение», длинных единиц и «шкала слева»
   // при одной оси — единицы видны на оси и в сводке ниже.
+  // Частота, в которой ряд лежит на графике: шаг сворачивает российские показатели на клиенте, а ряды стран приходят уже свёрнутыми.
+  const plottedFrequency = (s) => {
+    const native = s.ind?.frequency;
+    if (!native || (s.isWorld && !s.worldAlias) || s.isSubnational) return native;
+    return worldRequestedFrequency(step, native) || native;
+  };
   const legendDetail = (s, i, dropped) => {
     const parts = [];
     if (s.rep && s.rep !== REP_LEVEL) parts.push(s.repLabel);
@@ -2221,8 +2227,8 @@ export default function ComparePage({ renderSave = null } = {}) {
       const short = splitUnit(s.unit).short;
       if (short && short.length <= 14) parts.push(unitLabel(short));
       // Частота — только если у рядов она разная: иначе это лишнее слово в каждой подписи.
-      if (new Set(series.map((x) => x.ind?.frequency).filter(Boolean)).size > 1 && s.ind?.frequency) {
-        parts.push(freqLabel(s.ind.frequency, t));
+      if (new Set(series.map(plottedFrequency).filter(Boolean)).size > 1 && plottedFrequency(s)) {
+        parts.push(freqLabel(plottedFrequency(s), t));
       }
       if (distinctUnits.length > 1) parts.push(axisFor(i) === 'left' ? t('compare.axisLeft') : t('compare.axisRight'));
     }
@@ -2299,7 +2305,7 @@ export default function ComparePage({ renderSave = null } = {}) {
   const legendNeeded = !showEndLabels
     || nonIndexableNames.length > 0
     || series.some((s) => s.rep && s.rep !== REP_LEVEL)
-    || new Set(series.map((x) => x.ind?.frequency).filter(Boolean)).size > 1;
+    || new Set(series.map(plottedFrequency).filter(Boolean)).size > 1;
   // Единицы одной фразой над графиком: «Значения, млрд $».
   const unitsCaption = (() => {
     if (indexed || distinctUnits.length !== 1) return '';

@@ -2247,7 +2247,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199739,
+          "line": 199790,
           "kind": "other"
         },
         {
@@ -3590,12 +3590,12 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199596,
+          "line": 199647,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199738,
+          "line": 199789,
           "kind": "other"
         },
         {
@@ -14526,42 +14526,42 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 197447,
+          "line": 197439,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 197461,
+          "line": 197453,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 198026,
+          "line": 198077,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 198321,
+          "line": 198372,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200852,
+          "line": 200903,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 201031,
+          "line": 201082,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202347,
+          "line": 202398,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202890,
+          "line": 202941,
           "kind": "other"
         },
         {
@@ -17227,6 +17227,11 @@
         {
           "file": "frontend/src/pages/ComparePage.states.component.test.jsx",
           "line": 65,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/ComparePage.step.component.test.jsx",
+          "line": 133,
           "kind": "other"
         },
         {
@@ -22787,6 +22792,11 @@
         {
           "file": "frontend/src/pages/ComparePage.rates.component.test.jsx",
           "line": 100,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/ComparePage.step.component.test.jsx",
+          "line": 139,
           "kind": "other"
         },
         {
@@ -32779,7 +32789,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199744,
+          "line": 199795,
           "kind": "other"
         },
         {
@@ -33647,12 +33657,12 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199594,
+          "line": 199645,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202266,
+          "line": 202317,
           "kind": "other"
         },
         {
@@ -34797,7 +34807,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199743,
+          "line": 199794,
           "kind": "other"
         },
         {
@@ -56238,512 +56248,512 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 196952,
+          "line": 196944,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 197246,
+          "line": 197238,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 197474,
+          "line": 197466,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 197773,
+          "line": 197824,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 198047,
+          "line": 198098,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 198342,
+          "line": 198393,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199428,
+          "line": 199479,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199605,
+          "line": 199656,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199754,
+          "line": 199805,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200001,
+          "line": 200052,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200739,
+          "line": 200790,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200861,
+          "line": 200912,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 201040,
+          "line": 201091,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202708,
+          "line": 202759,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202899,
+          "line": 202950,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 203103,
+          "line": 203154,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 203674,
+          "line": 203725,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 203876,
+          "line": 203927,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204159,
+          "line": 204210,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204314,
+          "line": 204365,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205783,
+          "line": 205834,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205946,
+          "line": 205997,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 206116,
+          "line": 206167,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 206386,
+          "line": 206437,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 206791,
+          "line": 206842,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 207220,
+          "line": 207271,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208600,
+          "line": 208651,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208732,
+          "line": 208783,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 209035,
+          "line": 209086,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 209243,
+          "line": 209294,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 209529,
+          "line": 209580,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 209885,
+          "line": 209936,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 210073,
+          "line": 210124,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 211170,
+          "line": 211221,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 211311,
+          "line": 211362,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 212016,
+          "line": 212067,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 212210,
+          "line": 212261,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 212714,
+          "line": 212765,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 212867,
+          "line": 212918,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 213472,
+          "line": 213523,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 213884,
+          "line": 213935,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 214082,
+          "line": 214133,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216229,
+          "line": 216280,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216402,
+          "line": 216453,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216819,
+          "line": 216870,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 217342,
+          "line": 217393,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 217525,
+          "line": 217576,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 217950,
+          "line": 218001,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 218745,
+          "line": 218796,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 219161,
+          "line": 219212,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 219454,
+          "line": 219505,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 219674,
+          "line": 219725,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 220115,
+          "line": 220166,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 220745,
+          "line": 220796,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 221218,
+          "line": 221269,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 221436,
+          "line": 221487,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 221702,
+          "line": 221753,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 222483,
+          "line": 222534,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 224166,
+          "line": 224217,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 224452,
+          "line": 224503,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 224920,
+          "line": 224971,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 225144,
+          "line": 225195,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 225357,
+          "line": 225408,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 225796,
+          "line": 225847,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 227263,
+          "line": 227314,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 227411,
+          "line": 227462,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 227697,
+          "line": 227748,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 228260,
+          "line": 228311,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 228874,
+          "line": 228925,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 231621,
+          "line": 231672,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 232117,
+          "line": 232168,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 232453,
+          "line": 232504,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 233454,
+          "line": 233505,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 234356,
+          "line": 234407,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 234760,
+          "line": 234811,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236093,
+          "line": 236144,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236219,
+          "line": 236270,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236349,
+          "line": 236400,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236436,
+          "line": 236487,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236546,
+          "line": 236597,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236776,
+          "line": 236827,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236902,
+          "line": 236953,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 236996,
+          "line": 237047,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237091,
+          "line": 237142,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237194,
+          "line": 237245,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237352,
+          "line": 237403,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237502,
+          "line": 237553,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237692,
+          "line": 237743,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 237906,
+          "line": 237957,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 238104,
+          "line": 238155,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 238262,
+          "line": 238313,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 238468,
+          "line": 238519,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 238730,
+          "line": 238781,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 238994,
+          "line": 239045,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 239124,
+          "line": 239175,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 239523,
+          "line": 239574,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 239913,
+          "line": 239964,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 240048,
+          "line": 240099,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 240189,
+          "line": 240240,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 240480,
+          "line": 240531,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 240516,
+          "line": 240567,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 240711,
+          "line": 240762,
           "kind": "other"
         },
         {
@@ -60895,7 +60905,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205774,
+          "line": 205825,
           "kind": "other"
         },
         {
@@ -63492,7 +63502,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205323,
+          "line": 205374,
           "kind": "other"
         },
         {
@@ -64489,42 +64499,42 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199001,
+          "line": 199052,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199288,
+          "line": 199339,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199319,
+          "line": 199370,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202347,
+          "line": 202398,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 207924,
+          "line": 207975,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208329,
+          "line": 208380,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208458,
+          "line": 208509,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 220106,
+          "line": 220157,
           "kind": "other"
         },
         {
@@ -69214,7 +69224,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205323,
+          "line": 205374,
           "kind": "other"
         },
         {
@@ -70105,17 +70115,17 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 207940,
+          "line": 207991,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208338,
+          "line": 208389,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 208467,
+          "line": 208518,
           "kind": "other"
         },
         {
@@ -70759,7 +70769,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199740,
+          "line": 199791,
           "kind": "other"
         },
         {
@@ -71621,42 +71631,42 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204300,
+          "line": 204351,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204301,
+          "line": 204352,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204302,
+          "line": 204353,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 204303,
+          "line": 204354,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205932,
+          "line": 205983,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205933,
+          "line": 205984,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205934,
+          "line": 205985,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 205935,
+          "line": 205986,
           "kind": "other"
         },
         {
@@ -72152,7 +72162,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200730,
+          "line": 200781,
           "kind": "other"
         },
         {
@@ -72458,7 +72468,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200728,
+          "line": 200779,
           "kind": "other"
         },
         {
@@ -75324,27 +75334,27 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 196914,
+          "line": 196906,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 213461,
+          "line": 213512,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216169,
+          "line": 216220,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216202,
+          "line": 216253,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 227261,
+          "line": 227312,
           "kind": "other"
         },
         {
@@ -85687,7 +85697,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199745,
+          "line": 199796,
           "kind": "other"
         },
         {
@@ -90190,17 +90200,17 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 213459,
+          "line": 213510,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216170,
+          "line": 216221,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 216198,
+          "line": 216249,
           "kind": "other"
         },
         {
@@ -93164,7 +93174,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199741,
+          "line": 199792,
           "kind": "other"
         },
         {
@@ -94342,22 +94352,22 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199595,
+          "line": 199646,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202257,
+          "line": 202308,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202347,
+          "line": 202398,
           "kind": "other"
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 202889,
+          "line": 202940,
           "kind": "other"
         },
         {
@@ -95795,7 +95805,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 199742,
+          "line": 199793,
           "kind": "other"
         },
         {
@@ -100873,7 +100883,7 @@
         },
         {
           "file": "docs/client-mechanism-inventory.json",
-          "line": 200729,
+          "line": 200780,
           "kind": "other"
         },
         {

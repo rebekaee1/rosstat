@@ -50949,7 +50949,7 @@
     "anonymous_functions": 30
   },
   "frontend/src/pages/ComparePage.jsx": {
-    "sha256": "3a477eb20b155b23a4428ccb6c51c48be53a005c86c6e5cedf1a6226e6588b54",
+    "sha256": "77b67d84d0ea15e0c249f4cd7c91104cf3b18809fd2fb2b5331a293bbdd6a7dc",
     "definitions": [
       {
         "name": "useViewportHeight",
@@ -51230,7 +51230,7 @@
       {
         "name": "ComparePage",
         "line": 1583,
-        "end_line": 3318,
+        "end_line": 3324,
         "kind": "FunctionDeclaration"
       },
       {
@@ -51264,69 +51264,75 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "ComparePage.plottedFrequency",
+        "line": 2216,
+        "end_line": 2220,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "ComparePage.legendDetail",
-        "line": 2215,
-        "end_line": 2231,
+        "line": 2221,
+        "end_line": 2237,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.axisValues",
-        "line": 2236,
-        "end_line": 2243,
+        "line": 2242,
+        "end_line": 2249,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.calc",
-        "line": 2255,
-        "end_line": 2262,
+        "line": 2261,
+        "end_line": 2268,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleExport",
-        "line": 2369,
-        "end_line": 2385,
+        "line": 2375,
+        "end_line": 2391,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleDataExport",
-        "line": 2392,
-        "end_line": 2437,
+        "line": 2398,
+        "end_line": 2443,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleShare",
-        "line": 2440,
-        "end_line": 2462,
+        "line": 2446,
+        "end_line": 2468,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.openLimit",
-        "line": 2468,
-        "end_line": 2471,
+        "line": 2474,
+        "end_line": 2477,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.shortSeriesName",
-        "line": 2473,
-        "end_line": 2475,
+        "line": 2479,
+        "end_line": 2481,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.handleBrush",
-        "line": 2476,
-        "end_line": 2480,
+        "line": 2482,
+        "end_line": 2486,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.chooseScale",
-        "line": 2481,
-        "end_line": 2485,
+        "line": 2487,
+        "end_line": 2491,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "ComparePage.bigDigits",
-        "line": 3219,
-        "end_line": 3219,
+        "line": 3225,
+        "end_line": 3225,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -51586,7 +51592,7 @@
         "line": 1583
       }
     ],
-    "anonymous_functions": 281
+    "anonymous_functions": 279
   },
   "frontend/src/pages/ComparePage.rates.component.test.jsx": {
     "sha256": "295e80c5e017f238c7d7761faaf4bc750e0487f0795e7b059efc833dc3a58570",
@@ -51669,7 +51675,7 @@
     "anonymous_functions": 15
   },
   "frontend/src/pages/ComparePage.step.component.test.jsx": {
-    "sha256": "1d68d0539cd6809b43cba97ed22cd8489c2405c7437d0a89fe31782f03ae5355",
+    "sha256": "2e8a6c31bbb028f9491f08bb8d23e12541a495afcc10b58f929b6ddbe0f46c22",
     "definitions": [
       {
         "name": "item",
@@ -51715,7 +51721,7 @@
       }
     ],
     "exports": [],
-    "anonymous_functions": 18
+    "anonymous_functions": 22
   },
   "frontend/src/pages/ComparePage.w6.component.test.jsx": {
     "sha256": "1ecffb1d27bb0f2362b8e43f58afce247fb3d83601d90cfb9c34e97bd1739ee3",

@@ -191155,7 +191155,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/ComparePage.jsx": {
-      "sha256": "3a477eb20b155b23a4428ccb6c51c48be53a005c86c6e5cedf1a6226e6588b54",
+      "sha256": "77b67d84d0ea15e0c249f4cd7c91104cf3b18809fd2fb2b5331a293bbdd6a7dc",
       "imports": [
         {
           "line": 1,
@@ -193283,7 +193283,7 @@
         },
         {
           "line": 1583,
-          "end_line": 3318,
+          "end_line": 3324,
           "owner": "<module>",
           "name": "ComparePage",
           "kind": "FunctionDeclaration",
@@ -194026,736 +194026,728 @@
           "callback_context": null
         },
         {
-          "line": 2215,
-          "end_line": 2231,
+          "line": 2216,
+          "end_line": 2220,
+          "owner": "ComparePage",
+          "name": "plottedFrequency",
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 2221,
+          "end_line": 2237,
           "owner": "ComparePage",
           "name": "legendDetail",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2224,
-          "end_line": 2224,
-          "owner": "ComparePage.legendDetail",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.map"
-        },
-        {
-          "line": 2236,
-          "end_line": 2243,
+          "line": 2242,
+          "end_line": 2249,
           "owner": "ComparePage",
           "name": "axisValues",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2238,
-          "end_line": 2241,
+          "line": 2244,
+          "end_line": 2247,
           "owner": "ComparePage.axisValues",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2240,
-          "end_line": 2240,
-          "owner": "ComparePage.axisValues.<callback@2238>",
+          "line": 2246,
+          "end_line": 2246,
+          "owner": "ComparePage.axisValues.<callback@2244>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.forEach"
         },
         {
-          "line": 2254,
-          "end_line": 2264,
+          "line": 2260,
+          "end_line": 2270,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    const calc = (id, unit) => {\n      const vals = axisValues(id);\n      const digits = indexed ? 0 : unitDigits(unit);\n      return axisWidthForLabels(\n        axisSampleValues(vals).map((v) => formatAxisTick(v, digits)),\n        { min: narrow ? 42 : 52, perChar: narrow ? 7.4 : 8, pad: 12 },\n      );\n    };\n    return { left: calc('left', leftUnit), right: calc('right', rightUnit) };\n  }"
         },
         {
-          "line": 2255,
-          "end_line": 2262,
-          "owner": "ComparePage.<callback@2254>",
+          "line": 2261,
+          "end_line": 2268,
+          "owner": "ComparePage.<callback@2260>",
           "name": "calc",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2259,
-          "end_line": 2259,
-          "owner": "ComparePage.<callback@2254>.calc",
+          "line": 2265,
+          "end_line": 2265,
+          "owner": "ComparePage.<callback@2260>.calc",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "axisSampleValues(vals).map"
         },
         {
-          "line": 2272,
-          "end_line": 2297,
+          "line": 2278,
+          "end_line": 2303,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (!showEndLabels) return [];\n    const plotTop = 10;\n    const plotHeight = chartHeight - plotTop - 4 - xAxisHeight;\n    const raw = [];\n    series.forEach((s, i) => {\n      for (let r = chartRows.length - 1; r >= 0; r -= 1) {\n        const v = chartRows[r][s.key];\n        if (v == null || !Number.isFinite(Number(v))) continue;\n        const y = yForValue(v, axisScales.left.domain, { top: plotTop, plotHeight });\n        if (y != null) {\n          raw.push({\n            key: s.key, y, color: s.color, value: v, flag: seriesFlag(s),\n            name: compareEndName(labels[i] || t('z2.compare.seriesFallback'), endLabelWidth >= 136 ? 26 : 22),\n          });\n        }\n        break;\n      }\n    });\n    const placed = spreadLabels(raw, { min: 17, max: plotTop + plotHeight + 6, gap: 38 });\n    return raw.map((item) => ({\n      ...item,\n      top: placed[item.key] - 17,\n      text: formatEndValue(item.value, { unit: leftUnit, locale, indexed }),\n    }));\n  }"
         },
         {
-          "line": 2277,
-          "end_line": 2290,
-          "owner": "ComparePage.<callback@2272>",
+          "line": 2283,
+          "end_line": 2296,
+          "owner": "ComparePage.<callback@2278>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2292,
-          "end_line": 2296,
-          "owner": "ComparePage.<callback@2272>",
+          "line": 2298,
+          "end_line": 2302,
+          "owner": "ComparePage.<callback@2278>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "raw.map"
         },
         {
-          "line": 2301,
-          "end_line": 2301,
+          "line": 2307,
+          "end_line": 2307,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.some"
         },
         {
-          "line": 2302,
-          "end_line": 2302,
-          "owner": "ComparePage",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "series.map"
-        },
-        {
-          "line": 2304,
-          "end_line": 2309,
+          "line": 2310,
+          "end_line": 2315,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (indexed || distinctUnits.length !== 1) return '';\n    const unit = splitUnit(distinctUnits[0]).short || distinctUnits[0];\n    // Одна единица, в том числе «%»: общая подпись про две шкалы («слева и справа») при единственной оси неверна.\n    return unit ? t('z7.compare.valuesIn', { unit: unit === '%' ? '%' : String(unitLabel(unit)).replace(/\\.$/, '') }) : '';\n  }"
         },
         {
-          "line": 2311,
-          "end_line": 2317,
+          "line": 2317,
+          "end_line": 2323,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (indexed || series.length !== 2 || distinctUnits.length !== 1 || !isAbsoluteUnit(distinctUnits[0])) return null;\n    if (series.some((s) => s.rep !== REP_LEVEL)) return null;\n    const lasts = analysisSummary.metrics.map((m) => m.last?.value);\n    if (lasts.some((v) => v == null)) return null;\n    return gapInsight(series.map((s, i) => ({ label: labels[i], value: lasts[i] })), locale);\n  }"
         },
         {
-          "line": 2313,
-          "end_line": 2313,
-          "owner": "ComparePage.<callback@2311>",
+          "line": 2319,
+          "end_line": 2319,
+          "owner": "ComparePage.<callback@2317>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.some"
         },
         {
-          "line": 2314,
-          "end_line": 2314,
-          "owner": "ComparePage.<callback@2311>",
+          "line": 2320,
+          "end_line": 2320,
+          "owner": "ComparePage.<callback@2317>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.map"
         },
         {
-          "line": 2315,
-          "end_line": 2315,
-          "owner": "ComparePage.<callback@2311>",
+          "line": 2321,
+          "end_line": 2321,
+          "owner": "ComparePage.<callback@2317>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "lasts.some"
         },
         {
-          "line": 2316,
-          "end_line": 2316,
-          "owner": "ComparePage.<callback@2311>",
+          "line": 2322,
+          "end_line": 2322,
+          "owner": "ComparePage.<callback@2317>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2321,
-          "end_line": 2334,
+          "line": 2327,
+          "end_line": 2340,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2336,
-          "end_line": 2354,
+          "line": 2342,
+          "end_line": 2360,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2356,
-          "end_line": 2363,
+          "line": 2362,
+          "end_line": 2369,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useCallback"
         },
         {
-          "line": 2369,
-          "end_line": 2385,
+          "line": 2375,
+          "end_line": 2391,
           "owner": "ComparePage",
           "name": "handleExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2379,
-          "end_line": 2379,
+          "line": 2385,
+          "end_line": 2385,
           "owner": "ComparePage.handleExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "exportNodeToPng(exportRef.current, {\n      filename: `compare_${codes.join('-').replace(/:/g, '_') || 'chart'}.png`,\n      watermark: false,\n    }).catch"
         },
         {
-          "line": 2389,
-          "end_line": 2389,
+          "line": 2395,
+          "end_line": 2395,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(repByCode)\n    .filter"
         },
         {
-          "line": 2390,
-          "end_line": 2390,
+          "line": 2396,
+          "end_line": 2396,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "Object.entries(repByCode)\n    .filter(([code, rep]) => codes.includes(code) && rep && (rep !== REP_LEVEL || isWorldCode(code)))\n    .map"
         },
         {
-          "line": 2392,
-          "end_line": 2437,
+          "line": 2398,
+          "end_line": 2443,
           "owner": "ComparePage",
           "name": "handleDataExport",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2394,
-          "end_line": 2394,
+          "line": 2400,
+          "end_line": 2400,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.filter"
         },
         {
-          "line": 2398,
-          "end_line": 2406,
+          "line": 2404,
+          "end_line": 2412,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.map"
         },
         {
-          "line": 2408,
-          "end_line": 2412,
+          "line": 2414,
+          "end_line": 2418,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 2410,
-          "end_line": 2410,
-          "owner": "ComparePage.handleDataExport.<callback@2408>",
+          "line": 2416,
+          "end_line": 2416,
+          "owner": "ComparePage.handleDataExport.<callback@2414>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.forEach"
         },
         {
-          "line": 2413,
-          "end_line": 2413,
+          "line": 2419,
+          "end_line": 2419,
           "owner": "ComparePage.handleDataExport",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "shown.map"
         },
         {
-          "line": 2440,
-          "end_line": 2462,
+          "line": 2446,
+          "end_line": 2468,
           "owner": "ComparePage",
           "name": "handleShare",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2468,
-          "end_line": 2471,
+          "line": 2474,
+          "end_line": 2477,
           "owner": "ComparePage",
           "name": "openLimit",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2473,
-          "end_line": 2475,
+          "line": 2479,
+          "end_line": 2481,
           "owner": "ComparePage",
           "name": "shortSeriesName",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2476,
-          "end_line": 2480,
+          "line": 2482,
+          "end_line": 2486,
           "owner": "ComparePage",
           "name": "handleBrush",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2481,
-          "end_line": 2485,
+          "line": 2487,
+          "end_line": 2491,
           "owner": "ComparePage",
           "name": "chooseScale",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2489,
-          "end_line": 2501,
+          "line": 2495,
+          "end_line": 2507,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "() => {\n    if (isDemo || !codes.length || !renderSave) return null;\n    const itemKey = repString ? `${codes.join(',')}|${repString}` : codes.join(',');\n    if (itemKey.length > 300) return null;\n    // Названия рядов для строки «Мои сравнения» в кабинете (только то, что уже на экране; кодов там не показываем).\n    const names = series.map((s) => s.name).filter(Boolean).slice(0, 6);\n    return {\n      kind: 'comparison',\n      itemKey,\n      title: String(headline || '').slice(0, 200),\n      payload: { codes: codes.join(','), ...(repString ? { rep: repString } : {}), ...(names.length ? { names } : {}) },\n    };\n  }"
         },
         {
-          "line": 2494,
-          "end_line": 2494,
-          "owner": "ComparePage.<callback@2489>",
+          "line": 2500,
+          "end_line": 2500,
+          "owner": "ComparePage.<callback@2495>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2504,
-          "end_line": 2504,
+          "line": 2510,
+          "end_line": 2510,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "COMPARE_PRESETS.find"
         },
         {
-          "line": 2506,
-          "end_line": 2506,
+          "line": 2512,
+          "end_line": 2512,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2509,
-          "end_line": 2518,
+          "line": 2515,
+          "end_line": 2524,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.forEach"
         },
         {
-          "line": 2521,
-          "end_line": 2521,
+          "line": 2527,
+          "end_line": 2527,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.correlations\n    .map"
         },
         {
-          "line": 2531,
-          "end_line": 2531,
+          "line": 2537,
+          "end_line": 2537,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 2531,
-          "end_line": 2531,
-          "owner": "ComparePage.<callback@2531>",
+          "line": 2537,
+          "end_line": 2537,
+          "owner": "ComparePage.<callback@2537>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 2535,
-          "end_line": 2535,
+          "line": 2541,
+          "end_line": 2541,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2556,
-          "end_line": 2564,
+          "line": 2562,
+          "end_line": 2570,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "comparePresetsFor(locale).map"
         },
         {
-          "line": 2560,
-          "end_line": 2560,
-          "owner": "ComparePage.<callback@2556>",
+          "line": 2566,
+          "end_line": 2566,
+          "owner": "ComparePage.<callback@2562>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2594,
-          "end_line": 2594,
+          "line": 2600,
+          "end_line": 2600,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2604,
-          "end_line": 2642,
+          "line": 2610,
+          "end_line": 2648,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2622,
-          "end_line": 2622,
-          "owner": "ComparePage.<callback@2604>",
+          "line": 2628,
+          "end_line": 2628,
+          "owner": "ComparePage.<callback@2610>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2628,
-          "end_line": 2637,
-          "owner": "ComparePage.<callback@2604>",
+          "line": 2634,
+          "end_line": 2643,
+          "owner": "ComparePage.<callback@2610>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "reps.map"
         },
         {
-          "line": 2633,
-          "end_line": 2633,
-          "owner": "ComparePage.<callback@2604>.<callback@2628>",
+          "line": 2639,
+          "end_line": 2639,
+          "owner": "ComparePage.<callback@2610>.<callback@2634>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2673,
-          "end_line": 2673,
+          "line": 2679,
+          "end_line": 2679,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2673,
-          "end_line": 2673,
-          "owner": "ComparePage.<callback@2673>",
+          "line": 2679,
+          "end_line": 2679,
+          "owner": "ComparePage.<callback@2679>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setPickerOpen"
         },
         {
-          "line": 2711,
-          "end_line": 2711,
+          "line": 2717,
+          "end_line": 2717,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2749,
-          "end_line": 2757,
+          "line": 2755,
+          "end_line": 2763,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RANGE_OPTIONS.map"
         },
         {
-          "line": 2753,
-          "end_line": 2753,
-          "owner": "ComparePage.<callback@2749>",
+          "line": 2759,
+          "end_line": 2759,
+          "owner": "ComparePage.<callback@2755>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2769,
-          "end_line": 2777,
+          "line": 2775,
+          "end_line": 2783,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "STEP_OPTIONS.map"
         },
         {
-          "line": 2773,
-          "end_line": 2773,
-          "owner": "ComparePage.<callback@2769>",
+          "line": 2779,
+          "end_line": 2779,
+          "owner": "ComparePage.<callback@2775>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2784,
-          "end_line": 2797,
+          "line": 2790,
+          "end_line": 2803,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "SCALE_OPTIONS.map"
         },
         {
-          "line": 2791,
-          "end_line": 2791,
-          "owner": "ComparePage.<callback@2784>",
+          "line": 2797,
+          "end_line": 2797,
+          "owner": "ComparePage.<callback@2790>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2845,
-          "end_line": 2845,
+          "line": 2851,
+          "end_line": 2851,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RANGE_OPTIONS.find"
         },
         {
-          "line": 2853,
-          "end_line": 2853,
+          "line": 2859,
+          "end_line": 2859,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2863,
-          "end_line": 2863,
+          "line": 2869,
+          "end_line": 2869,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2872,
-          "end_line": 2874,
+          "line": 2878,
+          "end_line": 2880,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, 2).map"
         },
         {
-          "line": 2887,
-          "end_line": 2900,
+          "line": 2893,
+          "end_line": 2906,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2906,
-          "end_line": 2917,
+          "line": 2912,
+          "end_line": 2923,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "['left', 'right'].map"
         },
         {
-          "line": 2910,
-          "end_line": 2915,
-          "owner": "ComparePage.<callback@2906>",
+          "line": 2916,
+          "end_line": 2921,
+          "owner": "ComparePage.<callback@2912>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 2918,
-          "end_line": 2918,
+          "line": 2924,
+          "end_line": 2924,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2918,
-          "end_line": 2918,
-          "owner": "ComparePage.<callback@2918>",
+          "line": 2924,
+          "end_line": 2924,
+          "owner": "ComparePage.<callback@2924>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "setAxesSwapped"
         },
         {
-          "line": 2954,
-          "end_line": 2958,
+          "line": 2960,
+          "end_line": 2964,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "RIBBON_GRADIENTS.map"
         },
         {
-          "line": 2956,
-          "end_line": 2956,
-          "owner": "ComparePage.<callback@2954>",
+          "line": 2962,
+          "end_line": 2962,
+          "owner": "ComparePage.<callback@2960>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "stops.map"
         },
         {
-          "line": 2959,
-          "end_line": 2964,
+          "line": 2965,
+          "end_line": 2970,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "PALETTE.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 2969,
-          "end_line": 2969,
+          "line": 2975,
+          "end_line": 2975,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2986,
-          "end_line": 2986,
+          "line": 2992,
+          "end_line": 2992,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 2998,
-          "end_line": 2998,
+          "line": 3004,
+          "end_line": 3004,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3003,
-          "end_line": 3003,
+          "line": 3009,
+          "end_line": 3009,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "chartRows.map"
         },
         {
-          "line": 3023,
-          "end_line": 3038,
+          "line": 3029,
+          "end_line": 3044,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 3039,
-          "end_line": 3056,
+          "line": 3045,
+          "end_line": 3062,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.map"
         },
         {
-          "line": 3058,
-          "end_line": 3075,
+          "line": 3064,
+          "end_line": 3081,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "series.slice(0, RIBBON_COUNT).map"
         },
         {
-          "line": 3077,
-          "end_line": 3089,
+          "line": 3083,
+          "end_line": 3095,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "endDots.map"
         },
         {
-          "line": 3085,
-          "end_line": 3087,
-          "owner": "ComparePage.<callback@3077>",
+          "line": 3091,
+          "end_line": 3093,
+          "owner": "ComparePage.<callback@3083>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3093,
-          "end_line": 3106,
+          "line": 3099,
+          "end_line": 3112,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "endLabels.map"
         },
         {
-          "line": 3156,
-          "end_line": 3156,
+          "line": 3162,
+          "end_line": 3162,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3157,
-          "end_line": 3157,
+          "line": 3163,
+          "end_line": 3163,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3199,
-          "end_line": 3199,
+          "line": 3205,
+          "end_line": 3205,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.some"
         },
         {
-          "line": 3215,
-          "end_line": 3215,
+          "line": 3221,
+          "end_line": 3221,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter"
         },
         {
-          "line": 3216,
-          "end_line": 3216,
+          "line": 3222,
+          "end_line": 3222,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter"
         },
         {
-          "line": 3216,
-          "end_line": 3274,
+          "line": 3222,
+          "end_line": 3280,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "analysisSummary.metrics.filter((metric) => metric.last).map"
         },
         {
-          "line": 3219,
-          "end_line": 3219,
-          "owner": "ComparePage.<callback@3216>",
+          "line": 3225,
+          "end_line": 3225,
+          "owner": "ComparePage.<callback@3222>",
           "name": "bigDigits",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 3284,
-          "end_line": 3293,
+          "line": 3290,
+          "end_line": 3299,
           "owner": "ComparePage",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -195881,8 +195873,8 @@
           ]
         },
         {
-          "line": 2321,
-          "end_line": 2334,
+          "line": 2327,
+          "end_line": 2340,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195891,8 +195883,8 @@
           ]
         },
         {
-          "line": 2336,
-          "end_line": 2354,
+          "line": 2342,
+          "end_line": 2360,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195901,8 +195893,8 @@
           ]
         },
         {
-          "line": 2356,
-          "end_line": 2363,
+          "line": 2362,
+          "end_line": 2369,
           "owner": "ComparePage",
           "callee": "useCallback",
           "arguments": [
@@ -195911,8 +195903,8 @@
           ]
         },
         {
-          "line": 2531,
-          "end_line": 2531,
+          "line": 2537,
+          "end_line": 2537,
           "owner": "ComparePage",
           "callee": "useMemo",
           "arguments": [
@@ -195987,8 +195979,8 @@
           ]
         },
         {
-          "line": 2373,
-          "end_line": 2373,
+          "line": 2379,
+          "end_line": 2379,
           "owner": "ComparePage.handleExport",
           "callee": "window.dispatchEvent",
           "arguments": [
@@ -196534,256 +196526,256 @@
           "expression": "{onClose}"
         },
         {
-          "line": 2535,
-          "end_line": 2535,
+          "line": 2541,
+          "end_line": 2541,
           "owner": "ComparePage",
           "component": "UpsellModal",
           "event": "onClose",
           "expression": "{() => setUpsellOpen(false)}"
         },
         {
-          "line": 2557,
-          "end_line": 2561,
-          "owner": "ComparePage.<callback@2556>",
+          "line": 2563,
+          "end_line": 2567,
+          "owner": "ComparePage.<callback@2562>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => applyPreset(preset)}"
         },
         {
-          "line": 2566,
-          "end_line": 2566,
+          "line": 2572,
+          "end_line": 2572,
           "owner": "ComparePage",
           "component": "Chip",
           "event": "onClick",
           "expression": "{clearAll}"
         },
         {
-          "line": 2579,
-          "end_line": 2579,
+          "line": 2585,
+          "end_line": 2585,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{startEditing}"
         },
         {
-          "line": 2594,
-          "end_line": 2594,
+          "line": 2600,
+          "end_line": 2600,
           "owner": "ComparePage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }}"
         },
         {
-          "line": 2622,
-          "end_line": 2622,
-          "owner": "ComparePage.<callback@2604>",
+          "line": 2628,
+          "end_line": 2628,
+          "owner": "ComparePage.<callback@2610>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => removeCode(s.code)}"
         },
         {
-          "line": 2629,
-          "end_line": 2634,
-          "owner": "ComparePage.<callback@2604>.<callback@2628>",
+          "line": 2635,
+          "end_line": 2640,
+          "owner": "ComparePage.<callback@2610>.<callback@2634>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => setRep(s.code, o.id)}"
         },
         {
-          "line": 2661,
-          "end_line": 2661,
+          "line": 2667,
+          "end_line": 2667,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{undoLast}"
         },
         {
-          "line": 2670,
-          "end_line": 2675,
+          "line": 2676,
+          "end_line": 2681,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setPickerOpen((open) => !open)}"
         },
         {
-          "line": 2683,
-          "end_line": 2695,
+          "line": 2689,
+          "end_line": 2701,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onAdd",
           "expression": "{addCode}"
         },
         {
-          "line": 2683,
-          "end_line": 2695,
+          "line": 2689,
+          "end_line": 2701,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onClear",
           "expression": "{clearAll}"
         },
         {
-          "line": 2683,
-          "end_line": 2695,
+          "line": 2689,
+          "end_line": 2701,
           "owner": "ComparePage",
           "component": "CompareSeriesPicker",
           "event": "onLimit",
           "expression": "{isAuthed ? undefined : openLimit}"
         },
         {
-          "line": 2711,
-          "end_line": 2711,
+          "line": 2717,
+          "end_line": 2717,
           "owner": "ComparePage",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setUpsellOpen(true); track(events.REGISTER_NUDGE_EXPAND, { from: 'compare' }); }}"
         },
         {
-          "line": 2729,
-          "end_line": 2729,
+          "line": 2735,
+          "end_line": 2735,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{retryFailed}"
         },
         {
-          "line": 2750,
-          "end_line": 2754,
-          "owner": "ComparePage.<callback@2749>",
+          "line": 2756,
+          "end_line": 2760,
+          "owner": "ComparePage.<callback@2755>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { setRange(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { range: opt.key }); }}"
         },
         {
-          "line": 2770,
-          "end_line": 2774,
-          "owner": "ComparePage.<callback@2769>",
+          "line": 2776,
+          "end_line": 2780,
+          "owner": "ComparePage.<callback@2775>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { setStep(opt.key); setPanOffset(0); track(events.COMPARE_RANGE, { step: opt.key }); }}"
         },
         {
-          "line": 2787,
-          "end_line": 2793,
-          "owner": "ComparePage.<callback@2784>",
+          "line": 2793,
+          "end_line": 2799,
+          "owner": "ComparePage.<callback@2790>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => chooseScale(opt.key)}"
         },
         {
-          "line": 2805,
-          "end_line": 2805,
+          "line": 2811,
+          "end_line": 2811,
           "owner": "ComparePage",
           "component": "EventsChip",
           "event": "onToggle",
           "expression": "{toggleEvents}"
         },
         {
-          "line": 2815,
-          "end_line": 2832,
+          "line": 2821,
+          "end_line": 2838,
           "owner": "ComparePage",
           "component": "CompareChartState",
           "event": "onRetry",
           "expression": "{failedQueries.length > 0 ? retryFailed : undefined}"
         },
         {
-          "line": 2853,
-          "end_line": 2853,
+          "line": 2859,
+          "end_line": 2859,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => chooseScale('index')}"
         },
         {
-          "line": 2863,
-          "end_line": 2863,
+          "line": 2869,
+          "end_line": 2869,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => chooseScale('values')}"
         },
         {
-          "line": 2918,
-          "end_line": 2918,
+          "line": 2924,
+          "end_line": 2924,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{() => setAxesSwapped((value) => !value)}"
         },
         {
-          "line": 2933,
-          "end_line": 2947,
+          "line": 2939,
+          "end_line": 2953,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerDownCapture",
           "expression": "{touchTip.onPointerDownCapture}"
         },
         {
-          "line": 2933,
-          "end_line": 2947,
+          "line": 2939,
+          "end_line": 2953,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerDown",
           "expression": "{handlePointerDown}"
         },
         {
-          "line": 2933,
-          "end_line": 2947,
+          "line": 2939,
+          "end_line": 2953,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerMove",
           "expression": "{handlePointerMove}"
         },
         {
-          "line": 2933,
-          "end_line": 2947,
+          "line": 2939,
+          "end_line": 2953,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerUp",
           "expression": "{handlePointerUp}"
         },
         {
-          "line": 2933,
-          "end_line": 2947,
+          "line": 2939,
+          "end_line": 2953,
           "owner": "ComparePage",
           "component": "div",
           "event": "onPointerCancel",
           "expression": "{handlePointerUp}"
         },
         {
-          "line": 3122,
-          "end_line": 3133,
+          "line": 3128,
+          "end_line": 3139,
           "owner": "ComparePage",
           "component": "ChartBrush",
           "event": "onChange",
           "expression": "{handleBrush}"
         },
         {
-          "line": 3151,
-          "end_line": 3159,
+          "line": 3157,
+          "end_line": 3165,
           "owner": "ComparePage",
           "component": "ChartDownloadMenu",
           "event": "onCsv",
           "expression": "{() => handleDataExport('csv')}"
         },
         {
-          "line": 3151,
-          "end_line": 3159,
+          "line": 3157,
+          "end_line": 3165,
           "owner": "ComparePage",
           "component": "ChartDownloadMenu",
           "event": "onExcel",
           "expression": "{() => handleDataExport('xlsx')}"
         },
         {
-          "line": 3160,
-          "end_line": 3165,
+          "line": 3166,
+          "end_line": 3171,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
           "expression": "{handleExport}"
         },
         {
-          "line": 3169,
-          "end_line": 3175,
+          "line": 3175,
+          "end_line": 3181,
           "owner": "ComparePage",
           "component": "Button",
           "event": "onClick",
@@ -197470,7 +197462,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/ComparePage.step.component.test.jsx": {
-      "sha256": "1d68d0539cd6809b43cba97ed22cd8489c2405c7437d0a89fe31782f03ae5355",
+      "sha256": "2e8a6c31bbb028f9491f08bb8d23e12541a495afcc10b58f929b6ddbe0f46c22",
       "imports": [
         {
           "line": 2,
@@ -197596,7 +197588,7 @@
         },
         {
           "line": 75,
-          "end_line": 131,
+          "end_line": 160,
           "owner": "<module>",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -197705,6 +197697,38 @@
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
+        },
+        {
+          "line": 132,
+          "end_line": 159,
+          "owner": "<callback@75>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 144,
+          "end_line": 147,
+          "owner": "<callback@75>.<callback@132>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": null
+        },
+        {
+          "line": 155,
+          "end_line": 155,
+          "owner": "<callback@75>.<callback@132>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
+        },
+        {
+          "line": 157,
+          "end_line": 157,
+          "owner": "<callback@75>.<callback@132>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "waitFor"
         }
       ],
       "hooks": [],
@@ -197762,6 +197786,33 @@
           "entries": [
             "{ date: '2023-01-01', value: 3.2 }",
             "{ date: '2024-01-01', value: 2.8 }"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 133,
+          "end_line": 133,
+          "owner": "<callback@75>.<callback@132>",
+          "name": "RUSSIA_CPI",
+          "kind": "ObjectExpression",
+          "entries": [
+            "code",
+            "name",
+            "unit",
+            "frequency",
+            "source",
+            "is_listed"
+          ],
+          "initializer": null
+        },
+        {
+          "line": 134,
+          "end_line": 134,
+          "owner": "<callback@75>.<callback@132>",
+          "name": "YOY",
+          "kind": "ObjectExpression",
+          "entries": [
+            "data"
           ],
           "initializer": null
         }
@@ -240710,13 +240761,13 @@
   "totals": {
     "imports": 4465,
     "routes": 94,
-    "functions": 14467,
+    "functions": 14470,
     "hooks": 2661,
     "http": 114,
     "storage": 218,
     "events": 448,
     "jsx_handlers": 1169,
-    "registries": 682,
+    "registries": 684,
     "mcp_tools": 7,
     "files": 852,
     "parse_errors": 0

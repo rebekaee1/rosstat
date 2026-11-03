@@ -28,8 +28,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2010
     },
-    "definitions": 14699,
-    "annotated_definitions": 14699,
+    "definitions": 14700,
+    "annotated_definitions": 14700,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -11619,9 +11619,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "9761170e230ca184a431f659232da38b5284a41c73eb745045e2cdb5bc420aa2",
-      "bytes": 19932,
-      "lines": 154,
+      "sha256": "05c28a46889da062aae13d44b827b0a41e5c0e674a278e1ee374bdf73c561125",
+      "bytes": 20435,
+      "lines": 155,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12438,8 +12438,8 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "ed88da21bc00e505cb9335cac396656bb214f043d76d8ac6361bf120d59de125",
-      "bytes": 652825,
+      "sha256": "da64c15927258dd116e2a6a1fadb2945fa3042b86e83e14b51f0beaa0262e496",
+      "bytes": 653508,
       "lines": 3093,
       "code": false,
       "status": "reviewed",
@@ -12464,9 +12464,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "1daf471dfd52c48a9086a7fbf87f5360b719760182406fc2e97798f57f129a66",
-      "bytes": 6841908,
-      "lines": 240724,
+      "sha256": "3d670c74353a09f1a836a5c2d89dca246ebb45123e342bdd01b05f8830a52949",
+      "bytes": 6843240,
+      "lines": 240775,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12477,7 +12477,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "efafc3da2186ba691fb2a37e82d26d94064e9b5f91fe6a05068027ec8641659c",
+      "sha256": "ee4272d0062d3743631b0d5e49f9d28bebcd287c4e7af26b513f0955d0134e1d",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -12503,8 +12503,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "0832726b02713968da44bc246aa073b09a95006cc45ed87317d57105863800d9",
-      "bytes": 290381,
+      "sha256": "b0f8b129b52b1b0ece60ec157046f1e1d170ef11697fb13fa95dff528a922cc1",
+      "bytes": 290726,
       "lines": 981,
       "code": false,
       "status": "reviewed",
@@ -13036,9 +13036,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "952373737a8c2a24d00bbe97c4dbb496796d7d6144cc6c4be81e18a7c9546205",
-      "bytes": 2934808,
-      "lines": 106264,
+      "sha256": "86b91b3b06fde3258a70596c2b1eb0da6223cc14bbf392e1290696bdb71cb57f",
+      "bytes": 2935100,
+      "lines": 106274,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -25230,15 +25230,15 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.jsx",
-      "sha256": "3a477eb20b155b23a4428ccb6c51c48be53a005c86c6e5cedf1a6226e6588b54",
-      "bytes": 160692,
-      "lines": 3318,
+      "sha256": "77b67d84d0ea15e0c249f4cd7c91104cf3b18809fd2fb2b5331a293bbdd6a7dc",
+      "bytes": 161146,
+      "lines": 3324,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 63,
-      "annotated_definitions": 63,
+      "definitions": 64,
+      "annotated_definitions": 64,
       "missing_definitions": []
     },
     {
@@ -25269,9 +25269,9 @@
     },
     {
       "path": "frontend/src/pages/ComparePage.step.component.test.jsx",
-      "sha256": "1d68d0539cd6809b43cba97ed22cd8489c2405c7437d0a89fe31782f03ae5355",
-      "bytes": 6524,
-      "lines": 131,
+      "sha256": "2e8a6c31bbb028f9491f08bb8d23e12541a495afcc10b58f929b6ddbe0f46c22",
+      "bytes": 8472,
+      "lines": 161,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -28909,13 +28909,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "ba5857ba8b21a1bbf7db34fdae8ce35fa952a5dc79b8c19fbbf53a859a46c9e6",
-  "javascript_inventory_sha256": "437b3dd7db7676ddefc9c08a3674576baa179eeddc93fe6a9c1b9ee35b7742f3",
-  "baseline_commit": "32dd7127f0c0cdcd5c469b5fb30082a43d82a2e5",
+  "ledger_sha256": "3f37dcb3855e459107c64a6ef2aad409fb609f7fa394c3234a43b66e72370789",
+  "javascript_inventory_sha256": "2f849f8802815535d5f96024a01b7cd8f8d1927d5637aed843c3af71c0ab1ccc",
+  "baseline_commit": "54335e5496cb73ee2663cd528fd881e697179f79",
   "branch": "main",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/indicator-index.json"
   ]
 }

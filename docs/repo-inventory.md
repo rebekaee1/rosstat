@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2062  ·  **Строк:** 1 311 384  ·  **Токенов (≈):** 12 458 844
+**Файлов:** 2062  ·  **Строк:** 1 311 472  ·  **Токенов (≈):** 12 459 922
 
 ## По верхним папкам
 
@@ -18,9 +18,9 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 836 | 284 916 | 3 139 305 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 17 | 917 | 12 507 |
-| `docs` | 138 | 832 494 | 7 106 571 |
-| `frontend` | 927 | 165 879 | 1 847 121 |
+| `deploy` | 17 | 918 | 12 587 |
+| `docs` | 138 | 832 545 | 7 107 049 |
+| `frontend` | 927 | 165 915 | 1 847 641 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
 
@@ -29,7 +29,7 @@
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
 | `docs/mechanism-inventory.json` | 329 004 | 2 677 332 |
-| `docs/client-mechanism-inventory.json` | 240 724 | 1 702 245 |
+| `docs/client-mechanism-inventory.json` | 240 775 | 1 702 578 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
 | `docs/design/local-acceptance/first-pass-paced/http.json` | 28 293 | 253 706 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 053 | 133 292 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 093 | 109 095 |
+| `docs/backlog.md` | 3 093 | 109 193 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 726 | 59 270 |
@@ -49,14 +49,14 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 725 | 52 014 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 207 |
-| `docs/data-contracts.md` | 981 | 49 476 |
+| `docs/data-contracts.md` | 981 | 49 523 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 313 | 42 680 |
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `docs/design-system.md` | 491 | 38 836 |
-| `frontend/src/pages/ComparePage.jsx` | 3 318 | 36 745 |
+| `frontend/src/pages/ComparePage.jsx` | 3 324 | 36 832 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 954 | 32 752 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
 | `backend/app/api/world.py` | 2 893 | 28 640 |
@@ -344,6 +344,7 @@
 | `frontend/src/lib/compareRepresentation.test.js` | 366 | 4 272 |
 | `frontend/src/components/Navbar.menu.component.test.jsx` | 353 | 4 263 |
 | `backend/tests/test_circle9_f.py` | 335 | 4 260 |
+| `deploy/approved-shas.txt` | 155 | 4 250 |
 | `backend/app/services/world_adapters/boc_valet.py` | 457 | 4 233 |
 | `frontend/src/components/RegionAnnualChart.jsx` | 405 | 4 228 |
 | `backend/tests/test_seo_regional_year.py` | 440 | 4 218 |
@@ -354,7 +355,6 @@
 | `frontend/src/components/IndicatorSearch.w6d.component.test.jsx` | 313 | 4 205 |
 | `docs/adr/0001-derived-indicators-engine-shape.md` | 158 | 4 201 |
 | `backend/app/api/admin_session_analysis.py` | 249 | 4 173 |
-| `deploy/approved-shas.txt` | 154 | 4 170 |
 | `backend/app/tasks/analytics_scheduler.py` | 388 | 4 169 |
 | `backend/app/services/http_client.py` | 432 | 4 168 |
 | `frontend/src/components/LightScene.jsx` | 362 | 4 168 |
@@ -747,6 +747,7 @@
 | `backend/app/data/world_national_core/in.yaml` | 210 | 1 921 |
 | `docs/design/local-acceptance/source-audit.json` | 283 | 1 920 |
 | `backend/tests/test_search_dimension_roles.py` | 109 | 1 919 |
+| `frontend/src/pages/ComparePage.step.component.test.jsx` | 161 | 1 918 |
 | `backend/app/services/bot_score.py` | 177 | 1 910 |
 | `backend/tests/test_world_ons_adapter.py` | 266 | 1 910 |
 | `frontend/src/lib/pwaPolicy.test.js` | 140 | 1 907 |
@@ -916,7 +917,6 @@
 | `deploy/tor-http-bridge/tor_http_bridge.py` | 160 | 1 494 |
 | `frontend/src/lib/worldApi.test.js` | 143 | 1 493 |
 | `docs/traffic-platform-2026-09-10.md` | 47 | 1 486 |
-| `frontend/src/pages/ComparePage.step.component.test.jsx` | 131 | 1 485 |
 | `backend/tests/test_rosstat_population.py` | 185 | 1 483 |
 | `backend/app/services/event_params.py` | 141 | 1 472 |
 | `frontend/src/lib/usCatalogTopics.js` | 127 | 1 472 |

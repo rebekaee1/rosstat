@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `32dd7127f0c0cdcd5c469b5fb30082a43d82a2e5`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `54335e5496cb73ee2663cd528fd881e697179f79`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2221 |
 | Код, шаблоны и стили | 1814 |
 | Актуальные рецензии без пропусков guard | 2221 |
-| Именованные определения Python/JS: с аннотацией / всего | 14699 / 14699 |
+| Именованные определения Python/JS: с аннотацией / всего | 14700 / 14700 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -1976,7 +1976,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/ComparePage.c8.component.test.jsx](../frontend/src/pages/ComparePage.c8.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/ComparePage.c9.component.test.jsx](../frontend/src/pages/ComparePage.c9.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/ComparePage.component.test.jsx](../frontend/src/pages/ComparePage.component.test.jsx) | reviewed | 1/1 | актуально |
-| [frontend/src/pages/ComparePage.jsx](../frontend/src/pages/ComparePage.jsx) | reviewed | 63/63 | актуально |
+| [frontend/src/pages/ComparePage.jsx](../frontend/src/pages/ComparePage.jsx) | reviewed | 64/64 | актуально |
 | [frontend/src/pages/ComparePage.rates.component.test.jsx](../frontend/src/pages/ComparePage.rates.component.test.jsx) | reviewed | 4/4 | актуально |
 | [frontend/src/pages/ComparePage.states.component.test.jsx](../frontend/src/pages/ComparePage.states.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/ComparePage.step.component.test.jsx](../frontend/src/pages/ComparePage.step.component.test.jsx) | reviewed | 4/4 | актуально |

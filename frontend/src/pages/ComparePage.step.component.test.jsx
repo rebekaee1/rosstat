@@ -128,4 +128,34 @@ describe('ComparePage: частота мировых рядов', () => {
     // Квартал к кварталу: 104 / 101 − 1 ≈ 2,97 %, а не месяц к месяцу.
     expect(await screen.findAllByText(/2[,.]97/)).not.toHaveLength(0);
   });
+
+  it('подпись частоты в легенде берёт частоту, в которой ряд лежит на графике, а не родную', async () => {
+    const RUSSIA_CPI = { code: 'cpi', name: 'Индекс потребительских цен', unit: '%', frequency: 'monthly', source: 'Росстат', is_listed: true };
+    const YOY = { data: [{ date: '2024-01-01', value: 7.4 }, { date: '2024-02-01', value: 7.7 }, { date: '2024-03-01', value: 7.7 }] };
+    mockApiGet([
+      ['/auth/me', { user: null }],
+      [/^\/indicators\?/, [RUSSIA_CPI]],
+      ['/indicators', [RUSSIA_CPI]],
+      ['/indicators/cpi-yoy/data', YOY],
+      ['/regions/catalog', { sections: [] }],
+      [/^\/regions\/?$/, { districts: [], russia: null, totals: { regions: 0, indicators: 0, points: 0 } }],
+      [/^\/regions/, { districts: [], sections: [] }],
+      ['/world/compare/catalog', CATALOG],
+      [/^\/world\/compare\/series\//, (url) => {
+        const payload = seriesFor(url);
+        return { meta: { ...payload.meta, frequency: 'annual' }, data: ANNUAL };
+      }],
+      [/^\/world\/[^/]+\/regions$/, { regions: [], indicators: [], sections: [] }],
+    ]);
+    renderPage(<ComparePage />, {
+      path: '/compare',
+      route: '/compare?codes=w:germany:hicp-index,w:russia:hicp-index&rep=w:germany:hicp-index:yoy',
+    });
+    fireEvent.click(await screen.findByRole('button', { name: 'Год' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Год' }).getAttribute('aria-pressed')).toBe('true'));
+    // У Германии ряд пришёл годовым, у России месячный ряд свёрнут в год на клиенте: обе подписи «ежегодно», не «ежемесячно».
+    await waitFor(() => expect(document.body.textContent).toMatch(/Россия|Russia/));
+    expect(document.body.textContent).not.toMatch(/ежемесячно/);
+  });
 });
+
