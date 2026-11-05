@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2071  ·  **Строк:** 1 313 842  ·  **Токенов (≈):** 12 490 014
+**Файлов:** 2071  ·  **Строк:** 1 313 849  ·  **Токенов (≈):** 12 490 515
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 842 | 285 862 | 3 149 410 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 18 | 1 006 | 14 114 |
-| `docs` | 139 | 833 724 | 7 122 896 |
+| `deploy` | 18 | 1 007 | 14 155 |
+| `docs` | 139 | 833 730 | 7 123 356 |
 | `frontend` | 928 | 166 059 | 1 849 858 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 065 | 133 803 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 123 | 111 538 |
+| `docs/backlog.md` | 3 127 | 111 929 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 728 | 59 293 |
@@ -181,9 +181,9 @@
 | `frontend/src/pages/MortgageCalculatorPage.jsx` | 549 | 7 181 |
 | `backend/app/core/cache.py` | 747 | 7 145 |
 | `docs/research/_fpsr_raw/agent07.json` | 581 | 7 138 |
+| `docs/enterprise_resilience.md` | 167 | 7 056 |
 | `scripts/build-project-terrain.py` | 478 | 7 043 |
 | `frontend/src/lib/format.js` | 724 | 7 021 |
-| `docs/enterprise_resilience.md` | 165 | 6 987 |
 | `backend/app/services/world_adapters/nbs_stats.py` | 802 | 6 971 |
 | `frontend/src/pages/WorldRegionIndicatorPage.jsx` | 619 | 6 944 |
 | `backend/tests/test_search_federated.py` | 464 | 6 935 |
@@ -324,10 +324,10 @@
 | `backend/app/services/metrika_acquisition.py` | 449 | 4 486 |
 | `README.md` | 273 | 4 476 |
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
+| `deploy/approved-shas.txt` | 163 | 4 446 |
 | `backend/app/services/telegram_missed_summary.py` | 423 | 4 440 |
 | `frontend/src/lib/searchSynonyms.test.js` | 340 | 4 432 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
-| `deploy/approved-shas.txt` | 162 | 4 405 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 403 |
 | `backend/tests/test_world_national_reconcile_pg.py` | 393 | 4 391 |

@@ -11698,9 +11698,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "907303a6808527b8a1b004ea8c8bd64022325c0a4ebccd5d4ab4da203b46bdeb",
-      "bytes": 21334,
-      "lines": 162,
+      "sha256": "3c3f7f1348d98f97d88046e7fdcd51b4c6ee57b6e6288470139bee773e6f0a60",
+      "bytes": 21575,
+      "lines": 163,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12543,9 +12543,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "1494ce00b1c1af793b6598d970670ea5a0f560970d1e68fbfd5c86351c44f657",
-      "bytes": 667434,
-      "lines": 3123,
+      "sha256": "c19170115da41b364b3ada1c5b5d4abeb4c3a5cde943d1de8a66dc8433ae0aa4",
+      "bytes": 669635,
+      "lines": 3127,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13102,9 +13102,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "7fca7ea637662c8aa997890eda1acc5af43477f540577b9e4f0ce51e5dd64595",
-      "bytes": 40244,
-      "lines": 165,
+      "sha256": "c6be9f3521e85719db74eeca91476da61cf02d74776b2f4fec13611db1c1da12",
+      "bytes": 40589,
+      "lines": 167,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13141,7 +13141,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "cf55383ca5fb774386d103ffd0f8810f5071aac9eaeab5be8543adbe5298ce10",
+      "sha256": "c38d80b35371036ee5826dc72faf75cc16e505ab0f3caa5c9deda6e79da47a8c",
       "bytes": 2992056,
       "lines": 108276,
       "code": false,
@@ -29027,9 +29027,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "5016a11c8a559083c72368eb18096e5bd7af683a16806c18bce7082fc0530795",
+  "ledger_sha256": "8afbb981286538545f024d328df571fe42068926bc202b4efef8efde701a79ff",
   "javascript_inventory_sha256": "526fa19d62abce45d6c6f1ef6bd736865bb155149fc898bd3b1e92492fab5276",
-  "baseline_commit": "66cc9eaabfcd18a8c5d6a3a37c53c005b4192832",
+  "baseline_commit": "8726586d8c757bb50ba25ec941e4174f2cc19bc5",
   "branch": "main",
   "unstaged_at_capture": []
 }
