@@ -47,7 +47,7 @@ RESEND_KINDS = (
     "rate_limit_alert", "prod_config_alert", "etl_failure", "zero_parse",
     "staleness", "forecast_issue",
     # 05.11.2026 (ADR-0026): монитор хоста.
-    "host_pressure", "disk_space",
+    "host_pressure", "host_memory", "disk_space",
 )
 PENDING_ERROR = "pending"
 PENDING_FINAL_ERROR = "interrupted: no delivery result recorded (pending > 1h)"

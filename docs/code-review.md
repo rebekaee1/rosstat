@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `8726586d8c757bb50ba25ec941e4174f2cc19bc5`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `92f85113067cbafbffab88ea870c46ccfc81880a`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2230 |
 | Код, шаблоны и стили | 1822 |
 | Актуальные рецензии без пропусков guard | 2230 |
-| Именованные определения Python/JS: с аннотацией / всего | 14760 / 14760 |
+| Именованные определения Python/JS: с аннотацией / всего | 14766 / 14766 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -327,7 +327,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/geoip.py](../backend/app/services/geoip.py) | reviewed | 9/9 | актуально |
 | [backend/app/services/goal_taxonomy.py](../backend/app/services/goal_taxonomy.py) | reviewed | 7/7 | актуально |
 | [backend/app/services/gsc_client.py](../backend/app/services/gsc_client.py) | reviewed | 14/14 | актуально |
-| [backend/app/services/host_pressure.py](../backend/app/services/host_pressure.py) | reviewed | 10/10 | актуально |
+| [backend/app/services/host_pressure.py](../backend/app/services/host_pressure.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/http_client.py](../backend/app/services/http_client.py) | reviewed | 27/27 | актуально |
 | [backend/app/services/http_error_monitor.py](../backend/app/services/http_error_monitor.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/i18n_display.py](../backend/app/services/i18n_display.py) | reviewed | 1/1 | актуально |
@@ -723,7 +723,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_key_rate_seo.py](../backend/tests/test_key_rate_seo.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_labor_market_seo.py](../backend/tests/test_labor_market_seo.py) | reviewed | 5/5 | актуально |
 | [backend/tests/test_legacy_redirects.py](../backend/tests/test_legacy_redirects.py) | reviewed | 12/12 | актуально |
-| [backend/tests/test_load_priority.py](../backend/tests/test_load_priority.py) | reviewed | 24/24 | актуально |
+| [backend/tests/test_load_priority.py](../backend/tests/test_load_priority.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_locale_vary.py](../backend/tests/test_locale_vary.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_mac_backup_pull.py](../backend/tests/test_mac_backup_pull.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_market_history_backfill.py](../backend/tests/test_market_history_backfill.py) | reviewed | 14/14 | актуально |
@@ -869,7 +869,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_upsert.py](../backend/tests/test_upsert.py) | reviewed | 12/12 | актуально |
 | [backend/tests/test_us_br_pop_adapter.py](../backend/tests/test_us_br_pop_adapter.py) | reviewed | 11/11 | актуально |
 | [backend/tests/test_usd_rub_seo.py](../backend/tests/test_usd_rub_seo.py) | reviewed | 3/3 | актуально |
-| [backend/tests/test_uvicorn_supervisor_config.py](../backend/tests/test_uvicorn_supervisor_config.py) | reviewed | 5/5 | актуально |
+| [backend/tests/test_uvicorn_supervisor_config.py](../backend/tests/test_uvicorn_supervisor_config.py) | reviewed | 6/6 | актуально |
 | [backend/tests/test_view_model_families.py](../backend/tests/test_view_model_families.py) | reviewed | 25/25 | актуально |
 | [backend/tests/test_wages_nominal_seo.py](../backend/tests/test_wages_nominal_seo.py) | reviewed | 4/4 | актуально |
 | [backend/tests/test_web_import_weight.py](../backend/tests/test_web_import_weight.py) | reviewed | 3/3 | актуально |

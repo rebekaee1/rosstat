@@ -97,9 +97,9 @@ def telegram(monkeypatch):
 
     monkeypatch.setattr(alerting, "send_telegram", fake_send)
     monkeypatch.setattr(alerting, "alert_muted", fake_muted)
-    monkeypatch.setattr(host_pressure, "_bad", 0)
-    monkeypatch.setattr(host_pressure, "_ok", 0)
-    monkeypatch.setattr(host_pressure, "_alerted_at", None)
+    monkeypatch.setattr(host_pressure, "_io", host_pressure._Streak())
+    monkeypatch.setattr(host_pressure, "_mem", host_pressure._Streak())
+    monkeypatch.setattr(host_pressure.settings, "host_alert_mem_full_pct", 10.0)
     monkeypatch.setattr(host_pressure.settings, "host_alert_io_full_pct", 25.0)
     monkeypatch.setattr(host_pressure.settings, "host_alert_disk_free_pct", 10.0)
     return sent
@@ -132,6 +132,15 @@ def test_io_alert_after_three_bad_minutes_then_recovery(telegram, monkeypatch):
 def test_short_spike_is_silent(telegram, monkeypatch):
     _run_minutes(monkeypatch, [_snap(io_full60=70.0), _snap(io_full60=70.0), _snap(io_full60=5.0)] * 3)
     assert telegram == []
+
+
+def test_memory_pressure_alert_and_recovery(telegram, monkeypatch):
+    """02.11.2026 память backend и swap хоста не алертились; теперь PSI memory full три минуты подряд → алерт."""
+    bad, good = _snap(mem=15.0), _snap(mem=1.0)
+    _run_minutes(monkeypatch, [bad] * 3 + [good] * 5)
+    kinds = [k for k, _ in telegram]
+    assert kinds == ["host_memory", "host_memory"]
+    assert "Хосту не хватает памяти" in telegram[0][1] and "снова в норме" in telegram[1][1]
 
 
 def test_low_disk_alert_once(telegram, monkeypatch):

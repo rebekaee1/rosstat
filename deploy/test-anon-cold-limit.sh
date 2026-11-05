@@ -60,6 +60,13 @@ for k in 1 2 3 4 5 6; do
 done
 wait
 e=$(cat "$T"/int*.txt | sort | uniq -c | tr '\n' ' '); echo "внутренний прогрев (без XFF)   : $e"
+# Один внутренний адрес, 40 запросов разом: персональный лимит по IP (ssrstrict 2 r/s, burst 10) внутренним тоже не положен.
+w=$(docker run --rm --network acnet curlimages/curl sh -c "for i in \$(seq 1 40); do (curl -s -o /dev/null -w '%{http_code}\\n' -m 30 -A 'ForecastEconomy-ssr-warm/1' $PATH_URL &); done; sleep 10" | sort | uniq -c | tr '\n' ' ')
+echo "прогрев с одного адреса (40)   : $w"
+# Обратная проверка: один ВНЕШНИЙ адрес с Referer (вне общего бюджета) по-прежнему упирается в персональный лимит.
+o=$(docker run --rm --network acnet curlimages/curl sh -c "for i in \$(seq 1 40); do (curl -s -o /dev/null -w '%{http_code}\\n' -m 30 -H 'X-Forwarded-For: 95.1.2.3' -H 'Referer: https://ya.ru/' -A 'Mozilla/5.0 Safari' $PATH_URL &); done; sleep 10" | sort | uniq -c | tr '\n' ' ')
+echo "один внешний IP (40, Referer)  : $o"
+case "$o" in *429*) ;; *) echo "FAIL: персональный лимит по IP не работает"; exit 1;; esac
 # Класс клиента (по одному запросу, на другой адрес, чтобы не задеть бюджеты)
 cls() {  # $1 XFF или пусто, $2 UA, $3 Referer или пусто, $4 подделка заголовка или пусто
   docker run --rm --network acnet -e XFF="$1" -e UA="$2" -e REF="$3" -e FAKE="$4" curlimages/curl sh -c '
@@ -77,5 +84,5 @@ c6=$(cls 91.1.1.4 "$UA_BROWSER" '' 'crawler')
 echo "класс: ферма=$c1 из_поиска=$c2 googlebot=$c3 applebot=$c4 прогрев=$c5 подделка=$c6"
 [ "$c1 $c2 $c3 $c4 $c5 $c6" = "anon referred crawler robot internal anon" ] || { echo "FAIL: класс клиента"; exit 1; }
 case "$a" in *429*) ;; *) echo "FAIL: ферма не ограничена"; exit 1;; esac
-for r in "$b" "$c" "$d" "$e"; do case "$r" in *429*) echo "FAIL: законный трафик получил 429: $r"; exit 1;; esac; done
+for r in "$b" "$c" "$d" "$e" "$w"; do case "$r" in *429*) echo "FAIL: законный трафик получил 429: $r"; exit 1;; esac; done
 echo "OK"

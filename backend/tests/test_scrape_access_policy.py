@@ -26,10 +26,16 @@ def crawler_directives():
 def test_ssr_limits_are_per_ip_with_only_verified_crawler_exemption():
     config = nginx_directives()
     assert "zone=ssrall" not in config
-    # The key is the client IP, except a verified indexing crawler gets the empty key.
-    assert "limit_req_zone $crawler_limit_key zone=ssr:10m rate=5r/s;" in config
-    assert "limit_req_zone $crawler_limit_key zone=ssrstrict:10m rate=2r/s;" in config
-    assert "limit_conn_zone $crawler_limit_key zone=perip:10m;" in config
+    # The key is the client IP, except a verified indexing crawler and the docker network (cache warm-up,
+    # ADR-0026, 05.11.2026) get the empty key.
+    assert "limit_req_zone $fe_limit_key zone=ssr:10m rate=5r/s;" in config
+    assert "limit_req_zone $fe_limit_key zone=ssrstrict:10m rate=2r/s;" in config
+    assert "limit_conn_zone $fe_limit_key zone=perip:10m;" in config
+    assert 'map $fe_internal_peer $fe_limit_key {\n    1       "";\n    default $crawler_limit_key;' in config
+    internal = config.split("geo $fe_internal_peer {", 1)[1].split("}", 1)[0]
+    nets = sorted(line.split()[0] for line in internal.strip().splitlines() if line.strip().endswith(" 1;"))
+    assert nets == ["10.0.0.0/8", "127.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+    assert "default 0;" in internal
     assert "include /etc/nginx/search-crawlers.conf;" in config
     assert "$ssr_limit_key" not in config
 

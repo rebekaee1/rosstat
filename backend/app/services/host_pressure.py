@@ -6,7 +6,8 @@
 * `io_degraded()` — дешёвый (файл `/proc/pressure/io`, кэш 2 с) признак «диск хоста захлёбывается»; по нему холодный
   рендер для низкоприоритетного трафика сразу отвечает «занято», не занимая слот и соединение БД;
 * `describe()` — одна строка о хосте для алертов 5xx и сброса нагрузки;
-* `host_health_job()` — раз в минуту в scheduler: алерт «Диск хоста тормозит» (и «снова в норме») и «Мало места на диске».
+* `host_health_job()` — раз в минуту в scheduler: «Диск хоста тормозит», «Хосту не хватает памяти» (и «снова в норме»),
+  «Мало места на диске».
 
 `/proc/pressure/*` в Linux не разделён по контейнерам: внутри контейнера виден весь хост (сверено на боевом 05.11.2026).
 `shutil.disk_usage("/")` в контейнере отдаёт файловую систему под overlay, то есть корневой диск хоста. Нет PSI (macOS,
@@ -130,50 +131,81 @@ def describe(snap: Snapshot | None = None) -> str:
 
 # --- монитор хоста (scheduler, раз в минуту) ---------------------------------------------------------------------
 
-_IO_BAD_STREAK = 3  # минут подряд выше порога, прежде чем алертить (короткие всплески не будят владельца)
-_IO_OK_STREAK = 5  # минут подряд ниже половины порога, прежде чем сказать «в норме»
-_IO_COOLDOWN = 3600
+_BAD_STREAK = 3  # минут подряд выше порога, прежде чем алертить (короткие всплески не будят владельца)
+_OK_STREAK = 5  # минут подряд ниже половины порога, прежде чем сказать «в норме»
+_PRESSURE_COOLDOWN = 3600
 _DISK_COOLDOWN = 6 * 3600
 
-_bad = 0
-_ok = 0
-_alerted_at: float | None = None
+
+@dataclass
+class _Streak:
+    """Серия минут выше/ниже порога для одного вида давления и момент, когда о нём сказали."""
+
+    bad: int = 0
+    ok: int = 0
+    alerted_at: float | None = None
+
+    def observe(self, value: float, threshold: float) -> str | None:
+        """Учесть минуту; вернуть "bad" (пора алертить), "ok" (пора сказать «в норме») или None."""
+        if value >= threshold:
+            self.bad, self.ok = self.bad + 1, 0
+        elif value < threshold / 2:
+            self.ok, self.bad = self.ok + 1, 0
+        else:
+            self.bad = self.ok = 0
+        if self.bad >= _BAD_STREAK and self.alerted_at is None:
+            self.alerted_at = time.time()
+            return "bad"
+        if self.ok >= _OK_STREAK and self.alerted_at is not None:
+            return "ok"
+        return None
+
+    def minutes_and_reset(self) -> int:
+        minutes = max(1, round((time.time() - (self.alerted_at or time.time())) / 60))
+        self.alerted_at = None
+        return minutes
+
+
+_io = _Streak()
+_mem = _Streak()
+
+
+async def _pressure_alert(streak: _Streak, value: float | None, threshold: float, kind: str,
+                          bad_title: str, bad_text: str, ok_title: str, snap: Snapshot) -> None:
+    from app.services.alerting import alert_muted, send_telegram
+
+    if threshold <= 0 or value is None:
+        return
+    event = streak.observe(value, threshold)
+    if event == "bad" and not await alert_muted(kind, _PRESSURE_COOLDOWN):
+        await send_telegram(f"🟠 <b>{bad_title}</b>\n{describe(snap)}.\n{bad_text}", kind=kind)
+    elif event == "ok":
+        minutes = streak.minutes_and_reset()
+        await send_telegram(f"🟢 <b>{ok_title}</b>\nДлилось около {minutes} мин. {describe(snap)}.", kind=kind)
 
 
 async def host_health_job() -> None:
-    """Алерты о хосте: диск захлёбывается / снова в норме, мало места. Состояние в процессе scheduler."""
-    global _bad, _ok, _alerted_at
+    """Алерты о хосте: диск захлёбывается / не хватает памяти / снова в норме, мало места. Состояние в процессе scheduler."""
     from app.services.alerting import alert_muted, send_telegram
 
     snap = snapshot(fresh=True)
-    threshold = settings.host_alert_io_full_pct
-    full60 = snap.io_full60
-    if threshold > 0 and full60 is not None:
-        if full60 >= threshold:
-            _bad, _ok = _bad + 1, 0
-        elif full60 < threshold / 2:
-            _ok, _bad = _ok + 1, 0
-        else:
-            _bad = _ok = 0
-        if _bad >= _IO_BAD_STREAK and _alerted_at is None:
-            _alerted_at = time.time()
-            if not await alert_muted("host_pressure", _IO_COOLDOWN):
-                brownout = settings.host_brownout_io_full_pct
-                await send_telegram(
-                    "🟠 <b>Диск хоста тормозит</b>\n"
-                    f"{describe(snap)}.\n"
-                    "Сайт в режиме экономии: страницы из кэша отдаются как обычно, холодные страницы без Referer "
-                    f"(обходчики) получают «занято», пока ожидание выше {brownout:.0f}%. Люди из поиска и поисковые "
-                    "роботы идут первыми. Если держится больше часа — вопрос к провайдеру (хранилище ВМ).",
-                    kind="host_pressure",
-                )
-        elif _ok >= _IO_OK_STREAK and _alerted_at is not None:
-            minutes = max(1, round((time.time() - _alerted_at) / 60))
-            _alerted_at = None
-            await send_telegram(
-                f"🟢 <b>Диск хоста снова в норме</b>\nТормоза длились около {minutes} мин. {describe(snap)}.",
-                kind="host_pressure",
-            )
+    brownout = settings.host_brownout_io_full_pct
+    await _pressure_alert(
+        _io, snap.io_full60, settings.host_alert_io_full_pct, "host_pressure",
+        "Диск хоста тормозит",
+        "Сайт в режиме экономии: страницы из кэша отдаются как обычно, холодные страницы без Referer (обходчики) "
+        f"получают «занято», пока ожидание выше {brownout:.0f}%. Люди из поиска и поисковые роботы идут первыми. "
+        "Если держится больше часа — вопрос к провайдеру (хранилище ВМ).",
+        "Диск хоста снова в норме", snap,
+    )
+    # 02.11.2026: память backend 95% лимита и swap хоста 34% не алертились (алерт смотрел только scheduler).
+    await _pressure_alert(
+        _mem, snap.mem_full60, settings.host_alert_mem_full_pct, "host_memory",
+        "Хосту не хватает памяти",
+        "Процессы ждут память (вытеснение в swap). Обычно это рост backend или scheduler к лимиту; "
+        "смотреть docker stats и memory.events контейнеров (runbook «хост в свопе» в docs/workflow.md).",
+        "Память хоста снова в норме", snap,
+    )
 
     min_free = settings.host_alert_disk_free_pct
     pct = snap.disk_free_pct
