@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2071  ·  **Строк:** 1 313 985  ·  **Токенов (≈):** 12 492 656
+**Файлов:** 2071  ·  **Строк:** 1 313 988  ·  **Токенов (≈):** 12 492 844
 
 ## По верхним папкам
 
@@ -18,8 +18,8 @@
 | `.tours` | 1 | 55 | 804 |
 | `backend` | 842 | 285 922 | 3 150 189 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 18 | 1 014 | 14 388 |
-| `docs` | 139 | 833 788 | 7 124 352 |
+| `deploy` | 18 | 1 015 | 14 429 |
+| `docs` | 139 | 833 790 | 7 124 499 |
 | `frontend` | 928 | 166 066 | 1 849 964 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 066 | 133 832 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 129 | 112 211 |
+| `docs/backlog.md` | 3 131 | 112 358 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 728 | 59 293 |
@@ -321,10 +321,10 @@
 | `backend/app/services/base_parser.py` | 435 | 4 495 |
 | `backend/tests/test_signup_attribution.py` | 364 | 4 494 |
 | `backend/tests/test_ssr_cache.py` | 472 | 4 491 |
+| `deploy/approved-shas.txt` | 164 | 4 487 |
 | `backend/app/services/metrika_acquisition.py` | 449 | 4 486 |
 | `README.md` | 273 | 4 476 |
 | `docs/design/art-prompts/approved-collection.json` | 93 | 4 468 |
-| `deploy/approved-shas.txt` | 163 | 4 446 |
 | `backend/app/services/telegram_missed_summary.py` | 423 | 4 440 |
 | `frontend/src/lib/searchSynonyms.test.js` | 340 | 4 432 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
