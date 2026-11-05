@@ -201,6 +201,25 @@ def test_job_end_to_end_weekly_then_only_new(auth_env, monkeypatch):
     assert "fx-b" in sent[1] and "fx-a" not in sent[1]
 
 
+def test_staleness_query_gets_a_longer_statement_timeout(auth_env, monkeypatch):
+    """05.11.2026 10:00 МСК: запрос не уложился в публичные 30 с при диске хоста с задержкой 0,5-1,5 с и задача упала."""
+    import asyncio
+
+    import app.tasks.scheduler as sched
+
+    monkeypatch.setattr(sched, "async_session", auth_env["session_maker"])
+    monkeypatch.setattr("app.services.process_metrics.fd_pressure_high", lambda: False)
+    asked: list[int] = []
+
+    async def record(db, ms):
+        asked.append(ms)
+
+    monkeypatch.setattr(sched, "set_local_statement_timeout", record)
+    asyncio.run(sched.staleness_check_job())
+    assert asked == [sched.STALENESS_QUERY_TIMEOUT_MS]
+    assert sched.STALENESS_QUERY_TIMEOUT_MS > 60_000  # выше потолка и публичного (30 с), и аналитического (60 с) пула
+
+
 def test_fd_line_is_appended():
     rows = [_row("x", "daily", 40, parser="cbr_fx_xml", status="failed")]
     report = build_report(rows, {}, today=TODAY, now=NOW)

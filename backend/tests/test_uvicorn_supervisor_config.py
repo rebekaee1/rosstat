@@ -43,3 +43,23 @@ def test_compose_and_env_example_expose_the_setting_off_by_default():
     # в примере строка закомментирована: по умолчанию поведение прежнее (5 с)
     assert re.search(r"^# UVICORN_WORKER_HEALTHCHECK_TIMEOUT=30$", example, re.MULTILINE)
     assert not re.search(r"^UVICORN_WORKER_HEALTHCHECK_TIMEOUT=", example, re.MULTILINE)
+
+
+def test_access_log_is_off_by_default_and_switchable():
+    """05.11.2026 (ADR-0026): access-лог uvicorn дублировал nginx и ротировал docker-лог backend за ~20 минут."""
+    script = (ROOT / "backend" / "entrypoint.sh").read_text(encoding="utf8")
+    last_exec = [line for line in script.splitlines() if line.startswith("exec uvicorn")][-1]
+    assert "$ACCESS_ARGS" in last_exec
+    assert 'ACCESS_ARGS="--no-access-log"' in script
+    assert 'if [ "${UVICORN_ACCESS_LOG:-0}" = "1" ]' in script
+    compose = (ROOT / "docker-compose.yml").read_text(encoding="utf8")
+    assert "UVICORN_ACCESS_LOG: ${UVICORN_ACCESS_LOG:-0}" in compose
+
+
+def test_redis_does_not_swap_and_writes_gently():
+    """05.11.2026 (ADR-0026): кэш-Redis 209 МБ в swap и fsync AOF redis-state на медленном диске останавливали ответы."""
+    compose = (ROOT / "docker-compose.yml").read_text(encoding="utf8")
+    assert "--save 3600 1" in compose
+    assert "--appendonly yes --appendfsync no" in compose
+    assert "memswap_limit: 448M" in compose and "memswap_limit: 64M" in compose
+

@@ -117,6 +117,31 @@ def test_falls_back_to_process_window_when_redis_is_down(sent, monkeypatch):
     assert [kind for kind, _ in sent] == ["http_5xx_spike"]
 
 
+def test_redis_outage_warning_is_rate_limited(sent, monkeypatch, caplog):
+    """05.11.2026: недоступный Redis писал предупреждение с трассировкой на каждый 5xx (11,5 тысячи за 80 минут)."""
+    import logging
+
+    async def broken():
+        raise ConnectionError("redis-state is down")
+
+    monkeypatch.setattr(cache_mod, "get_state_redis", broken)
+    monkeypatch.setattr(monitor, "_redis_warned_at", float("-inf"))
+    monkeypatch.setattr(monitor, "_redis_warn_skipped", 0)
+    clock = iter([100.0, 101.0, 102.0, 130.0, 161.0, 161.5])  # пишется 1-й вызов и тот, что позже минуты после него
+    monkeypatch.setattr(monitor, "_mono", lambda: next(clock))
+
+    async def run():
+        for i in range(6):
+            await monitor.note(monitor.KIND_ERROR, "/api/v1/x", now=7_000.0 + i)
+
+    with caplog.at_level(logging.WARNING, logger=monitor.logger.name):
+        asyncio.run(run())
+    warns = [r for r in caplog.records if "Redis недоступен" in r.getMessage()]
+    assert len(warns) == 2  # на 100.0 и на 161.0; остальные четыре подавлены
+    assert warns[0].exc_info and "ещё" not in warns[0].getMessage()
+    assert "ещё 3" in warns[1].getMessage()
+
+
 def test_path_is_html_escaped(sent):
     async def run():
         for i in range(10):

@@ -55,6 +55,14 @@ if [ -n "${UVICORN_WORKER_HEALTHCHECK_TIMEOUT:-}" ]; then
   echo "  worker healthcheck timeout: ${UVICORN_WORKER_HEALTHCHECK_TIMEOUT}s"
 fi
 
+# 2026-11-05 (ADR-0026): access-лог uvicorn выключен по умолчанию. Каждый запрос уже пишет nginx (с временем ответа и
+# статусом backend в us=); дубль в docker-логе backend ротировал 5 файлов по 48 МБ за ~20 минут и стирал ошибки,
+# пока диск хоста и так не успевал. Включить: UVICORN_ACCESS_LOG=1.
+ACCESS_ARGS="--no-access-log"
+if [ "${UVICORN_ACCESS_LOG:-0}" = "1" ]; then
+  ACCESS_ARGS=""
+fi
+
 echo "[5/5] Starting uvicorn..."
-# shellcheck disable=SC2086  # HC_ARGS — осознанно без кавычек: либо пусто, либо два слова
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${UVICORN_WORKERS:-1} $HC_ARGS
+# shellcheck disable=SC2086  # HC_ARGS/ACCESS_ARGS — осознанно без кавычек: пусто или отдельные слова
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers ${UVICORN_WORKERS:-1} $HC_ARGS $ACCESS_ARGS

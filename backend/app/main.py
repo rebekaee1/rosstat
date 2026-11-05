@@ -1298,6 +1298,18 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram resend enabled: every 5 min")
 
+        # Монитор хоста (ADR-0026): PSI диска и памяти, свободное место; алерт с причиной вместо пачки 5xx без причины.
+        from app.services.host_pressure import host_health_job
+        scheduler.add_job(
+            host_health_job,
+            trigger=IntervalTrigger(minutes=1),
+            id="host_health",
+            name="Host disk/memory pressure and free space (PSI) → Telegram",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+        )
+
         from app.services.sitemap_static import sitemap_build_job
         scheduler.add_job(
             locked_job(sitemap_build_job, "sitemap_build", ttl_seconds=3 * 3600),
@@ -1814,6 +1826,10 @@ class LocaleMiddleware(BaseHTTPMiddleware):
         from app.services.ssr_swr import bind_request as _swr_bind, unbind_request as _swr_unbind
 
         swr_tokens = _swr_bind(request)
+        # Класс клиента от nginx (X-FE-Client-Class): приоритет холодного рендера, ADR-0026.
+        from app.services import load_priority as _lp
+
+        class_token = _lp.bind(request.headers.get(_lp.HEADER))
         try:
             response = await call_next(request)
             response.headers.setdefault("Content-Language", locale)
@@ -1823,6 +1839,7 @@ class LocaleMiddleware(BaseHTTPMiddleware):
                 _merge_vary(response, LOCALE_HEADER)
             return response
         finally:
+            _lp.reset(class_token)
             _swr_unbind(swr_tokens)
             reset_preview_locale(preview_token)
             reset_request_origin(origin_token)

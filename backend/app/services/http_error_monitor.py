@@ -35,13 +35,30 @@ _KEY_TTL = WINDOW_SECONDS + 2 * _BUCKET_SECONDS
 # Redis не должен задерживать обработку ошибок: при его стопоре (инцидент 02.11.2026) задачи не копятся.
 _REDIS_TIMEOUT = 2.0
 _MAX_INFLIGHT = 64
+# Недоступность Redis пишется в лог не чаще раза в минуту на процесс. 05.11.2026 на всплеске 503 каждое учтённое
+# 5xx (около 11,5 тысячи за 80 минут) писало предупреждение с полной трассировкой: ротация docker-лога backend
+# (5 файлов по 48 МБ) стирала историю за ~20 минут, а диск хоста в этот момент и так не успевал за записью.
+_REDIS_WARN_EVERY_SECONDS = 60.0
+
+
+def _host_line() -> str:
+    """Строка о хосте (PSI диска и памяти, место) отдельной строкой ПОСЛЕ «(последний путь: …)»: её разбирает
+    analytics_marts._server_5xx_spikes, и она должна оставаться последней на своей строке. 05.11.2026 пять алертов
+    пришли без причины, а причиной был диск хоста (ожидание ввода-вывода 70-80%)."""
+    try:
+        from app.services.host_pressure import describe
+
+        line = describe()
+    except Exception:  # noqa: BLE001 - алерт важнее подробности
+        return ""
+    return f"\n{line}" if line else ""
 
 
 def _error_text(count: int, path: str) -> str:
     return (
         f"🔴 <b>Всплеск ошибок сервера (5xx)</b>\n{count} ответов 5xx "
         f"за {WINDOW_SECONDS // 60} мин (последний путь: {escape(path[:120])})"
-    )
+    ) + _host_line()
 
 
 def _shed_text(count: int, path: str) -> str:
@@ -49,7 +66,7 @@ def _shed_text(count: int, path: str) -> str:
         f"🟡 <b>Сервер сбрасывает нагрузку</b>\n{count} страниц за {WINDOW_SECONDS // 60} мин получили «занято» (503): "
         f"очередь рендера переполнена. Это защита, а не поломка; причину ищите в нагрузке на диск и память "
         f"хоста (последний путь: {escape(path[:120])})"
-    )
+    ) + _host_line()
 
 
 @dataclass(frozen=True)
@@ -70,6 +87,8 @@ _local_hits: dict[str, list[float]] = {KIND_ERROR: [], KIND_SHED: []}
 _local_last_alert: dict[str, float] = {KIND_ERROR: float("-inf"), KIND_SHED: float("-inf")}
 _inflight = 0
 _tasks: set[asyncio.Task] = set()
+_redis_warned_at = float("-inf")
+_redis_warn_skipped = 0
 
 
 def _local_total(kind: str, now: float) -> int:
@@ -77,6 +96,24 @@ def _local_total(kind: str, now: float) -> int:
     hits.append(now)
     _local_hits[kind] = hits
     return len(hits)
+
+
+def _mono() -> float:
+    return time.monotonic()
+
+
+def _warn_redis_unavailable(mono: float) -> None:
+    """Одна запись в минуту (с трассировкой) вместо записи на каждый ответ 5xx; пропущенные считаем. Вызывать из `except`."""
+    global _redis_warned_at, _redis_warn_skipped
+    if mono - _redis_warned_at < _REDIS_WARN_EVERY_SECONDS:
+        _redis_warn_skipped += 1
+        return
+    skipped, _redis_warn_skipped, _redis_warned_at = _redis_warn_skipped, 0, mono
+    logger.warning(
+        "http spike counter: Redis недоступен, считаю внутри процесса%s",
+        f" (за минуту таких случаев ещё {skipped}, в лог не пишутся)" if skipped else "",
+        exc_info=True,
+    )
 
 
 async def _shared_total(kind: str, now: float) -> int | None:
@@ -94,7 +131,7 @@ async def _shared_total(kind: str, now: float) -> int | None:
             _, _, values = await asyncio.wait_for(pipe.execute(), timeout=_REDIS_TIMEOUT)
         return sum(int(v) for v in values if v)
     except Exception:  # noqa: BLE001
-        logger.warning("http spike counter: Redis недоступен, считаю внутри процесса", exc_info=True)
+        _warn_redis_unavailable(_mono())
         return None
 
 

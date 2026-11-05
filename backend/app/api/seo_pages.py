@@ -26,6 +26,7 @@ from contextvars import ContextVar
 import hashlib
 import re
 from datetime import date as _date
+from typing import Callable
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from fastapi import APIRouter, Depends, Request, Response
@@ -162,14 +163,30 @@ _RENDER_LOCKS_MAX = 2000
 _cache_state: ContextVar[str | None] = ContextVar("fe_ssr_cache_state", default=None)
 # Параллельные miss'ы разных URL не должны забрать весь QueuePool.
 _RENDER_SEM = asyncio.Semaphore(6)
+# Потолок слотов для низкоприоритетного холодного рендера (ADR-0026); None - отдельного потолка нет.
+_LOW_PRIORITY_SEM: asyncio.Semaphore | None = (
+    asyncio.Semaphore(settings.ssr_low_priority_render_slots) if settings.ssr_low_priority_render_slots > 0 else None
+)
 
 
 class _RenderQueueTimeout(Exception):
     """Очередь холодных рендеров не дала слот за отведённое время (запрос отклонён, рендер не начат)."""
 
 
-async def _acquire_render_slot(started: float) -> None:
-    """Занять слот `_RENDER_SEM`, но не дольше бюджета очереди (`ssr_render_queue_timeout_seconds`).
+async def _wait_slot(sem: asyncio.Semaphore, started: float, budget: float) -> None:
+    """Занять слот `sem`, но не дольше `budget` секунд от `started`; 0 или меньше - ждать без предела."""
+    if budget <= 0:
+        await sem.acquire()
+        return
+    remaining = budget - (asyncio.get_running_loop().time() - started)
+    try:
+        await asyncio.wait_for(sem.acquire(), timeout=max(remaining, 0.05))
+    except asyncio.TimeoutError:
+        raise _RenderQueueTimeout from None
+
+
+async def _acquire_render_slot(started: float) -> Callable[[], None]:
+    """Занять слот `_RENDER_SEM`, но не дольше бюджета очереди (`ssr_render_queue_timeout_seconds`); вернуть освобождение.
 
     Инцидент 2026-10-27 (18:25-18:35 UTC): ~1700 запросов с ~1000 IP, по одному на уникальную холодную страницу
     `/united-states/region/*`, встали в очередь к семафору. nginx обрывает ответ через 30 с (504), но обработчик
@@ -177,16 +194,38 @@ async def _acquire_render_slot(started: float) -> None:
     дольше, а общие запросы (роботы, люди) ждали позади. Теперь запрос, не получивший слот за бюджет, отклоняется
     сразу (503 + Retry-After), а рендер ради ушедшего клиента не начинается. 0 или меньше - прежнее поведение
     (ждать без предела). Время отсчитывается от входа в `_cached_html`, то есть включает ожидание singleflight-лока.
+
+    Приоритет (ADR-0026, инцидент 2026-11-05: 46 тысяч запросов с 39,7 тысяч IP без Referer заняли все слоты, Googlebot
+    и Bing получали 503/504 вместе с ними). Низкоприоритетный класс (`load_priority`: anon, robot) сначала берёт слот
+    своего потолка `_LOW_PRIORITY_SEM` (`ssr_low_priority_render_slots` из 6) и ждёт не дольше
+    `ssr_low_priority_queue_timeout_seconds`; при перегрузке диска хоста (`host_pressure.io_degraded`) получает «занято»
+    сразу. Люди с Referer, проверенные роботы, прогрев и запросы без разметки идут прежним путём.
     """
-    budget = settings.ssr_render_queue_timeout_seconds
-    if budget <= 0:
-        await _RENDER_SEM.acquire()
-        return
-    remaining = budget - (asyncio.get_running_loop().time() - started)
+    from app.services import host_pressure, load_priority
+
+    sem = _RENDER_SEM
+    if not load_priority.is_low_priority():
+        await _wait_slot(sem, started, settings.ssr_render_queue_timeout_seconds)
+        return sem.release
+    if host_pressure.io_degraded():
+        raise _RenderQueueTimeout
+    budget = settings.ssr_low_priority_queue_timeout_seconds
+    low = _LOW_PRIORITY_SEM
+    if low is None:
+        await _wait_slot(sem, started, budget)
+        return sem.release
+    await _wait_slot(low, started, budget)
     try:
-        await asyncio.wait_for(_RENDER_SEM.acquire(), timeout=max(remaining, 0.05))
-    except asyncio.TimeoutError:
-        raise _RenderQueueTimeout from None
+        await _wait_slot(sem, started, budget)
+    except BaseException:
+        low.release()
+        raise
+
+    def release() -> None:
+        sem.release()
+        low.release()
+
+    return release
 
 
 def _render_busy_html() -> str:
@@ -328,7 +367,7 @@ async def _cached_html(
                 return 200, cached
         _cache_state.set("miss")
         try:
-            await _acquire_render_slot(started)
+            release_slot = await _acquire_render_slot(started)
         except _RenderQueueTimeout:
             _cache_state.set("shed")
             return 503, _render_busy_html()
@@ -339,7 +378,7 @@ async def _cached_html(
                 # Не держать соединение во время cache_set / ответа.
                 await _release_db(db)
         finally:
-            _RENDER_SEM.release()
+            release_slot()
         if status == 200:
             if admit_on_repeat and not forced and settings.ssr_admit_on_repeat_enabled:
                 if not await admit_seen(key, settings.ssr_admit_window_seconds):

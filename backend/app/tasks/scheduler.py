@@ -13,7 +13,7 @@ from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import func, select, update
 
-from app.database import async_session
+from app.database import async_session, set_local_statement_timeout
 from app.core.cache import publish_committed_indicator_changes
 from app.models import Indicator, IndicatorData, FetchLog, EconomicEvent
 from app.services.rosstat_cpi_parser import get_parser
@@ -670,9 +670,16 @@ def calculation_engine_specs():
     return DERIVED_SPECS
 
 
+# Запрос свежести читает indicator_data целиком: на здоровом диске около секунды, но 05.11.2026 в 10:00 МСК
+# (диск хоста отвечал по 0,5-1,5 с на операцию) он не уложился в публичные 30 секунд и задача ушла в «Сбой фоновой
+# задачи» - ночной монитор молчал именно тогда, когда он нужнее всего. Задача раз в сутки, ждать можно.
+STALENESS_QUERY_TIMEOUT_MS = 180_000
+
+
 async def staleness_check_job() -> list[tuple[str, int]]:
     """Ежедневная проверка свежести всех активных индикаторов + Telegram-алерт."""
     async with async_session() as db:
+        await set_local_statement_timeout(db, STALENESS_QUERY_TIMEOUT_MS)
         # Последний прогон парсера (fetch_log): отличает «источник молчит»
         # (читаем без ошибок) от «парсер сломан» (failed/parsed_zero/…).
         last_status = (
