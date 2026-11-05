@@ -870,7 +870,7 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 **Монитор хоста.** `host_pressure.host_health_job` (scheduler, раз в минуту, id `host_health`): `host_pressure` «Диск хоста тормозит» при PSI io full avg60 ≥ `host_alert_io_full_pct` (25) три минуты подряд, затем «снова в норме» после пяти минут ниже половины порога; `disk_space` при свободном месте < `host_alert_disk_free_pct` (10%), не чаще раза в 6 ч. Оба вида в `RESEND_KINDS`. Алерты `http_5xx_spike` и `load_shed` получают последней строкой «Хост: …» (строка «(последний путь: …)» по-прежнему последняя на своей строке для `analytics_marts._SPIKE_PATH_RE`).
 
-**Хранилища и логи.** Кэш-Redis: `--save 3600 1`, `memswap_limit: 448M`; redis-state: `--appendfsync no`, `memswap_limit: 64M`. Access-лог uvicorn выключен (`UVICORN_ACCESS_LOG=1` включает).
+**Хранилища и логи.** Access-лог uvicorn выключен (`UVICORN_ACCESS_LOG=1` включает). Redis: на боевом 05.11.2026 вживую `CONFIG SET save "3600 1"` (кэш), `CONFIG SET appendfsync no` (redis-state) и `docker update --memory-swap` = лимит памяти (оба без swap); compose этих значений пока не содержит, перезапуск контейнера возвращает прежние (см. ADR-0026, п. 4).
 
 Там же в этот день: `http_error_monitor` пишет «Redis недоступен» не чаще раза в минуту на процесс (было на каждый ответ 5xx), `staleness_check_job` ставит своему запросу `statement_timeout` 180 с (`STALENESS_QUERY_TIMEOUT_MS`). Причины и цифры: [backlog.md](backlog.md#alert-spike-2026-11-05).
 

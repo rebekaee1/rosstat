@@ -54,12 +54,3 @@ def test_access_log_is_off_by_default_and_switchable():
     assert 'if [ "${UVICORN_ACCESS_LOG:-0}" = "1" ]' in script
     compose = (ROOT / "docker-compose.yml").read_text(encoding="utf8")
     assert "UVICORN_ACCESS_LOG: ${UVICORN_ACCESS_LOG:-0}" in compose
-
-
-def test_redis_does_not_swap_and_writes_gently():
-    """05.11.2026 (ADR-0026): кэш-Redis 209 МБ в swap и fsync AOF redis-state на медленном диске останавливали ответы."""
-    compose = (ROOT / "docker-compose.yml").read_text(encoding="utf8")
-    assert "--save 3600 1" in compose
-    assert "--appendonly yes --appendfsync no" in compose
-    assert "memswap_limit: 448M" in compose and "memswap_limit: 64M" in compose
-

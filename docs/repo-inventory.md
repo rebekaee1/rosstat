@@ -7,19 +7,19 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2071  ·  **Строк:** 1 313 847  ·  **Токенов (≈):** 12 489 647
+**Файлов:** 2071  ·  **Строк:** 1 313 842  ·  **Токенов (≈):** 12 490 014
 
 ## По верхним папкам
 
 | Папка | Файлов | Строк | Токенов (≈) |
 |-------|-------:|------:|------------:|
-| `(root)` | 8 | 2 756 | 63 545 |
+| `(root)` | 8 | 2 756 | 63 589 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 842 | 285 871 | 3 149 515 |
+| `backend` | 842 | 285 862 | 3 149 410 |
 | `clickhouse` | 2 | 37 | 483 |
-| `deploy` | 18 | 1 004 | 14 075 |
-| `docs` | 139 | 833 722 | 7 122 507 |
+| `deploy` | 18 | 1 006 | 14 114 |
+| `docs` | 139 | 833 724 | 7 122 896 |
 | `frontend` | 928 | 166 059 | 1 849 858 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 885 | 284 651 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 065 | 133 803 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 121 | 111 359 |
+| `docs/backlog.md` | 3 123 | 111 538 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 728 | 59 293 |
@@ -49,7 +49,7 @@
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 725 | 52 014 |
 | `backend/app/services/seo_renderer.py` | 4 253 | 51 209 |
-| `docs/data-contracts.md` | 1 013 | 50 713 |
+| `docs/data-contracts.md` | 1 013 | 50 756 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 314 | 42 783 |
@@ -157,8 +157,8 @@
 | `frontend/src/pages/WorldCountry.component.test.jsx` | 721 | 8 009 |
 | `scripts/build-indicator-index.py` | 722 | 7 995 |
 | `docs/research/data-comparison-2026-10-05.md` | 253 | 7 883 |
+| `docker-compose.yml` | 545 | 7 872 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 665 | 7 862 |
-| `docker-compose.yml` | 545 | 7 828 |
 | `frontend/src/styles/z4-indicator.css` | 673 | 7 764 |
 | `backend/tests/test_world_cards.py` | 850 | 7 744 |
 | `backend/app/services/seo_content.py` | 652 | 7 730 |
@@ -327,12 +327,12 @@
 | `backend/app/services/telegram_missed_summary.py` | 423 | 4 440 |
 | `frontend/src/lib/searchSynonyms.test.js` | 340 | 4 432 |
 | `backend/app/services/seo_world_subnational.py` | 463 | 4 406 |
+| `deploy/approved-shas.txt` | 162 | 4 405 |
 | `docs/adr/0004-rosstat-russian-canonical-sdds-deprecated.md` | 190 | 4 403 |
 | `frontend/src/lib/cpiViewModeContent.jsx` | 439 | 4 403 |
 | `backend/tests/test_world_national_reconcile_pg.py` | 393 | 4 391 |
 | `backend/alembic/versions/20260428_add_analytics_os_tables.py` | 327 | 4 373 |
 | `backend/app/services/world_adapters/boj_stat.py` | 492 | 4 366 |
-| `deploy/approved-shas.txt` | 160 | 4 366 |
 | `docs/agent-recipes.md` | 220 | 4 352 |
 | `frontend/src/pages/DemographicsPage.jsx` | 421 | 4 349 |
 | `frontend/public/consent.js` | 384 | 4 348 |
@@ -912,6 +912,7 @@
 | `docs/adr/0019-personal-cabinet-behind-flag.md` | 40 | 1 511 |
 | `backend/tests/test_seo_index_control.py` | 134 | 1 509 |
 | `backend/tests/test_webmaster_alert_hygiene.py` | 118 | 1 509 |
+| `docs/adr/0026-graceful-degradation-and-traffic-priority.md` | 35 | 1 509 |
 | `frontend/src/pages/WorldIndicatorPage.z4.component.test.jsx` | 125 | 1 503 |
 | `backend/tests/test_analytics_batch_delivery.py` | 140 | 1 501 |
 | `backend/tests/test_russia_world_compare.py` | 161 | 1 500 |
@@ -993,7 +994,6 @@
 | `frontend/src/components/WorldMapConceptNote.jsx` | 165 | 1 346 |
 | `backend/tests/test_clickhouse_sync.py` | 142 | 1 345 |
 | `frontend/src/embed/EmbedCard.jsx` | 128 | 1 343 |
-| `docs/adr/0026-graceful-degradation-and-traffic-priority.md` | 35 | 1 342 |
 | `docs/adr/0022-priority-sitemap-and-index-control.md` | 26 | 1 340 |
 | `frontend/src/lib/planetNavigation.test.js` | 118 | 1 338 |
 | `backend/app/data/seo_static/llms.txt` | 74 | 1 333 |
@@ -1332,7 +1332,6 @@
 | `frontend/src/lib/useLightPointer.test.js` | 96 | 847 |
 | `backend/tests/test_rosstat_labor.py` | 90 | 845 |
 | `scripts/frontend-asset-archive.py` | 91 | 845 |
-| `backend/tests/test_uvicorn_supervisor_config.py` | 65 | 844 |
 | `backend/app/services/fetcher.py` | 90 | 843 |
 | `backend/tests/test_backup_readiness.py` | 80 | 841 |
 | `frontend/src/lib/mapMetricPicks.js` | 88 | 838 |
@@ -1439,6 +1438,7 @@
 | `scripts/db-roles.sh` | 48 | 742 |
 | `backend/entrypoint.sh` | 68 | 741 |
 | `frontend/src/components/russia/LaborIndicatorGroups.jsx` | 52 | 740 |
+| `backend/tests/test_uvicorn_supervisor_config.py` | 56 | 739 |
 | `backend/app/services/regional_storage.py` | 70 | 738 |
 | `backend/app/services/yandex_metrika_logs.py` | 72 | 737 |
 | `backend/tests/test_housing_historical_backfill.py` | 80 | 736 |

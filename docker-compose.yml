@@ -80,10 +80,11 @@ services:
     # ~1940 ключей ≈ 95 МБ забивал лимит целиком) — поднято до 256mb.
     # 2026-09-26 (perf batch 3): 256mb снова полон — 1,17 млн вытеснений
     # allkeys-lru, hit 28% → 384mb (cgroup 448M, запас ~64M как прежде).
-    # 2026-11-05 (ADR-0026): снимок на диск раз в час, а не по умолчанию Redis 7 (раз в 5 минут при 100 изменениях):
-    # fork + запись до 384 МБ на хосте с памятью впритык и медленным диском. Кэш восстановим, час потери - не потеря.
-    # memswap_limit = лимит памяти: кэш не уходит в swap (05.11 в swap лежало 209 МБ Redis, и каждый GET ждал диск).
-    command: redis-server --requirepass ${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)} --maxmemory 384mb --maxmemory-policy ${REDIS_CACHE_POLICY:-volatile-lru} --save 3600 1
+    # 2026-11-05 (ADR-0026): настройки «снимок раз в час / без swap» применены на боевом вживую (CONFIG SET, docker update),
+    # а в compose пока не внесены: изменение command пересоздаёт контейнер, и выпуск 05.11 на тормозящем диске откатился —
+    # пересозданный кэш потерял каталог стран, холодная сборка не уложилась в smoke. Внести отдельным выпуском при
+    # спокойном диске вместе с stop_grace_period (сохранение 384 МБ не должно обрываться SIGKILL через 10 с).
+    command: redis-server --requirepass ${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)} --maxmemory 384mb --maxmemory-policy ${REDIS_CACHE_POLICY:-volatile-lru}
     ports:
       - "127.0.0.1:6380:6379"
     volumes:
@@ -95,7 +96,6 @@ services:
       options:
         max-size: "20m"
         max-file: "3"
-    memswap_limit: 448M
     deploy:
       resources:
         limits:
@@ -112,10 +112,11 @@ services:
     # AOF-persistence: сессии пользователей не выселяются и переживают рестарт.
     # Включение: RUSTATS_STATE_REDIS_URL=redis://:<pass>@redis-state:6379/0 в .env
     # (одноразовый разлогин всех — применять по команде владельца, см. Р-4).
-    # 2026-11-05 (ADR-0026): appendfsync no - запись AOF без fsync каждую секунду (ядро сбрасывает сам, ~30 с). При
-    # медленном диске fsync останавливал главный поток Redis: «Timeout reading from redis-state» и 11,5 тысячи
-    # «Redis недоступен» за 80 минут. Цена - до ~30 с сессий и счётчиков при падении хоста. Без swap, как кэш.
-    command: redis-server --requirepass ${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)} --maxmemory 48mb --maxmemory-policy noeviction --appendonly yes --appendfsync no
+    # 2026-11-05 (ADR-0026): настройки «appendfsync no / без swap» применены на боевом вживую (CONFIG SET, docker update),
+    # а в compose пока не внесены: изменение command пересоздаёт контейнер, и выпуск 05.11 на тормозящем диске откатился —
+    # пересозданный кэш потерял каталог стран, холодная сборка не уложилась в smoke. Внести отдельным выпуском при
+    # спокойном диске вместе с stop_grace_period (сохранение 384 МБ не должно обрываться SIGKILL через 10 с).
+    command: redis-server --requirepass ${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)} --maxmemory 48mb --maxmemory-policy noeviction --appendonly yes
     volumes:
       - redis_state_data:/data
     restart: unless-stopped
@@ -125,7 +126,6 @@ services:
       options:
         max-size: "20m"
         max-file: "3"
-    memswap_limit: 64M
     deploy:
       resources:
         limits:

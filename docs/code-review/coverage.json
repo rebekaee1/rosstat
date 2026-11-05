@@ -29,8 +29,8 @@
       "data_schema_reviewed": 6,
       "reviewed": 2015
     },
-    "definitions": 14761,
-    "annotated_definitions": 14761,
+    "definitions": 14760,
+    "annotated_definitions": 14760,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -10840,15 +10840,15 @@
     },
     {
       "path": "backend/tests/test_uvicorn_supervisor_config.py",
-      "sha256": "7d3cb3efc4489c504686ed8e77d48e5c7529e1d90dfe9d274aa15729bd2f6a90",
-      "bytes": 3885,
-      "lines": 65,
+      "sha256": "657750e739ace511c7ab251c39851c79ac791793b4cd86718d9d1856b71e4fa6",
+      "bytes": 3421,
+      "lines": 56,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 6,
-      "annotated_definitions": 6,
+      "definitions": 5,
+      "annotated_definitions": 5,
       "missing_definitions": []
     },
     {
@@ -11698,9 +11698,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "c062e187468cea99aeb5bac4d19322c331fa0bb1e4dc80b4e196760201068ca9",
-      "bytes": 21104,
-      "lines": 160,
+      "sha256": "907303a6808527b8a1b004ea8c8bd64022325c0a4ebccd5d4ab4da203b46bdeb",
+      "bytes": 21334,
+      "lines": 162,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -11932,8 +11932,8 @@
     },
     {
       "path": "docker-compose.yml",
-      "sha256": "f6f252a57b03286cad9b5735d7071b123fe5865e9cbc8eacaf1f51d8aa80b298",
-      "bytes": 36994,
+      "sha256": "7a8dadb620d994ba9d8f3f51e403698f4c198657869756b3a38da8a8c14bf6f8",
+      "bytes": 37366,
       "lines": 545,
       "code": false,
       "status": "reviewed",
@@ -12270,8 +12270,8 @@
     },
     {
       "path": "docs/adr/0026-graceful-degradation-and-traffic-priority.md",
-      "sha256": "d4da268a55868298a1c2b28690c6d2993c9454898da8f87a57834f173f67e256",
-      "bytes": 8277,
+      "sha256": "97b9f154aa1ed36a28350247104fc1da86dfeb6fa6ba3868c76fe6a5f198dda1",
+      "bytes": 9359,
       "lines": 35,
       "code": false,
       "status": "reviewed",
@@ -12543,9 +12543,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "75d6a7946178424f00d9eba8fb0af118acd0840d5603da895f2c37f7ef7ce957",
-      "bytes": 666336,
-      "lines": 3121,
+      "sha256": "1494ce00b1c1af793b6598d970670ea5a0f560970d1e68fbfd5c86351c44f657",
+      "bytes": 667434,
+      "lines": 3123,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12608,8 +12608,8 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "879a1128694df9cc696e26027d6520ff0b74175b6fdfcc196721385b71de3f5e",
-      "bytes": 297881,
+      "sha256": "655888a6972931d421321880186b07d51a0d523df311b48378285798aadc374d",
+      "bytes": 298150,
       "lines": 1013,
       "code": false,
       "status": "reviewed",
@@ -13141,8 +13141,8 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "47ccc25a0159d27fd78e0bba096051816c7a309ad21b31e0cba8efe42fd893f0",
-      "bytes": 2992055,
+      "sha256": "cf55383ca5fb774386d103ffd0f8810f5071aac9eaeab5be8543adbe5298ce10",
+      "bytes": 2992056,
       "lines": 108276,
       "code": false,
       "status": "data_schema_reviewed",
@@ -29027,9 +29027,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9dece28901395f7bf98be621e3fc260369b0549f464bb5c5a4d08d14692e44db",
+  "ledger_sha256": "5016a11c8a559083c72368eb18096e5bd7af683a16806c18bce7082fc0530795",
   "javascript_inventory_sha256": "526fa19d62abce45d6c6f1ef6bd736865bb155149fc898bd3b1e92492fab5276",
-  "baseline_commit": "b77df91eb8245d85b92726550e9cdb4b1665eecb",
+  "baseline_commit": "66cc9eaabfcd18a8c5d6a3a37c53c005b4192832",
   "branch": "main",
   "unstaged_at_capture": []
 }
