@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Trophy, Table2, ChevronDown, ArrowUpRight,
-  Download, Image as ImageIcon, GitCompare,
+  Download, Image as ImageIcon, GitCompare, Check,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { getSiteOrigin } from '../lib/siteOrigin';
@@ -20,6 +20,8 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
+import GroupedSiblings, { CompareLines, DiscontinuedNote } from '../components/regions/MonthlyPriceParts';
+import { changeOverMonths, compareRows, pickField, signedPct, ymLabel } from '../lib/z2Price';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
@@ -296,13 +298,32 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
 
   const abortion = ABORTION_SIBLING[code];
 
+  // Месячные цены: поля Z1 читаем с запасом — нет поля, страница ведёт себя как раньше.
+  const shortName = isMonthly ? pickField(active, 'short_name') : null;
+  const displayName = shortName || indName;
+  const discontinued = isMonthly && pickField(active, 'is_discontinued') === true;
+  const priceGroup = isMonthly ? pickField(active, 'price_group') : null;
+  const lastMonthLabel = isMonthly
+    ? (ymLabel(pickField(active, 'last_month'), locale) || lastLabel)
+    : '';
+  const compareList = isMonthly && !discontinued && last
+    ? compareRows(active.compare, slug, last.value)
+    : [];
+  const lastYm = last ? last.year * 100 + last.month : null;
+  const periodChanges = isMonthly
+    ? [
+      { key: 'z2.yearAgo', ch: changeOverMonths(activeSeries, 12) },
+      { key: 'z2.fiveYearsAgo', ch: changeOverMonths(activeSeries, 60) },
+    ].filter((x) => x.ch)
+    : [];
+
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
       <Breadcrumbs
         items={regionIndicatorTrail(
           regionName || '…',
           slug,
-          indName || '…',
+          displayName || '…',
           code,
         )}
       />
@@ -342,8 +363,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <CabinetActionsSlot subject={regionIndicatorSubject(slug, code, indName, regionName)} renderActions={renderActions} />
             </div>
             <h1 lang={locale} className="fe-title-wrap mb-5 w-full font-display text-[1.35rem] font-bold leading-tight text-text-primary sm:text-2xl">
-              {indName}
+              {displayName}
             </h1>
+            {shortName && shortName !== indName && (
+              <p className="z2p-caption" lang={locale}>{indName}</p>
+            )}
             {abortion && (
               <p className="mt-1 text-xs text-text-secondary">
                 {t('regions.ind.abortionLead')}
@@ -375,6 +399,8 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </DeltaBadge>
               )}
             </div>
+            {discontinued && <DiscontinuedNote lastLabel={lastMonthLabel} />}
+            <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
           </div>
 
           <div id="chart" data-block="region-chart" className="fe-panel mb-4 w-full min-w-0 max-w-full scroll-mt-24 rounded-3xl p-3 sm:p-4" ref={chartRef}>
@@ -410,7 +436,14 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </label>
                 {active.russia_series?.length > 0 && (
                   <Chip active={showRussia} onClick={() => setShowRussia(v => !v)}>
-                    {showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia')}
+                    {isMonthly
+                      ? (
+                        <span className="z2p-russia-chip">
+                          {showRussia && <Check size={13} aria-hidden="true" />}
+                          {t('z2.russiaLine')}
+                        </span>
+                      )
+                      : (showRussia ? t('regions.ind.vsRussia') : t('regions.ind.addRussia'))}
                   </Chip>
                 )}
                 {!isMonthly && data.series.length > 2 && !isNegativeCapable(data.series) && (
@@ -444,6 +477,8 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
               unit={showYoY ? t('w4.ind.yoyShort') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}
               regionName={regionName}
+              axisUnit={isMonthly ? (unitLabel(active.indicator.unit, locale) || active.indicator.unit) : ''}
+              yearTicks={isMonthly}
               height={300}
             />
             {compareSlug && isMonthly && compareMonthly.data && (
@@ -502,7 +537,12 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </span>
               </StatCell>
             )}
-            {stats && (
+            {isMonthly && periodChanges.map(({ key, ch }) => (
+              <StatCell key={key} label={t(key, { month: ymLabel(ch.from.year * 100 + ch.from.month, locale) })}>
+                {signedPct(ch.pct, locale)}
+              </StatCell>
+            ))}
+            {stats && !isMonthly && (
               <>
                 <StatCell label={t(extremeKeys.max, { year: stats.maxAt })}>
                   {formatRegionWithUnit(statValue(stats.max, stats), active.indicator.unit, locale)}
@@ -638,7 +678,16 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             </div>
           )}
 
-          {active.siblings?.length > 0 && (
+          {isMonthly && active.siblings?.some(s => s.price_group) && (
+            <GroupedSiblings
+              siblings={active.siblings}
+              currentGroup={priceGroup}
+              slug={slug}
+              section={active.indicator.section_name}
+              regionName={regionName}
+            />
+          )}
+          {active.siblings?.length > 0 && !(isMonthly && active.siblings.some(s => s.price_group)) && (
             <div>
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t('regions.ind.moreInSection', { section: active.indicator.section_name })}
@@ -650,7 +699,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                       to={regionIndicatorPath(slug, s.code)}
                       className="fe-tap fe-press flex h-full items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5 text-sm leading-snug text-text-primary transition-colors hover:text-champagne-ink fe-glass-lite fe-float"
                     >
-                      <span className="min-w-0 break-words">{glueNumbers(s.name)}</span>
+                      <span className="min-w-0 break-words">{glueNumbers((isMonthly && s.short_name) || s.name)}</span>
                       <ArrowUpRight size={14} className="shrink-0 text-text-secondary" aria-hidden="true" />
                     </Link>
                   </li>

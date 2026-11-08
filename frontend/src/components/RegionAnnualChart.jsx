@@ -19,9 +19,11 @@ import {
   CHART_THEME, GRID_PROPS, NARROW_CHART_WIDTH, TOOLTIP_STYLES, axisTick, axisSampleValues, axisWidthForLabels,
 } from '../lib/chartTheme';
 import { useChartGlassIds, useElementWidth, useTouchTooltip } from '../lib/chartHooks';
+import { yearTickPeriods } from '../lib/z2Price';
 import ChartBrandCaption from './ChartBrandCaption';
 import ChartGlassDefs from './ChartGlassDefs';
 import '../styles/k4-charts.css';
+import '../styles/z2-price.css';
 
 // Порог несопоставимости масштабов: если maxРФ/maxРегион больше — вторая ось.
 const DUAL_AXIS_RATIO = 3;
@@ -97,6 +99,8 @@ export default function RegionAnnualChart({
   frequency = 'annual',
   nationalLabel = null,
   forecastSeries = null,
+  axisUnit = '',
+  yearTicks = false,
 }) {
   const { t, locale } = useLocale();
   const wrapRef = useRef(null);
@@ -208,6 +212,10 @@ export default function RegionAnnualChart({
     // визуально «прыгают» между плотными промежутками.
     if (isNarrow && dualAxis) budget = Math.min(budget, 4);
     else if (isNarrow) budget = Math.min(budget, 5);
+    if (yearTicks && monthly) {
+      // Месячный ряд: только годы, 4–6 отметок (без «янв 2003» и «дек 2021» по краям).
+      return yearTickPeriods(data, Math.max(3, Math.min(6, Math.floor(axisW / 70))));
+    }
     return pickChartAxisTicks(data, budget, {
       dateKey: 'period',
       cadence: dated ? null : 'annual',
@@ -217,7 +225,7 @@ export default function RegionAnnualChart({
         return d ? d.label : String(v);
       },
     });
-  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, dated]);
+  }, [data, plotWidth, leftAxisWidth, rightAxisWidth, dualAxis, isNarrow, dated, yearTicks, monthly]);
 
   if (!data.length) return null;
 
@@ -232,6 +240,7 @@ export default function RegionAnnualChart({
 
   return (
     <div>
+      {axisUnit && !indexMode && <div className="z2p-axis-unit" aria-hidden="true">{axisUnit}</div>}
       <div
         ref={setWrap}
         onPointerDownCapture={touchTip.onPointerDownCapture}
@@ -253,7 +262,8 @@ export default function RegionAnnualChart({
               dataKey="period"
               tick={({ x, y, payload }) => {
                 const key = String(payload.value);
-                const label = data.find((point) => String(point.period) === key)?.label || key;
+                const point = data.find((pt) => String(pt.period) === key);
+                const label = (yearTicks && monthly && point) ? String(point.year) : (point?.label || key);
                 const anchor = xTicks.length < 2 ? 'middle'
                   : key === String(xTicks[0]) ? 'start'
                     : key === String(xTicks[xTicks.length - 1]) ? 'end' : 'middle';
@@ -322,7 +332,7 @@ export default function RegionAnnualChart({
               strokeLinejoin="round"
               fill={`url(#${glass.area})`}
               dot={false}
-              activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
+              activeDot={(touchTip.coarse && !touchTip.open) ? false : { r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
               isAnimationActive={animate}
               animationDuration={900}
               animationEasing="ease-out"

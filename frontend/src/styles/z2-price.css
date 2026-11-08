@@ -1,0 +1,92 @@
+/* Страница цены региона (месячный ряд): пометка о снятом ряде, сравнение цифрой, группы «Ещё в разделе», подпись единицы у оси.
+   Без рамок и обводок: форма держится заливкой и светом. Золото — только тонкий акцент. */
+
+.z2p-note {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--fe-gold, #ad8a48) 11%, transparent);
+  color: var(--color-text-primary, #1e2638);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.z2p-caption {
+  margin: -0.75rem 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary, #5d6578);
+}
+
+.z2p-compare {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #5d6578);
+}
+.z2p-compare li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.5rem; }
+.z2p-compare__name { min-width: 4.5rem; }
+.z2p-compare__val { font-weight: 600; color: var(--color-text-primary, #1e2638); }
+.z2p-compare__pct { font-size: 0.8125rem; }
+.z2p-compare__month { font-size: 0.75rem; opacity: 0.8; }
+
+.z2p-axis-unit {
+  margin: 0 0 0.15rem 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--color-text-secondary, #5d6578);
+}
+
+.z2p-russia-chip { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+.z2p-siblings { margin-top: 0.5rem; }
+.z2p-siblings__head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 0.25rem 1rem; margin-bottom: 0.75rem;
+}
+.z2p-all {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  font-size: 0.8125rem; font-weight: 500; color: var(--fe-gold-ink, #80642f);
+}
+.z2p-all:hover { text-decoration: underline; }
+
+.z2p-group { margin-bottom: 1.25rem; }
+.z2p-group__title {
+  margin: 0 0 0.5rem 0.15rem;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--color-text-secondary, #5d6578);
+}
+
+.z2p-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.15rem 0.75rem;
+  height: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-text-primary, #1e2638);
+  transition: color 0.2s;
+}
+.z2p-row:hover { color: var(--fe-gold-ink, #80642f); }
+.z2p-row__name { min-width: 0; overflow-wrap: anywhere; }
+.z2p-row__meta { display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+.z2p-row__val { font-weight: 600; white-space: nowrap; }
+.z2p-row__month { font-size: 0.6875rem; color: var(--color-text-secondary, #5d6578); white-space: nowrap; }
+.z2p-row__arrow { color: var(--color-text-secondary, #5d6578); }
+.z2p-row.is-dead { opacity: 0.7; }
+
+.z2p-more {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  margin: 0.5rem 0 0 0.15rem;
+  font-size: 0.8125rem; color: var(--color-text-secondary, #5d6578);
+}
+.z2p-more:hover { color: var(--fe-gold-ink, #80642f); }
+.z2p-more svg.is-open { transform: rotate(180deg); }
