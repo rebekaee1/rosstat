@@ -3789,4 +3789,5 @@ export default {
   'r2z2.statMin': 'Low, {month}',
   'r2z2.colYoy': 'YoY',
   'r2z2.source': 'Rosstat, average consumer prices. Data for {month}.',
+  'r2z2.discNote': 'Rosstat no longer publishes this series.',
 };

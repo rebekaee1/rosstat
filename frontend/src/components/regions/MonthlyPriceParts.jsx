@@ -25,11 +25,11 @@ const GROUP_KEYS = {
 const PER_GROUP = 6;
 
 /** Спокойная пометка: Росстат ряд больше не публикует. */
-export function DiscontinuedNote({ lastLabel }) {
+export function DiscontinuedNote() {
   const { t } = useLocale();
   return (
     <p className="z2p-note" role="note">
-      {t('z2.discontinued', { month: lastLabel })}
+      {t('r2z2.discNote')}
     </p>
   );
 }

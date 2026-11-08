@@ -104,3 +104,5 @@
 }
 
 .z2p-source { margin: 0.5rem 0.25rem 0; font-size: 0.6875rem; line-height: 1.4; color: var(--color-text-secondary, #5d6578); }
+
+.z2p-hero-dead { color: var(--color-text-secondary, #5d6578); }

@@ -436,7 +436,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="fe-num whitespace-nowrap text-3xl font-bold text-text-primary">
+              <span className={`fe-num whitespace-nowrap text-3xl font-bold ${discontinued ? 'z2p-hero-dead' : 'text-text-primary'}`}>
                 {isPrice && priceSuffix ? priceText(last.value, active.indicator.unit, locale) : formatRegionWithUnit(last.value, active.indicator.unit, locale)}
               </span>
               {priceSuffix && <span className="z2p-hero-unit">{priceSuffix}</span>}
@@ -458,7 +458,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 {t('z2.perUnit', { price: `${formatRegionNumber(perUnit.value, active.indicator.unit, locale)}${NBSP}₽`, word: perUnit.word })}
               </p>
             )}
-            {discontinued && <DiscontinuedNote lastLabel={lastMonthLabel} />}
+            {discontinued && <DiscontinuedNote />}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
           </div>
 
@@ -570,7 +570,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </button>
               </div>
             )}
-            {isPrice && (
+            {isPrice && !discontinued && (
               <p className="z2p-source" lang={locale}>{t('r2z2.source', { month: lastMonthLabel })}</p>
             )}
             </div>
@@ -696,10 +696,10 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                         {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
                       </th>
                       <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
-                      {isMonthly && <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r2z2.colYoy')}</th>}
                       {active.russia_series?.length > 0 && (
                         <th className="px-3 py-2 text-right font-medium sm:px-4">{t('regions.ind.russia')}</th>
                       )}
+                      {isMonthly && <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r2z2.colYoy')}</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -712,14 +712,14 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                             {isMonthly ? `${monthName(p.month, locale)} ${p.year}` : p.year}
                           </td>
                           <td className="fe-num px-3 py-1.5 text-right text-text-primary sm:px-4">{formatRegionNumber(p.value, active.indicator.unit, locale)}</td>
-                          {isMonthly && (
-                            <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
-                              {yoyByKey.get(p.year * 12 + p.month) != null ? signedPct(yoyByKey.get(p.year * 12 + p.month), locale) : '\u2014'}
-                            </td>
-                          )}
                           {active.russia_series?.length > 0 && (
                             <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
                               {rf ? formatRegionNumber(rf.value, active.indicator.unit, locale) : '—'}
+                            </td>
+                          )}
+                          {isMonthly && (
+                            <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
+                              {yoyByKey.get(p.year * 12 + p.month) != null ? signedPct(yoyByKey.get(p.year * 12 + p.month), locale) : '\u2014'}
                             </td>
                           )}
                         </tr>
