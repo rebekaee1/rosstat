@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `5f1add52c3478adc4dffc257f1d9d59b24d562cc`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `09a4f316375104f835eba8e18a894fca5a229b93`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -15,7 +15,7 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 | Файлы в явно определённом scope | 2248 |
 | Код, шаблоны и стили | 1838 |
 | Актуальные рецензии без пропусков guard | 2248 |
-| Именованные определения Python/JS: с аннотацией / всего | 14971 / 14971 |
+| Именованные определения Python/JS: с аннотацией / всего | 14972 / 14972 |
 | Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
@@ -367,7 +367,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/parser.py](../backend/app/services/parser.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/pii_scrub.py](../backend/app/services/pii_scrub.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/process_metrics.py](../backend/app/services/process_metrics.py) | reviewed | 9/9 | актуально |
-| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 43/43 | актуально |
+| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 44/44 | актуально |
 | [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |

@@ -1271,9 +1271,7 @@ async def lifespan(app: FastAPI):
                 telegram_poll_job,
                 # Публичный режим: почти непрерывный long-poll (getUpdates держит соединение до 20 с и
                 # возвращается сразу при новом сообщении). Раз в 30 с человек ждал ответа до минуты (08.11.2026).
-                trigger=IntervalTrigger(
-                    seconds=2 if settings.public_bot_enabled and not settings.public_bot_token else 30
-                ),
+                trigger=IntervalTrigger(seconds=30),
                 id="telegram_poll",
                 name="Telegram bot getUpdates poller (owner buttons)",
                 replace_existing=True,
@@ -1286,7 +1284,8 @@ async def lifespan(app: FastAPI):
                 from app.services.public_bot import public_bot_poll_job
                 scheduler.add_job(
                     public_bot_poll_job,
-                    trigger=IntervalTrigger(seconds=2),
+                    # Раз в минуту; внутри задачи опросы идут подряд ~35 с (без наложений и шума в журнале).
+                    trigger=IntervalTrigger(seconds=60),
                     id="public_bot_poll",
                     name="Public Telegram bot getUpdates long-poll (own token)",
                     replace_existing=True,

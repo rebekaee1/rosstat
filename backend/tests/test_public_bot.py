@@ -356,6 +356,7 @@ def test_separate_token_poller_and_admin_bot_back_to_owner_only(env, monkeypatch
             return {"ok": True, "result": [{"update_id": 7, "message": _msg("/start r005_ai92", chat_id=777)}]}
         return {"ok": True}
     monkeypatch.setattr(tb, "_api", api)
+    monkeypatch.setattr(pb, "_POLL_BUDGET_S", 0.0)  # один опрос
     asyncio.run(pb.public_bot_poll_job())
     polls = [c for c in api_calls if c[0] == "getUpdates"]
     assert polls and polls[0][2] == "PUBLIC"

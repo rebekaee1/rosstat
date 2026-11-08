@@ -783,6 +783,10 @@ async def answer_question(chat_id: str, text: str) -> None:
 
 _OFFSET_KEY = "fe:tg:public_offset"
 _offset_mem: str | None = None
+# Одна задача планировщика в минуту держит опросы подряд ~35 с (+ до 20 с последнего long-poll),
+# чтобы не было наложений: при задаче раз в 2 с журнал каждые 2 с писал «skipped: maximum number of
+# running instances» (живой прогон 08.11.2026), а диск сервера заполнен на 88 %.
+_POLL_BUDGET_S = 35.0
 
 
 async def handle_update(upd: dict) -> None:
@@ -795,10 +799,22 @@ async def handle_update(upd: dict) -> None:
 
 
 async def public_bot_poll_job() -> None:
-    """Long-poll getUpdates публичного бота (job каждые 2 с, запрос держится до 20 с)."""
-    global _offset_mem
+    """Задача раз в минуту: подряд long-poll getUpdates публичного бота около _POLL_BUDGET_S секунд."""
     if not (settings.public_bot_enabled and settings.public_bot_token):
         return
+    import time
+
+    deadline = time.monotonic() + _POLL_BUDGET_S
+    while True:
+        if not await _poll_once():
+            return
+        if time.monotonic() >= deadline:
+            return
+
+
+async def _poll_once() -> bool:
+    """Один getUpdates (держится до 20 с). False — Telegram не ответил, задача заканчивается."""
+    global _offset_mem
     from app.core.cache import get_state_redis
     from app.services.telegram_bot import _api
 
@@ -815,7 +831,7 @@ async def public_bot_poll_job() -> None:
         payload["offset"] = int(offset)
     data = await _api("getUpdates", payload, token=settings.public_bot_token)
     if not data:
-        return
+        return False
     updates = data.get("result", [])
     for upd in updates:
         try:
@@ -828,3 +844,4 @@ async def public_bot_poll_job() -> None:
             await r.set(_OFFSET_KEY, _offset_mem)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Public bot poll: смещение не записано в Redis: %s", exc)
+    return True
