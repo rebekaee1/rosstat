@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2123  ·  **Строк:** 1 363 212  ·  **Токенов (≈):** 12 903 628
+**Файлов:** 2123  ·  **Строк:** 1 363 250  ·  **Токенов (≈):** 12 904 835
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 871 | 307 913 | 3 338 544 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 122 | 16 382 |
-| `docs` | 140 | 848 476 | 7 253 231 |
+| `docs` | 140 | 848 514 | 7 254 438 |
 | `frontend` | 948 | 178 292 | 1 938 957 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 128 | 24 084 | 286 972 |
@@ -47,7 +47,7 @@
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `frontend/src/i18n/messages.ru.js` | 3 830 | 54 039 |
 | `frontend/src/i18n/messages.en.js` | 3 825 | 53 129 |
-| `docs/data-contracts.md` | 1 033 | 52 274 |
+| `docs/data-contracts.md` | 1 054 | 52 886 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `backend/app/services/seo_renderer.py` | 4 274 | 51 535 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
@@ -84,7 +84,7 @@
 | `frontend/src/pages/WorldRatingPage.jsx` | 1 401 | 16 504 |
 | `backend/tests/test_i18n_parity.py` | 1 833 | 16 334 |
 | `docs/design/local-acceptance/final-narrow/browser.json` | 2 181 | 16 120 |
-| `docs/search.md` | 701 | 15 727 |
+| `docs/search.md` | 706 | 15 997 |
 | `docs/planet-view.md` | 594 | 15 198 |
 | `backend/app/data/view_model_families.py` | 1 238 | 14 854 |
 | `backend/app/data/world_national_core/us.yaml` | 1 498 | 14 637 |
@@ -124,6 +124,7 @@
 | `frontend/src/pages/IndicatorDetail.jsx` | 871 | 9 402 |
 | `frontend/src/styles/z8-tools.css` | 905 | 9 371 |
 | `backend/tests/test_world.py` | 963 | 9 310 |
+| `docs/knowledge-unknowns.md` | 125 | 9 310 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 962 | 9 278 |
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `frontend/src/pages/WorldIndicatorPage.jsx` | 839 | 9 234 |
@@ -134,7 +135,6 @@
 | `docs/agent-orchestration.md` | 176 | 9 111 |
 | `docs/research/competitor-roschart-2026-10-04.md` | 277 | 9 030 |
 | `backend/app/services/clickhouse_sync.py` | 796 | 8 999 |
-| `docs/knowledge-unknowns.md` | 113 | 8 985 |
 | `backend/app/tasks/scheduler.py` | 831 | 8 930 |
 | `docs/research/tech-benchmark-2026-10-05.md` | 345 | 8 854 |
 | `backend/app/services/derived_ops.py` | 840 | 8 754 |
