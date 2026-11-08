@@ -13596,8 +13596,8 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "20096e45cfa6fe05ea3381af14f66d3272171bba5a931c7c169d90e9940b0b34",
-      "bytes": 60010,
+      "sha256": "f686d96b70b0c8e1a49b214f131c13bd8f3d9fc90970b7d0855698af48aea289",
+      "bytes": 60066,
       "lines": 133,
       "code": false,
       "status": "reviewed",
@@ -29794,15 +29794,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "2b7c64761d1d9906683e4b6f793e391a2d5fda0c6ef35f8b0320874f49a0c1b7",
+  "ledger_sha256": "6819fb3bc0e28195ad8e523de3908e27dc3afd7a8943078a1b93042cab6d084f",
   "javascript_inventory_sha256": "6a3b99f47f5cb53c0ad3e54520cb55b95f4e9a089d76249e1ab85367fa035ff3",
-  "baseline_commit": "e22efbedf0447f0ef9ddbb5a394d34d3c6b52332",
-  "branch": "worktree-agent-a955bd90f5c3c707d",
+  "baseline_commit": "82b5c36732299ef81fdf619b4f2d67b3deaff39f",
+  "branch": "circle-data/int",
   "unstaged_at_capture": [
-    "docs/data-contracts.md",
-    "docs/dead-code-report.md",
-    "docs/design-system.md",
-    "docs/indicator-index.md",
     "docs/knowledge-unknowns.md"
   ]
 }

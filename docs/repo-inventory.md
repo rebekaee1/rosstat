@@ -2,12 +2,12 @@
 
 > Генерируется `scripts/repo-inventory.py`. НЕ редактировать руками. Токены оценены как символы/4. Исключены: .git/.venv/node_modules/__pycache__/dist/build, *.lock и бинарники.
 
-**Сгенерировано:** 2026-11-08
+**Сгенерировано:** 2026-11-09
 
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2130  ·  **Строк:** 1 372 267  ·  **Токенов (≈):** 13 018 086
+**Файлов:** 2130  ·  **Строк:** 1 372 267  ·  **Токенов (≈):** 13 018 097
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 873 | 308 782 | 3 355 329 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 122 | 16 382 |
-| `docs` | 140 | 855 957 | 7 342 583 |
+| `docs` | 140 | 855 957 | 7 342 594 |
 | `frontend` | 953 | 178 997 | 1 947 278 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 128 | 24 084 | 286 972 |
@@ -122,7 +122,7 @@
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 794 | 9 700 |
 | `backend/app/services/pulse.py` | 874 | 9 642 |
-| `docs/knowledge-unknowns.md` | 133 | 9 581 |
+| `docs/knowledge-unknowns.md` | 133 | 9 592 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 871 | 9 402 |
 | `frontend/src/styles/z8-tools.css` | 905 | 9 371 |
 | `backend/tests/test_world.py` | 963 | 9 310 |
