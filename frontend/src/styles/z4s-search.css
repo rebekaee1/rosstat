@@ -5,3 +5,6 @@
 .z4s-region-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .z4s-region-chip__value { flex: none; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .z4s-region-chips > .z4s-region-more { grid-column: 1 / -1; justify-content: center; }
+/* R2-Z4: частоты курса («День · Неделя · Месяц · Квартал · Год») — одна строка равных кнопок на всю ширину, а не два рваных ряда. */
+.z4s-freq { display: grid; gap: 6px; padding-left: 16px; }
+.z4s-freq__chip { justify-content: center; min-width: 0; padding: 0 4px; white-space: nowrap; }

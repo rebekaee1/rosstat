@@ -881,7 +881,9 @@ function latestText(item, locale, t) {
   const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
   // Годовой процент читается как «34,9 % за 2025» (один знак после запятой), остальное как «4,00 %, август 2026».
   const yearPercent = item.frequency === 'annual' && /%/.test(short);
-  const value = formatValue(latest.value, yearPercent ? 1 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  // Курс мелкой валюты (тенге, сум, вона): «0,18 руб.» теряет цифры, нужны четыре знака — «0,1818 руб.».
+  const smallRate = abs > 0 && abs < 1 && /руб|₽|rub/i.test(String(item.unit || ''));
+  const value = formatValue(latest.value, yearPercent ? 1 : smallRate ? 4 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
   const period = latest.date ? formatDate(latest.date, PERIOD_FORMAT[item.frequency] || 'full', locale) : '';
   const shown = short ? `${value}\u00A0${short}` : value;
   const hasPeriod = period && period !== '—';
@@ -958,12 +960,13 @@ function SearchRow({
         </span>
       </button>
       {row.type === 'family' ? (
-        <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
+        <div className="w6d-sr-chips z4s-freq" role="group" aria-label={t('w6d.search.freqAria')}
+          style={{ gridTemplateColumns: `repeat(${Math.min(row.chips.length, 5)}, minmax(0, 1fr))` }}>
           {row.chips.map((chip) => (
             <button
               key={chip.frequency}
               type="button"
-              className="w6d-sr-chip fe-press"
+              className="w6d-sr-chip fe-press z4s-freq__chip"
               aria-current={chip.item === row.item ? 'true' : undefined}
               onClick={() => onPick(row, index + 1, chip.item)}
             >
@@ -1003,7 +1006,7 @@ function SearchRow({
             </button>
           ))}
           {countries.length > COUNTRY_CHIPS_VISIBLE ? (
-            <button type="button" className="w6d-sr-chip fe-press z4s-region-more" aria-expanded={expanded} onClick={onToggle}>
+            <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
               {expanded ? t('w6d.search.countryLess') : t('w6d.search.countryMore', { n: countries.length - COUNTRY_CHIPS_VISIBLE })}
             </button>
           ) : null}
