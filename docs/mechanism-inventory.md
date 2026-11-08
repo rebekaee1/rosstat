@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1214**
-- Registry references: **2333**
+- Registry declarations: **1219**
+- Registry references: **2350**
 - Migration operations: **458**
-- Candidate effects: **2656**
+- Candidate effects: **2665**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2304,14 +2304,14 @@ Relationships: `[]`
 | app.services.attribution_query.AI_UTM_REFERRER | Dict | 'chatgpt.com', 'openai', 'chat.openai.com', 'perplexity', 'perplexity.ai' | [backend/app/services/attribution_query.py:40](../backend/app/services/attribution_query.py#L40) |
 | app.services.base_parser.DEGRADED_STATUSES | Tuple | sequence/source expression | [backend/app/services/base_parser.py:90](../backend/app/services/base_parser.py#L90) |
 | app.services.binance_btcusdt_parser._HOSTS | List | sequence/source expression | [backend/app/services/binance_btcusdt_parser.py:52](../backend/app/services/binance_btcusdt_parser.py#L52) |
-| app.services.bot_chart.BG_TOP | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:24](../backend/app/services/bot_chart.py#L24) |
-| app.services.bot_chart.BG_BOTTOM | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:25](../backend/app/services/bot_chart.py#L25) |
-| app.services.bot_chart.BLUE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:27](../backend/app/services/bot_chart.py#L27) |
-| app.services.bot_chart.BLUE_FILL | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:28](../backend/app/services/bot_chart.py#L28) |
-| app.services.bot_chart.MUTED | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:29](../backend/app/services/bot_chart.py#L29) |
-| app.services.bot_chart.GRID | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:30](../backend/app/services/bot_chart.py#L30) |
-| app.services.bot_chart.COMPARE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:32](../backend/app/services/bot_chart.py#L32) |
-| app.services.bot_chart._MONTHS_SHORT | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:34](../backend/app/services/bot_chart.py#L34) |
+| app.services.bot_chart.BG_TOP | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:25](../backend/app/services/bot_chart.py#L25) |
+| app.services.bot_chart.BG_BOTTOM | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:26](../backend/app/services/bot_chart.py#L26) |
+| app.services.bot_chart.BLUE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:28](../backend/app/services/bot_chart.py#L28) |
+| app.services.bot_chart.BLUE_FILL | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:29](../backend/app/services/bot_chart.py#L29) |
+| app.services.bot_chart.MUTED | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:30](../backend/app/services/bot_chart.py#L30) |
+| app.services.bot_chart.GRID | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:31](../backend/app/services/bot_chart.py#L31) |
+| app.services.bot_chart.COMPARE | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:33](../backend/app/services/bot_chart.py#L33) |
+| app.services.bot_chart._MONTHS_SHORT | Tuple | sequence/source expression | [backend/app/services/bot_chart.py:35](../backend/app/services/bot_chart.py#L35) |
 | app.services.bot_score._BOT_UA_RE | Call | computed source expression | [backend/app/services/bot_score.py:29](../backend/app/services/bot_score.py#L29) |
 | app.services.bot_score.HEURISTICS | Tuple | sequence/source expression | [backend/app/services/bot_score.py:135](../backend/app/services/bot_score.py#L135) |
 | app.services.bot_traffic.CLASSES | Tuple | sequence/source expression | [backend/app/services/bot_traffic.py:30](../backend/app/services/bot_traffic.py#L30) |
@@ -2555,31 +2555,36 @@ Relationships: `[]`
 | app.services.public_bot.TOPICS | DictComp | computed source expression | [backend/app/services/public_bot.py:64](../backend/app/services/public_bot.py#L64) |
 | app.services.public_bot.REELS | Dict | 'r001', 'r002', 'r003', 'r004', 'r005' | [backend/app/services/public_bot.py:78](../backend/app/services/public_bot.py#L78) |
 | app.services.public_bot._MATCH_ORDER | Tuple | sequence/source expression | [backend/app/services/public_bot.py:85](../backend/app/services/public_bot.py#L85) |
-| app.services.public_bot.MENU | Tuple | sequence/source expression | [backend/app/services/public_bot.py:87](../backend/app/services/public_bot.py#L87) |
-| app.services.public_bot.SOURCES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:89](../backend/app/services/public_bot.py#L89) |
-| app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:91](../backend/app/services/public_bot.py#L91) |
-| app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:93](../backend/app/services/public_bot.py#L93) |
-| app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:95](../backend/app/services/public_bot.py#L95) |
-| app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:126](../backend/app/services/public_bot.py#L126) |
-| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:254](../backend/app/services/public_bot.py#L254) |
-| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:256](../backend/app/services/public_bot.py#L256) |
-| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:257](../backend/app/services/public_bot.py#L257) |
-| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:258](../backend/app/services/public_bot.py#L258) |
-| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:341](../backend/app/services/public_bot.py#L341) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:412](../backend/app/services/public_bot.py#L412) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:414](../backend/app/services/public_bot.py#L414) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:966](../backend/app/services/public_bot.py#L966) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1101](../backend/app/services/public_bot.py#L1101) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1103](../backend/app/services/public_bot.py#L1103) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1123](../backend/app/services/public_bot.py#L1123) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1128](../backend/app/services/public_bot.py#L1128) |
-| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1130](../backend/app/services/public_bot.py#L1130) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1132](../backend/app/services/public_bot.py#L1132) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1179](../backend/app/services/public_bot.py#L1179) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1181](../backend/app/services/public_bot.py#L1181) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1183](../backend/app/services/public_bot.py#L1183) |
-| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1207](../backend/app/services/public_bot.py#L1207) |
-| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1307](../backend/app/services/public_bot.py#L1307) |
+| app.services.public_bot.MENU | Tuple | sequence/source expression | [backend/app/services/public_bot.py:88](../backend/app/services/public_bot.py#L88) |
+| app.services.public_bot._EN_TITLES | Dict | 'diesel', 'ai92', 'ai95', 'inflation', 'keyrate', 'deposit', 'mortgage', 'gold', 'usd', 'eur' | [backend/app/services/public_bot.py:89](../backend/app/services/public_bot.py#L89) |
+| app.services.public_bot.SOURCES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:99](../backend/app/services/public_bot.py#L99) |
+| app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:101](../backend/app/services/public_bot.py#L101) |
+| app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:103](../backend/app/services/public_bot.py#L103) |
+| app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:105](../backend/app/services/public_bot.py#L105) |
+| app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:136](../backend/app/services/public_bot.py#L136) |
+| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:267](../backend/app/services/public_bot.py#L267) |
+| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:269](../backend/app/services/public_bot.py#L269) |
+| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:270](../backend/app/services/public_bot.py#L270) |
+| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:271](../backend/app/services/public_bot.py#L271) |
+| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:357](../backend/app/services/public_bot.py#L357) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:428](../backend/app/services/public_bot.py#L428) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:430](../backend/app/services/public_bot.py#L430) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1020](../backend/app/services/public_bot.py#L1020) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1204](../backend/app/services/public_bot.py#L1204) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1206](../backend/app/services/public_bot.py#L1206) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1226](../backend/app/services/public_bot.py#L1226) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1231](../backend/app/services/public_bot.py#L1231) |
+| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1233](../backend/app/services/public_bot.py#L1233) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1235](../backend/app/services/public_bot.py#L1235) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1297](../backend/app/services/public_bot.py#L1297) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1299](../backend/app/services/public_bot.py#L1299) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1301](../backend/app/services/public_bot.py#L1301) |
+| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1325](../backend/app/services/public_bot.py#L1325) |
+| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1433](../backend/app/services/public_bot.py#L1433) |
+| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1483](../backend/app/services/public_bot.py#L1483) |
+| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1484](../backend/app/services/public_bot.py#L1484) |
+| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1492](../backend/app/services/public_bot.py#L1492) |
+| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1493](../backend/app/services/public_bot.py#L1493) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |

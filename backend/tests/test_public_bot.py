@@ -106,15 +106,15 @@ def test_start_with_code_records_and_answers(env):
     assert [(e.kind, e.code, e.topic) for e in events] == [("start", "r014_diesel", "diesel")]
     assert all(e.chat_hash != "555" and len(e.chat_hash) == 64 for e in events)
     texts = [s["text"] for s in sent]
-    # По ссылке из ролика: сначала цифра, потом короткая строка о боте с политикой.
-    assert "<b>Дизель</b> — в среднем по России" in texts[0]
-    assert "<b>86,52 ₽ за литр</b> — 26 октября 2026" in texts[0]
-    assert "За неделю: +0,6 %" in texts[0] and "За год: +12,4 %" in texts[0]
-    assert "Полный бак 50 л: ≈4 326 ₽, год назад ≈3 850 ₽." in texts[0]
-    assert texts[1].startswith(pb.SHORT_INTRO) and "/stop" in texts[1]
+    # По ссылке из ролика: короткая строка о боте без кнопок, затем цифра — её кнопки внизу (09.11).
+    assert texts[0].startswith(pb.SHORT_INTRO) and "/stop" in texts[0] and sent[0]["kb"] is None
+    assert "<b>Дизель</b> — в среднем по России" in texts[1]
+    assert "<b>86,52 ₽ за литр</b> — 26 октября 2026" in texts[1]
+    assert "За неделю: +0,6 %" in texts[1] and "За год: +12,4 %" in texts[1]
+    assert "Полный бак 50 л: ≈4 326 ₽, год назад ≈3 850 ₽." in texts[1]
     assert pb.SOURCE_QUESTION not in texts
-    assert sent[0]["kb"]["inline_keyboard"][1][0]["callback_data"] == "pb:g:diesel"
-    url = sent[0]["kb"]["inline_keyboard"][1][1]["url"]
+    assert sent[1]["kb"]["inline_keyboard"][1][0]["callback_data"] == "pb:g:diesel"
+    url = sent[1]["kb"]["inline_keyboard"][1][1]["url"]
     assert url.startswith("https://ru.forecasteconomy.com/russia/indicator/fuel-diesel?")
     assert "utm_source=telegram" in url and "utm_campaign=diesel" in url and "utm_content=r014_diesel" in url
 
@@ -567,8 +567,8 @@ def test_reel_start_reply_context_subscriptions_and_toggle(env, monkeypatch):
     monkeypatch.setattr(pb, "_llm_complete", llm)
     pb.forget_history("555")
     asyncio.run(pb.handle_message(_msg("/start r003_jobs")))
-    assert "закон Оукена" in seen[-1][1] and sent[-2]["text"] == "Привет!"
-    assert sent[-1]["text"].startswith(pb.SHORT_INTRO)
+    assert "закон Оукена" in seen[-1][1] and sent[-1]["text"] == "Привет!"
+    assert sent[-2]["text"].startswith(pb.SHORT_INTRO)
     assert "Подписки этого человека на новые данные: нет." in seen[-1][0]
     # Подписка с карточки меняет кнопку под ней на «Не присылать».
     card = {"message_id": 10, "chat": {"id": 555, "type": "private"},

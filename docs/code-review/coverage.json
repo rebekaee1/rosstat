@@ -21,7 +21,7 @@
   "counts": {
     "files": 2249,
     "code_files": 1839,
-    "current_reviews": 2245,
+    "current_reviews": 2249,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
@@ -29,9 +29,9 @@
       "data_schema_reviewed": 6,
       "reviewed": 2034
     },
-    "definitions": 15038,
-    "annotated_definitions": 14986,
-    "files_needing_attention": 4
+    "definitions": 15053,
+    "annotated_definitions": 15053,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -2910,15 +2910,15 @@
     },
     {
       "path": "backend/app/services/bot_chart.py",
-      "sha256": "a3de1e9e3024c19b936cc47ab396210f04559788a604f00ff9484ce76fce8e1d",
-      "bytes": 12082,
-      "lines": 233,
+      "sha256": "98de79b899163c5a41981f4b97bd42daa563a0ce02cd9f545b90219dbd8c93a7",
+      "bytes": 14953,
+      "lines": 293,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 10,
-      "annotated_definitions": 10,
+      "definitions": 13,
+      "annotated_definitions": 13,
       "missing_definitions": []
     },
     {
@@ -4327,321 +4327,16 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "58adb9bfeb6730ecee910ea0f26a6c80c83c9c4b2877b7c8bf066387c85d476b",
-      "bytes": 90213,
-      "lines": 1591,
+      "sha256": "29d6e4858cd48927820d2b2e3ed85d8881563dd339dd4e08419c2be204609653",
+      "bytes": 104465,
+      "lines": 1750,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
-      "definitions": 70,
-      "annotated_definitions": 20,
-      "missing_definitions": [
-        {
-          "name": "_now",
-          "line": 439,
-          "end_line": 440,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_touch_chat",
-          "line": 443,
-          "end_line": 455,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_event",
-          "line": 458,
-          "end_line": 460,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_is_subscribed",
-          "line": 463,
-          "end_line": 466,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_send",
-          "line": 473,
-          "end_line": 478,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "bot_token",
-          "line": 481,
-          "end_line": 483,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_reply_figure",
-          "line": 486,
-          "end_line": 506,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_message",
-          "line": 509,
-          "end_line": 616,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_callback",
-          "line": 619,
-          "end_line": 698,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_toggle_card_keyboard",
-          "line": 701,
-          "end_line": 716,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_member_update",
-          "line": 719,
-          "end_line": 731,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "subscribe",
-          "line": 734,
-          "end_line": 749,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "unsubscribe",
-          "line": 752,
-          "end_line": 758,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "mark_blocked",
-          "line": 761,
-          "end_line": 767,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "forget_chat",
-          "line": 770,
-          "end_line": 780,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_send_week_digest",
-          "line": 787,
-          "end_line": 814,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_in_window",
-          "line": 817,
-          "end_line": 818,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_should_notify",
-          "line": 821,
-          "end_line": 828,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "public_bot_notify_job",
-          "line": 831,
-          "end_line": 889,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "report_text",
-          "line": 896,
-          "end_line": 964,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "report_text._line",
-          "line": 945,
-          "end_line": 948,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_figure_by_code",
-          "line": 1008,
-          "end_line": 1012,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "build_llm_context",
-          "line": 1015,
-          "end_line": 1047,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_context_line",
-          "line": 1050,
-          "end_line": 1061,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_llm_complete",
-          "line": 1064,
-          "end_line": 1071,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_llm_call",
-          "line": 1074,
-          "end_line": 1106,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_history",
-          "line": 1115,
-          "end_line": 1119,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_remember",
-          "line": 1122,
-          "end_line": 1125,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "forget_history",
-          "line": 1128,
-          "end_line": 1129,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "telegram_html",
-          "line": 1144,
-          "end_line": 1157,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "telegram_html._back",
-          "line": 1150,
-          "end_line": 1154,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "split_actions",
-          "line": 1160,
-          "end_line": 1196,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_series",
-          "line": 1207,
-          "end_line": 1225,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "render_topic_chart",
-          "line": 1231,
-          "end_line": 1239,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_render_topic_chart",
-          "line": 1242,
-          "end_line": 1274,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "chart_url",
-          "line": 1277,
-          "end_line": 1279,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "send_chart",
-          "line": 1282,
-          "end_line": 1309,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_question_id",
-          "line": 1316,
-          "end_line": 1325,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_flush_questions",
-          "line": 1331,
-          "end_line": 1342,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_lookup_question",
-          "line": 1345,
-          "end_line": 1354,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "answer_keyboard",
-          "line": 1357,
-          "end_line": 1362,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "trim_to_paragraph",
-          "line": 1365,
-          "end_line": 1372,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "answer_question",
-          "line": 1375,
-          "end_line": 1437,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_inline_query",
-          "line": 1452,
-          "end_line": 1485,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_update",
-          "line": 1488,
-          "end_line": 1497,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "public_bot_poll_job",
-          "line": 1500,
-          "end_line": 1512,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_poll_once",
-          "line": 1515,
-          "end_line": 1547,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_with_typing",
-          "line": 1551,
-          "end_line": 1564,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_update_chat_id",
-          "line": 1572,
-          "end_line": 1580,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_handle_in_order",
-          "line": 1583,
-          "end_line": 1591,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "current": true,
+      "issues": [],
+      "definitions": 74,
+      "annotated_definitions": 74,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -6912,10 +6607,8 @@
       "lines": 85,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 4,
       "annotated_definitions": 4,
       "missing_definitions": []
@@ -9795,33 +9488,16 @@
     },
     {
       "path": "backend/tests/test_public_bot.py",
-      "sha256": "912507e85324b5a6e170da499f3dd06293e4024252e1e9f837e4947bf281c7dc",
-      "bytes": 36999,
-      "lines": 695,
+      "sha256": "97b3da2496f7c8a1ae6a133e33a03990bd00102c0520f4f71bc3463a5ad4ffd8",
+      "bytes": 40173,
+      "lines": 756,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
-      "definitions": 70,
-      "annotated_definitions": 68,
-      "missing_definitions": [
-        {
-          "name": "test_tell_me_what_to_send_and_self_improvement_ideas",
-          "line": 680,
-          "end_line": 695,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_tell_me_what_to_send_and_self_improvement_ideas.llm",
-          "line": 685,
-          "end_line": 687,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "current": true,
+      "issues": [],
+      "definitions": 78,
+      "annotated_definitions": 78,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_public_year_contract.py",
@@ -12217,9 +11893,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "0095babae226d1516a39d5303d7b4a4bd0302b9811d8313561d2f05296c3ab5f",
-      "bytes": 24241,
-      "lines": 174,
+      "sha256": "39ca725de15cdac63d486e048d66956e565214e3a50a161b8546cc2e43f5c600",
+      "bytes": 24478,
+      "lines": 175,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12815,16 +12491,13 @@
     },
     {
       "path": "docs/adr/0027-public-telegram-bot.md",
-      "sha256": "3579a697ff737c83ff080da7a62046e08dcdd2585aea9fddebf89e08b6d4e705",
-      "bytes": 33425,
-      "lines": 191,
+      "sha256": "79c2b1f03e6ca4ff5cd0dfdafd38d53810d7eea53461ba13e17ad4405ab0150a",
+      "bytes": 35954,
+      "lines": 202,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -29601,17 +29274,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "a6d596fbd8eb41966b504fbd0dab5cee9cf999756293ef4a1b839cfac44745fb",
+  "ledger_sha256": "509207b933dc7637ea647e32d89d228a81921369a6fcf1fcdc97c4e3d5327a13",
   "javascript_inventory_sha256": "d796d2d357a9f3f25555e57966f5be7ce2cbb1ddeb87fec6ce38f47be19bcd06",
-  "baseline_commit": "3bedb51261a323ebb7901e0ff051b372670c729e",
+  "baseline_commit": "3e9c8913ff01823aa7aa4944920012ec7fb5be43",
   "branch": "fix/public-bot-ux",
-  "unstaged_at_capture": [
-    "backend/app/services/public_bot.py",
-    "backend/scripts/public-bot-setup.py",
-    "backend/tests/test_public_bot.py",
-    "docs/adr/0027-public-telegram-bot.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
