@@ -841,7 +841,10 @@ const REGION_CHIPS_VISIBLE = 4;
 function regionValueText(entry, unit, locale) {
   if (entry.value == null || !Number.isFinite(Number(entry.value))) return '';
   const abs = Math.abs(Number(entry.value));
-  const short = splitUnit(plainUnit(String(unit || '').trim(), locale)).short;
+  const rawUnit = String(unit || '').trim();
+  // Единица коротко и без повторов в каждой строке: «₽», «%»; длинное «рублей за литр» уже в заголовке строки.
+  const long = splitUnit(plainUnit(rawUnit, locale)).short;
+  const short = /руб|₽|rub/i.test(rawUnit) ? '₽' : rawUnit.includes('%') ? '%' : long && long.length <= 5 ? long : '';
   const value = formatValue(entry.value, abs >= 1000 ? 0 : abs >= 100 ? 1 : 2, locale);
   return short ? `${value}\u00A0${short}` : value;
 }
@@ -856,13 +859,13 @@ function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }
         const value = regionValueText(entry, unit, locale);
         return (
           <button key={entry.slug} type="button" className="w6d-sr-chip fe-press z4s-region-chip" onClick={() => onPick(entry)}>
-            <span>{entry.name}</span>
+            <span>{String(entry.name || '').replace(/^г\.\s*/u, '')}</span>
             {value ? <strong className="z4s-region-chip__value">{value}</strong> : null}
           </button>
         );
       })}
       {regions.length > REGION_CHIPS_VISIBLE ? (
-        <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
+        <button type="button" className="w6d-sr-chip fe-press z4s-region-more" aria-expanded={expanded} onClick={onToggle}>
           {expanded ? t('z4s.regions.less') : t('z4s.regions.more', { n: regions.length - REGION_CHIPS_VISIBLE })}
         </button>
       ) : null}
@@ -1000,7 +1003,7 @@ function SearchRow({
             </button>
           ))}
           {countries.length > COUNTRY_CHIPS_VISIBLE ? (
-            <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
+            <button type="button" className="w6d-sr-chip fe-press z4s-region-more" aria-expanded={expanded} onClick={onToggle}>
               {expanded ? t('w6d.search.countryLess') : t('w6d.search.countryMore', { n: countries.length - COUNTRY_CHIPS_VISIBLE })}
             </button>
           ) : null}

@@ -1118,6 +1118,14 @@ def _is_single_letter_query(raw: str) -> bool:
     return len(letters) == 1
 
 
+# Ходовые ряды: при равном счёте («курс», «ставка», «бензин») человек ждёт доллар, евро, юань, ключевую ставку и АИ-92,
+# а не ряды по алфавиту кодов. Влияет только на порядок строк с одинаковым счётом.
+_HEADLINE_ORDER = {code: rank for rank, code in enumerate((
+    "usd-rub", "eur-rub", "cny-rub", "kzt-rub", "try-rub", "byn-rub", "uah-rub", "aed-rub", "gbp-rub", "jpy-rub",
+    "key-rate", "cpi-yoy", "unemployment", "wages-nominal", "mortgage-rate", "fuel-ai92", "fuel-ai95", "ceni-ai92",
+    "ceni-ai95", "gdp-nominal"))}
+
+
 def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     """Порядок выдачи: сильнее совпадение выше; при равенстве региональные ряды ниже; на языке хоста выше.
 
@@ -1137,6 +1145,7 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
             -item["score"],
             # При равном счёте годовая инфляция страны выше индекса цен и месячного прироста.
             0 if _annual_inflation_row(item) else 1,
+            _HEADLINE_ORDER.get(item.get("code"), len(_HEADLINE_ORDER)),
             1 if not intent.regions and regional_indicator else 0,
             0 if (locale == "ru" and item.get("country_slug") == "russia") or (locale == "en" and item.get("country_slug") != "russia") else 1,
             item["key"],
