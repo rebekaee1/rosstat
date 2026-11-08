@@ -119,3 +119,33 @@
 @media (prefers-reduced-motion: reduce) {
   .z3-quick, .z3-pop__row { scroll-behavior: auto; }
 }
+
+/* ---------- R2-Z3: «Выгодно ли сейчас» под результатом ---------- */
+.z3-past { margin-top: 12px; }
+.z3-past__title { margin: 0 0 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--z8-muted, var(--color-text-secondary)); }
+.z3-past__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.z3-past__item {
+  padding: 10px 12px 9px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-surface, #fff) 70%, transparent);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 8px 22px -14px rgb(25 40 80 / 0.35);
+  min-width: 0;
+}
+.z3-past__item p { margin: 0; }
+.z3-past__when { font-size: 12px; color: var(--z8-muted, var(--color-text-secondary)); }
+.z3-past__val { margin-top: 2px; font-size: 19px; font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.z3-past__unit { margin-left: 4px; font-size: 12px; font-weight: 500; color: var(--z8-muted, var(--color-text-secondary)); }
+.z3-past__diff { margin-top: 3px; font-size: 13px; font-weight: 600; color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f)); }
+.z3-past__date { margin-top: 1px; font-size: 11.5px; color: var(--color-text-tertiary, var(--color-text-secondary)); }
+
+.z3-past--ghost { min-height: 168px; }
+/* Название валюты на кнопке «Из / В» читается целиком: две строки вместо «Таджик…» и «Доллар …». */
+.z3-pair .fe-z8-select__name {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}

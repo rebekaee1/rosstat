@@ -88,7 +88,11 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const lastRaw = rawSeries.length ? rawSeries[rawSeries.length - 1].value : null;
   const flipped = Boolean(pair?.invert && lastRaw != null && lastRaw > 100);
   // Мелкая валюта (сум, тенге) рисуется «за 10 000 / за 100», как у Банка России: на оси «68,60», а не «0,00686».
-  const nominal = pair && !pair.invert ? nominalFor(pair.base, lastRaw) : 1;
+  // Рубли в сомони и сумы («отправить семье»): курс «за 1 000 ₽», а не «за 1 ₽ = 0,1121».
+  const rubInverse = pair?.invert && !flipped && pair.base === 'RUB' && lastRaw > 0 ? 1 / lastRaw : null;
+  let rubNominal = 1;
+  if (rubInverse != null && rubInverse < 1) { rubNominal = 1000; while (rubNominal * rubInverse < 10 && rubNominal < 1e9) rubNominal *= 10; }
+  const nominal = rubNominal > 1 ? rubNominal : (pair && !pair.invert ? nominalFor(pair.base, lastRaw) : 1);
   const baseSeries = useMemo(() => {
     const series = pair?.invert && !flipped ? cleanSeries(perOne, { invert: true }) : rawSeries;
     return nominal > 1 ? series.map((p) => ({ ...p, value: p.value * nominal })) : series;
@@ -130,7 +134,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const secondPair = secondEnabled ? parsePair(secondCode) : null;
   const unitB = secondPair ? unitMeta(secondPair.quote)?.symbol || '' : '';
   const nameB = secondEnabled ? pairTitle(secondCode, locale, secondCode) : '';
-  const titleKey = period === 'year' ? 'z8.cur.chartTitle' : `c11e.cur.title.${period}`;
+  const titleKey = period === 'year' ? 'z8.cur.chartTitle' : period === 'quarter' ? 'r2z3.chart.title.quarter' : `c11e.cur.title.${period}`;
   const title = compare
     ? t('c11e.cur.titleCompare', { a: nameA, b: nameB })
     : t(titleKey, { pair: nameA });
@@ -144,7 +148,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
             active={period === id}
             onClick={() => { setPeriod(id); track(events.COMPARE_CHANGE, { converter: 'chart-period', period: id }); }}
           >
-            {t(`c11e.cur.period.${id}`)}
+            {t(id === 'quarter' || id === 'all' ? `r2z3.chart.period.${id}` : `c11e.cur.period.${id}`)}
           </Chip>
         ))}
       </div>
@@ -209,7 +213,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
     ? t('c9d.cur.perUnits', { n: `${formatValue(nominal, 0, locale)}\u00a0${unitWord(nominal, baseUnit, locale)}` })
     : '';
   const sparse = points.length <= 12;
-  const perKey = period === 'year' ? 'z8.cur.perYear' : `c11e.cur.per.${period}`;
+  const perKey = period === 'year' ? 'z8.cur.perYear' : period === 'quarter' ? 'r2z3.chart.per.quarter' : `c11e.cur.per.${period}`;
   const fillId = `url(#${glass.area})`;
 
   return (

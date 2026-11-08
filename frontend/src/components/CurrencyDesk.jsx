@@ -90,7 +90,7 @@ function RateTiles({ edges, market, pending = false }) {
         <div className="fe-z8-rate fe-z8-rate--cb fe-reveal fe-reveal--free" style={{ '--fe-delay': '0ms' }}>
           <p className="fe-z8-rate__label">
             <span className="fe-z8-rate__mark" aria-hidden="true" />
-            {t('z8.cur.tile.cb', { date: shortDate(cb.date, locale) })}
+            {t('r2z3.tile.cb', { date: shortDate(cb.date, locale) })}
           </p>
           <p className="fe-z8-rate__value">
             <span className="fe-z8-rate__num">{formatValue(cb.rate, 2, locale)}</span>
@@ -100,7 +100,7 @@ function RateTiles({ edges, market, pending = false }) {
         </div>
         {live ? (
           <div className="fe-z8-rate fe-reveal fe-reveal--free" style={{ '--fe-delay': '60ms' }}>
-            <p className="fe-z8-rate__label">{t('z8.cur.tile.market')}</p>
+            <p className="fe-z8-rate__label">{t('r2z3.tile.market')}</p>
             <p className="fe-z8-rate__value">
               <span className="fe-z8-rate__num">{formatValue(live.price, 2, locale)}</span>
               <span className="fe-z8-rate__unit">₽</span>

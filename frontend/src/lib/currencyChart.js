@@ -2,8 +2,8 @@
 // «старт = 100», подписи оси X без наложений и день в подсказке. Чистая логика без React.
 import { unitMeta } from './currencyRates';
 
-export const CHART_PERIODS = ['week', 'month', 'year', 'all'];
-const PERIOD_DAYS = { week: 7, month: 31, year: 366, all: 36500 };
+export const CHART_PERIODS = ['week', 'month', 'quarter', 'year', 'all'];
+const PERIOD_DAYS = { week: 7, month: 31, quarter: 92, year: 366, all: 36500 };
 const DAY_MS = 86_400_000;
 const MAX_POINTS = 600;
 
