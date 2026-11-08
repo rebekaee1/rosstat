@@ -3777,4 +3777,13 @@ export default {
   'z2.group.other': 'Прочее',
   'z2.perUnit': '≈ {price} за {word}',
   'z2.tableMonths': 'Таблица значений по месяцам',
+  'z4s.example.1': 'Цены на яйца в Москве',
+  'z4s.example.2': 'Курс узбекского сума',
+  'z4s.regions.aria': 'Регионы',
+  'z4s.regions.more': 'Ещё {n} регионов',
+  'z4s.regions.less': 'Свернуть',
+  'z4s.empty.rates': 'Курсы валют:',
+  'z4s.empty.rate.1': 'Курс доллара',
+  'z4s.empty.rate.2': 'Курс узбекского сума',
+  'z4s.empty.rate.3': 'Курс тенге',
 };

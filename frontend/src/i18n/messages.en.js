@@ -3772,4 +3772,13 @@ export default {
   'z2.group.other': 'Other',
   'z2.perUnit': '≈ {price} per {word}',
   'z2.tableMonths': 'Table of values by month',
+  'z4s.example.1': 'Egg prices in Moscow',
+  'z4s.example.2': 'Uzbek som rate',
+  'z4s.regions.aria': 'Regions',
+  'z4s.regions.more': '{n} more regions',
+  'z4s.regions.less': 'Show fewer',
+  'z4s.empty.rates': 'Exchange rates:',
+  'z4s.empty.rate.1': 'US dollar rate',
+  'z4s.empty.rate.2': 'Uzbek som rate',
+  'z4s.empty.rate.3': 'Tenge rate',
 };

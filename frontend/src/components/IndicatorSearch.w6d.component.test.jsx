@@ -52,7 +52,7 @@ const row = (key, name, extra = {}) => ({
 it('ru: примеры мировые, а ставка ФРС, нефть и ключевая ставка открываются сразу по своему адресу', async () => {
   mount();
   const options = screen.getAllByRole('option').map((o) => o.textContent);
-  expect(options.slice(0, 4)).toEqual(['Инфляция в Турции', 'ВВП Индии', 'Безработица в Испании', 'Ставка ФРС США']);
+  expect(options.slice(0, 4)).toEqual(['Цены на яйца в Москве', 'Курс узбекского сума', 'Ключевая ставка России', 'Инфляция в Турции']);
   fireEvent.click(screen.getByRole('option', { name: 'Ставка ФРС США' }));
   await waitFor(() => expect(screen.getByTestId('loc').textContent).toBe('/united-states/indicator/us-policy-rate'));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());

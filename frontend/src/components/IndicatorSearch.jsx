@@ -32,6 +32,7 @@ import '../styles/shell.css';
 import '../styles/w6d.css';
 import '../styles/z8-tools.css';
 import '../styles/k8-tools.css';
+import '../styles/z4s-search.css';
 
 // The palette discovers every public data plane through /search. Empty-query
 // suggestions remain small, and typed results preserve geography and slices.
@@ -769,6 +770,14 @@ export default function IndicatorSearch({
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
+                              <p className="mt-4 text-sm font-medium text-text-secondary">{t('z4s.empty.rates')}</p>
+                              <ul className="mt-2 flex flex-wrap justify-center gap-2">
+                                {['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => (
+                                  <li key={key}>
+                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(t(key)); inputRef.current?.focus(); }}>{t(key)}</Chip>
+                                  </li>
+                                ))}
+                              </ul>
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
                                 {popular.slice(0, 4).map((example) => (
                                   <li key={example}>
@@ -823,6 +832,41 @@ export default function IndicatorSearch({
         document.body,
       )}
     </>
+  );
+}
+
+const REGION_CHIPS_VISIBLE = 4;
+
+/** Короткое значение региона в чипе: «104,3 ₽»; единица берётся из строки. */
+function regionValueText(entry, unit, locale) {
+  if (entry.value == null || !Number.isFinite(Number(entry.value))) return '';
+  const abs = Math.abs(Number(entry.value));
+  const short = splitUnit(plainUnit(String(unit || '').trim(), locale)).short;
+  const value = formatValue(entry.value, abs >= 1000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  return short ? `${value}\u00A0${short}` : value;
+}
+
+/** Z4: регионы одного показателя под строкой «Россия»: первые видны, остальные раскрываются кнопкой «Ещё N регионов». */
+function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }) {
+  const regions = group.regions;
+  const shown = expanded ? regions : regions.slice(0, REGION_CHIPS_VISIBLE);
+  return (
+    <div className="w6d-sr-chips z4s-region-chips" role="group" aria-label={t('z4s.regions.aria')}>
+      {shown.map((entry) => {
+        const value = regionValueText(entry, unit, locale);
+        return (
+          <button key={entry.slug} type="button" className="w6d-sr-chip fe-press z4s-region-chip" onClick={() => onPick(entry)}>
+            <span>{entry.name}</span>
+            {value ? <strong className="z4s-region-chip__value">{value}</strong> : null}
+          </button>
+        );
+      })}
+      {regions.length > REGION_CHIPS_VISIBLE ? (
+        <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
+          {expanded ? t('z4s.regions.less') : t('z4s.regions.more', { n: regions.length - REGION_CHIPS_VISIBLE })}
+        </button>
+      ) : null}
+    </div>
   );
 }
 
@@ -931,6 +975,10 @@ function SearchRow({
             <button key={chip.id} type="button" className="w6d-sr-chip fe-press" onClick={() => onQuick?.(chip.query)}>{chip.label}</button>
           ))}
         </div>
+      ) : null}
+      {item.regional_group?.regions?.length ? (
+        <RegionGroupChips group={item.regional_group} unit={item.unit} expanded={expanded} onToggle={onToggle} t={t} locale={locale}
+          onPick={(entry) => onPick(row, index + 1, { key: `${item.key}:${entry.slug}`, kind: 'region_indicator', path: entry.path, navigation: entry.navigation || 'spa' })} />
       ) : null}
       {row.type === 'byCountry' ? (
         <div className="w6d-sr-chips">

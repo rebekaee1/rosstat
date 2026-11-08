@@ -7,6 +7,10 @@ import { indicatorPath, russiaIndicatorPath } from './sitePaths';
 import { plainUnit } from './searchText';
 
 export const SEARCH_EXAMPLE_KEYS = Object.freeze([
+  // Z4: домашние темы первыми — цены в регионе, курс сума, ключевая ставка; зарубежные следом.
+  'z4s.example.1',
+  'z4s.example.2',
+  'w6d.search.example.8',
   'shell.search.example.1',
   'shell.search.example.2',
   'shell.search.example.3',
@@ -14,7 +18,6 @@ export const SEARCH_EXAMPLE_KEYS = Object.freeze([
   'shell.search.example.5',
   'shell.search.example.6',
   'w6d.search.example.7',
-  'w6d.search.example.8',
 ]);
 
 /**
@@ -23,6 +26,7 @@ export const SEARCH_EXAMPLE_KEYS = Object.freeze([
  * («Инфляция в Турции») запускают поиск и открывают лучший результат сами.
  */
 const SUGGESTION_PATHS = Object.freeze({
+  'z4s.example.2': () => russiaIndicatorPath('uzs-rub'),
   'shell.search.example.4': () => indicatorPath('united-states', 'us-policy-rate'),
   'shell.search.example.5': () => russiaIndicatorPath('eur-usd'),
   'shell.search.example.6': () => russiaIndicatorPath('brent'),
