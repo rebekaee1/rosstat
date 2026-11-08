@@ -825,7 +825,7 @@ _EXTRA_CODES = (
 
 LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека, можешь задать встречный вопрос, если он поможет.
 
-Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
+Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
 Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
 
@@ -867,6 +867,11 @@ async def build_llm_context(db, today: date | None = None) -> str:
         f = await _figure_by_code(db, code)
         if f is not None:
             lines.append(_context_line(title, "", f))
+    yearly = await _series(db, "inflation-annual", date(today.year - 16, 1, 1), weekly=False)
+    if yearly:
+        # Для вопросов «сколько стоили бы мои деньги из 2015 года»: годовая инфляция по годам (Росстат).
+        lines.append("Инфляция по годам, % (декабрь к декабрю): "
+                     + ", ".join(f"{d.year} — {fmt_num(v, 1)}" for d, v in yearly[-15:]))
     if no_forecast:
         # Живой прогон 08.11: модель обещала «прогноз бензина на сайте», которого нет.
         lines.append("Нашего расчёта (прогноза) нет ни в боте, ни на сайте по темам: " + ", ".join(no_forecast)
@@ -1039,8 +1044,9 @@ async def render_topic_chart(topic_key: str) -> bytes | None:
         cmp_pts = await _series(db, cmp_code, since, weekly=True) if cmp_code else None
     ya = None
     if fig.year_ago_value is not None:
+        # То же значение «год назад», что в карточке (у дневных рядов график прорежен до недели).
         target = fig.last_date - timedelta(days=365)
-        ya = min(pts, key=lambda p: abs((p[0] - target).days))
+        ya = (min(pts, key=lambda p: abs((p[0] - target).days))[0], fig.year_ago_value)
     unit = {"%": "%", "% за год": "%"}.get(topic.unit, topic.unit)
     series = Series(
         title=topic.title, unit=unit, source=fig.source, points=pts,
@@ -1048,6 +1054,7 @@ async def render_topic_chart(topic_key: str) -> bytes | None:
         year_ago=ya if ya and abs((ya[0] - (fig.last_date - timedelta(days=365))).days) <= 40 else None,
         compare_label=cmp_label, compare_points=cmp_pts, target=_CHART_TARGET.get(topic_key),
         is_rate=topic.is_rate, step=topic_key == "keyrate", unit_note=topic.unit,
+        monthly=fig.frequency == "monthly",
     )
     return await asyncio.to_thread(render_chart, series)
 

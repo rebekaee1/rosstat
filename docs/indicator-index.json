@@ -11900,12 +11900,12 @@
         },
         {
           "file": "backend/app/services/public_bot.py",
-          "line": 1167,
+          "line": 1174,
           "kind": "other"
         },
         {
           "file": "backend/app/services/public_bot.py",
-          "line": 1172,
+          "line": 1179,
           "kind": "other"
         },
         {
@@ -22615,7 +22615,7 @@
         },
         {
           "file": "backend/app/services/public_bot.py",
-          "line": 996,
+          "line": 1001,
           "kind": "other"
         },
         {
@@ -37021,47 +37021,47 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334445,
+          "line": 334453,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334446,
+          "line": 334454,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334471,
+          "line": 334479,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334505,
+          "line": 334513,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334506,
+          "line": 334514,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334533,
+          "line": 334541,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334567,
+          "line": 334575,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334568,
+          "line": 334576,
           "kind": "other"
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 334590,
+          "line": 334598,
           "kind": "other"
         },
         {
@@ -58692,6 +58692,11 @@
           "kind": "derived"
         },
         {
+          "file": "backend/app/services/public_bot.py",
+          "line": 870,
+          "kind": "other"
+        },
+        {
           "file": "backend/scripts/export_seo_demand_quarter.py",
           "line": 473,
           "kind": "other"
@@ -58732,6 +58737,11 @@
           "kind": "tests"
         },
         {
+          "file": "backend/tests/test_public_bot.py",
+          "line": 584,
+          "kind": "tests"
+        },
+        {
           "file": "backend/tests/test_search_registered_semantics.py",
           "line": 61,
           "kind": "tests"
@@ -58749,6 +58759,11 @@
         {
           "file": "docs/adr/0006-indicator-card-unification.md",
           "line": 154,
+          "kind": "other"
+        },
+        {
+          "file": "docs/adr/0027-public-telegram-bot.md",
+          "line": 151,
           "kind": "other"
         },
         {
@@ -59483,7 +59498,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 324008,
+          "line": 324016,
           "kind": "other"
         },
         {
@@ -64543,7 +64558,7 @@
         },
         {
           "file": "backend/app/services/public_bot.py",
-          "line": 997,
+          "line": 1002,
           "kind": "other"
         },
         {
@@ -65463,7 +65478,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 328576,
+          "line": 328584,
           "kind": "other"
         },
         {
@@ -79810,7 +79825,7 @@
         },
         {
           "file": "docs/mechanism-inventory.json",
-          "line": 325054,
+          "line": 325062,
           "kind": "other"
         },
         {

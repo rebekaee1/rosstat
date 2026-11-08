@@ -48,6 +48,7 @@ class Series:
     is_rate: bool = False
     step: bool = False          # ступенчатый ряд (ключевая ставка): без сглаживания
     unit_note: str = ""         # подпись под заголовком, например «% за год»
+    monthly: bool = False       # месячный ряд: «за авг 2026», а не «на 1 авг 2026»
 
 
 def _num(v: float, digits: int = 2) -> str:
@@ -128,7 +129,8 @@ def render_chart(s: Series) -> bytes:
     vf = FG(88, 780)
     vw = d.textlength(value, font=vf)
     d.text((W - 90 - vw, 52), value, font=vf, fill=BLUE)
-    sub = f"на {last_d.day} {_MONTHS_SHORT[last_d.month - 1]} {last_d.year}"
+    sub = (f"за {_MONTHS_SHORT[last_d.month - 1]} {last_d.year}" if s.monthly
+           else f"на {last_d.day} {_MONTHS_SHORT[last_d.month - 1]} {last_d.year}")
     if s.year_ago:
         yv = s.year_ago[1]
         if s.is_rate:
@@ -181,7 +183,10 @@ def render_chart(s: Series) -> bytes:
         if len(cp) > 1:
             d.line(_spline(cp, 6), fill=COMPARE + (255,), width=3, joint="curve")
             cx, cy = cp[-1]
-            d.text((cx + 12, cy - 14), s.compare_label or "", font=FG(24, 600), fill=COMPARE)
+            lab = s.compare_label or ""
+            lw = d.textlength(lab, font=FG(24, 600))
+            # Подпись над концом линии, внутри области графика (у правого края обрезалась).
+            d.text((min(cx - lw / 2, right - lw), cy - 42), lab, font=FG(24, 600), fill=COMPARE)
 
     # основной ряд: заливка + линия
     pts = [xy(dt, v) for dt, v in s.points]

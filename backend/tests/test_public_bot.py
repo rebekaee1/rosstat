@@ -574,3 +574,30 @@ def test_notify_shows_was_and_no_stale_line():
                           was=(date(2026, 10, 19), 86.0))
     assert "Было 86,00 ₽ за литр (19 октября 2026)." in text and "Новее данных" not in text
     assert pb.fmt_date(date(2026, 4, 1), "quarterly") == "2-й квартал 2026"
+
+
+def test_context_yearly_inflation_and_prompt_trusts_data(env):
+    maker, _, _ = env
+
+    async def seed_and_ctx():
+        async with maker() as db:
+            ind = Indicator(code="inflation-annual", name="Инфляция годовая", unit="%", frequency="annual",
+                            source="Росстат")
+            db.add(ind)
+            await db.flush()
+            db.add_all([IndicatorData(indicator_id=ind.id, date=date(2015, 1, 1), value=12.9),
+                        IndicatorData(indicator_id=ind.id, date=date(2016, 1, 1), value=5.4)])
+            await db.commit()
+            return await pb.build_llm_context(db)
+    text = asyncio.run(seed_and_ctx())
+    assert "Инфляция по годам, % (декабрь к декабрю): 2015 — 12,9, 2016 — 5,4" in text
+    assert "свежее твоих прошлых реплик" in pb.LLM_SYSTEM_PROMPT
+
+
+def test_chart_monthly_subtitle_and_year_ago_matches_card(env):
+    from app.services.bot_chart import Series, render_chart
+    png = render_chart(Series(title="Вклады", unit="%", source="Банк России", monthly=True,
+                              points=[(date(2025, 8, 1), 15.57), (date(2026, 8, 1), 12.84)],
+                              compare_label="инфляция",
+                              compare_points=[(date(2025, 8, 1), 8.1), (date(2026, 8, 1), 6.3)]))
+    assert png[:8] == b"\x89PNG\r\n\x1a\n"

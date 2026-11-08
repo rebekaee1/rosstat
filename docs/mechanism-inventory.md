@@ -14,7 +14,7 @@
 - Jobs: **57**
 - Middleware: **6**
 - Registry declarations: **1210**
-- Registry references: **2312**
+- Registry references: **2313**
 - Migration operations: **458**
 - Candidate effects: **2643**
 - Unresolved syntax: **1**
@@ -2568,14 +2568,14 @@ Relationships: `[]`
 | app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:385](../backend/app/services/public_bot.py#L385) |
 | app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:387](../backend/app/services/public_bot.py#L387) |
 | app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:811](../backend/app/services/public_bot.py#L811) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:926](../backend/app/services/public_bot.py#L926) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:928](../backend/app/services/public_bot.py#L928) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:948](../backend/app/services/public_bot.py#L948) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:953](../backend/app/services/public_bot.py#L953) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:955](../backend/app/services/public_bot.py#L955) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:994](../backend/app/services/public_bot.py#L994) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:996](../backend/app/services/public_bot.py#L996) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:998](../backend/app/services/public_bot.py#L998) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:931](../backend/app/services/public_bot.py#L931) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:933](../backend/app/services/public_bot.py#L933) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:953](../backend/app/services/public_bot.py#L953) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:958](../backend/app/services/public_bot.py#L958) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:960](../backend/app/services/public_bot.py#L960) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:999](../backend/app/services/public_bot.py#L999) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1001](../backend/app/services/public_bot.py#L1001) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1003](../backend/app/services/public_bot.py#L1003) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
