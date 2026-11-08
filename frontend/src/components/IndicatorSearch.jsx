@@ -853,8 +853,17 @@ function regionValueText(entry, unit, locale) {
 function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }) {
   const regions = group.regions;
   const shown = expanded ? regions : regions.slice(0, REGION_CHIPS_VISIBLE);
+  // Разброс по регионам одной строкой: торопящемуся человеку это ответ быстрее, чем листать сорок регионов.
+  const valued = regions.filter((entry) => entry.value != null && Number.isFinite(Number(entry.value)));
+  const low = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) < Number(a.value) ? b : a)) : null;
+  const high = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) > Number(a.value) ? b : a)) : null;
   return (
     <div className="w6d-sr-chips z4s-region-chips" role="group" aria-label={t('z4s.regions.aria')}>
+      {low && high && Number(low.value) !== Number(high.value) ? (
+        <p className="z4s-region-range">
+          {t('r2z4.regions.range', { min: regionValueText(low, unit, locale), max: regionValueText(high, unit, locale) })}
+        </p>
+      ) : null}
       {shown.map((entry) => {
         const value = regionValueText(entry, unit, locale);
         return (

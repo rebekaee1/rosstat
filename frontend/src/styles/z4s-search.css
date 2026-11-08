@@ -8,3 +8,5 @@
 /* R2-Z4: частоты курса («День · Неделя · Месяц · Квартал · Год») — одна строка равных кнопок на всю ширину, а не два рваных ряда. */
 .z4s-freq { display: grid; gap: 6px; padding-left: 16px; }
 .z4s-freq__chip { justify-content: center; min-width: 0; padding: 0 4px; white-space: nowrap; }
+/* R2-Z4: разброс «по регионам: от … до …» над списком регионов; тихая подпись без рамок. */
+.z4s-region-range { margin: 0; padding: 0 4px 2px; font-size: 13px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }

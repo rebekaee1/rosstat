@@ -3786,4 +3786,5 @@ export default {
   'z4s.empty.rate.1': 'Курс доллара',
   'z4s.empty.rate.2': 'Курс узбекского сума',
   'z4s.empty.rate.3': 'Курс тенге',
+  'r2z4.regions.range': 'По регионам: от {min} до {max}',
 };

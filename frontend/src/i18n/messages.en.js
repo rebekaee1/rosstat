@@ -3781,4 +3781,5 @@ export default {
   'z4s.empty.rate.1': 'US dollar rate',
   'z4s.empty.rate.2': 'Uzbek som rate',
   'z4s.empty.rate.3': 'Tenge rate',
+  'r2z4.regions.range': 'Across regions: {min} to {max}',
 };
