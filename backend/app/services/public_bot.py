@@ -418,7 +418,7 @@ UNKNOWN_TEXT = ("Такой цифры у меня нет: беру только
                 "Ближе всего — темы ниже, или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>.")
 LIMIT_TEXT = ("На сегодня мои ответы закончились — продолжим завтра 🙂 "
               "Карточки тем, графики и подписки кнопками ниже работают без ограничений.")
-LLM_FAIL_TEXT = "Не получилось ответить на вопрос. Попробуйте позже или выберите тему ниже."
+LLM_FAIL_TEXT = "Не успел ответить — слишком много вопросов сразу. Напишите ещё раз через минуту или выберите тему ниже."
 SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
 WELCOME_BACK = "С возвращением! Спрашивайте своими словами или выберите тему."
 SHORT_INTRO = ("Это <b>Forecast Economy</b>: свежие официальные цифры экономики России. "
@@ -1197,11 +1197,17 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
     }
     try:
         async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
-            resp = await client.post(
-                _OPENROUTER_URL, json=payload,
-                headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
-                         "X-Title": "Forecast Economy bot"},
-            )
+            for attempt in (0, 1):
+                resp = await client.post(
+                    _OPENROUTER_URL, json=payload,
+                    headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
+                             "X-Title": "Forecast Economy bot"},
+                )
+                # Круг 2, тестер №4: при всплеске запросов провайдер отвечал 429/402/5xx — одна быстрая повторная попытка.
+                if resp.status_code in (402, 429, 500, 502, 503, 504) and attempt == 0:
+                    await asyncio.sleep(3)
+                    continue
+                break
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
             return None
@@ -1609,6 +1615,8 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Круг 2, тестер №4: на сбой модели человек получал сухую карточку без объяснения, будто бот не понял вопрос.
+            await _send(chat_id, "Подробно ответить не успел — вот свежая цифра по теме:")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
