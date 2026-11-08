@@ -763,3 +763,9 @@ def test_chart_mismatch_neighbour_row():
     assert not chart_mismatch("курс доллара", "usd")
     assert not chart_mismatch("доллар и юань", "usd")
     assert not chart_mismatch("курс юаня", "inflation")
+
+
+def test_telegram_html_drops_foreign_links():
+    out = pb.telegram_html('см. <a href="https://rosstat.gov.ru/x">Росстат</a> и <a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>')
+    assert "rosstat" not in out and "Росстат" in out
+    assert '<a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>' in out
