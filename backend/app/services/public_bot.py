@@ -1054,6 +1054,8 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 [[график: ключ]] — график темы картинкой (около полутора лет, другой период не выбрать; последняя цифра, год назад, наш расчёт); только если эта тема — предмет вопроса, для ВВП, юаня, биткоина и прочего вне ключей графика нет; он придёт перед твоим текстом, поэтому не предлагай его словами;
 [[вопросы: реплика | реплика]] — до трёх кнопок-реплик от лица человека (до 40 знаков): следующий вопрос, ответ на который точно есть в ДАННЫХ (не просьбы о совете, куда вложить), а в игре или опросе — варианты ответа.
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
+График прикладывай, только если человек просит показать саму тему или её динамику. На вопрос про часть темы (продукты, услуги), про историю («когда была самая высокая»), на расчёты и объяснения график не нужен: он не покажет ответ. Если график идёт с этим ответом, не пиши «могу прислать график» — он уже у человека.
+Расчёты (кредит, вклад) делай по последней официальной цифре; «наш расчёт» называй вторым, одной фразой. Налог на проценты по вкладам не считай по сегодняшней ставке: необлагаемый минимум зависит от максимальной ставки года на начало месяцев; назови это правилом и пошли к калькулятору налога ФНС словами «посмотрите у налоговой», суммы не выводи.
 Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет в ДАННЫХ — предложи нужный раздел нашего сайта ссылкой, а не чужие сайты. Ссылайся только на эти адреса как есть, своих не придумывай."""
 
 
@@ -1100,9 +1102,22 @@ async def build_llm_context(db, today: date | None = None) -> str:
             select(func.min(IndicatorData.date)).where(
                 IndicatorData.indicator_id == ind.id, IndicatorData.date > changed)
         )).scalar_one_or_none() if changed else None
+        # Тестер 1, 09.11: «когда следующее заседание ЦБ» — бот отвечал «даты нет», хотя календарь событий её знает.
+        meeting = (await db.execute(
+            select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
+            .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
+            .where(Indicator.code == TOPICS["keyrate"].indicator, EconomicEvent.event_type == "rate_decision",
+                   EconomicEvent.scheduled_date >= today)
+            .order_by(EconomicEvent.scheduled_date).limit(1)
+        )).first()
+        meeting_txt = (f"следующее заседание Банка России по ставке: {'ориентировочно ' if meeting[1] else ''}"
+                       f"{fmt_date(meeting[0], 'daily')}." if meeting
+                       else "даты следующего заседания Банка России в данных нет.")
         if since:
             lines.append(f"Ключевая ставка {fmt_num(key.last_value)} % действует с {fmt_date(since, 'daily')} "
-                         "(точки в ряду — дни, а не заседания); даты следующего заседания Банка России в данных нет.")
+                         f"(точки в ряду — дни, а не заседания); {meeting_txt}")
+        elif meeting:
+            lines.append(f"Ключевая ставка: {meeting_txt}")
     for code, title in _EXTRA_CODES:
         f = await _figure_by_code(db, code)
         if f is not None:
@@ -1160,6 +1175,10 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
     """Ответ модели; если основная не ответила — одна попытка запасной (openrouter_model)."""
     primary = settings.public_bot_llm_model or settings.openrouter_model
     answer = await _llm_call(primary, context, question, history)
+    if answer is None:
+        # Тестер 1, 09.11: при нагрузке 3 из 21 вопросов получили «не получилось ответить» — один повтор.
+        await asyncio.sleep(1.5)
+        answer = await _llm_call(primary, context, question, history)
     if answer is None and settings.public_bot_llm_model and settings.public_bot_llm_model != settings.openrouter_model:
         logger.warning("Public bot LLM: основная модель не ответила, пробую %s", settings.openrouter_model)
         answer = await _llm_call(settings.openrouter_model, context, question, history)
