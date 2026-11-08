@@ -3739,4 +3739,11 @@ export default {
   'z1.prices.rank.power': 'Electricity tariff',
   'z1.prices.rank.bus': 'Bus fare',
   'z1.prices.rank.rent': 'Flat rent',
+  // Z3 (round of 08 Nov): exchange rates
+  'z3.cur.popular': 'Popular for travel',
+  'z3.cur.searchHint': 'Currency, country or code: som, Uzbekistan, UZS',
+  'z3.cur.nothing': 'No such currency found. Try a name, a country or a code: "dirham", "Turkey", "UZS".',
+  'z3.cur.perDay': 'per day',
+  'z3.cur.cardTitle': 'Convert your amount',
+  'z3.cur.otherPair': 'Another pair: converter for all currencies',
 };

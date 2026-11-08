@@ -18,7 +18,7 @@ import { formatDeltaWithUnit } from '../lib/deltaText';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { CHART_THEME, COMPARE_COLORS, GRID_PROPS, axisTick, niceAxis } from '../lib/chartTheme';
 import { useChartGlassIds, useElementWidth } from '../lib/chartHooks';
-import { pairTitle, parsePair, unitMeta } from '../lib/currencyRates';
+import { nominalFor, pairTitle, parsePair, unitMeta, unitWord } from '../lib/currencyRates';
 import {
   CHART_PERIODS, alignIndex, axisPlan, changePct, cleanSeries, coinOf, digitsForStep, limitForPeriod,
   rateDigits, sliceByPeriod, unitName,
@@ -31,7 +31,7 @@ import '../styles/c8-currency.css';
 
 const SECOND_COLOR = COMPARE_COLORS[1];
 
-function ChartTip({ active, payload, locale, unitA, unitB, nameA, nameB, compare }) {
+function ChartTip({ active, payload, locale, unitA, unitB, nameA, nameB, compare, perText }) {
   if (!active || !payload?.length) return null;
   const point = payload[0]?.payload;
   if (!point) return null;
@@ -48,6 +48,7 @@ function ChartTip({ active, payload, locale, unitA, unitB, nameA, nameB, compare
       ) : (
         <p className="fe-z8-tip__val">{fmt(point.rawA, unitA)}</p>
       )}
+      {perText && !compare ? <p className="z3-tip__per">{perText}</p> : null}
     </div>
   );
 }
@@ -86,10 +87,12 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const rawSeries = useMemo(() => cleanSeries(perOne), [perOne]);
   const lastRaw = rawSeries.length ? rawSeries[rawSeries.length - 1].value : null;
   const flipped = Boolean(pair?.invert && lastRaw != null && lastRaw > 100);
-  const baseSeries = useMemo(
-    () => (pair?.invert && !flipped ? cleanSeries(perOne, { invert: true }) : rawSeries),
-    [perOne, pair?.invert, flipped, rawSeries],
-  );
+  // Мелкая валюта (сум, тенге) рисуется «за 10 000 / за 100», как у Банка России: на оси «68,60», а не «0,00686».
+  const nominal = pair && !pair.invert ? nominalFor(pair.base, lastRaw) : 1;
+  const baseSeries = useMemo(() => {
+    const series = pair?.invert && !flipped ? cleanSeries(perOne, { invert: true }) : rawSeries;
+    return nominal > 1 ? series.map((p) => ({ ...p, value: p.value * nominal })) : series;
+  }, [perOne, pair?.invert, flipped, rawSeries, nominal]);
   const primary = useMemo(() => sliceByPeriod(baseSeries, period), [baseSeries, period]);
   const secondSeries = useMemo(
     () => (secondEnabled ? cleanSeries(secondData?.data) : []),
@@ -202,6 +205,10 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const yStep = yTicks && yTicks.length > 1 ? Math.abs(yTicks[1] - yTicks[0]) : 0;
   const yDigits = compare ? digitsForStep(yStep) : digitsForStep(yStep);
   const yWidthPx = Math.max(40, Math.min(70, Math.round(String(yTicks ? formatValue(yTicks[yTicks.length - 1], yDigits, locale) : '88,30').length * 8 + 12)));
+  const perText = nominal > 1
+    ? t('c9d.cur.perUnits', { n: `${formatValue(nominal, 0, locale)}\u00a0${unitWord(nominal, baseUnit, locale)}` })
+    : '';
+  const sparse = points.length <= 12;
   const perKey = period === 'year' ? 'z8.cur.perYear' : `c11e.cur.per.${period}`;
   const fillId = `url(#${glass.area})`;
 
@@ -213,6 +220,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
           <p className="fe-z8-chart__value">
             <span className="fe-z8-chart__num">{formatValue(last.rawA, rateDigits(last.rawA), locale)}</span>
             {unit && <span className="fe-z8-chart__unit">{unit}</span>}
+            {perText && <span className="z3-chart__per">{perText}</span>}
           </p>
         </div>
         {delta && !delta.flat && (
@@ -249,7 +257,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
                 tickFormatter={(v) => formatValue(v, yTicks ? yDigits : (rateDigits(v) > 2 ? 3 : rateDigits(v)), locale)}
               />
               <Tooltip
-                content={<ChartTip locale={locale} unitA={unit} unitB={unitB} nameA={unitName(baseUnit, locale)} nameB={nameB} compare={compare} />}
+                content={<ChartTip locale={locale} unitA={unit} unitB={unitB} nameA={unitName(baseUnit, locale)} nameB={nameB} compare={compare} perText={perText} />}
                 cursor={{ stroke: CHART_THEME.champagne, strokeWidth: 1, strokeOpacity: 0.55 }}
               />
               {compare ? (
@@ -257,14 +265,14 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
               ) : null}
               <Area
                 className="k4-ribbon"
-                type="monotone"
+                type={sparse ? 'linear' : 'monotone'}
                 dataKey="a"
                 stroke={CHART_THEME.gold}
                 strokeWidth={2.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 fill={compare ? 'none' : fillId}
-                dot={false}
+                dot={sparse && !compare ? { r: 3.5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 1.5 } : false}
                 activeDot={{ r: 5, fill: CHART_THEME.gold, stroke: '#FFFFFF', strokeWidth: 2 }}
                 isAnimationActive={false}
               />
