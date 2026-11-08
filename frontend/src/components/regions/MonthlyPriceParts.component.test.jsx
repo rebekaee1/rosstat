@@ -7,9 +7,9 @@ import { LocaleProvider } from '../../i18n';
 const wrap = (ui) => render(<LocaleProvider><MemoryRouter>{ui}</MemoryRouter></LocaleProvider>);
 
 describe('MonthlyPriceParts', () => {
-  it('пометка снятого ряда называет месяц', () => {
-    wrap(<DiscontinuedNote lastLabel="декабрь 2017" />);
-    expect(screen.getByRole('note').textContent).toContain('декабрь 2017');
+  it('пометка снятого ряда говорит, что Росстат ряд не публикует', () => {
+    wrap(<DiscontinuedNote />);
+    expect(screen.getByRole('note').textContent).toContain('больше не публикует');
   });
 
   it('сравнение цифрой: строки России и Москвы со знаком отклонения', () => {
@@ -19,8 +19,8 @@ describe('MonthlyPriceParts', () => {
       lastMonth={202609}
     />);
     expect(screen.getByText('Россия')).toBeTruthy();
-    expect(screen.getByText(/\+6,3/)).toBeTruthy();
-    expect(screen.getByText(/−8,0/)).toBeTruthy();
+    expect(screen.getByText(/выше на 6,3/)).toBeTruthy();
+    expect(screen.getByText(/ниже на 8,0/)).toBeTruthy();
   });
 
   it('«Ещё в разделе»: группа текущей первой, снятые позже живых, ссылка на регион', () => {
