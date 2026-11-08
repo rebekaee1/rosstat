@@ -17,6 +17,7 @@ import MobileNavSelect from '../components/MobileNavSelect';
 import {
   RegionHeadlineCard, RegionIndicatorRow, RegionSectionHeading, RegionSearchField,
 } from '../components/regions/RegionParts';
+import { RegionPricesBlock, RegionPriceSection, collectPriceItems } from '../components/regions/RegionPrices';
 import { prioritizeIndicators } from '../lib/regionUi';
 import useSearchTracking from '../lib/useSearchTracking';
 import { filterSearchOptions } from '../lib/searchSynonyms';
@@ -30,6 +31,7 @@ import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/z5-country.css';
+import '../styles/z1-prices.css';
 
 function normalize(s) {
   return (s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
@@ -58,7 +60,10 @@ export default function RegionProfile({ renderActions = null } = {}) {
   }, [regionName, slug]);
 
   const sections = useMemo(
-    () => (data?.sections || []).map((s) => ({ ...s, indicators: prioritizeIndicators(s.indicators) })),
+    () => (data?.sections || []).map((s) => (
+      // Цены идут в порядке справочника (сервер уже поставил ходовые первыми), без пересортировки.
+      s.indicators.some((i) => i.price_group) ? s : { ...s, indicators: prioritizeIndicators(s.indicators) }
+    )),
     [data],
   );
 
@@ -78,6 +83,14 @@ export default function RegionProfile({ renderActions = null } = {}) {
 
   const foundIndicators = filteredSections.reduce((n, s) => n + s.indicators.length, 0);
   useSearchTracking('region-profile', deferredQuery, foundIndicators);
+
+  const priceTotal = useMemo(() => collectPriceItems(data?.sections).length, [data]);
+  const priceSection = (data?.sections || []).find((s) => s.indicators.some((i) => i.price_group));
+  const openAllPrices = () => {
+    setQuery('');
+    if (priceSection) setActiveSection(priceSection.num);
+    requestAnimationFrame(() => document.getElementById('chart')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  };
 
   const headlineOrder = ['1.1', '3.4', '2.10.1', '8.2', '10.1', '20.1', '3.12', '8.1'];
   const headline = data
@@ -116,20 +129,23 @@ export default function RegionProfile({ renderActions = null } = {}) {
 
       {data && (
         <>
-          <div className="fe-data-header fe-reveal">
+          <div className="fe-data-header z1p-header fe-reveal">
             {data.region.district_name && (
               <div className="mb-2 flex items-center gap-1.5 text-sm font-medium text-champagne-ink">
                 <MapPin size={15} aria-hidden="true" />
                 {data.region.district_name}
               </div>
             )}
-            <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
-              {data.region.name}
-            </h1>
+            <div className="z1p-title-row">
+              <h1 className="font-display text-[1.65rem] font-bold leading-tight text-text-primary sm:text-4xl">
+                {data.region.name}
+              </h1>
+              <CabinetActionsSlot subject={regionSubject(slug, data.region.name)} renderActions={renderActions} className="fe-cabinet-actions--flush" />
+            </div>
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
               {t('w4.regions.profile.intro', { sections: data.sections.length })}
             </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="z1p-header-actions">
               {headline.length > 0 && (
                 <Link
                   to={regionIndicatorPath(slug, headline.find((h) => h.code === '3.4')?.code || headline[0].code)}
@@ -141,20 +157,28 @@ export default function RegionProfile({ renderActions = null } = {}) {
                 </Link>
               )}
               <RegionComparePick slug={slug} />
-              <CabinetActionsSlot subject={regionSubject(slug, data.region.name)} renderActions={renderActions} />
             </div>
           </div>
 
           {headline.length > 0 && (
             <>
-              {/* Одна общая подпись вместо года на каждой карточке: у показателей разные «последние данные». */}
-              <p className="mb-2 text-sm text-text-secondary" data-testid="region-latest-note">{t('w6f.reg.latestNote')}</p>
               <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {headline.map((h, i) => (
                   <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
                 ))}
               </div>
             </>
+          )}
+
+          {!searching && (
+            <RegionPricesBlock
+              slug={slug}
+              sections={data.sections}
+              headlineCodes={data.price_headline_codes}
+              total={priceTotal}
+              onOpenAll={openAllPrices}
+              pathFor={(code) => regionIndicatorPath(slug, code)}
+            />
           )}
 
           <RegionSearchField
@@ -227,7 +251,16 @@ export default function RegionProfile({ renderActions = null } = {}) {
             )}
 
             <div id="chart" className="min-w-0 space-y-8 scroll-mt-28">
-              {visibleSections.map((sec) => (
+              {visibleSections.map((sec) => (sec.indicators.some((i) => i.price_group) ? (
+                <RegionPriceSection
+                  key={sec.num}
+                  section={sec}
+                  groupOrder={data.price_groups}
+                  pathFor={(code) => regionIndicatorPath(slug, code)}
+                  searching={searching}
+                  eyebrow={searching ? t('regions.searchResults') : null}
+                />
+              ) : (
                 <section key={sec.num} data-block={`region-section-${sec.num}`}>
                   <RegionSectionHeading
                     eyebrow={searching ? t('regions.searchResults') : null}
@@ -240,7 +273,7 @@ export default function RegionProfile({ renderActions = null } = {}) {
                     ))}
                   </div>
                 </section>
-              ))}
+              )))}
             </div>
           </div>
         </>

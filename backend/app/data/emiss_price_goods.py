@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -240,4 +241,204 @@ def copy_en(g: PriceGood) -> dict:
         "unit": f"roubles per {g.per_en}",
         "note": "average consumer price; end of month",
         "section": "Prices",
+    }
+
+
+# --- Подача для человека: короткое имя, группа, «Росстат больше не публикует» ---
+
+# Группы в порядке показа на странице региона.
+PRICE_GROUPS: tuple[str, ...] = (
+    "Продукты", "ЖКХ", "Транспорт", "Топливо", "Жильё", "Связь", "Услуги",
+    "Лекарства", "Одежда и товары", "Отдых", "Прочее",
+)
+PRICE_GROUPS_EN: dict[str, str] = {
+    "Продукты": "Food", "ЖКХ": "Utilities", "Транспорт": "Transport", "Топливо": "Fuel",
+    "Жильё": "Housing", "Связь": "Telecom", "Услуги": "Services", "Лекарства": "Medicines",
+    "Одежда и товары": "Clothing and goods", "Отдых": "Leisure", "Прочее": "Other",
+}
+
+# Короткие имена ручных позиций и топлива (имя уже включает единицу).
+_SHORT_MANUAL: dict[str, str] = {
+    "ceni-ai92": "Бензин АИ-92, л", "ceni-ai95": "Бензин АИ-95, л", "ceni-dt": "Дизельное топливо, л",
+    "ceni-ai98": "Бензин АИ-98 и выше, л",
+    "ceni-hleb-rzhanoy": "Хлеб ржаной, кг", "ceni-hleb-pshenichnyy": "Хлеб пшеничный, кг",
+    "ceni-muka": "Мука пшеничная, кг", "ceni-ris": "Рис, кг", "ceni-grechka": "Гречка, кг",
+    "ceni-manka": "Манка, кг", "ceni-makarony": "Макароны, кг", "ceni-sahar": "Сахар, кг",
+    "ceni-sol": "Соль, кг", "ceni-maslo-podsolnechnoe": "Масло подсолнечное, л",
+    "ceni-maslo-olivkovoe": "Масло оливковое, л",
+    "ceni-govyadina": "Говядина на кости, кг", "ceni-govyadina-beskostnaya": "Говядина без кости, кг",
+    "ceni-svinina": "Свинина на кости, кг", "ceni-svinina-beskostnaya": "Свинина без кости, кг",
+    "ceni-kury": "Курица, кг", "ceni-kolbasa-varenaya": "Колбаса варёная, кг",
+    "ceni-kolbasa-polukopchenaya": "Колбаса полукопчёная, кг",
+    "ceni-kolbasa-syrokopchenaya": "Колбаса сырокопчёная, кг", "ceni-pelmeni": "Пельмени, кг",
+    "ceni-ryba-morozhenaya": "Рыба мороженая, кг", "ceni-ryba-lososevaya": "Лосось и форель, кг",
+    "ceni-ryba-solenaya": "Рыба солёная и копчёная, кг",
+    "ceni-moloko": "Молоко пастеризованное, л", "ceni-moloko-ultrapasterizovannoe": "Молоко длительного хранения, л",
+    "ceni-kefir": "Кефир, кг", "ceni-smetana": "Сметана, кг", "ceni-tvorog": "Творог, кг",
+    "ceni-maslo-slivochnoe": "Масло сливочное, кг", "ceni-syr": "Сыр, кг",
+    "ceni-yaytsa": "Яйца куриные, 10 шт.",
+    "ceni-kartofel": "Картофель, кг", "ceni-kapusta": "Капуста, кг", "ceni-luk": "Лук репчатый, кг",
+    "ceni-morkov": "Морковь, кг", "ceni-ogurcy": "Огурцы, кг", "ceni-pomidory": "Помидоры, кг",
+    "ceni-yabloki": "Яблоки, кг", "ceni-banany": "Бананы, кг", "ceni-apelsiny": "Апельсины, кг",
+    "ceni-chay": "Чай чёрный, кг", "ceni-kofe-rastvorimyy": "Кофе растворимый, кг",
+    "ceni-kofe-zerno": "Кофе в зёрнах и молотый, кг", "ceni-kofe-navynos": "Кофе навынос, 200 г",
+    "ceni-shokolad": "Шоколад, кг", "ceni-konfety": "Конфеты шоколадные, кг",
+    "ceni-vodka": "Водка, л", "ceni-pivo": "Пиво, л", "ceni-sigarety": "Сигареты, пачка",
+    "ceni-elektroenergiya": "Электричество без плиты, 100 кВт·ч",
+    "ceni-elektroenergiya-elektroplity": "Электричество с электроплитой, 100 кВт·ч",
+    "ceni-voda-holodnaya": "Холодная вода, м³", "ceni-voda-goryachaya": "Горячая вода, м³",
+    "ceni-vodootvedenie": "Водоотведение, м³", "ceni-otoplenie": "Отопление, Гкал",
+    "ceni-gaz-setevoy": "Газ сетевой, м³", "ceni-vyvoz-musora": "Вывоз мусора, в месяц с человека",
+    "ceni-soderzhanie-zhilya": "Содержание и ремонт жилья, м²",
+    "ceni-sotovaya-svyaz": "Сотовая связь, месяц", "ceni-internet": "Домашний интернет, месяц",
+    "ceni-telefon-domashniy": "Домашний телефон, месяц",
+    "ceni-proezd-avtobus": "Проезд в автобусе, поездка", "ceni-proezd-tramvay": "Проезд в трамвае, поездка",
+    "ceni-proezd-trolleybus": "Проезд в троллейбусе, поездка", "ceni-proezd-metro": "Проезд в метро, поездка",
+    "ceni-proezd-marshrutka": "Проезд в маршрутке, поездка", "ceni-taksi": "Такси, 1 км",
+    "ceni-elektrichka": "Электричка, поездка", "ceni-mezhdugorodniy-avtobus": "Междугородный автобус, 50 км",
+    "ceni-poezd-plackart": "Поезд, плацкарт, 100 км", "ceni-poezd-kupe": "Поезд, купе, 100 км",
+    "ceni-arenda-1k": "Аренда 1-комнатной квартиры, месяц", "ceni-arenda-2k": "Аренда 2-комнатной квартиры, месяц",
+    "ceni-strizhka-zhenskaya": "Женская стрижка", "ceni-strizhka-muzhskaya": "Мужская стрижка",
+    "ceni-detskiy-sad": "Детский сад, день",
+    "ceni-poezdka-turciya": "Поездка в Турцию", "ceni-poezdka-egipet": "Поездка в Египет",
+    "ceni-poezdka-chernomore": "Поездка на Чёрное море",
+}
+
+_FUEL_EN = {"ceni-ai92": "AI-92 gasoline, litre", "ceni-ai95": "AI-95 gasoline, litre", "ceni-dt": "Diesel, litre"}
+_FUEL_CODES = ("ceni-ai92", "ceni-ai95", "ceni-dt")
+
+# Ходовые позиции для блока «Цены в регионе» на первом экране: порядок показа.
+HEADLINE_PRICE_CODES: tuple[str, ...] = (
+    "ceni-hleb-pshenichnyy", "ceni-moloko", "ceni-yaytsa", "ceni-kury", "ceni-kartofel",
+    "ceni-ai95", "ceni-proezd-avtobus", "ceni-arenda-1k", "ceni-elektroenergiya",
+    "ceni-sahar", "ceni-govyadina-beskostnaya", "ceni-internet",
+)
+
+_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("Топливо", ("бензин", "дизельн", "топливо", "газ автомобильный", "газ для заправки")),
+    ("Жильё", ("аренда", "наём жилых", "наем жилых", "найм жиль", "наём жилья")),
+    ("ЖКХ", ("водоснабжен", "водоотведен", "отоплени", "электроэнерг", "газ сетев", "газ в баллон",
+             "сжиженный газ", "коммунальн", "содержание и ремонт жиль", "канализац", "капитальный ремонт",
+             "лифт", "домофон", "дрова", "горячая вода", "холодная вода", "теплоснабжен")),
+    ("Связь", ("абонентская плата", "связь", "связи", "интернет", "sms", "смс", "почтов", "телеграмм",
+               "радиоточк", "антенн", "кабельн", "междугородн", "телефон")),
+    ("Транспорт", ("проезд", "такси", "перевозк", "авиабилет", "железнодорож", "автобус", "трамва",
+                   "метро", "троллейбус", "парковк", "автомобил", "шиномонтаж", "осаго", "каско")),
+    ("Отдых", ("поездка в", "поездки в", "поездка на", "поездки на", "путёвк", "путевк", "санатор",
+               "дом отдыха", "гостиниц", "кинотеатр", "театр", "концерт", "музе", "экскурс", "отдых",
+               "цирк", "аттракцион", "пансионат", "база отдыха", "зоопарк")),
+)
+_MED_PER = re.compile(r"(таблет|капсул|драже|ампул|суппозитор|мл\b|доз|пакетик)", re.I)
+_MED_LABEL = re.compile(r"(,\s*\d+(?:[.,]\d+)?\s*(мг|мкг|ме|%)|\bмазь\b|\bгель\b|капли|сироп|настойк|"
+                        r"таблетки|антибиот|вакцин|бинт|пластырь|вата|шприц|термометр|презерватив|"
+                        r"контрацептив|йод|перекис|пероксид|кислота|спрей|раствор)", re.I)
+_FOOD_PER = {"кг", "л", "10 шт.", "пачка", "200 г", "100 г", "350 г", "100 г (100 мл)", "1000 шт.", "упаковка"}
+_NONFOOD_KG = ("порошок", "мыло", "корм", "краска", "цемент", "гвозд", "удобрен", "семена", "кабель",
+               "проволок", "стекл", "обои", "линолеум", "лак", "шпатлёвк", "шпаклёвк", "песок", "щебень",
+               "кирпич", "средств", "уголь", "сигарет", "блоки", "строительн")
+_SERVICE_PER = ("услуга", "одна операция", "исследование", "один вид работы", "посещение", "час",
+                "академический час", "семестр", "минута", "полис", "сеанс", "занятие", "стрижка", "день",
+                "сутки", "билет", "сутки с человека")
+_SERVICE_KEYS = ("ремонт", "услуг", "химчистк", "стирк", "парикмахер", "бани", "баня", "сауна", "ритуальн",
+                 "нотариальн", "оформление", "обучение", "образован", "детский сад", "ясли", "ясел",
+                 "страхов", "фотограф", "проживание", "перевод суммы", "вклад", "ксерокопи", "юридич",
+                 "стоматолог", "приём врача", "прием врача", "диагностик", "рытье", "похорон", "кремаци",
+                 "занятия", "бассейн", "кредит", "доставка", "изготовление", "пошив", "прокат", "массаж", "маникюр")
+_PER_SHORT = {"м2": "м²", "м3": "м³", "м2 общей площади": "м²", "10 м2": "10 м²",
+              "месяц с человека": "в месяц с человека", "в расчете на 100 км пути": "100 км пути"}
+
+
+_TOUR = re.compile(r"(^|\W)тур(ы|а|ов|ист|ы)?(\W|$)")
+_GOODS_PER = ("шт.", "пара", "кг", "л", "комплект", "10 шт.", "упаковка", "набор")
+
+
+def _contains(label: str, keys: tuple[str, ...]) -> bool:
+    return any(k in label for k in keys)
+
+
+def classify_price_group(label: str, per: str) -> str:
+    """Группа цены по названию и единице Росстата (для позиций вне ручного списка)."""
+    low = label.lower()
+    for group, keys in _RULES:
+        if _contains(low, keys) or (group == "Отдых" and _TOUR.search(low)):
+            return group
+    if _contains(low, ("общественного питания", "обед в", "столов")):
+        return "Продукты"
+    if _MED_PER.search(per) or _MED_LABEL.search(low):
+        return "Лекарства"
+    if per in _SERVICE_PER or (per not in _GOODS_PER and _contains(low, _SERVICE_KEYS)):
+        return "Услуги"
+    if per in _FOOD_PER and not _contains(low, _NONFOOD_KG):
+        return "Продукты"
+    if per:
+        return "Одежда и товары"
+    return "Прочее"
+
+
+_TAIL_WORDS = {"из", "при", "в", "на", "с", "и", "для", "или", "по", "за", "от", "до", "без", "во", "к"}
+
+
+def _short_label(label: str) -> str:
+    text = label.strip()
+    if len(text) > 44 and "(" in text:
+        text = re.sub(r"\s*\([^)]*\)", "", text).strip()
+    text = text[:1].upper() + text[1:]
+    if len(text) > 56:
+        cut = text[:56].rsplit(" ", 1)[0].rstrip(" ,;-–")
+        for sep in (" из ", " при ", " для ", " с ", " на "):
+            at = cut.find(sep)
+            if at >= 16:
+                cut = cut[:at]
+                break
+        words = cut.split()
+        while words and words[-1].lower() in _TAIL_WORDS:
+            words.pop()
+        text = " ".join(words).rstrip(" ,;-–") + "…"
+    return text
+
+
+def short_name_for(g: PriceGood) -> str:
+    """Короткое имя для карточек и списков: «Яйца куриные, 10 шт.»."""
+    manual = _SHORT_MANUAL.get(g.code)
+    if manual:
+        return manual
+    per = _PER_SHORT.get(g.per, g.per).strip()
+    base = _short_label(g.label)
+    if not per or per.lower() in base.lower().split() or per == "услуга":
+        return base
+    return f"{base}, {per}"
+
+
+def _load_auto_last() -> dict[str, int]:
+    if not _AUTO_PATH.exists():
+        return {}
+    rows = json.loads(_AUTO_PATH.read_text(encoding="utf-8"))
+    return {r["code"]: int(r.get("last") or 0) for r in rows}
+
+
+_AUTO_LAST: dict[str, int] = _load_auto_last()
+# Последний месяц витрины (по артефакту: самый свежий ряд любой позиции).
+MARKET_LAST_MONTH: int = max(_AUTO_LAST.values(), default=0) or 202609
+
+
+def _months_between(a: int, b: int) -> int:
+    return (b // 100 - a // 100) * 12 + (b % 100 - a % 100)
+
+
+def price_meta(code: str) -> dict | None:
+    """Поля подачи цены для API; None, если код — не из витрины цен."""
+    g = PRICE_GOODS_BY_CODE.get(code)
+    if g is None:
+        if code in _FUEL_CODES:
+            return {"short_name": _SHORT_MANUAL[code], "short_name_en": _FUEL_EN[code], "price_group": "Топливо",
+                    "is_discontinued": False, "last_month": MARKET_LAST_MONTH}
+        return None
+    last = _AUTO_LAST.get(code) or MARKET_LAST_MONTH
+    group = g.group if g.group != "Прочее" else classify_price_group(g.label, g.per)
+    return {
+        "short_name": short_name_for(g),
+        "short_name_en": f"{g.label_en}, {g.per_en}" if g.label_en else None,
+        "price_group": group,
+        "is_discontinued": _months_between(last, MARKET_LAST_MONTH) > 12,
+        "last_month": last,
     }

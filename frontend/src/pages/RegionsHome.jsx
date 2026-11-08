@@ -77,6 +77,17 @@ const MAP_METRICS = [
 
 const PRESET_CODES = new Set(MAP_METRICS.map((m) => m.code));
 
+// Рейтинг цен: месячные ряды Росстата, сервер отдаёт последний месяц (heatmap).
+const PRICE_RANK_METRICS = [
+  { code: 'ceni-hleb-pshenichnyy', labelKey: 'z1.prices.rank.bread' },
+  { code: 'ceni-moloko', labelKey: 'z1.prices.rank.milk' },
+  { code: 'ceni-ai95', labelKey: 'z1.prices.rank.fuel' },
+  { code: 'ceni-elektroenergiya', labelKey: 'z1.prices.rank.power' },
+  { code: 'ceni-proezd-avtobus', labelKey: 'z1.prices.rank.bus' },
+  { code: 'ceni-arenda-1k', labelKey: 'z1.prices.rank.rent' },
+];
+const RANKING_METRICS = [...MAP_METRICS, ...PRICE_RANK_METRICS];
+
 function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
   const { t, locale } = useLocale();
   const catalog = useRegionsCatalog();
@@ -617,7 +628,7 @@ export default function RegionsHome() {
       {view === 'list' && (
         <>
           {/* Рейтинг: выбранный показатель, место, полоса и значение; «Ещё показатели» ищет по всему каталогу. */}
-          <RegionRanking metrics={MAP_METRICS} />
+          <RegionRanking metrics={RANKING_METRICS} />
 
           {contrastVisible.some((m) => m.heat.data) ? (
             <div data-block="contrasts" className="fe-reveal mb-4 space-y-4 rounded-3xl p-4 fe-glass-lite">
