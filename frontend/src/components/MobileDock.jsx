@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, Ellipsis, GitCompare, Globe2, TrendingUp } from 'lucide-react';
+import { BarChart3, Coins, Ellipsis, Globe2, ShoppingBasket } from 'lucide-react';
 import { cn } from '../lib/format';
 import { useT } from '../i18n';
-import { COUNTRIES_ANCHOR_ID, FORECASTS_TO, OPEN_NAV_MENU_EVENT, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
+import { COUNTRIES_ANCHOR_ID, OPEN_NAV_MENU_EVENT, RATES_TO, WORLD_RATING_TO, resolveActiveNavId } from '../lib/navItems';
 import { useAnchorInView } from '../lib/useAnchorInView';
-import { comparePath } from '../lib/sitePaths';
+import { regionHubPath } from '../lib/sitePaths';
 import { useScrollDirection } from '../lib/useScrollDirection';
 import { useFooterTone } from '../lib/useFooterTone';
 import { useStickyActive } from '../lib/stickyLayer';
@@ -14,9 +14,10 @@ import '../styles/k3-shell.css';
 
 const ITEMS = [
   { id: 'countries', to: '/#countries', labelKey: 'w6b.nav.countriesShort', icon: Globe2 },
+  // Круг 3 (R3-A): цены регионов и курсы ЦБ в панели; «Сравнение» и «Прогнозы» остались в «Ещё».
+  { id: 'region-prices', to: regionHubPath(), labelKey: 'r3a.dock.prices', icon: ShoppingBasket },
+  { id: 'currencies', to: RATES_TO, labelKey: 'z2.nav.ratesShort', icon: Coins },
   { id: 'world-rating', to: WORLD_RATING_TO, labelKey: 'w6b.nav.ratingShort', icon: BarChart3 },
-  { id: 'compare', to: comparePath(), labelKey: 'nav.compare', icon: GitCompare },
-  { id: 'forecasts', to: FORECASTS_TO, labelKey: 'w6b.nav.forecasts', icon: TrendingUp },
 ];
 
 /**
@@ -40,7 +41,9 @@ export default function MobileDock() {
   const visible = !hidden && deep && !stickyShown && !suppressed && (dir === 'up' || (rest && !overFooter));
   // «Страны» подсвечены по адресу (#countries) и пока человек читает каталог стран на главной (круг 11, G, U33).
   const countriesInView = useAnchorInView(COUNTRIES_ANCHOR_ID, pathname === '/' && !hidden);
-  const activeId = resolveActiveNavId(pathname, undefined, hash, countriesInView);
+  const activeId = pathname === regionHubPath() || pathname.startsWith(`${regionHubPath()}/`)
+    ? 'region-prices'
+    : resolveActiveNavId(pathname, undefined, hash, countriesInView);
 
   // --fe-dock-reserve: место под панелью, пока она смонтирована (main и подвал на телефоне добавляют его к нижнему отступу);
   // --fe-dock-h: сколько занимает панель сейчас (0, пока спрятана); data-fe-dock: признак «панель на экране» для CSS.
