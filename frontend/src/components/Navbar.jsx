@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
-  Menu, X, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
+  Menu, X, ShoppingBasket, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
   Cookie, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2, User,
 } from 'lucide-react';
 import { cn } from '../lib/format';
@@ -128,6 +128,7 @@ const MOBILE_ICONS = {
   map: MapIcon,
   calendar: CalendarDays,
   coins: Coins,
+  basket: ShoppingBasket,
   trend: TrendingUp,
   layers: Layers,
   book: BookOpen,

@@ -6,7 +6,7 @@ import { useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeftRight, ArrowRight, Coins, GitCompare, Percent } from 'lucide-react';
 import { useIndicators } from '../../lib/hooks';
-import { UNITS, buildEdges, convert, convertibleUnits, formatConverted } from '../../lib/currencyRates';
+import { TRAVEL_UNITS, buildEdges, convert, convertibleUnits, formatConverted, unitMeta } from '../../lib/currencyRates';
 import { useWorldCompareSnapshot, useWorldCountries } from '../../lib/worldApi';
 import { countryPublicName } from '../../lib/homeWorkbench';
 import { comparePath } from '../../lib/sitePaths';
@@ -16,7 +16,8 @@ import { useLocale, useT } from '../../i18n';
 import '../../styles/w6-g.css';
 import '../../styles/z3-home.css';
 
-const FIAT = ['RUB', 'USD', 'EUR', 'CNY', 'GBP'];
+// Круг 3 (R3-A): на русском сайте в конвертере есть и валюты «в дорогу» (сум, сомони, тенге…): с поиска «курс сума» человек находит свою валюту сразу.
+const FIAT = ['RUB', 'USD', 'EUR', 'CNY', 'GBP', ...TRAVEL_UNITS];
 // Круг 10 (Эн1): на английском сайте рубля в конвертере нет вовсе и порядок общепринятый (доллар, евро, фунт, юань), Россия не в центре внимания.
 const FIAT_EN = ['USD', 'EUR', 'GBP', 'CNY'];
 const MAX_AMOUNT = 1_000_000_000_000;
@@ -123,7 +124,7 @@ function ConverterTool() {
             <i key={`${formatConverted(result.value, locale)}${to}`} className="fe-tool__sheen" aria-hidden="true" />
             <span className="fe-tool__big">
               <span className="fe-tool__num">{formatConverted(result.value, locale)}</span>
-              <span className="fe-tool__unit">{UNITS[to].symbol}</span>
+              <span className="fe-tool__unit">{unitMeta(to)?.symbol || to}</span>
             </span>
             <span className="fe-tool__note">
               {asOf ? t('z3.tools.cur.noteDate', { date: asOf }) : t('z3.tools.cur.note')}

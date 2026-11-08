@@ -174,8 +174,8 @@ describe('HomeWorkbench', () => {
     const hrefs = [...quick.querySelectorAll('a')].map((a) => [a.textContent, a.getAttribute('href')]);
     expect(hrefs.slice(0, 3)).toEqual([
       ['Курс доллара', '/currencies/indicator/usd-rub'],
-      ['Инфляция в России', '/russia/indicator/cpi-yoy'],
-      ['Ключевая ставка', '/russia/indicator/key-rate'],
+      ['Цены в моём регионе', '/russia/region'],
+      ['Все курсы ЦБ', '/currencies'],
     ]);
     // «ВВП Индии» после загрузки среза ведёт сразу на показатель, а не на страницу страны.
     await waitFor(() => expect(within(quick).getByRole('link', { name: 'ВВП Индии' }).getAttribute('href')).toBe('/india/indicator/in-gdp'));
