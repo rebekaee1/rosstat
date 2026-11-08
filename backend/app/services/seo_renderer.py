@@ -3561,7 +3561,8 @@ async def render_indicator_year_html(
         return 404, "Not found"
 
     series = await yearly_last_points(db, indicator.id)
-    years = [y for y, _v, _d in series]
+    # Только публичные годы: одна битая точка (год 1, инцидент 05.11.2026) роняла всю страницу на ссылках соседних лет.
+    years = [y for y, _v, _d in series if paths.is_public_year(y)]
     values = [float(r.value) for r in rows]
     first, last = rows[0], rows[-1]
     category = _category_for_api(indicator.category)

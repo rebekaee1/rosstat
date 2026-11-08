@@ -59,6 +59,7 @@ from app.services.http_client import create_session
 from app.services.rosstat_weekly_inflation_parser import (
     _MONTH_MAP,
     _parse_column_date,
+    _sheet_year,
 )
 
 logger = logging.getLogger(__name__)
@@ -103,9 +104,8 @@ def parse_weekly_price_xlsx(content: bytes, product_label: str) -> list[PricePoi
     out: dict[date, float] = {}
     try:
         for sheet_name in wb.sheetnames:
-            try:
-                year = int(sheet_name)
-            except ValueError:
+            year = _sheet_year(sheet_name)
+            if year is None:
                 continue
             ws = wb[sheet_name]
             rows = [list(r) for r in ws.iter_rows(values_only=True)]

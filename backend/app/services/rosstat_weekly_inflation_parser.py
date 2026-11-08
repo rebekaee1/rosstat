@@ -132,6 +132,24 @@ def _classify_local_code(code) -> str | None:
     return None
 
 
+# Листы недельных файлов Росстата называются годами (2022, 2023, …). 05.11.2026 в nedel_sred_cen.xlsx пришёл лист
+# с названием «1»: `int("1")` дал год 1, и 31 неделя цен на топливо записалась датами 0001-01-10…0001-08-08 (вместе с
+# производными рядами — 194 точки), а годовые страницы /russia/indicator/fuel-*/{год} падали с 500. Годом считаем только
+# четыре цифры в разумных пределах.
+_SHEET_YEAR_MIN = 1990
+
+
+def _sheet_year(name: object) -> int | None:
+    """Год из названия листа или None, если лист не годовой («Содержание», «1», «2026 (испр.)»)."""
+    text = str(name).strip()
+    if len(text) != 4 or not text.isdigit():
+        return None
+    year = int(text)
+    if not _SHEET_YEAR_MIN <= year <= date.today().year + 1:
+        return None
+    return year
+
+
 def _parse_column_date(header: str, year: int) -> date | None:
     """Parse 'на 10 января **' → date(year, 1, 10)."""
     m = _HEADER_RE.search(header)
@@ -243,11 +261,8 @@ def _parse_weekly_xlsx_multi(
         match_cache: dict[str, tuple[float, str] | None] = {}
 
         for sheet_name in wb.sheetnames:
-            if sheet_name == "Содержание":
-                continue
-            try:
-                year = int(sheet_name)
-            except ValueError:
+            year = _sheet_year(sheet_name)
+            if year is None:
                 continue
             if years is not None and year not in years:
                 continue

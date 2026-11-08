@@ -521,3 +521,20 @@ def test_year_page_single_value_facts_are_cards(year_landing_client, auth_env):
     assert "Положение в истории" in facts
     assert "Значение:" not in facts  # само значение уже в крупной карточке
     assert "истории ряда" not in html and "историю ряда" not in html
+
+
+def test_bad_year_point_does_not_break_year_page(year_landing_client, auth_env):
+    """Инцидент 05.11.2026: точка с годом 1 в ряду роняла годовую страницу (`bad public year: 1`)."""
+    from sqlalchemy import select
+
+    async def render():
+        async with auth_env['session_maker']() as db:
+            indicator = (await db.execute(select(Indicator).where(
+                Indicator.code == 'population'))).scalar_one()
+            db.add(IndicatorData(indicator_id=indicator.id, date=date(1, 1, 10), value=47.4))
+            await db.commit()
+            return await render_indicator_year_html('population', 2024, db)
+
+    status, html = asyncio.run(render())
+    assert status == 200
+    assert '/population/1"' not in html and '/population/0001' not in html
