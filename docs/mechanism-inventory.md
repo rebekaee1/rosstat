@@ -13,10 +13,10 @@
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1188**
-- Registry references: **2242**
+- Registry declarations: **1192**
+- Registry references: **2250**
 - Migration operations: **458**
-- Candidate effects: **2630**
+- Candidate effects: **2638**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2550,9 +2550,13 @@ Relationships: `[]`
 | app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:81](../backend/app/services/public_bot.py#L81) |
 | app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:83](../backend/app/services/public_bot.py#L83) |
 | app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:85](../backend/app/services/public_bot.py#L85) |
-| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:217](../backend/app/services/public_bot.py#L217) |
-| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:218](../backend/app/services/public_bot.py#L218) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:667](../backend/app/services/public_bot.py#L667) |
+| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:230](../backend/app/services/public_bot.py#L230) |
+| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:232](../backend/app/services/public_bot.py#L232) |
+| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:233](../backend/app/services/public_bot.py#L233) |
+| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:234](../backend/app/services/public_bot.py#L234) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:357](../backend/app/services/public_bot.py#L357) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:359](../backend/app/services/public_bot.py#L359) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:722](../backend/app/services/public_bot.py#L722) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |

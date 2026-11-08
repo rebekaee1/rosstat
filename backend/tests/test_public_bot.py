@@ -10,11 +10,11 @@ import app.services.public_bot as pb
 import app.services.telegram_bot as tb
 from app.config import settings
 from app.models import (
-    Forecast, ForecastValue, Indicator, IndicatorData,
+    EconomicEvent, Forecast, ForecastValue, Indicator, IndicatorData,
     PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox,
 )
 
-_TABLES = (Indicator, IndicatorData, Forecast, ForecastValue,
+_TABLES = (Indicator, IndicatorData, Forecast, ForecastValue, EconomicEvent,
            PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox)
 
 
@@ -106,12 +106,14 @@ def test_start_with_code_records_and_answers(env):
     assert [(e.kind, e.code, e.topic) for e in events] == [("start", "r014_diesel", "diesel")]
     assert all(e.chat_hash != "555" and len(e.chat_hash) == 64 for e in events)
     texts = [s["text"] for s in sent]
-    assert "Forecast Economy" in texts[0] and "/stop" in texts[0]
-    assert "<b>86,52 ₽ за литр</b> — 26 октября 2026" in texts[1]
-    assert "За неделю: +0,6 %" in texts[1] and "За год: +12,4 %" in texts[1]
-    assert "Полный бак 50 л: ≈4 326 ₽, год назад ≈3 850 ₽." in texts[1]
+    # По ссылке из ролика: сначала цифра, потом короткая строка о боте с политикой.
+    assert "<b>Дизель</b> — в среднем по России" in texts[0]
+    assert "<b>86,52 ₽ за литр</b> — 26 октября 2026" in texts[0]
+    assert "За неделю: +0,6 %" in texts[0] and "За год: +12,4 %" in texts[0]
+    assert "Полный бак 50 л: ≈4 326 ₽, год назад ≈3 850 ₽." in texts[0]
+    assert texts[1].startswith(pb.SHORT_INTRO) and "/stop" in texts[1]
     assert pb.SOURCE_QUESTION not in texts
-    url = sent[1]["kb"]["inline_keyboard"][1][0]["url"]
+    url = sent[0]["kb"]["inline_keyboard"][1][0]["url"]
     assert url.startswith("https://ru.forecasteconomy.com/russia/indicator/fuel-diesel?")
     assert "utm_source=telegram" in url and "utm_campaign=diesel" in url and "utm_content=r014_diesel" in url
 
@@ -383,3 +385,30 @@ def test_send_message_can_disable_link_preview(monkeypatch):
     asyncio.run(tb.send_message("1", "x", link_preview=False, token="T"))
     assert payloads == [({"chat_id": "1", "text": "x", "parse_mode": "HTML",
                           "link_preview_options": {"is_disabled": True}}, "T")]
+
+
+def test_returning_start_greeting_thanks_and_next_release(env):
+    maker, sent, _ = env
+
+    async def seed():
+        async with maker() as db:
+            dep = Indicator(code="deposit-rate", name="Ставки по вкладам", unit="%", frequency="monthly",
+                            source="Банк России")
+            db.add(dep)
+            await db.flush()
+            db.add(IndicatorData(indicator_id=dep.id, date=date(2026, 8, 1), value=12.84))
+            db.add(EconomicEvent(title="Ставки", event_type="data_release", source="cbr", indicator_id=dep.id,
+                                 scheduled_date=date(2099, 12, 8), is_estimated=False))
+            await db.commit()
+    asyncio.run(seed())
+    asyncio.run(pb.handle_message(_msg("/start")))
+    assert "Forecast Economy" in sent[-1]["text"] and "/stop" in sent[-1]["text"]
+    asyncio.run(pb.handle_callback(_cb("pb:s:deposit")))
+    asyncio.run(pb.handle_message(_msg("/start")))
+    assert sent[-1]["text"] == pb.WELCOME_BACK + "\nПрисылаю новые данные: Ставки по вкладам."
+    n = len(sent)
+    asyncio.run(pb.handle_message(_msg("Привет!")))
+    asyncio.run(pb.handle_message(_msg("спасибо")))
+    assert [s["text"] for s in sent[n:]] == [pb.GREETING_TEXT, pb.THANKS_TEXT]
+    asyncio.run(pb.handle_callback(_cb("pb:t:deposit")))
+    assert "Следующие данные: 8 декабря." in sent[-1]["text"] or "Следующие данные" in sent[-2]["text"]

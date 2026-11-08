@@ -1370,8 +1370,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "d0d8c2fe1861830cdbe21b6a58c1addf29b210f9d50bd934887ed5fa8ab5d7a9",
-      "lines": 847
+      "sha256": "e22ff0b4f4280e5b2019ad60f72c4ec581f203f94809001bfac21c7408cd9e00",
+      "lines": 941
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -36478,8 +36478,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 410,
+      "end_line": 410,
       "owner": "bot_token",
       "conditions": [],
       "name": "public_bot_token",
@@ -36487,8 +36487,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 410,
+      "end_line": 410,
       "owner": "bot_token",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -36496,8 +36496,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 592,
+      "end_line": 592,
       "owner": "_in_window",
       "conditions": [],
       "name": "public_bot_notify_from_hour",
@@ -36505,8 +36505,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 537,
-      "end_line": 537,
+      "line": 592,
+      "end_line": 592,
       "owner": "_in_window",
       "conditions": [],
       "name": "public_bot_notify_to_hour",
@@ -36514,8 +36514,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 556,
-      "end_line": 556,
+      "line": 611,
+      "end_line": 611,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -36523,8 +36523,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 486,
+      "end_line": 486,
       "owner": "handle_message",
       "conditions": [
         "not (topic and len(text) <= 40)"
@@ -36534,8 +36534,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 431,
-      "end_line": 431,
+      "line": 486,
+      "end_line": 486,
       "owner": "handle_message",
       "conditions": [
         "not (topic and len(text) <= 40)"
@@ -36545,8 +36545,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 729,
-      "end_line": 729,
+      "line": 784,
+      "end_line": 784,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "public_bot_llm_model",
@@ -36554,8 +36554,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 729,
-      "end_line": 729,
+      "line": 784,
+      "end_line": 784,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_model",
@@ -36563,8 +36563,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 763,
-      "end_line": 763,
+      "line": 818,
+      "end_line": 818,
       "owner": "answer_question",
       "conditions": [],
       "name": "public_bot_llm_daily_limit",
@@ -36572,8 +36572,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 803,
-      "end_line": 803,
+      "line": 857,
+      "end_line": 857,
       "owner": "public_bot_poll_job",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -36581,8 +36581,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 803,
-      "end_line": 803,
+      "line": 857,
+      "end_line": 857,
       "owner": "public_bot_poll_job",
       "conditions": [],
       "name": "public_bot_token",
@@ -36599,8 +36599,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 832,
-      "end_line": 832,
+      "line": 887,
+      "end_line": 887,
       "owner": "_poll_once",
       "conditions": [],
       "name": "public_bot_token",
@@ -36608,8 +36608,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 737,
-      "end_line": 737,
+      "line": 792,
+      "end_line": 792,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -36617,8 +36617,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 740,
-      "end_line": 740,
+      "line": 795,
+      "end_line": 795,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -40017,6 +40017,24 @@
       "owner": "locked_job.wrapper",
       "conditions": [],
       "call": "asyncio.ensure_future(fn(*args, **kwargs))",
+      "symbol": "asyncio.ensure_future"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 909,
+      "end_line": 909,
+      "owner": "_with_typing",
+      "conditions": [],
+      "call": "asyncio.ensure_future(coro)",
+      "symbol": "asyncio.ensure_future"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 892,
+      "end_line": 892,
+      "owner": "_poll_once",
+      "conditions": [],
+      "call": "asyncio.ensure_future(_handle_in_order(upd))",
       "symbol": "asyncio.ensure_future"
     },
     {
@@ -90487,8 +90505,68 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 217,
-      "end_line": 217,
+      "line": 230,
+      "end_line": 230,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RELEASE_CODE",
+      "symbol": "app.services.public_bot._RELEASE_CODE",
+      "kind": "Dict",
+      "literal_keys": [
+        "'inflation'",
+        "'deposit'",
+        "'mortgage'"
+      ],
+      "entries": [
+        {
+          "key": "'inflation'",
+          "expression": "'cpi'",
+          "expression_truncated": false,
+          "expression_chars": 5,
+          "ast_sha256": "5f92a477b6d846bb8ef902b1506e456814b0ea171db41c695cf12d81e7cdfe7e"
+        },
+        {
+          "key": "'deposit'",
+          "expression": "'deposit-rate'",
+          "expression_truncated": false,
+          "expression_chars": 14,
+          "ast_sha256": "839d988ddf5f98c2cdd4a391046dcca99b8b88b5103359bb07a29cce0f5377de"
+        },
+        {
+          "key": "'mortgage'",
+          "expression": "'mortgage-rate'",
+          "expression_truncated": false,
+          "expression_chars": 15,
+          "ast_sha256": "cc815ebf7eb209fd762046c88197dccd22a71b315b656e8b783946b253dd8cca"
+        }
+      ],
+      "expression": "{'inflation': 'cpi', 'deposit': 'deposit-rate', 'mortgage': 'mortgage-rate'}",
+      "expression_truncated": false,
+      "expression_chars": 76,
+      "ast_sha256": "264902103f6ea1d71503c572f0dc199718c04d01218dbd0ca73cd9199e9f7362",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 232,
+      "end_line": 232,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_RUSSIA_AVG",
+      "symbol": "app.services.public_bot._RUSSIA_AVG",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('diesel', 'ai92', 'ai95', 'deposit', 'mortgage')",
+      "expression_truncated": false,
+      "expression_chars": 49,
+      "ast_sha256": "9d28a29dbfcecd2414adaba8ea43372ba26cbd28617703e389312765a73f1348",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 233,
+      "end_line": 233,
       "owner": "<module>",
       "conditions": [],
       "name": "_FRESH_DAYS",
@@ -90538,8 +90616,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 218,
-      "end_line": 218,
+      "line": 234,
+      "end_line": 234,
       "owner": "<module>",
       "conditions": [],
       "name": "_FUEL",
@@ -90555,8 +90633,42 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 667,
-      "end_line": 676,
+      "line": 357,
+      "end_line": 358,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_GREETINGS",
+      "symbol": "app.services.public_bot._GREETINGS",
+      "kind": "Set",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{'привет', 'здравствуйте', 'здравствуй', 'добрый день', 'добрый вечер', 'доброе утро', 'hi', 'hello', 'хай', 'салют', 'ку', 'приветствую'}",
+      "expression_truncated": false,
+      "expression_chars": 138,
+      "ast_sha256": "154876499e9029e86c3b3d1cca654a063daa55aef1287b738322505e59c0e24c",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 359,
+      "end_line": 359,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_THANKS",
+      "symbol": "app.services.public_bot._THANKS",
+      "kind": "Set",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{'спасибо', 'спс', 'благодарю', 'спасибо большое', 'thanks', 'thx', 'ок', 'окей', 'ok', 'понятно', 'ясно'}",
+      "expression_truncated": false,
+      "expression_chars": 106,
+      "ast_sha256": "3563a89b06574358896fd46132c9c4b5a45c18ed38e556fcab2bf51992c2ebd0",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 722,
+      "end_line": 731,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXTRA_CODES",
@@ -132293,8 +132405,22 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 351,
-      "end_line": 352,
+      "line": 921,
+      "end_line": 921,
+      "owner": "<module>",
+      "conditions": [],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.public_bot.set",
+      "expression": "set()",
+      "expression_truncated": false,
+      "expression_chars": 5,
+      "ast_sha256": "838cdcc98951e8453a6f9eabf156b2a00af54241b1675173b0420d161d1cb68b"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 387,
+      "end_line": 388,
       "owner": "_event",
       "conditions": [],
       "operation": "add",
@@ -132307,8 +132433,22 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 341,
-      "end_line": 341,
+      "line": 909,
+      "end_line": 909,
+      "owner": "_with_typing",
+      "conditions": [],
+      "operation": "ensure_future",
+      "receiver": "asyncio",
+      "symbol": "asyncio.ensure_future",
+      "expression": "asyncio.ensure_future(coro)",
+      "expression_truncated": false,
+      "expression_chars": 27,
+      "ast_sha256": "ab2c8d0dc83ee1337d87cb68fdb3035fdb2f39c7cec192a7acbf62b6ef83a0b1"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 377,
+      "end_line": 377,
       "owner": "_touch_chat",
       "conditions": [
         "chat is None"
@@ -132323,8 +132463,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 821,
-      "end_line": 821,
+      "line": 876,
+      "end_line": 876,
       "owner": "_poll_once",
       "conditions": [],
       "operation": "get_state_redis",
@@ -132337,8 +132477,36 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 389,
-      "end_line": 389,
+      "line": 892,
+      "end_line": 892,
+      "owner": "_poll_once",
+      "conditions": [],
+      "operation": "ensure_future",
+      "receiver": "asyncio",
+      "symbol": "asyncio.ensure_future",
+      "expression": "asyncio.ensure_future(_handle_in_order(upd))",
+      "expression_truncated": false,
+      "expression_chars": 44,
+      "ast_sha256": "51242c837274a85ba80935a4be0f76b5407965ea982d294950d0f3749a07ae00"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 893,
+      "end_line": 893,
+      "owner": "_poll_once",
+      "conditions": [],
+      "operation": "add",
+      "receiver": "_inflight",
+      "symbol": "app.services.public_bot._inflight.add",
+      "expression": "_inflight.add(task)",
+      "expression_truncated": false,
+      "expression_chars": 19,
+      "ast_sha256": "ae6a14e12f19b758ee0bbed3b78ab0d3bc21d408840dcce998cdbd6e24dfd74d"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 425,
+      "end_line": 425,
       "owner": "_reply_figure",
       "conditions": [],
       "operation": "commit",
@@ -132351,8 +132519,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 428,
-      "end_line": 428,
+      "line": 483,
+      "end_line": 483,
       "owner": "handle_message",
       "conditions": [],
       "operation": "commit",
@@ -132365,8 +132533,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 493,
-      "end_line": 497,
+      "line": 548,
+      "end_line": 552,
       "owner": "subscribe",
       "conditions": [
         "sub is None"
@@ -132381,8 +132549,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 499,
-      "end_line": 499,
+      "line": 554,
+      "end_line": 554,
       "owner": "subscribe",
       "conditions": [],
       "operation": "commit",
@@ -132395,8 +132563,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 504,
-      "end_line": 506,
+      "line": 559,
+      "end_line": 561,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "execute",
@@ -132409,8 +132577,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 508,
-      "end_line": 508,
+      "line": 563,
+      "end_line": 563,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "commit",
@@ -132423,8 +132591,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 572,
+      "end_line": 572,
       "owner": "mark_blocked",
       "conditions": [],
       "operation": "commit",
@@ -132437,8 +132605,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 579,
+      "end_line": 579,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132451,8 +132619,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 580,
+      "end_line": 580,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132465,8 +132633,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 526,
-      "end_line": 528,
+      "line": 581,
+      "end_line": 583,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132479,8 +132647,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 529,
-      "end_line": 529,
+      "line": 584,
+      "end_line": 584,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "commit",
@@ -132493,8 +132661,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 637,
+      "end_line": 637,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "set",
@@ -132507,8 +132675,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 652,
+      "end_line": 652,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "commit",
@@ -132521,8 +132689,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 769,
-      "end_line": 769,
+      "line": 824,
+      "end_line": 824,
       "owner": "answer_question",
       "conditions": [],
       "operation": "commit",
@@ -132535,8 +132703,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 163,
+      "end_line": 163,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132549,8 +132717,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 164,
-      "end_line": 168,
+      "line": 166,
+      "end_line": 170,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132563,8 +132731,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 174,
-      "end_line": 178,
+      "line": 176,
+      "end_line": 180,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132577,8 +132745,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 181,
-      "end_line": 186,
+      "line": 183,
+      "end_line": 188,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132591,8 +132759,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 451,
+      "end_line": 451,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -132607,8 +132775,24 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 476,
+      "end_line": 476,
+      "owner": "handle_message",
+      "conditions": [
+        "bare in _GREETINGS or bare in _THANKS"
+      ],
+      "operation": "commit",
+      "receiver": "db",
+      "symbol": "app.services.public_bot.db.commit",
+      "expression": "db.commit()",
+      "expression_truncated": false,
+      "expression_chars": 11,
+      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 747,
+      "end_line": 747,
       "owner": "_figure_by_code",
       "conditions": [],
       "operation": "execute",
@@ -132621,8 +132805,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 764,
-      "end_line": 764,
+      "line": 819,
+      "end_line": 819,
       "owner": "answer_question",
       "conditions": [
         "used >= settings.public_bot_llm_daily_limit"
@@ -132637,8 +132821,24 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 844,
-      "end_line": 844,
+      "line": 867,
+      "end_line": 867,
+      "owner": "public_bot_poll_job",
+      "conditions": [
+        "_inflight"
+      ],
+      "operation": "set",
+      "receiver": null,
+      "symbol": "app.services.public_bot.set",
+      "expression": "set(_inflight)",
+      "expression_truncated": false,
+      "expression_chars": 14,
+      "ast_sha256": "01af1fa36049007b4164197475b8132c37e489e3224853a57cc685ddf1cc8bb2"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 898,
+      "end_line": 898,
       "owner": "_poll_once",
       "conditions": [
         "updates"
@@ -132653,8 +132853,24 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 356,
-      "end_line": 358,
+      "line": 192,
+      "end_line": 197,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.public_bot.db.execute",
+      "expression": "db.execute(select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated).join(Indicator, Indicator.id == EconomicEvent.indicator_id).where(Indicator.code == rel_code, EconomicEvent.scheduled_date >= _now().date()).order_by(EconomicEvent.scheduled_date).limit(1))",
+      "expression_truncated": false,
+      "expression_chars": 265,
+      "ast_sha256": "112c3a7ff28c00f2832e628dcb19bd0bcc56779d1f51c76c4c8badbe1d9288d4"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 392,
+      "end_line": 394,
       "owner": "_is_subscribed",
       "conditions": [],
       "operation": "execute",
@@ -132667,8 +132883,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 455,
-      "end_line": 455,
+      "line": 510,
+      "end_line": 510,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -132684,8 +132900,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 489,
-      "end_line": 491,
+      "line": 544,
+      "end_line": 546,
       "owner": "subscribe",
       "conditions": [],
       "operation": "execute",
@@ -132698,8 +132914,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 665,
+      "end_line": 665,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132712,8 +132928,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 611,
-      "end_line": 612,
+      "line": 666,
+      "end_line": 667,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132726,8 +132942,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 613,
-      "end_line": 614,
+      "line": 668,
+      "end_line": 669,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132740,8 +132956,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 616,
-      "end_line": 620,
+      "line": 671,
+      "end_line": 675,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132754,8 +132970,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 621,
-      "end_line": 626,
+      "line": 676,
+      "end_line": 681,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132768,8 +132984,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 627,
-      "end_line": 629,
+      "line": 682,
+      "end_line": 684,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132782,8 +132998,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 630,
-      "end_line": 633,
+      "line": 685,
+      "end_line": 688,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132796,8 +133012,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 634,
-      "end_line": 641,
+      "line": 689,
+      "end_line": 696,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132810,8 +133026,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 759,
-      "end_line": 762,
+      "line": 814,
+      "end_line": 817,
       "owner": "answer_question",
       "conditions": [],
       "operation": "execute",
@@ -132824,8 +133040,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 559,
+      "end_line": 559,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "delete",
@@ -132838,8 +133054,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 579,
+      "end_line": 579,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -132852,8 +133068,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 580,
+      "end_line": 580,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -132866,8 +133082,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 581,
+      "end_line": 581,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -132880,8 +133096,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 561,
-      "end_line": 564,
+      "line": 616,
+      "end_line": 619,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "execute",
@@ -132894,8 +133110,24 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 449,
+      "end_line": 450,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.public_bot.db.execute",
+      "expression": "db.execute(select(PublicBotSubscription.topic).where(PublicBotSubscription.chat_id == chat_id))",
+      "expression_truncated": false,
+      "expression_chars": 95,
+      "ast_sha256": "7bb8acbc87d5703247549ba72b88463d4d1b38919f97579dd2727efe85c3b7a4"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 524,
+      "end_line": 524,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -201420,8 +201652,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 335,
-      "end_line": 335,
+      "line": 371,
+      "end_line": 371,
       "owner": "_touch_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201429,8 +201661,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 540,
-      "end_line": 540,
+      "line": 595,
+      "end_line": 595,
       "owner": "_should_notify",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201438,8 +201670,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 336,
-      "end_line": 336,
+      "line": 372,
+      "end_line": 372,
       "owner": "_touch_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201447,8 +201679,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 339,
-      "end_line": 339,
+      "line": 375,
+      "end_line": 375,
       "owner": "_touch_chat",
       "conditions": [
         "chat is None"
@@ -201458,8 +201690,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 351,
-      "end_line": 351,
+      "line": 387,
+      "end_line": 387,
       "owner": "_event",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -201467,8 +201699,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 670,
+      "end_line": 670,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_code",
@@ -201476,8 +201708,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 513,
-      "end_line": 513,
+      "line": 568,
+      "end_line": 568,
       "owner": "mark_blocked",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201485,8 +201717,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 615,
-      "end_line": 615,
+      "line": 670,
+      "end_line": 670,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201494,8 +201726,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 548,
+      "end_line": 548,
       "owner": "subscribe",
       "conditions": [
         "sub is None"
@@ -201505,8 +201737,19 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 446,
+      "end_line": 446,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 560,
+      "end_line": 560,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201514,8 +201757,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 560,
+      "end_line": 560,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201523,8 +201766,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 579,
+      "end_line": 579,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201532,8 +201775,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 580,
+      "end_line": 580,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.chat_id",
@@ -201541,8 +201784,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 582,
+      "end_line": 582,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.chat_id",
@@ -201550,8 +201793,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 582,
+      "end_line": 582,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -201559,8 +201802,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 163,
+      "end_line": 163,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -201568,8 +201811,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 504,
-      "end_line": 504,
+      "line": 559,
+      "end_line": 559,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201577,8 +201820,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 560,
+      "end_line": 560,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201586,8 +201829,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 505,
-      "end_line": 505,
+      "line": 560,
+      "end_line": 560,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201595,8 +201838,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 579,
+      "end_line": 579,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201604,8 +201847,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 579,
+      "end_line": 579,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201613,8 +201856,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 580,
+      "end_line": 580,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201622,8 +201865,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 525,
-      "end_line": 525,
+      "line": 580,
+      "end_line": 580,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201631,8 +201874,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 526,
-      "end_line": 526,
+      "line": 581,
+      "end_line": 581,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -201640,8 +201883,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 582,
+      "end_line": 582,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -201649,8 +201892,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 582,
+      "end_line": 582,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -201658,8 +201901,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 591,
-      "end_line": 591,
+      "line": 646,
+      "end_line": 646,
       "owner": "public_bot_notify_job",
       "conditions": [
         "not (ok)",
@@ -201670,8 +201913,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 610,
-      "end_line": 610,
+      "line": 665,
+      "end_line": 665,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201679,8 +201922,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 747,
+      "end_line": 747,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -201688,8 +201931,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 163,
+      "end_line": 163,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201697,8 +201940,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 161,
-      "end_line": 161,
+      "line": 163,
+      "end_line": 163,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201706,8 +201949,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 187,
+      "end_line": 187,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue.date",
@@ -201715,8 +201958,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 393,
+      "end_line": 393,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201724,8 +201967,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 357,
-      "end_line": 357,
+      "line": 393,
+      "end_line": 393,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201733,8 +201976,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 545,
+      "end_line": 545,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201742,8 +201985,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 545,
+      "end_line": 545,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201751,8 +201994,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 527,
-      "end_line": 527,
+      "line": 582,
+      "end_line": 582,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -201760,8 +202003,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 612,
-      "end_line": 612,
+      "line": 667,
+      "end_line": 667,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_seen_at",
@@ -201769,8 +202012,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 614,
-      "end_line": 614,
+      "line": 669,
+      "end_line": 669,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.blocked_at.is_not",
@@ -201778,8 +202021,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 638,
-      "end_line": 638,
+      "line": 693,
+      "end_line": 693,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash.in_",
@@ -201787,8 +202030,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 747,
+      "end_line": 747,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201796,8 +202039,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 747,
+      "end_line": 747,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201805,8 +202048,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 815,
+      "end_line": 815,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash",
@@ -201814,8 +202057,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 815,
+      "end_line": 815,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.kind",
@@ -201823,8 +202066,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 761,
-      "end_line": 761,
+      "line": 816,
+      "end_line": 816,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.occurred_at",
@@ -201832,8 +202075,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 169,
+      "end_line": 169,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.desc",
@@ -201841,12 +202084,916 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 179,
+      "end_line": 179,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.desc",
       "expression": "IndicatorData.date.desc"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 187,
+      "end_line": 187,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue",
+      "expression": "ForecastValue"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 196,
+      "end_line": 196,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent.scheduled_date",
+      "expression": "EconomicEvent.scheduled_date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 392,
+      "end_line": 392,
+      "owner": "_is_subscribed",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription.id",
+      "expression": "PublicBotSubscription.id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 393,
+      "end_line": 393,
+      "owner": "_is_subscribed",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 393,
+      "end_line": 393,
+      "owner": "_is_subscribed",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 544,
+      "end_line": 544,
+      "owner": "subscribe",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 545,
+      "end_line": 545,
+      "owner": "subscribe",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 545,
+      "end_line": 545,
+      "owner": "subscribe",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 666,
+      "end_line": 666,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 667,
+      "end_line": 667,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 668,
+      "end_line": 668,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 669,
+      "end_line": 669,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.blocked_at",
+      "expression": "PublicBotChat.blocked_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 680,
+      "end_line": 680,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.topic",
+      "expression": "PublicBotEvent.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription.topic",
+      "expression": "PublicBotSubscription.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 687,
+      "end_line": 687,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.heard_from",
+      "expression": "PublicBotChat.heard_from"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 693,
+      "end_line": 693,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.chat_hash",
+      "expression": "PublicBotEvent.chat_hash"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 814,
+      "end_line": 814,
+      "owner": "answer_question",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 815,
+      "end_line": 815,
+      "owner": "answer_question",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 815,
+      "end_line": 815,
+      "owner": "answer_question",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 816,
+      "end_line": 816,
+      "owner": "answer_question",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 169,
+      "end_line": 169,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 179,
+      "end_line": 179,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 196,
+      "end_line": 196,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 392,
+      "end_line": 392,
+      "owner": "_is_subscribed",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.blocked_at.is_",
+      "expression": "PublicBotChat.blocked_at.is_"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 669,
+      "end_line": 669,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 680,
+      "end_line": 680,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 687,
+      "end_line": 687,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 691,
+      "end_line": 691,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.occurred_at",
+      "expression": "PublicBotEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 692,
+      "end_line": 692,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.kind.in_",
+      "expression": "PublicBotEvent.kind.in_"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 693,
+      "end_line": 693,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 694,
+      "end_line": 694,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.first_seen_at",
+      "expression": "PublicBotChat.first_seen_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 168,
+      "end_line": 168,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 169,
+      "end_line": 169,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 178,
+      "end_line": 178,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.indicator_id",
+      "expression": "IndicatorData.indicator_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 178,
+      "end_line": 178,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 179,
+      "end_line": 179,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.indicator_id",
+      "expression": "Forecast.indicator_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.is_current.is_",
+      "expression": "Forecast.is_current.is_"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue.date",
+      "expression": "ForecastValue.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 450,
+      "end_line": 450,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotSubscription.chat_id",
+      "expression": "PublicBotSubscription.chat_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.blocked_at",
+      "expression": "PublicBotChat.blocked_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription.topic",
+      "expression": "PublicBotSubscription.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 691,
+      "end_line": 691,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 692,
+      "end_line": 692,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.kind",
+      "expression": "PublicBotEvent.kind"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 694,
+      "end_line": 694,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.chat_hash",
+      "expression": "PublicBotChat.chat_hash"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 694,
+      "end_line": 694,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 167,
+      "end_line": 167,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 167,
+      "end_line": 167,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 168,
+      "end_line": 168,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 177,
+      "end_line": 177,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 177,
+      "end_line": 177,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 178,
+      "end_line": 178,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 178,
+      "end_line": 178,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.is_current",
+      "expression": "Forecast.is_current"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue",
+      "expression": "ForecastValue"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 195,
+      "end_line": 195,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 195,
+      "end_line": 195,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent.scheduled_date",
+      "expression": "EconomicEvent.scheduled_date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 449,
+      "end_line": 449,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotSubscription.topic",
+      "expression": "PublicBotSubscription.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 450,
+      "end_line": 450,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.chat_id",
+      "expression": "PublicBotChat.chat_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription.chat_id",
+      "expression": "PublicBotSubscription.chat_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 618,
+      "end_line": 618,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 678,
+      "end_line": 678,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.occurred_at",
+      "expression": "PublicBotEvent.occurred_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 678,
+      "end_line": 678,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.topic.is_not",
+      "expression": "PublicBotEvent.topic.is_not"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 679,
+      "end_line": 679,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.kind.in_",
+      "expression": "PublicBotEvent.kind.in_"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 683,
+      "end_line": 683,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 687,
+      "end_line": 687,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.heard_from.is_not",
+      "expression": "PublicBotChat.heard_from.is_not"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 692,
+      "end_line": 692,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 694,
+      "end_line": 694,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 167,
+      "end_line": 167,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 167,
+      "end_line": 167,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 177,
+      "end_line": 177,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 177,
+      "end_line": 177,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.id",
+      "expression": "Forecast.id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue.forecast_id",
+      "expression": "ForecastValue.forecast_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 186,
+      "end_line": 186,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 194,
+      "end_line": 194,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 195,
+      "end_line": 195,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 195,
+      "end_line": 195,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 449,
+      "end_line": 449,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 617,
+      "end_line": 617,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription",
+      "expression": "PublicBotSubscription"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 677,
+      "end_line": 677,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.topic",
+      "expression": "PublicBotEvent.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 678,
+      "end_line": 678,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 678,
+      "end_line": 678,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.topic",
+      "expression": "PublicBotEvent.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 679,
+      "end_line": 679,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.kind",
+      "expression": "PublicBotEvent.kind"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 686,
+      "end_line": 686,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.heard_from",
+      "expression": "PublicBotChat.heard_from"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 687,
+      "end_line": 687,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.heard_from",
+      "expression": "PublicBotChat.heard_from"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 690,
+      "end_line": 690,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.chat_hash",
+      "expression": "PublicBotEvent.chat_hash"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 184,
+      "end_line": 184,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue.date",
+      "expression": "ForecastValue.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 184,
+      "end_line": 184,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue.value",
+      "expression": "ForecastValue.value"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 185,
+      "end_line": 185,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast",
+      "expression": "Forecast"
     },
     {
       "path": "backend/app/services/public_bot.py",
@@ -201859,269 +203006,30 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 356,
-      "end_line": 356,
-      "owner": "_is_subscribed",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription.id",
-      "expression": "PublicBotSubscription.id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 357,
-      "end_line": 357,
-      "owner": "_is_subscribed",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 357,
-      "end_line": 357,
-      "owner": "_is_subscribed",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 489,
-      "end_line": 489,
-      "owner": "subscribe",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 490,
-      "end_line": 490,
-      "owner": "subscribe",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 490,
-      "end_line": 490,
-      "owner": "subscribe",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 611,
-      "end_line": 611,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 612,
-      "end_line": 612,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 613,
-      "end_line": 613,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 614,
-      "end_line": 614,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.blocked_at",
-      "expression": "PublicBotChat.blocked_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 625,
-      "end_line": 625,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.topic",
-      "expression": "PublicBotEvent.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 628,
-      "end_line": 628,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription.topic",
-      "expression": "PublicBotSubscription.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 632,
-      "end_line": 632,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.heard_from",
-      "expression": "PublicBotChat.heard_from"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 638,
-      "end_line": 638,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.chat_hash",
-      "expression": "PublicBotEvent.chat_hash"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 759,
-      "end_line": 759,
-      "owner": "answer_question",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 760,
-      "end_line": 760,
-      "owner": "answer_question",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 760,
-      "end_line": 760,
-      "owner": "answer_question",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 761,
-      "end_line": 761,
-      "owner": "answer_question",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 194,
+      "end_line": 194,
       "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 194,
+      "end_line": 194,
       "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent.indicator_id",
+      "expression": "EconomicEvent.indicator_id"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 356,
-      "end_line": 356,
-      "owner": "_is_subscribed",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 563,
-      "end_line": 563,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.blocked_at.is_",
-      "expression": "PublicBotChat.blocked_at.is_"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 614,
-      "end_line": 614,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 625,
-      "end_line": 625,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 628,
-      "end_line": 628,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 632,
-      "end_line": 632,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 636,
-      "end_line": 636,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.occurred_at",
-      "expression": "PublicBotEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 637,
-      "end_line": 637,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.kind.in_",
-      "expression": "PublicBotEvent.kind.in_"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 638,
-      "end_line": 638,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 639,
-      "end_line": 639,
+      "line": 673,
+      "end_line": 673,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_seen_at",
@@ -202129,107 +203037,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 166,
-      "end_line": 166,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 176,
-      "end_line": 176,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.indicator_id",
-      "expression": "IndicatorData.indicator_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 176,
-      "end_line": 176,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.indicator_id",
-      "expression": "Forecast.indicator_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.is_current.is_",
-      "expression": "Forecast.is_current.is_"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue.date",
-      "expression": "ForecastValue.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 563,
-      "end_line": 563,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.blocked_at",
-      "expression": "PublicBotChat.blocked_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 628,
-      "end_line": 628,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription.topic",
-      "expression": "PublicBotSubscription.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 636,
-      "end_line": 636,
+      "line": 677,
+      "end_line": 677,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202237,26 +203046,26 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 678,
+      "end_line": 678,
       "owner": "report_text",
       "conditions": [],
-      "symbol": "app.models.PublicBotEvent.kind",
-      "expression": "PublicBotEvent.kind"
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 639,
-      "end_line": 639,
+      "line": 679,
+      "end_line": 679,
       "owner": "report_text",
       "conditions": [],
-      "symbol": "app.models.PublicBotChat.chat_hash",
-      "expression": "PublicBotChat.chat_hash"
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 639,
-      "end_line": 639,
+      "line": 686,
+      "end_line": 686,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202264,93 +203073,21 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 165,
-      "end_line": 165,
-      "owner": "load_figure",
+      "line": 687,
+      "end_line": 687,
+      "owner": "report_text",
       "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 165,
-      "end_line": 165,
-      "owner": "load_figure",
+      "line": 690,
+      "end_line": 690,
+      "owner": "report_text",
       "conditions": [],
-      "symbol": "app.models.IndicatorData.value",
-      "expression": "IndicatorData.value"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 166,
-      "end_line": 166,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.value",
-      "expression": "IndicatorData.value"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 176,
-      "end_line": 176,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 176,
-      "end_line": 176,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 183,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.is_current",
-      "expression": "Forecast.is_current"
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
     },
     {
       "path": "backend/app/services/public_bot.py",
@@ -202363,372 +203100,87 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.chat_id",
-      "expression": "PublicBotChat.chat_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription.chat_id",
-      "expression": "PublicBotSubscription.chat_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 563,
-      "end_line": 563,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.occurred_at",
-      "expression": "PublicBotEvent.occurred_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.topic.is_not",
-      "expression": "PublicBotEvent.topic.is_not"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 624,
-      "end_line": 624,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.kind.in_",
-      "expression": "PublicBotEvent.kind.in_"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 628,
-      "end_line": 628,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 632,
-      "end_line": 632,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.heard_from.is_not",
-      "expression": "PublicBotChat.heard_from.is_not"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 637,
-      "end_line": 637,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 639,
-      "end_line": 639,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 165,
-      "end_line": 165,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 165,
-      "end_line": 165,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 175,
-      "end_line": 175,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 183,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.id",
-      "expression": "Forecast.id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 183,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue.forecast_id",
-      "expression": "ForecastValue.forecast_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
       "line": 184,
       "end_line": 184,
       "owner": "load_figure",
       "conditions": [],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 562,
-      "end_line": 562,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription",
-      "expression": "PublicBotSubscription"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 622,
-      "end_line": 622,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.topic",
-      "expression": "PublicBotEvent.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.topic",
-      "expression": "PublicBotEvent.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 624,
-      "end_line": 624,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.kind",
-      "expression": "PublicBotEvent.kind"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 631,
-      "end_line": 631,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.heard_from",
-      "expression": "PublicBotChat.heard_from"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 632,
-      "end_line": 632,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.heard_from",
-      "expression": "PublicBotChat.heard_from"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 635,
-      "end_line": 635,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.chat_hash",
-      "expression": "PublicBotEvent.chat_hash"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 182,
-      "end_line": 182,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue.date",
-      "expression": "ForecastValue.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 182,
-      "end_line": 182,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue.value",
-      "expression": "ForecastValue.value"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 183,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast",
-      "expression": "Forecast"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 183,
-      "owner": "load_figure",
-      "conditions": [],
       "symbol": "app.models.ForecastValue",
       "expression": "ForecastValue"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 618,
-      "end_line": 618,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.first_seen_at",
-      "expression": "PublicBotChat.first_seen_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 622,
-      "end_line": 622,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 624,
-      "end_line": 624,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 631,
-      "end_line": 631,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 632,
-      "end_line": 632,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 635,
-      "end_line": 635,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 193,
+      "end_line": 193,
       "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue",
-      "expression": "ForecastValue"
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent.scheduled_date",
+      "expression": "EconomicEvent.scheduled_date"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 182,
-      "end_line": 182,
+      "line": 193,
+      "end_line": 193,
       "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue",
-      "expression": "ForecastValue"
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent.is_estimated",
+      "expression": "EconomicEvent.is_estimated"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 194,
+      "end_line": 194,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 194,
+      "end_line": 194,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 673,
+      "end_line": 673,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
       "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 193,
+      "end_line": 193,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 193,
+      "end_line": 193,
+      "owner": "load_figure",
+      "conditions": [
+        "rel_code"
+      ],
+      "symbol": "app.models.EconomicEvent",
+      "expression": "EconomicEvent"
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -275386,7 +275838,7 @@
     {
       "path": "backend/app/services/public_bot.py",
       "line": 147,
-      "end_line": 157,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "Figure",
@@ -275394,8 +275846,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 160,
-      "end_line": 191,
+      "line": 162,
+      "end_line": 203,
       "owner": "<module>",
       "conditions": [],
       "name": "load_figure",
@@ -275403,8 +275855,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 205,
+      "line": 206,
+      "end_line": 217,
       "owner": "<module>",
       "conditions": [],
       "name": "_change",
@@ -275412,8 +275864,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 208,
-      "end_line": 213,
+      "line": 220,
+      "end_line": 225,
       "owner": "<module>",
       "conditions": [],
       "name": "site_url",
@@ -275421,8 +275873,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 222,
-      "end_line": 242,
+      "line": 238,
+      "end_line": 262,
       "owner": "<module>",
       "conditions": [],
       "name": "_wallet_line",
@@ -275430,8 +275882,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 245,
-      "end_line": 275,
+      "line": 265,
+      "end_line": 299,
       "owner": "<module>",
       "conditions": [],
       "name": "figure_text",
@@ -275439,8 +275891,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 282,
-      "end_line": 285,
+      "line": 306,
+      "end_line": 309,
       "owner": "<module>",
       "conditions": [],
       "name": "menu_keyboard",
@@ -275448,8 +275900,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 288,
-      "end_line": 295,
+      "line": 312,
+      "end_line": 319,
       "owner": "<module>",
       "conditions": [],
       "name": "figure_keyboard",
@@ -275457,8 +275909,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 298,
-      "end_line": 302,
+      "line": 322,
+      "end_line": 326,
       "owner": "<module>",
       "conditions": [],
       "name": "sources_keyboard",
@@ -275466,8 +275918,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 305,
-      "end_line": 316,
+      "line": 329,
+      "end_line": 337,
       "owner": "<module>",
       "conditions": [],
       "name": "welcome_text",
@@ -275475,8 +275927,17 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 331,
-      "end_line": 332,
+      "line": 340,
+      "end_line": 344,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "privacy_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 367,
+      "end_line": 368,
       "owner": "<module>",
       "conditions": [],
       "name": "_now",
@@ -275484,8 +275945,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 335,
-      "end_line": 347,
+      "line": 371,
+      "end_line": 383,
       "owner": "<module>",
       "conditions": [],
       "name": "_touch_chat",
@@ -275493,8 +275954,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 350,
-      "end_line": 352,
+      "line": 386,
+      "end_line": 388,
       "owner": "<module>",
       "conditions": [],
       "name": "_event",
@@ -275502,8 +275963,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 355,
-      "end_line": 358,
+      "line": 391,
+      "end_line": 394,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_subscribed",
@@ -275511,8 +275972,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 365,
-      "end_line": 369,
+      "line": 401,
+      "end_line": 405,
       "owner": "<module>",
       "conditions": [],
       "name": "_send",
@@ -275520,8 +275981,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 372,
-      "end_line": 374,
+      "line": 408,
+      "end_line": 410,
       "owner": "<module>",
       "conditions": [],
       "name": "bot_token",
@@ -275529,8 +275990,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 377,
-      "end_line": 395,
+      "line": 413,
+      "end_line": 431,
       "owner": "<module>",
       "conditions": [],
       "name": "_reply_figure",
@@ -275538,8 +275999,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 398,
-      "end_line": 436,
+      "line": 434,
+      "end_line": 491,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_message",
@@ -275547,8 +276008,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 439,
-      "end_line": 470,
+      "line": 494,
+      "end_line": 525,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_callback",
@@ -275556,8 +276017,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 473,
-      "end_line": 481,
+      "line": 528,
+      "end_line": 536,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_member_update",
@@ -275565,8 +276026,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 484,
-      "end_line": 499,
+      "line": 539,
+      "end_line": 554,
       "owner": "<module>",
       "conditions": [],
       "name": "subscribe",
@@ -275574,8 +276035,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 502,
-      "end_line": 508,
+      "line": 557,
+      "end_line": 563,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe",
@@ -275583,8 +276044,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 511,
-      "end_line": 517,
+      "line": 566,
+      "end_line": 572,
       "owner": "<module>",
       "conditions": [],
       "name": "mark_blocked",
@@ -275592,8 +276053,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 520,
-      "end_line": 529,
+      "line": 575,
+      "end_line": 584,
       "owner": "<module>",
       "conditions": [],
       "name": "forget_chat",
@@ -275601,8 +276062,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 536,
-      "end_line": 537,
+      "line": 591,
+      "end_line": 592,
       "owner": "<module>",
       "conditions": [],
       "name": "_in_window",
@@ -275610,8 +276071,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 540,
-      "end_line": 547,
+      "line": 595,
+      "end_line": 602,
       "owner": "<module>",
       "conditions": [],
       "name": "_should_notify",
@@ -275619,8 +276080,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 550,
-      "end_line": 600,
+      "line": 605,
+      "end_line": 655,
       "owner": "<module>",
       "conditions": [],
       "name": "public_bot_notify_job",
@@ -275628,8 +276089,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 607,
-      "end_line": 657,
+      "line": 662,
+      "end_line": 712,
       "owner": "<module>",
       "conditions": [],
       "name": "report_text",
@@ -275637,8 +276098,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 691,
-      "end_line": 695,
+      "line": 746,
+      "end_line": 750,
       "owner": "<module>",
       "conditions": [],
       "name": "_figure_by_code",
@@ -275646,8 +276107,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 698,
-      "end_line": 711,
+      "line": 753,
+      "end_line": 766,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_context",
@@ -275655,8 +276116,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 714,
-      "end_line": 722,
+      "line": 769,
+      "end_line": 777,
       "owner": "<module>",
       "conditions": [],
       "name": "_context_line",
@@ -275664,8 +276125,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 725,
-      "end_line": 750,
+      "line": 780,
+      "end_line": 805,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_complete",
@@ -275673,8 +276134,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 753,
-      "end_line": 777,
+      "line": 808,
+      "end_line": 831,
       "owner": "<module>",
       "conditions": [],
       "name": "answer_question",
@@ -275682,8 +276143,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 792,
-      "end_line": 798,
+      "line": 846,
+      "end_line": 852,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_update",
@@ -275691,8 +276152,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 801,
-      "end_line": 812,
+      "line": 855,
+      "end_line": 867,
       "owner": "<module>",
       "conditions": [],
       "name": "public_bot_poll_job",
@@ -275700,8 +276161,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 815,
-      "end_line": 847,
+      "line": 870,
+      "end_line": 901,
       "owner": "<module>",
       "conditions": [],
       "name": "_poll_once",
@@ -275709,8 +276170,35 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 643,
-      "end_line": 646,
+      "line": 905,
+      "end_line": 916,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_with_typing",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 924,
+      "end_line": 930,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_update_chat_id",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 933,
+      "end_line": 941,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_handle_in_order",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 698,
+      "end_line": 701,
       "owner": "report_text",
       "conditions": [],
       "name": "_line",
@@ -314902,32 +315390,32 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 707,
-      "end_line": 707,
+      "line": 762,
+      "end_line": 762,
       "owner": "build_llm_context",
       "conditions": [],
       "symbol": "app.services.public_bot._EXTRA_CODES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 225,
-      "end_line": 225,
+      "line": 241,
+      "end_line": 241,
       "owner": "_wallet_line",
       "conditions": [],
       "symbol": "app.services.public_bot._FUEL"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 378,
-      "end_line": 378,
+      "line": 414,
+      "end_line": 414,
       "owner": "_reply_figure",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 485,
-      "end_line": 485,
+      "line": 540,
+      "end_line": 540,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
@@ -314950,16 +315438,48 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 190,
+      "end_line": 190,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.services.public_bot._RELEASE_CODE"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 272,
+      "end_line": 272,
+      "owner": "figure_text",
+      "conditions": [],
+      "symbol": "app.services.public_bot._RUSSIA_AVG"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 276,
+      "end_line": 276,
       "owner": "figure_text",
       "conditions": [],
       "symbol": "app.services.public_bot._FREQ_STEP"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 702,
-      "end_line": 702,
+      "line": 472,
+      "end_line": 472,
+      "owner": "handle_message",
+      "conditions": [],
+      "symbol": "app.services.public_bot._GREETINGS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 472,
+      "end_line": 472,
+      "owner": "handle_message",
+      "conditions": [],
+      "symbol": "app.services.public_bot._THANKS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 757,
+      "end_line": 757,
       "owner": "build_llm_context",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
@@ -314990,24 +315510,24 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 271,
-      "end_line": 271,
+      "line": 292,
+      "end_line": 292,
       "owner": "figure_text",
       "conditions": [],
       "symbol": "app.services.public_bot._FRESH_DAYS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 308,
+      "end_line": 308,
       "owner": "menu_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.MENU"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 506,
+      "end_line": 506,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')"
@@ -315016,16 +315536,16 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 558,
-      "end_line": 558,
+      "line": 613,
+      "end_line": 613,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot._MSK"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 567,
-      "end_line": 567,
+      "line": 622,
+      "end_line": 622,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
@@ -315042,8 +315562,18 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 295,
+      "end_line": 295,
+      "owner": "figure_text",
+      "conditions": [
+        "f.next_release and f.next_release >= today"
+      ],
+      "symbol": "app.services.public_bot._MONTHS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 512,
+      "end_line": 512,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315053,56 +315583,66 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 570,
-      "end_line": 570,
+      "line": 625,
+      "end_line": 625,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 648,
-      "end_line": 648,
+      "line": 703,
+      "end_line": 703,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 711,
+      "end_line": 711,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 300,
-      "end_line": 300,
+      "line": 324,
+      "end_line": 324,
       "owner": "sources_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 325,
+      "end_line": 325,
       "owner": "sources_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 382,
-      "end_line": 382,
+      "line": 418,
+      "end_line": 418,
       "owner": "_reply_figure",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 461,
-      "end_line": 461,
+      "line": 477,
+      "end_line": 477,
+      "owner": "handle_message",
+      "conditions": [
+        "bare in _GREETINGS or bare in _THANKS"
+      ],
+      "symbol": "app.services.public_bot._GREETINGS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 516,
+      "end_line": 516,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315113,16 +315653,16 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 284,
-      "end_line": 284,
+      "line": 308,
+      "end_line": 308,
       "owner": "menu_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 623,
+      "end_line": 623,
       "owner": "public_bot_notify_job",
       "conditions": [
         "key in TOPICS"
@@ -315131,8 +315671,32 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 464,
-      "end_line": 464,
+      "line": 458,
+      "end_line": 458,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')",
+        "not (topic)",
+        "returning"
+      ],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 458,
+      "end_line": 458,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')",
+        "not (topic)",
+        "returning"
+      ],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 519,
+      "end_line": 519,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315144,8 +315708,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 514,
+      "end_line": 514,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315156,8 +315720,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 463,
-      "end_line": 463,
+      "line": 518,
+      "end_line": 518,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
