@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import io
+import math
 from dataclasses import dataclass
 from datetime import date
 
@@ -114,6 +115,60 @@ def _watermark(img: Image.Image) -> None:
     d.text((x + 48 + wdt, y), "economy", font=FG(30, 400), fill=INK + (200,))
 
 
+def _nice_step(raw: float) -> float:
+    """Круглый шаг оси: 1, 2, 2,5, 5 × 10^k (тестеры 09.11: деления «11,1 / 9,1 / 7,2» и «13 826»)."""
+    if raw <= 0:
+        return 1.0
+    mag = 10 ** math.floor(math.log10(raw))
+    for m in (1, 2, 2.5, 5, 10):
+        if raw <= m * mag:
+            return m * mag
+    return 10 * mag
+
+
+def _dense(line: list[tuple[float, float]], step: float = 6) -> list[tuple[float, float]]:
+    out = []
+    for (x0, y0), (x1, y1) in zip(line, line[1:]):
+        n = max(1, int(math.hypot(x1 - x0, y1 - y0) / step))
+        out += [(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n) for i in range(n)]
+    return out + line[-1:]
+
+
+def _place_label(img: Image.Image, text: str, cx: float, cy: float, font, fill, avoid: list[tuple[float, float]],
+                 box: tuple[int, int, int, int], prefer: str = "above") -> None:
+    """Подпись у точки там, где её не режет линия (тестеры 09.11: «год назад» и «наш расчёт» перечёркнуты).
+
+    Пробуем над, под, слева, справа; берём место с наименьшим числом точек линии под текстом;
+    под текст — мягкая подложка цвета фона, без рамки."""
+    d = ImageDraw.Draw(img)
+    tw = d.textlength(text, font=font)
+    th = font.size + 6
+    left, top, right, bottom = box
+    cands = {
+        "above": (cx - tw / 2, cy - th - 26),
+        "below": (cx - tw / 2, cy + 24),
+        "left": (cx - tw - 28, cy - th / 2),
+        "right": (cx + 28, cy - th / 2),
+    }
+    order = [prefer] + [k for k in cands if k != prefer]
+    best, best_score = None, None
+    for k in order:
+        x, y = cands[k]
+        x = min(max(x, left + 4), right - tw - 4)
+        y = min(max(y, top - 30), bottom - th - 4)
+        hits = sum(1 for px, py in avoid if x - 10 <= px <= x + tw + 10 and y - 8 <= py <= y + th + 8)
+        if best_score is None or hits < best_score:
+            best, best_score = (x, y), hits
+        if hits == 0:
+            break
+    x, y = best
+    pad = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(pad).rounded_rectangle((x - 10, y - 4, x + tw + 10, y + th + 2), radius=12,
+                                          fill=BG_TOP + (215,))
+    img.alpha_composite(pad)
+    ImageDraw.Draw(img).text((x, y), text, font=font, fill=fill)
+
+
 def render_chart(s: Series) -> bytes:
     img = _background()
     _watermark(img)
@@ -148,8 +203,10 @@ def render_chart(s: Series) -> bytes:
     extra = [v for _, v in (s.compare_points or [])] + ([s.forecast[1]] if s.forecast else [])
     extra += [s.target[1]] if s.target else []
     lo, hi = min(vals + extra), max(vals + extra)
-    pad = (hi - lo) * 0.12 or abs(hi) * 0.05 or 1
-    lo, hi = lo - pad, hi + pad
+    pad = (hi - lo) * 0.08 or abs(hi) * 0.05 or 1
+    tick = _nice_step((hi - lo + 2 * pad) / 4)
+    lo, hi = math.floor((lo - pad) / tick) * tick, math.ceil((hi + pad) / tick) * tick
+    n_ticks = max(1, round((hi - lo) / tick))
     d0 = s.points[0][0].toordinal()
     d1 = (s.forecast[0] if s.forecast else last_d).toordinal()
     span = max(1, d1 - d0)
@@ -159,11 +216,12 @@ def render_chart(s: Series) -> bytes:
                 bottom - (v - lo) / (hi - lo) * (bottom - top))
 
     # сетка без рамки: 4 тонкие горизонтали и подписи слева
-    for i in range(5):
-        v = lo + (hi - lo) * i / 4
-        y = bottom - (bottom - top) * i / 4
+    tick_digits = 0 if tick >= 1 else (1 if round(tick * 10, 6) == int(round(tick * 10, 6)) else 2)
+    for i in range(n_ticks + 1):
+        v = lo + tick * i
+        y = bottom - (bottom - top) * i / n_ticks
         d.line((left, y, right, y), fill=GRID + (255,), width=2)
-        lab = _num(v, 1 if abs(hi - lo) < 20 else 0)
+        lab = _num(v, tick_digits)
         d.text((left - 18 - d.textlength(lab, font=FG(26, 450)), y - 16), lab, font=FG(26, 450), fill=MUTED)
     # подписи времени: начало, середина, конец
     for dt in (s.points[0][0], s.points[len(s.points) // 2][0], last_d):
@@ -179,14 +237,15 @@ def render_chart(s: Series) -> bytes:
             d.line((x, ty, min(x + 14, right), ty), fill=GOLD + (220,), width=3)
         d.text((left + 8, ty - 40), f"{s.target[0]} {_num(s.target[1], 0)} %", font=FG(26, 600), fill=GOLD)
     if s.compare_points and len(s.compare_points) > 1:
-        cp = [xy(dt, v) for dt, v in s.compare_points if dt.toordinal() >= d0]
+        # Тестеры 09.11: линия сравнения уходила за правый край — режем по последней дате основного ряда.
+        cp = [xy(dt, v) for dt, v in s.compare_points if d0 <= dt.toordinal() <= last_d.toordinal()]
         if len(cp) > 1:
-            d.line(_spline(cp, 6), fill=COMPARE + (255,), width=3, joint="curve")
+            cline = _spline(cp, 6)
+            d.line(cline, fill=COMPARE + (255,), width=3, joint="curve")
             cx, cy = cp[-1]
-            lab = s.compare_label or ""
-            lw = d.textlength(lab, font=FG(24, 600))
-            # Подпись над концом линии, внутри области графика (у правого края обрезалась).
-            d.text((min(cx - lw / 2, right - lw), cy - 42), lab, font=FG(24, 600), fill=COMPARE)
+            _place_label(img, s.compare_label or "", cx - 60, cy, FG(24, 600), COMPARE, _dense(cline),
+                         (left, top, right, bottom), prefer="above")
+            d = ImageDraw.Draw(img)
 
     # основной ряд: заливка + линия
     pts = [xy(dt, v) for dt, v in s.points]
@@ -207,8 +266,9 @@ def render_chart(s: Series) -> bytes:
     if s.year_ago:
         yx, yy = xy(*s.year_ago)
         d.ellipse((yx - 11, yy - 11, yx + 11, yy + 11), fill=BG_TOP + (255,), outline=BLUE + (255,), width=4)
-        lab = f"год назад {_num(s.year_ago[1])}"
-        d.text((yx - d.textlength(lab, font=FG(26, 600)) / 2, yy - 52), lab, font=FG(26, 600), fill=INK)
+        _place_label(img, f"год назад {_num(s.year_ago[1])}", yx, yy, FG(26, 600), INK, _dense(line),
+                     (left, top, right, bottom), prefer="above")
+        d = ImageDraw.Draw(img)
 
     # наш расчёт — одной точкой
     lx, ly = pts[-1]
@@ -220,9 +280,9 @@ def render_chart(s: Series) -> bytes:
             d.line((lx + (fx - lx) * a, ly + (fy - ly) * a, lx + (fx - lx) * b, ly + (fy - ly) * b),
                    fill=GOLD + (255,), width=5)
         d.ellipse((fx - 12, fy - 12, fx + 12, fy + 12), fill=GOLD + (255,))
-        lab = f"наш расчёт {_num(s.forecast[1])}"
-        tw = d.textlength(lab, font=FG(26, 650))
-        d.text((min(fx - tw / 2, right - tw), fy + 22), lab, font=FG(26, 650), fill=GOLD)
+        _place_label(img, f"наш расчёт {_num(s.forecast[1])}", fx, fy, FG(26, 650), GOLD, _dense(line),
+                     (left, top, right, bottom), prefer="below" if fy < ly else "above")
+        d = ImageDraw.Draw(img)
 
     # последняя точка: синий центр, золотое кольцо
     d.ellipse((lx - 17, ly - 17, lx + 17, ly + 17), fill=BG_TOP + (255,), outline=GOLD + (255,), width=5)
