@@ -45,6 +45,7 @@ from app.services.display import (
     format_number_ru,
 )
 from app.services.seo_renderer import _absolute, _breadcrumbs, _breadcrumbs_nav, build_document
+from app.services.site_urls import is_redirect_only_indicator
 from app.services.world_rank_values import (
     money_unit_compatible,
     ranking_display_name,
@@ -2001,6 +2002,22 @@ async def render_world_indicator_html(
             f'<ul class="seo-pills">{items}</ul></section>'
         )
 
+    # Ссылки на годовые страницы ряда (08.11.2026, гигиена после падения Google): мировые годовые страницы (5,5 млн
+    # в sitemap) были «островком» без входа с карточки. Годы берём из уже загруженных точек, только публичные, 12 последних.
+    years_html = ""
+    if not is_redirect_only_indicator(indicator.code):
+        card_years = sorted({d.year for d, _v in series if paths.is_public_year(d.year)}, reverse=True)[:12]
+        if card_years:
+            yh2 = (f"{display} by year" if loc == "en" else f"{display} по годам")
+            items = "".join(
+                f'<li><a href="{escape(paths.indicator_year(slug, indicator.code, y))}">{y}</a></li>'
+                for y in card_years
+            )
+            years_html = (
+                f'<section class="seo-section"><h2>{escape(yh2)}</h2>'
+                f'<ul class="seo-pills">{items}</ul></section>'
+            )
+
     # Имя ведомства ведёт на страницу страны, с которой открыт ряд.
     source_href = _on_site_provider_href(
         getattr(indicator, "provider", None) or "",
@@ -2138,6 +2155,7 @@ async def render_world_indicator_html(
 {paragraphs_html}
 {freq_links_html}
 {table_html}
+{years_html}
 {peers_html}
 {siblings_html}
 <section class="seo-section"><h2>{escape(h2_source)}</h2>

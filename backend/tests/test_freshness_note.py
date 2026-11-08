@@ -193,3 +193,30 @@ def test_ssr_page_of_stale_series_carries_the_honest_line(auth_env):
     assert status == 200
     assert "Источник не обновлял ряд с 2021." in html
     assert "Ближайший актуальный показатель: Свежий ряд." in html
+
+
+def test_world_card_links_to_its_years(auth_env):
+    """08.11.2026: мировая карточка ссылается на свои годовые страницы (до этого — ни одной ссылки)."""
+    from app.models import WorldDataPoint
+    from app.services.seo_world import render_world_indicator_html
+
+    async def go():
+        async with auth_env["session_maker"]() as db:
+            c = WorldCountry(code="IT", slug="italy", name_ru="Италия", name_en="Italy", is_active=True)
+            db.add(c)
+            await db.flush()
+            ind = _world(db, c.id, "it-old", date(2021, 1, 1), name_ru="Старый ряд")
+            db.add(ind)
+            await db.flush()
+            db.add_all([
+                WorldDataPoint(indicator_id=ind.id, date=date(2020, 1, 1), value=1.0),
+                WorldDataPoint(indicator_id=ind.id, date=date(2021, 1, 1), value=2.0),
+            ])
+            await db.commit()
+        async with auth_env["session_maker"]() as db:
+            return await render_world_indicator_html("italy", "it-old", db)
+
+    status, html = asyncio.run(go())
+    assert status == 200
+    assert "по годам" in html
+    assert 'href="/italy/indicator/it-old/2021"' in html and 'href="/italy/indicator/it-old/2020"' in html

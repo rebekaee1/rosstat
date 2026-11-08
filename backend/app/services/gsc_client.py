@@ -162,6 +162,63 @@ async def gsc_search_queries_job() -> None:
         logger.info("GSC search queries synced: %d rows", n)
     except Exception:
         logger.exception("GSC search queries sync failed")
+    # Снимок по страницам (08.11.2026): отдельно, чтобы сбой одного не останавливал другой.
+    try:
+        n = await sync_gsc_pages()
+        logger.info("GSC page snapshot synced: %d rows", n)
+    except Exception:
+        logger.exception("GSC page snapshot sync failed")
+
+
+def page_rows(result: dict) -> list[dict]:
+    """Строки снимка из ответа `search_day(dimensions=("page", "date"))`. Чистая функция."""
+    out = []
+    for row in result.get("rows") or []:
+        keys = row.get("keys") or []
+        if len(keys) != 2 or not keys[0]:
+            continue
+        try:
+            day = date.fromisoformat(keys[1])
+        except (ValueError, TypeError):
+            continue
+        out.append({
+            "date": day, "page": str(keys[0])[:1000],
+            "impressions": int(row.get("impressions") or 0), "clicks": int(row.get("clicks") or 0),
+            "ctr": row.get("ctr"), "position": row.get("position"),
+        })
+    return out
+
+
+async def sync_gsc_pages(token: str = "", *, days: int = 7) -> int:
+    """Полные показы и клики по страницам за последние `days` финальных дней (перезапись по дате и странице)."""
+    from sqlalchemy.dialects.postgresql import insert
+    from app.database import analytics_session
+    from app.models import GscPageDaily
+
+    if not 1 <= days <= 31:
+        raise ValueError("GSC sync window must be 1..31 days")
+    end = datetime.now(ZoneInfo("America/Los_Angeles")).date() - timedelta(days=1)
+    start = end - timedelta(days=days - 1)
+    stored = 0
+    async with httpx.AsyncClient(timeout=60) as http:
+        api = GscClient(http, token=token) if token else GscClient.from_settings(http)
+        for offset in range(days):
+            result = await api.search_day(configured_site(), start + timedelta(days=offset), dimensions=("page", "date"))
+            if result["reached_row_cap"]:
+                logger.warning("GSC page snapshot row cap reached for %s; snapshot is partial", result["date"])
+            rows = page_rows(result)
+            if not rows:
+                continue
+            async with analytics_session() as db:
+                for i in range(0, len(rows), 1000):
+                    stmt = insert(GscPageDaily).values(rows[i:i + 1000])
+                    stmt = stmt.on_conflict_do_update(constraint="uq_gsc_page_daily", set_={
+                        field: getattr(stmt.excluded, field) for field in ("impressions", "clicks", "ctr", "position")
+                    })
+                    await db.execute(stmt)
+                await db.commit()
+            stored += len(rows)
+    return stored
 
 
 async def sync_gsc_search_queries(token: str = "", *, days: int = 7) -> int:

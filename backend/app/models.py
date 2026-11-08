@@ -952,6 +952,28 @@ class GscSearchQuery(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
 
+class GscPageDaily(Base):
+    """Google Search Console: полные показы и клики страницы за день (без разреза по запросу, 08.11.2026).
+
+    `gsc_search_queries` видит только строки с запросом (3–6% показов); этот снимок — полную картину по страницам.
+    Заполняет `gsc_client.sync_gsc_pages` каждый день за последние 7 финальных дней (перезапись по ключу).
+    """
+    __tablename__ = "gsc_page_daily"
+    __table_args__ = (
+        UniqueConstraint("date", "page", name="uq_gsc_page_daily"),
+        Index("ix_gsc_page_daily_date", "date"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    page: Mapped[str] = mapped_column(String(1000), nullable=False)
+    impressions: Mapped[int | None] = mapped_column(Integer)
+    clicks: Mapped[int | None] = mapped_column(Integer)
+    ctr: Mapped[float | None] = mapped_column(Numeric(8, 4))
+    position: Mapped[float | None] = mapped_column(Numeric(8, 2))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+
 class SeoPageSnapshot(Base):
     __tablename__ = "seo_page_snapshots"
     __table_args__ = (

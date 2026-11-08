@@ -229,13 +229,10 @@ def test_sitemap_years_match_ssr_200(year_landing_client, auth_env):
     asyncio.run(_check())
 
 
-def test_main_card_omits_year_links_and_year_lookup(year_landing_client, auth_env, monkeypatch):
+def test_main_card_links_to_its_years(year_landing_client, auth_env):
+    """08.11.2026: карточка снова ссылается на свои годовые страницы (было убрано 27.09; годовые страницы
+    оставались без входа с сайта, Google находил их только через sitemap)."""
     from app.services import seo_renderer
-
-    async def unexpected_year_lookup(*_args, **_kwargs):
-        raise AssertionError("main card should not query years")
-
-    monkeypatch.setattr(seo_renderer, "indicator_data_years", unexpected_year_lookup)
 
     async def render():
         async with auth_env["session_maker"]() as db:
@@ -243,8 +240,8 @@ def test_main_card_omits_year_links_and_year_lookup(year_landing_client, auth_en
 
     status, html = asyncio.run(render())
     assert status == 200
-    assert 'href="/russia/indicator/cpi/2024"' not in html
-    assert "Индекс потребительских цен по годам" not in html
+    assert 'href="/russia/indicator/cpi/2024"' in html
+    assert "Индекс потребительских цен по годам" in html
 
 
 def test_main_card_chart_rights_cover_og_url(year_landing_client, auth_env):

@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2087  ·  **Строк:** 1 323 592  ·  **Токенов (≈):** 12 586 276
+**Файлов:** 2089  ·  **Строк:** 1 324 119  ·  **Токенов (≈):** 12 591 945
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 775 | 64 046 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 854 | 288 482 | 3 178 189 |
+| `backend` | 856 | 288 682 | 3 180 590 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 121 | 16 336 |
-| `docs` | 140 | 839 524 | 7 177 750 |
+| `docs` | 140 | 839 851 | 7 181 018 |
 | `frontend` | 930 | 167 196 | 1 858 928 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 944 | 285 531 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 335 423 | 2 728 186 |
+| `docs/mechanism-inventory.json` | 335 719 | 2 730 494 |
 | `docs/client-mechanism-inventory.json` | 240 906 | 1 703 672 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -37,9 +37,9 @@
 | `docs/design/local-acceptance/baseline/http.json` | 22 363 | 201 328 |
 | `docs/design/local-acceptance/first-pass/http.json` | 21 063 | 200 239 |
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
-| `docs/mechanism-inventory.md` | 3 158 | 136 800 |
+| `docs/mechanism-inventory.md` | 3 175 | 137 189 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 181 | 114 495 |
+| `docs/backlog.md` | 3 195 | 115 066 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 728 | 59 293 |
@@ -49,7 +49,7 @@
 | `docs/data-contracts.md` | 1 033 | 52 274 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `frontend/src/i18n/messages.en.js` | 3 727 | 52 040 |
-| `backend/app/services/seo_renderer.py` | 4 254 | 51 246 |
+| `backend/app/services/seo_renderer.py` | 4 274 | 51 535 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
 | `frontend/src/pages/AdminBI.jsx` | 3 045 | 43 228 |
 | `CONTEXT.md` | 1 315 | 42 960 |
@@ -62,14 +62,14 @@
 | `backend/app/api/world.py` | 2 893 | 28 640 |
 | `backend/app/api/sitemap.py` | 2 573 | 26 887 |
 | `backend/app/services/analytics_marts.py` | 2 361 | 26 261 |
-| `backend/app/models.py` | 1 856 | 24 219 |
+| `backend/app/models.py` | 1 878 | 24 494 |
 | `docs/workflow.md` | 670 | 23 947 |
 | `docs/architecture-knowledge.json` | 2 436 | 22 396 |
 | `backend/app/services/site_urls.py` | 2 252 | 22 005 |
 | `backend/app/services/og_image.py` | 1 977 | 21 420 |
 | `backend/app/main.py` | 2 001 | 21 053 |
 | `backend/app/services/seo_regional.py` | 2 111 | 20 923 |
-| `backend/app/services/seo_world.py` | 2 169 | 20 310 |
+| `backend/app/services/seo_world.py` | 2 187 | 20 551 |
 | `docs/data_sources.md` | 753 | 19 674 |
 | `scripts/metrika_daily_report.py` | 1 915 | 19 522 |
 | `frontend/src/components/PlanetView.component.test.jsx` | 1 234 | 19 476 |
@@ -213,12 +213,12 @@
 | `backend/app/data/eurostat_listing.py` | 721 | 6 321 |
 | `backend/app/services/seo_today.py` | 635 | 6 301 |
 | `backend/tests/test_parser_publication.py` | 531 | 6 288 |
+| `backend/tests/test_seo_world_year.py` | 572 | 6 245 |
 | `backend/app/data/legacy_redirects.py` | 650 | 6 238 |
 | `docs/research/_fpsr_raw/agent03.json` | 503 | 6 238 |
 | `backend/app/services/minfin_budget_parser.py` | 669 | 6 225 |
 | `docs/analytics_api_inventory/frontend_instrumentation.md` | 346 | 6 215 |
 | `backend/app/api/indicators.py` | 623 | 6 186 |
-| `backend/tests/test_seo_world_year.py` | 572 | 6 177 |
 | `backend/app/services/pulse_report.py` | 513 | 6 146 |
 | `frontend/index.html` | 240 | 6 076 |
 | `backend/tests/test_forecast_showcase.py` | 579 | 6 053 |
@@ -241,8 +241,8 @@
 | `backend/tests/test_derived_ops.py` | 633 | 5 574 |
 | `docs/research/_fpsr_raw/agent05.json` | 541 | 5 566 |
 | `frontend/src/styles/z3-home.css` | 411 | 5 522 |
-| `backend/tests/test_indicator_year_landing.py` | 540 | 5 509 |
 | `backend/app/services/calendar_seed.py` | 614 | 5 495 |
+| `backend/tests/test_indicator_year_landing.py` | 537 | 5 494 |
 | `backend/app/api/export.py` | 598 | 5 470 |
 | `backend/tests/test_world_search_compare_national.py` | 572 | 5 461 |
 | `frontend/src/lib/format.test.js` | 545 | 5 425 |
@@ -475,6 +475,7 @@
 | `backend/app/services/freshness_note.py` | 299 | 3 153 |
 | `frontend/src/lib/useCountryComparison.js` | 331 | 3 134 |
 | `backend/tests/test_search_intent_candidate_roles.py` | 228 | 3 131 |
+| `backend/app/services/gsc_client.py` | 263 | 3 129 |
 | `frontend/src/lib/viewModeFamilies.js` | 295 | 3 128 |
 | `backend/app/services/goal_taxonomy.py` | 342 | 3 122 |
 | `backend/tests/test_rosstat_gdp.py` | 308 | 3 121 |
@@ -528,6 +529,7 @@
 | `frontend/src/lib/chartImage.js` | 296 | 2 857 |
 | `backend/scripts/fix-world-country-prepositions.py` | 255 | 2 854 |
 | `frontend/src/pages/WorldRatingPage.w6d.component.test.jsx` | 229 | 2 852 |
+| `backend/tests/test_freshness_note.py` | 222 | 2 846 |
 | `backend/app/data/world_national_core/ca.yaml` | 293 | 2 838 |
 | `frontend/src/components/ChartControls.component.test.jsx` | 257 | 2 838 |
 | `scripts/tests/test_mechanism_inventories.py` | 179 | 2 838 |
@@ -593,7 +595,6 @@
 | `frontend/src/i18n/locale.js` | 281 | 2 552 |
 | `backend/app/services/seo_region_compare.py` | 266 | 2 548 |
 | `scripts/classify-graph-omissions.py` | 168 | 2 547 |
-| `backend/tests/test_freshness_note.py` | 195 | 2 544 |
 | `frontend/src/components/regions/RegionRanking.jsx` | 226 | 2 538 |
 | `backend/app/services/seo_year_ui.py` | 292 | 2 536 |
 | `backend/tests/test_seo_not_found.py` | 230 | 2 531 |
@@ -608,7 +609,6 @@
 | `backend/tests/test_search_geo_morphology.py` | 187 | 2 491 |
 | `frontend/src/pages/WorldRatingPage.c11f.component.test.jsx` | 203 | 2 485 |
 | `backend/app/services/ssr_warm.py` | 244 | 2 483 |
-| `backend/app/services/gsc_client.py` | 206 | 2 482 |
 | `frontend/src/i18n/messages.parity.test.js` | 265 | 2 480 |
 | `backend/tests/test_display_adapter.py` | 245 | 2 472 |
 | `frontend/src/lib/homeToday.js` | 234 | 2 461 |
@@ -1841,6 +1841,7 @@
 | `frontend/src/components/regions/MapMetricTopics.component.test.jsx` | 33 | 350 |
 | `frontend/src/lib/homeQuickLinks.test.js` | 25 | 350 |
 | `frontend/src/lib/searchRecent.test.js` | 35 | 349 |
+| `backend/alembic/versions/20261108b_gsc_page_daily.py` | 36 | 346 |
 | `backend/tests/test_search_intent_copy.py` | 25 | 345 |
 | `frontend/src/components/FreshnessBadge.jsx` | 36 | 342 |
 | `frontend/src/components/Skeleton.jsx` | 36 | 342 |
@@ -1950,6 +1951,7 @@
 | `frontend/src/components/ChartBrandCaption.component.test.jsx` | 29 | 251 |
 | `frontend/src/lib/homeStats.test.js` | 27 | 251 |
 | `backend/alembic/versions/20260706_bi21.py` | 36 | 250 |
+| `backend/tests/test_gsc_page_daily.py` | 23 | 248 |
 | `backend/tests/test_ruonia_seo.py` | 33 | 247 |
 | `frontend/src/components/SkipLink.component.test.jsx` | 19 | 247 |
 | `frontend/src/styles/c10m-map.css` | 27 | 247 |
