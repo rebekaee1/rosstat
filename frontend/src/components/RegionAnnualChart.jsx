@@ -52,7 +52,8 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
-  const periodLabel = tickLabel ? tickLabel(label) : label;
+  const rawPeriod = tickLabel ? tickLabel(label) : label;
+  const periodLabel = typeof rawPeriod === 'string' && rawPeriod ? rawPeriod.charAt(0).toUpperCase() + rawPeriod.slice(1) : rawPeriod;
   // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
   const inlineUnit = !indexNote && unit && String(unit).length <= 6 ? `\u00A0${unit}` : '';
   const fmt = (v) => `${formatRegionValue(v)}${inlineUnit}`;

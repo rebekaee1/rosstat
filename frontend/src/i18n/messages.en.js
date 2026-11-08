@@ -3785,8 +3785,8 @@ export default {
   'r2z2.hereLower': "here {pct} lower",
   'r2z2.hereSame': "about the same here",
   'r2z2.tipYoy': 'vs year ago',
-  'r2z2.statMax': 'Record high ({month})',
-  'r2z2.statMin': 'Record low ({month})',
+  'r2z2.statMax': 'Peak, {month}',
+  'r2z2.statMin': 'Low, {month}',
   'r2z2.colYoy': 'YoY',
   'r2z2.source': 'Rosstat, average consumer prices. Data for {month}.',
 };

@@ -3790,8 +3790,8 @@ export default {
   'r2z2.hereLower': "здесь ниже на {pct}",
   'r2z2.hereSame': "здесь так же",
   'r2z2.tipYoy': 'к году назад',
-  'r2z2.statMax': 'Максимум за весь период ({month})',
-  'r2z2.statMin': 'Минимум за весь период ({month})',
+  'r2z2.statMax': 'Максимум, {month}',
+  'r2z2.statMin': 'Минимум, {month}',
   'r2z2.colYoy': 'К году',
   'r2z2.source': 'Росстат, средние потребительские цены. Данные за {month}.',
 };

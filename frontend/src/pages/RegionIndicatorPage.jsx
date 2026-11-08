@@ -319,6 +319,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     ? (pickField(active, 'price_group') || (isPrice ? guessPriceGroup(indName, active.indicator.unit) : null))
     : null;
   const priceSuffix = isPrice ? unitSuffix(active.indicator.unit) : '';
+  const rubCaption = isPrice && priceSuffix && locale === 'ru' ? `₽ ${priceSuffix}` : '';
   const perUnit = isPrice && last ? perUnitPrice(active.indicator.unit, last.value) : null;
   const siblingsView = isMonthly && isPrice
     ? (active?.siblings || []).map(sb => ({
@@ -465,7 +466,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             <div className="flex flex-col gap-2 mb-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="text-sm text-text-secondary">
                 {isMonthly
-                  ? t('w4.ind.rangeMonthly', { from: first.year, to: last.year, unit: unitLabel(active.indicator.unit, locale) || active.indicator.unit })
+                  ? t('w4.ind.rangeMonthly', { from: first.year, to: last.year, unit: rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit })
                   : `${first.year}–${last.year}, ${showYoY ? t('w4.ind.yoyUnit') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}`}
               </div>
               <div className="flex flex-wrap items-center gap-1.5" data-no-export="true">
@@ -535,7 +536,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               compareName={compareSlug ? (compare.data?.region?.name || '') : ''}
               unit={showYoY ? t('w4.ind.yoyShort') : (unitLabel(active.indicator.unit, locale) || active.indicator.unit)}
               regionName={regionName}
-              axisUnit={isMonthly ? (unitLabel(active.indicator.unit, locale) || active.indicator.unit) : ''}
+              axisUnit={isMonthly ? (rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit) : ''}
               yearTicks={isMonthly}
               height={300}
             />
