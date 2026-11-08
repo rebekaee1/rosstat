@@ -690,8 +690,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "bc2fe0875737eb7c749ca4f02efa7a36faabc6e914c9900442820537eb55e672",
-      "lines": 1977
+      "sha256": "16d6cf7b7dcc90033181c892a89059e1b4e09b8d5ca7a26c2aaf0fcbf0757b70",
+      "lines": 1989
     },
     {
       "path": "backend/app/models.py",
@@ -967,6 +967,11 @@
       "path": "backend/app/services/clickhouse_sync.py",
       "sha256": "13020d7eb03703f34c4c617173b8dd6ee3116bd8c26692d503c290908fa92f4a",
       "lines": 796
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "sha256": "987a29110f6844417a259cb52a3ae248cbf997a57f8e4fe7dd8ea6aa45a5294c",
+      "lines": 69
     },
     {
       "path": "backend/app/services/data_validator.py",
@@ -1435,12 +1440,12 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "sha256": "1695a710dda40770cfc865cfffcde0c6d285099e3b9e71b52b83391ab7d3eaa8",
-      "lines": 947
+      "sha256": "28127f5cf8f0921a3a9625f05dafb92db765dd14385d8bc41770e11e5913c63a",
+      "lines": 962
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "sha256": "932639bd0064b28cc7e09526ef24d09fb6a9873eefba9eaeb38b0b70046d67a9",
+      "sha256": "a15a7947bd53965e9bfa7db934dc5809aa62b4516578948af5a55e93b9fd972b",
       "lines": 323
     },
     {
@@ -1565,8 +1570,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "de85b686a7def4ae473516a7f732607d907772212687e9a24f257116a3c8320a",
-      "lines": 4253
+      "sha256": "568faca27c3eb869c4b3722cc7015fa5986c766302b0c24c7c906ba063b4c36e",
+      "lines": 4254
     },
     {
       "path": "backend/app/services/seo_today.py",
@@ -1685,8 +1690,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "83cfbe84f1a1d9fca06ae784a095ff2d2e2d3e1d432a1b06456c929a861edc3f",
-      "lines": 336
+      "sha256": "6997089ceec0bd732bfc2537e7c347192b077230526c50e2d26f2f29bbdf2a03",
+      "lines": 338
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
@@ -1750,8 +1755,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "sha256": "4cee0f233af68faa7e3610ce6051f506201a63a9a405ada815ca52be66569da5",
-      "lines": 170
+      "sha256": "e37f8e7eb86057bf393ff882c1fce4e73b6fb6c90570e44a02d640d1684c003e",
+      "lines": 239
     },
     {
       "path": "backend/app/services/us_pop_adapter.py",
@@ -6986,8 +6991,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1461,
-      "end_line": 1469,
+      "line": 1473,
+      "end_line": 1481,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.main.app",
@@ -7285,8 +7290,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1964,
-      "end_line": 1964,
+      "line": 1976,
+      "end_line": 1976,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7296,8 +7301,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1967,
-      "end_line": 1967,
+      "line": 1979,
+      "end_line": 1979,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7307,8 +7312,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1970,
-      "end_line": 1970,
+      "line": 1982,
+      "end_line": 1982,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7318,8 +7323,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1974,
-      "end_line": 1974,
+      "line": 1986,
+      "end_line": 1986,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -7329,8 +7334,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1977,
-      "end_line": 1977,
+      "line": 1989,
+      "end_line": 1989,
       "owner": "<module>",
       "conditions": [],
       "parent": "app.main.app",
@@ -14231,8 +14236,8 @@
   "middleware": [
     {
       "path": "backend/app/main.py",
-      "line": 1942,
-      "end_line": 1942,
+      "line": 1954,
+      "end_line": 1954,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14242,8 +14247,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1943,
-      "end_line": 1943,
+      "line": 1955,
+      "end_line": 1955,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14253,8 +14258,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1944,
-      "end_line": 1944,
+      "line": 1956,
+      "end_line": 1956,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14264,8 +14269,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1945,
-      "end_line": 1945,
+      "line": 1957,
+      "end_line": 1957,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14275,8 +14280,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1946,
-      "end_line": 1960,
+      "line": 1958,
+      "end_line": 1972,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -14291,8 +14296,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1962,
-      "end_line": 1962,
+      "line": 1974,
+      "end_line": 1974,
       "owner": "<module>",
       "conditions": [],
       "application": "app.main.app",
@@ -33036,8 +33041,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1388,
-      "end_line": 1388,
+      "line": 1400,
+      "end_line": 1400,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33047,8 +33052,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1417,
-      "end_line": 1417,
+      "line": 1429,
+      "end_line": 1429,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33058,8 +33063,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1462,
-      "end_line": 1462,
+      "line": 1474,
+      "end_line": 1474,
       "owner": "<module>",
       "conditions": [],
       "name": "app_name",
@@ -33067,8 +33072,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1506,
-      "end_line": 1506,
+      "line": 1518,
+      "end_line": 1518,
       "owner": "_set_locale_preference_cookie",
       "conditions": [],
       "name": "auth_cookie_secure",
@@ -33076,8 +33081,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1514,
-      "end_line": 1514,
+      "line": 1526,
+      "end_line": 1526,
       "owner": "_set_locale_preference_cookie",
       "conditions": [],
       "name": "locale_preference_cookie",
@@ -33085,8 +33090,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1651,
-      "end_line": 1651,
+      "line": 1663,
+      "end_line": 1663,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "apex_locale_en",
@@ -33094,8 +33099,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1710,
-      "end_line": 1710,
+      "line": 1722,
+      "end_line": 1722,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "geo_locale_redirect_enabled",
@@ -33103,8 +33108,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1750,
-      "end_line": 1750,
+      "line": 1762,
+      "end_line": 1762,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "name": "apex_locale_en",
@@ -33384,8 +33389,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1302,
-      "end_line": 1302,
+      "line": 1314,
+      "end_line": 1314,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33395,8 +33400,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1302,
-      "end_line": 1302,
+      "line": 1314,
+      "end_line": 1314,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33406,8 +33411,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1302,
-      "end_line": 1302,
+      "line": 1314,
+      "end_line": 1314,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -33417,8 +33422,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1437,
-      "end_line": 1437,
+      "line": 1449,
+      "end_line": 1449,
       "owner": "lifespan",
       "conditions": [],
       "name": "scheduler_enabled",
@@ -33426,8 +33431,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1437,
-      "end_line": 1437,
+      "line": 1449,
+      "end_line": 1449,
       "owner": "lifespan",
       "conditions": [],
       "name": "worker_recycle_mb",
@@ -33435,8 +33440,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1466,
-      "end_line": 1466,
+      "line": 1478,
+      "end_line": 1478,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33444,8 +33449,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1467,
-      "end_line": 1467,
+      "line": 1479,
+      "end_line": 1479,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33453,8 +33458,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1468,
-      "end_line": 1468,
+      "line": 1480,
+      "end_line": 1480,
       "owner": "<module>",
       "conditions": [],
       "name": "debug",
@@ -33462,8 +33467,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1949,
-      "end_line": 1949,
+      "line": 1961,
+      "end_line": 1961,
       "owner": "<module>",
       "conditions": [],
       "name": "public_origin",
@@ -33681,8 +33686,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1318,
-      "end_line": 1318,
+      "line": 1330,
+      "end_line": 1330,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33693,8 +33698,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1318,
-      "end_line": 1318,
+      "line": 1330,
+      "end_line": 1330,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -33705,8 +33710,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1441,
-      "end_line": 1441,
+      "line": 1453,
+      "end_line": 1453,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -33716,8 +33721,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1442,
-      "end_line": 1442,
+      "line": 1454,
+      "end_line": 1454,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -33727,8 +33732,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1491,
-      "end_line": 1491,
+      "line": 1503,
+      "end_line": 1503,
       "owner": "_locale_preference",
       "conditions": [],
       "name": "locale_preference_cookie",
@@ -33736,8 +33741,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1589,
-      "end_line": 1589,
+      "line": 1601,
+      "end_line": 1601,
       "owner": "_geo_ru_country_codes",
       "conditions": [
         "_GEO_RU_CODES is None"
@@ -33747,8 +33752,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1950,
-      "end_line": 1950,
+      "line": 1962,
+      "end_line": 1962,
       "owner": "<module>",
       "conditions": [],
       "name": "public_host",
@@ -34228,8 +34233,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1307,
-      "end_line": 1307,
+      "line": 1319,
+      "end_line": 1319,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -34240,8 +34245,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1308,
-      "end_line": 1308,
+      "line": 1320,
+      "end_line": 1320,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -34252,8 +34257,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1393,
-      "end_line": 1393,
+      "line": 1405,
+      "end_line": 1405,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -34264,8 +34269,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1394,
-      "end_line": 1394,
+      "line": 1406,
+      "end_line": 1406,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -34313,8 +34318,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1952,
-      "end_line": 1952,
+      "line": 1964,
+      "end_line": 1964,
       "owner": "<module>",
       "conditions": [],
       "name": "public_host",
@@ -36423,8 +36428,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 316,
+      "end_line": 316,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -36575,6 +36580,24 @@
       "conditions": [],
       "name": "telegram_send_max_attempts",
       "expression": "settings.telegram_send_max_attempts"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 160,
+      "end_line": 160,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "name": "telegram_bot_token",
+      "expression": "settings.telegram_bot_token"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 160,
+      "end_line": 160,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "name": "telegram_chat_id",
+      "expression": "settings.telegram_chat_id"
     },
     {
       "path": "backend/app/services/web_push.py",
@@ -37692,8 +37715,31 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1322,
-      "end_line": 1330,
+      "line": 1303,
+      "end_line": 1311,
+      "owner": "lifespan",
+      "conditions": [
+        "settings.scheduler_enabled"
+      ],
+      "scheduler": "app.main.scheduler",
+      "id": "data_sanity",
+      "callable": "data_sanity_job",
+      "resolved_callable": "app.services.data_sanity.data_sanity_job",
+      "wrapper": null,
+      "lock": null,
+      "options": {
+        "trigger": "CronTrigger(hour=8, minute=20, timezone='Europe/Moscow')",
+        "id": "'data_sanity'",
+        "name": "'Daily sanity check of indicator_data (impossible dates, NaN) → Telegram'",
+        "replace_existing": "True",
+        "coalesce": "True",
+        "max_instances": "1"
+      }
+    },
+    {
+      "path": "backend/app/main.py",
+      "line": 1334,
+      "end_line": 1342,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37715,8 +37761,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1334,
-      "end_line": 1342,
+      "line": 1346,
+      "end_line": 1354,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37738,8 +37784,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1345,
-      "end_line": 1353,
+      "line": 1357,
+      "end_line": 1365,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37762,8 +37808,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1356,
-      "end_line": 1364,
+      "line": 1368,
+      "end_line": 1376,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37786,8 +37832,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1367,
-      "end_line": 1373,
+      "line": 1379,
+      "end_line": 1385,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37810,8 +37856,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1378,
-      "end_line": 1384,
+      "line": 1390,
+      "end_line": 1396,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -37834,8 +37880,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1405,
-      "end_line": 1413,
+      "line": 1417,
+      "end_line": 1425,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38615,8 +38661,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1304,
-      "end_line": 1316,
+      "line": 1316,
+      "end_line": 1328,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38639,8 +38685,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1390,
-      "end_line": 1400,
+      "line": 1402,
+      "end_line": 1412,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38666,8 +38712,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1419,
-      "end_line": 1428,
+      "line": 1431,
+      "end_line": 1440,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled",
@@ -38817,8 +38863,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38828,8 +38874,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1434,
-      "end_line": 1434,
+      "line": 1446,
+      "end_line": 1446,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -38839,8 +38885,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1440,
-      "end_line": 1444,
+      "line": 1452,
+      "end_line": 1456,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -38850,8 +38896,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1454,
-      "end_line": 1454,
+      "line": 1466,
+      "end_line": 1466,
       "owner": "lifespan",
       "conditions": [
         "scheduler.running"
@@ -38861,8 +38907,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1455,
-      "end_line": 1455,
+      "line": 1467,
+      "end_line": 1467,
       "owner": "lifespan",
       "conditions": [],
       "call": "engine.dispose()",
@@ -38870,8 +38916,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1456,
-      "end_line": 1456,
+      "line": 1468,
+      "end_line": 1468,
       "owner": "lifespan",
       "conditions": [],
       "call": "analytics_engine.dispose()",
@@ -77577,8 +77623,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1576,
-      "end_line": 1578,
+      "line": 1588,
+      "end_line": 1590,
       "owner": "<module>",
       "conditions": [],
       "name": "_GEO_EXCLUDED_PREFIXES",
@@ -77594,8 +77640,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1579,
-      "end_line": 1582,
+      "line": 1591,
+      "end_line": 1594,
       "owner": "<module>",
       "conditions": [],
       "name": "_GEO_EXCLUDED_EXACT",
@@ -82270,6 +82316,23 @@
       "expression_chars": 588,
       "ast_sha256": "fc8e7d36a23684cbee347ee1fd94dadc0f5fdecb4e7b0a91798501a0be060848",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 26,
+      "end_line": 31,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_QUERY",
+      "symbol": "app.services.data_sanity._QUERY",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "text(\"\\n    select i.code, count(*) as n, min(d.date)::text as first, max(d.date)::text as last\\n    from indicator_data d join indicators i on i.id = d.indicator_id\\n    where d.date < :date_min or d.date > :date_max or d.value = 'NaN'::numeric\\n    group by i.code order by n desc, i.code\\n\")",
+      "expression_truncated": false,
+      "expression_chars": 294,
+      "ast_sha256": "28dccd150fb5d67a934ce19afceac5a222f671eb57b9f774709fdd307263ab42",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/demand_router.py",
@@ -91193,8 +91256,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 355,
-      "end_line": 357,
+      "line": 370,
+      "end_line": 372,
       "owner": "<module>",
       "conditions": [],
       "name": "_CPI_BULLETIN_TITLE_RE",
@@ -91210,8 +91273,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 500,
-      "end_line": 500,
+      "line": 515,
+      "end_line": 515,
       "owner": "<module>",
       "conditions": [],
       "name": "_BULLETIN_PUB_DATE_RE",
@@ -91227,8 +91290,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 71,
-      "end_line": 73,
+      "line": 72,
+      "end_line": 74,
       "owner": "<module>",
       "conditions": [],
       "name": "_FUEL_BULLETIN_TITLE_RE",
@@ -91244,8 +91307,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 74,
-      "end_line": 76,
+      "line": 75,
+      "end_line": 77,
       "owner": "<module>",
       "conditions": [],
       "name": "_BULLETIN_HREF_RE",
@@ -91261,8 +91324,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 77,
-      "end_line": 79,
+      "line": 78,
+      "end_line": 80,
       "owner": "<module>",
       "conditions": [],
       "name": "_REG_DATE_RE",
@@ -91278,8 +91341,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 82,
-      "end_line": 86,
+      "line": 83,
+      "end_line": 87,
       "owner": "<module>",
       "conditions": [],
       "name": "_BULLETIN_ROW_BY_LABEL",
@@ -97137,8 +97200,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3968,
-      "end_line": 3975,
+      "line": 3969,
+      "end_line": 3976,
       "owner": "<module>",
       "conditions": [],
       "name": "_SSR_VS_COUNTRY_LABELS",
@@ -99584,10 +99647,10 @@
       "kind": "Call",
       "literal_keys": [],
       "entries": [],
-      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert'})",
+      "expression": "frozenset({'alert', 'etl_failure', 'etl_alert', 'etl_summary', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'http_5xx_spike', 'load_shed', 'rate_limit_alert', 'host_pressure', 'host_memory', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert'})",
       "expression_truncated": false,
-      "expression_chars": 367,
-      "ast_sha256": "e9b9f0afdf839d1a558b83901091bc397f5de61b9ed17b5a54d53c3b141c5d44",
+      "expression_chars": 396,
+      "ast_sha256": "71015f52055ca9bd986b5d6d17381a25471788007cef2cc313f0640a3731075e",
       "runtime_expansion": true
     },
     {
@@ -99669,10 +99732,10 @@
       "kind": "Tuple",
       "literal_keys": [],
       "entries": [],
-      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert')))",
+      "expression": "(('site', 'Сайт', ('http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert')), ('data', 'Данные', ('etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'data_guard', 'data_sanity')), ('jobs', 'Фоновые задачи', ('scheduler_alert', 'job_lease_lost', 'ticker_stale')), ('stats', 'Статистика и поиск', ('acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert')))",
       "expression_truncated": false,
-      "expression_chars": 454,
-      "ast_sha256": "b712e6198c9d8712bf28a2743bfe157bc3c16cb89dc161c9f5952d54e0bce72f",
+      "expression_chars": 483,
+      "ast_sha256": "24a29d160b4e4b21d9194bc48c3cde68a54732740c76b31fced6f38056df9424",
       "runtime_expansion": false
     },
     {
@@ -99695,7 +99758,7 @@
     {
       "path": "backend/app/services/telegram_calm.py",
       "line": 172,
-      "end_line": 194,
+      "end_line": 196,
       "owner": "<module>",
       "conditions": [],
       "name": "KIND_LABELS",
@@ -99715,6 +99778,8 @@
         "'staleness'",
         "'freshness_watchdog'",
         "'forecast_issue'",
+        "'data_guard'",
+        "'data_sanity'",
         "'scheduler_alert'",
         "'job_lease_lost'",
         "'ticker_stale'",
@@ -99817,6 +99882,20 @@
           "ast_sha256": "e16ee70a425db41fa23ff342595e62f8082253bf67dd5617ae772626836bc15b"
         },
         {
+          "key": "'data_guard'",
+          "expression": "'сторож не пустил в базу невозможные точки'",
+          "expression_truncated": false,
+          "expression_chars": 43,
+          "ast_sha256": "4234480c421378b778b802fd76c545b28d22166179f92f89f3db60d9266f3c43"
+        },
+        {
+          "key": "'data_sanity'",
+          "expression": "'ежедневная проверка нашла странные точки в базе'",
+          "expression_truncated": false,
+          "expression_chars": 49,
+          "ast_sha256": "c164ca776b7fd129d3d220c74faa6e1eec3209a2591ca02720d5ebd247b49a05"
+        },
+        {
           "key": "'scheduler_alert'",
           "expression": "'сбои фоновых задач'",
           "expression_truncated": false,
@@ -99873,16 +99952,16 @@
           "ast_sha256": "e085bdad16cf5c12da6988e70ab6364167ab7ae2737140ee11a3389ac2bceca3"
         }
       ],
-      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'alert': 'прочие технические заметки'}",
+      "expression": "{'http_5xx_spike': 'короткие всплески ошибок сервера', 'load_shed': 'сервер отбивал лишнюю нагрузку (роботы)', 'host_pressure': 'диск сервера притормаживал', 'host_memory': 'серверу не хватало памяти', 'rate_limit_alert': 'защита от флуда ненадолго отключалась', 'etl_summary': 'плановые обновления данных', 'etl_failure': 'показатели не обновились', 'etl_alert': 'сбои у отдельных источников', 'world_ingest_summary': 'обновления мировых данных', 'zero_parse': 'источник вернул пустой ответ', 'staleness': 'показатели давно не обновлялись', 'freshness_watchdog': 'проверка свежести данных', 'forecast_issue': 'заминки с прогнозами', 'data_guard': 'сторож не пустил в базу невозможные точки', 'data_sanity': 'ежедневная проверка нашла странные точки в базе', 'scheduler_alert': 'сбои фоновых задач', 'job_lease_lost': 'задача запускалась дважды', 'ticker_stale': 'бегущая строка котировок обновлялась с задержкой', 'acquisition_alert': 'неполная выгрузка из Метрики', 'recrawl_alert': 'заминки с переобходом Вебмастера', 'analytics_anomaly': 'необычные колебания в аналитике', 'audience_alert': 'необычные колебания аудитории', 'alert': 'прочие технические заметки'}",
       "expression_truncated": false,
-      "expression_chars": 1041,
-      "ast_sha256": "23035d86f043dff5748e83edac4e15e6f41d4bb1b98dfc5c1c95a843b3f9bb2a",
+      "expression_chars": 1166,
+      "ast_sha256": "4fb6a49516d69ffa3d5deb4dc806b256833b1bc9896efc2f40fedb20275e7889",
       "runtime_expansion": false
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 198,
+      "end_line": 198,
       "owner": "<module>",
       "conditions": [],
       "name": "_RECOVERY_RE",
@@ -102331,6 +102410,23 @@
       "expression_chars": 55,
       "ast_sha256": "12138f96e914a301e932d95ce28b655c705f537ad05c878f753d4ab6621fc8b4",
       "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 31,
+      "end_line": 31,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "DATE_MIN",
+      "symbol": "app.services.upsert.DATE_MIN",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "_date(1800, 1, 1)",
+      "expression_truncated": false,
+      "expression_chars": 17,
+      "ast_sha256": "44d07fd7a58c828a6a566e62728aebecabc9724cf4212ece1c7ad1b6310b6796",
+      "runtime_expansion": true
     },
     {
       "path": "backend/app/services/us_pop_adapter.py",
@@ -122545,8 +122641,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1430,
-      "end_line": 1430,
+      "line": 1442,
+      "end_line": 1442,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -122561,8 +122657,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1434,
-      "end_line": 1434,
+      "line": 1446,
+      "end_line": 1446,
       "owner": "lifespan",
       "conditions": [
         "settings.scheduler_enabled"
@@ -122577,8 +122673,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1440,
-      "end_line": 1444,
+      "line": 1452,
+      "end_line": 1456,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -127701,6 +127797,20 @@
       "ast_sha256": "25efb9a12a47e3e6812df52c98de8738416efdf00987f4816f8d03b85ebe7d8e"
     },
     {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 59,
+      "end_line": 59,
+      "owner": "data_sanity_job",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.data_sanity.db.execute",
+      "expression": "db.execute(_QUERY, params)",
+      "expression_truncated": false,
+      "expression_chars": 26,
+      "ast_sha256": "ff11979ba390c5d81f8b65a006225dee55de6d34a1e582ecd77f30ce99ff4425"
+    },
+    {
       "path": "backend/app/services/dataset_inventory.py",
       "line": 83,
       "end_line": 83,
@@ -131695,8 +131805,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 391,
+      "end_line": 391,
       "owner": "_find_bulletin_urls_central_news",
       "conditions": [],
       "operation": "set",
@@ -131709,8 +131819,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 462,
-      "end_line": 462,
+      "line": 477,
+      "end_line": 477,
       "owner": "_find_bulletin_urls",
       "conditions": [],
       "operation": "set",
@@ -131723,8 +131833,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 534,
-      "end_line": 534,
+      "line": 549,
+      "end_line": 549,
       "owner": "fetch_bulletin_points",
       "conditions": [],
       "operation": "set",
@@ -131737,8 +131847,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 450,
+      "end_line": 450,
       "owner": "_steady_xlsx_years",
       "conditions": [
         "today.month <= 2"
@@ -131753,8 +131863,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 497,
-      "end_line": 497,
+      "line": 512,
+      "end_line": 512,
       "owner": "_find_bulletin_urls",
       "conditions": [],
       "operation": "set",
@@ -131767,8 +131877,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 875,
-      "end_line": 877,
+      "line": 890,
+      "end_line": 892,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -131781,8 +131891,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 412,
-      "end_line": 412,
+      "line": 427,
+      "end_line": 427,
       "owner": "_find_bulletin_urls_central_news",
       "conditions": [],
       "operation": "add",
@@ -131795,8 +131905,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 510,
+      "end_line": 510,
       "owner": "_find_bulletin_urls",
       "conditions": [],
       "operation": "set",
@@ -131809,8 +131919,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 811,
-      "end_line": 811,
+      "line": 826,
+      "end_line": 826,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "commit",
@@ -131823,8 +131933,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 820,
-      "end_line": 820,
+      "line": 835,
+      "end_line": 835,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "add",
@@ -131837,8 +131947,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 882,
-      "end_line": 887,
+      "line": 897,
+      "end_line": 902,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -131851,8 +131961,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 890,
-      "end_line": 890,
+      "line": 905,
+      "end_line": 905,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [
         "seg_id is None"
@@ -131867,8 +131977,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 892,
-      "end_line": 894,
+      "line": 907,
+      "end_line": 909,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "operation": "execute",
@@ -131881,8 +131991,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 920,
-      "end_line": 925,
+      "line": 935,
+      "end_line": 940,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "operation": "execute",
@@ -131895,8 +132005,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 504,
+      "end_line": 504,
       "owner": "_find_bulletin_urls",
       "conditions": [
         "f'-{year}.' in path"
@@ -131911,8 +132021,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 561,
-      "end_line": 561,
+      "line": 576,
+      "end_line": 576,
       "owner": "fetch_bulletin_points",
       "conditions": [
         "pt and pt.date not in seen_dates"
@@ -131927,8 +132037,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 831,
+      "end_line": 831,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "rollback",
@@ -131941,8 +132051,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 821,
-      "end_line": 821,
+      "line": 836,
+      "end_line": 836,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "operation": "commit",
@@ -131955,8 +132065,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 784,
-      "end_line": 784,
+      "line": 799,
+      "end_line": 799,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [
         "not (points)",
@@ -131972,8 +132082,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 773,
-      "end_line": 773,
+      "line": 788,
+      "end_line": 788,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [
         "not (points)",
@@ -134165,8 +134275,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3932,
-      "end_line": 3937,
+      "line": 3933,
+      "end_line": 3938,
       "owner": "_latest_rows",
       "conditions": [],
       "operation": "execute",
@@ -134179,8 +134289,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3942,
-      "end_line": 3948,
+      "line": 3943,
+      "end_line": 3949,
       "owner": "_indicator_stats",
       "conditions": [],
       "operation": "execute",
@@ -134193,8 +134303,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3956,
-      "end_line": 3964,
+      "line": 3957,
+      "end_line": 3965,
       "owner": "_related_indicators",
       "conditions": [],
       "operation": "execute",
@@ -137941,8 +138051,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 320,
-      "end_line": 324,
+      "line": 322,
+      "end_line": 326,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -137955,8 +138065,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 325,
-      "end_line": 330,
+      "line": 327,
+      "end_line": 332,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -138295,8 +138405,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 106,
+      "end_line": 106,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "operation": "execute",
@@ -138309,8 +138419,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 142,
-      "end_line": 142,
+      "line": 211,
+      "end_line": 211,
       "owner": "bulk_upsert",
       "conditions": [],
       "operation": "flush",
@@ -138323,8 +138433,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 162,
-      "end_line": 162,
+      "line": 231,
+      "end_line": 231,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "operation": "flush",
@@ -138337,8 +138447,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 78,
-      "end_line": 78,
+      "line": 109,
+      "end_line": 109,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [
         "deleted"
@@ -138353,8 +138463,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 205,
+      "end_line": 205,
       "owner": "bulk_upsert",
       "conditions": [],
       "operation": "execute",
@@ -138367,8 +138477,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 158,
-      "end_line": 158,
+      "line": 227,
+      "end_line": 227,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "operation": "execute",
@@ -138381,8 +138491,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 106,
+      "end_line": 106,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "operation": "delete",
@@ -138395,8 +138505,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 151,
-      "end_line": 154,
+      "line": 220,
+      "end_line": 223,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "operation": "execute",
@@ -138409,8 +138519,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 163,
-      "end_line": 166,
+      "line": 232,
+      "end_line": 235,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "operation": "execute",
@@ -138420,6 +138530,20 @@
       "expression_truncated": false,
       "expression_chars": 98,
       "ast_sha256": "62c62080c365d2861787da0aadc1957dde238f723fbf788056038ef93785db85"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 168,
+      "end_line": 168,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.upsert.db.execute",
+      "expression": "db.execute(select(Indicator.code).where(Indicator.id == indicator_id))",
+      "expression_truncated": false,
+      "expression_chars": 70,
+      "ast_sha256": "206400ea122b99297bcf499ff42313bb735510fdc26aaa8b2997dd2c67b29e78"
     },
     {
       "path": "backend/app/services/us_pop_adapter.py",
@@ -203117,8 +203241,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 745,
+      "end_line": 745,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203126,8 +203250,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 730,
-      "end_line": 730,
+      "line": 745,
+      "end_line": 745,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -203135,8 +203259,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 828,
-      "end_line": 828,
+      "line": 843,
+      "end_line": 843,
       "owner": "RosstatWeeklyCpiParser._zero_parse_expected",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203144,8 +203268,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 836,
-      "end_line": 836,
+      "line": 851,
+      "end_line": 851,
       "owner": "RosstatWeeklyCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203153,8 +203277,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 853,
+      "end_line": 853,
       "owner": "RosstatWeeklyCpiParser._fetch_and_parse",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -203162,8 +203286,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 901,
-      "end_line": 901,
+      "line": 916,
+      "end_line": 916,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203171,8 +203295,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 903,
-      "end_line": 903,
+      "line": 918,
+      "end_line": 918,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.FetchLog",
@@ -203180,8 +203304,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 876,
-      "end_line": 876,
+      "line": 891,
+      "end_line": 891,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -203189,8 +203313,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 876,
-      "end_line": 876,
+      "line": 891,
+      "end_line": 891,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -203198,8 +203322,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 876,
-      "end_line": 876,
+      "line": 891,
+      "end_line": 891,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -203207,8 +203331,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 884,
-      "end_line": 884,
+      "line": 899,
+      "end_line": 899,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -203216,8 +203340,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 885,
-      "end_line": 885,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -203225,8 +203349,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 908,
+      "end_line": 908,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -203234,8 +203358,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 922,
-      "end_line": 922,
+      "line": 937,
+      "end_line": 937,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -203243,8 +203367,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 923,
-      "end_line": 923,
+      "line": 938,
+      "end_line": 938,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -203252,8 +203376,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 876,
-      "end_line": 876,
+      "line": 891,
+      "end_line": 891,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -203261,8 +203385,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 898,
+      "end_line": 898,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.id",
@@ -203270,8 +203394,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 884,
-      "end_line": 884,
+      "line": 899,
+      "end_line": 899,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203279,8 +203403,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 885,
-      "end_line": 885,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -203288,8 +203412,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 908,
+      "end_line": 908,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -203297,8 +203421,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 908,
+      "end_line": 908,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -203306,8 +203430,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 921,
-      "end_line": 921,
+      "line": 936,
+      "end_line": 936,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203315,8 +203439,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 922,
-      "end_line": 922,
+      "line": 937,
+      "end_line": 937,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203324,8 +203448,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 923,
-      "end_line": 923,
+      "line": 938,
+      "end_line": 938,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active",
@@ -203333,8 +203457,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 883,
-      "end_line": 883,
+      "line": 898,
+      "end_line": 898,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203342,8 +203466,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 885,
-      "end_line": 885,
+      "line": 900,
+      "end_line": 900,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -203351,8 +203475,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 908,
+      "end_line": 908,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -203360,8 +203484,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 923,
-      "end_line": 923,
+      "line": 938,
+      "end_line": 938,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -211624,8 +211748,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3891,
-      "end_line": 3891,
+      "line": 3892,
+      "end_line": 3892,
       "owner": "_indicator_alt_freq_links",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -211633,8 +211757,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3952,
-      "end_line": 3952,
+      "line": 3953,
+      "end_line": 3953,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -211642,8 +211766,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4013,
-      "end_line": 4013,
+      "line": 4014,
+      "end_line": 4014,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -211974,8 +212098,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3947,
-      "end_line": 3947,
+      "line": 3948,
+      "end_line": 3948,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -211983,8 +212107,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3959,
-      "end_line": 3959,
+      "line": 3960,
+      "end_line": 3960,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_active.is_",
@@ -211992,8 +212116,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3960,
-      "end_line": 3960,
+      "line": 3961,
+      "end_line": 3961,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.is_listed.is_",
@@ -212001,8 +212125,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3961,
-      "end_line": 3961,
+      "line": 3962,
+      "end_line": 3962,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.category",
@@ -212010,8 +212134,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3962,
-      "end_line": 3962,
+      "line": 3963,
+      "end_line": 3963,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -212156,8 +212280,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3947,
-      "end_line": 3947,
+      "line": 3948,
+      "end_line": 3948,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -212165,21 +212289,12 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3957,
-      "end_line": 3957,
+      "line": 3958,
+      "end_line": 3958,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
       "expression": "Indicator"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3959,
-      "end_line": 3959,
-      "owner": "_related_indicators",
-      "conditions": [],
-      "symbol": "app.models.Indicator.is_active",
-      "expression": "Indicator.is_active"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
@@ -212187,8 +212302,8 @@
       "end_line": 3960,
       "owner": "_related_indicators",
       "conditions": [],
-      "symbol": "app.models.Indicator.is_listed",
-      "expression": "Indicator.is_listed"
+      "symbol": "app.models.Indicator.is_active",
+      "expression": "Indicator.is_active"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
@@ -212196,13 +212311,22 @@
       "end_line": 3961,
       "owner": "_related_indicators",
       "conditions": [],
-      "symbol": "app.models.Indicator",
-      "expression": "Indicator"
+      "symbol": "app.models.Indicator.is_listed",
+      "expression": "Indicator.is_listed"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
       "line": 3962,
       "end_line": 3962,
+      "owner": "_related_indicators",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3963,
+      "end_line": 3963,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -212337,8 +212461,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3935,
-      "end_line": 3935,
+      "line": 3936,
+      "end_line": 3936,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -212346,21 +212470,12 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3944,
-      "end_line": 3944,
-      "owner": "_indicator_stats",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.id",
-      "expression": "IndicatorData.id"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
       "line": 3945,
       "end_line": 3945,
       "owner": "_indicator_stats",
       "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
+      "symbol": "app.models.IndicatorData.id",
+      "expression": "IndicatorData.id"
     },
     {
       "path": "backend/app/services/seo_renderer.py",
@@ -212373,8 +212488,17 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3959,
-      "end_line": 3959,
+      "line": 3947,
+      "end_line": 3947,
+      "owner": "_indicator_stats",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3960,
+      "end_line": 3960,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -212382,8 +212506,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3960,
-      "end_line": 3960,
+      "line": 3961,
+      "end_line": 3961,
       "owner": "_related_indicators",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -212563,18 +212687,9 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3935,
-      "end_line": 3935,
+      "line": 3936,
+      "end_line": 3936,
       "owner": "_latest_rows",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/seo_renderer.py",
-      "line": 3944,
-      "end_line": 3944,
-      "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
       "expression": "IndicatorData"
@@ -212592,6 +212707,15 @@
       "path": "backend/app/services/seo_renderer.py",
       "line": 3946,
       "end_line": 3946,
+      "owner": "_indicator_stats",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/seo_renderer.py",
+      "line": 3947,
+      "end_line": 3947,
       "owner": "_indicator_stats",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -212700,8 +212824,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3934,
-      "end_line": 3934,
+      "line": 3935,
+      "end_line": 3935,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -212742,8 +212866,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3933,
-      "end_line": 3933,
+      "line": 3934,
+      "end_line": 3934,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -212751,8 +212875,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3934,
-      "end_line": 3934,
+      "line": 3935,
+      "end_line": 3935,
       "owner": "_latest_rows",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -229522,8 +229646,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 325,
+      "end_line": 325,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -229531,8 +229655,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 325,
+      "end_line": 325,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229540,8 +229664,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.method",
@@ -229549,8 +229673,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -229558,8 +229682,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 330,
+      "end_line": 330,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -229567,8 +229691,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 329,
-      "end_line": 329,
+      "line": 331,
+      "end_line": 331,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -229576,8 +229700,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 328,
+      "end_line": 328,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -229585,8 +229709,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229594,8 +229718,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 327,
-      "end_line": 327,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -229603,12 +229727,48 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 330,
+      "end_line": 330,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
       "expression": "TelegramOutbox.kind"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 331,
+      "end_line": 331,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.method",
+      "expression": "TelegramOutbox.method"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 324,
+      "end_line": 324,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.sent_at",
+      "expression": "TelegramOutbox.sent_at"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 328,
+      "end_line": 328,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -229621,26 +229781,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 322,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.method",
-      "expression": "TelegramOutbox.method"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 322,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.sent_at",
-      "expression": "TelegramOutbox.sent_at"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 330,
+      "end_line": 330,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229648,26 +229790,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 327,
-      "end_line": 327,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 328,
-      "end_line": 328,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -229675,8 +229799,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.text",
@@ -229684,8 +229808,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 324,
+      "end_line": 324,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229693,8 +229817,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 324,
+      "end_line": 324,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229702,8 +229826,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229711,8 +229835,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 321,
-      "end_line": 321,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -230278,8 +230402,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 37,
-      "end_line": 37,
+      "line": 68,
+      "end_line": 68,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -230287,8 +230411,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 37,
-      "end_line": 37,
+      "line": 68,
+      "end_line": 68,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230296,8 +230420,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 101,
+      "end_line": 101,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -230305,8 +230429,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 102,
+      "end_line": 102,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.not_in",
@@ -230314,8 +230438,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 30,
-      "end_line": 30,
+      "line": 61,
+      "end_line": 61,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230323,8 +230447,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 70,
-      "end_line": 70,
+      "line": 101,
+      "end_line": 101,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230332,8 +230456,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 102,
+      "end_line": 102,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -230341,8 +230465,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 105,
+      "end_line": 105,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [
         "keep_after is not None"
@@ -230352,8 +230476,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 90,
-      "end_line": 90,
+      "line": 121,
+      "end_line": 121,
       "owner": "batch_upsert_stmt",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230361,8 +230485,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 71,
-      "end_line": 71,
+      "line": 102,
+      "end_line": 102,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230370,8 +230494,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 74,
-      "end_line": 74,
+      "line": 105,
+      "end_line": 105,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [
         "keep_after is not None"
@@ -230381,8 +230505,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 67,
+      "end_line": 67,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__.c.value",
@@ -230390,8 +230514,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 75,
-      "end_line": 75,
+      "line": 106,
+      "end_line": 106,
       "owner": "prune_indicator_dates_not_in",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230399,8 +230523,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 128,
+      "end_line": 128,
       "owner": "batch_upsert_stmt",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__.c.value",
@@ -230408,8 +230532,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 67,
+      "end_line": 67,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__.c",
@@ -230417,8 +230541,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 128,
+      "end_line": 128,
       "owner": "batch_upsert_stmt",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__.c",
@@ -230426,8 +230550,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 67,
+      "end_line": 67,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__",
@@ -230435,8 +230559,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 128,
+      "end_line": 128,
       "owner": "batch_upsert_stmt",
       "conditions": [],
       "symbol": "app.models.IndicatorData.__table__",
@@ -230444,8 +230568,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 153,
-      "end_line": 153,
+      "line": 222,
+      "end_line": 222,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -230453,8 +230577,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 234,
+      "end_line": 234,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -230462,8 +230586,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 36,
-      "end_line": 36,
+      "line": 67,
+      "end_line": 67,
       "owner": "upsert_indicator_data",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230471,8 +230595,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 97,
-      "end_line": 97,
+      "line": 128,
+      "end_line": 128,
       "owner": "batch_upsert_stmt",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230480,8 +230604,17 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 153,
-      "end_line": 153,
+      "line": 168,
+      "end_line": 168,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "symbol": "app.models.Indicator.id",
+      "expression": "Indicator.id"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 222,
+      "end_line": 222,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230489,8 +230622,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 234,
+      "end_line": 234,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230498,8 +230631,26 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 168,
+      "end_line": 168,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "symbol": "app.models.Indicator.code",
+      "expression": "Indicator.code"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 168,
+      "end_line": 168,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 221,
+      "end_line": 221,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -230507,8 +230658,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 164,
-      "end_line": 164,
+      "line": 233,
+      "end_line": 233,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData.id",
@@ -230516,8 +230667,17 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 152,
-      "end_line": 152,
+      "line": 168,
+      "end_line": 168,
+      "owner": "_report_rejected",
+      "conditions": [],
+      "symbol": "app.models.Indicator",
+      "expression": "Indicator"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 221,
+      "end_line": 221,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -230525,8 +230685,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 164,
-      "end_line": 164,
+      "line": 233,
+      "end_line": 233,
       "owner": "_bulk_upsert_row_by_row",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -248740,6 +248900,16 @@
       "resolved_text_constructor": "sqlalchemy.text"
     },
     {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 26,
+      "end_line": 31,
+      "owner": "<module>",
+      "conditions": [],
+      "literal": "\n    select i.code, count(*) as n, min(d.date)::text as first, max(d.date)::text as last\n    from indicator_data d join indicators i on i.id = d.indicator_id\n    where d.date < :date_min or d.date > :date_max or d.value = 'NaN'::numeric\n    group by i.code order by n desc, i.code\n",
+      "expression": "\"\\n    select i.code, count(*) as n, min(d.date)::text as first, max(d.date)::text as last\\n    from indicator_data d join indicators i on i.id = d.indicator_id\\n    where d.date < :date_min or d.date > :date_max or d.value = 'NaN'::numeric\\n    group by i.code order by n desc, i.code\\n\"",
+      "resolved_text_constructor": "sqlalchemy.text"
+    },
+    {
       "path": "backend/app/services/dataset_inventory.py",
       "line": 71,
       "end_line": 71,
@@ -259336,7 +259506,7 @@
     {
       "path": "backend/app/main.py",
       "line": 520,
-      "end_line": 1458,
+      "end_line": 1470,
       "owner": "<module>",
       "conditions": [],
       "name": "lifespan",
@@ -259344,8 +259514,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1471,
-      "end_line": 1479,
+      "line": 1483,
+      "end_line": 1491,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_query_params",
@@ -259353,8 +259523,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1482,
-      "end_line": 1491,
+      "line": 1494,
+      "end_line": 1503,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_preference",
@@ -259362,8 +259532,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1494,
-      "end_line": 1500,
+      "line": 1506,
+      "end_line": 1512,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_pref_cookie_domain",
@@ -259371,8 +259541,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1503,
-      "end_line": 1514,
+      "line": 1515,
+      "end_line": 1526,
       "owner": "<module>",
       "conditions": [],
       "name": "_set_locale_preference_cookie",
@@ -259380,8 +259550,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1517,
-      "end_line": 1573,
+      "line": 1529,
+      "end_line": 1585,
       "owner": "<module>",
       "conditions": [],
       "name": "_persist_locale_pref_redirect",
@@ -259389,8 +259559,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1586,
-      "end_line": 1593,
+      "line": 1598,
+      "end_line": 1605,
       "owner": "<module>",
       "conditions": [],
       "name": "_geo_ru_country_codes",
@@ -259398,8 +259568,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1596,
-      "end_line": 1603,
+      "line": 1608,
+      "end_line": 1615,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_html_navigation",
@@ -259407,8 +259577,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1606,
-      "end_line": 1611,
+      "line": 1618,
+      "end_line": 1623,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_request_url",
@@ -259416,8 +259586,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1614,
-      "end_line": 1640,
+      "line": 1626,
+      "end_line": 1652,
       "owner": "<module>",
       "conditions": [],
       "name": "_with_utm_referrer",
@@ -259425,8 +259595,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1643,
-      "end_line": 1721,
+      "line": 1655,
+      "end_line": 1733,
       "owner": "<module>",
       "conditions": [],
       "name": "_locale_host_redirect",
@@ -259434,8 +259604,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1724,
-      "end_line": 1726,
+      "line": 1736,
+      "end_line": 1738,
       "owner": "<module>",
       "conditions": [],
       "name": "_geo_locale_redirect",
@@ -259443,8 +259613,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1729,
-      "end_line": 1738,
+      "line": 1741,
+      "end_line": 1750,
       "owner": "<module>",
       "conditions": [],
       "name": "_strip_preview_locale_query",
@@ -259452,8 +259622,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1741,
-      "end_line": 1800,
+      "line": 1753,
+      "end_line": 1812,
       "owner": "<module>",
       "conditions": [],
       "name": "_preview_query_redirect",
@@ -259461,8 +259631,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1803,
-      "end_line": 1810,
+      "line": 1815,
+      "end_line": 1822,
       "owner": "<module>",
       "conditions": [],
       "name": "_merge_vary",
@@ -259470,8 +259640,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1813,
-      "end_line": 1877,
+      "line": 1825,
+      "end_line": 1889,
       "owner": "<module>",
       "conditions": [],
       "name": "LocaleMiddleware",
@@ -259479,8 +259649,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1880,
-      "end_line": 1933,
+      "line": 1892,
+      "end_line": 1945,
       "owner": "<module>",
       "conditions": [],
       "name": "ScrapeGuardMiddleware",
@@ -259542,8 +259712,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1678,
-      "end_line": 1702,
+      "line": 1690,
+      "end_line": 1714,
       "owner": "_locale_host_redirect",
       "conditions": [],
       "name": "_to",
@@ -259551,8 +259721,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1816,
-      "end_line": 1877,
+      "line": 1828,
+      "end_line": 1889,
       "owner": "LocaleMiddleware",
       "conditions": [],
       "name": "dispatch",
@@ -259560,8 +259730,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1883,
-      "end_line": 1933,
+      "line": 1895,
+      "end_line": 1945,
       "owner": "ScrapeGuardMiddleware",
       "conditions": [],
       "name": "dispatch",
@@ -265365,6 +265535,24 @@
       "conditions": [],
       "name": "_run",
       "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 34,
+      "end_line": 48,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "format_findings",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 51,
+      "end_line": 69,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "data_sanity_job",
+      "kind": "AsyncFunctionDef"
     },
     {
       "path": "backend/app/services/data_validator.py",
@@ -273333,8 +273521,17 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 135,
-      "end_line": 147,
+      "line": 142,
+      "end_line": 150,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_sheet_year",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
+      "line": 153,
+      "end_line": 165,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_column_date",
@@ -273342,8 +273539,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 150,
-      "end_line": 201,
+      "line": 168,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_load_product_weights",
@@ -273351,8 +273548,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 204,
-      "end_line": 222,
+      "line": 222,
+      "end_line": 240,
       "owner": "<module>",
       "conditions": [],
       "name": "_match_product",
@@ -273360,8 +273557,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 225,
-      "end_line": 306,
+      "line": 243,
+      "end_line": 321,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_weekly_xlsx_multi",
@@ -273369,8 +273566,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 309,
-      "end_line": 314,
+      "line": 324,
+      "end_line": 329,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_weekly_xlsx",
@@ -273378,8 +273575,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 317,
-      "end_line": 319,
+      "line": 332,
+      "end_line": 334,
       "owner": "<module>",
       "conditions": [],
       "name": "_strip_html",
@@ -273387,8 +273584,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 322,
-      "end_line": 344,
+      "line": 337,
+      "end_line": 359,
       "owner": "<module>",
       "conditions": [],
       "name": "_parse_bulletin_html",
@@ -273396,8 +273593,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 360,
-      "end_line": 428,
+      "line": 375,
+      "end_line": 443,
       "owner": "<module>",
       "conditions": [],
       "name": "_find_bulletin_urls_central_news",
@@ -273405,8 +273602,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 431,
-      "end_line": 436,
+      "line": 446,
+      "end_line": 451,
       "owner": "<module>",
       "conditions": [],
       "name": "_steady_xlsx_years",
@@ -273414,8 +273611,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 439,
-      "end_line": 497,
+      "line": 454,
+      "end_line": 512,
       "owner": "<module>",
       "conditions": [],
       "name": "_find_bulletin_urls",
@@ -273423,8 +273620,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 503,
-      "end_line": 517,
+      "line": 518,
+      "end_line": 532,
       "owner": "<module>",
       "conditions": [],
       "name": "_bulletin_pub_date",
@@ -273432,8 +273629,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 520,
-      "end_line": 571,
+      "line": 535,
+      "end_line": 586,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_bulletin_points",
@@ -273441,8 +273638,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 574,
-      "end_line": 592,
+      "line": 589,
+      "end_line": 607,
       "owner": "<module>",
       "conditions": [],
       "name": "_filter_new_points",
@@ -273450,8 +273647,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 595,
-      "end_line": 712,
+      "line": 610,
+      "end_line": 727,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_weekly_cpi_multi",
@@ -273459,8 +273656,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 715,
-      "end_line": 720,
+      "line": 730,
+      "end_line": 735,
       "owner": "<module>",
       "conditions": [],
       "name": "fetch_weekly_cpi",
@@ -273468,8 +273665,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 723,
-      "end_line": 947,
+      "line": 738,
+      "end_line": 962,
       "owner": "<module>",
       "conditions": [],
       "name": "RosstatWeeklyCpiParser",
@@ -273477,8 +273674,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 607,
-      "end_line": 610,
+      "line": 622,
+      "end_line": 625,
       "owner": "fetch_weekly_cpi_multi",
       "conditions": [],
       "name": "_apply_cutoff",
@@ -273486,8 +273683,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 726,
-      "end_line": 728,
+      "line": 741,
+      "end_line": 743,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "__init__",
@@ -273495,8 +273692,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 730,
-      "end_line": 826,
+      "line": 745,
+      "end_line": 841,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "run",
@@ -273504,8 +273701,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 828,
-      "end_line": 831,
+      "line": 843,
+      "end_line": 846,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_zero_parse_expected",
@@ -273513,8 +273710,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 833,
-      "end_line": 868,
+      "line": 848,
+      "end_line": 883,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_fetch_and_parse",
@@ -273522,8 +273719,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 870,
-      "end_line": 896,
+      "line": 885,
+      "end_line": 911,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_load_existing_dates",
@@ -273531,8 +273728,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 898,
-      "end_line": 947,
+      "line": 913,
+      "end_line": 962,
       "owner": "RosstatWeeklyCpiParser",
       "conditions": [],
       "name": "_post_upsert",
@@ -273540,8 +273737,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 90,
-      "end_line": 92,
+      "line": 91,
+      "end_line": 93,
       "owner": "<module>",
       "conditions": [],
       "name": "PricePoint",
@@ -273549,7 +273746,7 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 95,
+      "line": 96,
       "end_line": 144,
       "owner": "<module>",
       "conditions": [],
@@ -276963,7 +277160,7 @@
     {
       "path": "backend/app/services/seo_renderer.py",
       "line": 3512,
-      "end_line": 3888,
+      "end_line": 3889,
       "owner": "<module>",
       "conditions": [],
       "name": "render_indicator_year_html",
@@ -276971,8 +277168,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3891,
-      "end_line": 3917,
+      "line": 3892,
+      "end_line": 3918,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_alt_freq_links",
@@ -276980,8 +277177,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3920,
-      "end_line": 3928,
+      "line": 3921,
+      "end_line": 3929,
       "owner": "<module>",
       "conditions": [],
       "name": "_category_for_api",
@@ -276989,8 +277186,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3931,
-      "end_line": 3938,
+      "line": 3932,
+      "end_line": 3939,
       "owner": "<module>",
       "conditions": [],
       "name": "_latest_rows",
@@ -276998,8 +277195,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3941,
-      "end_line": 3949,
+      "line": 3942,
+      "end_line": 3950,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_stats",
@@ -277007,8 +277204,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3952,
-      "end_line": 3965,
+      "line": 3953,
+      "end_line": 3966,
       "owner": "<module>",
       "conditions": [],
       "name": "_related_indicators",
@@ -277016,8 +277213,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3978,
-      "end_line": 4009,
+      "line": 3979,
+      "end_line": 4010,
       "owner": "<module>",
       "conditions": [],
       "name": "_russia_world_compare_ssr_section",
@@ -277025,8 +277222,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4012,
-      "end_line": 4253,
+      "line": 4013,
+      "end_line": 4254,
       "owner": "<module>",
       "conditions": [],
       "name": "_indicator_body",
@@ -277097,8 +277294,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3743,
-      "end_line": 3744,
+      "line": 3744,
+      "end_line": 3745,
       "owner": "render_indicator_year_html",
       "conditions": [
         "not (single_point)"
@@ -281000,8 +281197,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 199,
-      "end_line": 200,
+      "line": 201,
+      "end_line": 202,
       "owner": "<module>",
       "conditions": [],
       "name": "_plain",
@@ -281009,8 +281206,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 203,
-      "end_line": 206,
+      "line": 205,
+      "end_line": 208,
       "owner": "<module>",
       "conditions": [],
       "name": "_headline",
@@ -281018,8 +281215,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 209,
-      "end_line": 215,
+      "line": 211,
+      "end_line": 217,
       "owner": "<module>",
       "conditions": [],
       "name": "_plural",
@@ -281027,8 +281224,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 218,
-      "end_line": 219,
+      "line": 220,
+      "end_line": 221,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -281036,8 +281233,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 222,
-      "end_line": 235,
+      "line": 224,
+      "end_line": 237,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -281045,8 +281242,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 238,
-      "end_line": 303,
+      "line": 240,
+      "end_line": 305,
       "owner": "<module>",
       "conditions": [],
       "name": "build_summary",
@@ -281054,8 +281251,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 306,
-      "end_line": 336,
+      "line": 308,
+      "end_line": 338,
       "owner": "<module>",
       "conditions": [],
       "name": "calm_morning_summary_job",
@@ -282170,8 +282367,17 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 27,
-      "end_line": 37,
+      "line": 36,
+      "end_line": 50,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "point_rejection",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 58,
+      "end_line": 68,
       "owner": "<module>",
       "conditions": [],
       "name": "upsert_indicator_data",
@@ -282179,8 +282385,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 40,
-      "end_line": 46,
+      "line": 71,
+      "end_line": 77,
       "owner": "<module>",
       "conditions": [],
       "name": "_split_point",
@@ -282188,8 +282394,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 49,
-      "end_line": 79,
+      "line": 80,
+      "end_line": 110,
       "owner": "<module>",
       "conditions": [],
       "name": "prune_indicator_dates_not_in",
@@ -282197,8 +282403,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 82,
-      "end_line": 98,
+      "line": 113,
+      "end_line": 129,
       "owner": "<module>",
       "conditions": [],
       "name": "batch_upsert_stmt",
@@ -282206,8 +282412,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 101,
-      "end_line": 113,
+      "line": 132,
+      "end_line": 150,
       "owner": "<module>",
       "conditions": [],
       "name": "_dedup_points",
@@ -282215,8 +282421,17 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 116,
-      "end_line": 143,
+      "line": 153,
+      "end_line": 179,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_report_rejected",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 182,
+      "end_line": 212,
       "owner": "<module>",
       "conditions": [],
       "name": "bulk_upsert",
@@ -282224,8 +282439,8 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "line": 146,
-      "end_line": 170,
+      "line": 215,
+      "end_line": 239,
       "owner": "<module>",
       "conditions": [],
       "name": "_bulk_upsert_row_by_row",
@@ -299186,8 +299401,8 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1443,
-      "end_line": 1443,
+      "line": 1455,
+      "end_line": 1455,
       "owner": "lifespan",
       "conditions": [
         "not settings.scheduler_enabled and settings.worker_recycle_mb > 0"
@@ -306428,16 +306643,16 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1600,
-      "end_line": 1600,
+      "line": 1612,
+      "end_line": 1612,
       "owner": "_is_html_navigation",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_EXACT"
     },
     {
       "path": "backend/app/main.py",
-      "line": 1769,
-      "end_line": 1769,
+      "line": 1781,
+      "end_line": 1781,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_EXACT"
@@ -306452,16 +306667,16 @@
     },
     {
       "path": "backend/app/main.py",
-      "line": 1600,
-      "end_line": 1600,
+      "line": 1612,
+      "end_line": 1612,
       "owner": "_is_html_navigation",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_PREFIXES"
     },
     {
       "path": "backend/app/main.py",
-      "line": 1769,
-      "end_line": 1769,
+      "line": 1781,
+      "end_line": 1781,
       "owner": "_preview_query_redirect",
       "conditions": [],
       "symbol": "app.main._GEO_EXCLUDED_PREFIXES"
@@ -307899,6 +308114,22 @@
         "dialect == 'postgresql'"
       ],
       "symbol": "app.services.clickhouse_sync._VISIT_JSON_KEYS"
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 56,
+      "end_line": 56,
+      "owner": "data_sanity_job",
+      "conditions": [],
+      "symbol": "app.services.upsert.DATE_MIN"
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "line": 59,
+      "end_line": 59,
+      "owner": "data_sanity_job",
+      "conditions": [],
+      "symbol": "app.services.data_sanity._QUERY"
     },
     {
       "path": "backend/app/services/demand_router.py",
@@ -311060,72 +311291,72 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 137,
-      "end_line": 137,
+      "line": 155,
+      "end_line": 155,
       "owner": "_parse_column_date",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._HEADER_RE"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 159,
+      "end_line": 159,
       "owner": "_parse_column_date",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._MONTH_MAP"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 340,
+      "end_line": 340,
       "owner": "_parse_bulletin_html",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._BULLETIN_RANGE_RE"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 326,
-      "end_line": 326,
+      "line": 341,
+      "end_line": 341,
       "owner": "_parse_bulletin_html",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._BULLETIN_VALUE_RE"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 345,
+      "end_line": 345,
       "owner": "_parse_bulletin_html",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._MONTH_MAP"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 511,
-      "end_line": 511,
+      "line": 526,
+      "end_line": 526,
       "owner": "_bulletin_pub_date",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._BULLETIN_PUB_DATE_RE"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 881,
-      "end_line": 881,
+      "line": 896,
+      "end_line": 896,
       "owner": "RosstatWeeklyCpiParser._load_existing_dates",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 915,
-      "end_line": 915,
+      "line": 930,
+      "end_line": 930,
       "owner": "RosstatWeeklyCpiParser._post_upsert",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser.WEEKLY_SEGMENT_CODES"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 486,
-      "end_line": 486,
+      "line": 501,
+      "end_line": 501,
       "owner": "_find_bulletin_urls",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser.BULLETIN_URL_RE"
@@ -311140,24 +311371,24 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 425,
+      "end_line": 425,
       "owner": "_find_bulletin_urls_central_news",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._CPI_BULLETIN_TITLE_RE"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 475,
-      "end_line": 475,
+      "line": 490,
+      "end_line": 490,
       "owner": "_find_bulletin_urls",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._MONTH_MAP"
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "line": 764,
-      "end_line": 764,
+      "line": 779,
+      "end_line": 779,
       "owner": "RosstatWeeklyCpiParser.run",
       "conditions": [
         "not (points)"
@@ -311190,8 +311421,8 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "line": 78,
-      "end_line": 78,
+      "line": 79,
+      "end_line": 79,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.rosstat_weekly_inflation_parser._MONTH_MAP"
@@ -313314,8 +313545,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4162,
-      "end_line": 4162,
+      "line": 4163,
+      "end_line": 4163,
       "owner": "_indicator_body",
       "conditions": [],
       "symbol": "app.services.seo_content.GLOBAL_INDICATOR_BLOCKS"
@@ -313372,8 +313603,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 3925,
-      "end_line": 3925,
+      "line": 3926,
+      "end_line": 3926,
       "owner": "_category_for_api",
       "conditions": [],
       "symbol": "app.services.seo_content.CATEGORY_META"
@@ -313414,8 +313645,8 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "line": 4000,
-      "end_line": 4000,
+      "line": 4001,
+      "end_line": 4001,
       "owner": "_russia_world_compare_ssr_section",
       "conditions": [],
       "symbol": "app.services.seo_renderer._SSR_VS_COUNTRY_LABELS"
@@ -314696,8 +314927,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 259,
-      "end_line": 259,
+      "line": 261,
+      "end_line": 261,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
@@ -314736,64 +314967,64 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 205,
-      "end_line": 205,
+      "line": 207,
+      "end_line": 207,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 242,
-      "end_line": 242,
+      "line": 244,
+      "end_line": 244,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 245,
-      "end_line": 245,
+      "line": 247,
+      "end_line": 247,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._MONTHS_GENITIVE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 289,
-      "end_line": 289,
+      "line": 291,
+      "end_line": 291,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._KIND_GROUP"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 334,
-      "end_line": 334,
+      "line": 336,
+      "end_line": 336,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.MSK"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 206,
-      "end_line": 206,
+      "line": 208,
+      "end_line": 208,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._EMOJI_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 200,
-      "end_line": 200,
+      "line": 202,
+      "end_line": 202,
       "owner": "_plain",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 291,
-      "end_line": 291,
+      "line": 293,
+      "end_line": 293,
       "owner": "build_summary",
       "conditions": [
         "other"
@@ -314802,24 +315033,24 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 268,
-      "end_line": 268,
+      "line": 270,
+      "end_line": 270,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._RECOVERY_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 276,
-      "end_line": 276,
+      "line": 278,
+      "end_line": 278,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.KIND_LABELS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 280,
-      "end_line": 280,
+      "line": 282,
+      "end_line": 282,
       "owner": "build_summary",
       "conditions": [
         "h"
@@ -314828,8 +315059,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 328,
-      "end_line": 328,
+      "line": 330,
+      "end_line": 330,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"
@@ -315556,6 +315787,24 @@
         "name == 'Windows'"
       ],
       "symbol": "app.services.ua_parser._WINDOWS_NAMES"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 40,
+      "end_line": 40,
+      "owner": "point_rejection",
+      "conditions": [],
+      "symbol": "app.services.upsert.DATE_MIN"
+    },
+    {
+      "path": "backend/app/services/upsert.py",
+      "line": 41,
+      "end_line": 41,
+      "owner": "point_rejection",
+      "conditions": [
+        "dt < DATE_MIN"
+      ],
+      "symbol": "app.services.upsert.DATE_MIN"
     },
     {
       "path": "backend/app/services/us_pop_adapter.py",
@@ -320894,8 +321143,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -320951,8 +321200,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321023,8 +321272,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321080,8 +321329,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321137,8 +321386,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321194,8 +321443,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321244,8 +321493,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321288,8 +321537,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321332,8 +321581,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321382,8 +321631,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321437,8 +321686,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321494,8 +321743,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321551,8 +321800,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321611,8 +321860,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321698,8 +321947,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321770,8 +322019,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321827,8 +322076,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321894,8 +322143,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -321984,8 +322233,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322059,8 +322308,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322124,8 +322373,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322174,8 +322423,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322234,8 +322483,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322284,8 +322533,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322334,8 +322583,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322384,8 +322633,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322436,8 +322685,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322488,8 +322737,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322555,8 +322804,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322622,8 +322871,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322674,8 +322923,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322726,8 +322975,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322776,8 +323025,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322833,8 +323082,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322895,8 +323144,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -322955,8 +323204,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323015,8 +323264,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323075,8 +323324,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323130,8 +323379,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323197,8 +323446,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323262,8 +323511,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323320,8 +323569,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323385,8 +323634,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323452,8 +323701,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323519,8 +323768,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323586,8 +323835,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323653,8 +323902,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323720,8 +323969,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323787,8 +324036,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323842,8 +324091,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323909,8 +324158,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -323953,8 +324202,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324028,8 +324277,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324088,8 +324337,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324148,8 +324397,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324203,8 +324452,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324273,8 +324522,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324343,8 +324592,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324393,8 +324642,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324443,8 +324692,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324498,8 +324747,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324553,8 +324802,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324613,8 +324862,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324668,8 +324917,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324728,8 +324977,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324788,8 +325037,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324873,8 +325122,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324923,8 +325172,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -324988,8 +325237,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325068,8 +325317,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325143,8 +325392,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325208,8 +325457,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325273,8 +325522,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325343,8 +325592,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325387,8 +325636,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325442,8 +325691,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325499,8 +325748,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325549,8 +325798,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325593,8 +325842,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325643,8 +325892,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325708,8 +325957,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325763,8 +326012,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325818,8 +326067,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325878,8 +326127,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325938,8 +326187,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -325998,8 +326247,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326078,8 +326327,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326143,8 +326392,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326198,8 +326447,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326263,8 +326512,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326323,8 +326572,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326388,8 +326637,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326453,8 +326702,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326513,8 +326762,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326563,8 +326812,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326618,8 +326867,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326668,8 +326917,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326728,8 +326977,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326788,8 +327037,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326838,8 +327087,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326903,8 +327152,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -326970,8 +327219,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327032,8 +327281,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327099,8 +327348,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327161,8 +327410,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327228,8 +327477,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327283,8 +327532,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327350,8 +327599,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327412,8 +327661,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327479,8 +327728,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327534,8 +327783,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327596,8 +327845,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327656,8 +327905,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327718,8 +327967,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327775,8 +328024,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327830,8 +328079,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327892,8 +328141,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -327947,8 +328196,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328004,8 +328253,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328061,8 +328310,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328116,8 +328365,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328169,8 +328418,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1964,
-          "end_line": 1964,
+          "line": 1976,
+          "end_line": 1976,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328246,8 +328495,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1967,
-          "end_line": 1967,
+          "line": 1979,
+          "end_line": 1979,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328297,8 +328546,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1967,
-          "end_line": 1967,
+          "line": 1979,
+          "end_line": 1979,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328345,8 +328594,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328398,8 +328647,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328435,8 +328684,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328478,8 +328727,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328521,8 +328770,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328569,8 +328818,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328620,8 +328869,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328676,8 +328925,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328732,8 +328981,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328788,8 +329037,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328849,8 +329098,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328905,8 +329154,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -328951,8 +329200,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329007,8 +329256,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329068,8 +329317,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329119,8 +329368,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329170,8 +329419,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329226,8 +329475,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329282,8 +329531,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329343,8 +329592,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329404,8 +329653,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329470,8 +329719,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329531,8 +329780,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329587,8 +329836,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329638,8 +329887,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329684,8 +329933,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329730,8 +329979,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329776,8 +330025,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329822,8 +330071,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1970,
-          "end_line": 1970,
+          "line": 1982,
+          "end_line": 1982,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329864,8 +330113,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1974,
-          "end_line": 1974,
+          "line": 1986,
+          "end_line": 1986,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329900,8 +330149,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1974,
-          "end_line": 1974,
+          "line": 1986,
+          "end_line": 1986,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329943,8 +330192,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -329991,8 +330240,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330039,8 +330288,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330092,8 +330341,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330140,8 +330389,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330193,8 +330442,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330251,8 +330500,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330299,8 +330548,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330352,8 +330601,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330405,8 +330654,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330463,8 +330712,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330511,8 +330760,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330564,8 +330813,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330622,8 +330871,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330670,8 +330919,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330723,8 +330972,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330781,8 +331030,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330844,8 +331093,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330902,8 +331151,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330945,8 +331194,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -330988,8 +331237,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331041,8 +331290,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331099,8 +331348,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331152,8 +331401,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331215,8 +331464,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331283,8 +331532,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331346,8 +331595,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331404,8 +331653,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331457,8 +331706,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331515,8 +331764,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331578,8 +331827,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331636,8 +331885,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",
@@ -331699,8 +331948,8 @@
       "mounts": [
         {
           "path": "backend/app/main.py",
-          "line": 1977,
-          "end_line": 1977,
+          "line": 1989,
+          "end_line": 1989,
           "owner": "<module>",
           "conditions": [],
           "parent": "app.main.app",

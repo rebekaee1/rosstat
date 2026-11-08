@@ -42,7 +42,7 @@ MESSAGE_LIMIT = 4000
 HELD_KINDS = frozenset({
     "alert",  # вид по умолчанию у `send_telegram`
     "etl_failure", "etl_alert", "etl_summary", "world_ingest_summary", "zero_parse",
-    "staleness", "freshness_watchdog", "forecast_issue",
+    "staleness", "freshness_watchdog", "forecast_issue", "data_guard", "data_sanity",
     "scheduler_alert", "job_lease_lost", "ticker_stale",
     "http_5xx_spike", "load_shed", "rate_limit_alert",
     "host_pressure", "host_memory",
@@ -162,7 +162,7 @@ _EMOJI_RE = re.compile(r"^[\W_]+", re.UNICODE)
 GROUPS = (
     ("site", "Сайт", ("http_5xx_spike", "load_shed", "host_pressure", "host_memory", "rate_limit_alert")),
     ("data", "Данные", ("etl_summary", "etl_failure", "etl_alert", "world_ingest_summary", "zero_parse",
-                        "staleness", "freshness_watchdog", "forecast_issue")),
+                        "staleness", "freshness_watchdog", "forecast_issue", "data_guard", "data_sanity")),
     ("jobs", "Фоновые задачи", ("scheduler_alert", "job_lease_lost", "ticker_stale")),
     ("stats", "Статистика и поиск", ("acquisition_alert", "recrawl_alert", "analytics_anomaly", "audience_alert")),
 )
@@ -183,6 +183,8 @@ KIND_LABELS = {
     "staleness": "показатели давно не обновлялись",
     "freshness_watchdog": "проверка свежести данных",
     "forecast_issue": "заминки с прогнозами",
+    "data_guard": "сторож не пустил в базу невозможные точки",
+    "data_sanity": "ежедневная проверка нашла странные точки в базе",
     "scheduler_alert": "сбои фоновых задач",
     "job_lease_lost": "задача запускалась дважды",
     "ticker_stale": "бегущая строка котировок обновлялась с задержкой",

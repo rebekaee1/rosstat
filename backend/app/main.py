@@ -1298,6 +1298,18 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram resend enabled: every 5 min")
 
+        # Проверка рядов в базе (08.11.2026, services/data_sanity.py): невозможные даты и NaN → утренняя сводка.
+        from app.services.data_sanity import data_sanity_job
+        scheduler.add_job(
+            data_sanity_job,
+            trigger=CronTrigger(hour=8, minute=20, timezone="Europe/Moscow"),
+            id="data_sanity",
+            name="Daily sanity check of indicator_data (impossible dates, NaN) → Telegram",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+        )
+
         # Спокойный режим Telegram (08.11.2026): одна утренняя сводка вместо потока технических алертов.
         if settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id:
             from app.services.telegram_calm import calm_morning_summary_job

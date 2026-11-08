@@ -19,18 +19,18 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2237,
-    "code_files": 1829,
-    "current_reviews": 2237,
+    "files": 2240,
+    "code_files": 1832,
+    "current_reviews": 2240,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
       "body_reviewed": 4,
       "data_schema_reviewed": 6,
-      "reviewed": 2022
+      "reviewed": 2025
     },
-    "definitions": 14847,
-    "annotated_definitions": 14847,
+    "definitions": 14869,
+    "annotated_definitions": 14869,
     "files_needing_attention": 0
   },
   "orphan_reviews": [],
@@ -2546,9 +2546,9 @@
     },
     {
       "path": "backend/app/main.py",
-      "sha256": "bc2fe0875737eb7c749ca4f02efa7a36faabc6e914c9900442820537eb55e672",
-      "bytes": 90743,
-      "lines": 1977,
+      "sha256": "16d6cf7b7dcc90033181c892a89059e1b4e09b8d5ca7a26c2aaf0fcbf0757b70",
+      "bytes": 91327,
+      "lines": 1989,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3270,6 +3270,19 @@
       "issues": [],
       "definitions": 28,
       "annotated_definitions": 28,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/data_sanity.py",
+      "sha256": "987a29110f6844417a259cb52a3ae248cbf997a57f8e4fe7dd8ea6aa45a5294c",
+      "bytes": 4034,
+      "lines": 69,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
       "missing_definitions": []
     },
     {
@@ -4483,21 +4496,21 @@
     },
     {
       "path": "backend/app/services/rosstat_weekly_inflation_parser.py",
-      "sha256": "1695a710dda40770cfc865cfffcde0c6d285099e3b9e71b52b83391ab7d3eaa8",
-      "bytes": 39388,
-      "lines": 947,
+      "sha256": "28127f5cf8f0921a3a9625f05dafb92db765dd14385d8bc41770e11e5913c63a",
+      "bytes": 40342,
+      "lines": 962,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 25,
-      "annotated_definitions": 25,
+      "definitions": 26,
+      "annotated_definitions": 26,
       "missing_definitions": []
     },
     {
       "path": "backend/app/services/rosstat_weekly_price_parser.py",
-      "sha256": "932639bd0064b28cc7e09526ef24d09fb6a9873eefba9eaeb38b0b70046d67a9",
-      "bytes": 13706,
+      "sha256": "a15a7947bd53965e9bfa7db934dc5809aa62b4516578948af5a55e93b9fd972b",
+      "bytes": 13708,
       "lines": 323,
       "code": true,
       "status": "reviewed",
@@ -4821,9 +4834,9 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "de85b686a7def4ae473516a7f732607d907772212687e9a24f257116a3c8320a",
-      "bytes": 220439,
-      "lines": 4253,
+      "sha256": "568faca27c3eb869c4b3722cc7015fa5986c766302b0c24c7c906ba063b4c36e",
+      "bytes": 220667,
+      "lines": 4254,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5133,9 +5146,9 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "83cfbe84f1a1d9fca06ae784a095ff2d2e2d3e1d432a1b06456c929a861edc3f",
-      "bytes": 18551,
-      "lines": 336,
+      "sha256": "6997089ceec0bd732bfc2537e7c347192b077230526c50e2d26f2f29bbdf2a03",
+      "bytes": 18818,
+      "lines": 338,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5302,15 +5315,15 @@
     },
     {
       "path": "backend/app/services/upsert.py",
-      "sha256": "4cee0f233af68faa7e3610ce6051f506201a63a9a405ada815ca52be66569da5",
-      "bytes": 7410,
-      "lines": 170,
+      "sha256": "e37f8e7eb86057bf393ff882c1fce4e73b6fb6c90570e44a02d640d1684c003e",
+      "bytes": 11154,
+      "lines": 239,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 7,
-      "annotated_definitions": 7,
+      "definitions": 9,
+      "annotated_definitions": 9,
       "missing_definitions": []
     },
     {
@@ -8044,6 +8057,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_data_guard.py",
+      "sha256": "a2b34ea679a55e9394fa3a3e80835a6b803d6dcc850befb32a36ca2f08848568",
+      "bytes": 3701,
+      "lines": 94,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 12,
+      "annotated_definitions": 12,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_data_loading_c28.py",
       "sha256": "c2fb042252b7bdb76e688e194f844ac18a08af9c30d54849cf61321e78253757",
       "bytes": 17847,
@@ -8916,15 +8942,15 @@
     },
     {
       "path": "backend/tests/test_indicator_year_landing.py",
-      "sha256": "ee5cc255806b4ef79a5c5526d8460f2081333b4eac1a686816f6c3efdac7b14f",
-      "bytes": 23038,
-      "lines": 523,
+      "sha256": "8adf87a8b6502733444a9185d3ee73d8311c391972259303aeafe83227dc2f83",
+      "bytes": 23853,
+      "lines": 540,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 37,
-      "annotated_definitions": 37,
+      "definitions": 39,
+      "annotated_definitions": 39,
       "missing_definitions": []
     },
     {
@@ -10995,6 +11021,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_weekly_sheet_year.py",
+      "sha256": "ce7e1528bb3058cf3ced9cc9f83d8d5f1257097240cc73f4c18ac9215ec24ff9",
+      "bytes": 1804,
+      "lines": 46,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 3,
+      "annotated_definitions": 3,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_weo_listing.py",
       "sha256": "9cca69bb821345ca252bc07f42483d2472740368ecdf1bc99594fe7f3ae621ce",
       "bytes": 2861,
@@ -12621,9 +12660,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "0401b95eec43a37f53d21c959eb16652ea4616aee967d8091fea979aef106f3b",
-      "bytes": 680682,
-      "lines": 3163,
+      "sha256": "07c8561d8ef49086b58c5aa52868df531254b6e88457dff16b1bcf95d08e1042",
+      "bytes": 684589,
+      "lines": 3181,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13180,9 +13219,9 @@
     },
     {
       "path": "docs/enterprise_resilience.md",
-      "sha256": "58d801b45d1286edf0c003b62bd3645004d3583bbf117793b5ea54dc4db9d57c",
-      "bytes": 43693,
-      "lines": 170,
+      "sha256": "542d594033657b67f6919dc55f6189b7ca747e607d3527af5a2d574608e3867c",
+      "bytes": 45165,
+      "lines": 171,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13219,9 +13258,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "e3b8e0dca0084718be8343bc74376dc486c6704e72059ab005b102abab377f7f",
-      "bytes": 2992435,
-      "lines": 108291,
+      "sha256": "da8915675df329ba3dc5b89b671ea4c44d3ce6bad5bb8ee0cd112ca519bdb2c5",
+      "bytes": 2994064,
+      "lines": 108361,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13271,9 +13310,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "1f59361542aa4c2015837ecf159936a95a0c79353a036aeec38b5d1eb51ec74f",
-      "bytes": 10995380,
-      "lines": 331845,
+      "sha256": "d50e7df51884761f3c6ee393c8c62893d0faacc606c977b4688947b2d65ac0d6",
+      "bytes": 11003876,
+      "lines": 332094,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13284,9 +13323,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "e484f99b283b071306fefd9e5be2f8cd5a2b0add94e59360bd556d4cd8ea0989",
-      "bytes": 545051,
-      "lines": 3092,
+      "sha256": "88bc1fe9462cfa5f05bfc159c2cae868b1b5b46d92d8c564c428d11c420ce6cd",
+      "bytes": 545606,
+      "lines": 3095,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -29118,9 +29157,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "affad5fb5145df2877598e1f84ef1c977a6fa7b7f86eb65cf477fb2b04d1a17c",
+  "ledger_sha256": "28708bd49febb435c233b9d08866a17f5ba9d9a9fec258b23e654631cb8ddcba",
   "javascript_inventory_sha256": "526fa19d62abce45d6c6f1ef6bd736865bb155149fc898bd3b1e92492fab5276",
-  "baseline_commit": "c7493deb6a796b0db8b64d00db0a6b69efafbe87",
+  "baseline_commit": "faf7bbb155e4bfb13effefe287fbc4dd3195adbe",
   "branch": "main",
   "unstaged_at_capture": []
 }

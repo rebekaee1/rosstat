@@ -11,13 +11,44 @@ for every concrete parser (CBR / Минфин / Rosstat) — see parser docstrin
 in `backend/app/services/*_parser.py`.
 """
 
+import logging
+import math
 from datetime import date as _date
+from datetime import timedelta as _timedelta
 
 from sqlalchemy import delete, func, literal_column, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import IndicatorData
+
+logger = logging.getLogger(__name__)
+
+# Сторож данных (08.11.2026): единственная точка записи рядов, через неё идут все парсеры, derived и мировые ряды.
+# 05.11.2026 парсер цен на топливо записал 31 неделю датами 0001-01-10… (лист «1» в файле Росстата), derived размножили
+# их до 194 точек, годовые страницы падали с 500. Даты вне [DATE_MIN, сегодня + FUTURE_DAYS] и нечисловые значения
+# (NaN, ±inf) в базу не пишутся; об отброшенном — алерт `data_guard` (в спокойном режиме уходит в утреннюю сводку).
+DATE_MIN = _date(1800, 1, 1)
+FUTURE_DAYS = 730
+_GUARD_MUTE_SECONDS = 24 * 3600
+
+
+def point_rejection(dt, val) -> str | None:
+    """Почему точку нельзя писать (`None` — можно). Чистая функция, без базы."""
+    if not isinstance(dt, _date):
+        return "дата не распознана"
+    if dt < DATE_MIN:
+        return f"дата {dt.isoformat()} раньше {DATE_MIN.year} года"
+    if dt > _date.today() + _timedelta(days=FUTURE_DAYS):
+        return f"дата {dt.isoformat()} дальше двух лет вперёд"
+    try:
+        num = float(val)
+    except (TypeError, ValueError):
+        return "значение не число"
+    if not math.isfinite(num):
+        return "значение не конечное число"
+    return None
+
 
 # П-1: пачка на statement. 3 параметра на строку — с запасом под лимит
 # asyncpg в 32767 bind-параметров.
@@ -98,9 +129,10 @@ def batch_upsert_stmt(indicator_id: int, rows: list[tuple[_date, float]]):
     ).returning(literal_column("(xmax = 0)").label("inserted"))
 
 
-def _dedup_points(points: list) -> dict[_date, float]:
-    """Отфильтровать None (ADR-0002 boundary) и схлопнуть дубли дат (last wins):
-    ON CONFLICT в одном statement не может тронуть строку дважды."""
+def _dedup_points(points: list, rejected: list | None = None) -> dict[_date, float]:
+    """Отфильтровать None (ADR-0002 boundary), отбросить невозможные точки (сторож данных) и схлопнуть
+    дубли дат (last wins): ON CONFLICT в одном statement не может тронуть строку дважды.
+    `rejected` — сюда кладутся (дата, значение, причина) отброшенных сторожем."""
     dedup: dict[_date, float] = {}
     for point in points:
         dt, val = _split_point(point)
@@ -109,8 +141,42 @@ def _dedup_points(points: list) -> dict[_date, float]:
         # got 502) must NOT silently wipe what's already in the DB.
         if val is None:
             continue
+        reason = point_rejection(dt, val)
+        if reason:
+            if rejected is not None:
+                rejected.append((dt, val, reason))
+            continue
         dedup[dt] = val
     return dedup
+
+
+async def _report_rejected(db: AsyncSession, indicator_id: int, rejected: list) -> None:
+    """Лог и алерт `data_guard` (раз в сутки на ряд). Ошибки алерта не мешают записи."""
+    from app.config import settings
+
+    sample = ", ".join(f"{d!s}={v!r}" for d, v, _r in rejected[:3])
+    logger.error("Сторож данных: ряд %s, отброшено %d точек (%s; %s)",
+                 indicator_id, len(rejected), rejected[0][2], sample)
+    if not (settings.telegram_bot_token and settings.telegram_chat_id):
+        return
+    try:
+        from html import escape
+
+        from app.models import Indicator
+        from app.services.alerting import alert_muted, send_telegram
+
+        code = (await db.execute(select(Indicator.code).where(Indicator.id == indicator_id))).scalar() or str(indicator_id)
+        if await alert_muted(f"data_guard:{code}", _GUARD_MUTE_SECONDS):
+            return
+        first = rejected[0][2]
+        await send_telegram(
+            "🟡 <b>Сторож данных не пустил точки в базу</b>\n"
+            f"Ряд <code>{escape(code)}</code>: отброшено {len(rejected)} — {escape(first)}"
+            + (" и др." if len(rejected) > 1 else "") + ". Остальные точки записаны; источник, вероятно, сменил формат.",
+            kind="data_guard",
+        )
+    except Exception:  # noqa: BLE001
+        logger.warning("data_guard alert failed", exc_info=True)
 
 
 async def bulk_upsert(db: AsyncSession, indicator_id: int, points: list) -> tuple[int, int]:
@@ -121,7 +187,10 @@ async def bulk_upsert(db: AsyncSession, indicator_id: int, points: list) -> tupl
     точек вместо 2N+2). На прочих диалектах (SQLite в тестах) — построчный
     путь с count-подсчётом, поведение идентично.
     """
-    dedup = _dedup_points(points)
+    rejected: list = []
+    dedup = _dedup_points(points, rejected)
+    if rejected:
+        await _report_rejected(db, indicator_id, rejected)
     if not dedup:
         return 0, 0
 
