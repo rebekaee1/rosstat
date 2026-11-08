@@ -30,6 +30,7 @@ import { russiaIndicatorSubject } from '../lib/cabinetSubjects';
 import { indicatorPolarity } from '../lib/deltaTone';
 import '../styles/z4-indicator.css';
 import '../styles/k5-pages.css';
+import '../styles/r3d-card.css';
 import { track, events } from '../lib/track';
 import { useLocale, useT } from '../i18n';
 import ApiRetryBanner from './ApiRetryBanner';
@@ -180,6 +181,19 @@ export default function GenericIndicatorView({
   }, [fullChartData, resolved, code, downloadMeta, indicator]);
 
   const isCurrency = isCurrencyIndicator(code);
+  // R3-D: у курса валюты режимы «к тому же периоду прошлого года» и «по кварталам» только сбивают (человек ждёт цену, а не темп).
+  // Прячем их на уровне показа; сам режим, если он уже открыт по ссылке, остаётся доступным.
+  const pickerFamily = useMemo(() => {
+    if (!isCurrency || !family?.groups) return family;
+    const current = family.modes?.find((m) => m.mode === safeMode);
+    const hide = new Set(['yoy']);
+    if (current && hide.has(current.group)) return family;
+    return {
+      ...family,
+      groups: family.groups.filter((g) => !hide.has(g.id)),
+      modes: (family.modes || []).filter((m) => !hide.has(m.group) && m.mode !== 'eop-quarter' && m.mode !== 'avg-quarter'),
+    };
+  }, [isCurrency, family, safeMode]);
   // На английском название курса пишется одинаково везде: «USD/RUB exchange rate».
   const headerIndicator = isCurrency && locale === 'en' && indicator?.name
     ? { ...indicator, name: normalizeRateNameEn(indicator.name) }
@@ -221,13 +235,16 @@ export default function GenericIndicatorView({
       <FreshnessNote freshness={indicator?.freshness} />
       <BrentLiveNote code={code} />
 
+      {/* R3-D: конвертер — главное действие на карточке курса, он стоит сразу под заголовком, а не после графика. */}
+      {isCurrency && <CurrencyCardConverter code={code} />}
+
       <ViewModesPanel label={isCurrency ? t('w6g.cur.show') : undefined}>
         {variantGroup ? (
           <VariantGroupPicker group={variantGroup} currentCode={code} />
         ) : null}
 
         <GenericViewModePicker
-          family={family}
+          family={pickerFamily}
           currentMode={safeMode}
           onChange={setViewMode}
           pending={Boolean(isLoading)}
@@ -300,8 +317,6 @@ export default function GenericIndicatorView({
       )}
         </div>
       </div>
-
-      {isCurrency && <CurrencyCardConverter code={code} />}
 
       <div className="z4-lower" data-lower={forecastEnabled && showForecast && hasForecast ? 'wide' : 'stack'}>
         <div className="z4-lower__table">

@@ -83,7 +83,7 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     expect(dock.getAttribute('data-tone')).toBe('dark');
   });
 
-  it('круг 9, S1: короткая пауза (700 мс) панель не возвращает, долгая (2,5 с) возвращает', async () => {
+  it('R3-D: пауза любой длины панель не возвращает: она возвращается только при движении вверх', async () => {
     renderDock();
     const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
     await scrollTo(400);
@@ -91,6 +91,8 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 900); }); });
     expect(dock.getAttribute('data-visible')).toBe('false');
     await act(async () => { await new Promise((resolve) => { setTimeout(resolve, 1800); }); });
+    expect(dock.getAttribute('data-visible')).toBe('false');
+    await scrollTo(300);
     expect(dock.getAttribute('data-visible')).toBe('true');
   });
 

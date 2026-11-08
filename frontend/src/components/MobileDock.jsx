@@ -32,12 +32,12 @@ const ITEMS = [
 export default function MobileDock() {
   const t = useT();
   const { pathname, hash } = useLocation();
-  const { deep, dir, rest } = useScrollDirection();
+  const { deep, dir } = useScrollDirection();
   const stickyShown = useStickyActive();
   const hidden = pathname.startsWith('/admin');
   const overFooter = useFooterTone().dock;
   const suppressed = useDockSuppressed();
-  const visible = !hidden && deep && !stickyShown && !suppressed && (dir === 'up' || (rest && !overFooter));
+  const visible = !hidden && deep && !stickyShown && !suppressed && dir === 'up';
   // «Страны» подсвечены по адресу (#countries) и пока человек читает каталог стран на главной (круг 11, G, U33).
   const countriesInView = useAnchorInView(COUNTRIES_ANCHOR_ID, pathname === '/' && !hidden);
   const activeId = resolveActiveNavId(pathname, undefined, hash, countriesInView);
