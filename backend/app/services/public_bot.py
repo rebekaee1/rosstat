@@ -1160,15 +1160,28 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
     """Ответ модели; если основная не ответила — одна попытка запасной (openrouter_model)."""
     primary = settings.public_bot_llm_model or settings.openrouter_model
     answer = await _llm_call(primary, context, question, history)
+    if answer is None and _last_llm_status not in (400, 401, 402, 403, 404):
+        # Тестер №7, 09.11: при одновременных запросах часть ответов — «Не получилось ответить».
+        # Пауза и повтор той же модели — только для временных сбоев (429, 5xx, обрыв), не для 402/4xx.
+        await asyncio.sleep(2.5)
+        answer = await _llm_call(primary, context, question, history)
+        if answer is None:
+            await asyncio.sleep(5)
+            answer = await _llm_call(primary, context, question, history)
     if answer is None and settings.public_bot_llm_model and settings.public_bot_llm_model != settings.openrouter_model:
         logger.warning("Public bot LLM: основная модель не ответила, пробую %s", settings.openrouter_model)
         answer = await _llm_call(settings.openrouter_model, context, question, history)
     return answer
 
 
+_last_llm_status = 0  # HTTP-статус последнего вызова модели (0 — обрыв/исключение)
+
+
 async def _llm_call(model: str, context: str, question: str, history: list[dict] | None) -> str | None:
     import httpx
 
+    global _last_llm_status
+    _last_llm_status = 0
     payload = {
         "model": model,
         "max_tokens": 2000,
@@ -1186,6 +1199,7 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
                 headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
                          "X-Title": "Forecast Economy bot"},
             )
+        _last_llm_status = resp.status_code
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
             return None
@@ -1564,6 +1578,9 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Тестер №7, 09.11: на «инфляция в Германии» без модели приходила молча карточка России.
+            await _send(chat_id, "Своими словами сейчас ответить не получилось — вот ближайшая карточка, "
+                                 "возможно, не совсем про ваш вопрос:")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
