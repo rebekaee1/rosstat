@@ -232,7 +232,7 @@ export function parseAmountInput(text, locale = 'ru') {
 }
 
 /** Валюты «в дорогу»: сначала то, что берут с собой или переводят чаще всего. Показываются быстрыми кнопками в конвертере. */
-export const TRAVEL_UNITS = ['KZT', 'BYN', 'UZS', 'TRY', 'AMD', 'KGS', 'AED', 'GEL', 'THB'];
+export const TRAVEL_UNITS = ['TJS', 'UZS', 'KGS', 'KZT', 'AMD', 'BYN', 'AED', 'TRY', 'GEL', 'THB'];
 
 // Страны и названия на двух языках: по ним валюта находится в поиске («узбекистан», «uzbek», «дубай», «dirham»).
 const SEARCH_ALIASES = {
@@ -314,6 +314,8 @@ export function nominalFor(unit, perOne) {
 /** Пресеты суммы под валюту «Из»: у мелких валют (сум, тенге) круглые суммы на сотни и тысячи рублей, а не «1» и «100». */
 export function amountPresets(from, edges) {
   const legacy = { list: [1, 100, 1000, 10000], initial: 100 };
+  // Рубли в руках: отправить семье или поменять в дорогу — тысячи, а не «100 ₽».
+  if (from === 'RUB') return { list: [1000, 5000, 10000, 50000], initial: 10000 };
   if (!from || HEAD_UNITS.includes(from)) return legacy;
   const rub = convert(1, from, 'RUB', edges)?.value;
   if (!(rub > 0) || rub >= 0.3) return legacy;

@@ -21,13 +21,13 @@ const INDICATORS = [
 ];
 
 describe('CurrencyDesk: мелкие валюты', () => {
-  it('кнопка «Сум» ставит сум, сумма 1 000 000 и результат по-человечески', () => {
+  it('кнопка «Сум» считает рубли в сумы: 10 000 ₽ и результат по-человечески', () => {
     renderPage(<CurrencyDesk indicators={INDICATORS} />);
     fireEvent.click(screen.getByRole('button', { name: /Сум/ }));
     const out = screen.getByTestId('converter-result').textContent;
-    expect(out).toContain('6 860');
+    expect(out).toContain('1 457 726');
     expect(out).toContain('10 000 сумов = 68,60 ₽');
-    expect(screen.getByRole('button', { name: /^10\s000\s000$/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^10\s000$/ })).toBeTruthy();
   });
 
   it('в строке списка номинал стоит рядом с ценой', () => {

@@ -129,11 +129,11 @@ describe('CurrencyDesk', () => {
     mockMarket();
     const { container } = renderPage(<CurrencyDesk indicators={INDICATORS} />);
     const tiles = container.querySelector('[data-block="currency-rate-tiles"]');
-    expect(tiles.textContent).toContain('Курс ЦБ на 3 окт.');
+    expect(tiles.textContent).toContain('Доллар: ЦБ на 3 окт.');
     expect(tiles.textContent).toContain('80,00');
     expect(tiles.querySelector('.fe-z8-rate--cb .fe-z8-rate__mark')).toBeTruthy();
     await waitFor(() => expect(tiles.textContent).toContain('85,81'));
-    expect(tiles.textContent).toContain('Рынок');
+    expect(tiles.textContent).toContain('Доллар: рынок');
     // Пояснение стоит на виду, а не за ссылкой «Почему курс отличается?».
     expect(tiles.querySelector('.fe-z8-why').textContent).toMatch(/официальный курс раз в день/);
     expect(container.querySelector('details.fe-w6g-why')).toBeNull();
@@ -302,6 +302,7 @@ describe('CurrencyDesk: новые валюты из ответа API (круг 
     expect(kzt.textContent).toContain('не обновлялся с 20 сент.');
     expect(kzt.querySelector('.fe-trow__date').classList.contains('is-stale')).toBe(true);
     const lira = rows.find((row) => row.textContent.includes('лира'));
-    expect(lira.textContent).toContain('курс ЦБ на 3 окт.');
+    // Свежая валюта «в дорогу»: вместо даты строка «1 000 ₽ = …» (R2-Z3).
+    expect(lira.textContent).toContain('1\u00a0000\u00a0₽ =');
   });
 });
