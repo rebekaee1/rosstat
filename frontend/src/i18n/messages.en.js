@@ -3346,6 +3346,7 @@ export default {
   'c9d.compare.preset.ruTrGdp': 'Russia and Türkiye: GDP',
   'c9d.compare.preset.ruTrUnemployment': 'Russia and Türkiye: unemployment',
   'c9d.cur.stale': 'not updated since {date}',
+  'c9d.cur.perUnits': 'per {n}',
   'c9d.mortgage.avgRate': 'Average mortgage rate now: {rate}% ({date}).',
   'c9d.mortgage.useAvg': 'Use it',
   'c9d.calc.monthsShort': '{n} mo.',

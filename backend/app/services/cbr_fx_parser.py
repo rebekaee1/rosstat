@@ -1,6 +1,9 @@
 """ETL: курсы валют ЦБ РФ (XML_dynamic) → IndicatorData.
 
-Пять индикаторов: usd-rub, eur-rub, cny-rub, try-rub, kzt-rub.
+Все валюты ежедневной ведомости Банка России: пять исходных пар (usd-rub,
+eur-rub, cny-rub, try-rub, kzt-rub) и 49 пар из справочника
+``app.data.cbr_currencies`` (08.11.2026). У мелких валют ряд хранится за 100,
+1 000, 10 000 или 1 000 000 единиц (``CBR_QUOTE_UNITS``), как в ведомости ЦБ.
 Источник: https://www.cbr.ru/scripts/XML_dynamic.asp
 
 Коды валют (параметр VAL_NM_RQ) сверены 2026-10-08 с официальным справочником
@@ -22,6 +25,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
+from app.data.cbr_currencies import CBR_CURRENCY_CODES, CBR_QUOTE_UNITS
 from app.models import FetchLog, Indicator, IndicatorData
 from app.services.base_parser import BaseParser
 from app.services.http_client import create_session
@@ -34,6 +38,7 @@ CURRENCY_MAP: dict[str, str] = {
     "cny-rub": "R01375",
     "try-rub": "R01700J",
     "kzt-rub": "R01335",
+    **CBR_CURRENCY_CODES,
 }
 
 DEFAULT_BACKFILL_FROM = date(2015, 1, 1)
@@ -63,8 +68,12 @@ def fetch_fx_xml(val_code: str, date_from: date, date_to: date) -> tuple[str, st
         session.close()
 
 
-def parse_fx_xml(xml_text: str) -> list[tuple[date, float]]:
-    """Parse XML_dynamic response into (date, value) pairs."""
+def parse_fx_xml(xml_text: str, quote_units: int = 1) -> list[tuple[date, float]]:
+    """Parse XML_dynamic response into (date, value) pairs.
+
+    ``quote_units`` — сколько единиц валюты в одной точке ряда (1 для доллара,
+    10 000 для сума). Каждая запись делится на свой номинал ЦБ.
+    """
     root = ElementTree.fromstring(xml_text)
     results: list[tuple[date, float]] = []
     for record in root.findall("Record"):
@@ -77,7 +86,7 @@ def parse_fx_xml(xml_text: str) -> list[tuple[date, float]]:
         dt = date(int(y), int(m), int(d))
         nominal = _parse_ru_float(nominal_el.text or "1")
         value = _parse_ru_float(value_el.text or "0")
-        rate = round(value / nominal, 4) if nominal else value
+        rate = round(value / nominal * quote_units, 4) if nominal else value
         results.append((dt, rate))
     results.sort(key=lambda x: x[0])
     return results
@@ -100,18 +109,26 @@ class CbrFxParser(BaseParser):
 
         date_to = date.today()
 
-        existing_n = (await db.execute(
-            select(func.count(IndicatorData.id)).where(IndicatorData.indicator_id == indicator.id)
-        )).scalar() or 0
+        existing_n, earliest = (await db.execute(
+            select(func.count(IndicatorData.id), func.min(IndicatorData.date))
+            .where(IndicatorData.indicator_id == indicator.id)
+        )).one()
+        existing_n = existing_n or 0
 
-        if cfg.get("backfill_from"):
-            date_from = date.fromisoformat(cfg["backfill_from"])
-        elif existing_n == 0:
+        # Полная история — пока ряд пуст или не дотянут до пола backfill_from;
+        # дальше ежедневный прогон берёт только окно последних дней (08.11.2026:
+        # валют стало 54, ежедневная перекачка истории с 1998 года не нужна).
+        backfill_from = date.fromisoformat(cfg["backfill_from"]) if cfg.get("backfill_from") else None
+        if earliest is not None and hasattr(earliest, "date"):
+            earliest = earliest.date()
+        if backfill_from and (existing_n == 0 or earliest is None or earliest > backfill_from + timedelta(days=45)):
+            date_from = backfill_from
+        elif backfill_from is None and existing_n == 0:
             date_from = DEFAULT_BACKFILL_FROM
         else:
             win = int(cfg.get("incremental_fetch_days", 60))
             date_from = date_to - timedelta(days=win)
 
         xml_text, final_url = await asyncio.to_thread(fetch_fx_xml, val_code, date_from, date_to)
-        points = await asyncio.to_thread(parse_fx_xml, xml_text)
+        points = await asyncio.to_thread(parse_fx_xml, xml_text, CBR_QUOTE_UNITS.get(code, 1))
         return points, final_url

@@ -7,6 +7,7 @@ import unicodedata
 from dataclasses import dataclass
 from functools import lru_cache
 
+from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES, search_concepts as _cbr_search_concepts
 from app.services.search_language import LANGUAGE_CONCEPTS, QUESTION_WORDS, prepare_language
 from app.services.search_vocabulary import VOCABULARY_CONCEPTS, GRAMMAR_WORDS, prepare_vocabulary, prepare_temporal_roles
 from app.services.search_units import UNIT_CONCEPTS
@@ -15,6 +16,8 @@ from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimension
 SEARCH_VERSION = "federated-v2"
 TOKEN_RE = re.compile(r"[a-zа-я0-9]+")
 STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
+
+CBR_SEARCH_CONCEPTS = _cbr_search_concepts()
 
 # Equivalent concepts only. Minimum wage deliberately does not alias average wages.
 CONCEPTS = (
@@ -37,6 +40,9 @@ CONCEPTS = (
     (("ицп", "ppi", "цены производителей"), ("ppi", "producer price", "цен производителей")),
     (("нефть брент", "нефти брент", "нефть марки брент", "брент", "нефть", "нефти", "oil", "brent"), ("brent", "нефт", "crude oil")),
     (("золото", "золота", "gold"), ("gold", "золот")),
+    # Остальные валюты ведомости Банка России (08.11.2026): раньше доллара, чтобы
+    # «австралийский доллар» не уходил в курс доллара США.
+    *CBR_SEARCH_CONCEPTS,
     (("курс доллара к рублю", "курс доллара", "курса доллара", "курсе доллара", "курсом доллара", "доллар", "доллара", "доллару", "долларом",
         "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
     (("курс юаня к рублю", "курс юаня", "юань", "юаня", "cny rub", "cnyrub"), ("cny-rub", "cny rub", "юан")),
@@ -101,7 +107,8 @@ _CONTROL_WORDS = frozenset(token for aliases, alternatives in CONCEPTS
         and not (alternatives[0] == "search-unit-chained-prices" and token in ("prices", "цены", "ценах")))
 _CURRENCY_KEYS = frozenset(("search-unit-usd", "search-unit-cad", "search-unit-aud", "search-unit-gbp",
     "search-unit-cny", "search-unit-eur", "search-unit-jpy", "search-unit-rub"))
-_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "try-rub", "kzt-rub", "usd-jpy", "eur-usd", "eur-rub"))
+_FX_SUBJECT_KEYS = frozenset(("usd-index", "usd-rub", "cny-rub", "try-rub", "kzt-rub", "usd-jpy", "eur-usd", "eur-rub",
+    *(c.code for c in _CBR_CURRENCIES)))
 _DENOMINATOR_COUNTS = {"1000": 1000, "1 000": 1000, "thousand": 1000, "one thousand": 1000,
     "тысячу": 1000, "тысячи": 1000, "10000": 10000, "10 000": 10000, "ten thousand": 10000,
     "десять тысяч": 10000, "100000": 100000, "100 000": 100000, "hundred thousand": 100000,
@@ -667,7 +674,8 @@ def _unmasked_query(query: str, text: str) -> str:
     return "".join(original)
 
 
-_RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-rub", "eur-usd", "usd-jpy", "btc-usd", "eth-usd"))
+_RATE_QUOTE_CODES = frozenset(("usd-rub", "eur-rub", "cny-rub", "try-rub", "kzt-rub", "eur-usd", "usd-jpy", "btc-usd", "eth-usd",
+    *(c.code for c in _CBR_CURRENCIES)))
 
 
 def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,

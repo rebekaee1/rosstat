@@ -16,7 +16,7 @@ import { russiaIndicatorPath } from '../lib/sitePaths';
 import EmptyState from './brand/EmptyState';
 import {
   CURRENCY_TABS, buildEdges, convert, convertibleUnits, formatConverted,
-  formatRate, pairTab, pairTitle, parseAmountInput, parsePair, rateBasis, sortByPopularity, unitMeta,
+  formatRate, pairTab, pairTitle, parseAmountInput, parsePair, quoteUnitsOf, rateBasis, sortByPopularity, unitMeta,
 } from '../lib/currencyRates';
 import { coinOf, unitName } from '../lib/currencyChart';
 import { MARKET_BOARD_CODES, chartPairFor, useMarketState } from '../lib/currencyMarket';
@@ -364,6 +364,9 @@ function CurrencyRow({ ind, index }) {
       <span className="fe-trow__val">
         <span className="fe-trow__num">{formatValue(value, digits, locale)}</span>
         {quote?.symbol && <span className="fe-trow__unit">{quote.symbol}</span>}
+        {quoteUnitsOf(ind.unit) > 1 && (
+          <span className="fe-trow__unit">{t('c9d.cur.perUnits', { n: formatValue(quoteUnitsOf(ind.unit), 0, locale) })}</span>
+        )}
       </span>
     </Link>
   );

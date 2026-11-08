@@ -161,6 +161,10 @@ _CURRENCY_BASE_CODES = (
     "btc-usd", "cny-eur", "cny-rub", "eth-usd", "eur-rub", "eur-usd",
     "gbp-eur", "gbp-usd", "kzt-rub", "sol-usd", "try-rub", "usd-cny", "usd-rub",
 )
+# Остальные валюты ведомости Банка России (08.11.2026): тоже в разделе валют.
+from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES  # noqa: E402
+
+_CURRENCY_BASE_CODES = _CURRENCY_BASE_CODES + tuple(c.code for c in _CBR_CURRENCIES)
 
 
 def is_currency_indicator(code: str) -> bool:

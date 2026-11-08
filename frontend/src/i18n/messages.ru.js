@@ -3351,6 +3351,7 @@ export default {
   'c9d.compare.preset.ruTrGdp': 'Россия и Турция: ВВП',
   'c9d.compare.preset.ruTrUnemployment': 'Россия и Турция: безработица',
   'c9d.cur.stale': 'не обновлялся с {date}',
+  'c9d.cur.perUnits': 'за {n}',
   'c9d.mortgage.avgRate': 'Средняя ставка по ипотеке сейчас: {rate} % ({date}).',
   'c9d.mortgage.useAvg': 'Подставить',
   'c9d.calc.monthsShort': '{n} мес.',

@@ -77,12 +77,18 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const [setPlotNode, plotWidth] = useElementWidth();
 
   // Круг 9 (V3): обратный курс мелкой монеты («1 доллар = 0,000012 биткоина») показываем как есть: «1 биткоин = N долларов».
-  const rawSeries = useMemo(() => cleanSeries(data?.data), [data]);
+  // Ряд мелкой валюты хранится за 100 / 10 000 единиц (как у ЦБ): на графике пары — за одну единицу.
+  const units = pair?.units || 1;
+  const perOne = useMemo(
+    () => (units === 1 ? data?.data : (data?.data || []).map((row) => ({ ...row, value: Number(row?.value) / units }))),
+    [data, units],
+  );
+  const rawSeries = useMemo(() => cleanSeries(perOne), [perOne]);
   const lastRaw = rawSeries.length ? rawSeries[rawSeries.length - 1].value : null;
   const flipped = Boolean(pair?.invert && lastRaw != null && lastRaw > 100);
   const baseSeries = useMemo(
-    () => (pair?.invert && !flipped ? cleanSeries(data?.data, { invert: true }) : rawSeries),
-    [data, pair?.invert, flipped, rawSeries],
+    () => (pair?.invert && !flipped ? cleanSeries(perOne, { invert: true }) : rawSeries),
+    [perOne, pair?.invert, flipped, rawSeries],
   );
   const primary = useMemo(() => sliceByPeriod(baseSeries, period), [baseSeries, period]);
   const secondSeries = useMemo(

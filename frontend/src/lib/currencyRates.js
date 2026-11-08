@@ -143,13 +143,26 @@ export function rateBasis(code) {
  * Курсы из списка показателей раздела: [{ code, current_value, current_date, is_active }].
  * Возвращает рёбра графа: 1 base = rate quote.
  */
+/**
+ * Сколько единиц валюты в одной точке ряда. У мелких валют Банк России даёт курс за 100, 1 000, 10 000
+ * единиц (иена, вона, сум), и ряд хранится так же: единица ряда «руб. за 10 000». Иначе — 1.
+ */
+export function quoteUnitsOf(unit) {
+  const match = /за\s*([\d\s\u00a0]+)/.exec(String(unit || ''));
+  if (!match) return 1;
+  const n = Number(match[1].replace(/[\s\u00a0]/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
 export function buildEdges(indicators) {
   const edges = [];
   for (const item of indicators || []) {
     const pair = parsePair(item?.code);
-    const rate = Number(item?.current_value);
+    const rate = Number(item?.current_value) / quoteUnitsOf(item?.unit);
     if (!pair || !Number.isFinite(rate) || rate <= 0 || item.is_active === false) continue;
-    edges.push({ from: pair.base, to: pair.quote, rate, date: item.current_date || null, code: item.code });
+    edges.push({
+      from: pair.base, to: pair.quote, rate, date: item.current_date || null, code: item.code, units: quoteUnitsOf(item?.unit),
+    });
   }
   return edges;
 }

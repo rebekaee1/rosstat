@@ -57,9 +57,9 @@ export function yearSeries(rows, { invert = false, days = 366 } = {}) {
 /** Какой ряд рисовать для пары конвертера: прямой, обратный (значения переворачиваются) или ближайший. */
 export function chartPairFor(edges, from, to) {
   const direct = edges.find((edge) => edge.from === from && edge.to === to);
-  if (direct) return { code: direct.code, base: from, quote: to, invert: false };
+  if (direct) return { code: direct.code, base: from, quote: to, invert: false, units: direct.units || 1 };
   const reverse = edges.find((edge) => edge.from === to && edge.to === from);
-  if (reverse) return { code: reverse.code, base: from, quote: to, invert: true };
+  if (reverse) return { code: reverse.code, base: from, quote: to, invert: true, units: reverse.units || 1 };
   const near = edges.find((edge) => edge.from === from || edge.to === from) || edges[0];
-  return near ? { code: near.code, base: near.from, quote: near.to, invert: false } : null;
+  return near ? { code: near.code, base: near.from, quote: near.to, invert: false, units: near.units || 1 } : null;
 }
