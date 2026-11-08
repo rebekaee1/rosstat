@@ -84,7 +84,17 @@ REELS = {
 }
 _MATCH_ORDER = ("diesel", "ai95", "ai92", "gold", "deposit", "mortgage", "keyrate", "usd", "eur", "inflation")
 # Порядок кнопок меню.
-MENU = (("diesel", "ai92"), ("inflation", "keyrate"), ("gold", "usd"), ("deposit", "mortgage"))
+# Тестер №9, 09.11: в меню не было евро и АИ-95, хотя бот о них отвечает.
+MENU = (("diesel", "ai92", "ai95"), ("inflation", "keyrate"), ("usd", "eur", "gold"), ("deposit", "mortgage"))
+_EN_TITLES = {"diesel": "Diesel", "ai92": "Petrol AI-92", "ai95": "Petrol AI-95", "inflation": "Inflation",
+              "keyrate": "Key rate", "deposit": "Deposit rates", "mortgage": "Mortgage rate", "gold": "Gold",
+              "usd": "US dollar", "eur": "Euro"}
+
+
+def is_english(text: str) -> bool:
+    """Вопрос на английском — кнопки и подпись к графику тоже английские (тестеры 4, 5, 9, 09.11)."""
+    lat = len(re.findall(r"[A-Za-z]", text))
+    return lat > 3 and lat > 2 * len(re.findall(r"[А-Яа-яЁё]", text))
 
 SOURCES = (("instagram", "Instagram"), ("telegram", "Telegram"), ("search", "Поиск"),
            ("friends", "Знакомые"), ("other", "Другое"))
@@ -1360,11 +1370,12 @@ def chart_url(topic: Topic) -> str:
     return f"{ru_public_origin()}/og/russia/{topic.indicator}.png"
 
 
-async def send_chart(chat_id: str, topic_key: str) -> bool:
+async def send_chart(chat_id: str, topic_key: str, en: bool = False) -> bool:
     from app.services.telegram_bot import _api
 
     topic = TOPICS[topic_key]
-    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">подробнее на сайте</a>"
+    more = "More on the website" if en else "Подробнее на сайте"
+    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">{more.lower()}</a>"
     async with async_session() as db:
         fig = await load_figure(db, topic)
     if fig is not None:
@@ -1372,10 +1383,17 @@ async def send_chart(chat_id: str, topic_key: str) -> bool:
                 f"{fmt_date(fig.last_date, fig.frequency)}"]
         if fig.year_ago_value is not None:
             bits.append(f"год назад {fmt_num(fig.year_ago_value)}")
-        if fig.forecast_value is not None:
-            bits.append(f"наш расчёт {fmt_num(fig.forecast_value)}")
-        caption = f"<b>{escape(topic.title)}</b>: " + escape(", ".join(bits)) + \
-            f"\n<a href=\"{site_url(topic, None)}\">Подробнее на сайте</a>"
+        if fig.forecast_value is not None and fig.forecast_date is not None:
+            # Тестеры 1 и 8, 09.11: «наш расчёт 6,26» без даты непонятен.
+            bits.append(f"наш прогноз на {fmt_date(fig.forecast_date, fig.frequency)}: {fmt_num(fig.forecast_value)}")
+        if en:
+            unit = "%" if "%" in topic.unit else ("RUB/litre" if "литр" in topic.unit else
+                                                   "RUB/gram" if "грам" in topic.unit else "RUB")
+            when = fig.last_date.strftime("%b %Y" if fig.frequency in ("monthly", "quarterly") else "%d %b %Y")
+            bits = [f"{fmt_num(fig.last_value)} {unit} ({when})"] + (
+                [f"a year ago {fmt_num(fig.year_ago_value)}"] if fig.year_ago_value is not None else [])
+        caption = f"<b>{escape(_EN_TITLES[topic_key] if en else topic.title)}</b>: " + escape(", ".join(bits)) + \
+            f"\n<a href=\"{site_url(topic, None)}\">{more}</a>"
     try:
         png = await render_topic_chart(topic_key)
     except Exception:  # noqa: BLE001 — график не должен ронять ответ
@@ -1435,11 +1453,14 @@ async def _lookup_question(qid: str) -> str | None:
         return None
 
 
-def answer_keyboard(topics: list[str], subs: list[str], questions: list[str] | None = None) -> dict:
+def answer_keyboard(topics: list[str], subs: list[str], questions: list[str] | None = None,
+                    en: bool = False) -> dict:
+    title = (lambda k: _EN_TITLES[k]) if en else (lambda k: TOPICS[k].title)
     rows = [[{"text": f"💬 {q}", "callback_data": f"{CB_PREFIX}q:{_question_id(q)}"}] for q in (questions or [])]
-    rows += [[{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in topics]] if topics else []
-    rows += [[{"text": f"🔔 Присылать: {TOPICS[k].title}", "callback_data": f"{CB_PREFIX}s:{k}"}] for k in subs]
-    rows.append([{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}])
+    rows += [[{"text": title(k), "callback_data": f"{CB_PREFIX}t:{k}"} for k in topics]] if topics else []
+    rows += [[{"text": f"🔔 {'Send updates' if en else 'Присылать'}: {title(k)}", "callback_data": f"{CB_PREFIX}s:{k}"}]
+             for k in subs]
+    rows.append([{"text": "All topics" if en else "Все темы", "callback_data": f"{CB_PREFIX}menu"}])
     return {"inline_keyboard": rows}
 
 
@@ -1563,9 +1584,10 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         }, token=bot_token(), timeout=6))
     _remember(chat_id, "user", text[:_MAX_QUESTION])
     _remember(chat_id, "assistant", clean)
+    en = is_english(text)
     for key in charts:
-        await send_chart(chat_id, key)
-    await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions))
+        await send_chart(chat_id, key, en=en)
+    await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions, en=en))
 
 
 # ---------------------------------------------------------------------------

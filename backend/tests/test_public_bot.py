@@ -733,3 +733,11 @@ def test_repeat_subscribe_and_stop(env):
     asyncio.run(pb.handle_message(_msg("/stop")))
     assert "уже нет" in sent[-1]["text"]
     assert "utm_content" not in pb.site_url(pb.TOPICS["usd"], "nonexistent")
+
+
+def test_english_keyboard_and_menu():
+    assert pb.is_english("What's inflation now?") and not pb.is_english("инфляция USD")
+    kb = pb.answer_keyboard(["usd"], ["usd"], en=True)["inline_keyboard"]
+    assert kb[0][0]["text"] == "US dollar" and kb[-1][0]["text"] == "All topics"
+    flat = [k for row in pb.MENU for k in row]
+    assert "eur" in flat and "ai95" in flat
