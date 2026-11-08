@@ -111,7 +111,8 @@ export default function IndicatorHeroValue({
           style={{ '--z4-hv-len': Math.max(4, String(shown.text || '').length) }}
         >
           <WorldCountUp value={last.value} format={fmt} className="z4-hv__num" />
-          {unitParts.short && !plainIndex ? <span className="z4-hv__unit">{unitParts.short}</span> : null}
+          {/* Место переноса: длинная единица («руб. за 10 000») уходит под число, а не обрезается. */}
+          {unitParts.short && !plainIndex ? <><wbr /><span className="z4-hv__unit">{unitParts.short}</span></> : null}
         </p>
         {spark.length > 1 ? (
           <div className="z4-hv__spark" aria-hidden="true">

@@ -6603,12 +6603,12 @@
     "anonymous_functions": 5
   },
   "frontend/src/components/IndicatorHeroValue.jsx": {
-    "sha256": "662315c45f61f9a566690bc17341321fd37df88e3ff5eab014fcf861a6c73400",
+    "sha256": "da78823b78e5aacd9df9a2c68487e3ecef6264dcc2638b4dc301e659000c079f",
     "definitions": [
       {
         "name": "IndicatorHeroValue",
         "line": 26,
-        "end_line": 127,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       },
       {
