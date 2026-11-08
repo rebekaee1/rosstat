@@ -4,22 +4,7 @@
   .fe-r3a .fe-r3a-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .fe-r3a-card { padding-bottom: 18px; }
-.fe-r3a-goods {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.fe-r3a-goods li {
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--fe-glass-strong, #fff) 70%, transparent);
-  box-shadow: 0 1px 6px rgba(20, 30, 60, 0.07);
-  font-size: 13px;
-  color: var(--text-secondary, #5b6477);
-}
+.fe-r3a-goods { margin: 14px 0 0; font-size: 14px; line-height: 1.5; color: var(--text-secondary, #5b6477); }
 .fe-r3a-rates {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -66,3 +51,27 @@
 }
 .fe-r3a-cta:focus-visible { outline: 2px solid var(--z3-gold-ink, #8a6a1f); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .fe-r3a-rate, .fe-r3a-rate--ghost { transition: none; animation: none; } }
+
+/* Строка «Цены в вашем регионе» в герое: стеклянная капсула, выбор региона и круглая кнопка. */
+.fe-r3a-quick { display: flex; align-items: center; gap: 10px; margin-top: 12px; max-width: 36rem; }
+.fe-r3a-quick__field {
+  display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; min-height: 56px; padding: 6px 16px;
+  border-radius: 999px; background: var(--fe-glass); box-shadow: var(--fe-card-shadow);
+  color: var(--z3-gold-ink, #8a6a1f);
+}
+.fe-r3a-quick__text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.fe-r3a-quick__cap { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary, #5b6477); }
+.fe-r3a-quick__select {
+  width: 100%; min-width: 0; padding: 0; border: 0; background: transparent; appearance: none; -webkit-appearance: none;
+  font: inherit; font-size: 17px; font-weight: 600; color: var(--color-text-primary, #12182b); text-overflow: ellipsis;
+}
+.fe-r3a-quick__select:focus-visible { outline: 2px solid var(--z3-gold-ink, #8a6a1f); outline-offset: 2px; }
+.fe-r3a-quick__go {
+  display: inline-flex; align-items: center; justify-content: center; flex: none; width: 56px; height: 56px; border-radius: 50%;
+  background: var(--fe-glass-primary, linear-gradient(135deg, #2C4A8A, #1E3A6E)); color: var(--fe-on-active, #F2F5FA); text-decoration: none;
+}
+.fe-r3a-quick__go:focus-visible { outline: 2px solid var(--z3-gold-ink, #8a6a1f); outline-offset: 3px; }
+.fe-r3a-quick__field { position: relative; }
+.fe-r3a-quick__chev { flex: none; color: var(--text-secondary, #5b6477); pointer-events: none; }
+.fe-r3a-quick__select { position: static; }
+.fe-r3a-quick__field:has(.fe-r3a-quick__select) .fe-r3a-quick__select::after { content: none; }

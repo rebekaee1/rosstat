@@ -3836,6 +3836,8 @@ export default {
   'r3a.prices.g.meds': 'Medicines',
   'r3a.rates.title': 'Bank of Russia exchange rates',
   'r3a.rates.lead': '{n} rates today. What you get for roubles:',
+  'r3a.rates.leadDate': '{n} rates as of {date}. What you get for roubles:',
+  'r3a.prices.more': 'and hundreds more goods and services',
   'r3a.rates.for': 'For 1,000 ₽',
   'r3a.rates.go': 'All rates and converter',
   'r3a.nav.prices': 'Regional prices',
@@ -3843,5 +3845,6 @@ export default {
   'r3a.nav.currencies.hint': 'Central bank rates: 50+ currencies',
   'r3a.quick.prices': 'Prices in my region',
   'r3a.dock.prices': 'Prices',
+  'r3a.quick.cap': 'Prices in your region',
   'r3a.quick.rates': 'All central bank rates',
 };

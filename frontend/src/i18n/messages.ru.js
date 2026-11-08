@@ -3841,6 +3841,8 @@ export default {
   'r3a.prices.g.meds': 'Лекарства',
   'r3a.rates.title': 'Курсы валют Банка России',
   'r3a.rates.lead': '{n} курсов на сегодня. Что получите за рубли:',
+  'r3a.rates.leadDate': '{n} курсов на {date}. Что получите за рубли:',
+  'r3a.prices.more': 'и ещё сотни товаров и услуг',
   'r3a.rates.for': 'За 1 000 ₽',
   'r3a.rates.go': 'Все курсы и конвертер',
   'r3a.nav.prices': 'Цены по регионам',
@@ -3848,5 +3850,6 @@ export default {
   'r3a.nav.currencies.hint': 'Курсы ЦБ: сум, сомони, тенге и ещё 50',
   'r3a.quick.prices': 'Цены в моём регионе',
   'r3a.dock.prices': 'Цены',
+  'r3a.quick.cap': 'Цены в вашем регионе',
   'r3a.quick.rates': 'Все курсы ЦБ',
 };

@@ -2,7 +2,7 @@
 // находит свой регион и курсы ЦБ за одно касание. Данные уже загружены главной (список показателей) или лёгкие (список регионов).
 import { useId, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Coins, ShoppingBasket } from 'lucide-react';
+import { ArrowRight, ChevronDown, Coins, ShoppingBasket } from 'lucide-react';
 import { useIndicators } from '../../lib/hooks';
 import { useRegionsLanding } from '../../lib/regionsApi';
 import { TRAVEL_UNITS, buildEdges, convert, formatConverted, unitWord } from '../../lib/currencyRates';
@@ -19,16 +19,14 @@ function readSaved() {
   try { return window.localStorage.getItem(STORE_KEY) || ''; } catch { return ''; }
 }
 
-function RegionPrices() {
-  const t = useT();
+function useRegionChoice() {
   const { locale } = useLocale();
-  const id = useId();
   const landing = useRegionsLanding();
   const regions = useMemo(() => {
     const collator = new Intl.Collator(locale === 'en' ? 'en' : 'ru');
     const list = (landing.data?.districts || []).flatMap((d) => d.regions || []);
     return list
-      .map((r) => ({ slug: r.slug, name: (locale === 'en' ? r.name_en : r.name_ru) || r.name }))
+      .map((r) => ({ slug: r.slug, name: String((locale === 'en' ? r.name_en : r.name_ru) || r.name).replace(/^г\.\s*/, '') }))
       .sort((a, b) => collator.compare(a.name, b.name));
   }, [landing.data, locale]);
   const [picked, setPicked] = useState(readSaved);
@@ -38,6 +36,44 @@ function RegionPrices() {
     setPicked(slug);
     try { window.localStorage.setItem(STORE_KEY, slug); } catch { /* память браузера необязательна */ }
   };
+  return { regions, value, total, onPick };
+}
+
+/** Компактная строка под быстрыми ссылками героя: регион и кнопка «к ценам» в один ряд, чтобы цены были в первом экране телефона. */
+export function HomeRegionQuick() {
+  const t = useT();
+  const id = useId();
+  const { regions, value, onPick } = useRegionChoice();
+  return (
+    <div className="fe-r3a-quick" data-block="home-region-quick">
+      <label className="fe-r3a-quick__field" htmlFor={`${id}-q`}>
+        <ShoppingBasket size={18} aria-hidden="true" />
+        <span className="fe-r3a-quick__text">
+          <span className="fe-r3a-quick__cap">{t('r3a.quick.cap')}</span>
+          <select id={`${id}-q`} className="fe-r3a-quick__select" value={value} onChange={(e) => onPick(e.target.value)} disabled={!regions.length} aria-label={t('r3a.prices.pick')}>
+            {regions.length ? regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>) : <option value="">…</option>}
+          </select>
+        </span>
+        <ChevronDown size={18} className="fe-r3a-quick__chev" aria-hidden="true" />
+      </label>
+      {value ? (
+        <Link
+          to={regionPath(value)}
+          onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'region-prices', surface: 'home-hero-quick' })}
+          className="fe-r3a-quick__go fe-press"
+          aria-label={t('r3a.prices.go')}
+        >
+          <ArrowRight size={18} aria-hidden="true" />
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
+function RegionPrices() {
+  const t = useT();
+  const id = useId();
+  const { regions, value, total, onPick } = useRegionChoice();
   return (
     <article className="fe-tool fe-reveal fe-r3a-card">
       <header className="fe-tool__head">
@@ -54,9 +90,7 @@ function RegionPrices() {
             {regions.length ? regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>) : <option value="">…</option>}
           </select>
         </label>
-        <ul className="fe-r3a-goods" aria-hidden="true">
-          {['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k) => <li key={k}>{t(`r3a.prices.g.${k}`)}</li>)}
-        </ul>
+        <p className="fe-r3a-goods">{['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k) => t(`r3a.prices.g.${k}`)).join(', ')} {t('r3a.prices.more')}</p>
       </div>
       {value ? (
         <Link
@@ -82,15 +116,19 @@ function RateTiles() {
     const res = edge ? convert(1000, 'RUB', unit, edges) : null;
     if (!edge || !res) return null;
     const rounded = Math.round(res.value);
-    return { unit, to: russiaIndicatorPath(edge.code), num: formatConverted(res.value, locale), word: unitWord(rounded, unit, locale) };
+    return { unit, date: edge.date, to: russiaIndicatorPath(edge.code), num: formatConverted(res.value, locale), word: unitWord(rounded, unit, locale) };
   }).filter(Boolean).slice(0, 6), [edges, locale]);
+  const dateRaw = tiles.find((x) => x.date)?.date;
+  const asOf = dateRaw
+    ? new Date(`${String(dateRaw).slice(0, 10)}T12:00:00`).toLocaleDateString(locale === 'en' ? 'en-US' : 'ru-RU', { day: 'numeric', month: 'long' })
+    : '';
   return (
     <article className="fe-tool fe-reveal fe-r3a-card">
       <header className="fe-tool__head">
         <span className="fe-tool__icon" aria-hidden="true"><Coins size={18} /></span>
         <div className="min-w-0">
           <h3 className="fe-tool__title">{t('r3a.rates.title')}</h3>
-          <p className="fe-tool__lead">{t('r3a.rates.lead', { n: edges.length || 54 })}</p>
+          <p className="fe-tool__lead">{t(asOf ? 'r3a.rates.leadDate' : 'r3a.rates.lead', { n: edges.length || 54, date: asOf })}</p>
         </div>
       </header>
       <div className="fe-tool__body">
