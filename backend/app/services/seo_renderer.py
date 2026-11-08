@@ -2024,6 +2024,7 @@ _NF_GUESS_RULES: tuple[tuple[tuple[str, ...], str], ...] = (
     (("russia", "rossiya", "rus"), "russia"),
     (("about", "contact", "contacts"), "about"),
     (("method", "methodology", "forecast", "prognoz"), "methodology"),
+    (("research", "report", "otchet", "issledovan", "pdf"), "research"),
 )
 
 
@@ -2047,6 +2048,7 @@ def _not_found_guesses(path: str | None, en: bool) -> list[tuple[str, str]]:
         "russia": (paths.russia_home(), "Russia", "Россия"),
         "about": ("/about", "About the project", "О проекте"),
         "methodology": ("/methodology", "Forecast methodology", "Методология прогнозов"),
+        "research": ("/research", "Research reports", "Исследования"),
     }
     def _hit(keys: tuple[str, ...]) -> bool:
         # Короткие слова (us, vs) — только целиком; длинные — по началу («rankings» → «rank»).
@@ -2362,6 +2364,7 @@ def _page_trail(page_slug: str, page: PageSeo) -> list[tuple[str, str]]:
         "widgets",
         "about",
         "methodology",
+        "research",
         "privacy",
         "terms",
     }:

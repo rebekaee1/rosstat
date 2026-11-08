@@ -184,6 +184,13 @@ export const fetchCalendarUpcoming = (params = {}, { signal } = {}) => {
   return api.get(`/calendar/upcoming${q ? `?${q}` : ''}`, { signal }).then((r) => r.data);
 };
 
+/** Раздел «Исследования»: каталог PDF-отчётов и счётчики скачиваний (backend/app/api/research.py). */
+export const fetchResearch = ({ signal } = {}) =>
+  api.get('/research', { signal }).then((r) => r.data);
+
+/** Ссылка на скачивание отчёта: сервер считает скачивание и отдаёт 302 на статический PDF. */
+export const researchDownloadHref = (slug) => `/api/v1/research/${encodeURIComponent(slug)}/download`;
+
 export const fetchCoverage = ({ signal } = {}) =>
   api.get('/dashboard/coverage', { signal }).then((r) => r.data);
 

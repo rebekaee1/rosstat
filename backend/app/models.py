@@ -1876,3 +1876,19 @@ class PublicBotSubscription(Base):
     last_point_date: Mapped[date | None] = mapped_column(Date)
     last_value: Mapped[float | None] = mapped_column(Numeric(14, 4))
     last_sent_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class ResearchDownload(Base):
+    """Скачивания PDF-отчётов раздела «Исследования» (09.11.2026): счётчик по отчёту и дню.
+
+    Без ПДн: ни IP, ни номера посетителя не хранятся. Повторное скачивание одним адресом в течение суток не
+    увеличивает счётчик (метка в Redis с хэшем адреса и сроком 24 ч). Каталог отчётов — `app/data/research_catalog.json`.
+    """
+    __tablename__ = "research_downloads"
+    __table_args__ = (UniqueConstraint("slug", "date", name="uq_research_downloads_slug_date"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+

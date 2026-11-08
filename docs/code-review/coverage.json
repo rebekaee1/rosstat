@@ -19,19 +19,19 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2249,
-    "code_files": 1839,
-    "current_reviews": 2245,
+    "files": 2299,
+    "code_files": 1845,
+    "current_reviews": 2299,
     "statuses": {
       "artifact_schema_reviewed": 85,
-      "asset_metadata_reviewed": 120,
+      "asset_metadata_reviewed": 162,
       "body_reviewed": 4,
       "data_schema_reviewed": 6,
-      "reviewed": 2034
+      "reviewed": 2042
     },
-    "definitions": 15038,
-    "annotated_definitions": 14986,
-    "files_needing_attention": 4
+    "definitions": 15068,
+    "annotated_definitions": 15068,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -284,9 +284,9 @@
     },
     {
       "path": "CONTEXT.md",
-      "sha256": "89cc5031c016f180ee4ac42d0d0a02641811d0d348255112d6ab7483c555ba73",
-      "bytes": 246384,
-      "lines": 1315,
+      "sha256": "f346725e1b755fa41ca101b5603bbf2e9e8e59cace9146db5842daa4fffe0896",
+      "bytes": 246843,
+      "lines": 1316,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -972,6 +972,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/alembic/versions/20261109_research_downloads.py",
+      "sha256": "c5ef5230b2e3843967ce39acd3bc097f28d829545bc11b8990e45bfd79df0871",
+      "bytes": 1013,
+      "lines": 29,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/alembic/versions/8524e35ba1ee_init_schema.py",
       "sha256": "a62f187e83558a320ee3edea0a81fc61ee252df0fb1b55651bfe75500d53b7ca",
       "bytes": 4626,
@@ -1258,10 +1271,23 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/api/research.py",
+      "sha256": "61b9a1e3663ae89178d112d8a90a20482d8b403bbb4763fafc49c8de19fc690c",
+      "bytes": 5217,
+      "lines": 117,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 8,
+      "annotated_definitions": 8,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/api/router.py",
-      "sha256": "606f352ef7e9354f98e95ea08076c6a43f81fb07352da8a0f491015a02d6be6e",
-      "bytes": 2684,
-      "lines": 55,
+      "sha256": "1654bfe4303e637665e6c31688fc6753c78ceaff43b55cdcd3a95f31d694d72d",
+      "bytes": 2782,
+      "lines": 57,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1285,9 +1311,9 @@
     },
     {
       "path": "backend/app/api/seo_pages.py",
-      "sha256": "27fed245ed79fb108d47f07f42086f0590e1c1c07f05015c0fd26cf66586ab77",
-      "bytes": 56128,
-      "lines": 1103,
+      "sha256": "44ec8b2077e64fe11fa31d41b9cf70bfe7bf62d79f98ac2b6fe3661142a84f31",
+      "bytes": 56327,
+      "lines": 1107,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1662,9 +1688,9 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "2324e1752d459a0a9ab9edf2c739bdd50ab9203e415142d849ca952b2864a8fa",
-      "bytes": 46822,
-      "lines": 603,
+      "sha256": "5136dd89e87f9585a950cc3c771a78f2c9af38f7d9d04dcc8be32f3d2122f110",
+      "bytes": 47196,
+      "lines": 606,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2026,9 +2052,9 @@
     },
     {
       "path": "backend/app/data/i18n/seo_en.py",
-      "sha256": "70bf72dbb19a087fcb3ef36ae07ff78961bdb38c4afa7874e9030f74097b96b3",
-      "bytes": 72683,
-      "lines": 1614,
+      "sha256": "2ca9d7bf7979c4551f9db14718c1cb7bef2802c9bfcdf520c60f32e8a52066cc",
+      "bytes": 73652,
+      "lines": 1631,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2172,6 +2198,19 @@
       "sha256": "5f1fc760ba99252ef28a90784bd38e6942f7587d7734a181f229f262d2958a4b",
       "bytes": 12774,
       "lines": 578,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/data/research_catalog.json",
+      "sha256": "039019b18a09b832cbe6290440c6c1ce8a92edf4d76ccd58c7700eacd240cc48",
+      "bytes": 56382,
+      "lines": 976,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -2585,15 +2624,15 @@
     },
     {
       "path": "backend/app/models.py",
-      "sha256": "6e0f0f85fe7e10dac503ed8c28cf6d975b71728f014a45a6b45109d6085beb3d",
-      "bytes": 106788,
-      "lines": 1878,
+      "sha256": "a17051370779e317bf860b551ccd719a11722380488b418337baf0ee3ea37a55",
+      "bytes": 107747,
+      "lines": 1894,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 74,
-      "annotated_definitions": 74,
+      "definitions": 75,
+      "annotated_definitions": 75,
       "missing_definitions": []
     },
     {
@@ -3846,9 +3885,9 @@
     },
     {
       "path": "backend/app/services/goal_taxonomy.py",
-      "sha256": "33436d32cf67869debc31ad23a8a2d64128dd3ca4ddb9f196d204ece994e45f1",
-      "bytes": 15727,
-      "lines": 342,
+      "sha256": "2b170b02afd5d00b93267f27f41c3034c1898a19035438019a4e3f380b278135",
+      "bytes": 15831,
+      "lines": 343,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4327,321 +4366,16 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "58adb9bfeb6730ecee910ea0f26a6c80c83c9c4b2877b7c8bf066387c85d476b",
-      "bytes": 90213,
-      "lines": 1591,
+      "sha256": "20566598e08b897f1579363d6e7d80a7b70bd9cf41e92a4c1327e0a1ab5bc8aa",
+      "bytes": 92193,
+      "lines": 1618,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
-      "definitions": 70,
-      "annotated_definitions": 20,
-      "missing_definitions": [
-        {
-          "name": "_now",
-          "line": 439,
-          "end_line": 440,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_touch_chat",
-          "line": 443,
-          "end_line": 455,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_event",
-          "line": 458,
-          "end_line": 460,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_is_subscribed",
-          "line": 463,
-          "end_line": 466,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_send",
-          "line": 473,
-          "end_line": 478,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "bot_token",
-          "line": 481,
-          "end_line": 483,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_reply_figure",
-          "line": 486,
-          "end_line": 506,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_message",
-          "line": 509,
-          "end_line": 616,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_callback",
-          "line": 619,
-          "end_line": 698,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_toggle_card_keyboard",
-          "line": 701,
-          "end_line": 716,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_member_update",
-          "line": 719,
-          "end_line": 731,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "subscribe",
-          "line": 734,
-          "end_line": 749,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "unsubscribe",
-          "line": 752,
-          "end_line": 758,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "mark_blocked",
-          "line": 761,
-          "end_line": 767,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "forget_chat",
-          "line": 770,
-          "end_line": 780,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_send_week_digest",
-          "line": 787,
-          "end_line": 814,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_in_window",
-          "line": 817,
-          "end_line": 818,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_should_notify",
-          "line": 821,
-          "end_line": 828,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "public_bot_notify_job",
-          "line": 831,
-          "end_line": 889,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "report_text",
-          "line": 896,
-          "end_line": 964,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "report_text._line",
-          "line": 945,
-          "end_line": 948,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_figure_by_code",
-          "line": 1008,
-          "end_line": 1012,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "build_llm_context",
-          "line": 1015,
-          "end_line": 1047,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_context_line",
-          "line": 1050,
-          "end_line": 1061,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_llm_complete",
-          "line": 1064,
-          "end_line": 1071,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_llm_call",
-          "line": 1074,
-          "end_line": 1106,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_history",
-          "line": 1115,
-          "end_line": 1119,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_remember",
-          "line": 1122,
-          "end_line": 1125,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "forget_history",
-          "line": 1128,
-          "end_line": 1129,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "telegram_html",
-          "line": 1144,
-          "end_line": 1157,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "telegram_html._back",
-          "line": 1150,
-          "end_line": 1154,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "split_actions",
-          "line": 1160,
-          "end_line": 1196,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_series",
-          "line": 1207,
-          "end_line": 1225,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "render_topic_chart",
-          "line": 1231,
-          "end_line": 1239,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_render_topic_chart",
-          "line": 1242,
-          "end_line": 1274,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "chart_url",
-          "line": 1277,
-          "end_line": 1279,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "send_chart",
-          "line": 1282,
-          "end_line": 1309,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_question_id",
-          "line": 1316,
-          "end_line": 1325,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_flush_questions",
-          "line": 1331,
-          "end_line": 1342,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_lookup_question",
-          "line": 1345,
-          "end_line": 1354,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "answer_keyboard",
-          "line": 1357,
-          "end_line": 1362,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "trim_to_paragraph",
-          "line": 1365,
-          "end_line": 1372,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "answer_question",
-          "line": 1375,
-          "end_line": 1437,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_inline_query",
-          "line": 1452,
-          "end_line": 1485,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "handle_update",
-          "line": 1488,
-          "end_line": 1497,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "public_bot_poll_job",
-          "line": 1500,
-          "end_line": 1512,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_poll_once",
-          "line": 1515,
-          "end_line": 1547,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_with_typing",
-          "line": 1551,
-          "end_line": 1564,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_update_chat_id",
-          "line": 1572,
-          "end_line": 1580,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_handle_in_order",
-          "line": 1583,
-          "end_line": 1591,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "current": true,
+      "issues": [],
+      "definitions": 72,
+      "annotated_definitions": 72,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -5035,9 +4769,9 @@
     },
     {
       "path": "backend/app/services/seo_content.py",
-      "sha256": "4467af9fdf84968277c777ff8fd22fc973aca1cec76d322933b923a315251c39",
-      "bytes": 45493,
-      "lines": 652,
+      "sha256": "8cd595bf5894d5ed6db4990d65fc0a819c3eee7ad88bdb07ef2f8e5f9f8f7322",
+      "bytes": 46940,
+      "lines": 670,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5191,15 +4925,28 @@
     },
     {
       "path": "backend/app/services/seo_renderer.py",
-      "sha256": "78c9d428f6e0c3f554a909c17110022bcb69f258db18f788097e707e6db86864",
-      "bytes": 222014,
-      "lines": 4274,
+      "sha256": "b80d83fea33c70df1296a057a31545ae8bdac3cfdcc366a369e497ffaf110713",
+      "bytes": 222190,
+      "lines": 4277,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
       "definitions": 99,
       "annotated_definitions": 99,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/services/seo_research.py",
+      "sha256": "f4bc66b5aa8b5f734d2e96422d9b07593521710c2df341aef754109742cc2472",
+      "bytes": 3712,
+      "lines": 70,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
       "missing_definitions": []
     },
     {
@@ -5386,9 +5133,9 @@
     },
     {
       "path": "backend/app/services/site_paths.py",
-      "sha256": "33895c8ae0264bfa72481c512cb0ea3a046ee70e662743a843abd3de8bce4b84",
-      "bytes": 11821,
-      "lines": 369,
+      "sha256": "91619e9327eaab7a1e841ddfbfd4793c00e7483ff3ec7b210e0dbf9da147a3a0",
+      "bytes": 11837,
+      "lines": 370,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5399,9 +5146,9 @@
     },
     {
       "path": "backend/app/services/site_urls.py",
-      "sha256": "0f9228cd7871684ebfb63eec61fd2021b3bd07e4e8328ec1a19d947147dadd0e",
-      "bytes": 97764,
-      "lines": 2252,
+      "sha256": "d59d00c02b0a7bf6864eb5b8902606a8b7eb569be0e59f2402ecc4a4fafeb69e",
+      "bytes": 97781,
+      "lines": 2253,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5542,9 +5289,9 @@
     },
     {
       "path": "backend/app/services/telegram_reports.py",
-      "sha256": "6da804a855e9dd44cdcfd16348f5c62e45d2534fe1abebd304bcb6f78096c932",
-      "bytes": 48645,
-      "lines": 921,
+      "sha256": "f4db4e52db8b4af3fffa84c1d0a554aaf41ad4de66d97a88e7e49df70630c48e",
+      "bytes": 48697,
+      "lines": 922,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6907,15 +6654,13 @@
     },
     {
       "path": "backend/scripts/public-bot-setup.py",
-      "sha256": "7ab38a249efcc560e882c6b65791668d6ad2cff5265ef28a15f844c6d7c53f88",
-      "bytes": 4656,
-      "lines": 85,
+      "sha256": "0b7c05c38c6094bed26d791c2fc7e74fa1d37d681839acbd27ef69d0a48cd5fb",
+      "bytes": 4777,
+      "lines": 86,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 4,
       "annotated_definitions": 4,
       "missing_definitions": []
@@ -9795,33 +9540,16 @@
     },
     {
       "path": "backend/tests/test_public_bot.py",
-      "sha256": "912507e85324b5a6e170da499f3dd06293e4024252e1e9f837e4947bf281c7dc",
-      "bytes": 36999,
-      "lines": 695,
+      "sha256": "8cc4c0440c9e02a1789a3a01ed8fd967e80b7bb51dcf90a0f88bf6d150d6a81a",
+      "bytes": 37856,
+      "lines": 709,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
-      "definitions": 70,
-      "annotated_definitions": 68,
-      "missing_definitions": [
-        {
-          "name": "test_tell_me_what_to_send_and_self_improvement_ideas",
-          "line": 680,
-          "end_line": 695,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_tell_me_what_to_send_and_self_improvement_ideas.llm",
-          "line": 685,
-          "end_line": 687,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "current": true,
+      "issues": [],
+      "definitions": 71,
+      "annotated_definitions": 71,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_public_year_contract.py",
@@ -10029,6 +9757,19 @@
       "issues": [],
       "definitions": 28,
       "annotated_definitions": 28,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_research.py",
+      "sha256": "9eddb5b7c5d456aaf70dafed29fff211371c844f6764b982711321655babaf21",
+      "bytes": 2740,
+      "lines": 65,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 7,
+      "annotated_definitions": 7,
       "missing_definitions": []
     },
     {
@@ -12217,9 +11958,9 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "0095babae226d1516a39d5303d7b4a4bd0302b9811d8313561d2f05296c3ab5f",
-      "bytes": 24241,
-      "lines": 174,
+      "sha256": "39ca725de15cdac63d486e048d66956e565214e3a50a161b8546cc2e43f5c600",
+      "bytes": 24478,
+      "lines": 175,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12815,16 +12556,26 @@
     },
     {
       "path": "docs/adr/0027-public-telegram-bot.md",
-      "sha256": "3579a697ff737c83ff080da7a62046e08dcdd2585aea9fddebf89e08b6d4e705",
-      "bytes": 33425,
-      "lines": 191,
+      "sha256": "322d3785987a1c16243aa46b4cb7ab3bd7b9eb7fe53ff214cd171fb9d725603c",
+      "bytes": 34323,
+      "lines": 195,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "docs/adr/0028-research-reports-section.md",
+      "sha256": "8df60a853cb8bea205922368a10c35784933932fe32b61bda8ab66441448baaf",
+      "bytes": 6280,
+      "lines": 26,
+      "code": false,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -13117,9 +12868,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "ac9420f4fc6f00a5033f9307ea70ad95c0840b44f5f1b31e9845fa4c4f3dcc04",
-      "bytes": 6847773,
-      "lines": 240906,
+      "sha256": "e859f827b4db7cfeee2e9fbb414ebaef32d0bf244682da45f26abecba2473523",
+      "bytes": 6857099,
+      "lines": 241268,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13130,9 +12881,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "b9b4f20c9d122cedce33024518d73e193c6c9b3fc72d5778e203d8a2f050e938",
-      "bytes": 13325,
-      "lines": 136,
+      "sha256": "8dfc48b82a13420830bb4bb59e24787171bdbcfa9010cc555d9efa7efb5527f4",
+      "bytes": 13421,
+      "lines": 137,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13156,9 +12907,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "48aec86465b2eb894a74df089d764568a877471240d3e734e30540216de05813",
-      "bytes": 308967,
-      "lines": 1039,
+      "sha256": "1aa53ca1832ed48fc88a4e00a9305f0d4da9fa14bab8b4455c491bce3e9ee567",
+      "bytes": 310549,
+      "lines": 1050,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13182,7 +12933,7 @@
     },
     {
       "path": "docs/dead-code-report.md",
-      "sha256": "012fd32c73aa445895ba312795e7c33e661adfc4fa937159b16cd5938996ab9d",
+      "sha256": "575656b39772c14d0d8db05c3283c313f9c56787e6e9be7c3d191d5c46c6db44",
       "bytes": 12346,
       "lines": 82,
       "code": false,
@@ -13689,9 +13440,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "3ad5e2896e1c73432bbcfbd372640322d4ecc1e41175ff66ad1eeb9fe90c59d3",
-      "bytes": 3008410,
-      "lines": 108941,
+      "sha256": "df1a7015c170085b4ae519607ecb46d34d247daba12d66e58a4e1df72beeaa44",
+      "bytes": 3008684,
+      "lines": 108951,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13702,7 +13453,7 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "d7f92939f29ef4265761a483bf37e947d63b61b186e4d651999f9c6ef9b9d6db",
+      "sha256": "3a15204e2ea9fa63ac1a50c17a4f2e8f479b58fcb42dbe7ada730dac6a3689e2",
       "bytes": 107654,
       "lines": 1138,
       "code": false,
@@ -13741,9 +13492,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "3ebdf806dbecdb9d47ace1a80ecae677eb495765b3a3b11f5e3447d875ffe2bb",
-      "bytes": 11235554,
-      "lines": 339699,
+      "sha256": "49f1cf94160aabadc3a0a130b98f33e42c1de902317653c248f2d65715ca302c",
+      "bytes": 11266132,
+      "lines": 340710,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13754,9 +13505,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "558610edbaa0ddea5a1bef127d9aa637d48139bbe27cc41001e4b6fa9f059358",
-      "bytes": 559511,
-      "lines": 3210,
+      "sha256": "1cfec8151f8817e8c549f6dc5acc2afaa2cad7e2508b884a0594b0ccc0a26056",
+      "bytes": 561039,
+      "lines": 3227,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -14612,9 +14363,9 @@
     },
     {
       "path": "frontend/nginx.conf",
-      "sha256": "eb76a499531517a1fb357f0439f63c65e5db16c44f1294c87aa4a578234f9ec7",
-      "bytes": 82213,
-      "lines": 1514,
+      "sha256": "1b131411070ec8f45c7845921591909d875946c8d8098979984f058a71307fa1",
+      "bytes": 82667,
+      "lines": 1521,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -16002,6 +15753,552 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/public/research/covers/forecasteconomy-research-01.webp",
+      "sha256": "32963b7af29a87bde8d5798aff80d83ab5ab00a96b38c4d555ff68117ecc555f",
+      "bytes": 14624,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-02.webp",
+      "sha256": "f04f4d80a2d352d1650b955747225515c1bd1d2d645f3794ad3ca666eea06c58",
+      "bytes": 18204,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-03.webp",
+      "sha256": "33d2e739ae523d9388de0ab9fcf1322d02faead87eec7f4e22cd023fdd90bf4e",
+      "bytes": 19284,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-04.webp",
+      "sha256": "a14d7297a133e1336d7b2e4d62949e85194e1c33a2de5dba08cc33ae7a55fc7a",
+      "bytes": 17288,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-05.webp",
+      "sha256": "a424bc0b27a87b47a1de79a2201ea1716dc5f394ccbef3474540f536e6b4fe77",
+      "bytes": 16778,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-06.webp",
+      "sha256": "31b23bc46551cc954980052d44da1ce6e540fab448f9d1ef62313756740e0967",
+      "bytes": 15458,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-07.webp",
+      "sha256": "6305fe777b8ff90a2639f9c11f674d21caaff958be0826ad8bcef8c20b738e91",
+      "bytes": 17708,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-08.webp",
+      "sha256": "ec1ad93af5c62ca5d0619ee7a5f37b126f6682fb02003d1b3c003382bae9f6e6",
+      "bytes": 16608,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-09.webp",
+      "sha256": "0c55b6656b3d64e8996be8aa20e3e3fd118da4ec6155fb005ffa07e1e78ec5fb",
+      "bytes": 16242,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-10.webp",
+      "sha256": "fd1301a0e9838cb6ec1817ee671e57157246ec76945d9074277eaa83aed8d572",
+      "bytes": 14920,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-11.webp",
+      "sha256": "f749b34a9a51c547129a81830dec97c22ca7825bb58b580d725da1726671ce5f",
+      "bytes": 17202,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-12.webp",
+      "sha256": "5e83370c5ecf720e5c2aff436754648c56c5a64af9da009ef22cddc2e680b57c",
+      "bytes": 16752,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-13.webp",
+      "sha256": "dd52222488fb5f11bdba6cb8ad81e4fa49e05093c5d1ab5f943eb2887e5b1475",
+      "bytes": 15246,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-14.webp",
+      "sha256": "68599111b4cc7ad0b3f7daebeb9f1e6605edbb6fa9dada101e11c2cf27ffec14",
+      "bytes": 17052,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-15.webp",
+      "sha256": "0e070a8c1595f255ab289b857c24dac3cc97418d62afc6d1abe87774f583ca8c",
+      "bytes": 16774,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-16.webp",
+      "sha256": "e90f03ea2ddff90f6365d152f5fbaecc65ee3d08728ee3b84469ed0032e02809",
+      "bytes": 17734,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-17.webp",
+      "sha256": "3edad9448db327963714c156531f1bb1aefbc148bf43f345506c0742f231a902",
+      "bytes": 13678,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-18.webp",
+      "sha256": "547e4f067a0096c65b232e6078089000f290dcdd18b1c11f80e255488db8246e",
+      "bytes": 13806,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-19.webp",
+      "sha256": "548677824ec94d2bb31809492555745c2138dc91a445d55954a7523b7196f222",
+      "bytes": 19368,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-20.webp",
+      "sha256": "61efd0df549e685c680939c75d047ea4c82ec458c0b828017100c8893b6fdc86",
+      "bytes": 15528,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/covers/forecasteconomy-research-21.webp",
+      "sha256": "ea8f258e54fad617cb812cb9a5dafbacb7f2ce4f3101cac577e14c78758f5366",
+      "bytes": 15966,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf",
+      "sha256": "89229890efbae767ab1dd70d8bc5f47eab70f2c8f2eac01a1949bbb6e4f47ad1",
+      "bytes": 1873918,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf",
+      "sha256": "1412fa7c2fdcda8ad34eb3a1d607e14ffa747f4971761538b09ae17f646116f6",
+      "bytes": 1929829,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf",
+      "sha256": "678d356e69bbc1eba94dc5e833762a441fd325b22371d20cfa5853b851bfc912",
+      "bytes": 1947572,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-04-card-payment-fee.pdf",
+      "sha256": "e43f02160855ec845cd5b0febcddc3acdd423082fb3e8155cff62ee9c695eaa3",
+      "bytes": 1846119,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-05-gasoline-vs-oil.pdf",
+      "sha256": "b017d4cca969d0e37767ec165210c629a7cfcc33181900337aea529cbe04ba2c",
+      "bytes": 1997592,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-06-cash-under-mattress.pdf",
+      "sha256": "3320a8f3a50fd7b40f9ae51afac730112825fc4e3d1703da606b21f208269a2b",
+      "bytes": 1985373,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-07-key-rate.pdf",
+      "sha256": "cd3ad83304d545bdb00949b84d6a57fd3d0fa6f4e1343cbc2dc2672e3f2d0ce6",
+      "bytes": 1938926,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-08-dollar-2014.pdf",
+      "sha256": "f8ac0c581b1971f9938ec9ec3fba57e1812fe11da02370220ebc71dfcbd3d32a",
+      "bytes": 1952837,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-09-investment-race.pdf",
+      "sha256": "98efd8f35607f4279b52c416ed64c4f9530d81cb89b6b16067f582711594d9b7",
+      "bytes": 1951228,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-10-cash-boom.pdf",
+      "sha256": "f00b6fec6eb8a6b956894cf924966a0964ddf986435d0e30f826ad7fffd0b1fb",
+      "bytes": 1875178,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-11-low-unemployment.pdf",
+      "sha256": "eaf97beeadffa7ea020894770d18e465ec7c9b38fb4196ba83dddc5a58925e4b",
+      "bytes": 1943852,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-12-real-wages.pdf",
+      "sha256": "93956a2eccebeef37fa1d49e1bee59b0745c4671b488fc22658040d4858c7200",
+      "bytes": 1898944,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-13-demographic-echo.pdf",
+      "sha256": "085002b07487305262af9c7d6ea15afdb88b6b1800a51d6c95bf2764d42afb52",
+      "bytes": 1891682,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-14-oil-and-ruble.pdf",
+      "sha256": "502623cedf52e76afb9b03733948f1bbc4b5b757167a4eac828a2c1932e0059d",
+      "bytes": 2026529,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-15-inflation-europe.pdf",
+      "sha256": "968a9cc838180f4d539b04c4b6a3d895d2865d0eac443e3c2bb61bf69fce4ebe",
+      "bytes": 1928730,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-16-average-person-debt.pdf",
+      "sha256": "0e18674b9f97d4432e79866ac60fb63760479ff42b7a319ae3ed6701a8c86b62",
+      "bytes": 1897011,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-17-money-creation.pdf",
+      "sha256": "92d19d8e5c6fdf9fb84d4dc7a12aa7fa7f3727767c77468ac8765a3323bd5368",
+      "bytes": 1888360,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-18-funeral-5000.pdf",
+      "sha256": "2994dc10dab08db40de5c88f166d8b7803c88a31d2847e8ec398b0e29f586d53",
+      "bytes": 1889416,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-19-fat-tails.pdf",
+      "sha256": "f3ce7df3c0153f3c70ec803689f1af8e17f051aad32b3aea1de1b2f6542aebf6",
+      "bytes": 1970593,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-20-fooled-by-randomness.pdf",
+      "sha256": "b5f1414f90bc56a32e394fcfc7f5ea2f3fcfdd25765df9929d50b00a7ca7732c",
+      "bytes": 1901799,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf",
+      "sha256": "a230c5727e9386a0c28b5789dd428de6a534e658524a98be491281470c477dfe",
+      "bytes": 2072478,
+      "lines": null,
+      "code": false,
+      "status": "asset_metadata_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/public/robots.txt",
       "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
       "bytes": 4052,
@@ -16133,9 +16430,9 @@
     },
     {
       "path": "frontend/src/App.jsx",
-      "sha256": "1516028ca4530bc5f7e6316509bbdec82e0f1aac66ad9bf0d37c8de4fa08c6b3",
-      "bytes": 19776,
-      "lines": 388,
+      "sha256": "fa483868a8044e6b0f9e1306bd623e79874f5540eeb09e4a5cd9731a99ae930c",
+      "bytes": 19907,
+      "lines": 390,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -17238,9 +17535,9 @@
     },
     {
       "path": "frontend/src/components/Footer.jsx",
-      "sha256": "8e1b9577f331e17cd0492e32c124d313af0492b48c2b4ce30ba28320cb81839d",
-      "bytes": 13956,
-      "lines": 359,
+      "sha256": "bb2d9556aa0ac211d1fbd9ce7c616686e4912947a84894750e4046058357171d",
+      "bytes": 14109,
+      "lines": 364,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -18005,9 +18302,9 @@
     },
     {
       "path": "frontend/src/components/Navbar.jsx",
-      "sha256": "1b8fb59c67796e2cc6f25e82256fa0f8045af835de6b44631968d4be479da763",
-      "bytes": 30282,
-      "lines": 615,
+      "sha256": "09f090ec99f209c8f01d417aa35bb357da3ffb125667a0ac5ee50abd13cbf939",
+      "bytes": 30709,
+      "lines": 622,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20306,9 +20603,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "dc837b43151bdb9d53a76fd702609157f64869c976603e8ba821fc57d0ad123d",
-      "bytes": 210008,
-      "lines": 3727,
+      "sha256": "516610b470e1277d20451624b02ec596ed7eeec6d774405f77e6c0845c1b31f6",
+      "bytes": 211184,
+      "lines": 3745,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20345,9 +20642,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "1062c2dd4a0f10c57cfbf4d713df70b2cba01edae045a5169db410d794309b66",
-      "bytes": 298904,
-      "lines": 3732,
+      "sha256": "c434df62b3824326307b10905d23e70108403901a71311d51532abbe3253097f",
+      "bytes": 300692,
+      "lines": 3750,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20462,15 +20759,15 @@
     },
     {
       "path": "frontend/src/lib/api.js",
-      "sha256": "897816a2ddb862f94278e1f12c7cb214756a9ebd35180d7536a5f4b29fcf6fea",
-      "bytes": 17203,
-      "lines": 351,
+      "sha256": "16f10d146597a2fcfd972a174f2918e81c4a7a6d9018d4058cec3953d51a8287",
+      "bytes": 17732,
+      "lines": 358,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 41,
-      "annotated_definitions": 41,
+      "definitions": 43,
+      "annotated_definitions": 43,
       "missing_definitions": []
     },
     {
@@ -23140,9 +23437,9 @@
     },
     {
       "path": "frontend/src/lib/pageMeta.generated.json",
-      "sha256": "8c615bde2e66cf4bde4c43e60e1948767c691b729c192b851bd0ee7cd47c7b69",
-      "bytes": 36836,
-      "lines": 513,
+      "sha256": "754f78384ce686a9136e75d5c19f07e8f2bec52bb8a615fedeeb08600afa4dc5",
+      "bytes": 38568,
+      "lines": 529,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -24557,9 +24854,9 @@
     },
     {
       "path": "frontend/src/lib/track.js",
-      "sha256": "4590e07b89bcf42318b8b3d743e7719c88bbc0ae237c1b31b66ea8103cd61ade",
-      "bytes": 15934,
-      "lines": 345,
+      "sha256": "7fbaa100e8ffd5c4349356530a8e3efaf2c3c9542251797321ad57a1021220d9",
+      "bytes": 15976,
+      "lines": 346,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26519,6 +26816,19 @@
       "missing_definitions": []
     },
     {
+      "path": "frontend/src/pages/ResearchPage.jsx",
+      "sha256": "9e5b47c387566cb71309c31f132283c98b5ca1e7834333a741d041b1e1321fcc",
+      "bytes": 5610,
+      "lines": 121,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 5,
+      "annotated_definitions": 5,
+      "missing_definitions": []
+    },
+    {
       "path": "frontend/src/pages/RussiaHome.c11f.component.test.jsx",
       "sha256": "ef1758207c7f394b0fcf75a0d23fcb6e399bdb1ed13a3d1630754c00f506f139",
       "bytes": 3009,
@@ -27446,6 +27756,19 @@
       "sha256": "d1a40728ec292c5c9c226820d4f53f28982394c62fbd59985dc90e9bcabbe4ad",
       "bytes": 30920,
       "lines": 423,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/research.css",
+      "sha256": "d763864bc7e7212324740f0e4cc6bb8abba340ca1f52cd9140e1d0ccf4ac7d65",
+      "bytes": 3756,
+      "lines": 51,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -29601,17 +29924,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "a6d596fbd8eb41966b504fbd0dab5cee9cf999756293ef4a1b839cfac44745fb",
-  "javascript_inventory_sha256": "d796d2d357a9f3f25555e57966f5be7ce2cbb1ddeb87fec6ce38f47be19bcd06",
-  "baseline_commit": "3bedb51261a323ebb7901e0ff051b372670c729e",
-  "branch": "fix/public-bot-ux",
-  "unstaged_at_capture": [
-    "backend/app/services/public_bot.py",
-    "backend/scripts/public-bot-setup.py",
-    "backend/tests/test_public_bot.py",
-    "docs/adr/0027-public-telegram-bot.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "ledger_sha256": "a789465a3a5b3b3debc4a547e9813adeb9dcd764cfbb164bea0c475b7dbf461e",
+  "javascript_inventory_sha256": "b13572889a88257b2ee973e36d29a49bd7a7bfcd4d43086eb58a6f91041dd4f2",
+  "baseline_commit": "5bac0d996a87e8bbe148764a3eb481cc4770eeab",
+  "branch": "feat/research-materials",
+  "unstaged_at_capture": []
 }

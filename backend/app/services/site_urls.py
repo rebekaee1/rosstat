@@ -82,6 +82,7 @@ SITEMAP_RENDER_REV = "urlset-v2"
 _STATIC_WITHOUT_DATA_LASTMOD = frozenset({
     "/about",
     "/methodology",
+    "/research",
     "/privacy",
     "/terms",
     "/calculator",

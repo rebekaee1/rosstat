@@ -693,3 +693,17 @@ def test_tell_me_what_to_send_and_self_improvement_ideas(env, monkeypatch):
     report = asyncio.run(pb.report_text())
     assert "Идеи людей: цены на хлеб по регионам 1" in report
     assert "скажите, что прислать" in pb.HELP_TEXT.lower() and "самоулучшаюсь" in pb.HELP_TEXT
+
+
+def test_research_links_follow_group_setting(monkeypatch):
+    """Бот → отчёты: без группы кнопка ведёт на /research сайта, с группой — в группу (09.11.2026)."""
+    from app.config import settings
+    from app.services import public_bot as pb
+
+    monkeypatch.setattr(settings, "public_bot_group_url", "")
+    assert pb.menu_keyboard()["inline_keyboard"][-1][0]["url"].endswith("/research")
+    assert [r[0].get("url", "") for r in pb.research_keyboard()["inline_keyboard"]][0].endswith("/research")
+    monkeypatch.setattr(settings, "public_bot_group_url", "https://t.me/+group")
+    assert pb.menu_keyboard()["inline_keyboard"][-1][0]["url"] == "https://t.me/+group"
+    assert pb.research_keyboard()["inline_keyboard"][0][0]["url"] == "https://t.me/+group"
+    assert "/research" in pb.HELP_TEXT

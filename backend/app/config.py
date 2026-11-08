@@ -526,6 +526,9 @@ class Settings(BaseSettings):
     public_bot_token: str = ""
     # Имя публичного бота без @ — для ссылок t.me/<имя>?start=… (встроенный режим, «Спросить бота»).
     public_bot_username: str = "ForecastEconomyBot"
+    # Группа Telegram с PDF-отчётами раздела «Исследования» (09.11.2026). Пусто = кнопки бота ведут
+    # на страницу /research сайта; задана (https://t.me/…) — в группу. Обратная ссылка группы → бот в её описании.
+    public_bot_group_url: str = ""
     # Ответы ИИ-модели (OpenRouter) на вопросы свободным текстом — по данным сайта из контекста.
     # Требует openrouter_api_key (и openrouter_proxy_url на проде). Модель: пусто = openrouter_model.
     public_bot_llm_enabled: bool = False
