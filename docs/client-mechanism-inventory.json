@@ -101066,7 +101066,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/legalPages.en.jsx": {
-      "sha256": "a36e7ccc0345ef9936755ea8b4e02cc194cf4af95301d30e07da7e853a298e34",
+      "sha256": "d8a2defcca3b2236173a39792ee14f2df9b72f22b81f6aba30c772d1da3c091e",
       "imports": [
         {
           "line": 5,
@@ -101156,31 +101156,31 @@
         },
         {
           "line": 27,
-          "end_line": 263,
+          "end_line": 266,
           "owner": "<module>",
           "name": "PrivacyBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 251,
-          "end_line": 251,
+          "line": 254,
+          "end_line": 254,
           "owner": "PrivacyBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 266,
-          "end_line": 394,
+          "line": 269,
+          "end_line": 397,
           "owner": "<module>",
           "name": "TermsBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 386,
-          "end_line": 386,
+          "line": 389,
+          "end_line": 389,
           "owner": "TermsBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -101201,16 +101201,16 @@
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 248,
-          "end_line": 252,
+          "line": 251,
+          "end_line": 255,
           "owner": "PrivacyBodyEn",
           "component": "a",
           "event": "onClick",
           "expression": "{() => track(events.CONTACT_EMAIL)}"
         },
         {
-          "line": 383,
-          "end_line": 387,
+          "line": 386,
+          "end_line": 390,
           "owner": "TermsBodyEn",
           "component": "a",
           "event": "onClick",
@@ -209453,7 +209453,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "f34addbffe8c2b9b8e2334952a4f6a163adbb3cef9d113b37adcf8349632236e",
+      "sha256": "680759cf271a1ff98a7908854bb8aaf7686555531e5706429edc855ebd8e5995",
       "imports": [
         {
           "line": 1,
@@ -209656,15 +209656,15 @@
         },
         {
           "line": 44,
-          "end_line": 299,
+          "end_line": 301,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 284,
-          "end_line": 284,
+          "line": 286,
+          "end_line": 286,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -209711,8 +209711,8 @@
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 281,
-          "end_line": 285,
+          "line": 283,
+          "end_line": 287,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",

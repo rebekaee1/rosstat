@@ -55,7 +55,7 @@ def env(monkeypatch, tmp_path):
         sent.append({"chat_id": chat_id, "text": text, "kb": kb, "kind": kind})
         return True
 
-    async def fake_api(method, payload, files=None):
+    async def fake_api(method, payload, files=None, token=None):
         api_calls.append((method, payload))
         return {"ok": True}
 
@@ -101,7 +101,7 @@ def test_start_with_code_records_and_answers(env):
     asyncio.run(pb.handle_message(_msg("/start r014_diesel")))
     chats = asyncio.run(_rows(maker, PublicBotChat))
     assert [(c.chat_id, c.first_code) for c in chats] == [("555", "r014_diesel")]
-    assert chats[0].asked_source_at is not None
+    assert chats[0].asked_source_at is None  # пришёл по коду ролика — источник не спрашиваем
     events = asyncio.run(_rows(maker, PublicBotEvent))
     assert [(e.kind, e.code, e.topic) for e in events] == [("start", "r014_diesel", "diesel")]
     assert all(e.chat_hash != "555" and len(e.chat_hash) == 64 for e in events)
@@ -109,23 +109,28 @@ def test_start_with_code_records_and_answers(env):
     assert "Forecast Economy" in texts[0] and "/stop" in texts[0]
     assert "<b>86,52 ₽ за литр</b> — 26 октября 2026" in texts[1]
     assert "За неделю: +0,6 %" in texts[1] and "За год: +12,4 %" in texts[1]
-    assert texts[2] == pb.SOURCE_QUESTION
+    assert "Полный бак 50 л: ≈4 326 ₽, год назад ≈3 850 ₽." in texts[1]
+    assert pb.SOURCE_QUESTION not in texts
     url = sent[1]["kb"]["inline_keyboard"][1][0]["url"]
-    assert url.startswith("https://forecasteconomy.com/russia/indicator/fuel-diesel?")
+    assert url.startswith("https://ru.forecasteconomy.com/russia/indicator/fuel-diesel?")
     assert "utm_source=telegram" in url and "utm_campaign=diesel" in url and "utm_content=r014_diesel" in url
 
 
 def test_word_answer_and_source_asked_once(env):
     maker, sent, _ = env
-    asyncio.run(pb.handle_message(_msg("Инфляция")))
-    asyncio.run(pb.handle_message(_msg("дизель")))
+    # Пришёл без кода (кнопкой темы) — один раз спрашиваем, откуда узнал.
+    asyncio.run(pb.handle_callback(_cb("pb:t:inflation")))
+    asyncio.run(pb.handle_callback(_cb("pb:t:diesel")))
     texts = [s["text"] for s in sent]
     assert texts.count(pb.SOURCE_QUESTION) == 1
     cpi = texts[0]
     assert "<b>6,35 % за год</b> — сентябрь 2026" in cpi
     # Прогноз — одной точкой, без диапазона (правило владельца).
-    assert "Наш прогноз на октябрь 2026: 6,26 % за год" in cpi and "5,00" not in cpi and "7,50" not in cpi
-    chat = asyncio.run(_rows(maker, PublicBotChat))[0]
+    assert "Наш расчёт на октябрь 2026: 6,26 % за год (прогноз Forecast Economy)" in cpi
+    assert "5,00" not in cpi and "7,50" not in cpi
+    assert "Что стоило 100 ₽ год назад, сейчас стоит ≈106,35 ₽." in cpi
+    asyncio.run(pb.handle_message(_msg("Инфляция", chat_id=556)))
+    chat = [c for c in asyncio.run(_rows(maker, PublicBotChat)) if c.chat_id == "556"][0]
     assert chat.first_code == "инфляция"
     asyncio.run(pb.handle_callback(_cb("pb:src:instagram")))
     assert asyncio.run(_rows(maker, PublicBotChat))[0].heard_from == "instagram"
@@ -252,3 +257,128 @@ def test_router_respects_flag_and_owner(env, monkeypatch):
     asyncio.run(tb._handle_message(_msg("дизель", chat_id=999)))
     asyncio.run(tb._handle_callback(_cb("pb:t:diesel", chat_id=999)))
     assert len(sent) == n
+
+
+# --- 08.11.2026 вечер: отдельный бот, ответы модели, понятные ответы -------------------------
+
+def test_free_question_goes_to_llm_with_data_context_and_limit(env, monkeypatch):
+    maker, sent, api_calls = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    monkeypatch.setattr(settings, "public_bot_llm_daily_limit", 2, raising=False)
+    seen: list[tuple[str, str]] = []
+
+    async def fake_llm(context, question):
+        seen.append((context, question))
+        return "⛽ Дизель 86,52 ₽ <за литр>"
+    monkeypatch.setattr(pb, "_llm_complete", fake_llm)
+    q = "что такое закон Оукена и как у нас с безработицей?"
+    asyncio.run(pb.handle_message(_msg(q)))
+    context, question = seen[0]
+    assert question == q
+    assert "Дизель: 86,52 ₽ за литр на 26 октября 2026" in context
+    assert "наш расчёт на октябрь 2026: 6,26" in context
+    assert "5,00" not in context and "7,50" not in context  # без диапазона
+    assert sent[-1]["text"] == "⛽ Дизель 86,52 ₽ &lt;за литр&gt;"  # ответ модели экранирован
+    assert ("sendChatAction", {"chat_id": "555", "action": "typing"}) in api_calls
+    ev = asyncio.run(_rows(maker, PublicBotEvent))
+    assert [(e.kind, e.code) for e in ev] == [("unknown", None), ("ask", None)]  # текст вопроса не храним
+    asyncio.run(pb.handle_message(_msg("а инфляция в регионах какая сейчас и почему так?")))
+    asyncio.run(pb.handle_message(_msg("и ещё вопрос про ВВП, что с ним происходит?")))
+    assert sent[-1]["text"] == pb.LIMIT_TEXT and len(seen) == 2
+
+
+def test_short_word_still_answers_by_figure_and_llm_off_fallback(env, monkeypatch):
+    _, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", False, raising=False)
+    asyncio.run(pb.handle_message(_msg("биткоин")))
+    assert sent[-1]["text"] == pb.UNKNOWN_TEXT
+    asyncio.run(pb.handle_message(_msg("дизель")))
+    assert "86,52" in sent[-1]["text"]
+
+
+def test_llm_failure_reply(env, monkeypatch):
+    _, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+
+    async def none_llm(context, question):
+        return None
+    monkeypatch.setattr(pb, "_llm_complete", none_llm)
+    asyncio.run(pb.handle_message(_msg("расскажи про индекс губной помады")))
+    assert sent[-1]["text"] == pb.LLM_FAIL_TEXT
+
+
+def test_stale_note_and_rate_wording():
+    fig = pb.Figure(topic=pb.TOPICS["deposit"], name="", source="Банк России", frequency="monthly",
+                    last_date=date(2026, 8, 1), last_value=12.84, prev_value=12.81, year_ago_value=15.57,
+                    forecast_date=None, forecast_value=None)
+    cpi = pb.Figure(topic=pb.TOPICS["inflation"], name="", source="", frequency="monthly",
+                    last_date=date(2026, 9, 1), last_value=6.35, prev_value=None, year_ago_value=None,
+                    forecast_date=None, forecast_value=None)
+    text = pb.figure_text(fig, cpi=cpi, today=date(2026, 11, 8))
+    assert "За месяц: +0,03 пункта. За год: −2,73 пункта." in text and "п.п." not in text
+    assert "Это выше инфляции (6,35 %) на 6,49 пункта" in text
+    assert "Новее данных пока нет" in text  # август на 8 ноября: 99 дней > 75
+    fresh = pb.figure_text(fig, cpi=cpi, today=date(2026, 9, 20))
+    assert "Новее данных пока нет" not in fresh
+
+
+def test_separate_token_poller_and_admin_bot_back_to_owner_only(env, monkeypatch):
+    _, sent, api_calls = env
+    monkeypatch.setattr(settings, "public_bot_token", "PUBLIC", raising=False)
+    monkeypatch.setattr(tb, "interactive_authorized_ids", lambda: {"42"})
+    admin: list = []
+
+    async def admin_send(chat_id, text, reply_markup=None, kind="bot_reply", **kw):
+        admin.append(text)
+        return True
+    monkeypatch.setattr(tb, "send_message", admin_send)
+    n = len(sent)
+    asyncio.run(tb._handle_message(_msg("дизель", chat_id=999)))  # служебный бот чужим молчит
+    asyncio.run(tb._handle_message(_msg("/start r014", chat_id=42)))  # и владельцу даёт админ-меню
+    assert len(sent) == n and admin == []
+    assert pb.bot_token() == "PUBLIC"
+
+    class _R:
+        store: dict = {}
+        async def get(self, k): return self.store.get(k)
+        async def set(self, k, v): self.store[k] = v
+
+    async def fake_redis():
+        return _R()
+    import app.core.cache as cache_mod
+    monkeypatch.setattr(cache_mod, "get_state_redis", fake_redis)
+
+    async def api(method, payload, files=None, token=None):
+        api_calls.append((method, payload, token))
+        if method == "getUpdates":
+            return {"ok": True, "result": [{"update_id": 7, "message": _msg("/start r005_ai92", chat_id=777)}]}
+        return {"ok": True}
+    monkeypatch.setattr(tb, "_api", api)
+    asyncio.run(pb.public_bot_poll_job())
+    polls = [c for c in api_calls if c[0] == "getUpdates"]
+    assert polls and polls[0][2] == "PUBLIC"
+    assert _R.store["fe:tg:public_offset"] == "8"
+    assert any("Бензин АИ-92" in s["text"] for s in sent[n:])
+
+
+def test_send_message_can_disable_link_preview(monkeypatch):
+    import app.services.telegram_outbox as outbox
+    payloads: list = []
+
+    async def api(method, payload, files=None, token=None):
+        payloads.append((payload, token))
+        return {"ok": True, "result": {"message_id": 1}}
+
+    async def begin(**kw):
+        return 1
+
+    async def finish(*a, **kw):
+        return None
+    monkeypatch.setattr(tb, "_api", api)
+    monkeypatch.setattr(outbox, "archive_begin", begin)
+    monkeypatch.setattr(outbox, "archive_finish", finish)
+    asyncio.run(tb.send_message("1", "x", link_preview=False, token="T"))
+    assert payloads == [({"chat_id": "1", "text": "x", "parse_mode": "HTML",
+                          "link_preview_options": {"is_disabled": True}}, "T")]

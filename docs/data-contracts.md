@@ -1014,6 +1014,11 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 **Чего нет.** Отметок прочтения (их нет в Bot API); цифр по регионам; живой проверки на реальном телефоне (08.11.2026).
 
+**Дополнение 08.11.2026 (вечер), [ADR-0027](adr/0027-public-telegram-bot.md#subsequent-additions).**
+- `RUSTATS_PUBLIC_BOT_TOKEN` задан → публичный бот отдельный (@ForecastEconomyBot): свой `getUpdates` (`public_bot_poll_job`, 2 с / long-poll 20 с, смещение `fe:tg:public_offset`, `allowed_updates` message/callback_query/my_chat_member). Все чаты, включая владельца, обрабатываются публично. Служебный бот снова только для владельца и получателей сводки.
+- `RUSTATS_PUBLIC_BOT_LLM_ENABLED` + `openrouter_api_key` → текст, не узнанный как тема (или длиннее 40 знаков), уходит модели (`public_bot_llm_model`, пусто = `openrouter_model`) с блоком «ДАННЫЕ». Лимит `public_bot_llm_daily_limit` в сутки на чат (по событиям `ask`), иначе `LIMIT_TEXT`; при сбое — `LLM_FAIL_TEXT`. Текст вопроса не хранится. Перед ответом бот показывает «печатает» (`sendChatAction`).
+- Ответ на тему: изменения процентных рядов в «пунктах»; строка «для кошелька»; «Наш расчёт … (прогноз Forecast Economy)»; «Новее данных пока нет» по порогу свежести; ссылки на `ru.` хост; `link_preview_options.is_disabled`. По коду ролика вопрос «откуда узнали» не задаётся.
+
 ## Разрезы рынка труда России из ЕМИСС
 
 Датасет, возраст, пол, частота и единица определены на уровне кода федерального

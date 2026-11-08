@@ -20732,7 +20732,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/legalPages.en.jsx": {
-    "sha256": "a36e7ccc0345ef9936755ea8b4e02cc194cf4af95301d30e07da7e853a298e34",
+    "sha256": "d8a2defcca3b2236173a39792ee14f2df9b72f22b81f6aba30c772d1da3c091e",
     "definitions": [
       {
         "name": "CookieRow",
@@ -20743,13 +20743,13 @@
       {
         "name": "PrivacyBodyEn",
         "line": 27,
-        "end_line": 263,
+        "end_line": 266,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TermsBodyEn",
-        "line": 266,
-        "end_line": 394,
+        "line": 269,
+        "end_line": 397,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -20790,7 +20790,7 @@
         "names": [
           "TermsBodyEn"
         ],
-        "line": 266
+        "line": 269
       }
     ],
     "anonymous_functions": 2
@@ -53917,7 +53917,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Privacy.jsx": {
-    "sha256": "f34addbffe8c2b9b8e2334952a4f6a163adbb3cef9d113b37adcf8349632236e",
+    "sha256": "680759cf271a1ff98a7908854bb8aaf7686555531e5706429edc855ebd8e5995",
     "definitions": [
       {
         "name": "CookieRow",
@@ -53928,7 +53928,7 @@
       {
         "name": "Privacy",
         "line": 44,
-        "end_line": 299,
+        "end_line": 301,
         "kind": "FunctionDeclaration"
       }
     ],

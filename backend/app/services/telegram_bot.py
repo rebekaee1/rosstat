@@ -102,8 +102,11 @@ _RETRY_METHODS = frozenset({"sendMessage", "sendDocument"})
 _last_api_error: ContextVar[str | None] = ContextVar("tg_last_api_error", default=None)
 
 
-async def _api(method: str, payload: dict, files: dict | None = None) -> dict | None:
-    token = settings.telegram_bot_token
+async def _api(
+    method: str, payload: dict, files: dict | None = None, token: str | None = None,
+) -> dict | None:
+    # token: другой бот того же сервера (публичный @ForecastEconomyBot, ADR-0027); по умолчанию — служебный.
+    token = token or settings.telegram_bot_token
     if not token:
         return None
     _last_api_error.set(None)
@@ -146,7 +149,8 @@ async def _api(method: str, payload: dict, files: dict | None = None) -> dict | 
 
 
 async def send_message(
-    chat_id: str, text: str, reply_markup: dict | None = None, kind: str = "bot_reply"
+    chat_id: str, text: str, reply_markup: dict | None = None, kind: str = "bot_reply",
+    link_preview: bool = True, token: str | None = None,
 ) -> bool:
     """Отправка + полный архив в telegram_outbox (глаза агента, 2026-07-04).
 
@@ -161,13 +165,17 @@ async def send_message(
     ok_any = False
     for i, chunk in enumerate(chunks):
         payload: dict = {"chat_id": chat_id, "text": chunk, "parse_mode": "HTML"}
+        if not link_preview:
+            payload["link_preview_options"] = {"is_disabled": True}
         if reply_markup and i == len(chunks) - 1:
             payload["reply_markup"] = reply_markup
         row_id = await archive_begin(
             chat_id=str(chat_id), method="sendMessage", kind=kind, text=chunk, payload=payload,
         )
         _last_api_error.set(None)
-        data = await _api("sendMessage", payload)
+        # token передаётся, только если задан: старые подделки _api в тестах его не принимают.
+        tok = {"token": token} if token else {}
+        data = await _api("sendMessage", payload, **tok)
         if data is None and _PARSE_ENTITIES_ERROR in (_last_api_error.get() or ""):
             # Telegram отверг разметку целиком (400 «can't parse entities»: «сырой» «<» или
             # незакрытый тег в тексте, например из LLM-сводки). Повтор без parse_mode, без тегов —
@@ -176,7 +184,7 @@ async def send_message(
             plain: dict = {"chat_id": chat_id, "text": _plain_fallback(chunk)}
             if "reply_markup" in payload:
                 plain["reply_markup"] = payload["reply_markup"]
-            data = await _api("sendMessage", plain)
+            data = await _api("sendMessage", plain, **tok)
         error = None if data is not None else (_last_api_error.get() or "send failed (см. логи)")
         await archive_finish(
             row_id, ok=data is not None,
@@ -412,7 +420,7 @@ async def _hypotheses_overview() -> str:
 async def _handle_callback(cq: dict) -> None:
     """Обработка нажатия кнопки. Владелец + получатели отчёта (skrakan)."""
     data = cq.get("data", "")
-    if settings.public_bot_enabled and data.startswith("pb:"):
+    if _public_shared() and data.startswith("pb:"):
         # Кнопки публичного режима (public_bot.py): любой личный чат, включая владельца.
         from app.services import public_bot
         await public_bot.handle_callback(cq)
@@ -493,7 +501,7 @@ async def _handle_callback(cq: dict) -> None:
 async def _handle_message(msg: dict) -> None:
     chat_id = str(msg.get("chat", {}).get("id", ""))
     text = (msg.get("text") or "").strip().lower()
-    if settings.public_bot_enabled and _is_public_message(chat_id, text):
+    if _public_shared() and _is_public_message(chat_id, text):
         from app.services import public_bot
         await public_bot.handle_message(msg)
         return
@@ -504,6 +512,13 @@ async def _handle_message(msg: dict) -> None:
     elif text == "/users":
         t, kb = await _users_overview()
         await send_message(chat_id, t, reply_markup=kb)
+
+
+def _public_shared() -> bool:
+    """Публичный режим живёт в этом же (служебном) боте — только пока нет своего токена.
+    С `public_bot_token` публичный бот отдельный (@ForecastEconomyBot) со своим поллером
+    (`public_bot.public_bot_poll_job`), а служебный снова отвечает только владельцу."""
+    return settings.public_bot_enabled and not settings.public_bot_token
 
 
 def _is_public_message(chat_id: str, text: str) -> bool:
@@ -537,7 +552,7 @@ async def telegram_poll_job() -> None:
     if _offset_mem and (not offset or int(_offset_mem) > int(offset)):
         offset = _offset_mem  # запись в Redis прошлого цикла не дошла — память новее
     allowed = ["message", "callback_query"]
-    if settings.public_bot_enabled:
+    if _public_shared():
         allowed.append("my_chat_member")  # человек остановил бота — публичный режим помечает чат
     payload: dict = {"timeout": 20, "allowed_updates": allowed}
     if offset:
@@ -552,7 +567,7 @@ async def telegram_poll_job() -> None:
                 await _handle_callback(upd["callback_query"])
             elif "message" in upd:
                 await _handle_message(upd["message"])
-            elif "my_chat_member" in upd and settings.public_bot_enabled:
+            elif "my_chat_member" in upd and _public_shared():
                 from app.services import public_bot
                 await public_bot.handle_member_update(upd["my_chat_member"])
         except Exception:
