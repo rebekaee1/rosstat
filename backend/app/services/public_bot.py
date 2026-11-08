@@ -25,7 +25,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
-from html import escape
+from html import escape, unescape
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
 
@@ -283,8 +283,11 @@ def _wallet_line(f: Figure, cpi: "Figure | None") -> str | None:
         return f"Это {side} инфляции ({fmt_num(cpi.last_value)} %) на {fmt_num(abs(gap))} пункта; налог на проценты не учтён."
     if t.key in ("gold", "usd", "eur") and f.year_ago_value:
         pct = (f.last_value / f.year_ago_value - 1) * 100
+        # Тестеры 09.11: евро за год подешевел, а модель писала «рос медленнее инфляции».
+        if pct < 0:
+            return f"За год подешевело на {fmt_num(-pct, 1)} %, а цены выросли на {fmt_num(cpi.last_value)} %."
         side = "быстрее" if pct > cpi.last_value else "медленнее"
-        return f"За год подорожало {side}, чем росли цены (инфляция {fmt_num(cpi.last_value)} %)."
+        return f"За год подорожало на {fmt_num(pct, 1)} % — {side}, чем росли цены (инфляция {fmt_num(cpi.last_value)} %)."
     return None
 
 
@@ -429,8 +432,9 @@ HELP_TEXT = ("<b>Что я умею</b>\n"
              "🗑 /stop — удалить мои данные.")
 MENU_TEXT = "Темы — или просто спросите своими словами:"
 WEEK_TOPIC = "week"  # подписка на пятничную сводку (не тема-ряд)
-WEEK_PROMPT = ("Сделай короткую сводку: что нового и важного в цифрах (бензин, цены, ставка, вклады, курсы) "
-               "за последние неделю–месяц и что это значит для обычного кошелька. 4–6 пунктов, живо.")
+WEEK_PROMPT = ("Сводка недели. Первая строка — один главный вывод. Дальше 3–5 коротких пунктов: последние цифры "
+               "(бензин, цены, ставка, вклады, курсы) с их датой и что это значит для кошелька. "
+               "Без оценок вроде «жить можно» и без прогноза дат.")
 STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
 
 
@@ -518,11 +522,14 @@ async def handle_message(msg: dict) -> None:
         return
     if not text:
         # Голосовое, фото, стикер без подписи: раньше бот молчал (проход 08.11.2026).
+        # Тестеры 09.11: на каждый стикер — меню из 10 кнопок и «картинки не разбираю».
+        short = {"inline_keyboard": [[{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}]]}
         if any(k in msg for k in ("voice", "audio", "video_note")):
-            await _send(chat_id, "Голосовые пока не слушаю — напишите, пожалуйста, текстом 🙂", menu_keyboard())
-        elif any(k in msg for k in ("photo", "document", "video", "sticker", "animation")):
-            await _send(chat_id, "Картинки пока не разбираю. Напишите вопрос текстом — отвечу по цифрам.",
-                        menu_keyboard())
+            await _send(chat_id, "Голосовые пока не слушаю — напишите, пожалуйста, текстом 🙂", short)
+        elif "sticker" in msg or "animation" in msg:
+            await _send(chat_id, "😊 Спросите что-нибудь — например, «что с бензином?»", short)
+        elif any(k in msg for k in ("photo", "document", "video")):
+            await _send(chat_id, "Картинки и файлы пока не разбираю. Напишите вопрос текстом — отвечу по цифрам.", short)
         return
     low = _norm(text)
     if low.startswith("/start"):
@@ -574,7 +581,8 @@ async def handle_message(msg: dict) -> None:
             await _send(chat_id, "Подписок пока нет. Под любой цифрой есть кнопка «🔔 Присылать новые данные».",
                         menu_keyboard())
         else:
-            await _send(chat_id, "Присылаю новые данные по темам:", {"inline_keyboard": [
+            names = ", ".join(TOPICS[k].title if k in TOPICS else "сводка по пятницам" for k in keys)
+            await _send(chat_id, f"Присылаю: {names}.\nОтключить — кнопкой ниже или словами «не присылай …».", {"inline_keyboard": [
                 [{"text": f"🔕 {TOPICS[k].title if k in TOPICS else 'Сводка по пятницам'}",
                   "callback_data": f"{CB_PREFIX}u:{k}"}] for k in keys
             ] + [[{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}]]})
@@ -734,6 +742,15 @@ async def handle_member_update(upd: dict) -> None:
 
 
 async def subscribe(chat_id: str, topic_key: str) -> None:
+    if topic_key == WEEK_TOPIC:
+        # Пятничная сводка: last_sent_at=None, чтобы первая ушла в ближайшую пятницу.
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            if not await _is_subscribed(db, chat_id, WEEK_TOPIC):
+                db.add(PublicBotSubscription(chat_id=chat_id, topic=WEEK_TOPIC, created_at=_now(), last_sent_at=None))
+                _event(db, chat_id, "subscribe", topic=WEEK_TOPIC)
+            await db.commit()
+        return
     topic = TOPICS[topic_key]
     async with async_session() as db:
         await _touch_chat(db, chat_id)
@@ -988,7 +1005,7 @@ _EXTRA_CODES = (
     ("btc-usd", "Биткоин, $"),
 )
 
-LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека (обращайся на «ты» или «вы», как он сам), можешь задать встречный вопрос, если он поможет.
+LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека: по умолчанию на «вы», на «ты» — только если он сам так пишет. Можешь задать встречный вопрос, если он поможет.
 
 Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
@@ -996,17 +1013,17 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 
 Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника.
 
-Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…», «врать не буду», «без занудства») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами: <a href="https://ru.forecasteconomy.com/calculator">калькулятор инфляции</a>, не голый адрес. Не додумывай историю, которой нет в ДАННЫХ (сколько заседаний подряд и т. п.), и не предлагай показать то, чего в ДАННЫХ нет. Чужие сайты, включая Росстат, не советуй — только наш.
+Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…», «врать не буду», «без занудства») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами: <a href="https://ru.forecasteconomy.com/calculator">калькулятор инфляции</a>, не голый адрес. Не додумывай историю, которой нет в ДАННЫХ (сколько заседаний подряд и т. п.), и не предлагай показать то, чего в ДАННЫХ нет. Причины изменений называй как общие механизмы («обычно на это влияет…»), а не как факт про этот месяц. Не заканчивай каждый ответ предложением подписки. Чужие сайты, включая Росстат, не советуй — только наш.
 
 Подписки приходят так: курсы и золото — раз в неделю, ставка — когда меняется, остальное — когда выходит новая цифра; с 9 до 21 по Москве. Обещай только это.
 Если спрашивают, что ты умеешь, — 3–5 строк своими словами: отвечаешь по свежим цифрам, присылаешь графики, присылаешь то, что попросят («присылай инфляцию»), сводка /week, карточка в любом чате через @ForecastEconomyBot, и самоулучшаешься — пожелания передаёшь команде.
 
 Если человеку пригодятся кнопки, добавь в самом конце отдельной строкой (её не увидят как текст):
 [[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
-[[подписка: ключ]] — предложить присылать новые данные по теме; если человек сам просит присылать — [[подписаться: ключ]] включит подписку сразу;
+[[подписка: ключ]] — предложить присылать новые данные по теме; если человек сам просит присылать — [[подписаться: ключ]] включит подписку сразу, просит перестать — [[отписаться: ключ]] (ключ week — пятничная сводка); не пиши «подписал» или «отписал» без этого действия;
 [[идея: суть до 60 знаков своими словами]] — если человеку не хватает темы, функции или данных: запиши суть и обязательно скажи ему, что передашь команде;
 [[реакция: эмодзи]] — поставить реакцию на сообщение человека (одну из 👍 🔥 🤔 👏 😁 🤯 🎉 🙏 👌 💯 🏆 🤝 👀), если уместно;
-[[график: ключ]] — график темы картинкой (последняя цифра, год назад, наш расчёт, сравнение по делу); он придёт перед твоим текстом, поэтому не предлагай его словами;
+[[график: ключ]] — график темы картинкой (около полутора лет, другой период не выбрать; последняя цифра, год назад, наш расчёт); только если эта тема — предмет вопроса, для ВВП, юаня, биткоина и прочего вне ключей графика нет; он придёт перед твоим текстом, поэтому не предлагай его словами;
 [[вопросы: реплика | реплика]] — до трёх кнопок-реплик от лица человека (до 40 знаков): следующий вопрос, на который ответишь по ДАННЫМ (не просьбы о совете, куда вложить), а в игре или опросе — варианты ответа.
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
 Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет в ДАННЫХ — предложи нужный раздел нашего сайта ссылкой, а не чужие сайты. Ссылайся только на эти адреса как есть, своих не придумывай."""
@@ -1038,6 +1055,26 @@ async def build_llm_context(db, today: date | None = None) -> str:
         wallet = _wallet_line(f, cpi if key != "inflation" else None)
         if wallet:
             lines.append(f"  для кошелька: {wallet}")
+        if key == "inflation":
+            # Тестеры 09.11: потерю на 1 млн модель считала как 6,35 % от суммы (63 500 вместо ≈59 700).
+            kept = 1_000_000 / (1 + f.last_value / 100)
+            lines.append(f"  для кошелька: 1 000 000 ₽, пролежавшие год без процентов, по покупательной силе "
+                         f"≈{fmt_num(kept, 0)} ₽ (потеря ≈{fmt_num(1_000_000 - kept, 0)} ₽; делим на 1 + инфляция).")
+    key = await load_figure(db, TOPICS["keyrate"])
+    if key is not None:
+        # Тестеры 09.11: из двух последних точек модель выводила «ставка не меняется второй день».
+        ind = (await db.execute(select(Indicator).where(Indicator.code == TOPICS["keyrate"].indicator))).scalar_one()
+        changed = (await db.execute(
+            select(func.max(IndicatorData.date)).where(
+                IndicatorData.indicator_id == ind.id, IndicatorData.value != key.last_value)
+        )).scalar_one_or_none()
+        since = (await db.execute(
+            select(func.min(IndicatorData.date)).where(
+                IndicatorData.indicator_id == ind.id, IndicatorData.date > changed)
+        )).scalar_one_or_none() if changed else None
+        if since:
+            lines.append(f"Ключевая ставка {fmt_num(key.last_value)} % действует с {fmt_date(since, 'daily')} "
+                         "(точки в ряду — дни, а не заседания); даты следующего заседания Банка России в данных нет.")
     for code, title in _EXTRA_CODES:
         f = await _figure_by_code(db, code)
         if f is not None:
@@ -1074,7 +1111,16 @@ def _context_line(title: str, unit: str, f: Figure) -> str:
                          else f" на {fmt_date(f.prev_date, f.frequency)}")
         parts.append(f"предыдущее значение {fmt_num(f.prev_value)}{prev_when}")
     if f.year_ago_value is not None:
-        parts.append(f"год назад {fmt_num(f.year_ago_value)}")
+        # Тестеры 09.11: проценты «17–20 %», «юань быстрее/медленнее» модель считала с ошибкой — даём готовое.
+        if f.topic.is_rate or "%" in unit or "%" in title:
+            d = f.last_value - f.year_ago_value
+            ch = f"{'+' if d >= 0 else '−'}{fmt_num(abs(d))} пункта"
+        elif f.year_ago_value:
+            d = (f.last_value / f.year_ago_value - 1) * 100
+            ch = f"{'+' if d >= 0 else '−'}{fmt_num(abs(d), 1)} %"
+        else:
+            ch = ""
+        parts.append(f"год назад {fmt_num(f.year_ago_value)}" + (f" (за год {ch})" if ch else ""))
     if f.forecast_value is not None and f.forecast_date is not None:
         parts.append(f"наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)}")
     if f.source:
@@ -1155,7 +1201,7 @@ _ALLOWED_TAG = re.compile(
     r"|&lt;blockquote( expandable)?&gt;|&lt;/blockquote&gt;"
     r"|&lt;a href=&quot;(https?://[^\s&]+?)&quot;&gt;|&lt;/a&gt;"
 )
-_ACTIONS = re.compile(r"\[\[\s*(темы|подписка|подписаться|вопросы|график|реакция|идея)\s*:\s*([^\]]*)\]\]", re.I)
+_ACTIONS = re.compile(r"\[\[\s*(темы|подписка|подписаться|отписаться|вопросы|график|реакция|идея)\s*:\s*([^\]]*)\]\]", re.I)
 # Реакции, которые Telegram разрешает ботам (подмножество стандартных).
 _REACTIONS = ("👍", "🔥", "🤔", "👏", "😁", "🤯", "🎉", "🙏", "👌", "💯", "🏆", "🤝", "👀")
 # Кнопки-вопросы: callback_data ограничен 64 байтами, поэтому текст вопроса держим в памяти по короткому id.
@@ -1166,7 +1212,8 @@ def telegram_html(text: str) -> str:
     """Ответ модели → безопасный HTML Telegram: всё экранируется, разрешённые теги возвращаются.
     Markdown-жирный (**x**) превращается в <b>. Битая разметка всё равно дойдёт: send_message
     при «can't parse entities» шлёт текст без тегов."""
-    out = escape(text, quote=True)
+    # Тестеры 09.11: модель сама пишет &#x27; и &quot; — без раскрытия человек видел «&amp;#x27;».
+    out = escape(unescape(text), quote=True)
 
     def _back(m: re.Match) -> str:
         raw = m.group(0)
@@ -1192,10 +1239,11 @@ def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], li
             if idea:
                 questions_meta.setdefault("idea", idea)
             continue
-        if kind == "подписаться":
+        if kind in ("подписаться", "отписаться"):
+            slot = "subscribe_now" if kind == "подписаться" else "unsubscribe_now"
             for k in re.split(r"[,\s]+", keys.strip().lower()):
-                if k in TOPICS:
-                    questions_meta.setdefault("subscribe_now", k)
+                if k in TOPICS or k == WEEK_TOPIC:
+                    questions_meta.setdefault(slot, []).append(k)
             continue
         if kind == "реакция":
             emo = keys.strip()
@@ -1213,7 +1261,8 @@ def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], li
     uniq = lambda xs: list(dict.fromkeys(xs))  # noqa: E731
     split_actions.last_reaction = questions_meta.get("reaction")  # type: ignore[attr-defined]
     split_actions.last_idea = questions_meta.get("idea")  # type: ignore[attr-defined]
-    split_actions.last_subscribe = questions_meta.get("subscribe_now")  # type: ignore[attr-defined]
+    split_actions.last_subscribe = questions_meta.get("subscribe_now") or []  # type: ignore[attr-defined]
+    split_actions.last_unsubscribe = questions_meta.get("unsubscribe_now") or []  # type: ignore[attr-defined]
     return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:3], uniq(charts)[:1]
 
 
@@ -1393,6 +1442,47 @@ def trim_to_paragraph(text: str) -> str:
     return cut.rstrip() + " …"
 
 
+_PHONE = re.compile(r"\+?[78][\s\-(]*\d{3}[\s\-)]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}")
+_PASSPORT = re.compile(r"\b\d{2}\s?\d{2}\s?\d{6}\b")
+
+
+def mask_personal(text: str) -> str:
+    """Телефон и номер паспорта не уходят модели (тестеры 09.11: «ушли модели без предупреждения»)."""
+    return _PASSPORT.sub("[номер скрыт]", _PHONE.sub("[телефон скрыт]", text))
+
+
+_PLACES: list[tuple[str, str, str]] = []  # (основа слова, название, путь)
+_PLACE_SKIP = {"область", "край", "республика", "автономный", "округ", "автономная", "город", "народная"}
+
+
+async def _place_links(db, text: str) -> list[str]:
+    """Страны и регионы из вопроса → настоящие адреса страниц (тестеры 09.11: модель придумывала /russia/tatarstan)."""
+    from app.models import Region, WorldCountry
+    try:
+        return await _place_links_inner(db, text, Region, WorldCountry)
+    except Exception:  # noqa: BLE001 — без адресов ответ всё равно уйдёт
+        logger.debug("place links failed", exc_info=True)
+        return []
+
+
+async def _place_links_inner(db, text: str, Region, WorldCountry) -> list[str]:
+    if not _PLACES:
+        for slug, name in (await db.execute(select(Region.slug, Region.name))).all():
+            words = [w for w in re.findall(r"[а-яё\-]+", name.lower()) if w not in _PLACE_SKIP and len(w) >= 5]
+            if words:
+                _PLACES.append((words[0][: max(5, len(words[0]) - 2)], name, f"/russia/region/{slug}"))
+        for slug, name in (await db.execute(select(WorldCountry.slug, WorldCountry.name_ru))).all():
+            w = name.lower()
+            if w != "россия" and " " not in w:
+                _PLACES.append((w if len(w) < 5 else w[: max(4, len(w) - 2)], name, f"/{slug}"))
+    low = text.lower()
+    found = []
+    for stem, name, path in _PLACES:
+        if re.search(rf"\b{re.escape(stem)}", low) and len(found) < 3:
+            found.append(f"{name} — {ru_public_origin()}{path}")
+    return found
+
+
 async def answer_question(chat_id: str, text: str, hint_topic: str | None = None,
                           msg_id: int | None = None) -> None:
     """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Текст в базе не хранится."""
@@ -1414,6 +1504,11 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         subs = (await db.execute(select(PublicBotSubscription.topic).where(
             PublicBotSubscription.chat_id == chat_id))).scalars().all()
         await db.commit()
+    text = mask_personal(text)
+    async with async_session() as db:
+        places = await _place_links(db, text)
+    if places:
+        context += "\nСтраницы нашего сайта по местам из вопроса — дай ссылку словами <a href=…>, если цифры по месту нет в ДАННЫХ: " + "; ".join(places) + "."
     names = ", ".join(TOPICS[k].title for k in subs if k in TOPICS)
     # Живой прогон 08.11: модель сказала «подписка уже у вас есть» сразу после отписки.
     context += f"\nПодписки этого человека на новые данные: {names or 'нет'}."
@@ -1437,15 +1532,19 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     clean, topics, subs, questions, charts = split_actions(answer)
     reaction = getattr(split_actions, "last_reaction", None)
     idea = getattr(split_actions, "last_idea", None)
-    subscribe_now = getattr(split_actions, "last_subscribe", None)
+    subscribe_now = getattr(split_actions, "last_subscribe", None) or []
+    unsubscribe_now = getattr(split_actions, "last_unsubscribe", None) or []
     if idea:
         # «Самоулучшаюсь»: суть пожелания своими словами модели (не текст человека) — в отчёт команде.
         async with async_session() as db:
             _event(db, chat_id, "idea", code=idea)
             await db.commit()
-    if subscribe_now:
+    for k in unsubscribe_now:
+        # Тестер №8, 09.11: «отпишись от доллара» → «отписал», а подписка оставалась.
+        await unsubscribe(chat_id, k)
+    for k in subscribe_now:
         # «Скажи, что прислать, — пришлю»: человек сам попросил — подписка сразу.
-        await subscribe(chat_id, subscribe_now)
+        await subscribe(chat_id, k)
     if reaction and msg_id:
         from app.services.telegram_bot import _api
         asyncio.ensure_future(_api("setMessageReaction", {

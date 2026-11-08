@@ -465,7 +465,14 @@ def test_no_text_messages_get_a_reply(env):
     _, sent, _ = env
     asyncio.run(pb.handle_message({"chat": {"id": 555, "type": "private"}, "voice": {"file_id": "x"}}))
     asyncio.run(pb.handle_message({"chat": {"id": 555, "type": "private"}, "sticker": {"file_id": "x"}}))
-    assert "Голосовые" in sent[-2]["text"] and "Картинки" in sent[-1]["text"]
+    asyncio.run(pb.handle_message({"chat": {"id": 555, "type": "private"}, "photo": [{"file_id": "x"}]}))
+    assert "Голосовые" in sent[-3]["text"] and "Спросите" in sent[-2]["text"] and "Картинки" in sent[-1]["text"]
+    assert len(sent[-1]["kb"]["inline_keyboard"]) == 1  # без меню из 10 кнопок
+
+
+def test_personal_numbers_masked_before_model():
+    assert pb.mask_personal("тел +7 916 123-45-67, паспорт 4510 123456, вклад 1 000 000") == \
+        "тел [телефон скрыт], паспорт [номер скрыт], вклад 1 000 000"
 
 
 def test_llm_context_has_wallet_lines_and_language_rule(env):
@@ -693,3 +700,24 @@ def test_tell_me_what_to_send_and_self_improvement_ideas(env, monkeypatch):
     report = asyncio.run(pb.report_text())
     assert "Идеи людей: цены на хлеб по регионам 1" in report
     assert "скажите, что прислать" in pb.HELP_TEXT.lower() and "самоулучшаюсь" in pb.HELP_TEXT
+
+
+def test_unsubscribe_by_words(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    answers = iter(["Буду присылать дизель и сводку.\n[[подписаться: diesel, week]]",
+                    "Отписал от дизеля.\n[[отписаться: diesel]]"])
+
+    async def llm(context, question, history=None):
+        return next(answers)
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    asyncio.run(pb.handle_message(_msg("присылай дизель и сводку по пятницам")))
+    assert sorted(x.topic for x in asyncio.run(_rows(maker, PublicBotSubscription))) == ["diesel", "week"]
+    asyncio.run(pb.handle_message(_msg("не присылай больше дизель")))
+    assert [x.topic for x in asyncio.run(_rows(maker, PublicBotSubscription))] == ["week"]
+    assert "[[" not in sent[-1]["text"]
+
+
+def test_model_entities_not_double_escaped():
+    assert pb.telegram_html("That&#x27;s &quot;fine&quot; &amp; <b>ok</b> 3 &lt; 5") == "That&#x27;s &quot;fine&quot; &amp; <b>ok</b> 3 &lt; 5"
