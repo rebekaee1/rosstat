@@ -76,6 +76,9 @@ export function unitMeta(code) {
 /** Порядок «по популярности»: сначала то, что ищут чаще всего. */
 export const POPULARITY = [
   'usd-rub', 'eur-rub', 'cny-rub',
+  // Рублёвые курсы, которые ищут чаще (08.11.2026): соседи и партнёры, затем мировые резервные.
+  'kzt-rub', 'byn-rub', 'try-rub', 'uzs-rub', 'kgs-rub', 'amd-rub', 'tjs-rub', 'gel-rub', 'azn-rub',
+  'aed-rub', 'gbp-rub', 'jpy-rub', 'chf-rub', 'inr-rub', 'thb-rub', 'vnd-rub', 'krw-rub', 'egp-rub',
   'btc-usd', 'eth-usd', 'sol-usd',
   'eur-usd', 'gbp-usd', 'usd-cny', 'gbp-eur', 'cny-eur',
 ];
