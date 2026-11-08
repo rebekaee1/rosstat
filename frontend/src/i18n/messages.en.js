@@ -3790,8 +3790,8 @@ export default {
   'r2z3.chart.period.quarter': '3 mo.',
   'r2z3.chart.title.quarter': '3 months: {pair}',
   'r2z3.chart.per.quarter': 'over 3 months',
-  'r2z3.tile.cb': 'Dollar · CBR on {date}',
-  'r2z3.tile.market': 'Dollar · market',
+  'r2z3.tile.cb': 'Dollar: CBR on {date}',
+  'r2z3.tile.market': 'Dollar: market',
   'r2z3.chart.period.all': 'All',
   'r2z3.tele.send': 'If you send roubles, you receive: {parts}.',
   'r2z3.tele.in.week': 'over a week',
@@ -3803,4 +3803,5 @@ export default {
   'r2z3.tele.basis.cb': 'Official Bank of Russia rate for {date}, updated once per business day. A bank or transfer service usually quotes a slightly different rate.',
   'r2z3.tele.up': 'higher',
   'r2z3.tele.down': 'lower',
+  'r2z3.chart.addSecond': '+ Compare with another pair',
 };

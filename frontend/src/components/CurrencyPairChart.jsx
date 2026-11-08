@@ -70,6 +70,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const { locale } = useLocale();
   const [period, setPeriod] = useState('year');
   const [secondCode, setSecondCode] = useState('');
+  const [showSecond, setShowSecond] = useState(false);
   const limit = limitForPeriod(period);
   const { data, isLoading } = useIndicatorData(pair?.code, { limit });
   const secondEnabled = Boolean(secondCode) && secondCode !== pair?.code;
@@ -152,6 +153,11 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
           </Chip>
         ))}
       </div>
+      {!showSecond && !secondEnabled ? (
+        <button type="button" className="z3-second-toggle fe-press" onClick={() => setShowSecond(true)}>
+          {t('r2z3.chart.addSecond')}
+        </button>
+      ) : (
       <CurrencySelect
         label={t('c11e.cur.second')}
         value={secondEnabled ? secondCode : ''}
@@ -161,6 +167,7 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
         emptyText={t('w6g.cur.nothing')}
         className="fe-c11e-second"
       />
+      )}
     </div>
   );
 

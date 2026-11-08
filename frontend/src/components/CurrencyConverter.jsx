@@ -38,7 +38,7 @@ function useAmount(from, edges, locale) {
 
 /** Единица рядом с цифрой результата: «1 121 сомони», «1 457 726 сумов»; без готового слова — полное название. */
 function shortUnit(unit, value, locale) {
-  if (locale === 'en') return unitName(unit, locale);
+  if (locale === 'en' || ['RUB', 'USD', 'EUR', 'CNY', 'GBP'].includes(unit)) return unitName(unit, locale);
   const word = unitWord(Math.floor(Math.abs(value)) || 1, unit, 'ru');
   return word === unit ? unitName(unit, locale) : word;
 }
@@ -74,9 +74,9 @@ function ConverterOut({ result, rate, safeTo, basisKey }) {
   );
 }
 
-function AmountField({ id, amount, text, setText, locale, label }) {
+function AmountField({ id, amount, text, setText, locale, label, suffix = '' }) {
   return (
-    <label className="fe-z8-field fe-z8-conv__amount z3-amount" htmlFor={id}>
+    <label className="fe-z8-field fe-z8-conv__amount z3-amount" htmlFor={id} data-suffix={suffix || undefined}>
       <span className="fe-z8-select__label">{label}</span>
       <input
         id={id}
@@ -167,7 +167,7 @@ export function Converter({ edges, from, to, onFrom, onTo }) {
   return (
     <section className="fe-panel fe-z8-conv z3-conv" data-block="currency-converter" aria-label={t('w6g.cur.converterTitle')}>
       <h2 className="fe-z8-conv__title">{t('w6g.cur.converterTitle')}</h2>
-      <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={`${t('w6g.cur.amount')}, ${unitMeta(safeFrom)?.symbol || safeFrom}`} />
+      <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={t('w6g.cur.amount')} suffix={unitMeta(safeFrom)?.symbol || safeFrom} />
       <QuickAmounts presets={presets} amount={amount} setText={setText} locale={locale} />
       <ConverterOut result={result} rate={rate} safeTo={safeTo} basisKey={basisKey} />
       <Z3PastCompare pair={pastPair} from={safeFrom} to={safeTo} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
@@ -279,7 +279,7 @@ export function CurrencyCardConverter({ code }) {
         </button>
       </div>
       <p className="z3-card-conv__dir">{`${unitName(from, locale)} → ${unitName(to, locale)}`}</p>
-      <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={`${t('w6g.cur.amount')}, ${unitMeta(from)?.symbol || from}`} />
+      <AmountField id={`${id}-amount`} amount={amount} text={text} setText={setText} locale={locale} label={t('w6g.cur.amount')} suffix={unitMeta(from)?.symbol || from} />
       <QuickAmounts presets={presets} amount={amount} setText={setText} locale={locale} />
       <ConverterOut result={result} rate={rate} safeTo={to} basisKey={basis ? `w6g.cur.basis.${basis}` : 'w6g.cur.basis.mix'} />
       <Z3PastCompare pair={pastPair} from={from} to={to} amount={amount} nowRate={amount > 0 && result ? result.value / amount : 0} />
