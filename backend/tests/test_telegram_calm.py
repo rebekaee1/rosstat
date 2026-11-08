@@ -98,6 +98,7 @@ def test_held_rows_are_invisible_to_resend():
 
 @pytest.fixture
 def down(monkeypatch):
+    monkeypatch.setattr(alerting.settings, "telegram_calm_mode", True, raising=False)
     monkeypatch.setattr(cache_mod, "_state_redis", fakeredis.aioredis.FakeRedis(decode_responses=True))
     monkeypatch.setattr(monitor, "_local_hits", {monitor.KIND_ERROR: [], monitor.KIND_SHED: []})
     monkeypatch.setattr(monitor, "_local_last_alert", {monitor.KIND_ERROR: float("-inf"), monitor.KIND_SHED: float("-inf")})

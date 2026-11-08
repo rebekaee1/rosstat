@@ -92,6 +92,8 @@ async def note_error_spike(now: float, count: int, path: str) -> None:
 
     Перерыв в ошибках дольше `SITE_DOWN_GAP_SECONDS` начинает отсчёт заново.
     """
+    if not getattr(settings, "telegram_calm_mode", False):
+        return  # без спокойного режима о всплесках и так сообщает http_5xx_spike
     from app.core.cache import get_state_redis
     from app.services.alerting import send_telegram
 
@@ -118,6 +120,8 @@ async def note_error_spike(now: float, count: int, path: str) -> None:
 
 async def check_site_recovered() -> None:
     """Раз в минуту (сторож хоста): писали «не открывается», а ошибок больше нет — пишем «снова работает»."""
+    if not getattr(settings, "telegram_calm_mode", False):
+        return
     from app.core.cache import get_state_redis
     from app.services.alerting import send_telegram
 
