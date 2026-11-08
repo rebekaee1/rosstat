@@ -754,3 +754,12 @@ def test_emoji_only_gets_reaction_not_model(env, monkeypatch):
     n = len(sent)
     asyncio.run(pb.handle_message({**_msg("👍"), "message_id": 7}))
     assert len(sent) == n and api_calls[-1][0] == "setMessageReaction"
+
+
+def test_chart_mismatch_neighbour_row():
+    from app.services.public_bot import chart_mismatch
+    assert chart_mismatch("юань курс", "usd")
+    assert chart_mismatch("курс биткоина", "eur")
+    assert not chart_mismatch("курс доллара", "usd")
+    assert not chart_mismatch("доллар и юань", "usd")
+    assert not chart_mismatch("курс юаня", "inflation")
