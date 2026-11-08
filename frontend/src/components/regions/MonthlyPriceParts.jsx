@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
 import { useLocale } from '../../i18n';
-import { formatRegionWithUnit, glueNumbers } from '../../lib/regionUi';
+import { glueNumbers } from '../../lib/regionUi';
 import { regionIndicatorPath, regionPath } from '../../lib/sitePaths';
-import { groupSiblings, signedPct, ymLabel } from '../../lib/z2Price';
+import { groupSiblings, priceText, signedPct, ymLabel } from '../../lib/z2Price';
 import '../../styles/z2-price.css';
 
 const GROUP_KEYS = {
@@ -45,8 +45,8 @@ export function CompareLines({ rows, unit, lastMonth }) {
         return (
           <li key={r.key}>
             <span className="z2p-compare__name">{t(r.key === 'russia' ? 'z2.russia' : 'z2.moskva')}</span>
-            <span className="fe-num z2p-compare__val">{formatRegionWithUnit(r.value, unit, locale)}</span>
-            <span className="fe-num z2p-compare__pct">{t('z2.here', { pct: signedPct(r.pct, locale) })}</span>
+            <span className="fe-num z2p-compare__val">{priceText(r.value, unit, locale)}</span>
+            <span className="fe-num z2p-compare__pct">{Math.abs(r.pct) < 0.05 ? t('r2z2.hereSame') : t(r.pct > 0 ? 'r2z2.hereHigher' : 'r2z2.hereLower', { pct: signedPct(Math.abs(r.pct), locale).replace(/^[+−]/, '') })}</span>
             {!sameMonth && <span className="z2p-compare__month">{ymLabel(r.month, locale)}</span>}
           </li>
         );
@@ -68,7 +68,7 @@ function SiblingRow({ s, slug }) {
       >
         <span className="z2p-row__name">{glueNumbers(s.short_name || s.name)}</span>
         <span className="z2p-row__meta">
-          {value != null && <span className="fe-num z2p-row__val">{formatRegionWithUnit(value, s.unit, locale)}</span>}
+          {value != null && <span className="fe-num z2p-row__val">{priceText(value, s.unit, locale)}</span>}
           {month && (
             <span className="z2p-row__month">{dead ? t('z2.until', { month }) : month}</span>
           )}

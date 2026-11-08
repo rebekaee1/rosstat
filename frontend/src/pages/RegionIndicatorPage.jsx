@@ -22,7 +22,7 @@ import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, u
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import GroupedSiblings, { CompareLines, DiscontinuedNote } from '../components/regions/MonthlyPriceParts';
 import {
-  changeOverMonths, compareRows, guessPriceGroup, perUnitPrice, pickField, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
+  changeOverMonths, compareRows, guessPriceGroup, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
 } from '../lib/z2Price';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
@@ -305,7 +305,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const abortion = ABORTION_SIBLING[code];
 
   // Месячные цены: поля Z1 читаем с запасом — нет поля, страница ведёт себя как раньше.
-  const isPrice = isMonthly && /^Средняя цена/i.test(indName || '');
+  const isPrice = isMonthly && (/^(Средняя цена|Average (consumer )?price)/i.test(indName || '') || isRubPerUnit(active.indicator.unit));
   const shortName = isMonthly
     ? (pickField(active, 'short_name') || (isPrice ? shortPriceName(indName, active.indicator.unit) : null))
     : null;
@@ -345,6 +345,23 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     ? compareRows(compareData, slug, last.value)
     : [];
   const lastYm = last ? last.year * 100 + last.month : null;
+  const monthlyExtremes = (() => {
+    if (!isMonthly || activeSeries.length < 24) return null;
+    let mx = activeSeries[0];
+    let mn = activeSeries[0];
+    for (const pt of activeSeries) {
+      if (pt.value > mx.value) mx = pt;
+      if (pt.value < mn.value) mn = pt;
+    }
+    return { mx, mn };
+  })();
+  const yoyByKey = isMonthly
+    ? new Map(activeSeries.map((pt, i, arr) => {
+      const prev = i >= 12 ? arr[i - 12] : null;
+      const ok = prev && prev.value && (pt.year * 12 + pt.month) - (prev.year * 12 + prev.month) === 12;
+      return [pt.year * 12 + pt.month, ok ? ((pt.value - prev.value) / Math.abs(prev.value)) * 100 : null];
+    }))
+    : null;
   const periodChanges = isMonthly
     ? [
       { key: 'z2.yearAgo', ch: changeOverMonths(activeSeries, 12) },
@@ -419,7 +436,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="fe-num whitespace-nowrap text-3xl font-bold text-text-primary">
-                {formatRegionWithUnit(last.value, active.indicator.unit, locale)}
+                {isPrice && priceSuffix ? priceText(last.value, active.indicator.unit, locale) : formatRegionWithUnit(last.value, active.indicator.unit, locale)}
               </span>
               {priceSuffix && <span className="z2p-hero-unit">{priceSuffix}</span>}
               <span className="text-sm text-text-secondary">{lastLabel}</span>
@@ -552,6 +569,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </button>
               </div>
             )}
+            {isPrice && (
+              <p className="z2p-source" lang={locale}>{t('r2z2.source', { month: lastMonthLabel })}</p>
+            )}
             </div>
 
           <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
@@ -593,9 +613,21 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </StatCell>
               </>
             )}
-            <StatCell label={t('regions.ind.period')} wide={isMonthly}>
-              {first.year}–{last.year}
-            </StatCell>
+            {monthlyExtremes && (
+              <>
+                <StatCell label={t('r2z2.statMax', { month: ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale) })}>
+                  {isPrice ? priceText(monthlyExtremes.mx.value, active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mx.value, active.indicator.unit, locale)}
+                </StatCell>
+                <StatCell label={t('r2z2.statMin', { month: ymLabel(monthlyExtremes.mn.year * 100 + monthlyExtremes.mn.month, locale) })}>
+                  {isPrice ? priceText(monthlyExtremes.mn.value, active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mn.value, active.indicator.unit, locale)}
+                </StatCell>
+              </>
+            )}
+            {!monthlyExtremes && (
+              <StatCell label={t('regions.ind.period')} wide={isMonthly}>
+                {first.year}–{last.year}
+              </StatCell>
+            )}
           </div>
 
           {active.rank?.top?.length > 0 && (
@@ -663,6 +695,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                         {isMonthly ? t('regions.ind.colMonth') : t('regions.ind.colYear')}
                       </th>
                       <th className="px-3 py-2 text-right font-medium sm:px-4">{regionName}</th>
+                      {isMonthly && <th className="px-3 py-2 text-right font-medium sm:px-4">{t('r2z2.colYoy')}</th>}
                       {active.russia_series?.length > 0 && (
                         <th className="px-3 py-2 text-right font-medium sm:px-4">{t('regions.ind.russia')}</th>
                       )}
@@ -678,6 +711,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                             {isMonthly ? `${monthName(p.month, locale)} ${p.year}` : p.year}
                           </td>
                           <td className="fe-num px-3 py-1.5 text-right text-text-primary sm:px-4">{formatRegionNumber(p.value, active.indicator.unit, locale)}</td>
+                          {isMonthly && (
+                            <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
+                              {yoyByKey.get(p.year * 12 + p.month) != null ? signedPct(yoyByKey.get(p.year * 12 + p.month), locale) : '\u2014'}
+                            </td>
+                          )}
                           {active.russia_series?.length > 0 && (
                             <td className="fe-num px-3 py-1.5 text-right text-text-secondary sm:px-4">
                               {rf ? formatRegionNumber(rf.value, active.indicator.unit, locale) : '—'}
