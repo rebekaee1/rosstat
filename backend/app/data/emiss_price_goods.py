@@ -198,12 +198,20 @@ PRICE_GOODS: tuple[PriceGood, ...] = (
 
 # Все остальные позиции витрины с опубликованными ценами (08.11.2026): артефакт
 # собирает scripts/regional/build_price_goods.py по полному проходу истории.
-# Английского перевода у них пока нет — EN-страницы показывают русское название.
+# Английские названия и единицы — в app/data/i18n/price_goods_en.py.
 def _load_auto() -> tuple[PriceGood, ...]:
     if not _AUTO_PATH.exists():
         return ()
     rows = json.loads(_AUTO_PATH.read_text(encoding="utf-8"))
-    return tuple(PriceGood(r["oid"], r["code"], r["label"], r["per"], "Прочее", "", "") for r in rows)
+    from app.data.i18n.price_goods_en import PRICE_GOODS_EN
+
+    def _en(code: str) -> tuple[str, str]:
+        return PRICE_GOODS_EN.get(code, ("", ""))
+
+    return tuple(
+        PriceGood(r["oid"], r["code"], r["label"], r["per"], "Прочее", *_en(r["code"]))
+        for r in rows
+    )
 
 
 AUTO_PRICE_GOODS: tuple[PriceGood, ...] = _load_auto()
@@ -238,7 +246,7 @@ def artifact_rows() -> list[dict]:
 def copy_en(g: PriceGood) -> dict:
     return {
         "name": f"Average consumer price: {g.label_en}",
-        "unit": f"roubles per {g.per_en}",
+        "unit": f"roubles per {g.per_en}" if g.per_en else "roubles",
         "note": "average consumer price; end of month",
         "section": "Prices",
     }
@@ -425,6 +433,18 @@ def _months_between(a: int, b: int) -> int:
     return (b // 100 - a // 100) * 12 + (b % 100 - a % 100)
 
 
+_SKIP_UNIT_EN = ("service", "item", "type of work", "operation", "visit", "procedure", "session", "course")
+
+
+def _short_en(g: PriceGood) -> str | None:
+    """Short English name with the unit: «Chicken eggs, 10 eggs»; no unit when it adds nothing."""
+    if not g.label_en:
+        return None
+    if not g.per_en or g.per_en in _SKIP_UNIT_EN:
+        return g.label_en
+    return f"{g.label_en}, {g.per_en}"
+
+
 def price_meta(code: str) -> dict | None:
     """Поля подачи цены для API; None, если код — не из витрины цен."""
     g = PRICE_GOODS_BY_CODE.get(code)
@@ -437,7 +457,7 @@ def price_meta(code: str) -> dict | None:
     group = g.group if g.group != "Прочее" else classify_price_group(g.label, g.per)
     return {
         "short_name": short_name_for(g),
-        "short_name_en": f"{g.label_en}, {g.per_en}" if g.label_en else None,
+        "short_name_en": _short_en(g),
         "price_group": group,
         "is_discontinued": _months_between(last, MARKET_LAST_MONTH) > 12,
         "last_month": last,
