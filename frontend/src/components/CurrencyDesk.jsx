@@ -16,7 +16,7 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import EmptyState from './brand/EmptyState';
 import {
-  CURRENCY_TABS, buildEdges, convertibleUnits, currencySearchText, nominalFor, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
+  CURRENCY_TABS, TRAVEL_UNITS, buildEdges, convertibleUnits, currencySearchText, formatConverted, nominalFor, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
   sortByPopularity, unitMeta, unitWord,
 } from '../lib/currencyRates';
 import { coinOf } from '../lib/currencyChart';
@@ -201,6 +201,14 @@ function CurrencyRow({ ind, index }) {
   const shown = apiN > 1 ? value : value * perN;
   const digits = Math.abs(shown) >= 1000 ? 0 : 2;
   const showDelta = delta && !delta.flat && !stale;
+  // Для тех, кто отправляет рубли: у валют «в дорогу» вместо даты (она одна для всех строк) стоит «1 000 ₽ = 112 сомони».
+  const perOneRub = value / (apiN || 1);
+  const sendText = pair && pair.quote === 'RUB' && TRAVEL_UNITS.includes(pair.base) && perOneRub > 0 && !stale
+    ? (() => {
+      const got = 1000 / perOneRub;
+      return `1\u00a0000\u00a0₽ = ${formatConverted(got, locale, { money: true })}\u00a0${unitWord(got, pair.base, locale)}`;
+    })()
+    : '';
   return (
     <Link
       to={russiaIndicatorPath(ind.code)}
@@ -218,7 +226,8 @@ function CurrencyRow({ ind, index }) {
             <DeltaBadge delta={pct} polarity={indicatorPolarity(ind.name, ind.name_en, ind.code)}>{delta.text}</DeltaBadge>
           )}
           {showDelta && basis !== 'close' && <span className="z3-period">{t('z3.cur.perDay')}</span>}
-          {basis && (
+          {sendText && <span className="fe-trow__date z3-send-row">{sendText}</span>}
+          {basis && !sendText && (
             <span className={cn('fe-trow__date', stale && 'is-stale')}>
               {stale ? t('c9d.cur.stale', { date: dateText }) : t(`w6g.cur.basisShort.${basis}`, { date: dateText })}
             </span>
