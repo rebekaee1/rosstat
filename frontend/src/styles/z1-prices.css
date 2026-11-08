@@ -1,0 +1,55 @@
+/* Z1 (круг «данные на виду»): цены в регионе. Только светлота слоя и тень, без рамок и колец. */
+
+.z1p-block { margin: 0 0 32px; }
+.z1p-block__head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.z1p-all { flex: none; min-height: 44px; }
+
+.z1p-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 640px) { .z1p-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .z1p-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Телефон: восемь ходовых цен, остальные видны на планшете и выше. */
+@media (max-width: 639px) { .z1p-grid > :nth-child(n + 9) { display: none; } }
+
+.z1p-card {
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  padding: 14px; border-radius: 18px;
+}
+.z1p-card__name {
+  font-size: 13px; line-height: 1.3; color: var(--color-text-secondary);
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+  min-height: 2.6em;
+}
+.z1p-card__value {
+  font-size: 1.3rem; font-weight: 700; line-height: 1.15; color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.z1p-card__per { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); }
+.z1p-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
+.z1p-card__month { font-size: 13px; color: var(--color-text-secondary); }
+
+/* Раздел цен: группы и переключатель групп. */
+.z1p-chips { margin: 0 0 18px; flex-wrap: wrap; }
+.z1p-chips__n { margin-left: 6px; font-size: 12px; opacity: .7; font-variant-numeric: tabular-nums; }
+.z1p-group { margin-top: 22px; }
+.z1p-group:first-of-type { margin-top: 4px; }
+.z1p-group__title {
+  display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px;
+  font-family: var(--font-display, inherit); font-size: 1.05rem; font-weight: 700; color: var(--color-text-primary);
+}
+.z1p-group__n { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.z1p-more { margin-top: 12px; min-height: 44px; }
+
+/* Позиции, которые Росстат больше не публикует: тихая пометка вместо тревоги. */
+.z1p-quiet { margin-top: 4px; font-size: 12px; line-height: 1.35; color: var(--color-text-tertiary, var(--color-text-secondary)); }
+.z1p-row-old { opacity: .78; }
+
+/* Шапка региона: название и звёздочка в одну строку, без пустой полосы под кнопками. */
+.z1p-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; }
+.z1p-title-row > h1 { min-width: 0; flex: 1 1 auto; }
+.z1p-title-row .fe-cabinet-actions { margin-left: 0; flex: none; gap: 6px; }
+.z1p-header-actions { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.z1p-header-actions .fe-reg-pick { min-height: 44px; }
+.fe-data-header.z1p-header { margin-bottom: 20px; padding-bottom: clamp(16px, 2.4vw, 28px); }

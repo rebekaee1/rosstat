@@ -232,12 +232,12 @@ describe('страница региона: подпись данных и под
     ] }],
   };
 
-  it('одна подпись «последние данные», кнопка «Сравнить с Россией», подсказка к сложному названию и указатель тренда', async () => {
+  it('без лишней подписи про год, кнопка «Сравнить с Россией», подсказка к сложному названию и указатель тренда', async () => {
     mockApiGet([['/auth/me', { user: null }], [/^\/regions\/region\//, profile], [/^\/regions\/tulskaya/, profile]]);
     renderPage(<RegionProfile />, { path: '/russia/region/:slug', route: '/russia/region/tulskaya-oblast' });
-    expect(await screen.findByTestId('region-latest-note')).toBeTruthy();
-    expect(screen.getByTestId('region-latest-note').textContent).toMatch(/Последние данные/);
-    const cmp = screen.getByTestId('region-compare-russia');
+    // Подпись про мелкий год убрана (круг «данные на виду»): период стоит на самой карточке.
+    const cmp = await screen.findByTestId('region-compare-russia');
+    expect(screen.queryByTestId('region-latest-note')).toBeNull();
     expect(cmp.textContent).toContain('Сравнить с Россией');
     expect(cmp.getAttribute('href')).toBe('/russia/region/tulskaya-oblast/3.4');
     expect((await screen.findByTestId('row-explain')).textContent).toMatch(/тысячу человек трудоспособного возраста/);

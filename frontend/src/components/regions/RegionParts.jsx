@@ -97,7 +97,7 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
         <RegionValue value={item.value} unit={item.unit} locale={locale} />
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
+        <span className="text-[13px] font-medium text-text-secondary">{item.period_label || item.year}</span>
         <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} label={item.label} unit={item.unit} />
       </div>
       {empty && <span className="sr-only">{t('common.noData')}</span>}
@@ -106,19 +106,25 @@ export function RegionHeadlineCard({ item, to, index = 0 }) {
 }
 
 export function RegionIndicatorRow({ item, to, title }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const empty = item.value == null;
-  const explain = explainIndicator(item.name, item.unit, locale);
+  const old = Boolean(item.is_discontinued);
+  const explain = item.short_name ? null : explainIndicator(item.name, item.unit, locale);
   const Card = empty ? 'div' : Link;
   return (
     <Card
       {...(empty ? { 'aria-disabled': true } : { to })}
-      className="fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float"
+      className={`${old ? 'z1p-row-old ' : ''}fe-press group flex min-w-0 flex-col gap-2 rounded-2xl px-3.5 py-3 transition-colors sm:min-h-[84px] sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-3.5 fe-glass-lite fe-float`}
     >
       <div className="min-w-0 flex-1">
         <div className="text-[14px] leading-snug text-text-primary transition-colors group-hover:text-champagne-ink">
           {title || plainIndicatorTitle(item.name, locale)}
         </div>
+        {old ? (
+          <div className="z1p-quiet" data-testid="row-discontinued">
+            {t('z1.prices.discontinued', { month: item.last_month_label || item.period_label || item.year })}
+          </div>
+        ) : null}
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
       <div className="flex items-baseline justify-between gap-3 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
@@ -126,8 +132,8 @@ export function RegionIndicatorRow({ item, to, title }) {
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">
-          <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />
-          <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />
+          {old ? null : <TrendTick value={item.value} prevValue={item.prev_value} polarity={indicatorPolarity(item.name)} />}
+          {old ? null : <RegionDelta value={item.value} prevValue={item.prev_value} name={item.name} unit={item.unit} />}
           <span className="text-xs text-text-tertiary">{item.period_label || item.year}</span>
         </div>
       </div>
