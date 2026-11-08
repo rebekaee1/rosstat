@@ -27,13 +27,13 @@
 
 ## Сводка
 
-- Всего кодов: **999**
+- Всего кодов: **1685**
 - in_both_viewmode_systems (дубль легаси+generic): **14**
 - shadowed_legacy (перекрытая standalone-ветка): **24**
 - unresolved (нет ui_stack): **27**
 - derived_not_seeded: **0**
 
-По стекам: `cpi`=32, `generic`=927, `housing`=8, `null`=27, `ppi`=5
+По стекам: `cpi`=32, `generic`=1613, `housing`=8, `null`=27, `ppi`=5
 
 ### Unresolved (ui_stack=null)
 
@@ -43,6 +43,48 @@
 
 | Код | Категория | Частота | Стек | Стратегия | Listed | Флаги |
 |-----|-----------|---------|------|-----------|:------:|-------|
+| `aed-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `aed-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `aed-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aed-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `aed-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `aed-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `aed-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aed-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `aed-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `aed-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `aed-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `aed-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `aed-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aed-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `amd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `amd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `amd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `amd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `amd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `amd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `amd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `amd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `amd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `amd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `amd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `amd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `amd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `amd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `aud-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `aud-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `aud-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aud-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `aud-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `aud-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `aud-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aud-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `aud-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `aud-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `aud-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `aud-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `aud-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `aud-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `auto-loan-rate` | Ставки | monthly | `generic` | monthly_auto | ✓ | — |
 | `auto-loan-rate-avg-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -53,11 +95,67 @@
 | `auto-loan-rate-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `auto-loan-rate-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
+| `azn-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `azn-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `azn-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `azn-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `azn-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `azn-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `azn-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `azn-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `azn-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `azn-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `azn-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `azn-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `azn-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `azn-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `bdt-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `bdt-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `bdt-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bdt-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `bdt-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `bdt-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `bdt-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bdt-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `bdt-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `bdt-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `bdt-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `bdt-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `bdt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bdt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `bhd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `bhd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `bhd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bhd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `bhd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `bhd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `bhd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bhd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `bhd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `bhd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `bhd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `bhd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `bhd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bhd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `birth-rate` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `birth-rate-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `births` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `births-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `births-yoy` | Население | annual | `generic` | derived_from_source | — | — |
+| `bob-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `bob-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `bob-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bob-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `bob-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `bob-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `bob-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bob-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `bob-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `bob-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `bob-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `bob-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `bob-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `bob-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `brent` | Товарные рынки | daily | `generic` | — | ✓ | — |
 | `brent-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
 | `brent-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
@@ -72,6 +170,20 @@
 | `brent-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `brent-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `brent-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
+| `brl-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `brl-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `brl-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `brl-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `brl-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `brl-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `brl-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `brl-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `brl-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `brl-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `brl-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `brl-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `brl-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `brl-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `btc-usd` | Валюты | daily | `generic` | — | ✓ | — |
 | `btc-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `btc-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -120,11 +232,53 @@
 | `business-credit-yoy` | Финансы | monthly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `business-credit-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
+| `byn-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `byn-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `byn-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `byn-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `byn-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `byn-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `byn-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `byn-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `byn-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `byn-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `byn-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `byn-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `byn-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `byn-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `cad-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `cad-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `cad-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cad-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `cad-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `cad-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `cad-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cad-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `cad-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `cad-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `cad-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `cad-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `cad-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cad-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `capital-investment` | Бизнес | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `capital-investment-qoq` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-sum-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `capital-investment-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
+| `chf-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `chf-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `chf-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `chf-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `chf-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `chf-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `chf-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `chf-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `chf-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `chf-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `chf-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `chf-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `chf-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `chf-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `cny-eur` | Валюты | daily | `null` | — | — | no-stack |
 | `cny-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `cny-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
@@ -274,12 +428,40 @@
 | `credit-rate-ind-short-yoy` | Ставки | monthly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-yoy-quarter` | Ставки | quarterly | `generic` | derived_from_source | — | — |
 | `credit-rate-ind-short-yoy-year` | Ставки | annual | `generic` | derived_from_source | — | — |
+| `cup-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `cup-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `cup-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cup-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `cup-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `cup-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `cup-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cup-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `cup-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `cup-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `cup-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `cup-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `cup-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `cup-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `current-account` | Торговля | quarterly | `generic` | signed_quarterly | ✓ | both, shadowed |
 | `current-account-qoq` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `current-account-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `current-account-yoy` | Торговля | quarterly | `generic` | — | — | — |
 | `current-account-yoy-abs` | Торговля | quarterly | `generic` | — | — | both, shadowed |
 | `current-account-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
+| `czk-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `czk-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `czk-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `czk-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `czk-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `czk-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `czk-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `czk-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `czk-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `czk-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `czk-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `czk-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `czk-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `czk-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `death-rate` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `death-rate-yoy` | Население | annual | `generic` | derived_from_source | — | — |
 | `deaths` | Население | annual | `generic` | annual_auto | ✓ | — |
@@ -337,9 +519,51 @@
 | `deposits-individual-yoy-year` | Финансы | annual | `generic` | derived_from_source | — | — |
 | `depreciation-rate` | Бизнес | annual | `generic` | annual_auto | ✓ | — |
 | `depreciation-rate-yoy` | Бизнес | annual | `generic` | derived_from_source | — | — |
+| `dkk-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `dkk-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `dkk-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dkk-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `dkk-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `dkk-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `dkk-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dkk-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `dkk-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `dkk-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `dkk-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `dkk-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `dkk-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dkk-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `doctoral-students` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `doctoral-students-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `doctoral-students-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `dzd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `dzd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `dzd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dzd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `dzd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `dzd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `dzd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dzd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `dzd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `dzd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `dzd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `dzd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `dzd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `dzd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `egp-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `egp-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `egp-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `egp-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `egp-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `egp-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `egp-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `egp-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `egp-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `egp-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `egp-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `egp-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `egp-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `egp-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `employment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `employment-avg-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-avg-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -351,6 +575,20 @@
 | `employment-yoy` | Рынок труда | monthly | `generic` | derived_from_source | — | — |
 | `employment-yoy-quarter` | Рынок труда | quarterly | `generic` | derived_from_source | — | — |
 | `employment-yoy-year` | Рынок труда | annual | `generic` | derived_from_source | — | — |
+| `etb-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `etb-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `etb-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `etb-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `etb-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `etb-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `etb-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `etb-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `etb-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `etb-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `etb-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `etb-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `etb-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `etb-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `eth-usd` | Валюты | daily | `generic` | — | ✓ | — |
 | `eth-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `eth-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -454,6 +692,20 @@
 | `fuel-diesel-yoy-quarter` | Цены | quarterly | `generic` | — | — | — |
 | `fuel-diesel-yoy-year` | Цены | annual | `generic` | — | — | — |
 | `gbp-eur` | Валюты | daily | `null` | — | — | no-stack |
+| `gbp-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `gbp-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `gbp-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `gbp-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `gbp-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `gbp-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `gbp-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gbp-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `gbp-usd` | Валюты | daily | `generic` | — | ✓ | — |
 | `gbp-usd-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `gbp-usd-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -493,6 +745,20 @@
 | `gdp-real-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
 | `gdp-real-yoy-year` | ВВП | annual | `generic` | derived_from_source | — | — |
 | `gdp-yoy` | ВВП | quarterly | `generic` | derived_from_source | — | — |
+| `gel-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `gel-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `gel-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gel-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `gel-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `gel-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `gel-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gel-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `gel-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `gel-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `gel-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `gel-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `gel-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `gel-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `gold-price` | Товарные рынки | daily | `generic` | — | ✓ | — |
 | `gold-price-avg-month` | Товарные рынки | monthly | `generic` | — | — | — |
 | `gold-price-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
@@ -510,6 +776,20 @@
 | `grad-students` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `grad-students-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `grad-students-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `hkd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `hkd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `hkd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `hkd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `hkd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `hkd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `hkd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `hkd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `hkd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `hkd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `hkd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `hkd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `hkd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `hkd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `housing-affordability` | Цены | monthly | `generic` | monthly_auto | ✓ | — |
 | `housing-affordability-avg-quarter` | Цены | quarterly | `generic` | derived_from_source | — | — |
 | `housing-affordability-avg-year` | Цены | annual | `generic` | derived_from_source | — | — |
@@ -546,6 +826,34 @@
 | `housing-qoq-secondary` | Цены | quarterly | `housing` | derived_from_source | — | — |
 | `housing-yoy-primary` | Цены | quarterly | `housing` | derived_from_source | — | — |
 | `housing-yoy-secondary` | Цены | quarterly | `housing` | derived_from_source | — | — |
+| `huf-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `huf-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `huf-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `huf-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `huf-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `huf-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `huf-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `huf-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `huf-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `huf-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `huf-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `huf-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `huf-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `huf-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `idr-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `idr-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `idr-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `idr-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `idr-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `idr-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `idr-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `idr-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `idr-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `idr-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `idr-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `idr-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `idr-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `idr-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `imoex` | Индексы | daily | `generic` | — | ✓ | — |
 | `imoex-avg-month` | Индексы | monthly | `generic` | — | — | — |
 | `imoex-avg-quarter` | Индексы | quarterly | `generic` | — | — | — |
@@ -581,6 +889,20 @@
 | `inflation-weekly-services` | Цены | weekly | `cpi` | generic_ols | — | — |
 | `innovation-activity` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `innovation-activity-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `inr-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `inr-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `inr-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `inr-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `inr-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `inr-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `inr-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `inr-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `inr-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `inr-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `inr-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `inr-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `inr-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `inr-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `international-reserves` | Финансы | weekly | `generic` | — | ✓ | — |
 | `international-reserves-avg-month` | Финансы | monthly | `generic` | — | — | — |
 | `international-reserves-avg-quarter` | Финансы | quarterly | `generic` | — | — | — |
@@ -643,6 +965,34 @@
 | `ipi-yoy` | Бизнес | monthly | `generic` | derived_from_source | — | — |
 | `ipi-yoy-quarter` | Бизнес | quarterly | `generic` | derived_from_source | — | — |
 | `ipi-yoy-year` | Бизнес | annual | `generic` | derived_from_source | — | — |
+| `irr-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `irr-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `irr-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `irr-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `irr-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `irr-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `irr-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `irr-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `irr-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `irr-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `irr-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `irr-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `irr-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `irr-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `jpy-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `jpy-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `jpy-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `jpy-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `jpy-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `jpy-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `jpy-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `jpy-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `jpy-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `jpy-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `jpy-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `jpy-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `jpy-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `jpy-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `key-rate` | Ставки | daily | `generic` | — | ✓ | — |
 | `key-rate-avg-month` | Финансы | monthly | `generic` | — | — | — |
 | `key-rate-avg-quarter` | Финансы | quarterly | `generic` | — | — | — |
@@ -657,6 +1007,34 @@
 | `key-rate-yoy` | Финансы | monthly | `generic` | — | — | — |
 | `key-rate-yoy-quarter` | Финансы | quarterly | `generic` | — | — | — |
 | `key-rate-yoy-year` | Финансы | annual | `generic` | — | — | — |
+| `kgs-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `kgs-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `kgs-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kgs-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `kgs-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `kgs-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `kgs-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kgs-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `kgs-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `kgs-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `kgs-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `kgs-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `kgs-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `kgs-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `krw-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `krw-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `krw-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `krw-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `krw-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `krw-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `krw-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `krw-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `krw-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `krw-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `krw-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `krw-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `krw-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `krw-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `kzt-rub` | Валюты | daily | `generic` | — | ✓ | — |
 | `kzt-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
 | `kzt-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
@@ -727,6 +1105,48 @@
 | `mcftr-yoy` | Индексы | monthly | `generic` | — | — | — |
 | `mcftr-yoy-quarter` | Индексы | quarterly | `generic` | — | — | — |
 | `mcftr-yoy-year` | Индексы | annual | `generic` | — | — | — |
+| `mdl-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `mdl-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `mdl-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mdl-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `mdl-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `mdl-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `mdl-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mdl-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `mdl-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `mdl-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `mdl-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `mdl-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `mdl-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mdl-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `mmk-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `mmk-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `mmk-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mmk-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `mmk-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `mmk-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `mmk-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mmk-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `mmk-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `mmk-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `mmk-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `mmk-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `mmk-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mmk-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `mnt-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `mnt-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `mnt-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mnt-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `mnt-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `mnt-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `mnt-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mnt-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `mnt-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `mnt-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `mnt-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `mnt-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `mnt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `mnt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `mortgage-rate` | Ставки | monthly | `generic` | monthly_auto | ✓ | — |
 | `mortgage-rate-avg-quarter` | Финансы | quarterly | `generic` | derived_from_source | — | — |
 | `mortgage-rate-avg-year` | Финансы | annual | `generic` | derived_from_source | — | — |
@@ -751,10 +1171,80 @@
 | `natural-gas-yoy` | Товарные рынки | monthly | `generic` | — | — | — |
 | `natural-gas-yoy-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
 | `natural-gas-yoy-year` | Товарные рынки | annual | `generic` | — | — | — |
+| `ngn-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `ngn-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `ngn-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ngn-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `ngn-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `ngn-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `ngn-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ngn-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `ngn-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `ngn-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `ngn-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `ngn-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `ngn-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ngn-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `nok-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `nok-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `nok-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nok-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `nok-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `nok-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `nok-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nok-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `nok-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `nok-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `nok-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `nok-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `nok-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nok-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `nzd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `nzd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `nzd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nzd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `nzd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `nzd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `nzd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nzd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `nzd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `nzd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `nzd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `nzd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `nzd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `nzd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `omr-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `omr-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `omr-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `omr-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `omr-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `omr-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `omr-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `omr-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `omr-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `omr-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `omr-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `omr-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `omr-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `omr-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `part-time-employed` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `pensioners` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pensioners-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pensioners-yoy` | Население | annual | `generic` | derived_from_source | — | — |
+| `pln-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `pln-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `pln-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `pln-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `pln-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `pln-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `pln-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `pln-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `pln-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `pln-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `pln-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `pln-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `pln-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `pln-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `pop-over-working-age` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `pop-over-working-age-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `pop-over-working-age-yoy` | Население | annual | `generic` | derived_from_source | — | — |
@@ -775,6 +1265,20 @@
 | `ppi-mom` | Цены | monthly | `ppi` | derived_from_source | — | — |
 | `ppi-qoq` | Цены | quarterly | `ppi` | derived_from_source | — | — |
 | `ppi-yoy` | Цены | monthly | `ppi` | derived_from_source | — | — |
+| `qar-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `qar-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `qar-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `qar-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `qar-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `qar-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `qar-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `qar-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `qar-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `qar-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `qar-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `qar-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `qar-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `qar-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `rd-organizations` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `rd-organizations-index` | Наука | annual | `generic` | derived_from_source | — | — |
 | `rd-organizations-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
@@ -805,6 +1309,34 @@
 | `rgbi-yoy` | Индексы | monthly | `generic` | — | — | — |
 | `rgbi-yoy-quarter` | Индексы | quarterly | `generic` | — | — | — |
 | `rgbi-yoy-year` | Индексы | annual | `generic` | — | — | — |
+| `ron-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `ron-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `ron-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ron-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `ron-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `ron-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `ron-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ron-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `ron-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `ron-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `ron-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `ron-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `ron-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `ron-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `rsd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `rsd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `rsd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `rsd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `rsd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `rsd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `rsd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `rsd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `rsd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `rsd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `rsd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `rsd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `rsd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `rsd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `rtsi` | Индексы | daily | `generic` | — | ✓ | — |
 | `rtsi-avg-month` | Индексы | monthly | `generic` | — | — | — |
 | `rtsi-avg-quarter` | Индексы | quarterly | `generic` | — | — | — |
@@ -833,6 +1365,34 @@
 | `ruonia-yoy` | Финансы | monthly | `generic` | — | — | — |
 | `ruonia-yoy-quarter` | Финансы | quarterly | `generic` | — | — | — |
 | `ruonia-yoy-year` | Финансы | annual | `generic` | — | — | — |
+| `sar-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `sar-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `sar-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sar-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `sar-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `sar-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `sar-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sar-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `sar-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `sar-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `sar-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `sar-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `sar-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sar-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `sek-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `sek-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `sek-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sek-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `sek-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `sek-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `sek-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sek-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `sek-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `sek-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `sek-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `sek-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `sek-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sek-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `services-exports` | Торговля | quarterly | `generic` | generic_quarterly | ✓ | — |
 | `services-exports-monthly` | Торговля | monthly | `generic` | monthly_auto | — | both, shadowed |
 | `services-exports-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -859,6 +1419,20 @@
 | `services-imports-sum-year` | Торговля | annual | `generic` | derived_from_source | — | — |
 | `services-imports-yoy` | Торговля | quarterly | `generic` | derived_from_source | — | — |
 | `services-imports-yoy-year` | Торговля | annual | `generic` | derived_from_source | — | — |
+| `sgd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `sgd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `sgd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sgd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `sgd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `sgd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `sgd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sgd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `sgd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `sgd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `sgd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `sgd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `sgd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `sgd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `short-term-unemployed` | Рынок труда | monthly | `null` | — | ✓ | no-stack |
 | `silver` | Товарные рынки | monthly | `generic` | — | ✓ | — |
 | `silver-avg-quarter` | Товарные рынки | quarterly | `generic` | — | — | — |
@@ -895,6 +1469,48 @@
 | `steel` | Товарные рынки | daily | `null` | — | — | no-stack |
 | `tech-innovation-share` | Наука | annual | `generic` | annual_auto | ✓ | — |
 | `tech-innovation-share-yoy` | Наука | annual | `generic` | derived_from_source | — | — |
+| `thb-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `thb-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `thb-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `thb-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `thb-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `thb-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `thb-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `thb-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `thb-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `thb-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `thb-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `thb-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `thb-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `thb-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `tjs-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `tjs-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `tjs-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tjs-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `tjs-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `tjs-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `tjs-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tjs-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `tjs-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `tjs-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `tjs-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `tjs-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `tjs-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tjs-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `tmt-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `tmt-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `tmt-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tmt-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `tmt-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `tmt-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `tmt-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tmt-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `tmt-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `tmt-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `tmt-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `tmt-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `tmt-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `tmt-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `trade-balance` | Торговля | quarterly | `generic` | derived_from_source | ✓ | both, shadowed |
 | `trade-balance-monthly` | Торговля | monthly | `generic` | monthly_auto | — | — |
 | `trade-balance-monthly-mom` | Торговля | monthly | `generic` | derived_from_source | — | — |
@@ -923,6 +1539,20 @@
 | `try-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
 | `try-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
 | `try-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `uah-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `uah-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `uah-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uah-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `uah-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `uah-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `uah-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uah-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `uah-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `uah-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `uah-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `uah-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `uah-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uah-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `unemployed-higher-education-share` | Рынок труда | quarterly | `null` | — | ✓ | no-stack |
 | `unemployed-higher-education-share-annual` | Рынок труда | annual | `null` | — | ✓ | no-stack |
 | `unemployment` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | shadowed |
@@ -1004,6 +1634,34 @@
 | `ust-10y-yoy` | Индексы | monthly | `generic` | — | — | — |
 | `ust-10y-yoy-quarter` | Индексы | quarterly | `generic` | — | — | — |
 | `ust-10y-yoy-year` | Индексы | annual | `generic` | — | — | — |
+| `uzs-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `uzs-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `uzs-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uzs-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `uzs-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `uzs-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `uzs-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uzs-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `uzs-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `uzs-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `uzs-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `uzs-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `uzs-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `uzs-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `vnd-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `vnd-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `vnd-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `vnd-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `vnd-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `vnd-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `vnd-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `vnd-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `vnd-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `vnd-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `vnd-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `vnd-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `vnd-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `vnd-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 | `wages-index` | Рынок труда | monthly | `generic` | — | — | — |
 | `wages-nominal` | Рынок труда | monthly | `generic` | monthly_auto | ✓ | — |
 | `wages-nominal-annual` | Рынок труда | annual | `generic` | derived_from_source | — | — |
@@ -1042,6 +1700,34 @@
 | `working-age-population` | Население | annual | `generic` | annual_auto | ✓ | — |
 | `working-age-population-index` | Население | annual | `generic` | derived_from_source | — | — |
 | `working-age-population-yoy` | Население | annual | `generic` | derived_from_source | — | — |
+| `xdr-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `xdr-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `xdr-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `xdr-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `xdr-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `xdr-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `xdr-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `xdr-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `xdr-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `xdr-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `xdr-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `xdr-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `xdr-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `xdr-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
+| `zar-rub` | Валюты | daily | `generic` | — | ✓ | — |
+| `zar-rub-avg-month` | Валюты | monthly | `generic` | — | — | — |
+| `zar-rub-avg-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `zar-rub-avg-week` | Валюты | weekly | `generic` | — | — | — |
+| `zar-rub-avg-year` | Валюты | annual | `generic` | — | — | — |
+| `zar-rub-eop-month` | Валюты | monthly | `generic` | — | — | — |
+| `zar-rub-eop-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `zar-rub-eop-week` | Валюты | weekly | `generic` | — | — | — |
+| `zar-rub-eop-year` | Валюты | annual | `generic` | — | — | — |
+| `zar-rub-mom` | Валюты | monthly | `generic` | — | — | — |
+| `zar-rub-qoq` | Валюты | quarterly | `generic` | — | — | — |
+| `zar-rub-yoy` | Валюты | monthly | `generic` | — | — | — |
+| `zar-rub-yoy-quarter` | Валюты | quarterly | `generic` | — | — | — |
+| `zar-rub-yoy-year` | Валюты | annual | `generic` | — | — | — |
 
 
 # Аудит полноты семейств — паспорт полноты
@@ -1053,7 +1739,7 @@
 - **Тип** (верх, эталон — переключатель ИПЦ): `value` Уровень/значение · `pop` К прошлому периоду · `yoy` К соотв. периоду пред. года · `index` Индекс
 - **Частота** (низ): `day` дн · `week` нед · `month` мес · `quarter` кв · `year` год
 
-Корней-семейств: **149** · с полной матрицей: **110** · с пробелами: **39**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 111, 'orphan': 27}.
+Корней-семейств: **198** · с полной матрицей: **159** · с пробелами: **39**. Покрытие: {'bespoke': 7, 'bespoke-data': 4, 'generic': 160, 'orphan': 27}.
 
 ## Систематические пробелы по типам
 
@@ -1065,7 +1751,7 @@
 | bespoke/CPI | index | month | 4 | `yoy:quarter`, `yoy:year` |
 | bespoke/HOUSING | index | quarter | 2 | `pop:year` |
 | bespoke/PPI | index | month | 1 | `yoy:quarter`, `yoy:year` |
-| generic/T1 | rate | day | 23 | — |
+| generic/T1 | rate | day | 72 | — |
 | generic/T10 | annual-count | year | 13 | — |
 | generic/T10a | annual-signed | year | 11 | — |
 | generic/T12 | ratio-index | month | 2 | — |

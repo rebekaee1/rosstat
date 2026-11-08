@@ -19,19 +19,20 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2248,
-    "code_files": 1838,
-    "current_reviews": 2248,
+    "files": 2257,
+    "code_files": 1846,
+    "current_reviews": 2253,
     "statuses": {
-      "artifact_schema_reviewed": 85,
+      "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 120,
       "body_reviewed": 4,
-      "data_schema_reviewed": 6,
-      "reviewed": 2033
+      "data_schema_reviewed": 8,
+      "missing": 1,
+      "reviewed": 2038
     },
-    "definitions": 14941,
-    "annotated_definitions": 14941,
-    "files_needing_attention": 0
+    "definitions": 14994,
+    "annotated_definitions": 14987,
+    "files_needing_attention": 4
   },
   "orphan_reviews": [],
   "files": [
@@ -1739,6 +1740,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/data/cbr_currencies.py",
+      "sha256": "0caee31ba6bef32c90b7d598803463a338c5024e07b7f89692d8fd00ad942a54",
+      "bytes": 34640,
+      "lines": 480,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 19,
+      "annotated_definitions": 19,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/data/cpi_provenance.py",
       "sha256": "91c113b75b30de23b12bd2a081fb41bb905002d90dcf0d36598d2815f73e7146",
       "bytes": 830,
@@ -1762,6 +1776,19 @@
       "issues": [],
       "definitions": 4,
       "annotated_definitions": 4,
+      "missing_definitions": []
+    },
+    {
+      "path": "backend/app/data/emiss_price_goods.py",
+      "sha256": "6174cb20e97421a005ec03b6b83e2e6e12e5bc8d64eff09e26ea1e02739b0928",
+      "bytes": 19876,
+      "lines": 243,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 8,
+      "annotated_definitions": 8,
       "missing_definitions": []
     },
     {
@@ -1922,9 +1949,9 @@
     },
     {
       "path": "backend/app/data/global_market_indicators.py",
-      "sha256": "d3cf17598ffeac16b7c15bba13518d86147feefa083cd3d22f98b01aa069f3f8",
-      "bytes": 2721,
-      "lines": 63,
+      "sha256": "4c97a58becb2243c18590457ae7e9d16cd124423dc54bf1b369cf05237d0da40",
+      "bytes": 2990,
+      "lines": 67,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -1987,9 +2014,9 @@
     },
     {
       "path": "backend/app/data/i18n/indicator_copy_en.py",
-      "sha256": "0a686afe1a2709f8bf134b3fb6d0c9cd401604112a2a4699f0558faf0b55825e",
-      "bytes": 73631,
-      "lines": 1084,
+      "sha256": "17b094ac5c96676278c1009ba5733f05532e6e79f7b8d09bda9abeb98e8af158",
+      "bytes": 73914,
+      "lines": 1091,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2000,9 +2027,9 @@
     },
     {
       "path": "backend/app/data/i18n/region_indicators_en.py",
-      "sha256": "64b7c1734f95f25ed454456a0ef629774a3920db53b9fc0ce59a13d58e1dba98",
-      "bytes": 131636,
-      "lines": 2954,
+      "sha256": "404584f2da40f81809fb072c570e1004a7e5c03fce5d38a72dbe5180d93511fa",
+      "bytes": 131998,
+      "lines": 2962,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2039,9 +2066,9 @@
     },
     {
       "path": "backend/app/data/indicator_seo.py",
-      "sha256": "5a51a8d2bc4084f15b5046ec89bff07ad1a3ccf441dbb9c296f07db945af40b4",
-      "bytes": 730114,
-      "lines": 9239,
+      "sha256": "1d2d53a4c37e3e3c12d72beedceecb0cc459349503cb2864c862d0a62f7c129f",
+      "bytes": 730719,
+      "lines": 9249,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -2129,6 +2156,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/data/regional/emiss_price_goods.json",
+      "sha256": "04b4a04fd1e801fb04ce74db782eb440e9cc37bdecf4f692db5f823bde0f2879",
+      "bytes": 184897,
+      "lines": 7211,
+      "code": false,
+      "status": "data_schema_reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/data/regional/fuel_points.csv",
       "sha256": "3439b2a2ecc99ba7571f63055184fdefce58dd45ef24f89ab5041075a92ac342",
       "bytes": 3067398,
@@ -2143,11 +2183,11 @@
     },
     {
       "path": "backend/app/data/regional/indicators.json",
-      "sha256": "fcd3f92a74bb35673d887aa173f13306672d32cd57f2ee20b0602d3d5abbeb3f",
-      "bytes": 302917,
-      "lines": 6440,
+      "sha256": "97b485fd88c075c411dff4d59607ee98dcf72c6a63ab46fd87f4f9dda3b54582",
+      "bytes": 787290,
+      "lines": 16131,
       "code": false,
-      "status": "reviewed",
+      "status": "data_schema_reviewed",
       "current": true,
       "issues": [],
       "definitions": 0,
@@ -2221,22 +2261,25 @@
     },
     {
       "path": "backend/app/data/seo_static/robots.txt",
-      "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
-      "bytes": 4052,
-      "lines": 108,
+      "sha256": "05ebf39dd74cdcfd2eb1d6a4d315df11c737d4495a5f60fbef1ddfe058d37dc7",
+      "bytes": 4968,
+      "lines": 122,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
     },
     {
       "path": "backend/app/data/view_model_families.py",
-      "sha256": "0af2d7fddf3c335e99bfbaec093af89c5584bb10d521d37fbf8e00bc0a4b61e9",
-      "bytes": 75668,
-      "lines": 1235,
+      "sha256": "cf27c9934cc0f3d2e4e9a1ea1c8e35cf539a11d0a9a740a6acc90773bd5ae7a2",
+      "bytes": 75821,
+      "lines": 1238,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3157,9 +3200,9 @@
     },
     {
       "path": "backend/app/services/cbr_fx_parser.py",
-      "sha256": "b05c5d240c35c1da573fcee6b7032c4f15db13d0fe563f1df50198500772effd",
-      "bytes": 4301,
-      "lines": 117,
+      "sha256": "bb35473aa8a08fc53f9f3ad2f13f6bb44412d1804752b85ac505915c88a0de28",
+      "bytes": 5779,
+      "lines": 134,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -3417,9 +3460,9 @@
     },
     {
       "path": "backend/app/services/emiss_regional_parser.py",
-      "sha256": "097a82ab65e6812b8ff5f8bae79716b919c652289b967e854dbe8a1cc7ac3554",
-      "bytes": 25172,
-      "lines": 512,
+      "sha256": "99d97a1aa8a5b8eba45892280cb08c9b50d892356f64c900370c037c7b4b09aa",
+      "bytes": 27021,
+      "lines": 535,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4600,9 +4643,9 @@
     },
     {
       "path": "backend/app/services/search_intent.py",
-      "sha256": "27599959ca674fcd83de961b4d6c3c7d02984847322c5ba2bd13e9473779b92e",
-      "bytes": 58482,
-      "lines": 935,
+      "sha256": "fbff05e5f378f4299dafd41b5eeb4e6f5c3a65eb6bb491b5573218896346dc55",
+      "bytes": 58983,
+      "lines": 943,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -4613,9 +4656,9 @@
     },
     {
       "path": "backend/app/services/search_language.py",
-      "sha256": "e76e5e51301772eee2bf19a20598dc4f1244611d2c48eb5fd451dae19ef70c92",
-      "bytes": 45067,
-      "lines": 384,
+      "sha256": "5be4638877c46305632574a0f94d5357a1e553cb4e358df46024262ef9a3cf80",
+      "bytes": 45168,
+      "lines": 387,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -5068,9 +5111,9 @@
     },
     {
       "path": "backend/app/services/site_paths.py",
-      "sha256": "33895c8ae0264bfa72481c512cb0ea3a046ee70e662743a843abd3de8bce4b84",
-      "bytes": 11821,
-      "lines": 369,
+      "sha256": "c27fb5c1a395694efb3f6a334c8b6a04db9b0cea2a0e678cc8adce9c8ee56551",
+      "bytes": 12121,
+      "lines": 373,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -6250,6 +6293,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/load_regional_monthly.py",
+      "sha256": "5d3ba6fce85ebd29fb0376ee5f1e897f44fd2a3cb55dc80afe6d1e109ee9434e",
+      "bytes": 3839,
+      "lines": 73,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 2,
+      "annotated_definitions": 2,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/pytest.ini",
       "sha256": "b160d82f7811555051f8966d8e02750a985227c1d022208c784e606946f2eada",
       "bytes": 42,
@@ -6823,9 +6879,9 @@
     },
     {
       "path": "backend/seed_data.py",
-      "sha256": "99377f94b19de840df351ad9d9c73ce6541a5f0f73ad8fb190fc50e83e949886",
-      "bytes": 304085,
-      "lines": 5728,
+      "sha256": "66a0688ee3cf6a89125e5908052b40be93e286234a2ede3d2bcec4f2ee919ea5",
+      "bytes": 304335,
+      "lines": 5732,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -7836,6 +7892,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_cbr_currencies.py",
+      "sha256": "3a7367e760d38915e9a9fd3e3c23a5209cbdd40f588fc7534c7c685072bd9e25",
+      "bytes": 3554,
+      "lines": 75,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 6,
+      "annotated_definitions": 6,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_cbr_dataservice.py",
       "sha256": "aa731bf045b79106c40011e59ca319a0d91f8787f7040663b440e2c8f48c379d",
       "bytes": 973,
@@ -8291,6 +8360,19 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_emiss_price_goods.py",
+      "sha256": "d692b69a1721e0f8a4f7c0c002e5a853a91ffce2cea34f42b6909e03839e8bcc",
+      "bytes": 2739,
+      "lines": 59,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 5,
+      "annotated_definitions": 5,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/tests/test_emiss_regional_live_c27.py",
       "sha256": "a7b95cda17e4a083becf694a0e3a4139d84d869c0833e2212dd5fda61c4329ee",
       "bytes": 7466,
@@ -8305,9 +8387,9 @@
     },
     {
       "path": "backend/tests/test_emiss_regional_parser.py",
-      "sha256": "baffff722c41f9193020b6d1272649a9b663f872993c6d758efefaf0fefe5da1",
-      "bytes": 7466,
-      "lines": 181,
+      "sha256": "d310746e2b53423854911775669f31b186f3f0743fe7f9d0e7ab310b2c7efc2f",
+      "bytes": 7595,
+      "lines": 182,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -9693,6 +9775,67 @@
       "definitions": 28,
       "annotated_definitions": 28,
       "missing_definitions": []
+    },
+    {
+      "path": "backend/tests/test_robots_ru_googlebot_years.py",
+      "sha256": "21d8bff7e43c87d91ffeb40b0fdd571644a6d8cc946feb7adf6e497c88d55ef2",
+      "bytes": 4401,
+      "lines": 116,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 7,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "_group",
+          "line": 32,
+          "end_line": 44,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_can_crawl",
+          "line": 47,
+          "end_line": 57,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_ru_googlebot_group_has_year_rules",
+          "line": 85,
+          "end_line": 88,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_ru_googlebot_blocks_world_years",
+          "line": 92,
+          "end_line": 94,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_ru_googlebot_keeps_russia_and_cards",
+          "line": 98,
+          "end_line": 100,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_ru_other_agents_keep_world_years",
+          "line": 104,
+          "end_line": 107,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_apex_control_group_unchanged",
+          "line": 110,
+          "end_line": 116,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/tests/test_rosstat_fuel_samples.py",
@@ -11880,13 +12023,16 @@
     },
     {
       "path": "deploy/approved-shas.txt",
-      "sha256": "b0aad593409f287fd89ada4c30f7fd16da1a486ae57d630f818dc179acc7c901",
-      "bytes": 21994,
-      "lines": 165,
+      "sha256": "01d7ee4b747c613158ac1701d6adbfc29f0c99eea9556aaa14bde01dac12348c",
+      "bytes": 22261,
+      "lines": 166,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -12231,9 +12377,9 @@
     },
     {
       "path": "docs/adr/0008-regional-bounded-context.md",
-      "sha256": "2e0de4507082e66ccf76ff4ef836f3cc60e27b83759aa119e7e778810e2a5742",
-      "bytes": 19732,
-      "lines": 199,
+      "sha256": "2d6f3cc125f9a8a95bb6f8db379be7a7bf12781dd88740d8b40fc2f609176020",
+      "bytes": 21989,
+      "lines": 220,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12751,9 +12897,9 @@
     },
     {
       "path": "docs/backlog.md",
-      "sha256": "0c11106cbbe080a1b207c172f44c31e880c09fd92d8f74b1b8694942d4f9d7cc",
-      "bytes": 688049,
-      "lines": 3195,
+      "sha256": "0606bdb11bc3ef291f4c18e3140b41624ad06c9997f6c39ac84f09606b37d5e3",
+      "bytes": 689780,
+      "lines": 3216,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12777,9 +12923,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "b93f7206fc1808b46b5c1d3b449d5cbc510ffe76a7559f846abbb8c5cb7e3c93",
-      "bytes": 6847773,
-      "lines": 240906,
+      "sha256": "bd5e62ed984334b4455f8e68f90b7a524b1c4d29d88beb0ac5dbd7d81f72718b",
+      "bytes": 6851169,
+      "lines": 241034,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12790,7 +12936,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "b9b4f20c9d122cedce33024518d73e193c6c9b3fc72d5778e203d8a2f050e938",
+      "sha256": "4cbcf3d4272600b20b57d9527f34f0883249bc2cd889a4564c4f2b6c7833609f",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -12829,9 +12975,9 @@
     },
     {
       "path": "docs/data_sources.md",
-      "sha256": "c8bfd7a5121ead802d0b1787cd5f1d7d0f1e2e038b684e51e1aa0c6f3cf47238",
-      "bytes": 111374,
-      "lines": 753,
+      "sha256": "74fa339908e20c482ef4f50ed9a462a6677dac2a8734d56fcc921281d8b5d3ea",
+      "bytes": 115942,
+      "lines": 756,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13349,9 +13495,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "63143110c7476cb15d199217cf40b08b8ddd9122df29253d6781f3382b719fdf",
-      "bytes": 2999679,
-      "lines": 108591,
+      "sha256": "5256bffff65f171bfce3cc05a669db0b15ca5cae78dcc95aaf06a1507f4ead91",
+      "bytes": 3793942,
+      "lines": 134033,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13362,9 +13508,9 @@
     },
     {
       "path": "docs/indicator-index.md",
-      "sha256": "d7f92939f29ef4265761a483bf37e947d63b61b186e4d651999f9c6ef9b9d6db",
-      "bytes": 107654,
-      "lines": 1138,
+      "sha256": "190dcad73dbea1cf0c9d544b714c3b341a9d608d4bc0fbb6b71831733affcd36",
+      "bytes": 160576,
+      "lines": 1824,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -13401,9 +13547,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "088395b80d57cca93195a68ada2139b125de94835bbdbe35c78d23484ec2e817",
-      "bytes": 11115363,
-      "lines": 335719,
+      "sha256": "6dcfba59e41cbea55f21c453c791ba3c39536cd586054149839718bc87e79e3e",
+      "bytes": 11164563,
+      "lines": 337035,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13414,9 +13560,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "d6b14dd8d510cd12ef9fcdf275c022b3741337be185e29a59d804b7b5e422175",
-      "bytes": 553808,
-      "lines": 3175,
+      "sha256": "5b562284a67896b8ad0ea0ac7f35f53d843ca0a4c952e508408c3b19316b20d6",
+      "bytes": 556545,
+      "lines": 3188,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -15663,13 +15809,16 @@
     },
     {
       "path": "frontend/public/robots.txt",
-      "sha256": "a5993d437214e57cc3c91828ded4c2026b81af40cf87174305426bdb3ffb8250",
-      "bytes": 4052,
-      "lines": 108,
+      "sha256": "05ebf39dd74cdcfd2eb1d6a4d315df11c737d4495a5f60fbef1ddfe058d37dc7",
+      "bytes": 4968,
+      "lines": 122,
       "code": false,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -16664,9 +16813,9 @@
     },
     {
       "path": "frontend/src/components/CurrencyDesk.jsx",
-      "sha256": "49c81b3836fcfad384d112226168e876fd0821c9d2242f3105140cdaec011e6b",
-      "bytes": 21834,
-      "lines": 483,
+      "sha256": "99dfb403380adb3d0699cc93b148f453bdd591cee55cb0a19c92a8f007ae0043",
+      "bytes": 22028,
+      "lines": 486,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -16690,9 +16839,9 @@
     },
     {
       "path": "frontend/src/components/CurrencyPairChart.jsx",
-      "sha256": "1f09612ac2e97ac91b777c7a0922fce306ddcbbab698b4e31f0e72e6635ce72e",
-      "bytes": 13900,
-      "lines": 289,
+      "sha256": "4c3503db3896e8a3cfe29fcde0ac39d30820c56aefb08480da93561cc8aef262",
+      "bytes": 14268,
+      "lines": 295,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -19966,9 +20115,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "dc837b43151bdb9d53a76fd702609157f64869c976603e8ba821fc57d0ad123d",
-      "bytes": 210008,
-      "lines": 3727,
+      "sha256": "81f4253a0a9c5a63d614345582bcd0b55d529113adcde0ee38944cda7cb3de5d",
+      "bytes": 210041,
+      "lines": 3728,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20005,9 +20154,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "1062c2dd4a0f10c57cfbf4d713df70b2cba01edae045a5169db410d794309b66",
-      "bytes": 298904,
-      "lines": 3732,
+      "sha256": "41ec453884d41fc56691d9c7ac45aca674f9ed537151c22ce944a79401694e1e",
+      "bytes": 298938,
+      "lines": 3733,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -21695,8 +21844,8 @@
     },
     {
       "path": "frontend/src/lib/currencyMarket.js",
-      "sha256": "446bf0d04af7ca80b662bbc19f61d60d2683088d5226e8b5486a1b62e364683c",
-      "bytes": 3447,
+      "sha256": "457a44498ff1e52f16a913ce86b78a55ebddc31eae8ac17706a4bee465407651",
+      "bytes": 3524,
       "lines": 65,
       "code": true,
       "status": "reviewed",
@@ -21707,16 +21856,29 @@
       "missing_definitions": []
     },
     {
-      "path": "frontend/src/lib/currencyRates.js",
-      "sha256": "01cf321cabe3d77f6c6cd50b4750d0788f1439766c39ccabc8fdd205ed663c93",
-      "bytes": 13422,
-      "lines": 300,
+      "path": "frontend/src/lib/currencyQuoteUnits.test.js",
+      "sha256": "cc17fdbb4a3f32a6be885034197b00e031f2b08b30bf08b1499d566cee494f08",
+      "bytes": 938,
+      "lines": 20,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 21,
-      "annotated_definitions": 21,
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/lib/currencyRates.js",
+      "sha256": "b8876a216842b2f056568fc6340ab30dbd4d6ef054400c754033c1984582117b",
+      "bytes": 14421,
+      "lines": 316,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 22,
+      "annotated_definitions": 22,
       "missing_definitions": []
     },
     {
@@ -23944,9 +24106,9 @@
     },
     {
       "path": "frontend/src/lib/sitePaths.js",
-      "sha256": "927587e93820845f496d6923f2155e9efc2199448dd61e6a2cb54d188926b124",
-      "bytes": 7465,
-      "lines": 242,
+      "sha256": "bead6615cbfdf6e732d8105206079ede8b191171a9bd2b76c2215fbb13ceac1c",
+      "bytes": 8224,
+      "lines": 251,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -24906,11 +25068,11 @@
     },
     {
       "path": "frontend/src/lib/viewModelFamilies.generated.json",
-      "sha256": "c8f6b5268c6ebfaf6543347d680791cf8e4fed5a018b9186f9d5dbadcfe9b850",
-      "bytes": 331578,
-      "lines": 13284,
+      "sha256": "a8cc5a5ae0e8b4622fd59ad6f17ba9d57dbaf582294c88345dff496a992652d3",
+      "bytes": 555481,
+      "lines": 22202,
       "code": false,
-      "status": "reviewed",
+      "status": "artifact_schema_reviewed",
       "current": true,
       "issues": [],
       "definitions": 0,
@@ -28870,6 +29032,19 @@
       "missing_definitions": []
     },
     {
+      "path": "scripts/regional/build_price_goods.py",
+      "sha256": "ec5aa9e4f10f94749c6576486cf237318ccef3d8a1a6f01e7ef392eaaa2770fd",
+      "bytes": 6366,
+      "lines": 140,
+      "code": true,
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
+      "definitions": 5,
+      "annotated_definitions": 5,
+      "missing_definitions": []
+    },
+    {
       "path": "scripts/regional/build_us_states_map_paths.mjs",
       "sha256": "bce8a7f2465fa4846c6f87c7ece0a9992184e9eec040cb892321602367d581ff",
       "bytes": 4384,
@@ -29261,9 +29436,16 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "d37cef3e6eb09057aa17d041c3dbb0c9c03a3bee461291ae0b77f0124ba13568",
-  "javascript_inventory_sha256": "63be132be579f0c80281780ed24c653d494c0c5d0bd52f1e05df4dd3ae70cca3",
-  "baseline_commit": "068caf081313b1b20b381be5543579826d98d1e7",
-  "branch": "feat/seo-hygiene",
-  "unstaged_at_capture": []
+  "ledger_sha256": "020543994db763edf4055a186b6236726246e126c5e1a8484d57e3b74028500b",
+  "javascript_inventory_sha256": "4ed26ef17da630e142a966ebd092c7df92ea8c28e4ce4761d7953f5061f53d54",
+  "baseline_commit": "efa71d82e530aaf22e1eb285e2dfcbcf4f924f45",
+  "branch": "feat/more-official-data-2026-11-08",
+  "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json",
+    "docs/indicator-index.md",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }

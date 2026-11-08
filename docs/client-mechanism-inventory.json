@@ -17262,7 +17262,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/CurrencyDesk.jsx": {
-      "sha256": "49c81b3836fcfad384d112226168e876fd0821c9d2242f3105140cdaec011e6b",
+      "sha256": "99dfb403380adb3d0699cc93b148f453bdd591cee55cb0a19c92a8f007ae0043",
       "imports": [
         {
           "line": 3,
@@ -17469,6 +17469,7 @@
             "pairTitle",
             "parseAmountInput",
             "parsePair",
+            "quoteUnitsOf",
             "rateBasis",
             "sortByPopularity",
             "unitMeta"
@@ -17845,7 +17846,7 @@
         },
         {
           "line": 326,
-          "end_line": 370,
+          "end_line": 373,
           "owner": "<module>",
           "name": "CurrencyRow",
           "kind": "FunctionDeclaration",
@@ -17860,56 +17861,40 @@
           "callback_context": null
         },
         {
-          "line": 372,
-          "end_line": 383,
+          "line": 375,
+          "end_line": 386,
           "owner": "<module>",
           "name": "matchesQuery",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 376,
-          "end_line": 379,
+          "line": 379,
+          "end_line": 382,
           "owner": "matchesQuery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[pair.base, pair.quote].forEach"
         },
         {
-          "line": 382,
-          "end_line": 382,
+          "line": 385,
+          "end_line": 385,
           "owner": "matchesQuery",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "needle.split(/\\s+/).filter(Boolean).every"
         },
         {
-          "line": 385,
-          "end_line": 483,
+          "line": 388,
+          "end_line": 486,
           "owner": "<module>",
           "name": "CurrencyDesk",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 397,
-          "end_line": 397,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 398,
-          "end_line": 398,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 399,
-          "end_line": 403,
+          "line": 400,
+          "end_line": 400,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -17918,18 +17903,26 @@
         {
           "line": 401,
           "end_line": 401,
-          "owner": "CurrencyDesk.<callback@399>",
+          "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "sorted.forEach"
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 402,
+          "end_line": 406,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
         },
         {
           "line": 404,
           "end_line": 404,
-          "owner": "CurrencyDesk",
+          "owner": "CurrencyDesk.<callback@402>",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "CURRENCY_TABS.filter"
+          "callback_context": "sorted.forEach"
         },
         {
           "line": 407,
@@ -17937,15 +17930,7 @@
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 409,
-          "end_line": 409,
-          "owner": "CurrencyDesk",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "units.find"
+          "callback_context": "CURRENCY_TABS.filter"
         },
         {
           "line": 410,
@@ -17956,12 +17941,20 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 411,
-          "end_line": 411,
+          "line": 412,
+          "end_line": 412,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "MARKET_BOARD_CODES.some"
+          "callback_context": "units.find"
+        },
+        {
+          "line": 413,
+          "end_line": 413,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
         },
         {
           "line": 414,
@@ -17969,59 +17962,67 @@
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
-          "callback_context": "sorted.filter"
+          "callback_context": "MARKET_BOARD_CODES.some"
         },
         {
-          "line": 415,
-          "end_line": 415,
+          "line": 417,
+          "end_line": 417,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "sorted.filter"
         },
         {
-          "line": 431,
-          "end_line": 441,
+          "line": 418,
+          "end_line": 418,
+          "owner": "CurrencyDesk",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "sorted.filter"
+        },
+        {
+          "line": 434,
+          "end_line": 444,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "tabs.map"
         },
         {
-          "line": 437,
-          "end_line": 437,
-          "owner": "CurrencyDesk.<callback@431>",
+          "line": 440,
+          "end_line": 440,
+          "owner": "CurrencyDesk.<callback@434>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 449,
-          "end_line": 449,
+          "line": 452,
+          "end_line": 452,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 455,
-          "end_line": 455,
+          "line": 458,
+          "end_line": 458,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 468,
-          "end_line": 468,
+          "line": 471,
+          "end_line": 471,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 473,
-          "end_line": 475,
+          "line": 476,
+          "end_line": 478,
           "owner": "CurrencyDesk",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -18164,15 +18165,15 @@
           "arguments": []
         },
         {
-          "line": 386,
-          "end_line": 386,
+          "line": 389,
+          "end_line": 389,
           "owner": "CurrencyDesk",
           "callee": "useT",
           "arguments": []
         },
         {
-          "line": 387,
-          "end_line": 387,
+          "line": 390,
+          "end_line": 390,
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
@@ -18180,8 +18181,8 @@
           ]
         },
         {
-          "line": 388,
-          "end_line": 388,
+          "line": 391,
+          "end_line": 391,
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
@@ -18189,15 +18190,15 @@
           ]
         },
         {
-          "line": 390,
-          "end_line": 390,
+          "line": 393,
+          "end_line": 393,
           "owner": "CurrencyDesk",
           "callee": "usePrefs",
           "arguments": []
         },
         {
-          "line": 391,
-          "end_line": 391,
+          "line": 394,
+          "end_line": 394,
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
@@ -18205,8 +18206,8 @@
           ]
         },
         {
-          "line": 392,
-          "end_line": 392,
+          "line": 395,
+          "end_line": 395,
           "owner": "CurrencyDesk",
           "callee": "useState",
           "arguments": [
@@ -18214,15 +18215,15 @@
           ]
         },
         {
-          "line": 395,
-          "end_line": 395,
+          "line": 398,
+          "end_line": 398,
           "owner": "CurrencyDesk",
           "callee": "useMarketState",
           "arguments": []
         },
         {
-          "line": 397,
-          "end_line": 397,
+          "line": 400,
+          "end_line": 400,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -18231,8 +18232,8 @@
           ]
         },
         {
-          "line": 398,
-          "end_line": 398,
+          "line": 401,
+          "end_line": 401,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -18241,8 +18242,8 @@
           ]
         },
         {
-          "line": 399,
-          "end_line": 403,
+          "line": 402,
+          "end_line": 406,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -18251,8 +18252,8 @@
           ]
         },
         {
-          "line": 407,
-          "end_line": 407,
+          "line": 410,
+          "end_line": 410,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -18261,8 +18262,8 @@
           ]
         },
         {
-          "line": 410,
-          "end_line": 410,
+          "line": 413,
+          "end_line": 413,
           "owner": "CurrencyDesk",
           "callee": "useMemo",
           "arguments": [
@@ -18340,48 +18341,48 @@
           "expression": "{() => track(events.CATEGORY_TILE_CLICK, { indicator: ind.code, surface: 'currencies' })}"
         },
         {
-          "line": 420,
-          "end_line": 420,
+          "line": 423,
+          "end_line": 423,
           "owner": "CurrencyDesk",
           "component": "Converter",
           "event": "onFrom",
           "expression": "{setFrom}"
         },
         {
-          "line": 420,
-          "end_line": 420,
+          "line": 423,
+          "end_line": 423,
           "owner": "CurrencyDesk",
           "component": "Converter",
           "event": "onTo",
           "expression": "{setTo}"
         },
         {
-          "line": 432,
-          "end_line": 438,
-          "owner": "CurrencyDesk.<callback@431>",
+          "line": 435,
+          "end_line": 441,
+          "owner": "CurrencyDesk.<callback@434>",
           "component": "button",
           "event": "onClick",
           "expression": "{() => { setTab(id); setQuery(''); }}"
         },
         {
-          "line": 446,
-          "end_line": 453,
+          "line": 449,
+          "end_line": 456,
           "owner": "CurrencyDesk",
           "component": "input",
           "event": "onChange",
           "expression": "{(event) => setQuery(event.target.value)}"
         },
         {
-          "line": 455,
-          "end_line": 455,
+          "line": 458,
+          "end_line": 458,
           "owner": "CurrencyDesk",
           "component": "button",
           "event": "onClick",
           "expression": "{() => setQuery('')}"
         },
         {
-          "line": 468,
-          "end_line": 468,
+          "line": 471,
+          "end_line": 471,
           "owner": "CurrencyDesk",
           "component": "Button",
           "event": "onClick",
@@ -18687,7 +18688,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/CurrencyPairChart.jsx": {
-      "sha256": "1f09612ac2e97ac91b777c7a0922fce306ddcbbab698b4e31f0e72e6635ce72e",
+      "sha256": "4c3503db3896e8a3cfe29fcde0ac39d30820c56aefb08480da93561cc8aef262",
       "imports": [
         {
           "line": 4,
@@ -19023,39 +19024,39 @@
         },
         {
           "line": 67,
-          "end_line": 289,
+          "end_line": 295,
           "owner": "<module>",
           "name": "CurrencyPairChart",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 80,
-          "end_line": 80,
+          "line": 83,
+          "end_line": 83,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 84,
-          "end_line": 84,
+          "line": 83,
+          "end_line": 83,
+          "owner": "CurrencyPairChart.<callback@83>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "(data?.data || []).map"
+        },
+        {
+          "line": 86,
+          "end_line": 86,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 87,
-          "end_line": 87,
-          "owner": "CurrencyPairChart",
-          "name": null,
-          "kind": "ArrowFunctionExpression",
-          "callback_context": "useMemo"
-        },
-        {
-          "line": 89,
-          "end_line": 89,
+          "line": 90,
+          "end_line": 90,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -19070,144 +19071,160 @@
           "callback_context": "useMemo"
         },
         {
-          "line": 98,
-          "end_line": 109,
+          "line": 95,
+          "end_line": 95,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 100,
-          "end_line": 100,
-          "owner": "CurrencyPairChart.<callback@98>",
+          "line": 99,
+          "end_line": 99,
+          "owner": "CurrencyPairChart",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 104,
+          "end_line": 115,
+          "owner": "CurrencyPairChart",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "useMemo"
+        },
+        {
+          "line": 106,
+          "end_line": 106,
+          "owner": "CurrencyPairChart.<callback@104>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "edges.filter"
         },
         {
-          "line": 100,
-          "end_line": 108,
-          "owner": "CurrencyPairChart.<callback@98>",
+          "line": 106,
+          "end_line": 114,
+          "owner": "CurrencyPairChart.<callback@104>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "edges.filter((edge) => edge.code !== pair?.code).map"
         },
         {
-          "line": 112,
-          "end_line": 112,
+          "line": 118,
+          "end_line": 118,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "useMemo"
         },
         {
-          "line": 112,
-          "end_line": 112,
-          "owner": "CurrencyPairChart.<callback@112>",
+          "line": 118,
+          "end_line": 118,
+          "owner": "CurrencyPairChart.<callback@118>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "primary.map"
         },
         {
-          "line": 132,
-          "end_line": 140,
+          "line": 138,
+          "end_line": 146,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "CHART_PERIODS.map"
         },
         {
-          "line": 136,
-          "end_line": 136,
-          "owner": "CurrencyPairChart.<callback@132>",
+          "line": 142,
+          "end_line": 142,
+          "owner": "CurrencyPairChart.<callback@138>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 146,
-          "end_line": 146,
+          "line": 152,
+          "end_line": 152,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 175,
-          "end_line": 175,
+          "line": 181,
+          "end_line": 181,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "changePct"
         },
         {
-          "line": 177,
-          "end_line": 177,
+          "line": 183,
+          "end_line": 183,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "changePct"
         },
         {
-          "line": 182,
-          "end_line": 184,
+          "line": 188,
+          "end_line": 190,
           "owner": "CurrencyPairChart",
           "name": "monthOf",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 185,
-          "end_line": 191,
+          "line": 191,
+          "end_line": 197,
           "owner": "CurrencyPairChart",
           "name": "tickLabel",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 193,
-          "end_line": 193,
+          "line": 199,
+          "end_line": 199,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.flatMap"
         },
         {
-          "line": 193,
-          "end_line": 193,
+          "line": 199,
+          "end_line": 199,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "points.map"
         },
         {
-          "line": 236,
-          "end_line": 236,
+          "line": 242,
+          "end_line": 242,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 236,
-          "end_line": 236,
+          "line": 242,
+          "end_line": 242,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 243,
-          "end_line": 243,
+          "line": 249,
+          "end_line": 249,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 270,
-          "end_line": 270,
+          "line": 276,
+          "end_line": 276,
           "owner": "CurrencyPairChart",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -19284,28 +19301,38 @@
           "arguments": []
         },
         {
-          "line": 80,
-          "end_line": 80,
+          "line": 82,
+          "end_line": 85,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
-            "() => cleanSeries(data?.data)",
-            "[data]"
+            "() => (units === 1 ? data?.data : (data?.data || []).map((row) => ({ ...row, value: Number(row?.value) / units })))",
+            "[data, units]"
           ]
         },
         {
-          "line": 83,
+          "line": 86,
           "end_line": 86,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
-            "() => (pair?.invert && !flipped ? cleanSeries(data?.data, { invert: true }) : rawSeries)",
-            "[data, pair?.invert, flipped, rawSeries]"
+            "() => cleanSeries(perOne)",
+            "[perOne]"
           ]
         },
         {
-          "line": 87,
-          "end_line": 87,
+          "line": 89,
+          "end_line": 92,
+          "owner": "CurrencyPairChart",
+          "callee": "useMemo",
+          "arguments": [
+            "() => (pair?.invert && !flipped ? cleanSeries(perOne, { invert: true }) : rawSeries)",
+            "[perOne, pair?.invert, flipped, rawSeries]"
+          ]
+        },
+        {
+          "line": 93,
+          "end_line": 93,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
@@ -19314,8 +19341,8 @@
           ]
         },
         {
-          "line": 88,
-          "end_line": 91,
+          "line": 94,
+          "end_line": 97,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
@@ -19324,8 +19351,8 @@
           ]
         },
         {
-          "line": 92,
-          "end_line": 95,
+          "line": 98,
+          "end_line": 101,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
@@ -19334,8 +19361,8 @@
           ]
         },
         {
-          "line": 98,
-          "end_line": 109,
+          "line": 104,
+          "end_line": 115,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
@@ -19344,8 +19371,8 @@
           ]
         },
         {
-          "line": 111,
-          "end_line": 114,
+          "line": 117,
+          "end_line": 120,
           "owner": "CurrencyPairChart",
           "callee": "useMemo",
           "arguments": [
@@ -19359,16 +19386,16 @@
       "events": [],
       "jsx_handlers": [
         {
-          "line": 133,
-          "end_line": 137,
-          "owner": "CurrencyPairChart.<callback@132>",
+          "line": 139,
+          "end_line": 143,
+          "owner": "CurrencyPairChart.<callback@138>",
           "component": "Chip",
           "event": "onClick",
           "expression": "{() => { setPeriod(id); track(events.COMPARE_CHANGE, { converter: 'chart-period', period: id }); }}"
         },
         {
-          "line": 142,
-          "end_line": 150,
+          "line": 148,
+          "end_line": 156,
           "owner": "CurrencyPairChart",
           "component": "CurrencySelect",
           "event": "onChange",
@@ -101516,7 +101543,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "dc837b43151bdb9d53a76fd702609157f64869c976603e8ba821fc57d0ad123d",
+      "sha256": "81f4253a0a9c5a63d614345582bcd0b55d529113adcde0ee38944cda7cb3de5d",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -101939,7 +101966,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "1062c2dd4a0f10c57cfbf4d713df70b2cba01edae045a5169db410d794309b66",
+      "sha256": "41ec453884d41fc56691d9c7ac45aca674f9ed537151c22ce944a79401694e1e",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -126840,7 +126867,7 @@
       "mcp_tools": []
     },
     "frontend/src/lib/currencyMarket.js": {
-      "sha256": "446bf0d04af7ca80b662bbc19f61d60d2683088d5226e8b5486a1b62e364683c",
+      "sha256": "457a44498ff1e52f16a913ce86b78a55ebddc31eae8ac17706a4bee465407651",
       "imports": [
         {
           "line": 3,
@@ -127011,8 +127038,83 @@
       ],
       "mcp_tools": []
     },
+    "frontend/src/lib/currencyQuoteUnits.test.js": {
+      "sha256": "cc17fdbb4a3f32a6be885034197b00e031f2b08b30bf08b1499d566cee494f08",
+      "imports": [
+        {
+          "line": 1,
+          "end_line": 1,
+          "owner": "<module>",
+          "specifier": "vitest",
+          "category": "external_package",
+          "target": "vitest",
+          "bindings": [
+            "describe",
+            "expect",
+            "it"
+          ]
+        },
+        {
+          "line": 2,
+          "end_line": 2,
+          "owner": "<module>",
+          "specifier": "./currencyRates",
+          "category": "owned_source",
+          "targets": [
+            "frontend/src/lib/currencyRates.js"
+          ],
+          "bindings": [
+            "buildEdges",
+            "convert",
+            "quoteUnitsOf"
+          ]
+        }
+      ],
+      "routes": [],
+      "functions": [
+        {
+          "line": 4,
+          "end_line": 20,
+          "owner": "<module>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "describe"
+        },
+        {
+          "line": 5,
+          "end_line": 10,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 12,
+          "end_line": 19,
+          "owner": "<callback@4>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "it"
+        },
+        {
+          "line": 17,
+          "end_line": 17,
+          "owner": "<callback@4>.<callback@12>",
+          "name": null,
+          "kind": "ArrowFunctionExpression",
+          "callback_context": "edges.find"
+        }
+      ],
+      "hooks": [],
+      "http": [],
+      "storage": [],
+      "events": [],
+      "jsx_handlers": [],
+      "registries": [],
+      "mcp_tools": []
+    },
     "frontend/src/lib/currencyRates.js": {
-      "sha256": "01cf321cabe3d77f6c6cd50b4750d0788f1439766c39ccabc8fdd205ed663c93",
+      "sha256": "b8876a216842b2f056568fc6340ab30dbd4d6ef054400c754033c1984582117b",
       "imports": [
         {
           "line": 2,
@@ -127087,224 +127189,232 @@
           "callback_context": null
         },
         {
-          "line": 86,
-          "end_line": 92,
+          "line": 89,
+          "end_line": 95,
           "owner": "<module>",
           "name": "parsePair",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 95,
-          "end_line": 110,
+          "line": 98,
+          "end_line": 113,
           "owner": "<module>",
           "name": "pairTitle",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 113,
-          "end_line": 118,
+          "line": 116,
+          "end_line": 121,
           "owner": "<module>",
           "name": "pairTab",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 123,
-          "end_line": 132,
+          "line": 126,
+          "end_line": 135,
           "owner": "<module>",
           "name": "sortByPopularity",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 123,
-          "end_line": 123,
+          "line": 126,
+          "end_line": 126,
           "owner": "sortByPopularity",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 124,
-          "end_line": 127,
+          "line": 127,
+          "end_line": 130,
           "owner": "sortByPopularity",
           "name": "rank",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 129,
-          "end_line": 129,
+          "line": 132,
+          "end_line": 132,
           "owner": "sortByPopularity",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items\n    .map"
         },
         {
-          "line": 130,
-          "end_line": 130,
+          "line": 133,
+          "end_line": 133,
           "owner": "sortByPopularity",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items\n    .map((item, order) => ({ item, order }))\n    .sort"
         },
         {
-          "line": 131,
-          "end_line": 131,
+          "line": 134,
+          "end_line": 134,
           "owner": "sortByPopularity",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "items\n    .map((item, order) => ({ item, order }))\n    .sort((a, b) => rank(a.item) - rank(b.item) || a.order - b.order)\n    .map"
         },
         {
-          "line": 135,
-          "end_line": 140,
+          "line": 138,
+          "end_line": 143,
           "owner": "<module>",
           "name": "rateBasis",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 146,
-          "end_line": 155,
+          "line": 153,
+          "end_line": 158,
+          "owner": "<module>",
+          "name": "quoteUnitsOf",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 160,
+          "end_line": 171,
           "owner": "<module>",
           "name": "buildEdges",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 161,
-          "end_line": 173,
+          "line": 177,
+          "end_line": 189,
           "owner": "<module>",
           "name": "convertibleUnits",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 164,
-          "end_line": 168,
+          "line": 180,
+          "end_line": 184,
           "owner": "convertibleUnits",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "edges.forEach"
         },
         {
-          "line": 165,
-          "end_line": 167,
-          "owner": "convertibleUnits.<callback@164>",
+          "line": 181,
+          "end_line": 183,
+          "owner": "convertibleUnits.<callback@180>",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[edge.from, edge.to].forEach"
         },
         {
-          "line": 171,
-          "end_line": 171,
+          "line": 187,
+          "end_line": 187,
           "owner": "convertibleUnits",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "seen.filter"
         },
         {
-          "line": 172,
-          "end_line": 172,
+          "line": 188,
+          "end_line": 188,
           "owner": "convertibleUnits",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "[...head, ...extra, ...tail].filter"
         },
         {
-          "line": 179,
-          "end_line": 204,
+          "line": 195,
+          "end_line": 220,
           "owner": "<module>",
           "name": "convert",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 210,
-          "end_line": 216,
+          "line": 226,
+          "end_line": 232,
           "owner": "<module>",
           "name": "parseAmountInput",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 219,
-          "end_line": 232,
+          "line": 235,
+          "end_line": 248,
           "owner": "<module>",
           "name": "formatRate",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 235,
-          "end_line": 245,
+          "line": 251,
+          "end_line": 261,
           "owner": "<module>",
           "name": "formatConverted",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 249,
-          "end_line": 258,
+          "line": 265,
+          "end_line": 274,
           "owner": "<module>",
           "name": "pointAtOrBefore",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 264,
-          "end_line": 293,
+          "line": 280,
+          "end_line": 309,
           "owner": "<module>",
           "name": "currencyWindows",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 266,
-          "end_line": 266,
+          "line": 282,
+          "end_line": 282,
           "owner": "currencyWindows",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(points || [])\n    .filter"
         },
         {
-          "line": 267,
-          "end_line": 267,
+          "line": 283,
+          "end_line": 283,
           "owner": "currencyWindows",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(points || [])\n    .filter((p) => p?.date && Number.isFinite(Number(p.value)))\n    .map"
         },
         {
-          "line": 268,
-          "end_line": 268,
+          "line": 284,
+          "end_line": 284,
           "owner": "currencyWindows",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "(points || [])\n    .filter((p) => p?.date && Number.isFinite(Number(p.value)))\n    .map((p) => ({ date: p.date, value: Number(p.value) }))\n    .sort"
         },
         {
-          "line": 272,
-          "end_line": 276,
+          "line": 288,
+          "end_line": 292,
           "owner": "currencyWindows",
           "name": "change",
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 278,
-          "end_line": 278,
+          "line": 294,
+          "end_line": 294,
           "owner": "currencyWindows",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "list.filter"
         },
         {
-          "line": 296,
-          "end_line": 300,
+          "line": 312,
+          "end_line": 316,
           "owner": "<module>",
           "name": "normalizeRateNameEn",
           "kind": "FunctionDeclaration",
@@ -127337,7 +127447,7 @@
         },
         {
           "line": 77,
-          "end_line": 81,
+          "end_line": 84,
           "owner": "<module>",
           "name": "POPULARITY",
           "kind": "ArrayExpression",
@@ -127345,6 +127455,24 @@
             "'usd-rub'",
             "'eur-rub'",
             "'cny-rub'",
+            "'kzt-rub'",
+            "'byn-rub'",
+            "'try-rub'",
+            "'uzs-rub'",
+            "'kgs-rub'",
+            "'amd-rub'",
+            "'tjs-rub'",
+            "'gel-rub'",
+            "'azn-rub'",
+            "'aed-rub'",
+            "'gbp-rub'",
+            "'jpy-rub'",
+            "'chf-rub'",
+            "'inr-rub'",
+            "'thb-rub'",
+            "'vnd-rub'",
+            "'krw-rub'",
+            "'egp-rub'",
             "'btc-usd'",
             "'eth-usd'",
             "'sol-usd'",
@@ -127357,8 +127485,8 @@
           "initializer": null
         },
         {
-          "line": 120,
-          "end_line": 120,
+          "line": 123,
+          "end_line": 123,
           "owner": "<module>",
           "name": "CURRENCY_TABS",
           "kind": "ArrayExpression",
@@ -157967,63 +158095,47 @@
       "mcp_tools": []
     },
     "frontend/src/lib/sitePaths.js": {
-      "sha256": "927587e93820845f496d6923f2155e9efc2199448dd61e6a2cb54d188926b124",
+      "sha256": "bead6615cbfdf6e732d8105206079ede8b191171a9bd2b76c2215fbb13ceac1c",
       "imports": [],
       "routes": [],
       "functions": [
         {
-          "line": 16,
-          "end_line": 20,
+          "line": 25,
+          "end_line": 29,
           "owner": "<module>",
           "name": "isCurrencyIndicator",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 18,
-          "end_line": 19,
+          "line": 27,
+          "end_line": 28,
           "owner": "isCurrencyIndicator",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": "CURRENCY_BASE_CODES.some"
         },
         {
-          "line": 63,
-          "end_line": 69,
+          "line": 72,
+          "end_line": 78,
           "owner": "<module>",
           "name": "isReservedFirstSegment",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 71,
-          "end_line": 75,
+          "line": 80,
+          "end_line": 84,
           "owner": "<module>",
           "name": "slug",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 77,
-          "end_line": 81,
+          "line": 86,
+          "end_line": 90,
           "owner": "<module>",
           "name": "code",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 83,
-          "end_line": 85,
-          "owner": "<module>",
-          "name": "homePath",
-          "kind": "FunctionDeclaration",
-          "callback_context": null
-        },
-        {
-          "line": 87,
-          "end_line": 89,
-          "owner": "<module>",
-          "name": "comparePath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
@@ -158031,7 +158143,7 @@
           "line": 92,
           "end_line": 94,
           "owner": "<module>",
-          "name": "forecastsPath",
+          "name": "homePath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
@@ -158039,245 +158151,261 @@
           "line": 96,
           "end_line": 98,
           "owner": "<module>",
+          "name": "comparePath",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 101,
+          "end_line": 103,
+          "owner": "<module>",
+          "name": "forecastsPath",
+          "kind": "FunctionDeclaration",
+          "callback_context": null
+        },
+        {
+          "line": 105,
+          "end_line": 107,
+          "owner": "<module>",
           "name": "countryPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 100,
-          "end_line": 102,
+          "line": 109,
+          "end_line": 111,
           "owner": "<module>",
           "name": "indicatorPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 104,
-          "end_line": 106,
+          "line": 113,
+          "end_line": 115,
           "owner": "<module>",
           "name": "indicatorYearPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 108,
-          "end_line": 110,
+          "line": 117,
+          "end_line": 119,
           "owner": "<module>",
           "name": "categoryPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 112,
-          "end_line": 114,
+          "line": 121,
+          "end_line": 123,
           "owner": "<module>",
           "name": "russiaHomePath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 117,
-          "end_line": 122,
+          "line": 126,
+          "end_line": 131,
           "owner": "<module>",
           "name": "isRussiaSectionPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 124,
-          "end_line": 127,
+          "line": 133,
+          "end_line": 136,
           "owner": "<module>",
           "name": "russiaIndicatorPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 129,
-          "end_line": 132,
+          "line": 138,
+          "end_line": 141,
           "owner": "<module>",
           "name": "russiaIndicatorYearPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 134,
-          "end_line": 137,
+          "line": 143,
+          "end_line": 146,
           "owner": "<module>",
           "name": "russiaCategoryPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 139,
-          "end_line": 141,
+          "line": 148,
+          "end_line": 150,
           "owner": "<module>",
           "name": "russiaCategoriesPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 143,
-          "end_line": 145,
+          "line": 152,
+          "end_line": 154,
           "owner": "<module>",
           "name": "regionHubPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 147,
-          "end_line": 149,
+          "line": 156,
+          "end_line": 158,
           "owner": "<module>",
           "name": "countryRegionsPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 151,
-          "end_line": 153,
+          "line": 160,
+          "end_line": 162,
           "owner": "<module>",
           "name": "countryRegionPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 155,
-          "end_line": 157,
+          "line": 164,
+          "end_line": 166,
           "owner": "<module>",
           "name": "countryRegionIndicatorPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 159,
-          "end_line": 161,
+          "line": 168,
+          "end_line": 170,
           "owner": "<module>",
           "name": "countryRegionIndicatorYearPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 163,
-          "end_line": 165,
+          "line": 172,
+          "end_line": 174,
           "owner": "<module>",
           "name": "countryRegionMapPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 167,
-          "end_line": 171,
+          "line": 176,
+          "end_line": 180,
           "owner": "<module>",
           "name": "countryRegionVsPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 173,
-          "end_line": 175,
+          "line": 182,
+          "end_line": 184,
           "owner": "<module>",
           "name": "regionRatingHubPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 177,
-          "end_line": 179,
+          "line": 186,
+          "end_line": 188,
           "owner": "<module>",
           "name": "regionPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 181,
-          "end_line": 183,
+          "line": 190,
+          "end_line": 192,
           "owner": "<module>",
           "name": "regionIndicatorPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 185,
-          "end_line": 187,
+          "line": 194,
+          "end_line": 196,
           "owner": "<module>",
           "name": "regionMapPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 189,
-          "end_line": 191,
+          "line": 198,
+          "end_line": 200,
           "owner": "<module>",
           "name": "regionRatingPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 193,
-          "end_line": 195,
+          "line": 202,
+          "end_line": 204,
           "owner": "<module>",
           "name": "regionVsPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 197,
-          "end_line": 199,
+          "line": 206,
+          "end_line": 208,
           "owner": "<module>",
           "name": "todayPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 201,
-          "end_line": 205,
+          "line": 210,
+          "end_line": 214,
           "owner": "<module>",
           "name": "calendarPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 207,
-          "end_line": 209,
+          "line": 216,
+          "end_line": 218,
           "owner": "<module>",
           "name": "demographicsPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 215,
-          "end_line": 217,
+          "line": 224,
+          "end_line": 226,
           "owner": "<module>",
           "name": "worldHubPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 222,
-          "end_line": 224,
+          "line": 231,
+          "end_line": 233,
           "owner": "<module>",
           "name": "worldRatingPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 227,
-          "end_line": 232,
+          "line": 236,
+          "end_line": 241,
           "owner": "<module>",
           "name": "worldRatingYearPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 235,
-          "end_line": 237,
+          "line": 244,
+          "end_line": 246,
           "owner": "<module>",
           "name": "worldCountryPath",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 240,
-          "end_line": 242,
+          "line": 249,
+          "end_line": 251,
           "owner": "<module>",
           "name": "worldIndicatorPath",
           "kind": "FunctionDeclaration",
@@ -158292,7 +158420,7 @@
       "registries": [
         {
           "line": 11,
-          "end_line": 14,
+          "end_line": 23,
           "owner": "<module>",
           "name": "CURRENCY_BASE_CODES",
           "kind": "CallExpression",
@@ -158300,8 +158428,8 @@
           "initializer": "Object.freeze"
         },
         {
-          "line": 23,
-          "end_line": 61,
+          "line": 32,
+          "end_line": 70,
           "owner": "<module>",
           "name": "RESERVED_FIRST_SEGMENTS",
           "kind": "CallExpression",
@@ -240890,17 +241018,17 @@
     }
   },
   "totals": {
-    "imports": 4469,
+    "imports": 4471,
     "routes": 94,
-    "functions": 14479,
-    "hooks": 2662,
+    "functions": 14486,
+    "hooks": 2663,
     "http": 114,
     "storage": 218,
     "events": 448,
     "jsx_handlers": 1165,
     "registries": 685,
     "mcp_tools": 7,
-    "files": 853,
+    "files": 854,
     "parse_errors": 0
   }
 }
