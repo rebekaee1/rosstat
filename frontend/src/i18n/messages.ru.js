@@ -3803,4 +3803,5 @@ export default {
   'r2z1.prices.moreN': 'Показать ещё {n}',
   'r2z1.hub.find': 'Найдите свой регион',
   'r2z1.hub.findPlaceholder': 'Например, Тамбов',
+  'r2z4.regions.range': 'По регионам: от {min} до {max}',
 };

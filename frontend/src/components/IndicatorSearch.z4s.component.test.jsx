@@ -48,3 +48,11 @@ it('региональный показатель — одна строка «Р
   fireEvent.click(screen.getByText('Ещё 8 регионов'));
   expect(screen.getByText('Регион 11')).toBeTruthy();
 });
+
+it('R2-Z4: над регионами строка разброса «от … до …» с рублём', async () => {
+  render(<QueryClientProvider client={client}><MemoryRouter><IndicatorSearch variant="inline" /></MemoryRouter></QueryClientProvider>);
+  fireEvent.click(screen.getAllByRole('button')[0]);
+  fireEvent.change(screen.getByRole('combobox'), { target: { value: 'яйца' } });
+  await waitFor(() => expect(screen.getAllByRole('option').length).toBe(1));
+  expect(screen.getByText(/По регионам: от/).textContent).toMatch(/от 100\S*\s₽ до 111\S*\s₽/);
+});

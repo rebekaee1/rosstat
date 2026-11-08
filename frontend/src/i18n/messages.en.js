@@ -3798,4 +3798,5 @@ export default {
   'r2z1.prices.moreN': 'Show {n} more',
   'r2z1.hub.find': 'Find your region',
   'r2z1.hub.findPlaceholder': 'For example, Tambov',
+  'r2z4.regions.range': 'Across regions: {min} to {max}',
 };

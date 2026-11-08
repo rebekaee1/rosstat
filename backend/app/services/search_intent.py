@@ -18,7 +18,9 @@ from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimension
 
 SEARCH_VERSION = "federated-v2"
 TOKEN_RE = re.compile(r"[a-zа-я0-9]+")
-STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
+# Название банка в бытовом запросе («ипотека сбер») не отдельный показатель: ставка по ипотеке одна на всех.
+BANK_BRAND_WORDS = frozenset(("сбер", "сбербанк", "втб", "тинькофф", "альфабанк", "газпромбанк"))
+STOP_WORDS = BANK_BRAND_WORDS | frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
 
 CBR_SEARCH_CONCEPTS = _cbr_search_concepts() + _currency_latin_concepts()
 PRICE_GOODS_CONCEPTS = _price_goods_concepts()
@@ -152,8 +154,34 @@ REGION_ALIASES = {
     "sankt-peterburg": ("санкт петербург", "санкт петербурга", "петербург", "спб", "saint petersburg"),
     "respublika-tatarstan": ("татарстан", "татарстана", "татарстане", "tatarstan"),
     "respublika-bashkortostan": ("башкортостан", "башкортостана", "башкортостане", "bashkortostan"),
-    "krasnodarskiy-kray": ("краснодарский край", "краснодарского края", "краснодарском крае", "krasnodar krai"),
+    "krasnodarskiy-kray": ("краснодарский край", "краснодарского края", "краснодарском крае", "krasnodar krai",
+        "краснодар", "краснодара", "краснодаре"),
+    # Город, который люди пишут вместо области («квартплата казань», «молоко екб»): ведёт в свой субъект.
 }
+_CITY_REGION_ALIASES = {
+    "respublika-tatarstan": ("казань", "казани", "казанью"),
+    "sverdlovskaya-oblast": ("екатеринбург", "екатеринбурга", "екатеринбурге", "екб"),
+    "nizhegorodskaya-oblast": ("нижний новгород", "нижнего новгорода", "нижнем новгороде", "нижний"),
+    "samarskaya-oblast": ("самара", "самары", "самаре"),
+    "chelyabinskaya-oblast": ("челябинск", "челябинска", "челябинске"),
+    "rostovskaya-oblast": ("ростов на дону", "ростова на дону", "ростове на дону"),
+    "voronezhskaya-oblast": ("воронеж", "воронежа", "воронеже"),
+    "permskiy-kray": ("пермь", "перми"),
+    "volgogradskaya-oblast": ("волгоград", "волгограда", "волгограде"),
+    "omskaya-oblast": ("омск", "омска", "омске"),
+    "novosibirskaya-oblast": ("новосибирск", "новосибирска", "новосибирске"),
+    "krasnoyarskiy-kray": ("красноярск", "красноярска", "красноярске"),
+    "respublika-bashkortostan": ("уфа", "уфы", "уфе"),
+    "saratovskaya-oblast": ("саратов", "саратова", "саратове"),
+    "tyumenskaya-oblast": ("тюмень", "тюмени"),
+    "irkutskaya-oblast": ("иркутск", "иркутска", "иркутске"),
+    "primorskiy-kray": ("владивосток", "владивостока", "владивостоке"),
+    "habarovskiy-kray": ("хабаровск", "хабаровска", "хабаровске"),
+    "kaliningradskaya-oblast": ("калининград", "калининграда", "калининграде"),
+    "sankt-peterburg": ("питер", "питере", "питера"),
+}
+for _slug, _names in _CITY_REGION_ALIASES.items():
+    REGION_ALIASES[_slug] = tuple(REGION_ALIASES.get(_slug, ())) + _names
 
 _EN_KEYS = "qwertyuiop[]asdfghjkl;'zxcvbnm,."
 _RU_KEYS = "йцукенгшщзхъфывапролджэячсмитьбю"

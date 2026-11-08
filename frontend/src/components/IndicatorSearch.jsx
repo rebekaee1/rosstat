@@ -770,16 +770,12 @@ export default function IndicatorSearch({
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
-                              <p className="mt-4 text-sm font-medium text-text-secondary">{t('z4s.empty.rates')}</p>
+                              {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => (
-                                  <li key={key}>
-                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(t(key)); inputRef.current?.focus(); }}>{t(key)}</Chip>
-                                  </li>
-                                ))}
-                              </ul>
-                              <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {popular.slice(0, 4).map((example) => (
+                                {[...new Set([
+                                  ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
+                                  ...popular.slice(0, 6),
+                                ].map((text) => String(text)))].slice(0, 6).map((example) => (
                                   <li key={example}>
                                     <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
                                   </li>
@@ -841,7 +837,10 @@ const REGION_CHIPS_VISIBLE = 4;
 function regionValueText(entry, unit, locale) {
   if (entry.value == null || !Number.isFinite(Number(entry.value))) return '';
   const abs = Math.abs(Number(entry.value));
-  const short = splitUnit(plainUnit(String(unit || '').trim(), locale)).short;
+  const rawUnit = String(unit || '').trim();
+  // Единица коротко и без повторов в каждой строке: «₽», «%»; длинное «рублей за литр» уже в заголовке строки.
+  const long = splitUnit(plainUnit(rawUnit, locale)).short;
+  const short = /руб|₽|rub/i.test(rawUnit) ? '₽' : rawUnit.includes('%') ? '%' : long && long.length <= 5 ? long : '';
   const value = formatValue(entry.value, abs >= 1000 ? 0 : abs >= 100 ? 1 : 2, locale);
   return short ? `${value}\u00A0${short}` : value;
 }
@@ -850,19 +849,28 @@ function regionValueText(entry, unit, locale) {
 function RegionGroupChips({ group, unit, expanded, onToggle, onPick, t, locale }) {
   const regions = group.regions;
   const shown = expanded ? regions : regions.slice(0, REGION_CHIPS_VISIBLE);
+  // Разброс по регионам одной строкой: торопящемуся человеку это ответ быстрее, чем листать сорок регионов.
+  const valued = regions.filter((entry) => entry.value != null && Number.isFinite(Number(entry.value)));
+  const low = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) < Number(a.value) ? b : a)) : null;
+  const high = valued.length >= 5 ? valued.reduce((a, b) => (Number(b.value) > Number(a.value) ? b : a)) : null;
   return (
     <div className="w6d-sr-chips z4s-region-chips" role="group" aria-label={t('z4s.regions.aria')}>
+      {low && high && Number(low.value) !== Number(high.value) ? (
+        <p className="z4s-region-range">
+          {t('r2z4.regions.range', { min: regionValueText(low, unit, locale), max: regionValueText(high, unit, locale) })}
+        </p>
+      ) : null}
       {shown.map((entry) => {
         const value = regionValueText(entry, unit, locale);
         return (
           <button key={entry.slug} type="button" className="w6d-sr-chip fe-press z4s-region-chip" onClick={() => onPick(entry)}>
-            <span>{entry.name}</span>
+            <span>{String(entry.name || '').replace(/^г\.\s*/u, '')}</span>
             {value ? <strong className="z4s-region-chip__value">{value}</strong> : null}
           </button>
         );
       })}
       {regions.length > REGION_CHIPS_VISIBLE ? (
-        <button type="button" className="w6d-sr-chip fe-press" aria-expanded={expanded} onClick={onToggle}>
+        <button type="button" className="w6d-sr-chip fe-press z4s-region-more" aria-expanded={expanded} onClick={onToggle}>
           {expanded ? t('z4s.regions.less') : t('z4s.regions.more', { n: regions.length - REGION_CHIPS_VISIBLE })}
         </button>
       ) : null}
@@ -878,7 +886,9 @@ function latestText(item, locale, t) {
   const short = splitUnit(plainUnit(String(item.unit || '').trim(), locale)).short;
   // Годовой процент читается как «34,9 % за 2025» (один знак после запятой), остальное как «4,00 %, август 2026».
   const yearPercent = item.frequency === 'annual' && /%/.test(short);
-  const value = formatValue(latest.value, yearPercent ? 1 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
+  // Курс мелкой валюты (тенге, сум, вона): «0,18 руб.» теряет цифры, нужны четыре знака — «0,1818 руб.».
+  const smallRate = abs > 0 && abs < 1 && /руб|₽|rub/i.test(String(item.unit || ''));
+  const value = formatValue(latest.value, yearPercent ? 1 : smallRate ? 4 : abs >= 10000 ? 0 : abs >= 100 ? 1 : 2, locale);
   const period = latest.date ? formatDate(latest.date, PERIOD_FORMAT[item.frequency] || 'full', locale) : '';
   const shown = short ? `${value}\u00A0${short}` : value;
   const hasPeriod = period && period !== '—';
@@ -955,12 +965,13 @@ function SearchRow({
         </span>
       </button>
       {row.type === 'family' ? (
-        <div className="w6d-sr-chips" role="group" aria-label={t('w6d.search.freqAria')}>
+        <div className="w6d-sr-chips z4s-freq" role="group" aria-label={t('w6d.search.freqAria')}
+          style={{ gridTemplateColumns: `repeat(${Math.min(row.chips.length, 5)}, minmax(0, 1fr))` }}>
           {row.chips.map((chip) => (
             <button
               key={chip.frequency}
               type="button"
-              className="w6d-sr-chip fe-press"
+              className="w6d-sr-chip fe-press z4s-freq__chip"
               aria-current={chip.item === row.item ? 'true' : undefined}
               onClick={() => onPick(row, index + 1, chip.item)}
             >

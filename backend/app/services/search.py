@@ -41,7 +41,7 @@ from app.services.search_language_sql import measure_constraints, _pattern_claus
 from app.services.search_units import UNIT_RULES, UNIT_EXCLUDES, DENOMINATOR_RULES, unit_metadata, denominator_metadata
 from app.services.search_dimensions import dimension_constraints, dimension_metadata, native_dimension_labels, native_dimension_match_clause, native_dimension_text
 from app.services.search_variants import collapse_equivalent, disambiguate_titles
-from app.services.search_regional_groups import attach_group_values, group_regional_rows
+from app.services.search_regional_groups import attach_group_values, attach_region_row_values, group_regional_rows
 from app.services.search_paths import russia_family_base, russia_search_path, russia_year_search_path, world_search_paths
 from app.services.seo_i18n import localize_category_name, public_indicator_fields, region_display_name, region_indicator_copy
 from app.services.world_subnational_ingest import country_has_subnational
@@ -1118,6 +1118,14 @@ def _is_single_letter_query(raw: str) -> bool:
     return len(letters) == 1
 
 
+# Ходовые ряды: при равном счёте («курс», «ставка», «бензин») человек ждёт доллар, евро, юань, ключевую ставку и АИ-92,
+# а не ряды по алфавиту кодов. Влияет только на порядок строк с одинаковым счётом.
+_HEADLINE_ORDER = {code: rank for rank, code in enumerate((
+    "usd-rub", "eur-rub", "cny-rub", "kzt-rub", "try-rub", "byn-rub", "uah-rub", "aed-rub", "gbp-rub", "jpy-rub",
+    "key-rate", "cpi-yoy", "unemployment", "wages-nominal", "mortgage-rate", "fuel-ai92", "fuel-ai95", "ceni-ai92",
+    "ceni-ai95", "gdp-nominal"))}
+
+
 def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     """Порядок выдачи: сильнее совпадение выше; при равенстве региональные ряды ниже; на языке хоста выше.
 
@@ -1137,6 +1145,7 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
             -item["score"],
             # При равном счёте годовая инфляция страны выше индекса цен и месячного прироста.
             0 if _annual_inflation_row(item) else 1,
+            _HEADLINE_ORDER.get(item.get("code"), len(_HEADLINE_ORDER)),
             1 if not intent.regions and regional_indicator else 0,
             0 if (locale == "ru" and item.get("country_slug") == "russia") or (locale == "en" and item.get("country_slug") != "russia") else 1,
             item["key"],
@@ -1223,6 +1232,7 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
     # U15: одинаковое название у разных рядов страны различается периодом, единицей или срезом.
     disambiguate_titles(final[:limit], world_rows, locale)
     await attach_group_values(db, final[:limit])
+    await attach_region_row_values(db, final[:limit])
     response = {"results": final[:limit], "total": min(len(final), limit),
         "has_more": len(final) > limit or world_clipped or regions_clipped or sub_clipped,
         "version": SEARCH_VERSION, "intent": summary}

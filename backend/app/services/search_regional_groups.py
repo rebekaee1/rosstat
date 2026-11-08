@@ -75,7 +75,8 @@ def _finite(column):
     return and_(column.is_not(None), column > literal_column("-1e30"), column < literal_column("1e30"))
 
 
-async def _latest_by_region(db: AsyncSession, code: str, *, monthly: bool) -> dict[str, tuple[float, str]]:
+async def _latest_by_region(db: AsyncSession, code: str, *, monthly: bool,
+        slugs: tuple[str, ...] | None = None) -> dict[str, tuple[float, str]]:
     """Последнее значение показателя по каждому субъекту и по России: slug → (значение, дата)."""
     if monthly:
         point, order = RegionMonthlyPoint, RegionMonthlyPoint.month.desc()
@@ -88,8 +89,10 @@ async def _latest_by_region(db: AsyncSession, code: str, *, monthly: bool) -> di
         func.row_number().over(partition_by=point.region_id, order_by=order).label("rn"),
     ).join(RegionIndicator, RegionIndicator.id == point.indicator_id).where(
         RegionIndicator.code == code, _finite(point.value)).subquery()
-    rows = (await db.execute(select(Region.slug, ranked.c.period, ranked.c.value)
-        .join(ranked, ranked.c.region_id == Region.id).where(ranked.c.rn == 1))).all()
+    query = select(Region.slug, ranked.c.period, ranked.c.value).join(ranked, ranked.c.region_id == Region.id).where(ranked.c.rn == 1)
+    if slugs:
+        query = query.where(Region.slug.in_(slugs))
+    rows = (await db.execute(query)).all()
     out = {}
     for slug, period, value in rows:
         period = int(period)
@@ -118,3 +121,22 @@ async def attach_group_values(db: AsyncSession, results: list[dict]) -> None:
             found = latest.get(entry["slug"])
             if found:
                 entry["value"], entry["date"] = round(found[0], 4), found[1]
+
+
+# Явный регион в запросе («аренда квартиры спб»): число показываем у первых строк, как у группы.
+VALUED_REGION_ROWS = 6
+
+
+async def attach_region_row_values(db: AsyncSession, results: list[dict]) -> None:
+    """Значение и месяц у строк одного региона с названным регионом; при сбое строка остаётся без чисел."""
+    head = [item for item in results[:VALUED_REGION_ROWS]
+        if _is_regional(item) and not item.get("regional_group") and not item.get("latest")]
+    for item in head:
+        try:
+            found = (await _latest_by_region(db, item["code"], monthly=item.get("frequency") == "monthly",
+                slugs=(item["region_slug"],))).get(item["region_slug"])
+        except Exception:
+            logger.warning("region row value skipped", exc_info=True)
+            continue
+        if found:
+            item["latest"] = {"value": round(found[0], 4), "date": found[1]}
