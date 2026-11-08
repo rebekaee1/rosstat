@@ -19,19 +19,20 @@
     "Production evidence is dated separately in runtime-inventory.json; local main is not deployed automatically."
   ],
   "counts": {
-    "files": 2282,
-    "code_files": 1871,
-    "current_reviews": 2282,
+    "files": 2289,
+    "code_files": 1878,
+    "current_reviews": 2267,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 120,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
+      "missing": 7,
       "reviewed": 2064
     },
-    "definitions": 15119,
-    "annotated_definitions": 15119,
-    "files_needing_attention": 0
+    "definitions": 15135,
+    "annotated_definitions": 15037,
+    "files_needing_attention": 22
   },
   "orphan_reviews": [],
   "files": [
@@ -1740,8 +1741,8 @@
     },
     {
       "path": "backend/app/data/cbr_currencies.py",
-      "sha256": "0caee31ba6bef32c90b7d598803463a338c5024e07b7f89692d8fd00ad942a54",
-      "bytes": 34640,
+      "sha256": "906aa23d94cde5d5577657a385cfc9921c13d4aabe8a94dc7508f2ffab6e246d",
+      "bytes": 34630,
       "lines": 480,
       "code": true,
       "status": "reviewed",
@@ -1779,16 +1780,85 @@
     },
     {
       "path": "backend/app/data/emiss_price_goods.py",
-      "sha256": "4ecc21ad54fa8b68be8a892a694be87eaf7fa99fc0eeeca8a60ee9a10c1d1a6c",
-      "bytes": 34706,
-      "lines": 444,
+      "sha256": "4152d18a3b81be70f22c70f7be0f702ca0bf289b1d625f2f000510632ad00ee6",
+      "bytes": 35246,
+      "lines": 464,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 15,
-      "annotated_definitions": 15,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
+      "definitions": 17,
+      "annotated_definitions": 6,
+      "missing_definitions": [
+        {
+          "name": "_load_auto._en",
+          "line": 208,
+          "end_line": 209,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "artifact_rows",
+          "line": 228,
+          "end_line": 243,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "copy_en",
+          "line": 246,
+          "end_line": 252,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_contains",
+          "line": 363,
+          "end_line": 364,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "classify_price_group",
+          "line": 367,
+          "end_line": 383,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_short_label",
+          "line": 389,
+          "end_line": 405,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "short_name_for",
+          "line": 408,
+          "end_line": 417,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_load_auto_last",
+          "line": 420,
+          "end_line": 424,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_months_between",
+          "line": 432,
+          "end_line": 433,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_short_en",
+          "line": 439,
+          "end_line": 445,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "price_meta",
+          "line": 448,
+          "end_line": 464,
+          "kind": "FunctionDef"
+        }
+      ]
     },
     {
       "path": "backend/app/data/eurostat_country_visibility.py",
@@ -2025,9 +2095,26 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/app/data/i18n/price_goods_en.py",
+      "sha256": "b6975e32d94673c03517ee9a4efff2a4c1ad846df7f032472cc4238df2cc7d75",
+      "bytes": 65228,
+      "lines": 813,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review"
+      ],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
       "path": "backend/app/data/i18n/region_indicators_en.py",
-      "sha256": "404584f2da40f81809fb072c570e1004a7e5c03fce5d38a72dbe5180d93511fa",
-      "bytes": 131998,
+      "sha256": "78429bf7332beaa07ce020bdf80a8569c70a077858b1b1cbdb673f11bdd73ade",
+      "bytes": 132024,
       "lines": 2962,
       "code": true,
       "status": "reviewed",
@@ -9591,6 +9678,49 @@
       "missing_definitions": []
     },
     {
+      "path": "backend/tests/test_price_goods_en.py",
+      "sha256": "2cf088d54ffb51087efc6592d25ec1b5b6a16547a51a63583b14d7057da5dd0f",
+      "bytes": 1367,
+      "lines": 36,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 4,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "test_every_good_has_english_copy",
+          "line": 11,
+          "end_line": 16,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_auto_goods_covered_exactly",
+          "line": 19,
+          "end_line": 21,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_names_are_clean",
+          "line": 24,
+          "end_line": 29,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_short_name_en_is_plain",
+          "line": 32,
+          "end_line": 36,
+          "kind": "FunctionDef"
+        }
+      ]
+    },
+    {
       "path": "backend/tests/test_project_terrain.py",
       "sha256": "e0f293801623e016df4564fbfba901c4e5054e2057fafac546d7d92f3e73843d",
       "bytes": 7170,
@@ -12972,9 +13102,9 @@
     },
     {
       "path": "docs/client-mechanism-inventory.json",
-      "sha256": "1e02cd41ea818e6f7b8104857804974a361cf811fb85cd472e9444a5bb48a7e0",
-      "bytes": 6954421,
-      "lines": 244670,
+      "sha256": "39d07ac3c5b5d8186692a968a29647399b49acfe69d1b395e9fbd96f1c06c470",
+      "bytes": 6981383,
+      "lines": 245623,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -12985,7 +13115,7 @@
     },
     {
       "path": "docs/client-mechanism-inventory.md",
-      "sha256": "ff111f9f0afb5d4cfbc8f0053a8f58c30c663e918a60ea0eeb945dd73bfdb85e",
+      "sha256": "d173396db298d91370022bded2fc46c231395d32d98060f8a669093ad10c7f5d",
       "bytes": 13325,
       "lines": 136,
       "code": false,
@@ -13544,9 +13674,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "9bb808228a01611f98b939f3c847ba64a0d67ba26bcf30636656e4bafae8d1d0",
-      "bytes": 3802943,
-      "lines": 134383,
+      "sha256": "ae52d97fef91130574cd0fa21c861368eb32e9602f7c11affaad48df597599aa",
+      "bytes": 3804083,
+      "lines": 134418,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13596,9 +13726,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "0486a6dd0dfca4adfc3eaafb43d10364ca4736b3b8114d706ab8e36916371a54",
-      "bytes": 11290543,
-      "lines": 340482,
+      "sha256": "c2e315edcbd3cfa7c61b4b66a89cec33810d8cfda1fc559f4879cad88f7b2886",
+      "bytes": 11581597,
+      "lines": 346957,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13609,9 +13739,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "45a9b209b4ea8509d701740b502cf34c62a7314243a7f24e540ff0915fdc123e",
-      "bytes": 564504,
-      "lines": 3220,
+      "sha256": "6d6c07b2dd479366f942fc6fcf4c3971de3f31607fbfea2608d1384c0ae867d8",
+      "bytes": 596251,
+      "lines": 3222,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -16755,29 +16885,89 @@
     },
     {
       "path": "frontend/src/components/CookieConsent.component.test.jsx",
-      "sha256": "d5ad517e94efe932411dd29482b2297caf0217e2a4158f14bf80799ed8cfcd44",
-      "bytes": 17777,
-      "lines": 353,
+      "sha256": "e0e1c6b2e91bea98292c98958735967d3727eb44aff5a11a072e6faf58ac614a",
+      "bytes": 17945,
+      "lines": 355,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 7,
-      "annotated_definitions": 7,
-      "missing_definitions": []
+      "annotated_definitions": 2,
+      "missing_definitions": [
+        {
+          "name": "scrollTo",
+          "line": 276,
+          "end_line": 282,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "phone",
+          "line": 287,
+          "end_line": 291,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "phone.matchMedia",
+          "line": 288,
+          "end_line": 290,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "phone.matchMedia.addEventListener",
+          "line": 289,
+          "end_line": 289,
+          "kind": "ObjectMethod"
+        },
+        {
+          "name": "phone.matchMedia.removeEventListener",
+          "line": 289,
+          "end_line": 289,
+          "kind": "ObjectMethod"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/CookieConsent.jsx",
-      "sha256": "bdc023a5bbc61b88f35eda12ca12a093535bd5e30bb73c4ce582416a1dc5125d",
-      "bytes": 16134,
-      "lines": 325,
+      "sha256": "7ad32d7963fd0600042326e70b2f55dbdea9d9d375bff6949147068e0b78cf33",
+      "bytes": 16739,
+      "lines": 332,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 8,
-      "annotated_definitions": 8,
-      "missing_definitions": []
+      "annotated_definitions": 4,
+      "missing_definitions": [
+        {
+          "name": "CookieConsent.reopen",
+          "line": 109,
+          "end_line": 120,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "CookieConsent.apply",
+          "line": 140,
+          "end_line": 143,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "CookieConsent.commit",
+          "line": 160,
+          "end_line": 179,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "CookieConsent.dismiss",
+          "line": 181,
+          "end_line": 189,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/CountryComparePicker.component.test.jsx",
@@ -17236,16 +17426,31 @@
     },
     {
       "path": "frontend/src/components/GenericIndicatorView.jsx",
-      "sha256": "f9f23e7ef5da8fb3f2b822132a8590471d02ee644a15402b7571f1f582eaa910",
-      "bytes": 15101,
-      "lines": 344,
+      "sha256": "3befe504869ef374c5c4a0b809b7dc13ef51304ba3dcd1f49866bf3d992d7317",
+      "bytes": 16246,
+      "lines": 359,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 2,
-      "annotated_definitions": 2,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "IDENTITY",
+          "line": 80,
+          "end_line": 80,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "GenericIndicatorView",
+          "line": 82,
+          "end_line": 359,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/GenericViewModePicker.jsx",
@@ -17353,9 +17558,9 @@
     },
     {
       "path": "frontend/src/components/IndicatorDetailHeader.jsx",
-      "sha256": "5f973bad3942106b09ba6b4851d6daa79efde3faa8cd497d7588ffb9de30b7ff",
-      "bytes": 5546,
-      "lines": 145,
+      "sha256": "bff568b63df8d4bcf9511c85a168135b82fc18518bbf333e05afc3d3afaa599d",
+      "bytes": 5611,
+      "lines": 146,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -17821,29 +18026,53 @@
     },
     {
       "path": "frontend/src/components/MobileDock.component.test.jsx",
-      "sha256": "08d62913d56222a7751a6b60a51052fab7459788c54cf5803e48737ff21e18ce",
-      "bytes": 7854,
-      "lines": 151,
+      "sha256": "a04066d5e487f34b114f54c2e226b4a2d4344faffb4f2a19c4e5631c576ced80",
+      "bytes": 7933,
+      "lines": 153,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 6,
-      "annotated_definitions": 6,
-      "missing_definitions": []
+      "annotated_definitions": 4,
+      "missing_definitions": [
+        {
+          "name": "getBoundingClientRect",
+          "line": 102,
+          "end_line": 102,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "onOpen",
+          "line": 139,
+          "end_line": 139,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/MobileDock.jsx",
-      "sha256": "ccf2fc731f9b3bca80f11fee8da5c4bf0379dfe737fc2d157d04b99f47a3f68b",
-      "bytes": 6009,
-      "lines": 106,
+      "sha256": "5a73d7c512f64b9d2cfdc2d468f7e254aa5d98cc4b04fa088e45cad313c12821",
+      "bytes": 6249,
+      "lines": 109,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 1,
-      "annotated_definitions": 1,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "MobileDock",
+          "line": 33,
+          "end_line": 109,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/MobileNavSelect.jsx",
@@ -17886,8 +18115,8 @@
     },
     {
       "path": "frontend/src/components/Navbar.component.test.jsx",
-      "sha256": "d43fdbe9dd3eff4d18689ae7870b193e4831b88c6db2812623488e2aa3c9583b",
-      "bytes": 17045,
+      "sha256": "5add361624c3eadbf019f3d6a1d1e396adf9767cd4ae890273e7523aaa73e247",
+      "bytes": 17108,
       "lines": 315,
       "code": true,
       "status": "reviewed",
@@ -17899,16 +18128,97 @@
     },
     {
       "path": "frontend/src/components/Navbar.jsx",
-      "sha256": "1b8fb59c67796e2cc6f25e82256fa0f8045af835de6b44631968d4be479da763",
-      "bytes": 30282,
-      "lines": 615,
+      "sha256": "7c4b0efd4c194c17d2f535608b6eb84c7d393749d64547128e835fc3e2fcd710",
+      "bytes": 30324,
+      "lines": 616,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 16,
-      "annotated_definitions": 16,
-      "missing_definitions": []
+      "annotated_definitions": 3,
+      "missing_definitions": [
+        {
+          "name": "CountriesMega",
+          "line": 147,
+          "end_line": 190,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "Navbar",
+          "line": 192,
+          "end_line": 616,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "Navbar.setMobileOpen",
+          "line": 231,
+          "end_line": 231,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.setCalcOpen",
+          "line": 232,
+          "end_line": 235,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.open",
+          "line": 244,
+          "end_line": 244,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.apply",
+          "line": 258,
+          "end_line": 262,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.onDoc",
+          "line": 281,
+          "end_line": 289,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.onKey",
+          "line": 290,
+          "end_line": 296,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.navItemClass",
+          "line": 318,
+          "end_line": 324,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.openMega",
+          "line": 335,
+          "end_line": 338,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.closeMega",
+          "line": 339,
+          "end_line": 342,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.renderPrimaryLink",
+          "line": 344,
+          "end_line": 381,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "Navbar.renderLink",
+          "line": 530,
+          "end_line": 548,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/Navbar.menu.component.test.jsx",
@@ -18315,16 +18625,67 @@
     },
     {
       "path": "frontend/src/components/RegionsMap.jsx",
-      "sha256": "d01996f6c17735b35bf32b494c26bfd6e8b907d4cffaef07ecc1390f4418eb98",
-      "bytes": 30632,
-      "lines": 624,
+      "sha256": "33c11d77b0e5cccf29412e41d2b6dab6456b8e9d9a463d8fa30a4fa0aae2aa13",
+      "bytes": 30668,
+      "lines": 625,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 8,
-      "annotated_definitions": 8,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "paddedViewBox",
+          "line": 45,
+          "end_line": 49,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionsMap",
+          "line": 51,
+          "end_line": 625,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionsMap.colorFor",
+          "line": 122,
+          "end_line": 122,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsMap.dist",
+          "line": 185,
+          "end_line": 185,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsMap.onTouchStart",
+          "line": 186,
+          "end_line": 192,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsMap.onTouchMove",
+          "line": 193,
+          "end_line": 205,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsMap.onTouchEnd",
+          "line": 206,
+          "end_line": 206,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsMap.onWheel",
+          "line": 207,
+          "end_line": 211,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/RegisterNudge.component.test.jsx",
@@ -19615,16 +19976,25 @@
     },
     {
       "path": "frontend/src/components/home/HomeHero.jsx",
-      "sha256": "4e5767c68501545bd57e8a9ae6c5cfc0f03f55748ea6f325768765012c7e85bf",
-      "bytes": 7381,
-      "lines": 124,
+      "sha256": "fa5d856d6af315d115a34e25f596f6d90c0b0102363f521ae913ff57e6d884d2",
+      "bytes": 7482,
+      "lines": 126,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 1,
-      "annotated_definitions": 1,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "HomeHero",
+          "line": 29,
+          "end_line": 126,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/home/HomePopularCountries.component.test.jsx",
@@ -19651,6 +20021,67 @@
       "definitions": 1,
       "annotated_definitions": 1,
       "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/components/home/HomePricesRates.jsx",
+      "sha256": "a6bbb837ed6a893f42ad57060747937d313028077c54d43a44dda272dd6e6c30",
+      "bytes": 8439,
+      "lines": 176,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review",
+        "definitions_without_annotation"
+      ],
+      "definitions": 7,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "readSaved",
+          "line": 18,
+          "end_line": 20,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "useRegionChoice",
+          "line": 22,
+          "end_line": 40,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "useRegionChoice.onPick",
+          "line": 35,
+          "end_line": 38,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "HomeRegionQuick",
+          "line": 43,
+          "end_line": 71,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionPrices",
+          "line": 73,
+          "end_line": 107,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RateTiles",
+          "line": 109,
+          "end_line": 159,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "HomePricesRates",
+          "line": 161,
+          "end_line": 176,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/home/HomeToday.component.test.jsx",
@@ -19693,21 +20124,72 @@
     },
     {
       "path": "frontend/src/components/home/HomeTools.jsx",
-      "sha256": "a9ccf7a9dd4263cd4b47a9f65d620e0815b294405084f0ca0fd497cebfa48f8d",
-      "bytes": 15429,
-      "lines": 312,
+      "sha256": "9f2f8656800c93c9b83205a2b75a3c36eb68621bd93eae34a3c88bbc19cadd93",
+      "bytes": 15736,
+      "lines": 313,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 8,
-      "annotated_definitions": 8,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "parseAmount",
+          "line": 25,
+          "end_line": 30,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "ToolShell",
+          "line": 32,
+          "end_line": 53,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "ConverterTool",
+          "line": 56,
+          "end_line": 139,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "InflationTool",
+          "line": 142,
+          "end_line": 207,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "InflationTool.money",
+          "line": 157,
+          "end_line": 159,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "CompareTool",
+          "line": 216,
+          "end_line": 293,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "CompareTool.has",
+          "line": 232,
+          "end_line": 232,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "HomeTools",
+          "line": 295,
+          "end_line": 313,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/home/HomeWorkbench.component.test.jsx",
-      "sha256": "625540686187c74f1acb84232ad8c62ce0c66234af4e9a2566b3c80603905f77",
-      "bytes": 23384,
+      "sha256": "98fb76a4854978ca7b9a36b996f917a28128b23e799ecfa8f1d2ba703d02cdb8",
+      "bytes": 23354,
       "lines": 461,
       "code": true,
       "status": "reviewed",
@@ -19888,16 +20370,37 @@
     },
     {
       "path": "frontend/src/components/regions/RegionRanking.jsx",
-      "sha256": "e4cd2672e473a0ce19cb1308f1f280a4703506e43fd4903136f51f234655f140",
-      "bytes": 10972,
-      "lines": 229,
+      "sha256": "9ee02231fe47e668140583c3f3db34d143af5f14c1091874044f070474505687",
+      "bytes": 11011,
+      "lines": 230,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "definitions_without_annotation"
+      ],
       "definitions": 3,
-      "annotated_definitions": 3,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "MoreMetrics",
+          "line": 23,
+          "end_line": 91,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionRanking",
+          "line": 93,
+          "end_line": 230,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionRanking.pick",
+          "line": 126,
+          "end_line": 130,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/components/russia/LaborIndicatorGroups.jsx",
@@ -20265,9 +20768,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.en.js",
-      "sha256": "ecd3041b5176d8393afb6655b1b1fc5bab5a8df496f2d7def82d54c47ebd27d2",
-      "bytes": 214367,
-      "lines": 3825,
+      "sha256": "ff92776173bcf0e7b4404d41fd9eddd4549cc5b1a91112b2f69ce4013b43ea27",
+      "bytes": 215973,
+      "lines": 3856,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20304,9 +20807,9 @@
     },
     {
       "path": "frontend/src/i18n/messages.ru.js",
-      "sha256": "51a5646c7f0b0b9beeb58324b5ca32a82488644a33b5c3ef7d20affbf56c7c30",
-      "bytes": 304690,
-      "lines": 3830,
+      "sha256": "e1f3b96169e93edfb28e62e82714dfe124bcc740310df883481d436142a74ba6",
+      "bytes": 306794,
+      "lines": 3861,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -20382,9 +20885,9 @@
     },
     {
       "path": "frontend/src/index.css",
-      "sha256": "bf2af7c1f89efb4212f92da16d17534a0ea37894e2232925fc256699825c651c",
-      "bytes": 45043,
-      "lines": 1036,
+      "sha256": "c639021b76e088645fcc7a2ec20613fb60bb24364585d8d23c29d2ca8a48dc8b",
+      "bytes": 45076,
+      "lines": 1037,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22527,9 +23030,9 @@
     },
     {
       "path": "frontend/src/lib/homeQuickLinks.js",
-      "sha256": "e4a77eea23d0666e5c034da07d3d2c300670d03e3de30d992ffea5c9a44baa7e",
-      "bytes": 2261,
-      "lines": 36,
+      "sha256": "8e059943dd183161691aacc67df3fc5526b74e670cc17dbcdb2e97630e256ac8",
+      "bytes": 2468,
+      "lines": 38,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22540,9 +23043,9 @@
     },
     {
       "path": "frontend/src/lib/homeQuickLinks.test.js",
-      "sha256": "2381ddd666632ea872384e8996fe71eef807c53b2b5d2d01a1ffacaa3aa90a61",
-      "bytes": 1582,
-      "lines": 25,
+      "sha256": "90d491225dfd562b2b8c3463ab794c922b94a35cf0f275ae42c3fc6d7f1a7533",
+      "bytes": 1705,
+      "lines": 27,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -22969,9 +23472,9 @@
     },
     {
       "path": "frontend/src/lib/navItems.js",
-      "sha256": "af56ad81ab676bc7883e70118c548075c1fe004ff35efbb91af7ed2833dfaa33",
-      "bytes": 8747,
-      "lines": 192,
+      "sha256": "c5212d19a3f1392a007ca7471a82a760210fd51c5a3bf75524fc6ba1fa5b79d7",
+      "bytes": 8914,
+      "lines": 196,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -26076,16 +26579,27 @@
     },
     {
       "path": "frontend/src/pages/Dashboard.jsx",
-      "sha256": "885b606aa4a299f41146af78cb26ed667e378cfb60f1bf2880f1eacde834aa09",
-      "bytes": 2395,
-      "lines": 53,
+      "sha256": "17a54a19a1a73c0c047295ee73a0f85c6c5fa13c104383e2da107375039ce575",
+      "bytes": 2487,
+      "lines": 55,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
       "definitions": 1,
-      "annotated_definitions": 1,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "Dashboard",
+          "line": 15,
+          "end_line": 55,
+          "kind": "FunctionDeclaration"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/DemographicsPage.jsx",
@@ -26362,16 +26876,69 @@
     },
     {
       "path": "frontend/src/pages/RegionComparePage.jsx",
-      "sha256": "e7aa5c01ff829f1d53ec2c27cc4813a7ba9ac5ee384fdb4853b5ece903ccb9de",
-      "bytes": 7392,
-      "lines": 176,
+      "sha256": "23a85fe66b3d7c1c81a92c8f6aeada8e8896d5795aec9eb8b3b7bed8830e06fe",
+      "bytes": 9563,
+      "lines": 223,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
-      "definitions": 5,
-      "annotated_definitions": 5,
-      "missing_definitions": []
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
+      "definitions": 8,
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "parsePair",
+          "line": 27,
+          "end_line": 32,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "useRegionCompare",
+          "line": 34,
+          "end_line": 42,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "useRegionCompare.queryFn",
+          "line": 37,
+          "end_line": 38,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "PairPicker",
+          "line": 45,
+          "end_line": 74,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "PairPicker.go",
+          "line": 54,
+          "end_line": 54,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "PairPicker.select",
+          "line": 55,
+          "end_line": 64,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionComparePage",
+          "line": 76,
+          "end_line": 223,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionComparePage.side",
+          "line": 164,
+          "end_line": 179,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/RegionIndicatorPage.component.test.jsx",
@@ -26440,16 +27007,33 @@
     },
     {
       "path": "frontend/src/pages/RegionRatingPage.jsx",
-      "sha256": "2b4cdee9f94c337ef5c3ab37b7c78ca2f8c7ee909299308e0e1491d4605c473e",
-      "bytes": 12402,
-      "lines": 265,
+      "sha256": "d623e22780151fbc4021d9831354bf5ed8ccb1da598ee95b4d90f0c2aacd9230",
+      "bytes": 13172,
+      "lines": 278,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
       "definitions": 2,
-      "annotated_definitions": 2,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "RegionRatingPage",
+          "line": 27,
+          "end_line": 278,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionRatingPage.setSortOverride",
+          "line": 39,
+          "end_line": 39,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/RegionRatingsHub.component.test.jsx",
@@ -26505,16 +27089,129 @@
     },
     {
       "path": "frontend/src/pages/RegionsHome.jsx",
-      "sha256": "4e80b2a7bcce26165165a41654ae30aa346dafab7d340d626bfa236113730607",
-      "bytes": 46295,
-      "lines": 1005,
+      "sha256": "bffa8f9d763784b1ce5c75333895a531ad7f0119102965235c274fd8f0694838",
+      "bytes": 46588,
+      "lines": 1011,
       "code": true,
       "status": "reviewed",
-      "current": true,
-      "issues": [],
+      "current": false,
+      "issues": [
+        "source_changed",
+        "read_range_gap",
+        "definitions_without_annotation"
+      ],
       "definitions": 18,
-      "annotated_definitions": 18,
-      "missing_definitions": []
+      "annotated_definitions": 0,
+      "missing_definitions": [
+        {
+          "name": "MapMetricSearch",
+          "line": 93,
+          "end_line": 180,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "MapMetricSearch.openWith",
+          "line": 110,
+          "end_line": 110,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "MapRegionSearch",
+          "line": 183,
+          "end_line": 235,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "MapRegionSearch.getSearchItem",
+          "line": 194,
+          "end_line": 194,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "MapRegionSearch.pick",
+          "line": 196,
+          "end_line": 200,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "ContrastRow",
+          "line": 256,
+          "end_line": 302,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "ContrastRow.side",
+          "line": 275,
+          "end_line": 285,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionCard",
+          "line": 304,
+          "end_line": 335,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionCard.mini",
+          "line": 309,
+          "end_line": 314,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome",
+          "line": 337,
+          "end_line": 1011,
+          "kind": "FunctionDeclaration"
+        },
+        {
+          "name": "RegionsHome.setView",
+          "line": 454,
+          "end_line": 465,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.selectOverview",
+          "line": 467,
+          "end_line": 470,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.selectPreset",
+          "line": 472,
+          "end_line": 475,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.selectCustom",
+          "line": 477,
+          "end_line": 480,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.clearCustom",
+          "line": 482,
+          "end_line": 484,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.getSearchItem",
+          "line": 522,
+          "end_line": 522,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.handlePng",
+          "line": 532,
+          "end_line": 546,
+          "kind": "ArrowFunctionExpression"
+        },
+        {
+          "name": "RegionsHome.handleGif",
+          "line": 548,
+          "end_line": 568,
+          "kind": "ArrowFunctionExpression"
+        }
+      ]
     },
     {
       "path": "frontend/src/pages/RegionsHome.z5.component.test.jsx",
@@ -27474,6 +28171,74 @@
       "status": "reviewed",
       "current": true,
       "issues": [],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/r3a-home.css",
+      "sha256": "bcc7fb082f32b7795b08650c270fed12ab4f67a1e2326ab1f9bd741965ed73a3",
+      "bytes": 4089,
+      "lines": 77,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review"
+      ],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/r3b-regions.css",
+      "sha256": "28fdf420013344bc6e99ef17263b8c9ce31c3fa0665b4cfc081496b8a376358c",
+      "bytes": 5286,
+      "lines": 98,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review"
+      ],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/r3c-dark.css",
+      "sha256": "a18ea86ef210458203fcb2cb0a5e6cf7e5c22065fe84b3b883f4ad66c95cec25",
+      "bytes": 4218,
+      "lines": 105,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review"
+      ],
+      "definitions": 0,
+      "annotated_definitions": 0,
+      "missing_definitions": []
+    },
+    {
+      "path": "frontend/src/styles/r3d-card.css",
+      "sha256": "879d6277369e3574fa0114ca3fe102cba7b4c282d59599037760396da68b707b",
+      "bytes": 4521,
+      "lines": 74,
+      "code": true,
+      "status": "missing",
+      "current": false,
+      "issues": [
+        "missing_review",
+        "review_incomplete",
+        "code_needs_body_review"
+      ],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -29703,9 +30468,15 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "9687adf658c541e835cd096a3d85e862e3fc3325f98beebdc584304a718c95d9",
-  "javascript_inventory_sha256": "2c0030550b9f6997d282ccebbd31660841043fbef08e513d9cca0091cfd59056",
-  "baseline_commit": "0555aa82ca4af5076b7f27775b55c9ae2321ba96",
-  "branch": "worktree-agent-a955bd90f5c3c707d",
-  "unstaged_at_capture": []
+  "ledger_sha256": "e6b656fd49fdc1ff83ce90fadb3c50fa82da97a976ecf29ebcfc12f107c1d252",
+  "javascript_inventory_sha256": "6a3b99f47f5cb53c0ad3e54520cb55b95f4e9a089d76249e1ab85367fa035ff3",
+  "baseline_commit": "e1d6ccdbddd0db681693052c3ab4ba8b37f76314",
+  "branch": "circle-data/int",
+  "unstaged_at_capture": [
+    "docs/client-mechanism-inventory.json",
+    "docs/client-mechanism-inventory.md",
+    "docs/indicator-index.json",
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
+  ]
 }
