@@ -9,7 +9,7 @@
 - ORM tables: **68**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **249**
-- Settings reads: **580**
+- Settings reads: **582**
 - Direct environment reads: **35**
 - Jobs: **54**
 - Middleware: **6**
@@ -1829,7 +1829,7 @@ Relationships: `[]`
 | RUSTATS_TELEGRAM_DIGEST_CHAT_IDS | str = '' | 1 | [backend/app/config.py:422](../backend/app/config.py#L422) |
 | RUSTATS_TELEGRAM_PROXY_URL | str = '' | 2 | [backend/app/config.py:425](../backend/app/config.py#L425) |
 | RUSTATS_TELEGRAM_REALTIME_ALERTS_ENABLED | bool = True | 4 | [backend/app/config.py:428](../backend/app/config.py#L428) |
-| RUSTATS_TELEGRAM_CALM_MODE | bool = True | 3 | [backend/app/config.py:433](../backend/app/config.py#L433) |
+| RUSTATS_TELEGRAM_CALM_MODE | bool = True | 5 | [backend/app/config.py:433](../backend/app/config.py#L433) |
 | RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:434](../backend/app/config.py#L434) |
 | RUSTATS_TELEGRAM_CALM_SUMMARY_CRON_MINUTE | int = 10 | 2 | [backend/app/config.py:435](../backend/app/config.py#L435) |
 | RUSTATS_TELEGRAM_DIGEST_V2_ENABLED | bool = False | 4 | [backend/app/config.py:440](../backend/app/config.py#L440) |
@@ -2708,13 +2708,13 @@ Relationships: `[]`
 | app.services.telegram_calm.MSK | Call | computed source expression | [backend/app/services/telegram_calm.py:35](../backend/app/services/telegram_calm.py#L35) |
 | app.services.telegram_calm.HELD_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:42](../backend/app/services/telegram_calm.py#L42) |
 | app.services.telegram_calm.URGENT_KINDS | Call | computed source expression | [backend/app/services/telegram_calm.py:52](../backend/app/services/telegram_calm.py#L52) |
-| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:152](../backend/app/services/telegram_calm.py#L152) |
-| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:154](../backend/app/services/telegram_calm.py#L154) |
-| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:155](../backend/app/services/telegram_calm.py#L155) |
-| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:158](../backend/app/services/telegram_calm.py#L158) |
-| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:165](../backend/app/services/telegram_calm.py#L165) |
-| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'alert' | [backend/app/services/telegram_calm.py:168](../backend/app/services/telegram_calm.py#L168) |
-| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:192](../backend/app/services/telegram_calm.py#L192) |
+| app.services.telegram_calm._MONTHS_GENITIVE | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:156](../backend/app/services/telegram_calm.py#L156) |
+| app.services.telegram_calm._TAG_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:158](../backend/app/services/telegram_calm.py#L158) |
+| app.services.telegram_calm._EMOJI_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:159](../backend/app/services/telegram_calm.py#L159) |
+| app.services.telegram_calm.GROUPS | Tuple | sequence/source expression | [backend/app/services/telegram_calm.py:162](../backend/app/services/telegram_calm.py#L162) |
+| app.services.telegram_calm._KIND_GROUP | DictComp | computed source expression | [backend/app/services/telegram_calm.py:169](../backend/app/services/telegram_calm.py#L169) |
+| app.services.telegram_calm.KIND_LABELS | Dict | 'http_5xx_spike', 'load_shed', 'host_pressure', 'host_memory', 'rate_limit_alert', 'etl_summary', 'etl_failure', 'etl_alert', 'world_ingest_summary', 'zero_parse', 'staleness', 'freshness_watchdog', 'forecast_issue', 'scheduler_alert', 'job_lease_lost', 'ticker_stale', 'acquisition_alert', 'recrawl_alert', 'analytics_anomaly', 'audience_alert', 'alert' | [backend/app/services/telegram_calm.py:172](../backend/app/services/telegram_calm.py#L172) |
+| app.services.telegram_calm._RECOVERY_RE | Call | computed source expression | [backend/app/services/telegram_calm.py:196](../backend/app/services/telegram_calm.py#L196) |
 | app.services.telegram_missed_summary.MSK | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:34](../backend/app/services/telegram_missed_summary.py#L34) |
 | app.services.telegram_missed_summary.DELIVERY_WINDOW | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:39](../backend/app/services/telegram_missed_summary.py#L39) |
 | app.services.telegram_missed_summary.SKIPPED_KINDS | Call | computed source expression | [backend/app/services/telegram_missed_summary.py:43](../backend/app/services/telegram_missed_summary.py#L43) |

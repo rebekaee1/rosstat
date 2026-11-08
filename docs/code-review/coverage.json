@@ -5133,9 +5133,9 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "adf9762bfcb3924014a7c56c798369911e60e6f28ea435f883f7cbe15dcd824a",
-      "bytes": 18295,
-      "lines": 332,
+      "sha256": "83cfbe84f1a1d9fca06ae784a095ff2d2e2d3e1d432a1b06456c929a861edc3f",
+      "bytes": 18551,
+      "lines": 336,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -10736,9 +10736,9 @@
     },
     {
       "path": "backend/tests/test_telegram_calm.py",
-      "sha256": "60d92d32f10648b2948f993f63557a0cc8d6d542e429d9c412dc235cdea841e9",
-      "bytes": 8486,
-      "lines": 204,
+      "sha256": "39966a3f5b8454fd638fa5da684244a6793fbfa68bfc57ffe399a93f7c01c376",
+      "bytes": 8572,
+      "lines": 205,
       "code": true,
       "status": "reviewed",
       "current": true,
@@ -13219,7 +13219,7 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "a159e6df852f697e77bd8ef61c5480cf4ce6299352f528adb93c3d04e0ac4099",
+      "sha256": "e3b8e0dca0084718be8343bc74376dc486c6704e72059ab005b102abab377f7f",
       "bytes": 2992435,
       "lines": 108291,
       "code": false,
@@ -13271,9 +13271,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "17254a1c3b391671fdf4e4f8419570aa44bbe462d2c73312087d3e62d7f82760",
-      "bytes": 10994780,
-      "lines": 331825,
+      "sha256": "1f59361542aa4c2015837ecf159936a95a0c79353a036aeec38b5d1eb51ec74f",
+      "bytes": 10995380,
+      "lines": 331845,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13284,7 +13284,7 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "09f86351e9e5e598c4f2acd319a0ba7b2f6b490d0276d3ccc87646700fdb06ce",
+      "sha256": "e484f99b283b071306fefd9e5be2f8cd5a2b0add94e59360bd556d4cd8ea0989",
       "bytes": 545051,
       "lines": 3092,
       "code": false,
@@ -29118,9 +29118,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "e845543163bcc63a66f4aca4f3351743df651753e74148374ab08e3d4c496f88",
+  "ledger_sha256": "c8aa13a7e90168d47a155c093df279cbea5c881c0c306e7b4dbaef2ae1286173",
   "javascript_inventory_sha256": "526fa19d62abce45d6c6f1ef6bd736865bb155149fc898bd3b1e92492fab5276",
-  "baseline_commit": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
+  "baseline_commit": "d7f0fc865c82a93b1a2a435054b440d05007dac7",
   "branch": "main",
   "unstaged_at_capture": []
 }

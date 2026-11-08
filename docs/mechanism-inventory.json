@@ -1685,8 +1685,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "sha256": "adf9762bfcb3924014a7c56c798369911e60e6f28ea435f883f7cbe15dcd824a",
-      "lines": 332
+      "sha256": "83cfbe84f1a1d9fca06ae784a095ff2d2e2d3e1d432a1b06456c929a861edc3f",
+      "lines": 336
     },
     {
       "path": "backend/app/services/telegram_missed_summary.py",
@@ -36403,8 +36403,28 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 95,
+      "end_line": 95,
+      "owner": "note_error_spike",
+      "conditions": [],
+      "name": "telegram_calm_mode",
+      "expression": "getattr(settings, 'telegram_calm_mode', False)",
+      "dynamic": false
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "check_site_recovered",
+      "conditions": [],
+      "name": "telegram_calm_mode",
+      "expression": "getattr(settings, 'telegram_calm_mode', False)",
+      "dynamic": false
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 314,
+      "end_line": 314,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "name": "telegram_calm_mode",
@@ -99589,8 +99609,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 152,
-      "end_line": 153,
+      "line": 156,
+      "end_line": 157,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHS_GENITIVE",
@@ -99606,8 +99626,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 154,
-      "end_line": 154,
+      "line": 158,
+      "end_line": 158,
       "owner": "<module>",
       "conditions": [],
       "name": "_TAG_RE",
@@ -99623,8 +99643,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 155,
-      "end_line": 155,
+      "line": 159,
+      "end_line": 159,
       "owner": "<module>",
       "conditions": [],
       "name": "_EMOJI_RE",
@@ -99640,8 +99660,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 158,
-      "end_line": 164,
+      "line": 162,
+      "end_line": 168,
       "owner": "<module>",
       "conditions": [],
       "name": "GROUPS",
@@ -99657,8 +99677,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 169,
+      "end_line": 169,
       "owner": "<module>",
       "conditions": [],
       "name": "_KIND_GROUP",
@@ -99674,8 +99694,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 168,
-      "end_line": 190,
+      "line": 172,
+      "end_line": 194,
       "owner": "<module>",
       "conditions": [],
       "name": "KIND_LABELS",
@@ -99861,8 +99881,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 192,
-      "end_line": 192,
+      "line": 196,
+      "end_line": 196,
       "owner": "<module>",
       "conditions": [],
       "name": "_RECOVERY_RE",
@@ -137851,8 +137871,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 98,
-      "end_line": 98,
+      "line": 100,
+      "end_line": 100,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "get_state_redis",
@@ -137865,8 +137885,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 111,
+      "end_line": 111,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -137879,8 +137899,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 128,
+      "end_line": 128,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "get_state_redis",
@@ -137893,8 +137913,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 128,
-      "end_line": 128,
+      "line": 132,
+      "end_line": 132,
       "owner": "check_site_recovered",
       "conditions": [],
       "operation": "delete",
@@ -137907,8 +137927,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 114,
-      "end_line": 114,
+      "line": 116,
+      "end_line": 116,
       "owner": "note_error_spike",
       "conditions": [],
       "operation": "set",
@@ -137921,8 +137941,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 316,
-      "end_line": 320,
+      "line": 320,
+      "end_line": 324,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -137935,8 +137955,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 321,
-      "end_line": 326,
+      "line": 325,
+      "end_line": 330,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "operation": "execute",
@@ -229502,8 +229522,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -229511,8 +229531,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 319,
-      "end_line": 319,
+      "line": 323,
+      "end_line": 323,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229520,8 +229540,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.method",
@@ -229529,8 +229549,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok.is_",
@@ -229538,8 +229558,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 328,
+      "end_line": 328,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -229547,8 +229567,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
@@ -229556,8 +229576,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 322,
-      "end_line": 322,
+      "line": 326,
+      "end_line": 326,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.id",
@@ -229565,8 +229585,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229574,8 +229594,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 327,
+      "end_line": 327,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.ok",
@@ -229583,8 +229603,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 328,
+      "end_line": 328,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -229592,8 +229612,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 329,
+      "end_line": 329,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229601,8 +229621,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 322,
+      "end_line": 322,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.method",
@@ -229610,12 +229630,57 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 318,
-      "end_line": 318,
+      "line": 322,
+      "end_line": 322,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.sent_at",
       "expression": "TelegramOutbox.sent_at"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 326,
+      "end_line": 326,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 327,
+      "end_line": 327,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 328,
+      "end_line": 328,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox",
+      "expression": "TelegramOutbox"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 321,
+      "end_line": 321,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.kind",
+      "expression": "TelegramOutbox.kind"
+    },
+    {
+      "path": "backend/app/services/telegram_calm.py",
+      "line": 321,
+      "end_line": 321,
+      "owner": "calm_morning_summary_job",
+      "conditions": [],
+      "symbol": "app.models.TelegramOutbox.text",
+      "expression": "TelegramOutbox.text"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -229628,8 +229693,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 323,
-      "end_line": 323,
+      "line": 322,
+      "end_line": 322,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229637,8 +229702,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 321,
+      "end_line": 321,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -229646,53 +229711,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 317,
-      "end_line": 317,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.kind",
-      "expression": "TelegramOutbox.kind"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 317,
-      "end_line": 317,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox.text",
-      "expression": "TelegramOutbox.text"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 318,
-      "end_line": 318,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 318,
-      "end_line": 318,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 317,
-      "end_line": 317,
-      "owner": "calm_morning_summary_job",
-      "conditions": [],
-      "symbol": "app.models.TelegramOutbox",
-      "expression": "TelegramOutbox"
-    },
-    {
-      "path": "backend/app/services/telegram_calm.py",
-      "line": 317,
-      "end_line": 317,
+      "line": 321,
+      "end_line": 321,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -280945,7 +280965,7 @@
     {
       "path": "backend/app/services/telegram_calm.py",
       "line": 90,
-      "end_line": 116,
+      "end_line": 118,
       "owner": "<module>",
       "conditions": [],
       "name": "note_error_spike",
@@ -280953,8 +280973,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 119,
-      "end_line": 130,
+      "line": 121,
+      "end_line": 134,
       "owner": "<module>",
       "conditions": [],
       "name": "check_site_recovered",
@@ -280962,8 +280982,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 133,
-      "end_line": 141,
+      "line": 137,
+      "end_line": 145,
       "owner": "<module>",
       "conditions": [],
       "name": "site_down_text",
@@ -280971,8 +280991,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 144,
-      "end_line": 145,
+      "line": 148,
+      "end_line": 149,
       "owner": "<module>",
       "conditions": [],
       "name": "site_up_text",
@@ -280980,8 +281000,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 195,
-      "end_line": 196,
+      "line": 199,
+      "end_line": 200,
       "owner": "<module>",
       "conditions": [],
       "name": "_plain",
@@ -280989,8 +281009,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 199,
-      "end_line": 202,
+      "line": 203,
+      "end_line": 206,
       "owner": "<module>",
       "conditions": [],
       "name": "_headline",
@@ -280998,8 +281018,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 205,
-      "end_line": 211,
+      "line": 209,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "_plural",
@@ -281007,8 +281027,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 214,
-      "end_line": 215,
+      "line": 218,
+      "end_line": 219,
       "owner": "<module>",
       "conditions": [],
       "name": "_times",
@@ -281016,8 +281036,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 218,
-      "end_line": 231,
+      "line": 222,
+      "end_line": 235,
       "owner": "<module>",
       "conditions": [],
       "name": "_etl_line",
@@ -281025,8 +281045,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 234,
-      "end_line": 299,
+      "line": 238,
+      "end_line": 303,
       "owner": "<module>",
       "conditions": [],
       "name": "build_summary",
@@ -281034,8 +281054,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 302,
-      "end_line": 332,
+      "line": 306,
+      "end_line": 336,
       "owner": "<module>",
       "conditions": [],
       "name": "calm_morning_summary_job",
@@ -314676,8 +314696,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 255,
-      "end_line": 255,
+      "line": 259,
+      "end_line": 259,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
@@ -314700,8 +314720,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 165,
-      "end_line": 165,
+      "line": 169,
+      "end_line": 169,
       "owner": "<module>",
       "conditions": [],
       "symbol": "app.services.telegram_calm.GROUPS"
@@ -314716,64 +314736,64 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 201,
-      "end_line": 201,
+      "line": 205,
+      "end_line": 205,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 238,
-      "end_line": 238,
+      "line": 242,
+      "end_line": 242,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.HELD_KINDS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 245,
+      "end_line": 245,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._MONTHS_GENITIVE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 285,
-      "end_line": 285,
+      "line": 289,
+      "end_line": 289,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._KIND_GROUP"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 330,
-      "end_line": 330,
+      "line": 334,
+      "end_line": 334,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.MSK"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 202,
-      "end_line": 202,
+      "line": 206,
+      "end_line": 206,
       "owner": "_headline",
       "conditions": [],
       "symbol": "app.services.telegram_calm._EMOJI_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 200,
+      "end_line": 200,
       "owner": "_plain",
       "conditions": [],
       "symbol": "app.services.telegram_calm._TAG_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 287,
-      "end_line": 287,
+      "line": 291,
+      "end_line": 291,
       "owner": "build_summary",
       "conditions": [
         "other"
@@ -314782,24 +314802,24 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 264,
-      "end_line": 264,
+      "line": 268,
+      "end_line": 268,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm._RECOVERY_RE"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 276,
+      "end_line": 276,
       "owner": "build_summary",
       "conditions": [],
       "symbol": "app.services.telegram_calm.KIND_LABELS"
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 276,
-      "end_line": 276,
+      "line": 280,
+      "end_line": 280,
       "owner": "build_summary",
       "conditions": [
         "h"
@@ -314808,8 +314828,8 @@
     },
     {
       "path": "backend/app/services/telegram_calm.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 328,
+      "end_line": 328,
       "owner": "calm_morning_summary_job",
       "conditions": [],
       "symbol": "app.services.telegram_calm.URGENT_KINDS"

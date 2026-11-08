@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2078  ·  **Строк:** 1 318 379  ·  **Токенов (≈):** 12 536 572
+**Файлов:** 2078  ·  **Строк:** 1 318 404  ·  **Токенов (≈):** 12 536 820
 
 ## По верхним папкам
 
@@ -16,10 +16,10 @@
 | `(root)` | 8 | 2 770 | 63 875 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 847 | 287 081 | 3 162 651 |
+| `backend` | 847 | 287 086 | 3 162 727 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 120 | 16 303 |
-| `docs` | 139 | 835 776 | 7 144 861 |
+| `docs` | 139 | 835 796 | 7 145 033 |
 | `frontend` | 929 | 167 138 | 1 857 855 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 127 | 23 944 | 285 531 |
@@ -28,7 +28,7 @@
 
 | Файл | Строк | Токенов (≈) |
 |------|------:|------------:|
-| `docs/mechanism-inventory.json` | 331 825 | 2 700 510 |
+| `docs/mechanism-inventory.json` | 331 845 | 2 700 660 |
 | `docs/client-mechanism-inventory.json` | 240 906 | 1 703 672 |
 | `docs/design/local-acceptance/final/all.json` | 81 702 | 639 945 |
 | `backend/app/data/world_bea_regional/us.json` | 37 325 | 600 234 |
@@ -39,7 +39,7 @@
 | `docs/design/local-acceptance/first-pass-spa-paced/browser.json` | 19 693 | 137 476 |
 | `docs/mechanism-inventory.md` | 3 092 | 134 999 |
 | `backend/app/data/indicator_seo.py` | 9 239 | 118 162 |
-| `docs/backlog.md` | 3 159 | 113 553 |
+| `docs/backlog.md` | 3 159 | 113 575 |
 | `frontend/src/lib/viewModelFamilies.generated.json` | 13 284 | 78 423 |
 | `docs/runtime-inventory.json` | 7 342 | 60 430 |
 | `backend/seed_data.py` | 5 728 | 59 293 |
@@ -399,6 +399,7 @@
 | `backend/tests/test_clickhouse_replication_ch.py` | 296 | 3 741 |
 | `frontend/src/pages/WorldIndicatorPage.component.test.jsx` | 380 | 3 740 |
 | `backend/tests/test_route_smoke.py` | 383 | 3 731 |
+| `backend/app/services/telegram_calm.py` | 336 | 3 730 |
 | `frontend/src/lib/api.js` | 351 | 3 711 |
 | `frontend/src/components/IndicatorChartSection.jsx` | 364 | 3 707 |
 | `backend/tests/test_rosstat_plan.py` | 351 | 3 699 |
@@ -407,7 +408,6 @@
 | `backend/app/api/system.py` | 382 | 3 697 |
 | `frontend/src/pages/RussiaHome.jsx` | 363 | 3 686 |
 | `backend/app/services/world_rank_values.py` | 448 | 3 677 |
-| `backend/app/services/telegram_calm.py` | 332 | 3 676 |
 | `frontend/src/components/home/HomeCountryList.jsx` | 326 | 3 673 |
 | `frontend/src/components/home/HomeCountryList.component.test.jsx` | 252 | 3 656 |
 | `scripts/audit-indicator-unification.py` | 307 | 3 654 |
@@ -743,11 +743,11 @@
 | `docs/verification/ssr-analytics-delivery-2026-09-30.md` | 41 | 1 963 |
 | `frontend/src/components/cabinet/cabinet.c13.component.test.jsx` | 156 | 1 959 |
 | `frontend/src/components/cabinet/SavedList.jsx` | 190 | 1 956 |
+| `backend/tests/test_telegram_calm.py` | 205 | 1 948 |
 | `backend/app/services/job_lease.py` | 205 | 1 944 |
 | `frontend/src/lib/api.test.js` | 176 | 1 930 |
 | `backend/tests/test_action_apply_idempotency.py` | 227 | 1 928 |
 | `backend/tests/forecast_strategies/snapshots/prod_signed_quarterly.json` | 560 | 1 926 |
-| `backend/tests/test_telegram_calm.py` | 204 | 1 926 |
 | `frontend/src/pages/Methodology.jsx` | 208 | 1 925 |
 | `backend/tests/test_pwa.py` | 157 | 1 924 |
 | `backend/app/services/world_official_forecast.py` | 206 | 1 923 |

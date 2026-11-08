@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "5b4d5e353e4b3a4e7596460f44c8a28a179d955ed6142d6ec74ffec07cc0af17",
-  "extraction_sha256": "f2af8e4a9c0906b51679630d9d4d39d55bcb69b75a45ed69f371b34bea7dfae6",
-  "terrain_baseline_commit": "f8919adff0c09ed8571fc58e906ae57aa7a13b55",
+  "terrain_sha256": "f07e6e15d866927612ee94162a51a3225e1cac1a2508be5d0fd3f48bb3ed9ce6",
+  "extraction_sha256": "2d35823c000209513c1c7fe8fd2aed49414cd4a5c3516b24f8fba29ed360b7af",
+  "terrain_baseline_commit": "d7f0fc865c82a93b1a2a435054b440d05007dac7",
   "counts": {
     "external_or_unresolved_file": 2976,
     "missing_endpoint": 4080
@@ -90339,14 +90339,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/telegram_calm.py",
-        "source_location": "L234",
+        "source_location": "L238",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "build_summary()",
         "source_file": "backend/app/services/telegram_calm.py",
-        "source_location": "L234"
+        "source_location": "L238"
       },
       "target_endpoint": {
         "label": "date",
