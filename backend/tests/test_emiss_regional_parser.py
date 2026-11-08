@@ -92,8 +92,9 @@ class TestParse:
 class TestMonthsToFetch:
     def test_empty_db_starts_from_first_year(self):
         plan = months_to_fetch(set(), today=date(2026, 8, 27))
-        # Пустая БД: начинаем с января 2003 (пол витрины) и догоняем до текущего.
-        assert plan[0] == (2003, 1)
+        # Пустая БД: начинаем с января 2000 (пол витрины: цены товаров по РФ
+        # с 2000, по субъектам и топливу с 2003; 08.11.2026) и догоняем до текущего.
+        assert plan[0] == (2000, 1)
         assert plan[-1][0] == 2026
         assert (2026, 8) in plan
 
@@ -153,7 +154,7 @@ def test_run_update_resolves_indicators_from_real_session(tmp_path, monkeypatch)
 
     fetched = []
 
-    async def fake_fetch(year, month, territory_ids, dimnames, post_grid=None):
+    async def fake_fetch(year, month, territory_ids, dimnames, post_grid=None, series=None):
         fetched.append((year, month))
         return []
 

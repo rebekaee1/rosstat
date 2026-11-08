@@ -2952,3 +2952,11 @@ REGION_INDICATORS_EN: dict[str, dict[str, str | None]] = {
     },
 }
 
+
+# Average consumer prices of goods and services, EMISS 31448 (2026-11-08).
+from app.data.emiss_price_goods import PRICE_GOODS as _PRICE_GOODS, copy_en as _price_copy_en  # noqa: E402
+
+# Only hand-picked items have an English name; the rest fall back to Russian.
+
+for _good in _PRICE_GOODS:
+    REGION_INDICATORS_EN.setdefault(_good.code, _price_copy_en(_good))
