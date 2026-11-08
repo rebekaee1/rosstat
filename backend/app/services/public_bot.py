@@ -1176,7 +1176,9 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
 
     payload = {
         "model": model,
-        "max_tokens": 2000,
+        # Тестер №6, 09.11: при нескольких одновременных вопросах OpenRouter отвечал 402 «in_flight_budget_exhausted»
+        # (резерв считается от max_tokens); ответы короткие, 900 токенов хватает с запасом.
+        "max_tokens": 900,
         "messages": [
             {"role": "system", "content": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context},
             *(history or []),
@@ -1592,6 +1594,8 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Тестер №6, 09.11: на «а в США инфляция?» без ответа модели приходила карточка России без слов.
+            await _send(chat_id, "Сейчас не могу ответить своими словами — вот ближайшая цифра по России:")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
