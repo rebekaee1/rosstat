@@ -6,7 +6,7 @@
 
 [Независимый backend-инвентарь](mechanism-inventory.md) · [Клиент/anonymous callbacks/MCP](client-mechanism-inventory.md) · [Приёмка и границы](project-knowledge-acceptance.md) · [Неизвестное](knowledge-unknowns.md)
 
-Экстрактор: `graphifyy==0.9.69`. Базовый commit: `3e9c8913ff01`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
+Экстрактор: `graphifyy==0.9.69`. Базовый commit: `5316583467a0`; снимок включает рабочие изменения. SHA-256 каждого входного файла записан в JSON. `unstaged_at_capture` и `untracked_at_capture` фиксируют состояние входов; коммит карты сам по себе не коммитит чужие изменения кода. HTML локальный, в Git не хранится; в чистом clone сначала выполнить `--render`.
 
 Input scope: `tracked`. Для публикуемой main-карты используются Git tracked/index пути; новые файлы задачи сначала добавляются в index. Чужие untracked материалы остаются вне main-снимка и сохраняются на диске.
 
@@ -117,7 +117,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/adr/0024-telegram-report-modes.md](../docs/adr/0024-telegram-report-modes.md) | 26 | nodes |
 | [docs/adr/0025-oil-quote-source-legality.md](../docs/adr/0025-oil-quote-source-legality.md) | 29 | nodes |
 | [docs/adr/0026-graceful-degradation-and-traffic-priority.md](../docs/adr/0026-graceful-degradation-and-traffic-priority.md) | 55 | nodes |
-| [docs/adr/0027-public-telegram-bot.md](../docs/adr/0027-public-telegram-bot.md) | 202 | nodes |
+| [docs/adr/0027-public-telegram-bot.md](../docs/adr/0027-public-telegram-bot.md) | 203 | nodes |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | 15 | nodes |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | 15 | nodes |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | 13 | nodes |
@@ -157,7 +157,7 @@ Input scope: `tracked`. Для публикуемой main-карты испол
 | [docs/indicator-index.md](../docs/indicator-index.md) | 1138 | nodes |
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | 113 | nodes |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | 107 | nodes |
-| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 3210 | nodes |
+| [docs/mechanism-inventory.md](../docs/mechanism-inventory.md) | 3215 | nodes |
 | [docs/missed_data_audit.md](../docs/missed_data_audit.md) | 449 | nodes |
 | [docs/offsite-backup-runbook.md](../docs/offsite-backup-runbook.md) | 74 | nodes |
 | [docs/planet-view.md](../docs/planet-view.md) | 594 | nodes |

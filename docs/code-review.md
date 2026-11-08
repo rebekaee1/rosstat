@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `3e9c8913ff01823aa7aa4944920012ec7fb5be43`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `5316583467a00e4b44dc01476e98f5a6fada6ce0`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2249 |
 | Код, шаблоны и стили | 1839 |
-| Актуальные рецензии без пропусков guard | 2249 |
+| Актуальные рецензии без пропусков guard | 2247 |
 | Именованные определения Python/JS: с аннотацией / всего | 15053 / 15053 |
-| Файлы, требующие внимания | 0 |
+| Файлы, требующие внимания | 2 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -1024,7 +1024,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | reviewed | 0/0 | актуально |
 | [docs/data-contracts.md](../docs/data-contracts.md) | reviewed | 0/0 | актуально |
 | [docs/data_sources.md](../docs/data_sources.md) | reviewed | 0/0 | актуально |
-| [docs/dead-code-report.md](../docs/dead-code-report.md) | reviewed | 0/0 | актуально |
+| [docs/dead-code-report.md](../docs/dead-code-report.md) | reviewed | 0/0 | source_changed |
 | [docs/design-system.md](../docs/design-system.md) | reviewed | 0/0 | актуально |
 | [docs/design/README.md](../docs/design/README.md) | reviewed | 0/0 | актуально |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | reviewed | 0/0 | актуально |
@@ -1064,7 +1064,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-index.json](../docs/indicator-index.json) | data_schema_reviewed | 0/0 | актуально |
-| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | актуально |
+| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | source_changed |
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | reviewed | 0/0 | актуально |
 | [docs/mechanism-inventory.json](../docs/mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |

@@ -2569,22 +2569,22 @@ Relationships: `[]`
 | app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:357](../backend/app/services/public_bot.py#L357) |
 | app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:428](../backend/app/services/public_bot.py#L428) |
 | app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:430](../backend/app/services/public_bot.py#L430) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1020](../backend/app/services/public_bot.py#L1020) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1204](../backend/app/services/public_bot.py#L1204) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1206](../backend/app/services/public_bot.py#L1206) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1226](../backend/app/services/public_bot.py#L1226) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1231](../backend/app/services/public_bot.py#L1231) |
-| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1233](../backend/app/services/public_bot.py#L1233) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1235](../backend/app/services/public_bot.py#L1235) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1297](../backend/app/services/public_bot.py#L1297) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1299](../backend/app/services/public_bot.py#L1299) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1301](../backend/app/services/public_bot.py#L1301) |
-| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1325](../backend/app/services/public_bot.py#L1325) |
-| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1433](../backend/app/services/public_bot.py#L1433) |
-| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1483](../backend/app/services/public_bot.py#L1483) |
-| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1484](../backend/app/services/public_bot.py#L1484) |
-| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1492](../backend/app/services/public_bot.py#L1492) |
-| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1493](../backend/app/services/public_bot.py#L1493) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1021](../backend/app/services/public_bot.py#L1021) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1205](../backend/app/services/public_bot.py#L1205) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1207](../backend/app/services/public_bot.py#L1207) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1227](../backend/app/services/public_bot.py#L1227) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1232](../backend/app/services/public_bot.py#L1232) |
+| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1234](../backend/app/services/public_bot.py#L1234) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1236](../backend/app/services/public_bot.py#L1236) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1298](../backend/app/services/public_bot.py#L1298) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1300](../backend/app/services/public_bot.py#L1300) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1302](../backend/app/services/public_bot.py#L1302) |
+| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1326](../backend/app/services/public_bot.py#L1326) |
+| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1434](../backend/app/services/public_bot.py#L1434) |
+| app.services.public_bot._PHONE | Call | computed source expression | [backend/app/services/public_bot.py:1484](../backend/app/services/public_bot.py#L1484) |
+| app.services.public_bot._PASSPORT | Call | computed source expression | [backend/app/services/public_bot.py:1485](../backend/app/services/public_bot.py#L1485) |
+| app.services.public_bot._PLACES | List | sequence/source expression | [backend/app/services/public_bot.py:1493](../backend/app/services/public_bot.py#L1493) |
+| app.services.public_bot._PLACE_SKIP | Set | sequence/source expression | [backend/app/services/public_bot.py:1494](../backend/app/services/public_bot.py#L1494) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |

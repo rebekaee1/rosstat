@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "terrain_sha256": "aa4622a31fa3b237a60838a99fd3f1b2a52f7b21e1ae4747d12f0f0b8b4d5966",
-  "extraction_sha256": "2b1394781d12972e74fa80629b7dfc55a022008a6bc74228d9c104cee951925a",
-  "terrain_baseline_commit": "3e9c8913ff01823aa7aa4944920012ec7fb5be43",
+  "terrain_sha256": "2fc4e4495241a1238af4fbf94985c7064e4a91c88dcb4d42705736eebcf46c32",
+  "extraction_sha256": "0bd06e11884a7c48173eb57cbf43acf1cf83a4b8b3370db07ba5facc95d6aa0d",
+  "terrain_baseline_commit": "5316583467a00e4b44dc01476e98f5a6fada6ce0",
   "counts": {
     "external_or_unresolved_file": 2870,
     "missing_endpoint": 4131
@@ -67423,14 +67423,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1066",
+        "source_location": "L1067",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "build_llm_context()",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1066"
+        "source_location": "L1067"
       },
       "target_endpoint": {
         "label": "date",
@@ -67453,14 +67453,14 @@
         "context": "parameter_type",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1304",
+        "source_location": "L1305",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_series()",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1304"
+        "source_location": "L1305"
       },
       "target_endpoint": {
         "label": "date",
@@ -67483,14 +67483,14 @@
         "context": "generic_arg",
         "confidence": "EXTRACTED",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1304",
+        "source_location": "L1305",
         "weight": 1.0,
         "_origin": "ast"
       },
       "source_endpoint": {
         "label": "_series()",
         "source_file": "backend/app/services/public_bot.py",
-        "source_location": "L1304"
+        "source_location": "L1305"
       },
       "target_endpoint": {
         "label": "date",
