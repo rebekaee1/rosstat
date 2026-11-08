@@ -9,14 +9,14 @@
 - ORM tables: **72**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **257**
-- Settings reads: **618**
+- Settings reads: **635**
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1210**
-- Registry references: **2313**
+- Registry declarations: **1214**
+- Registry references: **2333**
 - Migration operations: **458**
-- Candidate effects: **2644**
+- Candidate effects: **2656**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -1924,14 +1924,14 @@ Relationships: `[]`
 | RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:478](../backend/app/config.py#L478) |
 | RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:479](../backend/app/config.py#L479) |
 | RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:480](../backend/app/config.py#L480) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 9 | [backend/app/config.py:482](../backend/app/config.py#L482) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 15 | [backend/app/config.py:482](../backend/app/config.py#L482) |
 | RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:486](../backend/app/config.py#L486) |
 | RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:487](../backend/app/config.py#L487) |
 | RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:488](../backend/app/config.py#L488) |
 | RUSTATS_SESSION_REPLAY_ENABLED | bool = False | 3 | [backend/app/config.py:489](../backend/app/config.py#L489) |
 | RUSTATS_SESSION_REPLAY_RETENTION_DAYS | int = 14 | 3 | [backend/app/config.py:490](../backend/app/config.py#L490) |
 | RUSTATS_SESSION_REPLAY_MAX_RECORDING_BYTES | int = 8000000 | 1 | [backend/app/config.py:491](../backend/app/config.py#L491) |
-| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 4 | [backend/app/config.py:492](../backend/app/config.py#L492) |
+| RUSTATS_OPENROUTER_MODEL | str = 'anthropic/claude-sonnet-5' | 7 | [backend/app/config.py:492](../backend/app/config.py#L492) |
 | RUSTATS_OPENROUTER_PROXY_URL | str = '' | 4 | [backend/app/config.py:498](../backend/app/config.py#L498) |
 | RUSTATS_ETL_HTTP_PROXY_URL | str = '' | 1 | [backend/app/config.py:502](../backend/app/config.py#L502) |
 | RUSTATS_ETL_SOCKS_PROXY_URL | str = '' | 1 | [backend/app/config.py:505](../backend/app/config.py#L505) |
@@ -1944,8 +1944,8 @@ Relationships: `[]`
 | RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:523](../backend/app/config.py#L523) |
 | RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:526](../backend/app/config.py#L526) |
 | RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:528](../backend/app/config.py#L528) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 4 | [backend/app/config.py:531](../backend/app/config.py#L531) |
-| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = '' | 1 | [backend/app/config.py:532](../backend/app/config.py#L532) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 10 | [backend/app/config.py:531](../backend/app/config.py#L531) |
+| RUSTATS_PUBLIC_BOT_LLM_MODEL | str = '' | 3 | [backend/app/config.py:532](../backend/app/config.py#L532) |
 | RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:533](../backend/app/config.py#L533) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:535](../backend/app/config.py#L535) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:536](../backend/app/config.py#L536) |
@@ -2565,17 +2565,21 @@ Relationships: `[]`
 | app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:256](../backend/app/services/public_bot.py#L256) |
 | app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:257](../backend/app/services/public_bot.py#L257) |
 | app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:258](../backend/app/services/public_bot.py#L258) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:385](../backend/app/services/public_bot.py#L385) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:387](../backend/app/services/public_bot.py#L387) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:821](../backend/app/services/public_bot.py#L821) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:941](../backend/app/services/public_bot.py#L941) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:943](../backend/app/services/public_bot.py#L943) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:963](../backend/app/services/public_bot.py#L963) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:968](../backend/app/services/public_bot.py#L968) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:970](../backend/app/services/public_bot.py#L970) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1010](../backend/app/services/public_bot.py#L1010) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1012](../backend/app/services/public_bot.py#L1012) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1014](../backend/app/services/public_bot.py#L1014) |
+| app.services.public_bot.WELCOME_EXAMPLES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:341](../backend/app/services/public_bot.py#L341) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:412](../backend/app/services/public_bot.py#L412) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:414](../backend/app/services/public_bot.py#L414) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:966](../backend/app/services/public_bot.py#L966) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:1101](../backend/app/services/public_bot.py#L1101) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:1103](../backend/app/services/public_bot.py#L1103) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:1123](../backend/app/services/public_bot.py#L1123) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:1128](../backend/app/services/public_bot.py#L1128) |
+| app.services.public_bot._REACTIONS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:1130](../backend/app/services/public_bot.py#L1130) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:1132](../backend/app/services/public_bot.py#L1132) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1179](../backend/app/services/public_bot.py#L1179) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1181](../backend/app/services/public_bot.py#L1181) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1183](../backend/app/services/public_bot.py#L1183) |
+| app.services.public_bot._CHART_CACHE | Dict | sequence/source expression | [backend/app/services/public_bot.py:1207](../backend/app/services/public_bot.py#L1207) |
+| app.services.public_bot._QUESTIONS_PENDING | Dict | sequence/source expression | [backend/app/services/public_bot.py:1307](../backend/app/services/public_bot.py#L1307) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
@@ -3032,8 +3036,8 @@ Relationships: `[]`
 | scripts.load-world-eurostat.PRIORITY_PREFIXES | Tuple | sequence/source expression | [backend/scripts/load-world-eurostat.py:96](../backend/scripts/load-world-eurostat.py#L96) |
 | scripts.metrika-goals-redesign._GOAL_NAMES | Dict | 'signup', 'newsletter_opt_in', 'feedback_submit', 'login_success', 'download_csv', 'download_excel', 'download_ical', 'demographics_csv', 'chart_image_download', 'compare_image_download', 'compare_add', 'compare_change', 'region_compare_add', 'calc_share', 'calc_copy_result', 'calc_mortgage', 'calc_compound', 'embed_code_copy', 'contact_email' | [backend/scripts/metrika-goals-redesign.py:39](../backend/scripts/metrika-goals-redesign.py#L39) |
 | scripts.metrika-goals-redesign._FUNNELS | List | sequence/source expression | [backend/scripts/metrika-goals-redesign.py:61](../backend/scripts/metrika-goals-redesign.py#L61) |
-| scripts.public-bot-setup.COMMANDS | List | sequence/source expression | [backend/scripts/public-bot-setup.py:31](../backend/scripts/public-bot-setup.py#L31) |
-| scripts.public-bot-setup.PRIVATE | Dict | 'type' | [backend/scripts/public-bot-setup.py:37](../backend/scripts/public-bot-setup.py#L37) |
+| scripts.public-bot-setup.COMMANDS | List | sequence/source expression | [backend/scripts/public-bot-setup.py:32](../backend/scripts/public-bot-setup.py#L32) |
+| scripts.public-bot-setup.PRIVATE | Dict | 'type' | [backend/scripts/public-bot-setup.py:40](../backend/scripts/public-bot-setup.py#L40) |
 | scripts.rebase-world-eurostat.PROBE_GEOS | Tuple | sequence/source expression | [backend/scripts/rebase-world-eurostat.py:56](../backend/scripts/rebase-world-eurostat.py#L56) |
 | scripts.render-telegram-reports._BULLET_RE | Call | computed source expression | [backend/scripts/render-telegram-reports.py:30](../backend/scripts/render-telegram-reports.py#L30) |
 | scripts.repair-world-listing._NATIONAL_PASSPORT_CODES | Call | computed source expression | [backend/scripts/repair-world-listing.py:521](../backend/scripts/repair-world-listing.py#L521) |

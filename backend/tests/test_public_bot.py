@@ -121,9 +121,18 @@ def test_start_with_code_records_and_answers(env):
 
 def test_word_answer_and_source_asked_once(env):
     maker, sent, _ = env
-    # Пришёл без кода (кнопкой темы) — один раз спрашиваем, откуда узнал.
+    # Пришёл без кода (кнопкой темы): на первой карточке не спрашиваем, на повторном визите — один раз.
     asyncio.run(pb.handle_callback(_cb("pb:t:inflation")))
+    assert pb.SOURCE_QUESTION not in [x["text"] for x in sent]
+
+    async def age_chat():
+        from sqlalchemy import update
+        async with maker() as db:
+            await db.execute(update(PublicBotChat).values(first_seen_at=datetime(2026, 1, 1)))
+            await db.commit()
+    asyncio.run(age_chat())
     asyncio.run(pb.handle_callback(_cb("pb:t:diesel")))
+    asyncio.run(pb.handle_callback(_cb("pb:t:gold")))
     texts = [s["text"] for s in sent]
     assert texts.count(pb.SOURCE_QUESTION) == 1
     cpi = texts[0]
@@ -285,7 +294,8 @@ def test_free_question_goes_to_llm_with_data_context_and_limit(env, monkeypatch)
     assert sent[-1]["text"] == "⛽ Дизель 86,52 ₽ &lt;за литр&gt;"  # ответ модели экранирован
     assert ("sendChatAction", {"chat_id": "555", "action": "typing"}) in api_calls
     ev = asyncio.run(_rows(maker, PublicBotEvent))
-    assert [(e.kind, e.code) for e in ev] == [("unknown", None), ("ask", None)]  # текст вопроса не храним
+    assert [(e.kind, e.code) for e in ev][:2] == [("unknown", None), ("ask", None)]  # текст вопроса не храним
+    assert ev[2].kind == "llm_time" and float(ev[2].code) >= 0  # время ответа модели — для отчёта
     asyncio.run(pb.handle_message(_msg("а инфляция в регионах какая сейчас и почему так?")))
     asyncio.run(pb.handle_message(_msg("и ещё вопрос про ВВП, что с ним происходит?")))
     assert sent[-1]["text"] == pb.LIMIT_TEXT and len(seen) == 2
@@ -504,10 +514,11 @@ def test_week_command_asks_model_for_digest(env, monkeypatch):
     monkeypatch.setattr(pb, "_llm_complete", llm)
     asyncio.run(pb.handle_message(_msg("/week")))
     assert asked == [pb.WEEK_PROMPT]
-    assert sent[-1]["text"] == "📰 <b>Неделя</b>"
-    assert sent[-1]["kb"]["inline_keyboard"][0][0]["text"] == "💬 Почему бензин дешевеет?"
+    assert sent[-2]["text"] == "📰 <b>Неделя</b>"
+    assert sent[-2]["kb"]["inline_keyboard"][0][0]["text"] == "💬 Почему бензин дешевеет?"
+    assert sent[-1]["kb"]["inline_keyboard"][0][0]["callback_data"] == "pb:s:week"
     kinds = [e.kind for e in asyncio.run(_rows(maker, PublicBotEvent))]
-    assert kinds == ["week", "ask"]
+    assert kinds == ["week", "ask", "llm_time"]
 
 
 def test_chart_render_and_send(env, monkeypatch):
@@ -619,3 +630,66 @@ def test_keyword_only_short_and_report_shows_model_usage(env, monkeypatch):
     asyncio.run(pb.handle_message(_msg("/week", chat_id=11)))
     text = asyncio.run(pb.report_text())
     assert "Ответов модели: 4 (из них /week 1)" in text
+
+
+
+def test_friday_digest_group_hello_and_english_welcome(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+
+    async def llm(context, question, history=None):
+        return "Цены <b>успокоились</b>\n[[темы: inflation]]"
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    asyncio.run(pb.handle_callback(_cb("pb:s:week")))
+    asyncio.run(pb.handle_callback(_cb("pb:s:week", chat_id=556)))
+    friday = datetime(2026, 11, 13, 8, 0)  # пятница 11:00 МСК
+    stats = asyncio.run(pb.public_bot_notify_job(now=friday))
+    assert stats["week"] == 2
+    digests = [s for s in sent if s["text"].startswith("📰 <b>Сводка недели</b>")]
+    assert len(digests) == 2 and "<b>успокоились</b>" in digests[0]["text"]
+    assert asyncio.run(pb.public_bot_notify_job(now=friday))["week"] == 0  # второй раз в ту же пятницу — нет
+    asyncio.run(pb.handle_member_update({"chat": {"id": -5, "type": "group"},
+                                         "new_chat_member": {"status": "member"}}))
+    assert sent[-1]["chat_id"] == "-5" and "в личных сообщениях" in sent[-1]["text"]
+    asyncio.run(pb.handle_message({"chat": {"id": 900, "type": "private"}, "text": "/start",
+                                   "from": {"language_code": "en"}}))
+    assert sent[-1]["text"].startswith("Hi! I'm <b>Forecast Economy</b>")
+
+
+def test_question_buttons_survive_restart_via_redis(monkeypatch):
+    import fakeredis.aioredis
+    import app.core.cache as cache_mod
+    r = fakeredis.aioredis.FakeRedis(decode_responses=True)
+
+    async def state():
+        return r
+    monkeypatch.setattr(cache_mod, "get_state_redis", state)
+    qid = pb._question_id("Почему бензин дорожает?")
+
+    async def flow():
+        await pb._flush_questions()
+        pb._QUESTIONS.clear()  # «перезапуск» процесса
+        return await pb._lookup_question(qid)
+    assert asyncio.run(flow()) == "Почему бензин дорожает?"
+    kb = pb.figure_keyboard(pb.TOPICS["gold"], None, False)
+    assert any(b.get("callback_data") == "pb:w:gold" for row in kb["inline_keyboard"] for b in row) or \
+        not (pb.settings.public_bot_llm_enabled and pb.settings.openrouter_api_key)
+
+
+def test_tell_me_what_to_send_and_self_improvement_ideas(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+
+    async def llm(context, question, history=None):
+        return ("Договорились, буду присылать дизель! А про цены на хлеб — передам команде.\n"
+                "[[подписаться: diesel]]\n[[идея: цены на хлеб по регионам]]")
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    asyncio.run(pb.handle_message(_msg("присылай мне дизель, и хочу ещё цены на хлеб в моём регионе")))
+    subs = [x.topic for x in asyncio.run(_rows(maker, PublicBotSubscription))]
+    assert subs == ["diesel"]
+    assert "[[" not in sent[-1]["text"]
+    report = asyncio.run(pb.report_text())
+    assert "Идеи людей: цены на хлеб по регионам 1" in report
+    assert "скажите, что прислать" in pb.HELP_TEXT.lower() and "самоулучшаюсь" in pb.HELP_TEXT
