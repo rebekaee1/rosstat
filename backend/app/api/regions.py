@@ -20,6 +20,12 @@ from app.data.region_indicator_polarity import (
     region_rating_meta,
     region_rating_order_by,
 )
+from app.data.emiss_price_goods import (
+    HEADLINE_PRICE_CODES,
+    PRICE_GROUPS,
+    PRICE_GROUPS_EN,
+    price_meta,
+)
 from app.database import get_db
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 from app.services.locale import get_locale
@@ -393,6 +399,19 @@ _MONTHS_RU = ("январь", "февраль", "март", "апрель", "м�
 _MONTHS_EN = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 
+def _price_fields(meta: dict) -> dict:
+    """short_name / price_group / is_discontinued / last_month для ряда цен (контракт Z1)."""
+    group = meta["price_group"]
+    return {
+        "short_name": (meta.get("short_name_en") or meta["short_name"]) if get_locale() == "en" else meta["short_name"],
+        "price_group": group,
+        "price_group_label": PRICE_GROUPS_EN.get(group, group) if get_locale() == "en" else group,
+        "is_discontinued": bool(meta["is_discontinued"]),
+        "last_month": meta["last_month"],
+        "last_month_label": _month_label(meta["last_month"]) if meta["last_month"] else None,
+    }
+
+
 def _month_label(month: int) -> str:
     """YYYYMM → «сентябрь 2026» / «Sep 2026» по языку запроса."""
     names = _MONTHS_EN if get_locale() == "en" else _MONTHS_RU
@@ -401,7 +420,7 @@ def _month_label(month: int) -> str:
 
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"profile:search-v3:{slug}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"profile:prices-v4:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -497,6 +516,9 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
             # YYYYMM последней и предыдущей точки: карточка месячного ряда.
             item["month"], item["prev_month"] = month_of[i.id]
             item["period_label"] = _month_label(item["month"])
+            meta = price_meta(i.code)
+            if meta:
+                item.update(_price_fields(meta))
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
@@ -538,6 +560,8 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         "headline": headline,
         "sections": [sections[k] for k in sorted(sections)],
         # Полный каталог (все RegionIndicator) vs показатели с фактическими точками по региону (≈471 у Москвы).
+        "price_headline_codes": list(HEADLINE_PRICE_CODES),
+        "price_groups": list(PRICE_GROUPS),
         "catalog_total": len(inds),
         "available_total": sum(len(s["indicators"]) for s in sections.values()),
     }
@@ -656,6 +680,13 @@ MONTH_NAMES_RU = (
 )
 
 
+def _monthly_price_fields(code: str, region_last: int) -> dict:
+    meta = price_meta(code)
+    if not meta:
+        return {"short_name": None, "price_group": None, "is_discontinued": False, "last_month": region_last}
+    return _price_fields(meta)
+
+
 @router.get("/{slug}/i/{code}/monthly")
 async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     """Помесячный ряд показателя в регионе (пока — цены на топливо, ЕМИСС).
@@ -664,7 +695,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
     Сравнение с РФ строится, рейтинг — нет: цена зависит от структуры рынка
     и логистики региона, «место в рейтинге цен» вводило бы в заблуждение.
     """
-    cache_key = await versioned_key("regions", f"monthly:v1:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"monthly:v2:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -712,6 +743,24 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
                 for m, v in rf_rows
             ]
 
+    # значения РФ и Москвы на последний месяц региона — «где ваша цена»
+    last_m = rows[-1][0]
+    compare = {"russia": None, "moskva": None}
+    for key in ("russia", "moskva"):
+        if region.slug == key:
+            continue
+        peer = (await db.execute(select(Region).where(Region.slug == key))).scalar_one_or_none()
+        if peer is None:
+            continue
+        pv = (await db.execute(
+            select(RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.region_id == peer.id,
+                   RegionMonthlyPoint.month == last_m)
+        )).scalar_one_or_none()
+        if pv is not None:
+            compare[key] = {"value": _fmt(float(pv)), "month": int(last_m)}
+
     # соседние показатели раздела + мост в макроблок — та же семантика, что
     # у годового эндпоинта: карточка месяц-режима строит те же блоки.
     siblings = (await db.execute(
@@ -739,8 +788,10 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
             "section_name": copy["section"] or indicator.section_name,
             "table_code": indicator.table_code,
             "macro_code": MACRO_BY_TABLE.get(indicator.table_code or ""),
+            **_monthly_price_fields(indicator.code, int(last_m)),
         },
         "frequency": "monthly",
+        "compare": compare,
         "series": series,
         "russia_series": russia_series,
         "siblings": [
