@@ -1,0 +1,45 @@
+/* Круг 4 (R4-C): широкий экран, планшет в альбомной ориентации (от 900 px).
+   Только раскладка: две колонки там, где они помогают, выравнивание по общей линии. Без рамок и обводок. */
+
+@media (min-width: 900px) {
+  /* ---------- /currencies: конвертер рядом с графиком, плитки рядом со сводкой, весь перечень на всю ширину ---------- */
+  .fe-z8-cur.fe-z8-cur.fe-z8-cur { grid-template-areas: 'conv chart' 'rates board' 'list list'; align-items: stretch; }
+  .fe-z8-cur.fe-z8-cur.fe-z8-cur:not(.has-board) { grid-template-areas: 'conv chart' 'rates rates' 'list list'; }
+  .fe-z8-cur .fe-z8-cur__conv > .fe-z8-conv,
+  .fe-z8-cur .fe-z8-cur__chart > .fe-z8-chart { height: 100%; }
+  :root .fe-z8-cur .fe-z8-rows.fe-trow-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; }
+
+  .fe-z8-cur .fe-z8-cur__rates,
+  .fe-z8-cur .fe-z8-cur__board { align-self: start; margin-top: 0; }
+
+  /* ---------- Страница цены: слева цена и подпись, справа сравнение с Россией ---------- */
+  .fe-data-header:has(> .z2p-compare) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    column-gap: 2rem;
+    align-items: start;
+  }
+  .fe-data-header:has(> .z2p-compare) > * { grid-column: 1; }
+  .fe-data-header:has(> .z2p-compare) > .z2p-compare {
+    grid-column: 2; grid-row: 2 / span 4; align-self: center;
+    margin: 0; padding: 1rem 1.1rem; border-radius: 1.1rem;
+    background: color-mix(in srgb, var(--fe-glass-strong, #fff) 70%, transparent);
+    box-shadow: 0 2px 12px rgba(20, 30, 60, 0.08);
+  }
+  .z2p-compare li { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+  .z2p-compare__val { font-size: 1.5rem; line-height: 1.15; }
+
+  /* ---------- Главная, блок «Цены и курсы»: подпись карточки в две строки, перечень товаров заполняет пустоту ---------- */
+  .fe-r3a-card .fe-tool__lead { white-space: normal; overflow: visible; text-overflow: clip; display: block; -webkit-line-clamp: unset; }
+  .fe-r3a-card .fe-tool__body { display: flex; flex-direction: column; flex: 1; }
+  .fe-r3a-goods {
+    flex: 1; display: flex; align-items: center; margin: 14px 0; padding: 14px 16px; border-radius: 16px;
+    font-size: 15px; line-height: 1.55;
+    background: color-mix(in srgb, var(--fe-glass-strong, #fff) 70%, transparent);
+    box-shadow: 0 2px 10px rgba(20, 30, 60, 0.06);
+  }
+  .fe-r3a-rate__num { font-size: 22px; }
+
+  /* ---------- Поиск: регионы одного показателя в две колонки ---------- */
+  .z4s-region-chips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; }
+}
