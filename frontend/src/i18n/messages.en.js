@@ -145,6 +145,7 @@ export default {
   'footer.methodology': 'How we forecast',
   'footer.privacy': 'Privacy policy',
   'footer.terms': 'Terms of use',
+  'footer.youtube': 'Forecast Economy on YouTube',
   'footer.cookies': 'Cookie settings',
   'footer.systemOk': 'System operational',
   'footer.disclaimer':
@@ -610,6 +611,7 @@ export default {
 
   'legal.eyebrow': 'Legal information',
   'legal.revised': 'Revised 24 September 2026',
+  'legal.privacyRevised': 'Revised 8 November 2026',
   'legal.cookieSettings': 'Cookie settings',
   'legal.privacyLink': 'privacy policy',
   'legal.termsLink': 'terms of use',

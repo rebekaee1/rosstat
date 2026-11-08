@@ -27,6 +27,8 @@ and `analytics-smoke.py` exits with `enabled=false`.
 
 **Круг 11 (09.10.2026, локально, не выпущено):** внутренний аналитический контур дополнен таблицами `user_signups` и `daily_goal_dims`, колонкой `site_locale`, витринами регистраций и воронки и четырьмя выключенными по умолчанию Telegram-отчётами; внешних API Яндекса и Google это не касается. События входа, регистрации и языка описаны в [frontend_instrumentation](frontend_instrumentation.md#дополнение-2026-10-09-круг-11-вход-регистрация-язык-новые-функции), контракт данных — [data-contracts](../data-contracts.md#c11-analytics-2026-10-09).
 
+**Публичный Telegram-бот (08.11.2026, локально, флаг выключен):** таблицы `public_bot_chats`, `public_bot_events`, `public_bot_subscriptions` — внутренний учёт пути «ролик → бот → цифра → подписка → возврат»; переходы из бота на сайт приходят с `utm_source=telegram&utm_medium=bot`. Внешних API нет. Контракт — [data-contracts](../data-contracts.md#публичный-telegram-бот--2026-11-08), решение — [ADR-0027](../adr/0027-public-telegram-bot.md).
+
 Activation cheat-sheet:
 
 - `RUSTATS_ANALYTICS_API_TOKEN` защищает внутренние analytics REST endpoints

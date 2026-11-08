@@ -1802,3 +1802,55 @@ class DailyGoalDim(Base):
     count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     sessions: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     computed_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+
+
+# ---------------------------------------------------------------------------
+# Публичный Telegram-бот (решение владельца 08.11.2026: «делаем бота»).
+# Дверь из роликов Instagram: человек приходит по ссылке t.me/бот?start=<код> или пишет
+# слово из ролика, получает свежую цифру и может подписаться на новые данные.
+# Номер чата — персональные данные: хранится только в public_bot_chats (нужен, чтобы
+# отвечать и присылать подписку), удаляется командой /stop вместе с подписками.
+# События хранят только HMAC номера чата (chat_hash), без имени и @username.
+# ---------------------------------------------------------------------------
+
+
+class PublicBotChat(Base):
+    __tablename__ = "public_bot_chats"
+
+    chat_id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    chat_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    first_code: Mapped[str | None] = mapped_column(String(64))
+    heard_from: Mapped[str | None] = mapped_column(String(24))
+    asked_source_at: Mapped[datetime | None] = mapped_column(DateTime)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    blocked_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class PublicBotEvent(Base):
+    __tablename__ = "public_bot_events"
+    __table_args__ = (Index("ix_public_bot_events_kind_ts", "kind", "occurred_at"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    chat_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    # start / word / topic / subscribe / unsubscribe / source / notify / blocked / stop / unknown
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    code: Mapped[str | None] = mapped_column(String(64))
+    topic: Mapped[str | None] = mapped_column(String(24))
+
+
+class PublicBotSubscription(Base):
+    __tablename__ = "public_bot_subscriptions"
+    __table_args__ = (UniqueConstraint("chat_id", "topic", name="uq_public_bot_sub_chat_topic"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    chat_id: Mapped[str] = mapped_column(
+        String(32), ForeignKey("public_bot_chats.chat_id", ondelete="CASCADE"), nullable=False, index=True,
+    )
+    topic: Mapped[str] = mapped_column(String(24), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive)
+    # Дата последней точки ряда, о которой человек уже знает (при подписке — текущая последняя).
+    last_point_date: Mapped[date | None] = mapped_column(Date)
+    last_value: Mapped[float | None] = mapped_column(Numeric(14, 4))
+    last_sent_at: Mapped[datetime | None] = mapped_column(DateTime)

@@ -145,6 +145,7 @@ export default {
   'footer.methodology': 'Как мы считаем прогнозы',
   'footer.privacy': 'Политика конфиденциальности',
   'footer.terms': 'Условия использования',
+  'footer.youtube': 'Мы на YouTube',
   'footer.cookies': 'Настройки cookie',
   'footer.systemOk': 'Система работает',
   'footer.disclaimer':
@@ -609,6 +610,7 @@ export default {
 
   'legal.eyebrow': 'Правовая информация',
   'legal.revised': 'Редакция от 24 сентября 2026 г.',
+  'legal.privacyRevised': 'Редакция от 8 ноября 2026 г.',
   'legal.cookieSettings': 'Настройки cookie',
   'legal.privacyLink': 'политике конфиденциальности',
   'legal.termsLink': 'пользовательском соглашении',

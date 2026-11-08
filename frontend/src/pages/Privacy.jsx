@@ -66,7 +66,7 @@ export default function Privacy() {
         <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
           Политика конфиденциальности и обработки персональных данных
         </h1>
-        <p className="text-sm text-text-secondary mb-8">Редакция от 24 сентября 2026 г.</p>
+        <p className="text-sm text-text-secondary mb-8">Редакция от 8 ноября 2026 г.</p>
 
         <h2 className={h2}>1. Общие положения</h2>
         <p className={p}>
@@ -212,6 +212,28 @@ export default function Privacy() {
             обработка обезличенной статистики посещений сервисом Яндекс Метрика и показ рекламы
             Рекламной сетью Яндекса на основании вашего согласия, выраженного использованием
             Сайта. Условия обработки данных описаны в документах Яндекса.
+          </li>
+          <li className={li}>
+            <strong className="text-text-primary">Telegram</strong> — если вы пишете нашему боту
+            @forecast_bot_economy_bot, Оператор хранит номер чата, чтобы отвечать и присылать
+            выбранные вами обновления, а также сведения о том, по какой ссылке или с каким словом
+            вы пришли, какие темы смотрели и на что подписались. Имя и @username не сохраняются.
+            Сообщения передаются через сервис Telegram по его правилам. Команда /stop в боте
+            удаляет номер чата, подписки и переписку бота с вами.
+          </li>
+          <li className={li}>
+            <strong className="text-text-primary">YouTube API Services</strong> (Google) — Оператор
+            использует YouTube API Services, чтобы загружать собственные видео Forecast Economy
+            на свой канал YouTube; это внутренний инструмент, он не работает с аккаунтами
+            посетителей. Пользуясь функциями YouTube, вы соглашаетесь с{' '}
+            <a href="https://www.youtube.com/t/terms" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">Условиями использования YouTube</a>
+            {' '}и{' '}
+            <a href="https://policies.google.com/privacy" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности Google</a>.
+            Токен доступа к нашему каналу хранится только у Оператора; данные пользователей
+            YouTube Сайт не собирает, не хранит и не передаёт. Доступ приложения можно отозвать
+            на{' '}
+            <a href="https://security.google.com/settings/security/permissions" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">странице разрешений аккаунта Google</a>;
+            по запросу на адрес из раздела 9 сохранённые данные удаляются в течение 7 дней.
           </li>
           <li className={li}>
             по требованию уполномоченных государственных органов — в случаях, установленных

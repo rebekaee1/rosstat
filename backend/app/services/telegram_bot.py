@@ -7,6 +7,8 @@
    в state-Redis (`fe:tg:offset`). Обрабатывает чаты из `interactive_authorized_ids()`
    (владелец + получатели отчёта, напр. skrakan) — чужие апдейты подтверждаются
    и игнорируются. Realtime-алерты сюда не входят: они только у владельца.
+   С 08.11.2026 при `public_bot_enabled` чужие личные чаты (и кнопки `pb:*`, и
+   `/start <код>` владельца) уходят в публичный режим `public_bot.py`.
 
 Кнопки главного меню:
 - «Пользователи» — таблица всех пользователей (expandable blockquote);
@@ -86,6 +88,8 @@ def main_menu_keyboard() -> dict:
             {"text": "🧭 Воронка", "callback_data": "funnel"},
         ])
         rows.append([{"text": "🎯 Цели", "callback_data": "goals"}])
+    if settings.public_bot_enabled:
+        rows.append([{"text": "🤖 Публичный бот", "callback_data": "public_bot"}])
     return {"inline_keyboard": rows}
 
 
@@ -407,11 +411,16 @@ async def _hypotheses_overview() -> str:
 
 async def _handle_callback(cq: dict) -> None:
     """Обработка нажатия кнопки. Владелец + получатели отчёта (skrakan)."""
+    data = cq.get("data", "")
+    if settings.public_bot_enabled and data.startswith("pb:"):
+        # Кнопки публичного режима (public_bot.py): любой личный чат, включая владельца.
+        from app.services import public_bot
+        await public_bot.handle_callback(cq)
+        return
     await _api("answerCallbackQuery", {"callback_query_id": cq["id"]})
     chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
     if chat_id not in interactive_authorized_ids():
         return
-    data = cq.get("data", "")
 
     if data == "users":
         text, kb = await _users_overview()
@@ -471,6 +480,9 @@ async def _handle_callback(cq: dict) -> None:
             "goals": telegram_reports.goals_button_text,
         }[data]
         await send_message(chat_id, await builder(), reply_markup=main_menu_keyboard(), kind="bot_report")
+    elif data == "public_bot" and settings.public_bot_enabled:
+        from app.services import public_bot
+        await send_message(chat_id, await public_bot.report_text(), reply_markup=main_menu_keyboard(), kind="bot_report")
     elif data.startswith("user:"):
         text = await _user_card(data.split(":", 1)[1])
         await send_message(chat_id, text, reply_markup=main_menu_keyboard())
@@ -480,14 +492,29 @@ async def _handle_callback(cq: dict) -> None:
 
 async def _handle_message(msg: dict) -> None:
     chat_id = str(msg.get("chat", {}).get("id", ""))
+    text = (msg.get("text") or "").strip().lower()
+    if settings.public_bot_enabled and _is_public_message(chat_id, text):
+        from app.services import public_bot
+        await public_bot.handle_message(msg)
+        return
     if chat_id not in interactive_authorized_ids():
         return
-    text = (msg.get("text") or "").strip().lower()
     if text in ("/start", "/menu", "меню"):
         await send_message(chat_id, "🛰 <b>Forecast Economy — пульс</b>\nВыберите раздел:", reply_markup=main_menu_keyboard())
     elif text == "/users":
         t, kb = await _users_overview()
         await send_message(chat_id, t, reply_markup=kb)
+
+
+def _is_public_message(chat_id: str, text: str) -> bool:
+    """Чужой чат — всегда публичный режим. Владелец и получатели отчёта попадают в него
+    ссылкой с кодом (`/start r014`) и любым текстом, кроме команд админ-меню, — так
+    владелец проверяет путь человека из ролика на своём телефоне."""
+    if chat_id not in interactive_authorized_ids():
+        return True
+    if text.startswith("/start "):
+        return True
+    return text not in ("/start", "/menu", "меню", "/users")
 
 
 async def telegram_poll_job() -> None:
@@ -509,7 +536,10 @@ async def telegram_poll_job() -> None:
         offset = _offset_mem
     if _offset_mem and (not offset or int(_offset_mem) > int(offset)):
         offset = _offset_mem  # запись в Redis прошлого цикла не дошла — память новее
-    payload: dict = {"timeout": 20, "allowed_updates": ["message", "callback_query"]}
+    allowed = ["message", "callback_query"]
+    if settings.public_bot_enabled:
+        allowed.append("my_chat_member")  # человек остановил бота — публичный режим помечает чат
+    payload: dict = {"timeout": 20, "allowed_updates": allowed}
     if offset:
         payload["offset"] = int(offset)
     data = await _api("getUpdates", payload)
@@ -522,6 +552,9 @@ async def telegram_poll_job() -> None:
                 await _handle_callback(upd["callback_query"])
             elif "message" in upd:
                 await _handle_message(upd["message"])
+            elif "my_chat_member" in upd and settings.public_bot_enabled:
+                from app.services import public_bot
+                await public_bot.handle_member_update(upd["my_chat_member"])
         except Exception:
             logger.warning("Telegram update %s failed", upd.get("update_id"), exc_info=True)
     if updates:

@@ -1277,6 +1277,18 @@ async def lifespan(app: FastAPI):
                 max_instances=1,
             )
             logger.info("Telegram poller enabled: every 30s")
+            if settings.public_bot_enabled:
+                from app.services.public_bot import public_bot_notify_job
+                scheduler.add_job(
+                    public_bot_notify_job,
+                    trigger=IntervalTrigger(minutes=30),
+                    id="public_bot_notify",
+                    name="Public Telegram bot: new data to subscribers (day hours MSK)",
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+                logger.info("Public bot notify enabled: every 30 min")
 
         # Досылка недоставленного из telegram_outbox: только если Telegram-
         # уведомления реально включены (токен + чат + дайджест или realtime).

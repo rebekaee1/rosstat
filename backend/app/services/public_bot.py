@@ -1,0 +1,601 @@
+"""Публичный режим Telegram-бота (решение владельца 08.11.2026: «делаем бота»).
+
+Зачем: дверь из роликов Instagram, где ссылка не нажимается. Ролик просит написать боту
+слово («ДИЗЕЛЬ») или ведёт по ссылке `t.me/<бот>?start=<код>` из сторис и шапки профиля.
+Бот отвечает свежей цифрой с сайта и предлагает присылать новые данные. Так видно,
+какой ролик кого привёл (код или слово), что человек спросил и вернулся ли он.
+
+Границы:
+- тот же бот и тот же поллер, что у админ-меню (`telegram_bot.telegram_poll_job`);
+  публичный режим включает `settings.public_bot_enabled`, выключенный флаг = прежнее поведение;
+- только личные чаты; группы и каналы игнорируются;
+- номер чата хранится только в `public_bot_chats` (нужен для ответа и подписки), события —
+  с HMAC номера (`chat_hash`); `/stop` удаляет чат, подписки и архив публичных ответов;
+- бот не видит, прочитано ли сообщение (в Bot API нет отметок прочтения): «вернулся» —
+  это новое сообщение/нажатие человека или переход на сайт по ссылке с метками;
+- прогноз показывается одной точкой, без диапазона (правило владельца).
+"""
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import hmac
+import logging
+import re
+from dataclasses import dataclass
+from datetime import date, datetime, timedelta, timezone
+from html import escape
+from urllib.parse import urlencode
+from zoneinfo import ZoneInfo
+
+from sqlalchemy import delete, func, select
+
+from app.config import settings
+from app.database import async_session
+from app.models import (
+    Forecast, ForecastValue, Indicator, IndicatorData,
+    PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox,
+)
+
+logger = logging.getLogger(__name__)
+
+KIND_REPLY = "public_bot"
+KIND_NOTIFY = "public_bot_notify"
+CB_PREFIX = "pb:"
+_MSK = ZoneInfo("Europe/Moscow")
+_CODE_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+_MAX_TEXT = 200
+
+
+@dataclass(frozen=True)
+class Topic:
+    key: str
+    indicator: str          # code в indicators
+    title: str
+    unit: str
+    stems: tuple[str, ...]  # начала слов, по которым узнаём тему
+    tokens: tuple[str, ...] = ()  # точные слова (92, 95)
+    is_rate: bool = False   # проценты: изменение в п.п., а не в %
+    notify: str = "new_point"  # new_point | weekly | on_change
+
+
+TOPICS: dict[str, Topic] = {t.key: t for t in (
+    Topic("diesel", "fuel-diesel", "Дизель", "₽ за литр", ("дизел", "солярк"), ("дт",)),
+    Topic("ai92", "fuel-ai92", "Бензин АИ-92", "₽ за литр", ("бензин",), ("92", "аи92", "аи-92")),
+    Topic("ai95", "fuel-ai95", "Бензин АИ-95", "₽ за литр", (), ("95", "аи95", "аи-95")),
+    Topic("gold", "gold-price", "Золото", "₽ за грамм", ("золот",), notify="weekly"),
+    Topic("inflation", "cpi-yoy", "Инфляция", "% за год", ("инфляц", "ипц"), ("цены",), is_rate=True),
+    Topic("keyrate", "key-rate", "Ключевая ставка", "%", ("ключев", "ставк"), is_rate=True, notify="on_change"),
+    Topic("deposit", "deposit-rate", "Ставки по вкладам", "%", ("вклад", "депозит"), is_rate=True),
+    Topic("mortgage", "mortgage-rate", "Ставка по ипотеке", "%", ("ипотек",), is_rate=True),
+    Topic("usd", "usd-rub", "Доллар", "₽", ("доллар", "бакс"), ("usd",), notify="weekly"),
+    Topic("eur", "eur-rub", "Евро", "₽", ("евро",), ("eur",), notify="weekly"),
+)}
+_MATCH_ORDER = ("diesel", "ai95", "ai92", "gold", "deposit", "mortgage", "keyrate", "usd", "eur", "inflation")
+# Порядок кнопок меню.
+MENU = (("diesel", "ai92"), ("inflation", "keyrate"), ("gold", "usd"), ("deposit", "mortgage"))
+
+SOURCES = (("instagram", "Instagram"), ("telegram", "Telegram"), ("search", "Поиск"),
+           ("friends", "Знакомые"), ("other", "Другое"))
+_MONTHS = ("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа",
+           "сентября", "октября", "ноября", "декабря")
+_MONTHS_NOM = ("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август",
+               "сентябрь", "октябрь", "ноябрь", "декабрь")
+_FREQ_STEP = {"weekly": "За неделю", "monthly": "За месяц", "quarterly": "За квартал"}
+
+
+# ---------------------------------------------------------------------------
+# Разбор входа
+# ---------------------------------------------------------------------------
+
+def chat_hash(chat_id: str) -> str:
+    key = (settings.telegram_bot_token or "fe-public-bot").encode("utf-8")
+    return hmac.new(key, f"public-bot|{chat_id}".encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def parse_start(text: str) -> tuple[str | None, str | None]:
+    """`/start r014_diesel` → (код, тема). Код — как есть (до 64 знаков [A-Za-z0-9_-]),
+    тема — если последняя часть кода после «_»/«-» или весь код совпадает с ключом темы."""
+    parts = text.strip().split(maxsplit=1)
+    if len(parts) < 2:
+        return None, None
+    code = parts[1].strip()
+    if not _CODE_RE.match(code):
+        return None, None
+    tail = re.split(r"[_-]", code)[-1].lower()
+    topic = code.lower() if code.lower() in TOPICS else (tail if tail in TOPICS else None)
+    return code, topic
+
+
+def _norm(text: str) -> str:
+    return text.lower().replace("ё", "е")
+
+
+def match_topic(text: str) -> tuple[str | None, str | None]:
+    """Слово из ролика → (тема, нормализованное слово-код). Пусто, если тему не узнали."""
+    t = _norm(text)[:_MAX_TEXT]
+    words = re.findall(r"[a-zа-я0-9-]+", t)
+    # Сначала частные темы: «ставки по вкладам» — вклады, «ставка по ипотеке» — ипотека,
+    # «цены на бензин» — бензин; общее «ставка»/«цены» — последними.
+    for key in _MATCH_ORDER:
+        topic = TOPICS[key]
+        for w in words:
+            if w in topic.tokens or any(w.startswith(s) for s in topic.stems):
+                return topic.key, w[:64]
+    return None, None
+
+
+# ---------------------------------------------------------------------------
+# Цифры
+# ---------------------------------------------------------------------------
+
+def fmt_num(v: float, digits: int = 2) -> str:
+    s = f"{v:,.{digits}f}".replace(",", " ").replace(".", ",")
+    return s.replace("-", "−")
+
+
+def fmt_date(d: date, freq: str) -> str:
+    if freq in ("monthly",):
+        return f"{_MONTHS_NOM[d.month - 1]} {d.year}"
+    if freq in ("annual",):
+        return f"{d.year} год"
+    return f"{d.day} {_MONTHS[d.month - 1]} {d.year}"
+
+
+@dataclass
+class Figure:
+    topic: Topic
+    name: str
+    source: str
+    frequency: str
+    last_date: date
+    last_value: float
+    prev_value: float | None
+    year_ago_value: float | None
+    forecast_date: date | None
+    forecast_value: float | None
+
+
+async def load_figure(db, topic: Topic) -> Figure | None:
+    ind = (await db.execute(select(Indicator).where(Indicator.code == topic.indicator))).scalar_one_or_none()
+    if ind is None:
+        return None
+    rows = (await db.execute(
+        select(IndicatorData.date, IndicatorData.value)
+        .where(IndicatorData.indicator_id == ind.id)
+        .order_by(IndicatorData.date.desc()).limit(2)
+    )).all()
+    if not rows:
+        return None
+    last_d, last_v = rows[0][0], float(rows[0][1])
+    prev_v = float(rows[1][1]) if len(rows) > 1 else None
+    target = last_d - timedelta(days=365)
+    ya = (await db.execute(
+        select(IndicatorData.date, IndicatorData.value)
+        .where(IndicatorData.indicator_id == ind.id, IndicatorData.date <= target + timedelta(days=7))
+        .order_by(IndicatorData.date.desc()).limit(1)
+    )).first()
+    # Точка «год назад» — ближайшая к дате минус 365 дней (у недельных рядов день недели сдвигается).
+    year_ago = float(ya[1]) if ya is not None and abs((target - ya[0]).days) <= 40 else None
+    fc = (await db.execute(
+        select(ForecastValue.date, ForecastValue.value)
+        .join(Forecast, Forecast.id == ForecastValue.forecast_id)
+        .where(Forecast.indicator_id == ind.id, Forecast.is_current.is_(True), ForecastValue.date > last_d)
+        .order_by(ForecastValue.date).limit(1)
+    )).first()
+    return Figure(
+        topic=topic, name=ind.name, source=ind.source or "", frequency=ind.frequency or "",
+        last_date=last_d, last_value=last_v, prev_value=prev_v, year_ago_value=year_ago,
+        forecast_date=fc[0] if fc else None, forecast_value=float(fc[1]) if fc else None,
+    )
+
+
+def _change(now: float, before: float | None, is_rate: bool) -> str | None:
+    if before is None:
+        return None
+    if is_rate:
+        diff = now - before
+        sign = "+" if diff > 0 else ""
+        return f"{sign}{fmt_num(diff)} п.п."
+    if before == 0:
+        return None
+    pct = (now / before - 1) * 100
+    sign = "+" if pct > 0 else ""
+    return f"{sign}{fmt_num(pct, 1)} %"
+
+
+def site_url(topic: Topic, code: str | None) -> str:
+    q = {"utm_source": "telegram", "utm_medium": "bot", "utm_campaign": topic.key}
+    if code:
+        q["utm_content"] = code
+    return f"{settings.public_base_url.rstrip('/')}/russia/indicator/{topic.indicator}?{urlencode(q)}"
+
+
+def figure_text(f: Figure, header: str | None = None) -> str:
+    t = f.topic
+    unit = t.unit if t.unit != "%" else "%"
+    lines = []
+    if header:
+        lines.append(header)
+    lines.append(f"<b>{escape(t.title)}</b>")
+    lines.append(f"<b>{fmt_num(f.last_value)} {escape(unit)}</b> — {fmt_date(f.last_date, f.frequency)}")
+    changes = []
+    step = _FREQ_STEP.get(f.frequency)
+    ch = _change(f.last_value, f.prev_value, t.is_rate)
+    if step and ch:
+        changes.append(f"{step}: {ch}")
+    ch_y = _change(f.last_value, f.year_ago_value, t.is_rate)
+    if ch_y:
+        changes.append(f"За год: {ch_y}")
+    if changes:
+        joined = ". ".join(c.rstrip(".") if c.endswith("п.п.") and i < len(changes) - 1 else c
+                           for i, c in enumerate(changes))
+        lines.append(joined if joined.endswith(".") else joined + ".")
+    if f.forecast_value is not None and f.forecast_date is not None:
+        lines.append(f"Наш прогноз на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} {escape(unit)}")
+    if f.source:
+        lines.append(f"<i>Источник: {escape(f.source)}</i>")
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Клавиатуры и тексты
+# ---------------------------------------------------------------------------
+
+def menu_keyboard() -> dict:
+    return {"inline_keyboard": [
+        [{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in row] for row in MENU
+    ]}
+
+
+def figure_keyboard(topic: Topic, code: str | None, subscribed: bool) -> dict:
+    sub = ({"text": "🔕 Не присылать", "callback_data": f"{CB_PREFIX}u:{topic.key}"} if subscribed
+           else {"text": "🔔 Присылать новые данные", "callback_data": f"{CB_PREFIX}s:{topic.key}"})
+    return {"inline_keyboard": [
+        [sub],
+        [{"text": "📈 График и прогноз на сайте", "url": site_url(topic, code)}],
+        [{"text": "Другие цифры", "callback_data": f"{CB_PREFIX}menu"}],
+    ]}
+
+
+def sources_keyboard() -> dict:
+    return {"inline_keyboard": [
+        [{"text": label, "callback_data": f"{CB_PREFIX}src:{key}"} for key, label in SOURCES[:3]],
+        [{"text": label, "callback_data": f"{CB_PREFIX}src:{key}"} for key, label in SOURCES[3:]],
+    ]}
+
+
+def welcome_text() -> str:
+    privacy = f"{settings.public_base_url.rstrip('/')}/privacy"
+    return (
+        "Привет! Я бот <b>Forecast Economy</b>.\n"
+        "Присылаю свежие цифры экономики России из официальных источников и наш прогноз — "
+        "и напоминаю, когда выходят новые данные.\n\n"
+        "Напишите слово, например <b>ДИЗЕЛЬ</b>, <b>ИНФЛЯЦИЯ</b> или <b>ЗОЛОТО</b>, или выберите ниже.\n\n"
+        f"<i>Храню только номер этого чата, чтобы отвечать. /stop — удалить всё. "
+        f"<a href=\"{privacy}\">Политика конфиденциальности</a></i>"
+    )
+
+
+UNKNOWN_TEXT = "Не узнал слово. Выберите тему кнопкой или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>."
+SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
+STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
+
+
+# ---------------------------------------------------------------------------
+# Хранение
+# ---------------------------------------------------------------------------
+
+def _now() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+async def _touch_chat(db, chat_id: str, code: str | None = None) -> PublicBotChat:
+    chat = await db.get(PublicBotChat, chat_id)
+    now = _now()
+    if chat is None:
+        chat = PublicBotChat(chat_id=chat_id, chat_hash=chat_hash(chat_id), first_code=code,
+                             first_seen_at=now, last_seen_at=now)
+        db.add(chat)
+    else:
+        chat.last_seen_at = now
+        chat.blocked_at = None
+        if code and not chat.first_code:
+            chat.first_code = code
+    return chat
+
+
+def _event(db, chat_id: str, kind: str, code: str | None = None, topic: str | None = None) -> None:
+    db.add(PublicBotEvent(occurred_at=_now(), chat_hash=chat_hash(chat_id), kind=kind,
+                          code=(code or None) and code[:64], topic=topic))
+
+
+async def _is_subscribed(db, chat_id: str, topic: str) -> bool:
+    return (await db.execute(select(PublicBotSubscription.id).where(
+        PublicBotSubscription.chat_id == chat_id, PublicBotSubscription.topic == topic,
+    ))).first() is not None
+
+
+# ---------------------------------------------------------------------------
+# Сценарии
+# ---------------------------------------------------------------------------
+
+async def _send(chat_id: str, text: str, kb: dict | None = None, kind: str = KIND_REPLY) -> bool:
+    from app.services.telegram_bot import send_message  # локальный импорт против цикла
+    return await send_message(chat_id, text, reply_markup=kb, kind=kind)
+
+
+async def _reply_figure(chat_id: str, topic_key: str) -> None:
+    topic = TOPICS[topic_key]
+    async with async_session() as db:
+        chat = await _touch_chat(db, chat_id)
+        fig = await load_figure(db, topic)
+        subscribed = await _is_subscribed(db, chat_id, topic_key)
+        ask_source = chat.heard_from is None and chat.asked_source_at is None
+        if ask_source:
+            chat.asked_source_at = _now()
+        code = chat.first_code
+        await db.commit()
+    if fig is None:
+        await _send(chat_id, f"По теме «{escape(topic.title)}» сейчас нет данных. Выберите другую:", menu_keyboard())
+        return
+    await _send(chat_id, figure_text(fig), figure_keyboard(topic, code, subscribed))
+    if ask_source:
+        await _send(chat_id, SOURCE_QUESTION, sources_keyboard())
+
+
+async def handle_message(msg: dict) -> None:
+    chat = msg.get("chat") or {}
+    if chat.get("type") != "private":
+        return
+    chat_id = str(chat.get("id", ""))
+    text = (msg.get("text") or "").strip()
+    if not chat_id or not text:
+        return
+    low = _norm(text)
+    if low.startswith("/start"):
+        code, topic = parse_start(text)
+        async with async_session() as db:
+            await _touch_chat(db, chat_id, code)
+            _event(db, chat_id, "start", code=code, topic=topic)
+            await db.commit()
+        await _send(chat_id, welcome_text(), menu_keyboard())
+        if topic:
+            await _reply_figure(chat_id, topic)
+        return
+    if low in ("/stop", "стоп"):
+        await forget_chat(chat_id)
+        await _send(chat_id, STOP_TEXT)
+        return
+    if low in ("/menu", "/help", "меню"):
+        await _send(chat_id, "Выберите тему:", menu_keyboard())
+        return
+    topic, word = match_topic(text)
+    async with async_session() as db:
+        await _touch_chat(db, chat_id, word if topic else None)
+        _event(db, chat_id, "word" if topic else "unknown", code=word, topic=topic)
+        await db.commit()
+    if topic:
+        await _reply_figure(chat_id, topic)
+    else:
+        await _send(chat_id, UNKNOWN_TEXT, menu_keyboard())
+
+
+async def handle_callback(cq: dict) -> None:
+    from app.services.telegram_bot import _api  # локальный импорт против цикла
+
+    msg = cq.get("message") or {}
+    chat_id = str((msg.get("chat") or {}).get("id", ""))
+    data = cq.get("data") or ""
+    await _api("answerCallbackQuery", {"callback_query_id": cq.get("id")})
+    if not chat_id or not data.startswith(CB_PREFIX):
+        return
+    action, _, arg = data[len(CB_PREFIX):].partition(":")
+    if action == "menu":
+        await _send(chat_id, "Выберите тему:", menu_keyboard())
+    elif action == "t" and arg in TOPICS:
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            _event(db, chat_id, "topic", topic=arg)
+            await db.commit()
+        await _reply_figure(chat_id, arg)
+    elif action == "s" and arg in TOPICS:
+        await subscribe(chat_id, arg)
+        await _send(chat_id, f"🔔 Пришлю, когда выйдут новые данные: <b>{escape(TOPICS[arg].title)}</b>. "
+                             "Отключить — кнопкой под цифрой или /stop.")
+    elif action == "u" and arg in TOPICS:
+        await unsubscribe(chat_id, arg)
+        await _send(chat_id, f"🔕 Больше не присылаю: {escape(TOPICS[arg].title)}.")
+    elif action == "src" and arg in dict(SOURCES):
+        async with async_session() as db:
+            chat = await _touch_chat(db, chat_id)
+            chat.heard_from = arg
+            _event(db, chat_id, "source", code=arg)
+            await db.commit()
+        await _send(chat_id, "Спасибо!")
+
+
+async def handle_member_update(upd: dict) -> None:
+    """my_chat_member: человек остановил (заблокировал) бота или вернулся."""
+    chat = upd.get("chat") or {}
+    if chat.get("type") != "private":
+        return
+    chat_id = str(chat.get("id", ""))
+    status = ((upd.get("new_chat_member") or {}).get("status")) or ""
+    if status == "kicked":
+        await mark_blocked(chat_id)
+
+
+async def subscribe(chat_id: str, topic_key: str) -> None:
+    topic = TOPICS[topic_key]
+    async with async_session() as db:
+        await _touch_chat(db, chat_id)
+        fig = await load_figure(db, topic)
+        sub = (await db.execute(select(PublicBotSubscription).where(
+            PublicBotSubscription.chat_id == chat_id, PublicBotSubscription.topic == topic_key,
+        ))).scalar_one_or_none()
+        if sub is None:
+            db.add(PublicBotSubscription(
+                chat_id=chat_id, topic=topic_key, created_at=_now(),
+                last_point_date=fig.last_date if fig else None,
+                last_value=fig.last_value if fig else None, last_sent_at=_now(),
+            ))
+        _event(db, chat_id, "subscribe", topic=topic_key)
+        await db.commit()
+
+
+async def unsubscribe(chat_id: str, topic_key: str) -> None:
+    async with async_session() as db:
+        await db.execute(delete(PublicBotSubscription).where(
+            PublicBotSubscription.chat_id == chat_id, PublicBotSubscription.topic == topic_key,
+        ))
+        _event(db, chat_id, "unsubscribe", topic=topic_key)
+        await db.commit()
+
+
+async def mark_blocked(chat_id: str) -> None:
+    async with async_session() as db:
+        chat = await db.get(PublicBotChat, chat_id)
+        if chat is not None and chat.blocked_at is None:
+            chat.blocked_at = _now()
+            _event(db, chat_id, "blocked")
+        await db.commit()
+
+
+async def forget_chat(chat_id: str) -> None:
+    """/stop: удалить номер чата, подписки и архив публичных ответов этому чату."""
+    async with async_session() as db:
+        _event(db, chat_id, "stop")
+        await db.execute(delete(PublicBotSubscription).where(PublicBotSubscription.chat_id == chat_id))
+        await db.execute(delete(PublicBotChat).where(PublicBotChat.chat_id == chat_id))
+        await db.execute(delete(TelegramOutbox).where(
+            TelegramOutbox.chat_id == chat_id, TelegramOutbox.kind.in_((KIND_REPLY, KIND_NOTIFY)),
+        ))
+        await db.commit()
+
+
+# ---------------------------------------------------------------------------
+# Рассылка новых данных
+# ---------------------------------------------------------------------------
+
+def _in_window(now_msk: datetime) -> bool:
+    return settings.public_bot_notify_from_hour <= now_msk.hour < settings.public_bot_notify_to_hour
+
+
+def _should_notify(topic: Topic, sub: PublicBotSubscription, fig: Figure, now: datetime) -> bool:
+    if sub.last_point_date is not None and fig.last_date <= sub.last_point_date:
+        return False
+    if topic.notify == "on_change":
+        return sub.last_value is None or abs(float(sub.last_value) - fig.last_value) > 1e-9
+    if topic.notify == "weekly":
+        return sub.last_sent_at is None or now - sub.last_sent_at >= timedelta(days=7)
+    return True
+
+
+async def public_bot_notify_job(now: datetime | None = None) -> dict:
+    """Раз в 30 минут: подписчикам — новая точка ряда (днём по Москве, без ночных сообщений)."""
+    from app.services import telegram_bot
+
+    now = now or _now()
+    stats = {"sent": 0, "blocked": 0, "skipped": 0}
+    if not settings.public_bot_enabled:
+        return stats
+    if not _in_window(now.replace(tzinfo=timezone.utc).astimezone(_MSK)):
+        return stats
+    async with async_session() as db:
+        subs = (await db.execute(
+            select(PublicBotSubscription).join(PublicBotChat, PublicBotChat.chat_id == PublicBotSubscription.chat_id)
+            .where(PublicBotChat.blocked_at.is_(None))
+        )).scalars().all()
+        figures: dict[str, Figure | None] = {}
+        for key in {s.topic for s in subs}:
+            if key in TOPICS:
+                figures[key] = await load_figure(db, TOPICS[key])
+        for sub in subs:
+            topic = TOPICS.get(sub.topic)
+            fig = figures.get(sub.topic)
+            if topic is None or fig is None:
+                continue
+            if not _should_notify(topic, sub, fig, now):
+                if sub.last_point_date is None or fig.last_date > sub.last_point_date:
+                    # Новая точка без повода писать (ставка не изменилась; курс — не чаще раза в неделю):
+                    # для on_change запоминаем точку, для weekly ждём недели.
+                    if topic.notify == "on_change":
+                        sub.last_point_date, sub.last_value = fig.last_date, fig.last_value
+                stats["skipped"] += 1
+                continue
+            telegram_bot._last_api_error.set(None)
+            ok = await _send(sub.chat_id, figure_text(fig, header="🔔 <b>Новые данные</b>"),
+                             figure_keyboard(topic, None, True), kind=KIND_NOTIFY)
+            if ok:
+                sub.last_point_date, sub.last_value, sub.last_sent_at = fig.last_date, fig.last_value, now
+                _event(db, sub.chat_id, "notify", topic=sub.topic)
+                stats["sent"] += 1
+            elif "403" in (telegram_bot._last_api_error.get() or ""):
+                chat = await db.get(PublicBotChat, sub.chat_id)
+                if chat is not None and chat.blocked_at is None:
+                    chat.blocked_at = now
+                    _event(db, sub.chat_id, "blocked")
+                stats["blocked"] += 1
+            await asyncio.sleep(0.05)  # ≤ 20 сообщений в секунду, лимит Bot API — 30
+        await db.commit()
+    if stats["sent"] or stats["blocked"]:
+        logger.info("Public bot notify: %s", stats)
+    return stats
+
+
+# ---------------------------------------------------------------------------
+# Отчёт для админ-меню
+# ---------------------------------------------------------------------------
+
+async def report_text(days: int = 7) -> str:
+    since = _now() - timedelta(days=days)
+    async with async_session() as db:
+        total = (await db.execute(select(func.count()).select_from(PublicBotChat))).scalar_one()
+        new = (await db.execute(select(func.count()).select_from(PublicBotChat)
+                                .where(PublicBotChat.first_seen_at >= since))).scalar_one()
+        blocked = (await db.execute(select(func.count()).select_from(PublicBotChat)
+                                    .where(PublicBotChat.blocked_at.is_not(None)))).scalar_one()
+        code_col = func.coalesce(PublicBotChat.first_code, "без кода")
+        codes = (await db.execute(
+            select(code_col, func.count())
+            .where(PublicBotChat.first_seen_at >= since)
+            .group_by(code_col).order_by(func.count().desc()).limit(15)
+        )).all()
+        topics = (await db.execute(
+            select(PublicBotEvent.topic, func.count())
+            .where(PublicBotEvent.occurred_at >= since, PublicBotEvent.topic.is_not(None),
+                   PublicBotEvent.kind.in_(("start", "word", "topic")))
+            .group_by(PublicBotEvent.topic).order_by(func.count().desc())
+        )).all()
+        subs = (await db.execute(
+            select(PublicBotSubscription.topic, func.count()).group_by(PublicBotSubscription.topic).order_by(func.count().desc())
+        )).all()
+        heard = (await db.execute(
+            select(PublicBotChat.heard_from, func.count())
+            .where(PublicBotChat.heard_from.is_not(None)).group_by(PublicBotChat.heard_from).order_by(func.count().desc())
+        )).all()
+        returned = (await db.execute(
+            select(func.count(func.distinct(PublicBotEvent.chat_hash)))
+            .where(PublicBotEvent.occurred_at >= since,
+                   PublicBotEvent.kind.in_(("word", "topic", "start", "subscribe")))
+            .where(PublicBotEvent.chat_hash.in_(
+                select(PublicBotChat.chat_hash).where(PublicBotChat.first_seen_at < since)
+            ))
+        )).scalar_one()
+
+    def _line(rows, names=None) -> str:
+        if not rows:
+            return "—"
+        return ", ".join(f"{escape(str((names or {}).get(k, k)))} {n}" for k, n in rows)
+
+    titles = {k: t.title for k, t in TOPICS.items()}
+    return (
+        f"🤖 <b>Публичный бот</b> — за {days} дн.\n"
+        f"Новых людей: <b>{new}</b> (всего {total}, остановили бота {blocked})\n"
+        f"Вернулись (пришли раньше, писали за период): <b>{returned}</b>\n"
+        f"С какого кода пришли: {_line(codes)}\n"
+        f"Что спрашивали: {_line(topics, titles)}\n"
+        f"Подписки сейчас: {_line(subs, titles)}\n"
+        f"Откуда узнали: {_line(heard, dict(SOURCES))}"
+    )

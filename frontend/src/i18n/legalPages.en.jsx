@@ -33,7 +33,7 @@ export function PrivacyBodyEn({ t, h1 }) {
       <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary mb-6 leading-tight">
         {h1}
       </h1>
-      <p className="text-sm text-text-tertiary mb-8">{t('legal.revised')}</p>
+      <p className="text-sm text-text-tertiary mb-8">{t('legal.privacyRevised')}</p>
 
       <h2 className={h2}>1. General provisions</h2>
       <p className={p}>
@@ -181,6 +181,27 @@ export function PrivacyBodyEn({ t, h1 }) {
           by the Yandex Advertising Network on the basis of your consent expressed by using
           the Site. The terms of Yandex’s data processing are set out in Yandex’s own
           documents.
+        </li>
+        <li className={li}>
+          <strong className="text-text-primary">Telegram</strong> — if you message our bot
+          @forecast_bot_economy_bot, the Controller stores the chat number to reply and to send
+          the updates you choose, along with the link or word you came with, the topics you
+          viewed, and your subscriptions. Names and @usernames are not stored. Messages pass
+          through the Telegram service under its own rules. The /stop command in the bot deletes
+          the chat number, subscriptions, and the bot’s messages to you.
+        </li>
+        <li className={li}>
+          <strong className="text-text-primary">YouTube API Services</strong> (Google) — the
+          Controller uses YouTube API Services to upload Forecast Economy’s own videos to its own
+          YouTube channel; this is an internal tool and does not access visitors’ accounts. By
+          using YouTube features, you agree to the{' '}
+          <a href="https://www.youtube.com/t/terms" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a>
+          {' '}and the{' '}
+          <a href="https://policies.google.com/privacy" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>.
+          The access token for our channel is kept only by the Controller; the Site does not
+          collect, store, or share YouTube users’ data. You can revoke the app’s access on the{' '}
+          <a href="https://security.google.com/settings/security/permissions" className="text-champagne-ink hover:underline" target="_blank" rel="noopener noreferrer">Google account permissions page</a>;
+          on request to the address in section 9, stored data is deleted within 7 days.
         </li>
         <li className={li}>
           when required by authorised public authorities — in cases established by the laws

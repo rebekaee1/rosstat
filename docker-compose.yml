@@ -374,6 +374,8 @@ services:
       RUSTATS_FRESHNESS_WATCHDOG_ENABLED: ${RUSTATS_FRESHNESS_WATCHDOG_ENABLED:-false}
       RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE: ${RUSTATS_FRESHNESS_WATCHDOG_MIN_STALE:-25}
       RUSTATS_TELEGRAM_POLLER_ENABLED: ${RUSTATS_TELEGRAM_POLLER_ENABLED:-false}
+      # Публичный режим бота (ADR-0027): чужие личные чаты получают цифры и подписку; выкл. по умолчанию
+      RUSTATS_PUBLIC_BOT_ENABLED: ${RUSTATS_PUBLIC_BOT_ENABLED:-false}
       # Состояние (сессии/квоты) — отдельный Redis DB /1: FLUSHDB кэша не трогает.
       # Переезд на выделенный redis-state (О-8) — переопределением в .env.
       RUSTATS_STATE_REDIS_URL: ${RUSTATS_STATE_REDIS_URL:-redis://:${REDIS_PASSWORD:?задайте REDIS_PASSWORD в .env (шаблон .env.example)}@redis:6379/1}

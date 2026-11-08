@@ -292,6 +292,16 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <a
+                href="https://www.youtube.com/@forecasteconomy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={footLink}
+              >
+                {t('footer.youtube')}
+              </a>
+            </li>
+            <li>
               <Link to="/about#credits" className={footLink}>
                 {t('footer.credits')}
               </Link>

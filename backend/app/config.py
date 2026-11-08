@@ -517,6 +517,13 @@ class Settings(BaseSettings):
     freshness_watchdog_cron_minute: int = 30
     # Интерактивные кнопки бота (getUpdates-поллер каждые 30 с)
     telegram_poller_enabled: bool = False
+    # Публичный режим того же бота (решение владельца 08.11.2026, `services/public_bot.py`):
+    # чужие чаты получают цифры по словам и коду из роликов, подписку на новые данные.
+    # false = прежнее поведение (чужие апдейты молча подтверждаются). Требует telegram_poller_enabled.
+    public_bot_enabled: bool = False
+    # Окно рассылки новых данных подписчикам, часы по Москве [с, до).
+    public_bot_notify_from_hour: int = 9
+    public_bot_notify_to_hour: int = 21
 
     # «Фальшивая дверь» платного API (замер спроса, 2026-10-05): точки входа
     # «API и выгрузка с прогнозом» на странице показателя и в окне лимита

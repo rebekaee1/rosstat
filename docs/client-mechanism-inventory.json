@@ -23312,7 +23312,7 @@
       "mcp_tools": []
     },
     "frontend/src/components/Footer.jsx": {
-      "sha256": "31524b923b0be77924174ebae7e62fc6df98316d6e49ac2a0ea7d0f1f8d78a56",
+      "sha256": "8e1b9577f331e17cd0492e32c124d313af0492b48c2b4ce30ba28320cb81839d",
       "imports": [
         {
           "line": 1,
@@ -23625,7 +23625,7 @@
         },
         {
           "line": 142,
-          "end_line": 349,
+          "end_line": 359,
           "owner": "<module>",
           "name": "Footer",
           "kind": "FunctionDeclaration",
@@ -23712,8 +23712,8 @@
           "callback_context": "toolLinks.map"
         },
         {
-          "line": 310,
-          "end_line": 310,
+          "line": 320,
+          "end_line": 320,
           "owner": "Footer",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -23781,16 +23781,16 @@
           "expression": "{() => setOpen((v) => !v)}"
         },
         {
-          "line": 301,
-          "end_line": 301,
+          "line": 311,
+          "end_line": 311,
           "owner": "Footer",
           "component": "button",
           "event": "onClick",
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 306,
-          "end_line": 311,
+          "line": 316,
+          "end_line": 321,
           "owner": "Footer",
           "component": "a",
           "event": "onClick",
@@ -101066,7 +101066,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/legalPages.en.jsx": {
-      "sha256": "a43fafde39e38511a8a9af1e1edc25180f9177a54e13f1da85d3559921cdcece",
+      "sha256": "a36e7ccc0345ef9936755ea8b4e02cc194cf4af95301d30e07da7e853a298e34",
       "imports": [
         {
           "line": 5,
@@ -101156,31 +101156,31 @@
         },
         {
           "line": 27,
-          "end_line": 242,
+          "end_line": 263,
           "owner": "<module>",
           "name": "PrivacyBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 230,
-          "end_line": 230,
+          "line": 251,
+          "end_line": 251,
           "owner": "PrivacyBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
           "callback_context": null
         },
         {
-          "line": 245,
-          "end_line": 373,
+          "line": 266,
+          "end_line": 394,
           "owner": "<module>",
           "name": "TermsBodyEn",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 365,
-          "end_line": 365,
+          "line": 386,
+          "end_line": 386,
           "owner": "TermsBodyEn",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -101201,16 +101201,16 @@
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 227,
-          "end_line": 231,
+          "line": 248,
+          "end_line": 252,
           "owner": "PrivacyBodyEn",
           "component": "a",
           "event": "onClick",
           "expression": "{() => track(events.CONTACT_EMAIL)}"
         },
         {
-          "line": 362,
-          "end_line": 366,
+          "line": 383,
+          "end_line": 387,
           "owner": "TermsBodyEn",
           "component": "a",
           "event": "onClick",
@@ -101516,7 +101516,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.en.js": {
-      "sha256": "aafd6c34687f29fbbd7cb2ed13b4abb4ef5d5f2eee100c30db1210680cd91c24",
+      "sha256": "dc837b43151bdb9d53a76fd702609157f64869c976603e8ba821fc57d0ad123d",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -101939,7 +101939,7 @@
       "mcp_tools": []
     },
     "frontend/src/i18n/messages.ru.js": {
-      "sha256": "6861c270b4f4963b054b237bd9af63b9196a0822bf69e324febf73b9a5979f14",
+      "sha256": "1062c2dd4a0f10c57cfbf4d713df70b2cba01edae045a5169db410d794309b66",
       "imports": [],
       "routes": [],
       "functions": [],
@@ -209453,7 +209453,7 @@
       "mcp_tools": []
     },
     "frontend/src/pages/Privacy.jsx": {
-      "sha256": "8ab8749729e7520b6dd4297ea5001edaa08baa1e43e1740f38e2636325d4aeb2",
+      "sha256": "f34addbffe8c2b9b8e2334952a4f6a163adbb3cef9d113b37adcf8349632236e",
       "imports": [
         {
           "line": 1,
@@ -209656,15 +209656,15 @@
         },
         {
           "line": 44,
-          "end_line": 277,
+          "end_line": 299,
           "owner": "<module>",
           "name": "Privacy",
           "kind": "FunctionDeclaration",
           "callback_context": null
         },
         {
-          "line": 262,
-          "end_line": 262,
+          "line": 284,
+          "end_line": 284,
           "owner": "Privacy",
           "name": null,
           "kind": "ArrowFunctionExpression",
@@ -209711,8 +209711,8 @@
           "expression": "{openConsentSettings}"
         },
         {
-          "line": 259,
-          "end_line": 263,
+          "line": 281,
+          "end_line": 285,
           "owner": "Privacy",
           "component": "a",
           "event": "onClick",

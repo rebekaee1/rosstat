@@ -996,6 +996,24 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 Миграций вне перечисленных нет; формат `world_forecasts`, `world_indicators`, таблиц аналитики и кабинета не менялся; ключи кэша поиска (`r3`, `ind:v23`, `country:v19`) и `data:v13` не менялись; пороги прогнозного гейта не менялись.
 
+## Публичный Telegram-бот — 2026-11-08
+
+[ADR-0027](adr/0027-public-telegram-bot.md). Флаг `RUSTATS_PUBLIC_BOT_ENABLED` (по умолчанию `false`, требует `RUSTATS_TELEGRAM_POLLER_ENABLED`); окно рассылки `RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR`/`_TO_HOUR` (9/21, Москва). Код `backend/app/services/public_bot.py`.
+
+**Вход.** Личный чат (группы и каналы игнорируются). `/start <код>`: код `^[A-Za-z0-9_-]{1,64}$`, иначе считается отсутствующим; тема — весь код или его хвост после последнего `_`/`-`, если это ключ темы. Текст: тема по началу слова (`дизел`, `бензин`, `инфляц`, `вклад`, `ипотек`, `ставк`…), частные темы раньше общих («ставки по вкладам» — вклады). `/menu`, `/stop` (`стоп`). Кнопки `pb:t:<тема>`, `pb:s:<тема>`, `pb:u:<тема>`, `pb:src:<источник>`, `pb:menu`. Владелец и получатели отчёта попадают в публичный путь по `/start <код>` и любому тексту, кроме `/start`, `/menu`, `меню`, `/users`.
+
+**Темы → ряды.** `diesel` fuel-diesel, `ai92` fuel-ai92, `ai95` fuel-ai95, `gold` gold-price, `inflation` cpi-yoy, `keyrate` key-rate, `deposit` deposit-rate, `mortgage` mortgage-rate, `usd` usd-rub, `eur` eur-rub.
+
+**Ответ.** Последняя точка (`IndicatorData`), изменение к предыдущей точке для недельных/месячных/квартальных рядов, изменение за год (ближайшая точка к дате минус 365 дней, не дальше 40 дней), в процентных рядах — в п.п.; прогноз — первая точка текущего прогноза после последней даты, **без диапазона**; источник. Кнопка «График и прогноз на сайте» → `{public_base_url}/russia/indicator/{code}?utm_source=telegram&utm_medium=bot&utm_campaign=<тема>[&utm_content=<код первого входа>]`. После первой цифры один раз — вопрос «откуда узнали» (Instagram, Telegram, Поиск, Знакомые, Другое).
+
+**Хранение.** `public_bot_chats` (номер чата — ПДн, `chat_hash` = HMAC-SHA256 номера на ключе токена бота, `first_code`, `heard_from`, `asked_source_at`, `first_seen_at`, `last_seen_at`, `blocked_at`); `public_bot_events` (`chat_hash`, `kind` ∈ start/word/topic/subscribe/unsubscribe/source/notify/blocked/stop/unknown, `code`, `topic`; свободный текст не хранится); `public_bot_subscriptions` (`chat_id`, `topic`, `last_point_date`, `last_value`, `last_sent_at`; уникально `chat_id+topic`, каскад от чата). Ответы архивируются в `telegram_outbox` с `kind` `public_bot`/`public_bot_notify`; в досылку (`RESEND_KINDS`) не входят. `/stop` удаляет чат, подписки и эти строки архива; событие `stop` остаётся с `chat_hash`.
+
+**Рассылка.** `public_bot_notify` (scheduler, 30 мин, только при флаге): новая точка ряда после `last_point_date`; `gold`/`usd`/`eur` — не чаще раза в 7 дней; `keyrate` — только при изменении значения (иначе точка запоминается молча). Ошибка с кодом 403 → `blocked_at`. Пауза 0,05 с между сообщениями. `my_chat_member` со статусом `kicked` → `blocked_at`.
+
+**Отчёт.** Админ-меню «🤖 Публичный бот» (только при флаге): за 7 дней новые люди, вернувшиеся (пришли раньше периода, писали в периоде), коды первого входа, темы, подписки сейчас, «откуда узнали».
+
+**Чего нет.** Отметок прочтения (их нет в Bot API); цифр по регионам; живой проверки на реальном телефоне (08.11.2026).
+
 ## Разрезы рынка труда России из ЕМИСС
 
 Датасет, возраст, пол, частота и единица определены на уровне кода федерального
