@@ -9,6 +9,7 @@ import { ViewModesPanel } from './ViewModesPanel';
 import IndicatorTelemetryGrid from './IndicatorTelemetryGrid';
 import CurrencyTelemetry from './CurrencyTelemetry';
 import CurrencyNext from './CurrencyNext';
+import { CurrencyCardConverter } from './CurrencyConverter';
 import { isCurrencyIndicator } from '../lib/sitePaths';
 import { normalizeRateNameEn } from '../lib/currencyRates';
 import IndicatorChartSection from './IndicatorChartSection';
@@ -299,6 +300,8 @@ export default function GenericIndicatorView({
       )}
         </div>
       </div>
+
+      {isCurrency && <CurrencyCardConverter code={code} />}
 
       <div className="z4-lower" data-lower={forecastEnabled && showForecast && hasForecast ? 'wide' : 'stack'}>
         <div className="z4-lower__table">

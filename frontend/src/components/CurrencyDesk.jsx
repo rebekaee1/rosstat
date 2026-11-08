@@ -1,27 +1,27 @@
 // Раздел «Курсы валют и криптовалют». Слева: две плитки доллара («Курс ЦБ» и «Рынок»), конвертер, вкладки «Валюты / Крипто / Мир»
 // и строки курсов. Справа: график выбранной пары за год и «Золото, нефть, биткоин». На телефоне всё идёт одной колонкой.
-import { useId, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRightLeft, Info, Search, X } from 'lucide-react';
+import { Info, Search, X } from 'lucide-react';
 import Button from './Button';
 import DeltaBadge from './DeltaBadge';
 import Sparkline from './Sparkline';
-import CurrencySelect, { CoinBadge } from './CurrencySelect';
+import { CoinBadge } from './CurrencySelect';
+import { Converter } from './CurrencyConverter';
 import CurrencyPairChart from './CurrencyPairChart';
 import { useIndicatorData } from '../lib/hooks';
-import { cn, formatDate, formatValue } from '../lib/format';
+import { cn, formatValue } from '../lib/format';
 import { formatDeltaWithUnit } from '../lib/deltaText';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import EmptyState from './brand/EmptyState';
 import {
-  CURRENCY_TABS, buildEdges, convert, convertibleUnits, formatConverted,
-  formatRate, pairTab, pairTitle, parseAmountInput, parsePair, quoteUnitsOf, rateBasis, sortByPopularity, unitMeta,
+  CURRENCY_TABS, buildEdges, convertibleUnits, currencySearchText, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
+  sortByPopularity, unitMeta, unitWord,
 } from '../lib/currencyRates';
-import { coinOf, unitName } from '../lib/currencyChart';
+import { coinOf } from '../lib/currencyChart';
 import { MARKET_BOARD_CODES, chartPairFor, useMarketState } from '../lib/currencyMarket';
 import { track, events } from '../lib/track';
-import { useGlintOnChange } from '../lib/calcGlint';
 import { useLocale, useT } from '../i18n';
 import '../styles/y2-indicator.css';
 import '../styles/w6-g.css';
@@ -30,8 +30,8 @@ import '../styles/z8-tools.css';
 import '../styles/k4-charts.css';
 import '../styles/k8-tools.css';
 import '../styles/c8-currency.css';
+import '../styles/z3-cur.css';
 
-const QUICK_AMOUNTS = ['1', '100', '1000', '10000'];
 const MARKET_LABEL_KEYS = { 'gold-rub-live': 'w6b.ticker.gold', brent: 'w6b.ticker.brent', 'btc-usd': 'w6b.ticker.btc' };
 const MARKET_LINKS = { 'gold-rub-live': 'gold-price', brent: 'brent', 'btc-usd': 'btc-usd' };
 const MARKET_UNITS = { 'gold-rub-live': '₽/г', brent: '$', 'btc-usd': '$' };
@@ -127,153 +127,6 @@ function RateTiles({ edges, market, pending = false }) {
   );
 }
 
-/** Результат конвертера: «камень» с золотой цифрой; блик проходит заново, когда число изменилось. */
-function ConverterOut({ result, one, safeFrom, safeTo, basisKey }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const ref = useRef(null);
-  useGlintOnChange(ref, result ? result.value : null);
-  return (
-    <div ref={ref} className="fe-z8-conv__out fe-glint" aria-live="polite" data-testid="converter-result">
-      {result ? (
-        <>
-          <p className="fe-z8-conv__sum">
-            <span className="fe-z8-conv__num">{formatConverted(result.value, locale)}</span>
-            <span className="fe-z8-conv__unit">{unitName(safeTo, locale)}</span>
-          </p>
-          {one && (
-            <p className="fe-z8-conv__rate">
-              {`1 ${safeFrom} = ${formatRate(one.value, locale)} ${safeTo}`}
-            </p>
-          )}
-          {result.date && (
-            <p className="fe-z8-conv__note">
-              {t(basisKey, { date: formatDate(result.date, 'day', locale) })}
-            </p>
-          )}
-        </>
-      ) : (
-        <p className="fe-z8-conv__note">{t('w6g.cur.badAmount')}</p>
-      )}
-    </div>
-  );
-}
-
-/** Сумма в поле одним видом с кнопками «1 000», «10 000»: тысячи отделены пробелом, дробь сохраняется. */
-function groupedAmount(amount, locale) {
-  if (!Number.isFinite(amount)) return '';
-  const digits = Number.isInteger(amount) ? 0 : Math.min(8, (String(amount).split('.')[1] || '').length);
-  return formatValue(amount, digits, locale);
-}
-
-function Converter({ edges, from, to, onFrom, onTo }) {
-  const t = useT();
-  const { locale } = useLocale();
-  const id = useId();
-  const units = useMemo(() => convertibleUnits(edges), [edges]);
-  const [amountText, setAmountText] = useState('100');
-  // Каждое нажатие на «⇄» поворачивает стрелки ещё на 180° (k8-tools: --k8-turn).
-  const [turns, setTurns] = useState(0);
-  if (units.length < 2) return null;
-
-  const safeFrom = units.includes(from) ? from : units[0];
-  const safeTo = units.includes(to) && to !== safeFrom ? to : units.find((u) => u !== safeFrom);
-  const amount = parseAmountInput(amountText, locale);
-  const result = amount != null ? convert(amount, safeFrom, safeTo, edges) : null;
-  const one = convert(1, safeFrom, safeTo, edges);
-
-  const bases = result ? new Set(result.path.map((code) => rateBasis(code)).filter(Boolean)) : new Set();
-  const basisKey = bases.size === 1 ? `w6g.cur.basis.${[...bases][0]}` : 'w6g.cur.basis.mix';
-  const swap = () => {
-    onFrom(safeTo);
-    onTo(safeFrom);
-    setTurns((n) => n + 1);
-    track(events.COMPARE_CHANGE, { converter: 'swap' });
-  };
-  const optionOf = (unit) => {
-    const meta = unitMeta(unit);
-    return {
-      value: unit,
-      name: unitName(unit, locale),
-      ...coinOf(unit),
-      search: [unit, meta.ru, meta.en, meta.symbol].join(' ').toLowerCase(),
-    };
-  };
-  const fromOptions = units.map(optionOf);
-  const toOptions = units.filter((unit) => unit !== safeFrom).map(optionOf);
-
-  return (
-    <section className="fe-panel fe-z8-conv" data-block="currency-converter" aria-label={t('w6g.cur.converterTitle')}>
-      <h2 className="fe-z8-conv__title">{t('w6g.cur.converterTitle')}</h2>
-      <div className="fe-z8-conv__row">
-        <label className="fe-z8-field fe-z8-conv__amount" htmlFor={`${id}-amount`}>
-          <span className="fe-z8-select__label">{t('w6g.cur.amount')}</span>
-          <input
-            id={`${id}-amount`}
-            type="text"
-            inputMode="decimal"
-            autoComplete="off"
-            value={amountText}
-            onChange={(event) => setAmountText(event.target.value)}
-            onFocus={(event) => { const node = event.target; window.setTimeout(() => { if (document.activeElement === node) node.select(); }, 0); }}
-            onBlur={() => { if (amount != null && amountText.trim() !== '') setAmountText(groupedAmount(amount, locale)); }}
-            aria-invalid={amount == null ? 'true' : undefined}
-            className="fe-z8-input"
-          />
-        </label>
-        <CurrencySelect
-          label={t('w6g.cur.from')}
-          value={safeFrom}
-          options={fromOptions}
-          onChange={onFrom}
-          searchPlaceholder={t('w6g.cur.search')}
-          emptyText={t('w6g.cur.nothing')}
-          className="fe-z8-conv__from"
-        />
-        <button
-          type="button"
-          className="fe-z8-swap fe-press"
-          style={{ '--k8-turn': `${turns * 180}deg` }}
-          onClick={swap}
-          aria-label={t('w6g.cur.swap')}
-          title={t('w6g.cur.swap')}
-        >
-          <ArrowRightLeft size={18} aria-hidden="true" />
-        </button>
-        <CurrencySelect
-          label={t('w6g.cur.to')}
-          value={safeTo}
-          options={toOptions}
-          onChange={onTo}
-          searchPlaceholder={t('w6g.cur.search')}
-          emptyText={t('w6g.cur.nothing')}
-          className="fe-z8-conv__to"
-        />
-      </div>
-      <div className="fe-z8-quick" role="group" aria-label={t('z8.cur.quickAria')}>
-        {QUICK_AMOUNTS.map((value) => (
-          <button
-            key={value}
-            type="button"
-            className={cn('fe-z8-quick__btn fe-press', amount === Number(value) && 'is-active')}
-            onClick={() => setAmountText(groupedAmount(Number(value), locale))}
-          >
-            {formatValue(Number(value), 0, locale)}
-          </button>
-        ))}
-      </div>
-
-      <ConverterOut
-        result={result}
-        one={one}
-        safeFrom={safeFrom}
-        safeTo={safeTo}
-        basisKey={basisKey}
-      />
-    </section>
-  );
-}
-
 /** Дата значения у цены: сервер отдаёт as_of_day (день одним форматом) для живых и дневных рядов. */
 function boardDate(snap, locale = 'ru') {
   const day = snap?.as_of_day || snap?.as_of_date || '';
@@ -338,6 +191,13 @@ function CurrencyRow({ ind, index }) {
   const dateText = shortDate(ind.current_date, locale);
   const digits = Math.abs(value) >= 1000 ? 0 : 2;
   const stale = ageInDays(ind.current_date) > STALE_AFTER_DAYS;
+  // «Узбекский сум» крупно, «к рублю» тише: на узком экране название идёт в одну строку.
+  const baseName = pair ? (locale === 'en' ? unitMeta(pair.base).en : unitMeta(pair.base).ru) : '';
+  const split = baseName && title.startsWith(baseName) && title.length > baseName.length;
+  const head = split ? baseName : title;
+  const tail = split ? title.slice(baseName.length) : '';
+  const perN = quoteUnitsOf(ind.unit);
+  const showDelta = delta && !delta.flat && !stale;
   return (
     <Link
       to={russiaIndicatorPath(ind.code)}
@@ -346,11 +206,15 @@ function CurrencyRow({ ind, index }) {
     >
       <CoinBadge className="fe-w6g-coin" flag={coin.flag} symbol={coin.symbol} />
       <span className="fe-trow__main">
-        <h3 className="fe-trow__title">{title}</h3>
+        <h3 className="fe-trow__title">
+          {head}
+          {tail && <span className={cn('z3-to', pair?.quote === 'RUB' && 'z3-to--rub')}>{tail}</span>}
+        </h3>
         <span className="fe-trow__meta">
-          {delta && !delta.flat && !stale && (
+          {showDelta && (
             <DeltaBadge delta={pct} polarity={indicatorPolarity(ind.name, ind.name_en, ind.code)}>{delta.text}</DeltaBadge>
           )}
+          {showDelta && basis !== 'close' && <span className="z3-period">{t('z3.cur.perDay')}</span>}
           {basis && (
             <span className={cn('fe-trow__date', stale && 'is-stale')}>
               {stale ? t('c9d.cur.stale', { date: dateText }) : t(`w6g.cur.basisShort.${basis}`, { date: dateText })}
@@ -361,11 +225,15 @@ function CurrencyRow({ ind, index }) {
       <span className="fe-trow__spark" aria-hidden="true">
         <RowSpark code={ind.code} index={index} />
       </span>
-      <span className="fe-trow__val">
-        <span className="fe-trow__num">{formatValue(value, digits, locale)}</span>
-        {quote?.symbol && <span className="fe-trow__unit">{quote.symbol}</span>}
-        {quoteUnitsOf(ind.unit) > 1 && (
-          <span className="fe-trow__unit">{t('c9d.cur.perUnits', { n: formatValue(quoteUnitsOf(ind.unit), 0, locale) })}</span>
+      <span className="fe-trow__val z3-val">
+        <span className="z3-val__main">
+          <span className="fe-trow__num">{formatValue(value, digits, locale)}</span>
+          {quote?.symbol && <span className="fe-trow__unit z3-val__sym">{quote.symbol}</span>}
+        </span>
+        {perN > 1 && pair && (
+          <span className="z3-val__per">
+            {t('c9d.cur.perUnits', { n: `${formatValue(perN, 0, locale)}\u00a0${unitWord(perN, pair.base, locale)}` })}
+          </span>
         )}
       </span>
     </Link>
@@ -376,12 +244,9 @@ function matchesQuery(ind, needle) {
   const pair = parsePair(ind.code);
   const parts = [ind.code, ind.name, ind.name_en, pairTitle(ind.code, 'ru'), pairTitle(ind.code, 'en')];
   if (pair) {
-    [pair.base, pair.quote].forEach((unit) => {
-      const meta = unitMeta(unit);
-      parts.push(unit, meta.ru, meta.en, meta.symbol);
-    });
+    [pair.base, pair.quote].forEach((unit) => parts.push(currencySearchText(unit)));
   }
-  const text = parts.filter(Boolean).join(' ').toLowerCase();
+  const text = parts.filter(Boolean).join(' ').toLowerCase().replace(/ё/g, 'е');
   return needle.split(/\s+/).filter(Boolean).every((word) => text.includes(word));
 }
 
@@ -394,7 +259,7 @@ export default function CurrencyDesk({ indicators }) {
   const [pickedFrom, setFrom] = useState(null);
   const [to, setTo] = useState('RUB');
   const from = pickedFrom ?? prefFrom ?? 'USD';
-  const needle = query.trim().toLowerCase();
+  const needle = query.trim().toLowerCase().replace(/ё/g, 'е');
   const { market, pending: marketPending } = useMarketState();
 
   const sorted = useMemo(() => sortByPopularity(indicators || []), [indicators]);

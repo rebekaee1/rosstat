@@ -1,0 +1,115 @@
+/* Круг 2026-11-08, зона Z3: курсы валют (конвертер, строки списка, график пары, конвертер на карточке курса).
+   Свет и тень, никаких рамок и обводок; курсы без красного и зелёного. Подключается из CurrencyConverter.jsx и CurrencyDesk.jsx. */
+
+/* ---------- Порядок блоков: сначала конвертер, потом плитки доллара ---------- */
+.fe-z8-cur.fe-z8-cur { grid-template-areas: 'conv' 'rates' 'chart' 'list' 'board'; }
+@media (min-width: 1024px) {
+  .fe-z8-cur.fe-z8-cur { grid-template-areas: 'conv chart' 'rates chart' 'list board'; }
+  .fe-z8-cur.fe-z8-cur:not(.has-board) { grid-template-areas: 'conv chart' 'rates chart' 'list list'; }
+}
+/* На телефоне плитки доллара короче: пояснение под цифрой убрано, суть остаётся в одной строке ниже. */
+@media (max-width: 639px) {
+  .fe-z8-cur .fe-z8-rate__note { display: none; }
+}
+
+/* ---------- Конвертер: сумма, быстрые суммы, результат, потом пара ---------- */
+.z3-conv { padding: 18px 18px 16px; }
+.z3-conv .fe-z8-conv__title { margin-bottom: 10px; }
+.z3-amount { display: grid; gap: 6px; min-width: 0; }
+.z3-quick {
+  margin-top: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.z3-quick::-webkit-scrollbar { display: none; }
+.z3-quick .fe-z8-quick__btn { flex: none; }
+.z3-out { margin-top: 12px; min-height: 0; padding: 14px 18px 12px; }
+.z3-out .fe-z8-conv__num { font-size: clamp(30px, 8.5vw, 48px); overflow-wrap: anywhere; }
+.z3-out .fe-z8-conv__rate { margin-top: 6px; font-size: 14px; line-height: 1.4; }
+.z3-out .fe-z8-conv__rate + .fe-z8-conv__rate { margin-top: 2px; color: var(--color-text-secondary); }
+.z3-pair { margin-top: 14px; }
+
+/* Популярные валюты для поездок: одна лента кнопок, на телефоне листается вбок. */
+.z3-pop { margin-top: 14px; }
+.z3-pop__label {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--z8-muted, var(--color-text-secondary));
+}
+.z3-pop__row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.z3-pop__row::-webkit-scrollbar { display: none; }
+@media (min-width: 640px) {
+  .z3-pop__row { flex-wrap: wrap; overflow: visible; }
+}
+.z3-pop__btn { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.z3-pop__btn .fe-z8-coin {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ---------- Строки списка: название в одну строку, номинал рядом с ценой ---------- */
+.fe-z8-cur .fe-trow__title {
+  display: block;
+  -webkit-line-clamp: unset;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fe-z8-cur .z3-to { font-weight: 500; color: var(--color-text-secondary); }
+.z3-period { font-size: 12px; color: var(--color-text-tertiary, var(--color-text-secondary)); }
+.z3-val { gap: 3px; }
+.z3-val__main { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; }
+.z3-val__per {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--z8-gold-ink, #8a6a1f) 12%, transparent);
+  color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f));
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 479px) {
+  .fe-z8-cur .fe-trow.fe-trow.fe-w6g-currency-row { grid-template-columns: auto minmax(0, 1fr) 44px auto; gap: 4px 10px; }
+  .fe-z8-cur .z3-to--rub { display: none; }
+}
+
+/* ---------- График пары ---------- */
+.z3-chart__per {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f));
+}
+.z3-tip__per { margin: 2px 0 0; font-size: 12px; color: var(--z8-muted, var(--color-text-secondary)); }
+
+/* ---------- Конвертер на карточке курса ---------- */
+.z3-card-conv { margin: 20px 0; padding: 18px 18px 16px; border-radius: 24px; }
+.z3-card-conv__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.z3-card-conv__head .fe-z8-conv__title { margin: 0; }
+.z3-card-conv__dir { margin: 4px 0 12px; font-size: 13px; color: var(--z8-muted, var(--color-text-secondary)); }
+.z3-card-conv .z3-quick { margin-top: 10px; }
+.z3-card-conv__more { margin: 12px 0 0; font-size: 14px; }
+.z3-card-conv__link { font-weight: 600; text-decoration: none; color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f)); }
+.z3-card-conv__link:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .z3-quick, .z3-pop__row { scroll-behavior: auto; }
+}

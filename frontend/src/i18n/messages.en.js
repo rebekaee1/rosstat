@@ -3725,4 +3725,11 @@ export default {
   'c13b.brentLive.tail': 'The chart below shows the daily spot price from the US Energy Information Administration, which is published once a week.',
   'c13u.ticker.brentNote': 'Brent crude price as of the date shown. Source: US Energy Information Administration (EIA), which publishes once a week, so the price lags by a few days',
   'c13u.ticker.change24h': '24-hour change',
+  // Z3 (round of 08 Nov): exchange rates
+  'z3.cur.popular': 'Popular for travel',
+  'z3.cur.searchHint': 'Currency, country or code: som, Uzbekistan, UZS',
+  'z3.cur.nothing': 'No such currency found. Try a name, a country or a code: "dirham", "Turkey", "UZS".',
+  'z3.cur.perDay': 'per day',
+  'z3.cur.cardTitle': 'Convert your amount',
+  'z3.cur.otherPair': 'Another pair: converter for all currencies',
 };
