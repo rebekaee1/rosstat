@@ -21,18 +21,17 @@
   "counts": {
     "files": 2282,
     "code_files": 1871,
-    "current_reviews": 2230,
+    "current_reviews": 2282,
     "statuses": {
       "artifact_schema_reviewed": 86,
       "asset_metadata_reviewed": 120,
       "body_reviewed": 4,
       "data_schema_reviewed": 8,
-      "missing": 26,
-      "reviewed": 2038
+      "reviewed": 2064
     },
     "definitions": 15119,
-    "annotated_definitions": 14788,
-    "files_needing_attention": 52
+    "annotated_definitions": 15119,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -1252,152 +1251,11 @@
       "lines": 848,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 23,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_fmt",
-          "line": 76,
-          "end_line": 77,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_rname",
-          "line": 80,
-          "end_line": 81,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_icopy",
-          "line": 84,
-          "end_line": 91,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_indicator_search_fields",
-          "line": 94,
-          "end_line": 107,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_region_search_fields",
-          "line": 110,
-          "end_line": 114,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_headline_label",
-          "line": 117,
-          "end_line": 120,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_region_or_404",
-          "line": 123,
-          "end_line": 127,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_latest_values",
-          "line": 130,
-          "end_line": 157,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "regions_landing",
-          "line": 161,
-          "end_line": 233,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "regions_landing.stats_for",
-          "line": 191,
-          "end_line": 205,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "regions_catalog",
-          "line": 237,
-          "end_line": 270,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "regions_heatmap",
-          "line": 274,
-          "end_line": 341,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "regions_heatmap_series",
-          "line": 345,
-          "end_line": 394,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "regions_compare",
-          "line": 398,
-          "end_line": 412,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_price_fields",
-          "line": 420,
-          "end_line": 430,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_month_label",
-          "line": 433,
-          "end_line": 436,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "region_profile",
-          "line": 440,
-          "end_line": 587,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_section_siblings",
-          "line": 590,
-          "end_line": 638,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_section_siblings._sib_rank",
-          "line": 605,
-          "end_line": 608,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_section_siblings._sibling",
-          "line": 623,
-          "end_line": 636,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "region_indicator_detail",
-          "line": 642,
-          "end_line": 729,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_monthly_price_fields",
-          "line": 738,
-          "end_line": 742,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "region_indicator_monthly",
-          "line": 746,
-          "end_line": 848,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 23,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/api/router.py",
@@ -1419,26 +1277,11 @@
       "lines": 57,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_cache_key",
-          "line": 34,
-          "end_line": 36,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "search",
-          "line": 40,
-          "end_line": 57,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/api/seo_pages.py",
@@ -1941,104 +1784,11 @@
       "lines": 444,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 15,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "PriceGood",
-          "line": 36,
-          "end_line": 51,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "PriceGood.name",
-          "line": 46,
-          "end_line": 47,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "PriceGood.unit",
-          "line": 50,
-          "end_line": 51,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "unit_phrase",
-          "line": 85,
-          "end_line": 98,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_g",
-          "line": 101,
-          "end_line": 102,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_load_auto",
-          "line": 202,
-          "end_line": 206,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "artifact_rows",
-          "line": 220,
-          "end_line": 235,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "copy_en",
-          "line": 238,
-          "end_line": 244,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_contains",
-          "line": 355,
-          "end_line": 356,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "classify_price_group",
-          "line": 359,
-          "end_line": 375,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_short_label",
-          "line": 381,
-          "end_line": 397,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "short_name_for",
-          "line": 400,
-          "end_line": 409,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_load_auto_last",
-          "line": 412,
-          "end_line": 416,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_months_between",
-          "line": 424,
-          "end_line": 425,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "price_meta",
-          "line": 428,
-          "end_line": 444,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 15,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/data/eurostat_country_visibility.py",
@@ -4868,290 +4618,11 @@
       "lines": 1243,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 46,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_family_metadata",
-          "line": 77,
-          "end_line": 97,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_family_price_evidence",
-          "line": 100,
-          "end_line": 105,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_registered_price_codes",
-          "line": 109,
-          "end_line": 113,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_bespoke_mode_metadata",
-          "line": 117,
-          "end_line": 122,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_native_price_metadata",
-          "line": 131,
-          "end_line": 136,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_native_name_text",
-          "line": 139,
-          "end_line": 154,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_native_price_constraint",
-          "line": 157,
-          "end_line": 163,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_intent_concept",
-          "line": 166,
-          "end_line": 170,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_intent_frequency",
-          "line": 173,
-          "end_line": 175,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_unit_metadata",
-          "line": 179,
-          "end_line": 188,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_country_only",
-          "line": 202,
-          "end_line": 203,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_like_regex",
-          "line": 225,
-          "end_line": 226,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_headline_concept_key",
-          "line": 233,
-          "end_line": 240,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_concept_headline_patterns",
-          "line": 243,
-          "end_line": 245,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_concept_headline_bonus",
-          "line": 248,
-          "end_line": 252,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_preference",
-          "line": 255,
-          "end_line": 273,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_country_headline_bonus",
-          "line": 276,
-          "end_line": 287,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_bonus",
-          "line": 290,
-          "end_line": 302,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_unit",
-          "line": 305,
-          "end_line": 333,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_finite",
-          "line": 336,
-          "end_line": 339,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_date_constraints",
-          "line": 342,
-          "end_line": 348,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_annual_fact",
-          "line": 351,
-          "end_line": 358,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_monthly_fact",
-          "line": 361,
-          "end_line": 370,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_fact",
-          "line": 377,
-          "end_line": 380,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_escape_like",
-          "line": 383,
-          "end_line": 384,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_lexical",
-          "line": 387,
-          "end_line": 390,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_lexical_terms",
-          "line": 393,
-          "end_line": 574,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_world_mode_metadata",
-          "line": 577,
-          "end_line": 590,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_period_path",
-          "line": 593,
-          "end_line": 611,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_geometry",
-          "line": 614,
-          "end_line": 638,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_eligible_geo",
-          "line": 641,
-          "end_line": 643,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_entities",
-          "line": 646,
-          "end_line": 698,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_russia",
-          "line": 701,
-          "end_line": 797,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_world",
-          "line": 800,
-          "end_line": 885,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_world.candidates",
-          "line": 821,
-          "end_line": 831,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_regions",
-          "line": 888,
-          "end_line": 928,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_subnational",
-          "line": 931,
-          "end_line": 968,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_native_title_span",
-          "line": 971,
-          "end_line": 981,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_literal_title",
-          "line": 984,
-          "end_line": 1079,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "_literal_title.title_patterns",
-          "line": 1028,
-          "end_line": 1037,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_result_measure_names",
-          "line": 1082,
-          "end_line": 1093,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_annual_inflation_row",
-          "line": 1104,
-          "end_line": 1112,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_is_single_letter_query",
-          "line": 1115,
-          "end_line": 1118,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_result_sort_key",
-          "line": 1129,
-          "end_line": 1154,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_result_sort_key.key",
-          "line": 1141,
-          "end_line": 1152,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "federated_search",
-          "line": 1157,
-          "end_line": 1243,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 46,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_currency_aliases.py",
@@ -5159,36 +4630,12 @@
       "bytes": 2929,
       "lines": 56,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 3,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_stem",
-          "line": 23,
-          "end_line": 24,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_roots",
-          "line": 27,
-          "end_line": 31,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "currency_latin_concepts",
-          "line": 34,
-          "end_line": 56,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 3,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_dimensions.py",
@@ -5210,194 +4657,11 @@
       "lines": 990,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 30,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_normalize_text",
-          "line": 211,
-          "end_line": 212,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "normalize",
-          "line": 215,
-          "end_line": 216,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_tokens_of_normalized",
-          "line": 220,
-          "end_line": 221,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "tokens",
-          "line": 224,
-          "end_line": 225,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_phrase_of_normalized",
-          "line": 229,
-          "end_line": 230,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "phrase",
-          "line": 233,
-          "end_line": 234,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "edit_distance_one",
-          "line": 238,
-          "end_line": 252,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_control_neighbour",
-          "line": 256,
-          "end_line": 258,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_concept_correction",
-          "line": 261,
-          "end_line": 267,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "nominal_variants",
-          "line": 271,
-          "end_line": 317,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_extract_denominators",
-          "line": 320,
-          "end_line": 328,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_percentage_word_text",
-          "line": 331,
-          "end_line": 340,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_extract_point_units",
-          "line": 343,
-          "end_line": 359,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_outside_literal_query",
-          "line": 362,
-          "end_line": 386,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_percent_word_spans",
-          "line": 389,
-          "end_line": 394,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_alias_occurrences",
-          "line": 397,
-          "end_line": 403,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_compile_concept_matchers",
-          "line": 406,
-          "end_line": 416,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_russian_geo_cases",
-          "line": 422,
-          "end_line": 483,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_geographic_possessive_aliases",
-          "line": 486,
-          "end_line": 500,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "geo_aliases",
-          "line": 503,
-          "end_line": 542,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "SearchIntent",
-          "line": 546,
-          "end_line": 556,
-          "kind": "ClassDef"
-        },
-        {
-          "name": "strip_geography",
-          "line": 559,
-          "end_line": 665,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "literal_identifier",
-          "line": 668,
-          "end_line": 697,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_unmasked_query",
-          "line": 700,
-          "end_line": 708,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "parse_intent",
-          "line": 715,
-          "end_line": 899,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "parse_intent.price_base_replacement",
-          "line": 739,
-          "end_line": 743,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "matching_alternatives",
-          "line": 906,
-          "end_line": 915,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "complete_nominal_alternative",
-          "line": 918,
-          "end_line": 926,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_alternative_plan",
-          "line": 930,
-          "end_line": 942,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "match_score",
-          "line": 945,
-          "end_line": 990,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 30,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_language.py",
@@ -5457,60 +4721,12 @@
       "bytes": 14540,
       "lines": 168,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 7,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_norm",
-          "line": 104,
-          "end_line": 105,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_codes_by_pattern",
-          "line": 109,
-          "end_line": 115,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "price_goods_concepts",
-          "line": 118,
-          "end_line": 127,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_alias_regex",
-          "line": 131,
-          "end_line": 133,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_lead_regex",
-          "line": 137,
-          "end_line": 138,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "prepare_price_goods",
-          "line": 141,
-          "end_line": 161,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "has_price_goods",
-          "line": 164,
-          "end_line": 165,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 7,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_region_hint.py",
@@ -5518,36 +4734,12 @@
       "bytes": 2558,
       "lines": 44,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 3,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_words",
-          "line": 19,
-          "end_line": 20,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_stems",
-          "line": 23,
-          "end_line": 28,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "region_prefix_keys",
-          "line": 31,
-          "end_line": 44,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 3,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_regional_groups.py",
@@ -5555,60 +4747,12 @@
       "bytes": 6999,
       "lines": 142,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 7,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_is_regional",
-          "line": 28,
-          "end_line": 29,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "group_regional_rows",
-          "line": 32,
-          "end_line": 63,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_ordered_regions",
-          "line": 66,
-          "end_line": 71,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_finite",
-          "line": 74,
-          "end_line": 75,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_latest_by_region",
-          "line": 78,
-          "end_line": 101,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "attach_group_values",
-          "line": 104,
-          "end_line": 123,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "attach_region_row_values",
-          "line": 130,
-          "end_line": 142,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 7,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/search_units.py",
@@ -5799,38 +4943,11 @@
       "lines": 2122,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 21,
-      "annotated_definitions": 17,
-      "missing_definitions": [
-        {
-          "name": "_month_label_nom",
-          "line": 1293,
-          "end_line": 1295,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_month_label",
-          "line": 1298,
-          "end_line": 1300,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_render_region_indicator_monthly",
-          "line": 1303,
-          "end_line": 1631,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "render_region_indicator_html",
-          "line": 1634,
-          "end_line": 2122,
-          "kind": "AsyncFunctionDef"
-        }
-      ]
+      "annotated_definitions": 21,
+      "missing_definitions": []
     },
     {
       "path": "backend/app/services/seo_regional_year.py",
@@ -10635,42 +9752,12 @@
       "bytes": 2860,
       "lines": 59,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 4,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "prices_client",
-          "line": 12,
-          "end_line": 32,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "prices_client.seed",
-          "line": 13,
-          "end_line": 28,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_profile_and_monthly_expose_price_fields_and_compare",
-          "line": 35,
-          "end_line": 52,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_heatmap_ranks_monthly_price_by_latest_month",
-          "line": 55,
-          "end_line": 59,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 4,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_region_prices_meta.py",
@@ -10678,54 +9765,12 @@
       "bytes": 3332,
       "lines": 65,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 6,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "test_every_position_has_meta_in_known_group",
-          "line": 17,
-          "end_line": 22,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_manual_items_have_hand_written_short_names",
-          "line": 25,
-          "end_line": 31,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_fuel_codes_are_covered_and_headline_codes_exist",
-          "line": 34,
-          "end_line": 39,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_auto_groups_by_keywords_and_forms",
-          "line": 42,
-          "end_line": 51,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_discontinued_is_older_than_twelve_months_from_market_last",
-          "line": 54,
-          "end_line": 60,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_title_month_is_nominative",
-          "line": 63,
-          "end_line": 65,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 6,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_region_units.py",
@@ -10811,60 +9856,12 @@
       "bytes": 4401,
       "lines": 116,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 7,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_group",
-          "line": 32,
-          "end_line": 44,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_can_crawl",
-          "line": 47,
-          "end_line": 57,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_ru_googlebot_group_has_year_rules",
-          "line": 85,
-          "end_line": 88,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_ru_googlebot_blocks_world_years",
-          "line": 92,
-          "end_line": 94,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_ru_googlebot_keeps_russia_and_cards",
-          "line": 98,
-          "end_line": 100,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_ru_other_agents_keep_world_years",
-          "line": 104,
-          "end_line": 107,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_apex_control_group_unchanged",
-          "line": 110,
-          "end_line": 116,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 7,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_rosstat_fuel_samples.py",
@@ -11353,54 +10350,12 @@
       "bytes": 3155,
       "lines": 59,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 6,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "test_city_names_point_to_their_region",
-          "line": 23,
-          "end_line": 25,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_kvartplata_is_utilities",
-          "line": 28,
-          "end_line": 31,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_explicit_region_rows_get_latest_value",
-          "line": 34,
-          "end_line": 47,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_explicit_region_rows_get_latest_value.fake",
-          "line": 37,
-          "end_line": 39,
-          "kind": "AsyncFunctionDef"
-        },
-        {
-          "name": "test_bank_brand_word_does_not_empty_the_query",
-          "line": 50,
-          "end_line": 54,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_headline_order_puts_dollar_before_alphabetical_currencies",
-          "line": 57,
-          "end_line": 59,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 6,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_search_registered_semantics.py",
@@ -11486,96 +10441,12 @@
       "bytes": 6509,
       "lines": 105,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 13,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "_score",
-          "line": 21,
-          "end_line": 22,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_egg_forms_find_the_price_series_without_average_mode",
-          "line": 26,
-          "end_line": 30,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_average_price_of_goods_with_region_keeps_region_and_drops_average_mode",
-          "line": 33,
-          "end_line": 36,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_average_price_of_non_goods_is_unchanged",
-          "line": 39,
-          "end_line": 40,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_everyday_phrases_reach_price_series",
-          "line": 51,
-          "end_line": 52,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_goods_do_not_match_unrelated_series",
-          "line": 55,
-          "end_line": 56,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_region_prefix_and_city_name_pick_regions",
-          "line": 59,
-          "end_line": 64,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_short_prefix_needs_a_price_good_and_never_hijacks_economy_words",
-          "line": 67,
-          "end_line": 70,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_latin_currency_names_find_their_rate",
-          "line": 77,
-          "end_line": 80,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_shared_currency_word_is_not_a_single_currency",
-          "line": 83,
-          "end_line": 84,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "_row",
-          "line": 87,
-          "end_line": 89,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_many_regions_become_one_group_with_russia_on_top",
-          "line": 92,
-          "end_line": 99,
-          "kind": "FunctionDef"
-        },
-        {
-          "name": "test_named_region_and_single_rows_stay_as_they_are",
-          "line": 102,
-          "end_line": 105,
-          "kind": "FunctionDef"
-        }
-      ]
+      "annotated_definitions": 13,
+      "missing_definitions": []
     },
     {
       "path": "backend/tests/test_seed_hash.py",
@@ -14140,9 +13011,9 @@
     },
     {
       "path": "docs/data-contracts.md",
-      "sha256": "26718fcf46f18f5ab255306555baa2e83ca462ce4d294d010788a789b5290700",
-      "bytes": 306467,
-      "lines": 1033,
+      "sha256": "9959a12915c082ade819f28654fe180dc5bd07b47790df36a384ce6fb4f2138e",
+      "bytes": 310278,
+      "lines": 1054,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -14699,9 +13570,9 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "4f0447a3ade0ae4a6bcbff0bc4238f7c8b01aed3d5bf35e3542630f402b8309c",
-      "bytes": 55950,
-      "lines": 113,
+      "sha256": "df7f1e2fec7f4ce8b853898104fb2209e9639dc69373450034b4388c9fc43666",
+      "bytes": 58183,
+      "lines": 125,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -15375,9 +14246,9 @@
     },
     {
       "path": "docs/search.md",
-      "sha256": "1fffcc4bc18a299f768f965506df929ecfda6cdc7b6fba70a1685f3d015e7d83",
-      "bytes": 98217,
-      "lines": 701,
+      "sha256": "857da38347e7e49ea0b91267181f4bc522368bda3ea296094c6fa0c9ce212a32",
+      "bytes": 100089,
+      "lines": 706,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -17979,90 +16850,12 @@
       "bytes": 14225,
       "lines": 293,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 12,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "groupedAmount",
-          "line": 25,
-          "end_line": 29,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "useAmount",
-          "line": 32,
-          "end_line": 37,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "shortUnit",
-          "line": 40,
-          "end_line": 44,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "ConverterOut",
-          "line": 47,
-          "end_line": 75,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "AmountField",
-          "line": 77,
-          "end_line": 95,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "QuickAmounts",
-          "line": 97,
-          "end_line": 113,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "chipName",
-          "line": 116,
-          "end_line": 120,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "Converter",
-          "line": 122,
-          "end_line": 228,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "Converter.swap",
-          "line": 145,
-          "end_line": 150,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "Converter.optionOf",
-          "line": 151,
-          "end_line": 156,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "Converter.pickTravel",
-          "line": 160,
-          "end_line": 165,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "CurrencyCardConverter",
-          "line": 234,
-          "end_line": 291,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 12,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/CurrencyConverterZ3.component.test.jsx",
@@ -18070,13 +16863,9 @@
       "bytes": 2707,
       "lines": 46,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -18101,44 +16890,11 @@
       "lines": 363,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 10,
-      "annotated_definitions": 5,
-      "missing_definitions": [
-        {
-          "name": "boardDate",
-          "line": 131,
-          "end_line": 134,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "MarketBoard",
-          "line": 137,
-          "end_line": 177,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "CurrencyRow",
-          "line": 179,
-          "end_line": 253,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "matchesQuery",
-          "line": 255,
-          "end_line": 263,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "CurrencyDesk",
-          "line": 265,
-          "end_line": 363,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 10,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/CurrencyNext.jsx",
@@ -18160,38 +16916,11 @@
       "lines": 314,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 6,
-      "annotated_definitions": 2,
-      "missing_definitions": [
-        {
-          "name": "EndBead",
-          "line": 57,
-          "end_line": 65,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "CurrencyPairChart",
-          "line": 68,
-          "end_line": 314,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "CurrencyPairChart.monthOf",
-          "line": 202,
-          "end_line": 204,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "CurrencyPairChart.tickLabel",
-          "line": 205,
-          "end_line": 211,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 6,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/CurrencySelect.jsx",
@@ -18512,28 +17241,11 @@
       "lines": 344,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "IDENTITY",
-          "line": 79,
-          "end_line": 79,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "GenericIndicatorView",
-          "line": 81,
-          "end_line": 344,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/GenericViewModePicker.jsx",
@@ -18776,10 +17488,8 @@
       "lines": 354,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 10,
       "annotated_definitions": 10,
       "missing_definitions": []
@@ -18791,106 +17501,11 @@
       "lines": 1085,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 15,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "RotatingHint",
-          "line": 63,
-          "end_line": 95,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "isKKey",
-          "line": 101,
-          "end_line": 105,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "IndicatorSearch",
-          "line": 107,
-          "end_line": 832,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "IndicatorSearch.shownTitle",
-          "line": 239,
-          "end_line": 239,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "IndicatorSearch.onKey",
-          "line": 353,
-          "end_line": 383,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "IndicatorSearch.focusInput",
-          "line": 399,
-          "end_line": 399,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "IndicatorSearch.onQueryChange",
-          "line": 437,
-          "end_line": 442,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "IndicatorSearch.handleListKey",
-          "line": 451,
-          "end_line": 463,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "IndicatorSearch.renderRow",
-          "line": 481,
-          "end_line": 501,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "regionValueText",
-          "line": 837,
-          "end_line": 846,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionGroupChips",
-          "line": 849,
-          "end_line": 879,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "latestText",
-          "line": 882,
-          "end_line": 899,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "SearchRow",
-          "line": 905,
-          "end_line": 1022,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "filterValueLabel",
-          "line": 1027,
-          "end_line": 1032,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "SearchFilters",
-          "line": 1038,
-          "end_line": 1085,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 15,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/IndicatorSearch.w6d.component.test.jsx",
@@ -18899,10 +17514,8 @@
       "lines": 313,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 9,
       "annotated_definitions": 9,
       "missing_definitions": []
@@ -18913,48 +17526,12 @@
       "bytes": 3820,
       "lines": 58,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 5,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "useWorldCountries",
-          "line": 13,
-          "end_line": 13,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "useWorldRatingConcepts",
-          "line": 14,
-          "end_line": 14,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "useT",
-          "line": 18,
-          "end_line": 18,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "useLocale",
-          "line": 19,
-          "end_line": 19,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "regions",
-          "line": 22,
-          "end_line": 24,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 5,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/IndicatorSeoBlocks.jsx",
@@ -19691,64 +18268,11 @@
       "lines": 447,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 8,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "chartMayAnimate",
-          "line": 34,
-          "end_line": 37,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "monthTickLabel",
-          "line": 40,
-          "end_line": 47,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionTooltip",
-          "line": 49,
-          "end_line": 93,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionTooltip.fmt",
-          "line": 59,
-          "end_line": 59,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionAnnualChart",
-          "line": 97,
-          "end_line": 447,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionAnnualChart.periodKey",
-          "line": 122,
-          "end_line": 126,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionAnnualChart.idx",
-          "line": 188,
-          "end_line": 188,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionAnnualChart.formatLabel",
-          "line": 232,
-          "end_line": 235,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 8,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/RegionCrossLink.jsx",
@@ -20445,30 +18969,12 @@
       "bytes": 2675,
       "lines": 52,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 2,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "verdict",
-          "line": 11,
-          "end_line": 16,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "Z3PastCompare",
-          "line": 19,
-          "end_line": 52,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 2,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/Z4Indicator.component.test.jsx",
@@ -21282,24 +19788,12 @@
       "bytes": 2430,
       "lines": 44,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 1,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "wrap",
-          "line": 7,
-          "end_line": 7,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 1,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/regions/MonthlyPriceParts.jsx",
@@ -21307,48 +19801,12 @@
       "bytes": 5746,
       "lines": 132,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 5,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "DiscontinuedNote",
-          "line": 28,
-          "end_line": 35,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "CompareLines",
-          "line": 38,
-          "end_line": 56,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "SiblingRow",
-          "line": 58,
-          "end_line": 80,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "Group",
-          "line": 82,
-          "end_line": 99,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "GroupedSiblings",
-          "line": 102,
-          "end_line": 132,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 5,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/regions/RegionComparePick.jsx",
@@ -21396,58 +19854,11 @@
       "lines": 186,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 8,
-      "annotated_definitions": 1,
-      "missing_definitions": [
-        {
-          "name": "TrendTick",
-          "line": 52,
-          "end_line": 73,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionValue",
-          "line": 76,
-          "end_line": 84,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionHeadlineCard",
-          "line": 86,
-          "end_line": 108,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionIndicatorRow",
-          "line": 110,
-          "end_line": 144,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionSectionHeading",
-          "line": 147,
-          "end_line": 157,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionSearchField",
-          "line": 159,
-          "end_line": 173,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionMetricLine",
-          "line": 176,
-          "end_line": 186,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 8,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/regions/RegionPrices.jsx",
@@ -21455,78 +19866,12 @@
       "bytes": 11430,
       "lines": 225,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 10,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "collectPriceItems",
-          "line": 19,
-          "end_line": 23,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "splitShortName",
-          "line": 26,
-          "end_line": 33,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "formatPrice",
-          "line": 35,
-          "end_line": 40,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "commonPeriod",
-          "line": 43,
-          "end_line": 50,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "PriceCard",
-          "line": 52,
-          "end_line": 81,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionPricesBlock",
-          "line": 84,
-          "end_line": 111,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "PriceRow",
-          "line": 113,
-          "end_line": 115,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionPriceSection",
-          "line": 118,
-          "end_line": 225,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionPriceSection.rank",
-          "line": 134,
-          "end_line": 134,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionPriceSection.toggle",
-          "line": 147,
-          "end_line": 151,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 10,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/regions/RegionPrices.test.jsx",
@@ -21534,13 +19879,9 @@
       "bytes": 1200,
       "lines": 21,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -21552,22 +19893,11 @@
       "lines": 229,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 3,
-      "annotated_definitions": 2,
-      "missing_definitions": [
-        {
-          "name": "RegionRanking.pick",
-          "line": 125,
-          "end_line": 129,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 3,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/components/russia/LaborIndicatorGroups.jsx",
@@ -21940,11 +20270,8 @@
       "lines": 3825,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -21982,11 +20309,8 @@
       "lines": 3830,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -23649,10 +21973,8 @@
       "lines": 136,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 13,
       "annotated_definitions": 13,
       "missing_definitions": []
@@ -23703,94 +22025,11 @@
       "lines": 434,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 29,
-      "annotated_definitions": 16,
-      "missing_definitions": [
-        {
-          "name": "currencySearchText",
-          "line": 268,
-          "end_line": 271,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "unitWord",
-          "line": 287,
-          "end_line": 298,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "nominalFor",
-          "line": 306,
-          "end_line": 312,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "amountPresets",
-          "line": 315,
-          "end_line": 325,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "describeRate",
-          "line": 331,
-          "end_line": 350,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "describeRate.money",
-          "line": 341,
-          "end_line": 343,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "describeRate.line",
-          "line": 344,
-          "end_line": 348,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "formatRate",
-          "line": 353,
-          "end_line": 366,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "formatConverted",
-          "line": 369,
-          "end_line": 379,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "pointAtOrBefore",
-          "line": 383,
-          "end_line": 392,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "currencyWindows",
-          "line": 398,
-          "end_line": 427,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "currencyWindows.change",
-          "line": 406,
-          "end_line": 410,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "normalizeRateNameEn",
-          "line": 430,
-          "end_line": 434,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 29,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/dataFreshness.js",
@@ -25775,82 +24014,11 @@
       "lines": 126,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 11,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "z4s.example.2",
-          "line": 29,
-          "end_line": 29,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "shell.search.example.4",
-          "line": 30,
-          "end_line": 30,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "shell.search.example.5",
-          "line": 31,
-          "end_line": 31,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "shell.search.example.6",
-          "line": 32,
-          "end_line": 32,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "w6d.search.example.7",
-          "line": 33,
-          "end_line": 33,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "w6d.search.example.8",
-          "line": 34,
-          "end_line": 34,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "searchSuggestions",
-          "line": 38,
-          "end_line": 44,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "searchExamples",
-          "line": 48,
-          "end_line": 50,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "describeSearchResult",
-          "line": 58,
-          "end_line": 75,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "dedupeSearchRows",
-          "line": 78,
-          "end_line": 88,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "separateVisibleTwins",
-          "line": 102,
-          "end_line": 126,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 11,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/searchExamples.twins.test.js",
@@ -27379,120 +25547,12 @@
       "bytes": 9776,
       "lines": 182,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 17,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "parseYm",
-          "line": 11,
-          "end_line": 19,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "ymLabel",
-          "line": 21,
-          "end_line": 27,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "ymLabelFrom",
-          "line": 30,
-          "end_line": 36,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "pickField",
-          "line": 39,
-          "end_line": 42,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "changeOverMonths",
-          "line": 45,
-          "end_line": 52,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "signedPct",
-          "line": 54,
-          "end_line": 60,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "compareRows",
-          "line": 63,
-          "end_line": 78,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "groupSiblings",
-          "line": 81,
-          "end_line": 103,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "groupSiblings.rank",
-          "line": 90,
-          "end_line": 94,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "yearTickPeriods",
-          "line": 106,
-          "end_line": 123,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "upFirst",
-          "line": 125,
-          "end_line": 125,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "shortPriceName",
-          "line": 128,
-          "end_line": 134,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "unitSuffix",
-          "line": 137,
-          "end_line": 140,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "isRubPerUnit",
-          "line": 143,
-          "end_line": 145,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "priceText",
-          "line": 148,
-          "end_line": 152,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "perUnitPrice",
-          "line": 156,
-          "end_line": 163,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "guessPriceGroup",
-          "line": 178,
-          "end_line": 182,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 17,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/z2Price.test.js",
@@ -27500,13 +25560,9 @@
       "bytes": 3343,
       "lines": 52,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -27517,13 +25573,9 @@
       "bytes": 736,
       "lines": 14,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -27547,13 +25599,9 @@
       "bytes": 2573,
       "lines": 49,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -27564,36 +25612,12 @@
       "bytes": 1894,
       "lines": 31,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review",
-        "definitions_without_annotation"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 3,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "ms",
-          "line": 4,
-          "end_line": 6,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "rateDaysAgo",
-          "line": 9,
-          "end_line": 23,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "comparePast",
-          "line": 26,
-          "end_line": 31,
-          "kind": "FunctionDeclaration"
-        }
-      ]
+      "annotated_definitions": 3,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/lib/z4ChartTitle.js",
@@ -27784,11 +25808,8 @@
       "lines": 228,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 10,
       "annotated_definitions": 10,
       "missing_definitions": []
@@ -28047,11 +26068,8 @@
       "lines": 105,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -28375,88 +26393,11 @@
       "lines": 794,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 12,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "toYoYSeries",
-          "line": 51,
-          "end_line": 63,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "isNegativeCapable",
-          "line": 68,
-          "end_line": 70,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "StatCell",
-          "line": 72,
-          "end_line": 81,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "statValue",
-          "line": 84,
-          "end_line": 86,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "monthName",
-          "line": 89,
-          "end_line": 91,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionIndicatorPage",
-          "line": 104,
-          "end_line": 794,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionIndicatorPage.requireAuth",
-          "line": 141,
-          "end_line": 146,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionIndicatorPage.handleExportTable",
-          "line": 148,
-          "end_line": 178,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionIndicatorPage.handleExportPng",
-          "line": 180,
-          "end_line": 189,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionIndicatorPage.at",
-          "line": 276,
-          "end_line": 279,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionIndicatorPage.onSelect",
-          "line": 516,
-          "end_line": 516,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionIndicatorPage.onSelect",
-          "line": 517,
-          "end_line": 517,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 12,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/RegionProfile.component.test.jsx",
@@ -28478,40 +26419,11 @@
       "lines": 288,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 4,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "normalize",
-          "line": 36,
-          "end_line": 38,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionProfile",
-          "line": 41,
-          "end_line": 288,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionProfile.getSearchItem",
-          "line": 78,
-          "end_line": 78,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionProfile.openAllPrices",
-          "line": 93,
-          "end_line": 97,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 4,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/RegionRatingPage.component.test.jsx",
@@ -28598,124 +26510,11 @@
       "lines": 1005,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed",
-        "read_range_gap",
-        "definitions_without_annotation"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 18,
-      "annotated_definitions": 0,
-      "missing_definitions": [
-        {
-          "name": "MapMetricSearch",
-          "line": 91,
-          "end_line": 178,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "MapMetricSearch.openWith",
-          "line": 108,
-          "end_line": 108,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "MapRegionSearch",
-          "line": 181,
-          "end_line": 233,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "MapRegionSearch.getSearchItem",
-          "line": 192,
-          "end_line": 192,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "MapRegionSearch.pick",
-          "line": 194,
-          "end_line": 198,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "ContrastRow",
-          "line": 254,
-          "end_line": 296,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "ContrastRow.side",
-          "line": 273,
-          "end_line": 283,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionCard",
-          "line": 298,
-          "end_line": 329,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionCard.mini",
-          "line": 303,
-          "end_line": 308,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome",
-          "line": 331,
-          "end_line": 1005,
-          "kind": "FunctionDeclaration"
-        },
-        {
-          "name": "RegionsHome.setView",
-          "line": 448,
-          "end_line": 459,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.selectOverview",
-          "line": 461,
-          "end_line": 464,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.selectPreset",
-          "line": 466,
-          "end_line": 469,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.selectCustom",
-          "line": 471,
-          "end_line": 474,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.clearCustom",
-          "line": 476,
-          "end_line": 478,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.getSearchItem",
-          "line": 516,
-          "end_line": 516,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.handlePng",
-          "line": 526,
-          "end_line": 540,
-          "kind": "ArrowFunctionExpression"
-        },
-        {
-          "name": "RegionsHome.handleGif",
-          "line": 542,
-          "end_line": 562,
-          "kind": "ArrowFunctionExpression"
-        }
-      ]
+      "annotated_definitions": 18,
+      "missing_definitions": []
     },
     {
       "path": "frontend/src/pages/RegionsHome.z5.component.test.jsx",
@@ -28867,10 +26666,8 @@
       "lines": 267,
       "code": true,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 6,
       "annotated_definitions": 6,
       "missing_definitions": []
@@ -29869,13 +27666,9 @@
       "bytes": 4841,
       "lines": 80,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -29912,13 +27705,9 @@
       "bytes": 4132,
       "lines": 108,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -29942,13 +27731,9 @@
       "bytes": 8474,
       "lines": 181,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -29998,13 +27783,9 @@
       "bytes": 1564,
       "lines": 12,
       "code": true,
-      "status": "missing",
-      "current": false,
-      "issues": [
-        "missing_review",
-        "review_incomplete",
-        "code_needs_body_review"
-      ],
+      "status": "reviewed",
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -31922,15 +29703,9 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "6a14ef37e2cf3deea6c30f6b5f65ecdf3d1f05e29d1bb7bdf4a7b11a427e35ea",
+  "ledger_sha256": "9687adf658c541e835cd096a3d85e862e3fc3325f98beebdc584304a718c95d9",
   "javascript_inventory_sha256": "2c0030550b9f6997d282ccebbd31660841043fbef08e513d9cca0091cfd59056",
-  "baseline_commit": "2e3047dfd9eccb3bb69599ffae6a833e9b8c51a6",
-  "branch": "circle-data/int",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "baseline_commit": "0555aa82ca4af5076b7f27775b55c9ae2321ba96",
+  "branch": "worktree-agent-a955bd90f5c3c707d",
+  "unstaged_at_capture": []
 }
