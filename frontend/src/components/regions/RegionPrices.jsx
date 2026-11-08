@@ -12,6 +12,7 @@ import { useLocale } from '../../i18n';
 import '../../styles/z1-prices.css';
 
 const FIRST_ROWS = 10;
+const PAGE = 30;
 const NBSP = ' ';
 
 /** Позиции с ценой (есть группа от сервера). */
@@ -119,6 +120,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(() => new Set());
   const [indexesOpen, setIndexesOpen] = useState(false);
+  const [pages, setPages] = useState({});
 
   const { plain, groups } = useMemo(() => {
     const plainRows = [];
@@ -167,7 +169,10 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
       )}
       {shownGroups.map((g) => {
         const expanded = searching || !!activeGroup || open.has(g.key);
-        const rows = expanded ? g.items : g.items.slice(0, FIRST_ROWS);
+        // В одной группе (лекарства — 155 позиций) показываем порциями по 30, чтобы страница не превращалась в простыню.
+        const pageLimit = activeGroup && !searching ? PAGE * (1 + (pages[g.key] || 0)) : Infinity;
+        const rows = (expanded ? g.items : g.items.slice(0, FIRST_ROWS)).slice(0, pageLimit);
+        const rest = Math.max(0, (expanded ? g.items.length : 0) - rows.length);
         return (
           <div key={g.key} className="z1p-group" data-testid={`price-group-${g.key}`}>
             {!searching && (
@@ -179,6 +184,11 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
             <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
               {rows.map((item) => <PriceRow key={item.code} item={item} to={pathFor(item.code)} />)}
             </div>
+            {rest > 0 && (
+              <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setPages((p) => ({ ...p, [g.key]: (p[g.key] || 0) + 1 }))}>
+                {t('r2z1.prices.moreN', { n: Math.min(PAGE, rest) })}
+              </button>
+            )}
             {!expanded && g.items.length > FIRST_ROWS && (
               <button type="button" className="fe-chip fe-press z1p-more" onClick={() => toggle(g.key)}>
                 {t('z1.prices.showMore', { n: g.items.length })}

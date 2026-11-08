@@ -117,6 +117,8 @@ export default function RegionRanking({ metrics, initialCode }) {
 
   const maxAbs = useMemo(() => Math.max(1e-9, ...ranked.map((r) => Math.abs(r.num || 0))), [ranked]);
   const unit = data?.indicator?.unit || '';
+  // Рубли и проценты пишем у каждого числа: в строке рейтинга не надо искать единицу в подписи сверху.
+  const signUnit = ['₽', '%'].includes(unitLabel(unit, locale)) ? unitLabel(unit, locale) : '';
   const isPreset = metrics.some((m) => m.code === code);
   const shown = expanded ? ranked : ranked.slice(0, FIRST_ROWS);
 
@@ -204,6 +206,7 @@ export default function RegionRanking({ metrics, initialCode }) {
                   className="fe-rank__value fe-rank__link fe-num fe-press"
                 >
                   {formatRegionNumber(row.num, unit, locale)}
+                  {signUnit ? <span className="fe-rank__unit">{'\u00A0'}{signUnit}</span> : null}
                 </Link>
               </li>
             ))}

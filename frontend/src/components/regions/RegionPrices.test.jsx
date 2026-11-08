@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { splitShortName, formatPrice, collectPriceItems } from './RegionPrices';
+import { splitShortName, formatPrice, collectPriceItems, commonPeriod } from './RegionPrices';
 
 describe('RegionPrices helpers', () => {
   it('splits short name into title and unit', () => {
@@ -13,5 +13,9 @@ describe('RegionPrices helpers', () => {
   it('collects only priced items', () => {
     const got = collectPriceItems([{ indicators: [{ code: 'a' }, { code: 'b', price_group: 'Продукты' }] }]);
     expect(got.map((i) => i.code)).toEqual(['b']);
+  });
+  it('picks the most common month for the block caption', () => {
+    expect(commonPeriod([{ period_label: 'сентябрь 2026' }, { period_label: 'август 2026' }, { period_label: 'сентябрь 2026' }])).toBe('сентябрь 2026');
+    expect(commonPeriod([])).toBe('');
   });
 });

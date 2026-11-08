@@ -3786,4 +3786,7 @@ export default {
   'r2z1.prices.flat': 'unchanged',
   'r2z1.headline.title': 'Key figures',
   'r2z1.prices.indexes': 'Annual price indices',
+  'r2z1.prices.moreN': 'Show {n} more',
+  'r2z1.hub.find': 'Find your region',
+  'r2z1.hub.findPlaceholder': 'For example, Tambov',
 };

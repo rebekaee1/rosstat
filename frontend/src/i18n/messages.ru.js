@@ -3791,4 +3791,7 @@ export default {
   'r2z1.prices.flat': 'без перемен',
   'r2z1.headline.title': 'Главные цифры региона',
   'r2z1.prices.indexes': 'Годовые индексы цен',
+  'r2z1.prices.moreN': 'Показать ещё {n}',
+  'r2z1.hub.find': 'Найдите свой регион',
+  'r2z1.hub.findPlaceholder': 'Например, Тамбов',
 };

@@ -72,3 +72,9 @@
 @media (min-width: 640px) { .z1p-headline-title { font-size: 1.5rem; } }
 
 .z1p-flat { font-size: 13px; color: var(--color-text-secondary); white-space: nowrap; }
+
+/* Хаб регионов: «Найдите свой регион» над рейтингом. */
+.z1h-find { margin: 20px 0 16px; }
+.z1h-find__label { margin: 0 0 8px; font-family: var(--font-display, inherit); font-size: 1.05rem; font-weight: 700; color: var(--color-text-primary); }
+.z1h-find [data-testid="map-region-search"] { max-width: none; }
+.fe-rank__unit { font-size: .85em; font-weight: 500; color: var(--color-text-secondary); }
