@@ -1,0 +1,4 @@
+/* Z4: регионы одного показателя под строкой «Россия». Без рамок: тон и вес вместо линий. */
+.z4s-region-chips { padding-top: 0.25rem; }
+.z4s-region-chip { display: inline-flex; align-items: baseline; gap: 0.5rem; }
+.z4s-region-chip__value { font-weight: 600; font-variant-numeric: tabular-nums; }

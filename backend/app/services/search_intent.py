@@ -8,6 +8,9 @@ from dataclasses import dataclass
 from functools import lru_cache
 
 from app.data.cbr_currencies import CBR_CURRENCIES as _CBR_CURRENCIES, search_concepts as _cbr_search_concepts
+from app.services.search_currency_aliases import currency_latin_concepts as _currency_latin_concepts
+from app.services.search_price_goods import has_price_goods, prepare_price_goods, price_goods_concepts as _price_goods_concepts
+from app.services.search_region_hint import region_prefix_keys
 from app.services.search_language import LANGUAGE_CONCEPTS, QUESTION_WORDS, prepare_language
 from app.services.search_vocabulary import VOCABULARY_CONCEPTS, GRAMMAR_WORDS, prepare_vocabulary, prepare_temporal_roles
 from app.services.search_units import UNIT_CONCEPTS
@@ -17,7 +20,8 @@ SEARCH_VERSION = "federated-v2"
 TOKEN_RE = re.compile(r"[a-zа-я0-9]+")
 STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
 
-CBR_SEARCH_CONCEPTS = _cbr_search_concepts()
+CBR_SEARCH_CONCEPTS = _cbr_search_concepts() + _currency_latin_concepts()
+PRICE_GOODS_CONCEPTS = _price_goods_concepts()
 
 # Equivalent concepts only. Minimum wage deliberately does not alias average wages.
 CONCEPTS = (
@@ -43,6 +47,8 @@ CONCEPTS = (
     # Остальные валюты ведомости Банка России (08.11.2026): раньше доллара, чтобы
     # «австралийский доллар» не уходил в курс доллара США.
     *CBR_SEARCH_CONCEPTS,
+    # Ходовые товары и услуги средних цен Росстата: формы слов и разговорные названия («цена яиц», «коммуналка»).
+    *PRICE_GOODS_CONCEPTS,
     (("курс доллара к рублю", "курс доллара", "курса доллара", "курсе доллара", "курсом доллара", "доллар", "доллара", "доллару", "долларом",
         "usd rub", "usdrub"), ("usd-rub", "usd rub", "доллар")),
     (("курс юаня к рублю", "курс юаня", "юань", "юаня", "cny rub", "cnyrub"), ("cny-rub", "cny rub", "юан")),
@@ -715,6 +721,8 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
     # Project masked tokens to the original punctuation before rewriting an age
     # span. This keeps the outside ISO date aligned while numeric age members
     # become opaque nonnumeric aliases rather than observation-period words.
+    # «Средняя цена яиц» — про товар, а не про режим «среднее за период».
+    text = prepare_price_goods(text)
     text = prepare_dimensions(text)
     base_unit = re.search(r"(?<!\d)((?:1|2)\d{3})\s*=\s*100(?!\d)", period_query)
     unit_term = None
@@ -811,6 +819,7 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
         if alternatives not in terms:
             terms.append(alternatives)
     residual = "".join(" " if i in term_occupied else ch for i, ch in enumerate(content))
+    residual_terms = []
     for token in tokens(residual):
         if token in STOP_WORDS or token in ("год", "года", "году", "year"):
             continue
@@ -824,6 +833,16 @@ def parse_intent(raw: str, geometry: list[dict], *, allow_layout: bool = True,
             # the raw unknown word as the parser's mandatory public identity.
             alternatives = nominal_variants(token)
         terms.append(alternatives)
+        residual_terms.append(alternatives)
+    # Регион по началу слова или городу («яйца нов», «хлеб новосибирск»): остаток запроса, не понятие.
+    if residual_terms and not countries and not regions and len(terms) > len(residual_terms):
+        goods = has_price_goods(tuple(terms))
+        for alternatives in residual_terms:
+            hinted = region_prefix_keys(alternatives[0], geometry, goods=goods)
+            if hinted:
+                regions = set(hinted)
+                terms.remove(alternatives)
+                break
     # «Сколько стоит доллар / евро / биткоин»: цена курса — это сам курс; в названии его ряда слова «цена» нет,
     # и обязательная «цена» превращала такой вопрос в пустую выдачу.
     if any(term[0] in _RATE_QUOTE_CODES for term in terms):

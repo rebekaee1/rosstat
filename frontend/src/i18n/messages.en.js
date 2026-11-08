@@ -3725,4 +3725,13 @@ export default {
   'c13b.brentLive.tail': 'The chart below shows the daily spot price from the US Energy Information Administration, which is published once a week.',
   'c13u.ticker.brentNote': 'Brent crude price as of the date shown. Source: US Energy Information Administration (EIA), which publishes once a week, so the price lags by a few days',
   'c13u.ticker.change24h': '24-hour change',
+  'z4s.example.1': 'Egg prices in Moscow',
+  'z4s.example.2': 'Uzbek som rate',
+  'z4s.regions.aria': 'Regions',
+  'z4s.regions.more': '{n} more regions',
+  'z4s.regions.less': 'Show fewer',
+  'z4s.empty.rates': 'Exchange rates:',
+  'z4s.empty.rate.1': 'US dollar rate',
+  'z4s.empty.rate.2': 'Uzbek som rate',
+  'z4s.empty.rate.3': 'Tenge rate',
 };
