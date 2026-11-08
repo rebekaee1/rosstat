@@ -741,3 +741,16 @@ def test_english_keyboard_and_menu():
     assert kb[0][0]["text"] == "US dollar" and kb[-1][0]["text"] == "All topics"
     flat = [k for row in pb.MENU for k in row]
     assert "eur" in flat and "ai95" in flat
+
+
+def test_emoji_only_gets_reaction_not_model(env, monkeypatch):
+    _, sent, api_calls = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+
+    async def llm(*a, **k):
+        raise AssertionError("модель не нужна")
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    n = len(sent)
+    asyncio.run(pb.handle_message({**_msg("👍"), "message_id": 7}))
+    assert len(sent) == n and api_calls[-1][0] == "setMessageReaction"

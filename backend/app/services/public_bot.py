@@ -542,6 +542,12 @@ async def handle_message(msg: dict) -> None:
         elif any(k in msg for k in ("photo", "document", "video")):
             await _send(chat_id, "Картинки и файлы пока не разбираю. Напишите вопрос текстом — отвечу по цифрам.", short)
         return
+    if not re.search(r"[\w/]", text) and len(text) <= 8 and msg.get("message_id"):
+        # Тестер №4, 09.11: «👍» тратил вопрос из дневного лимита модели. Отвечаем реакцией.
+        from app.services.telegram_bot import _api
+        await _api("setMessageReaction", {"chat_id": chat_id, "message_id": msg["message_id"],
+                                          "reaction": [{"type": "emoji", "emoji": "🤝"}]}, token=bot_token(), timeout=6)
+        return
     low = _norm(text)
     if low.startswith("/start"):
         code, topic = parse_start(text)
