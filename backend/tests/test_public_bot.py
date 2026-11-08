@@ -754,3 +754,9 @@ def test_emoji_only_gets_reaction_not_model(env, monkeypatch):
     n = len(sent)
     asyncio.run(pb.handle_message({**_msg("👍"), "message_id": 7}))
     assert len(sent) == n and api_calls[-1][0] == "setMessageReaction"
+
+
+def test_telegram_html_drops_foreign_links():
+    out = pb.telegram_html('см. <a href="https://rosstat.gov.ru/x">Росстат</a> и <a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>')
+    assert "rosstat" not in out and "Росстат" in out
+    assert '<a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>' in out
