@@ -66,7 +66,6 @@ OTHER_GOAL_LABELS = {
     "login_success": "входы",
     "embed_code_copy": "код виджета скопирован",
     "contact_email": "письмо нам",
-    "research_download": "скачал отчёт",
     "calc_copy_result": "результат расчёта скопирован",
 }
 SERVER_ERROR_GROUPS = {

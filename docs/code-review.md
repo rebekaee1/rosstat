@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `5bac0d996a87e8bbe148764a3eb481cc4770eeab`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `3bedb51261a323ebb7901e0ff051b372670c729e`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -12,11 +12,11 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 
 | Проверка | Число |
 |---|---:|
-| Файлы в явно определённом scope | 2299 |
-| Код, шаблоны и стили | 1845 |
-| Актуальные рецензии без пропусков guard | 2299 |
-| Именованные определения Python/JS: с аннотацией / всего | 15068 / 15068 |
-| Файлы, требующие внимания | 0 |
+| Файлы в явно определённом scope | 2249 |
+| Код, шаблоны и стили | 1839 |
+| Актуальные рецензии без пропусков guard | 2245 |
+| Именованные определения Python/JS: с аннотацией / всего | 14986 / 15038 |
+| Файлы, требующие внимания | 4 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -110,7 +110,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/alembic/versions/20261012c_world_listed_cnt.py](../backend/alembic/versions/20261012c_world_listed_cnt.py) | reviewed | 3/3 | актуально |
 | [backend/alembic/versions/20261108_public_bot.py](../backend/alembic/versions/20261108_public_bot.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/20261108b_gsc_page_daily.py](../backend/alembic/versions/20261108b_gsc_page_daily.py) | reviewed | 2/2 | актуально |
-| [backend/alembic/versions/20261109_research_downloads.py](../backend/alembic/versions/20261109_research_downloads.py) | reviewed | 2/2 | актуально |
 | [backend/alembic/versions/8524e35ba1ee_init_schema.py](../backend/alembic/versions/8524e35ba1ee_init_schema.py) | reviewed | 2/2 | актуально |
 | [backend/app/__init__.py](../backend/app/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/__init__.py](../backend/app/api/__init__.py) | reviewed | 0/0 | актуально |
@@ -133,7 +132,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/api/push.py](../backend/app/api/push.py) | reviewed | 13/13 | актуально |
 | [backend/app/api/pwa.py](../backend/app/api/pwa.py) | reviewed | 7/7 | актуально |
 | [backend/app/api/regions.py](../backend/app/api/regions.py) | reviewed | 17/17 | актуально |
-| [backend/app/api/research.py](../backend/app/api/research.py) | reviewed | 8/8 | актуально |
 | [backend/app/api/router.py](../backend/app/api/router.py) | reviewed | 0/0 | актуально |
 | [backend/app/api/search.py](../backend/app/api/search.py) | reviewed | 2/2 | актуально |
 | [backend/app/api/seo_pages.py](../backend/app/api/seo_pages.py) | reviewed | 51/51 | актуально |
@@ -205,7 +203,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/regional/indicators.json](../backend/app/data/regional/indicators.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/parse_report.json](../backend/app/data/regional/parse_report.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/regional/regions.json](../backend/app/data/regional/regions.json) | reviewed | 0/0 | актуально |
-| [backend/app/data/research_catalog.json](../backend/app/data/research_catalog.json) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/llms.en.txt](../backend/app/data/seo_static/llms.en.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/llms.txt](../backend/app/data/seo_static/llms.txt) | reviewed | 0/0 | актуально |
 | [backend/app/data/seo_static/robots.en.txt](../backend/app/data/seo_static/robots.en.txt) | reviewed | 0/0 | актуально |
@@ -237,7 +234,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/data/world_superseded.py](../backend/app/data/world_superseded.py) | reviewed | 7/7 | актуально |
 | [backend/app/database.py](../backend/app/database.py) | reviewed | 6/6 | актуально |
 | [backend/app/main.py](../backend/app/main.py) | reviewed | 45/45 | актуально |
-| [backend/app/models.py](../backend/app/models.py) | reviewed | 75/75 | актуально |
+| [backend/app/models.py](../backend/app/models.py) | reviewed | 74/74 | актуально |
 | [backend/app/schemas.py](../backend/app/schemas.py) | reviewed | 14/14 | актуально |
 | [backend/app/security/__init__.py](../backend/app/security/__init__.py) | reviewed | 0/0 | актуально |
 | [backend/app/security/auth.py](../backend/app/security/auth.py) | reviewed | 8/8 | актуально |
@@ -371,7 +368,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/parser.py](../backend/app/services/parser.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/pii_scrub.py](../backend/app/services/pii_scrub.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/process_metrics.py](../backend/app/services/process_metrics.py) | reviewed | 9/9 | актуально |
-| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 72/72 | актуально |
+| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 20/70 | source_changed, read_range_gap, definitions_without_annotation |
 | [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |
@@ -415,7 +412,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/seo_regional.py](../backend/app/services/seo_regional.py) | reviewed | 20/20 | актуально |
 | [backend/app/services/seo_regional_year.py](../backend/app/services/seo_regional_year.py) | reviewed | 10/10 | актуально |
 | [backend/app/services/seo_renderer.py](../backend/app/services/seo_renderer.py) | reviewed | 99/99 | актуально |
-| [backend/app/services/seo_research.py](../backend/app/services/seo_research.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/seo_today.py](../backend/app/services/seo_today.py) | reviewed | 16/16 | актуально |
 | [backend/app/services/seo_weekly_report.py](../backend/app/services/seo_weekly_report.py) | reviewed | 13/13 | актуально |
 | [backend/app/services/seo_world.py](../backend/app/services/seo_world.py) | reviewed | 48/48 | актуально |
@@ -547,7 +543,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/scripts/load-world-national.py](../backend/scripts/load-world-national.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/load-world-subnational.py](../backend/scripts/load-world-subnational.py) | reviewed | 2/2 | актуально |
 | [backend/scripts/metrika-goals-redesign.py](../backend/scripts/metrika-goals-redesign.py) | reviewed | 3/3 | актуально |
-| [backend/scripts/public-bot-setup.py](../backend/scripts/public-bot-setup.py) | reviewed | 4/4 | актуально |
+| [backend/scripts/public-bot-setup.py](../backend/scripts/public-bot-setup.py) | reviewed | 4/4 | source_changed |
 | [backend/scripts/rebase-world-eurostat.py](../backend/scripts/rebase-world-eurostat.py) | reviewed | 5/5 | актуально |
 | [backend/scripts/rebuild-world-forecasts.py](../backend/scripts/rebuild-world-forecasts.py) | reviewed | 3/3 | актуально |
 | [backend/scripts/reclassify-known-crawlers.py](../backend/scripts/reclassify-known-crawlers.py) | reviewed | 1/1 | актуально |
@@ -769,7 +765,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_perf_batch2.py](../backend/tests/test_perf_batch2.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_pg_backup_offsite.py](../backend/tests/test_pg_backup_offsite.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
-| [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 71/71 | актуально |
+| [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 68/70 | source_changed, read_range_gap, definitions_without_annotation |
 | [backend/tests/test_public_year_contract.py](../backend/tests/test_public_year_contract.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_pulse.py](../backend/tests/test_pulse.py) | reviewed | 79/79 | актуально |
 | [backend/tests/test_pulse_llm_payload_no_pii.py](../backend/tests/test_pulse_llm_payload_no_pii.py) | reviewed | 7/7 | актуально |
@@ -786,7 +782,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_regional_publication_pg.py](../backend/tests/test_regional_publication_pg.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_regional_search_metadata.py](../backend/tests/test_regional_search_metadata.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_regional_seed_pg.py](../backend/tests/test_regional_seed_pg.py) | reviewed | 28/28 | актуально |
-| [backend/tests/test_research.py](../backend/tests/test_research.py) | reviewed | 7/7 | актуально |
 | [backend/tests/test_rosstat_fuel_samples.py](../backend/tests/test_rosstat_fuel_samples.py) | reviewed | 3/3 | актуально |
 | [backend/tests/test_rosstat_gdp.py](../backend/tests/test_rosstat_gdp.py) | reviewed | 32/32 | актуально |
 | [backend/tests/test_rosstat_housing.py](../backend/tests/test_rosstat_housing.py) | reviewed | 22/22 | актуально |
@@ -1001,8 +996,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/adr/0024-telegram-report-modes.md](../docs/adr/0024-telegram-report-modes.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0025-oil-quote-source-legality.md](../docs/adr/0025-oil-quote-source-legality.md) | reviewed | 0/0 | актуально |
 | [docs/adr/0026-graceful-degradation-and-traffic-priority.md](../docs/adr/0026-graceful-degradation-and-traffic-priority.md) | reviewed | 0/0 | актуально |
-| [docs/adr/0027-public-telegram-bot.md](../docs/adr/0027-public-telegram-bot.md) | reviewed | 0/0 | актуально |
-| [docs/adr/0028-research-reports-section.md](../docs/adr/0028-research-reports-section.md) | reviewed | 0/0 | актуально |
+| [docs/adr/0027-public-telegram-bot.md](../docs/adr/0027-public-telegram-bot.md) | reviewed | 0/0 | source_changed, read_range_gap |
 | [docs/agent-briefs/README.md](../docs/agent-briefs/README.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/hotfix-brief.md](../docs/agent-briefs/hotfix-brief.md) | reviewed | 0/0 | актуально |
 | [docs/agent-briefs/integration-brief.md](../docs/agent-briefs/integration-brief.md) | reviewed | 0/0 | актуально |
@@ -1247,48 +1241,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/public/planet/earth_night_2048.webp](../frontend/public/planet/earth_night_2048.webp) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/planet/earth_night_4096.jpg](../frontend/public/planet/earth_night_4096.jpg) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/planet/source-manifest.json](../frontend/public/planet/source-manifest.json) | data_schema_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-01.webp](../frontend/public/research/covers/forecasteconomy-research-01.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-02.webp](../frontend/public/research/covers/forecasteconomy-research-02.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-03.webp](../frontend/public/research/covers/forecasteconomy-research-03.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-04.webp](../frontend/public/research/covers/forecasteconomy-research-04.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-05.webp](../frontend/public/research/covers/forecasteconomy-research-05.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-06.webp](../frontend/public/research/covers/forecasteconomy-research-06.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-07.webp](../frontend/public/research/covers/forecasteconomy-research-07.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-08.webp](../frontend/public/research/covers/forecasteconomy-research-08.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-09.webp](../frontend/public/research/covers/forecasteconomy-research-09.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-10.webp](../frontend/public/research/covers/forecasteconomy-research-10.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-11.webp](../frontend/public/research/covers/forecasteconomy-research-11.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-12.webp](../frontend/public/research/covers/forecasteconomy-research-12.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-13.webp](../frontend/public/research/covers/forecasteconomy-research-13.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-14.webp](../frontend/public/research/covers/forecasteconomy-research-14.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-15.webp](../frontend/public/research/covers/forecasteconomy-research-15.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-16.webp](../frontend/public/research/covers/forecasteconomy-research-16.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-17.webp](../frontend/public/research/covers/forecasteconomy-research-17.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-18.webp](../frontend/public/research/covers/forecasteconomy-research-18.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-19.webp](../frontend/public/research/covers/forecasteconomy-research-19.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-20.webp](../frontend/public/research/covers/forecasteconomy-research-20.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/covers/forecasteconomy-research-21.webp](../frontend/public/research/covers/forecasteconomy-research-21.webp) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf](../frontend/public/research/files/forecasteconomy-research-01-lipstick-index.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf](../frontend/public/research/files/forecasteconomy-research-02-engel-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf](../frontend/public/research/files/forecasteconomy-research-03-okun-law.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-04-card-payment-fee.pdf](../frontend/public/research/files/forecasteconomy-research-04-card-payment-fee.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-05-gasoline-vs-oil.pdf](../frontend/public/research/files/forecasteconomy-research-05-gasoline-vs-oil.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-06-cash-under-mattress.pdf](../frontend/public/research/files/forecasteconomy-research-06-cash-under-mattress.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-07-key-rate.pdf](../frontend/public/research/files/forecasteconomy-research-07-key-rate.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-08-dollar-2014.pdf](../frontend/public/research/files/forecasteconomy-research-08-dollar-2014.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-09-investment-race.pdf](../frontend/public/research/files/forecasteconomy-research-09-investment-race.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-10-cash-boom.pdf](../frontend/public/research/files/forecasteconomy-research-10-cash-boom.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-11-low-unemployment.pdf](../frontend/public/research/files/forecasteconomy-research-11-low-unemployment.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-12-real-wages.pdf](../frontend/public/research/files/forecasteconomy-research-12-real-wages.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-13-demographic-echo.pdf](../frontend/public/research/files/forecasteconomy-research-13-demographic-echo.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-14-oil-and-ruble.pdf](../frontend/public/research/files/forecasteconomy-research-14-oil-and-ruble.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-15-inflation-europe.pdf](../frontend/public/research/files/forecasteconomy-research-15-inflation-europe.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-16-average-person-debt.pdf](../frontend/public/research/files/forecasteconomy-research-16-average-person-debt.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-17-money-creation.pdf](../frontend/public/research/files/forecasteconomy-research-17-money-creation.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-18-funeral-5000.pdf](../frontend/public/research/files/forecasteconomy-research-18-funeral-5000.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-19-fat-tails.pdf](../frontend/public/research/files/forecasteconomy-research-19-fat-tails.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-20-fooled-by-randomness.pdf](../frontend/public/research/files/forecasteconomy-research-20-fooled-by-randomness.pdf) | asset_metadata_reviewed | 0/0 | актуально |
-| [frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf](../frontend/public/research/files/forecasteconomy-research-21-ergodicity.pdf) | asset_metadata_reviewed | 0/0 | актуально |
 | [frontend/public/robots.txt](../frontend/public/robots.txt) | reviewed | 0/0 | актуально |
 | [frontend/public/seo-ticker.js](../frontend/public/seo-ticker.js) | reviewed | 5/5 | актуально |
 | [frontend/public/sw.js](../frontend/public/sw.js) | reviewed | 1/1 | актуально |
@@ -1632,7 +1584,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/index.css](../frontend/src/index.css) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/absoluteAuthNext.test.js](../frontend/src/lib/absoluteAuthNext.test.js) | reviewed | 0/0 | актуально |
 | [frontend/src/lib/accountInitial.js](../frontend/src/lib/accountInitial.js) | reviewed | 1/1 | актуально |
-| [frontend/src/lib/api.js](../frontend/src/lib/api.js) | reviewed | 43/43 | актуально |
+| [frontend/src/lib/api.js](../frontend/src/lib/api.js) | reviewed | 41/41 | актуально |
 | [frontend/src/lib/api.test.js](../frontend/src/lib/api.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/lib/apiErrorMessage.js](../frontend/src/lib/apiErrorMessage.js) | reviewed | 2/2 | актуально |
 | [frontend/src/lib/apiErrorMessage.test.js](../frontend/src/lib/apiErrorMessage.test.js) | reviewed | 1/1 | актуально |
@@ -2098,7 +2050,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/pages/RegionsHome.z5.component.test.jsx](../frontend/src/pages/RegionsHome.z5.component.test.jsx) | reviewed | 3/3 | актуально |
 | [frontend/src/pages/Register.component.test.jsx](../frontend/src/pages/Register.component.test.jsx) | reviewed | 7/7 | актуально |
 | [frontend/src/pages/Register.jsx](../frontend/src/pages/Register.jsx) | reviewed | 4/4 | актуально |
-| [frontend/src/pages/ResearchPage.jsx](../frontend/src/pages/ResearchPage.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/RussiaHome.c11f.component.test.jsx](../frontend/src/pages/RussiaHome.c11f.component.test.jsx) | reviewed | 1/1 | актуально |
 | [frontend/src/pages/RussiaHome.component.test.jsx](../frontend/src/pages/RussiaHome.component.test.jsx) | reviewed | 5/5 | актуально |
 | [frontend/src/pages/RussiaHome.jsx](../frontend/src/pages/RussiaHome.jsx) | reviewed | 6/6 | актуально |
@@ -2171,7 +2122,6 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [frontend/src/styles/planet-map-default.test.js](../frontend/src/styles/planet-map-default.test.js) | reviewed | 1/1 | актуально |
 | [frontend/src/styles/platform-pages.css](../frontend/src/styles/platform-pages.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/regions-w4.css](../frontend/src/styles/regions-w4.css) | reviewed | 0/0 | актуально |
-| [frontend/src/styles/research.css](../frontend/src/styles/research.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/s6-shell.test.js](../frontend/src/styles/s6-shell.test.js) | reviewed | 2/2 | актуально |
 | [frontend/src/styles/shell.css](../frontend/src/styles/shell.css) | reviewed | 0/0 | актуально |
 | [frontend/src/styles/ui-detail-nav-calendar.css](../frontend/src/styles/ui-detail-nav-calendar.css) | reviewed | 0/0 | актуально |

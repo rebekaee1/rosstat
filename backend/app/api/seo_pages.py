@@ -511,10 +511,6 @@ async def seo_forecasts(request: Request, db: AsyncSession = Depends(get_db)):
 
 @router.api_route("/seo/page/{page}", methods=["GET", "HEAD"], include_in_schema=False)
 async def seo_page(page: str, request: Request, db: AsyncSession = Depends(get_db)):
-    if page == "research":
-        from app.services.seo_research import render_research_html
-        status, html = await render_research_html()
-        return _html_response(status, html, request)
     if page == "demographics":
         from app.services.seo_demographics import render_demographics_html
         status, html = await render_demographics_html(db)

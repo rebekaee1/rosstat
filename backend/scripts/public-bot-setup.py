@@ -34,7 +34,6 @@ COMMANDS = [
     {"command": "menu", "description": "Темы: бензин, инфляция, ставка…"},
     {"command": "week", "description": "Сводка: что изменилось и что это значит"},
     {"command": "subs", "description": "Мои подписки на новые данные"},
-    {"command": "research", "description": "Исследования в PDF: цифры, графики, выводы"},
     {"command": "help", "description": "Что я умею"},
     {"command": "stop", "description": "Удалить мои данные и подписки"},
 ]

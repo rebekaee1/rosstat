@@ -285,14 +285,6 @@
         "slug": "privacy",
         "title": "Privacy policy"
       },
-      "research": {
-        "description": "Research by the Forecast Economy team on inflation, interest rates, the ruble, wages, investing and risk, built on official data. Each study comes with a short video and a free PDF report (in Russian).",
-        "h1": "Research",
-        "intro": "We take a simple question about money and test it on official data from Rosstat, the Bank of Russia, the Moscow Exchange, the IMF and Eurostat. Every study has a short video and a PDF report with key figures, charts, methodology, sources and conclusions. Reports are in Russian.",
-        "path": "/research",
-        "slug": "research",
-        "title": "Forecast Economy research — reports in PDF"
-      },
       "russia": {
         "description": "Russia country card: macroeconomic indicators, categories, regional statistics, release calendar, and a current snapshot.",
         "h1": "Russia",
@@ -422,14 +414,6 @@
       "path": "/privacy",
       "slug": "privacy",
       "title": "Политика конфиденциальности"
-    },
-    "research": {
-      "description": "Исследования команды Forecast Economy: инфляция, ставки, курс, зарплаты, инвестиции и риск на официальных данных. Каждое — ролик и PDF-отчёт с графиками, методикой и выводами. Скачивание бесплатно.",
-      "h1": "Исследования",
-      "intro": "Мы берём простой вопрос о деньгах и проверяем его на официальных данных: Росстат, Банк России, Московская биржа, МВФ, Евростат. К каждому исследованию — короткий ролик и PDF-отчёт: главное в цифрах, графики, методика, источники и выводы.",
-      "path": "/research",
-      "slug": "research",
-      "title": "Исследования Forecast Economy — отчёты и выводы в PDF"
     },
     "russia": {
       "description": "Карточка России: макроэкономические показатели, категории, региональная статистика, календарь публикаций и оперативный срез.",

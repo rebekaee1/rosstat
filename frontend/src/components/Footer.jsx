@@ -282,11 +282,6 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/research" className={footLink}>
-                {t('footer.research')}
-              </Link>
-            </li>
-            <li>
               <Link to="/privacy" className={footLink}>
                 {t('footer.privacy')}
               </Link>

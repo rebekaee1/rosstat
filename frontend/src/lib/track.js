@@ -250,7 +250,6 @@ export const events = {
 
   OUTBOUND_LINK: 'outbound_link',
   CONTACT_EMAIL: 'contact_email',
-  RESEARCH_DOWNLOAD: 'research_download',
   CONSENT_UPDATE: 'consent_update',
   API_RETRY: 'api_retry',
   ERROR_RELOAD: 'error_reload',
