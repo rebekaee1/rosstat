@@ -21,7 +21,7 @@
   "counts": {
     "files": 2249,
     "code_files": 1839,
-    "current_reviews": 2247,
+    "current_reviews": 2249,
     "statuses": {
       "artifact_schema_reviewed": 85,
       "asset_metadata_reviewed": 120,
@@ -29,9 +29,9 @@
       "data_schema_reviewed": 6,
       "reviewed": 2034
     },
-    "definitions": 15053,
-    "annotated_definitions": 15053,
-    "files_needing_attention": 2
+    "definitions": 15063,
+    "annotated_definitions": 15063,
+    "files_needing_attention": 0
   },
   "orphan_reviews": [],
   "files": [
@@ -4327,15 +4327,15 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "dd5692c24b3637bbc68bc01d56d420b5e03ea2647ab4dbe4eb55f703ded21c09",
-      "bytes": 104526,
-      "lines": 1751,
+      "sha256": "e42327106bcdb95233576064cbd8da18a7fdf2d49575b955d9410fd2f6b8d391",
+      "bytes": 121425,
+      "lines": 1934,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 74,
-      "annotated_definitions": 74,
+      "definitions": 80,
+      "annotated_definitions": 80,
       "missing_definitions": []
     },
     {
@@ -9488,15 +9488,15 @@
     },
     {
       "path": "backend/tests/test_public_bot.py",
-      "sha256": "6896e0c8187a0d65bc3f60032f5dde135c0b3a787c8a9057e4cb97944ae54749",
-      "bytes": 40223,
-      "lines": 756,
+      "sha256": "697cc8889d882768969ae4cdf6fd9aa1c17a34ce77e5568d92ebe1018b696991",
+      "bytes": 41723,
+      "lines": 784,
       "code": true,
       "status": "reviewed",
       "current": true,
       "issues": [],
-      "definitions": 78,
-      "annotated_definitions": 78,
+      "definitions": 82,
+      "annotated_definitions": 82,
       "missing_definitions": []
     },
     {
@@ -12491,9 +12491,9 @@
     },
     {
       "path": "docs/adr/0027-public-telegram-bot.md",
-      "sha256": "322017d25131825445057933984a875fb3725beecdd1e8532742f1732a765b67",
-      "bytes": 36260,
-      "lines": 203,
+      "sha256": "8c28eead00664e39fd09d2112fa2bc3010b5ee3f1ff883ef8cc1056ae0e8f921",
+      "bytes": 38676,
+      "lines": 211,
       "code": false,
       "status": "reviewed",
       "current": true,
@@ -12860,10 +12860,8 @@
       "lines": 82,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -13364,9 +13362,9 @@
     },
     {
       "path": "docs/indicator-index.json",
-      "sha256": "ba3cf137f26221f8333cdb88731a363c1c90b3d0fa4fd680a47bd4c6e9fd5ef7",
-      "bytes": 3008547,
-      "lines": 108946,
+      "sha256": "af88b1963d87d323dcd14c78cc44e8c78a1060a0e11d4ef619d0c429b4b1c801",
+      "bytes": 3011302,
+      "lines": 109056,
       "code": false,
       "status": "data_schema_reviewed",
       "current": true,
@@ -13382,10 +13380,8 @@
       "lines": 1138,
       "code": false,
       "status": "reviewed",
-      "current": false,
-      "issues": [
-        "source_changed"
-      ],
+      "current": true,
+      "issues": [],
       "definitions": 0,
       "annotated_definitions": 0,
       "missing_definitions": []
@@ -13418,9 +13414,9 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "d582fc656d7fff1ab11b63586de02498ad47feca22a57462fa7231caeed704ba",
-      "bytes": 11262452,
-      "lines": 340604,
+      "sha256": "fd227af37dfa06be2e9eef18300a9efd20f95ed27fab42303a67af6c08bc4071",
+      "bytes": 11283328,
+      "lines": 341277,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -13431,9 +13427,9 @@
     },
     {
       "path": "docs/mechanism-inventory.md",
-      "sha256": "6bcd04109c747ea71dff52c09603064c291e33a5f75d0242d14fedf56a5fa893",
-      "bytes": 560394,
-      "lines": 3215,
+      "sha256": "af752211ccd831c1e06057511007b31c733674b36e352f073983e0d7c96c5d7f",
+      "bytes": 561737,
+      "lines": 3223,
       "code": false,
       "status": "artifact_schema_reviewed",
       "current": true,
@@ -29278,13 +29274,14 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "526d45d67712a0a192601a6cf6c0f22a67dbdfd73fc68baa44a3ad8236430d41",
+  "ledger_sha256": "c98292b46ed95c85a94d91db7651a1ea0ef579d7562be89b25a299abf2242e9f",
   "javascript_inventory_sha256": "d796d2d357a9f3f25555e57966f5be7ce2cbb1ddeb87fec6ce38f47be19bcd06",
-  "baseline_commit": "5316583467a00e4b44dc01476e98f5a6fada6ce0",
+  "baseline_commit": "6b181937d188ae533889c8f21f7a3131bc9f3c93",
   "branch": "fix/public-bot-ux",
   "unstaged_at_capture": [
-    "docs/dead-code-report.md",
+    "docs/adr/0027-public-telegram-bot.md",
     "docs/indicator-index.json",
-    "docs/indicator-index.md"
+    "docs/mechanism-inventory.json",
+    "docs/mechanism-inventory.md"
   ]
 }

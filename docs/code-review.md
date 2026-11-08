@@ -2,7 +2,7 @@
 
 > Генерируется из рецензий, написанных после чтения исходников. Генератор не присваивает статус «прочитано».
 
-Базовый commit: `5316583467a00e4b44dc01476e98f5a6fada6ce0`. SHA-256 каждого файла фиксирует также рабочие изменения.
+Базовый commit: `6b181937d188ae533889c8f21f7a3131bc9f3c93`. SHA-256 каждого файла фиксирует также рабочие изменения.
 
 Input scope: `tracked` — Git tracked/index files; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main.
 
@@ -14,9 +14,9 @@ Input scope: `tracked` — Git tracked/index files; generated maps and docs/code
 |---|---:|
 | Файлы в явно определённом scope | 2249 |
 | Код, шаблоны и стили | 1839 |
-| Актуальные рецензии без пропусков guard | 2247 |
-| Именованные определения Python/JS: с аннотацией / всего | 15053 / 15053 |
-| Файлы, требующие внимания | 2 |
+| Актуальные рецензии без пропусков guard | 2249 |
+| Именованные определения Python/JS: с аннотацией / всего | 15063 / 15063 |
+| Файлы, требующие внимания | 0 |
 
 Полное чтение кода, проверка схем данных и проверка метаданных ресурсов учитываются отдельно. Рецензия описывает назначение, вход/выход, побочные эффекты, ошибки, связи и границы тестов. Это не доказательство всех runtime-сценариев, отсутствия ошибок или достоверности каждой точки данных.
 
@@ -368,7 +368,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/app/services/parser.py](../backend/app/services/parser.py) | reviewed | 2/2 | актуально |
 | [backend/app/services/pii_scrub.py](../backend/app/services/pii_scrub.py) | reviewed | 8/8 | актуально |
 | [backend/app/services/process_metrics.py](../backend/app/services/process_metrics.py) | reviewed | 9/9 | актуально |
-| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 74/74 | актуально |
+| [backend/app/services/public_bot.py](../backend/app/services/public_bot.py) | reviewed | 80/80 | актуально |
 | [backend/app/services/pulse.py](../backend/app/services/pulse.py) | reviewed | 21/21 | актуально |
 | [backend/app/services/pulse_report.py](../backend/app/services/pulse_report.py) | reviewed | 14/14 | актуально |
 | [backend/app/services/region_compare_data.py](../backend/app/services/region_compare_data.py) | reviewed | 1/1 | актуально |
@@ -765,7 +765,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [backend/tests/test_perf_batch2.py](../backend/tests/test_perf_batch2.py) | reviewed | 30/30 | актуально |
 | [backend/tests/test_pg_backup_offsite.py](../backend/tests/test_pg_backup_offsite.py) | reviewed | 8/8 | актуально |
 | [backend/tests/test_project_terrain.py](../backend/tests/test_project_terrain.py) | reviewed | 10/10 | актуально |
-| [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 78/78 | актуально |
+| [backend/tests/test_public_bot.py](../backend/tests/test_public_bot.py) | reviewed | 82/82 | актуально |
 | [backend/tests/test_public_year_contract.py](../backend/tests/test_public_year_contract.py) | reviewed | 9/9 | актуально |
 | [backend/tests/test_pulse.py](../backend/tests/test_pulse.py) | reviewed | 79/79 | актуально |
 | [backend/tests/test_pulse_llm_payload_no_pii.py](../backend/tests/test_pulse_llm_payload_no_pii.py) | reviewed | 7/7 | актуально |
@@ -1024,7 +1024,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/code-review-findings.md](../docs/code-review-findings.md) | reviewed | 0/0 | актуально |
 | [docs/data-contracts.md](../docs/data-contracts.md) | reviewed | 0/0 | актуально |
 | [docs/data_sources.md](../docs/data_sources.md) | reviewed | 0/0 | актуально |
-| [docs/dead-code-report.md](../docs/dead-code-report.md) | reviewed | 0/0 | source_changed |
+| [docs/dead-code-report.md](../docs/dead-code-report.md) | reviewed | 0/0 | актуально |
 | [docs/design-system.md](../docs/design-system.md) | reviewed | 0/0 | актуально |
 | [docs/design/README.md](../docs/design/README.md) | reviewed | 0/0 | актуально |
 | [docs/design/accessibility-review.md](../docs/design/accessibility-review.md) | reviewed | 0/0 | актуально |
@@ -1064,7 +1064,7 @@ Scope исключает генерируемые карты, repo-inventory и 
 | [docs/indexnow-sitemap-backfill-plan.md](../docs/indexnow-sitemap-backfill-plan.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-family-playbook.md](../docs/indicator-family-playbook.md) | reviewed | 0/0 | актуально |
 | [docs/indicator-index.json](../docs/indicator-index.json) | data_schema_reviewed | 0/0 | актуально |
-| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | source_changed |
+| [docs/indicator-index.md](../docs/indicator-index.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-unknowns.md](../docs/knowledge-unknowns.md) | reviewed | 0/0 | актуально |
 | [docs/knowledge-workflow.md](../docs/knowledge-workflow.md) | reviewed | 0/0 | актуально |
 | [docs/mechanism-inventory.json](../docs/mechanism-inventory.json) | artifact_schema_reviewed | 0/0 | актуально |
