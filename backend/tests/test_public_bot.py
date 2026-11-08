@@ -769,3 +769,12 @@ def test_telegram_html_drops_foreign_links():
     out = pb.telegram_html('см. <a href="https://rosstat.gov.ru/x">Росстат</a> и <a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>')
     assert "rosstat" not in out and "Росстат" in out
     assert '<a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>' in out
+
+
+def test_safe_links_drops_invented_and_foreign_links():
+    from app.services import public_bot as pb
+    o = pb.ru_public_origin()
+    ok = f'<a href="{o}/russia/indicator/usd-rub">курс</a>'
+    assert pb.safe_links(ok) == ok
+    assert pb.safe_links(f'<a href="{o}/usd">доллар</a>') == "доллар"
+    assert pb.safe_links('<a href="https://coinmarketcap.com">крипто</a>') == "крипто"
