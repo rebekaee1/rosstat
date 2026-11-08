@@ -1578,6 +1578,11 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Тестер 2, круг 2: на «что будет, если ЦБ снизит ставку» без ответа модели приходила голая карточка
+            # ставки, будто это и был ответ. Для длинного вопроса говорим прямо.
+            if len(text.split()) > 2:
+                await _send(chat_id, "Сейчас не получается ответить на ваш вопрос своими словами. "
+                                     "Вот свежая цифра по теме — она может помочь.")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
