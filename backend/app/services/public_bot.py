@@ -521,9 +521,12 @@ async def handle_message(msg: dict) -> None:
         await answer_question(chat_id, WEEK_PROMPT)
         return
     topic, word = match_topic(text)
+    # Кодом входа считаем только короткое слово из ролика (1–2 слова), а не слово внутри обычного вопроса:
+    # в отчёте было «С какого кода пришли: ипотеку» из «стоит ли брать ипотеку?».
+    keyword = word if topic and len(text.split()) <= 2 else None
     async with async_session() as db:
-        await _touch_chat(db, chat_id, word if topic else None)
-        _event(db, chat_id, "word" if topic else "unknown", code=word, topic=topic)
+        await _touch_chat(db, chat_id, keyword)
+        _event(db, chat_id, "word" if keyword else "unknown", code=keyword, topic=topic)
         await db.commit()
     if settings.public_bot_llm_enabled and settings.openrouter_api_key:
         # Модель главная (решение владельца 08.11.2026): любой текст, кроме команд, отвечает она.
@@ -771,6 +774,11 @@ async def report_text(days: int = 7) -> str:
         subs = (await db.execute(
             select(PublicBotSubscription.topic, func.count()).group_by(PublicBotSubscription.topic).order_by(func.count().desc())
         )).all()
+        usage = dict((await db.execute(
+            select(PublicBotEvent.kind, func.count())
+            .where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind.in_(("ask", "week", "inline", "notify")))
+            .group_by(PublicBotEvent.kind)
+        )).all())
         heard = (await db.execute(
             select(PublicBotChat.heard_from, func.count())
             .where(PublicBotChat.heard_from.is_not(None)).group_by(PublicBotChat.heard_from).order_by(func.count().desc())
@@ -797,7 +805,9 @@ async def report_text(days: int = 7) -> str:
         f"С какого кода пришли: {_line(codes)}\n"
         f"Что спрашивали: {_line(topics, titles)}\n"
         f"Подписки сейчас: {_line(subs, titles)}\n"
-        f"Откуда узнали: {_line(heard, dict(SOURCES))}"
+        f"Откуда узнали: {_line(heard, dict(SOURCES))}\n"
+        f"Ответов модели: {usage.get('ask', 0)} (из них /week {usage.get('week', 0)}), "
+        f"карточек во встроенном режиме: {usage.get('inline', 0)}, рассылок: {usage.get('notify', 0)}"
     )
 
 
@@ -835,7 +845,7 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 [[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
 [[подписка: ключ]] — предложить присылать новые данные по теме;
 [[график: ключ]] — график темы картинкой (последняя цифра, год назад, наш расчёт, сравнение по делу); он придёт перед твоим текстом;
-[[вопросы: короткий вопрос | ещё вопрос]] — до двух следующих вопросов, которые человеку интересно нажать (до 40 знаков, от его лица) — только такие, на которые ответишь по ДАННЫМ.
+[[вопросы: реплика | реплика]] — до трёх кнопок-реплик от лица человека (до 40 знаков): следующий вопрос, на который ответишь по ДАННЫМ, а в игре или опросе — варианты ответа.
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
 Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет в ДАННЫХ — предложи нужный раздел нашего сайта ссылкой, а не чужие сайты."""
 
@@ -985,14 +995,15 @@ def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], li
     for kind, keys in _ACTIONS.findall(answer):
         kind = kind.lower()
         if kind == "вопросы":
-            questions += [q.strip(" ?\"«»")[:60] + "?" for q in keys.split("|") if q.strip(" ?\"«»")]
+            # Реплика от лица человека: вопрос или вариант ответа («80 ₽») — знак не дописываем.
+            questions += [q.strip(" \"«»")[:60] for q in keys.split("|") if q.strip(" \"«»")]
             continue
         for k in re.split(r"[,\s]+", keys.strip().lower()):
             if k in TOPICS and (kind != "график" or k in CHART_TOPICS):
                 {"подписка": subs, "график": charts}.get(kind, topics).append(k)
     clean = _ACTIONS.sub("", answer).strip()
     uniq = lambda xs: list(dict.fromkeys(xs))  # noqa: E731
-    return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:2], uniq(charts)[:1]
+    return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:3], uniq(charts)[:1]
 
 
 # Свой график (bot_chart.py) рисуется для всех тем: окно 3 года, у дневных рядов 18 месяцев.

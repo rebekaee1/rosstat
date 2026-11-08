@@ -16,7 +16,7 @@
 - Registry declarations: **1210**
 - Registry references: **2313**
 - Migration operations: **458**
-- Candidate effects: **2643**
+- Candidate effects: **2644**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -2567,15 +2567,15 @@ Relationships: `[]`
 | app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:258](../backend/app/services/public_bot.py#L258) |
 | app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:385](../backend/app/services/public_bot.py#L385) |
 | app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:387](../backend/app/services/public_bot.py#L387) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:811](../backend/app/services/public_bot.py#L811) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:931](../backend/app/services/public_bot.py#L931) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:933](../backend/app/services/public_bot.py#L933) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:953](../backend/app/services/public_bot.py#L953) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:958](../backend/app/services/public_bot.py#L958) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:960](../backend/app/services/public_bot.py#L960) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:999](../backend/app/services/public_bot.py#L999) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1001](../backend/app/services/public_bot.py#L1001) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1003](../backend/app/services/public_bot.py#L1003) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:821](../backend/app/services/public_bot.py#L821) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:941](../backend/app/services/public_bot.py#L941) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:943](../backend/app/services/public_bot.py#L943) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:963](../backend/app/services/public_bot.py#L963) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:968](../backend/app/services/public_bot.py#L968) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:970](../backend/app/services/public_bot.py#L970) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:1010](../backend/app/services/public_bot.py#L1010) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:1012](../backend/app/services/public_bot.py#L1012) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:1014](../backend/app/services/public_bot.py#L1014) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |

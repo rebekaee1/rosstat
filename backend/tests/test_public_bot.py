@@ -601,3 +601,21 @@ def test_chart_monthly_subtitle_and_year_ago_matches_card(env):
                               compare_label="инфляция",
                               compare_points=[(date(2025, 8, 1), 8.1), (date(2026, 8, 1), 6.3)]))
     assert png[:8] == b"\x89PNG\r\n\x1a\n"
+
+
+def test_keyword_only_short_and_report_shows_model_usage(env, monkeypatch):
+    maker, _, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+
+    async def llm(context, question, history=None):
+        return "ok"
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    asyncio.run(pb.handle_message(_msg("стоит ли сейчас брать ипотеку?", chat_id=11)))
+    asyncio.run(pb.handle_message(_msg("ОУКЕН", chat_id=12)))
+    asyncio.run(pb.handle_message(_msg("дизель", chat_id=13)))
+    chats = {c.chat_id: c.first_code for c in asyncio.run(_rows(maker, PublicBotChat))}
+    assert chats["11"] is None and chats["13"] == "дизель"
+    asyncio.run(pb.handle_message(_msg("/week", chat_id=11)))
+    text = asyncio.run(pb.report_text())
+    assert "Ответов модели: 4 (из них /week 1)" in text
