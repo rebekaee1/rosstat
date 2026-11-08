@@ -528,7 +528,7 @@ class Settings(BaseSettings):
     # Требует openrouter_api_key (и openrouter_proxy_url на проде). Модель: пусто = openrouter_model.
     public_bot_llm_enabled: bool = False
     public_bot_llm_model: str = ""
-    public_bot_llm_daily_limit: int = 20
+    public_bot_llm_daily_limit: int = 40
     # Окно рассылки новых данных подписчикам, часы по Москве [с, до).
     public_bot_notify_from_hour: int = 9
     public_bot_notify_to_hour: int = 21

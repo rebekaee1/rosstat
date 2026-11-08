@@ -385,7 +385,7 @@
     },
     {
       "path": "backend/app/config.py",
-      "sha256": "38d5c307c52be238584614c314d8003475653658e6c0ead92c44dee3e33ed3c8",
+      "sha256": "1b9153f93c16f669e16f79f0611622c7d69744a0a686f25811a5c7762ba6dd42",
       "lines": 601
     },
     {
@@ -1370,8 +1370,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "sha256": "e22ff0b4f4280e5b2019ad60f72c4ec581f203f94809001bfac21c7408cd9e00",
-      "lines": 941
+      "sha256": "b1ba2d3dac89c15a55883ae4d074604cce4e19f33ed4af0c0980400bc1516cb2",
+      "lines": 1116
     },
     {
       "path": "backend/app/services/pulse.py",
@@ -1700,8 +1700,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "sha256": "b6021fbaedb6c04c68c0b54f4f2654a67e130995629f7184fb93a496963d1b88",
-      "lines": 580
+      "sha256": "c1caffd16052a1517afa9afa63f43add63d4ecf973b47e53e2e5843930545daa",
+      "lines": 581
     },
     {
       "path": "backend/app/services/telegram_calm.py",
@@ -32296,7 +32296,7 @@
       "name": "public_bot_llm_daily_limit",
       "env_name": "RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT",
       "annotation": "int",
-      "default": "20"
+      "default": "40"
     },
     {
       "path": "backend/app/config.py",
@@ -36478,8 +36478,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 422,
+      "end_line": 422,
       "owner": "bot_token",
       "conditions": [],
       "name": "public_bot_token",
@@ -36487,8 +36487,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 410,
-      "end_line": 410,
+      "line": 422,
+      "end_line": 422,
       "owner": "bot_token",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -36496,8 +36496,26 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 496,
+      "end_line": 496,
+      "owner": "handle_message",
+      "conditions": [],
+      "name": "public_bot_llm_enabled",
+      "expression": "settings.public_bot_llm_enabled"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 496,
+      "end_line": 496,
+      "owner": "handle_message",
+      "conditions": [],
+      "name": "openrouter_api_key",
+      "expression": "settings.openrouter_api_key"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 624,
+      "end_line": 624,
       "owner": "_in_window",
       "conditions": [],
       "name": "public_bot_notify_from_hour",
@@ -36505,8 +36523,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 592,
-      "end_line": 592,
+      "line": 624,
+      "end_line": 624,
       "owner": "_in_window",
       "conditions": [],
       "name": "public_bot_notify_to_hour",
@@ -36514,8 +36532,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 611,
-      "end_line": 611,
+      "line": 643,
+      "end_line": 643,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -36523,30 +36541,30 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 486,
-      "end_line": 486,
-      "owner": "handle_message",
+      "line": 529,
+      "end_line": 529,
+      "owner": "handle_callback",
       "conditions": [
-        "not (topic and len(text) <= 40)"
+        "action == 'q'"
       ],
       "name": "public_bot_llm_enabled",
       "expression": "settings.public_bot_llm_enabled"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 486,
-      "end_line": 486,
-      "owner": "handle_message",
+      "line": 529,
+      "end_line": 529,
+      "owner": "handle_callback",
       "conditions": [
-        "not (topic and len(text) <= 40)"
+        "action == 'q'"
       ],
       "name": "openrouter_api_key",
       "expression": "settings.openrouter_api_key"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 784,
-      "end_line": 784,
+      "line": 833,
+      "end_line": 833,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "public_bot_llm_model",
@@ -36554,8 +36572,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 784,
-      "end_line": 784,
+      "line": 833,
+      "end_line": 833,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_model",
@@ -36563,8 +36581,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 818,
-      "end_line": 818,
+      "line": 981,
+      "end_line": 981,
       "owner": "answer_question",
       "conditions": [],
       "name": "public_bot_llm_daily_limit",
@@ -36572,8 +36590,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 1030,
+      "end_line": 1030,
       "owner": "public_bot_poll_job",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -36581,8 +36599,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 857,
-      "end_line": 857,
+      "line": 1030,
+      "end_line": 1030,
       "owner": "public_bot_poll_job",
       "conditions": [],
       "name": "public_bot_token",
@@ -36599,8 +36617,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 887,
-      "end_line": 887,
+      "line": 1060,
+      "end_line": 1060,
       "owner": "_poll_once",
       "conditions": [],
       "name": "public_bot_token",
@@ -36608,8 +36626,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 792,
-      "end_line": 792,
+      "line": 842,
+      "end_line": 842,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_proxy_url",
@@ -36617,8 +36635,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 795,
-      "end_line": 795,
+      "line": 845,
+      "end_line": 845,
       "owner": "_llm_complete",
       "conditions": [],
       "name": "openrouter_api_key",
@@ -37249,8 +37267,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 109,
-      "end_line": 109,
+      "line": 110,
+      "end_line": 110,
       "owner": "_api",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -37258,8 +37276,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 522,
+      "end_line": 522,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_enabled",
@@ -37267,8 +37285,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 521,
-      "end_line": 521,
+      "line": 522,
+      "end_line": 522,
       "owner": "_public_shared",
       "conditions": [],
       "name": "public_bot_token",
@@ -37276,8 +37294,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 538,
-      "end_line": 538,
+      "line": 539,
+      "end_line": 539,
       "owner": "telegram_poll_job",
       "conditions": [],
       "name": "telegram_bot_token",
@@ -37285,8 +37303,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 124,
-      "end_line": 124,
+      "line": 125,
+      "end_line": 125,
       "owner": "_api",
       "conditions": [],
       "name": "telegram_proxy_url",
@@ -37294,8 +37312,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 482,
-      "end_line": 482,
+      "line": 483,
+      "end_line": 483,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -37309,8 +37327,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 491,
-      "end_line": 491,
+      "line": 492,
+      "end_line": 492,
       "owner": "_handle_callback",
       "conditions": [
         "not (data == 'users')",
@@ -40021,8 +40039,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 909,
-      "end_line": 909,
+      "line": 1082,
+      "end_line": 1082,
       "owner": "_with_typing",
       "conditions": [],
       "call": "asyncio.ensure_future(coro)",
@@ -40030,11 +40048,20 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 892,
-      "end_line": 892,
+      "line": 1065,
+      "end_line": 1065,
       "owner": "_poll_once",
       "conditions": [],
       "call": "asyncio.ensure_future(_handle_in_order(upd))",
+      "symbol": "asyncio.ensure_future"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 1085,
+      "end_line": 1086,
+      "owner": "_with_typing",
+      "conditions": [],
+      "call": "asyncio.ensure_future(_api('sendChatAction', {'chat_id': chat_id, 'action': 'typing'}, token=bot_token(), timeout=6))",
       "symbol": "asyncio.ensure_future"
     },
     {
@@ -90505,8 +90532,107 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 230,
-      "end_line": 230,
+      "line": 116,
+      "end_line": 117,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_FUZZY",
+      "symbol": "app.services.public_bot._FUZZY",
+      "kind": "Dict",
+      "literal_keys": [
+        "'дизель'",
+        "'солярка'",
+        "'бензин'",
+        "'инфляция'",
+        "'золото'",
+        "'доллар'",
+        "'ипотека'",
+        "'вклады'",
+        "'депозит'",
+        "'ключевая'"
+      ],
+      "entries": [
+        {
+          "key": "'дизель'",
+          "expression": "'diesel'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "bc895b2624214e250571cd0bea924357ea3660686da23523a34d59fc8d059a49"
+        },
+        {
+          "key": "'солярка'",
+          "expression": "'diesel'",
+          "expression_truncated": false,
+          "expression_chars": 8,
+          "ast_sha256": "bc895b2624214e250571cd0bea924357ea3660686da23523a34d59fc8d059a49"
+        },
+        {
+          "key": "'бензин'",
+          "expression": "'ai92'",
+          "expression_truncated": false,
+          "expression_chars": 6,
+          "ast_sha256": "c02ebe3e09b11af288a13a1f96faa62f1bce47c31a54929412612c23e6e5838a"
+        },
+        {
+          "key": "'инфляция'",
+          "expression": "'inflation'",
+          "expression_truncated": false,
+          "expression_chars": 11,
+          "ast_sha256": "85b14f090c5f17c3212cc54da76cef6ab3a37ad4dfcb07f0fabe8c06706188f2"
+        },
+        {
+          "key": "'золото'",
+          "expression": "'gold'",
+          "expression_truncated": false,
+          "expression_chars": 6,
+          "ast_sha256": "8285a6fa319c81b5648b29a214225a60221eb1b776a92a07af9271874535a763"
+        },
+        {
+          "key": "'доллар'",
+          "expression": "'usd'",
+          "expression_truncated": false,
+          "expression_chars": 5,
+          "ast_sha256": "27b4310010158678d5562834c8b17674d1e0d6c2bb14c74de627e281f9ab75d3"
+        },
+        {
+          "key": "'ипотека'",
+          "expression": "'mortgage'",
+          "expression_truncated": false,
+          "expression_chars": 10,
+          "ast_sha256": "e6af2ff57cd26182a5cb9782af8489134c6892dcbe512861f5f5d820cf156964"
+        },
+        {
+          "key": "'вклады'",
+          "expression": "'deposit'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "ad8a75f723a172308da88737327e7f821aec4886528effd2601b9d223fc2a848"
+        },
+        {
+          "key": "'депозит'",
+          "expression": "'deposit'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "ad8a75f723a172308da88737327e7f821aec4886528effd2601b9d223fc2a848"
+        },
+        {
+          "key": "'ключевая'",
+          "expression": "'keyrate'",
+          "expression_truncated": false,
+          "expression_chars": 9,
+          "ast_sha256": "54ddc5960a977d2957b7d47a9b42900d762443a2a3018df0d2d46b542f41d5c4"
+        }
+      ],
+      "expression": "{'дизель': 'diesel', 'солярка': 'diesel', 'бензин': 'ai92', 'инфляция': 'inflation', 'золото': 'gold', 'доллар': 'usd', 'ипотека': 'mortgage', 'вклады': 'deposit', 'депозит': 'deposit', 'ключевая': 'keyrate'}",
+      "expression_truncated": false,
+      "expression_chars": 208,
+      "ast_sha256": "d8f3c020bdb38f88718a9b5c40f3c5fd4bf183f2919b167128de16f4f025bfef",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 242,
+      "end_line": 242,
       "owner": "<module>",
       "conditions": [],
       "name": "_RELEASE_CODE",
@@ -90548,8 +90674,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 232,
-      "end_line": 232,
+      "line": 244,
+      "end_line": 244,
       "owner": "<module>",
       "conditions": [],
       "name": "_RUSSIA_AVG",
@@ -90565,8 +90691,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 233,
-      "end_line": 233,
+      "line": 245,
+      "end_line": 245,
       "owner": "<module>",
       "conditions": [],
       "name": "_FRESH_DAYS",
@@ -90616,8 +90742,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 234,
-      "end_line": 234,
+      "line": 246,
+      "end_line": 246,
       "owner": "<module>",
       "conditions": [],
       "name": "_FUEL",
@@ -90633,8 +90759,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 357,
-      "end_line": 358,
+      "line": 369,
+      "end_line": 370,
       "owner": "<module>",
       "conditions": [],
       "name": "_GREETINGS",
@@ -90650,8 +90776,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 359,
-      "end_line": 359,
+      "line": 371,
+      "end_line": 371,
       "owner": "<module>",
       "conditions": [],
       "name": "_THANKS",
@@ -90667,8 +90793,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 722,
-      "end_line": 731,
+      "line": 754,
+      "end_line": 763,
       "owner": "<module>",
       "conditions": [],
       "name": "_EXTRA_CODES",
@@ -90680,6 +90806,91 @@
       "expression_truncated": false,
       "expression_chars": 367,
       "ast_sha256": "e4f57aa47f7c814284310c6d2a6bd504a187663c5d64a3d8c69f11e0499726b0",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 864,
+      "end_line": 864,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HISTORY",
+      "symbol": "app.services.public_bot._HISTORY",
+      "kind": "Dict",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{}",
+      "expression_truncated": false,
+      "expression_chars": 2,
+      "ast_sha256": "195994bce1c51fd4b0166d060b283e0c4166eb662736a569f291925f48b7e3fd",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 866,
+      "end_line": 866,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_HISTORY_TTL",
+      "symbol": "app.services.public_bot._HISTORY_TTL",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "timedelta(minutes=30)",
+      "expression_truncated": false,
+      "expression_chars": 21,
+      "ast_sha256": "8ba713870be21e9d89922a89027a457c804ae90d2a1588d8714ee0d646b3d125",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 886,
+      "end_line": 890,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_ALLOWED_TAG",
+      "symbol": "app.services.public_bot._ALLOWED_TAG",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('&lt;(/?)(b|strong|i|em|u|ins|s|strike|del|code|pre|tg-spoiler)&gt;|&lt;blockquote( expandable)?&gt;|&lt;/blockquote&gt;|&lt;a href=&quot;(https?://[^\\\\s&]+?)&quot;&gt;|&lt;/a&gt;')",
+      "expression_truncated": false,
+      "expression_chars": 192,
+      "ast_sha256": "609893812cc28942926d6ed6e40d0f606d31a8b2945223b6f970566b64491813",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 891,
+      "end_line": 891,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_ACTIONS",
+      "symbol": "app.services.public_bot._ACTIONS",
+      "kind": "Call",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "re.compile('\\\\[\\\\[\\\\s*(темы|подписка|вопросы|график)\\\\s*:\\\\s*([^\\\\]]*)\\\\]\\\\]', re.I)",
+      "expression_truncated": false,
+      "expression_chars": 84,
+      "ast_sha256": "df8f3918cb83ccb2caeceb8713a854cf6c4a8b46f69b4e2cf4c1cb1a288e54ce",
+      "runtime_expansion": true
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 893,
+      "end_line": 893,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_QUESTIONS",
+      "symbol": "app.services.public_bot._QUESTIONS",
+      "kind": "Dict",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "{}",
+      "expression_truncated": false,
+      "expression_chars": 2,
+      "ast_sha256": "195994bce1c51fd4b0166d060b283e0c4166eb662736a569f291925f48b7e3fd",
       "runtime_expansion": false
     },
     {
@@ -114787,6 +114998,53 @@
       "ast_sha256": "080da7c52954fc1d239ceb19ae9e72ab4357410dc9bd2165e0cf3640946717b1"
     },
     {
+      "path": "backend/app/services/public_bot.py",
+      "line": 872,
+      "end_line": 872,
+      "owner": "_history",
+      "conditions": [],
+      "registry": "app.services.public_bot._HISTORY",
+      "expression": "_HISTORY[chat_id] = items",
+      "expression_truncated": false,
+      "expression_chars": 25,
+      "ast_sha256": "9b2228356721be007f270b870325a19e65364bd09d7a931637c88c07a0a736b4"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 948,
+      "end_line": 948,
+      "owner": "_question_id",
+      "conditions": [],
+      "registry": "app.services.public_bot._QUESTIONS",
+      "expression": "_QUESTIONS[qid] = q",
+      "expression_truncated": false,
+      "expression_chars": 19,
+      "ast_sha256": "51c82cb4e0f8848bab9f5d220c7bab285de294ef60671da87c8b8e2d0fa1700b"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 951,
+      "end_line": 951,
+      "owner": "_question_id",
+      "conditions": [
+        "len(_QUESTIONS) > 20000"
+      ],
+      "registry": "app.services.public_bot._QUESTIONS",
+      "expression": "_QUESTIONS[qid] = q",
+      "expression_truncated": false,
+      "expression_chars": 19,
+      "ast_sha256": "51c82cb4e0f8848bab9f5d220c7bab285de294ef60671da87c8b8e2d0fa1700b"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 877,
+      "end_line": 877,
+      "owner": "_remember",
+      "conditions": [],
+      "registry": "app.services.public_bot._HISTORY",
+      "expression": "_HISTORY.setdefault(chat_id, [])"
+    },
+    {
       "path": "backend/app/services/search_dimensions.py",
       "line": 182,
       "end_line": 182,
@@ -132405,8 +132663,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 921,
-      "end_line": 921,
+      "line": 1096,
+      "end_line": 1096,
       "owner": "<module>",
       "conditions": [],
       "operation": "set",
@@ -132419,8 +132677,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 387,
-      "end_line": 388,
+      "line": 399,
+      "end_line": 400,
       "owner": "_event",
       "conditions": [],
       "operation": "add",
@@ -132433,8 +132691,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 909,
-      "end_line": 909,
+      "line": 1082,
+      "end_line": 1082,
       "owner": "_with_typing",
       "conditions": [],
       "operation": "ensure_future",
@@ -132447,8 +132705,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 377,
-      "end_line": 377,
+      "line": 389,
+      "end_line": 389,
       "owner": "_touch_chat",
       "conditions": [
         "chat is None"
@@ -132463,8 +132721,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 876,
-      "end_line": 876,
+      "line": 1049,
+      "end_line": 1049,
       "owner": "_poll_once",
       "conditions": [],
       "operation": "get_state_redis",
@@ -132477,8 +132735,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 892,
-      "end_line": 892,
+      "line": 1065,
+      "end_line": 1065,
       "owner": "_poll_once",
       "conditions": [],
       "operation": "ensure_future",
@@ -132491,8 +132749,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 893,
-      "end_line": 893,
+      "line": 1066,
+      "end_line": 1066,
       "owner": "_poll_once",
       "conditions": [],
       "operation": "add",
@@ -132505,8 +132763,22 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 425,
-      "end_line": 425,
+      "line": 1085,
+      "end_line": 1086,
+      "owner": "_with_typing",
+      "conditions": [],
+      "operation": "ensure_future",
+      "receiver": "asyncio",
+      "symbol": "asyncio.ensure_future",
+      "expression": "asyncio.ensure_future(_api('sendChatAction', {'chat_id': chat_id, 'action': 'typing'}, token=bot_token(), timeout=6))",
+      "expression_truncated": false,
+      "expression_chars": 117,
+      "ast_sha256": "3489a190190e808222b86854b642792f0da0543241a2eb397464dda8b84ee4b1"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 437,
+      "end_line": 437,
       "owner": "_reply_figure",
       "conditions": [],
       "operation": "commit",
@@ -132519,8 +132791,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 483,
-      "end_line": 483,
+      "line": 495,
+      "end_line": 495,
       "owner": "handle_message",
       "conditions": [],
       "operation": "commit",
@@ -132533,8 +132805,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 548,
-      "end_line": 552,
+      "line": 579,
+      "end_line": 583,
       "owner": "subscribe",
       "conditions": [
         "sub is None"
@@ -132549,8 +132821,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 554,
-      "end_line": 554,
+      "line": 585,
+      "end_line": 585,
       "owner": "subscribe",
       "conditions": [],
       "operation": "commit",
@@ -132563,8 +132835,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 559,
-      "end_line": 561,
+      "line": 590,
+      "end_line": 592,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "execute",
@@ -132577,8 +132849,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 563,
-      "end_line": 563,
+      "line": 594,
+      "end_line": 594,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "commit",
@@ -132591,8 +132863,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 572,
-      "end_line": 572,
+      "line": 603,
+      "end_line": 603,
       "owner": "mark_blocked",
       "conditions": [],
       "operation": "commit",
@@ -132605,8 +132877,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 611,
+      "end_line": 611,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132619,8 +132891,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 612,
+      "end_line": 612,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132633,8 +132905,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 581,
-      "end_line": 583,
+      "line": 613,
+      "end_line": 615,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "execute",
@@ -132647,8 +132919,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 584,
-      "end_line": 584,
+      "line": 616,
+      "end_line": 616,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "commit",
@@ -132661,8 +132933,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 637,
-      "end_line": 637,
+      "line": 669,
+      "end_line": 669,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "set",
@@ -132675,8 +132947,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 652,
-      "end_line": 652,
+      "line": 684,
+      "end_line": 684,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "commit",
@@ -132689,8 +132961,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 824,
-      "end_line": 824,
+      "line": 990,
+      "end_line": 990,
       "owner": "answer_question",
       "conditions": [],
       "operation": "commit",
@@ -132703,8 +132975,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 175,
+      "end_line": 175,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132717,8 +132989,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 166,
-      "end_line": 170,
+      "line": 178,
+      "end_line": 182,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132731,8 +133003,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 176,
-      "end_line": 180,
+      "line": 188,
+      "end_line": 192,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132745,8 +133017,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 183,
-      "end_line": 188,
+      "line": 195,
+      "end_line": 200,
       "owner": "load_figure",
       "conditions": [],
       "operation": "execute",
@@ -132759,8 +133031,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 471,
+      "end_line": 471,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -132775,24 +133047,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 476,
-      "end_line": 476,
-      "owner": "handle_message",
-      "conditions": [
-        "bare in _GREETINGS or bare in _THANKS"
-      ],
-      "operation": "commit",
-      "receiver": "db",
-      "symbol": "app.services.public_bot.db.commit",
-      "expression": "db.commit()",
-      "expression_truncated": false,
-      "expression_chars": 11,
-      "ast_sha256": "338a2318494f84ee378f87927636d150a559f9d70146a1786e96e31e549f0025"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 783,
+      "end_line": 783,
       "owner": "_figure_by_code",
       "conditions": [],
       "operation": "execute",
@@ -132805,8 +133061,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 819,
-      "end_line": 819,
+      "line": 982,
+      "end_line": 982,
       "owner": "answer_question",
       "conditions": [
         "used >= settings.public_bot_llm_daily_limit"
@@ -132821,8 +133077,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 867,
-      "end_line": 867,
+      "line": 1040,
+      "end_line": 1040,
       "owner": "public_bot_poll_job",
       "conditions": [
         "_inflight"
@@ -132837,8 +133093,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 898,
-      "end_line": 898,
+      "line": 1071,
+      "end_line": 1071,
       "owner": "_poll_once",
       "conditions": [
         "updates"
@@ -132853,8 +133109,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 192,
-      "end_line": 197,
+      "line": 204,
+      "end_line": 209,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -132869,8 +133125,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 392,
-      "end_line": 394,
+      "line": 404,
+      "end_line": 406,
       "owner": "_is_subscribed",
       "conditions": [],
       "operation": "execute",
@@ -132883,8 +133139,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 510,
-      "end_line": 510,
+      "line": 541,
+      "end_line": 541,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -132900,8 +133156,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 544,
-      "end_line": 546,
+      "line": 575,
+      "end_line": 577,
       "owner": "subscribe",
       "conditions": [],
       "operation": "execute",
@@ -132914,8 +133170,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 665,
-      "end_line": 665,
+      "line": 697,
+      "end_line": 697,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132928,8 +133184,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 666,
-      "end_line": 667,
+      "line": 698,
+      "end_line": 699,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132942,8 +133198,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 668,
-      "end_line": 669,
+      "line": 700,
+      "end_line": 701,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132956,8 +133212,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 671,
-      "end_line": 675,
+      "line": 703,
+      "end_line": 707,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132970,8 +133226,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 676,
-      "end_line": 681,
+      "line": 708,
+      "end_line": 713,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132984,8 +133240,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 682,
-      "end_line": 684,
+      "line": 714,
+      "end_line": 716,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -132998,8 +133254,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 685,
-      "end_line": 688,
+      "line": 717,
+      "end_line": 720,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -133012,8 +133268,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 689,
-      "end_line": 696,
+      "line": 721,
+      "end_line": 728,
       "owner": "report_text",
       "conditions": [],
       "operation": "execute",
@@ -133026,8 +133282,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 814,
-      "end_line": 817,
+      "line": 977,
+      "end_line": 980,
       "owner": "answer_question",
       "conditions": [],
       "operation": "execute",
@@ -133040,8 +133296,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 590,
+      "end_line": 590,
       "owner": "unsubscribe",
       "conditions": [],
       "operation": "delete",
@@ -133054,8 +133310,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 611,
+      "end_line": 611,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -133068,8 +133324,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 612,
+      "end_line": 612,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -133082,8 +133338,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 581,
-      "end_line": 581,
+      "line": 613,
+      "end_line": 613,
       "owner": "forget_chat",
       "conditions": [],
       "operation": "delete",
@@ -133096,8 +133352,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 616,
-      "end_line": 619,
+      "line": 648,
+      "end_line": 651,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "operation": "execute",
@@ -133110,8 +133366,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 449,
-      "end_line": 450,
+      "line": 469,
+      "end_line": 470,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -133126,8 +133382,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 524,
-      "end_line": 524,
+      "line": 555,
+      "end_line": 555,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -139919,8 +140175,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 112,
-      "end_line": 112,
+      "line": 113,
+      "end_line": 113,
       "owner": "_api",
       "conditions": [],
       "operation": "set",
@@ -139933,8 +140189,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 228,
-      "end_line": 228,
+      "line": 229,
+      "end_line": 229,
       "owner": "send_document",
       "conditions": [],
       "operation": "set",
@@ -139947,8 +140203,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 175,
-      "end_line": 175,
+      "line": 176,
+      "end_line": 176,
       "owner": "send_message",
       "conditions": [],
       "operation": "set",
@@ -139961,8 +140217,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 543,
-      "end_line": 543,
+      "line": 544,
+      "end_line": 544,
       "owner": "telegram_poll_job",
       "conditions": [],
       "operation": "get_state_redis",
@@ -139975,8 +140231,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 136,
-      "end_line": 136,
+      "line": 137,
+      "end_line": 137,
       "owner": "_api",
       "conditions": [
         "error is not None or resp is None"
@@ -139991,8 +140247,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 141,
-      "end_line": 141,
+      "line": 142,
+      "end_line": 142,
       "owner": "_api",
       "conditions": [
         "not data.get('ok')"
@@ -140007,8 +140263,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 146,
-      "end_line": 146,
+      "line": 147,
+      "end_line": 147,
       "owner": "_api",
       "conditions": [],
       "operation": "set",
@@ -140021,8 +140277,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 578,
-      "end_line": 578,
+      "line": 579,
+      "end_line": 579,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -140037,8 +140293,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 257,
-      "end_line": 259,
+      "line": 258,
+      "end_line": 260,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -140051,8 +140307,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 296,
-      "end_line": 299,
+      "line": 297,
+      "end_line": 300,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -140065,8 +140321,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 300,
-      "end_line": 302,
+      "line": 301,
+      "end_line": 303,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -140079,8 +140335,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 303,
-      "end_line": 307,
+      "line": 304,
+      "end_line": 308,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -140093,8 +140349,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 313,
-      "end_line": 318,
+      "line": 314,
+      "end_line": 319,
       "owner": "_user_card",
       "conditions": [],
       "operation": "execute",
@@ -140107,8 +140363,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 379,
-      "end_line": 381,
+      "line": 380,
+      "end_line": 382,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -140121,8 +140377,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 253,
-      "end_line": 255,
+      "line": 254,
+      "end_line": 256,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -140135,8 +140391,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 375,
-      "end_line": 377,
+      "line": 376,
+      "end_line": 378,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -140149,8 +140405,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 250,
-      "end_line": 252,
+      "line": 251,
+      "end_line": 253,
       "owner": "_users_overview",
       "conditions": [],
       "operation": "execute",
@@ -140163,8 +140419,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 375,
+      "end_line": 375,
       "owner": "_users_csv",
       "conditions": [],
       "operation": "execute",
@@ -140177,8 +140433,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 400,
-      "end_line": 402,
+      "line": 401,
+      "end_line": 403,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "operation": "execute",
@@ -201652,8 +201908,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 371,
-      "end_line": 371,
+      "line": 383,
+      "end_line": 383,
       "owner": "_touch_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201661,8 +201917,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 595,
-      "end_line": 595,
+      "line": 627,
+      "end_line": 627,
       "owner": "_should_notify",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201670,8 +201926,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 372,
-      "end_line": 372,
+      "line": 384,
+      "end_line": 384,
       "owner": "_touch_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201679,8 +201935,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 375,
-      "end_line": 375,
+      "line": 387,
+      "end_line": 387,
       "owner": "_touch_chat",
       "conditions": [
         "chat is None"
@@ -201690,8 +201946,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 387,
-      "end_line": 387,
+      "line": 399,
+      "end_line": 399,
       "owner": "_event",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -201699,8 +201955,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 702,
+      "end_line": 702,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_code",
@@ -201708,8 +201964,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 568,
-      "end_line": 568,
+      "line": 599,
+      "end_line": 599,
       "owner": "mark_blocked",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201717,8 +201973,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 670,
-      "end_line": 670,
+      "line": 702,
+      "end_line": 702,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201726,8 +201982,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 548,
-      "end_line": 548,
+      "line": 579,
+      "end_line": 579,
       "owner": "subscribe",
       "conditions": [
         "sub is None"
@@ -201737,8 +201993,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 446,
-      "end_line": 446,
+      "line": 466,
+      "end_line": 466,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -201748,8 +202004,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 591,
+      "end_line": 591,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201757,8 +202013,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 591,
+      "end_line": 591,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201766,8 +202022,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 611,
+      "end_line": 611,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201775,8 +202031,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 612,
+      "end_line": 612,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.chat_id",
@@ -201784,8 +202040,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 614,
+      "end_line": 614,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.chat_id",
@@ -201793,8 +202049,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 614,
+      "end_line": 614,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind.in_",
@@ -201802,8 +202058,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 175,
+      "end_line": 175,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -201811,8 +202067,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 559,
-      "end_line": 559,
+      "line": 590,
+      "end_line": 590,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201820,8 +202076,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 591,
+      "end_line": 591,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201829,8 +202085,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 560,
-      "end_line": 560,
+      "line": 591,
+      "end_line": 591,
       "owner": "unsubscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201838,8 +202094,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 611,
+      "end_line": 611,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201847,8 +202103,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 611,
+      "end_line": 611,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -201856,8 +202112,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 612,
+      "end_line": 612,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201865,8 +202121,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 580,
-      "end_line": 580,
+      "line": 612,
+      "end_line": 612,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201874,8 +202130,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 581,
-      "end_line": 581,
+      "line": 613,
+      "end_line": 613,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -201883,8 +202139,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 614,
+      "end_line": 614,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -201892,8 +202148,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 614,
+      "end_line": 614,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox.kind",
@@ -201901,8 +202157,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 646,
-      "end_line": 646,
+      "line": 678,
+      "end_line": 678,
       "owner": "public_bot_notify_job",
       "conditions": [
         "not (ok)",
@@ -201913,8 +202169,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 665,
-      "end_line": 665,
+      "line": 697,
+      "end_line": 697,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -201922,8 +202178,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 783,
+      "end_line": 783,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator.code",
@@ -201931,8 +202187,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 175,
+      "end_line": 175,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201940,8 +202196,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 163,
-      "end_line": 163,
+      "line": 175,
+      "end_line": 175,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -201949,8 +202205,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 187,
-      "end_line": 187,
+      "line": 199,
+      "end_line": 199,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue.date",
@@ -201958,8 +202214,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 393,
-      "end_line": 393,
+      "line": 405,
+      "end_line": 405,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201967,8 +202223,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 393,
-      "end_line": 393,
+      "line": 405,
+      "end_line": 405,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201976,8 +202232,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 576,
+      "end_line": 576,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -201985,8 +202241,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 576,
+      "end_line": 576,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -201994,8 +202250,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 614,
+      "end_line": 614,
       "owner": "forget_chat",
       "conditions": [],
       "symbol": "app.models.TelegramOutbox",
@@ -202003,8 +202259,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 667,
-      "end_line": 667,
+      "line": 699,
+      "end_line": 699,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_seen_at",
@@ -202012,8 +202268,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 669,
-      "end_line": 669,
+      "line": 701,
+      "end_line": 701,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.blocked_at.is_not",
@@ -202021,8 +202277,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 693,
-      "end_line": 693,
+      "line": 725,
+      "end_line": 725,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash.in_",
@@ -202030,8 +202286,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 783,
+      "end_line": 783,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -202039,8 +202295,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 747,
-      "end_line": 747,
+      "line": 783,
+      "end_line": 783,
       "owner": "_figure_by_code",
       "conditions": [],
       "symbol": "app.models.Indicator",
@@ -202048,8 +202304,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 815,
-      "end_line": 815,
+      "line": 978,
+      "end_line": 978,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash",
@@ -202057,8 +202313,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 815,
-      "end_line": 815,
+      "line": 978,
+      "end_line": 978,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.kind",
@@ -202066,8 +202322,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 979,
+      "end_line": 979,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.occurred_at",
@@ -202075,8 +202331,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 181,
+      "end_line": 181,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.desc",
@@ -202084,8 +202340,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 191,
+      "end_line": 191,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date.desc",
@@ -202093,8 +202349,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 187,
-      "end_line": 187,
+      "line": 199,
+      "end_line": 199,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue",
@@ -202102,8 +202358,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 208,
+      "end_line": 208,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202113,8 +202369,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 392,
-      "end_line": 392,
+      "line": 404,
+      "end_line": 404,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.id",
@@ -202122,8 +202378,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 393,
-      "end_line": 393,
+      "line": 405,
+      "end_line": 405,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202131,8 +202387,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 393,
-      "end_line": 393,
+      "line": 405,
+      "end_line": 405,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202140,8 +202396,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 544,
-      "end_line": 544,
+      "line": 575,
+      "end_line": 575,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202149,8 +202405,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 576,
+      "end_line": 576,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202158,8 +202414,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 545,
-      "end_line": 545,
+      "line": 576,
+      "end_line": 576,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202167,8 +202423,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 666,
-      "end_line": 666,
+      "line": 698,
+      "end_line": 698,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202176,8 +202432,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 667,
-      "end_line": 667,
+      "line": 699,
+      "end_line": 699,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202185,8 +202441,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 700,
+      "end_line": 700,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202194,8 +202450,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 669,
-      "end_line": 669,
+      "line": 701,
+      "end_line": 701,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.blocked_at",
@@ -202203,8 +202459,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 680,
-      "end_line": 680,
+      "line": 712,
+      "end_line": 712,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.topic",
@@ -202212,8 +202468,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 715,
+      "end_line": 715,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.topic",
@@ -202221,8 +202477,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 719,
+      "end_line": 719,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.heard_from",
@@ -202230,8 +202486,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 693,
-      "end_line": 693,
+      "line": 725,
+      "end_line": 725,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash",
@@ -202239,8 +202495,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 814,
-      "end_line": 814,
+      "line": 977,
+      "end_line": 977,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202248,8 +202504,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 815,
-      "end_line": 815,
+      "line": 978,
+      "end_line": 978,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202257,8 +202513,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 815,
-      "end_line": 815,
+      "line": 978,
+      "end_line": 978,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202266,8 +202522,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 816,
-      "end_line": 816,
+      "line": 979,
+      "end_line": 979,
       "owner": "answer_question",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202275,8 +202531,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 181,
+      "end_line": 181,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -202284,8 +202540,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 179,
-      "end_line": 179,
+      "line": 191,
+      "end_line": 191,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -202293,8 +202549,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 196,
-      "end_line": 196,
+      "line": 208,
+      "end_line": 208,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202304,8 +202560,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 392,
-      "end_line": 392,
+      "line": 404,
+      "end_line": 404,
       "owner": "_is_subscribed",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202313,8 +202569,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 650,
+      "end_line": 650,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.blocked_at.is_",
@@ -202322,8 +202578,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 669,
-      "end_line": 669,
+      "line": 701,
+      "end_line": 701,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202331,8 +202587,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 680,
-      "end_line": 680,
+      "line": 712,
+      "end_line": 712,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202340,8 +202596,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 715,
+      "end_line": 715,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202349,8 +202605,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 719,
+      "end_line": 719,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202358,8 +202614,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 691,
-      "end_line": 691,
+      "line": 723,
+      "end_line": 723,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.occurred_at",
@@ -202367,8 +202623,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 724,
+      "end_line": 724,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.kind.in_",
@@ -202376,8 +202632,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 693,
-      "end_line": 693,
+      "line": 725,
+      "end_line": 725,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202385,8 +202641,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 694,
-      "end_line": 694,
+      "line": 726,
+      "end_line": 726,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_seen_at",
@@ -202394,8 +202650,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 180,
+      "end_line": 180,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -202403,8 +202659,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 169,
-      "end_line": 169,
+      "line": 181,
+      "end_line": 181,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202412,8 +202668,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 190,
+      "end_line": 190,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.indicator_id",
@@ -202421,8 +202677,127 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 190,
+      "end_line": 190,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData.date",
+      "expression": "IndicatorData.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 191,
+      "end_line": 191,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.IndicatorData",
+      "expression": "IndicatorData"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.indicator_id",
+      "expression": "Forecast.indicator_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.Forecast.is_current.is_",
+      "expression": "Forecast.is_current.is_"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 198,
+      "end_line": 198,
+      "owner": "load_figure",
+      "conditions": [],
+      "symbol": "app.models.ForecastValue.date",
+      "expression": "ForecastValue.date"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 470,
+      "end_line": 470,
+      "owner": "handle_message",
+      "conditions": [
+        "low.startswith('/start')"
+      ],
+      "symbol": "app.models.PublicBotSubscription.chat_id",
+      "expression": "PublicBotSubscription.chat_id"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 649,
+      "end_line": 649,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 650,
+      "end_line": 650,
+      "owner": "public_bot_notify_job",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.blocked_at",
+      "expression": "PublicBotChat.blocked_at"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 715,
+      "end_line": 715,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotSubscription.topic",
+      "expression": "PublicBotSubscription.topic"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 723,
+      "end_line": 723,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent",
+      "expression": "PublicBotEvent"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 724,
+      "end_line": 724,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotEvent.kind",
+      "expression": "PublicBotEvent.kind"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 726,
+      "end_line": 726,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat.chat_hash",
+      "expression": "PublicBotChat.chat_hash"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 726,
+      "end_line": 726,
+      "owner": "report_text",
+      "conditions": [],
+      "symbol": "app.models.PublicBotChat",
+      "expression": "PublicBotChat"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 179,
+      "end_line": 179,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -202434,114 +202809,22 @@
       "end_line": 179,
       "owner": "load_figure",
       "conditions": [],
+      "symbol": "app.models.IndicatorData.value",
+      "expression": "IndicatorData.value"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 180,
+      "end_line": 180,
+      "owner": "load_figure",
+      "conditions": [],
       "symbol": "app.models.IndicatorData",
       "expression": "IndicatorData"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.indicator_id",
-      "expression": "Forecast.indicator_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.Forecast.is_current.is_",
-      "expression": "Forecast.is_current.is_"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.ForecastValue.date",
-      "expression": "ForecastValue.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 450,
-      "end_line": 450,
-      "owner": "handle_message",
-      "conditions": [
-        "low.startswith('/start')"
-      ],
-      "symbol": "app.models.PublicBotSubscription.chat_id",
-      "expression": "PublicBotSubscription.chat_id"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 618,
-      "end_line": 618,
-      "owner": "public_bot_notify_job",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.blocked_at",
-      "expression": "PublicBotChat.blocked_at"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 683,
-      "end_line": 683,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotSubscription.topic",
-      "expression": "PublicBotSubscription.topic"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 691,
-      "end_line": 691,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent",
-      "expression": "PublicBotEvent"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotEvent.kind",
-      "expression": "PublicBotEvent.kind"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 694,
-      "end_line": 694,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat.chat_hash",
-      "expression": "PublicBotChat.chat_hash"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 694,
-      "end_line": 694,
-      "owner": "report_text",
-      "conditions": [],
-      "symbol": "app.models.PublicBotChat",
-      "expression": "PublicBotChat"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 189,
+      "end_line": 189,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.date",
@@ -202549,8 +202832,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 189,
+      "end_line": 189,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData.value",
@@ -202558,8 +202841,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 168,
-      "end_line": 168,
+      "line": 190,
+      "end_line": 190,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202567,26 +202850,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.date",
-      "expression": "IndicatorData.date"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData.value",
-      "expression": "IndicatorData.value"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 178,
-      "end_line": 178,
+      "line": 190,
+      "end_line": 190,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202594,17 +202859,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 178,
-      "end_line": 178,
-      "owner": "load_figure",
-      "conditions": [],
-      "symbol": "app.models.IndicatorData",
-      "expression": "IndicatorData"
-    },
-    {
-      "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 197,
+      "end_line": 197,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -202612,8 +202868,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 198,
+      "end_line": 198,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -202621,8 +202877,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 198,
+      "end_line": 198,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast.is_current",
@@ -202630,8 +202886,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 198,
+      "end_line": 198,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue",
@@ -202639,8 +202895,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 207,
+      "end_line": 207,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202650,8 +202906,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 207,
+      "end_line": 207,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202661,8 +202917,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 469,
+      "end_line": 469,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -202672,8 +202928,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 450,
-      "end_line": 450,
+      "line": 470,
+      "end_line": 470,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -202683,8 +202939,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 649,
+      "end_line": 649,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.chat_id",
@@ -202692,8 +202948,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 649,
+      "end_line": 649,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription.chat_id",
@@ -202701,8 +202957,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 650,
+      "end_line": 650,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202710,8 +202966,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 710,
+      "end_line": 710,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.occurred_at",
@@ -202719,8 +202975,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 710,
+      "end_line": 710,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.topic.is_not",
@@ -202728,8 +202984,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 679,
-      "end_line": 679,
+      "line": 711,
+      "end_line": 711,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.kind.in_",
@@ -202737,8 +202993,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 715,
+      "end_line": 715,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202746,8 +203002,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 719,
+      "end_line": 719,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.heard_from.is_not",
@@ -202755,8 +203011,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 692,
-      "end_line": 692,
+      "line": 724,
+      "end_line": 724,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202764,8 +203020,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 694,
-      "end_line": 694,
+      "line": 726,
+      "end_line": 726,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202773,8 +203029,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 179,
+      "end_line": 179,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202782,8 +203038,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 167,
-      "end_line": 167,
+      "line": 179,
+      "end_line": 179,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202791,8 +203047,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 189,
+      "end_line": 189,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202800,8 +203056,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 177,
-      "end_line": 177,
+      "line": 189,
+      "end_line": 189,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.IndicatorData",
@@ -202809,8 +203065,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 197,
+      "end_line": 197,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast.id",
@@ -202818,8 +203074,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 197,
+      "end_line": 197,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue.forecast_id",
@@ -202827,8 +203083,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 186,
-      "end_line": 186,
+      "line": 198,
+      "end_line": 198,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -202836,8 +203092,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 206,
+      "end_line": 206,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202847,8 +203103,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 207,
+      "end_line": 207,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202858,8 +203114,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 195,
-      "end_line": 195,
+      "line": 207,
+      "end_line": 207,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -202869,8 +203125,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 449,
-      "end_line": 449,
+      "line": 469,
+      "end_line": 469,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')"
@@ -202880,8 +203136,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 649,
+      "end_line": 649,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202889,8 +203145,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 649,
+      "end_line": 649,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -202898,8 +203154,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 649,
+      "end_line": 649,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.models.PublicBotSubscription",
@@ -202907,8 +203163,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 677,
-      "end_line": 677,
+      "line": 709,
+      "end_line": 709,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.topic",
@@ -202916,8 +203172,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 710,
+      "end_line": 710,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -202925,8 +203181,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 710,
+      "end_line": 710,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.topic",
@@ -202934,8 +203190,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 679,
-      "end_line": 679,
+      "line": 711,
+      "end_line": 711,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.kind",
@@ -202943,8 +203199,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 718,
+      "end_line": 718,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.heard_from",
@@ -202952,8 +203208,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 719,
+      "end_line": 719,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.heard_from",
@@ -202961,8 +203217,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 722,
+      "end_line": 722,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent.chat_hash",
@@ -202970,8 +203226,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 196,
+      "end_line": 196,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue.date",
@@ -202979,8 +203235,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 196,
+      "end_line": 196,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue.value",
@@ -202988,8 +203244,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 197,
+      "end_line": 197,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.Forecast",
@@ -202997,8 +203253,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 185,
-      "end_line": 185,
+      "line": 197,
+      "end_line": 197,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue",
@@ -203006,8 +203262,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 206,
+      "end_line": 206,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203017,8 +203273,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 206,
+      "end_line": 206,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203028,8 +203284,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 705,
+      "end_line": 705,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat.first_seen_at",
@@ -203037,8 +203293,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 677,
-      "end_line": 677,
+      "line": 709,
+      "end_line": 709,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -203046,8 +203302,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 678,
-      "end_line": 678,
+      "line": 710,
+      "end_line": 710,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -203055,8 +203311,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 679,
-      "end_line": 679,
+      "line": 711,
+      "end_line": 711,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -203064,8 +203320,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 718,
+      "end_line": 718,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -203073,8 +203329,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 687,
-      "end_line": 687,
+      "line": 719,
+      "end_line": 719,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -203082,8 +203338,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 690,
-      "end_line": 690,
+      "line": 722,
+      "end_line": 722,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotEvent",
@@ -203091,8 +203347,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 196,
+      "end_line": 196,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue",
@@ -203100,8 +203356,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 184,
-      "end_line": 184,
+      "line": 196,
+      "end_line": 196,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.models.ForecastValue",
@@ -203109,8 +203365,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 205,
+      "end_line": 205,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203120,8 +203376,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 205,
+      "end_line": 205,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203131,8 +203387,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 206,
+      "end_line": 206,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203142,8 +203398,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 194,
-      "end_line": 194,
+      "line": 206,
+      "end_line": 206,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203153,8 +203409,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 705,
+      "end_line": 705,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.models.PublicBotChat",
@@ -203162,8 +203418,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 205,
+      "end_line": 205,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -203173,8 +203429,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 193,
-      "end_line": 193,
+      "line": 205,
+      "end_line": 205,
       "owner": "load_figure",
       "conditions": [
         "rel_code"
@@ -232727,8 +232983,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 290,
-      "end_line": 290,
+      "line": 291,
+      "end_line": 291,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.User",
@@ -232736,8 +232992,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 295,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -232745,8 +233001,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 259,
+      "end_line": 259,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -232754,8 +233010,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 259,
+      "end_line": 259,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -232763,8 +233019,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 295,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -232772,8 +233028,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 295,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -232781,8 +233037,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 311,
+      "end_line": 311,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
@@ -232790,8 +233046,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 311,
+      "end_line": 311,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.event",
@@ -232799,8 +233055,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -232808,8 +233064,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -232817,8 +233073,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
@@ -232826,8 +233082,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 255,
+      "end_line": 255,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -232835,8 +233091,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 255,
+      "end_line": 255,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -232844,8 +233100,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 259,
+      "end_line": 259,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -232853,8 +233109,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 258,
-      "end_line": 258,
+      "line": 259,
+      "end_line": 259,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -232862,8 +233118,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 294,
-      "end_line": 294,
+      "line": 295,
+      "end_line": 295,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -232871,8 +233127,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 298,
-      "end_line": 298,
+      "line": 299,
+      "end_line": 299,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.user_id",
@@ -232880,8 +233136,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 302,
+      "end_line": 302,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent.user_id",
@@ -232889,8 +233145,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 311,
+      "end_line": 311,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -232898,8 +233154,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 310,
-      "end_line": 310,
+      "line": 311,
+      "end_line": 311,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -232907,8 +233163,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 377,
+      "end_line": 377,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.user_id",
@@ -232916,8 +233172,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 376,
-      "end_line": 376,
+      "line": 377,
+      "end_line": 377,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.EmailCredential.email",
@@ -232925,8 +233181,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -232934,8 +233190,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -232943,8 +233199,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 380,
-      "end_line": 380,
+      "line": 381,
+      "end_line": 381,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -232952,8 +233208,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 255,
+      "end_line": 255,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -232961,8 +233217,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 254,
-      "end_line": 254,
+      "line": 255,
+      "end_line": 255,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.EmailCredential",
@@ -232970,8 +233226,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 298,
+      "end_line": 298,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.provider",
@@ -232979,8 +233235,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 298,
+      "end_line": 298,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.email",
@@ -232988,12 +233244,93 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 298,
+      "end_line": 298,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity.phone",
       "expression": "OAuthIdentity.phone"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 299,
+      "end_line": 299,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.OAuthIdentity",
+      "expression": "OAuthIdentity"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.Consent.kind",
+      "expression": "Consent.kind"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.Consent.granted",
+      "expression": "Consent.granted"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 302,
+      "end_line": 302,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.Consent",
+      "expression": "Consent"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 310,
+      "end_line": 310,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit.id",
+      "expression": "AuthAudit.id"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 375,
+      "end_line": 375,
+      "owner": "_users_csv",
+      "conditions": [],
+      "symbol": "app.models.User.created_at",
+      "expression": "User.created_at"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 377,
+      "end_line": 377,
+      "owner": "_users_csv",
+      "conditions": [],
+      "symbol": "app.models.EmailCredential",
+      "expression": "EmailCredential"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 377,
+      "end_line": 377,
+      "owner": "_users_csv",
+      "conditions": [],
+      "symbol": "app.models.EmailCredential",
+      "expression": "EmailCredential"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 252,
+      "end_line": 252,
+      "owner": "_users_overview",
+      "conditions": [],
+      "symbol": "app.models.User.created_at.desc",
+      "expression": "User.created_at.desc"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -233006,80 +233343,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.Consent.kind",
-      "expression": "Consent.kind"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.Consent.granted",
-      "expression": "Consent.granted"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.Consent",
-      "expression": "Consent"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 309,
-      "end_line": 309,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit.id",
-      "expression": "AuthAudit.id"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 374,
-      "end_line": 374,
-      "owner": "_users_csv",
-      "conditions": [],
-      "symbol": "app.models.User.created_at",
-      "expression": "User.created_at"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 376,
-      "end_line": 376,
-      "owner": "_users_csv",
-      "conditions": [],
-      "symbol": "app.models.EmailCredential",
-      "expression": "EmailCredential"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 376,
-      "end_line": 376,
-      "owner": "_users_csv",
-      "conditions": [],
-      "symbol": "app.models.EmailCredential",
-      "expression": "EmailCredential"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
-      "owner": "_users_overview",
-      "conditions": [],
-      "symbol": "app.models.User.created_at.desc",
-      "expression": "User.created_at.desc"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 298,
+      "end_line": 298,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -233087,8 +233352,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
+      "line": 298,
+      "end_line": 298,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.OAuthIdentity",
@@ -233096,17 +233361,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 297,
-      "end_line": 297,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.OAuthIdentity",
-      "expression": "OAuthIdentity"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 302,
+      "end_line": 302,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -233114,8 +233370,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 301,
-      "end_line": 301,
+      "line": 302,
+      "end_line": 302,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.Consent",
@@ -233123,8 +233379,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 307,
+      "end_line": 307,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts.desc",
@@ -233132,8 +233388,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 309,
-      "end_line": 309,
+      "line": 310,
+      "end_line": 310,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit",
@@ -233141,8 +233397,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 317,
+      "end_line": 317,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at.desc",
@@ -233150,8 +233406,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 375,
+      "end_line": 375,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -233159,8 +233415,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 252,
+      "end_line": 252,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -233168,8 +233424,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 252,
+      "end_line": 252,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User.created_at",
@@ -233177,8 +233433,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 306,
-      "end_line": 306,
+      "line": 307,
+      "end_line": 307,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.ts",
@@ -233186,8 +233442,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 316,
-      "end_line": 316,
+      "line": 317,
+      "end_line": 317,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent.occurred_at",
@@ -233195,8 +233451,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 374,
-      "end_line": 374,
+      "line": 375,
+      "end_line": 375,
       "owner": "_users_csv",
       "conditions": [],
       "symbol": "app.models.User",
@@ -233204,8 +233460,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 251,
-      "end_line": 251,
+      "line": 252,
+      "end_line": 252,
       "owner": "_users_overview",
       "conditions": [],
       "symbol": "app.models.User",
@@ -233213,12 +233469,75 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 305,
-      "end_line": 305,
+      "line": 306,
+      "end_line": 306,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.AuthAudit.user_id",
       "expression": "AuthAudit.user_id"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 307,
+      "end_line": 307,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit",
+      "expression": "AuthAudit"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 316,
+      "end_line": 316,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.user_id",
+      "expression": "FrontendEvent.user_id"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 317,
+      "end_line": 317,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent",
+      "expression": "FrontendEvent"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 402,
+      "end_line": 402,
+      "owner": "_hypotheses_overview",
+      "conditions": [],
+      "symbol": "app.models.Hypothesis.updated_at.desc",
+      "expression": "Hypothesis.updated_at.desc"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit.event",
+      "expression": "AuthAudit.event"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit.ip",
+      "expression": "AuthAudit.ip"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 305,
+      "end_line": 305,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.AuthAudit.ts",
+      "expression": "AuthAudit.ts"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -233235,8 +233554,26 @@
       "end_line": 315,
       "owner": "_user_card",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent.user_id",
-      "expression": "FrontendEvent.user_id"
+      "symbol": "app.models.FrontendEvent.event_name",
+      "expression": "FrontendEvent.event_name"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.params_json",
+      "expression": "FrontendEvent.params_json"
+    },
+    {
+      "path": "backend/app/services/telegram_bot.py",
+      "line": 315,
+      "end_line": 315,
+      "owner": "_user_card",
+      "conditions": [],
+      "symbol": "app.models.FrontendEvent.occurred_at",
+      "expression": "FrontendEvent.occurred_at"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -233249,39 +233586,21 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 402,
+      "end_line": 402,
       "owner": "_hypotheses_overview",
       "conditions": [],
-      "symbol": "app.models.Hypothesis.updated_at.desc",
-      "expression": "Hypothesis.updated_at.desc"
+      "symbol": "app.models.Hypothesis",
+      "expression": "Hypothesis"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
+      "line": 402,
+      "end_line": 402,
+      "owner": "_hypotheses_overview",
       "conditions": [],
-      "symbol": "app.models.AuthAudit.event",
-      "expression": "AuthAudit.event"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit.ip",
-      "expression": "AuthAudit.ip"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit.ts",
-      "expression": "AuthAudit.ts"
+      "symbol": "app.models.Hypothesis.updated_at",
+      "expression": "Hypothesis.updated_at"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -233294,30 +233613,21 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 305,
+      "end_line": 305,
       "owner": "_user_card",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent.event_name",
-      "expression": "FrontendEvent.event_name"
+      "symbol": "app.models.AuthAudit",
+      "expression": "AuthAudit"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 305,
+      "end_line": 305,
       "owner": "_user_card",
       "conditions": [],
-      "symbol": "app.models.FrontendEvent.params_json",
-      "expression": "FrontendEvent.params_json"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent.occurred_at",
-      "expression": "FrontendEvent.occurred_at"
+      "symbol": "app.models.AuthAudit",
+      "expression": "AuthAudit"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
@@ -233330,53 +233640,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 401,
-      "end_line": 401,
-      "owner": "_hypotheses_overview",
-      "conditions": [],
-      "symbol": "app.models.Hypothesis",
-      "expression": "Hypothesis"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 401,
-      "end_line": 401,
-      "owner": "_hypotheses_overview",
-      "conditions": [],
-      "symbol": "app.models.Hypothesis.updated_at",
-      "expression": "Hypothesis.updated_at"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit",
-      "expression": "AuthAudit"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit",
-      "expression": "AuthAudit"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 304,
-      "end_line": 304,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.AuthAudit",
-      "expression": "AuthAudit"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 315,
+      "end_line": 315,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -233384,8 +233649,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
+      "line": 315,
+      "end_line": 315,
       "owner": "_user_card",
       "conditions": [],
       "symbol": "app.models.FrontendEvent",
@@ -233393,17 +233658,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 314,
-      "end_line": 314,
-      "owner": "_user_card",
-      "conditions": [],
-      "symbol": "app.models.FrontendEvent",
-      "expression": "FrontendEvent"
-    },
-    {
-      "path": "backend/app/services/telegram_bot.py",
-      "line": 401,
-      "end_line": 401,
+      "line": 402,
+      "end_line": 402,
       "owner": "_hypotheses_overview",
       "conditions": [],
       "symbol": "app.models.Hypothesis",
@@ -275810,8 +276066,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 115,
-      "end_line": 126,
+      "line": 120,
+      "end_line": 138,
       "owner": "<module>",
       "conditions": [],
       "name": "match_topic",
@@ -275819,8 +276075,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 133,
-      "end_line": 135,
+      "line": 145,
+      "end_line": 147,
       "owner": "<module>",
       "conditions": [],
       "name": "fmt_num",
@@ -275828,8 +276084,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 138,
-      "end_line": 143,
+      "line": 150,
+      "end_line": 155,
       "owner": "<module>",
       "conditions": [],
       "name": "fmt_date",
@@ -275837,8 +276093,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 147,
-      "end_line": 159,
+      "line": 159,
+      "end_line": 171,
       "owner": "<module>",
       "conditions": [],
       "name": "Figure",
@@ -275846,8 +276102,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 162,
-      "end_line": 203,
+      "line": 174,
+      "end_line": 215,
       "owner": "<module>",
       "conditions": [],
       "name": "load_figure",
@@ -275855,8 +276111,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 206,
-      "end_line": 217,
+      "line": 218,
+      "end_line": 229,
       "owner": "<module>",
       "conditions": [],
       "name": "_change",
@@ -275864,8 +276120,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 220,
-      "end_line": 225,
+      "line": 232,
+      "end_line": 237,
       "owner": "<module>",
       "conditions": [],
       "name": "site_url",
@@ -275873,8 +276129,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 238,
-      "end_line": 262,
+      "line": 250,
+      "end_line": 274,
       "owner": "<module>",
       "conditions": [],
       "name": "_wallet_line",
@@ -275882,8 +276138,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 265,
-      "end_line": 299,
+      "line": 277,
+      "end_line": 311,
       "owner": "<module>",
       "conditions": [],
       "name": "figure_text",
@@ -275891,8 +276147,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 306,
-      "end_line": 309,
+      "line": 318,
+      "end_line": 321,
       "owner": "<module>",
       "conditions": [],
       "name": "menu_keyboard",
@@ -275900,8 +276156,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 312,
-      "end_line": 319,
+      "line": 324,
+      "end_line": 332,
       "owner": "<module>",
       "conditions": [],
       "name": "figure_keyboard",
@@ -275909,8 +276165,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 322,
-      "end_line": 326,
+      "line": 335,
+      "end_line": 339,
       "owner": "<module>",
       "conditions": [],
       "name": "sources_keyboard",
@@ -275918,8 +276174,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 329,
-      "end_line": 337,
+      "line": 342,
+      "end_line": 349,
       "owner": "<module>",
       "conditions": [],
       "name": "welcome_text",
@@ -275927,8 +276183,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 340,
-      "end_line": 344,
+      "line": 352,
+      "end_line": 356,
       "owner": "<module>",
       "conditions": [],
       "name": "privacy_line",
@@ -275936,8 +276192,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 367,
-      "end_line": 368,
+      "line": 379,
+      "end_line": 380,
       "owner": "<module>",
       "conditions": [],
       "name": "_now",
@@ -275945,8 +276201,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 371,
-      "end_line": 383,
+      "line": 383,
+      "end_line": 395,
       "owner": "<module>",
       "conditions": [],
       "name": "_touch_chat",
@@ -275954,8 +276210,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 386,
-      "end_line": 388,
+      "line": 398,
+      "end_line": 400,
       "owner": "<module>",
       "conditions": [],
       "name": "_event",
@@ -275963,8 +276219,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 391,
-      "end_line": 394,
+      "line": 403,
+      "end_line": 406,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_subscribed",
@@ -275972,8 +276228,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 401,
-      "end_line": 405,
+      "line": 413,
+      "end_line": 417,
       "owner": "<module>",
       "conditions": [],
       "name": "_send",
@@ -275981,8 +276237,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 408,
-      "end_line": 410,
+      "line": 420,
+      "end_line": 422,
       "owner": "<module>",
       "conditions": [],
       "name": "bot_token",
@@ -275990,8 +276246,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 413,
-      "end_line": 431,
+      "line": 425,
+      "end_line": 443,
       "owner": "<module>",
       "conditions": [],
       "name": "_reply_figure",
@@ -275999,8 +276255,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 434,
-      "end_line": 491,
+      "line": 446,
+      "end_line": 509,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_message",
@@ -276008,8 +276264,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 494,
-      "end_line": 525,
+      "line": 512,
+      "end_line": 556,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_callback",
@@ -276017,8 +276273,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 528,
-      "end_line": 536,
+      "line": 559,
+      "end_line": 567,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_member_update",
@@ -276026,8 +276282,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 539,
-      "end_line": 554,
+      "line": 570,
+      "end_line": 585,
       "owner": "<module>",
       "conditions": [],
       "name": "subscribe",
@@ -276035,8 +276291,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 557,
-      "end_line": 563,
+      "line": 588,
+      "end_line": 594,
       "owner": "<module>",
       "conditions": [],
       "name": "unsubscribe",
@@ -276044,8 +276300,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 566,
-      "end_line": 572,
+      "line": 597,
+      "end_line": 603,
       "owner": "<module>",
       "conditions": [],
       "name": "mark_blocked",
@@ -276053,8 +276309,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 575,
-      "end_line": 584,
+      "line": 606,
+      "end_line": 616,
       "owner": "<module>",
       "conditions": [],
       "name": "forget_chat",
@@ -276062,8 +276318,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 591,
-      "end_line": 592,
+      "line": 623,
+      "end_line": 624,
       "owner": "<module>",
       "conditions": [],
       "name": "_in_window",
@@ -276071,8 +276327,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 595,
-      "end_line": 602,
+      "line": 627,
+      "end_line": 634,
       "owner": "<module>",
       "conditions": [],
       "name": "_should_notify",
@@ -276080,8 +276336,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 605,
-      "end_line": 655,
+      "line": 637,
+      "end_line": 687,
       "owner": "<module>",
       "conditions": [],
       "name": "public_bot_notify_job",
@@ -276089,8 +276345,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 662,
-      "end_line": 712,
+      "line": 694,
+      "end_line": 744,
       "owner": "<module>",
       "conditions": [],
       "name": "report_text",
@@ -276098,8 +276354,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 746,
-      "end_line": 750,
+      "line": 782,
+      "end_line": 786,
       "owner": "<module>",
       "conditions": [],
       "name": "_figure_by_code",
@@ -276107,8 +276363,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 753,
-      "end_line": 766,
+      "line": 789,
+      "end_line": 813,
       "owner": "<module>",
       "conditions": [],
       "name": "build_llm_context",
@@ -276116,8 +276372,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 769,
-      "end_line": 777,
+      "line": 816,
+      "end_line": 826,
       "owner": "<module>",
       "conditions": [],
       "name": "_context_line",
@@ -276125,8 +276381,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 780,
-      "end_line": 805,
+      "line": 829,
+      "end_line": 860,
       "owner": "<module>",
       "conditions": [],
       "name": "_llm_complete",
@@ -276134,8 +276390,98 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 808,
-      "end_line": 831,
+      "line": 869,
+      "end_line": 873,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_history",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 876,
+      "end_line": 879,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_remember",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 882,
+      "end_line": 883,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "forget_history",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 896,
+      "end_line": 909,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "telegram_html",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 912,
+      "end_line": 928,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "split_actions",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 931,
+      "end_line": 933,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "chart_url",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 936,
+      "end_line": 943,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "send_chart",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 946,
+      "end_line": 952,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_question_id",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 955,
+      "end_line": 960,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "answer_keyboard",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 963,
+      "end_line": 970,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "trim_to_paragraph",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 973,
+      "end_line": 1004,
       "owner": "<module>",
       "conditions": [],
       "name": "answer_question",
@@ -276143,8 +276489,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 846,
-      "end_line": 852,
+      "line": 1019,
+      "end_line": 1025,
       "owner": "<module>",
       "conditions": [],
       "name": "handle_update",
@@ -276152,8 +276498,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 855,
-      "end_line": 867,
+      "line": 1028,
+      "end_line": 1040,
       "owner": "<module>",
       "conditions": [],
       "name": "public_bot_poll_job",
@@ -276161,8 +276507,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 870,
-      "end_line": 901,
+      "line": 1043,
+      "end_line": 1074,
       "owner": "<module>",
       "conditions": [],
       "name": "_poll_once",
@@ -276170,8 +276516,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 905,
-      "end_line": 916,
+      "line": 1078,
+      "end_line": 1091,
       "owner": "<module>",
       "conditions": [],
       "name": "_with_typing",
@@ -276179,8 +276525,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 924,
-      "end_line": 930,
+      "line": 1099,
+      "end_line": 1105,
       "owner": "<module>",
       "conditions": [],
       "name": "_update_chat_id",
@@ -276188,8 +276534,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 933,
-      "end_line": 941,
+      "line": 1108,
+      "end_line": 1116,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_in_order",
@@ -276197,11 +276543,20 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 698,
-      "end_line": 701,
+      "line": 730,
+      "end_line": 733,
       "owner": "report_text",
       "conditions": [],
       "name": "_line",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 902,
+      "end_line": 906,
+      "owner": "telegram_html",
+      "conditions": [],
+      "name": "_back",
       "kind": "FunctionDef"
     },
     {
@@ -285323,7 +285678,7 @@
     {
       "path": "backend/app/services/telegram_bot.py",
       "line": 105,
-      "end_line": 148,
+      "end_line": 149,
       "owner": "<module>",
       "conditions": [],
       "name": "_api",
@@ -285331,8 +285686,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 151,
-      "end_line": 212,
+      "line": 152,
+      "end_line": 213,
       "owner": "<module>",
       "conditions": [],
       "name": "send_message",
@@ -285340,8 +285695,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 215,
-      "end_line": 240,
+      "line": 216,
+      "end_line": 241,
       "owner": "<module>",
       "conditions": [],
       "name": "send_document",
@@ -285349,8 +285704,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 247,
-      "end_line": 285,
+      "line": 248,
+      "end_line": 286,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_overview",
@@ -285358,8 +285713,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 288,
-      "end_line": 369,
+      "line": 289,
+      "end_line": 370,
       "owner": "<module>",
       "conditions": [],
       "name": "_user_card",
@@ -285367,8 +285722,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 372,
-      "end_line": 393,
+      "line": 373,
+      "end_line": 394,
       "owner": "<module>",
       "conditions": [],
       "name": "_users_csv",
@@ -285376,8 +285731,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 396,
-      "end_line": 413,
+      "line": 397,
+      "end_line": 414,
       "owner": "<module>",
       "conditions": [],
       "name": "_hypotheses_overview",
@@ -285385,8 +285740,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 420,
-      "end_line": 498,
+      "line": 421,
+      "end_line": 499,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_callback",
@@ -285394,8 +285749,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 501,
-      "end_line": 514,
+      "line": 502,
+      "end_line": 515,
       "owner": "<module>",
       "conditions": [],
       "name": "_handle_message",
@@ -285403,8 +285758,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 517,
-      "end_line": 521,
+      "line": 518,
+      "end_line": 522,
       "owner": "<module>",
       "conditions": [],
       "name": "_public_shared",
@@ -285412,8 +285767,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 524,
-      "end_line": 532,
+      "line": 525,
+      "end_line": 533,
       "owner": "<module>",
       "conditions": [],
       "name": "_is_public_message",
@@ -285421,8 +285776,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 535,
-      "end_line": 580,
+      "line": 536,
+      "end_line": 581,
       "owner": "<module>",
       "conditions": [],
       "name": "telegram_poll_job",
@@ -285430,8 +285785,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 115,
-      "end_line": 120,
+      "line": 116,
+      "end_line": 121,
       "owner": "_api",
       "conditions": [],
       "name": "_rewind",
@@ -285439,8 +285794,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 126,
-      "end_line": 130,
+      "line": 127,
+      "end_line": 131,
       "owner": "_api",
       "conditions": [],
       "name": "_once",
@@ -315382,43 +315737,67 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 121,
-      "end_line": 121,
+      "line": 126,
+      "end_line": 126,
       "owner": "match_topic",
       "conditions": [],
       "symbol": "app.services.public_bot._MATCH_ORDER"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 762,
-      "end_line": 762,
+      "line": 805,
+      "end_line": 805,
       "owner": "build_llm_context",
       "conditions": [],
       "symbol": "app.services.public_bot._EXTRA_CODES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 241,
-      "end_line": 241,
+      "line": 253,
+      "end_line": 253,
       "owner": "_wallet_line",
       "conditions": [],
       "symbol": "app.services.public_bot._FUEL"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 414,
-      "end_line": 414,
+      "line": 426,
+      "end_line": 426,
       "owner": "_reply_figure",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 540,
-      "end_line": 540,
+      "line": 571,
+      "end_line": 571,
       "owner": "subscribe",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 872,
+      "end_line": 872,
+      "owner": "_history",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 939,
+      "end_line": 939,
+      "owner": "send_chart",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 948,
+      "end_line": 948,
+      "owner": "_question_id",
+      "conditions": [],
+      "symbol": "app.services.public_bot._QUESTIONS"
     },
     {
       "path": "backend/app/services/public_bot.py",
@@ -315430,59 +315809,117 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 122,
-      "end_line": 122,
+      "line": 127,
+      "end_line": 127,
       "owner": "match_topic",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 190,
-      "end_line": 190,
+      "line": 202,
+      "end_line": 202,
       "owner": "load_figure",
       "conditions": [],
       "symbol": "app.services.public_bot._RELEASE_CODE"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 272,
-      "end_line": 272,
+      "line": 284,
+      "end_line": 284,
       "owner": "figure_text",
       "conditions": [],
       "symbol": "app.services.public_bot._RUSSIA_AVG"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 276,
-      "end_line": 276,
+      "line": 288,
+      "end_line": 288,
       "owner": "figure_text",
       "conditions": [],
       "symbol": "app.services.public_bot._FREQ_STEP"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 504,
+      "end_line": 504,
       "owner": "handle_message",
       "conditions": [],
       "symbol": "app.services.public_bot._GREETINGS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 472,
-      "end_line": 472,
+      "line": 504,
+      "end_line": 504,
       "owner": "handle_message",
       "conditions": [],
       "symbol": "app.services.public_bot._THANKS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 757,
-      "end_line": 757,
+      "line": 522,
+      "end_line": 522,
+      "owner": "handle_callback",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 795,
+      "end_line": 795,
       "owner": "build_llm_context",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 878,
+      "end_line": 878,
+      "owner": "_remember",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 883,
+      "end_line": 883,
+      "owner": "forget_history",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 907,
+      "end_line": 907,
+      "owner": "telegram_html",
+      "conditions": [],
+      "symbol": "app.services.public_bot._ALLOWED_TAG"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 918,
+      "end_line": 918,
+      "owner": "split_actions",
+      "conditions": [],
+      "symbol": "app.services.public_bot._ACTIONS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 949,
+      "end_line": 949,
+      "owner": "_question_id",
+      "conditions": [],
+      "symbol": "app.services.public_bot._QUESTIONS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 951,
+      "end_line": 951,
+      "owner": "_question_id",
+      "conditions": [
+        "len(_QUESTIONS) > 20000"
+      ],
+      "symbol": "app.services.public_bot._QUESTIONS"
     },
     {
       "path": "backend/app/services/public_bot.py",
@@ -315502,32 +315939,42 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 143,
-      "end_line": 143,
+      "line": 155,
+      "end_line": 155,
       "owner": "fmt_date",
       "conditions": [],
       "symbol": "app.services.public_bot._MONTHS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 292,
-      "end_line": 292,
+      "line": 304,
+      "end_line": 304,
       "owner": "figure_text",
       "conditions": [],
       "symbol": "app.services.public_bot._FRESH_DAYS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 320,
+      "end_line": 320,
       "owner": "menu_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.MENU"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 506,
-      "end_line": 506,
+      "line": 528,
+      "end_line": 528,
+      "owner": "handle_callback",
+      "conditions": [
+        "action == 'q'"
+      ],
+      "symbol": "app.services.public_bot._QUESTIONS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 537,
+      "end_line": 537,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')"
@@ -315536,24 +315983,60 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 613,
-      "end_line": 613,
+      "line": 645,
+      "end_line": 645,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot._MSK"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 622,
-      "end_line": 622,
+      "line": 654,
+      "end_line": 654,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 140,
-      "end_line": 140,
+      "line": 793,
+      "end_line": 793,
+      "owner": "build_llm_context",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 879,
+      "end_line": 879,
+      "owner": "_remember",
+      "conditions": [
+        "len(_HISTORY) > 5000"
+      ],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 924,
+      "end_line": 924,
+      "owner": "split_actions",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 950,
+      "end_line": 950,
+      "owner": "_question_id",
+      "conditions": [
+        "len(_QUESTIONS) > 20000"
+      ],
+      "symbol": "app.services.public_bot._QUESTIONS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 152,
+      "end_line": 152,
       "owner": "fmt_date",
       "conditions": [
         "freq in ('monthly',)"
@@ -315562,8 +316045,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 295,
-      "end_line": 295,
+      "line": 307,
+      "end_line": 307,
       "owner": "figure_text",
       "conditions": [
         "f.next_release and f.next_release >= today"
@@ -315572,8 +316055,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 512,
-      "end_line": 512,
+      "line": 543,
+      "end_line": 543,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315583,56 +316066,91 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 625,
-      "end_line": 625,
+      "line": 657,
+      "end_line": 657,
       "owner": "public_bot_notify_job",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 703,
-      "end_line": 703,
+      "line": 735,
+      "end_line": 735,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 711,
-      "end_line": 711,
+      "line": 743,
+      "end_line": 743,
       "owner": "report_text",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 324,
-      "end_line": 324,
+      "line": 871,
+      "end_line": 871,
+      "owner": "_history",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY_TTL"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 877,
+      "end_line": 877,
+      "owner": "_remember",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 926,
+      "end_line": 926,
+      "owner": "split_actions",
+      "conditions": [],
+      "symbol": "app.services.public_bot._ACTIONS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 135,
+      "end_line": 135,
+      "owner": "match_topic",
+      "conditions": [
+        "len(words) <= 3",
+        "len(w) >= 5"
+      ],
+      "symbol": "app.services.public_bot._FUZZY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 337,
+      "end_line": 337,
       "owner": "sources_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 325,
-      "end_line": 325,
+      "line": 338,
+      "end_line": 338,
       "owner": "sources_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.SOURCES"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 418,
-      "end_line": 418,
+      "line": 430,
+      "end_line": 430,
       "owner": "_reply_figure",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 477,
-      "end_line": 477,
+      "line": 505,
+      "end_line": 505,
       "owner": "handle_message",
       "conditions": [
         "bare in _GREETINGS or bare in _THANKS"
@@ -315641,8 +316159,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 516,
-      "end_line": 516,
+      "line": 547,
+      "end_line": 547,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315653,16 +316171,36 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 308,
-      "end_line": 308,
+      "line": 871,
+      "end_line": 871,
+      "owner": "_history",
+      "conditions": [],
+      "symbol": "app.services.public_bot._HISTORY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 137,
+      "end_line": 137,
+      "owner": "match_topic",
+      "conditions": [
+        "len(words) <= 3",
+        "len(w) >= 5",
+        "near"
+      ],
+      "symbol": "app.services.public_bot._FUZZY"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 320,
+      "end_line": 320,
       "owner": "menu_keyboard",
       "conditions": [],
       "symbol": "app.services.public_bot.TOPICS"
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 623,
-      "end_line": 623,
+      "line": 655,
+      "end_line": 655,
       "owner": "public_bot_notify_job",
       "conditions": [
         "key in TOPICS"
@@ -315671,8 +316209,16 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 957,
+      "end_line": 957,
+      "owner": "answer_keyboard",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 478,
+      "end_line": 478,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')",
@@ -315683,8 +316229,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 478,
+      "end_line": 478,
       "owner": "handle_message",
       "conditions": [
         "low.startswith('/start')",
@@ -315695,8 +316241,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 519,
-      "end_line": 519,
+      "line": 550,
+      "end_line": 550,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315708,8 +316254,27 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 514,
-      "end_line": 514,
+      "line": 958,
+      "end_line": 958,
+      "owner": "answer_keyboard",
+      "conditions": [],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 525,
+      "end_line": 525,
+      "owner": "handle_callback",
+      "conditions": [
+        "action == 'g' and arg in TOPICS",
+        "not await send_chart(chat_id, arg)"
+      ],
+      "symbol": "app.services.public_bot.TOPICS"
+    },
+    {
+      "path": "backend/app/services/public_bot.py",
+      "line": 545,
+      "end_line": 545,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -315720,8 +316285,8 @@
     },
     {
       "path": "backend/app/services/public_bot.py",
-      "line": 518,
-      "end_line": 518,
+      "line": 549,
+      "end_line": 549,
       "owner": "handle_callback",
       "conditions": [
         "not (action == 'menu')",
@@ -319719,16 +320284,16 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 546,
-      "end_line": 546,
+      "line": 547,
+      "end_line": 547,
       "owner": "telegram_poll_job",
       "conditions": [],
       "symbol": "app.services.telegram_bot._REDIS_TRANSIENT"
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 579,
-      "end_line": 579,
+      "line": 580,
+      "end_line": 580,
       "owner": "telegram_poll_job",
       "conditions": [
         "updates"
@@ -319737,8 +320302,8 @@
     },
     {
       "path": "backend/app/services/telegram_bot.py",
-      "line": 133,
-      "end_line": 133,
+      "line": 134,
+      "end_line": 134,
       "owner": "_api",
       "conditions": [],
       "symbol": "app.services.telegram_bot._RETRY_METHODS"

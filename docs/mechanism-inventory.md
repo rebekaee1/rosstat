@@ -9,12 +9,12 @@
 - ORM tables: **72**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **256**
-- Settings reads: **611**
+- Settings reads: **613**
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1192**
-- Registry references: **2250**
+- Registry declarations: **1198**
+- Registry references: **2274**
 - Migration operations: **458**
 - Candidate effects: **2638**
 - Unresolved syntax: **1**
@@ -1924,7 +1924,7 @@ Relationships: `[]`
 | RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:478](../backend/app/config.py#L478) |
 | RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:479](../backend/app/config.py#L479) |
 | RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:480](../backend/app/config.py#L480) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 6 | [backend/app/config.py:482](../backend/app/config.py#L482) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 7 | [backend/app/config.py:482](../backend/app/config.py#L482) |
 | RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:486](../backend/app/config.py#L486) |
 | RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:487](../backend/app/config.py#L487) |
 | RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:488](../backend/app/config.py#L488) |
@@ -1943,9 +1943,9 @@ Relationships: `[]`
 | RUSTATS_TELEGRAM_POLLER_ENABLED | bool = False | 1 | [backend/app/config.py:519](../backend/app/config.py#L519) |
 | RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:523](../backend/app/config.py#L523) |
 | RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:526](../backend/app/config.py#L526) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 1 | [backend/app/config.py:529](../backend/app/config.py#L529) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 2 | [backend/app/config.py:529](../backend/app/config.py#L529) |
 | RUSTATS_PUBLIC_BOT_LLM_MODEL | str = '' | 1 | [backend/app/config.py:530](../backend/app/config.py#L530) |
-| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 20 | 1 | [backend/app/config.py:531](../backend/app/config.py#L531) |
+| RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:531](../backend/app/config.py#L531) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:533](../backend/app/config.py#L533) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_TO_HOUR | int = 21 | 1 | [backend/app/config.py:534](../backend/app/config.py#L534) |
 | RUSTATS_API_INTEREST_ENABLED | bool = False | 2 | [backend/app/config.py:540](../backend/app/config.py#L540) |
@@ -2550,13 +2550,19 @@ Relationships: `[]`
 | app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:81](../backend/app/services/public_bot.py#L81) |
 | app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:83](../backend/app/services/public_bot.py#L83) |
 | app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:85](../backend/app/services/public_bot.py#L85) |
-| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:230](../backend/app/services/public_bot.py#L230) |
-| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:232](../backend/app/services/public_bot.py#L232) |
-| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:233](../backend/app/services/public_bot.py#L233) |
-| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:234](../backend/app/services/public_bot.py#L234) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:357](../backend/app/services/public_bot.py#L357) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:359](../backend/app/services/public_bot.py#L359) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:722](../backend/app/services/public_bot.py#L722) |
+| app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:116](../backend/app/services/public_bot.py#L116) |
+| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:242](../backend/app/services/public_bot.py#L242) |
+| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:244](../backend/app/services/public_bot.py#L244) |
+| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:245](../backend/app/services/public_bot.py#L245) |
+| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:246](../backend/app/services/public_bot.py#L246) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:369](../backend/app/services/public_bot.py#L369) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:371](../backend/app/services/public_bot.py#L371) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:754](../backend/app/services/public_bot.py#L754) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:864](../backend/app/services/public_bot.py#L864) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:866](../backend/app/services/public_bot.py#L866) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:886](../backend/app/services/public_bot.py#L886) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:891](../backend/app/services/public_bot.py#L891) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:893](../backend/app/services/public_bot.py#L893) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |

@@ -112,6 +112,11 @@ def _norm(text: str) -> str:
     return text.lower().replace("ё", "е")
 
 
+# Полные слова тем для опечаток («дизиль», «инфляцыя»): ближайшее по difflib, только для слов от 5 букв.
+_FUZZY = {"дизель": "diesel", "солярка": "diesel", "бензин": "ai92", "инфляция": "inflation", "золото": "gold",
+          "доллар": "usd", "ипотека": "mortgage", "вклады": "deposit", "депозит": "deposit", "ключевая": "keyrate"}
+
+
 def match_topic(text: str) -> tuple[str | None, str | None]:
     """Слово из ролика → (тема, нормализованное слово-код). Пусто, если тему не узнали."""
     t = _norm(text)[:_MAX_TEXT]
@@ -123,6 +128,13 @@ def match_topic(text: str) -> tuple[str | None, str | None]:
         for w in words:
             if w in topic.tokens or any(w.startswith(s) for s in topic.stems):
                 return topic.key, w[:64]
+    if len(words) <= 3:
+        import difflib
+        for w in words:
+            if len(w) >= 5:
+                near = difflib.get_close_matches(w, list(_FUZZY), n=1, cutoff=0.75)
+                if near:
+                    return _FUZZY[near[0]], w[:64]
     return None, None
 
 
@@ -314,7 +326,8 @@ def figure_keyboard(topic: Topic, code: str | None, subscribed: bool) -> dict:
            else {"text": "🔔 Присылать новые данные", "callback_data": f"{CB_PREFIX}s:{topic.key}"})
     return {"inline_keyboard": [
         [sub],
-        [{"text": "📈 График и прогноз на сайте", "url": site_url(topic, code)}],
+        [{"text": "📊 График сюда", "callback_data": f"{CB_PREFIX}g:{topic.key}"},
+         {"text": "📈 На сайте", "url": site_url(topic, code)}],
         [{"text": "Другие цифры", "callback_data": f"{CB_PREFIX}menu"}],
     ]}
 
@@ -328,11 +341,10 @@ def sources_keyboard() -> dict:
 
 def welcome_text() -> str:
     return (
-        "Привет! Я бот <b>Forecast Economy</b>.\n"
-        "Присылаю свежие цифры экономики России из официальных источников и наш прогноз — "
-        "и напоминаю, когда выходят новые данные.\n\n"
-        "Напишите слово, например <b>ДИЗЕЛЬ</b>, <b>ИНФЛЯЦИЯ</b> или <b>ЗОЛОТО</b>, или выберите ниже.\n\n"
-        "Можно и просто спросить своими словами — отвечу по нашим данным.\n\n"
+        "Привет! Я <b>Forecast Economy</b> 👋\n"
+        "Спрашивайте своими словами — про бензин, цены, ставки, вклады, курс. "
+        "Отвечу по свежим официальным цифрам и объясню, что они значат для кошелька.\n\n"
+        "Кнопки ниже — быстрые карточки с графиком и подпиской на новые данные.\n\n"
         + privacy_line()
     )
 
@@ -349,9 +361,9 @@ UNKNOWN_TEXT = ("Такой цифры у меня нет: беру только
 LIMIT_TEXT = "На сегодня вопросы закончились. Цифры по темам — кнопками ниже, они без ограничений."
 LLM_FAIL_TEXT = "Не получилось ответить на вопрос. Попробуйте позже или выберите тему ниже."
 SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
-WELCOME_BACK = "С возвращением! Выберите тему, напишите слово или спросите своими словами."
-SHORT_INTRO = ("Это бот <b>Forecast Economy</b>: свежие цифры экономики России из официальных источников. "
-               "Напишите слово или спросите своими словами.")
+WELCOME_BACK = "С возвращением! Спрашивайте своими словами или выберите тему."
+SHORT_INTRO = ("Это <b>Forecast Economy</b>: свежие официальные цифры экономики России. "
+               "Спрашивайте своими словами — отвечу и объясню.")
 GREETING_TEXT = "Здравствуйте! Выберите тему кнопкой, напишите слово, например <b>БЕНЗИН</b>, или спросите своими словами."
 THANKS_TEXT = "Пожалуйста! Если нужно ещё — выберите тему или спросите своими словами."
 _GREETINGS = {"привет", "здравствуйте", "здравствуй", "добрый день", "добрый вечер", "доброе утро", "hi", "hello",
@@ -436,8 +448,16 @@ async def handle_message(msg: dict) -> None:
     if chat.get("type") != "private":
         return
     chat_id = str(chat.get("id", ""))
-    text = (msg.get("text") or "").strip()
-    if not chat_id or not text:
+    text = (msg.get("text") or msg.get("caption") or "").strip()
+    if not chat_id:
+        return
+    if not text:
+        # Голосовое, фото, стикер без подписи: раньше бот молчал (проход 08.11.2026).
+        if any(k in msg for k in ("voice", "audio", "video_note")):
+            await _send(chat_id, "Голосовые пока не слушаю — напишите, пожалуйста, текстом 🙂", menu_keyboard())
+        elif any(k in msg for k in ("photo", "document", "video", "sticker", "animation")):
+            await _send(chat_id, "Картинки пока не разбираю. Напишите вопрос текстом — отвечу по цифрам.",
+                        menu_keyboard())
         return
     low = _norm(text)
     if low.startswith("/start"):
@@ -468,23 +488,21 @@ async def handle_message(msg: dict) -> None:
     if low in ("/menu", "/help", "меню"):
         await _send(chat_id, "Выберите тему:", menu_keyboard())
         return
-    bare = re.sub(r"[!.,?)( 🙂😊👋]+$", "", low).strip()
-    if bare in _GREETINGS or bare in _THANKS:
-        # Без модели: приветствие и «спасибо» не должны тратить лимит вопросов.
-        async with async_session() as db:
-            await _touch_chat(db, chat_id)
-            await db.commit()
-        await _send(chat_id, GREETING_TEXT if bare in _GREETINGS else THANKS_TEXT, menu_keyboard())
-        return
     topic, word = match_topic(text)
     async with async_session() as db:
         await _touch_chat(db, chat_id, word if topic else None)
         _event(db, chat_id, "word" if topic else "unknown", code=word, topic=topic)
         await db.commit()
-    if topic and len(text) <= 40:
-        await _reply_figure(chat_id, topic)
-    elif settings.public_bot_llm_enabled and settings.openrouter_api_key:
-        await answer_question(chat_id, text)
+    if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        # Модель главная (решение владельца 08.11.2026): любой текст, кроме команд, отвечает она.
+        await answer_question(chat_id, text, hint_topic=topic)
+        return
+    # Без модели — прежние скрипты: приветствие, тема по слову, подсказка.
+    bare = re.sub(r"[!.,?)( 🙂😊👋]+$", "", low).strip()
+    if not re.search(r"[a-zа-я0-9]", low):
+        bare = "спасибо"
+    if bare in _GREETINGS or bare in _THANKS:
+        await _send(chat_id, GREETING_TEXT if bare in _GREETINGS else THANKS_TEXT, menu_keyboard())
     elif topic:
         await _reply_figure(chat_id, topic)
     else:
@@ -501,6 +519,19 @@ async def handle_callback(cq: dict) -> None:
     if not chat_id or not data.startswith(CB_PREFIX):
         return
     action, _, arg = data[len(CB_PREFIX):].partition(":")
+    if action == "g" and arg in TOPICS:
+        if not await send_chart(chat_id, arg):
+            await _send(chat_id, "Не получилось прислать график — откройте его на сайте.",
+                        {"inline_keyboard": [[{"text": "📈 На сайте", "url": site_url(TOPICS[arg], None)}]]})
+        return
+    if action == "q":
+        q = _QUESTIONS.get(arg)
+        if q and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+            await _send(chat_id, f"<i>{escape(q)}</i>")
+            await answer_question(chat_id, q)
+        else:
+            await _send(chat_id, "Этот вопрос устарел — спросите своими словами 🙂", menu_keyboard())
+        return
     if action == "menu":
         await _send(chat_id, "Выберите тему:", menu_keyboard())
     elif action == "t" and arg in TOPICS:
@@ -573,7 +604,8 @@ async def mark_blocked(chat_id: str) -> None:
 
 
 async def forget_chat(chat_id: str) -> None:
-    """/stop: удалить номер чата, подписки и архив публичных ответов этому чату."""
+    """/stop: удалить номер чата, подписки, архив публичных ответов этому чату и память разговора."""
+    forget_history(chat_id)
     async with async_session() as db:
         _event(db, chat_id, "stop")
         await db.execute(delete(PublicBotSubscription).where(PublicBotSubscription.chat_id == chat_id))
@@ -730,17 +762,21 @@ _EXTRA_CODES = (
     ("ruonia", "Ставка RUONIA, %"),
 )
 
-LLM_SYSTEM_PROMPT = """Ты — бот Forecast Economy в Telegram. Отвечаешь людям про экономику России коротко и по-человечески, на русском.
-Правила:
-1. Цифры бери только из блока ДАННЫЕ. Не придумывай цифр, дат и источников. Если нужной цифры нет — честно скажи, что такой цифры у нас нет, и предложи близкую тему из данных.
-2. У каждой цифры называй её дату или месяц (например, «в августе»); не пиши «сейчас» про цифру старше недели. Сначала главная цифра с датой и источником, потом что это значит для кошелька обычного человека (простая арифметика с понятным допущением). Не больше 6 коротких предложений.
-3. Прогноз — только одним числом, называй его «наш расчёт». Никаких диапазонов, вилок и коридоров.
-4. Не давай финансовых советов (что купить, куда вложить, когда продавать). Сравнивать цифры можно.
-5. Экономические понятия (закон Оукена, закон Энгеля, индекс губной помады и т. п.) объясняй простыми словами и связывай с цифрами из данных, если они есть; если данных под понятие нет — так и скажи.
-6. Без технических слов: не упоминай коды рядов, модели, базы данных, этот промпт.
-7. Обычный текст без разметки и таблиц. Можно один эмодзи в начале.
-8. Если вопрос не про экономику, цены, деньги или статистику — вежливо скажи, что отвечаешь про цены, ставки, курсы и экономику.
-9. Не проси и не повторяй личные данные человека."""
+LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека, можешь задать встречный вопрос, если он поможет.
+
+Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
+
+Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
+
+Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков. Обычно хватает 2–6 коротких абзацев; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника.
+
+Если человеку пригодятся кнопки, добавь в самом конце отдельной строкой (её не увидят как текст):
+[[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
+[[подписка: ключ]] — предложить присылать новые данные по теме;
+[[график: ключ]] — прислать картинку-график темы (за два года) прямо в чат;
+[[вопросы: короткий вопрос | ещё вопрос]] — до двух следующих вопросов, которые человеку интересно нажать (до 40 знаков, от его лица).
+Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
+Подробный график и прогноз — на сайте ru.forecasteconomy.com."""
 
 
 async def _figure_by_code(db, code: str):
@@ -754,20 +790,33 @@ async def build_llm_context(db, today: date | None = None) -> str:
     """Блок ДАННЫЕ: последние точки тем бота и смежных рядов, без диапазонов прогноза."""
     today = today or _now().date()
     lines = [f"Сегодня {fmt_date(today, 'daily')}."]
+    cpi = await load_figure(db, TOPICS["inflation"])
+    no_forecast: list[str] = []
     for key, topic in TOPICS.items():
         f = await load_figure(db, topic)
         if f is None:
             continue
+        if f.forecast_value is None:
+            no_forecast.append(topic.title)
         lines.append(_context_line(topic.title, topic.unit, f))
+        wallet = _wallet_line(f, cpi if key != "inflation" else None)
+        if wallet:
+            lines.append(f"  для кошелька: {wallet}")
     for code, title in _EXTRA_CODES:
         f = await _figure_by_code(db, code)
         if f is not None:
             lines.append(_context_line(title, "", f))
+    if no_forecast:
+        # Живой прогон 08.11: модель обещала «прогноз бензина на сайте», которого нет.
+        lines.append("Нашего расчёта (прогноза) нет ни в боте, ни на сайте по темам: " + ", ".join(no_forecast)
+                     + ". Не обещай его.")
     return "\n".join(lines)
 
 
 def _context_line(title: str, unit: str, f: Figure) -> str:
     parts = [f"- {title}: {fmt_num(f.last_value)} {unit}".rstrip() + f" на {fmt_date(f.last_date, f.frequency)}"]
+    if f.prev_value is not None:
+        parts.append(f"прошлая точка {fmt_num(f.prev_value)}")
     if f.year_ago_value is not None:
         parts.append(f"год назад {fmt_num(f.year_ago_value)}")
     if f.forecast_value is not None and f.forecast_date is not None:
@@ -777,14 +826,15 @@ def _context_line(title: str, unit: str, f: Figure) -> str:
     return "; ".join(parts)
 
 
-async def _llm_complete(context: str, question: str) -> str | None:
+async def _llm_complete(context: str, question: str, history: list[dict] | None = None) -> str | None:
     import httpx
 
     payload = {
         "model": settings.public_bot_llm_model or settings.openrouter_model,
-        "max_tokens": 700,
+        "max_tokens": 2000,
         "messages": [
             {"role": "system", "content": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context},
+            *(history or []),
             {"role": "user", "content": question[:_MAX_QUESTION]},
         ],
     }
@@ -798,17 +848,130 @@ async def _llm_complete(context: str, question: str) -> str | None:
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
             return None
-        content = (resp.json().get("choices") or [{}])[0].get("message", {}).get("content")
-        return content.strip() if isinstance(content, str) and content.strip() else None
+        choice = (resp.json().get("choices") or [{}])[0]
+        content = choice.get("message", {}).get("content")
+        if not isinstance(content, str) or not content.strip():
+            return None
+        if choice.get("finish_reason") == "length":
+            content = trim_to_paragraph(content)
+        return content.strip()
     except Exception:  # noqa: BLE001
         logger.warning("Public bot LLM failed", exc_info=True)
         return None
 
 
-async def answer_question(chat_id: str, text: str) -> None:
-    """Вопрос своими словами → ответ модели по блоку ДАННЫЕ. Текст вопроса не хранится."""
+# Короткая память разговора — только в памяти процесса (не в базе): последние реплики за 30 минут.
+_HISTORY: dict[str, list[tuple[datetime, str, str]]] = {}
+_HISTORY_TURNS = 6
+_HISTORY_TTL = timedelta(minutes=30)
+
+
+def _history(chat_id: str) -> list[dict]:
+    now = _now()
+    items = [h for h in _HISTORY.get(chat_id, []) if now - h[0] < _HISTORY_TTL][-_HISTORY_TURNS:]
+    _HISTORY[chat_id] = items
+    return [{"role": role, "content": content} for _, role, content in items]
+
+
+def _remember(chat_id: str, role: str, content: str) -> None:
+    _HISTORY.setdefault(chat_id, []).append((_now(), role, content[:1500]))
+    if len(_HISTORY) > 5000:
+        _HISTORY.clear()
+
+
+def forget_history(chat_id: str) -> None:
+    _HISTORY.pop(chat_id, None)
+
+
+_ALLOWED_TAG = re.compile(
+    r"&lt;(/?)(b|strong|i|em|u|ins|s|strike|del|code|pre|tg-spoiler)&gt;"
+    r"|&lt;blockquote( expandable)?&gt;|&lt;/blockquote&gt;"
+    r"|&lt;a href=&quot;(https?://[^\s&]+?)&quot;&gt;|&lt;/a&gt;"
+)
+_ACTIONS = re.compile(r"\[\[\s*(темы|подписка|вопросы|график)\s*:\s*([^\]]*)\]\]", re.I)
+# Кнопки-вопросы: callback_data ограничен 64 байтами, поэтому текст вопроса держим в памяти по короткому id.
+_QUESTIONS: dict[str, str] = {}
+
+
+def telegram_html(text: str) -> str:
+    """Ответ модели → безопасный HTML Telegram: всё экранируется, разрешённые теги возвращаются.
+    Markdown-жирный (**x**) превращается в <b>. Битая разметка всё равно дойдёт: send_message
+    при «can't parse entities» шлёт текст без тегов."""
+    out = escape(text, quote=True)
+
+    def _back(m: re.Match) -> str:
+        raw = m.group(0)
+        if raw.startswith("&lt;a href="):
+            return f'<a href="{m.group(4)}">'
+        return raw.replace("&lt;", "<").replace("&gt;", ">")
+    out = _ALLOWED_TAG.sub(_back, out)
+    out = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", out)
+    return out.strip()
+
+
+def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], list[str]]:
+    """Служебные строки модели [[темы|подписка|вопросы|график: …]] → (текст, темы, подписки, вопросы, графики)."""
+    topics: list[str] = []
+    subs: list[str] = []
+    questions: list[str] = []
+    charts: list[str] = []
+    for kind, keys in _ACTIONS.findall(answer):
+        kind = kind.lower()
+        if kind == "вопросы":
+            questions += [q.strip(" ?\"«»")[:60] + "?" for q in keys.split("|") if q.strip(" ?\"«»")]
+            continue
+        for k in re.split(r"[,\s]+", keys.strip().lower()):
+            if k in TOPICS:
+                {"подписка": subs, "график": charts}.get(kind, topics).append(k)
+    clean = _ACTIONS.sub("", answer).strip()
+    uniq = lambda xs: list(dict.fromkeys(xs))  # noqa: E731
+    return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:2], uniq(charts)[:1]
+
+
+def chart_url(topic: Topic) -> str:
+    """Картинка-график показателя с сайта (та же, что OG-превью страницы)."""
+    return f"{ru_public_origin()}/og/russia/{topic.indicator}.png"
+
+
+async def send_chart(chat_id: str, topic_key: str) -> bool:
     from app.services.telegram_bot import _api
 
+    topic = TOPICS[topic_key]
+    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">график и прогноз на сайте</a>"
+    res = await _api("sendPhoto", {"chat_id": chat_id, "photo": chart_url(topic), "caption": caption,
+                                   "parse_mode": "HTML"}, token=bot_token(), timeout=30)
+    return res is not None
+
+
+def _question_id(q: str) -> str:
+    qid = hashlib.sha1(q.encode("utf-8")).hexdigest()[:10]
+    _QUESTIONS[qid] = q
+    if len(_QUESTIONS) > 20000:
+        _QUESTIONS.clear()
+        _QUESTIONS[qid] = q
+    return qid
+
+
+def answer_keyboard(topics: list[str], subs: list[str], questions: list[str] | None = None) -> dict:
+    rows = [[{"text": f"💬 {q}", "callback_data": f"{CB_PREFIX}q:{_question_id(q)}"}] for q in (questions or [])]
+    rows += [[{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in topics]] if topics else []
+    rows += [[{"text": f"🔔 Присылать: {TOPICS[k].title}", "callback_data": f"{CB_PREFIX}s:{k}"}] for k in subs]
+    rows.append([{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}])
+    return {"inline_keyboard": rows}
+
+
+def trim_to_paragraph(text: str) -> str:
+    """Ответ упёрся в лимит длины (живой прогон 08.11: обрыв «Индекс Мосбиржи — 2 476,70»):
+    режем до последнего целого абзаца и ставим многоточие."""
+    cut = text.rstrip()
+    para = cut.rfind("\n\n")
+    if para > len(cut) // 3:
+        cut = cut[:para]
+    return cut.rstrip() + " …"
+
+
+async def answer_question(chat_id: str, text: str, hint_topic: str | None = None) -> None:
+    """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Текст в базе не хранится."""
     day_start = datetime.combine(_now().date(), datetime.min.time())
     async with async_session() as db:
         used = (await db.execute(select(func.count()).select_from(PublicBotEvent).where(
@@ -817,18 +980,28 @@ async def answer_question(chat_id: str, text: str) -> None:
         ))).scalar_one()
         if used >= settings.public_bot_llm_daily_limit:
             await db.commit()
-            await _send(chat_id, LIMIT_TEXT, menu_keyboard())
+            if hint_topic:
+                await _reply_figure(chat_id, hint_topic)
+            else:
+                await _send(chat_id, LIMIT_TEXT, menu_keyboard())
             return
-        _event(db, chat_id, "ask")
+        _event(db, chat_id, "ask", topic=hint_topic)
         context = await build_llm_context(db)
         await db.commit()
-    answer = await _with_typing(chat_id, _llm_complete(context, text))
+    history = _history(chat_id)
+    answer = await _with_typing(chat_id, _llm_complete(context, text, history))
     if not answer:
-        await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
+        if hint_topic:
+            await _reply_figure(chat_id, hint_topic)
+        else:
+            await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
         return
-    await _send(chat_id, escape(answer), {"inline_keyboard": [
-        [{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}],
-    ]})
+    clean, topics, subs, questions, charts = split_actions(answer)
+    _remember(chat_id, "user", text[:_MAX_QUESTION])
+    _remember(chat_id, "assistant", clean)
+    for key in charts:
+        await send_chart(chat_id, key)
+    await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions))
 
 
 # ---------------------------------------------------------------------------
@@ -864,7 +1037,7 @@ async def public_bot_poll_job() -> None:
             break
     if _inflight:
         # Дождаться начатых ответов (модель до 60 с), чтобы следующая задача не наложилась на них.
-        await asyncio.wait(set(_inflight), timeout=75)
+        await asyncio.wait(set(_inflight), timeout=20)
 
 
 async def _poll_once() -> bool:
@@ -908,7 +1081,9 @@ async def _with_typing(chat_id: str, coro):
 
     task = asyncio.ensure_future(coro)
     while not task.done():
-        await _api("sendChatAction", {"chat_id": chat_id, "action": "typing"}, token=bot_token())
+        # Не ждём: запрос к Telegram с российского сервера иногда висит до 35 с (проверено 08.11.2026).
+        asyncio.ensure_future(_api("sendChatAction", {"chat_id": chat_id, "action": "typing"},
+                                   token=bot_token(), timeout=6))
         try:
             await asyncio.wait_for(asyncio.shield(task), timeout=4)
         except asyncio.TimeoutError:

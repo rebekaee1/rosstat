@@ -104,6 +104,7 @@ _last_api_error: ContextVar[str | None] = ContextVar("tg_last_api_error", defaul
 
 async def _api(
     method: str, payload: dict, files: dict | None = None, token: str | None = None,
+    timeout: float | None = None,
 ) -> dict | None:
     # token: другой бот того же сервера (публичный @ForecastEconomyBot, ADR-0027); по умолчанию — служебный.
     token = token or settings.telegram_bot_token
@@ -121,7 +122,7 @@ async def _api(
 
     try:
         async with httpx.AsyncClient(
-            timeout=35, proxy=settings.telegram_proxy_url or None, trust_env=False,
+            timeout=timeout or 35, proxy=settings.telegram_proxy_url or None, trust_env=False,
         ) as client:
             async def _once() -> httpx.Response:
                 if files:
