@@ -1,22 +1,12 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "2856cac0331bc8c6afe71f0ac5f75a5786b8c329",
+  "baseline_commit": "9941d1e1ae031710491f66d03d58e459da595dd6",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/javascript-symbols.json",
-    "docs/code-review/materials-2026-09-30.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/materials-2026-09-30.json"
   ],
   "untracked_at_capture": [],
   "stats": {

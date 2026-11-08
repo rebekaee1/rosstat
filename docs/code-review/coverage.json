@@ -30004,16 +30004,7 @@
   "input_scope": "tracked",
   "ledger_sha256": "b5fc1c457444d00a2e8a588ed3759010332e8369e3b12322c005152af3a16868",
   "javascript_inventory_sha256": "0274cafb29f45319bd138c2e72488ea1f9290bab9691b186344110114e9c8dab",
-  "baseline_commit": "2856cac0331bc8c6afe71f0ac5f75a5786b8c329",
-  "branch": "worktree-agent-a955bd90f5c3c707d",
-  "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "baseline_commit": "9941d1e1ae031710491f66d03d58e459da595dd6",
+  "branch": "circle-data/int",
+  "unstaged_at_capture": []
 }
