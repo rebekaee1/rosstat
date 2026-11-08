@@ -1,15 +1,10 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "6b181937d188ae533889c8f21f7a3131bc9f3c93",
+  "baseline_commit": "d54cc6167205378d17630bed61644d5440cc26a0",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/adr/0027-public-telegram-bot.md",
-    "docs/code-review/coverage.json",
-    "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/code-review/coverage.json"
   ],
   "untracked_at_capture": [],
   "stats": {

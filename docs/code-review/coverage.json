@@ -29276,12 +29276,7 @@
   "input_scope": "tracked",
   "ledger_sha256": "c98292b46ed95c85a94d91db7651a1ea0ef579d7562be89b25a299abf2242e9f",
   "javascript_inventory_sha256": "d796d2d357a9f3f25555e57966f5be7ce2cbb1ddeb87fec6ce38f47be19bcd06",
-  "baseline_commit": "6b181937d188ae533889c8f21f7a3131bc9f3c93",
+  "baseline_commit": "d54cc6167205378d17630bed61644d5440cc26a0",
   "branch": "fix/public-bot-ux",
-  "unstaged_at_capture": [
-    "docs/adr/0027-public-telegram-bot.md",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
-  ]
+  "unstaged_at_capture": []
 }
