@@ -28,7 +28,7 @@ def test_artifact_rows_fit_the_model_and_are_in_indicators_json():
     stored = {r["code"]: r for r in json.loads((DATA / "indicators.json").read_text(encoding="utf-8"))}
     for row in rows:
         assert stored[row["code"]] == row
-    assert all(r["section_num"] == 22 for r in rows)
+    assert all(r["section_num"] == 20 for r in rows)
 
 
 def test_unit_phrases_read_naturally():

@@ -103,7 +103,7 @@ def refresh_indicator_artifact() -> None:
     path = ROOT / "backend/app/data/regional/indicators.json"
     current = json.loads(path.read_text(encoding="utf-8"))
     goods_codes = {g.code for g in goods_module.ALL_PRICE_GOODS}
-    kept = [row for row in current if not str(row.get("table_code", "")).startswith("22.m")
+    kept = [row for row in current if not str(row.get("table_code", "")).startswith(("20.m", "22.m"))
             and row["code"] not in goods_codes]
     rows = kept + goods_module.artifact_rows()
     path.write_text(json.dumps(rows, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

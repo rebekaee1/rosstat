@@ -517,11 +517,11 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
                 card["note"] = period
             headline[i.table_code] = card
 
-    # Цены ЕМИСС (table_code 22.m{N}): после годовых рядов раздела, в порядке
+    # Цены ЕМИСС (table_code 20.m{N}): после годовых рядов раздела, в порядке
     # справочника — сначала ходовые товары и услуги (яйца, хлеб, ЖКХ, проезд).
     price_order = {
         i.code: int(i.table_code[4:]) for i in inds
-        if (i.table_code or "").startswith("22.m") and i.table_code[4:].isdigit()
+        if (i.table_code or "").startswith("20.m") and i.table_code[4:].isdigit()
     }
     for sec in sections.values():
         sec["indicators"].sort(key=lambda it: (it["code"] in price_order, price_order.get(it["code"], 0)))

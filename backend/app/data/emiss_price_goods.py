@@ -7,7 +7,7 @@
 
 Здесь — первая порция: 79 позиций, которые ищут чаще всего (продукты, ЖКХ,
 связь, проезд, аренда жилья, бытовые услуги, поездки). Код ряда — ``ceni-…``,
-как у топлива; раздел 22 «Цены и тарифы» регионального каталога; слой
+как у топлива; раздел 20 «Цены и тарифы» регионального каталога; слой
 помесячный (``region_monthly_data``). История: по России с 2000 года, по
 субъектам с 2003 года (так отдаёт источник). Значения — рубли за указанную в
 названии единицу, на конец месяца (методология Росстата).
@@ -212,7 +212,7 @@ PRICE_GOODS_BY_OID: dict[str, str] = {g.oid: g.code for g in ALL_PRICE_GOODS}
 PRICE_GOODS_BY_CODE: dict[str, PriceGood] = {g.code: g for g in ALL_PRICE_GOODS}
 
 # Раздел регионального каталога, куда встают позиции.
-SECTION_NUM = 22
+SECTION_NUM = 20
 SECTION_NAME = "Цены и тарифы"
 
 
@@ -222,7 +222,7 @@ def artifact_rows() -> list[dict]:
     for n, g in enumerate(ALL_PRICE_GOODS, start=1):
         rows.append({
             "code": g.code,
-            "table_code": f"22.m{n}",
+            "table_code": f"20.m{n}",
             "section_num": SECTION_NUM,
             "section_name": SECTION_NAME,
             "name": g.name,
