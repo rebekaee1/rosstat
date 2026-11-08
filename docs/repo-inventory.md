@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2130  ·  **Строк:** 1 372 254  ·  **Токенов (≈):** 13 017 373
+**Файлов:** 2130  ·  **Строк:** 1 372 267  ·  **Токенов (≈):** 13 018 086
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 873 | 308 782 | 3 355 329 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 122 | 16 382 |
-| `docs` | 140 | 855 944 | 7 341 870 |
+| `docs` | 140 | 855 957 | 7 342 583 |
 | `frontend` | 953 | 178 997 | 1 947 278 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 128 | 24 084 | 286 972 |
@@ -47,7 +47,7 @@
 | `docs/research/search-matrix-2026-09-30.json` | 7 211 | 58 897 |
 | `frontend/src/i18n/messages.ru.js` | 3 861 | 54 420 |
 | `frontend/src/i18n/messages.en.js` | 3 856 | 53 527 |
-| `docs/data-contracts.md` | 1 054 | 52 886 |
+| `docs/data-contracts.md` | 1 058 | 53 143 |
 | `backend/app/data/eurostat_listing_decisions.json` | 5 417 | 52 136 |
 | `backend/app/services/seo_renderer.py` | 4 274 | 51 535 |
 | `docs/design/local-acceptance/first-pass/browser.json` | 6 470 | 44 920 |
@@ -56,7 +56,7 @@
 | `frontend/src/lib/usStatesMap.json` | 1 | 42 651 |
 | `docs/design/local-acceptance/final-narrow/http.json` | 4 949 | 41 138 |
 | `backend/app/data/regional/emiss_price_goods.json` | 7 211 | 39 800 |
-| `docs/design-system.md` | 491 | 38 836 |
+| `docs/design-system.md` | 492 | 39 021 |
 | `frontend/src/pages/ComparePage.jsx` | 3 324 | 36 832 |
 | `backend/app/data/i18n/region_indicators_en.py` | 2 962 | 32 849 |
 | `backend/app/data/eurostat_titles_curated.json` | 1 451 | 31 104 |
@@ -122,10 +122,10 @@
 | `backend/app/services/eurostat_parser.py` | 1 009 | 9 773 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 794 | 9 700 |
 | `backend/app/services/pulse.py` | 874 | 9 642 |
+| `docs/knowledge-unknowns.md` | 133 | 9 581 |
 | `frontend/src/pages/IndicatorDetail.jsx` | 871 | 9 402 |
 | `frontend/src/styles/z8-tools.css` | 905 | 9 371 |
 | `backend/tests/test_world.py` | 963 | 9 310 |
-| `docs/knowledge-unknowns.md` | 125 | 9 310 |
 | `backend/app/services/rosstat_weekly_inflation_parser.py` | 962 | 9 278 |
 | `backend/app/data/world_bea_regional/description_ru.json` | 477 | 9 258 |
 | `frontend/src/pages/WorldIndicatorPage.jsx` | 839 | 9 234 |
