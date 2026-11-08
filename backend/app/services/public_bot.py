@@ -20,6 +20,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import hmac
+import io
 import logging
 import re
 from dataclasses import dataclass
@@ -326,8 +327,9 @@ def figure_keyboard(topic: Topic, code: str | None, subscribed: bool) -> dict:
            else {"text": "🔔 Присылать новые данные", "callback_data": f"{CB_PREFIX}s:{topic.key}"})
     return {"inline_keyboard": [
         [sub],
-        [{"text": "📊 График сюда", "callback_data": f"{CB_PREFIX}g:{topic.key}"},
-         {"text": "📈 На сайте", "url": site_url(topic, code)}],
+        ([{"text": "📊 График сюда", "callback_data": f"{CB_PREFIX}g:{topic.key}"},
+          {"text": "📈 На сайте", "url": site_url(topic, code)}] if topic.key in CHART_TOPICS
+         else [{"text": "📈 График и прогноз на сайте", "url": site_url(topic, code)}]),
         [{"text": "Другие цифры", "callback_data": f"{CB_PREFIX}menu"}],
     ]}
 
@@ -369,6 +371,8 @@ THANKS_TEXT = "Пожалуйста! Если нужно ещё — выбери
 _GREETINGS = {"привет", "здравствуйте", "здравствуй", "добрый день", "добрый вечер", "доброе утро", "hi", "hello",
               "хай", "салют", "ку", "приветствую"}
 _THANKS = {"спасибо", "спс", "благодарю", "спасибо большое", "thanks", "thx", "ок", "окей", "ok", "понятно", "ясно"}
+WEEK_PROMPT = ("Сделай короткую сводку: что нового и важного в цифрах (бензин, цены, ставка, вклады, курсы) "
+               "за последние неделю–месяц и что это значит для обычного кошелька. 4–6 пунктов, живо.")
 STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
 
 
@@ -487,6 +491,13 @@ async def handle_message(msg: dict) -> None:
         return
     if low in ("/menu", "/help", "меню"):
         await _send(chat_id, "Выберите тему:", menu_keyboard())
+        return
+    if low in ("/week", "/сводка", "сводка") and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            _event(db, chat_id, "week")
+            await db.commit()
+        await answer_question(chat_id, WEEK_PROMPT)
         return
     topic, word = match_topic(text)
     async with async_session() as db:
@@ -760,6 +771,9 @@ _EXTRA_CODES = (
     ("brent", "Нефть Brent, $ за баррель"),
     ("imoex", "Индекс Мосбиржи"),
     ("ruonia", "Ставка RUONIA, %"),
+    # Живой прогон 08.11: «какой курс юаня» — «нет в данных», хотя ряд на сайте есть.
+    ("cny-rub", "Юань, ₽"),
+    ("btc-usd", "Биткоин, $"),
 )
 
 LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека, можешь задать встречный вопрос, если он поможет.
@@ -773,7 +787,7 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 Если человеку пригодятся кнопки, добавь в самом конце отдельной строкой (её не увидят как текст):
 [[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
 [[подписка: ключ]] — предложить присылать новые данные по теме;
-[[график: ключ]] — прислать картинку-график темы (за два года) прямо в чат;
+[[график: ключ]] — график темы картинкой (последняя цифра, год назад, наш расчёт, сравнение по делу); он придёт перед твоим текстом;
 [[вопросы: короткий вопрос | ещё вопрос]] — до двух следующих вопросов, которые человеку интересно нажать (до 40 знаков, от его лица).
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
 Подробный график и прогноз — на сайте ru.forecasteconomy.com."""
@@ -816,7 +830,7 @@ async def build_llm_context(db, today: date | None = None) -> str:
 def _context_line(title: str, unit: str, f: Figure) -> str:
     parts = [f"- {title}: {fmt_num(f.last_value)} {unit}".rstrip() + f" на {fmt_date(f.last_date, f.frequency)}"]
     if f.prev_value is not None:
-        parts.append(f"прошлая точка {fmt_num(f.prev_value)}")
+        parts.append(f"предыдущее значение {fmt_num(f.prev_value)}")
     if f.year_ago_value is not None:
         parts.append(f"год назад {fmt_num(f.year_ago_value)}")
     if f.forecast_value is not None and f.forecast_date is not None:
@@ -921,11 +935,73 @@ def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], li
             questions += [q.strip(" ?\"«»")[:60] + "?" for q in keys.split("|") if q.strip(" ?\"«»")]
             continue
         for k in re.split(r"[,\s]+", keys.strip().lower()):
-            if k in TOPICS:
+            if k in TOPICS and (kind != "график" or k in CHART_TOPICS):
                 {"подписка": subs, "график": charts}.get(kind, topics).append(k)
     clean = _ACTIONS.sub("", answer).strip()
     uniq = lambda xs: list(dict.fromkeys(xs))  # noqa: E731
     return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:2], uniq(charts)[:1]
+
+
+# Свой график (bot_chart.py) рисуется для всех тем: окно 3 года, у дневных рядов 18 месяцев.
+CHART_TOPICS = tuple(TOPICS)
+# С чем сравнивать по делу: (код ряда, подпись) или цель ЦБ.
+_CHART_COMPARE = {"keyrate": ("cpi-yoy", "инфляция"), "deposit": ("cpi-yoy", "инфляция"),
+                  "mortgage": ("key-rate", "ключевая ставка")}
+_CHART_TARGET = {"inflation": ("цель ЦБ", 4.0)}
+
+
+async def _series(db, code: str, since: date, weekly: bool) -> list[tuple[date, float]]:
+    ind = (await db.execute(select(Indicator.id).where(Indicator.code == code))).scalar_one_or_none()
+    if ind is None:
+        return []
+    rows = (await db.execute(
+        select(IndicatorData.date, IndicatorData.value)
+        .where(IndicatorData.indicator_id == ind, IndicatorData.date >= since)
+        .order_by(IndicatorData.date)
+    )).all()
+    pts = [(r[0], float(r[1])) for r in rows]
+    if weekly and len(pts) > 120:
+        # Дневной ряд — последнее значение каждой недели: линия чище, смысл тот же.
+        by_week: dict[tuple[int, int], tuple[date, float]] = {}
+        for dt, v in pts:
+            by_week[dt.isocalendar()[:2]] = (dt, v)
+        pts = list(by_week.values())
+        if pts and rows and pts[-1][0] != rows[-1][0]:
+            pts.append((rows[-1][0], float(rows[-1][1])))
+    return pts
+
+
+async def render_topic_chart(topic_key: str) -> bytes | None:
+    from app.services.bot_chart import Series, render_chart
+
+    topic = TOPICS[topic_key]
+    async with async_session() as db:
+        fig = await load_figure(db, topic)
+        if fig is None:
+            return None
+        daily = fig.frequency == "daily"
+        since = date(fig.last_date.year - (1 if daily else 3), fig.last_date.month, 1)
+        if daily:
+            since = date(fig.last_date.year - 2, fig.last_date.month, 1) if fig.last_date.month <= 6 else \
+                date(fig.last_date.year - 1, fig.last_date.month - 6, 1)
+        pts = await _series(db, topic.indicator, since, weekly=daily)
+        if len(pts) < 2:
+            return None
+        cmp_code, cmp_label = _CHART_COMPARE.get(topic_key, (None, None))
+        cmp_pts = await _series(db, cmp_code, since, weekly=True) if cmp_code else None
+    ya = None
+    if fig.year_ago_value is not None:
+        target = fig.last_date - timedelta(days=365)
+        ya = min(pts, key=lambda p: abs((p[0] - target).days))
+    unit = {"%": "%", "% за год": "%"}.get(topic.unit, topic.unit)
+    series = Series(
+        title=topic.title, unit=unit, source=fig.source, points=pts,
+        forecast=(fig.forecast_date, fig.forecast_value) if fig.forecast_value is not None else None,
+        year_ago=ya if ya and abs((ya[0] - (fig.last_date - timedelta(days=365))).days) <= 40 else None,
+        compare_label=cmp_label, compare_points=cmp_pts, target=_CHART_TARGET.get(topic_key),
+        is_rate=topic.is_rate, step=topic_key == "keyrate", unit_note=topic.unit,
+    )
+    return await asyncio.to_thread(render_chart, series)
 
 
 def chart_url(topic: Topic) -> str:
@@ -937,9 +1013,18 @@ async def send_chart(chat_id: str, topic_key: str) -> bool:
     from app.services.telegram_bot import _api
 
     topic = TOPICS[topic_key]
-    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">график и прогноз на сайте</a>"
-    res = await _api("sendPhoto", {"chat_id": chat_id, "photo": chart_url(topic), "caption": caption,
-                                   "parse_mode": "HTML"}, token=bot_token(), timeout=30)
+    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">подробнее на сайте</a>"
+    try:
+        png = await render_topic_chart(topic_key)
+    except Exception:  # noqa: BLE001 — график не должен ронять ответ
+        logger.warning("Public bot chart render failed: %s", topic_key, exc_info=True)
+        png = None
+    if png:
+        res = await _api("sendPhoto", {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"},
+                         files={"photo": (f"{topic_key}.png", io.BytesIO(png))}, token=bot_token(), timeout=30)
+    else:
+        res = await _api("sendPhoto", {"chat_id": chat_id, "photo": chart_url(topic), "caption": caption,
+                                       "parse_mode": "HTML"}, token=bot_token(), timeout=30)
     return res is not None
 
 
@@ -1016,7 +1101,44 @@ _offset_mem: str | None = None
 _POLL_BUDGET_S = 35.0
 
 
+async def handle_inline_query(iq: dict) -> None:
+    """Встроенный режим: «@ForecastEconomyBot дизель» в любом чате → готовая карточка, чтобы поделиться.
+    Пустой запрос — все темы. Без модели: карточки собираются скриптом из базы (быстро, без лимитов)."""
+    from app.services.telegram_bot import _api
+
+    query = (iq.get("query") or "").strip()
+    topic, _ = match_topic(query) if query else (None, None)
+    keys = [topic] if topic else [k for row in MENU for k in row]
+    results = []
+    async with async_session() as db:
+        cpi = await load_figure(db, TOPICS["inflation"])
+        for key in keys:
+            fig = await load_figure(db, TOPICS[key])
+            if fig is None:
+                continue
+            text = figure_text(fig, cpi=cpi if key != "inflation" else None)
+            results.append({
+                "type": "article", "id": key,
+                "title": f"{TOPICS[key].title}: {fmt_num(fig.last_value)} {TOPICS[key].unit}",
+                "description": f"{fmt_date(fig.last_date, fig.frequency)} · {fig.source}",
+                **({"thumbnail_url": chart_url(TOPICS[key])} if key in CHART_TOPICS else {}),
+                "input_message_content": {"message_text": text, "parse_mode": "HTML",
+                                          "link_preview_options": {"is_disabled": True}},
+                "reply_markup": {"inline_keyboard": [[
+                    {"text": "Спросить бота", "url": f"https://t.me/{settings.public_bot_username}?start=share_{key}"},
+                    {"text": "📈 На сайте", "url": site_url(TOPICS[key], "inline")},
+                ]]},
+            })
+        _event(db, str((iq.get("from") or {}).get("id", "")), "inline", topic=topic)
+        await db.commit()
+    await _api("answerInlineQuery", {"inline_query_id": iq.get("id"), "results": results, "cache_time": 300,
+                                     "is_personal": False}, token=bot_token(), timeout=10)
+
+
 async def handle_update(upd: dict) -> None:
+    if "inline_query" in upd:
+        await handle_inline_query(upd["inline_query"])
+        return
     if "callback_query" in upd:
         await handle_callback(upd["callback_query"])
     elif "message" in upd:
@@ -1054,7 +1176,8 @@ async def _poll_once() -> bool:
         offset = _offset_mem
     if _offset_mem and (not offset or int(_offset_mem) > int(offset)):
         offset = _offset_mem
-    payload: dict = {"timeout": 20, "allowed_updates": ["message", "callback_query", "my_chat_member"]}
+    payload: dict = {"timeout": 20,
+                     "allowed_updates": ["message", "callback_query", "my_chat_member", "inline_query"]}
     if offset:
         payload["offset"] = int(offset)
     data = await _api("getUpdates", payload, token=settings.public_bot_token)
@@ -1097,6 +1220,8 @@ _inflight: set = set()
 
 
 def _update_chat_id(upd: dict) -> str:
+    if "inline_query" in upd:
+        return "inline:" + str((upd["inline_query"].get("from") or {}).get("id", ""))
     for key in ("message", "my_chat_member"):
         if key in upd:
             return str((upd[key].get("chat") or {}).get("id", ""))

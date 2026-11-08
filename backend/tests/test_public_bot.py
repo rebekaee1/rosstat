@@ -468,3 +468,70 @@ def test_llm_context_has_wallet_lines_and_language_rule(env):
     assert "для кошелька: Полный бак 50 л: ≈4 326 ₽" in text
     assert "языке собеседника" in pb.LLM_SYSTEM_PROMPT and "[[темы:" in pb.LLM_SYSTEM_PROMPT
     assert "Нашего расчёта (прогноза) нет" in text and "Дизель" in text.split("Нашего расчёта")[1]
+
+
+def test_inline_query_cards(env):
+    _, _, api_calls = env
+    asyncio.run(pb.handle_inline_query({"id": "iq1", "query": "дизель", "from": {"id": 7}}))
+    method, payload = api_calls[-1][:2]
+    assert method == "answerInlineQuery" and payload["inline_query_id"] == "iq1"
+    [card] = payload["results"]
+    assert card["id"] == "diesel" and card["title"] == "Дизель: 86,52 ₽ за литр"
+    assert card["thumbnail_url"].endswith("/og/russia/fuel-diesel.png")
+    assert "86,52" in card["input_message_content"]["message_text"]
+    assert card["reply_markup"]["inline_keyboard"][0][0]["url"] == "https://t.me/ForecastEconomyBot?start=share_diesel"
+    asyncio.run(pb.handle_inline_query({"id": "iq2", "query": "", "from": {"id": 7}}))
+    ids = [r["id"] for r in api_calls[-1][1]["results"]]
+    assert "diesel" in ids and "inflation" in ids and "keyrate" in ids  # пустой запрос — все темы с данными
+
+
+def test_chart_action_for_any_topic_but_unknown_key_dropped():
+    _, _, _, _, charts = pb.split_actions("x [[график: keyrate]]")
+    assert charts == ["keyrate"]  # свой график рисуется и для дневных рядов
+    _, _, _, _, charts = pb.split_actions("x [[график: bitcoin]]")
+    assert charts == []
+
+
+def test_week_command_asks_model_for_digest(env, monkeypatch):
+    maker, sent, _ = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    asked: list = []
+
+    async def llm(context, question, history=None):
+        asked.append(question)
+        return "📰 <b>Неделя</b>\n[[вопросы: Почему бензин дешевеет?]]"
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    asyncio.run(pb.handle_message(_msg("/week")))
+    assert asked == [pb.WEEK_PROMPT]
+    assert sent[-1]["text"] == "📰 <b>Неделя</b>"
+    assert sent[-1]["kb"]["inline_keyboard"][0][0]["text"] == "💬 Почему бензин дешевеет?"
+    kinds = [e.kind for e in asyncio.run(_rows(maker, PublicBotEvent))]
+    assert kinds == ["week", "ask"]
+
+
+def test_chart_render_and_send(env, monkeypatch):
+    from io import BytesIO
+    from PIL import Image
+    from app.services.bot_chart import Series, render_chart
+
+    png = render_chart(Series(
+        title="Ключевая ставка", unit="%", source="Банк России",
+        points=[(date(2025, 11, 1), 16.5), (date(2026, 3, 1), 15.0), (date(2026, 11, 6), 14.0)],
+        year_ago=(date(2025, 11, 1), 16.5), compare_label="инфляция",
+        compare_points=[(date(2025, 11, 1), 7.9), (date(2026, 9, 1), 6.35)], step=True, is_rate=True,
+        forecast=(date(2026, 12, 1), 13.5), target=("цель ЦБ", 4.0),
+    ))
+    assert Image.open(BytesIO(png)).size == (1600, 1000)  # 2× от показа
+
+    _, sent, api_calls = env
+    seen: list = []
+
+    async def api(method, payload, files=None, token=None, **kw):
+        seen.append((method, payload, files))
+        return {"ok": True}
+    monkeypatch.setattr(tb, "_api", api)
+    assert asyncio.run(pb.send_chart("555", "diesel"))
+    method, payload, files = seen[-1]
+    assert method == "sendPhoto" and "photo" in files and "Дизель" in payload["caption"]
+    assert Image.open(files["photo"][1]).size == (1600, 1000)

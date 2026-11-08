@@ -524,6 +524,8 @@ class Settings(BaseSettings):
     # Токен отдельного публичного бота (@ForecastEconomyBot, решение владельца 08.11.2026):
     # пусто = публичный режим в служебном боте (прежняя схема); задан = свой бот и свой поллер.
     public_bot_token: str = ""
+    # Имя публичного бота без @ — для ссылок t.me/<имя>?start=… (встроенный режим, «Спросить бота»).
+    public_bot_username: str = "ForecastEconomyBot"
     # Ответы ИИ-модели (OpenRouter) на вопросы свободным текстом — по данным сайта из контекста.
     # Требует openrouter_api_key (и openrouter_proxy_url на проде). Модель: пусто = openrouter_model.
     public_bot_llm_enabled: bool = False
