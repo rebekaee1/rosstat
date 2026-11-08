@@ -25,6 +25,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
+import dataclasses
 from html import escape, unescape
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
@@ -591,6 +592,10 @@ async def handle_message(msg: dict) -> None:
     if low in ("/help", "помощь"):
         await _send(chat_id, HELP_TEXT, menu_keyboard())
         return
+    if low in ("/privacy", "/конфиденциальность", "конфиденциальность"):
+        # Тестер №3, круг 2: модель на /privacy уверяла «ничего не храню» — храним номер чата и подписки.
+        await _send(chat_id, privacy_line(), menu_keyboard())
+        return
     if low in ("/menu", "меню"):
         await _send(chat_id, MENU_TEXT, menu_keyboard())
         return
@@ -1032,6 +1037,18 @@ _EXTRA_CODES = (
     ("gdp-real-yoy", "Реальный ВВП, % к прошлому году"),
     ("cny-rub", "Юань, ₽"),
     ("btc-usd", "Биткоин, $"),
+    # Тестер №3, круг 2: «курс тенге» и «лиры» — бот отвечал «нет в данных», а ряды на сайте есть.
+    ("kzt-rub", "Тенге, ₽ за 100 тенге"),
+    ("try-rub", "Турецкая лира, ₽ за 1 лиру"),
+)
+
+# Итоги по годам для вопросов «какой был курс/ставка в 2014»: ряды на конец года, с 2005.
+_YEAR_END_CODES = (
+    ("usd-rub-eop-year", "Доллар на конец года, ₽"),
+    ("eur-rub-eop-year", "Евро на конец года, ₽"),
+    ("key-rate-eop-year", "Ключевая ставка на конец года, %"),
+    ("gold-price-eop-year", "Золото на конец года, ₽ за грамм"),
+    ("brent-eop-year", "Нефть Brent на конец года, $ за баррель"),
 )
 
 # Тестер №5, 09.11: «юань курс» — модель приложила график доллара. Ряды без своего графика не подменяем соседним.
@@ -1050,7 +1067,9 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 
 Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
-О себе пиши без рода: не «отписал»/«отписала», а «готово — отписка оформлена» (ответы звучат по-разному от раза к разу). Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
+О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: храню номер чата, подписки и память разговора на 30 минут, тексты вопросов не сохраняю; подробности — /privacy.
+
+Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
 
 Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника — то есть последнего сообщения человека (написал по-английски — по-английски, даже если раньше шла речь по-русски). В играх и загадках сверяй каждую подсказку арифметикой и не пиши «ровно», если не ровно.
 
@@ -1118,6 +1137,15 @@ async def build_llm_context(db, today: date | None = None) -> str:
             rows.append(f"{years} лет — {fmt_num(_pay(base, years), 0)} ₽ (при +1 пункте {fmt_num(_pay(base + 1, years), 0)} ₽)")
         lines.append(f"Ипотека, платёж в месяц на каждый 1 000 000 ₽ долга (аннуитет, средняя ставка {fmt_num(base)} %): "
                      + "; ".join(rows) + ". Для другой суммы умножь пропорционально; это расчёт по средней ставке, не предложение банка.")
+    dep = await load_figure(db, TOPICS["deposit"])
+    if dep is not None:
+        # Тестер №3, круг 2: «20 тыс. в месяц 10 лет под 12,84 %» модель считала в уме (4,4 вместо ≈4,8 млн).
+        r = dep.last_value / 100 / 12
+        rows = ", ".join(f"{n} лет — {fmt_num(10_000 * (((1 + r) ** (12 * n) - 1) / r), 0)} ₽ (внесено {fmt_num(120_000 * n, 0)} ₽)"
+                         for n in (1, 3, 5, 10, 20))
+        lines.append(f"Накопление по 10 000 ₽ в начале каждого месяца при ставке по вкладам {fmt_num(dep.last_value)} % "
+                     f"с капитализацией раз в месяц, без налога и при неизменной ставке: {rows}. "
+                     "Для другой суммы умножь пропорционально; ставка на годы вперёд неизвестна.")
     key = await load_figure(db, TOPICS["keyrate"])
     if key is not None:
         # Тестеры 09.11: из двух последних точек модель выводила «ставка не меняется второй день».
@@ -1149,7 +1177,16 @@ async def build_llm_context(db, today: date | None = None) -> str:
     for code, title in _EXTRA_CODES:
         f = await _figure_by_code(db, code)
         if f is not None:
+            if code == "kzt-rub":
+                # Тенге стоит копейки: «0,18 ₽» теряет точность, считаем за 100 тенге, как котирует ЦБ.
+                f = dataclasses.replace(f, **{k: (getattr(f, k) * 100 if getattr(f, k) is not None else None)
+                                              for k in ("last_value", "prev_value", "year_ago_value", "forecast_value")})
             lines.append(_context_line(title, "", f))
+    for code, title in _YEAR_END_CODES:
+        pts = await _series(db, code, date(2005, 1, 1), weekly=False)
+        pts = [(d, v) for d, v in pts if d.year < today.year]
+        if pts:
+            lines.append(f"{title}: " + ", ".join(f"{d.year} — {fmt_num(v)}" for d, v in pts))
     yearly = await _series(db, "inflation-annual", date(today.year - 16, 1, 1), weekly=False)
     if yearly:
         # Для вопросов «сколько стоили бы мои деньги из 2015 года»: годовая инфляция по годам (Росстат).
@@ -1219,8 +1256,8 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
         logger.warning("Public bot LLM: основная модель не ответила, пробую %s", settings.openrouter_model)
         answer = await _llm_call(settings.openrouter_model, context, question, history)
     if answer is None:
-        # Тестер 9, 09.11: при нагрузке (8 чатов разом) большинство ответов — «Не получилось»; одна повторная попытка через паузу.
-        await asyncio.sleep(3)
+        # Тестеры №3 и №9, 09.11: разовые отказы OpenRouter (402/429) — одна повторная попытка через паузу.
+        await asyncio.sleep(2)
         answer = await _llm_call(primary, context, question, history)
     return answer
 
