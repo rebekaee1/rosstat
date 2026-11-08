@@ -388,9 +388,20 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     return payload
 
 
+_MONTHS_RU = ("январь", "февраль", "март", "апрель", "май", "июнь",
+              "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь")
+_MONTHS_EN = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+
+def _month_label(month: int) -> str:
+    """YYYYMM → «сентябрь 2026» / «Sep 2026» по языку запроса."""
+    names = _MONTHS_EN if get_locale() == "en" else _MONTHS_RU
+    return f"{names[month % 100 - 1]} {month // 100}"
+
+
 @router.get("/{slug}")
 async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"profile:search-v2:{slug}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"profile:search-v3:{slug}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -435,6 +446,34 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
         else:
             prev[iid] = (year, float(value))
 
+    # Месячный слой (цены ЕМИСС: топливо и товары, 08.11.2026): два последних
+    # месяца по каждому ряду региона. Годовая точка у показателя приоритетнее.
+    mrn = func.row_number().over(
+        partition_by=RegionMonthlyPoint.indicator_id,
+        order_by=RegionMonthlyPoint.month.desc(),
+    ).label("rn")
+    msub = (
+        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month,
+               RegionMonthlyPoint.value, mrn)
+        .where(RegionMonthlyPoint.region_id == region.id)
+        .subquery()
+    )
+    month_of: dict[int, tuple[int, int | None]] = {}
+    mlatest: dict[int, tuple] = {}
+    mprev: dict[int, tuple] = {}
+    for iid, month, value, r_n in (await db.execute(
+        select(msub.c.indicator_id, msub.c.month, msub.c.value, msub.c.rn).where(msub.c.rn <= 2)
+    )).all():
+        (mlatest if r_n == 1 else mprev)[iid] = (int(month), float(value))
+    for iid, (month, value) in mlatest.items():
+        if iid in latest:
+            continue
+        latest[iid] = (month // 100, value)
+        p_month = mprev.get(iid)
+        if p_month:
+            prev[iid] = (p_month[0] // 100, p_month[1])
+        month_of[iid] = (month, p_month[0] if p_month else None)
+
     sections: dict[int, dict] = {}
     headline = {}
     growth_map = (
@@ -454,6 +493,10 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
             "prev_year": p[0] if p else None,
             "prev_value": _fmt(p[1]) if p else None,
         }
+        if i.id in month_of:
+            # YYYYMM последней и предыдущей точки: карточка месячного ряда.
+            item["month"], item["prev_month"] = month_of[i.id]
+            item["period_label"] = _month_label(item["month"])
         sec = sections.setdefault(i.section_num, {
             "num": i.section_num,
             "name": copy["section"] or i.section_name,
@@ -473,6 +516,15 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
                 card["unit"] = unit_out
                 card["note"] = period
             headline[i.table_code] = card
+
+    # Цены ЕМИСС (table_code 22.m{N}): после годовых рядов раздела, в порядке
+    # справочника — сначала ходовые товары и услуги (яйца, хлеб, ЖКХ, проезд).
+    price_order = {
+        i.code: int(i.table_code[4:]) for i in inds
+        if (i.table_code or "").startswith("22.m") and i.table_code[4:].isdigit()
+    }
+    for sec in sections.values():
+        sec["indicators"].sort(key=lambda it: (it["code"] in price_order, price_order.get(it["code"], 0)))
 
     result = {
         "region": {

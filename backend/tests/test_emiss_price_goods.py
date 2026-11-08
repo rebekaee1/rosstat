@@ -57,3 +57,10 @@ def test_one_month_payload_parses_fuel_and_goods_together():
         ("ceni-arenda-1k", "russia", 202609, 22345.0),
         ("ceni-yaytsa", "russia", 202609, 98.4),
     ]
+
+
+def test_region_profile_month_label():
+    from app.api.regions import _month_label
+
+    assert _month_label(202609) == "сентябрь 2026"
+    assert _month_label(200001) == "январь 2000"
