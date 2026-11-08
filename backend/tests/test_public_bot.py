@@ -754,3 +754,9 @@ def test_emoji_only_gets_reaction_not_model(env, monkeypatch):
     n = len(sent)
     asyncio.run(pb.handle_message({**_msg("👍"), "message_id": 7}))
     assert len(sent) == n and api_calls[-1][0] == "setMessageReaction"
+
+
+def test_telegram_html_fixes_latin_letter_inside_russian_word():
+    from app.services.public_bot import telegram_html
+    assert telegram_html("регулятор кранa и доллar") == "регулятор крана и доллар"
+    assert telegram_html("the USD rate") == "the USD rate"
