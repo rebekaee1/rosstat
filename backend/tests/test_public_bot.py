@@ -778,3 +778,7 @@ def test_safe_links_drops_invented_and_foreign_links():
     assert pb.safe_links(ok) == ok
     assert pb.safe_links(f'<a href="{o}/usd">доллар</a>') == "доллар"
     assert pb.safe_links('<a href="https://coinmarketcap.com">крипто</a>') == "крипто"
+def test_telegram_html_fixes_latin_letter_inside_russian_word():
+    from app.services.public_bot import telegram_html
+    assert telegram_html("регулятор кранa и доллar") == "регулятор крана и доллар"
+    assert telegram_html("the USD rate") == "the USD rate"

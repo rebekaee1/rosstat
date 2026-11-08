@@ -1343,11 +1343,17 @@ _REACTIONS = ("👍", "🔥", "🤔", "👏", "😁", "🤯", "🎉", "🙏", "�
 _QUESTIONS: dict[str, str] = {}
 
 
+_LAT2CYR = {"a": "а", "c": "с", "e": "е", "o": "о", "p": "р", "x": "х", "y": "у"}
+_LAT_IN_CYR = re.compile(r"(?<=[а-яё])([acepoxy])(?![a-z])|(?<![a-z])([acepoxy])(?=[а-яё])")
+
+
 def telegram_html(text: str) -> str:
     """Ответ модели → безопасный HTML Telegram: всё экранируется, разрешённые теги возвращаются.
     Markdown-жирный (**x**) превращается в <b>. Битая разметка всё равно дойдёт: send_message
     при «can't parse entities» шлёт текст без тегов."""
     # Тестеры 09.11: модель сама пишет &#x27; и &quot; — без раскрытия человек видел «&amp;#x27;».
+    # Тестер №10, 09.11: модель вставляет латинскую «a»/«o» внутрь русского слова («кранa», «доллar») — чинится.
+    text = _LAT_IN_CYR.sub(lambda m: _LAT2CYR[m.group(1) or m.group(2)], text)
     out = escape(unescape(text), quote=True)
 
     link_ok: list[bool] = []
@@ -1773,6 +1779,10 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     if any(w in _norm(text) for w in _NO_CHART):
         # Тестер №6, 09.11: «что с юанем?» приходил с графиком доллара — такого графика у темы нет.
         charts = []
+    # Тестер №10, 09.11: «безработица» (темы нет) приходила с картинкой инфляции. Короткий запрос про другое — без чужого графика.
+    short = len(re.findall(r"[a-zа-я0-9-]+", _norm(text))) <= 3
+    if short and "график" not in _norm(text) and "chart" not in _norm(text):
+        charts = [k for k in charts if match_topic(text)[0] == k]
     for key in charts:
         if chart_mismatch(text, key) or not _chart_fits(text, key, history):
             continue
