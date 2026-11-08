@@ -38,24 +38,42 @@ export function formatPrice(value, locale = 'ru') {
   return n.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: digits });
 }
 
-function PriceCard({ item, to, locale }) {
+/** Самый частый месяц среди ходовых цен: его показываем один раз над сеткой, а не на каждой карточке. */
+export function commonPeriod(items) {
+  const count = new Map();
+  items.forEach((i) => { if (i.period_label) count.set(i.period_label, (count.get(i.period_label) || 0) + 1); });
+  let best = '';
+  let n = 0;
+  count.forEach((v, k) => { if (v > n) { best = k; n = v; } });
+  return best;
+}
+
+function PriceCard({ item, to, locale, common, index = 0 }) {
+  const { t } = useLocale();
   const { title, per } = splitShortName(item.short_name || item.name);
   const d = yearDelta(item.value, item.prev_value);
   const signed = d ? (d.pct < 0 ? -Math.abs(d.pct) : Math.abs(d.pct)) : null;
   return (
-    <Link to={to} className="z1p-card fe-panel fe-summary-card fe-press fe-float" data-testid="region-price-card">
+    <Link
+      to={to}
+      className="z1p-card fe-panel fe-summary-card fe-press fe-float fe-reveal"
+      style={{ '--fe-delay': `${Math.min(index, 7) * 0.04}s`, '--fe-rise': '8px' }}
+      data-testid="region-price-card"
+    >
       <span className="z1p-card__name">{title}</span>
       <span className="z1p-card__value fe-num">
         {formatPrice(item.value, locale)}{NBSP}₽
         {per ? <span className="z1p-card__per">{NBSP}/ {per}</span> : null}
       </span>
       <span className="z1p-card__foot">
-        <span className="z1p-card__month">{item.period_label}</span>
-        {signed != null && (
-          <DeltaBadge delta={d.up || d.down ? signed : 0} polarity="up-bad" className="text-xs">
-            {formatDeltaPercent(signed, locale)}
-          </DeltaBadge>
-        )}
+        {item.period_label && item.period_label !== common ? <span className="z1p-card__month">{item.period_label}</span> : null}
+        {signed != null && (Math.abs(signed) < 0.05
+          ? <span className="z1p-card__flat">{t('r2z1.prices.flat')}</span>
+          : (
+            <DeltaBadge delta={signed} polarity="up-bad" className="text-xs">
+              {formatDeltaPercent(signed, locale)}
+            </DeltaBadge>
+          ))}
       </span>
     </Link>
   );
@@ -68,23 +86,24 @@ export function RegionPricesBlock({ slug, sections, headlineCodes, total, onOpen
     const byCode = new Map(collectPriceItems(sections).map((i) => [i.code, i]));
     return (headlineCodes || []).map((c) => byCode.get(c)).filter((i) => i && !i.is_discontinued).slice(0, 12);
   }, [sections, headlineCodes]);
+  const common = useMemo(() => commonPeriod(picks), [picks]);
   if (picks.length === 0) return null;
   return (
     <section className="z1p-block fe-reveal" data-testid="region-prices-block" aria-labelledby={`z1p-title-${slug}`}>
       <div className="z1p-block__head">
-        <div className="min-w-0">
-          <h2 id={`z1p-title-${slug}`} className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+        <div className="z1p-block__top">
+          <h2 id={`z1p-title-${slug}`} className="min-w-0 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
             {t('z1.prices.title')}
           </h2>
-          <p className="mt-0.5 text-sm text-text-secondary">{t('z1.prices.lead')}</p>
+          <button type="button" className="fe-chip fe-press z1p-all gap-1.5 text-champagne-ink" onClick={onOpenAll} data-testid="region-prices-all">
+            {t('z1.prices.all', { n: total })}
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
         </div>
-        <button type="button" className="fe-chip fe-press z1p-all gap-1.5 text-champagne-ink" onClick={onOpenAll} data-testid="region-prices-all">
-          {t('z1.prices.all', { n: total })}
-          <ArrowRight size={14} aria-hidden="true" />
-        </button>
+        <p className="mt-1 text-sm text-text-secondary">{common ? t('r2z1.prices.leadMonth', { month: common }) : t('z1.prices.lead')}</p>
       </div>
       <div className="z1p-grid">
-        {picks.map((item) => <PriceCard key={item.code} item={item} to={pathFor(item.code)} locale={locale} />)}
+        {picks.map((item, i) => <PriceCard key={item.code} item={item} to={pathFor(item.code)} locale={locale} common={common} index={i} />)}
       </div>
     </section>
   );
