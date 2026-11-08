@@ -1163,6 +1163,10 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
     if answer is None and settings.public_bot_llm_model and settings.public_bot_llm_model != settings.openrouter_model:
         logger.warning("Public bot LLM: основная модель не ответила, пробую %s", settings.openrouter_model)
         answer = await _llm_call(settings.openrouter_model, context, question, history)
+    if answer is None:
+        # Тестер 9, 09.11: при нагрузке (8 чатов разом) большинство ответов — «Не получилось»; одна повторная попытка через паузу.
+        await asyncio.sleep(3)
+        answer = await _llm_call(primary, context, question, history)
     return answer
 
 
