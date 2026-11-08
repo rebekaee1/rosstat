@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowDown, ArrowUp, Trophy, BarChart3 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Trophy, BarChart3, GitCompare } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionsHeatmap } from '../lib/regionsApi';
 import { formatRegionNumber, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
@@ -15,12 +15,14 @@ import {
   regionPath,
   regionRatingHubPath,
   regionRatingPath,
+  regionVsPath,
 } from '../lib/sitePaths';
 import Chip from '../components/Chip';
 import { useT, useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/k6-country.css';
+import '../styles/r3b-regions.css';
 
 export default function RegionRatingPage() {
   const t = useT();
@@ -47,6 +49,7 @@ export default function RegionRatingPage() {
     return rows.map((row, i) => ({ ...row, rank: i + 1 }));
   }, [data, sortDirection]);
 
+  const maxAbs = Math.max(1e-9, ...ranked.map((r) => Math.abs(Number(r.raw ?? r.value) || 0)));
   const top = ranked[0];
   const bottom = ranked[ranked.length - 1];
   const mapValues = useMemo(() => {
@@ -98,7 +101,7 @@ export default function RegionRatingPage() {
           <SkeletonBox className="mb-3 h-8 w-full max-w-xl sm:h-9" />
           <SkeletonBox className="mb-4 h-12 w-full max-w-3xl" />
           <SkeletonBox className="mb-6 h-9 w-72 max-w-full" />
-          <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="r3b-rate-tiles mb-3 grid grid-cols-1 gap-3">
             <SkeletonBox className="h-[92px] rounded-xl" />
             <SkeletonBox className="h-[92px] rounded-xl" />
             <SkeletonBox className="h-[92px] rounded-xl" />
@@ -117,7 +120,7 @@ export default function RegionRatingPage() {
             {' '}
             {t('common.year').toLowerCase()}
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
+          <h1 className="r3b-rate-h1 font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             {data.indicator.name}
             :
             {' '}
@@ -170,6 +173,13 @@ export default function RegionRatingPage() {
             </div>
           </div>
 
+          {top.slug && bottom.slug && top.slug !== bottom.slug && (
+            <Link to={regionVsPath(top.slug, bottom.slug)} className="r3b-vs-link fe-tap-inline mb-8">
+              <GitCompare size={14} aria-hidden="true" />
+              {t('r3b.rating.compareExtremes', { a: top.name, b: bottom.name })}
+            </Link>
+          )}
+
           <div className="mb-8 rounded-3xl p-3 sm:p-5 fe-glass-lite">
             <RegionsMap
               valuesBySlug={mapValues}
@@ -184,7 +194,7 @@ export default function RegionRatingPage() {
             <h2 className="mb-3 font-display text-xl font-bold text-text-primary">
               {listTitle}
             </h2>
-            <div className="max-h-[32rem] overflow-auto rounded-2xl fe-glass-lite">
+            <div className="r3b-rate-box max-h-[32rem] overflow-auto rounded-2xl fe-glass-lite">
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 z-10">
                   <tr className="text-left text-xs font-medium text-text-secondary">
@@ -225,6 +235,9 @@ export default function RegionRatingPage() {
                         >
                           {row.name}
                         </Link>
+                        <span className="r3b-rate-bar" aria-hidden="true">
+                          <span style={{ width: `${Math.max(2, (Math.abs(Number(row.raw ?? row.value) || 0) / maxAbs) * 100)}%` }} />
+                        </span>
                       </td>
                       <td className="fe-num whitespace-nowrap px-4 py-2 text-right text-text-primary">
                         <Link

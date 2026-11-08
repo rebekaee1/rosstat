@@ -3822,4 +3822,10 @@ export default {
   'r2z3.tele.up': 'higher',
   'r2z3.tele.down': 'lower',
   'r2z3.chart.addSecond': '+ Compare with another pair',
+  'r3b.hub.compareTwo': 'Compare: {a} and {b}',
+  'r3b.cmp.first': 'First region',
+  'r3b.cmp.second': 'Second region',
+  'r3b.cmp.swap': 'Swap the regions',
+  'r3b.cmp.tally': '{a} is higher on {na} of {n} indicators, {b} on {nb}.',
+  'r3b.rating.compareExtremes': 'Compare first and last place: {a} and {b}',
 };

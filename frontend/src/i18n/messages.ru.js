@@ -3827,4 +3827,10 @@ export default {
   'r2z3.tele.up': 'дороже',
   'r2z3.tele.down': 'дешевле',
   'r2z3.chart.addSecond': '+ Сравнить с другой парой',
+  'r3b.hub.compareTwo': 'Сравнить: {a} и {b}',
+  'r3b.cmp.first': 'Первый регион',
+  'r3b.cmp.second': 'Второй регион',
+  'r3b.cmp.swap': 'Поменять регионы местами',
+  'r3b.cmp.tally': '{a} больше по {na} из {n} показателей, {b} — по {nb}.',
+  'r3b.rating.compareExtremes': 'Сравнить первое и последнее места: {a} и {b}',
 };
