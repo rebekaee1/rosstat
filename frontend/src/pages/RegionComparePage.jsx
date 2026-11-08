@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 import { GitCompare, ChevronRight, ArrowLeftRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +19,7 @@ import {
   regionRatingPath,
   regionVsPath,
 } from '../lib/sitePaths';
+import R4PriceCompare, { R4PriceSkeleton, useRegionPriceCompare } from '../components/regions/R4PriceCompare';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionVsTrail } from '../lib/breadcrumbs';
 import { useLocale } from '../i18n';
@@ -73,12 +74,40 @@ function PairPicker({ slugA, slugB }) {
   );
 }
 
+const QUICK_SLUGS = ['krasnodarskiy-kray', 'respublika-tatarstan', 'novosibirskaya-oblast', 'sankt-peterburg', 'sverdlovskaya-oblast', 'rostovskaya-oblast'];
+
+/** Быстрый выбор: куда обычно переезжают — одно касание меняет второй регион. */
+function QuickPairs({ slugA, slugB }) {
+  const { t } = useLocale();
+  const navigate = useNavigate();
+  const { data } = useRegionsHeatmap('chislennost-naseleniya');
+  const names = useMemo(() => Object.fromEntries((data?.values || []).map((o) => [o.slug, o.name])), [data]);
+  const list = QUICK_SLUGS.filter((s) => names[s] && s !== slugA && s !== slugB);
+  if (list.length === 0) return null;
+  return (
+    <div className="r4a-quick" data-testid="r4a-quick-pairs">
+      <p className="r4a-quick__lead">{t('r4a.quick.lead', { a: names[slugA] || '' })}</p>
+      <div className="r4a-quick__row">
+        {list.map((s) => (
+          <button key={s} type="button" className="r4a-quick__chip fe-press" onClick={() => navigate(regionVsPath(slugA, s))}>
+            {names[s]}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function RegionComparePage() {
   const { t, locale } = useLocale();
   const { pair } = useParams();
   const parsed = parsePair(pair);
   const [slugA, slugB] = parsed || [null, null];
   const { data, isLoading, isError, refetch, isFetching } = useRegionCompare(slugA, slugB);
+  const prices = useRegionPriceCompare(slugA, slugB);
+  const [view, setView] = useState('prices');
+  const hasPrices = !!prices.data?.items?.length;
+  const showFacts = view === 'facts' || !hasPrices;
 
   useDocumentMeta(data ? {
     title: t('regions.compareTitle', { a: data.region_a.name, b: data.region_b.name }),
@@ -142,8 +171,20 @@ export default function RegionComparePage() {
           </p>
 
           <PairPicker slugA={slugA} slugB={slugB} />
+          <QuickPairs slugA={slugA} slugB={slugB} />
 
-          {tally.total > 0 && (
+          {prices.isLoading && <R4PriceSkeleton />}
+          {hasPrices && (
+            <div className="r4a-seg" role="tablist" data-testid="r4a-seg">
+              {['prices', 'facts'].map((v) => (
+                <button key={v} type="button" role="tab" aria-selected={view === v} className={`r4a-seg__btn fe-press${view === v ? ' is-on' : ''}`} onClick={() => setView(v)}>
+                  {t(`r4a.seg.${v}`)}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {tally.total > 0 && showFacts && (
             <p className="r3b-tally" data-testid="region-compare-tally">
               {t('r3b.cmp.tally', {
                 a: data.region_a.name, na: tally.a, b: data.region_b.name, nb: tally.b, n: tally.total,
@@ -158,7 +199,9 @@ export default function RegionComparePage() {
             </div>
           )}
 
-          <div className="mb-8 grid gap-3 sm:grid-cols-2">
+          {hasPrices && view === 'prices' && <R4PriceCompare data={prices.data} />}
+
+          <div className="mb-8 grid gap-3 sm:grid-cols-2" hidden={!showFacts}>
             {data.rows.map((row, index) => {
               const peak = Math.max(Math.abs(row.a.value ?? 0), Math.abs(row.b.value ?? 0), 1e-9);
               const side = (region, point) => {
