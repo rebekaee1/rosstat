@@ -16,7 +16,7 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { russiaIndicatorPath } from '../lib/sitePaths';
 import EmptyState from './brand/EmptyState';
 import {
-  CURRENCY_TABS, buildEdges, convertibleUnits, currencySearchText, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
+  CURRENCY_TABS, buildEdges, convertibleUnits, currencySearchText, nominalFor, pairTab, pairTitle, parsePair, quoteUnitsOf, rateBasis,
   sortByPopularity, unitMeta, unitWord,
 } from '../lib/currencyRates';
 import { coinOf } from '../lib/currencyChart';
@@ -189,14 +189,17 @@ function CurrencyRow({ ind, index }) {
   const pct = pctOf(change, value);
   const delta = pct != null ? formatDeltaWithUnit(pct, '%', { pct: true, locale }) : null;
   const dateText = shortDate(ind.current_date, locale);
-  const digits = Math.abs(value) >= 1000 ? 0 : 2;
   const stale = ageInDays(ind.current_date) > STALE_AFTER_DAYS;
   // «Узбекский сум» крупно, «к рублю» тише: на узком экране название идёт в одну строку.
   const baseName = pair ? (locale === 'en' ? unitMeta(pair.base).en : unitMeta(pair.base).ru) : '';
   const split = baseName && title.startsWith(baseName) && title.length > baseName.length;
   const head = split ? baseName : title;
   const tail = split ? title.slice(baseName.length) : '';
-  const perN = quoteUnitsOf(ind.unit);
+  // Ряд мелкой валюты, который пришёл «за 1» (тенге 0,18 ₽), показываем как ЦБ: «18,31 ₽ за 100 тенге».
+  const apiN = quoteUnitsOf(ind.unit);
+  const perN = apiN > 1 ? apiN : (pair ? nominalFor(pair.base, value) : 1);
+  const shown = apiN > 1 ? value : value * perN;
+  const digits = Math.abs(shown) >= 1000 ? 0 : 2;
   const showDelta = delta && !delta.flat && !stale;
   return (
     <Link
@@ -227,7 +230,7 @@ function CurrencyRow({ ind, index }) {
       </span>
       <span className="fe-trow__val z3-val">
         <span className="z3-val__main">
-          <span className="fe-trow__num">{formatValue(value, digits, locale)}</span>
+          <span className="fe-trow__num">{formatValue(shown, digits, locale)}</span>
           {quote?.symbol && <span className="fe-trow__unit z3-val__sym">{quote.symbol}</span>}
         </span>
         {perN > 1 && pair && (

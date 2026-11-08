@@ -30,6 +30,12 @@
 .z3-out .fe-z8-conv__rate { margin-top: 6px; font-size: 14px; line-height: 1.4; }
 .z3-out .fe-z8-conv__rate + .fe-z8-conv__rate { margin-top: 2px; color: var(--color-text-secondary); }
 .z3-pair { margin-top: 14px; }
+/* Телефон от 400 px: «Из ⇄ В» в одну строку (раньше три блока друг под другом отнимали почти пол-экрана). */
+@media (min-width: 400px) and (max-width: 479px) {
+  .fe-z8-cur .z3-pair.fe-z8-conv__row { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 6px; align-items: end; }
+  .fe-z8-cur .z3-pair.fe-z8-conv__row > .fe-z8-swap { margin: 0 0 4px; width: 36px; height: 36px; min-width: 36px; min-height: 36px; }
+  .fe-z8-cur .z3-pair.fe-z8-conv__row > .fe-z8-swap svg { transform: rotate(var(--k8-turn, 0deg)); }
+}
 
 /* Популярные валюты для поездок: одна лента кнопок, на телефоне листается вбок. */
 .z3-pop { margin-top: 14px; }
