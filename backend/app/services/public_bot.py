@@ -1047,6 +1047,15 @@ async def build_llm_context(db, today: date | None = None) -> str:
         # Для вопросов «сколько стоили бы мои деньги из 2015 года»: годовая инфляция по годам (Росстат).
         lines.append("Инфляция по годам, % (декабрь к декабрю): "
                      + ", ".join(f"{d.year} — {fmt_num(v, 1)}" for d, v in yearly[-15:]))
+        # Живой прогон 08.11: сложные проценты в уме модель считала с ошибкой (195 вместо 183 тыс.).
+        last_year = yearly[-1][0].year
+        grow, acc = [], 1.0
+        for d, v in reversed(yearly[-15:]):
+            if d.year < last_year:
+                grow.append(f"{d.year} — {fmt_num(100 * acc, 0)}")
+            acc *= 1 + v / 100
+        lines.append(f"100 ₽ на конец года стоят на конец {last_year} (без текущего года): "
+                     + ", ".join(reversed(grow)))
     if no_forecast:
         # Живой прогон 08.11: модель обещала «прогноз бензина на сайте», которого нет.
         lines.append("Нашего расчёта (прогноза) нет ни в боте, ни на сайте по темам: " + ", ".join(no_forecast)
