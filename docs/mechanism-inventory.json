@@ -335,8 +335,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "sha256": "d643c5ffdb42dabb8a4db3eb8c25276b830053151066d84f318342634fd363c0",
-      "lines": 848
+      "sha256": "07a30d9d4dd98a9a63ad4e512dfb3674548ddd726e1fce5d38b4094fefeba08a",
+      "lines": 864
     },
     {
       "path": "backend/app/api/router.py",
@@ -1402,6 +1402,11 @@
       "path": "backend/app/services/pulse_report.py",
       "sha256": "4b1a0097a5e4363d215367cf88a6405a28562a48b104d478329ec083cf799bb4",
       "lines": 513
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "sha256": "0af748315c9eb85f8f88efbaede25c48b7ee334e4c5eb2b2394b86664aea4848",
+      "lines": 151
     },
     {
       "path": "backend/app/services/region_compare_data.py",
@@ -10822,8 +10827,43 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 415,
+      "end_line": 415,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "handler": "app.api.regions.regions_compare_prices",
+      "router": "app.api.regions.router",
+      "path_template": "/vs/{slug_a}/{slug_b}/prices",
+      "path_expression": "'/vs/{slug_a}/{slug_b}/prices'",
+      "methods": [
+        "GET"
+      ],
+      "options": {},
+      "handler_line": 416,
+      "handler_end_line": 428,
+      "parameters": [
+        {
+          "name": "slug_a",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "slug_b",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "db",
+          "annotation": "AsyncSession",
+          "default": "Depends(get_db)"
+        }
+      ],
+      "returns": null
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 455,
+      "end_line": 455,
       "owner": "region_profile",
       "conditions": [],
       "handler": "app.api.regions.region_profile",
@@ -10834,8 +10874,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 440,
-      "handler_end_line": 587,
+      "handler_line": 456,
+      "handler_end_line": 603,
       "parameters": [
         {
           "name": "slug",
@@ -10852,8 +10892,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 657,
+      "end_line": 657,
       "owner": "region_indicator_detail",
       "conditions": [],
       "handler": "app.api.regions.region_indicator_detail",
@@ -10864,8 +10904,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 642,
-      "handler_end_line": 729,
+      "handler_line": 658,
+      "handler_end_line": 745,
       "parameters": [
         {
           "name": "slug",
@@ -10887,8 +10927,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 745,
-      "end_line": 745,
+      "line": 761,
+      "end_line": 761,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "handler": "app.api.regions.region_indicator_monthly",
@@ -10899,8 +10939,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 746,
-      "handler_end_line": 848,
+      "handler_line": 762,
+      "handler_end_line": 864,
       "parameters": [
         {
           "name": "slug",
@@ -33045,8 +33085,17 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 586,
-      "end_line": 586,
+      "line": 427,
+      "end_line": 427,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "name": "cache_ttl_data",
+      "expression": "settings.cache_ttl_data"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 602,
+      "end_line": 602,
       "owner": "region_profile",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -33054,8 +33103,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 744,
+      "end_line": 744,
       "owner": "region_indicator_detail",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -33063,8 +33112,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 847,
-      "end_line": 847,
+      "line": 863,
+      "end_line": 863,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "name": "cache_ttl_data",
@@ -41324,8 +41373,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 415,
-      "end_line": 416,
+      "line": 431,
+      "end_line": 432,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHS_RU",
@@ -41341,8 +41390,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 417,
-      "end_line": 417,
+      "line": 433,
+      "end_line": 433,
       "owner": "<module>",
       "conditions": [],
       "name": "_MONTHS_EN",
@@ -41358,8 +41407,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 732,
-      "end_line": 735,
+      "line": 748,
+      "end_line": 751,
       "owner": "<module>",
       "conditions": [],
       "name": "MONTH_NAMES_RU",
@@ -98583,6 +98632,57 @@
       "runtime_expansion": true
     },
     {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 18,
+      "end_line": 30,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "BASKET",
+      "symbol": "app.services.r4a_price_compare.BASKET",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "(('ceni-hleb-pshenichnyy', 8), ('ceni-moloko', 12), ('ceni-yaytsa', 4), ('ceni-kury', 4), ('ceni-govyadina-beskostnaya', 2), ('ceni-kartofel', 8), ('ceni-sahar', 2), ('ceni-ai95', 80), ('ceni-proezd-avtobus', 40), ('ceni-elektroenergiya', 2), ('ceni-internet', 1))",
+      "expression_truncated": false,
+      "expression_chars": 264,
+      "ast_sha256": "d9e7caff48e3b83d7d192842d14db78a7e6f1f279be090cebe5ee5e29eb33958",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 32,
+      "end_line": 33,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_MONTHS_RU",
+      "symbol": "app.services.r4a_price_compare._MONTHS_RU",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь')",
+      "expression_truncated": false,
+      "expression_chars": 116,
+      "ast_sha256": "2af4edba5fdeb39f6d094cdca01707ddd784b553b7c7197a3d644214aefcb592",
+      "runtime_expansion": false
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 34,
+      "end_line": 34,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_MONTHS_EN",
+      "symbol": "app.services.r4a_price_compare._MONTHS_EN",
+      "kind": "Tuple",
+      "literal_keys": [],
+      "entries": [],
+      "expression": "('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')",
+      "expression_truncated": false,
+      "expression_chars": 84,
+      "ast_sha256": "5d0a6cc253bdfad815702dfd797c8ac9b5fe8da2cb802b0541eca30158558730",
+      "runtime_expansion": false
+    },
+    {
       "path": "backend/app/services/rosstat_cpi_parser.py",
       "line": 92,
       "end_line": 128,
@@ -127285,8 +127385,50 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 441,
-      "end_line": 441,
+      "line": 420,
+      "end_line": 420,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "operation": "versioned_key",
+      "receiver": null,
+      "symbol": "app.core.cache.versioned_key",
+      "expression": "versioned_key('regions', f'vs-prices:v1:{slug_a}:{slug_b}:{get_locale()}')",
+      "expression_truncated": false,
+      "expression_chars": 74,
+      "ast_sha256": "d1a6bccd41331dba20bc4e48c11632491d2ecd80c6df6abac4ba85a361c61fed"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 421,
+      "end_line": 421,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "operation": "cache_get",
+      "receiver": null,
+      "symbol": "app.core.cache.cache_get",
+      "expression": "cache_get(cache_key)",
+      "expression_truncated": false,
+      "expression_chars": 20,
+      "ast_sha256": "840dc83a972434e94805de9b0eab94c0dbd9cec41d0af1f8b5807c614f20ac5b"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 427,
+      "end_line": 427,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "operation": "cache_set",
+      "receiver": null,
+      "symbol": "app.core.cache.cache_set",
+      "expression": "cache_set(cache_key, payload, settings.cache_ttl_data)",
+      "expression_truncated": false,
+      "expression_chars": 54,
+      "ast_sha256": "b95f74e94ab624df3f68c6837bc746ba74aa54c9855bcf428476199f7ef1e83d"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 457,
+      "end_line": 457,
       "owner": "region_profile",
       "conditions": [],
       "operation": "versioned_key",
@@ -127299,8 +127441,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 442,
-      "end_line": 442,
+      "line": 458,
+      "end_line": 458,
       "owner": "region_profile",
       "conditions": [],
       "operation": "cache_get",
@@ -127313,8 +127455,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 586,
-      "end_line": 586,
+      "line": 602,
+      "end_line": 602,
       "owner": "region_profile",
       "conditions": [],
       "operation": "cache_set",
@@ -127327,8 +127469,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 643,
-      "end_line": 643,
+      "line": 659,
+      "end_line": 659,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "versioned_key",
@@ -127341,8 +127483,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 644,
-      "end_line": 644,
+      "line": 660,
+      "end_line": 660,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "cache_get",
@@ -127355,8 +127497,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 728,
-      "end_line": 728,
+      "line": 744,
+      "end_line": 744,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "cache_set",
@@ -127369,8 +127511,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 753,
-      "end_line": 753,
+      "line": 769,
+      "end_line": 769,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "versioned_key",
@@ -127383,8 +127525,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 754,
-      "end_line": 754,
+      "line": 770,
+      "end_line": 770,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "cache_get",
@@ -127397,8 +127539,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 847,
-      "end_line": 847,
+      "line": 863,
+      "end_line": 863,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "cache_set",
@@ -127411,8 +127553,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 635,
-      "end_line": 635,
+      "line": 651,
+      "end_line": 651,
       "owner": "_section_siblings._sibling",
       "conditions": [
         "meta"
@@ -127539,8 +127681,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 474,
-      "end_line": 477,
+      "line": 490,
+      "end_line": 493,
       "owner": "region_profile",
       "conditions": [],
       "operation": "execute",
@@ -127553,8 +127695,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 501,
-      "end_line": 503,
+      "line": 517,
+      "end_line": 519,
       "owner": "region_profile",
       "conditions": [],
       "operation": "execute",
@@ -127567,8 +127709,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 539,
-      "end_line": 539,
+      "line": 555,
+      "end_line": 555,
       "owner": "region_profile",
       "conditions": [
         "i.id in month_of",
@@ -127584,8 +127726,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 649,
-      "end_line": 651,
+      "line": 665,
+      "end_line": 667,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "execute",
@@ -127598,8 +127740,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 655,
-      "end_line": 660,
+      "line": 671,
+      "end_line": 676,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "execute",
@@ -127612,8 +127754,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 681,
-      "end_line": 690,
+      "line": 697,
+      "end_line": 706,
       "owner": "region_indicator_detail",
       "conditions": [],
       "operation": "execute",
@@ -127626,8 +127768,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 759,
-      "end_line": 761,
+      "line": 775,
+      "end_line": 777,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "execute",
@@ -127640,8 +127782,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 765,
-      "end_line": 770,
+      "line": 781,
+      "end_line": 786,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "execute",
@@ -127702,8 +127844,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 450,
-      "end_line": 452,
+      "line": 466,
+      "end_line": 468,
       "owner": "region_profile",
       "conditions": [
         "region.district_slug"
@@ -127718,8 +127860,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 615,
-      "end_line": 620,
+      "line": 631,
+      "end_line": 636,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -127734,8 +127876,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 684,
+      "end_line": 684,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'"
@@ -127750,8 +127892,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 788,
-      "end_line": 788,
+      "line": 804,
+      "end_line": 804,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'"
@@ -127766,8 +127908,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 807,
-      "end_line": 807,
+      "line": 823,
+      "end_line": 823,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "execute",
@@ -127780,8 +127922,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 810,
-      "end_line": 815,
+      "line": 826,
+      "end_line": 831,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "operation": "execute",
@@ -127836,8 +127978,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 456,
-      "end_line": 460,
+      "line": 472,
+      "end_line": 476,
       "owner": "region_profile",
       "conditions": [],
       "operation": "execute",
@@ -127850,8 +127992,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 595,
-      "end_line": 601,
+      "line": 611,
+      "end_line": 617,
       "owner": "_section_siblings",
       "conditions": [],
       "operation": "execute",
@@ -127864,8 +128006,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 670,
-      "end_line": 675,
+      "line": 686,
+      "end_line": 691,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -127881,8 +128023,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 790,
-      "end_line": 795,
+      "line": 806,
+      "end_line": 811,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -141845,6 +141987,66 @@
       "expression_truncated": false,
       "expression_chars": 108,
       "ast_sha256": "ca13b47e981cb24d6f9600d908bb5a75af5932102d9e64aa0f03b81713b2f355"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 60,
+      "end_line": 66,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.r4a_price_compare.db.execute",
+      "expression": "db.execute(select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.region_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value).where(RegionMonthlyPoint.indicator_id.in_(list(by_id)), RegionMonthlyPoint.region_id.in_([ra.id, rb.id])).order_by(RegionMonthlyPoint.month.desc()))",
+      "expression_truncated": false,
+      "expression_chars": 281,
+      "ast_sha256": "eb61da679565f30a219094afd26dd461c424e9f10059d7dd79c89c8a55bbcec0"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 122,
+      "end_line": 126,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.r4a_price_compare.db.execute",
+      "expression": "db.execute(select(RegionDataPoint.region_id, RegionDataPoint.year, RegionDataPoint.value).where(RegionDataPoint.indicator_id == w_ind.id, RegionDataPoint.region_id.in_([ra.id, rb.id])))",
+      "expression_truncated": false,
+      "expression_chars": 185,
+      "ast_sha256": "83d5d2c42a0ac3e14d3a1fa53e0fcd2ba15ee8acdc77e78ce714d1513e317c24"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 54,
+      "end_line": 56,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.r4a_price_compare.db.execute",
+      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.code.like('ceni-%')))",
+      "expression_truncated": false,
+      "expression_chars": 78,
+      "ast_sha256": "817934af937b5449eaa0b859b9d1e861e820e6095089598e45ec4b42b67c53a1"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 118,
+      "end_line": 120,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "operation": "execute",
+      "receiver": "db",
+      "symbol": "app.services.r4a_price_compare.db.execute",
+      "expression": "db.execute(select(RegionIndicator).where(RegionIndicator.table_code == WAGE_TABLE).limit(1))",
+      "expression_truncated": false,
+      "expression_chars": 92,
+      "ast_sha256": "d0759a40262a2e25c0bfe825f017b4a9f007f76ea16e188a2484f661e0a237e0"
     },
     {
       "path": "backend/app/services/region_compare_data.py",
@@ -168537,8 +168739,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 481,
+      "end_line": 481,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -168546,8 +168748,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 487,
+      "end_line": 487,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -168555,8 +168757,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 505,
+      "end_line": 505,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -168564,8 +168766,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 511,
+      "end_line": 511,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
@@ -168620,8 +168822,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 465,
-      "end_line": 465,
+      "line": 481,
+      "end_line": 481,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168629,8 +168831,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 482,
+      "end_line": 482,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year.desc",
@@ -168638,8 +168840,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 485,
+      "end_line": 485,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -168647,8 +168849,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 485,
+      "end_line": 485,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -168656,8 +168858,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 486,
+      "end_line": 486,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -168665,8 +168867,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 471,
-      "end_line": 471,
+      "line": 487,
+      "end_line": 487,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168674,8 +168876,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 489,
-      "end_line": 489,
+      "line": 505,
+      "end_line": 505,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -168683,8 +168885,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 506,
+      "end_line": 506,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month.desc",
@@ -168692,8 +168894,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 509,
+      "end_line": 509,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -168701,8 +168903,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 509,
+      "end_line": 509,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -168710,8 +168912,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 510,
+      "end_line": 510,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.value",
@@ -168719,8 +168921,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 495,
-      "end_line": 495,
+      "line": 511,
+      "end_line": 511,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -168728,8 +168930,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 675,
+      "end_line": 675,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -168737,8 +168939,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 769,
-      "end_line": 769,
+      "line": 785,
+      "end_line": 785,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -168818,8 +169020,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 482,
+      "end_line": 482,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -168827,8 +169029,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 485,
+      "end_line": 485,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168836,8 +169038,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 469,
-      "end_line": 469,
+      "line": 485,
+      "end_line": 485,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168845,8 +169047,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 470,
-      "end_line": 470,
+      "line": 486,
+      "end_line": 486,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168854,8 +169056,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 506,
+      "end_line": 506,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -168863,8 +169065,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 509,
+      "end_line": 509,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -168872,8 +169074,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 493,
-      "end_line": 493,
+      "line": 509,
+      "end_line": 509,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -168881,8 +169083,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 494,
-      "end_line": 494,
+      "line": 510,
+      "end_line": 510,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -168890,8 +169092,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 666,
+      "end_line": 666,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -168899,8 +169101,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 659,
-      "end_line": 659,
+      "line": 675,
+      "end_line": 675,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -168908,8 +169110,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 688,
-      "end_line": 688,
+      "line": 704,
+      "end_line": 704,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -168917,8 +169119,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 776,
+      "end_line": 776,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -168926,8 +169128,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 769,
-      "end_line": 769,
+      "line": 785,
+      "end_line": 785,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -169185,8 +169387,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 467,
+      "end_line": 467,
       "owner": "region_profile",
       "conditions": [
         "region.district_slug"
@@ -169196,8 +169398,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 475,
+      "end_line": 475,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -169205,8 +169407,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 475,
+      "end_line": 475,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -169214,8 +169416,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 466,
-      "end_line": 466,
+      "line": 482,
+      "end_line": 482,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -169223,8 +169425,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 490,
-      "end_line": 490,
+      "line": 506,
+      "end_line": 506,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -169232,8 +169434,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 616,
+      "end_line": 616,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.table_code",
@@ -169241,8 +169443,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 616,
+      "end_line": 616,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -169250,8 +169452,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 619,
-      "end_line": 619,
+      "line": 635,
+      "end_line": 635,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -169261,8 +169463,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 666,
+      "end_line": 666,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169270,8 +169472,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 650,
-      "end_line": 650,
+      "line": 666,
+      "end_line": 666,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169279,8 +169481,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 684,
+      "end_line": 684,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'"
@@ -169290,8 +169492,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 674,
-      "end_line": 674,
+      "line": 690,
+      "end_line": 690,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -169302,8 +169504,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 688,
-      "end_line": 688,
+      "line": 704,
+      "end_line": 704,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -169311,8 +169513,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 776,
+      "end_line": 776,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169320,8 +169522,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 760,
-      "end_line": 760,
+      "line": 776,
+      "end_line": 776,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169329,8 +169531,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 788,
-      "end_line": 788,
+      "line": 804,
+      "end_line": 804,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'"
@@ -169340,8 +169542,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 794,
-      "end_line": 794,
+      "line": 810,
+      "end_line": 810,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -169352,8 +169554,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 807,
-      "end_line": 807,
+      "line": 823,
+      "end_line": 823,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -169361,8 +169563,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 812,
-      "end_line": 812,
+      "line": 828,
+      "end_line": 828,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -169370,8 +169572,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 829,
+      "end_line": 829,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
@@ -169379,8 +169581,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 814,
-      "end_line": 814,
+      "line": 830,
+      "end_line": 830,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -169608,8 +169810,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 467,
+      "end_line": 467,
       "owner": "region_profile",
       "conditions": [
         "region.district_slug"
@@ -169619,8 +169821,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 467,
+      "end_line": 467,
       "owner": "region_profile",
       "conditions": [
         "region.district_slug"
@@ -169630,8 +169832,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 475,
+      "end_line": 475,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169639,8 +169841,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 459,
-      "end_line": 459,
+      "line": 475,
+      "end_line": 475,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169648,8 +169850,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 616,
+      "end_line": 616,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169657,8 +169859,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 600,
-      "end_line": 600,
+      "line": 616,
+      "end_line": 616,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -169666,8 +169868,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 619,
-      "end_line": 619,
+      "line": 635,
+      "end_line": 635,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -169677,8 +169879,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 673,
+      "end_line": 673,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -169686,8 +169888,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 674,
+      "end_line": 674,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -169695,8 +169897,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 684,
+      "end_line": 684,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'"
@@ -169706,8 +169908,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 668,
-      "end_line": 668,
+      "line": 684,
+      "end_line": 684,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'"
@@ -169717,8 +169919,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 674,
-      "end_line": 674,
+      "line": 690,
+      "end_line": 690,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -169729,8 +169931,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 684,
-      "end_line": 684,
+      "line": 700,
+      "end_line": 700,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.indicator_id",
@@ -169738,8 +169940,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 701,
+      "end_line": 701,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -169747,8 +169949,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 702,
+      "end_line": 702,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region.kind",
@@ -169756,8 +169958,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 767,
-      "end_line": 767,
+      "line": 783,
+      "end_line": 783,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.indicator_id",
@@ -169765,8 +169967,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 784,
+      "end_line": 784,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.region_id",
@@ -169774,8 +169976,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 788,
-      "end_line": 788,
+      "line": 804,
+      "end_line": 804,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'"
@@ -169785,8 +169987,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 788,
-      "end_line": 788,
+      "line": 804,
+      "end_line": 804,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'"
@@ -169796,8 +169998,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 794,
-      "end_line": 794,
+      "line": 810,
+      "end_line": 810,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -169808,8 +170010,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 807,
-      "end_line": 807,
+      "line": 823,
+      "end_line": 823,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -169817,8 +170019,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 807,
-      "end_line": 807,
+      "line": 823,
+      "end_line": 823,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -169826,8 +170028,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 811,
-      "end_line": 811,
+      "line": 827,
+      "end_line": 827,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.value",
@@ -169835,8 +170037,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 812,
-      "end_line": 812,
+      "line": 828,
+      "end_line": 828,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -169844,8 +170046,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 813,
-      "end_line": 813,
+      "line": 829,
+      "end_line": 829,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -169853,8 +170055,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 814,
-      "end_line": 814,
+      "line": 830,
+      "end_line": 830,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170018,8 +170220,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 451,
-      "end_line": 451,
+      "line": 467,
+      "end_line": 467,
       "owner": "region_profile",
       "conditions": [
         "region.district_slug"
@@ -170029,8 +170231,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 633,
+      "end_line": 633,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170040,8 +170242,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 634,
+      "end_line": 634,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170051,8 +170253,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 619,
-      "end_line": 619,
+      "line": 635,
+      "end_line": 635,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170062,8 +170264,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 672,
+      "end_line": 672,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.year",
@@ -170071,8 +170273,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 672,
+      "end_line": 672,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -170080,8 +170282,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 657,
-      "end_line": 657,
+      "line": 673,
+      "end_line": 673,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170089,8 +170291,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 658,
-      "end_line": 658,
+      "line": 674,
+      "end_line": 674,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170098,8 +170300,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 699,
+      "end_line": 699,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -170107,8 +170309,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 684,
-      "end_line": 684,
+      "line": 700,
+      "end_line": 700,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170116,8 +170318,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 685,
-      "end_line": 685,
+      "line": 701,
+      "end_line": 701,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170125,8 +170327,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 686,
-      "end_line": 686,
+      "line": 702,
+      "end_line": 702,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -170134,8 +170336,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 782,
+      "end_line": 782,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.month",
@@ -170143,8 +170345,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 782,
+      "end_line": 782,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint.value",
@@ -170152,8 +170354,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 767,
-      "end_line": 767,
+      "line": 783,
+      "end_line": 783,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170161,8 +170363,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 768,
-      "end_line": 768,
+      "line": 784,
+      "end_line": 784,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170170,8 +170372,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 811,
-      "end_line": 811,
+      "line": 827,
+      "end_line": 827,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170374,8 +170576,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 474,
+      "end_line": 474,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -170383,8 +170585,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 613,
+      "end_line": 613,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.section_num",
@@ -170392,8 +170594,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 598,
-      "end_line": 598,
+      "line": 614,
+      "end_line": 614,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.code",
@@ -170401,8 +170603,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 599,
-      "end_line": 599,
+      "line": 615,
+      "end_line": 615,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed.is_",
@@ -170410,8 +170612,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170421,8 +170623,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170432,8 +170634,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170443,8 +170645,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 617,
-      "end_line": 617,
+      "line": 633,
+      "end_line": 633,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170454,8 +170656,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 634,
+      "end_line": 634,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170465,17 +170667,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 656,
-      "end_line": 656,
-      "owner": "region_indicator_detail",
-      "conditions": [],
-      "symbol": "app.models.RegionDataPoint",
-      "expression": "RegionDataPoint"
-    },
-    {
-      "path": "backend/app/api/regions.py",
-      "line": 656,
-      "end_line": 656,
+      "line": 672,
+      "end_line": 672,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170486,6 +170679,15 @@
       "line": 672,
       "end_line": 672,
       "owner": "region_indicator_detail",
+      "conditions": [],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 688,
+      "end_line": 688,
+      "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
         "rf"
@@ -170495,8 +170697,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 689,
+      "end_line": 689,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170507,8 +170709,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 699,
+      "end_line": 699,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region.id",
@@ -170516,8 +170718,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 699,
+      "end_line": 699,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.region_id",
@@ -170525,8 +170727,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 782,
+      "end_line": 782,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170534,8 +170736,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 766,
-      "end_line": 766,
+      "line": 782,
+      "end_line": 782,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.models.RegionMonthlyPoint",
@@ -170543,8 +170745,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 792,
-      "end_line": 792,
+      "line": 808,
+      "end_line": 808,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170555,8 +170757,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 793,
-      "end_line": 793,
+      "line": 809,
+      "end_line": 809,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170680,8 +170882,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 457,
-      "end_line": 457,
+      "line": 473,
+      "end_line": 473,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170689,8 +170891,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 474,
+      "end_line": 474,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -170698,8 +170900,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 596,
-      "end_line": 596,
+      "line": 612,
+      "end_line": 612,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170707,8 +170909,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 597,
-      "end_line": 597,
+      "line": 613,
+      "end_line": 613,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170716,8 +170918,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 598,
-      "end_line": 598,
+      "line": 614,
+      "end_line": 614,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170725,8 +170927,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 599,
-      "end_line": 599,
+      "line": 615,
+      "end_line": 615,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator.is_listed",
@@ -170734,8 +170936,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170745,8 +170947,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170756,8 +170958,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 616,
-      "end_line": 616,
+      "line": 632,
+      "end_line": 632,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170767,8 +170969,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 618,
-      "end_line": 618,
+      "line": 634,
+      "end_line": 634,
       "owner": "_section_siblings",
       "conditions": [
         "siblings"
@@ -170778,8 +170980,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 687,
+      "end_line": 687,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170790,8 +170992,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 687,
+      "end_line": 687,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170802,8 +171004,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 672,
-      "end_line": 672,
+      "line": 688,
+      "end_line": 688,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170814,8 +171016,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 673,
-      "end_line": 673,
+      "line": 689,
+      "end_line": 689,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170826,8 +171028,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region.slug",
@@ -170835,8 +171037,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region.name",
@@ -170844,8 +171046,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint.value",
@@ -170853,8 +171055,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 699,
+      "end_line": 699,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -170862,8 +171064,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 683,
-      "end_line": 683,
+      "line": 699,
+      "end_line": 699,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -170871,8 +171073,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 807,
+      "end_line": 807,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170883,8 +171085,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 807,
+      "end_line": 807,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170895,8 +171097,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 792,
-      "end_line": 792,
+      "line": 808,
+      "end_line": 808,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170907,8 +171109,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 793,
-      "end_line": 793,
+      "line": 809,
+      "end_line": 809,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -170939,8 +171141,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 458,
-      "end_line": 458,
+      "line": 474,
+      "end_line": 474,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170948,8 +171150,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 599,
-      "end_line": 599,
+      "line": 615,
+      "end_line": 615,
       "owner": "_section_siblings",
       "conditions": [],
       "symbol": "app.models.RegionIndicator",
@@ -170957,8 +171159,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 687,
+      "end_line": 687,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170969,8 +171171,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 671,
-      "end_line": 671,
+      "line": 687,
+      "end_line": 687,
       "owner": "region_indicator_detail",
       "conditions": [
         "region.slug != 'russia'",
@@ -170981,8 +171183,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -170990,8 +171192,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.Region",
@@ -170999,8 +171201,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 682,
-      "end_line": 682,
+      "line": 698,
+      "end_line": 698,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.models.RegionDataPoint",
@@ -171008,8 +171210,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 807,
+      "end_line": 807,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -171020,8 +171222,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 791,
-      "end_line": 791,
+      "line": 807,
+      "end_line": 807,
       "owner": "region_indicator_monthly",
       "conditions": [
         "region.slug != 'russia'",
@@ -214958,6 +215160,377 @@
       "conditions": [],
       "symbol": "app.models.Hypothesis",
       "expression": "Hypothesis"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.month.desc",
+      "expression": "RegionMonthlyPoint.month.desc"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.indicator_id",
+      "expression": "RegionDataPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.region_id.in_",
+      "expression": "RegionDataPoint.region_id.in_"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code.like",
+      "expression": "RegionIndicator.code.like"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.month",
+      "expression": "RegionMonthlyPoint.month"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.year",
+      "expression": "RegionDataPoint.year"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.value",
+      "expression": "RegionDataPoint.value"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 124,
+      "end_line": 124,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint.region_id",
+      "expression": "RegionDataPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.code",
+      "expression": "RegionIndicator.code"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.indicator_id.in_",
+      "expression": "RegionMonthlyPoint.indicator_id.in_"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.region_id.in_",
+      "expression": "RegionMonthlyPoint.region_id.in_"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 65,
+      "end_line": 65,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 123,
+      "end_line": 123,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 125,
+      "end_line": 125,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "w_ind is not None and basket"
+      ],
+      "symbol": "app.models.RegionDataPoint",
+      "expression": "RegionDataPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 55,
+      "end_line": 55,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 61,
+      "end_line": 61,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.indicator_id",
+      "expression": "RegionMonthlyPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 61,
+      "end_line": 61,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.region_id",
+      "expression": "RegionMonthlyPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.month",
+      "expression": "RegionMonthlyPoint.month"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.value",
+      "expression": "RegionMonthlyPoint.value"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.indicator_id",
+      "expression": "RegionMonthlyPoint.indicator_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint.region_id",
+      "expression": "RegionMonthlyPoint.region_id"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator.table_code",
+      "expression": "RegionIndicator.table_code"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 61,
+      "end_line": 61,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 61,
+      "end_line": 61,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 62,
+      "end_line": 62,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 63,
+      "end_line": 63,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 64,
+      "end_line": 64,
+      "owner": "build_price_compare_payload",
+      "conditions": [
+        "by_id"
+      ],
+      "symbol": "app.models.RegionMonthlyPoint",
+      "expression": "RegionMonthlyPoint"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 119,
+      "end_line": 119,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.models.RegionIndicator",
+      "expression": "RegionIndicator"
     },
     {
       "path": "backend/app/services/region_compare_data.py",
@@ -267461,8 +268034,17 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 420,
-      "end_line": 430,
+      "line": 416,
+      "end_line": 428,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "regions_compare_prices",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 436,
+      "end_line": 446,
       "owner": "<module>",
       "conditions": [],
       "name": "_price_fields",
@@ -267470,8 +268052,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 433,
-      "end_line": 436,
+      "line": 449,
+      "end_line": 452,
       "owner": "<module>",
       "conditions": [],
       "name": "_month_label",
@@ -267479,8 +268061,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 440,
-      "end_line": 587,
+      "line": 456,
+      "end_line": 603,
       "owner": "<module>",
       "conditions": [],
       "name": "region_profile",
@@ -267488,8 +268070,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 590,
-      "end_line": 638,
+      "line": 606,
+      "end_line": 654,
       "owner": "<module>",
       "conditions": [],
       "name": "_section_siblings",
@@ -267497,8 +268079,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 642,
-      "end_line": 729,
+      "line": 658,
+      "end_line": 745,
       "owner": "<module>",
       "conditions": [],
       "name": "region_indicator_detail",
@@ -267506,8 +268088,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 738,
-      "end_line": 742,
+      "line": 754,
+      "end_line": 758,
       "owner": "<module>",
       "conditions": [],
       "name": "_monthly_price_fields",
@@ -267515,8 +268097,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 746,
-      "end_line": 848,
+      "line": 762,
+      "end_line": 864,
       "owner": "<module>",
       "conditions": [],
       "name": "region_indicator_monthly",
@@ -267533,8 +268115,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 623,
-      "end_line": 636,
+      "line": 639,
+      "end_line": 652,
       "owner": "_section_siblings",
       "conditions": [],
       "name": "_sibling",
@@ -267542,8 +268124,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 605,
-      "end_line": 608,
+      "line": 621,
+      "end_line": 624,
       "owner": "_section_siblings",
       "conditions": [
         "own_meta"
@@ -285895,6 +286477,33 @@
       "owner": "<module>",
       "conditions": [],
       "name": "pulse_report_job",
+      "kind": "AsyncFunctionDef"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 37,
+      "end_line": 39,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_label",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 42,
+      "end_line": 43,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "_pct",
+      "kind": "FunctionDef"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 46,
+      "end_line": 151,
+      "owner": "<module>",
+      "conditions": [],
+      "name": "build_price_compare_payload",
       "kind": "AsyncFunctionDef"
     },
     {
@@ -317216,56 +317825,56 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 451,
+      "end_line": 451,
       "owner": "_month_label",
       "conditions": [],
       "symbol": "app.api.regions._MONTHS_EN"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 435,
-      "end_line": 435,
+      "line": 451,
+      "end_line": 451,
       "owner": "_month_label",
       "conditions": [],
       "symbol": "app.api.regions._MONTHS_RU"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 533,
+      "end_line": 533,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.api.regions.HEADLINE_INDEX_TO_GROWTH_EN"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 517,
-      "end_line": 517,
+      "line": 533,
+      "end_line": 533,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.api.regions.HEADLINE_INDEX_TO_GROWTH"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 548,
-      "end_line": 548,
+      "line": 564,
+      "end_line": 564,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.api.regions.HEADLINE_TABLES"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 581,
-      "end_line": 581,
+      "line": 597,
+      "end_line": 597,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.data.emiss_price_goods.HEADLINE_PRICE_CODES"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 582,
-      "end_line": 582,
+      "line": 598,
+      "end_line": 598,
       "owner": "region_profile",
       "conditions": [],
       "symbol": "app.data.emiss_price_goods.PRICE_GROUPS"
@@ -317292,24 +317901,24 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 426,
-      "end_line": 426,
+      "line": 442,
+      "end_line": 442,
       "owner": "_price_fields",
       "conditions": [],
       "symbol": "app.data.emiss_price_goods.PRICE_GROUPS_EN"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 718,
-      "end_line": 718,
+      "line": 734,
+      "end_line": 734,
       "owner": "region_indicator_detail",
       "conditions": [],
       "symbol": "app.services.seo_regional.MACRO_BY_TABLE"
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 838,
-      "end_line": 838,
+      "line": 854,
+      "end_line": 854,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "symbol": "app.services.seo_regional.MACRO_BY_TABLE"
@@ -325615,6 +326224,46 @@
       "owner": "sanitize_llm_html",
       "conditions": [],
       "symbol": "app.services.pulse_report._TG_ALLOWED_TAG_RE"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 97,
+      "end_line": 97,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.services.r4a_price_compare.BASKET"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 38,
+      "end_line": 38,
+      "owner": "_label",
+      "conditions": [],
+      "symbol": "app.services.r4a_price_compare._MONTHS_EN"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 38,
+      "end_line": 38,
+      "owner": "_label",
+      "conditions": [],
+      "symbol": "app.services.r4a_price_compare._MONTHS_RU"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 91,
+      "end_line": 91,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.data.emiss_price_goods.PRICE_GROUPS"
+    },
+    {
+      "path": "backend/app/services/r4a_price_compare.py",
+      "line": 83,
+      "end_line": 83,
+      "owner": "build_price_compare_payload",
+      "conditions": [],
+      "symbol": "app.data.emiss_price_goods.PRICE_GROUPS_EN"
     },
     {
       "path": "backend/app/services/region_compare_data.py",
@@ -339749,8 +340398,68 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 439,
-      "end_line": 439,
+      "line": 415,
+      "end_line": 415,
+      "owner": "regions_compare_prices",
+      "conditions": [],
+      "handler": "app.api.regions.regions_compare_prices",
+      "router": "app.api.regions.router",
+      "path_template": "/vs/{slug_a}/{slug_b}/prices",
+      "path_expression": "'/vs/{slug_a}/{slug_b}/prices'",
+      "methods": [
+        "GET"
+      ],
+      "options": {},
+      "handler_line": 416,
+      "handler_end_line": 428,
+      "parameters": [
+        {
+          "name": "slug_a",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "slug_b",
+          "annotation": "str",
+          "default": null
+        },
+        {
+          "name": "db",
+          "annotation": "AsyncSession",
+          "default": "Depends(get_db)"
+        }
+      ],
+      "returns": null,
+      "full_path": "/api/v1/regions/vs/{slug_a}/{slug_b}/prices",
+      "mounts": [
+        {
+          "path": "backend/app/main.py",
+          "line": 1988,
+          "end_line": 1988,
+          "owner": "<module>",
+          "conditions": [],
+          "parent": "app.main.app",
+          "child": "app.api.router.api_router",
+          "prefix": "",
+          "options": {}
+        },
+        {
+          "path": "backend/app/api/router.py",
+          "line": 43,
+          "end_line": 43,
+          "owner": "<module>",
+          "conditions": [],
+          "parent": "app.api.router.api_router",
+          "child": "app.api.regions.router",
+          "prefix": "",
+          "options": {}
+        }
+      ]
+    },
+    {
+      "path": "backend/app/api/regions.py",
+      "line": 455,
+      "end_line": 455,
       "owner": "region_profile",
       "conditions": [],
       "handler": "app.api.regions.region_profile",
@@ -339761,8 +340470,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 440,
-      "handler_end_line": 587,
+      "handler_line": 456,
+      "handler_end_line": 603,
       "parameters": [
         {
           "name": "slug",
@@ -339804,8 +340513,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 641,
-      "end_line": 641,
+      "line": 657,
+      "end_line": 657,
       "owner": "region_indicator_detail",
       "conditions": [],
       "handler": "app.api.regions.region_indicator_detail",
@@ -339816,8 +340525,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 642,
-      "handler_end_line": 729,
+      "handler_line": 658,
+      "handler_end_line": 745,
       "parameters": [
         {
           "name": "slug",
@@ -339864,8 +340573,8 @@
     },
     {
       "path": "backend/app/api/regions.py",
-      "line": 745,
-      "end_line": 745,
+      "line": 761,
+      "end_line": 761,
       "owner": "region_indicator_monthly",
       "conditions": [],
       "handler": "app.api.regions.region_indicator_monthly",
@@ -339876,8 +340585,8 @@
         "GET"
       ],
       "options": {},
-      "handler_line": 746,
-      "handler_end_line": 848,
+      "handler_line": 762,
+      "handler_end_line": 864,
       "parameters": [
         {
           "name": "slug",
