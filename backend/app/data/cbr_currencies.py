@@ -76,7 +76,7 @@ class CbrCurrency:
 
     @property
     def name_en(self) -> str:
-        return f"{self.iso}/RUB Exchange Rate"
+        return f"{self.en} Exchange Rate"
 
 
 def _c(iso, cbr_id, nom, gen, gen_pl, en, where, q, start, daily, vmin, vmax, country=None, aliases=()):
@@ -415,7 +415,7 @@ def copy_en(c: CbrCurrency) -> dict[str, str]:
         else f"History starts in {start}; before {daily} the Bank of Russia set this rate once a month."
     )
     return {
-        "name": f"{c.iso}/RUB exchange rate",
+        "name": f"{c.en} to ruble rate",
         "description": (
             f"Official {c.en} to Russian ruble exchange rate set by the Bank of Russia, "
             f"quoted in rubles {per}."
