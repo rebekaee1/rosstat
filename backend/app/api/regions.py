@@ -276,7 +276,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
 
     Роут объявлен до `/{slug}` — иначе «heatmap» перехватится как slug региона.
     """
-    cache_key = await versioned_key("regions", f"heatmap:v2:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"heatmap:v3:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -293,16 +293,33 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
         .where(RegionDataPoint.indicator_id == indicator.id,
                Region.kind == "region")
     )).scalar()
+    last_month = None
     if last_year is None:
-        raise HTTPException(404, "Нет данных по этому показателю")
-
-    rows = (await db.execute(
-        select(Region.slug, Region.name, RegionDataPoint.value)
-        .join(Region, Region.id == RegionDataPoint.region_id)
-        .where(RegionDataPoint.indicator_id == indicator.id,
-               RegionDataPoint.year == last_year,
-               Region.kind == "region")
-    )).all()
+        # Месячные ряды (цены ЕМИСС): рейтинг по последнему месяцу, где есть точки субъектов.
+        last_month = (await db.execute(
+            select(func.max(RegionMonthlyPoint.month))
+            .join(Region, Region.id == RegionMonthlyPoint.region_id)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   Region.kind == "region")
+        )).scalar()
+        if last_month is None:
+            raise HTTPException(404, "Нет данных по этому показателю")
+        last_year = int(last_month) // 100
+        rows = (await db.execute(
+            select(Region.slug, Region.name, RegionMonthlyPoint.value)
+            .join(Region, Region.id == RegionMonthlyPoint.region_id)
+            .where(RegionMonthlyPoint.indicator_id == indicator.id,
+                   RegionMonthlyPoint.month == last_month,
+                   Region.kind == "region")
+        )).all()
+    else:
+        rows = (await db.execute(
+            select(Region.slug, Region.name, RegionDataPoint.value)
+            .join(Region, Region.id == RegionDataPoint.region_id)
+            .where(RegionDataPoint.indicator_id == indicator.id,
+                   RegionDataPoint.year == last_year,
+                   Region.kind == "region")
+        )).all()
 
     polarity = region_rating_meta(indicator.code, indicator.table_code)
     copy = _icopy(indicator)
@@ -313,6 +330,7 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
             "unit": copy["unit"],
         },
         "year": last_year,
+        **({"month": int(last_month), "period_label": _month_label(int(last_month))} if last_month else {}),
         **polarity,
         "values": [
             {"slug": s, "name": _rname(s, n), "value": _fmt(float(v)), "raw": float(v)}
@@ -629,14 +647,48 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
             break
 
     # соседние показатели раздела (для блока «В этом разделе»)
-    siblings = (await db.execute(
+    all_sib = (await db.execute(
         select(RegionIndicator)
         .where(RegionIndicator.section_num == indicator.section_num,
                RegionIndicator.code != indicator.code,
                RegionIndicator.is_listed.is_(True))
-        .order_by(RegionIndicator.code)
-        .limit(12)
+        .order_by(RegionIndicator.table_code, RegionIndicator.code)
     )).scalars().all()
+    own_meta = price_meta(indicator.code)
+    if own_meta:
+        # Соседи по цене: та же группа и живые позиции первыми, затем остальные.
+        def _sib_rank(ind):
+            m = price_meta(ind.code)
+            return (0 if m and m["price_group"] == own_meta["price_group"] else 1,
+                    1 if (m and m["is_discontinued"]) else 0)
+        all_sib = sorted(all_sib, key=_sib_rank)
+        siblings = all_sib[:24]
+    else:
+        siblings = sorted(all_sib, key=lambda x: x.code)[:12]
+    sib_latest: dict[int, tuple[int, float]] = {}
+    if siblings:
+        for iid, m, v in (await db.execute(
+            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.region_id == region.id,
+                   RegionMonthlyPoint.indicator_id.in_([x.id for x in siblings]))
+            .order_by(RegionMonthlyPoint.month.desc())
+        )).all():
+            sib_latest.setdefault(iid, (int(m), float(v)))
+
+    def _sibling(x):
+        item = {"code": x.code, "name": _icopy(x)["name"], "unit": _icopy(x)["unit"]}
+        got = sib_latest.get(x.id)
+        if got:
+            item["last_month"], item["month"], item["value"] = got[0], got[0], _fmt(got[1])
+            item["period_label"] = _month_label(got[0])
+        meta = price_meta(x.code)
+        if meta:
+            fields = _price_fields(meta)
+            if got:
+                fields.pop("last_month", None)
+                fields.pop("last_month_label", None)
+            item.update(fields)
+        return item
 
     copy = _icopy(indicator)
     result = {
@@ -794,10 +846,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
         "compare": compare,
         "series": series,
         "russia_series": russia_series,
-        "siblings": [
-            {"code": s.code, "name": _icopy(s)["name"], "unit": _icopy(s)["unit"]}
-            for s in siblings
-        ],
+        "siblings": [_sibling(x) for x in siblings],
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result

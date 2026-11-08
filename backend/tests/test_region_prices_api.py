@@ -46,5 +46,14 @@ def test_profile_and_monthly_expose_price_fields_and_compare(prices_client):
     assert mon["compare"]["russia"] == {"value": 102.0, "month": 202609}
     assert mon["compare"]["moskva"] == {"value": 122.0, "month": 202609}
 
+    assert mon["siblings"] == []
+
     own = prices_client.get("/api/v1/regions/moskva/i/ceni-yaytsa/monthly").json()
     assert own["compare"]["moskva"] is None and own["compare"]["russia"]["value"] == 102.0
+
+
+def test_heatmap_ranks_monthly_price_by_latest_month(prices_client):
+    data = prices_client.get("/api/v1/regions/heatmap/ceni-yaytsa").json()
+    assert data["month"] == 202609 and data["year"] == 2026
+    assert data["period_label"] == "сентябрь 2026"
+    assert {v["slug"]: v["raw"] for v in data["values"]} == {"moskva": 122.0, "altayskiy-kray": 92.0}
