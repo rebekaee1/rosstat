@@ -1578,6 +1578,12 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         async with async_session() as db:
             _event(db, chat_id, "idea", code=idea)
             await db.commit()
+    # Тестер №7, 09.11: «не присылай доллар» при уже включённой подписке — модель сказала «отписал ещё
+    # раньше», а подписка осталась. Явная просьба перестать с узнанной темой выполняется и без метки модели.
+    for seg in re.findall(r"(?:не\s+(?:присылай|пиши|шли)|отпиши(?:сь)?(?:\s+от)?|отключи|хватит\s+присылать)\s+([^,.;!?]+?)(?:\s+и\s+(?=присылай|шли)|[,.;!?]|$)", text.lower()):
+        k, _ = match_topic(seg)
+        if k and k in subs and k not in unsubscribe_now:
+            unsubscribe_now.append(k)
     for k in unsubscribe_now:
         # Тестер №8, 09.11: «отпишись от доллара» → «отписал», а подписка оставалась.
         await unsubscribe(chat_id, k)
