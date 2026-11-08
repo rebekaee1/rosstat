@@ -12,6 +12,7 @@ import { useLocale } from '../../i18n';
 import '../../styles/z1-prices.css';
 
 const FIRST_ROWS = 10;
+const PAGE = 30;
 const NBSP = ' ';
 
 /** Позиции с ценой (есть группа от сервера). */
@@ -38,24 +39,42 @@ export function formatPrice(value, locale = 'ru') {
   return n.toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: digits });
 }
 
-function PriceCard({ item, to, locale }) {
+/** Самый частый месяц среди ходовых цен: его показываем один раз над сеткой, а не на каждой карточке. */
+export function commonPeriod(items) {
+  const count = new Map();
+  items.forEach((i) => { if (i.period_label) count.set(i.period_label, (count.get(i.period_label) || 0) + 1); });
+  let best = '';
+  let n = 0;
+  count.forEach((v, k) => { if (v > n) { best = k; n = v; } });
+  return best;
+}
+
+function PriceCard({ item, to, locale, common, index = 0 }) {
+  const { t } = useLocale();
   const { title, per } = splitShortName(item.short_name || item.name);
   const d = yearDelta(item.value, item.prev_value);
   const signed = d ? (d.pct < 0 ? -Math.abs(d.pct) : Math.abs(d.pct)) : null;
   return (
-    <Link to={to} className="z1p-card fe-panel fe-summary-card fe-press fe-float" data-testid="region-price-card">
+    <Link
+      to={to}
+      className="z1p-card fe-panel fe-summary-card fe-press fe-float fe-reveal"
+      style={{ '--fe-delay': `${Math.min(index, 7) * 0.04}s`, '--fe-rise': '8px' }}
+      data-testid="region-price-card"
+    >
       <span className="z1p-card__name">{title}</span>
       <span className="z1p-card__value fe-num">
         {formatPrice(item.value, locale)}{NBSP}₽
         {per ? <span className="z1p-card__per">{NBSP}/ {per}</span> : null}
       </span>
       <span className="z1p-card__foot">
-        <span className="z1p-card__month">{item.period_label}</span>
-        {signed != null && (
-          <DeltaBadge delta={d.up || d.down ? signed : 0} polarity="up-bad" className="text-xs">
-            {formatDeltaPercent(signed, locale)}
-          </DeltaBadge>
-        )}
+        {item.period_label && item.period_label !== common ? <span className="z1p-card__month">{item.period_label}</span> : null}
+        {signed != null && (Math.abs(signed) < 0.05
+          ? <span className="z1p-card__flat">{t('r2z1.prices.flat')}</span>
+          : (
+            <DeltaBadge delta={signed} polarity="up-bad" className="text-xs">
+              {formatDeltaPercent(signed, locale)}
+            </DeltaBadge>
+          ))}
       </span>
     </Link>
   );
@@ -68,23 +87,24 @@ export function RegionPricesBlock({ slug, sections, headlineCodes, total, onOpen
     const byCode = new Map(collectPriceItems(sections).map((i) => [i.code, i]));
     return (headlineCodes || []).map((c) => byCode.get(c)).filter((i) => i && !i.is_discontinued).slice(0, 12);
   }, [sections, headlineCodes]);
+  const common = useMemo(() => commonPeriod(picks), [picks]);
   if (picks.length === 0) return null;
   return (
     <section className="z1p-block fe-reveal" data-testid="region-prices-block" aria-labelledby={`z1p-title-${slug}`}>
       <div className="z1p-block__head">
-        <div className="min-w-0">
-          <h2 id={`z1p-title-${slug}`} className="font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
+        <div className="z1p-block__top">
+          <h2 id={`z1p-title-${slug}`} className="min-w-0 font-display text-xl font-bold leading-snug text-text-primary sm:text-2xl">
             {t('z1.prices.title')}
           </h2>
-          <p className="mt-0.5 text-sm text-text-secondary">{t('z1.prices.lead')}</p>
+          <button type="button" className="fe-chip fe-press z1p-all gap-1.5 text-champagne-ink" onClick={onOpenAll} data-testid="region-prices-all">
+            {t('z1.prices.all', { n: total })}
+            <ArrowRight size={14} aria-hidden="true" />
+          </button>
         </div>
-        <button type="button" className="fe-chip fe-press z1p-all gap-1.5 text-champagne-ink" onClick={onOpenAll} data-testid="region-prices-all">
-          {t('z1.prices.all', { n: total })}
-          <ArrowRight size={14} aria-hidden="true" />
-        </button>
+        <p className="mt-1 text-sm text-text-secondary">{common ? t('r2z1.prices.leadMonth', { month: common }) : t('z1.prices.lead')}</p>
       </div>
       <div className="z1p-grid">
-        {picks.map((item) => <PriceCard key={item.code} item={item} to={pathFor(item.code)} locale={locale} />)}
+        {picks.map((item, i) => <PriceCard key={item.code} item={item} to={pathFor(item.code)} locale={locale} common={common} index={i} />)}
       </div>
     </section>
   );
@@ -99,6 +119,8 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   const { t } = useLocale();
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(() => new Set());
+  const [indexesOpen, setIndexesOpen] = useState(false);
+  const [pages, setPages] = useState({});
 
   const { plain, groups } = useMemo(() => {
     const plainRows = [];
@@ -108,6 +130,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
       if (!map.has(item.price_group)) map.set(item.price_group, { key: item.price_group, label: item.price_group_label || item.price_group, items: [] });
       map.get(item.price_group).items.push(item);
     });
+    plainRows.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
     const rank = (k) => { const i = (groupOrder || []).indexOf(k); return i < 0 ? 99 : i; };
     const list = [...map.values()].sort((a, b) => rank(a.key) - rank(b.key));
     list.forEach((g) => {
@@ -130,11 +153,6 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   return (
     <section data-block={`region-section-${section.num}`} className="z1p-section">
       <RegionSectionHeading eyebrow={eyebrow} title={section.name} count={section.indicators.length} />
-      {plain.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
-          {plain.map((item) => <RegionIndicatorRow key={item.code} item={item} to={pathFor(item.code)} />)}
-        </div>
-      )}
       {groups.length > 0 && !searching && (
         <div className="z1p-chips fe-chip-row" role="group" aria-label={t('z1.prices.groupsAria')}>
           <button type="button" aria-pressed={!activeGroup} className={`fe-chip fe-press ${!activeGroup ? 'is-active' : ''}`} onClick={() => setGroup('')}>
@@ -151,7 +169,10 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
       )}
       {shownGroups.map((g) => {
         const expanded = searching || !!activeGroup || open.has(g.key);
-        const rows = expanded ? g.items : g.items.slice(0, FIRST_ROWS);
+        // В одной группе (лекарства — 155 позиций) показываем порциями по 30, чтобы страница не превращалась в простыню.
+        const pageLimit = activeGroup && !searching ? PAGE * (1 + (pages[g.key] || 0)) : Infinity;
+        const rows = (expanded ? g.items : g.items.slice(0, FIRST_ROWS)).slice(0, pageLimit);
+        const rest = Math.max(0, (expanded ? g.items.length : 0) - rows.length);
         return (
           <div key={g.key} className="z1p-group" data-testid={`price-group-${g.key}`}>
             {!searching && (
@@ -163,6 +184,11 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
             <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
               {rows.map((item) => <PriceRow key={item.code} item={item} to={pathFor(item.code)} />)}
             </div>
+            {rest > 0 && (
+              <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setPages((p) => ({ ...p, [g.key]: (p[g.key] || 0) + 1 }))}>
+                {t('r2z1.prices.moreN', { n: Math.min(PAGE, rest) })}
+              </button>
+            )}
             {!expanded && g.items.length > FIRST_ROWS && (
               <button type="button" className="fe-chip fe-press z1p-more" onClick={() => toggle(g.key)}>
                 {t('z1.prices.showMore', { n: g.items.length })}
@@ -176,6 +202,24 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
           </div>
         );
       })}
+      {plain.length > 0 && (
+        <div className="z1p-group z1p-indexes" data-testid="price-indexes">
+          {!searching && groups.length > 0 && (
+            <h3 className="z1p-group__title">
+              {t('r2z1.prices.indexes')}
+              <span className="z1p-group__n">{plain.length}</span>
+            </h3>
+          )}
+          <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
+            {(searching || indexesOpen || groups.length === 0 ? plain : plain.slice(0, 4)).map((item) => <RegionIndicatorRow key={item.code} item={item} to={pathFor(item.code)} />)}
+          </div>
+          {!searching && groups.length > 0 && plain.length > 4 && (
+            <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setIndexesOpen((v) => !v)}>
+              {indexesOpen ? t('z1.prices.collapse') : t('z1.prices.showMore', { n: plain.length })}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

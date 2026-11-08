@@ -57,3 +57,24 @@
   .z1p-header-actions > * { width: 100%; justify-content: center; }
 }
 .fe-data-header.z1p-header { margin-bottom: 20px; padding-bottom: clamp(16px, 2.4vw, 28px); }
+
+/* R2-Z1: карточка цены — месяц вынесен в подпись блока, «без перемен» вместо знака «меньше 0,1 %». */
+.z1p-card__flat { font-size: 13px; color: var(--color-text-secondary); }
+.z1p-card__name { font-size: 14px; }
+.z1p-card__foot { min-height: 28px; }
+
+/* Заголовок блока цен: название и «Все цены» в одну строку, пояснение под ними. */
+.z1p-block__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.z1p-block__head { display: block; }
+.z1p-block__head .z1p-all { min-height: 40px; padding-inline: 14px; }
+
+.z1p-headline-title { margin: 0 0 12px; font-size: 1.25rem; font-weight: 700; line-height: 1.3; color: var(--color-text-primary); }
+@media (min-width: 640px) { .z1p-headline-title { font-size: 1.5rem; } }
+
+.z1p-flat { font-size: 13px; color: var(--color-text-secondary); white-space: nowrap; }
+
+/* Хаб регионов: «Найдите свой регион» над рейтингом. */
+.z1h-find { margin: 20px 0 16px; }
+.z1h-find__label { margin: 0 0 8px; font-family: var(--font-display, inherit); font-size: 1.05rem; font-weight: 700; color: var(--color-text-primary); }
+.z1h-find [data-testid="map-region-search"] { max-width: none; }
+.fe-rank__unit { font-size: .85em; font-weight: 500; color: var(--color-text-secondary); }

@@ -85,7 +85,11 @@ export default function RegionProfile({ renderActions = null } = {}) {
   useSearchTracking('region-profile', deferredQuery, foundIndicators);
 
   const priceTotal = useMemo(() => collectPriceItems(data?.sections).length, [data]);
-  const priceSection = (data?.sections || []).find((s) => s.indicators.some((i) => i.price_group));
+  // Несколько цен (бензин, проезд) лежат и в других темах; «Все цены» ведёт в тему, где их больше всего.
+  const priceSection = (data?.sections || []).reduce((best, s) => {
+    const n = s.indicators.filter((i) => i.price_group).length;
+    return n > (best?.n || 0) ? { n, section: s } : best;
+  }, null)?.section;
   const openAllPrices = () => {
     setQuery('');
     if (priceSection) setActiveSection(priceSection.num);
@@ -143,7 +147,7 @@ export default function RegionProfile({ renderActions = null } = {}) {
               <CabinetActionsSlot subject={regionSubject(slug, data.region.name)} renderActions={renderActions} className="fe-cabinet-actions--flush" />
             </div>
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-text-secondary">
-              {t('w4.regions.profile.intro', { sections: data.sections.length })}
+              {t('r2z1.intro')}
             </p>
             <div className="z1p-header-actions">
               {headline.length > 0 && (
@@ -160,16 +164,6 @@ export default function RegionProfile({ renderActions = null } = {}) {
             </div>
           </div>
 
-          {headline.length > 0 && (
-            <>
-              <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                {headline.map((h, i) => (
-                  <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
-                ))}
-              </div>
-            </>
-          )}
-
           {!searching && (
             <RegionPricesBlock
               slug={slug}
@@ -179,6 +173,17 @@ export default function RegionProfile({ renderActions = null } = {}) {
               onOpenAll={openAllPrices}
               pathFor={(code) => regionIndicatorPath(slug, code)}
             />
+          )}
+
+          {headline.length > 0 && (
+            <section aria-labelledby="z1p-headline-title">
+              <h2 id="z1p-headline-title" className="z1p-headline-title font-display">{t('r2z1.headline.title')}</h2>
+              <div className="mb-8 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                {headline.map((h, i) => (
+                  <RegionHeadlineCard key={h.code} item={h} index={i} to={regionIndicatorPath(slug, h.code)} />
+                ))}
+              </div>
+            </section>
           )}
 
           <RegionSearchField

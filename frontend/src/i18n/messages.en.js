@@ -3790,4 +3790,12 @@ export default {
   'r2z2.colYoy': 'YoY',
   'r2z2.source': 'Rosstat, average consumer prices. Data for {month}.',
   'r2z2.discNote': 'Rosstat no longer publishes this series.',
+  'r2z1.intro': 'Prices, wages, housing and other official figures.',
+  'r2z1.prices.leadMonth': 'Average end-of-month prices: {month}. Next to each, the change from the previous month.',
+  'r2z1.prices.flat': 'unchanged',
+  'r2z1.headline.title': 'Key figures',
+  'r2z1.prices.indexes': 'Annual price indices',
+  'r2z1.prices.moreN': 'Show {n} more',
+  'r2z1.hub.find': 'Find your region',
+  'r2z1.hub.findPlaceholder': 'For example, Tambov',
 };

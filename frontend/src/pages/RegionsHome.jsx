@@ -178,7 +178,7 @@ function MapMetricSearch({ activeCode, onPick, onClear, activeName }) {
 }
 
 /** Поиск региона над картой: выбранный регион подсвечивается на карте, под ней открывается его карточка. */
-function MapRegionSearch({ names, onPick }) {
+function MapRegionSearch({ names, onPick, placeholder }) {
   const { t } = useLocale();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -203,8 +203,8 @@ function MapRegionSearch({ names, onPick }) {
         <input
           type="text"
           value={query}
-          placeholder={t('w6f.map.findRegion')}
-          aria-label={t('w6f.map.findRegion')}
+          placeholder={placeholder || t('w6f.map.findRegion')}
+          aria-label={placeholder || t('w6f.map.findRegion')}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => { setOpen(true); setQuery(e.target.value); }}
@@ -627,6 +627,11 @@ export default function RegionsHome() {
 
       {view === 'list' && (
         <>
+          <div className="z1h-find fe-reveal" data-testid="hub-find-region">
+            <div className="z1h-find__label">{t('r2z1.hub.find')}</div>
+            <MapRegionSearch names={namesBySlug} placeholder={t('r2z1.hub.findPlaceholder')} onPick={(slug) => navigate(regionPath(slug))} />
+          </div>
+
           {/* Рейтинг: выбранный показатель, место, полоса и значение; «Ещё показатели» ищет по всему каталогу. */}
           <RegionRanking metrics={RANKING_METRICS} />
 
