@@ -68,6 +68,13 @@ async def send_telegram(
     if not token or not cid:
         return False
 
+    # Спокойный режим (решение владельца 08.11.2026): технические виды не шлём сразу, а копим
+    # для утренней сводки; срочное («сайт не открывается», место на диске) идёт как раньше.
+    from app.services.telegram_calm import hold, should_hold  # против цикла
+
+    if should_hold(kind, chat_id):
+        return await hold(message, chat_id, kind)
+
     # E3 (круг 11): длинный текст режется на части под лимит Bot API; клавиатура
     # вешается на последнюю часть, в архиве — по строке на каждую часть (как у
     # telegram_bot.send_message), поэтому досылка работает по частям.

@@ -148,7 +148,7 @@ def test_low_disk_alert_once(telegram, monkeypatch):
     _run_minutes(monkeypatch, [low, low, low])
     kinds = [k for k, _ in telegram]
     assert kinds == ["disk_space"]
-    assert "Мало места" in telegram[0][1] and "(5%)" in telegram[0][1]
+    assert "кончается место" in telegram[0][1] and "(5%)" in telegram[0][1]
 
 
 # --- приоритет в очереди рендера -----------------------------------------------------------------------------------

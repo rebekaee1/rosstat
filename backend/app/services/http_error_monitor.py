@@ -150,7 +150,11 @@ async def note(kind: str, path: str, *, now: float | None = None) -> None:
                 _inflight -= 1
         if total is None:
             total = _local_total(kind, ts)
-        if total < rule.threshold or ts - _local_last_alert[kind] <= rule.cooldown_seconds:
+        if total < rule.threshold:
+            return
+        if kind == KIND_ERROR:
+            await _note_site_down(ts, total, path)
+        if ts - _local_last_alert[kind] <= rule.cooldown_seconds:
             return
         _local_last_alert[kind] = ts
         from app.services.alerting import alert_muted, send_telegram
@@ -160,6 +164,16 @@ async def note(kind: str, path: str, *, now: float | None = None) -> None:
         await send_telegram(rule.text(total, path), kind=rule.outbox_kind)
     except Exception:  # noqa: BLE001
         logger.exception("5xx spike alert failed")
+
+
+async def _note_site_down(ts: float, total: int, path: str) -> None:
+    """Ошибки держатся долго — срочное «сайт не открывается» (`telegram_calm`). Без Redis — молчит: всплески и так в сводке."""
+    from app.services.telegram_calm import note_error_spike
+
+    try:
+        await asyncio.wait_for(note_error_spike(ts, total, path), timeout=_REDIS_TIMEOUT * 3)
+    except Exception:  # noqa: BLE001
+        _warn_redis_unavailable(_mono())
 
 
 def schedule(kind: str, path: str) -> None:

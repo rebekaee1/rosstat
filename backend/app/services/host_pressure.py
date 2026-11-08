@@ -207,12 +207,22 @@ async def host_health_job() -> None:
         "Память хоста снова в норме", snap,
     )
 
+    # Спокойный режим: после «сайт не открывается» сообщить, что снова работает.
+    try:
+        from app.services.telegram_calm import check_site_recovered
+
+        await check_site_recovered()
+    except Exception:  # noqa: BLE001
+        logger.warning("site recovery check failed", exc_info=True)
+
     min_free = settings.host_alert_disk_free_pct
     pct = snap.disk_free_pct
     if min_free > 0 and pct is not None and pct < min_free and not await alert_muted("disk_space", _DISK_COOLDOWN):
         await send_telegram(
-            "🟠 <b>Мало места на диске хоста</b>\n"
-            f"{describe(snap)}. При заполнении диска останавливаются Postgres и сборка при выкладке; "
-            "кандидаты на чистку: кэш сборки docker, журналы systemd, старые логи fail2ban и syslog.",
+            "🟠 <b>На сервере кончается место</b>\n"
+            "Сайт пока работает, но если место кончится совсем, остановится база. "
+            "Что сделать: открой Claude и напиши «почисти диск на сервере».\n"
+            f"<i>{describe(snap)}. Кандидаты на чистку: кэш сборки docker, журналы systemd, старые логи "
+            "fail2ban и syslog.</i>",
             kind="disk_space",
         )

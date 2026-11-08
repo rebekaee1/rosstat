@@ -26,6 +26,9 @@ def _mute_telegram(monkeypatch: pytest.MonkeyPatch):
 
     monkeypatch.setattr(settings, "telegram_bot_token", "", raising=False)
     monkeypatch.setattr(settings, "telegram_chat_id", "", raising=False)
+    # Спокойный режим откладывает технические алерты; старые тесты отправки проверяют прямую отправку.
+    # Тесты самого режима (test_telegram_calm.py) включают его сами.
+    monkeypatch.setattr(settings, "telegram_calm_mode", False, raising=False)
 
 
 @pytest.fixture(autouse=True)

@@ -1298,6 +1298,25 @@ async def lifespan(app: FastAPI):
             )
             logger.info("Telegram resend enabled: every 5 min")
 
+        # Спокойный режим Telegram (08.11.2026): одна утренняя сводка вместо потока технических алертов.
+        if settings.telegram_calm_mode and settings.telegram_bot_token and settings.telegram_chat_id:
+            from app.services.telegram_calm import calm_morning_summary_job
+            scheduler.add_job(
+                calm_morning_summary_job,
+                trigger=CronTrigger(
+                    hour=settings.telegram_calm_summary_cron_hour,
+                    minute=settings.telegram_calm_summary_cron_minute,
+                    timezone="Europe/Moscow",
+                ),
+                id="telegram_calm_summary",
+                name="Calm mode: morning summary of held technical alerts → Telegram",
+                replace_existing=True,
+                coalesce=True,
+                max_instances=1,
+            )
+            logger.info("Telegram calm mode: morning summary at %02d:%02d MSK",
+                        settings.telegram_calm_summary_cron_hour, settings.telegram_calm_summary_cron_minute)
+
         # Монитор хоста (ADR-0026): PSI диска и памяти, свободное место; алерт с причиной вместо пачки 5xx без причины.
         from app.services.host_pressure import host_health_job
         scheduler.add_job(
