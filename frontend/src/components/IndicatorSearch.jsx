@@ -770,16 +770,12 @@ export default function IndicatorSearch({
                                 <li>{t('shell.search.tip.place')}</li>
                               </ul>
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
-                              <p className="mt-4 text-sm font-medium text-text-secondary">{t('z4s.empty.rates')}</p>
+                              {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => (
-                                  <li key={key}>
-                                    <Chip aria-pressed={undefined} onClick={() => { onQueryChange(t(key)); inputRef.current?.focus(); }}>{t(key)}</Chip>
-                                  </li>
-                                ))}
-                              </ul>
-                              <ul className="mt-2 flex flex-wrap justify-center gap-2">
-                                {popular.slice(0, 4).map((example) => (
+                                {[...new Set([
+                                  ...['z4s.empty.rate.1', 'z4s.empty.rate.2', 'z4s.empty.rate.3'].map((key) => t(key)),
+                                  ...popular.slice(0, 6),
+                                ].map((text) => String(text)))].slice(0, 6).map((example) => (
                                   <li key={example}>
                                     <Chip aria-pressed={undefined} onClick={() => { onQueryChange(example); inputRef.current?.focus(); }}>{example}</Chip>
                                   </li>

@@ -18,7 +18,9 @@ from app.services.search_dimensions import DIMENSION_CONCEPTS, prepare_dimension
 
 SEARCH_VERSION = "federated-v2"
 TOKEN_RE = re.compile(r"[a-zа-я0-9]+")
-STOP_WORDS = frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
+# Название банка в бытовом запросе («ипотека сбер») не отдельный показатель: ставка по ипотеке одна на всех.
+BANK_BRAND_WORDS = frozenset(("сбер", "сбербанк", "втб", "тинькофф", "альфабанк", "газпромбанк"))
+STOP_WORDS = BANK_BRAND_WORDS | frozenset(("в", "во", "по", "за", "на", "из", "для", "и", "к", "the", "in", "of", "for", "and")) | QUESTION_WORDS | GRAMMAR_WORDS
 
 CBR_SEARCH_CONCEPTS = _cbr_search_concepts() + _currency_latin_concepts()
 PRICE_GOODS_CONCEPTS = _price_goods_concepts()

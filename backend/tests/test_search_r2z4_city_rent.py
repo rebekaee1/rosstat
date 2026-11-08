@@ -31,8 +31,7 @@ def test_kvartplata_is_utilities():
     assert match_score(intent, code='ceni-gaz-setevoy', names=('Средняя цена: газ сетевой, рублей за м³',)) is not None
 
 
-@pytest.mark.asyncio
-async def test_explicit_region_rows_get_latest_value(monkeypatch):
+def test_explicit_region_rows_get_latest_value(monkeypatch):
     from app.services import search_regional_groups as g
 
     async def fake(db, code, *, monthly, slugs=None):
@@ -42,6 +41,19 @@ async def test_explicit_region_rows_get_latest_value(monkeypatch):
     monkeypatch.setattr(g, '_latest_by_region', fake)
     rows = [{'kind': 'region_indicator', 'region_slug': 'moskva', 'code': 'ceni-arenda-1k', 'frequency': 'monthly'},
             {'kind': 'russia', 'code': 'cpi'}]
-    await g.attach_region_row_values(None, rows)
+    import asyncio
+    asyncio.run(g.attach_region_row_values(None, rows))
     assert rows[0]['latest'] == {'value': 31219.7123, 'date': '2026-09-01'}
     assert 'latest' not in rows[1]
+
+
+def test_bank_brand_word_does_not_empty_the_query():
+    plain = parse_intent('ипотека', GEOMETRY)
+    branded = parse_intent('ипотека сбер', GEOMETRY)
+    assert branded.error is None
+    assert branded.terms == plain.terms
+
+
+def test_headline_order_puts_dollar_before_alphabetical_currencies():
+    from app.services.search import _HEADLINE_ORDER
+    assert _HEADLINE_ORDER['usd-rub'] < _HEADLINE_ORDER['eur-rub'] < _HEADLINE_ORDER['key-rate']
