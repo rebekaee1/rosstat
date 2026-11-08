@@ -4,19 +4,19 @@
 
 Полный машинный состав, поля, зависимости, ветвления и выражения — [mechanism-inventory.json](mechanism-inventory.json). Журнал reviews не является входом генератора.
 
-- HTTP declarations: **188**
-- HTTP reachable paths: **188**
+- HTTP declarations: **189**
+- HTTP reachable paths: **189**
 - ORM tables: **72**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **252**
-- Settings reads: **597**
+- Settings reads: **598**
 - Direct environment reads: **35**
 - Jobs: **56**
 - Middleware: **6**
-- Registry declarations: **1232**
-- Registry references: **2309**
+- Registry declarations: **1235**
+- Registry references: **2314**
 - Migration operations: **458**
-- Candidate effects: **2652**
+- Candidate effects: **2659**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -87,9 +87,10 @@
 | GET | /api/v1/regions/heatmap/{code} | app.api.regions.regions_heatmap | [backend/app/api/regions.py:273](../backend/app/api/regions.py#L273) |
 | GET | /api/v1/regions/heatmap-series/{code} | app.api.regions.regions_heatmap_series | [backend/app/api/regions.py:344](../backend/app/api/regions.py#L344) |
 | GET | /api/v1/regions/vs/{slug_a}/{slug_b} | app.api.regions.regions_compare | [backend/app/api/regions.py:397](../backend/app/api/regions.py#L397) |
-| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:439](../backend/app/api/regions.py#L439) |
-| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:641](../backend/app/api/regions.py#L641) |
-| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:745](../backend/app/api/regions.py#L745) |
+| GET | /api/v1/regions/vs/{slug_a}/{slug_b}/prices | app.api.regions.regions_compare_prices | [backend/app/api/regions.py:415](../backend/app/api/regions.py#L415) |
+| GET | /api/v1/regions/{slug} | app.api.regions.region_profile | [backend/app/api/regions.py:455](../backend/app/api/regions.py#L455) |
+| GET | /api/v1/regions/{slug}/i/{code} | app.api.regions.region_indicator_detail | [backend/app/api/regions.py:657](../backend/app/api/regions.py#L657) |
+| GET | /api/v1/regions/{slug}/i/{code}/monthly | app.api.regions.region_indicator_monthly | [backend/app/api/regions.py:761](../backend/app/api/regions.py#L761) |
 | GET | /api/v1/admin/bi/dashboard | app.api.admin_bi.bi_dashboard | [backend/app/api/admin_bi.py:216](../backend/app/api/admin_bi.py#L216) |
 | GET | /api/v1/admin/bi/slices/meta | app.api.admin_bi.slices_meta | [backend/app/api/admin_bi.py:275](../backend/app/api/admin_bi.py#L275) |
 | GET | /api/v1/admin/bi/slices | app.api.admin_bi.slices_query | [backend/app/api/admin_bi.py:299](../backend/app/api/admin_bi.py#L299) |
@@ -1739,7 +1740,7 @@ Relationships: `[]`
 | RUSTATS_SCRAPE_CHALLENGE_MIN_CORES | int = 48 | 1 | [backend/app/config.py:83](../backend/app/config.py#L83) |
 | RUSTATS_REDIS_URL | str = 'redis://localhost:6379/0' | 4 | [backend/app/config.py:86](../backend/app/config.py#L86) |
 | RUSTATS_STATE_REDIS_URL | str = '' | 2 | [backend/app/config.py:90](../backend/app/config.py#L90) |
-| RUSTATS_CACHE_TTL_DATA | int = 3600 | 15 | [backend/app/config.py:91](../backend/app/config.py#L91) |
+| RUSTATS_CACHE_TTL_DATA | int = 3600 | 16 | [backend/app/config.py:91](../backend/app/config.py#L91) |
 | RUSTATS_CACHE_TTL_META | int = 300 | 2 | [backend/app/config.py:92](../backend/app/config.py#L92) |
 | RUSTATS_CBR_BASE_URL | str = 'https://www.cbr.ru' | 7 | [backend/app/config.py:95](../backend/app/config.py#L95) |
 | RUSTATS_CBR_REQUEST_TIMEOUT | int = 90 | 7 | [backend/app/config.py:96](../backend/app/config.py#L96) |
@@ -1998,9 +1999,9 @@ Relationships: `[]`
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH | Dict | '20.1' | [backend/app/api/regions.py:64](../backend/app/api/regions.py#L64) |
 | app.api.regions.HEADLINE_INDEX_TO_GROWTH_EN | Dict | '20.1' | [backend/app/api/regions.py:68](../backend/app/api/regions.py#L68) |
 | app.api.regions.LANDING_TABLES | Tuple | sequence/source expression | [backend/app/api/regions.py:73](../backend/app/api/regions.py#L73) |
-| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:415](../backend/app/api/regions.py#L415) |
-| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:417](../backend/app/api/regions.py#L417) |
-| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:732](../backend/app/api/regions.py#L732) |
+| app.api.regions._MONTHS_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:431](../backend/app/api/regions.py#L431) |
+| app.api.regions._MONTHS_EN | Tuple | sequence/source expression | [backend/app/api/regions.py:433](../backend/app/api/regions.py#L433) |
+| app.api.regions.MONTH_NAMES_RU | Tuple | sequence/source expression | [backend/app/api/regions.py:748](../backend/app/api/regions.py#L748) |
 | app.api.seo_pages._RENDER_SEM | Call | computed source expression | [backend/app/api/seo_pages.py:165](../backend/app/api/seo_pages.py#L165) |
 | app.api.sitemap._ANNUAL_SUMMARY_EN | Dict | 'Рост цен за год', 'Итог за год (сумма)', 'Значение на конец года', 'Среднее за год' | [backend/app/api/sitemap.py:90](../backend/app/api/sitemap.py#L90) |
 | app.api.sitemap._OG_INDICATOR_ALIASES | Dict | 'inflation', 'gdp' | [backend/app/api/sitemap.py:632](../backend/app/api/sitemap.py#L632) |
@@ -2586,6 +2587,9 @@ Relationships: `[]`
 | app.services.pulse._REGION_MARKERS | Tuple | sequence/source expression | [backend/app/services/pulse.py:434](../backend/app/services/pulse.py#L434) |
 | app.services.pulse_report._TG_ALLOWED_TAG_RE | Call | computed source expression | [backend/app/services/pulse_report.py:44](../backend/app/services/pulse_report.py#L44) |
 | app.services.pulse_report._HTML_ENTITY_RE | Call | computed source expression | [backend/app/services/pulse_report.py:48](../backend/app/services/pulse_report.py#L48) |
+| app.services.r4a_price_compare.BASKET | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:18](../backend/app/services/r4a_price_compare.py#L18) |
+| app.services.r4a_price_compare._MONTHS_RU | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:32](../backend/app/services/r4a_price_compare.py#L32) |
+| app.services.r4a_price_compare._MONTHS_EN | Tuple | sequence/source expression | [backend/app/services/r4a_price_compare.py:34](../backend/app/services/r4a_price_compare.py#L34) |
 | app.services.rosstat_cpi_parser.PARSER_REGISTRY | Dict | RosstatCpiParser.parser_type, CbrKeyRateParser.parser_type, CbrFxParser.parser_type, CbrRuoniaParser.parser_type, CbrMonetaryParser.parser_type, CbrDataServiceParser.parser_type, EmissLaborParser.parser_type, RosstatLaborParser.parser_type, RosstatGdpParser.parser_type, CbrDataServiceSumParser.parser_type, MinfinBudgetParser.parser_type, RosstatWeeklyCpiParser.parser_type, RosstatIpiParser.parser_type, RosstatHousingParser.parser_type, RosstatPopulationParser.parser_type, RosstatPpiParser.parser_type, CbrBopParser.parser_type, CbrTradeGoodsMonthlyParser.parser_type, CbrTradeServicesMonthlyParser.parser_type, CbrReservesParser.parser_type, CbrDebtParser.parser_type, CbrGoldParser.parser_type, RosstatDemoParser.parser_type, RosstatIndParser.parser_type, RosstatScienceParser.parser_type, RosstatFixedAssetsParser.parser_type, BinanceBtcUsdtParser.parser_type, BrentDailyFredParser.parser_type, FredCsvParser.parser_type, WorldBankPinkSheetParser.parser_type, EcbFxParser.parser_type, ImfWeoParser.parser_type, CbrMonetaryAggParser.parser_type, MoexIndexParser.parser_type, RosstatWeeklyPriceParser.parser_type | [backend/app/services/rosstat_cpi_parser.py:92](../backend/app/services/rosstat_cpi_parser.py#L92) |
 | app.services.rosstat_demo_parser.DEMO_FILES | Dict | 'births', 'deaths', 'birth-rate', 'death-rate', 'working-age-population', 'pop-under-working-age', 'pop-over-working-age', 'pensioners' | [backend/app/services/rosstat_demo_parser.py:278](../backend/app/services/rosstat_demo_parser.py#L278) |
 | app.services.rosstat_gdp_parser._Q_RE | Call | computed source expression | [backend/app/services/rosstat_gdp_parser.py:49](../backend/app/services/rosstat_gdp_parser.py#L49) |
