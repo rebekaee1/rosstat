@@ -1,5 +1,5 @@
 // Месячная страница цены региона: чистые помощники (без React) — свежесть ряда, сравнение, изменение за период, группы «Ещё в разделе».
-import { NBSP } from './regionUi';
+import { NBSP, formatRegionNumber, formatRegionWithUnit } from './regionUi';
 
 /** Порядок групп цен (price_group от API). Неизвестные группы идут после известных. */
 export const PRICE_GROUP_ORDER = [
@@ -133,18 +133,33 @@ export function shortPriceName(name, unit) {
   return upFirst(s.trim()) || name;
 }
 
-/** «рублей за 10 штук» → «за 10 штук»; «рублей в месяц» → «в месяц»; иначе ''. */
+/** «рублей за 10 штук» / «roubles per 10 eggs» → «за 10 штук» / «per 10 eggs»; иначе ''. */
 export function unitSuffix(unit) {
-  const m = /^рубл\S*\s+((?:за|в)\s+.+)$/i.exec(unit || '');
+  const m = /^(?:рубл\S*|rou?bles?)\s+((?:за|в|per|in|for)\s+.+)$/i.exec(unit || '');
   return m ? m[1] : '';
+}
+
+/** Цена в рублях за упаковку/кг/месяц — единица с рублём и «за …». */
+export function isRubPerUnit(unit) {
+  return !!unitSuffix(unit);
+}
+
+/** «134 ₽» для цен «рублей за …» (единица уже в названии или под числом); прочие единицы — как раньше. */
+export function priceText(value, unit, locale = 'ru') {
+  if (!isRubPerUnit(unit)) return formatRegionWithUnit(value, unit, locale);
+  const n = formatRegionNumber(value, unit, locale);
+  return n === '—' ? n : `${n}${NBSP}₽`;
 }
 
 const PER_ONE = { 'штук': 'штуку', 'таблеток': 'таблетку', 'капсул': 'капсулу', 'ампул': 'ампулу' };
 /** Цена за одну штуку/таблетку для упаковок «за 10 штук»: {value, word} или null. */
 export function perUnitPrice(unit, value) {
   const m = /за\s+(\d+)\s+(штук|таблеток|капсул|ампул)(?![а-яё])/i.exec(unit || '');
-  if (!m || !(Number(m[1]) > 1) || !(value > 0)) return null;
-  return { value: value / Number(m[1]), word: PER_ONE[m[2].toLowerCase()] };
+  const e = m ? null : /per\s+(\d+)\s+(eggs|pieces|tablets|capsules|ampoules)\b/i.exec(unit || '');
+  const hit = m || e;
+  if (!hit || !(Number(hit[1]) > 1) || !(value > 0)) return null;
+  const word = m ? PER_ONE[m[2].toLowerCase()] : e[2].toLowerCase().replace(/s$/, '');
+  return { value: value / Number(hit[1]), word };
 }
 
 const GROUP_RULES = [

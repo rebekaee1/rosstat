@@ -3786,4 +3786,13 @@ export default {
   'z4s.empty.rate.1': 'Курс доллара',
   'z4s.empty.rate.2': 'Курс узбекского сума',
   'z4s.empty.rate.3': 'Курс тенге',
+  'r2z2.hereHigher': "здесь выше на {pct}",
+  'r2z2.hereLower': "здесь ниже на {pct}",
+  'r2z2.hereSame': "здесь так же",
+  'r2z2.tipYoy': 'к году назад',
+  'r2z2.statMax': 'Максимум, {month}',
+  'r2z2.statMin': 'Минимум, {month}',
+  'r2z2.colYoy': 'К году',
+  'r2z2.source': 'Росстат, средние потребительские цены. Данные за {month}.',
+  'r2z2.discNote': 'Росстат больше не публикует этот ряд.',
 };

@@ -10,7 +10,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
-  Tooltip, CartesianGrid,
+  Tooltip, CartesianGrid, ReferenceDot,
 } from 'recharts';
 import { formatRegionValue, axisScaleFor, formatScaledTick } from '../lib/regionsApi';
 import { pickChartAxisTicks, chartAxisTickBudget } from '../lib/format';
@@ -46,13 +46,14 @@ function monthTickLabel(p, locale) {
   return `${names[m]} ${p.year}`;
 }
 
-function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote }) {
+function RegionTooltip({ active, payload, label, unit, regionName, compareName, russiaLabel, forecastLabel, tickLabel, indexNote, yoyLabel, yoyOf }) {
   if (!active || !payload?.length) return null;
   const region = payload.find(p => p.dataKey === 'value' && p.value != null);
   const compare = payload.find(p => p.dataKey === 'compare' && p.value != null);
   const russia = payload.find(p => p.dataKey === 'russia' && p.value != null);
   const forecast = payload.find(p => p.dataKey === 'forecast' && p.value != null);
-  const periodLabel = tickLabel ? tickLabel(label) : label;
+  const rawPeriod = tickLabel ? tickLabel(label) : label;
+  const periodLabel = typeof rawPeriod === 'string' && rawPeriod ? rawPeriod.charAt(0).toUpperCase() + rawPeriod.slice(1) : rawPeriod;
   // Короткая единица («₽», «%») стоит рядом с числом, а не отдельной строкой внизу: раньше «₽» оставался сам по себе на второй строке.
   const inlineUnit = !indexNote && unit && String(unit).length <= 6 ? `\u00A0${unit}` : '';
   const fmt = (v) => `${formatRegionValue(v)}${inlineUnit}`;
@@ -62,6 +63,11 @@ function RegionTooltip({ active, payload, label, unit, regionName, compareName, 
       {region && (
         <div className="font-semibold tabular-nums text-champagne-ink">
           {regionName}: {fmt(region.value)}
+        </div>
+      )}
+      {region && yoyOf && yoyOf(label) != null && (
+        <div className="tabular-nums text-text-secondary mt-0.5">
+          {yoyLabel}: {yoyOf(label)}
         </div>
       )}
       {compare && (
@@ -122,7 +128,10 @@ export default function RegionAnnualChart({
   const data = useMemo(() => {
     const rfByPeriod = new Map((russiaSeries || []).map(p => [periodKey(p), p.value]));
     const cmpByPeriod = new Map((compareSeries || []).map(p => [periodKey(p), p.value]));
-    const observed = (series || []).map(p => ({
+    const observed = (series || []).map((p, i, arr) => ({
+      yoy: monthly && i >= 12 && arr[i - 12].value
+        && (p.year * 12 + p.month) - (arr[i - 12].year * 12 + arr[i - 12].month) === 12
+        ? ((p.value - arr[i - 12].value) / Math.abs(arr[i - 12].value)) * 100 : null,
       period: periodKey(p),
       year: p.year,
       label: monthly
@@ -264,7 +273,10 @@ export default function RegionAnnualChart({
                 const key = String(payload.value);
                 const point = data.find((pt) => String(pt.period) === key);
                 const label = (yearTicks && monthly && point) ? String(point.year) : (point?.label || key);
+                const idx = data.findIndex((pt) => String(pt.period) === key);
+                const edge = yearTicks && monthly && data.length > 1 ? idx / (data.length - 1) : 0.5;
                 const anchor = xTicks.length < 2 ? 'middle'
+                  : (yearTicks && monthly) ? (edge > 0.965 ? 'end' : edge < 0.02 ? 'start' : 'middle')
                   : key === String(xTicks[0]) ? 'start'
                     : key === String(xTicks[xTicks.length - 1]) ? 'end' : 'middle';
                 return <text x={x} y={y} dy={12} textAnchor={anchor} {...tickStyle}>{label}</text>;
@@ -314,6 +326,13 @@ export default function RegionAnnualChart({
                   russiaLabel={russiaLabel}
                   forecastLabel={locale === 'en' ? 'Our forecast' : 'Наш прогноз'}
                   indexNote={indexMode ? t('w6f.reg.indexNote') : null}
+                  yoyLabel={t('r2z2.tipYoy')}
+                  yoyOf={monthly && !indexMode ? (v) => {
+                    const d = data.find((x) => String(x.period) === String(v));
+                    if (d?.yoy == null) return null;
+                    const a = Math.abs(d.yoy).toFixed(1).replace('.', locale === 'en' ? '.' : ',');
+                    return `${d.yoy > 0.04 ? '+' : d.yoy < -0.04 ? '\u2212' : ''}${a}\u00A0%`;
+                  } : null}
                   tickLabel={(v) => {
                     const d = data.find((x) => String(x.period) === String(v));
                     return d ? d.label : String(v);
@@ -337,6 +356,19 @@ export default function RegionAnnualChart({
               animationDuration={900}
               animationEasing="ease-out"
             />
+            {monthly && !forecastSeries?.length && data.length > 0 && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={data[data.length - 1].value}
+                r={4.5}
+                fill={CHART_THEME.gold}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
             {compareSeries?.length > 0 && (
               <Line
                 className="k4-ribbon k4-ribbon--sapphire"

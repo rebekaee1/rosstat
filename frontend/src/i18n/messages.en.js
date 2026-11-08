@@ -3781,4 +3781,13 @@ export default {
   'z4s.empty.rate.1': 'US dollar rate',
   'z4s.empty.rate.2': 'Uzbek som rate',
   'z4s.empty.rate.3': 'Tenge rate',
+  'r2z2.hereHigher': "here {pct} higher",
+  'r2z2.hereLower': "here {pct} lower",
+  'r2z2.hereSame': "about the same here",
+  'r2z2.tipYoy': 'vs year ago',
+  'r2z2.statMax': 'Peak, {month}',
+  'r2z2.statMin': 'Low, {month}',
+  'r2z2.colYoy': 'YoY',
+  'r2z2.source': 'Rosstat, average consumer prices. Data for {month}.',
+  'r2z2.discNote': 'Rosstat no longer publishes this series.',
 };
