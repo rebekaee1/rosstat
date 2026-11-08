@@ -587,6 +587,57 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
     return result
 
 
+async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
+    """Соседние показатели раздела для блока «Ещё в разделе» (годовой и месячный режим).
+
+    У позиций цен — та же группа и живые первыми, со значением и месяцем региона.
+    """
+    all_sib = (await db.execute(
+        select(RegionIndicator)
+        .where(RegionIndicator.section_num == indicator.section_num,
+               RegionIndicator.code != indicator.code,
+               RegionIndicator.is_listed.is_(True))
+        .order_by(RegionIndicator.table_code, RegionIndicator.code)
+    )).scalars().all()
+    own_meta = price_meta(indicator.code)
+    if own_meta:
+        # Соседи по цене: та же группа и живые позиции первыми, затем остальные.
+        def _sib_rank(ind):
+            m = price_meta(ind.code)
+            return (0 if m and m["price_group"] == own_meta["price_group"] else 1,
+                    1 if (m and m["is_discontinued"]) else 0)
+        all_sib = sorted(all_sib, key=_sib_rank)
+        siblings = all_sib[:24]
+    else:
+        siblings = sorted(all_sib, key=lambda x: x.code)[:12]
+    sib_latest: dict[int, tuple[int, float]] = {}
+    if siblings:
+        for iid, m, v in (await db.execute(
+            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
+            .where(RegionMonthlyPoint.region_id == region.id,
+                   RegionMonthlyPoint.indicator_id.in_([x.id for x in siblings]))
+            .order_by(RegionMonthlyPoint.month.desc())
+        )).all():
+            sib_latest.setdefault(iid, (int(m), float(v)))
+
+    def _sibling(x):
+        item = {"code": x.code, "name": _icopy(x)["name"], "unit": _icopy(x)["unit"]}
+        got = sib_latest.get(x.id)
+        if got:
+            item["last_month"], item["month"], item["value"] = got[0], got[0], _fmt(got[1])
+            item["period_label"] = _month_label(got[0])
+        meta = price_meta(x.code)
+        if meta:
+            fields = _price_fields(meta)
+            if got:
+                fields.pop("last_month", None)
+                fields.pop("last_month_label", None)
+            item.update(fields)
+        return item
+
+    return [_sibling(x) for x in siblings]
+
+
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
     cache_key = await versioned_key("regions", f"detail:v2:{slug}:{code}:{get_locale()}")
@@ -647,48 +698,7 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
             break
 
     # соседние показатели раздела (для блока «В этом разделе»)
-    all_sib = (await db.execute(
-        select(RegionIndicator)
-        .where(RegionIndicator.section_num == indicator.section_num,
-               RegionIndicator.code != indicator.code,
-               RegionIndicator.is_listed.is_(True))
-        .order_by(RegionIndicator.table_code, RegionIndicator.code)
-    )).scalars().all()
-    own_meta = price_meta(indicator.code)
-    if own_meta:
-        # Соседи по цене: та же группа и живые позиции первыми, затем остальные.
-        def _sib_rank(ind):
-            m = price_meta(ind.code)
-            return (0 if m and m["price_group"] == own_meta["price_group"] else 1,
-                    1 if (m and m["is_discontinued"]) else 0)
-        all_sib = sorted(all_sib, key=_sib_rank)
-        siblings = all_sib[:24]
-    else:
-        siblings = sorted(all_sib, key=lambda x: x.code)[:12]
-    sib_latest: dict[int, tuple[int, float]] = {}
-    if siblings:
-        for iid, m, v in (await db.execute(
-            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
-            .where(RegionMonthlyPoint.region_id == region.id,
-                   RegionMonthlyPoint.indicator_id.in_([x.id for x in siblings]))
-            .order_by(RegionMonthlyPoint.month.desc())
-        )).all():
-            sib_latest.setdefault(iid, (int(m), float(v)))
-
-    def _sibling(x):
-        item = {"code": x.code, "name": _icopy(x)["name"], "unit": _icopy(x)["unit"]}
-        got = sib_latest.get(x.id)
-        if got:
-            item["last_month"], item["month"], item["value"] = got[0], got[0], _fmt(got[1])
-            item["period_label"] = _month_label(got[0])
-        meta = price_meta(x.code)
-        if meta:
-            fields = _price_fields(meta)
-            if got:
-                fields.pop("last_month", None)
-                fields.pop("last_month_label", None)
-            item.update(fields)
-        return item
+    sibling_items = await _section_siblings(db, region, indicator)
 
     copy = _icopy(indicator)
     result = {
@@ -713,14 +723,7 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
             "position": rank, "total": total_ranked, "year": last_year,
             "top": top, "bottom": bottom, **polarity,
         } if rank else None,
-        "siblings": [
-            {
-                "code": s.code,
-                "name": _icopy(s)["name"],
-                "unit": _icopy(s)["unit"],
-            }
-            for s in siblings
-        ],
+        "siblings": sibling_items,
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
@@ -815,14 +818,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
 
     # соседние показатели раздела + мост в макроблок — та же семантика, что
     # у годового эндпоинта: карточка месяц-режима строит те же блоки.
-    siblings = (await db.execute(
-        select(RegionIndicator)
-        .where(RegionIndicator.section_num == indicator.section_num,
-               RegionIndicator.code != indicator.code,
-               RegionIndicator.is_listed.is_(True))
-        .order_by(RegionIndicator.code)
-        .limit(12)
-    )).scalars().all()
+    sibling_items = await _section_siblings(db, region, indicator)
 
     copy = _icopy(indicator)
     result = {
@@ -846,7 +842,7 @@ async def region_indicator_monthly(slug: str, code: str, db: AsyncSession = Depe
         "compare": compare,
         "series": series,
         "russia_series": russia_series,
-        "siblings": [_sibling(x) for x in siblings],
+        "siblings": sibling_items,
     }
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
