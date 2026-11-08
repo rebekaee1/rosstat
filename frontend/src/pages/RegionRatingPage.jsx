@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, Trophy, BarChart3, GitCompare } from 'lucide-react'
 import useDocumentMeta from '../lib/useMeta';
 import { useRegionsHeatmap } from '../lib/regionsApi';
 import { formatRegionNumber, formatRegionWithUnit, unitLabel } from '../lib/regionUi';
+import R4YourRegion from '../components/regions/R4YourRegion';
 import RegionsMap from '../components/RegionsMap';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
@@ -49,7 +50,9 @@ export default function RegionRatingPage() {
     return rows.map((row, i) => ({ ...row, rank: i + 1 }));
   }, [data, sortDirection]);
 
-  const maxAbs = Math.max(1e-9, ...ranked.map((r) => Math.abs(Number(r.raw ?? r.value) || 0)));
+  // Цены ЕМИСС (месячный ряд): места не показываем — только значения и сравнение.
+  const isPrice = data?.month != null;
+  const maxAbs =Math.max(1e-9, ...ranked.map((r) => Math.abs(Number(r.raw ?? r.value) || 0)));
   const top = ranked[0];
   const bottom = ranked[ranked.length - 1];
   const mapValues = useMemo(() => {
@@ -173,10 +176,18 @@ export default function RegionRatingPage() {
             </div>
           </div>
 
+          {isPrice && (
+            <R4YourRegion
+              rows={ranked}
+              unit={data.indicator.unit}
+              cheapestSlug={[...ranked].sort((a, b) => (a.raw ?? a.value) - (b.raw ?? b.value))[0]?.slug}
+            />
+          )}
+
           {top.slug && bottom.slug && top.slug !== bottom.slug && (
             <Link to={regionVsPath(top.slug, bottom.slug)} className="r3b-vs-link fe-tap-inline mb-8">
               <GitCompare size={14} aria-hidden="true" />
-              {t('r3b.rating.compareExtremes', { a: top.name, b: bottom.name })}
+              {t(isPrice ? 'r4a.rating.extremes' : 'r3b.rating.compareExtremes', { a: top.name, b: bottom.name })}
             </Link>
           )}
 
@@ -198,7 +209,7 @@ export default function RegionRatingPage() {
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-obsidian-light/95 z-10">
                   <tr className="text-left text-xs font-medium text-text-secondary">
-                    <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>
+                    {!isPrice && <th className="px-4 py-2.5 font-medium w-16">{tableCol}</th>}
                     <th className="px-4 py-2.5 font-medium">{t('regions.rating.colRegion')}</th>
                     <th
                       aria-sort={sortDirection === 'asc' ? 'ascending' : 'descending'}
@@ -223,11 +234,13 @@ export default function RegionRatingPage() {
                 <tbody>
                   {ranked.map((row) => (
                     <tr key={row.slug} className="fe-row-link border-t border-border-subtle">
-                      <td className="fe-num px-4 py-2 text-text-secondary">
-                        {achievement && row.rank <= 3
-                          ? <span className="w2-rank-pos" data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
-                          : row.rank}
-                      </td>
+                      {!isPrice && (
+                        <td className="fe-num px-4 py-2 text-text-secondary">
+                          {achievement && row.rank <= 3
+                            ? <span className="w2-rank-pos" data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>
+                            : row.rank}
+                        </td>
+                      )}
                       <td className="px-4 py-2">
                         <Link
                           to={regionPath(row.slug)}

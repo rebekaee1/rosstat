@@ -412,6 +412,22 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     return payload
 
 
+@router.get("/vs/{slug_a}/{slug_b}/prices")
+async def regions_compare_prices(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
+    """Цены двух регионов рядом, корзина и зарплата в корзинах (R4-A)."""
+    from app.services.r4a_price_compare import build_price_compare_payload
+
+    cache_key = await versioned_key("regions", f"vs-prices:v1:{slug_a}:{slug_b}:{get_locale()}")
+    cached = await cache_get(cache_key)
+    if cached:
+        return cached
+    payload = await build_price_compare_payload(slug_a, slug_b, db)
+    if payload is None:
+        raise HTTPException(404, "Нет цен для сравнения")
+    await cache_set(cache_key, payload, settings.cache_ttl_data)
+    return payload
+
+
 _MONTHS_RU = ("январь", "февраль", "март", "апрель", "май", "июнь",
               "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь")
 _MONTHS_EN = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")

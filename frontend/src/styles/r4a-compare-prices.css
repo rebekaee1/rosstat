@@ -1,0 +1,86 @@
+/* Круг 4, R4-A: цены двух регионов рядом. Холодная палитра, без рамок. */
+.r4a-prices { margin-bottom: 24px; }
+.r4a-tally { margin: 0 0 14px; font-size: 15px; line-height: 1.45; color: var(--color-text-primary); }
+.r4a-card { border-radius: 24px; padding: 18px; margin-bottom: 20px; }
+.r4a-card__title, .r4a-wage__title {
+  display: flex; align-items: center; gap: 8px; margin: 0;
+  font-family: var(--font-display, inherit); font-size: 17px; font-weight: 600; color: var(--color-text-primary);
+}
+.r4a-wage__title { font-size: 15px; margin-bottom: 10px; }
+.r4a-card__lead { margin: 6px 0 14px; font-size: 14px; line-height: 1.45; color: var(--color-text-secondary); }
+.r4a-card__verdict { margin: 12px 0 0; font-size: 15px; line-height: 1.45; color: var(--color-text-primary); }
+.r4a-card__note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--color-text-secondary); }
+.r4a-wage { margin-top: 20px; padding-top: 4px; }
+
+.r4a-duel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+.r4a-duel__cell { min-width: 0; padding: 12px; border-radius: 16px; background: rgba(60, 78, 110, 0.05); }
+.r4a-duel__cell.is-better { background: rgba(60, 84, 130, 0.10); }
+.r4a-duel__name { display: block; font-size: 13px; line-height: 1.3; color: var(--color-text-secondary); }
+.r4a-duel__value { display: block; margin-top: 4px; font-size: 20px; font-weight: 600; white-space: nowrap; color: var(--color-text-primary); }
+.r4a-duel__bar { display: block; height: 6px; margin-top: 10px; border-radius: 9999px; background: rgba(60, 78, 110, 0.10); overflow: hidden; }
+.r4a-duel__bar > span { display: block; height: 100%; border-radius: 9999px; background: rgba(70, 92, 130, 0.45); transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.r4a-duel__cell.is-better .r4a-duel__bar > span { background: linear-gradient(90deg, #3B5280, #1E2F57); }
+
+.r4a-more {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 8px; padding: 0 4px;
+  background: none; border: 0; font: inherit; font-size: 14px; color: var(--color-champagne-ink); cursor: pointer;
+}
+.r4a-more svg, .r4a-group__head svg { transition: transform 0.25s ease; }
+.r4a-more svg.is-open, .r4a-group__head svg.is-open { transform: rotate(180deg); }
+.r4a-list { list-style: none; margin: 4px 0 0; padding: 0; }
+.r4a-list__row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: baseline; padding: 8px 0; font-size: 14px; }
+.r4a-list__row:nth-child(even) { background: rgba(60, 78, 110, 0.04); }
+.r4a-list__qty { color: var(--color-text-secondary); }
+.r4a-list__val { text-align: right; white-space: nowrap; color: var(--color-text-secondary); }
+.r4a-list__val.is-better, .r4a-table__val.is-better { color: var(--color-text-primary); font-weight: 600; }
+
+.r4a-h2 { margin: 0 0 10px; font-family: var(--font-display, inherit); font-size: 17px; font-weight: 600; color: var(--color-text-primary); }
+.r4a-groups { display: grid; gap: 10px; }
+.r4a-group { border-radius: 18px; background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow); overflow: hidden; }
+.r4a-group__head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto 20px; gap: 10px; align-items: center; width: 100%;
+  min-height: 48px; padding: 0 14px; background: none; border: 0; font: inherit; text-align: left; cursor: pointer;
+  color: var(--color-text-primary);
+}
+.r4a-group__label { font-weight: 600; font-size: 15px; }
+.r4a-group__tally { font-size: 12.5px; color: var(--color-text-secondary); white-space: nowrap; }
+.r4a-table { padding: 0 14px 10px; }
+.r4a-table__row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: baseline; padding: 8px 0; font-size: 14px; }
+.r4a-table__row:not(.r4a-table__row--head):nth-child(even) { background: rgba(60, 78, 110, 0.04); }
+.r4a-table__row--head { font-size: 12px; color: var(--color-text-secondary); }
+.r4a-table__row--head .r4a-table__val { white-space: normal; line-height: 1.2; }
+.r4a-table__name { min-width: 0; line-height: 1.3; }
+.r4a-table__link { color: var(--color-text-primary); }
+.r4a-table__link:hover { text-decoration: underline; }
+.r4a-table__per { display: block; font-size: 12px; color: var(--color-text-secondary); }
+.r4a-table__val { text-align: right; white-space: nowrap; color: var(--color-text-secondary); }
+@media (prefers-reduced-motion: reduce) {
+  .r4a-duel__bar > span, .r4a-more svg, .r4a-group__head svg { transition: none; }
+}
+
+.r4a-hero { margin: 0 0 12px; font-family: var(--font-display, inherit); font-size: 19px; line-height: 1.3; font-weight: 600; color: var(--color-text-primary); }
+.r4a-table__diff { display: block; font-size: 11.5px; font-weight: 400; color: var(--color-champagne-ink); }
+.r4a-h2row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.r4a-h2row .r4a-h2 { margin: 0; }
+.r4a-h2row .r4a-more { margin: 0; flex: none; }
+.r4a-skel { border-radius: 24px; background: rgba(60, 78, 110, 0.07); margin-bottom: 16px; animation: r4a-pulse 1.4s ease-in-out infinite; }
+.r4a-skel--card { height: 300px; }
+.r4a-skel--row { height: 48px; border-radius: 18px; }
+@keyframes r4a-pulse { 50% { opacity: 0.5; } }
+@media (prefers-reduced-motion: reduce) { .r4a-skel { animation: none; } }
+
+/* Переключатель «Цены / Показатели» и быстрые пары */
+.r4a-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin: 0 0 16px; border-radius: 16px; background: rgba(60, 78, 110, 0.07); }
+.r4a-seg__btn { min-height: 44px; border: 0; border-radius: 12px; background: none; font: inherit; font-size: 15px; color: var(--color-text-secondary); cursor: pointer; }
+.r4a-seg__btn.is-on { background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow); color: var(--color-text-primary); font-weight: 600; }
+.r4a-quick { margin: -4px 0 16px; }
+.r4a-quick__lead { margin: 0 0 6px 4px; font-size: 12px; color: var(--color-text-secondary); }
+.r4a-quick__row { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
+.r4a-quick__row::-webkit-scrollbar { display: none; }
+.r4a-quick__chip { flex: none; min-height: 44px; padding: 0 14px; border: 0; border-radius: 9999px; background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow); font: inherit; font-size: 14px; color: var(--color-text-primary); cursor: pointer; }
+
+/* Страница рейтинга цен: «Ваш регион» */
+.r4a-your { border-radius: 20px; padding: 14px 16px; margin-bottom: 20px; }
+.r4a-your__field { display: block; }
+.r4a-your__label { display: block; margin: 0 0 4px 4px; font-size: 12px; color: var(--color-text-secondary); }
+.r4a-your__text { margin: 10px 0 0; font-size: 15px; line-height: 1.45; color: var(--color-text-primary); }
