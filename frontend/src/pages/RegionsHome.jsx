@@ -9,7 +9,7 @@ import { useMemo, useState, useRef, useDeferredValue, useCallback, useEffect, la
 import { Link, useNavigate, useSearchParams, useLocation, useParams } from 'react-router-dom';
 import {
   Search, MapPin, ChevronRight, List, Map as MapIcon, ChevronDown,
-  Image as ImageIcon, Film, X, RefreshCw,
+  Image as ImageIcon, Film, X, RefreshCw, GitCompare,
 } from 'lucide-react';
 import useDocumentMeta from '../lib/useMeta';
 import {
@@ -46,7 +46,9 @@ import {
   regionHubPath,
   regionIndicatorPath,
   regionPath,
+  regionVsPath,
 } from '../lib/sitePaths';
+import '../styles/r3b-regions.css';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
@@ -291,6 +293,10 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
         {side(first, neutral ? 'text-text-primary' : 'fe-ink-pos')}
         {side(second, neutral ? 'text-text-primary' : 'fe-ink-neg')}
       </div>
+      <Link to={regionVsPath(first.slug, second.slug)} className="r3b-vs-link fe-tap-inline">
+        <GitCompare size={14} aria-hidden="true" />
+        {t('r3b.hub.compareTwo', { a: first.name, b: second.name })}
+      </Link>
     </div>
   );
 }

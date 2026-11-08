@@ -15,6 +15,7 @@ import { useLocale } from '../../i18n';
 import '../../styles/regions-w4.css';
 import '../../styles/w6f-pages.css';
 import '../../styles/k6-country.css';
+import '../../styles/r3b-regions.css';
 
 const FIRST_ROWS = 12;
 

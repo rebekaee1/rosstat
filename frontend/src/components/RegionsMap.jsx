@@ -23,6 +23,7 @@ import RegionComparePick from './regions/RegionComparePick';
 import { CHART_THEME } from '../lib/chartTheme';
 import '../styles/regions-w4.css';
 import '../styles/w6f-pages.css';
+import '../styles/r3b-regions.css';
 
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.6;

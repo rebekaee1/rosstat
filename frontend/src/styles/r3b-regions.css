@@ -1,0 +1,98 @@
+/* Круг 3, R3-B: регионы на планшете (хаб, рейтинг, карта, сравнение). Холодная палитра, без рамок. */
+
+/* ── Хаб: кнопки показателей рейтинга занимают всю ширину карточки ───────────── */
+@media (min-width: 640px) {
+  :root .fe-rank .fe-chip-row--grid {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Строки рейтинга ниже: на iPad видно больше мест без бесконечной прокрутки. */
+  :root .fe-rank__row { min-height: 46px; padding: 4px 14px; }
+  :root .fe-rank__list { gap: 4px; }
+  :root .fe-rank__link { min-height: 40px; }
+}
+
+/* Ссылка «сравнить» под парой контрастов */
+.r3b-vs-link {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 6px;
+  font-size: 13px; font-weight: 500; color: var(--color-champagne-ink);
+}
+.r3b-vs-link:hover { text-decoration: underline; }
+
+/* ── Карта: карточка выбранного региона — одна строка на планшете ──────────────── */
+@media (min-width: 640px) {
+  :root [data-block='regions-map'] .fe-map-pick,
+  :root .fe-map-pick:not(.fe-map-pick--empty) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 44px;
+    grid-template-areas: 'text actions close';
+    align-items: center;
+    column-gap: 12px;
+    margin-top: 16px;
+    padding: 10px 8px 10px 16px;
+    min-height: 0;
+  }
+  :root .fe-map-pick__text { grid-area: text; }
+  :root .fe-map-pick__actions { grid-area: actions; display: flex; flex-wrap: nowrap; gap: 8px; }
+  :root .fe-map-pick__actions--grid { display: grid; width: min(22rem, 100%); }
+  :root .fe-map-pick__close { grid-area: close; }
+  :root .fe-map-pick__name { font-size: 16px; }
+  :root .fe-map-pick__value { font-size: 15px; }
+}
+
+/* ── Сравнение двух регионов ───────────────────────────────────────────────── */
+.r3b-pair {
+  display: grid; grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr);
+  align-items: end; gap: 10px; margin-bottom: 16px;
+}
+.r3b-pair__field { display: block; min-width: 0; }
+.r3b-pair__label { display: block; margin: 0 0 4px 4px; font-size: 12px; color: var(--color-text-secondary); }
+.r3b-pair__select {
+  width: 100%; min-height: 44px; padding: 0 12px; border: 0; border-radius: 14px;
+  background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow);
+  color: var(--color-text-primary); font: inherit; font-size: 15px;
+}
+.r3b-pair__swap {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 14px; color: var(--color-text-secondary);
+  background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow);
+}
+@media (max-width: 479px) {
+  .r3b-pair { grid-template-columns: minmax(0, 1fr) 44px; }
+  .r3b-pair__field:last-child { grid-column: 1 / -1; }
+  .r3b-pair__swap { grid-row: 1; grid-column: 2; }
+}
+.r3b-tally { margin: 0 0 16px; font-size: 15px; line-height: 1.45; color: var(--color-text-primary); }
+
+.r3b-side__bar {
+  display: block; height: 6px; margin-top: 8px; border-radius: 9999px;
+  background: rgba(60, 78, 110, 0.10); overflow: hidden;
+}
+.r3b-side__bar > span { display: block; height: 100%; border-radius: 9999px; background: rgba(70, 92, 130, 0.45); }
+.r3b-side.is-more .r3b-side__bar > span { background: linear-gradient(90deg, #3B5280, #1E2F57); }
+.r3b-side.is-more { background: rgba(60, 84, 130, 0.07); }
+
+/* ── Карта: все показатели видны сразу, без скрытой горизонтальной прокрутки ───── */
+@media (min-width: 640px) and (max-width: 1199px) {
+  :root:root .fe-chip-row--grid.z5-metric-ribbon {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding: 2px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  :root:root .fe-chip-row--grid.z5-metric-ribbon > .fe-chip { white-space: normal; text-align: center; }
+}
+/* ── Рейтинг: полоска под названием региона, таблица без вложенной прокрутки на планшете ── */
+.r3b-rate-bar { display: block; height: 4px; margin-top: 5px; border-radius: 9999px; background: rgba(60, 78, 110, 0.08); overflow: hidden; max-width: 22rem; }
+.r3b-rate-bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #4A6396, #26386A); }
+@media (min-width: 640px) {
+  :root:root .r3b-rate-tiles { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 9rem; }
+  :root:root .r3b-rate-h1 { font-size: clamp(1.6rem, 3.6vw, 2.1rem); line-height: 1.15; }
+  .r3b-rate-box { max-height: none; overflow: visible; }
+  .r3b-rate-box thead { position: static; }
+  /* Строки без линий: ровная полосатая заливка читается мягче. */
+  :root .r3b-rate-box tbody tr { border: 0; border-top-width: 0; }
+  :root .r3b-rate-box tbody tr:nth-child(even) { background: rgba(60, 78, 110, 0.045); }
+}
