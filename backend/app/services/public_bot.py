@@ -73,6 +73,15 @@ TOPICS: dict[str, Topic] = {t.key: t for t in (
     Topic("usd", "usd-rub", "Доллар", "₽", ("доллар", "бакс"), ("usd",), notify="weekly"),
     Topic("eur", "eur-rub", "Евро", "₽", ("евро",), ("eur",), notify="weekly"),
 )}
+# Ролики (очередь контент-завода 08.11.2026): код из ссылки → тема ролика. Человек из ролика сразу получает
+# ответ модели по теме ролика, а не общее приветствие.
+REELS = {
+    "r001": "индекс губной помады",
+    "r002": "закон Энгеля: чем беднее семья, тем большая доля трат уходит на еду",
+    "r003": "закон Оукена: связь безработицы и роста экономики",
+    "r004": "куда деваются 5 рублей с чашки кофе",
+    "r005": "почему бензин не дешевеет вместе с нефтью",
+}
 _MATCH_ORDER = ("diesel", "ai95", "ai92", "gold", "deposit", "mortgage", "keyrate", "usd", "eur", "inflation")
 # Порядок кнопок меню.
 MENU = (("diesel", "ai92"), ("inflation", "keyrate"), ("gold", "usd"), ("deposit", "mortgage"))
@@ -153,6 +162,8 @@ def fmt_date(d: date, freq: str) -> str:
         return f"{_MONTHS_NOM[d.month - 1]} {d.year}"
     if freq in ("annual",):
         return f"{d.year} год"
+    if freq in ("quarterly",):
+        return f"{(d.month - 1) // 3 + 1}-й квартал {d.year}"
     return f"{d.day} {_MONTHS[d.month - 1]} {d.year}"
 
 
@@ -276,7 +287,7 @@ def _wallet_line(f: Figure, cpi: "Figure | None") -> str | None:
 
 
 def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = None,
-                today: date | None = None) -> str:
+                today: date | None = None, was: tuple[date | None, float | None] | None = None) -> str:
     t = f.topic
     unit = t.unit if t.unit != "%" else "%"
     lines = []
@@ -285,6 +296,9 @@ def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = Non
     scope = " — в среднем по России" if t.key in _RUSSIA_AVG else ""
     lines.append(f"<b>{escape(t.title)}</b>{scope}")
     lines.append(f"<b>{fmt_num(f.last_value)} {escape(unit)}</b> — {fmt_date(f.last_date, f.frequency)}")
+    if was and was[1] is not None:
+        when = f" ({fmt_date(was[0], f.frequency)})" if was[0] else ""
+        lines.append(f"Было {fmt_num(was[1])} {escape(unit)}{when}.")
     changes = []
     step = _FREQ_STEP.get(f.frequency)
     ch = _change(f.last_value, f.prev_value, t.is_rate)
@@ -302,7 +316,7 @@ def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = Non
         lines.append(f"Наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} {escape(unit)} "
                      "(прогноз Forecast Economy)")
     today = today or _now().date()
-    if (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
+    if not header and (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
         lines.append("Новее данных пока нет: это последние опубликованные.")
     if f.next_release and f.next_release >= today:
         when = f"{f.next_release.day} {_MONTHS[f.next_release.month - 1]}"
@@ -473,7 +487,14 @@ async def handle_message(msg: dict) -> None:
             subs = (await db.execute(select(PublicBotSubscription.topic).where(
                 PublicBotSubscription.chat_id == chat_id))).scalars().all()
             await db.commit()
-        if topic:
+        reel = REELS.get((code or "").split("_")[0].lower())
+        if reel and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+            # Из ролика: модель встречает по теме ролика с нашими цифрами, затем строка о боте.
+            await answer_question(chat_id, f"Я пришёл из вашего ролика «{reel}». Поздоровайся и коротко, живо "
+                                           "объясни тему на наших цифрах.", hint_topic=topic)
+            await _send(chat_id, (WELCOME_BACK if returning else SHORT_INTRO + "\n\n" + privacy_line()),
+                        menu_keyboard())
+        elif topic:
             # По ссылке из ролика: сразу цифра по теме ролика, потом короткая строка о боте.
             await _reply_figure(chat_id, topic)
             await _send(chat_id, (WELCOME_BACK if returning else SHORT_INTRO + "\n\n" + privacy_line()),
@@ -506,6 +527,10 @@ async def handle_message(msg: dict) -> None:
         await db.commit()
     if settings.public_bot_llm_enabled and settings.openrouter_api_key:
         # Модель главная (решение владельца 08.11.2026): любой текст, кроме команд, отвечает она.
+        quoted = ((msg.get("reply_to_message") or {}).get("text") or "").strip()
+        if quoted:
+            # Ответ на конкретное сообщение бота: модель видит, о чём речь.
+            text = f"(в ответ на сообщение: «{quoted[:400]}»)\n{text}"
         await answer_question(chat_id, text, hint_topic=topic)
         return
     # Без модели — прежние скрипты: приветствие, тема по слову, подсказка.
@@ -553,10 +578,12 @@ async def handle_callback(cq: dict) -> None:
         await _reply_figure(chat_id, arg)
     elif action == "s" and arg in TOPICS:
         await subscribe(chat_id, arg)
+        await _toggle_card_keyboard(msg, chat_id, arg, subscribed=True)
         await _send(chat_id, f"🔔 Пришлю, когда выйдут новые данные: <b>{escape(TOPICS[arg].title)}</b>. "
                              "Отключить — кнопкой под цифрой или /stop.")
     elif action == "u" and arg in TOPICS:
         await unsubscribe(chat_id, arg)
+        await _toggle_card_keyboard(msg, chat_id, arg, subscribed=False)
         await _send(chat_id, f"🔕 Больше не присылаю: {escape(TOPICS[arg].title)}.")
     elif action == "src" and arg in dict(SOURCES):
         async with async_session() as db:
@@ -565,6 +592,24 @@ async def handle_callback(cq: dict) -> None:
             _event(db, chat_id, "source", code=arg)
             await db.commit()
         await _send(chat_id, "Спасибо!")
+
+
+async def _toggle_card_keyboard(msg: dict, chat_id: str, topic_key: str, subscribed: bool) -> None:
+    """После подписки кнопка под карточкой меняется на «Не присылать» и наоборот (живой прогон 08.11:
+    после подписки под цифрой оставалось «Присылать»). Только у карточек темы, у ответа модели — нет."""
+    from app.services.telegram_bot import _api
+
+    rows = ((msg.get("reply_markup") or {}).get("inline_keyboard")) or []
+    datas = [b.get("callback_data", "") for row in rows for b in row]
+    if not any(d in (f"{CB_PREFIX}s:{topic_key}", f"{CB_PREFIX}u:{topic_key}") for d in datas):
+        return
+    is_card = any(d == f"{CB_PREFIX}menu" for d in datas) and any(b.get("url") for row in rows for b in row)
+    if not is_card or not msg.get("message_id"):
+        return
+    await _api("editMessageReplyMarkup", {
+        "chat_id": chat_id, "message_id": msg["message_id"],
+        "reply_markup": figure_keyboard(TOPICS[topic_key], None, subscribed),
+    }, token=bot_token(), timeout=10)
 
 
 async def handle_member_update(upd: dict) -> None:
@@ -678,8 +723,9 @@ async def public_bot_notify_job(now: datetime | None = None) -> dict:
                 stats["skipped"] += 1
                 continue
             telegram_bot._last_api_error.set(None)
-            ok = await _send(sub.chat_id, figure_text(fig, header="🔔 <b>Новые данные</b>",
-                                                      cpi=figures.get("inflation")),
+            ok = await _send(sub.chat_id, figure_text(
+                fig, header="🔔 <b>Новые данные</b>", cpi=figures.get("inflation"),
+                was=(sub.last_point_date, float(sub.last_value) if sub.last_value is not None else None)),
                              figure_keyboard(topic, None, True), kind=KIND_NOTIFY)
             if ok:
                 sub.last_point_date, sub.last_value, sub.last_sent_at = fig.last_date, fig.last_value, now
@@ -772,6 +818,7 @@ _EXTRA_CODES = (
     ("imoex", "Индекс Мосбиржи"),
     ("ruonia", "Ставка RUONIA, %"),
     # Живой прогон 08.11: «какой курс юаня» — «нет в данных», хотя ряд на сайте есть.
+    ("gdp-real-yoy", "Реальный ВВП, % к прошлому году"),
     ("cny-rub", "Юань, ₽"),
     ("btc-usd", "Биткоин, $"),
 )
@@ -788,9 +835,9 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 [[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
 [[подписка: ключ]] — предложить присылать новые данные по теме;
 [[график: ключ]] — график темы картинкой (последняя цифра, год назад, наш расчёт, сравнение по делу); он придёт перед твоим текстом;
-[[вопросы: короткий вопрос | ещё вопрос]] — до двух следующих вопросов, которые человеку интересно нажать (до 40 знаков, от его лица).
+[[вопросы: короткий вопрос | ещё вопрос]] — до двух следующих вопросов, которые человеку интересно нажать (до 40 знаков, от его лица) — только такие, на которые ответишь по ДАННЫМ.
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
-Подробный график и прогноз — на сайте ru.forecasteconomy.com."""
+Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет в ДАННЫХ — предложи нужный раздел нашего сайта ссылкой, а не чужие сайты."""
 
 
 async def _figure_by_code(db, code: str):
@@ -828,7 +875,8 @@ async def build_llm_context(db, today: date | None = None) -> str:
 
 
 def _context_line(title: str, unit: str, f: Figure) -> str:
-    parts = [f"- {title}: {fmt_num(f.last_value)} {unit}".rstrip() + f" на {fmt_date(f.last_date, f.frequency)}"]
+    when = fmt_date(f.last_date, f.frequency)
+    parts = [f"- {title}: {fmt_num(f.last_value)} {unit}".rstrip() + (f" за {when}" if f.frequency in ("monthly", "quarterly", "annual") else f" на {when}")]
     if f.prev_value is not None:
         parts.append(f"предыдущее значение {fmt_num(f.prev_value)}")
     if f.year_ago_value is not None:
@@ -1072,7 +1120,12 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
             return
         _event(db, chat_id, "ask", topic=hint_topic)
         context = await build_llm_context(db)
+        subs = (await db.execute(select(PublicBotSubscription.topic).where(
+            PublicBotSubscription.chat_id == chat_id))).scalars().all()
         await db.commit()
+    names = ", ".join(TOPICS[k].title for k in subs if k in TOPICS)
+    # Живой прогон 08.11: модель сказала «подписка уже у вас есть» сразу после отписки.
+    context += f"\nПодписки этого человека на новые данные: {names or 'нет'}."
     history = _history(chat_id)
     answer = await _with_typing(chat_id, _llm_complete(context, text, history))
     if not answer:

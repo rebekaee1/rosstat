@@ -535,3 +535,42 @@ def test_chart_render_and_send(env, monkeypatch):
     method, payload, files = seen[-1]
     assert method == "sendPhoto" and "photo" in files and "Дизель" in payload["caption"]
     assert Image.open(files["photo"][1]).size == (1600, 1000)
+
+
+def test_reel_start_reply_context_subscriptions_and_toggle(env, monkeypatch):
+    maker, sent, api_calls = env
+    monkeypatch.setattr(settings, "public_bot_llm_enabled", True, raising=False)
+    monkeypatch.setattr(settings, "openrouter_api_key", "k", raising=False)
+    seen: list = []
+
+    async def llm(context, question, history=None):
+        seen.append((context, question))
+        return "Привет!"
+    monkeypatch.setattr(pb, "_llm_complete", llm)
+    pb.forget_history("555")
+    asyncio.run(pb.handle_message(_msg("/start r003_jobs")))
+    assert "закон Оукена" in seen[-1][1] and sent[-2]["text"] == "Привет!"
+    assert sent[-1]["text"].startswith(pb.SHORT_INTRO)
+    assert "Подписки этого человека на новые данные: нет." in seen[-1][0]
+    # Подписка с карточки меняет кнопку под ней на «Не присылать».
+    card = {"message_id": 10, "chat": {"id": 555, "type": "private"},
+            "reply_markup": pb.figure_keyboard(pb.TOPICS["diesel"], None, False)}
+    asyncio.run(pb.handle_callback({"id": "c", "data": "pb:s:diesel", "message": card}))
+    edits = [p for m, p, *_ in api_calls if m == "editMessageReplyMarkup"]
+    assert edits and edits[-1]["reply_markup"]["inline_keyboard"][0][0]["callback_data"] == "pb:u:diesel"
+    # Ответ на сообщение бота: модель видит цитату; подписка теперь в данных.
+    msg = _msg("а почему так?")
+    msg["reply_to_message"] = {"text": "Дизель 86,52"}
+    asyncio.run(pb.handle_message(msg))
+    assert seen[-1][1].startswith("(в ответ на сообщение: «Дизель 86,52»)")
+    assert "Подписки этого человека на новые данные: Дизель." in seen[-1][0]
+
+
+def test_notify_shows_was_and_no_stale_line():
+    fig = pb.Figure(topic=pb.TOPICS["diesel"], name="", source="Росстат", frequency="weekly",
+                    last_date=date(2026, 10, 26), last_value=86.52, prev_value=86.0, year_ago_value=None,
+                    forecast_date=None, forecast_value=None)
+    text = pb.figure_text(fig, header="🔔 <b>Новые данные</b>", today=date(2026, 11, 20),
+                          was=(date(2026, 10, 19), 86.0))
+    assert "Было 86,00 ₽ за литр (19 октября 2026)." in text and "Новее данных" not in text
+    assert pb.fmt_date(date(2026, 4, 1), "quarterly") == "2-й квартал 2026"

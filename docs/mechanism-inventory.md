@@ -9,14 +9,14 @@
 - ORM tables: **72**
 - DTO schemas (own fields + resolved inherited bases): **49**
 - Settings fields: **257**
-- Settings reads: **616**
+- Settings reads: **618**
 - Direct environment reads: **35**
 - Jobs: **57**
 - Middleware: **6**
-- Registry declarations: **1209**
-- Registry references: **2308**
+- Registry declarations: **1210**
+- Registry references: **2312**
 - Migration operations: **458**
-- Candidate effects: **2642**
+- Candidate effects: **2643**
 - Unresolved syntax: **1**
 - MCP tools: **7**
 
@@ -1924,7 +1924,7 @@ Relationships: `[]`
 | RUSTATS_PULSE_CHAT_ID | str = '' | 5 | [backend/app/config.py:478](../backend/app/config.py#L478) |
 | RUSTATS_PULSE_REPORT_CRON_HOUR | int = 9 | 2 | [backend/app/config.py:479](../backend/app/config.py#L479) |
 | RUSTATS_PULSE_REPORT_CRON_MINUTE | int = 5 | 2 | [backend/app/config.py:480](../backend/app/config.py#L480) |
-| RUSTATS_OPENROUTER_API_KEY | str = '' | 8 | [backend/app/config.py:482](../backend/app/config.py#L482) |
+| RUSTATS_OPENROUTER_API_KEY | str = '' | 9 | [backend/app/config.py:482](../backend/app/config.py#L482) |
 | RUSTATS_SESSION_ANALYSIS_ENABLED | bool = False | 2 | [backend/app/config.py:486](../backend/app/config.py#L486) |
 | RUSTATS_SESSION_ANALYSIS_AI_ENABLED | bool = False | 2 | [backend/app/config.py:487](../backend/app/config.py#L487) |
 | RUSTATS_SESSION_ANALYSIS_BATCH_SIZE | int = 100 | 1 | [backend/app/config.py:488](../backend/app/config.py#L488) |
@@ -1944,7 +1944,7 @@ Relationships: `[]`
 | RUSTATS_PUBLIC_BOT_ENABLED | bool = False | 7 | [backend/app/config.py:523](../backend/app/config.py#L523) |
 | RUSTATS_PUBLIC_BOT_TOKEN | str = '' | 7 | [backend/app/config.py:526](../backend/app/config.py#L526) |
 | RUSTATS_PUBLIC_BOT_USERNAME | str = 'ForecastEconomyBot' | 1 | [backend/app/config.py:528](../backend/app/config.py#L528) |
-| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 3 | [backend/app/config.py:531](../backend/app/config.py#L531) |
+| RUSTATS_PUBLIC_BOT_LLM_ENABLED | bool = False | 4 | [backend/app/config.py:531](../backend/app/config.py#L531) |
 | RUSTATS_PUBLIC_BOT_LLM_MODEL | str = '' | 1 | [backend/app/config.py:532](../backend/app/config.py#L532) |
 | RUSTATS_PUBLIC_BOT_LLM_DAILY_LIMIT | int = 40 | 1 | [backend/app/config.py:533](../backend/app/config.py#L533) |
 | RUSTATS_PUBLIC_BOT_NOTIFY_FROM_HOUR | int = 9 | 1 | [backend/app/config.py:535](../backend/app/config.py#L535) |
@@ -2553,28 +2553,29 @@ Relationships: `[]`
 | app.services.public_bot._MSK | Call | computed source expression | [backend/app/services/public_bot.py:47](../backend/app/services/public_bot.py#L47) |
 | app.services.public_bot._CODE_RE | Call | computed source expression | [backend/app/services/public_bot.py:48](../backend/app/services/public_bot.py#L48) |
 | app.services.public_bot.TOPICS | DictComp | computed source expression | [backend/app/services/public_bot.py:64](../backend/app/services/public_bot.py#L64) |
-| app.services.public_bot._MATCH_ORDER | Tuple | sequence/source expression | [backend/app/services/public_bot.py:76](../backend/app/services/public_bot.py#L76) |
-| app.services.public_bot.MENU | Tuple | sequence/source expression | [backend/app/services/public_bot.py:78](../backend/app/services/public_bot.py#L78) |
-| app.services.public_bot.SOURCES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:80](../backend/app/services/public_bot.py#L80) |
-| app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:82](../backend/app/services/public_bot.py#L82) |
-| app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:84](../backend/app/services/public_bot.py#L84) |
-| app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:86](../backend/app/services/public_bot.py#L86) |
-| app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:117](../backend/app/services/public_bot.py#L117) |
-| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:243](../backend/app/services/public_bot.py#L243) |
-| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:245](../backend/app/services/public_bot.py#L245) |
-| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:246](../backend/app/services/public_bot.py#L246) |
-| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:247](../backend/app/services/public_bot.py#L247) |
-| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:371](../backend/app/services/public_bot.py#L371) |
-| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:373](../backend/app/services/public_bot.py#L373) |
-| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:765](../backend/app/services/public_bot.py#L765) |
-| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:878](../backend/app/services/public_bot.py#L878) |
-| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:880](../backend/app/services/public_bot.py#L880) |
-| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:900](../backend/app/services/public_bot.py#L900) |
-| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:905](../backend/app/services/public_bot.py#L905) |
-| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:907](../backend/app/services/public_bot.py#L907) |
-| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:946](../backend/app/services/public_bot.py#L946) |
-| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:948](../backend/app/services/public_bot.py#L948) |
-| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:950](../backend/app/services/public_bot.py#L950) |
+| app.services.public_bot.REELS | Dict | 'r001', 'r002', 'r003', 'r004', 'r005' | [backend/app/services/public_bot.py:78](../backend/app/services/public_bot.py#L78) |
+| app.services.public_bot._MATCH_ORDER | Tuple | sequence/source expression | [backend/app/services/public_bot.py:85](../backend/app/services/public_bot.py#L85) |
+| app.services.public_bot.MENU | Tuple | sequence/source expression | [backend/app/services/public_bot.py:87](../backend/app/services/public_bot.py#L87) |
+| app.services.public_bot.SOURCES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:89](../backend/app/services/public_bot.py#L89) |
+| app.services.public_bot._MONTHS | Tuple | sequence/source expression | [backend/app/services/public_bot.py:91](../backend/app/services/public_bot.py#L91) |
+| app.services.public_bot._MONTHS_NOM | Tuple | sequence/source expression | [backend/app/services/public_bot.py:93](../backend/app/services/public_bot.py#L93) |
+| app.services.public_bot._FREQ_STEP | Dict | 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:95](../backend/app/services/public_bot.py#L95) |
+| app.services.public_bot._FUZZY | Dict | 'дизель', 'солярка', 'бензин', 'инфляция', 'золото', 'доллар', 'ипотека', 'вклады', 'депозит', 'ключевая' | [backend/app/services/public_bot.py:126](../backend/app/services/public_bot.py#L126) |
+| app.services.public_bot._RELEASE_CODE | Dict | 'inflation', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:254](../backend/app/services/public_bot.py#L254) |
+| app.services.public_bot._RUSSIA_AVG | Tuple | sequence/source expression | [backend/app/services/public_bot.py:256](../backend/app/services/public_bot.py#L256) |
+| app.services.public_bot._FRESH_DAYS | Dict | 'daily', 'weekly', 'monthly', 'quarterly' | [backend/app/services/public_bot.py:257](../backend/app/services/public_bot.py#L257) |
+| app.services.public_bot._FUEL | Tuple | sequence/source expression | [backend/app/services/public_bot.py:258](../backend/app/services/public_bot.py#L258) |
+| app.services.public_bot._GREETINGS | Set | sequence/source expression | [backend/app/services/public_bot.py:385](../backend/app/services/public_bot.py#L385) |
+| app.services.public_bot._THANKS | Set | sequence/source expression | [backend/app/services/public_bot.py:387](../backend/app/services/public_bot.py#L387) |
+| app.services.public_bot._EXTRA_CODES | Tuple | sequence/source expression | [backend/app/services/public_bot.py:811](../backend/app/services/public_bot.py#L811) |
+| app.services.public_bot._HISTORY | Dict | sequence/source expression | [backend/app/services/public_bot.py:926](../backend/app/services/public_bot.py#L926) |
+| app.services.public_bot._HISTORY_TTL | Call | computed source expression | [backend/app/services/public_bot.py:928](../backend/app/services/public_bot.py#L928) |
+| app.services.public_bot._ALLOWED_TAG | Call | computed source expression | [backend/app/services/public_bot.py:948](../backend/app/services/public_bot.py#L948) |
+| app.services.public_bot._ACTIONS | Call | computed source expression | [backend/app/services/public_bot.py:953](../backend/app/services/public_bot.py#L953) |
+| app.services.public_bot._QUESTIONS | Dict | sequence/source expression | [backend/app/services/public_bot.py:955](../backend/app/services/public_bot.py#L955) |
+| app.services.public_bot.CHART_TOPICS | Call | computed source expression | [backend/app/services/public_bot.py:994](../backend/app/services/public_bot.py#L994) |
+| app.services.public_bot._CHART_COMPARE | Dict | 'keyrate', 'deposit', 'mortgage' | [backend/app/services/public_bot.py:996](../backend/app/services/public_bot.py#L996) |
+| app.services.public_bot._CHART_TARGET | Dict | 'inflation' | [backend/app/services/public_bot.py:998](../backend/app/services/public_bot.py#L998) |
 | app.services.pulse._DOWNLOAD_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:64](../backend/app/services/pulse.py#L64) |
 | app.services.pulse._WALL_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:65](../backend/app/services/pulse.py#L65) |
 | app.services.pulse._ERROR_EVENTS | Call | computed source expression | [backend/app/services/pulse.py:66](../backend/app/services/pulse.py#L66) |
