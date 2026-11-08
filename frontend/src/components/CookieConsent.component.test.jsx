@@ -227,12 +227,14 @@ describe('cookie choices remain usable when measurement fails', () => {
     expect(gear.querySelector('.fe-cookie-gear__label')).toBeTruthy();
   });
 
-  it('молчание не считается согласием: плашка не закрывается сама', () => {
+  it('молчание не считается согласием: плашка прячется через 8 секунд (R3-D), но выбор не записывается', () => {
     vi.useFakeTimers();
     try {
       renderConsent();
-      act(() => { vi.advanceTimersByTime(60_000); });
+      act(() => { vi.advanceTimersByTime(7_000); });
       expect(screen.getByRole('dialog')).toBeTruthy();
+      act(() => { vi.advanceTimersByTime(60_000); });
+      expect(screen.queryByRole('dialog')).toBeNull();
       expect(getConsent()).toBeNull();
       expect(track).not.toHaveBeenCalled();
     } finally {
