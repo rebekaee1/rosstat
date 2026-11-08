@@ -13,7 +13,7 @@ import '../../styles/regions-w4.css';
 
 /** Изменение к прошлому периоду: стрелка и цвет — по смыслу показателя (падение безработицы — хорошо). */
 export function RegionDelta({ value, prevValue, name, label, unit }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   // Показатель в процентах (инфляция, безработица): честнее разница в пунктах, а не «+32,9 %».
   if (isPercentUnit(unit)) {
     const pts = formatPointsDelta(value, prevValue, locale);
@@ -32,6 +32,8 @@ export function RegionDelta({ value, prevValue, name, label, unit }) {
   const d = yearDelta(value, prevValue);
   if (!d) return null;
   const signed = d.pct < 0 ? -Math.abs(d.pct) : Math.abs(d.pct);
+  // Изменение меньше 0,05 % глазом не видно: «без перемен» понятнее, чем «− <0,1 %».
+  if (Math.abs(signed) < 0.05) return <span className="z1p-flat">{t('r2z1.prices.flat')}</span>;
   return (
     <DeltaBadge
       delta={d.up || d.down ? signed : 0}
@@ -127,8 +129,8 @@ export function RegionIndicatorRow({ item, to, title }) {
         ) : null}
         {explain ? <div className="mt-1 text-xs leading-snug text-text-secondary" data-testid="row-explain">{explain}</div> : null}
       </div>
-      <div className="flex items-baseline justify-between gap-3 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
-        <div className="fe-num whitespace-nowrap text-[15px] font-semibold tabular-nums text-text-primary">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 pt-2 sm:w-[9.5rem] sm:shrink-0 sm:flex-col sm:items-end sm:justify-center sm:gap-1 sm:border-0 sm:pt-0 sm:text-right">
+        <div className="fe-num min-w-0 text-[15px] font-semibold tabular-nums text-text-primary sm:whitespace-nowrap">
           <RegionValue value={item.value} unit={item.unit} locale={locale} />
         </div>
         <div className="flex items-center gap-2">

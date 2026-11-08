@@ -3785,4 +3785,5 @@ export default {
   'r2z1.prices.leadMonth': 'Average end-of-month prices: {month}. Next to each, the change from the previous month.',
   'r2z1.prices.flat': 'unchanged',
   'r2z1.headline.title': 'Key figures',
+  'r2z1.prices.indexes': 'Annual price indices',
 };

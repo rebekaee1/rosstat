@@ -118,6 +118,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   const { t } = useLocale();
   const [group, setGroup] = useState('');
   const [open, setOpen] = useState(() => new Set());
+  const [indexesOpen, setIndexesOpen] = useState(false);
 
   const { plain, groups } = useMemo(() => {
     const plainRows = [];
@@ -127,6 +128,7 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
       if (!map.has(item.price_group)) map.set(item.price_group, { key: item.price_group, label: item.price_group_label || item.price_group, items: [] });
       map.get(item.price_group).items.push(item);
     });
+    plainRows.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
     const rank = (k) => { const i = (groupOrder || []).indexOf(k); return i < 0 ? 99 : i; };
     const list = [...map.values()].sort((a, b) => rank(a.key) - rank(b.key));
     list.forEach((g) => {
@@ -149,11 +151,6 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
   return (
     <section data-block={`region-section-${section.num}`} className="z1p-section">
       <RegionSectionHeading eyebrow={eyebrow} title={section.name} count={section.indicators.length} />
-      {plain.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
-          {plain.map((item) => <RegionIndicatorRow key={item.code} item={item} to={pathFor(item.code)} />)}
-        </div>
-      )}
       {groups.length > 0 && !searching && (
         <div className="z1p-chips fe-chip-row" role="group" aria-label={t('z1.prices.groupsAria')}>
           <button type="button" aria-pressed={!activeGroup} className={`fe-chip fe-press ${!activeGroup ? 'is-active' : ''}`} onClick={() => setGroup('')}>
@@ -195,6 +192,24 @@ export function RegionPriceSection({ section, groupOrder, pathFor, searching, ey
           </div>
         );
       })}
+      {plain.length > 0 && (
+        <div className="z1p-group z1p-indexes" data-testid="price-indexes">
+          {!searching && groups.length > 0 && (
+            <h3 className="z1p-group__title">
+              {t('r2z1.prices.indexes')}
+              <span className="z1p-group__n">{plain.length}</span>
+            </h3>
+          )}
+          <div className="grid grid-cols-1 gap-2 sm:gap-2.5 xl:grid-cols-2">
+            {(searching || indexesOpen || groups.length === 0 ? plain : plain.slice(0, 4)).map((item) => <RegionIndicatorRow key={item.code} item={item} to={pathFor(item.code)} />)}
+          </div>
+          {!searching && groups.length > 0 && plain.length > 4 && (
+            <button type="button" className="fe-chip fe-press z1p-more" onClick={() => setIndexesOpen((v) => !v)}>
+              {indexesOpen ? t('z1.prices.collapse') : t('z1.prices.showMore', { n: plain.length })}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }

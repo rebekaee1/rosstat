@@ -3790,4 +3790,5 @@ export default {
   'r2z1.prices.leadMonth': 'Средние цены на конец месяца: {month}. Рядом — изменение к прошлому месяцу.',
   'r2z1.prices.flat': 'без перемен',
   'r2z1.headline.title': 'Главные цифры региона',
+  'r2z1.prices.indexes': 'Годовые индексы цен',
 };
