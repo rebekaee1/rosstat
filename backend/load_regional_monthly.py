@@ -30,7 +30,9 @@ from sqlalchemy import select, text
 sys.path.insert(0, str(Path(__file__).parent))
 
 from app.core.cache import publish_committed_regional_changes  # noqa: E402
-from app.database import async_session, set_local_statement_timeout  # noqa: E402
+from sqlalchemy.ext.asyncio import AsyncSession  # noqa: E402
+
+from app.database import engine, set_local_statement_timeout  # noqa: E402
 from app.models import Region, RegionIndicator  # noqa: E402
 from app.services.regional_storage import acquire_regional_write_lock, update_regional_year_bounds  # noqa: E402
 
@@ -56,11 +58,14 @@ async def load(path: Path) -> None:
     Каждая порция — своя короткая транзакция под региональной блокировкой писателя,
     между порциями пауза: на боевом сервере сайт продолжает отвечать во время заливки
     (одна вставка 13 млн строк на стенде 08.11.2026 упёрлась в 30-минутный лимит).
-    Временная таблица живёт до конца соединения (ON COMMIT PRESERVE ROWS): у
+    Временная таблица живёт до конца соединения (ON COMMIT PRESERVE ROWS), поэтому
+    сессия привязана к одному соединению: у
     пользователя приложения нет права создавать постоянные таблицы, и это правильно.
     """
     written = staged = 0
-    async with async_session() as db:
+    # Одно соединение на весь прогон: сессия, привязанная к пулу, после commit может
+    # взять другое соединение, и временная таблица «исчезнет» (стенд 08.11.2026).
+    async with engine.connect() as conn, AsyncSession(bind=conn, expire_on_commit=False) as db:
         await set_local_statement_timeout(db, 1_800_000)
         region_ids = dict((await db.execute(select(Region.slug, Region.id))).all())
         indicator_ids = dict((await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all())
