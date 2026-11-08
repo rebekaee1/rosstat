@@ -4,8 +4,8 @@
 за 2000–2026. Парсер ``emiss_regional_parser`` догружает её сам (запрос
 «год × месяц», ~320 запросов), но на сервере это полчаса через релей. Этот
 загрузчик берёт ту же историю, заранее скачанную с официального источника и
-разобранную тем же ``parse_grid_response``: COPY в незажурналированную
-таблицу, затем запись порциями.
+разобранную тем же ``parse_grid_response``: COPY во временную таблицу
+сессии, затем запись порциями.
 Дальше ежемесячные обновления делает парсер.
 
 Вход: ``gzip`` CSV ``indicator_code;region_slug;YYYYMM;value`` с заголовком.
@@ -51,24 +51,26 @@ PAUSE_SECONDS = 0.5
 
 
 async def load(path: Path) -> None:
-    """COPY в отдельную незажурналированную таблицу, затем запись порциями по показателям.
+    """COPY во временную таблицу сессии, затем запись порциями по показателям.
 
     Каждая порция — своя короткая транзакция под региональной блокировкой писателя,
     между порциями пауза: на боевом сервере сайт продолжает отвечать во время заливки
-    (одна вставка 13 млн строк на стенде 08.11.2026 занимала сервер полностью).
+    (одна вставка 13 млн строк на стенде 08.11.2026 упёрлась в 30-минутный лимит).
+    Временная таблица живёт до конца соединения (ON COMMIT PRESERVE ROWS): у
+    пользователя приложения нет права создавать постоянные таблицы, и это правильно.
     """
+    written = staged = 0
     async with async_session() as db:
         await set_local_statement_timeout(db, 1_800_000)
         region_ids = dict((await db.execute(select(Region.slug, Region.id))).all())
         indicator_ids = dict((await db.execute(select(RegionIndicator.code, RegionIndicator.id))).all())
-        await db.execute(text("DROP TABLE IF EXISTS regional_monthly_load"))
-        await db.execute(text("""CREATE UNLOGGED TABLE regional_monthly_load (
+        await db.execute(text("""CREATE TEMP TABLE regional_monthly_load (
             indicator_id integer NOT NULL, region_id integer NOT NULL,
             period integer NOT NULL, value numeric(18,4) NOT NULL,
-            PRIMARY KEY (indicator_id, region_id, period))"""))
+            PRIMARY KEY (indicator_id, region_id, period)) ON COMMIT PRESERVE ROWS"""))
         raw = await (await db.connection()).get_raw_connection()
         driver = raw.driver_connection
-        staged, chunk = 0, []
+        chunk = []
         for code, slug, period, value in iter_csv(path):
             indicator_id, region_id = indicator_ids.get(code), region_ids.get(slug)
             if indicator_id is None or region_id is None:
@@ -83,14 +85,13 @@ async def load(path: Path) -> None:
             await driver.copy_records_to_table("regional_monthly_load", records=chunk,
                                                columns=("indicator_id", "region_id", "period", "value"))
             staged += len(chunk)
-        await db.commit()
+        await db.execute(text("ANALYZE regional_monthly_load"))
         ids = [row[0] for row in (await db.execute(text(
             "SELECT DISTINCT indicator_id FROM regional_monthly_load ORDER BY 1"))).all()]
+        await db.commit()
 
-    written = 0
-    for i in range(0, len(ids), BATCH_INDICATORS):
-        batch = ids[i:i + BATCH_INDICATORS]
-        async with async_session() as db:
+        for i in range(0, len(ids), BATCH_INDICATORS):
+            batch = ids[i:i + BATCH_INDICATORS]
             await set_local_statement_timeout(db, 600_000)
             await acquire_regional_write_lock(db)
             result = await db.execute(text("""
@@ -106,12 +107,8 @@ async def load(path: Path) -> None:
             await update_regional_year_bounds(db, set(batch))
             await db.commit()
             written += result.rowcount
-        print(f"regional monthly: показатели {i + len(batch)}/{len(ids)}, записано {written}", flush=True)
-        await asyncio.sleep(PAUSE_SECONDS)
-
-    async with async_session() as db:
-        await db.execute(text("DROP TABLE IF EXISTS regional_monthly_load"))
-        await db.commit()
+            print(f"regional monthly: показатели {i + len(batch)}/{len(ids)}, записано {written}", flush=True)
+            await asyncio.sleep(PAUSE_SECONDS)
     if written:
         await publish_committed_regional_changes()
     print(f"regional monthly: прочитано {staged} точек, записано {written}")
