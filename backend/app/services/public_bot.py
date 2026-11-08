@@ -418,7 +418,7 @@ UNKNOWN_TEXT = ("Такой цифры у меня нет: беру только
                 "Ближе всего — темы ниже, или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>.")
 LIMIT_TEXT = ("На сегодня мои ответы закончились — продолжим завтра 🙂 "
               "Карточки тем, графики и подписки кнопками ниже работают без ограничений.")
-LLM_FAIL_TEXT = "Не получилось ответить на вопрос. Попробуйте позже или выберите тему ниже."
+LLM_FAIL_TEXT = "Не успел ответить — слишком много вопросов сразу. Напишите ещё раз через минуту или выберите тему ниже."
 SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
 WELCOME_BACK = "С возвращением! Спрашивайте своими словами или выберите тему."
 SHORT_INTRO = ("Это <b>Forecast Economy</b>: свежие официальные цифры экономики России. "
@@ -445,7 +445,8 @@ MENU_TEXT = "Темы — или просто спросите своими сл
 WEEK_TOPIC = "week"  # подписка на пятничную сводку (не тема-ряд)
 WEEK_PROMPT = ("Сводка недели. Первая строка — один главный вывод. Дальше 3–5 коротких пунктов: последние цифры "
                "(бензин, цены, ставка, вклады, курсы) с их датой и что это значит для кошелька. "
-               "Без оценок вроде «жить можно» и без прогноза дат.")
+               "Без оценок вроде «жить можно» и без прогноза дат. Главный вывод — только то, что прямо следует из этих цифр; "
+               "не сравнивай бензин с «официальной статистикой» и не выдумывай связей между пунктами.")
 STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
 
 
@@ -1039,9 +1040,9 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 
 Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
 
-Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника.
+Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника — то есть последнего сообщения человека (написал по-английски — по-английски, даже если раньше шла речь по-русски). В играх и загадках сверяй каждую подсказку арифметикой и не пиши «ровно», если не ровно.
 
-Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…», «врать не буду», «без занудства») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами: <a href="https://ru.forecasteconomy.com/calculator">калькулятор инфляции</a>, не голый адрес. Не додумывай историю, которой нет в ДАННЫХ (сколько заседаний подряд и т. п.), и не предлагай показать то, чего в ДАННЫХ нет. Причины изменений называй как общие механизмы («обычно на это влияет…»), а не как факт про этот месяц. Не заканчивай каждый ответ предложением подписки. Чужие сайты, включая Росстат, не советуй — только наш.
+Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…», «врать не буду», «без занудства») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами: <a href="https://ru.forecasteconomy.com/calculator">калькулятор инфляции</a>, не голый адрес. Не додумывай историю, которой нет в ДАННЫХ (сколько заседаний подряд и т. п.), и не предлагай показать то, чего в ДАННЫХ нет. Причины изменений называй как общие механизмы («обычно на это влияет…»), а не как факт про этот месяц. Не заканчивай каждый ответ предложением подписки. Чужие сайты не советуй и ссылок на них не давай — только наш; но если спрашивают источник цифры, назови его словами (Росстат, Банк России — он есть в ДАННЫХ) и скажи, что на странице показателя на нашем сайте он указан. На вопросы «будет ли дефолт/крах» не успокаивай и не пугай: факты из ДАННЫХ и честное «предсказать не могу». Ссылку на страницу показателя бери только из ДАННЫХ («страница на нашем сайте»), свою не строй. Слово «ДАННЫЕ» человеку не говори: пиши «у меня нет такой цифры». Не поправляй себя вслух посреди фразы («10… то есть 12»): сверь цифру и пиши сразу верную. Для тем без ключей (юань, нефть, ВВП, зарплата, биткоин) кнопки тем и графика не ставь — не подсовывай доллар вместо юаня.
 
 Подписки приходят так: курсы и золото — раз в неделю, ставка — когда меняется, остальное — когда выходит новая цифра; с 9 до 21 по Москве. Обещай только это.
 Если спрашивают, что ты умеешь, — 3–5 строк своими словами: отвечаешь по свежим цифрам, присылаешь графики, присылаешь то, что попросят («присылай инфляцию»), сводка /week, карточка в любом чате через @ForecastEconomyBot, и самоулучшаешься — пожелания передаёшь команде.
@@ -1079,6 +1080,8 @@ async def build_llm_context(db, today: date | None = None) -> str:
         if f.forecast_value is None:
             no_forecast.append(topic.title)
         line = _context_line(topic.title, topic.unit, f)
+        # Круг 2, тестер №4: на «дай ссылку на источник» модель выдумала адрес ru.forecasteconomy.com/ai92.
+        line += f"; страница на нашем сайте: https://ru.forecasteconomy.com/russia/indicator/{topic.indicator}"
         if (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
             line += " (новее данных источник пока не публиковал)"
         lines.append(line)
@@ -1090,6 +1093,19 @@ async def build_llm_context(db, today: date | None = None) -> str:
             kept = 1_000_000 / (1 + f.last_value / 100)
             lines.append(f"  для кошелька: 1 000 000 ₽, пролежавшие год без процентов, по покупательной силе "
                          f"≈{fmt_num(kept, 0)} ₽ (потеря ≈{fmt_num(1_000_000 - kept, 0)} ₽; делим на 1 + инфляция).")
+    mort = await load_figure(db, TOPICS["mortgage"])
+    if mort is not None:
+        # Круг 2, тестер №4: «ипотека 12 млн на 20 лет, какой платёж?» — модель не умела считать аннуитет; даём готовое.
+        def _pay(rate: float, years: int) -> float:
+            r = rate / 100 / 12
+            n = years * 12
+            return 1_000_000 * r / (1 - (1 + r) ** -n)
+        base = mort.last_value
+        rows = []
+        for years in (10, 15, 20, 30):
+            rows.append(f"{years} лет — {fmt_num(_pay(base, years), 0)} ₽ (при +1 пункте {fmt_num(_pay(base + 1, years), 0)} ₽)")
+        lines.append(f"Ипотека, платёж в месяц на каждый 1 000 000 ₽ долга (аннуитет, средняя ставка {fmt_num(base)} %): "
+                     + "; ".join(rows) + ". Для другой суммы умножь пропорционально; это расчёт по средней ставке, не предложение банка.")
     key = await load_figure(db, TOPICS["keyrate"])
     if key is not None:
         # Тестеры 09.11: из двух последних точек модель выводила «ставка не меняется второй день».
@@ -1200,11 +1216,17 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
     }
     try:
         async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
-            resp = await client.post(
-                _OPENROUTER_URL, json=payload,
-                headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
-                         "X-Title": "Forecast Economy bot"},
-            )
+            for attempt in (0, 1):
+                resp = await client.post(
+                    _OPENROUTER_URL, json=payload,
+                    headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
+                             "X-Title": "Forecast Economy bot"},
+                )
+                # Круг 2, тестер №4: при всплеске запросов провайдер отвечал 429/402/5xx — одна быстрая повторная попытка.
+                if resp.status_code in (402, 429, 500, 502, 503, 504) and attempt == 0:
+                    await asyncio.sleep(3)
+                    continue
+                break
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
             return None
@@ -1541,6 +1563,35 @@ async def _place_links_inner(db, text: str, Region, WorldCountry) -> list[str]:
     return found
 
 
+def _topics_in(text: str) -> set[str]:
+    t = _norm(text)[:_MAX_TEXT]
+    found: set[str] = set()
+    for w in re.findall(r"[a-zа-я0-9-]+", t):
+        for key in TOPICS:
+            tp = TOPICS[key]
+            if w in tp.tokens or any(w.startswith(x) for x in tp.stems):
+                found.add(key)
+    m, _ = match_topic(text)
+    if m:
+        found.add(m)
+    return found
+
+
+def _chart_fits(text: str, key: str, history: list[dict]) -> bool:
+    """График отправляем, если тема названа в вопросе; без темы в тексте («покажи график») — если о ней шла речь раньше."""
+    named = _topics_in(text)
+    if named:
+        return key in named or (key in ("ai92", "ai95") and named & {"ai92", "ai95"})
+    if not re.search(r"график|динамик|картинк|покажи", _norm(text)):
+        return False
+    filler = {"а", "и", "ну", "теперь", "ещё", "еще", "покажи", "пришли", "дай", "нарисуй", "график", "графика",
+              "динамику", "динамика", "картинку", "пожалуйста", "его", "её", "мне", "тоже", "же"}
+    if any(w not in filler for w in re.findall(r"[a-zа-я0-9-]+", _norm(text))):
+        return False  # «график ВВП»: назван предмет вне ключей, а не продолжение прошлой темы
+    recent = " ".join(h["content"] for h in history[-4:])
+    return key in _topics_in(recent)
+
+
 async def answer_question(chat_id: str, text: str, hint_topic: str | None = None,
                           msg_id: int | None = None) -> None:
     """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Текст в базе не хранится."""
@@ -1583,6 +1634,8 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Круг 2, тестер №4: на сбой модели человек получал сухую карточку без объяснения, будто бот не понял вопрос.
+            await _send(chat_id, "Подробно ответить не успел — вот свежая цифра по теме:")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
@@ -1612,6 +1665,9 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     _remember(chat_id, "assistant", clean)
     en = is_english(text)
     for key in charts:
+        # Круг 2, тестер №4: на «средняя зарплата» и «ВВП России» приходил график инфляции — тема не из вопроса.
+        if not _chart_fits(text, key, history):
+            continue
         await send_chart(chat_id, key, en=en)
     await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions, en=en))
 
