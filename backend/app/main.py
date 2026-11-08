@@ -1329,6 +1329,18 @@ async def lifespan(app: FastAPI):
             max_instances=1,
         )
 
+        # Сводка по роботам и ферме (08.11.2026): дочитывает security.log nginx, счётчики по классам в state-Redis.
+        from app.services.bot_traffic import collect_job as bot_traffic_collect_job
+        scheduler.add_job(
+            bot_traffic_collect_job,
+            trigger=IntervalTrigger(minutes=10),
+            id="bot_traffic_collect",
+            name="Bot/farm traffic counters from nginx security.log",
+            replace_existing=True,
+            coalesce=True,
+            max_instances=1,
+        )
+
         from app.services.sitemap_static import sitemap_build_job
         scheduler.add_job(
             locked_job(sitemap_build_job, "sitemap_build", ttl_seconds=3 * 3600),

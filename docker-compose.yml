@@ -386,9 +386,13 @@ services:
       RUSTATS_YANDEX_PARTNER_CLIENT_ID: ${RUSTATS_YANDEX_PARTNER_CLIENT_ID:-}
       RUSTATS_YANDEX_PARTNER_CLIENT_SECRET: ${RUSTATS_YANDEX_PARTNER_CLIENT_SECRET:-}
       RUSTATS_YANDEX_PARTNER_TOKEN: ${RUSTATS_YANDEX_PARTNER_TOKEN:-}
+      # Пропуск человека (08.11.2026): тот же секрет у nginx (frontend); пусто = выключено.
+      RUSTATS_FE_HUMAN_PASS_SECRET: ${FE_HUMAN_PASS_SECRET:-}
       TZ: Europe/Moscow
     volumes: &backend_volumes
       - ./output:/app/data:ro
+      # Сводка по роботам (08.11.2026): scheduler читает security.log nginx (только чтение), см. bot_traffic.py.
+      - /var/log/rosstat-nginx:/var/log/rosstat-nginx:ro
       # Гео-база DB-IP Lite: скачивается backend'ом при старте, обновляется
       # ежемесячным job'ом. Том — чтобы не тянуть ~100 МБ при каждом rebuild.
       - geoip_data:/app/geoip
@@ -469,6 +473,9 @@ services:
         VITE_PUBLIC_BASE_URL: ${VITE_PUBLIC_BASE_URL:-https://forecasteconomy.com}
         # Намеренно тот же source env, что у backend: отдельного VITE-флага нет.
         VITE_APEX_LOCALE_EN: ${RUSTATS_APEX_LOCALE_EN:-false}
+    environment:
+      # Пропуск человека (08.11.2026, frontend/40-fe-human-pass.sh): пусто = выключено.
+      FE_HUMAN_PASS_SECRET: ${FE_HUMAN_PASS_SECRET:-}
     ports:
       - "127.0.0.1:3000:80"
     volumes:

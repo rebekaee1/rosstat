@@ -117,6 +117,11 @@ def main() -> int:
     volume, volume_ignore = parse_filter("nginx-volume")
     fail: list[int] = []
 
+    # 08.11.2026: security.log получил хвост «cls=<класс трафика>» (frontend/nginx.conf, сводка по роботам).
+    expect(matched_ip(nginx_429, SECURITY_429_HTML + " cls=anon") == "1.2.3.4",
+           "nginx-429: line with traffic class suffix still matches", fail)
+    expect(matched_ip(volume, CATALOG + " cls=anon") == "9.9.9.9",
+           "nginx-volume: line with traffic class suffix still matches", fail)
     expect(matched_ip(nginx_429, SECURITY_429_HTML) == "1.2.3.4",
            "nginx-429: HTML 429 → 1.2.3.4", fail)
     expect(matched_ip(nginx_429, SECURITY_429_TICKER) is None,

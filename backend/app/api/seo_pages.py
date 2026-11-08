@@ -167,6 +167,11 @@ _RENDER_SEM = asyncio.Semaphore(6)
 _LOW_PRIORITY_SEM: asyncio.Semaphore | None = (
     asyncio.Semaphore(settings.ssr_low_priority_render_slots) if settings.ssr_low_priority_render_slots > 0 else None
 )
+# Свой потолок для проверенных полезных роботов (класс goodbot, 08.11.2026): ферма не может занять их слоты, а они -
+# все слоты людей. None - отдельного потолка нет.
+_GOODBOT_SEM: asyncio.Semaphore | None = (
+    asyncio.Semaphore(settings.ssr_goodbot_render_slots) if settings.ssr_goodbot_render_slots > 0 else None
+)
 
 
 class _RenderQueueTimeout(Exception):
@@ -200,17 +205,27 @@ async def _acquire_render_slot(started: float) -> Callable[[], None]:
     своего потолка `_LOW_PRIORITY_SEM` (`ssr_low_priority_render_slots` из 6) и ждёт не дольше
     `ssr_low_priority_queue_timeout_seconds`; при перегрузке диска хоста (`host_pressure.io_degraded`) получает «занято»
     сразу. Люди с Referer, проверенные роботы, прогрев и запросы без разметки идут прежним путём.
+
+    08.11.2026: проверенный полезный робот вне трёх поисковиков (`goodbot`: Apple, OpenAI, Perplexity, DuckDuckGo,
+    Telegram) берёт слот своего потолка `_GOODBOT_SEM` (`ssr_goodbot_render_slots`) с обычным ожиданием, а при перегрузке
+    диска получает «занято», как низкоприоритетные. Человек с пропуском (`human`) идёт обычным путём.
     """
     from app.services import host_pressure, load_priority
 
     sem = _RENDER_SEM
-    if not load_priority.is_low_priority():
+    good = load_priority.is_good_bot()
+    if not good and not load_priority.is_low_priority():
         await _wait_slot(sem, started, settings.ssr_render_queue_timeout_seconds)
         return sem.release
     if host_pressure.io_degraded():
         raise _RenderQueueTimeout
-    budget = settings.ssr_low_priority_queue_timeout_seconds
-    low = _LOW_PRIORITY_SEM
+    if good:
+        # Полезный робот (08.11.2026): свой потолок и обычное ожидание; с фермой (anon/robot) слоты не делит.
+        budget = settings.ssr_render_queue_timeout_seconds
+        low = _GOODBOT_SEM
+    else:
+        budget = settings.ssr_low_priority_queue_timeout_seconds
+        low = _LOW_PRIORITY_SEM
     if low is None:
         await _wait_slot(sem, started, budget)
         return sem.release

@@ -47,6 +47,16 @@ document.documentElement.lang=en?'en':'ru';
 document.title=en?'429 — Too many requests | Forecast Economy':'429 — Слишком много запросов | Forecast Economy';
 }catch(e){}
 document.getElementById('reload').addEventListener('click',function(){location.reload()});
+// Пропуск человека (08.11.2026): ферма без JavaScript сюда не доходит, человек получает пропуск и страницу сразу.
+// Не чаще раза в 2 минуты на вкладку: если 429 вернулся и с пропуском (лимит по IP), страница не перезагружается по кругу.
+try{
+var k='fe_pass_try',t=+sessionStorage.getItem(k)||0;
+if(Date.now()-t>120000&&window.fetch){
+sessionStorage.setItem(k,String(Date.now()));
+fetch('/api/v1/human-pass',{method:'POST',credentials:'same-origin',headers:{'X-FE-Pass-Request':'1'}})
+.then(function(r){if(r.status===204)location.reload()}).catch(function(){});
+}
+}catch(e){}
 })();
 </script>
 </body>

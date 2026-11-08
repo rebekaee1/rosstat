@@ -253,6 +253,15 @@ class Settings(BaseSettings):
     # стольких секунд; остальные слоты остаются людям, поисковым роботам и прогреву. 0 слотов - без отдельного потолка.
     ssr_low_priority_render_slots: int = 2
     ssr_low_priority_queue_timeout_seconds: float = 4.0
+    # Проверенные полезные роботы вне трёх поисковиков (класс nginx `goodbot`: Apple, OpenAI, Perplexity, DuckDuckGo,
+    # Telegram; 08.11.2026) занимают не больше стольких слотов из 6 - свой потолок, не общий с фермой. 0 - без потолка.
+    ssr_goodbot_render_slots: int = 2
+    # Пропуск человека (08.11.2026, api/human_pass.py): общий с nginx секрет подписи cookie fe_pass ([A-Za-z0-9_-]{32,});
+    # пусто - пропуск не выдаётся (404), страница 429 ведёт себя как раньше. Срок пропуска в днях.
+    fe_human_pass_secret: str = ""
+    fe_human_pass_days: int = 30
+    # Сводка по роботам (services/bot_traffic.py): security.log nginx, смонтирован в backend/scheduler только на чтение.
+    bot_traffic_log_path: str = "/var/log/rosstat-nginx/security.log"
     # Режим экономии: при PSI io `full` avg10 не ниже порога (%) низкоприоритетный холодный рендер сразу отвечает «занято»
     # (services/host_pressure.py). 05.11.2026 в инциденте было 70-80%, в норме единицы процентов. 0 - выключено.
     host_brownout_io_full_pct: float = 40.0

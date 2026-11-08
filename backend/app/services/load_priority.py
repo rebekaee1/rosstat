@@ -6,7 +6,11 @@ nginx (frontend/nginx.conf, карта `$fe_client_class`) ставит кажд
 * `referred` — есть Referer (человек из поиска или с самого сайта);
 * `internal` — адрес из сети docker (прогрев кэша);
 * `robot` — без Referer, UA честно называет робота (Applebot, предпросмотр ссылок);
-* `anon` — без Referer, браузерный UA: так выглядела ферма 05.11.2026 (46 тысяч запросов с 39,7 тысяч IP за 53 минуты).
+* `anon` — без Referer, браузерный UA: так выглядела ферма 05.11.2026 (46 тысяч запросов с 39,7 тысяч IP за 53 минуты);
+* `goodbot` (08.11.2026) — проверенный полезный робот вне трёх поисковиков (Apple, OpenAI, Perplexity, DuckDuckGo,
+  Telegram; сеть из официального списка + UA): свой потолок слотов, не общий с фермой; при перегрузке диска — «занято»;
+* `human` (08.11.2026) — без Referer, но с действующим пропуском `fe_pass` (выдан странице 429 из JavaScript):
+  обычный приоритет, как у человека с Referer.
 
 `robot` и `anon` — низкий приоритет: им достаётся меньше слотов холодного рендера и короткое ожидание, а при перегрузке
 диска хоста они сразу получают «занято» (`seo_pages._acquire_render_slot`). Заголовок клиент подделать не может: nginx
@@ -25,9 +29,11 @@ REFERRED = "referred"
 INTERNAL = "internal"
 ROBOT = "robot"
 ANON = "anon"
+GOODBOT = "goodbot"
+HUMAN = "human"
 UNKNOWN = "unknown"
 
-_KNOWN = frozenset({CRAWLER, REFERRED, INTERNAL, ROBOT, ANON})
+_KNOWN = frozenset({CRAWLER, REFERRED, INTERNAL, ROBOT, ANON, GOODBOT, HUMAN})
 LOW_PRIORITY = frozenset({ROBOT, ANON})
 
 _client_class: ContextVar[str] = ContextVar("fe_client_class", default=UNKNOWN)
@@ -53,3 +59,7 @@ def current() -> str:
 
 def is_low_priority() -> bool:
     return _client_class.get() in LOW_PRIORITY
+
+
+def is_good_bot() -> bool:
+    return _client_class.get() == GOODBOT

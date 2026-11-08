@@ -1,5 +1,21 @@
 # Backlog — текущие правки в работе
 
+<a id="bot-defense-2026-11-08"></a>
+
+## 2026-11-08 — вредные роботы: полезные подтверждаются, ферма в общих бюджетах, пропуск человека
+
+**Статус.** Локально (commit без push и выкладки). Владелец: «можешь ли ты полностью решить проблему с вредными ботами, которые нам вредят? есть же и полезные боты» → план A одобрен словами «Да, A и логи». Ответ: на 100 % нельзя (ферма из настоящих браузеров на домашних IP неотличима от человека по одному запросу); цель — ферма не роняет сайт, полезные роботы идут первыми. Решение и замер — [ADR-0026, дополнение 08.11](adr/0026-graceful-degradation-and-traffic-priority.md#дополнение-08112026-полезные-роботы-подтверждаются-ферма-упирается-в-общие-бюджеты-человек-получает-пропуск), контракт — [data-contracts](data-contracts.md#потолок-безымянного-трафика-на-страницы-длинного-хвоста--2026-11-05).
+
+**Живые цифры (прод, только чтение, 08.11 06:14–08:21 UTC).** Ферма: 55 147 запросов без Referer с 53 559 IP, 72 % уже получали 429, 99 % адресов без JS. Настоящие Google/Bing/Яндекс — все в наших списках (вне списков только самозванцы). Applebot, OAI-SearchBot, ChatGPT-User, PerplexityBot, DuckDuckBot — 100 % адресов в официальных списках. Честные прочие роботы на тяжёлых страницах — 1,2 зап/с, пик 2,4.
+
+**Что сделано.** `scripts/refresh-search-crawler-ranges.py` (+Apple, OpenAI, Perplexity, DuckDuckGo, Telegram; списки Google/Bing обновлены 08.11), `frontend/nginx.conf` (`$fe_traffic_class`, `robotcold`/`previewcold`/`passcold`/`passmint`, бюджеты на 15 тяжёлых локациях, `secure_link`, хвост `cls=` в `security.log`, `/api/v1/human-pass`), `frontend/40-fe-human-pass.sh` + Dockerfile, `frontend/public/429.html`, `backend/app/api/human_pass.py`, `load_priority` (`goodbot`, `human`), `seo_pages._acquire_render_slot` (`_GOODBOT_SEM`), `services/bot_traffic.py` + задача `bot_traffic_collect`, compose (секрет, `security.log` только на чтение в backend/scheduler), `.env.example`.
+
+**Проверено локально.** `deploy/test-bot-classes.sh` (классы, бюджет роботов 61/120 при Applebot 29/29, скопированный пропуск ограничен, выдача доходит до backend, entrypoint-скрипт), `deploy/test-anon-cold-limit.sh`, `deploy/test-nginx-config.sh`, `deploy/test-fail2ban-filters.py`, `backend/tests/test_bot_defense.py`, полный pytest backend. Страница 429 в браузере (стенд с настоящим 429.html): сама получила пропуск (одна выдача), перезагрузилась и открыла страницу. Не проверено: сборка образа frontend целиком, связка nginx + backend + браузер одним стендом.
+
+**Выпуск (по команде владельца).** Задать в продовом `.env` `FE_HUMAN_PASS_SECRET` (`openssl rand -hex 24`) — без него пропуск выключен, остальное работает. Пересобрать frontend (nginx.conf запечён в образ) и backend/scheduler (новый том). После выпуска: `security.log` с `cls=`, доля 429 у `crawler`/`goodbot` ≈ 0, счётчики `bot_traffic:{дата}` в state-Redis; строку `bot_traffic.summary_lines` включить в утреннюю сводку спокойного режима (`telegram_calm`, ведёт основная сессия).
+
+**Остаток.** Решение владельца: CDN/антибот, отпечаток TLS (JA4) в Caddy, отдельный диск/БД. Ферма с поддельным Referer проходит как `referred`. Списки сетей обновлять раз в месяц (`python3 scripts/refresh-search-crawler-ranges.py --check`) или когда сводка предупредит о настоящем роботе вне списков. По пути замечено: прогрев `ForecastEconomy-ssr-warm/1` получил 260 ответов 500 из 6 760 за 2 часа (08.11) — не разбиралось.
+
 <a id="telegram-calm-2026-11-08"></a>
 
 ## 2026-11-08 — спокойный режим Telegram
