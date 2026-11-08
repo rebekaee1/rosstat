@@ -754,3 +754,31 @@ def test_emoji_only_gets_reaction_not_model(env, monkeypatch):
     n = len(sent)
     asyncio.run(pb.handle_message({**_msg("👍"), "message_id": 7}))
     assert len(sent) == n and api_calls[-1][0] == "setMessageReaction"
+
+
+def test_chart_mismatch_neighbour_row():
+    from app.services.public_bot import chart_mismatch
+    assert chart_mismatch("юань курс", "usd")
+    assert chart_mismatch("курс биткоина", "eur")
+    assert not chart_mismatch("курс доллара", "usd")
+    assert not chart_mismatch("доллар и юань", "usd")
+    assert not chart_mismatch("курс юаня", "inflation")
+
+
+def test_telegram_html_drops_foreign_links():
+    out = pb.telegram_html('см. <a href="https://rosstat.gov.ru/x">Росстат</a> и <a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>')
+    assert "rosstat" not in out and "Росстат" in out
+    assert '<a href="https://ru.forecasteconomy.com/calculator">калькулятор</a>' in out
+
+
+def test_safe_links_drops_invented_and_foreign_links():
+    from app.services import public_bot as pb
+    o = pb.ru_public_origin()
+    ok = f'<a href="{o}/russia/indicator/usd-rub">курс</a>'
+    assert pb.safe_links(ok) == ok
+    assert pb.safe_links(f'<a href="{o}/usd">доллар</a>') == "доллар"
+    assert pb.safe_links('<a href="https://coinmarketcap.com">крипто</a>') == "крипто"
+def test_telegram_html_fixes_latin_letter_inside_russian_word():
+    from app.services.public_bot import telegram_html
+    assert telegram_html("регулятор кранa и доллar") == "регулятор крана и доллар"
+    assert telegram_html("the USD rate") == "the USD rate"

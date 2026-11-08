@@ -25,6 +25,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
+import dataclasses
 from html import escape, unescape
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
@@ -418,7 +419,7 @@ UNKNOWN_TEXT = ("Такой цифры у меня нет: беру только
                 "Ближе всего — темы ниже, или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>.")
 LIMIT_TEXT = ("На сегодня мои ответы закончились — продолжим завтра 🙂 "
               "Карточки тем, графики и подписки кнопками ниже работают без ограничений.")
-LLM_FAIL_TEXT = "Не получилось ответить на вопрос. Попробуйте позже или выберите тему ниже."
+LLM_FAIL_TEXT = "Не успел ответить — слишком много вопросов сразу. Напишите ещё раз через минуту или выберите тему ниже."
 SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
 WELCOME_BACK = "С возвращением! Спрашивайте своими словами или выберите тему."
 SHORT_INTRO = ("Это <b>Forecast Economy</b>: свежие официальные цифры экономики России. "
@@ -445,7 +446,8 @@ MENU_TEXT = "Темы — или просто спросите своими сл
 WEEK_TOPIC = "week"  # подписка на пятничную сводку (не тема-ряд)
 WEEK_PROMPT = ("Сводка недели. Первая строка — один главный вывод. Дальше 3–5 коротких пунктов: последние цифры "
                "(бензин, цены, ставка, вклады, курсы) с их датой и что это значит для кошелька. "
-               "Без оценок вроде «жить можно» и без прогноза дат.")
+               "Без оценок вроде «жить можно» и без прогноза дат. Главный вывод — только то, что прямо следует из этих цифр; "
+               "не сравнивай бензин с «официальной статистикой» и не выдумывай связей между пунктами.")
 STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
 
 
@@ -589,6 +591,10 @@ async def handle_message(msg: dict) -> None:
         return
     if low in ("/help", "помощь"):
         await _send(chat_id, HELP_TEXT, menu_keyboard())
+        return
+    if low in ("/privacy", "/конфиденциальность", "конфиденциальность"):
+        # Тестер №3, круг 2: модель на /privacy уверяла «ничего не храню» — храним номер чата и подписки.
+        await _send(chat_id, privacy_line(), menu_keyboard())
         return
     if low in ("/menu", "меню"):
         await _send(chat_id, MENU_TEXT, menu_keyboard())
@@ -1031,30 +1037,56 @@ _EXTRA_CODES = (
     ("gdp-real-yoy", "Реальный ВВП, % к прошлому году"),
     ("cny-rub", "Юань, ₽"),
     ("btc-usd", "Биткоин, $"),
+    # Тестер №3, круг 2: «курс тенге» и «лиры» — бот отвечал «нет в данных», а ряды на сайте есть.
+    ("kzt-rub", "Тенге, ₽ за 100 тенге"),
+    ("try-rub", "Турецкая лира, ₽ за 1 лиру"),
 )
+
+# Итоги по годам для вопросов «какой был курс/ставка в 2014»: ряды на конец года, с 2005.
+_YEAR_END_CODES = (
+    ("usd-rub-eop-year", "Доллар на конец года, ₽"),
+    ("eur-rub-eop-year", "Евро на конец года, ₽"),
+    ("key-rate-eop-year", "Ключевая ставка на конец года, %"),
+    ("gold-price-eop-year", "Золото на конец года, ₽ за грамм"),
+    ("brent-eop-year", "Нефть Brent на конец года, $ за баррель"),
+)
+
+# Тестер №5, 09.11: «юань курс» — модель приложила график доллара. Ряды без своего графика не подменяем соседним.
+_NO_CHART_ROWS = re.compile(r"юан|yuan|cny|renminbi|биткоин|bitcoin|btc|тенге|лир[аыу]|сереб|платин|brent|брент|нефт", re.I)
+_CHART_FOR_ROW = {"usd": re.compile(r"доллар|usd|\$|dollar", re.I), "eur": re.compile(r"евро|eur", re.I),
+                  "gold": re.compile(r"золот|gold", re.I)}
+
+
+def chart_mismatch(text: str, key: str) -> bool:
+    """Вопрос про ряд без графика (юань, биткоин…) и не про ключ графика — картинку соседа не шлём."""
+    pat = _CHART_FOR_ROW.get(key)
+    return bool(pat and _NO_CHART_ROWS.search(text) and not pat.search(text))
+
 
 LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека: по умолчанию на «вы», на «ты» — только если он сам так пишет. Можешь задать встречный вопрос, если он поможет.
 
 Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
+О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: храню номер чата, подписки и память разговора на 30 минут, тексты вопросов не сохраняю; подробности — /privacy. Перед «выше/ниже/подорожало» сравни два числа и проверь знак; разные ряды одним словом не обобщай (доллар вырос, евро упал — так и скажи).
+
 Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
 
-Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника.
+Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника — то есть последнего сообщения человека (написал по-английски — по-английски, даже если раньше шла речь по-русски). В играх и загадках сверяй каждую подсказку арифметикой и не пиши «ровно», если не ровно.
 
-Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…», «врать не буду», «без занудства») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами: <a href="https://ru.forecasteconomy.com/calculator">калькулятор инфляции</a>, не голый адрес. Не додумывай историю, которой нет в ДАННЫХ (сколько заседаний подряд и т. п.), и не предлагай показать то, чего в ДАННЫХ нет. Причины изменений называй как общие механизмы («обычно на это влияет…»), а не как факт про этот месяц. Не заканчивай каждый ответ предложением подписки. Чужие сайты, включая Росстат, не советуй — только наш.
+Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами и только на наш сайт: адреса из ДАННЫХ или из списка ниже, своих не строй; источник цифры называй словами (Росстат, Банк России). Не додумывай историю, которой нет в ДАННЫХ, и не предлагай того, чего там нет. Причины — как общие механизмы («обычно на это влияет…»), а не факт про этот месяц. Налоги, законы и льготы по памяти не пересказывай и суммы налога не считай — законы меняются (про налог на вклады: «точную сумму посмотрите у налоговой»); на «куда обратиться» отвечай общими словами, без названий ведомств и сайтов. На «будет ли дефолт/крах» — факты и честное «предсказать не могу». Слово «ДАННЫЕ» человеку не пиши («в моих цифрах»). Сверь цифру до того, как писать, не поправляйся вслух. Расчёты (кредит, вклад) — по последней официальной цифре, «наш расчёт» — вторым, одной фразой. Ты — ИИ-бот; какая именно модель — не знаешь. Не заканчивай каждый ответ предложением подписки. Просит перестать, а подписки нет — так и скажи; просит присылать — сразу [[подписаться]]. Сравнивая вклад, золото, валюту, не подводи к выбору: цифры как факт, вывод — человеку. Для тем без ключей (юань, нефть, ВВП, зарплата, биткоин) кнопок тем не ставь.
 
 Подписки приходят так: курсы и золото — раз в неделю, ставка — когда меняется, остальное — когда выходит новая цифра; с 9 до 21 по Москве. Обещай только это.
 Если спрашивают, что ты умеешь, — 3–5 строк своими словами: отвечаешь по свежим цифрам, присылаешь графики, присылаешь то, что попросят («присылай инфляцию»), сводка /week, карточка в любом чате через @ForecastEconomyBot, и самоулучшаешься — пожелания передаёшь команде.
 
 Если человеку пригодятся кнопки, добавь в самом конце отдельной строкой (её не увидят как текст):
 [[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
-[[подписка: ключ]] — предложить присылать новые данные по теме; если человек сам просит присылать — [[подписаться: ключ]] включит подписку сразу, просит перестать — [[отписаться: ключ]] (ключ week — пятничная сводка); не пиши «подписал» или «отписал» без этого действия;
+[[подписка: ключ]] — предложить присылать новые данные по теме; если человек сам просит присылать — [[подписаться: ключ]] включит подписку сразу, просит «на всё» — перечисли все нужные ключи через запятую в одном действии; просит перестать — [[отписаться: ключ]] (ключ week — пятничная сводка); не пиши «подписал» или «отписал» без этого действия;
 [[идея: суть до 60 знаков своими словами]] — если человеку не хватает темы, функции или данных: запиши суть и обязательно скажи ему, что передашь команде;
 [[реакция: эмодзи]] — поставить реакцию на сообщение человека (одну из 👍 🔥 🤔 👏 😁 🤯 🎉 🙏 👌 💯 🏆 🤝 👀), если уместно;
-[[график: ключ]] — график темы картинкой (около полутора лет, другой период не выбрать; последняя цифра, год назад, наш расчёт); только если эта тема — предмет вопроса, для ВВП, юаня, биткоина и прочего вне ключей графика нет; он придёт перед твоим текстом, поэтому не предлагай его словами;
+[[график: ключ]] — график темы картинкой (около полутора лет, другой период не выбрать). Только если человек просит саму тему или её динамику; не для части темы (продукты, услуги), истории, расчётов и тем вне ключей (ВВП, юань, биткоин). Он придёт перед твоим текстом — не предлагай его словами;
 [[вопросы: реплика | реплика]] — до трёх кнопок-реплик от лица человека (до 40 знаков): следующий вопрос, ответ на который точно есть в ДАННЫХ (не просьбы о совете, куда вложить), а в игре или опросе — варианты ответа.
 Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
-Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет в ДАННЫХ — предложи нужный раздел нашего сайта ссылкой, а не чужие сайты. Ссылайся только на эти адреса как есть, своих не придумывай."""
+Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет — предложи нужный раздел ссылкой."""
 
 
 async def _figure_by_code(db, code: str):
@@ -1077,6 +1109,7 @@ async def build_llm_context(db, today: date | None = None) -> str:
         if f.forecast_value is None:
             no_forecast.append(topic.title)
         line = _context_line(topic.title, topic.unit, f)
+        # Круг 2, тестер №4: адрес страницы темы — в общем списке «Страницы с полной историей ряда» ниже.
         if (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
             line += " (новее данных источник пока не публиковал)"
         lines.append(line)
@@ -1088,6 +1121,28 @@ async def build_llm_context(db, today: date | None = None) -> str:
             kept = 1_000_000 / (1 + f.last_value / 100)
             lines.append(f"  для кошелька: 1 000 000 ₽, пролежавшие год без процентов, по покупательной силе "
                          f"≈{fmt_num(kept, 0)} ₽ (потеря ≈{fmt_num(1_000_000 - kept, 0)} ₽; делим на 1 + инфляция).")
+    mort = await load_figure(db, TOPICS["mortgage"])
+    if mort is not None:
+        # Круг 2, тестер №4: «ипотека 12 млн на 20 лет, какой платёж?» — модель не умела считать аннуитет; даём готовое.
+        def _pay(rate: float, years: int) -> float:
+            r = rate / 100 / 12
+            n = years * 12
+            return 1_000_000 * r / (1 - (1 + r) ** -n)
+        base = mort.last_value
+        rows = []
+        for years in (10, 15, 20, 30):
+            rows.append(f"{years} лет — {fmt_num(_pay(base, years), 0)} ₽ (при +1 пункте {fmt_num(_pay(base + 1, years), 0)} ₽)")
+        lines.append(f"Ипотека, платёж в месяц на каждый 1 000 000 ₽ долга (аннуитет, средняя ставка {fmt_num(base)} %): "
+                     + "; ".join(rows) + ". Для другой суммы умножь пропорционально; это расчёт по средней ставке, не предложение банка.")
+    dep = await load_figure(db, TOPICS["deposit"])
+    if dep is not None:
+        # Тестер №3, круг 2: «20 тыс. в месяц 10 лет под 12,84 %» модель считала в уме (4,4 вместо ≈4,8 млн).
+        r = dep.last_value / 100 / 12
+        rows = ", ".join(f"{n} лет — {fmt_num(10_000 * (((1 + r) ** (12 * n) - 1) / r), 0)} ₽ (внесено {fmt_num(120_000 * n, 0)} ₽)"
+                         for n in (1, 3, 5, 10, 20))
+        lines.append(f"Накопление по 10 000 ₽ в начале каждого месяца при ставке по вкладам {fmt_num(dep.last_value)} % "
+                     f"с капитализацией раз в месяц, без налога и при неизменной ставке: {rows}. "
+                     "Для другой суммы умножь пропорционально; ставка на годы вперёд неизвестна.")
     key = await load_figure(db, TOPICS["keyrate"])
     if key is not None:
         # Тестеры 09.11: из двух последних точек модель выводила «ставка не меняется второй день».
@@ -1100,13 +1155,35 @@ async def build_llm_context(db, today: date | None = None) -> str:
             select(func.min(IndicatorData.date)).where(
                 IndicatorData.indicator_id == ind.id, IndicatorData.date > changed)
         )).scalar_one_or_none() if changed else None
+        # Тестер 1, 09.11: «когда следующее заседание ЦБ» — бот отвечал «даты нет», хотя календарь событий её знает.
+        meeting = (await db.execute(
+            select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
+            .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
+            .where(Indicator.code == TOPICS["keyrate"].indicator, EconomicEvent.event_type == "rate_decision",
+                   EconomicEvent.scheduled_date >= today)
+            .order_by(EconomicEvent.scheduled_date).limit(1)
+        )).first()
+        meeting_txt = (f"следующее заседание Банка России по ставке: {'ориентировочно ' if meeting[1] else ''}"
+                       f"{fmt_date(meeting[0], 'daily')}." if meeting
+                       else "даты следующего заседания Банка России в данных нет.")
         if since:
             lines.append(f"Ключевая ставка {fmt_num(key.last_value)} % действует с {fmt_date(since, 'daily')} "
-                         "(точки в ряду — дни, а не заседания); даты следующего заседания Банка России в данных нет.")
+                         f"(точки в ряду — дни, а не заседания); {meeting_txt}")
+        elif meeting:
+            lines.append(f"Ключевая ставка: {meeting_txt}")
     for code, title in _EXTRA_CODES:
         f = await _figure_by_code(db, code)
         if f is not None:
+            if code == "kzt-rub":
+                # Тенге стоит копейки: «0,18 ₽» теряет точность, считаем за 100 тенге, как котирует ЦБ.
+                f = dataclasses.replace(f, **{k: (getattr(f, k) * 100 if getattr(f, k) is not None else None)
+                                              for k in ("last_value", "prev_value", "year_ago_value", "forecast_value")})
             lines.append(_context_line(title, "", f))
+    for code, title in _YEAR_END_CODES:
+        pts = await _series(db, code, date(2005, 1, 1), weekly=False)
+        pts = [(d, v) for d, v in pts if d.year < today.year]
+        if pts:
+            lines.append(f"{title}: " + ", ".join(f"{d.year} — {fmt_num(v)}" for d, v in pts))
     yearly = await _series(db, "inflation-annual", date(today.year - 16, 1, 1), weekly=False)
     if yearly:
         # Для вопросов «сколько стоили бы мои деньги из 2015 года»: годовая инфляция по годам (Росстат).
@@ -1121,6 +1198,11 @@ async def build_llm_context(db, today: date | None = None) -> str:
             acc *= 1 + v / 100
         lines.append(f"100 ₽ на конец года стоят на конец {last_year} (без текущего года): "
                      + ", ".join(reversed(grow)))
+    # Тестер №6, 09.11: модель выдумала ссылку /usd (404). Даём настоящие страницы тем и юаня/биткоина.
+    pages = [f"{t.title} — {ru_public_origin()}/russia/indicator/{t.indicator}" for t in TOPICS.values()]
+    pages += [f"Юань — {ru_public_origin()}/russia/indicator/cny-rub", f"Биткоин — {ru_public_origin()}/russia/indicator/btc-usd"]
+    lines.append("Страницы с полной историей ряда на нашем сайте (ссылайся только на них, других адресов не придумывай): "
+                 + "; ".join(pages))
     if no_forecast:
         # Живой прогон 08.11: модель обещала «прогноз бензина на сайте», которого нет.
         lines.append("Нашего расчёта (прогноза) нет ни в боте, ни на сайте по темам: " + ", ".join(no_forecast)
@@ -1150,7 +1232,11 @@ def _context_line(title: str, unit: str, f: Figure) -> str:
             ch = ""
         parts.append(f"год назад {fmt_num(f.year_ago_value)}" + (f" (за год {ch})" if ch else ""))
     if f.forecast_value is not None and f.forecast_date is not None:
-        parts.append(f"наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)}")
+        # Тестер №5, 09.11: «октябрь 6,26 %» при сентябре 6,35 % модель назвала «чуть подрастёт» — даём направление.
+        # Округляем как в тексте: 12,84 → 12,84 не «ниже» (слияние круга 2, 09.11).
+        fd = round(f.forecast_value, 2) - round(f.last_value, 2)
+        way = "ниже последней цифры (снижение)" if fd < 0 else "выше последней цифры (рост)" if fd > 0 else "на уровне последней цифры"
+        parts.append(f"наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} — {way}")
     if f.source:
         parts.append(f"источник: {f.source}")
     return "; ".join(parts)
@@ -1166,12 +1252,16 @@ async def _llm_complete(context: str, question: str, history: list[dict] | None 
     return answer
 
 
+
+
 async def _llm_call(model: str, context: str, question: str, history: list[dict] | None) -> str | None:
     import httpx
 
     payload = {
         "model": model,
-        "max_tokens": 2000,
+        # Тестер №6, 09.11: при нескольких одновременных вопросах OpenRouter отвечал 402 «in_flight_budget_exhausted»
+        # (резерв считается от max_tokens); ответы короткие, 900 токенов хватает с запасом.
+        "max_tokens": 900,
         "messages": [
             {"role": "system", "content": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context},
             *(history or []),
@@ -1181,11 +1271,17 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
     }
     try:
         async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
-            resp = await client.post(
-                _OPENROUTER_URL, json=payload,
-                headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
-                         "X-Title": "Forecast Economy bot"},
-            )
+            for attempt in (0, 1):
+                resp = await client.post(
+                    _OPENROUTER_URL, json=payload,
+                    headers={"Authorization": f"Bearer {settings.openrouter_api_key}",
+                             "X-Title": "Forecast Economy bot"},
+                )
+                # Тестеры №1, 3, 4, 7, 9 (09.11): разовые 429/5xx — один повтор; 402 (нет баланса) не повторяем.
+                if resp.status_code in (429, 500, 502, 503, 504) and attempt == 0:
+                    await asyncio.sleep(2.5)
+                    continue
+                break
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
             return None
@@ -1236,21 +1332,57 @@ _REACTIONS = ("👍", "🔥", "🤔", "👏", "😁", "🤯", "🎉", "🙏", "�
 _QUESTIONS: dict[str, str] = {}
 
 
+_LAT2CYR = {"a": "а", "c": "с", "e": "е", "o": "о", "p": "р", "x": "х", "y": "у", "r": "р", "k": "к", "m": "м", "t": "т"}
+# Короткая латинская вставка (1–3 буквы) внутри русского слова: «кранa», «доллar».
+_LAT_IN_CYR = re.compile(r"(?<=[а-яё])([acepoxyrkmt]{1,3})(?![a-z])|(?<![a-z])([acepoxyrkmt]{1,3})(?=[а-яё])")
+
+
 def telegram_html(text: str) -> str:
     """Ответ модели → безопасный HTML Telegram: всё экранируется, разрешённые теги возвращаются.
     Markdown-жирный (**x**) превращается в <b>. Битая разметка всё равно дойдёт: send_message
     при «can't parse entities» шлёт текст без тегов."""
     # Тестеры 09.11: модель сама пишет &#x27; и &quot; — без раскрытия человек видел «&amp;#x27;».
+    # Тестер №10, 09.11: модель вставляет латинскую «a»/«o» внутрь русского слова («кранa», «доллar») — чинится.
+    text = _LAT_IN_CYR.sub(lambda m: "".join(_LAT2CYR[c] for c in (m.group(1) or m.group(2))), text)
     out = escape(unescape(text), quote=True)
+
+    link_ok: list[bool] = []
 
     def _back(m: re.Match) -> str:
         raw = m.group(0)
         if raw.startswith("&lt;a href="):
-            return f'<a href="{m.group(4)}">'
+            # Тестер 9, 09.11: ссылки только на наш сайт; чужую модель могла вставить сама (текст остаётся, ссылка нет).
+            host = re.match(r"https?://([^/?#]+)", m.group(4))
+            ok = bool(host) and (host.group(1).lower() == "forecasteconomy.com"
+                                 or host.group(1).lower().endswith(".forecasteconomy.com"))
+            link_ok.append(ok)
+            return f'<a href="{m.group(4)}">' if ok else ""
+        if raw == "&lt;/a&gt;":
+            return "</a>" if (link_ok.pop() if link_ok else False) else ""
         return raw.replace("&lt;", "<").replace("&gt;", ">")
     out = _ALLOWED_TAG.sub(_back, out)
     out = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", out)
     return out.strip()
+
+
+_LINK = re.compile(r'<a\s+href="([^"]+)"[^>]*>(.*?)</a>', re.S | re.I)
+_OK_PATHS = ("/russia", "/compare", "/calculator", "/currencies")
+_NO_CHART = ("юан", "биткоин", "биткойн", "bitcoin", "btc", "фунт", "тенге", "франк", "нефть", "brent", "ввп")
+
+
+def safe_links(text: str, known: str = "") -> str:
+    """Тестер №6, 09.11: модель дала ссылку /usd (404) и «крипто-ресурсы». Оставляем только наши известные адреса,
+    остальные ссылки превращаем в простой текст."""
+    origin = ru_public_origin()
+
+    def _fix(m: re.Match) -> str:
+        url = m.group(1).replace("&amp;", "&")
+        if url.startswith(origin):
+            path = url[len(origin):].split("?")[0].split("#")[0].rstrip("/") or "/"
+            if path.startswith(_OK_PATHS) or url in known or path in known:
+                return m.group(0)
+        return m.group(2)
+    return _LINK.sub(_fix, text)
 
 
 def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], list[str]]:
@@ -1522,6 +1654,35 @@ async def _place_links_inner(db, text: str, Region, WorldCountry) -> list[str]:
     return found
 
 
+def _topics_in(text: str) -> set[str]:
+    t = _norm(text)[:_MAX_TEXT]
+    found: set[str] = set()
+    for w in re.findall(r"[a-zа-я0-9-]+", t):
+        for key in TOPICS:
+            tp = TOPICS[key]
+            if w in tp.tokens or any(w.startswith(x) for x in tp.stems):
+                found.add(key)
+    m, _ = match_topic(text)
+    if m:
+        found.add(m)
+    return found
+
+
+def _chart_fits(text: str, key: str, history: list[dict]) -> bool:
+    """График отправляем, если тема названа в вопросе; без темы в тексте («покажи график») — если о ней шла речь раньше."""
+    named = _topics_in(text)
+    if named:
+        return key in named or (key in ("ai92", "ai95") and named & {"ai92", "ai95"})
+    if not re.search(r"график|динамик|картинк|покажи", _norm(text)):
+        return False
+    filler = {"а", "и", "ну", "теперь", "ещё", "еще", "покажи", "пришли", "дай", "нарисуй", "график", "графика",
+              "динамику", "динамика", "картинку", "пожалуйста", "его", "её", "мне", "тоже", "же"}
+    if any(w not in filler for w in re.findall(r"[a-zа-я0-9-]+", _norm(text))):
+        return False  # «график ВВП»: назван предмет вне ключей, а не продолжение прошлой темы
+    recent = " ".join(h["content"] for h in history[-4:])
+    return key in _topics_in(recent)
+
+
 async def answer_question(chat_id: str, text: str, hint_topic: str | None = None,
                           msg_id: int | None = None) -> None:
     """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Текст в базе не хранится."""
@@ -1551,6 +1712,9 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     names = ", ".join(TOPICS[k].title for k in subs if k in TOPICS)
     # Живой прогон 08.11: модель сказала «подписка уже у вас есть» сразу после отписки.
     context += f"\nПодписки этого человека на новые данные: {names or 'нет'}."
+    if is_english(text):
+        # Тестер №6, 09.11: «and the dollar?» по-английски получил русский ответ (контекст русский).
+        context += "\nЧеловек пишет по-английски: ответь по-английски, весь текст, включая подписи кнопок-реплик."
     history = _history(chat_id)
     import time
     started = time.monotonic()
@@ -1564,6 +1728,8 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         logger.debug("llm_time not stored", exc_info=True)
     if not answer:
         if hint_topic:
+            # Тестеры №4 и №6, 09.11: на сбой модели приходила голая карточка, будто это ответ на вопрос.
+            await _send(chat_id, "Сейчас не получается ответить своими словами — вот ближайшая свежая цифра:")
             await _reply_figure(chat_id, hint_topic)
         else:
             await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
@@ -1578,6 +1744,12 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
         async with async_session() as db:
             _event(db, chat_id, "idea", code=idea)
             await db.commit()
+    # Тестер №7, 09.11: «не присылай доллар» при уже включённой подписке — модель сказала «отписал ещё
+    # раньше», а подписка осталась. Явная просьба перестать с узнанной темой выполняется и без метки модели.
+    for seg in re.findall(r"(?:не\s+(?:присылай|пиши|шли)|отпиши(?:сь)?(?:\s+от)?|отключи|хватит\s+присылать)\s+([^,.;!?]+?)(?:\s+и\s+(?=присылай|шли)|[,.;!?]|$)", text.lower()):
+        k, _ = match_topic(seg)
+        if k and k in subs and k not in unsubscribe_now:
+            unsubscribe_now.append(k)
     for k in unsubscribe_now:
         # Тестер №8, 09.11: «отпишись от доллара» → «отписал», а подписка оставалась.
         await unsubscribe(chat_id, k)
@@ -1592,7 +1764,18 @@ async def answer_question(chat_id: str, text: str, hint_topic: str | None = None
     _remember(chat_id, "user", text[:_MAX_QUESTION])
     _remember(chat_id, "assistant", clean)
     en = is_english(text)
+    subs = [k for k in subs if not chart_mismatch(text, k)]
+    clean = safe_links(clean, context)
+    if any(w in _norm(text) for w in _NO_CHART):
+        # Тестер №6, 09.11: «что с юанем?» приходил с графиком доллара — такого графика у темы нет.
+        charts = []
+    # Тестер №10, 09.11: «безработица» (темы нет) приходила с картинкой инфляции. Короткий запрос про другое — без чужого графика.
+    short = len(re.findall(r"[a-zа-я0-9-]+", _norm(text))) <= 3
+    if short and "график" not in _norm(text) and "chart" not in _norm(text):
+        charts = [k for k in charts if match_topic(text)[0] == k]
     for key in charts:
+        if chart_mismatch(text, key) or not _chart_fits(text, key, history):
+            continue
         await send_chart(chat_id, key, en=en)
     await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions, en=en))
 
