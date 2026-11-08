@@ -721,3 +721,15 @@ def test_unsubscribe_by_words(env, monkeypatch):
 
 def test_model_entities_not_double_escaped():
     assert pb.telegram_html("That&#x27;s &quot;fine&quot; &amp; <b>ok</b> 3 &lt; 5") == "That&#x27;s &quot;fine&quot; &amp; <b>ok</b> 3 &lt; 5"
+
+
+def test_repeat_subscribe_and_stop(env):
+    _, sent, _ = env
+    asyncio.run(pb.handle_callback(_cb("pb:s:usd")))
+    assert "раз в неделю" in sent[-1]["text"]
+    asyncio.run(pb.handle_callback(_cb("pb:s:usd")))
+    assert sent[-1]["text"].startswith("Уже присылаю")
+    asyncio.run(pb.handle_message(_msg("/stop")))
+    asyncio.run(pb.handle_message(_msg("/stop")))
+    assert "уже нет" in sent[-1]["text"]
+    assert "utm_content" not in pb.site_url(pb.TOPICS["usd"], "nonexistent")

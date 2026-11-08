@@ -245,7 +245,8 @@ def _change(now: float, before: float | None, is_rate: bool) -> str | None:
 
 def site_url(topic: Topic, code: str | None) -> str:
     q = {"utm_source": "telegram", "utm_medium": "bot", "utm_campaign": topic.key}
-    if code:
+    # Тестер №9, 09.11: ?start=nonexistent попадал в utm_content — берём только коды роликов и наши метки.
+    if code and (re.match(r"^r\d{3}(_|$)", code) or code in TOPICS or code in ("inline", "site", "channel")):
         q["utm_content"] = code
     # Русский хост: apex — английская версия сайта (проверено 08.11.2026 на живом боте).
     return f"{ru_public_origin()}/russia/indicator/{topic.indicator}?{urlencode(q)}"
@@ -563,8 +564,11 @@ async def handle_message(msg: dict) -> None:
             await _send(chat_id, welcome_text(), welcome_keyboard())
         return
     if low in ("/stop", "стоп"):
+        async with async_session() as db:
+            known = await db.get(PublicBotChat, chat_id) is not None
         await forget_chat(chat_id)
-        await _send(chat_id, STOP_TEXT)
+        # Тестер №2, 09.11: повторный /stop снова писал «удалил».
+        await _send(chat_id, STOP_TEXT if known else "Ваших данных у меня уже нет. Чтобы вернуться, нажмите /start.")
         return
     if low in ("/help", "помощь"):
         await _send(chat_id, HELP_TEXT, menu_keyboard())
@@ -687,13 +691,20 @@ async def handle_callback(cq: dict) -> None:
         await unsubscribe(chat_id, WEEK_TOPIC)
         await _send(chat_id, "🔕 Пятничную сводку больше не присылаю.")
     elif action == "s" and arg in TOPICS:
+        async with async_session() as db:
+            already = await _is_subscribed(db, chat_id, arg)
+        if already:
+            # Тестеры №7 и №9, 09.11: повторное нажатие давало тот же ответ, без «уже».
+            await _send(chat_id, f"Уже присылаю: <b>{escape(TOPICS[arg].title)}</b>. Все подписки — /subs.")
+            return
         await subscribe(chat_id, arg)
         await _toggle_card_keyboard(msg, chat_id, arg, subscribed=True)
         async with async_session() as db:
             fig = await load_figure(db, TOPICS[arg])
         nxt = (f" Следующие ожидаются {fig.next_release.day} {_MONTHS[fig.next_release.month - 1]}."
                if fig and fig.next_release else "")
-        await _send(chat_id, f"🔔 Пришлю, когда выйдут новые данные: <b>{escape(TOPICS[arg].title)}</b>.{nxt} "
+        when = {"weekly": "раз в неделю", "on_change": "когда изменится"}.get(TOPICS[arg].notify, "когда выйдут новые данные")
+        await _send(chat_id, f"🔔 Пришлю {when}, днём: <b>{escape(TOPICS[arg].title)}</b>.{nxt} "
                              "Все подписки — /subs.")
     elif action == "u" and arg in TOPICS:
         await unsubscribe(chat_id, arg)
