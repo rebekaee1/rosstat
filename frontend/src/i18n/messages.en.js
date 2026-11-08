@@ -3757,8 +3757,8 @@ export default {
   'z2.less': 'Show less',
   'z2.allPrices': 'All prices in {region}',
   'z2.russiaLine': 'Russia',
-  'z2.yearAgo': 'Vs a year ago ({month})',
-  'z2.fiveYearsAgo': 'Vs 5 years ago ({month})',
+  'z2.yearAgo': 'Past year (since {month})',
+  'z2.fiveYearsAgo': 'Past 5 years (since {month})',
   'z2.group.food': 'Food',
   'z2.group.utilities': 'Utilities',
   'z2.group.transport': 'Transport',
@@ -3770,4 +3770,6 @@ export default {
   'z2.group.leisure': 'Leisure',
   'z2.group.fuel': 'Fuel',
   'z2.group.other': 'Other',
+  'z2.perUnit': '≈ {price} per {word}',
+  'z2.tableMonths': 'Table of values by month',
 };

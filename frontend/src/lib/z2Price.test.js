@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseYm, compareRows, groupSiblings, yearTickPeriods, changeOverMonths, pickField } from './z2Price';
+import { shortPriceName, unitSuffix, perUnitPrice, guessPriceGroup, parseYm, compareRows, groupSiblings, yearTickPeriods, changeOverMonths, pickField } from './z2Price';
 
 describe('z2Price', () => {
   it('parseYm', () => {
@@ -31,6 +31,17 @@ describe('z2Price', () => {
     const t = yearTickPeriods(pts, 5);
     expect(t.length).toBeLessThanOrEqual(5);
     expect(t[t.length - 1]).toBe('2026-01');
+  });
+  it('запасные короткое имя, единица, цена за штуку, группа', () => {
+    expect(shortPriceName('Средняя цена: яйца куриные, рублей за 10 штук', 'рублей за 10 штук')).toBe('Яйца куриные');
+    expect(shortPriceName('Средняя цена: ацетилцистеин (АЦЦ), 600 мг, рублей за 10 таблеток', 'рублей за 10 таблеток')).toBe('Ацетилцистеин (АЦЦ), 600 мг');
+    expect(unitSuffix('рублей за 10 штук')).toBe('за 10 штук');
+    expect(unitSuffix('%')).toBe('');
+    expect(perUnitPrice('рублей за 10 штук', 123).value).toBeCloseTo(12.3);
+    expect(perUnitPrice('рублей за литр', 50)).toBeNull();
+    expect(guessPriceGroup('бензин АИ-98', 'рублей за литр')).toBe('Топливо');
+    expect(guessPriceGroup('яйца куриные', 'рублей за 10 штук')).toBe('Продукты');
+    expect(guessPriceGroup('аципол', 'рублей за 30 капсул')).toBe('Лекарства');
   });
   it('changeOverMonths и pickField', () => {
     const s = [{ year: 2025, month: 9, value: 100 }, { year: 2026, month: 9, value: 110 }];

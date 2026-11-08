@@ -214,7 +214,7 @@ export default function RegionAnnualChart({
     else if (isNarrow) budget = Math.min(budget, 5);
     if (yearTicks && monthly) {
       // Месячный ряд: только годы, 4–6 отметок (без «янв 2003» и «дек 2021» по краям).
-      return yearTickPeriods(data, Math.max(3, Math.min(6, Math.floor(axisW / 70))));
+      return yearTickPeriods(data, Math.max(3, Math.min(6, Math.floor(axisW / 48))));
     }
     return pickChartAxisTicks(data, budget, {
       dateKey: 'period',

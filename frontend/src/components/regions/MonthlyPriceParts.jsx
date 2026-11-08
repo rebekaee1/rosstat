@@ -84,7 +84,7 @@ function Group({ label, items, slug, open, onToggle }) {
   const shown = open ? items : items.slice(0, PER_GROUP);
   return (
     <section className="z2p-group">
-      <h3 className="z2p-group__title">{label}</h3>
+      <h3 className="z2p-group__title">{label}<span className="z2p-group__count fe-num">{items.length}</span></h3>
       <ul className="grid gap-2 sm:grid-cols-2">
         {shown.map((s) => <SiblingRow key={s.code} s={s} slug={slug} />)}
       </ul>
@@ -123,6 +123,10 @@ export default function GroupedSiblings({ siblings, currentGroup, slug, section,
           onToggle={() => setOpenGroups((o) => ({ ...o, [g.group]: !o[g.group] }))}
         />
       ))}
+      <Link to={regionPath(slug)} className="z2p-all-btn fe-tap fe-press">
+        {t('z2.allPrices', { region: regionName })}
+        <ArrowUpRight size={14} aria-hidden="true" />
+      </Link>
     </div>
   );
 }

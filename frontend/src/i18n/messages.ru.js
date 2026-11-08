@@ -3762,8 +3762,8 @@ export default {
   'z2.less': 'Свернуть',
   'z2.allPrices': 'Все цены региона',
   'z2.russiaLine': 'Россия',
-  'z2.yearAgo': 'К году назад ({month})',
-  'z2.fiveYearsAgo': 'К 5 годам назад ({month})',
+  'z2.yearAgo': 'За год (с {month})',
+  'z2.fiveYearsAgo': 'За 5 лет (с {month})',
   'z2.group.food': 'Продукты',
   'z2.group.utilities': 'ЖКУ',
   'z2.group.transport': 'Транспорт',
@@ -3775,4 +3775,6 @@ export default {
   'z2.group.leisure': 'Отдых',
   'z2.group.fuel': 'Топливо',
   'z2.group.other': 'Прочее',
+  'z2.perUnit': '≈ {price} за {word}',
+  'z2.tableMonths': 'Таблица значений по месяцам',
 };

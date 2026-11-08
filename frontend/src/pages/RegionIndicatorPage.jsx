@@ -21,7 +21,9 @@ import { indicatorPolarity } from '../lib/deltaTone';
 import { formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
 import GroupedSiblings, { CompareLines, DiscontinuedNote } from '../components/regions/MonthlyPriceParts';
-import { changeOverMonths, compareRows, pickField, signedPct, ymLabel } from '../lib/z2Price';
+import {
+  changeOverMonths, compareRows, guessPriceGroup, perUnitPrice, pickField, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
+} from '../lib/z2Price';
 import DownloadMenu from '../components/regions/DownloadMenu';
 import ApiRetryBanner from '../components/ApiRetryBanner';
 import LoadingNote from '../components/LoadingNote';
@@ -67,9 +69,9 @@ function isNegativeCapable(series) {
   return Array.isArray(series) && series.some(p => p?.value != null && p.value < 0);
 }
 
-function StatCell({ label, children }) {
+function StatCell({ label, children, wide = false }) {
   return (
-    <div className="min-w-0 rounded-2xl p-3 sm:p-3.5 fe-glass-lite">
+    <div className={`min-w-0 rounded-2xl p-3 sm:p-3.5 fe-glass-lite${wide ? ' max-sm:col-span-2' : ''}`}>
       <div className="text-xs font-medium leading-snug text-text-secondary">{label}</div>
       <div className="fe-num mt-1 text-[15px] font-semibold leading-tight text-text-primary">
         {children}
@@ -122,6 +124,10 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const compare = useRegionIndicator(compareSlug || null, compareSlug ? code : null);
   const compareMonthly = useRegionIndicatorMonthly(
     compareSlug || null, compareSlug ? code : null, !!compareSlug && isMonthly,
+  );
+  // Запасной путь сравнения с Москвой, пока API не отдаёт compare: тот же показатель по Москве (запрос общий с кэшем).
+  const moskvaMonthly = useRegionIndicatorMonthly(
+    slug !== 'moskva' ? 'moskva' : null, slug !== 'moskva' ? code : null, isMonthly,
   );
   const regionOptions = useMemo(() => {
     if (!landing.data) return [];
@@ -299,15 +305,44 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const abortion = ABORTION_SIBLING[code];
 
   // Месячные цены: поля Z1 читаем с запасом — нет поля, страница ведёт себя как раньше.
-  const shortName = isMonthly ? pickField(active, 'short_name') : null;
+  const isPrice = isMonthly && /^Средняя цена/i.test(indName || '');
+  const shortName = isMonthly
+    ? (pickField(active, 'short_name') || (isPrice ? shortPriceName(indName, active.indicator.unit) : null))
+    : null;
   const displayName = shortName || indName;
-  const discontinued = isMonthly && pickField(active, 'is_discontinued') === true;
-  const priceGroup = isMonthly ? pickField(active, 'price_group') : null;
+  // Нет флага от API — считаем снятым ряд, чья последняя точка старше 12 месяцев.
+  const flagged = isMonthly ? pickField(active, 'is_discontinued') : null;
+  const now = new Date();
+  const staleByDate = isMonthly && last && (now.getFullYear() * 12 + now.getMonth() + 1) - (last.year * 12 + last.month) > 12;
+  const discontinued = isMonthly && (flagged === null ? !!staleByDate : flagged === true);
+  const priceGroup = isMonthly
+    ? (pickField(active, 'price_group') || (isPrice ? guessPriceGroup(indName, active.indicator.unit) : null))
+    : null;
+  const priceSuffix = isPrice ? unitSuffix(active.indicator.unit) : '';
+  const perUnit = isPrice && last ? perUnitPrice(active.indicator.unit, last.value) : null;
+  const siblingsView = isMonthly && isPrice
+    ? (active?.siblings || []).map(sb => ({
+      ...sb,
+      short_name: sb.short_name || shortPriceName(sb.name, sb.unit),
+      price_group: sb.price_group || guessPriceGroup(sb.name, sb.unit),
+    }))
+    : (active?.siblings || []);
+  const rfLast = active?.russia_series?.[active.russia_series.length - 1];
+  const mskSeries = moskvaMonthly.data?.series;
+  const mskLast = mskSeries?.length ? mskSeries[mskSeries.length - 1] : null;
+  const compareData = isMonthly
+    ? {
+      ...(active.compare || {}),
+      russia: active.compare?.russia
+        || (rfLast ? { value: rfLast.value, month: rfLast.year * 100 + rfLast.month } : null),
+      moskva: active.compare?.moskva || (mskLast ? { value: mskLast.value, month: mskLast.year * 100 + mskLast.month } : null),
+    }
+    : null;
   const lastMonthLabel = isMonthly
     ? (ymLabel(pickField(active, 'last_month'), locale) || lastLabel)
     : '';
   const compareList = isMonthly && !discontinued && last
-    ? compareRows(active.compare, slug, last.value)
+    ? compareRows(compareData, slug, last.value)
     : [];
   const lastYm = last ? last.year * 100 + last.month : null;
   const periodChanges = isMonthly
@@ -358,7 +393,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             <div className="mb-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5 text-sm">
               <span className="font-medium text-champagne-ink">{regionName}</span>
               {active.indicator.section_name && (
-                <span className="min-w-0 pl-2 text-text-secondary">{active.indicator.section_name}</span>
+                <span className={`min-w-0 pl-2 text-text-secondary${isMonthly ? ' max-sm:hidden' : ''}`}>{active.indicator.section_name}</span>
               )}
               <CabinetActionsSlot subject={regionIndicatorSubject(slug, code, indName, regionName)} renderActions={renderActions} />
             </div>
@@ -386,8 +421,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <span className="fe-num whitespace-nowrap text-3xl font-bold text-text-primary">
                 {formatRegionWithUnit(last.value, active.indicator.unit, locale)}
               </span>
+              {priceSuffix && <span className="z2p-hero-unit">{priceSuffix}</span>}
               <span className="text-sm text-text-secondary">{lastLabel}</span>
-              {delta && (
+              {delta && !discontinued && (
                 <DeltaBadge
                   delta={delta.up || delta.down ? delta.pct : 0}
                   polarity={indicatorPolarity(indName)}
@@ -399,6 +435,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </DeltaBadge>
               )}
             </div>
+            {perUnit && (
+              <p className="z2p-per-unit fe-num">
+                {t('z2.perUnit', { price: `${formatRegionNumber(perUnit.value, active.indicator.unit, locale)}${NBSP}₽`, word: perUnit.word })}
+              </p>
+            )}
             {discontinued && <DiscontinuedNote lastLabel={lastMonthLabel} />}
             <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
           </div>
@@ -538,7 +579,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               </StatCell>
             )}
             {isMonthly && periodChanges.map(({ key, ch }) => (
-              <StatCell key={key} label={t(key, { month: ymLabel(ch.from.year * 100 + ch.from.month, locale) })}>
+              <StatCell key={key} label={t(key, { month: ymLabelFrom(ch.from.year * 100 + ch.from.month, locale) })}>
                 {signedPct(ch.pct, locale)}
               </StatCell>
             ))}
@@ -552,7 +593,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 </StatCell>
               </>
             )}
-            <StatCell label={t('regions.ind.period')}>
+            <StatCell label={t('regions.ind.period')} wide={isMonthly}>
               {first.year}–{last.year}
             </StatCell>
           </div>
@@ -609,7 +650,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             >
               <span className="flex items-center gap-2 text-sm font-medium text-text-primary">
                 <Table2 size={15} className="text-text-secondary" />
-                {t('regions.ind.tableToggle')}
+                {t(isMonthly ? 'z2.tableMonths' : 'regions.ind.tableToggle')}
               </span>
               <ChevronDown size={16} className={`text-text-secondary transition-transform ${showTable ? 'rotate-180' : ''}`} />
             </button>
@@ -678,16 +719,16 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             </div>
           )}
 
-          {isMonthly && active.siblings?.some(s => s.price_group) && (
+          {isMonthly && siblingsView.some(s => s.price_group) && (
             <GroupedSiblings
-              siblings={active.siblings}
+              siblings={siblingsView}
               currentGroup={priceGroup}
               slug={slug}
               section={active.indicator.section_name}
               regionName={regionName}
             />
           )}
-          {active.siblings?.length > 0 && !(isMonthly && active.siblings.some(s => s.price_group)) && (
+          {active.siblings?.length > 0 && !(isMonthly && siblingsView.some(s => s.price_group)) && (
             <div>
               <h2 className="text-sm font-semibold text-text-primary mb-3">
                 {t('regions.ind.moreInSection', { section: active.indicator.section_name })}

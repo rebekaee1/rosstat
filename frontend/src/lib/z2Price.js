@@ -26,6 +26,15 @@ export function ymLabel(v, locale = 'ru') {
   return `${name} ${ym.year}`;
 }
 
+/** «сентября 2025» (родительный падеж для «с …»). */
+export function ymLabelFrom(v, locale = 'ru') {
+  const ym = parseYm(v);
+  if (!ym) return '';
+  if (locale === 'en') return ymLabel(v, locale);
+  const m = new Date(2000, ym.month - 1, 1).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }).replace(/^\d+\s*/, '');
+  return `${m} ${ym.year}`;
+}
+
 /** Поле может лежать в `indicator` или на верхнем уровне ответа. */
 export function pickField(active, key) {
   const v = active?.indicator?.[key];
@@ -111,4 +120,48 @@ export function yearTickPeriods(points, max = 5) {
     if (p) out.unshift(p.period);
   }
   return out;
+}
+
+const upFirst = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
+/** Короткое имя цены без ведомственного шаблона: «Средняя цена: яйца куриные, рублей за 10 штук» → «Яйца куриные». Запасной путь, пока API не отдал short_name. */
+export function shortPriceName(name, unit) {
+  if (!name) return name;
+  let s = String(name).replace(/^Средняя цена:\s*/i, '');
+  if (unit && s.endsWith(`, ${unit}`)) s = s.slice(0, -(unit.length + 2));
+  s = s.replace(/,\s*рубл\S*\s+(за|в)\s.*$/i, '');
+  return upFirst(s.trim()) || name;
+}
+
+/** «рублей за 10 штук» → «за 10 штук»; «рублей в месяц» → «в месяц»; иначе ''. */
+export function unitSuffix(unit) {
+  const m = /^рубл\S*\s+((?:за|в)\s+.+)$/i.exec(unit || '');
+  return m ? m[1] : '';
+}
+
+const PER_ONE = { 'штук': 'штуку', 'таблеток': 'таблетку', 'капсул': 'капсулу', 'ампул': 'ампулу' };
+/** Цена за одну штуку/таблетку для упаковок «за 10 штук»: {value, word} или null. */
+export function perUnitPrice(unit, value) {
+  const m = /за\s+(\d+)\s+(штук|таблеток|капсул|ампул)(?![а-яё])/i.exec(unit || '');
+  if (!m || !(Number(m[1]) > 1) || !(value > 0)) return null;
+  return { value: value / Number(m[1]), word: PER_ONE[m[2].toLowerCase()] };
+}
+
+const GROUP_RULES = [
+  ['Топливо', /бензин|дизельн|топлив/i],
+  ['Лекарства', /таблеток|капсул|ампул|мазь|сироп|лекарств|порошок/i],
+  ['Связь', /абонентск|связ|интернет|телефон|радиоточк|антенн|телеканал/i],
+  ['Транспорт', /проезд|такси|билет|автобус|метро|трамвай|троллейбус|перевозк/i],
+  ['ЖКХ', /отоплен|горяч|холодн|водоснабж|электроэнерг|природн.*газ|водоотвед|канализац|вывоз|содержани|найм/i],
+  ['Жильё', /квартир|аренд|жиль|недвижим/i],
+  ['Услуги', /стрижк|химчистк|ремонт|услуг|баня|парикмахер|прачеч|фотограф|ритуал|обучен/i],
+  ['Одежда и товары', /костюм|пальто|куртк|обувь|сапог|платье|рубашк|джинс|телевизор|холодильник|стиральн|утюг|пылесос|мебель|трикотаж|шерст|ткан/i],
+  ['Отдых', /путёвк|путевк|санатор|кино|театр|абонемент/i],
+  ['Продукты', /хлеб|молоко|мясо|говядин|свинин|куриц|курин|яйц|сыр|масло|сахар|мука|крупа|рис|греч|картофел|овощ|фрукт|яблок|капуст|морковь|лук|рыба|колбас|сосиск|творог|кефир|сметан|вермишел|макарон|чай|кофе|соль|консерв|конфет|печень|шоколад|пшен|помидор|огурц|банан|апельсин|сельд/i],
+];
+/** Запасная группа по названию, пока API не отдал price_group. */
+export function guessPriceGroup(name, unit) {
+  const text = `${name || ''} ${unit || ''}`;
+  for (const [g, re] of GROUP_RULES) if (re.test(text)) return g;
+  return 'Прочее';
 }
