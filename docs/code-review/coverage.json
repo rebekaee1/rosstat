@@ -14012,8 +14012,8 @@
     },
     {
       "path": "docs/knowledge-unknowns.md",
-      "sha256": "02edaf424ea11bc84cf9754b409cc078ecdd0b7c6d01c1c3c3ad3c676cf06d1c",
-      "bytes": 76995,
+      "sha256": "f6bda5be47878996980cb33d5878e4d22b728112e70f861f9a8daef04803caa5",
+      "bytes": 77162,
       "lines": 191,
       "code": false,
       "status": "reviewed",
@@ -31653,18 +31653,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "c99dcc23f38ec7be4f5741c03b6065969aa6124ec1e56091c74e700362cc3845",
+  "ledger_sha256": "3e0cab78d0ad3ce59aacc689958c4b0cdba35712486314a979274f2f8ac74e6c",
   "javascript_inventory_sha256": "1b9181d43340afa047ee6b0aa458b597c870084f83a2791a40724c899f9c3626",
-  "baseline_commit": "6809f6f53e53c1a56b08aa3ea212ac7774d078d7",
-  "branch": "worktree-agent-a8d43b1699ebc9e87",
+  "baseline_commit": "749237bdf323c3790f01a56f7da342f3749417c4",
+  "branch": "circle-data/int",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/knowledge-unknowns.md"
   ]
 }

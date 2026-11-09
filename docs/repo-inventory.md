@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2231  ·  **Строк:** 1 411 076  ·  **Токенов (≈):** 13 422 944
+**Файлов:** 2231  ·  **Строк:** 1 411 076  ·  **Токенов (≈):** 13 422 962
 
 ## По верхним папкам
 
@@ -19,7 +19,7 @@
 | `backend` | 904 | 315 805 | 3 446 499 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 139 | 17 075 |
-| `docs` | 142 | 881 736 | 7 562 415 |
+| `docs` | 142 | 881 736 | 7 562 433 |
 | `frontend` | 1014 | 184 412 | 2 020 093 |
 | `mcp` | 3 | 158 | 1 120 |
 | `scripts` | 135 | 24 652 | 307 147 |
@@ -103,8 +103,8 @@
 | `backend/app/data/research_catalog.json` | 981 | 12 770 |
 | `backend/app/services/forecaster.py` | 1 363 | 12 626 |
 | `backend/app/api/seo_pages.py` | 1 107 | 12 337 |
+| `docs/knowledge-unknowns.md` | 191 | 12 145 |
 | `frontend/src/lib/behavior.js` | 1 214 | 12 143 |
-| `docs/knowledge-unknowns.md` | 191 | 12 127 |
 | `backend/tests/test_seo_world.py` | 1 107 | 11 928 |
 | `backend/app/api/regions.py` | 1 194 | 11 765 |
 | `frontend/src/pages/RegionIndicatorPage.jsx` | 888 | 11 715 |

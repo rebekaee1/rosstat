@@ -1,22 +1,14 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "6809f6f53e53c1a56b08aa3ea212ac7774d078d7",
+  "baseline_commit": "749237bdf323c3790f01a56f7da342f3749417c4",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
-    "docs/client-mechanism-inventory.json",
-    "docs/client-mechanism-inventory.md",
     "docs/code-review/coverage.json",
     "docs/code-review/graph-omission-classification-2026-09-30.json",
-    "docs/code-review/javascript-symbols.json",
     "docs/code-review/materials-2026-09-30.json",
     "docs/code-review/reviews.jsonl",
-    "docs/data-contracts.md",
-    "docs/design-system.md",
-    "docs/indicator-index.json",
-    "docs/knowledge-unknowns.md",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/knowledge-unknowns.md"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -24,8 +16,8 @@
     "attempted": 2078,
     "files_with_nodes": 1986,
     "nodes": 24240,
-    "symbol_edges": 76273,
-    "file_edges": 17674,
+    "symbol_edges": 76272,
+    "file_edges": 17673,
     "projection_omissions": {
       "external_or_unresolved_file": 2918,
       "missing_endpoint": 4312,
@@ -33,7 +25,7 @@
     },
     "confidence": {
       "EXTRACTED": 69360,
-      "INFERRED": 6913
+      "INFERRED": 6912
     }
   },
   "overview": {
@@ -296,8 +288,8 @@
       {
         "source": "docs",
         "target": "browser",
-        "file_relations": 248,
-        "symbol_relations": 333
+        "file_relations": 247,
+        "symbol_relations": 332
       },
       {
         "source": "docs",
@@ -1819,7 +1811,7 @@
     {"path": "docs/indicator-family-playbook.md", "kind": "document", "bytes": 48077, "lines": 618, "sha256": "b8a95b1db788429b05b6100d371a871e2fe338366fa8908eba7c0450727023ad", "symlink": false, "nodes": 60, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": false},
     {"path": "docs/indicator-index.json", "kind": "asset/data/config", "bytes": 3837473, "lines": 135728, "sha256": "f9f1733cd65536ec5c5f45ec85b20b7b48404b1f79c4a6ee37c44129f9f1ecd0", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 160576, "lines": 1824, "sha256": "4dd0c45ab6107a60497562b1cf411668d3dac7e0fdd89eeabf1ac4610d94565b", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 76995, "lines": 191, "sha256": "02edaf424ea11bc84cf9754b409cc078ecdd0b7c6d01c1c3c3ad3c676cf06d1c", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 77162, "lines": 191, "sha256": "f6bda5be47878996980cb33d5878e4d22b728112e70f861f9a8daef04803caa5", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 12090188, "lines": 362351, "sha256": "f43b81f3da7b836cbee2edfa478eeb3b1680370c05b4f8231c154a163787bff2", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 622349, "lines": 3365, "sha256": "2ec160f6eb63fde1c8a70676c62ebba7af3c0e44b8fef4e26d68d2871341aad8", "symlink": false, "nodes": 84, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
@@ -12159,7 +12151,6 @@
     {"source": "docs/knowledge-unknowns.md", "target": "frontend/src/components/home/HomePricesRates.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/knowledge-unknowns.md", "line": "L133", "source": "2026-11-08 — круг 3: что осталось (локально, не выпущено)", "target": "HomePricesRates()"}]},
     {"source": "docs/knowledge-unknowns.md", "target": "frontend/src/components/regions/MonthlyPriceParts.jsx", "relation": "references", "confidence": "INFERRED", "count": 2, "evidence": [{"file": "docs/knowledge-unknowns.md", "line": "L168", "source": "2026-11-09 — круг 8: пробелы (локально, не выпущено)", "target": "variantLabel()"}]},
     {"source": "docs/knowledge-unknowns.md", "target": "frontend/src/components/regions/R10bCompare.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/knowledge-unknowns.md", "line": "L189", "source": "2026-11-09 — круг 10: пробелы (локально, не выпущено)", "target": "R10bAnswer()"}]},
-    {"source": "docs/knowledge-unknowns.md", "target": "frontend/src/pages/RegionComparePage.jsx", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/knowledge-unknowns.md", "line": "L191", "source": "2026-11-09 — круг 10: пробелы (локально, не выпущено)", "target": "RegionComparePage()"}]},
     {"source": "docs/mechanism-inventory.md", "target": "backend/app/api/world.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/mechanism-inventory.md", "line": "L284", "source": "Table `indicator_data`", "target": "indicator_data()"}]},
     {"source": "docs/mechanism-inventory.md", "target": "backend/app/services/site_paths.py", "relation": "references", "confidence": "INFERRED", "count": 1, "evidence": [{"file": "docs/mechanism-inventory.md", "line": "L599", "source": "Table `forecasts`", "target": "forecasts()"}]},
     {"source": "docs/missed_data_audit.md", "target": "AGENTS.md", "relation": "references", "confidence": "EXTRACTED", "count": 1, "evidence": [{"file": "docs/missed_data_audit.md", "line": "L6", "source": "missed_data_audit.md", "target": "AGENTS.md"}]},
