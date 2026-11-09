@@ -1,0 +1,32 @@
+/* R6-C: годовые карточки региона. Без рамок; холодная палитра. */
+.r6c-russia {
+  margin: 0.55rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #5b6475);
+}
+.r6c-russia__gap { color: var(--color-text-primary, #121a2b); font-weight: 500; }
+.r6c-rank-cap { display: block; margin-top: 0.2rem; font-size: 0.75rem; font-weight: 400; line-height: 1.25; color: var(--color-text-secondary, #5b6475); }
+.r6c-since-was { display: block; margin-top: 0.2rem; font-size: 0.75rem; font-weight: 400; color: var(--color-text-secondary, #5b6475); }
+.r6c-extras { margin-top: 0.85rem; }
+.r6c-rf {
+  display: flex; justify-content: space-between; gap: 0.5rem;
+  margin: 0 0 0.25rem; padding: 0.5rem 0.75rem; border-radius: 0.75rem;
+  font-size: 13px; color: var(--color-text-secondary, #5b6475);
+  background: rgba(91, 125, 168, 0.08);
+}
+.r6c-sub { margin: 0.9rem 0 0.35rem; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--color-text-secondary, #5b6475); }
+.r6c-stale { margin: 0.6rem 0.25rem 0; font-size: 0.8125rem; line-height: 1.4; color: var(--color-text-secondary, #5b6475); }
+.r6c-legend-val { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--color-text-primary, #121a2b); }
+.r6c-diff-col { white-space: nowrap; }
+.r6c-more {
+  display: flex; width: 100%; align-items: center; justify-content: center;
+  margin-top: 0.6rem; padding: 0.7rem 1rem; border-radius: 1rem;
+  font-size: 0.9375rem; font-weight: 500; color: var(--color-champagne-ink, #1c3b6b);
+  background: rgba(255, 255, 255, 0.7);
+}
+.r6c-title-sub { display: block; margin-top: 0.35rem; font-size: 0.95rem; font-weight: 500; line-height: 1.35; color: var(--color-text-secondary, #5b6475); }
+.r6c-unit-note { flex-basis: 100%; font-size: 0.8125rem; line-height: 1.35; color: var(--color-text-secondary, #5b6475); order: 2; }

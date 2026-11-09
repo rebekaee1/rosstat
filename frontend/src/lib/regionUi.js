@@ -13,6 +13,7 @@ function numberLocale(locale) {
 export function unitLabel(unit, locale = 'ru') {
   const raw = (unit || '').trim();
   if (!raw) return '';
+  if (/^(число лет|years?)$/i.test(raw)) return locale === 'en' ? 'years' : 'лет';
   const short = shortUnit(raw);
   if (short === '% г/г') return locale === 'en' ? '% YoY' : '% за год';
   const perPop = raw.toLowerCase().match(/^на\s*(\d[\d\s\u00a0]*)\s+(человек|жителей)/);
