@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import {
   Menu, X, ShoppingBasket, ChevronDown, ArrowLeftRight, BarChart3, BookOpen, Building2, CalendarDays, Clock, Coins, Flag, GitCompare, Globe2,
-  Cookie, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2, User,
+  Cookie, FileText, Home, Info, Landmark, Layers, Mail, Map as MapIcon, Percent, PiggyBank, TrendingUp, Code2, User,
 } from 'lucide-react';
 import { cn } from '../lib/format';
 import { FOCUS_RING } from '../lib/uiTokens';
@@ -586,6 +586,13 @@ export default function Navbar() {
             );
           })}
           <div className="fe-mnav-group">
+            <NavLink to="/research" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
+              <MnavTile icon={FileText} />
+              <span className="fe-mnav-text">
+                <span className="fe-mnav-label">{t('nav.research')}</span>
+                <span className="fe-mnav-hint">{t('nav.research.hint')}</span>
+              </span>
+            </NavLink>
             <NavLink to="/about" className={({ isActive }) => cn(navItemClass(isActive), 'fe-mnav-link')} onClick={closeAll}>
               <MnavTile icon={Info} />
               <span className="fe-mnav-text"><span className="fe-mnav-label">{t('nav.about')}</span></span>

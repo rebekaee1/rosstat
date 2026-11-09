@@ -335,6 +335,23 @@ PAGE_META_EN: dict[str, PageSeo] = {
         ),
         links=(("/privacy", "Privacy policy"), ("/", "Home")),
     ),
+    "research": PageSeo(
+        slug="research",
+        path="/research",
+        title="Forecast Economy research — reports in PDF",
+        description=(
+            "Research by the Forecast Economy team on inflation, interest rates, the ruble, wages, investing and risk, "
+            "built on official data. Each study comes with a short video and a free PDF report (in Russian)."
+        ),
+        h1="Research",
+        intro=(
+            "We take a simple question about money and test it on official data from Rosstat, the Bank of Russia, "
+            "the Moscow Exchange, the IMF and Eurostat. Every study has a short video and a PDF report with key "
+            "figures, charts, methodology, sources and conclusions. Reports are in Russian."
+        ),
+        keywords="economic research, PDF report, inflation, interest rate, ruble, investing, Forecast Economy",
+        links=(("/methodology", "How we calculate"), ("/about", "About")),
+    ),
     "methodology": PageSeo(
         slug="methodology",
         path="/methodology",

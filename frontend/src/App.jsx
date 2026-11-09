@@ -60,6 +60,7 @@ import {
 const LiveTicker = lazy(() => import('./components/LiveTicker'));
 const IndicatorDetail = lazy(() => import('./pages/IndicatorDetail'));
 const About = lazy(() => import('./pages/About'));
+const ResearchPage = lazy(() => import('./pages/ResearchPage'));
 const Methodology = lazy(() => import('./pages/Methodology'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
@@ -275,6 +276,7 @@ function AppRoutes() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/about" element={<About />} />
             <Route path="/methodology" element={<Methodology />} />
+            <Route path="/research" element={<ResearchPage />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/compare" element={<ComparePage renderSave={renderCompareSave} />} />

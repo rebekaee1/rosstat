@@ -1008,11 +1008,19 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 
 **Хранение.** `public_bot_chats` (номер чата — ПДн, `chat_hash` = HMAC-SHA256 номера на ключе токена бота, `first_code`, `heard_from`, `asked_source_at`, `first_seen_at`, `last_seen_at`, `blocked_at`); `public_bot_events` (`chat_hash`, `kind` ∈ start/word/topic/subscribe/unsubscribe/source/notify/blocked/stop/unknown, `code`, `topic`; свободный текст не хранится); `public_bot_subscriptions` (`chat_id`, `topic`, `last_point_date`, `last_value`, `last_sent_at`; уникально `chat_id+topic`, каскад от чата). Ответы архивируются в `telegram_outbox` с `kind` `public_bot`/`public_bot_notify`; в досылку (`RESEND_KINDS`) не входят. `/stop` удаляет чат, подписки и эти строки архива; событие `stop` остаётся с `chat_hash`.
 
+**Журнал переписки (09.11.2026, решение владельца «сохранять историю диалога… и что ему отправляла LLM»).** `public_bot_dialog`: `occurred_at`, `chat_id`, `user_id`, `username`, `first_name`, `last_name`, `language_code`, `direction` ∈ in/llm, `kind` (in: message/callback/inline/member; llm: answer/broadcast), `text` (до 8000 знаков), `payload` (in — сырой update; llm — `model`, `status`, `latency_ms`, `usage`, `messages` запроса). Пишется в `handle_update` и `_llm_call` (`app/services/public_bot_dialog.py`), ошибка записи ответ не роняет. Исходящие — по-прежнему `telegram_outbox`. `/stop` удаляет строки чата. Выгрузка: `scripts/public-bot-dialogs.py` (`--days`, `--chat`, `--jsonl`). Политика конфиденциальности и `privacy_line()` обновлены.
+
 **Рассылка.** `public_bot_notify` (scheduler, 30 мин, только при флаге): новая точка ряда после `last_point_date`; `gold`/`usd`/`eur` — не чаще раза в 7 дней; `keyrate` — только при изменении значения (иначе точка запоминается молча). Ошибка с кодом 403 → `blocked_at`. Пауза 0,05 с между сообщениями. `my_chat_member` со статусом `kicked` → `blocked_at`.
 
 **Отчёт.** Админ-меню «🤖 Публичный бот» (только при флаге): за 7 дней новые люди, вернувшиеся (пришли раньше периода, писали в периоде), коды первого входа, темы, подписки сейчас, «откуда узнали».
 
 **Чего нет.** Отметок прочтения (их нет в Bot API); цифр по регионам; живой проверки на реальном телефоне (08.11.2026).
+
+**Дополнение 08.11.2026 (вечер), [ADR-0027](adr/0027-public-telegram-bot.md#subsequent-additions).**
+- `RUSTATS_PUBLIC_BOT_TOKEN` задан → публичный бот отдельный (@ForecastEconomyBot): свой `getUpdates` (`public_bot_poll_job`: задача раз в минуту, внутри опросы подряд ~35 с, long-poll до 20 с, смещение `fe:tg:public_offset`, `allowed_updates` message/callback_query/my_chat_member). Все чаты, включая владельца, обрабатываются публично. Служебный бот снова только для владельца и получателей сводки.
+- `RUSTATS_PUBLIC_BOT_LLM_ENABLED` + `openrouter_api_key` → текст, не узнанный как тема (или длиннее 40 знаков), уходит модели (`public_bot_llm_model`, пусто = `openrouter_model`) с блоком «ДАННЫЕ». Лимит `public_bot_llm_daily_limit` в сутки на чат (по событиям `ask`), иначе `LIMIT_TEXT`; при сбое — `LLM_FAIL_TEXT`. Текст вопроса не хранится. Перед ответом бот показывает «печатает» (`sendChatAction`).
+- Ночь 08.11: повторный `/start` → «С возвращением!» и подписки; `/start <код с темой>` → сначала цифра, потом короткая строка о боте; приветствия и «спасибо» без модели; топливо, вклады и ипотека «в среднем по России»; у инфляции, вкладов и ипотеки «Следующие данные: <дата>» из `economic_events` (cpi, deposit-rate, mortgage-rate); у ставки сравнение с инфляцией; апдейты разных чатов параллельно, одного чата по порядку; «печатает» каждые 4 с во время ответа модели.
+- Ответ на тему: изменения процентных рядов в «пунктах»; строка «для кошелька»; «Наш расчёт … (прогноз Forecast Economy)»; «Новее данных пока нет» по порогу свежести; ссылки на `ru.` хост; `link_preview_options.is_disabled`. По коду ролика вопрос «откуда узнали» не задаётся.
 
 ## Разрезы рынка труда России из ЕМИСС
 
@@ -1031,6 +1039,19 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 В каталоге «Рынок труда» и на странице «Россия» общий уровень безработицы
 идёт первым. Разрезы ЕМИСС собраны в семь раскрываемых групп, остальные
 показатели остаются в обзорном списке. Контракты и адреса рядов сохранены.
+
+**Публичный бот: чтение базы ИИ-агентом, 2026-11-09.** Агент @ForecastEconomyBot читает `indicators`/`indicator_data`/текущие `forecasts`, `region_indicators`/`region_data`/`region_monthly_data`/`regions`, `world_indicators` (только `is_listed`)/`world_data_points`/`world_countries` и `economic_events` через инструменты `bot_agent_tools.py`: только SELECT, `statement_timeout` 3 с на вызов, ответ до 3500 знаков, прогноз одним значением без границ, адреса страниц через `site_paths`. Запись не выполняется. [Инструменты](../backend/app/services/bot_agent_tools.py), [ADR-0027](adr/0027-public-telegram-bot.md).
+
+## Исследования: PDF-отчёты к роликам — 2026-11-09
+
+Решение и основания — [ADR-0028](adr/0028-research-reports-section.md).
+
+- Каталог: `backend/app/data/research_catalog.json` (`release`, `release_en`, `group_url`, `items[]`: `slug, number, title, subtitle, annotation, figures[{value,label,tone: green|red|gold|""}], conclusions[], topics[], file, download_name, cover, pages, size_mb, authors`). Генератор — `content-factory/материалы/выгрузить_на_сайт.py`. Файлы — `frontend/public/research/{files,covers}/`, nginx `location ^~ /research/files/` (неделя кэша, `noindex`).
+- `GET /api/v1/research` → `{release, release_en, group_url, items[+downloads], total_downloads}`; кэш 60 с.
+- `GET /api/v1/research/{slug}/download` → 302 на `file`; 404 на неизвестный slug. Счёт: не бот, первый раз за сутки с адреса (Redis `fe:research:dl:*`, TTL 24 ч) → `research_downloads(slug, date, count)` +1. IP и ПДн не хранятся.
+- Таблица `research_downloads`: `id, slug varchar(120), date, count`, уникальность `(slug, date)` — Alembic `20261109_research_downloads`.
+- Цель `research_download` (микро) на клик «Скачать PDF».
+- Публичный бот: `RUSTATS_PUBLIC_BOT_GROUP_URL` (пусто по умолчанию) — куда ведут «📚 Исследования (PDF)», `/research`, `?start=research…`; без группы — `/research` сайта.
 
 ## 2026-11-08 — цены ЕМИСС по регионам: поля подачи, сравнение, группы поиска (круг данных, локально)
 

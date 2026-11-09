@@ -236,102 +236,102 @@
     "anonymous_functions": 1
   },
   "frontend/src/App.jsx": {
-    "sha256": "1516028ca4530bc5f7e6316509bbdec82e0f1aac66ad9bf0d37c8de4fa08c6b3",
+    "sha256": "fa483868a8044e6b0f9e1306bd623e79874f5540eeb09e4a5cd9731a99ae930c",
     "definitions": [
       {
         "name": "ScrollToTop",
-        "line": 103,
-        "end_line": 114,
+        "line": 104,
+        "end_line": 115,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "YandexMetrikaHit",
-        "line": 116,
-        "end_line": 140,
+        "line": 117,
+        "end_line": 141,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "IndicatorDetailKeyed",
-        "line": 142,
-        "end_line": 145,
+        "line": 143,
+        "end_line": 146,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldCountryRoute",
-        "line": 148,
-        "end_line": 154,
+        "line": 149,
+        "end_line": 155,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "WorldIndicatorRoute",
-        "line": 157,
-        "end_line": 163,
+        "line": 158,
+        "end_line": 164,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RedirectTo",
-        "line": 165,
-        "end_line": 169,
+        "line": 166,
+        "end_line": 170,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "NavigateKeepSearch",
-        "line": 172,
-        "end_line": 175,
+        "line": 173,
+        "end_line": 176,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CalculatorsAlias",
-        "line": 178,
-        "end_line": 181,
+        "line": 179,
+        "end_line": 182,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "CountriesToHome",
-        "line": 184,
-        "end_line": 187,
+        "line": 185,
+        "end_line": 188,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "ServerNotFoundGate",
-        "line": 197,
-        "end_line": 200,
+        "line": 198,
+        "end_line": 201,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedSpinner",
-        "line": 204,
-        "end_line": 211,
+        "line": 205,
+        "end_line": 212,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "EmbedRoutes",
-        "line": 213,
-        "end_line": 229,
+        "line": 214,
+        "end_line": 230,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "renderCabinetActions",
-        "line": 232,
-        "end_line": 232,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "renderCompareSave",
         "line": 233,
         "end_line": 233,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "renderCompareSave",
+        "line": 234,
+        "end_line": 234,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "AppRoutes",
-        "line": 235,
-        "end_line": 380,
+        "line": 236,
+        "end_line": 382,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "App",
-        "line": 382,
-        "end_line": 388,
+        "line": 384,
+        "end_line": 390,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -466,10 +466,10 @@
         "names": [
           "default"
         ],
-        "line": 382
+        "line": 384
       }
     ],
-    "anonymous_functions": 59
+    "anonymous_functions": 60
   },
   "frontend/src/SpaRoot.jsx": {
     "sha256": "f06df2619a28073c38ba7021f6070257729d8d8887507defa0c2e655aaed9c40",
@@ -5358,7 +5358,7 @@
     "anonymous_functions": 21
   },
   "frontend/src/components/Footer.jsx": {
-    "sha256": "8e1b9577f331e17cd0492e32c124d313af0492b48c2b4ce30ba28320cb81839d",
+    "sha256": "bb2d9556aa0ac211d1fbd9ce7c616686e4912947a84894750e4046058357171d",
     "definitions": [
       {
         "name": "ImageCredit",
@@ -5381,7 +5381,7 @@
       {
         "name": "Footer",
         "line": 142,
-        "end_line": 359,
+        "end_line": 364,
         "kind": "FunctionDeclaration"
       },
       {
@@ -9591,7 +9591,7 @@
     "anonymous_functions": 28
   },
   "frontend/src/components/Navbar.jsx": {
-    "sha256": "7c4b0efd4c194c17d2f535608b6eb84c7d393749d64547128e835fc3e2fcd710",
+    "sha256": "a7ccf6ac0ee62cb14c8e4d259b41e2b29a5e51dc569eecd0a7075bf98f917935",
     "definitions": [
       {
         "name": "revealWhenRendered",
@@ -9620,7 +9620,7 @@
       {
         "name": "Navbar",
         "line": 192,
-        "end_line": 616,
+        "end_line": 623,
         "kind": "FunctionDeclaration"
       },
       {
@@ -9804,7 +9804,7 @@
         "line": 192
       }
     ],
-    "anonymous_functions": 39
+    "anonymous_functions": 40
   },
   "frontend/src/components/Navbar.menu.component.test.jsx": {
     "sha256": "c6b0e2a0bd9284aa63e4ef7d2ac87b6e54340b08871fa8a1b0be1bb40acc4ab4",
@@ -22758,7 +22758,7 @@
     "anonymous_functions": 8
   },
   "frontend/src/i18n/legalPages.en.jsx": {
-    "sha256": "a36e7ccc0345ef9936755ea8b4e02cc194cf4af95301d30e07da7e853a298e34",
+    "sha256": "d8a2defcca3b2236173a39792ee14f2df9b72f22b81f6aba30c772d1da3c091e",
     "definitions": [
       {
         "name": "CookieRow",
@@ -22769,13 +22769,13 @@
       {
         "name": "PrivacyBodyEn",
         "line": 27,
-        "end_line": 263,
+        "end_line": 266,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "TermsBodyEn",
-        "line": 266,
-        "end_line": 394,
+        "line": 269,
+        "end_line": 397,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -22816,7 +22816,7 @@
         "names": [
           "TermsBodyEn"
         ],
-        "line": 266
+        "line": 269
       }
     ],
     "anonymous_functions": 2
@@ -23166,7 +23166,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "e7b00c7f815c8d791dcd4b63f39e7ab8efc4abca30e41d8fc120f124c3a659a2",
+    "sha256": "bbd5b5192ade3986186476b798b833d26d316309a5ec915b63f96ecc7c8eb6aa",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23274,7 +23274,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "0d494c0c25bdd035b66310e9cf0e95a8f8f93de9d97a3ef45acaa416e2bc2436",
+    "sha256": "98e671ba110cdd39193527012e3de24ce0e84775ce727f1d7a8067272974fb11",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23861,7 +23861,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/lib/api.js": {
-    "sha256": "897816a2ddb862f94278e1f12c7cb214756a9ebd35180d7536a5f4b29fcf6fea",
+    "sha256": "16f10d146597a2fcfd972a174f2918e81c4a7a6d9018d4058cec3953d51a8287",
     "definitions": [
       {
         "name": "hasIdempotencyKey",
@@ -23960,153 +23960,165 @@
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "fetchResearch",
+        "line": 188,
+        "end_line": 189,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "researchDownloadHref",
+        "line": 192,
+        "end_line": 192,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "fetchCoverage",
-        "line": 187,
-        "end_line": 188,
+        "line": 194,
+        "end_line": 195,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchDashboardSparklines",
-        "line": 190,
-        "end_line": 191,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "fetchDemographicsStructure",
-        "line": 193,
-        "end_line": 194,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "fetchMe",
         "line": 197,
         "end_line": 198,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "registerUser",
+        "name": "fetchDemographicsStructure",
         "line": 200,
         "end_line": 201,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "loginUser",
-        "line": 203,
-        "end_line": 204,
+        "name": "fetchMe",
+        "line": 204,
+        "end_line": 205,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "logoutUser",
-        "line": 206,
-        "end_line": 206,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "logoutAll",
-        "line": 208,
+        "name": "registerUser",
+        "line": 207,
         "end_line": 208,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "setPassword",
+        "name": "loginUser",
         "line": 210,
         "end_line": 211,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "unlinkIdentity",
+        "name": "logoutUser",
         "line": 213,
-        "end_line": 214,
+        "end_line": 213,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "logoutAll",
+        "line": 215,
+        "end_line": 215,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "setPassword",
+        "line": 217,
+        "end_line": 218,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "unlinkIdentity",
+        "line": 220,
+        "end_line": 221,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "deleteAccount",
-        "line": 216,
-        "end_line": 216,
+        "line": 223,
+        "end_line": 223,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "submitFeedback",
-        "line": 218,
-        "end_line": 219,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "submitApiInterest",
         "line": 225,
         "end_line": 226,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "updateNewsletter",
-        "line": 229,
-        "end_line": 230,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "updateProfile",
+        "name": "submitApiInterest",
         "line": 232,
         "end_line": 233,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "fetchDownloadQuota",
+        "name": "updateNewsletter",
         "line": 236,
         "end_line": 237,
         "kind": "ArrowFunctionExpression"
       },
       {
+        "name": "updateProfile",
+        "line": 239,
+        "end_line": 240,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "fetchDownloadQuota",
+        "line": 243,
+        "end_line": 244,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "absoluteAuthNext",
-        "line": 244,
-        "end_line": 255,
+        "line": 251,
+        "end_line": 262,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "oauthStartUrl",
-        "line": 259,
-        "end_line": 264,
+        "line": 266,
+        "end_line": 271,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchOAuthProviders",
-        "line": 267,
-        "end_line": 268,
+        "line": 274,
+        "end_line": 275,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "defaultExportHistory",
-        "line": 274,
-        "end_line": 281,
+        "line": 281,
+        "end_line": 288,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "withExportHref",
-        "line": 287,
-        "end_line": 293,
+        "line": 294,
+        "end_line": 300,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "postExportBlob",
-        "line": 299,
-        "end_line": 322,
+        "line": 306,
+        "end_line": 329,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "exportTable",
-        "line": 330,
-        "end_line": 333,
+        "line": 337,
+        "end_line": 340,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "exportGrid",
-        "line": 340,
-        "end_line": 343,
+        "line": 347,
+        "end_line": 350,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "fetchAccountExport",
-        "line": 349,
-        "end_line": 349,
+        "line": 356,
+        "end_line": 356,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -24201,144 +24213,156 @@
       },
       {
         "names": [
+          "fetchResearch"
+        ],
+        "line": 188
+      },
+      {
+        "names": [
+          "researchDownloadHref"
+        ],
+        "line": 192
+      },
+      {
+        "names": [
           "fetchCoverage"
         ],
-        "line": 187
+        "line": 194
       },
       {
         "names": [
           "fetchDashboardSparklines"
         ],
-        "line": 190
+        "line": 197
       },
       {
         "names": [
           "fetchDemographicsStructure"
         ],
-        "line": 193
+        "line": 200
       },
       {
         "names": [
           "fetchMe"
         ],
-        "line": 197
+        "line": 204
       },
       {
         "names": [
           "registerUser"
         ],
-        "line": 200
+        "line": 207
       },
       {
         "names": [
           "loginUser"
         ],
-        "line": 203
+        "line": 210
       },
       {
         "names": [
           "logoutUser"
         ],
-        "line": 206
+        "line": 213
       },
       {
         "names": [
           "logoutAll"
         ],
-        "line": 208
+        "line": 215
       },
       {
         "names": [
           "setPassword"
         ],
-        "line": 210
+        "line": 217
       },
       {
         "names": [
           "unlinkIdentity"
         ],
-        "line": 213
+        "line": 220
       },
       {
         "names": [
           "deleteAccount"
         ],
-        "line": 216
+        "line": 223
       },
       {
         "names": [
           "submitFeedback"
         ],
-        "line": 218
+        "line": 225
       },
       {
         "names": [
           "submitApiInterest"
         ],
-        "line": 225
+        "line": 232
       },
       {
         "names": [
           "updateNewsletter"
         ],
-        "line": 229
+        "line": 236
       },
       {
         "names": [
           "updateProfile"
         ],
-        "line": 232
+        "line": 239
       },
       {
         "names": [
           "fetchDownloadQuota"
         ],
-        "line": 236
+        "line": 243
       },
       {
         "names": [
           "absoluteAuthNext"
         ],
-        "line": 244
+        "line": 251
       },
       {
         "names": [
           "oauthStartUrl"
         ],
-        "line": 259
+        "line": 266
       },
       {
         "names": [
           "fetchOAuthProviders"
         ],
-        "line": 267
+        "line": 274
       },
       {
         "names": [
           "exportTable"
         ],
-        "line": 330
+        "line": 337
       },
       {
         "names": [
           "exportGrid"
         ],
-        "line": 340
+        "line": 347
       },
       {
         "names": [
           "fetchAccountExport"
         ],
-        "line": 349
+        "line": 356
       },
       {
         "names": [
           "default"
         ],
-        "line": 351
+        "line": 358
       }
     ],
-    "anonymous_functions": 34
+    "anonymous_functions": 35
   },
   "frontend/src/lib/api.test.js": {
     "sha256": "e44c147b4622217efc3fc2c1d6d9548877028014cb36d7c1b5ee480eddea3328",
@@ -46158,7 +46182,7 @@
     "anonymous_functions": 14
   },
   "frontend/src/lib/track.js": {
-    "sha256": "4590e07b89bcf42318b8b3d743e7719c88bbc0ae237c1b31b66ea8103cd61ade",
+    "sha256": "7fbaa100e8ffd5c4349356530a8e3efaf2c3c9542251797321ad57a1021220d9",
     "definitions": [
       {
         "name": "sessionId",
@@ -56785,7 +56809,7 @@
     "anonymous_functions": 10
   },
   "frontend/src/pages/Privacy.jsx": {
-    "sha256": "f34addbffe8c2b9b8e2334952a4f6a163adbb3cef9d113b37adcf8349632236e",
+    "sha256": "a57af798a3eddd17691d4421501fd8744dcaf2fd754f80f8863c6b166b07b50c",
     "definitions": [
       {
         "name": "CookieRow",
@@ -56796,7 +56820,7 @@
       {
         "name": "Privacy",
         "line": 44,
-        "end_line": 299,
+        "end_line": 303,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -58387,6 +58411,100 @@
       }
     ],
     "anonymous_functions": 10
+  },
+  "frontend/src/pages/ResearchPage.jsx": {
+    "sha256": "9e5b47c387566cb71309c31f132283c98b5ca1e7834333a741d041b1e1321fcc",
+    "definitions": [
+      {
+        "name": "formatCount",
+        "line": 17,
+        "end_line": 19,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ReportCard",
+        "line": 21,
+        "end_line": 80,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ReportCard.onDownload",
+        "line": 22,
+        "end_line": 22,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "ResearchPage",
+        "line": 86,
+        "end_line": 121,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "ResearchPage.queryFn",
+        "line": 91,
+        "end_line": 91,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@tanstack/react-query",
+        "line": 1
+      },
+      {
+        "source": "lucide-react",
+        "line": 2
+      },
+      {
+        "source": "../components/Breadcrumbs",
+        "line": 3
+      },
+      {
+        "source": "../components/Button",
+        "line": 4
+      },
+      {
+        "source": "../lib/breadcrumbs",
+        "line": 5
+      },
+      {
+        "source": "../lib/useMeta",
+        "line": 6
+      },
+      {
+        "source": "../lib/pageMeta",
+        "line": 7
+      },
+      {
+        "source": "../i18n",
+        "line": 8
+      },
+      {
+        "source": "../lib/api",
+        "line": 9
+      },
+      {
+        "source": "../lib/track",
+        "line": 10
+      },
+      {
+        "source": "../styles/w5-pages.css",
+        "line": 11
+      },
+      {
+        "source": "../styles/research.css",
+        "line": 12
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 86
+      }
+    ],
+    "anonymous_functions": 3
   },
   "frontend/src/pages/RussiaHome.c11f.component.test.jsx": {
     "sha256": "ef1758207c7f394b0fcf75a0d23fcb6e399bdb1ed13a3d1630754c00f506f139",

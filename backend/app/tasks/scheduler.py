@@ -201,6 +201,45 @@ def _is_network_failure(exc: BaseException) -> bool:
     return "unreachable" in str(exc).lower()
 
 
+async def _rosstat_outage_codes(codes: list[str]) -> list[str]:
+    """Ряды Росстата, упавшие «файл не найден», пока сайт отдаёт старую копию (`rosstat_outage`, 09.11.2026).
+
+    Такая ошибка — недоступность источника, а не поломка ряда: причина дописывается в последнюю запись `fetch_log`
+    (со словом «unreachable»), ряд уходит в «источник недоступен» и в догрузку `rosstat_recovery_job`.
+    Без признака старой копии ошибки остаются ошибками.
+    """
+    if not codes:
+        return []
+    from app.services.rosstat_outage import stale_copy_reason
+
+    reason = await asyncio.to_thread(stale_copy_reason)
+    if not reason:
+        return []
+    await _annotate_outage(codes, reason)
+    logger.warning("Daily ETL: %d Rosstat series moved to «source unavailable»: %s", len(codes), reason)
+    return list(codes)
+
+
+async def _annotate_outage(codes: list[str], reason: str) -> None:
+    """Дописать причину недоступности в последнюю запись `fetch_log` каждого ряда (её читает `rosstat_recovery_job`)."""
+    async with async_session() as db:
+        rows = (await db.execute(
+            select(Indicator.id).where(Indicator.code.in_(codes))
+        )).scalars().all()
+        for indicator_id in rows:
+            last = (await db.execute(
+                select(FetchLog).where(FetchLog.indicator_id == indicator_id)
+                .order_by(FetchLog.started_at.desc(), FetchLog.id.desc()).limit(1)
+            )).scalar_one_or_none()
+            if last is None or last.status != "failed" or "unreachable" in (last.error_message or "").lower():
+                continue
+            await db.execute(
+                update(FetchLog).where(FetchLog.id == last.id)
+                .values(error_message=f"{reason} | {last.error_message or ''}"[:500])
+            )
+        await db.commit()
+
+
 # Повтор после остывания предохранителя хоста (2026-10-27): вечерний ETL 16.10, 22.10 и 27.10 терял 17-25 рядов
 # Росстата из-за одного сбоя в начале и ждал следующего прогона 10-14 часов. Теперь сбои сетевого рода
 # повторяются один раз после остывания предохранителя, если это укладывается в потолок времени ETL.
@@ -288,6 +327,7 @@ async def daily_update_job(only_codes: set[str] | None = None, *, recovery: bool
     degraded: dict[str, list[str]] = {s: [] for s in DEGRADED_STATUSES}
     degraded["deadline_skipped"] = []
     network_retry: list[dict] = []
+    outage_candidates: list[str] = []
     for task in indicator_tasks:
         code = task["code"]
         if task["parser_type"] == "derived":
@@ -324,6 +364,8 @@ async def daily_update_job(only_codes: set[str] | None = None, *, recovery: bool
             failed_codes.append(code)
             if _is_network_failure(e):
                 network_retry.append(task)
+            elif str(parser_type or "").startswith("rosstat_"):
+                outage_candidates.append(code)
         finally:
             async with _lock:
                 _running_locks.discard(code)
@@ -331,6 +373,7 @@ async def daily_update_job(only_codes: set[str] | None = None, *, recovery: bool
     await _retry_network_failures([] if recovery else network_retry, t0, updated_codes, failed_codes, degraded)
     # Источник так и не ответил: ряды не «сломаны», их догонит `rosstat_recovery_job`; в итоге они отдельной строкой.
     unreachable = [t["code"] for t in network_retry if t["code"] in failed_codes]
+    unreachable += await _rosstat_outage_codes(outage_candidates)
     failed_codes = [c for c in failed_codes if c not in unreachable]
     # Недельные парсеры глотают сетевой сбой и отвечают «0 точек»: это не «смена вёрстки», а тот же недоступный источник.
     if degraded.get("parsed_zero"):
@@ -440,12 +483,19 @@ def _rosstat_site_answers() -> bool:
     from app.config import settings
     from app.services.http_client import create_session
 
+    from app.services.rosstat_outage import stale_copy_reason
+
     session = create_session(timeout=20)
     session.verify = settings.rosstat_ca_cert
     try:
-        return session.get(ROSSTAT_PROBE_URL, timeout=(10, 20)).status_code == 200
+        if session.get(ROSSTAT_PROBE_URL, timeout=(10, 20)).status_code != 200:
+            return False
     except requests.RequestException:
         return False
+    finally:
+        session.close()
+    # Главная открывается, но сайт - старая копия без файлов (09.11.2026): догружать нечего, ряды ждут.
+    return stale_copy_reason(force=True) is None
 
 
 async def rosstat_recovery_job() -> dict:

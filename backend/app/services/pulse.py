@@ -98,9 +98,21 @@ async def _etl_snapshot(db, start: datetime, end: datetime) -> dict[str, Any]:
             FetchLog.status.in_(ETL_ERROR_STATUSES),
         )
     )).scalars().all()
+    # Ряды, упавшие из-за недоступного источника (в тексте ошибки «unreachable»: сеть, заглушка техработ, старая
+    # копия сайта Росстата). 07-08.11.2026 Пульс называл аварию Росстата «хронической проблемой синхронизации».
+    unreachable_ids = (await db.execute(
+        select(func.distinct(FetchLog.indicator_id))
+        .where(
+            FetchLog.started_at >= start,
+            FetchLog.started_at < end,
+            FetchLog.status.in_(ETL_ERROR_STATUSES),
+            func.lower(func.coalesce(FetchLog.error_message, "")).like("%unreachable%"),
+        )
+    )).scalars().all()
     return {
         "by_status": {s: {"runs": n, "records": int(r)} for s, n, r in etl_rows},
         "failed_indicator_ids": [int(i) for i in failed_codes][:20],
+        "source_unavailable_indicators": len(unreachable_ids),
     }
 
 
@@ -339,7 +351,12 @@ async def _seo_snapshot(db=None) -> dict[str, Any]:
             "demand_by_host": demand_by_host,
             "indexing_daily": indexing_daily,
         }
-    except Exception:
+    except Exception as exc:
+        from app.services.yandex_token_alert import is_token_expired
+
+        if is_token_expired(exc):
+            # 06-08.11.2026 Пульс трижды писал «SEO-отчёт недоступен (fetch failed)», а причина была одна: токен истёк.
+            return {"available": False, "reason": "webmaster token expired: owner must re-issue it"}
         logger.warning("Pulse SEO snapshot failed", exc_info=True)
         return {"available": False, "reason": "fetch failed"}
 

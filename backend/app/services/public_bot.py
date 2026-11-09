@@ -9,8 +9,9 @@
 - тот же бот и тот же поллер, что у админ-меню (`telegram_bot.telegram_poll_job`);
   публичный режим включает `settings.public_bot_enabled`, выключенный флаг = прежнее поведение;
 - только личные чаты; группы и каналы игнорируются;
-- номер чата хранится только в `public_bot_chats` (нужен для ответа и подписки), события —
-  с HMAC номера (`chat_hash`); `/stop` удаляет чат, подписки и архив публичных ответов;
+- номер чата — в `public_bot_chats` (нужен для ответа и подписки), события — с HMAC номера (`chat_hash`);
+  переписка (входящие с профилем Telegram и запросы к модели) — в `public_bot_dialog` (решение владельца 09.11.2026),
+  исходящие — в `telegram_outbox`; `/stop` удаляет чат, подписки, журнал и архив публичных ответов;
 - бот не видит, прочитано ли сообщение (в Bot API нет отметок прочтения): «вернулся» —
   это новое сообщение/нажатие человека или переход на сайт по ссылке с метками;
 - прогноз показывается одной точкой, без диапазона (правило владельца).
@@ -18,13 +19,16 @@
 from __future__ import annotations
 
 import asyncio
+import contextvars
 import hashlib
 import hmac
+import io
 import logging
 import re
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
-from html import escape
+import dataclasses
+from html import escape, unescape
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
 
@@ -32,8 +36,9 @@ from sqlalchemy import delete, func, select
 
 from app.config import settings
 from app.database import async_session
+from app.services.locale import ru_public_origin
 from app.models import (
-    Forecast, ForecastValue, Indicator, IndicatorData,
+    EconomicEvent, Forecast, ForecastValue, Indicator, IndicatorData,
     PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox,
 )
 
@@ -71,9 +76,28 @@ TOPICS: dict[str, Topic] = {t.key: t for t in (
     Topic("usd", "usd-rub", "Доллар", "₽", ("доллар", "бакс"), ("usd",), notify="weekly"),
     Topic("eur", "eur-rub", "Евро", "₽", ("евро",), ("eur",), notify="weekly"),
 )}
+# Ролики (очередь контент-завода 08.11.2026): код из ссылки → тема ролика. Человек из ролика сразу получает
+# ответ модели по теме ролика, а не общее приветствие.
+REELS = {
+    "r001": "индекс губной помады",
+    "r002": "закон Энгеля: чем беднее семья, тем большая доля трат уходит на еду",
+    "r003": "закон Оукена: связь безработицы и роста экономики",
+    "r004": "куда деваются 5 рублей с чашки кофе",
+    "r005": "почему бензин не дешевеет вместе с нефтью",
+}
 _MATCH_ORDER = ("diesel", "ai95", "ai92", "gold", "deposit", "mortgage", "keyrate", "usd", "eur", "inflation")
 # Порядок кнопок меню.
-MENU = (("diesel", "ai92"), ("inflation", "keyrate"), ("gold", "usd"), ("deposit", "mortgage"))
+# Тестер №9, 09.11: в меню не было евро и АИ-95, хотя бот о них отвечает.
+MENU = (("diesel", "ai92", "ai95"), ("inflation", "keyrate"), ("usd", "eur", "gold"), ("deposit", "mortgage"))
+_EN_TITLES = {"diesel": "Diesel", "ai92": "Petrol AI-92", "ai95": "Petrol AI-95", "inflation": "Inflation",
+              "keyrate": "Key rate", "deposit": "Deposit rates", "mortgage": "Mortgage rate", "gold": "Gold",
+              "usd": "US dollar", "eur": "Euro"}
+
+
+def is_english(text: str) -> bool:
+    """Вопрос на английском — кнопки и подпись к графику тоже английские (тестеры 4, 5, 9, 09.11)."""
+    lat = len(re.findall(r"[A-Za-z]", text))
+    return lat > 3 and lat > 2 * len(re.findall(r"[А-Яа-яЁё]", text))
 
 SOURCES = (("instagram", "Instagram"), ("telegram", "Telegram"), ("search", "Поиск"),
            ("friends", "Знакомые"), ("other", "Другое"))
@@ -111,6 +135,11 @@ def _norm(text: str) -> str:
     return text.lower().replace("ё", "е")
 
 
+# Полные слова тем для опечаток («дизиль», «инфляцыя»): ближайшее по difflib, только для слов от 5 букв.
+_FUZZY = {"дизель": "diesel", "солярка": "diesel", "бензин": "ai92", "инфляция": "inflation", "золото": "gold",
+          "доллар": "usd", "ипотека": "mortgage", "вклады": "deposit", "депозит": "deposit", "ключевая": "keyrate"}
+
+
 def match_topic(text: str) -> tuple[str | None, str | None]:
     """Слово из ролика → (тема, нормализованное слово-код). Пусто, если тему не узнали."""
     t = _norm(text)[:_MAX_TEXT]
@@ -122,6 +151,13 @@ def match_topic(text: str) -> tuple[str | None, str | None]:
         for w in words:
             if w in topic.tokens or any(w.startswith(s) for s in topic.stems):
                 return topic.key, w[:64]
+    if len(words) <= 3:
+        import difflib
+        for w in words:
+            if len(w) >= 5:
+                near = difflib.get_close_matches(w, list(_FUZZY), n=1, cutoff=0.75)
+                if near:
+                    return _FUZZY[near[0]], w[:64]
     return None, None
 
 
@@ -139,6 +175,8 @@ def fmt_date(d: date, freq: str) -> str:
         return f"{_MONTHS_NOM[d.month - 1]} {d.year}"
     if freq in ("annual",):
         return f"{d.year} год"
+    if freq in ("quarterly",):
+        return f"{(d.month - 1) // 3 + 1}-й квартал {d.year}"
     return f"{d.day} {_MONTHS[d.month - 1]} {d.year}"
 
 
@@ -154,6 +192,9 @@ class Figure:
     year_ago_value: float | None
     forecast_date: date | None
     forecast_value: float | None
+    next_release: date | None = None
+    next_release_estimated: bool = False
+    prev_date: date | None = None
 
 
 async def load_figure(db, topic: Topic) -> Figure | None:
@@ -183,10 +224,21 @@ async def load_figure(db, topic: Topic) -> Figure | None:
         .where(Forecast.indicator_id == ind.id, Forecast.is_current.is_(True), ForecastValue.date > last_d)
         .order_by(ForecastValue.date).limit(1)
     )).first()
+    nxt = None
+    rel_code = _RELEASE_CODE.get(topic.key)
+    if rel_code:
+        nxt = (await db.execute(
+            select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
+            .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
+            .where(Indicator.code == rel_code, EconomicEvent.scheduled_date >= _now().date())
+            .order_by(EconomicEvent.scheduled_date).limit(1)
+        )).first()
     return Figure(
         topic=topic, name=ind.name, source=ind.source or "", frequency=ind.frequency or "",
         last_date=last_d, last_value=last_v, prev_value=prev_v, year_ago_value=year_ago,
         forecast_date=fc[0] if fc else None, forecast_value=float(fc[1]) if fc else None,
+        next_release=nxt[0] if nxt else None, next_release_estimated=bool(nxt[1]) if nxt else False,
+        prev_date=rows[1][0] if len(rows) > 1 else None,
     )
 
 
@@ -196,7 +248,7 @@ def _change(now: float, before: float | None, is_rate: bool) -> str | None:
     if is_rate:
         diff = now - before
         sign = "+" if diff > 0 else ""
-        return f"{sign}{fmt_num(diff)} п.п."
+        return f"{sign}{fmt_num(diff)} пункта"
     if before == 0:
         return None
     pct = (now / before - 1) * 100
@@ -206,19 +258,66 @@ def _change(now: float, before: float | None, is_rate: bool) -> str | None:
 
 def site_url(topic: Topic, code: str | None) -> str:
     q = {"utm_source": "telegram", "utm_medium": "bot", "utm_campaign": topic.key}
-    if code:
+    # Тестер №9, 09.11: ?start=nonexistent попадал в utm_content — берём только коды роликов и наши метки.
+    if code and (re.match(r"^r\d{3}(_|$)", code) or code in TOPICS or code in ("inline", "site", "channel")):
         q["utm_content"] = code
-    return f"{settings.public_base_url.rstrip('/')}/russia/indicator/{topic.indicator}?{urlencode(q)}"
+    # Русский хост: apex — английская версия сайта (проверено 08.11.2026 на живом боте).
+    return f"{ru_public_origin()}/russia/indicator/{topic.indicator}?{urlencode(q)}"
 
 
-def figure_text(f: Figure, header: str | None = None) -> str:
+# Сколько дней после даты точки ряд ещё считается свежим (выход данных с задержкой).
+# Календарь сайта (economic_events) привязан к базовым рядам: для темы — код ряда с датами выхода.
+_RELEASE_CODE = {"inflation": "cpi", "deposit": "deposit-rate", "mortgage": "mortgage-rate"}
+# Средние по России: человек спрашивает «в Москве» — честно называем охват.
+_RUSSIA_AVG = ("diesel", "ai92", "ai95", "deposit", "mortgage")
+_FRESH_DAYS = {"daily": 6, "weekly": 12, "monthly": 75, "quarterly": 200}
+_FUEL = ("diesel", "ai92", "ai95")
+_TANK_L = 50
+
+
+def _wallet_line(f: Figure, cpi: "Figure | None") -> str | None:
+    """Одна строка «что это для кошелька» — простая арифметика из тех же рядов (итоги агентов 08.11.2026)."""
+    t = f.topic
+    if t.key in _FUEL:
+        tank = f"Полный бак {_TANK_L} л: ≈{fmt_num(f.last_value * _TANK_L, 0)} ₽"
+        if f.year_ago_value:
+            tank += f", год назад ≈{fmt_num(f.year_ago_value * _TANK_L, 0)} ₽"
+        return tank + "."
+    if t.key == "inflation":
+        return f"Что стоило 100 ₽ год назад, сейчас стоит ≈{fmt_num(100 + f.last_value)} ₽."
+    if cpi is None:
+        return None
+    if t.key == "keyrate":
+        gap = f.last_value - cpi.last_value
+        side = "выше" if gap > 0 else "ниже"
+        return f"Это на {fmt_num(abs(gap))} пункта {side} инфляции ({fmt_num(cpi.last_value)} %)."
+    if t.key == "deposit":
+        gap = f.last_value - cpi.last_value
+        side = "выше" if gap > 0 else "ниже"
+        return f"Это {side} инфляции ({fmt_num(cpi.last_value)} %) на {fmt_num(abs(gap))} пункта; налог на проценты не учтён."
+    if t.key in ("gold", "usd", "eur") and f.year_ago_value:
+        pct = (f.last_value / f.year_ago_value - 1) * 100
+        # Тестеры 09.11: евро за год подешевел, а модель писала «рос медленнее инфляции».
+        if pct < 0:
+            return f"За год подешевело на {fmt_num(-pct, 1)} %, а цены выросли на {fmt_num(cpi.last_value)} %."
+        side = "быстрее" if pct > cpi.last_value else "медленнее"
+        return f"За год подорожало на {fmt_num(pct, 1)} % — {side}, чем росли цены (инфляция {fmt_num(cpi.last_value)} %)."
+    return None
+
+
+def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = None,
+                today: date | None = None, was: tuple[date | None, float | None] | None = None) -> str:
     t = f.topic
     unit = t.unit if t.unit != "%" else "%"
     lines = []
     if header:
         lines.append(header)
-    lines.append(f"<b>{escape(t.title)}</b>")
+    scope = " — в среднем по России" if t.key in _RUSSIA_AVG else ""
+    lines.append(f"<b>{escape(t.title)}</b>{scope}")
     lines.append(f"<b>{fmt_num(f.last_value)} {escape(unit)}</b> — {fmt_date(f.last_date, f.frequency)}")
+    if was and was[1] is not None:
+        when = f" ({fmt_date(was[0], f.frequency)})" if was[0] else ""
+        lines.append(f"Было {fmt_num(was[1])} {escape(unit)}{when}.")
     changes = []
     step = _FREQ_STEP.get(f.frequency)
     ch = _change(f.last_value, f.prev_value, t.is_rate)
@@ -228,11 +327,19 @@ def figure_text(f: Figure, header: str | None = None) -> str:
     if ch_y:
         changes.append(f"За год: {ch_y}")
     if changes:
-        joined = ". ".join(c.rstrip(".") if c.endswith("п.п.") and i < len(changes) - 1 else c
-                           for i, c in enumerate(changes))
-        lines.append(joined if joined.endswith(".") else joined + ".")
+        lines.append(". ".join(changes) + ".")
+    wallet = _wallet_line(f, cpi)
+    if wallet:
+        lines.append(wallet)
     if f.forecast_value is not None and f.forecast_date is not None:
-        lines.append(f"Наш прогноз на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} {escape(unit)}")
+        lines.append(f"Наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} {escape(unit)} "
+                     "(прогноз Forecast Economy)")
+    today = today or _now().date()
+    if not header and (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
+        lines.append("Новее данных пока нет: это последние опубликованные.")
+    if f.next_release and f.next_release >= today:
+        when = f"{f.next_release.day} {_MONTHS[f.next_release.month - 1]}"
+        lines.append(f"Следующие данные: {'ориентировочно ' if f.next_release_estimated else ''}{when}.")
     if f.source:
         lines.append(f"<i>Источник: {escape(f.source)}</i>")
     return "\n".join(lines)
@@ -242,10 +349,39 @@ def figure_text(f: Figure, header: str | None = None) -> str:
 # Клавиатуры и тексты
 # ---------------------------------------------------------------------------
 
+def research_url() -> str:
+    """Куда ведёт «📚 Исследования»: группа с отчётами, а пока её нет — раздел сайта."""
+    return settings.public_bot_group_url or f"{ru_public_origin()}/research"
+
+
+def research_keyboard() -> dict:
+    rows = []
+    if settings.public_bot_group_url:
+        rows.append([{"text": "📚 Группа с отчётами", "url": settings.public_bot_group_url}])
+    rows.append([{"text": "🌐 Все отчёты на сайте", "url": f"{ru_public_origin()}/research"}])
+    rows.append([{"text": "Цифры по темам", "callback_data": f"{CB_PREFIX}menu"}])
+    return {"inline_keyboard": rows}
+
+
 def menu_keyboard() -> dict:
-    return {"inline_keyboard": [
-        [{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in row] for row in MENU
-    ]}
+    rows = [[{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in row] for row in MENU]
+    if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        rows.append([{"text": "📰 Сводка", "callback_data": f"{CB_PREFIX}week"},
+                     {"text": "❓ Что я умею", "callback_data": f"{CB_PREFIX}help"}])
+    rows.append([{"text": "📚 Исследования (PDF)", "url": research_url()}])
+    return {"inline_keyboard": rows}
+
+
+WELCOME_EXAMPLES = ("Почему бензин дорожает?", "Сколько я теряю на инфляции?", "Выгодны ли сейчас вклады?")
+
+
+def welcome_keyboard() -> dict:
+    """Новичку — примеры вопросов (живой путь через модель) и темы карточками."""
+    kb = menu_keyboard()
+    if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        kb["inline_keyboard"] = [[{"text": f"💬 {q}", "callback_data": f"{CB_PREFIX}q:{_question_id(q)}"}]
+                                 for q in WELCOME_EXAMPLES] + kb["inline_keyboard"]
+    return kb
 
 
 def figure_keyboard(topic: Topic, code: str | None, subscribed: bool) -> dict:
@@ -253,9 +389,23 @@ def figure_keyboard(topic: Topic, code: str | None, subscribed: bool) -> dict:
            else {"text": "🔔 Присылать новые данные", "callback_data": f"{CB_PREFIX}s:{topic.key}"})
     return {"inline_keyboard": [
         [sub],
-        [{"text": "📈 График и прогноз на сайте", "url": site_url(topic, code)}],
+        ([{"text": "📊 График сюда", "callback_data": f"{CB_PREFIX}g:{topic.key}"},
+          {"text": "📈 На сайте", "url": site_url(topic, code)}] if topic.key in CHART_TOPICS
+         else [{"text": "📈 График и прогноз на сайте", "url": site_url(topic, code)}]),
+        ([{"text": "💬 Почему так?", "callback_data": f"{CB_PREFIX}w:{topic.key}"}]
+         if settings.public_bot_llm_enabled and settings.openrouter_api_key else []),
         [{"text": "Другие цифры", "callback_data": f"{CB_PREFIX}menu"}],
     ]}
+
+
+def notify_keyboard(topic: Topic) -> dict:
+    """Под рассылкой: спросить модель «что это значит» (если она включена), график, отписка."""
+    kb = figure_keyboard(topic, None, True)
+    if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        q = f"Что значат свежие данные: {topic.title.lower()}?"
+        kb["inline_keyboard"].insert(0, [{"text": "💬 Что это значит для меня?",
+                                          "callback_data": f"{CB_PREFIX}q:{_question_id(q)}"}])
+    return kb
 
 
 def sources_keyboard() -> dict:
@@ -266,19 +416,59 @@ def sources_keyboard() -> dict:
 
 
 def welcome_text() -> str:
-    privacy = f"{settings.public_base_url.rstrip('/')}/privacy"
     return (
-        "Привет! Я бот <b>Forecast Economy</b>.\n"
-        "Присылаю свежие цифры экономики России из официальных источников и наш прогноз — "
-        "и напоминаю, когда выходят новые данные.\n\n"
-        "Напишите слово, например <b>ДИЗЕЛЬ</b>, <b>ИНФЛЯЦИЯ</b> или <b>ЗОЛОТО</b>, или выберите ниже.\n\n"
-        f"<i>Храню только номер этого чата, чтобы отвечать. /stop — удалить всё. "
-        f"<a href=\"{privacy}\">Политика конфиденциальности</a></i>"
+        "Привет! Я <b>Forecast Economy</b> 👋\n"
+        "Спрашивайте своими словами — про бензин, цены, ставки, вклады, курс. "
+        "Отвечу по свежим официальным цифрам и объясню, что они значат для кошелька.\n\n"
+        "Кнопки ниже — быстрые карточки с графиком и подпиской на новые данные.\n\n"
+        + privacy_line()
     )
 
 
-UNKNOWN_TEXT = "Не узнал слово. Выберите тему кнопкой или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>."
+def privacy_line() -> str:
+    privacy = f"{ru_public_origin()}/privacy"
+    return (f"<i>Сохраняю переписку и имя профиля Telegram, чтобы отвечать и улучшать ответы. Вопросы своими словами "
+            f"передаю ИИ-модели — не пишите в них личные данные. /stop — удалить всё. "
+            f"<a href=\"{privacy}\">Политика конфиденциальности</a></i>")
+
+
+UNKNOWN_TEXT = ("Такой цифры у меня нет: беру только официальные данные. "
+                "Ближе всего — темы ниже, или напишите, например, <b>ДИЗЕЛЬ</b> или <b>ИНФЛЯЦИЯ</b>.")
+LIMIT_TEXT = ("На сегодня мои ответы закончились — продолжим завтра 🙂 "
+              "Карточки тем, графики и подписки кнопками ниже работают без ограничений.")
+LLM_FAIL_TEXT = "Не успел ответить — слишком много вопросов сразу. Напишите ещё раз через минуту или выберите тему ниже."
 SOURCE_QUESTION = "Один вопрос: откуда вы о нас узнали?"
+WELCOME_BACK = "С возвращением! Спрашивайте своими словами или выберите тему."
+SHORT_INTRO = ("Это <b>Forecast Economy</b>: свежие официальные цифры экономики России. "
+               "Спрашивайте своими словами — отвечу и объясню.")
+GREETING_TEXT = "Здравствуйте! Выберите тему кнопкой, напишите слово, например <b>БЕНЗИН</b>, или спросите своими словами."
+THANKS_TEXT = "Пожалуйста! Если нужно ещё — выберите тему или спросите своими словами."
+_GREETINGS = {"привет", "здравствуйте", "здравствуй", "добрый день", "добрый вечер", "доброе утро", "hi", "hello",
+              "хай", "салют", "ку", "приветствую"}
+_THANKS = {"спасибо", "спс", "благодарю", "спасибо большое", "thanks", "thx", "ок", "окей", "ok", "понятно", "ясно"}
+GROUP_TEXT = ("Привет! Я отвечаю в личных сообщениях: t.me/ForecastEconomyBot 🙂\n"
+              "А здесь можно делиться карточками: наберите <code>@ForecastEconomyBot дизель</code>.")
+WELCOME_EN = ("Hi! I'm <b>Forecast Economy</b> 👋\nAsk in your own words about Russia's economy — fuel, prices, "
+              "rates, deposits, the rouble. I answer with fresh official numbers.\n\n")
+HELP_TEXT = ("<b>Что я умею</b>\n"
+             "💬 Отвечаю на вопросы своими словами — про цены, бензин, ставки, вклады, ипотеку, курсы.\n"
+             "📊 Присылаю график любой темы — просто попросите.\n"
+             "📬 Скажите, что прислать, — пришлю: «присылай инфляцию», «напиши, когда изменится ставка». "
+             "Список — /subs.\n"
+             "📰 /week — короткая сводка: что изменилось и что это значит.\n"
+             "📚 /research — исследования команды в PDF: ролик, цифры, графики, выводы.\n"
+             "↗️ В любом чате наберите <code>@ForecastEconomyBot дизель</code> — и отправьте карточку другу.\n"
+             "🌱 А ещё я самоулучшаюсь: расскажите, чего не хватает, — передам команде, и это появится.\n"
+             "🗑 /stop — удалить мои данные.")
+RESEARCH_TEXT = ("📚 <b>Исследования Forecast Economy</b>\n"
+                 "Берём простой вопрос о деньгах и проверяем его на официальных данных. К каждому исследованию — "
+                 "короткий ролик и PDF-отчёт: главное в цифрах, графики, методика, источники и выводы.")
+MENU_TEXT = "Темы — или просто спросите своими словами:"
+WEEK_TOPIC = "week"  # подписка на пятничную сводку (не тема-ряд)
+WEEK_PROMPT = ("Сводка недели. Первая строка — один главный вывод. Дальше 3–5 коротких пунктов: последние цифры "
+               "(бензин, цены, ставка, вклады, курсы) с их датой и что это значит для кошелька. "
+               "Без оценок вроде «жить можно» и без прогноза дат. Главный вывод — только то, что прямо следует из этих цифр; "
+               "не сравнивай бензин с «официальной статистикой» и не выдумывай связей между пунктами.")
 STOP_TEXT = "Готово: удалил подписки и номер этого чата. Чтобы вернуться, нажмите /start."
 
 
@@ -322,7 +512,15 @@ async def _is_subscribed(db, chat_id: str, topic: str) -> bool:
 
 async def _send(chat_id: str, text: str, kb: dict | None = None, kind: str = KIND_REPLY) -> bool:
     from app.services.telegram_bot import send_message  # локальный импорт против цикла
-    return await send_message(chat_id, text, reply_markup=kb, kind=kind)
+    await _flush_questions()
+    # Без превью ссылок: иначе под приветствием встаёт большая карточка страницы политики.
+    return await send_message(chat_id, text, reply_markup=kb, kind=kind, link_preview=False,
+                              token=bot_token())
+
+
+def bot_token() -> str:
+    """Токен публичного бота: свой (@ForecastEconomyBot) или служебный в общей схеме."""
+    return settings.public_bot_token or settings.telegram_bot_token
 
 
 async def _reply_figure(chat_id: str, topic_key: str) -> None:
@@ -330,8 +528,12 @@ async def _reply_figure(chat_id: str, topic_key: str) -> None:
     async with async_session() as db:
         chat = await _touch_chat(db, chat_id)
         fig = await load_figure(db, topic)
+        cpi = await load_figure(db, TOPICS["inflation"]) if topic_key != "inflation" else None
         subscribed = await _is_subscribed(db, chat_id, topic_key)
-        ask_source = chat.heard_from is None and chat.asked_source_at is None
+        # Пришёл по коду ролика — источник известен, не спрашиваем (итоги агентов 08.11.2026).
+        # Не на первой же карточке: спрашиваем, когда человек уже пользуется ботом дольше 10 минут.
+        ask_source = (chat.heard_from is None and chat.asked_source_at is None and not chat.first_code
+                      and _now() - chat.first_seen_at >= timedelta(minutes=10))
         if ask_source:
             chat.asked_source_at = _now()
         code = chat.first_code
@@ -339,7 +541,7 @@ async def _reply_figure(chat_id: str, topic_key: str) -> None:
     if fig is None:
         await _send(chat_id, f"По теме «{escape(topic.title)}» сейчас нет данных. Выберите другую:", menu_keyboard())
         return
-    await _send(chat_id, figure_text(fig), figure_keyboard(topic, code, subscribed))
+    await _send(chat_id, figure_text(fig, cpi=cpi), figure_keyboard(topic, code, subscribed))
     if ask_source:
         await _send(chat_id, SOURCE_QUESTION, sources_keyboard())
 
@@ -349,33 +551,132 @@ async def handle_message(msg: dict) -> None:
     if chat.get("type") != "private":
         return
     chat_id = str(chat.get("id", ""))
-    text = (msg.get("text") or "").strip()
-    if not chat_id or not text:
+    text = (msg.get("text") or msg.get("caption") or "").strip()
+    if not chat_id:
+        return
+    if not text:
+        # Голосовое, фото, стикер без подписи: раньше бот молчал (проход 08.11.2026).
+        # Тестеры 09.11: на каждый стикер — меню из 10 кнопок и «картинки не разбираю».
+        short = {"inline_keyboard": [[{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}]]}
+        if any(k in msg for k in ("voice", "audio", "video_note")):
+            await _send(chat_id, "Голосовые пока не слушаю — напишите, пожалуйста, текстом 🙂", short)
+        elif "sticker" in msg or "animation" in msg:
+            await _send(chat_id, "😊 Спросите что-нибудь — например, «что с бензином?»", short)
+        elif any(k in msg for k in ("photo", "document", "video")):
+            await _send(chat_id, "Картинки и файлы пока не разбираю. Напишите вопрос текстом — отвечу по цифрам.", short)
+        return
+    if not re.search(r"[\w/]", text) and len(text) <= 8 and msg.get("message_id"):
+        # Тестер №4, 09.11: «👍» тратил вопрос из дневного лимита модели. Отвечаем реакцией.
+        from app.services.telegram_bot import _api
+        await _api("setMessageReaction", {"chat_id": chat_id, "message_id": msg["message_id"],
+                                          "reaction": [{"type": "emoji", "emoji": "🤝"}]}, token=bot_token(), timeout=6)
         return
     low = _norm(text)
     if low.startswith("/start"):
         code, topic = parse_start(text)
         async with async_session() as db:
+            returning = await db.get(PublicBotChat, chat_id) is not None
             await _touch_chat(db, chat_id, code)
             _event(db, chat_id, "start", code=code, topic=topic)
+            subs = (await db.execute(select(PublicBotSubscription.topic).where(
+                PublicBotSubscription.chat_id == chat_id))).scalars().all()
             await db.commit()
-        await _send(chat_id, welcome_text(), menu_keyboard())
-        if topic:
+        reel = REELS.get((code or "").split("_")[0].lower())
+        if reel and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+            # Из ролика: короткое знакомство без кнопок, затем ответ модели — его кнопки-вопросы остаются внизу
+            # (09.11: меню из 10 кнопок после ответа прятало их).
+            if not returning:
+                await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line())
+            await answer_question(chat_id, f"Я пришёл из вашего ролика «{reel}». Поздоровайся и коротко, живо "
+                                           "объясни тему на наших цифрах.", hint_topic=topic)
+        elif (code or "").lower().startswith("research"):
+            # По ссылке «исследования» (`?start=research…`): отчёты и путь к группе, потом строка о боте.
+            await _send(chat_id, RESEARCH_TEXT, research_keyboard())
+            if not returning:
+                await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line(), menu_keyboard())
+        elif topic:
+            # По ссылке из ролика: короткая строка о боте, затем цифра с её кнопками внизу.
+            if not returning:
+                await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line())
             await _reply_figure(chat_id, topic)
+        elif returning:
+            names = ", ".join(TOPICS[s].title for s in subs if s in TOPICS)
+            extra = f"\nПрисылаю новые данные: {escape(names)}." if names else ""
+            await _send(chat_id, WELCOME_BACK + extra, menu_keyboard())
+        elif str((msg.get("from") or {}).get("language_code", "")).startswith("en"):
+            await _send(chat_id, WELCOME_EN + privacy_line(), welcome_keyboard())
+        else:
+            await _send(chat_id, welcome_text(), welcome_keyboard())
         return
     if low in ("/stop", "стоп"):
+        async with async_session() as db:
+            known = await db.get(PublicBotChat, chat_id) is not None
         await forget_chat(chat_id)
-        await _send(chat_id, STOP_TEXT)
+        # Тестер №2, 09.11: повторный /stop снова писал «удалил».
+        await _send(chat_id, STOP_TEXT if known else "Ваших данных у меня уже нет. Чтобы вернуться, нажмите /start.")
         return
-    if low in ("/menu", "/help", "меню"):
-        await _send(chat_id, "Выберите тему:", menu_keyboard())
+    if low in ("/help", "помощь"):
+        await _send(chat_id, HELP_TEXT, menu_keyboard())
+        return
+    if low in ("/privacy", "/конфиденциальность", "конфиденциальность"):
+        # Тестер №3, круг 2: модель на /privacy уверяла «ничего не храню» — храним номер чата и подписки.
+        await _send(chat_id, privacy_line(), menu_keyboard())
+        return
+    if low in ("/research", "/исследования", "исследования", "отчёты", "отчеты"):
+        await _send(chat_id, RESEARCH_TEXT, research_keyboard())
+        return
+    if low in ("/menu", "меню"):
+        await _send(chat_id, MENU_TEXT, menu_keyboard())
+        return
+    if low in ("/subs", "/подписки", "подписки"):
+        async with async_session() as db:
+            subs = (await db.execute(select(PublicBotSubscription.topic).where(
+                PublicBotSubscription.chat_id == chat_id))).scalars().all()
+        keys = [k for k in subs if k in TOPICS or k == WEEK_TOPIC]
+        if not keys:
+            await _send(chat_id, "Подписок пока нет. Под любой цифрой есть кнопка «🔔 Присылать новые данные».",
+                        menu_keyboard())
+        else:
+            names = ", ".join(TOPICS[k].title if k in TOPICS else "сводка по пятницам" for k in keys)
+            await _send(chat_id, f"Присылаю: {names}.\nОтключить — кнопкой ниже или словами «не присылай …».", {"inline_keyboard": [
+                [{"text": f"🔕 {TOPICS[k].title if k in TOPICS else 'Сводка по пятницам'}",
+                  "callback_data": f"{CB_PREFIX}u:{k}"}] for k in keys
+            ] + [[{"text": "Все темы", "callback_data": f"{CB_PREFIX}menu"}]]})
+        return
+    if low in ("/week", "/сводка", "сводка") and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            _event(db, chat_id, "week")
+            subscribed = await _is_subscribed(db, chat_id, WEEK_TOPIC)
+            await db.commit()
+        await answer_question(chat_id, WEEK_PROMPT)
+        if not subscribed:
+            await _send(chat_id, "Хотите получать такую сводку каждую пятницу утром?", {"inline_keyboard": [
+                [{"text": "🔔 Да, по пятницам", "callback_data": f"{CB_PREFIX}s:{WEEK_TOPIC}"}]]})
         return
     topic, word = match_topic(text)
+    # Кодом входа считаем только короткое слово из ролика (1–2 слова), а не слово внутри обычного вопроса:
+    # в отчёте было «С какого кода пришли: ипотеку» из «стоит ли брать ипотеку?».
+    keyword = word if topic and len(text.split()) <= 2 else None
     async with async_session() as db:
-        await _touch_chat(db, chat_id, word if topic else None)
-        _event(db, chat_id, "word" if topic else "unknown", code=word, topic=topic)
+        await _touch_chat(db, chat_id, keyword)
+        _event(db, chat_id, "word" if keyword else "unknown", code=keyword, topic=topic)
         await db.commit()
-    if topic:
+    if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        # Модель главная (решение владельца 08.11.2026): любой текст, кроме команд, отвечает она.
+        quoted = ((msg.get("reply_to_message") or {}).get("text") or "").strip()
+        if quoted:
+            # Ответ на конкретное сообщение бота: модель видит, о чём речь.
+            text = f"(в ответ на сообщение: «{quoted[:400]}»)\n{text}"
+        await answer_question(chat_id, text, hint_topic=topic, msg_id=msg.get("message_id"))
+        return
+    # Без модели — прежние скрипты: приветствие, тема по слову, подсказка.
+    bare = re.sub(r"[!.,?)( 🙂😊👋]+$", "", low).strip()
+    if not re.search(r"[a-zа-я0-9]", low):
+        bare = "спасибо"
+    if bare in _GREETINGS or bare in _THANKS:
+        await _send(chat_id, GREETING_TEXT if bare in _GREETINGS else THANKS_TEXT, menu_keyboard())
+    elif topic:
         await _reply_figure(chat_id, topic)
     else:
         await _send(chat_id, UNKNOWN_TEXT, menu_keyboard())
@@ -387,24 +688,79 @@ async def handle_callback(cq: dict) -> None:
     msg = cq.get("message") or {}
     chat_id = str((msg.get("chat") or {}).get("id", ""))
     data = cq.get("data") or ""
-    await _api("answerCallbackQuery", {"callback_query_id": cq.get("id")})
+    data0 = cq.get("data") or ""
+    toast = {"s": "🔔 Подписка включена", "u": "🔕 Подписка выключена", "g": "📊 Рисую график…",
+             "q": "💬 Думаю…"}.get(data0[len(CB_PREFIX):].partition(":")[0]) if data0.startswith(CB_PREFIX) else None
+    await _api("answerCallbackQuery", {"callback_query_id": cq.get("id"), **({"text": toast} if toast else {})},
+               token=bot_token())
     if not chat_id or not data.startswith(CB_PREFIX):
         return
     action, _, arg = data[len(CB_PREFIX):].partition(":")
+    if action == "week":
+        await handle_message({"chat": {"id": int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id,
+                                       "type": "private"}, "text": "/week"})
+        return
+    if action == "help":
+        await _send(chat_id, HELP_TEXT, menu_keyboard())
+        return
+    if action == "g" and arg in TOPICS:
+        if not await send_chart(chat_id, arg):
+            await _send(chat_id, "Не получилось прислать график — откройте его на сайте.",
+                        {"inline_keyboard": [[{"text": "📈 На сайте", "url": site_url(TOPICS[arg], None)}]]})
+        return
+    if action == "w" and arg in TOPICS:
+        # «Почему так?» под карточкой: тема в самой кнопке, память не нужна.
+        if settings.public_bot_llm_enabled and settings.openrouter_api_key:
+            await answer_question(chat_id, f"Почему так меняется: {TOPICS[arg].title.lower()}? Объясни простыми словами.",
+                                  hint_topic=arg)
+        return
+    if action == "q":
+        q = await _lookup_question(arg)
+        if q and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+            await _send(chat_id, f"<i>{escape(q)}</i>")
+            await answer_question(chat_id, q)
+        else:
+            await _send(chat_id, "Этот вопрос устарел — спросите своими словами 🙂", menu_keyboard())
+        return
     if action == "menu":
-        await _send(chat_id, "Выберите тему:", menu_keyboard())
+        await _send(chat_id, MENU_TEXT, menu_keyboard())
     elif action == "t" and arg in TOPICS:
         async with async_session() as db:
             await _touch_chat(db, chat_id)
             _event(db, chat_id, "topic", topic=arg)
             await db.commit()
         await _reply_figure(chat_id, arg)
+    elif action == "s" and arg == WEEK_TOPIC:
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            if not await _is_subscribed(db, chat_id, WEEK_TOPIC):
+                # last_sent_at пусто: первая сводка — в ближайшую пятницу.
+                db.add(PublicBotSubscription(chat_id=chat_id, topic=WEEK_TOPIC, created_at=_now(), last_sent_at=None))
+            _event(db, chat_id, "subscribe", topic=WEEK_TOPIC)
+            await db.commit()
+        await _send(chat_id, "🔔 Договорились: сводка — по пятницам утром. Отключить — /subs.")
+    elif action == "u" and arg == WEEK_TOPIC:
+        await unsubscribe(chat_id, WEEK_TOPIC)
+        await _send(chat_id, "🔕 Пятничную сводку больше не присылаю.")
     elif action == "s" and arg in TOPICS:
+        async with async_session() as db:
+            already = await _is_subscribed(db, chat_id, arg)
+        if already:
+            # Тестеры №7 и №9, 09.11: повторное нажатие давало тот же ответ, без «уже».
+            await _send(chat_id, f"Уже присылаю: <b>{escape(TOPICS[arg].title)}</b>. Все подписки — /subs.")
+            return
         await subscribe(chat_id, arg)
-        await _send(chat_id, f"🔔 Пришлю, когда выйдут новые данные: <b>{escape(TOPICS[arg].title)}</b>. "
-                             "Отключить — кнопкой под цифрой или /stop.")
+        await _toggle_card_keyboard(msg, chat_id, arg, subscribed=True)
+        async with async_session() as db:
+            fig = await load_figure(db, TOPICS[arg])
+        nxt = (f" Следующие ожидаются {fig.next_release.day} {_MONTHS[fig.next_release.month - 1]}."
+               if fig and fig.next_release else "")
+        when = {"weekly": "раз в неделю", "on_change": "когда изменится"}.get(TOPICS[arg].notify, "когда выйдут новые данные")
+        await _send(chat_id, f"🔔 Пришлю {when}, днём: <b>{escape(TOPICS[arg].title)}</b>.{nxt} "
+                             "Все подписки — /subs.")
     elif action == "u" and arg in TOPICS:
         await unsubscribe(chat_id, arg)
+        await _toggle_card_keyboard(msg, chat_id, arg, subscribed=False)
         await _send(chat_id, f"🔕 Больше не присылаю: {escape(TOPICS[arg].title)}.")
     elif action == "src" and arg in dict(SOURCES):
         async with async_session() as db:
@@ -415,18 +771,49 @@ async def handle_callback(cq: dict) -> None:
         await _send(chat_id, "Спасибо!")
 
 
+async def _toggle_card_keyboard(msg: dict, chat_id: str, topic_key: str, subscribed: bool) -> None:
+    """После подписки кнопка под карточкой меняется на «Не присылать» и наоборот (живой прогон 08.11:
+    после подписки под цифрой оставалось «Присылать»). Только у карточек темы, у ответа модели — нет."""
+    from app.services.telegram_bot import _api
+
+    rows = ((msg.get("reply_markup") or {}).get("inline_keyboard")) or []
+    datas = [b.get("callback_data", "") for row in rows for b in row]
+    if not any(d in (f"{CB_PREFIX}s:{topic_key}", f"{CB_PREFIX}u:{topic_key}") for d in datas):
+        return
+    is_card = any(d == f"{CB_PREFIX}menu" for d in datas) and any(b.get("url") for row in rows for b in row)
+    if not is_card or not msg.get("message_id"):
+        return
+    await _api("editMessageReplyMarkup", {
+        "chat_id": chat_id, "message_id": msg["message_id"],
+        "reply_markup": figure_keyboard(TOPICS[topic_key], None, subscribed),
+    }, token=bot_token(), timeout=10)
+
+
 async def handle_member_update(upd: dict) -> None:
     """my_chat_member: человек остановил (заблокировал) бота или вернулся."""
     chat = upd.get("chat") or {}
+    status = ((upd.get("new_chat_member") or {}).get("status")) or ""
+    if chat.get("type") in ("group", "supergroup") and status in ("member", "administrator"):
+        # Добавили в группу: вежливо зовём в личку (в группах бот не отвечает).
+        await _send(str(chat.get("id", "")), GROUP_TEXT)
+        return
     if chat.get("type") != "private":
         return
     chat_id = str(chat.get("id", ""))
-    status = ((upd.get("new_chat_member") or {}).get("status")) or ""
     if status == "kicked":
         await mark_blocked(chat_id)
 
 
 async def subscribe(chat_id: str, topic_key: str) -> None:
+    if topic_key == WEEK_TOPIC:
+        # Пятничная сводка: last_sent_at=None, чтобы первая ушла в ближайшую пятницу.
+        async with async_session() as db:
+            await _touch_chat(db, chat_id)
+            if not await _is_subscribed(db, chat_id, WEEK_TOPIC):
+                db.add(PublicBotSubscription(chat_id=chat_id, topic=WEEK_TOPIC, created_at=_now(), last_sent_at=None))
+                _event(db, chat_id, "subscribe", topic=WEEK_TOPIC)
+            await db.commit()
+        return
     topic = TOPICS[topic_key]
     async with async_session() as db:
         await _touch_chat(db, chat_id)
@@ -463,7 +850,11 @@ async def mark_blocked(chat_id: str) -> None:
 
 
 async def forget_chat(chat_id: str) -> None:
-    """/stop: удалить номер чата, подписки и архив публичных ответов этому чату."""
+    """/stop: удалить номер чата, подписки, архив публичных ответов этому чату, журнал переписки и память разговора."""
+    from app.services import public_bot_dialog
+
+    forget_history(chat_id)
+    await public_bot_dialog.forget(chat_id)
     async with async_session() as db:
         _event(db, chat_id, "stop")
         await db.execute(delete(PublicBotSubscription).where(PublicBotSubscription.chat_id == chat_id))
@@ -477,6 +868,36 @@ async def forget_chat(chat_id: str) -> None:
 # ---------------------------------------------------------------------------
 # Рассылка новых данных
 # ---------------------------------------------------------------------------
+
+async def _send_week_digest(now: datetime) -> int:
+    """Пятница, с 10:00 МСК: одна сводка модели на всех подписчиков (кому не слали 6 дней)."""
+    async with async_session() as db:
+        due = (await db.execute(
+            select(PublicBotSubscription).join(PublicBotChat, PublicBotChat.chat_id == PublicBotSubscription.chat_id)
+            .where(PublicBotSubscription.topic == WEEK_TOPIC, PublicBotChat.blocked_at.is_(None))
+        )).scalars().all()
+        due = [d for d in due if d.last_sent_at is None or now - d.last_sent_at >= timedelta(days=6)]
+        if not due:
+            return 0
+        context = await build_llm_context(db)
+    answer = await _llm_complete(context, WEEK_PROMPT)
+    if not answer:
+        return 0
+    clean, topics, _subs, _q, _c = split_actions(answer)
+    sent = 0
+    async with async_session() as db:
+        for d in due:
+            ok = await _send(d.chat_id, "📰 <b>Сводка недели</b>\n\n" + telegram_html(clean),
+                             answer_keyboard(topics, []), kind=KIND_NOTIFY)
+            if ok:
+                row = await db.get(PublicBotSubscription, d.id)
+                row.last_sent_at = now
+                _event(db, d.chat_id, "notify", topic=WEEK_TOPIC)
+                sent += 1
+            await asyncio.sleep(0.05)
+        await db.commit()
+    return sent
+
 
 def _in_window(now_msk: datetime) -> bool:
     return settings.public_bot_notify_from_hour <= now_msk.hour < settings.public_bot_notify_to_hour
@@ -502,16 +923,21 @@ async def public_bot_notify_job(now: datetime | None = None) -> dict:
         return stats
     if not _in_window(now.replace(tzinfo=timezone.utc).astimezone(_MSK)):
         return stats
+    msk = now.replace(tzinfo=timezone.utc).astimezone(_MSK)
+    if msk.weekday() == 4 and msk.hour >= 10 and settings.public_bot_llm_enabled and settings.openrouter_api_key:
+        stats["week"] = await _send_week_digest(now)
     async with async_session() as db:
         subs = (await db.execute(
             select(PublicBotSubscription).join(PublicBotChat, PublicBotChat.chat_id == PublicBotSubscription.chat_id)
             .where(PublicBotChat.blocked_at.is_(None))
         )).scalars().all()
         figures: dict[str, Figure | None] = {}
-        for key in {s.topic for s in subs}:
+        for key in {s.topic for s in subs} | {"inflation"}:
             if key in TOPICS:
                 figures[key] = await load_figure(db, TOPICS[key])
         for sub in subs:
+            if sub.topic == WEEK_TOPIC:
+                continue
             topic = TOPICS.get(sub.topic)
             fig = figures.get(sub.topic)
             if topic is None or fig is None:
@@ -525,8 +951,12 @@ async def public_bot_notify_job(now: datetime | None = None) -> dict:
                 stats["skipped"] += 1
                 continue
             telegram_bot._last_api_error.set(None)
-            ok = await _send(sub.chat_id, figure_text(fig, header="🔔 <b>Новые данные</b>"),
-                             figure_keyboard(topic, None, True), kind=KIND_NOTIFY)
+            if sub.topic in CHART_TOPICS and TOPICS[sub.topic].indicator and fig.frequency != "daily":
+                await send_chart(sub.chat_id, sub.topic)
+            ok = await _send(sub.chat_id, figure_text(
+                fig, header="🔔 <b>Новые данные</b>", cpi=figures.get("inflation"),
+                was=(sub.last_point_date, float(sub.last_value) if sub.last_value is not None else None)),
+                             notify_keyboard(topic), kind=KIND_NOTIFY)
             if ok:
                 sub.last_point_date, sub.last_value, sub.last_sent_at = fig.last_date, fig.last_value, now
                 _event(db, sub.chat_id, "notify", topic=sub.topic)
@@ -571,6 +1001,22 @@ async def report_text(days: int = 7) -> str:
         subs = (await db.execute(
             select(PublicBotSubscription.topic, func.count()).group_by(PublicBotSubscription.topic).order_by(func.count().desc())
         )).all()
+        usage = dict((await db.execute(
+            select(PublicBotEvent.kind, func.count())
+            .where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind.in_(("ask", "week", "inline", "notify")))
+            .group_by(PublicBotEvent.kind)
+        )).all())
+        lat = [float(c) for (c,) in (await db.execute(
+            select(PublicBotEvent.code).where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "llm_time")
+        )).all() if c]
+        costs = [c.split("|") for (c,) in (await db.execute(
+            select(PublicBotEvent.code).where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "llm_cost")
+        )).all() if c and c.count("|") == 2]
+        ideas = (await db.execute(
+            select(PublicBotEvent.code, func.count())
+            .where(PublicBotEvent.occurred_at >= since, PublicBotEvent.kind == "idea")
+            .group_by(PublicBotEvent.code).order_by(func.count().desc()).limit(10)
+        )).all()
         heard = (await db.execute(
             select(PublicBotChat.heard_from, func.count())
             .where(PublicBotChat.heard_from.is_not(None)).group_by(PublicBotChat.heard_from).order_by(func.count().desc())
@@ -597,5 +1043,1019 @@ async def report_text(days: int = 7) -> str:
         f"С какого кода пришли: {_line(codes)}\n"
         f"Что спрашивали: {_line(topics, titles)}\n"
         f"Подписки сейчас: {_line(subs, titles)}\n"
-        f"Откуда узнали: {_line(heard, dict(SOURCES))}"
+        f"Откуда узнали: {_line(heard, dict(SOURCES))}\n"
+        f"Ответов модели: {usage.get('ask', 0)} (из них /week {usage.get('week', 0)}), "
+        f"карточек во встроенном режиме: {usage.get('inline', 0)}, рассылок: {usage.get('notify', 0)}"
+        + (f"\nИдеи людей: {_line(ideas)}" if ideas else "")
+        + (f"\nВремя ответа модели: в среднем {fmt_num(sum(lat) / len(lat), 1)} с, медленнее всего {fmt_num(max(lat), 1)} с"
+           if lat else "")
+        + (f"\nЦена ответа: в среднем ${sum(float(c[0]) for c in costs) / len(costs):.4f}, "
+           f"всего ${sum(float(c[0]) for c in costs):.2f} за {len(costs)}; шагов модели в среднем "
+           f"{fmt_num(sum(int(c[1]) for c in costs) / len(costs), 1)}; вход из кэша {sum(int(c[2]) for c in costs) // len(costs)} %"
+           if costs else "")
     )
+
+
+# ---------------------------------------------------------------------------
+# Ответы ИИ-модели (OpenRouter) по данным сайта — решение владельца 08.11.2026
+# ---------------------------------------------------------------------------
+
+_OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+_MAX_QUESTION = 500
+# Ряды сверх тем бота, чтобы модель отвечала про ролики (Энгель, Оукен, кофе) и смежные вопросы.
+_EXTRA_CODES = (
+    ("cpi-food-yoy", "Цены на продукты, % за год"),
+    ("cpi-nonfood-yoy", "Цены на непродовольственные товары, % за год"),
+    ("cpi-services-yoy", "Цены на услуги, % за год"),
+    ("unemployment", "Безработица, %"),
+    ("wages-nominal", "Средняя начисленная зарплата, ₽ в месяц"),
+    ("brent", "Нефть Brent, $ за баррель"),
+    ("imoex", "Индекс Мосбиржи"),
+    ("ruonia", "Ставка RUONIA, %"),
+    # Живой прогон 08.11: «какой курс юаня» — «нет в данных», хотя ряд на сайте есть.
+    ("gdp-real-yoy", "Реальный ВВП, % к прошлому году"),
+    ("cny-rub", "Юань, ₽"),
+    ("btc-usd", "Биткоин, $"),
+    # Тестер №3, круг 2: «курс тенге» и «лиры» — бот отвечал «нет в данных», а ряды на сайте есть.
+    ("kzt-rub", "Тенге, ₽ за 100 тенге"),
+    ("try-rub", "Турецкая лира, ₽ за 1 лиру"),
+)
+
+# Итоги по годам для вопросов «какой был курс/ставка в 2014»: ряды на конец года, с 2005.
+_YEAR_END_CODES = (
+    ("usd-rub-eop-year", "Доллар на конец года, ₽"),
+    ("eur-rub-eop-year", "Евро на конец года, ₽"),
+    ("key-rate-eop-year", "Ключевая ставка на конец года, %"),
+    ("gold-price-eop-year", "Золото на конец года, ₽ за грамм"),
+    ("brent-eop-year", "Нефть Brent на конец года, $ за баррель"),
+)
+
+# Тестер №5, 09.11: «юань курс» — модель приложила график доллара. Ряды без своего графика не подменяем соседним.
+_NO_CHART_ROWS = re.compile(r"юан|yuan|cny|renminbi|биткоин|bitcoin|btc|тенге|лир[аыу]|сереб|платин|brent|брент|нефт", re.I)
+_CHART_FOR_ROW = {"usd": re.compile(r"доллар|usd|\$|dollar", re.I), "eur": re.compile(r"евро|eur", re.I),
+                  "gold": re.compile(r"золот|gold", re.I)}
+
+
+def chart_mismatch(text: str, key: str) -> bool:
+    """Вопрос про ряд без графика (юань, биткоин…) и не про ключ графика — картинку соседа не шлём."""
+    pat = _CHART_FOR_ROW.get(key)
+    return bool(pat and _NO_CHART_ROWS.search(text) and not pat.search(text))
+
+
+LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседник в Telegram, который разбирается в экономике России и умеет объяснять её по-человечески: просто, с теплом и уместным юмором, без канцелярита и воды. Подстраивайся под тон человека: по умолчанию на «вы», на «ты» — только если он сам так пишет. Можешь задать встречный вопрос, если он поможет.
+
+Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда или из ответов инструментов и называй месяц цифры.
+
+Инструменты — наша база целиком: 1000+ рядов России, 495 показателей по 96 регионам (зарплаты, цены на топливо по месяцам, население…), ряды 55 стран, календарь выхода данных. Если нужного нет в ДАННЫХ (регион, страна, другой ряд, история за годы, рейтинг регионов) — сначала find_series, потом get_series или rank_regions; «нет данных» говори, только если поиск не нашёл. Любую арифметику, кроме совсем простой, — через calculate. Обычно хватает 1–3 вызовов; на простой вопрос по ДАННЫМ отвечай сразу. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
+
+О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: сохраняю переписку (вопросы и ответы), имя профиля Telegram, номер чата и подписки; /stop удаляет всё; подробности — /privacy. Перед «выше/ниже/подорожало» сравни два числа и проверь знак; разные ряды одним словом не обобщай (доллар вырос, евро упал — так и скажи).
+
+Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
+
+Оформление — HTML Telegram, умеренно: <b>, <i>, <u>, <s>, <code>, <blockquote>, <blockquote expandable> для подробностей, <tg-spoiler>, <a href="...">. Без Markdown, без таблиц и заголовков, без сокращений вроде «п.п.» (пиши «пункта»). Обычно 1–3 коротких абзаца, до 500 знаков; длиннее — только если просят. Эмодзи — по вкусу, не в каждой строке. Отвечай на языке собеседника — то есть последнего сообщения человека (написал по-английски — по-английски, даже если раньше шла речь по-русски). В играх и загадках сверяй каждую подсказку арифметикой и не пиши «ровно», если не ровно.
+
+Вкус: пиши как умный знакомый в переписке, а не как буклет. Без дежурных фраз («Отличный вопрос», «Привет! Я…») и без перечня всего подряд: одна главная цифра лучше пяти. Ссылки — словами и только на наш сайт: адреса из ДАННЫХ, из ответов инструментов или из списка ниже, своих не строй; источник цифры называй словами (Росстат, Банк России). Не додумывай историю, которой нет в ДАННЫХ, и не предлагай того, чего там нет. Причины — как общие механизмы («обычно на это влияет…»), а не факт про этот месяц. Налоги, законы и льготы по памяти не пересказывай и суммы налога не считай — законы меняются (про налог на вклады: «точную сумму посмотрите у налоговой»); на «куда обратиться» отвечай общими словами, без названий ведомств и сайтов. На «будет ли дефолт/крах» — факты и честное «предсказать не могу». Слово «ДАННЫЕ» человеку не пиши («в моих цифрах»). Сверь цифру до того, как писать, не поправляйся вслух. Расчёты (кредит, вклад) — по последней официальной цифре, «наш расчёт» — вторым, одной фразой. Ты — ИИ-бот; какая именно модель — не знаешь. Не заканчивай каждый ответ предложением подписки. Просит перестать, а подписки нет — так и скажи; просит присылать — сразу [[подписаться]]. Сравнивая вклад, золото, валюту, не подводи к выбору: цифры как факт, вывод — человеку. Для тем без ключей (юань, нефть, ВВП, зарплата, биткоин) кнопок тем не ставь.
+
+Подписки приходят так: курсы и золото — раз в неделю, ставка — когда меняется, остальное — когда выходит новая цифра; с 9 до 21 по Москве. Обещай только это.
+Если спрашивают, что ты умеешь, — 3–5 строк своими словами: отвечаешь по свежим цифрам, присылаешь графики, присылаешь то, что попросят («присылай инфляцию»), сводка /week, карточка в любом чате через @ForecastEconomyBot, и самоулучшаешься — пожелания передаёшь команде.
+
+Если человеку пригодятся кнопки, добавь в самом конце отдельной строкой (её не увидят как текст):
+[[темы: ключ, ключ]] — карточки тем с графиком и подпиской (не больше трёх);
+[[подписка: ключ]] — предложить присылать новые данные по теме; если человек сам просит присылать — [[подписаться: ключ]] включит подписку сразу, просит «на всё» — перечисли все нужные ключи через запятую в одном действии; просит перестать — [[отписаться: ключ]] (ключ week — пятничная сводка); не пиши «подписал» или «отписал» без этого действия;
+[[идея: суть до 60 знаков своими словами]] — если человеку не хватает темы, функции или данных: запиши суть и обязательно скажи ему, что передашь команде;
+[[реакция: эмодзи]] — поставить реакцию на сообщение человека (одну из 👍 🔥 🤔 👏 😁 🤯 🎉 🙏 👌 💯 🏆 🤝 👀), если уместно;
+[[график: ключ]] — график темы картинкой (около полутора лет, другой период не выбрать). Только если человек просит саму тему или её динамику; не для части темы (продукты, услуги), истории, расчётов и тем вне ключей (ВВП, юань, биткоин). Он придёт перед твоим текстом — не предлагай его словами;
+[[вопросы: реплика | реплика]] — до трёх кнопок-реплик от лица человека (до 40 знаков): следующий вопрос, ответ на который точно есть в ДАННЫХ (не просьбы о совете, куда вложить), а в игре или опросе — варианты ответа.
+Ключи тем: diesel, ai92, ai95, inflation, keyrate, deposit, mortgage, gold, usd, eur.
+Наш сайт ru.forecasteconomy.com: графики и прогнозы, регионы России (/russia/region), страны мира (например, /united-states), сравнение показателей (/compare), калькулятор инфляции (/calculator). Если цифры нет — предложи нужный раздел ссылкой."""
+
+
+async def _figure_by_code(db, code: str):
+    ind = (await db.execute(select(Indicator).where(Indicator.code == code))).scalar_one_or_none()
+    if ind is None:
+        return None
+    return await load_figure(db, Topic(code, code, ind.name, ind.unit or "", ()))
+
+
+async def build_llm_context(db, today: date | None = None) -> str:
+    """Блок ДАННЫЕ: последние точки тем бота и смежных рядов, без диапазонов прогноза."""
+    today = today or _now().date()
+    lines = [f"Сегодня {fmt_date(today, 'daily')}."]
+    cpi = await load_figure(db, TOPICS["inflation"])
+    no_forecast: list[str] = []
+    for key, topic in TOPICS.items():
+        f = await load_figure(db, topic)
+        if f is None:
+            continue
+        if f.forecast_value is None:
+            no_forecast.append(topic.title)
+        line = _context_line(topic.title, topic.unit, f)
+        # Круг 2, тестер №4: адрес страницы темы — в общем списке «Страницы с полной историей ряда» ниже.
+        if (today - f.last_date).days > _FRESH_DAYS.get(f.frequency, 400):
+            line += " (новее данных источник пока не публиковал)"
+        lines.append(line)
+        wallet = _wallet_line(f, cpi if key != "inflation" else None)
+        if wallet:
+            lines.append(f"  для кошелька: {wallet}")
+        if key == "inflation":
+            # Тестеры 09.11: потерю на 1 млн модель считала как 6,35 % от суммы (63 500 вместо ≈59 700).
+            kept = 1_000_000 / (1 + f.last_value / 100)
+            lines.append(f"  для кошелька: 1 000 000 ₽, пролежавшие год без процентов, по покупательной силе "
+                         f"≈{fmt_num(kept, 0)} ₽ (потеря ≈{fmt_num(1_000_000 - kept, 0)} ₽; делим на 1 + инфляция).")
+    mort = await load_figure(db, TOPICS["mortgage"])
+    if mort is not None:
+        # Круг 2, тестер №4: «ипотека 12 млн на 20 лет, какой платёж?» — модель не умела считать аннуитет; даём готовое.
+        def _pay(rate: float, years: int) -> float:
+            r = rate / 100 / 12
+            n = years * 12
+            return 1_000_000 * r / (1 - (1 + r) ** -n)
+        base = mort.last_value
+        rows = []
+        for years in (10, 15, 20, 30):
+            rows.append(f"{years} лет — {fmt_num(_pay(base, years), 0)} ₽ (при +1 пункте {fmt_num(_pay(base + 1, years), 0)} ₽)")
+        lines.append(f"Ипотека, платёж в месяц на каждый 1 000 000 ₽ долга (аннуитет, средняя ставка {fmt_num(base)} %): "
+                     + "; ".join(rows) + ". Для другой суммы умножь пропорционально; это расчёт по средней ставке, не предложение банка.")
+    dep = await load_figure(db, TOPICS["deposit"])
+    if dep is not None:
+        # Тестер №3, круг 2: «20 тыс. в месяц 10 лет под 12,84 %» модель считала в уме (4,4 вместо ≈4,8 млн).
+        r = dep.last_value / 100 / 12
+        rows = ", ".join(f"{n} лет — {fmt_num(10_000 * (((1 + r) ** (12 * n) - 1) / r), 0)} ₽ (внесено {fmt_num(120_000 * n, 0)} ₽)"
+                         for n in (1, 3, 5, 10, 20))
+        lines.append(f"Накопление по 10 000 ₽ в начале каждого месяца при ставке по вкладам {fmt_num(dep.last_value)} % "
+                     f"с капитализацией раз в месяц, без налога и при неизменной ставке: {rows}. "
+                     "Для другой суммы умножь пропорционально; ставка на годы вперёд неизвестна.")
+    key = await load_figure(db, TOPICS["keyrate"])
+    if key is not None:
+        # Тестеры 09.11: из двух последних точек модель выводила «ставка не меняется второй день».
+        ind = (await db.execute(select(Indicator).where(Indicator.code == TOPICS["keyrate"].indicator))).scalar_one()
+        changed = (await db.execute(
+            select(func.max(IndicatorData.date)).where(
+                IndicatorData.indicator_id == ind.id, IndicatorData.value != key.last_value)
+        )).scalar_one_or_none()
+        since = (await db.execute(
+            select(func.min(IndicatorData.date)).where(
+                IndicatorData.indicator_id == ind.id, IndicatorData.date > changed)
+        )).scalar_one_or_none() if changed else None
+        # Тестер 1, 09.11: «когда следующее заседание ЦБ» — бот отвечал «даты нет», хотя календарь событий её знает.
+        meeting = (await db.execute(
+            select(EconomicEvent.scheduled_date, EconomicEvent.is_estimated)
+            .join(Indicator, Indicator.id == EconomicEvent.indicator_id)
+            .where(Indicator.code == TOPICS["keyrate"].indicator, EconomicEvent.event_type == "rate_decision",
+                   EconomicEvent.scheduled_date >= today)
+            .order_by(EconomicEvent.scheduled_date).limit(1)
+        )).first()
+        meeting_txt = (f"следующее заседание Банка России по ставке: {'ориентировочно ' if meeting[1] else ''}"
+                       f"{fmt_date(meeting[0], 'daily')}." if meeting
+                       else "даты следующего заседания Банка России в данных нет.")
+        if since:
+            lines.append(f"Ключевая ставка {fmt_num(key.last_value)} % действует с {fmt_date(since, 'daily')} "
+                         f"(точки в ряду — дни, а не заседания); {meeting_txt}")
+        elif meeting:
+            lines.append(f"Ключевая ставка: {meeting_txt}")
+    for code, title in _EXTRA_CODES:
+        f = await _figure_by_code(db, code)
+        if f is not None:
+            if code == "kzt-rub":
+                # Тенге стоит копейки: «0,18 ₽» теряет точность, считаем за 100 тенге, как котирует ЦБ.
+                f = dataclasses.replace(f, **{k: (getattr(f, k) * 100 if getattr(f, k) is not None else None)
+                                              for k in ("last_value", "prev_value", "year_ago_value", "forecast_value")})
+            lines.append(_context_line(title, "", f))
+    for code, title in _YEAR_END_CODES:
+        pts = await _series(db, code, date(2005, 1, 1), weekly=False)
+        pts = [(d, v) for d, v in pts if d.year < today.year]
+        if pts:
+            lines.append(f"{title}: " + ", ".join(f"{d.year} — {fmt_num(v)}" for d, v in pts))
+    yearly = await _series(db, "inflation-annual", date(today.year - 16, 1, 1), weekly=False)
+    if yearly:
+        # Для вопросов «сколько стоили бы мои деньги из 2015 года»: годовая инфляция по годам (Росстат).
+        lines.append("Инфляция по годам, % (декабрь к декабрю): "
+                     + ", ".join(f"{d.year} — {fmt_num(v, 1)}" for d, v in yearly[-15:]))
+        # Живой прогон 08.11: сложные проценты в уме модель считала с ошибкой (195 вместо 183 тыс.).
+        last_year = yearly[-1][0].year
+        grow, acc = [], 1.0
+        for d, v in reversed(yearly[-15:]):
+            if d.year < last_year:
+                grow.append(f"{d.year} — {fmt_num(100 * acc, 0)}")
+            acc *= 1 + v / 100
+        lines.append(f"100 ₽ на конец года стоят на конец {last_year} (без текущего года): "
+                     + ", ".join(reversed(grow)))
+    # Тестер №6, 09.11: модель выдумала ссылку /usd (404). Даём настоящие страницы тем и юаня/биткоина.
+    pages = [f"{t.title} — {ru_public_origin()}/russia/indicator/{t.indicator}" for t in TOPICS.values()]
+    pages += [f"Юань — {ru_public_origin()}/russia/indicator/cny-rub", f"Биткоин — {ru_public_origin()}/russia/indicator/btc-usd"]
+    lines.append("Страницы с полной историей ряда на нашем сайте (ссылайся только на них, других адресов не придумывай): "
+                 + "; ".join(pages))
+    if no_forecast:
+        # Живой прогон 08.11: модель обещала «прогноз бензина на сайте», которого нет.
+        lines.append("Нашего расчёта (прогноза) нет ни в боте, ни на сайте по темам: " + ", ".join(no_forecast)
+                     + ". Не обещай его.")
+    return "\n".join(lines)
+
+
+def _context_line(title: str, unit: str, f: Figure) -> str:
+    when = fmt_date(f.last_date, f.frequency)
+    parts = [f"- {title}: {fmt_num(f.last_value)} {unit}".rstrip() + (f" за {when}" if f.frequency in ("monthly", "quarterly", "annual") else f" на {when}")]
+    if f.prev_value is not None:
+        # Живой прогон 08.11: без даты модель называла недельную точку «месяцем раньше».
+        prev_when = ""
+        if f.prev_date is not None:
+            prev_when = (f" за {fmt_date(f.prev_date, f.frequency)}" if f.frequency in ("monthly", "quarterly", "annual")
+                         else f" на {fmt_date(f.prev_date, f.frequency)}")
+        parts.append(f"предыдущее значение {fmt_num(f.prev_value)}{prev_when}")
+    if f.year_ago_value is not None:
+        # Тестеры 09.11: проценты «17–20 %», «юань быстрее/медленнее» модель считала с ошибкой — даём готовое.
+        if f.topic.is_rate or "%" in unit or "%" in title:
+            d = f.last_value - f.year_ago_value
+            ch = f"{'+' if d >= 0 else '−'}{fmt_num(abs(d))} пункта"
+        elif f.year_ago_value:
+            d = (f.last_value / f.year_ago_value - 1) * 100
+            ch = f"{'+' if d >= 0 else '−'}{fmt_num(abs(d), 1)} %"
+        else:
+            ch = ""
+        parts.append(f"год назад {fmt_num(f.year_ago_value)}" + (f" (за год {ch})" if ch else ""))
+    if f.forecast_value is not None and f.forecast_date is not None:
+        # Тестер №5, 09.11: «октябрь 6,26 %» при сентябре 6,35 % модель назвала «чуть подрастёт» — даём направление.
+        # Округляем как в тексте: 12,84 → 12,84 не «ниже» (слияние круга 2, 09.11).
+        fd = round(f.forecast_value, 2) - round(f.last_value, 2)
+        way = "ниже последней цифры (снижение)" if fd < 0 else "выше последней цифры (рост)" if fd > 0 else "на уровне последней цифры"
+        parts.append(f"наш расчёт на {fmt_date(f.forecast_date, f.frequency)}: {fmt_num(f.forecast_value)} — {way}")
+    if f.source:
+        parts.append(f"источник: {f.source}")
+    return "; ".join(parts)
+
+
+async def _llm_complete(context: str, question: str, history: list[dict] | None = None) -> str | None:
+    """Ответ модели; если основная не ответила — одна попытка запасной (openrouter_model)."""
+    primary = settings.public_bot_llm_model or settings.openrouter_model
+    answer = await _llm_call(primary, context, question, history)
+    if answer is None and settings.public_bot_llm_model and settings.public_bot_llm_model != settings.openrouter_model:
+        logger.warning("Public bot LLM: основная модель не ответила, пробую %s", settings.openrouter_model)
+        answer = await _llm_call(settings.openrouter_model, context, question, history)
+    return answer
+
+
+
+
+_AGENT_STEPS = 5          # шагов с инструментами на один ответ; последний — без инструментов
+_AGENT_TOOL_CALLS = 4     # вызовов инструментов за шаг
+# Ответы инструментов текущего вопроса: список создаёт answer_question, задача модели дописывает
+# (ContextVar с изменяемым списком — изменения из фоновой задачи видны вызывающему).
+_TOOL_TEXT: "contextvars.ContextVar[list[str] | None]" = contextvars.ContextVar("pb_tool_text", default=None)
+# Цена ответа в $ и прочитанные из кэша токены по шагам (usage OpenRouter) — для отчёта «сколько стоит диалог».
+_LLM_USAGE: "contextvars.ContextVar[list[tuple[float, int, int]] | None]" = contextvars.ContextVar("pb_llm_usage", default=None)
+
+
+async def _llm_post(client, payload: dict):
+    """Один запрос в OpenRouter; разовые 429/5xx — один повтор, 402 (нет баланса) — нет (тестеры 09.11)."""
+    for attempt in (0, 1):
+        resp = await client.post(
+            _OPENROUTER_URL, json=payload,
+            headers={"Authorization": f"Bearer {settings.openrouter_api_key}", "X-Title": "Forecast Economy bot"},
+        )
+        if resp.status_code in (429, 500, 502, 503, 504) and attempt == 0:
+            await asyncio.sleep(2.5)
+            continue
+        return resp
+    return resp
+
+
+async def _llm_call(model: str, context: str, question: str, history: list[dict] | None) -> str | None:
+    """Ответ модели-агента: правила и ДАННЫЕ в кэше, инструменты по нашей базе (bot_agent_tools), до 5 шагов.
+
+    Владелец 09.11: «чтобы агент сам заходил в нашу базу, доставал — максимально автономного агента».
+    Системная часть (правила + ДАННЫЕ) помечена cache_control: повторное чтение — 10 % цены входа
+    (OpenRouter, Anthropic: от 512 токенов у Sonnet 5.5). Тексты ответов инструментов складываются в
+    _TOOL_TEXT — по ним safe_links пропускает адреса страниц, которые агент нашёл сам.
+    """
+    import httpx
+
+    from app.services.bot_agent_tools import TOOLS, run_tool
+
+    messages: list[dict] = [
+        {"role": "system", "content": [{"type": "text", "text": LLM_SYSTEM_PROMPT + "\n\nДАННЫЕ:\n" + context,
+                                        "cache_control": {"type": "ephemeral"}}]},
+        *(history or []),
+        {"role": "user", "content": question[:_MAX_QUESTION]
+         + (" …(сообщение обрезано)" if len(question) > _MAX_QUESTION else "")},
+    ]
+    tool_text: list[str] = []
+    import time
+
+    from app.services import public_bot_dialog
+
+    started = time.monotonic()
+    usage_sum: dict = {}
+
+    async def _log(answer: str | None, status: str) -> None:
+        # Журнал переписки (решение владельца 09.11): итоговая переписка с шагами инструментов и расход по всем шагам.
+        await public_bot_dialog.log_llm(model=model, messages=messages, answer=answer, status=status,
+                                        latency_ms=int((time.monotonic() - started) * 1000), usage=usage_sum or None,
+                                        kind="answer" if public_bot_dialog.current_chat.get() else "broadcast")
+
+    try:
+        async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
+            for step in range(_AGENT_STEPS):
+                last = step == _AGENT_STEPS - 1
+                payload = {
+                    "model": model,
+                    # Тестер №6, 09.11: резерв бюджета OpenRouter считается от max_tokens — держим 900.
+                    "max_tokens": 900,
+                    "messages": messages,
+                    "tools": TOOLS,
+                    "tool_choice": "none" if last else "auto",
+                    "usage": {"include": True},
+                }
+                resp = await _llm_post(client, payload)
+                if resp.status_code != 200:
+                    logger.warning("Public bot LLM: HTTP %s", resp.status_code)
+                    await _log(None, f"http_{resp.status_code}")
+                    return None
+                data = resp.json()
+                usage = data.get("usage") or {}
+                for k in ("prompt_tokens", "completion_tokens", "cost"):
+                    if usage.get(k) is not None:
+                        usage_sum[k] = usage_sum.get(k, 0) + usage[k]
+                usage_sum["steps"] = usage_sum.get("steps", 0) + 1
+                ubuf = _LLM_USAGE.get()
+                if ubuf is not None:
+                    ubuf.append((float(usage.get("cost") or 0), int(usage.get("prompt_tokens") or 0),
+                                 int((usage.get("prompt_tokens_details") or {}).get("cached_tokens") or 0)))
+                choice = (data.get("choices") or [{}])[0]
+                msg = choice.get("message") or {}
+                calls = msg.get("tool_calls") or []
+                if calls and not last:
+                    messages.append({"role": "assistant", "content": msg.get("content") or "", "tool_calls": calls})
+                    for call in calls:
+                        fn = call.get("function") or {}
+                        out = (await run_tool(fn.get("name", ""), fn.get("arguments"))
+                               if len(tool_text) < _AGENT_TOOL_CALLS * _AGENT_STEPS else "Лимит вызовов исчерпан — отвечай.")
+                        tool_text.append(out)
+                        messages.append({"role": "tool", "tool_call_id": call.get("id", ""), "content": out})
+                    continue
+                content = msg.get("content")
+                if not isinstance(content, str) or not content.strip():
+                    await _log(None, "empty")
+                    return None
+                if choice.get("finish_reason") == "length":
+                    content = trim_to_paragraph(content)
+                buf = _TOOL_TEXT.get()
+                if buf is not None:
+                    buf.extend(tool_text)
+                await _log(content.strip(), f"ok:{choice.get('finish_reason')}")
+                return content.strip()
+        return None
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Public bot LLM failed", exc_info=True)
+        await _log(None, f"error:{type(exc).__name__}")
+        return None
+
+
+# Короткая память разговора — только в памяти процесса (не в базе): последние реплики за 30 минут.
+_HISTORY: dict[str, list[tuple[datetime, str, str]]] = {}
+_HISTORY_TURNS = 6
+_HISTORY_TTL = timedelta(minutes=30)
+
+
+def _history(chat_id: str) -> list[dict]:
+    now = _now()
+    items = [h for h in _HISTORY.get(chat_id, []) if now - h[0] < _HISTORY_TTL][-_HISTORY_TURNS:]
+    _HISTORY[chat_id] = items
+    return [{"role": role, "content": content} for _, role, content in items]
+
+
+def _remember(chat_id: str, role: str, content: str) -> None:
+    _HISTORY.setdefault(chat_id, []).append((_now(), role, content[:1500]))
+    if len(_HISTORY) > 5000:
+        _HISTORY.clear()
+
+
+def forget_history(chat_id: str) -> None:
+    _HISTORY.pop(chat_id, None)
+
+
+_ALLOWED_TAG = re.compile(
+    r"&lt;(/?)(b|strong|i|em|u|ins|s|strike|del|code|pre|tg-spoiler)&gt;"
+    r"|&lt;blockquote( expandable)?&gt;|&lt;/blockquote&gt;"
+    r"|&lt;a href=&quot;(https?://[^\s&]+?)&quot;&gt;|&lt;/a&gt;"
+)
+_ACTIONS = re.compile(r"\[\[\s*(темы|подписка|подписаться|отписаться|вопросы|график|реакция|идея)\s*:\s*([^\]]*)\]\]", re.I)
+# Реакции, которые Telegram разрешает ботам (подмножество стандартных).
+_REACTIONS = ("👍", "🔥", "🤔", "👏", "😁", "🤯", "🎉", "🙏", "👌", "💯", "🏆", "🤝", "👀")
+# Кнопки-вопросы: callback_data ограничен 64 байтами, поэтому текст вопроса держим в памяти по короткому id.
+_QUESTIONS: dict[str, str] = {}
+
+
+_LAT2CYR = {"a": "а", "c": "с", "e": "е", "o": "о", "p": "р", "x": "х", "y": "у", "r": "р", "k": "к", "m": "м", "t": "т"}
+# Короткая латинская вставка (1–3 буквы) внутри русского слова: «кранa», «доллar».
+_LAT_IN_CYR = re.compile(r"(?<=[а-яё])([acepoxyrkmt]{1,3})(?![a-z])|(?<![a-z])([acepoxyrkmt]{1,3})(?=[а-яё])")
+
+
+def telegram_html(text: str) -> str:
+    """Ответ модели → безопасный HTML Telegram: всё экранируется, разрешённые теги возвращаются.
+    Markdown-жирный (**x**) превращается в <b>. Битая разметка всё равно дойдёт: send_message
+    при «can't parse entities» шлёт текст без тегов."""
+    # Тестеры 09.11: модель сама пишет &#x27; и &quot; — без раскрытия человек видел «&amp;#x27;».
+    # Тестер №10, 09.11: модель вставляет латинскую «a»/«o» внутрь русского слова («кранa», «доллar») — чинится.
+    text = _LAT_IN_CYR.sub(lambda m: "".join(_LAT2CYR[c] for c in (m.group(1) or m.group(2))), text)
+    out = escape(unescape(text), quote=True)
+
+    link_ok: list[bool] = []
+
+    def _back(m: re.Match) -> str:
+        raw = m.group(0)
+        if raw.startswith("&lt;a href="):
+            # Тестер 9, 09.11: ссылки только на наш сайт; чужую модель могла вставить сама (текст остаётся, ссылка нет).
+            host = re.match(r"https?://([^/?#]+)", m.group(4))
+            ok = bool(host) and (host.group(1).lower() == "forecasteconomy.com"
+                                 or host.group(1).lower().endswith(".forecasteconomy.com"))
+            link_ok.append(ok)
+            return f'<a href="{m.group(4)}">' if ok else ""
+        if raw == "&lt;/a&gt;":
+            return "</a>" if (link_ok.pop() if link_ok else False) else ""
+        return raw.replace("&lt;", "<").replace("&gt;", ">")
+    out = _ALLOWED_TAG.sub(_back, out)
+    out = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", out)
+    return out.strip()
+
+
+_LINK = re.compile(r'<a\s+href="([^"]+)"[^>]*>(.*?)</a>', re.S | re.I)
+_OK_PATHS = ("/russia", "/compare", "/calculator", "/currencies")
+_NO_CHART = ("юан", "биткоин", "биткойн", "bitcoin", "btc", "фунт", "тенге", "франк", "нефть", "brent", "ввп")
+
+
+def safe_links(text: str, known: str = "") -> str:
+    """Тестер №6, 09.11: модель дала ссылку /usd (404) и «крипто-ресурсы». Оставляем только наши известные адреса,
+    остальные ссылки превращаем в простой текст."""
+    origin = ru_public_origin()
+
+    def _fix(m: re.Match) -> str:
+        url = m.group(1).replace("&amp;", "&")
+        if url.startswith(origin):
+            path = url[len(origin):].split("?")[0].split("#")[0].rstrip("/") or "/"
+            if path.startswith(_OK_PATHS) or url in known or path in known:
+                return m.group(0)
+        return m.group(2)
+    return _LINK.sub(_fix, text)
+
+
+def split_actions(answer: str) -> tuple[str, list[str], list[str], list[str], list[str]]:
+    """Служебные строки модели [[темы|подписка|вопросы|график: …]] → (текст, темы, подписки, вопросы, графики)."""
+    topics: list[str] = []
+    subs: list[str] = []
+    questions: list[str] = []
+    charts: list[str] = []
+    questions_meta: dict[str, str] = {}
+    for kind, keys in _ACTIONS.findall(answer):
+        kind = kind.lower()
+        if kind == "идея":
+            idea = re.sub(r"\s+", " ", keys).strip()[:64]
+            if idea:
+                questions_meta.setdefault("idea", idea)
+            continue
+        if kind in ("подписаться", "отписаться"):
+            slot = "subscribe_now" if kind == "подписаться" else "unsubscribe_now"
+            for k in re.split(r"[,\s]+", keys.strip().lower()):
+                if k in TOPICS or k == WEEK_TOPIC:
+                    questions_meta.setdefault(slot, []).append(k)
+            continue
+        if kind == "реакция":
+            emo = keys.strip()
+            if emo in _REACTIONS:
+                questions_meta.setdefault("reaction", emo)
+            continue
+        if kind == "вопросы":
+            # Реплика от лица человека: вопрос или вариант ответа («80 ₽») — знак не дописываем.
+            questions += [q.strip(" \"«»")[:60] for q in keys.split("|") if q.strip(" \"«»")]
+            continue
+        for k in re.split(r"[,\s]+", keys.strip().lower()):
+            if k in TOPICS and (kind != "график" or k in CHART_TOPICS):
+                {"подписка": subs, "график": charts}.get(kind, topics).append(k)
+    clean = _ACTIONS.sub("", answer).strip()
+    uniq = lambda xs: list(dict.fromkeys(xs))  # noqa: E731
+    split_actions.last_reaction = questions_meta.get("reaction")  # type: ignore[attr-defined]
+    split_actions.last_idea = questions_meta.get("idea")  # type: ignore[attr-defined]
+    split_actions.last_subscribe = questions_meta.get("subscribe_now") or []  # type: ignore[attr-defined]
+    split_actions.last_unsubscribe = questions_meta.get("unsubscribe_now") or []  # type: ignore[attr-defined]
+    return clean, uniq(topics)[:3], uniq(subs)[:2], uniq(questions)[:3], uniq(charts)[:1]
+
+
+# Свой график (bot_chart.py) рисуется для всех тем: окно 3 года, у дневных рядов 18 месяцев.
+CHART_TOPICS = tuple(TOPICS)
+# С чем сравнивать по делу: (код ряда, подпись) или цель ЦБ.
+_CHART_COMPARE = {"keyrate": ("cpi-yoy", "инфляция"), "deposit": ("cpi-yoy", "инфляция"),
+                  "mortgage": ("key-rate", "ключевая ставка")}
+_CHART_TARGET = {"inflation": ("цель ЦБ", 4.0)}
+
+
+async def _series(db, code: str, since: date, weekly: bool) -> list[tuple[date, float]]:
+    ind = (await db.execute(select(Indicator.id).where(Indicator.code == code))).scalar_one_or_none()
+    if ind is None:
+        return []
+    rows = (await db.execute(
+        select(IndicatorData.date, IndicatorData.value)
+        .where(IndicatorData.indicator_id == ind, IndicatorData.date >= since)
+        .order_by(IndicatorData.date)
+    )).all()
+    pts = [(r[0], float(r[1])) for r in rows]
+    if weekly and len(pts) > 120:
+        # Дневной ряд — последнее значение каждой недели: линия чище, смысл тот же.
+        by_week: dict[tuple[int, int], tuple[date, float]] = {}
+        for dt, v in pts:
+            by_week[dt.isocalendar()[:2]] = (dt, v)
+        pts = list(by_week.values())
+        if pts and rows and pts[-1][0] != rows[-1][0]:
+            pts.append((rows[-1][0], float(rows[-1][1])))
+    return pts
+
+
+_CHART_CACHE: dict[str, tuple[datetime, bytes]] = {}
+
+
+async def render_topic_chart(topic_key: str) -> bytes | None:
+    """PNG графика темы; кэш 10 минут (рассылка шлёт одну картинку многим подписчикам)."""
+    hit = _CHART_CACHE.get(topic_key)
+    if hit and _now() - hit[0] < timedelta(minutes=10):
+        return hit[1]
+    png = await _render_topic_chart(topic_key)
+    if png:
+        _CHART_CACHE[topic_key] = (_now(), png)
+    return png
+
+
+async def _render_topic_chart(topic_key: str) -> bytes | None:
+    from app.services.bot_chart import Series, render_chart
+
+    topic = TOPICS[topic_key]
+    async with async_session() as db:
+        fig = await load_figure(db, topic)
+        if fig is None:
+            return None
+        daily = fig.frequency == "daily"
+        since = date(fig.last_date.year - (1 if daily else 3), fig.last_date.month, 1)
+        if daily:
+            since = date(fig.last_date.year - 2, fig.last_date.month, 1) if fig.last_date.month <= 6 else \
+                date(fig.last_date.year - 1, fig.last_date.month - 6, 1)
+        pts = await _series(db, topic.indicator, since, weekly=daily)
+        if len(pts) < 2:
+            return None
+        cmp_code, cmp_label = _CHART_COMPARE.get(topic_key, (None, None))
+        cmp_pts = await _series(db, cmp_code, since, weekly=True) if cmp_code else None
+    ya = None
+    if fig.year_ago_value is not None:
+        # То же значение «год назад», что в карточке (у дневных рядов график прорежен до недели).
+        target = fig.last_date - timedelta(days=365)
+        ya = (min(pts, key=lambda p: abs((p[0] - target).days))[0], fig.year_ago_value)
+    unit = {"%": "%", "% за год": "%"}.get(topic.unit, topic.unit)
+    series = Series(
+        title=topic.title, unit=unit, source=fig.source, points=pts,
+        forecast=(fig.forecast_date, fig.forecast_value) if fig.forecast_value is not None else None,
+        year_ago=ya if ya and abs((ya[0] - (fig.last_date - timedelta(days=365))).days) <= 40 else None,
+        compare_label=cmp_label, compare_points=cmp_pts, target=_CHART_TARGET.get(topic_key),
+        is_rate=topic.is_rate, step=topic_key == "keyrate", unit_note=topic.unit,
+        monthly=fig.frequency == "monthly",
+    )
+    return await asyncio.to_thread(render_chart, series)
+
+
+def chart_url(topic: Topic) -> str:
+    """Картинка-график показателя с сайта (та же, что OG-превью страницы)."""
+    return f"{ru_public_origin()}/og/russia/{topic.indicator}.png"
+
+
+async def send_chart(chat_id: str, topic_key: str, en: bool = False) -> bool:
+    from app.services.telegram_bot import _api
+
+    topic = TOPICS[topic_key]
+    more = "More on the website" if en else "Подробнее на сайте"
+    caption = f"<b>{escape(topic.title)}</b> — <a href=\"{site_url(topic, None)}\">{more.lower()}</a>"
+    async with async_session() as db:
+        fig = await load_figure(db, topic)
+    if fig is not None:
+        bits = [f"{fmt_num(fig.last_value)} {topic.unit} {('за ' if fig.frequency in ('monthly', 'quarterly') else 'на ')}"
+                f"{fmt_date(fig.last_date, fig.frequency)}"]
+        if fig.year_ago_value is not None:
+            bits.append(f"год назад {fmt_num(fig.year_ago_value)}")
+        if fig.forecast_value is not None and fig.forecast_date is not None:
+            # Тестеры 1 и 8, 09.11: «наш расчёт 6,26» без даты непонятен.
+            bits.append(f"наш прогноз на {fmt_date(fig.forecast_date, fig.frequency)}: {fmt_num(fig.forecast_value)}")
+        if en:
+            unit = "%" if "%" in topic.unit else ("RUB/litre" if "литр" in topic.unit else
+                                                   "RUB/gram" if "грам" in topic.unit else "RUB")
+            when = fig.last_date.strftime("%b %Y" if fig.frequency in ("monthly", "quarterly") else "%d %b %Y")
+            bits = [f"{fmt_num(fig.last_value)} {unit} ({when})"] + (
+                [f"a year ago {fmt_num(fig.year_ago_value)}"] if fig.year_ago_value is not None else [])
+        caption = f"<b>{escape(_EN_TITLES[topic_key] if en else topic.title)}</b>: " + escape(", ".join(bits)) + \
+            f"\n<a href=\"{site_url(topic, None)}\">{more}</a>"
+    try:
+        png = await render_topic_chart(topic_key)
+    except Exception:  # noqa: BLE001 — график не должен ронять ответ
+        logger.warning("Public bot chart render failed: %s", topic_key, exc_info=True)
+        png = None
+    if png:
+        res = await _api("sendPhoto", {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"},
+                         files={"photo": (f"{topic_key}.png", io.BytesIO(png))}, token=bot_token(), timeout=30)
+    else:
+        res = await _api("sendPhoto", {"chat_id": chat_id, "photo": chart_url(topic), "caption": caption,
+                                       "parse_mode": "HTML"}, token=bot_token(), timeout=30)
+    return res is not None
+
+
+_Q_KEY = "fe:pb:q:"
+_Q_TTL = 30 * 24 * 3600
+
+
+def _question_id(q: str) -> str:
+    """Короткий id кнопки-вопроса. Текст — в памяти и в state-Redis на 30 дней: иначе после перезапуска
+    (каждая выкладка) старые кнопки отвечали «вопрос устарел» (живой прогон 08.11.2026)."""
+    qid = hashlib.sha1(q.encode("utf-8")).hexdigest()[:10]
+    _QUESTIONS[qid] = q
+    if len(_QUESTIONS) > 20000:
+        _QUESTIONS.clear()
+        _QUESTIONS[qid] = q
+    _QUESTIONS_PENDING[qid] = q
+    return qid
+
+
+_QUESTIONS_PENDING: dict[str, str] = {}
+
+
+async def _flush_questions() -> None:
+    if not _QUESTIONS_PENDING:
+        return
+    items = dict(_QUESTIONS_PENDING)
+    _QUESTIONS_PENDING.clear()
+    try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        for qid, q in items.items():
+            await r.set(_Q_KEY + qid, q, ex=_Q_TTL)
+    except Exception:  # noqa: BLE001 — Redis недоступен: кнопки живут до перезапуска
+        logger.debug("question ids not stored", exc_info=True)
+
+
+async def _lookup_question(qid: str) -> str | None:
+    if qid in _QUESTIONS:
+        return _QUESTIONS[qid]
+    try:
+        from app.core.cache import get_state_redis
+        r = await get_state_redis()
+        q = await r.get(_Q_KEY + qid)
+        return q.decode() if isinstance(q, bytes) else q
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def answer_keyboard(topics: list[str], subs: list[str], questions: list[str] | None = None,
+                    en: bool = False) -> dict:
+    title = (lambda k: _EN_TITLES[k]) if en else (lambda k: TOPICS[k].title)
+    rows = [[{"text": f"💬 {q}", "callback_data": f"{CB_PREFIX}q:{_question_id(q)}"}] for q in (questions or [])]
+    rows += [[{"text": title(k), "callback_data": f"{CB_PREFIX}t:{k}"} for k in topics]] if topics else []
+    rows += [[{"text": f"🔔 {'Send updates' if en else 'Присылать'}: {title(k)}", "callback_data": f"{CB_PREFIX}s:{k}"}]
+             for k in subs]
+    rows.append([{"text": "All topics" if en else "Все темы", "callback_data": f"{CB_PREFIX}menu"}])
+    return {"inline_keyboard": rows}
+
+
+def trim_to_paragraph(text: str) -> str:
+    """Ответ упёрся в лимит длины (живой прогон 08.11: обрыв «Индекс Мосбиржи — 2 476,70»):
+    режем до последнего целого абзаца и ставим многоточие."""
+    cut = text.rstrip()
+    para = cut.rfind("\n\n")
+    if para > len(cut) // 3:
+        cut = cut[:para]
+    return cut.rstrip() + " …"
+
+
+_PHONE = re.compile(r"\+?[78][\s\-(]*\d{3}[\s\-)]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}")
+_PASSPORT = re.compile(r"\b\d{2}\s?\d{2}\s?\d{6}\b")
+
+
+def mask_personal(text: str) -> str:
+    """Телефон и номер паспорта не уходят модели (тестеры 09.11: «ушли модели без предупреждения»)."""
+    return _PASSPORT.sub("[номер скрыт]", _PHONE.sub("[телефон скрыт]", text))
+
+
+_PLACES: list[tuple[str, str, str]] = []  # (основа слова, название, путь)
+_PLACE_SKIP = {"область", "край", "республика", "автономный", "округ", "автономная", "город", "народная"}
+
+
+async def _place_links(db, text: str) -> list[str]:
+    """Страны и регионы из вопроса → настоящие адреса страниц (тестеры 09.11: модель придумывала /russia/tatarstan)."""
+    from app.models import Region, WorldCountry
+    try:
+        return await _place_links_inner(db, text, Region, WorldCountry)
+    except Exception:  # noqa: BLE001 — без адресов ответ всё равно уйдёт
+        logger.debug("place links failed", exc_info=True)
+        return []
+
+
+async def _place_links_inner(db, text: str, Region, WorldCountry) -> list[str]:
+    if not _PLACES:
+        for slug, name in (await db.execute(select(Region.slug, Region.name))).all():
+            words = [w for w in re.findall(r"[а-яё\-]+", name.lower()) if w not in _PLACE_SKIP and len(w) >= 5]
+            if words:
+                _PLACES.append((words[0][: max(5, len(words[0]) - 2)], name, f"/russia/region/{slug}"))
+        for slug, name in (await db.execute(select(WorldCountry.slug, WorldCountry.name_ru))).all():
+            w = name.lower()
+            if w != "россия" and " " not in w:
+                _PLACES.append((w if len(w) < 5 else w[: max(4, len(w) - 2)], name, f"/{slug}"))
+    low = text.lower()
+    found = []
+    for stem, name, path in _PLACES:
+        if re.search(rf"\b{re.escape(stem)}", low) and len(found) < 3:
+            found.append(f"{name} — {ru_public_origin()}{path}")
+    return found
+
+
+def _topics_in(text: str) -> set[str]:
+    t = _norm(text)[:_MAX_TEXT]
+    found: set[str] = set()
+    for w in re.findall(r"[a-zа-я0-9-]+", t):
+        for key in TOPICS:
+            tp = TOPICS[key]
+            if w in tp.tokens or any(w.startswith(x) for x in tp.stems):
+                found.add(key)
+    m, _ = match_topic(text)
+    if m:
+        found.add(m)
+    return found
+
+
+def _chart_fits(text: str, key: str, history: list[dict]) -> bool:
+    """График отправляем, если тема названа в вопросе; без темы в тексте («покажи график») — если о ней шла речь раньше."""
+    named = _topics_in(text)
+    if named:
+        return key in named or (key in ("ai92", "ai95") and named & {"ai92", "ai95"})
+    if not re.search(r"график|динамик|картинк|покажи", _norm(text)):
+        return False
+    filler = {"а", "и", "ну", "теперь", "ещё", "еще", "покажи", "пришли", "дай", "нарисуй", "график", "графика",
+              "динамику", "динамика", "картинку", "пожалуйста", "его", "её", "мне", "тоже", "же"}
+    if any(w not in filler for w in re.findall(r"[a-zа-я0-9-]+", _norm(text))):
+        return False  # «график ВВП»: назван предмет вне ключей, а не продолжение прошлой темы
+    recent = " ".join(h["content"] for h in history[-4:])
+    return key in _topics_in(recent)
+
+
+async def answer_question(chat_id: str, text: str, hint_topic: str | None = None,
+                          msg_id: int | None = None) -> None:
+    """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Вопрос и ответ пишутся в public_bot_dialog."""
+    day_start = datetime.combine(_now().date(), datetime.min.time())
+    async with async_session() as db:
+        used = (await db.execute(select(func.count()).select_from(PublicBotEvent).where(
+            PublicBotEvent.chat_hash == chat_hash(chat_id), PublicBotEvent.kind == "ask",
+            PublicBotEvent.occurred_at >= day_start,
+        ))).scalar_one()
+        if used >= settings.public_bot_llm_daily_limit:
+            await db.commit()
+            if hint_topic:
+                await _reply_figure(chat_id, hint_topic)
+            else:
+                await _send(chat_id, LIMIT_TEXT, menu_keyboard())
+            return
+        _event(db, chat_id, "ask", topic=hint_topic)
+        context = await build_llm_context(db)
+        subs = (await db.execute(select(PublicBotSubscription.topic).where(
+            PublicBotSubscription.chat_id == chat_id))).scalars().all()
+        await db.commit()
+    text = mask_personal(text)
+    async with async_session() as db:
+        places = await _place_links(db, text)
+    if places:
+        context += "\nСтраницы нашего сайта по местам из вопроса — дай ссылку словами <a href=…>, если цифры по месту нет в ДАННЫХ: " + "; ".join(places) + "."
+    names = ", ".join(TOPICS[k].title for k in subs if k in TOPICS)
+    # Живой прогон 08.11: модель сказала «подписка уже у вас есть» сразу после отписки.
+    context += f"\nПодписки этого человека на новые данные: {names or 'нет'}."
+    if is_english(text):
+        # Тестер №6, 09.11: «and the dollar?» по-английски получил русский ответ (контекст русский).
+        context += "\nЧеловек пишет по-английски: ответь по-английски, весь текст, включая подписи кнопок-реплик."
+    history = _history(chat_id)
+    import time
+    started = time.monotonic()
+    tool_buf: list[str] = []
+    _TOOL_TEXT.set(tool_buf)
+    usage_buf: list[tuple[float, int, int]] = []
+    _LLM_USAGE.set(usage_buf)
+    answer = await _with_typing(chat_id, _llm_complete(context, text, history))
+    elapsed = time.monotonic() - started
+    try:
+        async with async_session() as db:
+            _event(db, chat_id, "llm_time", code=f"{elapsed:.1f}")
+            if usage_buf:
+                # Цена ответа и доля входа из кэша — строка «Цена ответа» в отчёте (владелец 09.11: «сколько стоит диалог»).
+                cost = sum(u[0] for u in usage_buf)
+                prompt = sum(u[1] for u in usage_buf) or 1
+                cached = sum(u[2] for u in usage_buf)
+                _event(db, chat_id, "llm_cost", code=f"{cost:.5f}|{len(usage_buf)}|{cached * 100 // prompt}")
+            await db.commit()
+    except Exception:  # noqa: BLE001 — замер не должен мешать ответу
+        logger.debug("llm_time not stored", exc_info=True)
+    if not answer:
+        if hint_topic:
+            # Тестеры №4 и №6, 09.11: на сбой модели приходила голая карточка, будто это ответ на вопрос.
+            await _send(chat_id, "Сейчас не получается ответить своими словами — вот ближайшая свежая цифра:")
+            await _reply_figure(chat_id, hint_topic)
+        else:
+            await _send(chat_id, LLM_FAIL_TEXT, menu_keyboard())
+        return
+    clean, topics, subs, questions, charts = split_actions(answer)
+    reaction = getattr(split_actions, "last_reaction", None)
+    idea = getattr(split_actions, "last_idea", None)
+    subscribe_now = getattr(split_actions, "last_subscribe", None) or []
+    unsubscribe_now = getattr(split_actions, "last_unsubscribe", None) or []
+    if idea:
+        # «Самоулучшаюсь»: суть пожелания своими словами модели (не текст человека) — в отчёт команде.
+        async with async_session() as db:
+            _event(db, chat_id, "idea", code=idea)
+            await db.commit()
+    # Тестер №7, 09.11: «не присылай доллар» при уже включённой подписке — модель сказала «отписал ещё
+    # раньше», а подписка осталась. Явная просьба перестать с узнанной темой выполняется и без метки модели.
+    for seg in re.findall(r"(?:не\s+(?:присылай|пиши|шли)|отпиши(?:сь)?(?:\s+от)?|отключи|хватит\s+присылать)\s+([^,.;!?]+?)(?:\s+и\s+(?=присылай|шли)|[,.;!?]|$)", text.lower()):
+        k, _ = match_topic(seg)
+        if k and k in subs and k not in unsubscribe_now:
+            unsubscribe_now.append(k)
+    for k in unsubscribe_now:
+        # Тестер №8, 09.11: «отпишись от доллара» → «отписал», а подписка оставалась.
+        await unsubscribe(chat_id, k)
+    for k in subscribe_now:
+        # «Скажи, что прислать, — пришлю»: человек сам попросил — подписка сразу.
+        await subscribe(chat_id, k)
+    if reaction and msg_id:
+        from app.services.telegram_bot import _api
+        asyncio.ensure_future(_api("setMessageReaction", {
+            "chat_id": chat_id, "message_id": msg_id, "reaction": [{"type": "emoji", "emoji": reaction}],
+        }, token=bot_token(), timeout=6))
+    _remember(chat_id, "user", text[:_MAX_QUESTION])
+    _remember(chat_id, "assistant", clean)
+    en = is_english(text)
+    subs = [k for k in subs if not chart_mismatch(text, k)]
+    clean = safe_links(clean, context + "\n" + "\n".join(tool_buf))
+    if any(w in _norm(text) for w in _NO_CHART):
+        # Тестер №6, 09.11: «что с юанем?» приходил с графиком доллара — такого графика у темы нет.
+        charts = []
+    # Тестер №10, 09.11: «безработица» (темы нет) приходила с картинкой инфляции. Короткий запрос про другое — без чужого графика.
+    short = len(re.findall(r"[a-zа-я0-9-]+", _norm(text))) <= 3
+    if short and "график" not in _norm(text) and "chart" not in _norm(text):
+        charts = [k for k in charts if match_topic(text)[0] == k]
+    for key in charts:
+        if chart_mismatch(text, key) or not _chart_fits(text, key, history):
+            continue
+        await send_chart(chat_id, key, en=en)
+    await _send(chat_id, telegram_html(clean), answer_keyboard(topics, subs, questions, en=en))
+
+
+# ---------------------------------------------------------------------------
+# Свой поллер отдельного бота (@ForecastEconomyBot)
+# ---------------------------------------------------------------------------
+
+_OFFSET_KEY = "fe:tg:public_offset"
+_offset_mem: str | None = None
+# Одна задача планировщика в минуту держит опросы подряд ~35 с (+ до 20 с последнего long-poll),
+# чтобы не было наложений: при задаче раз в 2 с журнал каждые 2 с писал «skipped: maximum number of
+# running instances» (живой прогон 08.11.2026), а диск сервера заполнен на 88 %.
+_POLL_BUDGET_S = 35.0
+
+
+async def handle_inline_query(iq: dict) -> None:
+    """Встроенный режим: «@ForecastEconomyBot дизель» в любом чате → готовая карточка, чтобы поделиться.
+    Пустой запрос — все темы. Без модели: карточки собираются скриптом из базы (быстро, без лимитов)."""
+    from app.services.telegram_bot import _api
+
+    query = (iq.get("query") or "").strip()
+    topic, _ = match_topic(query) if query else (None, None)
+    keys = [topic] if topic else [k for row in MENU for k in row]
+    results = []
+    async with async_session() as db:
+        cpi = await load_figure(db, TOPICS["inflation"])
+        for key in keys:
+            fig = await load_figure(db, TOPICS[key])
+            if fig is None:
+                continue
+            text = figure_text(fig, cpi=cpi if key != "inflation" else None)
+            results.append({
+                "type": "article", "id": key,
+                "title": f"{TOPICS[key].title}: {fmt_num(fig.last_value)} {TOPICS[key].unit}",
+                "description": f"{fmt_date(fig.last_date, fig.frequency)} · {fig.source}",
+                **({"thumbnail_url": chart_url(TOPICS[key])} if key in CHART_TOPICS else {}),
+                "input_message_content": {"message_text": text, "parse_mode": "HTML",
+                                          "link_preview_options": {"is_disabled": True}},
+                "reply_markup": {"inline_keyboard": [[
+                    {"text": "Спросить бота", "url": f"https://t.me/{settings.public_bot_username}?start=share_{key}"},
+                    {"text": "📈 На сайте", "url": site_url(TOPICS[key], "inline")},
+                ]]},
+            })
+        _event(db, str((iq.get("from") or {}).get("id", "")), "inline", topic=topic)
+        await db.commit()
+    await _api("answerInlineQuery", {"inline_query_id": iq.get("id"), "results": results, "cache_time": 300,
+                                     "is_personal": False,
+                                     "button": {"text": "💬 Спросить бота своими словами", "start_parameter": "inline"}},
+               token=bot_token(), timeout=10)
+
+
+async def handle_update(upd: dict) -> None:
+    from app.services import public_bot_dialog
+
+    d = public_bot_dialog.describe_update(upd)
+    public_bot_dialog.current_chat.set(d["chat_id"] if d else None)
+    await public_bot_dialog.log_update(upd)
+    if "inline_query" in upd:
+        await handle_inline_query(upd["inline_query"])
+        return
+    if "callback_query" in upd:
+        await handle_callback(upd["callback_query"])
+    elif "message" in upd:
+        await handle_message(upd["message"])
+    elif "my_chat_member" in upd:
+        await handle_member_update(upd["my_chat_member"])
+
+
+async def public_bot_poll_job() -> None:
+    """Задача раз в минуту: подряд long-poll getUpdates публичного бота около _POLL_BUDGET_S секунд."""
+    if not (settings.public_bot_enabled and settings.public_bot_token):
+        return
+    import time
+
+    deadline = time.monotonic() + _POLL_BUDGET_S
+    while True:
+        if not await _poll_once() or time.monotonic() >= deadline:
+            break
+    if _inflight:
+        # Дождаться начатых ответов (модель до 60 с), чтобы следующая задача не наложилась на них.
+        await asyncio.wait(set(_inflight), timeout=20)
+
+
+async def _poll_once() -> bool:
+    """Один getUpdates (держится до 20 с). False — Telegram не ответил, задача заканчивается."""
+    global _offset_mem
+    from app.core.cache import get_state_redis
+    from app.services.telegram_bot import _api
+
+    r = await get_state_redis()
+    try:
+        offset = await r.get(_OFFSET_KEY)
+    except Exception as exc:  # noqa: BLE001 — Redis недоступен: смещение из памяти процесса
+        logger.warning("Public bot poll: state-Redis не ответил: %s", exc)
+        offset = _offset_mem
+    if _offset_mem and (not offset or int(_offset_mem) > int(offset)):
+        offset = _offset_mem
+    payload: dict = {"timeout": 20,
+                     "allowed_updates": ["message", "callback_query", "my_chat_member", "inline_query"]}
+    if offset:
+        payload["offset"] = int(offset)
+    data = await _api("getUpdates", payload, token=settings.public_bot_token)
+    if not data:
+        return False
+    updates = data.get("result", [])
+    for upd in updates:
+        task = asyncio.ensure_future(_handle_in_order(upd))
+        _inflight.add(task)
+        task.add_done_callback(_inflight.discard)
+    if updates:
+        _offset_mem = str(updates[-1]["update_id"] + 1)
+        try:
+            await r.set(_OFFSET_KEY, _offset_mem)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Public bot poll: смещение не записано в Redis: %s", exc)
+    return True
+
+
+
+async def _with_typing(chat_id: str, coro):
+    """Пока модель думает, держим «печатает…» (статус гаснет через ~5 с, обновляем каждые 4 с)."""
+    from app.services.telegram_bot import _api
+
+    task = asyncio.ensure_future(coro)
+    while not task.done():
+        # Не ждём: запрос к Telegram с российского сервера иногда висит до 35 с (проверено 08.11.2026).
+        asyncio.ensure_future(_api("sendChatAction", {"chat_id": chat_id, "action": "typing"},
+                                   token=bot_token(), timeout=6))
+        try:
+            await asyncio.wait_for(asyncio.shield(task), timeout=4)
+        except asyncio.TimeoutError:
+            continue
+    return task.result()
+
+
+# Разные люди не ждут друг друга: апдейты разных чатов идут параллельно, одного чата — по порядку.
+_chat_locks: dict[str, asyncio.Lock] = {}
+_inflight: set = set()
+
+
+def _update_chat_id(upd: dict) -> str:
+    if "inline_query" in upd:
+        return "inline:" + str((upd["inline_query"].get("from") or {}).get("id", ""))
+    for key in ("message", "my_chat_member"):
+        if key in upd:
+            return str((upd[key].get("chat") or {}).get("id", ""))
+    if "callback_query" in upd:
+        return str(((upd["callback_query"].get("message") or {}).get("chat") or {}).get("id", ""))
+    return ""
+
+
+async def _handle_in_order(upd: dict) -> None:
+    lock = _chat_locks.setdefault(_update_chat_id(upd), asyncio.Lock())
+    async with lock:
+        try:
+            await handle_update(upd)
+        except Exception:  # noqa: BLE001
+            logger.warning("Public bot update %s failed", upd.get("update_id"), exc_info=True)
+    if len(_chat_locks) > 5000:
+        _chat_locks.clear()

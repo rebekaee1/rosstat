@@ -1862,6 +1862,30 @@ class PublicBotEvent(Base):
     topic: Mapped[str | None] = mapped_column(String(24))
 
 
+class PublicBotDialog(Base):
+    """Журнал переписки публичного бота (решение владельца 09.11.2026: «сохранять историю диалога… и что ему отправляла LLM»).
+
+    direction="in" — всё, что прислал человек (сообщение, нажатие кнопки, inline-запрос), с данными профиля Telegram
+    и сырым update; direction="llm" — запрос к модели и её ответ. Исходящие сообщения бота — в telegram_outbox.
+    /stop удаляет записи этого чата.
+    """
+    __tablename__ = "public_bot_dialog"
+    __table_args__ = (Index("ix_public_bot_dialog_chat_ts", "chat_id", "occurred_at"),)
+
+    id: Mapped[int] = mapped_column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=_utcnow_naive, index=True)
+    chat_id: Mapped[str | None] = mapped_column(String(32))
+    user_id: Mapped[str | None] = mapped_column(String(32))
+    username: Mapped[str | None] = mapped_column(String(64))
+    first_name: Mapped[str | None] = mapped_column(String(128))
+    last_name: Mapped[str | None] = mapped_column(String(128))
+    language_code: Mapped[str | None] = mapped_column(String(16))
+    direction: Mapped[str] = mapped_column(String(8), nullable=False)  # in / llm
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)  # message / callback / inline / member / answer / week / ...
+    text: Mapped[str | None] = mapped_column(Text)
+    payload: Mapped[dict | None] = mapped_column(JSON)
+
+
 class PublicBotSubscription(Base):
     __tablename__ = "public_bot_subscriptions"
     __table_args__ = (UniqueConstraint("chat_id", "topic", name="uq_public_bot_sub_chat_topic"),)
@@ -1876,3 +1900,21 @@ class PublicBotSubscription(Base):
     last_point_date: Mapped[date | None] = mapped_column(Date)
     last_value: Mapped[float | None] = mapped_column(Numeric(14, 4))
     last_sent_at: Mapped[datetime | None] = mapped_column(DateTime)
+
+
+class ResearchDownload(Base):
+    """Скачивания PDF-отчётов раздела «Исследования» (09.11.2026): счётчик по отчёту и дню.
+
+    Без ПДн: ни IP, ни номера посетителя не хранятся. Повторное скачивание одним адресом в течение суток не
+    увеличивает счётчик (метка в Redis с хэшем адреса и сроком 24 ч). Каталог отчётов — `app/data/research_catalog.json`.
+    """
+    __tablename__ = "research_downloads"
+    __table_args__ = (UniqueConstraint("slug", "date", "source", name="uq_research_downloads_slug_date_src"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    # site / bot / tg / direct (без перехода с сайта и без метки — почти всегда ферма, в публичный счёт не входит)
+    source: Mapped[str] = mapped_column(String(16), nullable=False, default="site", server_default="site")
+    count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+

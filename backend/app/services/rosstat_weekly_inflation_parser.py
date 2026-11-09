@@ -777,6 +777,11 @@ class RosstatWeeklyCpiParser(BaseParser):
                 fetch_log.records_added = records_added
                 fetch_log.records_updated = records_updated
             elif not any((segment_snapshot or {}).get(s) for s in WEEKLY_SEGMENT_CODES):
+                if not fetch_issues and not expected_empty_reason(fetch_log):
+                    # Старая копия сайта Росстата (09.11.2026): nedel_Ipc.xlsx 404, лента бюллетеней мартовская.
+                    outage = await self._source_outage_reason()
+                    if outage:
+                        fetch_issues = [outage]
                 if fetch_issues and not expected_empty_reason(fetch_log):
                     # Источник не ответил (сайт на технических работах, предохранитель хоста), а не «вёрстка сменилась»:
                     # как в BaseParser.run - честный failed без zero_parse-алерта; ряд подхватит rosstat_recovery_job.

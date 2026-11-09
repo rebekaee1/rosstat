@@ -489,7 +489,7 @@ class Settings(BaseSettings):
     session_replay_enabled: bool = False
     session_replay_retention_days: int = 14
     session_replay_max_recording_bytes: int = 8_000_000
-    openrouter_model: str = "anthropic/claude-sonnet-5"
+    openrouter_model: str = "anthropic/claude-sonnet-5.5"
     # 2026-07-08: прод-IP российский, OpenRouter/Anthropic режут его на границе
     # Cloudflare (гео/санкционный комплаенс, не репутация конкретного IP —
     # подтверждено: тот же блок на api.openai.com/api.anthropic.com напрямую,
@@ -521,6 +521,21 @@ class Settings(BaseSettings):
     # чужие чаты получают цифры по словам и коду из роликов, подписку на новые данные.
     # false = прежнее поведение (чужие апдейты молча подтверждаются). Требует telegram_poller_enabled.
     public_bot_enabled: bool = False
+    # Токен отдельного публичного бота (@ForecastEconomyBot, решение владельца 08.11.2026):
+    # пусто = публичный режим в служебном боте (прежняя схема); задан = свой бот и свой поллер.
+    public_bot_token: str = ""
+    # Имя публичного бота без @ — для ссылок t.me/<имя>?start=… (встроенный режим, «Спросить бота»).
+    public_bot_username: str = "ForecastEconomyBot"
+    # Группа Telegram с PDF-отчётами раздела «Исследования» (09.11.2026). Пусто = кнопки бота ведут
+    # на страницу /research сайта; задана (https://t.me/…) — в группу. Обратная ссылка группы → бот в её описании.
+    public_bot_group_url: str = ""
+    # Ответы ИИ-модели (OpenRouter) на вопросы свободным текстом — по данным сайта из контекста.
+    # Требует openrouter_api_key (и openrouter_proxy_url на проде). Модель: пусто = openrouter_model.
+    public_bot_llm_enabled: bool = False
+    # 09.11.2026: Sonnet 5.5 — та же цена за токен, что Sonnet 5, живее и точнее с инструментами (сравнение в
+    # .artifacts/bot-research-2026-11-08/сравнение-моделей.md); пусто — openrouter_model.
+    public_bot_llm_model: str = "anthropic/claude-sonnet-5.5"
+    public_bot_llm_daily_limit: int = 40
     # Окно рассылки новых данных подписчикам, часы по Москве [с, до).
     public_bot_notify_from_hour: int = 9
     public_bot_notify_to_hour: int = 21

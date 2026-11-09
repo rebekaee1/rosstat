@@ -7337,6 +7337,13 @@
       },
       "limits": "Не проверялось: включение флагов на боевом, alembic upgrade head по цепочке на PostgreSQL боевого размера, фактические значения флагов на боевом и стенде, скорость загрузки 63 наборов Евростата на боевом, эффект счётчика страны и памяти воркера на боевом, реальный вызов URL Inspection из контейнера, отправка отчётов Telegram, deploy/test-nginx-config.sh (нужен Docker). Не проверялось (дополнение 13.10): флаг RUSTATS_MOEX_BRENT_LIVE_ENABLED на живом сервере, работа ISS в клиринг, ночью и в выходные; снятие дублей (301) на стенде и боевом после выкладки кода; боевая скорость пакета Европы и вечернего ETL.",
       "gap": "RUSTATS_SEO_WEEKLY_REPORT_CRON_HOUR/_MINUTE и RUSTATS_SITEMAP_PRIORITY_MAX_URLS: первая пара в compose не перечислена; RUSTATS_SSR_SWR_TOKEN и RUSTATS_SSR_SWR_BASE_URL по-прежнему не перечислены (см. запись круга 12)."
+    },
+    {
+      "id": "pulse-model-sonnet55-2026-11-09",
+      "observed_date_msk": "2026-11-09",
+      "local_source_commit": "c9fea738",
+      "kind": "production setting change by owner request, observed after recreate",
+      "scope": "RUSTATS_OPENROUTER_MODEL в /opt/rosstat/.env: anthropic/claude-sonnet-5 → anthropic/claude-sonnet-5.5 (просьба владельца 09.11.2026). Копия прежнего .env — /root/env-before-sonnet55-20261109. backend и scheduler пересозданы `docker compose up -d --no-build` на прежнем образе, оба healthy; переменная в обоих контейнерах = anthropic/claude-sonnet-5.5; https://forecasteconomy.com/ → 200. Пробный запрос к OpenRouter через RUSTATS_OPENROUTER_PROXY_URL: HTTP 200, модель anthropic/claude-sonnet-5.5. Код прода (git) не менялся: 117d391d. Первый Пульс на новой модели не наблюдался."
     }
   ]
 }

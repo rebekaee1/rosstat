@@ -184,11 +184,14 @@ export function PrivacyBodyEn({ t, h1 }) {
         </li>
         <li className={li}>
           <strong className="text-text-primary">Telegram</strong> — if you message our bot
-          @forecast_bot_economy_bot, the Controller stores the chat number to reply and to send
+          @ForecastEconomyBot, the Controller stores the chat number to reply and to send
           the updates you choose, along with the link or word you came with, the topics you
           viewed, and your subscriptions. Names and @usernames are not stored. Messages pass
-          through the Telegram service under its own rules. The /stop command in the bot deletes
-          the chat number, subscriptions, and the bot’s messages to you.
+          through the Telegram service under its own rules. Questions asked in your own words are
+          sent, together with the Site’s public data, to an AI model via the OpenRouter service to
+          produce an answer; the Controller does not store the text of questions — do not include
+          personal data in them. The /stop command in the bot deletes the chat number,
+          subscriptions, and the bot’s messages to you.
         </li>
         <li className={li}>
           <strong className="text-text-primary">YouTube API Services</strong> (Google) — the

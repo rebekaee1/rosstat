@@ -203,3 +203,21 @@ def test_summary_mentions_urgent_and_does_not_claim_calm_site():
 def test_held_and_urgent_kinds_do_not_overlap():
     assert not calm.HELD_KINDS & calm.URGENT_KINDS
     assert set(calm.KIND_LABELS) >= calm.HELD_KINDS
+
+
+def test_summary_does_not_say_nothing_to_do_when_action_is_waiting():
+    # 09.11.2026: сводка начиналась с «Тебе ничего делать не нужно», а ниже лежало «напиши Claude «почисти битые точки»».
+    rows = [
+        ("data_sanity", "🟡 <b>В базе есть точки, которых не может быть</b>\n192 точек у 27 рядов"),
+        ("token_expired", "🟠 <b>Истёк доступ к Яндекс Вебмастеру</b>\nПока токен не обновлён…"),
+        ("load_shed", "🟡 <b>Сервер сбрасывает нагрузку</b>\n50 страниц"),
+    ]
+    text = calm.build_summary(rows, day=date(2026, 11, 9))
+    assert "ничего делать не нужно" not in text
+    assert "Нужно от тебя:" in text and "почисти битые точки" in text
+    # токен Вебмастера владелец обновить не может (09.11.2026): в «нужно от тебя» его нет
+    assert "токен" not in text.split("\n")[1]
+
+
+def test_action_kinds_are_held():
+    assert set(calm.ACTION_KINDS) <= calm.HELD_KINDS
