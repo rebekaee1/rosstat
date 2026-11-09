@@ -39,7 +39,7 @@ export function deltaUnit(unit, locale, { plain = false } = {}) {
 export function formatDeltaWithUnit(delta, unit, { pct = false, digits = 2, locale, plain = false } = {}) {
   const { flat, text } = formatDeltaNumber(delta, { digits, locale });
   if (flat) return { flat: true, text: '' };
-  if (pct) return { flat: false, text: `${text}${NBSP}%` };
+  if (pct) return { flat: false, text: `${text}${locale === 'en' ? '' : NBSP}%` };
   const suffix = deltaUnit(unit, locale, { plain });
   // Круг 13: длинная подпись («+0.34 percentage points») должна уметь переноситься, иначе плашка шире карточки (кадр se-34).
   // Число со знаком от слов не отрываем неразрывным пробелом только у короткой единицы; у длинной — обычный пробел.

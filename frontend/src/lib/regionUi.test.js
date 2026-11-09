@@ -59,7 +59,7 @@ describe('formatRegionNumber / formatDeltaPercent', () => {
   it('изменение: «44,4 %» и «<0,1 %»', () => {
     expect(formatDeltaPercent(-44.4)).toBe(`44,4${NBSP}%`);
     expect(formatDeltaPercent(0.02)).toBe(`<0,1${NBSP}%`);
-    expect(formatDeltaPercent(3.3, 'en')).toBe(`3.3${NBSP}%`);
+    expect(formatDeltaPercent(3.3, 'en')).toBe("3.3%");
   });
 });
 

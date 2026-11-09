@@ -63,8 +63,9 @@ export function formatDeltaPercent(pct, locale = 'ru') {
   const abs = Math.abs(Number(pct));
   const dec = locale === 'en' ? '.' : ',';
   if (!Number.isFinite(abs)) return '';
-  if (abs < 0.1) return `<0${dec}1${NBSP}%`;
-  return `${abs.toFixed(1).replace('.', dec)}${NBSP}%`;
+  const gap = locale === 'en' ? '' : NBSP;
+  if (abs < 0.1) return `<0${dec}1${gap}%`;
+  return `${abs.toFixed(1).replace('.', dec)}${gap}%`;
 }
 
 /**
