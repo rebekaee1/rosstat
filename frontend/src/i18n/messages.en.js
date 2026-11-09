@@ -3889,4 +3889,5 @@ export default {
   'r5d.copy': 'Copy the numbers',
   'r5d.copied': 'Copied',
   'r5d.prices.compare': 'Compare your region with another',
+  'r5d.search.compare': 'Or compare two regions: prices, basket, wages',
 };
