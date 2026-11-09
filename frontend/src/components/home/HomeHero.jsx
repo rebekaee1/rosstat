@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import IndicatorSearch from '../IndicatorSearch';
 import HomeDataScope from './HomeDataScope';
 import HomeToday from './HomeToday';
-import { HomeRegionQuick } from './HomePricesRates';
+import { HomeRegionQuick, HomeFactsStrip, HomePriceStrip } from './HomePricesRates';
 import { HOME_EXAMPLE_COUNT, searchExamples } from '../../lib/searchExamples';
 import { buildQuickLinks } from '../../lib/homeQuickLinks';
 import { useWorldCompareSnapshot, useWorldCountries } from '../../lib/worldApi';
@@ -80,7 +80,7 @@ export default function HomeHero({ planet = null }) {
             {planet ? (
               <>
                 <span className="fe-hero-lead--full">{t('w6c.hero.subtitle')}</span>
-                <span className="fe-hero-lead--short">{t('z3.hero.leadShort')}</span>
+                <span className="fe-hero-lead--short">{t('r9a.hero.leadShort')}</span>
               </>
             ) : t('home.hero.subtitle')}
           </p>
@@ -116,6 +116,8 @@ export default function HomeHero({ planet = null }) {
             </nav>
           ) : null}
           {planet ? <HomeRegionQuick /> : null}
+          {planet ? <HomeFactsStrip /> : null}
+          {planet ? <HomePriceStrip /> : null}
         </div>
         {planet && <div className="fe-hero-planet">{planet}</div>}
         {planet ? <HomeToday /> : null}

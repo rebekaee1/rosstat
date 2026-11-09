@@ -13,6 +13,9 @@ import { useLocale, useT } from '../../i18n';
 import '../../styles/z3-home.css';
 import '../../styles/r3a-home.css';
 import '../../styles/r5d-home.css';
+import HomeRegionPriceTiles, { HomePriceStrip } from './HomeRegionPriceTiles';
+import { useHomePriceSummary } from '../../lib/homePriceSummary';
+import { regionHubPath } from '../../lib/sitePaths';
 
 const STORE_KEY = 'fe-home-region';
 
@@ -36,8 +39,10 @@ function useRegionChoice() {
   const onPick = (slug) => {
     setPicked(slug);
     try { window.localStorage.setItem(STORE_KEY, slug); } catch { /* память браузера необязательна */ }
+    try { window.dispatchEvent(new CustomEvent('fe:home-region', { detail: slug })); } catch { /* событие необязательно */ }
   };
-  return { regions, value, total, onPick };
+  const name = regions.find((r) => r.slug === value)?.name || '';
+  return { regions, value, total, name, onPick };
 }
 
 /** Компактная строка под быстрыми ссылками героя: регион и кнопка «к ценам» в один ряд, чтобы цены были в первом экране телефона. */
@@ -71,10 +76,30 @@ export function HomeRegionQuick() {
   );
 }
 
+/** Полоса фактов в первом экране (R9-A): сколько цен, регионов и курсов ЦБ; каждое число ведёт в свой раздел. */
+export { HomePriceStrip };
+export function HomeFactsStrip() {
+  const t = useT();
+  const { total } = useRegionChoice();
+  const prices = useHomePriceSummary();
+  const indicators = useIndicators();
+  const edges = useMemo(() => buildEdges(indicators.data || []), [indicators.data]);
+  const n = prices.data?.total || 0;
+  if (!n) return null;
+  return (
+    <ul className="r9a-facts" data-block="home-facts" aria-label={t('r9a.facts.aria')}>
+      <li><Link to={regionHubPath()}><b>{n}</b>{t('r9a.facts.prices')}</Link></li>
+      <li><Link to={regionHubPath()}><b>{total}</b>{t('r9a.facts.regions')}</Link></li>
+      {edges.length ? <li><Link to={RATES_TO}><b>{edges.length}</b>{t('r9a.facts.rates')}</Link></li> : null}
+    </ul>
+  );
+}
+
 function RegionPrices() {
   const t = useT();
   const id = useId();
-  const { regions, value, total, onPick } = useRegionChoice();
+  const { regions, value, total, name, onPick } = useRegionChoice();
+  const rival = regions.find((r) => r.slug === (value === 'sankt-peterburg' ? 'moskva' : 'sankt-peterburg'));
   return (
     <article className="fe-tool fe-reveal fe-r3a-card">
       <header className="fe-tool__head">
@@ -91,7 +116,7 @@ function RegionPrices() {
             {regions.length ? regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>) : <option value="">…</option>}
           </select>
         </label>
-        <p className="fe-r3a-goods">{['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k, i) => { const w = t(`r3a.prices.g.${k}`); return i ? w.charAt(0).toLowerCase() + w.slice(1) : w; }).join(', ')} {t('r3a.prices.more')}</p>
+        <HomeRegionPriceTiles region={value} regionName={name} />
       </div>
       {value ? (
         <Link
@@ -99,7 +124,7 @@ function RegionPrices() {
           onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'region-prices', surface: 'home-r3a' })}
           className="fe-r3a-cta fe-press"
         >
-          {t('r3a.prices.go')}
+          {name ? t('r9a.prices.goName', { name }) : t('r3a.prices.go')}
           <ArrowRight size={16} aria-hidden="true" />
         </Link>
       ) : null}
@@ -109,7 +134,7 @@ function RegionPrices() {
           onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'region-compare', surface: 'home-r5d' })}
           className="r5d-compare fe-press"
         >
-          {t('r5d.prices.compare')}
+          {rival && name ? t('r9a.prices.comparePair', { a: name, b: rival.name }) : t('r5d.prices.compare')}
         </Link>
       ) : null}
     </article>
