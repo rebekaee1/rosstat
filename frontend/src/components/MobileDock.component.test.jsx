@@ -34,13 +34,13 @@ afterEach(() => {
 });
 
 describe('MobileDock: нижняя док-панель телефона', () => {
-  it('пять пунктов: Страны, Цены, Валюты, Рейтинг, Ещё; ссылки ведут на свои разделы', () => {
+  it('пять пунктов: Цены, Валюты, Страны, Рейтинг, Ещё (R9-A: цены первыми); ссылки ведут на свои разделы', () => {
     renderDock();
     const dock = screen.getByRole('navigation', { name: 'Основные разделы' });
     const labels = [...dock.querySelectorAll('.fe-dock__label')].map((n) => n.textContent);
-    expect(labels).toEqual(['Страны', 'Цены', 'Валюты', 'Рейтинг', 'Ещё']);
+    expect(labels).toEqual(['Цены', 'Валюты', 'Страны', 'Рейтинг', 'Ещё']);
     const hrefs = [...dock.querySelectorAll('a')].map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual(['/#countries', '/russia/region', '/currencies', '/world/rating/gdp-usd']);
+    expect(hrefs).toEqual(['/russia/region', '/currencies', '/#countries', '/world/rating/gdp-usd']);
     expect(dock.querySelectorAll('button')).toHaveLength(1);
   });
 
@@ -48,7 +48,7 @@ describe('MobileDock: нижняя док-панель телефона', () => 
     renderDock('/', 'en');
     const dock = screen.getByRole('navigation', { name: 'Main sections' });
     expect([...dock.querySelectorAll('.fe-dock__label')].map((n) => n.textContent)).toEqual([
-      'Countries', 'Prices', 'Rates', 'Rankings', 'More',
+      'Prices', 'Rates', 'Countries', 'Rankings', 'More',
     ]);
   });
 

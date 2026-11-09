@@ -76,7 +76,7 @@ describe('Navbar H-4 menu', () => {
     const hrefs = (root) => [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
     const links = hrefs(menu);
     // Порядок: страны, цены по регионам (круг 3), рейтинг, сравнение, прогнозы, категории, валюты, «Как мы считаем».
-    const order = ['/#countries', '/russia/region', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/methodology'];
+    const order = ['/russia/region', '/#countries', '/world/rating/gdp-usd', '/compare', '/forecasts', '/russia/category', '/currencies', '/methodology'];
     expect(order.map((href) => links.indexOf(href))).toEqual([...order.keys()]);
     expect(within(menu).queryByRole('link', { name: 'Демография' })).toBeNull();
 
