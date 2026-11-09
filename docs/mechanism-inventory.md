@@ -14,7 +14,7 @@
 - Jobs: **59**
 - Middleware: **6**
 - Registry declarations: **1327**
-- Registry references: **2516**
+- Registry references: **2517**
 - Migration operations: **464**
 - Candidate effects: **2790**
 - Unresolved syntax: **1**
@@ -3166,7 +3166,7 @@ Relationships: `[]`
 | app.tasks.analytics_rollups._TRAFFIC_JSON_KEYS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:58](../backend/app/tasks/analytics_rollups.py#L58) |
 | app.tasks.analytics_rollups.METRIKA_SOURCE_TO_CHANNEL | Dict | 'organic', 'direct', 'ad', 'referral', 'internal', 'social', 'messenger', 'email', 'recommend', 'saved', 'undefined' | [backend/app/tasks/analytics_rollups.py:65](../backend/app/tasks/analytics_rollups.py#L65) |
 | app.tasks.analytics_rollups._RAW_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:104](../backend/app/tasks/analytics_rollups.py#L104) |
-| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:424](../backend/app/tasks/analytics_rollups.py#L424) |
+| app.tasks.analytics_rollups._PORTRAIT_FP_COLUMNS | Tuple | sequence/source expression | [backend/app/tasks/analytics_rollups.py:435](../backend/app/tasks/analytics_rollups.py#L435) |
 | app.tasks.scheduler.ETL_TIMEOUT_BY_PARSER | Dict | 'rosstat_weekly_cpi', 'minfin_budget_csv' | [backend/app/tasks/scheduler.py:43](../backend/app/tasks/scheduler.py#L43) |
 | app.tasks.session_analysis._INACTIVE | Call | computed source expression | [backend/app/tasks/session_analysis.py:27](../backend/app/tasks/session_analysis.py#L27) |
 | app.tasks.ticker_worker._SERIES_TICKER_SPECS | Tuple | sequence/source expression | [backend/app/tasks/ticker_worker.py:47](../backend/app/tasks/ticker_worker.py#L47) |
