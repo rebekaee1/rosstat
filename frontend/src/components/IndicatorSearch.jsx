@@ -36,6 +36,7 @@ import '../styles/k8-tools.css';
 import '../styles/z4s-search.css';
 import '../styles/r6a-search.css';
 import '../styles/r7a-search.css';
+import '../styles/r8a-search.css';
 import { labourNoteKey, labourSuggestions, localSuggestions } from './searchLabourHints';
 
 // The palette discovers every public data plane through /search. Empty-query
@@ -482,6 +483,7 @@ export default function IndicatorSearch({
   })();
 
   const indexById = useMemo(() => new Map(rows.map((row, i) => [row.id, i])), [rows]);
+  const nearestRows = !isLoading && !isSearchError && Array.isArray(globalSearch.data?.nearest?.results) ? globalSearch.data.nearest.results.filter((item) => item?.path) : [];
   const renderRow = (row) => {
     const i = indexById.get(row.id);
     return (
@@ -767,11 +769,31 @@ export default function IndicatorSearch({
                         : globalSearch.data?.reason === 'ambiguous_geography' ? t('search.ambiguousGeography')
                           : (
                             <div className="text-center" data-testid="search-nothing">
-                              <EmptyState variant="no-results" size={80} title={t('search.nothingFound', { query: qTrim })} />
+                              <EmptyState variant="no-results" size={nearestRows.length ? 56 : 80} title={nearestRows.length ? t('r8a.nearest.title', { query: qTrim }) : t('search.nothingFound', { query: qTrim })} />
+                              {nearestRows.length ? (
+                                <div className="r8a-nearest" data-testid="search-nearest">
+                                  <p className="r8a-nearest__note">{t(`r8a.nearest.${globalSearch.data.nearest.note}`)}</p>
+                                  {nearestRows.map((item, k) => (
+                                    <SearchRow
+                                      key={item.key}
+                                      row={{ id: `nearest-${k}`, type: 'item', item, name: item.name, detail: item.region_name || item.country_name }}
+                                      index={k}
+                                      id={`${resultId}-nearest-${k}`}
+                                      flagCode={flagBySlug.get(item.country_slug) || ''}
+                                      flagBySlug={flagBySlug}
+                                      locale={locale}
+                                      t={t}
+                                      plain
+                                      onHover={setHi}
+                                      onPick={() => openTarget(item, { label: item.name, position: k + 1 })}
+                                    />
+                                  ))}
+                                </div>
+                              ) : null}
                               {(() => {
                                 const regionName = globalSearch.data?.intent?.region_name;
-                                const labour = labourSuggestions(qTrim, t, regionName);
-                                const items = labour.length > 0 ? labour : localSuggestions(regionName, t);
+                                const labour = nearestRows.length ? [] : labourSuggestions(qTrim, t, regionName);
+                                const items = nearestRows.length ? [] : labour.length > 0 ? labour : localSuggestions(regionName, t);
                                 if (items.length === 0) return null;
                                 return (
                                   <div className="r6a-labour r7a-local" data-testid="search-labour-hints">
@@ -786,11 +808,13 @@ export default function IndicatorSearch({
                                   </div>
                                 );
                               })()}
-                              <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
-                                <li>{t('shell.search.tip.spelling')}</li>
-                                <li>{t('shell.search.tip.short')}</li>
-                                <li>{t('shell.search.tip.place')}</li>
-                              </ul>
+                              {nearestRows.length ? null : (
+                                <ul className="mx-auto mt-3 max-w-sm space-y-1 text-left text-sm text-text-secondary">
+                                  <li>{t('shell.search.tip.spelling')}</li>
+                                  <li>{t('shell.search.tip.short')}</li>
+                                  <li>{t('shell.search.tip.place')}</li>
+                                </ul>
+                              )}
                               <p className="mt-4 text-sm font-medium text-text-secondary">{t('shell.search.tryThese')}</p>
                               {/* R2-Z4: один ряд подсказок без повторов: курсы валют и домашние темы вместе, без второго заголовка. */}
                               <ul className="mt-2 flex flex-wrap justify-center gap-2">
@@ -803,9 +827,16 @@ export default function IndicatorSearch({
                                   </li>
                                 ))}
                               </ul>
-                              <button type="button" data-testid="search-nothing-compare" onClick={() => navigate(regionVsPath('moskva', 'sankt-peterburg'))} className={cn(FOCUS_RING, 'fe-press mt-4 min-h-11 rounded-xl px-4 text-sm font-medium text-champagne-ink')}>
-                                {t('r5d.search.compare')}
-                              </button>
+                              {(() => {
+                                // R8-A: назван свой регион — сравнение «мой регион и Москва», а не чужая пара.
+                                const ownSlug = (globalSearch.data?.intent?.regions || [])[0]?.split(':').pop();
+                                const own = ownSlug && ownSlug !== 'moskva' ? ownSlug : '';
+                                return (
+                                  <button type="button" data-testid="search-nothing-compare" onClick={() => navigate(own ? regionVsPath(own, 'moskva') : regionVsPath('moskva', 'sankt-peterburg'))} className={cn(FOCUS_RING, 'fe-press mt-4 min-h-11 rounded-xl px-4 text-sm font-medium text-champagne-ink')}>
+                                    {own ? t('r8a.search.compareOwn', { region: globalSearch.data.intent.region_name }) : t('r5d.search.compare')}
+                                  </button>
+                                );
+                              })()}
                             </div>
                           )}
                 </div>
@@ -928,7 +959,7 @@ function latestText(item, locale, t) {
  * Строка-семья несёт переключатель частот, строка «по странам» — кнопки стран; сама строка открывает главное.
  */
 function SearchRow({
-  row, index, id, active, flagCode = '', flagBySlug = null, locale = 'ru', t, expanded = false, onToggle, onHover, onPick, onWarm, onQuick,
+  row, index, id, active, flagCode = '', flagBySlug = null, locale = 'ru', t, expanded = false, onToggle, onHover, onPick, onWarm, onQuick, plain = false,
 }) {
   const isSuggestion = row.type === 'suggestion';
   const item = row.item || {};
@@ -963,9 +994,9 @@ function SearchRow({
           'fe-search-row w-full min-h-14 text-left px-3 py-2.5 flex items-center gap-3 transition-colors',
           active && 'is-active',
         )}
-        role="option"
-        tabIndex={-1}
-        aria-selected={active}
+        role={plain ? undefined : 'option'}
+        tabIndex={plain ? 0 : -1}
+        aria-selected={plain ? undefined : active}
       >
         <span className="fe-search-row__tile relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-champagne/10 text-champagne-ink" aria-hidden="true">
           {flagAsIcon ? <CountryFlag code={flagCode} className="fe-search-row__flag" /> : <Icon size={18} />}

@@ -52,6 +52,9 @@ _ARREARS_NAME = re.compile(r"просроченн|задолженност|пе�
 _LOAD_QUERY = re.compile(r"пенсион|нагрузк|на одного|на 1 |pensioner|per pensioner", re.I)
 _LOAD_NAME = re.compile(r"приходящ\w+ на одного|на одного пенсионера", re.I)
 _STALE_NAME = re.compile(r"в IV квартале 2001", re.I)
+# R8-A: «Итоги выборочных обследований — …» — не общая цифра региона; без слов «итоги/обследование» в запросе она ниже.
+_SURVEY_NAME = re.compile(r"итоги выборочн|выборочных обследован", re.I)
+_SURVEY_QUERY = re.compile(r"итог|обследован|выборочн", re.I)
 
 
 def r7a_demotion(name: str, raw_query: str) -> int:
@@ -63,4 +66,6 @@ def r7a_demotion(name: str, raw_query: str) -> int:
         return 140
     if _STALE_NAME.search(name):
         return 60
+    if _SURVEY_NAME.search(name) and not _SURVEY_QUERY.search(raw):
+        return 200
     return 0
