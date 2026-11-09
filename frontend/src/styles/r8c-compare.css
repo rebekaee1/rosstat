@@ -1,0 +1,16 @@
+/* R8-C: сравнение цен двух регионов — ритм, выравнивание, читаемые подписи. Без рамок. */
+
+/* Кнопки-ссылки встают заподлицо с заголовком, а не на 4 px правее. */
+.r4a-more { padding-inline: 0; }
+
+/* Шапка группы: название и подпись «кто дешевле» в два яруса, чтобы цифры не были безымянными. */
+.r4a-group__head { grid-template-columns: minmax(0, 1fr) 20px; grid-template-rows: auto auto; row-gap: 2px; padding-block: 10px; }
+.r4a-group__head .r4a-group__label { grid-column: 1; grid-row: 1; }
+.r4a-group__head > svg { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.r8c-tally { grid-column: 1; grid-row: 2; white-space: normal; font-variant-numeric: tabular-nums lining-nums; line-height: 1.35; }
+
+/* Полосатая заливка строк: мягкие края, текст не прижат к краю заливки. */
+.r4a-table { padding-inline: 4px; }
+.r4a-table__row { padding-inline: 10px; border-radius: 12px; }
+.r4a-list__row { padding-inline: 10px; border-radius: 12px; }
+.r4a-table__val, .r4a-list__val { font-variant-numeric: tabular-nums lining-nums; }

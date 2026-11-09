@@ -12,6 +12,7 @@ import { formatPrice, splitShortName } from './RegionPrices';
 import { useLocale } from '../../i18n';
 import { resolveBrowserLocale } from '../../i18n/locale';
 import '../../styles/r4a-compare-prices.css';
+import '../../styles/r8c-compare.css';
 
 export function useRegionPriceCompare(slugA, slugB) {
   return useQuery({
@@ -123,7 +124,7 @@ function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
     <section className="r4a-group">
       <button type="button" className="r4a-group__head fe-press" aria-expanded={open} onClick={() => setOwn((v) => !v)}>
         <span className="r4a-group__label">{group.label}</span>
-        <span className="r4a-group__tally">{t('r4a.group.tally', { a: cheaperA, b: cheaperB })}</span>
+        <span className="r4a-group__tally r8c-tally">{t('r8c.group.tally', { a: a.name, na: cheaperA, b: b.name, nb: cheaperB })}</span>
         <ChevronDown size={16} aria-hidden="true" className={open ? 'is-open' : ''} />
       </button>
       {open && (
@@ -145,7 +146,7 @@ function GroupTable({ group, data, locale, t, forceOpen, defaultOpen }) {
                   <span role="cell" key={r.slug} className={`fe-num r4a-table__val${it.cheaper_slug === r.slug ? ' is-better' : ''}`}>
                     {formatPrice(k === 0 ? it.a : it.b, locale)}
                     {it.cheaper_slug === r.slug && it.diff_pct != null && it.diff_pct >= 1 && (
-                      <span className="r4a-table__diff">{`−${Math.round(it.diff_pct)} %`}</span>
+                      <span className="r4a-table__diff">{`−${Math.round(it.diff_pct)}${locale === 'en' ? '' : '\u00a0'}%`}</span>
                     )}
                   </span>
                 ))}

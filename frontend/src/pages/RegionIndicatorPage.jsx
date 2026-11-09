@@ -484,7 +484,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                 >
                   {absDelta ? `${absDelta.text} ${t('regions.ind.deltaYoYAbs')}` : isMonthly && Math.abs(delta.pct) < 0.05 ? t('r5a.flatMonth') : t(isMonthly ? 'regions.ind.deltaMoM' : 'regions.ind.deltaYoY', {
                     pct: `${delta.up ? '+' : delta.down ? '\u2212' : ''}${Math.abs(delta.pct).toFixed(1).replace('.', locale === 'en' ? '.' : ',')}`,
-                  }).replace('%', `${NBSP}%`)}
+                  }).replace('%', locale === 'en' ? '%' : `${NBSP}%`)}
                 </DeltaBadge>
               )}
             </div>
@@ -500,7 +500,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <R6RussiaLine value={last.value} year={last.year} series={active.russia_series} unit={active.indicator.unit} locale={locale} t={t} />
             )}
             {discontinued && <DiscontinuedNote />}
-            <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} />
+            <CompareLines rows={compareList} unit={active.indicator.unit} lastMonth={lastYm} nation={slug === 'russia'} />
             {isPrice && !discontinued && <CopyForClient text={shareText} />}
           </div>
 
@@ -649,9 +649,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               </StatCell>
             )}
             {isMonthly && periodChanges.map(({ key, ch }) => (
-              <StatCell key={key} label={t(key, { month: ymLabelFrom(ch.from.year * 100 + ch.from.month, locale) })}>
+              <StatCell key={key} label={isPrice ? t(key === 'z2.yearAgo' ? 'r8c.yearShort' : 'r8c.fiveShort') : t(key, { month: ymLabelFrom(ch.from.year * 100 + ch.from.month, locale) })}>
                 {signedPct(ch.pct, locale)}
-                {isPrice && <span className="r5a-stat-was">{t('r5a.was', { value: priceText(roundBig(ch.from.value), active.indicator.unit, locale) })}</span>}
+                {isPrice && <span className="r5a-stat-was"><span className="whitespace-nowrap">{t('r5a.was', { value: priceText(roundBig(ch.from.value), active.indicator.unit, locale) })}</span><span className="block whitespace-nowrap">{ymLabel(ch.from.year * 100 + ch.from.month, locale)}</span></span>}
               </StatCell>
             ))}
             {stats && !isMonthly && (
@@ -666,11 +666,13 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             )}
             {monthlyExtremes && (
               <>
-                <StatCell label={t(monthlyExtremes.mx === last || (monthlyExtremes.mx.year === last.year && monthlyExtremes.mx.month === last.month) ? 'r5a.record' : 'r2z2.statMax', { month: ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale) })}>
+                <StatCell label={isPrice ? t(monthlyExtremes.mx === last || (monthlyExtremes.mx.year === last.year && monthlyExtremes.mx.month === last.month) ? 'r8c.record' : 'r8c.peak') : t(monthlyExtremes.mx === last || (monthlyExtremes.mx.year === last.year && monthlyExtremes.mx.month === last.month) ? 'r5a.record' : 'r2z2.statMax', { month: ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale) })}>
                   {isPrice ? priceText(roundBig(monthlyExtremes.mx.value), active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mx.value, active.indicator.unit, locale)}
+                  {isPrice && <span className="r5a-stat-was">{ymLabel(monthlyExtremes.mx.year * 100 + monthlyExtremes.mx.month, locale)}</span>}
                 </StatCell>
-                <StatCell label={t('r2z2.statMin', { month: ymLabel(monthlyExtremes.mn.year * 100 + monthlyExtremes.mn.month, locale) })}>
+                <StatCell label={isPrice ? t('r8c.low') : t('r2z2.statMin', { month: ymLabel(monthlyExtremes.mn.year * 100 + monthlyExtremes.mn.month, locale) })}>
                   {isPrice ? priceText(roundBig(monthlyExtremes.mn.value), active.indicator.unit, locale) : formatRegionWithUnit(monthlyExtremes.mn.value, active.indicator.unit, locale)}
+                  {isPrice && <span className="r5a-stat-was">{ymLabel(monthlyExtremes.mn.year * 100 + monthlyExtremes.mn.month, locale)}</span>}
                 </StatCell>
               </>
             )}
@@ -814,7 +816,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
           )}
 
           {isMonthly && siblingsView.some(s => s.price_group) && (
-            <GroupedSiblings
+            <GroupedSiblings pageMonth={isPrice && !discontinued ? lastYm : null}
               siblings={siblingsView}
               currentGroup={priceGroup}
               slug={slug}

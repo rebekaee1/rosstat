@@ -107,6 +107,10 @@ export default function RegionComparePage() {
   const prices = useRegionPriceCompare(slugA, slugB);
   const [view, setView] = useState('prices');
   const hasPrices = !!prices.data?.items?.length;
+  // Сервер отдаёт пару в алфавитном порядке; заголовок и крошки следуют порядку выбора в адресе, как поля выбора.
+  const nameOf = (slug) => (data?.region_a?.slug === slug ? data.region_a.name : data?.region_b?.name);
+  const nameA = data ? nameOf(slugA) : '';
+  const nameB = data ? nameOf(slugB) : '';
   const showFacts = view === 'facts' || !hasPrices;
 
   useDocumentMeta(data ? {
@@ -135,7 +139,7 @@ export default function RegionComparePage() {
     <div className="fe-data-page max-w-5xl mx-auto px-4 pt-24 pb-12 sm:pb-16">
       <Breadcrumbs
         items={regionVsTrail(
-          data ? `${data.region_a.name} — ${data.region_b.name}` : t('regions.compareCrumb'),
+          data ? `${nameA} — ${nameB}` : t('regions.compareCrumb'),
           regionVsPath(slugA, slugB),
         )}
         className="mb-4"
@@ -164,7 +168,7 @@ export default function RegionComparePage() {
             {t('regions.compareEyebrow')}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
-            {t('regions.compareH1', { a: data.region_a.name, b: data.region_b.name })}
+            {t('regions.compareH1', { a: nameA, b: nameB })}
           </h1>
           <p className="mb-6 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
             {t('regions.compareIntro')}

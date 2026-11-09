@@ -4003,4 +4003,13 @@ export default {
   'r8b.sub.build': 'Building',
   'r8b.sub.leisure': 'Leisure',
   'r8b.sub.other': 'Other goods',
+  'r8c.yearShort': 'Past year',
+  'r8c.fiveShort': 'Past 5 years',
+  'r8c.record': 'Record',
+  'r8c.peak': 'Peak',
+  'r8c.low': 'Low',
+  'r8c.group.tally': 'Cheaper: {a} {na}, {b} {nb}',
+  'r8c.natHigher': 'Russia: {pct} higher',
+  'r8c.natLower': 'Russia: {pct} lower',
+  'r8c.natSame': 'Russia: about the same',
 };

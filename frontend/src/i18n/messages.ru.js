@@ -4008,4 +4008,13 @@ export default {
   'r8b.sub.build': 'Стройка',
   'r8b.sub.leisure': 'Досуг и сад',
   'r8b.sub.other': 'Прочее',
+  'r8c.yearShort': 'За год',
+  'r8c.fiveShort': 'За 5 лет',
+  'r8c.record': 'Рекорд',
+  'r8c.peak': 'Максимум',
+  'r8c.low': 'Минимум',
+  'r8c.group.tally': 'Дешевле: {a} — {na}, {b} — {nb}',
+  'r8c.natHigher': 'в России выше на {pct}',
+  'r8c.natLower': 'в России ниже на {pct}',
+  'r8c.natSame': 'в России так же',
 };

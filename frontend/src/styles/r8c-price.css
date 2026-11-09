@@ -1,0 +1,19 @@
+/* R8-C: страница цены региона глазами дизайнера-перфекциониста. Без рамок: заливка и свет. */
+
+/* Сравнение с Россией: колонка названий одной ширины, цифры табличные, полоса тонкая; метка «уровень России» вместо глухой полной полосы. */
+.z2p-compare__name { flex: 0 0 4.5rem; }
+.z2p-compare__val { flex: 0 0 5.4rem; }
+.z2p-compare__val, .z2p-compare__pct { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.z2p-compare li { column-gap: 0.6rem; }
+.r8c-bar { position: relative; height: 2px; margin: 0.3rem 0 0.25rem; background: color-mix(in srgb, var(--color-text-secondary, #5d6578) 12%, transparent); overflow: visible; }
+.r8c-bar i { background: color-mix(in srgb, var(--fe-gold, #ad8a48) 55%, transparent); }
+.r8c-bar b {
+  position: absolute; top: -3px; width: 2px; height: 8px; margin-left: -1px; border-radius: 1px;
+  background: var(--color-text-primary, #1e2638); opacity: 0.55;
+}
+
+/* Окно графика: на телефоне выключатель периода тянется на всю ширину, кнопки равные. */
+@media (max-width: 639px) {
+  .r5a-range { display: flex; width: 100%; }
+  .r5a-range__b { flex: 1 1 0; text-align: center; padding-inline: 0.4rem; white-space: nowrap; }
+}
