@@ -1,0 +1,81 @@
+/* Круг 7, R7-C: хаб регионов, рейтинг и карта. Холодная палитра, без рамок. */
+
+/* Заголовок рейтинга: название на всю ширину, ниже инструменты, а не зажатая колонка рядом с кнопкой. */
+.r7c-head { margin-bottom: 8px; }
+.r7c-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.r7c-mine {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 14px;
+  border-radius: 9999px; background: var(--fe-glass-l2); box-shadow: var(--fe-l2-shadow);
+  font-size: 13px; color: var(--color-text-secondary); max-width: 100%;
+}
+.r7c-mine__label { font-weight: 600; white-space: nowrap; }
+.r7c-mine select {
+  min-width: 0; max-width: 11rem; min-height: 40px; border: 0; background: transparent;
+  color: var(--color-text-primary); font: inherit; font-size: 14px; font-weight: 600; text-overflow: ellipsis;
+}
+.r7c-mine select:focus-visible { outline: 2px solid #2C4A8A; outline-offset: 2px; border-radius: 8px; }
+
+/* Мой регион: место, значение и середина по регионам: одна карточка. */
+.r7c-mine-card {
+  margin: 4px 0 10px; padding: 12px 14px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(60, 84, 130, 0.10), transparent 85%), var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow), var(--fe-inset-glint);
+}
+.r7c-mine-card__top { display: flex; align-items: center; gap: 12px; }
+.r7c-mine-card__place { min-width: 40px; text-align: center; font-size: 26px; font-weight: 700; color: #1E3A6E; }
+.r7c-mine-card__name { display: block; font-size: 15px; font-weight: 650; line-height: 1.25; color: var(--color-text-primary); }
+.r7c-mine-card__sub { font-size: 12px; color: var(--color-text-secondary); }
+.r7c-mine-card__x { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 9999px; color: var(--color-text-secondary); }
+.r7c-mine-card__vals { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-top: 4px; padding-left: 52px; font-size: 16px; font-weight: 650; }
+.r7c-mine-card__med { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+:root:root .fe-rank__row.is-mine { background: linear-gradient(135deg, rgba(60, 84, 130, 0.14), transparent 85%), var(--fe-glass-l2); }
+
+/* Строки рейтинга на телефоне: название и полоса слева, значение справа. Раньше три яруса по 90 px, на экран влезало 5 регионов. */
+@media (max-width: 639px) {
+  :root:root .fe-rank__row {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    grid-template-areas: 'place name value' 'place bar value';
+    row-gap: 0; min-height: 0; padding: 6px 12px 10px 8px; column-gap: 8px;
+  }
+  :root:root .fe-rank__row .fe-rank__link { min-height: 36px; }
+  :root:root .fe-rank__bar { height: 4px; align-self: start; margin-top: 3px; }
+  :root:root .fe-rank__list { gap: 4px; }
+}
+
+/* Карта на телефоне: название показателя в две строки (раньше «Среднемесячная номинальная…»),
+   подсказка «Нажмите на регион» не прячется, пока регион не выбран. */
+@media (max-width: 767px) {
+  :root:root .fe-map-capline__text > div[title]:first-child { -webkit-line-clamp: 2; line-clamp: 2; }
+  :root:root [data-block='regions-map'] .fe-map-pick--empty {
+    display: block; position: static; min-height: 0; margin-top: 8px; padding: 10px 14px; text-align: left; border-radius: 14px;
+  }
+  :root:root [data-block='regions-map'] .fe-map-pick--empty .fe-map-pick__prompt { margin: 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+}
+
+/* Страница рейтинга: «Мой регион» и строка выбранного региона в таблице. */
+.r7c-rate-mine { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: -12px 0 20px; }
+.r7c-rate-mine__sum { font-size: 14px; font-weight: 650; color: #1E3A6E; min-height: 44px; display: inline-flex; align-items: center; }
+:root:root .r3b-rate-box tbody tr.is-mine { background: linear-gradient(90deg, rgba(60, 84, 130, 0.16), rgba(60, 84, 130, 0.05)); }
+:root:root .r3b-rate-box tbody tr.is-mine td:nth-child(2) a { font-weight: 700; }
+
+/* Страница рейтинга на телефоне: заголовок и вступление компактнее, лучший и худший рядом, таблица без вложенной прокрутки. */
+@media (max-width: 639px) {
+  :root:root .r3b-rate-h1 { font-size: 1.45rem; line-height: 1.18; }
+  .r7c-rate-lead { font-size: 14px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+  :root:root .r7c-rate-tiles > div { padding: 12px 14px; }
+  :root:root .r7c-rate-tiles .font-semibold { font-size: 15px; line-height: 1.25; }
+  .r7c-rate-tiles__year { grid-column: 1 / -1; padding-block: 10px; }
+  .r7c-rate-tiles__year > div:last-child { display: inline; margin-left: 6px; }
+  .r7c-rate-tiles__year > div:first-child { display: inline; }
+  :root:root .r3b-rate-box { max-height: none; overflow: visible; }
+  :root:root .r3b-rate-box thead { position: static; }
+  /* Линии между строками убраны и на телефоне: ровная полосатая заливка, как на планшете. Узкая колонка места. */
+  :root:root .r3b-rate-box tbody tr { border: 0; border-top-width: 0; }
+  :root:root .r3b-rate-box tbody tr:nth-child(even) { background: rgba(60, 78, 110, 0.045); }
+  :root:root .r3b-rate-box th, :root:root .r3b-rate-box td { padding-left: 10px; padding-right: 10px; }
+  :root:root .r3b-rate-box th.w-16 { width: 44px; }
+}
+/* Карточка региона в списке: тонкая полоса зарплаты относительно самой высокой по стране. */
+.r7c-card-bar { display: block; height: 4px; margin-top: 10px; border-radius: 9999px; background: var(--k6-groove, rgba(60, 78, 110, 0.10)); overflow: hidden; }
+.r7c-card-bar > span { display: block; height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #2C4A8A, #1E3A6E); }
+.r7c-map-hint { margin: 10px 4px 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }

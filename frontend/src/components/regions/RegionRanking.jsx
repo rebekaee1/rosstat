@@ -1,7 +1,7 @@
 // Рейтинг регионов прямо на странице «Регионы России»: выбранный показатель, место, значение и полоса.
 // Раньше здесь были шесть ссылок без выбора и список регионов по алфавиту. Теперь по умолчанию виден
 // настоящий рейтинг (место, название, полоса, значение), а «Ещё показатели» открывает поиск по всему каталогу.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowDown, ArrowUp, Search, X } from 'lucide-react';
 import { SkeletonBox } from '../Skeleton';
@@ -16,8 +16,12 @@ import '../../styles/regions-w4.css';
 import '../../styles/w6f-pages.css';
 import '../../styles/k6-country.css';
 import '../../styles/r3b-regions.css';
+import '../../styles/r7c-regions.css';
 
 const FIRST_ROWS = 12;
+const MY_KEY = 'fe-my-region';
+const readMine = () => { try { return localStorage.getItem(MY_KEY) || ''; } catch { return ''; } };
+const writeMine = (v) => { try { if (v) localStorage.setItem(MY_KEY, v); else localStorage.removeItem(MY_KEY); } catch { /* без хранилища работает так же */ } };
 
 /** Поле «Ещё показатели»: поиск по всему каталогу региональной статистики (сотни показателей). */
 function MoreMetrics({ total, onPick }) {
@@ -97,6 +101,13 @@ export default function RegionRanking({ metrics, initialCode }) {
   const [dirState, setDirState] = useState({ code, value: null });
   const [expanded, setExpanded] = useState(false);
   const { data, isLoading, isError, refetch, isFetching } = useRegionsHeatmap(code);
+  const [mine, setMine] = useState(readMine);
+  const chipsRef = useRef(null);
+  // Выбранная кнопка показателя не прячется за краем ленты на телефоне.
+  useEffect(() => {
+    const el = chipsRef.current?.querySelector('[aria-pressed="true"]');
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }, [code]);
 
   const total = useMemo(
     () => (catalog.data?.sections || []).reduce((n, s) => n + (s.indicators?.length || 0), 0),
@@ -123,6 +134,16 @@ export default function RegionRanking({ metrics, initialCode }) {
   const isPreset = metrics.some((m) => m.code === code);
   const shown = expanded ? ranked : ranked.slice(0, FIRST_ROWS);
 
+  const byName = useMemo(() => [...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)), [ranked, locale]);
+  const mineRow = ranked.find((r) => r.slug === mine) || null;
+  const median = useMemo(() => {
+    const v = ranked.map((r) => r.num).filter(Number.isFinite).sort((a, b) => a - b);
+    if (!v.length) return null;
+    const m = Math.floor(v.length / 2);
+    return v.length % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+  }, [ranked]);
+  const pickMine = (slug) => { setMine(slug); writeMine(slug); };
+
   const pick = (nextCode) => {
     setCode(nextCode);
     setExpanded(false);
@@ -138,7 +159,7 @@ export default function RegionRanking({ metrics, initialCode }) {
       </h2>
       <p className="mt-1 max-w-2xl text-sm leading-relaxed text-text-secondary">{t('w6f.rank.lead')}</p>
 
-      <div className="fe-chip-row--grid mt-3" role="group" aria-label={t('w6f.rank.metricAria')}>
+      <div ref={chipsRef} className="fe-chip-row--grid mt-3" role="group" aria-label={t('w6f.rank.metricAria')}>
         {metrics.map((m) => (
           <button
             key={m.code}
@@ -167,30 +188,57 @@ export default function RegionRanking({ metrics, initialCode }) {
 
       {data && ranked.length > 0 && (
         <div className="mt-4">
-          <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold leading-snug text-text-primary" data-testid="ranking-active-name">
-                {data.indicator.name}
+          <div className="r7c-head">
+            <div className="text-sm font-semibold leading-snug text-text-primary" data-testid="ranking-active-name">
+              {data.indicator.name}
+            </div>
+            <div className="text-xs text-text-secondary">
+              {[data.period_label || t('w4.map.yearLabel', { year: data.year }), unitLabel(unit, locale) || unit].filter(Boolean).join(', ')}
+              {!isPreset ? ` ${t('w6f.rank.chosenByYou')}` : ''}
+              {`, ${t('r7c.rank.of', { n: ranked.length })}`}
+            </div>
+            <div className="r7c-tools">
+              <label className="r7c-mine">
+                <span className="r7c-mine__label">{t('r7c.rank.mineLabel')}</span>
+                <select value={mine} onChange={(e) => pickMine(e.target.value)} aria-label={t('r7c.rank.mineAria')} data-testid="ranking-mine">
+                  <option value="">{t('r7c.rank.minePlaceholder')}</option>
+                  {byName.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
+                </select>
+              </label>
+              <button
+                type="button"
+                onClick={() => setDirState({ code, value: direction === 'asc' ? 'desc' : 'asc' })}
+                className="fe-chip fe-press gap-1.5"
+                aria-label={direction === 'asc' ? t('regions.rating.sortAsc') : t('regions.rating.sortDesc')}
+              >
+                {direction === 'asc' ? <ArrowUp size={14} aria-hidden="true" /> : <ArrowDown size={14} aria-hidden="true" />}
+                {direction === 'asc' ? t('w6f.rank.lowFirst') : t('w6f.rank.highFirst')}
+              </button>
+            </div>
+          </div>
+
+          {mineRow && (
+            <div className="r7c-mine-card" data-testid="ranking-mine-card">
+              <div className="r7c-mine-card__top">
+                <span className="r7c-mine-card__place fe-num">{mineRow.rank}</span>
+                <div className="min-w-0 flex-1">
+                  <Link to={regionPath(mineRow.slug)} className="r7c-mine-card__name">{mineRow.name}</Link>
+                  <div className="r7c-mine-card__sub">{t('r7c.rank.mineSub', { rank: mineRow.rank, n: ranked.length })}</div>
+                </div>
+                <button type="button" className="r7c-mine-card__x" onClick={() => pickMine('')} aria-label={t('r7c.rank.mineClear')}><X size={16} aria-hidden="true" /></button>
               </div>
-              <div className="text-xs text-text-secondary">
-                {[data.period_label || t('w4.map.yearLabel', { year: data.year }), unitLabel(unit, locale) || unit].filter(Boolean).join(', ')}
-                {!isPreset ? ` ${t('w6f.rank.chosenByYou')}` : ''}
+              <div className="r7c-mine-card__vals fe-num">
+                <span>{formatRegionNumber(mineRow.num, unit, locale)}{signUnit ? `\u00A0${signUnit}` : ''}</span>
+                {median != null && (
+                  <span className="r7c-mine-card__med">{t('r7c.rank.median', { v: `${formatRegionNumber(median, unit, locale)}${signUnit ? `\u00A0${signUnit}` : ''}` })}</span>
+                )}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setDirState({ code, value: direction === 'asc' ? 'desc' : 'asc' })}
-              className="fe-chip fe-press gap-1.5"
-              aria-label={direction === 'asc' ? t('regions.rating.sortAsc') : t('regions.rating.sortDesc')}
-            >
-              {direction === 'asc' ? <ArrowUp size={14} aria-hidden="true" /> : <ArrowDown size={14} aria-hidden="true" />}
-              {direction === 'asc' ? t('w6f.rank.lowFirst') : t('w6f.rank.highFirst')}
-            </button>
-          </div>
+          )}
 
           <ol className="fe-rank__list">
             {shown.map((row) => (
-              <li key={row.slug} className="fe-rank__row">
+              <li key={row.slug} className={`fe-rank__row${row.slug === mine ? ' is-mine' : ''}`}>
                 <span className="fe-rank__place fe-num">
                   {achievement && row.rank <= 3
                     ? <span data-medal={row.rank} title={t('w6f.rank.topThree')}>{row.rank}</span>

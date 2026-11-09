@@ -3290,7 +3290,7 @@ export default {
   'x8.planet.viewGlobe': 'Globe',
   // ===== Круг 8: Россия, регионы, календарь, страны (Z4) =====
   'c8y.ru.main.inflationMonth': 'Inflation, month over month',
-  'c8y.map.replay': 'Play again',
+  'c8y.map.replay': 'Watch again',
   // ===== Круг 8: главная (Z1) =====
   'c8h.today.sub': 'Figures for the latest year with data',
   // ===== Круг 8, волна 2: оболочка (W-A) =====
@@ -3960,4 +3960,13 @@ export default {
   'r6b.flatSince': 'since {date}',
   'r6b.related': 'Related indicators',
   'r6b.toTop': 'Back to the top of the indicator',
+  'r7c.rank.of': '{n} regions in the ranking',
+  'r7c.rank.mineLabel': 'My region',
+  'r7c.rank.mineAria': 'Choose your region to see where it stands',
+  'r7c.rank.minePlaceholder': 'Choose…',
+  'r7c.rank.mineSub': 'No. {rank} of {n}',
+  'r7c.rank.mineClear': 'Clear my region',
+  'r7c.rank.median': 'regional midpoint: {v}',
+  'r7c.card.wageBar': 'Wage compared with the highest among regions',
+  'r7c.rate.mapHint': 'Tap a region on the map to open this indicator for it.',
 };

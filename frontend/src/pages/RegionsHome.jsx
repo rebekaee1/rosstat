@@ -49,6 +49,7 @@ import {
   regionVsPath,
 } from '../lib/sitePaths';
 import '../styles/r3b-regions.css';
+import '../styles/r7c-regions.css';
 import { useLocale } from '../i18n';
 import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
@@ -302,7 +303,7 @@ function ContrastRow({ heat, metricLabel, betterIsLow = false, neutral = false }
   );
 }
 
-function RegionCard({ region }) {
+function RegionCard({ region, maxWage = 0 }) {
   const { t, locale } = useLocale();
   const pop = region.stats['1.1'];
   const wage = region.stats['3.4'];
@@ -328,6 +329,11 @@ function RegionCard({ region }) {
             {mini(t('w4.regions.card.wage'), wage ? formatRegionWithUnit(wage.value, '₽', locale) : '\u2014')}
             {mini(t('w4.regions.card.unemp'), unemp ? formatRegionWithUnit(unemp.value, '%', locale) : '\u2014')}
           </div>
+        )}
+        {wage && maxWage > 0 && (
+          <span className="r7c-card-bar" aria-hidden="true" title={t('r7c.card.wageBar')}>
+            <span style={{ width: `${Math.max(3, Math.min(100, (Number(wage.value) / maxWage) * 100))}%` }} />
+          </span>
         )}
       </div>
       <ChevronRight size={16} className="hidden shrink-0 text-text-secondary transition-colors group-hover:text-champagne-ink sm:block" aria-hidden="true" />
@@ -526,6 +532,11 @@ export default function RegionsHome() {
       .filter((d) => d.regions.length > 0);
   }, [data, deferredQuery, activeDistrict]);
 
+  // Полоска под зарплатой на карточке региона: доля от самой высокой зарплаты среди регионов.
+  const maxWage = useMemo(
+    () => Math.max(0, ...(data?.districts || []).flatMap((d) => d.regions.map((r) => Number(r.stats?.['3.4']?.value) || 0))),
+    [data],
+  );
   const totalShown = filtered.reduce((n, d) => n + d.regions.length, 0);
 
   useSearchTracking('regions-list', deferredQuery, totalShown);
@@ -798,7 +809,7 @@ export default function RegionsHome() {
                           count={d.regions.length}
                         />
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-2.5">
-                          {d.regions.map((r) => <RegionCard key={r.slug} region={r} />)}
+                          {d.regions.map((r) => <RegionCard key={r.slug} region={r} maxWage={maxWage} />)}
                         </div>
                       </section>
                     ))}

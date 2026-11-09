@@ -24,6 +24,7 @@ import '../styles/platform-pages.css';
 import '../styles/regions-w4.css';
 import '../styles/k6-country.css';
 import '../styles/r3b-regions.css';
+import '../styles/r7c-regions.css';
 
 export default function RegionRatingPage() {
   const t = useT();
@@ -49,6 +50,17 @@ export default function RegionRatingPage() {
     });
     return rows.map((row, i) => ({ ...row, rank: i + 1 }));
   }, [data, sortDirection]);
+
+  // «Мой регион» общий с хабом: выбор помнится в браузере.
+  const [mine, setMine] = useState(() => { try { return localStorage.getItem('fe-my-region') || ''; } catch { return ''; } });
+  const pickMine = (slug) => {
+    setMine(slug);
+    try { if (slug) localStorage.setItem('fe-my-region', slug); else localStorage.removeItem('fe-my-region'); } catch { /* без хранилища работает так же */ }
+    if (slug && typeof document !== 'undefined') {
+      window.requestAnimationFrame(() => document.getElementById(`r7c-row-${slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    }
+  };
+  const mineRow = ranked.find((r) => r.slug === mine) || null;
 
   // Цены ЕМИСС (месячный ряд): места не показываем — только значения и сравнение.
   const isPrice = data?.month != null;
@@ -129,7 +141,7 @@ export default function RegionRatingPage() {
             {' '}
             {achievement ? t('regions.rating.h1Achievement') : t('regions.rating.h1Neutral')}
           </h1>
-          <p className="mb-5 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
+          <p className="r7c-rate-lead mb-5 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
             {t('w4.rating.lead', {
               n: ranked.length,
               name: data.indicator.name,
@@ -152,7 +164,26 @@ export default function RegionRatingPage() {
             </Chip>
           </div>
 
-          <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {!isPrice && (
+            <div className="r7c-rate-mine" data-testid="rating-mine">
+              <label className="r7c-mine">
+                <span className="r7c-mine__label">{t('r7c.rank.mineLabel')}</span>
+                <select value={mine} onChange={(e) => pickMine(e.target.value)} aria-label={t('r7c.rank.mineAria')}>
+                  <option value="">{t('r7c.rank.minePlaceholder')}</option>
+                  {[...ranked].sort((a, b) => a.name.localeCompare(b.name, locale)).map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>)}
+                </select>
+              </label>
+              {mineRow && (
+                <a href="#r7c-mine-row" className="r7c-rate-mine__sum fe-num" onClick={(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
+                  {t('r7c.rank.mineSub', { rank: mineRow.rank, n: ranked.length })}
+                  {', '}
+                  {formatRegionWithUnit(mineRow.raw ?? mineRow.value, data.indicator.unit, locale)}
+                </a>
+              )}
+            </div>
+          )}
+
+          <div className="r7c-rate-tiles mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div className="k6-place k6-place--first rounded-2xl p-4 fe-glass-lite">
               <div className="flex items-center gap-1 text-xs font-medium text-text-secondary">
                 {achievement && <Trophy size={13} className="text-champagne-ink" aria-hidden="true" />}
@@ -170,7 +201,7 @@ export default function RegionRatingPage() {
                 {formatRegionWithUnit(bottom.raw ?? bottom.value, data.indicator.unit, locale)}
               </div>
             </div>
-            <div className="rounded-2xl p-4 fe-glass-lite">
+            <div className="r7c-rate-tiles__year rounded-2xl p-4 fe-glass-lite">
               <div className="text-xs font-medium text-text-secondary">{t('regions.rating.dataFor')}</div>
               <div className="fe-num mt-1 font-semibold text-text-primary">{t('w4.map.yearLabel', { year: data.year })}</div>
             </div>
@@ -199,6 +230,7 @@ export default function RegionRatingPage() {
               colorDirection={sortDirection}
               onSelect={(slug) => navigate(regionIndicatorPath(slug, code))}
             />
+            <p className="r7c-map-hint">{t('r7c.rate.mapHint')}</p>
           </div>
 
           <section id="chart" className="mb-8 scroll-mt-28">
@@ -233,7 +265,7 @@ export default function RegionRatingPage() {
                 </thead>
                 <tbody>
                   {ranked.map((row) => (
-                    <tr key={row.slug} className="fe-row-link border-t border-border-subtle">
+                    <tr key={row.slug} id={`r7c-row-${row.slug}`} className={`fe-row-link border-t border-border-subtle${row.slug === mine && !isPrice ? ' is-mine' : ''}`}>
                       {!isPrice && (
                         <td className="fe-num px-4 py-2 text-text-secondary">
                           {achievement && row.rank <= 3
