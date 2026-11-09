@@ -574,23 +574,17 @@ async def region_profile(slug: str, db: AsyncSession = Depends(get_db)):
 
     # Месячный слой (цены ЕМИСС: топливо и товары, 08.11.2026): два последних
     # месяца по каждому ряду региона. Годовая точка у показателя приоритетнее.
-    mrn = func.row_number().over(
-        partition_by=RegionMonthlyPoint.indicator_id,
-        order_by=RegionMonthlyPoint.month.desc(),
-    ).label("rn")
-    msub = (
-        select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month,
-               RegionMonthlyPoint.value, mrn)
-        .where(RegionMonthlyPoint.region_id == region.id)
-        .subquery()
-    )
+    # Два последних месяца пары индексом (09.11.2026): оконная функция по всей месячной истории региона
+    # (~280 тыс. строк после заливки цен ЕМИСС) давала 15,6 с на холодном диске.
+    from app.services.regional_monthly_latest import latest_monthly_points
+
     month_of: dict[int, tuple[int, int | None]] = {}
     mlatest: dict[int, tuple] = {}
     mprev: dict[int, tuple] = {}
-    for iid, month, value, r_n in (await db.execute(
-        select(msub.c.indicator_id, msub.c.month, msub.c.value, msub.c.rn).where(msub.c.rn <= 2)
-    )).all():
-        (mlatest if r_n == 1 else mprev)[iid] = (int(month), float(value))
+    for (iid, _rid), pts in (await latest_monthly_points(db, [i.id for i in inds], [region.id], n=2)).items():
+        mlatest[iid] = pts[0]
+        if len(pts) > 1:
+            mprev[iid] = pts[1]
     for iid, (month, value) in mlatest.items():
         if iid in latest:
             continue
@@ -703,13 +697,11 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
         siblings = sorted(all_sib, key=lambda x: x.code)[:12]
     sib_latest: dict[int, tuple[int, float]] = {}
     if siblings:
-        for iid, m, v in (await db.execute(
-            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.month, RegionMonthlyPoint.value)
-            .where(RegionMonthlyPoint.region_id == region.id,
-                   RegionMonthlyPoint.indicator_id.in_([x.id for x in siblings]))
-            .order_by(RegionMonthlyPoint.month.desc())
-        )).all():
-            sib_latest.setdefault(iid, (int(m), float(v)))
+        # Последний месяц соседа индексом, а не вся история (09.11.2026).
+        from app.services.regional_monthly_latest import latest_monthly_points
+
+        for (iid, _rid), pts in (await latest_monthly_points(db, [x.id for x in siblings], [region.id], n=1)).items():
+            sib_latest[iid] = pts[0]
 
     def _sibling(x):
         item = {"code": x.code, "name": _icopy(x)["name"], "unit": _icopy(x)["unit"]}

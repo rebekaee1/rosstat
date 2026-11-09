@@ -52,3 +52,29 @@ def test_price_compare_basket_and_wage(cmp_client):
 def test_price_compare_rejects_same_and_cities(cmp_client):
     assert cmp_client.get("/api/v1/regions/vs/moskva/krasnodarskiy-kray/prices").status_code == 404
     assert cmp_client.get("/api/v1/regions/vs/krasnodarskiy-kray/krasnodarskiy-kray/prices").status_code == 404
+
+
+
+def test_latest_monthly_points_takes_only_last_n_per_pair(auth_env):
+    """09.11.2026: последние точки пары без чтения всей истории (на SQLite — переносимый путь, тот же результат)."""
+    from app.services.regional_monthly_latest import latest_monthly_points
+
+    async def scenario():
+        async with auth_env["session_maker"]() as db:
+            reg = Region(slug="test-lmp", name="Тест", kind="region")
+            ind = RegionIndicator(code="ceni-test-lmp", table_code="20.m1", section_num=20, section_name="Цены",
+                                  name="Тест", unit="руб.", is_listed=True)
+            db.add_all([reg, ind])
+            await db.flush()
+            db.add_all([RegionMonthlyPoint(indicator_id=ind.id, region_id=reg.id, month=m, value=float(m % 100))
+                        for m in (202401, 202402, 202609, 202608)])
+            await db.commit()
+            one = await latest_monthly_points(db, [ind.id], [reg.id], n=1)
+            two = await latest_monthly_points(db, [ind.id], [reg.id], n=2)
+            none = await latest_monthly_points(db, [], [reg.id])
+            return one[(ind.id, reg.id)], two[(ind.id, reg.id)], none
+
+    one, two, none = asyncio.run(scenario())
+    assert one == [(202609, 9.0)]
+    assert two == [(202609, 9.0), (202608, 8.0)]
+    assert none == {}

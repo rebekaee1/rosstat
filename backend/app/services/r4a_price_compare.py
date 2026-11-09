@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.data.emiss_price_goods import PRICE_GROUPS, PRICE_GROUPS_EN, price_meta
-from app.models import RegionDataPoint, RegionIndicator, RegionMonthlyPoint
+from app.models import RegionDataPoint, RegionIndicator
 from app.services.locale import get_locale
 from app.services.seo_i18n import region_display_name
 from app.services.seo_regional import _region
@@ -57,15 +57,11 @@ async def build_price_compare_payload(slug_a: str, slug_b: str, db: AsyncSession
     by_id = {i.id: i for i in inds}
     latest: dict[tuple[int, int], tuple[int, float]] = {}
     if by_id:
-        rows = (await db.execute(
-            select(RegionMonthlyPoint.indicator_id, RegionMonthlyPoint.region_id,
-                   RegionMonthlyPoint.month, RegionMonthlyPoint.value)
-            .where(RegionMonthlyPoint.indicator_id.in_(list(by_id)),
-                   RegionMonthlyPoint.region_id.in_([ra.id, rb.id]))
-            .order_by(RegionMonthlyPoint.month.desc())
-        )).all()
-        for iid, rid, month, value in rows:
-            latest.setdefault((iid, rid), (int(month), float(value)))
+        # Только последний месяц пары индексом: чтение всей истории с 2000 года падало по таймауту (09.11.2026).
+        from app.services.regional_monthly_latest import latest_monthly_points
+
+        for key, pts in (await latest_monthly_points(db, list(by_id), [ra.id, rb.id], n=1)).items():
+            latest[key] = pts[0]
 
     items = []
     for ind in inds:
