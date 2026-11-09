@@ -176,7 +176,7 @@ export default function RegionRatingPage() {
               {mineRow && (
                 <a href="#r7c-mine-row" className="r7c-rate-mine__sum fe-num" onClick={(e) => { e.preventDefault(); document.getElementById(`r7c-row-${mineRow.slug}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
                   {t('r7c.rank.mineSub', { rank: mineRow.rank, n: ranked.length })}
-                  {' · '}
+                  {', '}
                   {formatRegionWithUnit(mineRow.raw ?? mineRow.value, data.indicator.unit, locale)}
                 </a>
               )}

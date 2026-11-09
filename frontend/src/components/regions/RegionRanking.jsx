@@ -195,7 +195,7 @@ export default function RegionRanking({ metrics, initialCode }) {
             <div className="text-xs text-text-secondary">
               {[data.period_label || t('w4.map.yearLabel', { year: data.year }), unitLabel(unit, locale) || unit].filter(Boolean).join(', ')}
               {!isPreset ? ` ${t('w6f.rank.chosenByYou')}` : ''}
-              {` · ${t('r7c.rank.of', { n: ranked.length })}`}
+              {`, ${t('r7c.rank.of', { n: ranked.length })}`}
             </div>
             <div className="r7c-tools">
               <label className="r7c-mine">
