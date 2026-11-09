@@ -2910,8 +2910,8 @@
     },
     {
       "path": "backend/app/services/bot_agent_tools.py",
-      "sha256": "25bfd9849301b49dca5de1b91731e77f20b6bc00ba9a1664f9b7baea44392acb",
-      "bytes": 26067,
+      "sha256": "7e020d3a31d0757c12279046ba0595d6016f18a9d48daade46fe691b33234847",
+      "bytes": 26093,
       "lines": 424,
       "code": true,
       "status": "reviewed",
@@ -13427,7 +13427,7 @@
     },
     {
       "path": "docs/mechanism-inventory.json",
-      "sha256": "7bef5fe3e34a6ffda8af9f6a2e5889f99bd94ed2ee05a799abcc00787f870628",
+      "sha256": "a93f4792bb4dc3c0489ddca3531c6cf226a17b3af63962d6ceb67637377a8605",
       "bytes": 11383487,
       "lines": 344596,
       "code": false,
@@ -29287,13 +29287,11 @@
     }
   ],
   "input_scope": "tracked",
-  "ledger_sha256": "25945ca0aee575931b1ad9f2243e66b1798b7e8096e1ce3e6f62aa9204701560",
+  "ledger_sha256": "04d99a9fd1573be981ed78ae8dfff8a1bbd781b18212cac7d993242b4e884e06",
   "javascript_inventory_sha256": "d796d2d357a9f3f25555e57966f5be7ce2cbb1ddeb87fec6ce38f47be19bcd06",
-  "baseline_commit": "795105c17ba98517a8e7f8d8dde0f0c8d23ca913",
+  "baseline_commit": "1af5327428513e28d6bf2ceed611b0d6a76e2288",
   "branch": "fix/public-bot-ux",
   "unstaged_at_capture": [
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ]
 }

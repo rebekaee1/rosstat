@@ -1,14 +1,12 @@
 {
   "schema_version": 2,
   "extractor": "graphifyy==0.9.69",
-  "baseline_commit": "795105c17ba98517a8e7f8d8dde0f0c8d23ca913",
+  "baseline_commit": "1af5327428513e28d6bf2ceed611b0d6a76e2288",
   "scope": "Git tracked/index files in local main; generated maps and docs/code-review evidence directory excluded; evidence identities checked separately; foreign untracked inputs are outside main",
   "unstaged_at_capture": [
     "docs/code-review/coverage.json",
     "docs/code-review/reviews.jsonl",
-    "docs/indicator-index.json",
-    "docs/mechanism-inventory.json",
-    "docs/mechanism-inventory.md"
+    "docs/mechanism-inventory.json"
   ],
   "untracked_at_capture": [],
   "stats": {
@@ -16,15 +14,15 @@
     "attempted": 1972,
     "files_with_nodes": 1886,
     "nodes": 23394,
-    "symbol_edges": 73357,
+    "symbol_edges": 73358,
     "file_edges": 16760,
     "projection_omissions": {
       "external_or_unresolved_file": 2875,
       "missing_endpoint": 4139,
-      "within_file": 31938
+      "within_file": 31939
     },
     "confidence": {
-      "EXTRACTED": 66602,
+      "EXTRACTED": 66603,
       "INFERRED": 6755
     }
   },
@@ -939,7 +937,7 @@
     {"path": "backend/app/services/attribution_query.py", "kind": "code", "bytes": 5490, "lines": 156, "sha256": "29b9a2e405ad2e18fb748baf1e62ca8bb8e1527f87644b8287822792c7f1c59e", "symlink": false, "nodes": 15, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/base_parser.py", "kind": "code", "bytes": 21078, "lines": 435, "sha256": "16426c91123a5d72766cbf0d8c330468e76d8a3255672e84334827a0007ec09a", "symlink": false, "nodes": 37, "extraction": "nodes", "layer": "services", "semantic_evidence": true, "semantic_current": false},
     {"path": "backend/app/services/binance_btcusdt_parser.py", "kind": "code", "bytes": 11010, "lines": 221, "sha256": "3d805cd13e6aacf1c0bda144fdc1502a2c64c3307e63f4d73656c1ff8ce36a27", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
-    {"path": "backend/app/services/bot_agent_tools.py", "kind": "code", "bytes": 26067, "lines": 424, "sha256": "25bfd9849301b49dca5de1b91731e77f20b6bc00ba9a1664f9b7baea44392acb", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
+    {"path": "backend/app/services/bot_agent_tools.py", "kind": "code", "bytes": 26093, "lines": 424, "sha256": "7e020d3a31d0757c12279046ba0595d6016f18a9d48daade46fe691b33234847", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/bot_chart.py", "kind": "code", "bytes": 14953, "lines": 293, "sha256": "98de79b899163c5a41981f4b97bd42daa563a0ce02cd9f545b90219dbd8c93a7", "symlink": false, "nodes": 18, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/bot_score.py", "kind": "code", "bytes": 10217, "lines": 177, "sha256": "50221862531a55fb7460771a6d1c72de41f6ff69e0792e222a347b86cccb700f", "symlink": false, "nodes": 21, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
     {"path": "backend/app/services/bot_traffic.py", "kind": "code", "bytes": 11588, "lines": 262, "sha256": "ab7813a5552e85831635d5a0a791a35f8cab01d2529097474760d02e25f055ab", "symlink": false, "nodes": 23, "extraction": "nodes", "layer": "services", "semantic_evidence": false, "semantic_current": null},
@@ -1748,7 +1746,7 @@
     {"path": "docs/indicator-index.md", "kind": "document", "bytes": 107654, "lines": 1138, "sha256": "3a15204e2ea9fa63ac1a50c17a4f2e8f479b58fcb42dbe7ada730dac6a3689e2", "symlink": false, "nodes": 11, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-unknowns.md", "kind": "document", "bytes": 55950, "lines": 113, "sha256": "4f0447a3ade0ae4a6bcbff0bc4238f7c8b01aed3d5bf35e3542630f402b8309c", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/knowledge-workflow.md", "kind": "document", "bytes": 11467, "lines": 107, "sha256": "33ddb198c07974b285cf39a3bb330848e1998acef54dd5b33338b22a6c98485a", "symlink": false, "nodes": 6, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
-    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 11383487, "lines": 344596, "sha256": "7bef5fe3e34a6ffda8af9f6a2e5889f99bd94ed2ee05a799abcc00787f870628", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
+    {"path": "docs/mechanism-inventory.json", "kind": "asset/data/config", "bytes": 11383487, "lines": 344596, "sha256": "a93f4792bb4dc3c0489ddca3531c6cf226a17b3af63962d6ceb67637377a8605", "symlink": false, "nodes": 0, "extraction": "no_nodes", "layer": "research", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/mechanism-inventory.md", "kind": "document", "bytes": 562882, "lines": 3229, "sha256": "f34cf5da4e32c3c599207d031f0f7f275fa2eac89ccbf5b18b7dff7c9792c0cf", "symlink": false, "nodes": 82, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},
     {"path": "docs/missed_data_audit.md", "kind": "document", "bytes": 36937, "lines": 449, "sha256": "05322b9310edef2e9fad7dca2750390026bf0b4f912d8eac8c48673ce3ead93a", "symlink": false, "nodes": 35, "extraction": "nodes", "layer": "docs", "semantic_evidence": true, "semantic_current": true},
     {"path": "docs/offsite-backup-runbook.md", "kind": "document", "bytes": 8720, "lines": 74, "sha256": "96fb520148401f8994a2f2eaf202f547e5b136cdc0a5874ef6203b3500b25ef9", "symlink": false, "nodes": 10, "extraction": "nodes", "layer": "docs", "semantic_evidence": false, "semantic_current": null},

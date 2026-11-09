@@ -7,7 +7,7 @@
 **Scope:** Git tracked/index по умолчанию, включая новые git add файлы; untracked не входят.
 Если Git недоступен, применяется filesystem fallback с прежними фильтрами; такой срез не подтверждает состав main.
 
-**Файлов:** 2091  ·  **Строк:** 1 336 040  ·  **Токенов (≈):** 12 704 138
+**Файлов:** 2091  ·  **Строк:** 1 336 040  ·  **Токенов (≈):** 12 704 145
 
 ## По верхним папкам
 
@@ -16,7 +16,7 @@
 | `(root)` | 8 | 2 778 | 64 098 |
 | `.github` | 3 | 300 | 3 089 |
 | `.tours` | 1 | 55 | 804 |
-| `backend` | 858 | 291 464 | 3 218 049 |
+| `backend` | 858 | 291 464 | 3 218 056 |
 | `clickhouse` | 2 | 37 | 483 |
 | `deploy` | 19 | 1 132 | 16 771 |
 | `docs` | 140 | 848 971 | 7 255 145 |
@@ -235,7 +235,7 @@
 | `frontend/src/styles/k1-scene.css` | 587 | 5 773 |
 | `frontend/src/components/WorldMap.component.test.jsx` | 481 | 5 756 |
 | `backend/tests/test_telegram_reports.py` | 442 | 5 730 |
-| `backend/app/services/bot_agent_tools.py` | 424 | 5 713 |
+| `backend/app/services/bot_agent_tools.py` | 424 | 5 720 |
 | `backend/app/api/world_subnational.py` | 648 | 5 712 |
 | `frontend/src/styles/k5-pages.css` | 541 | 5 666 |
 | `frontend/src/styles/z6-rating.css` | 387 | 5 630 |
