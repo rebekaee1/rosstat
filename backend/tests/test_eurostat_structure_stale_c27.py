@@ -8,6 +8,8 @@ from datetime import date
 
 from app.services.eurostat_structure import ExistingSlice, plan_structure_migration
 
+TODAY = date(2026, 11, 9)
+
 
 def _monthly(start: date, months: int):
     out = []
@@ -32,7 +34,7 @@ def test_cards_ended_long_before_structure_change_do_not_block_the_dataset():
     new = {("FR", "h_live"): (live_slice, _monthly(date(2020, 1, 1), 80))}  # до 2026-08
     # прежние точки мёртвых карточек заканчиваются в декабре 2023
     old_points = {i: _monthly(date(2020, 1, 1), 48) for i in range(14)}
-    verdict = plan_structure_migration(existing, new, old_points=old_points)
+    verdict = plan_structure_migration(existing, new, old_points=old_points, today=TODAY)
     assert verdict.accept, verdict.reason
     assert verdict.orphans_listed == 0
     assert verdict.orphans_stale == 14
@@ -48,7 +50,7 @@ def test_recently_live_orphans_still_trigger_quarantine():
     existing += [ExistingSlice(i, "DE", s, f"h_lost{i}", True) for i, s in enumerate(lost)]
     new = {("FR", "h_live"): (live_slice, _monthly(date(2020, 1, 1), 80))}
     old_points = {i: _monthly(date(2020, 1, 1), 78) for i in range(10)}  # до 2026-06
-    verdict = plan_structure_migration(existing, new, old_points=old_points)
+    verdict = plan_structure_migration(existing, new, old_points=old_points, today=TODAY)
     assert not verdict.accept
     assert verdict.orphans_listed == 10 and verdict.orphans_stale == 0
 
@@ -61,7 +63,7 @@ def test_annual_dataset_one_year_behind_is_not_stale():
     existing += [ExistingSlice(i, "DE", s, f"h_lost{i}", True) for i, s in enumerate(lost)]
     new = {("FR", "h_live"): (live_slice, [(date(y, 1, 1), 1.0) for y in range(2015, 2026)])}
     old_points = {i: [(date(y, 1, 1), 1.0) for y in range(2015, 2025)] for i in range(5)}
-    verdict = plan_structure_migration(existing, new, old_points=old_points)
+    verdict = plan_structure_migration(existing, new, old_points=old_points, today=TODAY)
     assert verdict.orphans_stale == 0 and verdict.orphans_listed == 5
     assert not verdict.accept
 
@@ -72,5 +74,29 @@ def test_no_history_is_treated_as_live_conservatively():
     existing = [ExistingSlice(100, "FR", live_slice, "h_live", True)]
     existing += [ExistingSlice(i, "DE", s, f"h_lost{i}", True) for i, s in enumerate(lost)]
     new = {("FR", "h_live"): (live_slice, _monthly(date(2020, 1, 1), 80))}
-    verdict = plan_structure_migration(existing, new, old_points={})
+    verdict = plan_structure_migration(existing, new, old_points={}, today=TODAY)
     assert not verdict.accept and verdict.orphans_stale == 0
+
+
+def test_annual_cards_two_releases_behind_are_stale():
+    """09.11.2026 `sts_inlb_a`: 23 карточки кончились на 2023 годе, свежий год набора - 2025 (Германия, Болгария...)."""
+    live = {"freq": "A", "unit": "I21", "indic_bt": "EMP"}
+    existing = [ExistingSlice(100, "FR", live, "h_live", True)]
+    existing += [ExistingSlice(i, "DE", {"freq": "A", "unit": "I15", "indic_bt": f"X{i}"}, f"h{i}", True) for i in range(23)]
+    new = {("FR", "h_live"): (live, [(date(y, 1, 1), 1.0) for y in range(2015, 2026)])}
+    old_points = {i: [(date(y, 1, 1), 1.0) for y in range(2010, 2024)] for i in range(23)}
+    verdict = plan_structure_migration(existing, new, old_points=old_points, today=TODAY)
+    assert verdict.accept, verdict.reason
+    assert verdict.orphans_stale == 23
+
+
+def test_whole_new_version_old_measures_from_today():
+    """09.11.2026 `sts_selb_m`: заголовочный срез у всех стран кончился в 2023 - и новый, и карточки. Не разлом."""
+    live = _slice("EMP", unit="I21")
+    existing = [ExistingSlice(100, "ES", live, "h_live", True)]
+    existing += [ExistingSlice(i, "PT", _slice(f"X{i}", unit="I15"), f"h{i}", True) for i in range(10)]
+    new = {("ES", "h_live"): (live, _monthly(date(2000, 1, 1), 288))}  # до 2023-12
+    old_points = {i: _monthly(date(2005, 1, 1), 228) for i in range(10)}  # до 2023-12
+    verdict = plan_structure_migration(existing, new, old_points=old_points, today=TODAY)
+    assert verdict.accept, verdict.reason
+    assert verdict.orphans_stale == 10

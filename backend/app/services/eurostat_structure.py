@@ -33,7 +33,7 @@ TOC Eurostat сообщает дату «last table structure change». Карт
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 
 # Совпадение истории при поиске замены: пересмотры допускаются, другой ряд —
 # нет. Сезонная корректировка пересчитывает часть точек; ребазирование индекса
@@ -50,8 +50,15 @@ _ORPHAN_SHARE = 0.2
 
 # Отставание последней точки карточки от самой свежей точки новой версии набора, после которого
 # карточка считается «уже устаревшей до смены структуры» (по частоте среза; по умолчанию год).
-_STALE_AFTER_DAYS = {"A": 800, "Q": 550}
+# Годовой: два пропущенных выпуска (последний год 2023 при свежем 2025 - 731 дн.). До 09.11.2026 стояло 800 дн.:
+# `sts_inlb_a` держался в карантине из-за 23 карточек, кончившихся на 2023 годе у Германии, Болгарии и др.,
+# хотя источник за 2024-2025 по ним ничего не дал.
+_STALE_AFTER_DAYS = {"A": 700, "Q": 550}
 _STALE_AFTER_DEFAULT_DAYS = 366
+# Если вся новая версия набора старая (09.11.2026 `sts_selb_m`: заголовочный срез у всех стран закончился в 2023),
+# отставание меряется не от её свежей точки, а от «сегодня минус обычный лаг публикации».
+_PUBLICATION_LAG_DAYS = {"A": 540, "Q": 200}
+_PUBLICATION_LAG_DEFAULT_DAYS = 120
 
 
 @dataclass(frozen=True)
@@ -122,13 +129,16 @@ def _newest_new_point(
 
 
 def _already_stale(
-    item: ExistingSlice, history: list[tuple[date, float]], newest: date | None,
+    item: ExistingSlice, history: list[tuple[date, float]], newest: date | None, today: date,
 ) -> bool:
     """Ряд карточки закончился у источника задолго до свежих данных набора: смена структуры его не ломала."""
-    if newest is None or not history:
+    if not history:
         return False
-    lag = (newest - max(d for d, _v in history)).days
-    limit = _STALE_AFTER_DAYS.get(_freq(item.slice_json), _STALE_AFTER_DEFAULT_DAYS)
+    freq = _freq(item.slice_json)
+    expected = today - timedelta(days=_PUBLICATION_LAG_DAYS.get(freq, _PUBLICATION_LAG_DEFAULT_DAYS))
+    reference = max(newest, expected) if newest else expected
+    lag = (reference - max(d for d, _v in history)).days
+    limit = _STALE_AFTER_DAYS.get(freq, _STALE_AFTER_DEFAULT_DAYS)
     return lag > limit
 
 
@@ -137,6 +147,7 @@ def plan_structure_migration(
     new_series: dict[tuple[str, str], tuple[dict, list[tuple[date, float]]]],
     *,
     old_points: dict[int, list[tuple[date, float]]],
+    today: date | None = None,
 ) -> StructureVerdict:
     """Решение по набору: принять (с переподключениями) или оставить в карантине.
 
@@ -195,7 +206,7 @@ def plan_structure_migration(
                 continue
         verdict.orphans.append(item.indicator_id)
         if item.is_listed:
-            if _already_stale(item, history, newest):
+            if _already_stale(item, history, newest, today or date.today()):
                 verdict.orphans_stale += 1
             else:
                 verdict.orphans_listed += 1

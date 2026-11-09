@@ -1254,6 +1254,54 @@ def format_failed_series(
     return text
 
 
+# Ошибки, которые не чинятся повтором и не значат поломку (09.11.2026). Ночная сводка 08.11 показала «Ошибок: 22»:
+# у Японии, Кореи и Мексики на проде никогда не было ключей API (e-Stat, ECOS, Banxico SIE - бесплатная регистрация
+# владельца), а RBA, RBI и NBS отвечают серверу 403 или не принимают соединение (с браузерным UA и через Tor - тоже).
+# Каждую ночь это красило итог в «частично», и новая настоящая ошибка тонула в тех же 22 строках.
+KNOWN_NOT_CONFIGURED = "not_configured"
+KNOWN_BLOCKED = "blocked"
+_NOT_CONFIGURED_MARKERS = ("requires rustats_", "adapter unavailable")
+# Только явный отказ доступа: разовый таймаут рабочего источника остаётся ошибкой.
+_BLOCKED_MARKERS = ("http 403", "access denied", "unreachable from this network")
+
+
+def classify_series_error(error: str | None) -> str:
+    """`not_configured` — нет ключа API; `blocked` — источник не пускает сервер; `error` — всё остальное."""
+    text = (error or "").lower()
+    if any(m in text for m in _NOT_CONFIGURED_MARKERS):
+        return KNOWN_NOT_CONFIGURED
+    if any(m in text for m in _BLOCKED_MARKERS):
+        return KNOWN_BLOCKED
+    return "error"
+
+
+def split_failed_series(
+    failed: Mapping[str, Sequence[tuple[str, str]]],
+) -> tuple[dict[str, list[tuple[str, str]]], dict[str, dict[str, int]]]:
+    """Настоящие ошибки рядов отдельно от известных («нет ключа», «закрыт для сервера»: страна → число рядов)."""
+    real: dict[str, list[tuple[str, str]]] = {}
+    known: dict[str, dict[str, int]] = {KNOWN_NOT_CONFIGURED: {}, KNOWN_BLOCKED: {}}
+    for cc, series in failed.items():
+        for code, err in series:
+            kind = classify_series_error(err)
+            if kind == "error":
+                real.setdefault(cc, []).append((code, err))
+            else:
+                known[kind][cc] = known[kind].get(cc, 0) + 1
+    return real, known
+
+
+def _known_line(known: Mapping[str, Mapping[str, int]]) -> str:
+    parts = []
+    if known.get(KNOWN_NOT_CONFIGURED):
+        parts.append("не подключены, нужен бесплатный ключ: " + ", ".join(
+            f"{cc} {n}" for cc, n in known[KNOWN_NOT_CONFIGURED].items()))
+    if known.get(KNOWN_BLOCKED):
+        parts.append("источник не пускает наш сервер: " + ", ".join(
+            f"{cc} {n}" for cc, n in known[KNOWN_BLOCKED].items()))
+    return ("Без изменений, известно: " + "; ".join(parts) + ". ") if parts else ""
+
+
 NATIONAL_CORE_COUNTRIES: tuple[str, ...] = (
     "au", "br", "ca", "cn", "in", "jp", "kr", "mx", "uk", "us",
 )
@@ -1336,6 +1384,9 @@ async def run_national_core_ingest(
     series_failed_total = sum(len(v) for v in failed_series.values())
     series_failed_text = format_failed_series(failed_series, limit=30)
     country_level_failures = [c for c in failures if c not in failed_series]
+    real_failed, known_failed = split_failed_series(failed_series)
+    real_failed_total = sum(len(v) for v in real_failed.values())
+    real_failed_text = format_failed_series(real_failed, limit=30)
     async with async_session() as db:
         run = await db.get(WorldIngestRun, run_id)
         assert run is not None
@@ -1371,10 +1422,10 @@ async def run_national_core_ingest(
 
     await alert_world_ingest_summary(
         "национальные источники (США и другие страны)",
-        status="partial" if failures or cache_invalidation_error else "ok",
+        status="partial" if real_failed or country_level_failures or cache_invalidation_error else "ok",
         checked=len(countries),
         changed=points_touched + points_removed + metadata_changed,
-        failed=series_failed_total + len(country_level_failures)
+        failed=real_failed_total + len(country_level_failures)
         + int(cache_invalidation_error is not None),
         checked_label="Проверено стран",
         changed_label="Изменено точек/карточек",
@@ -1389,8 +1440,9 @@ async def run_national_core_ingest(
                 if 'us' in per_country else ""
             )
             + (
-                f"Ошибки: {series_failed_text}. " if series_failed_text else ""
+                f"Ошибки: {real_failed_text}. " if real_failed_text else ""
             )
+            + _known_line(known_failed)
             + (
                 "Страны с общим сбоем: " + ", ".join(country_level_failures) + ". "
                 if country_level_failures else ""

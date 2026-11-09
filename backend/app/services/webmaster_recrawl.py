@@ -98,6 +98,13 @@ async def recrawl_daily_job(
         quota_resp = await client.recrawl_quota(user_id, wm_host_id)
         remaining = int(quota_resp.data.get("quota_remainder", 0))
     except Exception as exc:
+        from app.services.yandex_token_alert import is_token_expired, report_token_expired
+
+        if is_token_expired(exc):
+            # Истёкший токен - одно сообщение «нужно обновить токен» в сутки, а не алерт на каждый хост.
+            logger.warning("Recrawl job: Webmaster token expired")
+            await report_token_expired("webmaster")
+            return {"submitted": 0, "quota": 0, "blocked": "token_expired"}
         # Н-24: живой токен + недоступный API = дневная квота переобхода
         # потеряна; молчаливый лог откладывал обнаружение на недели.
         logger.exception("Recrawl job: quota/user fetch failed")

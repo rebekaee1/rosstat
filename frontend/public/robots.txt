@@ -63,6 +63,20 @@ Disallow: /*?fbclid=
 Disallow: /*&fbclid=
 Disallow: /*?yclid=
 Disallow: /*&yclid=
+# 08.11.2026, решение владельца: на ru. Google не обходит годовые страницы
+# мира и регионов мира (~8,6 млн URL). Хост ru. выпал из индекса Google
+# 02.10.2026 целиком; русскому читателю эти годы почти не нужны (3 клика
+# за 4 месяца). noindex Google увидел бы на них через ~430 суток обхода.
+# Яндекс и apex (robots.en.txt) не меняются: apex — контрольная группа.
+# Allow длиннее Disallow — побеждает (Россия, регионы РФ, валюты).
+# Разбор: .artifacts/google-drop-2026-11-08/отчёт.md
+Disallow: /*/indicator/*/1
+Disallow: /*/indicator/*/2
+Disallow: /*/region/*/1
+Disallow: /*/region/*/2
+Allow: /russia/indicator/
+Allow: /russia/region/
+Allow: /currencies/indicator/
 
 # Агрессивные скрейперы без SEO-ценности: срезаем весь контент.
 # Решают только каталог/страницы, которые им и так не нужны.

@@ -42,6 +42,7 @@ See:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
@@ -187,6 +188,8 @@ class BaseParser(ABC):
             points = self._validate(points, cfg)
 
             failed_reason = fetch_failed_reason(fetch_log)
+            if not points and not (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log):
+                failed_reason = await self._source_outage_reason()
             if not points and (fetch_issues or failed_reason) and not expected_empty_reason(fetch_log):
                 # Источник не ответил, а не «вёрстка сменилась»: честный failed,
                 # а не parsed_zero с ложным «смена layout». Данные в БД целы.
@@ -295,6 +298,15 @@ class BaseParser(ABC):
         await publish_committed_indicator_changes(
             publication_codes, invalidate=cache_invalidate_indicator,
         )
+
+    async def _source_outage_reason(self) -> str | None:
+        """Пустой результат парсера Росстата при старой копии сайта (09.11.2026) — недоступный источник, а не
+        «смена вёрстки»: ряд получает failed с «unreachable» и догрузку после возвращения сайта, zero_parse не шлётся."""
+        if not self.parser_type.startswith("rosstat_"):
+            return None
+        from app.services.rosstat_outage import stale_copy_reason
+
+        return await asyncio.to_thread(stale_copy_reason)
 
     def _zero_parse_expected(self, indicator: Indicator, cfg: dict) -> bool:
         """Override: True, если пустой parse-результат для этого ряда легитимен.

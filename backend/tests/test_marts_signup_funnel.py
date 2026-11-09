@@ -272,10 +272,16 @@ def test_reliability_splits_real_errors_files_not_loaded_and_5xx():
         async with maker() as db:
             own = "https://ru.forecasteconomy.com/assets/charts-AAA.js"
             db.add_all([
-                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="human",
                               params_json={"kind": "resource", "src": own + "?v=1"}),
-                BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="human",
                               params_json={"kind": "resource", "src": own}),
+                BehaviorEvent(event_type="click", page="/", occurred_at=now, session_id_hash="human"),
+                # 08.11.2026: ферма без картинок - незагрузки у сессии без единого действия не считаются поломкой
+                BehaviorEvent(event_type="js_error", page="/", occurred_at=now, session_id_hash="farm",
+                              params_json={"kind": "resource", "src": "https://forecasteconomy.com/brand/footer-desktop.webp"}),
+                BehaviorEvent(event_type="dwell", page="/", occurred_at=now, session_id_hash="farm",
+                              params_json={"ms": 1300}),
                 BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
                               params_json={"kind": "error", "msg": "TypeError: boom", "src": "https://forecasteconomy.com/a.js"}),
                 BehaviorEvent(event_type="js_error", page="/", occurred_at=now,
@@ -294,7 +300,8 @@ def test_reliability_splits_real_errors_files_not_loaded_and_5xx():
             data = await m.mart_reliability(db, resolve_period("7d"))
         assert [e["error"] for e in data["js_errors_real_own"]] == ["TypeError: boom"]  # устаревшая вкладка не в счёт
         assert data["js_files_failed_own"] == {"total": 2, "top": {"charts-AAA.js": 2}}
-        assert data["js_errors_total"] == 4  # прежние показатели не изменились
+        assert data["js_files_failed_inert_sessions"] == 1
+        assert data["js_errors_total"] == 5  # прежние показатели не изменились
         assert data["api_5xx_sampled"] == 1 and data["api_5xx_by_group"] == {"api": 1}
         assert data["server_5xx_spikes"] == {"count": 1, "by_group": {"seo": 1}}
 
