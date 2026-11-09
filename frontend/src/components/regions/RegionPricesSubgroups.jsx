@@ -37,7 +37,7 @@ export function splitGoods(items) {
   return SUB_ORDER.filter((k) => map.has(k)).map((k) => ({ key: k, items: map.get(k) }));
 }
 
-/** Ряд кнопок подгрупп: «Все 341 · Дом 40 · Техника 25 …». */
+/** Ряд кнопок подгрупп: «Все 341, Дом 40, Техника 25 …». */
 export function GoodsSubChips({ parts, total, value, onChange }) {
   const { t } = useLocale();
   return (
