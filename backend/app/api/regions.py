@@ -443,12 +443,79 @@ async def regions_compare(slug_a: str, slug_b: str, db: AsyncSession = Depends(g
     return payload
 
 
+# R10-B: куда переезжают чаще всего. Снимки их цен держим тёплыми, чтобы любая пара с ними собиралась за миллисекунды.
+_COMPARE_WARM_SLUGS = (
+    "moskva", "sankt-peterburg", "krasnodarskiy-kray", "respublika-tatarstan", "novosibirskaya-oblast",
+    "sverdlovskaya-oblast", "rostovskaya-oblast", "moskovskaya-oblast", "leningradskaya-oblast",
+    "nizhegorodskaya-oblast", "samarskaya-oblast", "chelyabinskaya-oblast",
+)
+_compare_warm_state = {"at": 0.0, "running": False}
+
+
+async def warm_price_compare_regions(slugs: tuple[str, ...] = _COMPARE_WARM_SLUGS) -> int:
+    """Собирает снимки цен популярных регионов, которых нет в кэше. Возвращает, сколько собрано."""
+    from app.database import async_session
+    from app.services.r4a_price_compare import _region_snapshot
+    from app.services.seo_regional import _region
+
+    done = 0
+    for slug in slugs:
+        try:
+            async with async_session() as db:
+                await set_local_statement_timeout(db, 120_000)
+                reg = await _region(db, slug)
+                if reg is None or reg.kind != "region":
+                    continue
+                key = await versioned_key("regions", f"vs-prices-reg:v1:{reg.id}:{reg.slug}")
+                if await cache_get(key):
+                    continue
+                await _region_snapshot(db, reg)
+                done += 1
+        except Exception:
+            logger.warning("price-compare warm-up failed (%s)", slug, exc_info=True)
+    return done
+
+
+async def price_compare_warm_job() -> None:
+    """Задача планировщика: досчитать снимки популярных регионов, если их нет в кэше."""
+    done = await warm_price_compare_regions()
+    if done:
+        logger.info("Price-compare warm-up: %s regions", done)
+
+
+def _kick_compare_warm() -> None:
+    """Первый запрос сравнения запускает прогрев популярных регионов в фоне (не чаще раза в 10 минут)."""
+    import asyncio
+    import time
+
+    st = _compare_warm_state
+    if st["running"] or time.monotonic() - st["at"] < 600:
+        return
+    st["running"], st["at"] = True, time.monotonic()
+
+    async def _run():
+        try:
+            await warm_price_compare_regions()
+        finally:
+            st["running"] = False
+
+    try:
+        task = asyncio.get_running_loop().create_task(_run())
+        st["task"] = task  # держим ссылку, иначе задачу может собрать сборщик мусора
+    except RuntimeError:
+        st["running"] = False
+
+
 @router.get("/vs/{slug_a}/{slug_b}/prices")
 async def regions_compare_prices(slug_a: str, slug_b: str, db: AsyncSession = Depends(get_db)):
-    """Цены двух регионов рядом, корзина и зарплата в корзинах (R4-A)."""
+    """Цены двух регионов рядом, корзина и зарплата в корзинах (R4-A, R10-B).
+
+    Пара собирается из двух кэшированных снимков регионов (`r4a_price_compare._region_snapshot`), поэтому
+    холодный запрос стоит один проход по индексу на регион, а не на пару, и общий для всех пар региона.
+    """
     from app.services.r4a_price_compare import build_price_compare_payload
 
-    cache_key = await versioned_key("regions", f"vs-prices:v1:{slug_a}:{slug_b}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"vs-prices:v2:{slug_a}:{slug_b}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -456,6 +523,7 @@ async def regions_compare_prices(slug_a: str, slug_b: str, db: AsyncSession = De
     if payload is None:
         raise HTTPException(404, "Нет цен для сравнения")
     await cache_set(cache_key, payload, settings.cache_ttl_data)
+    _kick_compare_warm()
     return payload
 
 

@@ -20,6 +20,7 @@ import {
   regionVsPath,
 } from '../lib/sitePaths';
 import R4PriceCompare, { R4PriceSkeleton, useRegionPriceCompare } from '../components/regions/R4PriceCompare';
+import { R10bAnswer, R10bWait, R10bError } from '../components/regions/R10bCompare';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { regionVsTrail } from '../lib/breadcrumbs';
 import { useLocale } from '../i18n';
@@ -170,6 +171,14 @@ export default function RegionComparePage() {
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             {t('regions.compareH1', { a: nameA, b: nameB })}
           </h1>
+          {hasPrices && <R10bAnswer data={prices.data} locale={locale} t={t} />}
+          {prices.isLoading && (
+            <>
+              <R4PriceSkeleton />
+              <R10bWait t={t} />
+            </>
+          )}
+          {prices.isError && <R10bError t={t} onRetry={() => prices.refetch()} busy={prices.isFetching} />}
           <p className="mb-6 max-w-3xl text-[15px] leading-relaxed text-text-secondary">
             {t('regions.compareIntro')}
           </p>
@@ -177,12 +186,11 @@ export default function RegionComparePage() {
           <PairPicker slugA={slugA} slugB={slugB} />
           <QuickPairs slugA={slugA} slugB={slugB} />
 
-          {prices.isLoading && <R4PriceSkeleton />}
           {hasPrices && (
             <div className="r4a-seg" role="tablist" data-testid="r4a-seg">
               {['prices', 'facts'].map((v) => (
                 <button key={v} type="button" role="tab" aria-selected={view === v} className={`r4a-seg__btn fe-press${view === v ? ' is-on' : ''}`} onClick={() => setView(v)}>
-                  {t(`r4a.seg.${v}`)}
+                  {t(`r10b.seg.${v}`)}
                 </button>
               ))}
             </div>

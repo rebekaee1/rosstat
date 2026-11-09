@@ -5,9 +5,12 @@
 
 from __future__ import annotations
 
+import asyncio
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cache import cache_get, cache_set, versioned_key
 from app.data.emiss_price_goods import PRICE_GROUPS, PRICE_GROUPS_EN, price_meta
 from app.models import RegionDataPoint, RegionIndicator
 from app.services.locale import get_locale
@@ -43,37 +46,86 @@ def _pct(hi: float, lo: float) -> float | None:
     return round((hi - lo) / lo * 100, 1) if lo else None
 
 
-async def build_price_compare_payload(slug_a: str, slug_b: str, db: AsyncSession) -> dict | None:
-    if slug_a == slug_b:
-        return None
-    ra, rb = await _region(db, slug_a), await _region(db, slug_b)
-    if not ra or not rb or ra.kind != "region" or rb.kind != "region":
-        return None
-    en = get_locale() == "en"
+# R10-B: снимок цен одного региона кэшируется отдельно от пары и общий для всех пар с этим регионом.
+_SNAP_TTL = 6 * 3600
+_flights: dict[str, "asyncio.Future"] = {}
 
+
+async def _region_snapshot(db: AsyncSession, region) -> dict:
+    """Последние цены и зарплата одного региона: {"prices": {код: [месяц, значение]}, "wage": {год: значение}}.
+
+    Считается одним проходом по индексу (по одной точке на ряд) и только по рядам, которые Росстат ещё публикует.
+    Параллельные запросы одного региона ждут общий расчёт, а не плодят одинаковые.
+    """
+    key = await versioned_key("regions", f"vs-prices-reg:v1:{region.id}:{region.slug}")
+    cached = await cache_get(key)
+    if isinstance(cached, dict) and "prices" in cached:
+        return cached
+    flight = _flights.get(key)
+    if flight is not None:
+        return await asyncio.shield(flight)
+    flight = asyncio.get_running_loop().create_future()
+    _flights[key] = flight
+    try:
+        snap = await _build_snapshot(db, region)
+        await cache_set(key, snap, _SNAP_TTL)
+        flight.set_result(snap)
+        return snap
+    except BaseException as exc:
+        flight.set_exception(exc)
+        flight.exception()  # помечаем прочитанным, чтобы не было предупреждения без ожидающих
+        raise
+    finally:
+        _flights.pop(key, None)
+
+
+async def _build_snapshot(db: AsyncSession, region) -> dict:
     inds = (await db.execute(
-        select(RegionIndicator).where(RegionIndicator.code.like("ceni-%"))
-    )).scalars().all()
-    by_id = {i.id: i for i in inds}
-    latest: dict[tuple[int, int], tuple[int, float]] = {}
-    if by_id:
-        # Только последний месяц пары индексом: чтение всей истории с 2000 года падало по таймауту (09.11.2026).
+        select(RegionIndicator.id, RegionIndicator.code).where(RegionIndicator.code.like("ceni-%"))
+    )).all()
+    live = {}
+    for iid, code in inds:
+        meta = price_meta(code)
+        if meta and not meta["is_discontinued"]:
+            live[iid] = code
+    prices: dict[str, list] = {}
+    if live:
         from app.services.regional_monthly_latest import latest_monthly_points
 
-        for key, pts in (await latest_monthly_points(db, list(by_id), [ra.id, rb.id], n=1)).items():
-            latest[key] = pts[0]
+        for (iid, _rid), pts in (await latest_monthly_points(db, list(live), [region.id], n=1)).items():
+            prices[live[iid]] = [pts[0][0], pts[0][1]]
+    wage: dict[str, float] = {}
+    w_id = (await db.execute(
+        select(RegionIndicator.id).where(RegionIndicator.table_code == WAGE_TABLE).limit(1)
+    )).scalar()
+    if w_id is not None:
+        for year, value in (await db.execute(
+            select(RegionDataPoint.year, RegionDataPoint.value)
+            .where(RegionDataPoint.indicator_id == w_id, RegionDataPoint.region_id == region.id)
+        )).all():
+            wage[str(int(year))] = float(value)
+    return {"prices": prices, "wage": wage}
+
+
+def compose_pair(slug_a: str, slug_b: str, ra, rb, snap_a: dict, snap_b: dict) -> dict | None:
+    """Сборка сравнения из двух готовых снимков (без обращения к базе)."""
+    en = get_locale() == "en"
+    latest = {}
+    for code, pa in snap_a["prices"].items():
+        pb = snap_b["prices"].get(code)
+        if pb:
+            latest[code] = (pa, pb)
 
     items = []
-    for ind in inds:
-        pa, pb = latest.get((ind.id, ra.id)), latest.get((ind.id, rb.id))
-        meta = price_meta(ind.code)
-        if not pa or not pb or not meta or meta["is_discontinued"]:
+    for code, (pa, pb) in latest.items():
+        meta = price_meta(code)
+        if not meta or meta["is_discontinued"]:
             continue
         va, vb = pa[1], pb[1]
         cheaper = None if abs(va - vb) < 1e-9 else (slug_a if va < vb else slug_b)
         group = meta["price_group"]
         items.append({
-            "code": ind.code,
+            "code": code,
             "name": (meta.get("short_name_en") or meta["short_name"]) if en else meta["short_name"],
             "group": group,
             "group_label": PRICE_GROUPS_EN.get(group, group) if en else group,
@@ -111,21 +163,11 @@ async def build_price_compare_payload(slug_a: str, slug_b: str, db: AsyncSession
         }
 
     wage = None
-    w_ind = (await db.execute(
-        select(RegionIndicator).where(RegionIndicator.table_code == WAGE_TABLE).limit(1)
-    )).scalars().first()
-    if w_ind is not None and basket:
-        wrows = (await db.execute(
-            select(RegionDataPoint.region_id, RegionDataPoint.year, RegionDataPoint.value)
-            .where(RegionDataPoint.indicator_id == w_ind.id,
-                   RegionDataPoint.region_id.in_([ra.id, rb.id]))
-        )).all()
-        per: dict[int, dict[int, float]] = {}
-        for rid, year, value in wrows:
-            per.setdefault(int(year), {})[rid] = float(value)
-        common = max((y for y, v in per.items() if ra.id in v and rb.id in v), default=None)
+    if basket:
+        wa_all, wb_all = snap_a["wage"], snap_b["wage"]
+        common = max((int(y) for y in wa_all if y in wb_all), default=None)
         if common is not None:
-            wa, wb = per[common][ra.id], per[common][rb.id]
+            wa, wb = wa_all[str(common)], wb_all[str(common)]
             if wa > 0 and wb > 0 and total_a > 0 and total_b > 0:
                 ka, kb = round(wa / total_a, 1), round(wb / total_b, 1)
                 wage = {
@@ -145,3 +187,13 @@ async def build_price_compare_payload(slug_a: str, slug_b: str, db: AsyncSession
             "total": len(items),
         },
     }
+
+
+async def build_price_compare_payload(slug_a: str, slug_b: str, db: AsyncSession) -> dict | None:
+    if slug_a == slug_b:
+        return None
+    ra, rb = await _region(db, slug_a), await _region(db, slug_b)
+    if not ra or not rb or ra.kind != "region" or rb.kind != "region":
+        return None
+    snap_a, snap_b = await _region_snapshot(db, ra), await _region_snapshot(db, rb)
+    return compose_pair(slug_a, slug_b, ra, rb, snap_a, snap_b)
