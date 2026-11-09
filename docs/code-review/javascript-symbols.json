@@ -9287,12 +9287,12 @@
     "anonymous_functions": 27
   },
   "frontend/src/components/MobileDock.jsx": {
-    "sha256": "5a73d7c512f64b9d2cfdc2d468f7e254aa5d98cc4b04fa088e45cad313c12821",
+    "sha256": "ae7b0a1e61ca244d0ba6609a3789f6d5c78145b116af411919713a802bb7e36b",
     "definitions": [
       {
         "name": "MobileDock",
-        "line": 33,
-        "end_line": 109,
+        "line": 34,
+        "end_line": 110,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -9355,7 +9355,7 @@
         "names": [
           "default"
         ],
-        "line": 33
+        "line": 34
       }
     ],
     "anonymous_functions": 6
@@ -11951,66 +11951,60 @@
     "anonymous_functions": 11
   },
   "frontend/src/components/R7PricesBlock.jsx": {
-    "sha256": "61216d58fd79cb802d707b4a3025d1d863d1e4497e879a3b72ae5dce178a2989",
+    "sha256": "2f5f84ea2cea595d82498f5b7d05335f3d3c1cdb163fe477a11dbb703347d564",
     "definitions": [
       {
         "name": "loadSummary",
-        "line": 18,
-        "end_line": 32,
+        "line": 20,
+        "end_line": 34,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRussiaPrices",
-        "line": 34,
-        "end_line": 40,
+        "line": 36,
+        "end_line": 42,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRussiaPrices.queryFn",
-        "line": 37,
-        "end_line": 37,
+        "line": 39,
+        "end_line": 39,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "splitPriceUnit",
-        "line": 43,
-        "end_line": 52,
-        "kind": "FunctionDeclaration"
-      },
-      {
         "name": "pctChange",
-        "line": 54,
-        "end_line": 57,
-        "kind": "FunctionDeclaration"
-      },
-      {
-        "name": "signed",
-        "line": 59,
-        "end_line": 62,
+        "line": 44,
+        "end_line": 47,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "Trend",
-        "line": 64,
-        "end_line": 75,
+        "line": 49,
+        "end_line": 60,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "deriveMovers",
+        "line": 63,
+        "end_line": 73,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "readRegion",
-        "line": 77,
-        "end_line": 80,
+        "line": 75,
+        "end_line": 78,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "R7PricesBlock",
-        "line": 82,
-        "end_line": 211,
+        "line": 80,
+        "end_line": 215,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "R7PricesBlock.onRegion",
-        "line": 99,
-        "end_line": 104,
+        "line": 97,
+        "end_line": 102,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12064,8 +12058,16 @@
         "line": 12
       },
       {
-        "source": "../styles/r7d-prices.css",
+        "source": "./R9PriceMovers",
         "line": 13
+      },
+      {
+        "source": "../lib/r9bPrice",
+        "line": 14
+      },
+      {
+        "source": "../styles/r7d-prices.css",
+        "line": 15
       }
     ],
     "exports": [
@@ -12073,10 +12075,98 @@
         "names": [
           "default"
         ],
-        "line": 82
+        "line": 80
       }
     ],
-    "anonymous_functions": 13
+    "anonymous_functions": 17
+  },
+  "frontend/src/components/R9PriceMovers.jsx": {
+    "sha256": "281e785710901492975598d8dfc7bdbb9d30dd58602b567de7fc91e221e14080",
+    "definitions": [
+      {
+        "name": "R9PriceMovers",
+        "line": 11,
+        "end_line": 130,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "R9PriceMovers.flash",
+        "line": 30,
+        "end_line": 34,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R9PriceMovers.copyOne",
+        "line": 35,
+        "end_line": 38,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R9PriceMovers.allText",
+        "line": 40,
+        "end_line": 40,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R9PriceMovers.copyAll",
+        "line": 41,
+        "end_line": 44,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "R9PriceMovers.share",
+        "line": 46,
+        "end_line": 51,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 1
+      },
+      {
+        "source": "react-router-dom",
+        "line": 2
+      },
+      {
+        "source": "lucide-react",
+        "line": 3
+      },
+      {
+        "source": "../lib/format",
+        "line": 4
+      },
+      {
+        "source": "../lib/r9bPrice",
+        "line": 5
+      },
+      {
+        "source": "../lib/sitePaths",
+        "line": 6
+      },
+      {
+        "source": "../lib/track",
+        "line": 7
+      },
+      {
+        "source": "../i18n",
+        "line": 8
+      },
+      {
+        "source": "../styles/r9b-movers.css",
+        "line": 9
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 11
+      }
+    ],
+    "anonymous_functions": 10
   },
   "frontend/src/components/RatingExtras.jsx": {
     "sha256": "08cc99d3fa862b017dbbd0468a1a72bf41a091e68cbfad91e16c7614f789db66",
@@ -12609,54 +12699,54 @@
     "anonymous_functions": 19
   },
   "frontend/src/components/RegionsMap.jsx": {
-    "sha256": "33c11d77b0e5cccf29412e41d2b6dab6456b8e9d9a463d8fa30a4fa0aae2aa13",
+    "sha256": "4c5aa5b064cf7003a54f7f4ff9203536fec985bc21d03cdd4d00910905611084",
     "definitions": [
       {
         "name": "paddedViewBox",
-        "line": 45,
-        "end_line": 49,
+        "line": 46,
+        "end_line": 50,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsMap",
-        "line": 51,
-        "end_line": 625,
+        "line": 52,
+        "end_line": 626,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionsMap.colorFor",
-        "line": 122,
-        "end_line": 122,
+        "line": 123,
+        "end_line": 123,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.dist",
-        "line": 185,
-        "end_line": 185,
+        "line": 186,
+        "end_line": 186,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.onTouchStart",
-        "line": 186,
-        "end_line": 192,
+        "line": 187,
+        "end_line": 193,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionsMap.onTouchMove",
-        "line": 193,
-        "end_line": 205,
-        "kind": "ArrowFunctionExpression"
-      },
-      {
-        "name": "RegionsMap.onTouchEnd",
-        "line": 206,
+        "line": 194,
         "end_line": 206,
         "kind": "ArrowFunctionExpression"
       },
       {
-        "name": "RegionsMap.onWheel",
+        "name": "RegionsMap.onTouchEnd",
         "line": 207,
-        "end_line": 211,
+        "end_line": 207,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionsMap.onWheel",
+        "line": 208,
+        "end_line": 212,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -12686,40 +12776,44 @@
         "line": 14
       },
       {
-        "source": "../lib/regionsMapColors",
+        "source": "../lib/r9cPriceUnit",
         "line": 15
       },
       {
-        "source": "../lib/regionsBubbles",
+        "source": "../lib/regionsMapColors",
         "line": 16
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/regionsBubbles",
         "line": 17
       },
       {
-        "source": "../i18n",
-        "line": 21
+        "source": "../lib/sitePaths",
+        "line": 18
       },
       {
-        "source": "./regions/RegionComparePick",
+        "source": "../i18n",
         "line": 22
       },
       {
-        "source": "../lib/chartTheme",
+        "source": "./regions/RegionComparePick",
         "line": 23
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../lib/chartTheme",
         "line": 24
       },
       {
-        "source": "../styles/w6f-pages.css",
+        "source": "../styles/regions-w4.css",
         "line": 25
       },
       {
-        "source": "../styles/r3b-regions.css",
+        "source": "../styles/w6f-pages.css",
         "line": 26
+      },
+      {
+        "source": "../styles/r3b-regions.css",
+        "line": 27
       }
     ],
     "exports": [
@@ -12727,7 +12821,7 @@
         "names": [
           "default"
         ],
-        "line": 51
+        "line": 52
       }
     ],
     "anonymous_functions": 52
@@ -18763,24 +18857,24 @@
     "anonymous_functions": 24
   },
   "frontend/src/components/home/HomeDataScope.jsx": {
-    "sha256": "271712c021e70946cbcc93114c1446f0f13431d8a700eecaa702107c26593a24",
+    "sha256": "8253280f8efd001188a4933c2939ca90dbde6132cd28016f81121c4f3ce1397d",
     "definitions": [
       {
         "name": "groupDigits",
-        "line": 14,
-        "end_line": 17,
+        "line": 16,
+        "end_line": 19,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "Stat",
-        "line": 23,
-        "end_line": 34,
+        "line": 25,
+        "end_line": 36,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomeDataScope",
-        "line": 42,
-        "end_line": 108,
+        "line": 44,
+        "end_line": 117,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -18802,36 +18896,44 @@
         "line": 4
       },
       {
-        "source": "../../lib/homeWorkbench",
+        "source": "../../lib/homePriceSummary",
         "line": 5
       },
       {
-        "source": "../../lib/homeStats",
+        "source": "../../lib/homeWorkbench",
         "line": 6
       },
       {
-        "source": "../../lib/worldApi",
+        "source": "../../lib/homeStats",
         "line": 7
       },
       {
-        "source": "../../lib/sitePaths",
+        "source": "../../lib/worldApi",
         "line": 8
       },
       {
-        "source": "../../i18n",
+        "source": "../../lib/sitePaths",
         "line": 9
       },
       {
-        "source": "./CountUp",
+        "source": "../../i18n",
         "line": 10
       },
       {
-        "source": "../../styles/shell.css",
+        "source": "./CountUp",
         "line": 11
       },
       {
-        "source": "../../styles/z3-home.css",
+        "source": "../../styles/shell.css",
         "line": 12
+      },
+      {
+        "source": "../../styles/z3-home.css",
+        "line": 13
+      },
+      {
+        "source": "../../styles/r9a-home.css",
+        "line": 14
       }
     ],
     "exports": [
@@ -18839,18 +18941,18 @@
         "names": [
           "default"
         ],
-        "line": 42
+        "line": 44
       }
     ],
     "anonymous_functions": 2
   },
   "frontend/src/components/home/HomeHero.jsx": {
-    "sha256": "fa5d856d6af315d115a34e25f596f6d90c0b0102363f521ae913ff57e6d884d2",
+    "sha256": "1128aaa46385a993d079243e393a61c67a7765a1619cfe873dc0f5ca51bf7e3e",
     "definitions": [
       {
         "name": "HomeHero",
         "line": 29,
-        "end_line": 126,
+        "end_line": 128,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19036,48 +19138,54 @@
     "anonymous_functions": 7
   },
   "frontend/src/components/home/HomePricesRates.jsx": {
-    "sha256": "5c3746868833e70f9544d4ab2f521f050b0f1f0fcf58298d140bce0d7c3bd0d8",
+    "sha256": "835df2dadcfa4f9a802332623b8ff4a095fa74827611a8f6685ba0e24fe5e395",
     "definitions": [
       {
         "name": "readSaved",
-        "line": 19,
-        "end_line": 21,
+        "line": 22,
+        "end_line": 24,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionChoice",
-        "line": 23,
-        "end_line": 41,
+        "line": 26,
+        "end_line": 46,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "useRegionChoice.onPick",
-        "line": 36,
-        "end_line": 39,
+        "line": 39,
+        "end_line": 43,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "HomeRegionQuick",
-        "line": 44,
-        "end_line": 72,
+        "line": 49,
+        "end_line": 77,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HomeFactsStrip",
+        "line": 81,
+        "end_line": 96,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionPrices",
-        "line": 74,
-        "end_line": 117,
+        "line": 98,
+        "end_line": 142,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RateTiles",
-        "line": 119,
-        "end_line": 169,
+        "line": 144,
+        "end_line": 194,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "HomePricesRates",
-        "line": 171,
-        "end_line": 186,
+        "line": 196,
+        "end_line": 211,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -19133,6 +19241,18 @@
       {
         "source": "../../styles/r5d-home.css",
         "line": 15
+      },
+      {
+        "source": "./HomeRegionPriceTiles",
+        "line": 16
+      },
+      {
+        "source": "../../lib/homePriceSummary",
+        "line": 17
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 18
       }
     ],
     "exports": [
@@ -19140,16 +19260,122 @@
         "names": [
           "HomeRegionQuick"
         ],
-        "line": 44
+        "line": 49
+      },
+      {
+        "names": [
+          "HomePriceStrip"
+        ],
+        "line": 80
+      },
+      {
+        "names": [
+          "HomeFactsStrip"
+        ],
+        "line": 81
       },
       {
         "names": [
           "default"
         ],
-        "line": 171
+        "line": 196
       }
     ],
-    "anonymous_functions": 22
+    "anonymous_functions": 24
+  },
+  "frontend/src/components/home/HomeRegionPriceTiles.jsx": {
+    "sha256": "44e8b6b9fa12a6a1510064279ea8cacff86380323be586a45b45b120bdc0dc48",
+    "definitions": [
+      {
+        "name": "unitParts",
+        "line": 16,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "Trend",
+        "line": 26,
+        "end_line": 38,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HomeRegionPriceTiles",
+        "line": 40,
+        "end_line": 100,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "savedRegion",
+        "line": 102,
+        "end_line": 104,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HomePriceStrip",
+        "line": 110,
+        "end_line": 142,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "HomePriceStrip.on",
+        "line": 116,
+        "end_line": 116,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "react",
+        "line": 4
+      },
+      {
+        "source": "react-router-dom",
+        "line": 5
+      },
+      {
+        "source": "lucide-react",
+        "line": 6
+      },
+      {
+        "source": "../../lib/homePriceSummary",
+        "line": 7
+      },
+      {
+        "source": "../../lib/format",
+        "line": 8
+      },
+      {
+        "source": "../../lib/sitePaths",
+        "line": 9
+      },
+      {
+        "source": "../../lib/track",
+        "line": 10
+      },
+      {
+        "source": "../../i18n",
+        "line": 11
+      },
+      {
+        "source": "../../styles/r9a-home.css",
+        "line": 12
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "default"
+        ],
+        "line": 40
+      },
+      {
+        "names": [
+          "HomePriceStrip"
+        ],
+        "line": 110
+      }
+    ],
+    "anonymous_functions": 10
   },
   "frontend/src/components/home/HomeToday.component.test.jsx": {
     "sha256": "26d5c7555ab1b491d9f0443a311b156facdc44fcfb5985382bc9133cac292670",
@@ -21399,30 +21625,48 @@
     "anonymous_functions": 6
   },
   "frontend/src/components/russia/RussiaKeyFigures.jsx": {
-    "sha256": "1931f10ab279f58516d5ede688096337a9845b52ce5f0724f1c8a8ad0de1b73a",
+    "sha256": "ac4dda8ab7df28fab4a1391b9e0b78afc721e96e2917937ee0c5b05c3724f649",
     "definitions": [
       {
         "name": "formatFigure",
-        "line": 25,
-        "end_line": 34,
+        "line": 28,
+        "end_line": 37,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "thinForSpark",
-        "line": 37,
-        "end_line": 41,
+        "line": 40,
+        "end_line": 44,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "MainCard",
-        "line": 43,
-        "end_line": 99,
+        "line": 46,
+        "end_line": 102,
         "kind": "FunctionDeclaration"
       },
       {
+        "name": "CiteStrip",
+        "line": 105,
+        "end_line": 135,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "CiteStrip.text",
+        "line": 111,
+        "end_line": 118,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "CiteStrip.copy",
+        "line": 119,
+        "end_line": 125,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
         "name": "RussiaKeyFigures",
-        "line": 101,
-        "end_line": 111,
+        "line": 137,
+        "end_line": 150,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -21432,64 +21676,76 @@
         "line": 2
       },
       {
-        "source": "react-router-dom",
+        "source": "lucide-react",
         "line": 3
       },
       {
-        "source": "../../lib/hooks",
+        "source": "react-router-dom",
         "line": 4
       },
       {
-        "source": "../../lib/format",
+        "source": "../../lib/hooks",
         "line": 5
       },
       {
-        "source": "../../lib/deltaTone",
+        "source": "../../lib/format",
         "line": 6
       },
       {
-        "source": "../../lib/periodPhrase",
+        "source": "../../lib/deltaTone",
         "line": 7
       },
       {
-        "source": "../../lib/russiaHomeCards",
+        "source": "../../lib/periodPhrase",
         "line": 8
       },
       {
-        "source": "../../lib/countryKeyFigures",
+        "source": "../../lib/russiaHomeCards",
         "line": 9
       },
       {
-        "source": "../../lib/sitePaths",
-        "line": 12
+        "source": "../../lib/countryKeyFigures",
+        "line": 10
       },
       {
-        "source": "../../i18n",
+        "source": "../../lib/sitePaths",
         "line": 13
       },
       {
-        "source": "../DeltaBadge",
+        "source": "../../i18n",
         "line": 14
       },
       {
-        "source": "../Sparkline",
+        "source": "../DeltaBadge",
         "line": 15
       },
       {
-        "source": "../Skeleton",
+        "source": "../Sparkline",
         "line": 16
       },
       {
-        "source": "../country/useSparkHeight",
+        "source": "../Skeleton",
         "line": 17
       },
       {
-        "source": "../../styles/z5-country.css",
+        "source": "../country/useSparkHeight",
         "line": 18
       },
       {
-        "source": "../../styles/k6-country.css",
+        "source": "../../lib/r9bPrice",
         "line": 19
+      },
+      {
+        "source": "../../styles/r9b-movers.css",
+        "line": 20
+      },
+      {
+        "source": "../../styles/z5-country.css",
+        "line": 21
+      },
+      {
+        "source": "../../styles/k6-country.css",
+        "line": 22
       }
     ],
     "exports": [
@@ -21497,10 +21753,10 @@
         "names": [
           "default"
         ],
-        "line": 101
+        "line": 137
       }
     ],
-    "anonymous_functions": 9
+    "anonymous_functions": 11
   },
   "frontend/src/components/searchLabourHints.js": {
     "sha256": "68ad11ac8fbede4921826e061b27f0ba3e0b056f924a3c8e46c06e5b324ebfeb",
@@ -23166,7 +23422,7 @@
     "anonymous_functions": 0
   },
   "frontend/src/i18n/messages.en.js": {
-    "sha256": "bbd5b5192ade3986186476b798b833d26d316309a5ec915b63f96ecc7c8eb6aa",
+    "sha256": "1fa028809b4855ad65aead79ffbbfeb5aeb92c71f0739ffe2c5d0b2046650613",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -23274,7 +23530,7 @@
     "anonymous_functions": 27
   },
   "frontend/src/i18n/messages.ru.js": {
-    "sha256": "98e671ba110cdd39193527012e3de24ce0e84775ce727f1d7a8067272974fb11",
+    "sha256": "cac4c6160f0c7f8a06f8a7a5a7bd23acc9b43ab70096f9491a2a61050593576d",
     "definitions": [],
     "imports": [],
     "exports": [
@@ -35515,6 +35771,46 @@
     "exports": [],
     "anonymous_functions": 9
   },
+  "frontend/src/lib/homePriceSummary.js": {
+    "sha256": "d56203ab238fcb08efd2f9c8f876ea5195223a20295ee87904488ec6dc1dc874",
+    "definitions": [
+      {
+        "name": "useHomePriceSummary",
+        "line": 6,
+        "end_line": 13,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "useHomePriceSummary.queryFn",
+        "line": 9,
+        "end_line": 9,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "@tanstack/react-query",
+        "line": 1
+      },
+      {
+        "source": "./api",
+        "line": 2
+      },
+      {
+        "source": "../i18n/locale",
+        "line": 3
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "useHomePriceSummary"
+        ],
+        "line": 6
+      }
+    ],
+    "anonymous_functions": 0
+  },
   "frontend/src/lib/homeQuickLinks.js": {
     "sha256": "8e059943dd183161691aacc67df3fc5526b74e670cc17dbcdb2e97630e256ac8",
     "definitions": [
@@ -37946,7 +38242,7 @@
     "anonymous_functions": 6
   },
   "frontend/src/lib/navItems.js": {
-    "sha256": "c5212d19a3f1392a007ca7471a82a760210fd51c5a3bf75524fc6ba1fa5b79d7",
+    "sha256": "93975a78493f28af219b7b409b1f8388cdc4b75aa13e59d9ee6368928da33d19",
     "definitions": [
       {
         "name": "primaryNav",
@@ -37975,7 +38271,7 @@
       {
         "name": "mobileNavGroups",
         "line": 156,
-        "end_line": 196,
+        "end_line": 197,
         "kind": "FunctionDeclaration"
       }
     ],
@@ -40865,6 +41161,140 @@
     ],
     "exports": [],
     "anonymous_functions": 5
+  },
+  "frontend/src/lib/r9bPrice.js": {
+    "sha256": "60f5225780ac9c47391888280386e7aee08d6ecd833a1d90dab52b720369f34c",
+    "definitions": [
+      {
+        "name": "splitPriceUnit",
+        "line": 4,
+        "end_line": 13,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "signed",
+        "line": 15,
+        "end_line": 18,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "money",
+        "line": 20,
+        "end_line": 24,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "quoteLine",
+        "line": 27,
+        "end_line": 37,
+        "kind": "FunctionDeclaration"
+      },
+      {
+        "name": "copyToClipboard",
+        "line": 39,
+        "end_line": 59,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [
+      {
+        "source": "./format",
+        "line": 1
+      }
+    ],
+    "exports": [
+      {
+        "names": [
+          "splitPriceUnit"
+        ],
+        "line": 4
+      },
+      {
+        "names": [
+          "signed"
+        ],
+        "line": 15
+      },
+      {
+        "names": [
+          "money"
+        ],
+        "line": 20
+      },
+      {
+        "names": [
+          "quoteLine"
+        ],
+        "line": 27
+      },
+      {
+        "names": [
+          "copyToClipboard"
+        ],
+        "line": 39
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/r9bPrice.test.js": {
+    "sha256": "15dc5f9ab16968f4c5caf3ffac7ee60a91aa65003bf41cb277efcd9c39d9d790",
+    "definitions": [
+      {
+        "name": "t",
+        "line": 4,
+        "end_line": 4,
+        "kind": "ArrowFunctionExpression"
+      }
+    ],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./r9bPrice",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 5
+  },
+  "frontend/src/lib/r9cPriceUnit.js": {
+    "sha256": "cb6ef480e8022b054ac03fcced9cee6c74ff21d79e2c4a99184bb620e49eb5ab",
+    "definitions": [
+      {
+        "name": "priceUnitLabel",
+        "line": 3,
+        "end_line": 10,
+        "kind": "FunctionDeclaration"
+      }
+    ],
+    "imports": [],
+    "exports": [
+      {
+        "names": [
+          "priceUnitLabel"
+        ],
+        "line": 3
+      }
+    ],
+    "anonymous_functions": 0
+  },
+  "frontend/src/lib/r9cPriceUnit.test.js": {
+    "sha256": "7b5e34257bee11c72806e337537e318fdede752b1d5c1c6fc5ab8cbb7348592d",
+    "definitions": [],
+    "imports": [
+      {
+        "source": "vitest",
+        "line": 1
+      },
+      {
+        "source": "./r9cPriceUnit",
+        "line": 2
+      }
+    ],
+    "exports": [],
+    "anonymous_functions": 4
   },
   "frontend/src/lib/rangeStats.js": {
     "sha256": "7f5b0d9dce1aed3c61d42ca0d1bb0c2646f99ed957b1adcffc60680eb5c4aaa5",
@@ -57572,24 +58002,54 @@
     "anonymous_functions": 12
   },
   "frontend/src/pages/RegionRatingPage.jsx": {
-    "sha256": "54dd971bb65e80d0e2f7b550d185f0b0b38b577ad5ab7050c028484316b7b957",
+    "sha256": "86432ac4a4e5334eec9c85668f77009cc87a587dc1395d5f269800fab3f9edcd",
     "definitions": [
       {
+        "name": "cleanPriceName",
+        "line": 32,
+        "end_line": 39,
+        "kind": "FunctionDeclaration"
+      },
+      {
         "name": "RegionRatingPage",
-        "line": 29,
-        "end_line": 323,
+        "line": 41,
+        "end_line": 402,
         "kind": "FunctionDeclaration"
       },
       {
         "name": "RegionRatingPage.setSortOverride",
-        "line": 41,
-        "end_line": 41,
+        "line": 55,
+        "end_line": 55,
         "kind": "ArrowFunctionExpression"
       },
       {
         "name": "RegionRatingPage.pickMine",
-        "line": 56,
-        "end_line": 62,
+        "line": 70,
+        "end_line": 76,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.val",
+        "line": 83,
+        "end_line": 83,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.fmtU",
+        "line": 93,
+        "end_line": 93,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.num1",
+        "line": 94,
+        "end_line": 94,
+        "kind": "ArrowFunctionExpression"
+      },
+      {
+        "name": "RegionRatingPage.signed",
+        "line": 95,
+        "end_line": 95,
         "kind": "ArrowFunctionExpression"
       }
     ],
@@ -57619,64 +58079,72 @@
         "line": 6
       },
       {
-        "source": "../components/regions/R4YourRegion",
+        "source": "../lib/r9cPriceUnit",
         "line": 7
       },
       {
-        "source": "../components/RegionsMap",
+        "source": "../components/regions/R4YourRegion",
         "line": 8
       },
       {
-        "source": "../components/ApiRetryBanner",
+        "source": "../components/RegionsMap",
         "line": 9
       },
       {
-        "source": "../components/LoadingNote",
+        "source": "../components/ApiRetryBanner",
         "line": 10
       },
       {
-        "source": "../components/Breadcrumbs",
+        "source": "../components/LoadingNote",
         "line": 11
       },
       {
-        "source": "../components/Skeleton",
+        "source": "../components/Breadcrumbs",
         "line": 12
       },
       {
-        "source": "../lib/breadcrumbs",
+        "source": "../components/Skeleton",
         "line": 13
       },
       {
-        "source": "../lib/sitePaths",
+        "source": "../lib/breadcrumbs",
         "line": 14
       },
       {
-        "source": "../components/Chip",
-        "line": 21
+        "source": "../lib/sitePaths",
+        "line": 15
       },
       {
-        "source": "../i18n",
+        "source": "../components/Chip",
         "line": 22
       },
       {
-        "source": "../styles/platform-pages.css",
+        "source": "../i18n",
         "line": 23
       },
       {
-        "source": "../styles/regions-w4.css",
+        "source": "../styles/platform-pages.css",
         "line": 24
       },
       {
-        "source": "../styles/k6-country.css",
+        "source": "../styles/regions-w4.css",
         "line": 25
       },
       {
-        "source": "../styles/r3b-regions.css",
+        "source": "../styles/k6-country.css",
         "line": 26
       },
       {
-        "source": "../styles/r7c-regions.css",
+        "source": "../styles/r3b-regions.css",
         "line": 27
+      },
+      {
+        "source": "../styles/r7c-regions.css",
+        "line": 28
+      },
+      {
+        "source": "../styles/r9c-price-rating.css",
+        "line": 29
       }
     ],
     "exports": [
@@ -57684,10 +58152,10 @@
         "names": [
           "default"
         ],
-        "line": 29
+        "line": 41
       }
     ],
-    "anonymous_functions": 22
+    "anonymous_functions": 28
   },
   "frontend/src/pages/RegionRatingsHub.component.test.jsx": {
     "sha256": "70b170c898f0637f4eb8baa98372e1495ba3faf65b350778670dc21996a3bac1",
