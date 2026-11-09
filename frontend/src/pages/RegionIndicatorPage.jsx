@@ -20,6 +20,8 @@ import DeltaBadge from '../components/DeltaBadge';
 import { indicatorPolarity } from '../lib/deltaTone';
 import { prioritizeIndicators, formatRegionNumber, isPercentUnit, formatRegionWithUnit, glueNumbers, unitLabel, NBSP } from '../lib/regionUi';
 import RegionAnnualChart from '../components/RegionAnnualChart';
+import { HistoryKeyYears, HistoryCoverage } from '../components/regions/MonthlyPricePartsHistory';
+import { deflateSeries, eventPeriods, fillMonthGaps } from '../lib/z2PriceHistory';
 import GroupedSiblings, { CompareLines, AreaCalc, CopyForClient, DiscontinuedNote, PairSwitch, RangeChips } from '../components/regions/MonthlyPriceParts';
 import {
   bigRub, changeOverMonths, compareRows, guessPriceGroup, pairsFirst, roundBig, sliceMonths, yearlyCost, isRubPerUnit, perUnitPrice, pickField, priceText, shortPriceName, signedPct, unitSuffix, ymLabel, ymLabelFrom,
@@ -120,7 +122,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   // В-20: для знакопеременных рядов режим «% г/г» недоступен.
   const showYoY = showYoYRaw && !isNegativeCapable(data?.series);
   const [exporting, setExporting] = useState(false);
-  const [rangeM, setRangeM] = useState(60);
+  const [rangePick, setRangeM] = useState(null);
+  const [showReal, setShowReal] = useState(false);
+  // Длинная история (от 12 лет): сразу весь период, иначе учитель видит только последние 5 лет.
+  const monthlyLen = isMonthly ? monthly.data.series.length : 0;
+  const rangeM = rangePick ?? (monthlyLen >= 144 ? 0 : 60);
   const { isAuthed } = useAuth();
   const chartRef = useRef(null);
 
@@ -321,7 +327,9 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
   const shortName = isMonthly
     ? (pickField(active, 'short_name') || (isPrice ? shortPriceName(indName, active.indicator.unit) : null))
     : null;
-  const displayName = shortName || indName;
+  // EN: короткое имя приходит с единицей в хвосте («Boneless beef, kg»), а единица уже стоит у цены: убираем повтор.
+  const trimUnitTail = (n) => (locale === 'en' && isPrice && n ? String(n).replace(/,\s*(?:kg|g|l|litre|liter|piece|pcs|pack|m2|m²|month|per [^,]{1,24}|\d+\s?[a-z²]{1,8})\s*$/i, '') : n);
+  const displayName = trimUnitTail(shortName) || indName;
   const titleParts = (() => {
     const m = String(displayName || '').match(/^(.{20,}?)\s+[—–]\s+(.{25,})$/);
     return m ? [m[1], m[2]] : null;
@@ -396,6 +404,11 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
     ].filter(Boolean).join(' ')
     : '';
   const chartMonths = isMonthly ? rangeM : 0;
+  const cpiChain = isMonthly ? monthly.data?.cpi_russia : null;
+  const realFull = isMonthly && last && !discontinued ? deflateSeries(activeSeries, cpiChain, last.year * 100 + last.month) : null;
+  const chartSeriesM = isMonthly ? fillMonthGaps(sliceMonths(activeSeries, chartMonths)) : null;
+  const chartEvents = isMonthly && chartMonths !== 24 && chartMonths !== 60 ? eventPeriods(chartSeriesM) : null;
+  const realSlice = showReal && realFull ? sliceMonths(realFull, chartMonths) : null;
 
   return (
     <div className="fe-data-page mx-auto w-full max-w-7xl px-4 pb-12 pt-24 sm:px-6 sm:pb-16">
@@ -540,6 +553,14 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
                     ))}
                   </select>
                 </label>
+                {isMonthly && realFull && (
+                  <Chip active={showReal} onClick={() => setShowReal((v) => !v)} title={t('r10c.realTitle')}>
+                    <span className="z2p-russia-chip">
+                      {showReal && <Check size={13} aria-hidden="true" />}
+                      {t('r10c.realBtn')}
+                    </span>
+                  </Chip>
+                )}
                 {active.russia_series?.length > 0 && (
                   <Chip active={showRussia} onClick={() => setShowRussia(v => !v)}>
                     {isMonthly
@@ -569,7 +590,7 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
             </div>
             <RegionAnnualChart
               frequency={isMonthly ? 'monthly' : 'annual'}
-              series={isMonthly ? sliceMonths(activeSeries, chartMonths) : (showYoY ? toYoYSeries(data.series) : data.series)}
+              series={isMonthly ? chartSeriesM : (showYoY ? toYoYSeries(data.series) : data.series)}
               russiaSeries={showRussia
                 ? (isMonthly
                   ? sliceMonths(active.russia_series, chartMonths)
@@ -585,8 +606,15 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               regionName={regionName}
               axisUnit={isMonthly ? (rubCaption || unitLabel(active.indicator.unit, locale) || active.indicator.unit) : ''}
               yearTicks={isMonthly}
+              realSeries={realSlice}
+              realLabel={realSlice ? t('r10c.realLabel', { ym: ymLabelFrom(last.year * 100 + last.month, locale) }) : ''}
+              eventYears={chartEvents}
               height={300}
             />
+            {isMonthly && <HistoryCoverage series={activeSeries} russiaSeries={active.russia_series} discontinued={discontinued} />}
+            {realSlice && (
+              <p className="r10c-legend" data-no-export="true"><span><span className="r10c-legend__dash" aria-hidden="true" />{t('r10c.realLegend', { ym: ymLabelFrom(last.year * 100 + last.month, locale) })}</span></p>
+            )}
             {compareSlug && isMonthly && compareMonthly.data && (
               <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-secondary px-1" data-no-export="true">
                 <span className="inline-flex items-center gap-1.5">
@@ -622,6 +650,10 @@ export default function RegionIndicatorPage({ renderActions = null } = {}) {
               <p className="z2p-source" lang={locale}>{t('r2z2.source', { month: lastMonthLabel })}</p>
             )}
             </div>
+
+          {isMonthly && isPrice && (
+            <HistoryKeyYears series={activeSeries} russiaSeries={active.russia_series} cpi={cpiChain} last={last} unit={active.indicator.unit} discontinued={discontinued} />
+          )}
 
           <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {active.rank?.position && (
