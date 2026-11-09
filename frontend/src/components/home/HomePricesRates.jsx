@@ -6,12 +6,13 @@ import { ArrowRight, ChevronDown, Coins, ShoppingBasket } from 'lucide-react';
 import { useIndicators } from '../../lib/hooks';
 import { useRegionsLanding } from '../../lib/regionsApi';
 import { TRAVEL_UNITS, buildEdges, convert, formatConverted, unitWord } from '../../lib/currencyRates';
-import { regionPath, russiaIndicatorPath } from '../../lib/sitePaths';
+import { regionPath, regionVsPath, russiaIndicatorPath } from '../../lib/sitePaths';
 import { RATES_TO } from '../../lib/navItems';
 import { track, events } from '../../lib/track';
 import { useLocale, useT } from '../../i18n';
 import '../../styles/z3-home.css';
 import '../../styles/r3a-home.css';
+import '../../styles/r5d-home.css';
 
 const STORE_KEY = 'fe-home-region';
 
@@ -90,7 +91,7 @@ function RegionPrices() {
             {regions.length ? regions.map((r) => <option key={r.slug} value={r.slug}>{r.name}</option>) : <option value="">…</option>}
           </select>
         </label>
-        <p className="fe-r3a-goods">{['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k) => t(`r3a.prices.g.${k}`)).join(', ')} {t('r3a.prices.more')}</p>
+        <p className="fe-r3a-goods">{['eggs', 'milk', 'fuel', 'bread', 'meds'].map((k, i) => { const w = t(`r3a.prices.g.${k}`); return i ? w.charAt(0).toLowerCase() + w.slice(1) : w; }).join(', ')} {t('r3a.prices.more')}</p>
       </div>
       {value ? (
         <Link
@@ -100,6 +101,15 @@ function RegionPrices() {
         >
           {t('r3a.prices.go')}
           <ArrowRight size={16} aria-hidden="true" />
+        </Link>
+      ) : null}
+      {value ? (
+        <Link
+          to={regionVsPath(value, value === 'sankt-peterburg' ? 'moskva' : 'sankt-peterburg')}
+          onClick={() => track(events.HOME_CATEGORY_CLICK, { category: 'region-compare', surface: 'home-r5d' })}
+          className="r5d-compare fe-press"
+        >
+          {t('r5d.prices.compare')}
         </Link>
       ) : null}
     </article>

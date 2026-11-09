@@ -3888,4 +3888,5 @@ export default {
   'r5d.diffRub': 'The difference is {sum} a month.',
   'r5d.copy': 'Copy the numbers',
   'r5d.copied': 'Copied',
+  'r5d.prices.compare': 'Compare your region with another',
 };

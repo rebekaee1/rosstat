@@ -3893,4 +3893,5 @@ export default {
   'r5d.diffRub': 'Разница — {sum} в месяц.',
   'r5d.copy': 'Скопировать цифры',
   'r5d.copied': 'Скопировано',
+  'r5d.prices.compare': 'Сравнить свой регион с другим',
 };
