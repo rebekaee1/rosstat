@@ -1041,3 +1041,14 @@ SSR-страницы отдают `X-FE-Cache: hit | stale | miss` (`api/seo_pag
 показатели остаются в обзорном списке. Контракты и адреса рядов сохранены.
 
 **Публичный бот: чтение базы ИИ-агентом, 2026-11-09.** Агент @ForecastEconomyBot читает `indicators`/`indicator_data`/текущие `forecasts`, `region_indicators`/`region_data`/`region_monthly_data`/`regions`, `world_indicators` (только `is_listed`)/`world_data_points`/`world_countries` и `economic_events` через инструменты `bot_agent_tools.py`: только SELECT, `statement_timeout` 3 с на вызов, ответ до 3500 знаков, прогноз одним значением без границ, адреса страниц через `site_paths`. Запись не выполняется. [Инструменты](../backend/app/services/bot_agent_tools.py), [ADR-0027](adr/0027-public-telegram-bot.md).
+
+## Исследования: PDF-отчёты к роликам — 2026-11-09
+
+Решение и основания — [ADR-0028](adr/0028-research-reports-section.md).
+
+- Каталог: `backend/app/data/research_catalog.json` (`release`, `release_en`, `group_url`, `items[]`: `slug, number, title, subtitle, annotation, figures[{value,label,tone: green|red|gold|""}], conclusions[], topics[], file, download_name, cover, pages, size_mb, authors`). Генератор — `content-factory/материалы/выгрузить_на_сайт.py`. Файлы — `frontend/public/research/{files,covers}/`, nginx `location ^~ /research/files/` (неделя кэша, `noindex`).
+- `GET /api/v1/research` → `{release, release_en, group_url, items[+downloads], total_downloads}`; кэш 60 с.
+- `GET /api/v1/research/{slug}/download` → 302 на `file`; 404 на неизвестный slug. Счёт: не бот, первый раз за сутки с адреса (Redis `fe:research:dl:*`, TTL 24 ч) → `research_downloads(slug, date, count)` +1. IP и ПДн не хранятся.
+- Таблица `research_downloads`: `id, slug varchar(120), date, count`, уникальность `(slug, date)` — Alembic `20261109_research_downloads`.
+- Цель `research_download` (микро) на клик «Скачать PDF».
+- Публичный бот: `RUSTATS_PUBLIC_BOT_GROUP_URL` (пусто по умолчанию) — куда ведут «📚 Исследования (PDF)», `/research`, `?start=research…`; без группы — `/research` сайта.

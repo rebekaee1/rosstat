@@ -58,6 +58,7 @@ RESERVED_FIRST_SEGMENTS: frozenset[str] = frozenset({
     # Платформенные страницы
     "about",
     "methodology",
+    "research",
     "privacy",
     "terms",
     "calculator",

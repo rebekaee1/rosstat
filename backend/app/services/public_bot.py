@@ -349,11 +349,26 @@ def figure_text(f: Figure, header: str | None = None, cpi: "Figure | None" = Non
 # Клавиатуры и тексты
 # ---------------------------------------------------------------------------
 
+def research_url() -> str:
+    """Куда ведёт «📚 Исследования»: группа с отчётами, а пока её нет — раздел сайта."""
+    return settings.public_bot_group_url or f"{ru_public_origin()}/research"
+
+
+def research_keyboard() -> dict:
+    rows = []
+    if settings.public_bot_group_url:
+        rows.append([{"text": "📚 Группа с отчётами", "url": settings.public_bot_group_url}])
+    rows.append([{"text": "🌐 Все отчёты на сайте", "url": f"{ru_public_origin()}/research"}])
+    rows.append([{"text": "Цифры по темам", "callback_data": f"{CB_PREFIX}menu"}])
+    return {"inline_keyboard": rows}
+
+
 def menu_keyboard() -> dict:
     rows = [[{"text": TOPICS[k].title, "callback_data": f"{CB_PREFIX}t:{k}"} for k in row] for row in MENU]
     if settings.public_bot_llm_enabled and settings.openrouter_api_key:
         rows.append([{"text": "📰 Сводка", "callback_data": f"{CB_PREFIX}week"},
                      {"text": "❓ Что я умею", "callback_data": f"{CB_PREFIX}help"}])
+    rows.append([{"text": "📚 Исследования (PDF)", "url": research_url()}])
     return {"inline_keyboard": rows}
 
 
@@ -441,9 +456,13 @@ HELP_TEXT = ("<b>Что я умею</b>\n"
              "📬 Скажите, что прислать, — пришлю: «присылай инфляцию», «напиши, когда изменится ставка». "
              "Список — /subs.\n"
              "📰 /week — короткая сводка: что изменилось и что это значит.\n"
+             "📚 /research — исследования команды в PDF: ролик, цифры, графики, выводы.\n"
              "↗️ В любом чате наберите <code>@ForecastEconomyBot дизель</code> — и отправьте карточку другу.\n"
              "🌱 А ещё я самоулучшаюсь: расскажите, чего не хватает, — передам команде, и это появится.\n"
              "🗑 /stop — удалить мои данные.")
+RESEARCH_TEXT = ("📚 <b>Исследования Forecast Economy</b>\n"
+                 "Берём простой вопрос о деньгах и проверяем его на официальных данных. К каждому исследованию — "
+                 "короткий ролик и PDF-отчёт: главное в цифрах, графики, методика, источники и выводы.")
 MENU_TEXT = "Темы — или просто спросите своими словами:"
 WEEK_TOPIC = "week"  # подписка на пятничную сводку (не тема-ряд)
 WEEK_PROMPT = ("Сводка недели. Первая строка — один главный вывод. Дальше 3–5 коротких пунктов: последние цифры "
@@ -570,6 +589,11 @@ async def handle_message(msg: dict) -> None:
                 await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line())
             await answer_question(chat_id, f"Я пришёл из вашего ролика «{reel}». Поздоровайся и коротко, живо "
                                            "объясни тему на наших цифрах.", hint_topic=topic)
+        elif (code or "").lower().startswith("research"):
+            # По ссылке «исследования» (`?start=research…`): отчёты и путь к группе, потом строка о боте.
+            await _send(chat_id, RESEARCH_TEXT, research_keyboard())
+            if not returning:
+                await _send(chat_id, SHORT_INTRO + "\n\n" + privacy_line(), menu_keyboard())
         elif topic:
             # По ссылке из ролика: короткая строка о боте, затем цифра с её кнопками внизу.
             if not returning:
@@ -597,6 +621,9 @@ async def handle_message(msg: dict) -> None:
     if low in ("/privacy", "/конфиденциальность", "конфиденциальность"):
         # Тестер №3, круг 2: модель на /privacy уверяла «ничего не храню» — храним номер чата и подписки.
         await _send(chat_id, privacy_line(), menu_keyboard())
+        return
+    if low in ("/research", "/исследования", "исследования", "отчёты", "отчеты"):
+        await _send(chat_id, RESEARCH_TEXT, research_keyboard())
         return
     if low in ("/menu", "меню"):
         await _send(chat_id, MENU_TEXT, menu_keyboard())
