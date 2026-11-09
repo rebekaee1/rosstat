@@ -7,6 +7,7 @@
 // В этом случае обе линии пересчитываются в «Россия = 100» и рисуются на одной оси: две разные
 // шкалы в одном поле (волна 6) заставляли новичка сравнивать высоту линий, которая ничего не значит.
 // Старый вариант с правой осью остался только для графика с нашим прогнозом (у него нет ряда РФ).
+import '../styles/r6c-annual.css';
 import { useCallback, useMemo, useRef } from 'react';
 import {
   ResponsiveContainer, ComposedChart, Area, Line, XAxis, YAxis,
@@ -246,6 +247,8 @@ export default function RegionAnnualChart({
   };
   const chartHeight = isNarrow ? Math.min(height, 260) : height;
   const russiaLabel = nationalLabel || t('regions.ind.russia');
+  const lastPoint = data[data.length - 1];
+  const fmtLegend = (v) => Number(v).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU', { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 1 });
 
   return (
     <div>
@@ -356,6 +359,32 @@ export default function RegionAnnualChart({
               animationDuration={900}
               animationEasing="ease-out"
             />
+            {!dated && !forecastSeries?.length && showRussia && !dualAxis && !indexMode && data.length > 0 && data[data.length - 1].russia != null && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={data[data.length - 1].russia}
+                r={3.5}
+                fill={CHART_THEME.axis}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
+            {!dated && !forecastSeries?.length && data.length > 0 && (
+              <ReferenceDot
+                yAxisId="region"
+                x={data[data.length - 1].period}
+                y={plotData[plotData.length - 1].value}
+                r={4.5}
+                fill={CHART_THEME.gold}
+                stroke="#FFFFFF"
+                strokeWidth={2}
+                ifOverflow="extendDomain"
+                isFront
+              />
+            )}
             {monthly && !forecastSeries?.length && data.length > 0 && (
               <ReferenceDot
                 yAxisId="region"
@@ -419,10 +448,12 @@ export default function RegionAnnualChart({
           <span className="inline-flex items-center gap-1.5">
             <span className="k4-swatch k4-swatch--ribbon" aria-hidden="true" />
             {regionName}
+            {!dated && !indexMode && lastPoint?.value != null && <span className="r6c-legend-val">{fmtLegend(lastPoint.value)}</span>}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="k4-swatch" style={{ background: CHART_THEME.axis, opacity: 0.7 }} aria-hidden="true" />
             {indexMode ? t('w6f.reg.russia100', { name: russiaLabel }) : russiaLabel}
+            {!dated && !indexMode && lastPoint?.russia != null && <span className="r6c-legend-val">{fmtLegend(lastPoint.russia)}</span>}
           </span>
           {indexMode && (
             <span className="basis-full text-xs" data-testid="index-note">{t('w6f.reg.indexExplain', { region: regionName })}</span>

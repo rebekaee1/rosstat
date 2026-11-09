@@ -656,9 +656,22 @@ async def _section_siblings(db: AsyncSession, region, indicator) -> list[dict]:
     return [_sibling(x) for x in siblings]
 
 
+def _rank_around(rank_rows, rank, span: int = 2) -> list[dict]:
+    """Соседи региона по рейтингу: span мест выше и ниже (с номерами мест)."""
+    if not rank:
+        return []
+    lo = max(1, rank - span)
+    hi = min(len(rank_rows), rank + span)
+    return [
+        {"position": pos, "slug": s, "name": _rname(s, n), "value": _fmt(float(v))}
+        for pos, (s, n, v) in enumerate(rank_rows, 1)
+        if lo <= pos <= hi
+    ]
+
+
 @router.get("/{slug}/i/{code}")
 async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depends(get_db)):
-    cache_key = await versioned_key("regions", f"detail:v2:{slug}:{code}:{get_locale()}")
+    cache_key = await versioned_key("regions", f"detail:v3:{slug}:{code}:{get_locale()}")
     cached = await cache_get(cache_key)
     if cached:
         return cached
@@ -714,6 +727,7 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         if s == region.slug:
             rank = pos
             break
+    around = _rank_around(rank_rows, rank)
 
     # соседние показатели раздела (для блока «В этом разделе»)
     sibling_items = await _section_siblings(db, region, indicator)
@@ -739,7 +753,7 @@ async def region_indicator_detail(slug: str, code: str, db: AsyncSession = Depen
         "russia_series": russia_series,
         "rank": {
             "position": rank, "total": total_ranked, "year": last_year,
-            "top": top, "bottom": bottom, **polarity,
+            "top": top, "bottom": bottom, "around": around, **polarity,
         } if rank else None,
         "siblings": sibling_items,
     }
