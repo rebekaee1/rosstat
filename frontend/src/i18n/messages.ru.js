@@ -3998,4 +3998,10 @@ export default {
   'r7a.local.population': 'Население',
   'r7a.local.prices': 'Цены на продукты',
   'r7a.local.housing': 'Цены на жильё',
+  'r8c.yearShort': 'За год',
+  'r8c.fiveShort': 'За 5 лет',
+  'r8c.record': 'Рекорд',
+  'r8c.peak': 'Максимум',
+  'r8c.low': 'Минимум',
+  'r8c.group.tally': 'Дешевле: {a} — {na}, {b} — {nb}',
 };

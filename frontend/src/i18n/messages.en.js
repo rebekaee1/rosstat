@@ -3993,4 +3993,10 @@ export default {
   'r7a.local.population': 'Population',
   'r7a.local.prices': 'Food prices',
   'r7a.local.housing': 'Housing prices',
+  'r8c.yearShort': 'Past year',
+  'r8c.fiveShort': 'Past 5 years',
+  'r8c.record': 'Record',
+  'r8c.peak': 'Peak',
+  'r8c.low': 'Low',
+  'r8c.group.tally': 'Cheaper: {a} {na}, {b} {nb}',
 };

@@ -11,6 +11,7 @@ import { regionIndicatorPath, regionPath } from '../../lib/sitePaths';
 import { compareFill, groupSiblings, pairLabel, pairSiblings, perAreaUnit, priceText, roundBig, signedPct, ymLabel } from '../../lib/z2Price';
 import '../../styles/z2-price.css';
 import '../../styles/r5a-price.css';
+import '../../styles/r8c-price.css';
 
 const GROUP_KEYS = {
   'Продукты': 'z2.group.food',
@@ -51,7 +52,10 @@ export function CompareLines({ rows, unit, lastMonth }) {
             <span className="fe-num z2p-compare__val">{priceText(roundBig(r.value), unit, locale)}</span>
             <span className="fe-num z2p-compare__pct">{Math.abs(r.pct) < 0.05 ? t('r2z2.hereSame') : t(r.pct > 0 ? 'r2z2.hereHigher' : 'r2z2.hereLower', { pct: signedPct(Math.abs(r.pct), locale).replace(/^[+−]/, '') })}</span>
             {!sameMonth && <span className="z2p-compare__month">{ymLabel(r.month, locale)}</span>}
-            <span className="r5a-bar" aria-hidden="true"><i style={{ width: `${Math.round(compareFill(r.pct) * 100)}%` }} /></span>
+            <span className="r5a-bar r8c-bar" aria-hidden="true">
+              <i style={{ width: `${Math.round(compareFill(r.pct) * 100)}%` }} />
+              {r.pct > 0.05 && <b style={{ left: `${Math.round(100 / (1 + r.pct / 100))}%` }} />}
+            </span>
           </li>
         );
       })}
@@ -59,11 +63,13 @@ export function CompareLines({ rows, unit, lastMonth }) {
   );
 }
 
-function SiblingRow({ s, slug }) {
+function SiblingRow({ s, slug, pageMonth }) {
   const { t, locale } = useLocale();
   const value = s.value ?? s.last_value ?? null;
   const month = ymLabel(s.last_month ?? s.month, locale);
   const dead = !!s.is_discontinued;
+  const rawM = String(s.last_month ?? s.month ?? '').replace(/\D/g, '');
+  const sameAsPage = !dead && !!pageMonth && rawM === String(pageMonth).replace(/\D/g, '');
   return (
     <li className="min-w-0">
       <Link
@@ -73,7 +79,7 @@ function SiblingRow({ s, slug }) {
         <span className="z2p-row__name">{glueNumbers(s.short_name || s.name)}</span>
         <span className="z2p-row__meta">
           {value != null && <span className="fe-num z2p-row__val">{priceText(value, s.unit, locale)}</span>}
-          {month && (
+          {month && !sameAsPage && (
             <span className="z2p-row__month">{dead ? t('z2.until', { month }) : month}</span>
           )}
         </span>
@@ -83,14 +89,14 @@ function SiblingRow({ s, slug }) {
   );
 }
 
-function Group({ label, items, slug, open, onToggle }) {
+function Group({ label, items, slug, open, onToggle, pageMonth }) {
   const { t } = useLocale();
   const shown = open ? items : items.slice(0, PER_GROUP);
   return (
     <section className="z2p-group">
       <h3 className="z2p-group__title">{label}<span className="z2p-group__count fe-num">{items.length}</span></h3>
       <ul className="grid gap-2 sm:grid-cols-2">
-        {shown.map((s) => <SiblingRow key={s.code} s={s} slug={slug} />)}
+        {shown.map((s) => <SiblingRow key={s.code} s={s} slug={slug} pageMonth={pageMonth} />)}
       </ul>
       {items.length > PER_GROUP && (
         <button type="button" className="z2p-more fe-tap-inline" onClick={onToggle} aria-expanded={open}>
@@ -103,7 +109,7 @@ function Group({ label, items, slug, open, onToggle }) {
 }
 
 /** «Ещё в разделе»: группы цен, группа текущей позиции первой, живые раньше снятых; ссылка «Все цены региона». */
-export default function GroupedSiblings({ siblings, currentGroup, slug, section, regionName }) {
+export default function GroupedSiblings({ siblings, currentGroup, slug, section, regionName, pageMonth }) {
   const { t } = useLocale();
   const [openGroups, setOpenGroups] = useState({});
   const groups = groupSiblings(siblings, currentGroup);
@@ -123,6 +129,7 @@ export default function GroupedSiblings({ siblings, currentGroup, slug, section,
           label={GROUP_KEYS[g.group] ? t(GROUP_KEYS[g.group]) : g.group}
           items={g.items}
           slug={slug}
+          pageMonth={pageMonth}
           open={!!openGroups[g.group]}
           onToggle={() => setOpenGroups((o) => ({ ...o, [g.group]: !o[g.group] }))}
         />
