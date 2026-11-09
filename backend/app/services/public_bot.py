@@ -9,8 +9,9 @@
 - тот же бот и тот же поллер, что у админ-меню (`telegram_bot.telegram_poll_job`);
   публичный режим включает `settings.public_bot_enabled`, выключенный флаг = прежнее поведение;
 - только личные чаты; группы и каналы игнорируются;
-- номер чата хранится только в `public_bot_chats` (нужен для ответа и подписки), события —
-  с HMAC номера (`chat_hash`); `/stop` удаляет чат, подписки и архив публичных ответов;
+- номер чата — в `public_bot_chats` (нужен для ответа и подписки), события — с HMAC номера (`chat_hash`);
+  переписка (входящие с профилем Telegram и запросы к модели) — в `public_bot_dialog` (решение владельца 09.11.2026),
+  исходящие — в `telegram_outbox`; `/stop` удаляет чат, подписки, журнал и архив публичных ответов;
 - бот не видит, прочитано ли сообщение (в Bot API нет отметок прочтения): «вернулся» —
   это новое сообщение/нажатие человека или переход на сайт по ссылке с метками;
 - прогноз показывается одной точкой, без диапазона (правило владельца).
@@ -410,8 +411,8 @@ def welcome_text() -> str:
 
 def privacy_line() -> str:
     privacy = f"{ru_public_origin()}/privacy"
-    return (f"<i>Храню только номер этого чата, чтобы отвечать. Вопросы своими словами передаю ИИ-модели "
-            f"для ответа и не храню — не пишите в них личные данные. /stop — удалить всё. "
+    return (f"<i>Сохраняю переписку и имя профиля Telegram, чтобы отвечать и улучшать ответы. Вопросы своими словами "
+            f"передаю ИИ-модели — не пишите в них личные данные. /stop — удалить всё. "
             f"<a href=\"{privacy}\">Политика конфиденциальности</a></i>")
 
 
@@ -821,8 +822,11 @@ async def mark_blocked(chat_id: str) -> None:
 
 
 async def forget_chat(chat_id: str) -> None:
-    """/stop: удалить номер чата, подписки, архив публичных ответов этому чату и память разговора."""
+    """/stop: удалить номер чата, подписки, архив публичных ответов этому чату, журнал переписки и память разговора."""
+    from app.services import public_bot_dialog
+
     forget_history(chat_id)
+    await public_bot_dialog.forget(chat_id)
     async with async_session() as db:
         _event(db, chat_id, "stop")
         await db.execute(delete(PublicBotSubscription).where(PublicBotSubscription.chat_id == chat_id))
@@ -1067,7 +1071,7 @@ LLM_SYSTEM_PROMPT = """Ты — Forecast Economy, живой собеседни�
 
 Опора — блок ДАННЫЕ: это официальная статистика с нашего сайта (у каждой цифры есть дата и источник). Цифры, даты и источники бери только оттуда и называй месяц цифры. Чего там нет — честно скажи и предложи близкое. ДАННЫЕ всегда свежее твоих прошлых реплик: если цифра там есть, используй её, даже если раньше говорил, что её нет. Общие знания об экономике и понятиях использовать можно, но без выдуманных чисел.
 
-О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: храню номер чата, подписки и память разговора на 30 минут, тексты вопросов не сохраняю; подробности — /privacy. Перед «выше/ниже/подорожало» сравни два числа и проверь знак; разные ряды одним словом не обобщай (доллар вырос, евро упал — так и скажи).
+О себе — без рода («готово, отписка оформлена»). Имя человека называй, только если он сам представился в чате. О хранении правду: сохраняю переписку (вопросы и ответы), имя профиля Telegram, номер чата и подписки; /stop удаляет всё; подробности — /privacy. Перед «выше/ниже/подорожало» сравни два числа и проверь знак; разные ряды одним словом не обобщай (доллар вырос, евро упал — так и скажи).
 
 Три границы: прогноз — только одним числом («наш расчёт»), без диапазонов; не советуй, что покупать, куда вкладывать и когда продавать; не проси личных данных.
 
@@ -1269,6 +1273,17 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
              + (" …(сообщение обрезано)" if len(question) > _MAX_QUESTION else "")},
         ],
     }
+    import time
+
+    from app.services import public_bot_dialog
+
+    started = time.monotonic()
+
+    async def _log(answer: str | None, status: str, usage: dict | None = None) -> None:
+        await public_bot_dialog.log_llm(model=model, messages=payload["messages"], answer=answer, status=status,
+                                        latency_ms=int((time.monotonic() - started) * 1000), usage=usage,
+                                        kind="answer" if public_bot_dialog.current_chat.get() else "broadcast")
+
     try:
         async with httpx.AsyncClient(timeout=60, proxy=settings.openrouter_proxy_url or None) as client:
             for attempt in (0, 1):
@@ -1284,16 +1299,21 @@ async def _llm_call(model: str, context: str, question: str, history: list[dict]
                 break
         if resp.status_code != 200:
             logger.warning("Public bot LLM: HTTP %s", resp.status_code)
+            await _log(None, f"http_{resp.status_code}")
             return None
-        choice = (resp.json().get("choices") or [{}])[0]
+        body = resp.json()
+        choice = (body.get("choices") or [{}])[0]
         content = choice.get("message", {}).get("content")
         if not isinstance(content, str) or not content.strip():
+            await _log(None, "empty", body.get("usage"))
             return None
         if choice.get("finish_reason") == "length":
             content = trim_to_paragraph(content)
+        await _log(content.strip(), f"ok:{choice.get('finish_reason')}", body.get("usage"))
         return content.strip()
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
         logger.warning("Public bot LLM failed", exc_info=True)
+        await _log(None, f"error:{type(exc).__name__}")
         return None
 
 
@@ -1685,7 +1705,7 @@ def _chart_fits(text: str, key: str, history: list[dict]) -> bool:
 
 async def answer_question(chat_id: str, text: str, hint_topic: str | None = None,
                           msg_id: int | None = None) -> None:
-    """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Текст в базе не хранится."""
+    """Текст человека → ответ модели по блоку ДАННЫЕ и короткой памяти разговора. Вопрос и ответ пишутся в public_bot_dialog."""
     day_start = datetime.combine(_now().date(), datetime.min.time())
     async with async_session() as db:
         used = (await db.execute(select(func.count()).select_from(PublicBotEvent).where(
@@ -1829,6 +1849,11 @@ async def handle_inline_query(iq: dict) -> None:
 
 
 async def handle_update(upd: dict) -> None:
+    from app.services import public_bot_dialog
+
+    d = public_bot_dialog.describe_update(upd)
+    public_bot_dialog.current_chat.set(d["chat_id"] if d else None)
+    await public_bot_dialog.log_update(upd)
     if "inline_query" in upd:
         await handle_inline_query(upd["inline_query"])
         return

@@ -7,15 +7,16 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 import app.services.public_bot as pb
+import app.services.public_bot_dialog as pbd
 import app.services.telegram_bot as tb
 from app.config import settings
 from app.models import (
     EconomicEvent, Forecast, ForecastValue, Indicator, IndicatorData,
-    PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox,
+    PublicBotChat, PublicBotDialog, PublicBotEvent, PublicBotSubscription, TelegramOutbox,
 )
 
 _TABLES = (Indicator, IndicatorData, Forecast, ForecastValue, EconomicEvent,
-           PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox)
+           PublicBotChat, PublicBotEvent, PublicBotSubscription, TelegramOutbox, PublicBotDialog)
 
 
 @pytest.fixture
@@ -60,6 +61,7 @@ def env(monkeypatch, tmp_path):
         return {"ok": True}
 
     monkeypatch.setattr(pb, "async_session", maker)
+    monkeypatch.setattr(pbd, "async_session", maker)
     monkeypatch.setattr(pb, "_send", fake_send)
     monkeypatch.setattr(tb, "_api", fake_api)
     monkeypatch.setattr(settings, "public_bot_enabled", True, raising=False)
@@ -782,3 +784,75 @@ def test_telegram_html_fixes_latin_letter_inside_russian_word():
     from app.services.public_bot import telegram_html
     assert telegram_html("регулятор кранa и доллar") == "регулятор крана и доллар"
     assert telegram_html("the USD rate") == "the USD rate"
+
+
+def test_dialog_log_incoming_llm_and_stop(env, monkeypatch):
+    """Решение владельца 09.11.2026: журнал переписки — кто написал, что написал, что ответила модель; /stop удаляет."""
+    maker, sent, _ = env
+    upd = {"update_id": 1, "message": {"message_id": 7, "chat": {"id": 555, "type": "private"}, "text": "золото",
+                                       "from": {"id": 555, "username": "ivan", "first_name": "Иван", "language_code": "ru"}}}
+    asyncio.run(pb.handle_update(upd))
+    asyncio.run(pb.handle_update({"update_id": 2, "callback_query": {
+        "id": "c", "data": "pb:t:diesel", "from": {"id": 555, "username": "ivan"},
+        "message": {"chat": {"id": 555, "type": "private"}}}}))
+
+    class Resp:
+        status_code = 200
+
+        def json(self):
+            return {"choices": [{"message": {"content": "Ответ модели"}, "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 3}}
+
+    class Client:
+        def __init__(self, *a, **k): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        async def post(self, *a, **k): return Resp()
+
+    import httpx
+    monkeypatch.setattr(httpx, "AsyncClient", Client)
+
+    async def ask():
+        pbd.current_chat.set("555")
+        return await pb._llm_call("m-test", "ДАННЫЕ", "почему бензин дорожает?", None)
+    assert asyncio.run(ask()) == "Ответ модели"
+
+    rows = asyncio.run(_rows(maker, PublicBotDialog))
+    assert [(r.direction, r.kind) for r in rows] == [("in", "message"), ("in", "callback"), ("llm", "answer")]
+    first = rows[0]
+    assert (first.chat_id, first.user_id, first.username, first.first_name, first.text) == ("555", "555", "ivan", "Иван", "золото")
+    assert rows[1].text == "pb:t:diesel"
+    llm = rows[2]
+    assert llm.chat_id == "555" and llm.text == "Ответ модели"
+    assert llm.payload["model"] == "m-test" and llm.payload["status"] == "ok:stop"
+    assert llm.payload["messages"][-1]["content"].startswith("почему бензин")
+    assert llm.payload["usage"]["completion_tokens"] == 3
+
+    asyncio.run(pb.handle_message(_msg("/stop")))
+    assert asyncio.run(_rows(maker, PublicBotDialog)) == []
+
+
+def test_dialog_describe_non_text_and_privacy_text():
+    d = pbd.describe_update({"message": {"chat": {"id": 1}, "from": {"id": 1}, "sticker": {}}})
+    assert d["text"] == "[sticker]" and d["kind"] == "message"
+    assert pbd.describe_update({"edited_message": {}}) is None
+    assert "Сохраняю переписку" in pb.privacy_line()
+
+
+def test_dialog_export_merges_outbox(env, monkeypatch):
+    import importlib.util
+    maker, _, _ = env
+    spec = importlib.util.spec_from_file_location("pbexp", "scripts/public-bot-dialogs.py")
+    exp = importlib.util.module_from_spec(spec); spec.loader.exec_module(exp)
+    monkeypatch.setattr(exp, "async_session", maker)
+    asyncio.run(pb.handle_update({"update_id": 1, "message": {"chat": {"id": 555, "type": "private"}, "text": "дизель",
+                                                              "from": {"id": 555, "first_name": "Иван"}}}))
+
+    async def out():
+        async with maker() as db:
+            db.add(TelegramOutbox(chat_id="555", method="sendMessage", kind=pb.KIND_REPLY, text="Дизель 86,52", ok=True))
+            await db.commit()
+    asyncio.run(out())
+    ev = asyncio.run(exp.collect(7, "555"))
+    assert [(e["who"], e["text"]) for e in ev] == [("in", "дизель"), ("bot", "Дизель 86,52")]
+    assert ev[0]["name"] == "Иван"
