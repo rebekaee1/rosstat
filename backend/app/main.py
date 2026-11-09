@@ -469,6 +469,18 @@ async def _startup_data_catch_up() -> None:
         logger.warning("Startup forecast catch-up aborted: %s", e)
     await _catch_up_static_sitemaps()
     await _warm_forecast_showcase()
+    await _warm_russia_prices()
+
+
+async def _warm_russia_prices() -> None:
+    """Startup: сводка цен России в кэш до первого посетителя (холодная сборка ~5 с)."""
+    try:
+        from app.api.regions import warm_russia_prices_summary
+
+        warmed = await warm_russia_prices_summary(force=False)
+        logger.info("Startup russia prices-summary warm-up: %s", warmed)
+    except Exception as e:
+        logger.warning("Startup russia prices-summary warm-up aborted: %s", e)
 
 
 async def _warm_forecast_showcase() -> None:
@@ -1416,6 +1428,20 @@ async def lifespan(app: FastAPI):
             id="gsc_search_queries",
             name="Google Search Console search analytics sync",
             replace_existing=True,
+        )
+
+        # Сводка цен России (главная, «Цены и инфляция»): холодная сборка ~5 с на проде,
+        # ключ сбрасывается публикацией региональных данных и живёт час. Раз в 5 минут
+        # проверяем ключ и собираем его в фоне, если нет (09.11.2026).
+        from app.api.regions import russia_prices_warm_job
+        scheduler.add_job(
+            locked_job(russia_prices_warm_job, "russia_prices_warm", ttl_seconds=600),
+            trigger=IntervalTrigger(minutes=5),
+            id="russia_prices_warm",
+            name="Russia prices-summary cache warm-up (every 5 min, only when missing)",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
         )
 
         # Витрина прогнозов: ключ живёт 30 минут и сбрасывается загрузкой данных,

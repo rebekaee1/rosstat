@@ -10,6 +10,8 @@ region_data, годовая частота, без forecast/derived-контур
   GET /regions/{slug}/i/{code}      — ряд показателя в регионе + рейтинг + сравнение с РФ
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,12 +28,13 @@ from app.data.emiss_price_goods import (
     PRICE_GROUPS_EN,
     price_meta,
 )
-from app.database import get_db
+from app.database import get_db, set_local_statement_timeout
 from app.models import Region, RegionDataPoint, RegionIndicator, RegionMonthlyPoint
 from app.services.locale import get_locale
 from app.services.seo_i18n import region_display_name, region_indicator_copy
 from app.services.seo_regional import MACRO_BY_TABLE
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/regions", tags=["regions"])
 
 # Ключевые показатели карточек/профиля: table_code -> короткая подпись.
@@ -497,7 +500,11 @@ async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
     cached = await cache_get(cache_key)
     if cached:
         return cached
+    return await _build_russia_prices_summary(db, cache_key)
 
+
+async def _build_russia_prices_summary(db: AsyncSession, cache_key: str) -> dict:
+    """Сборка сводки цен России и запись в кэш (общая для запроса и прогрева)."""
     region = (await db.execute(select(Region).where(Region.slug == "russia"))).scalar_one_or_none()
     if region is None:
         raise HTTPException(404, "Регион не найден")
@@ -559,12 +566,55 @@ async def russia_prices_summary(db: AsyncSession = Depends(get_db)):
     return payload
 
 
+async def warm_russia_prices_summary(*, force: bool = False) -> dict[str, int]:
+    """Держит сводку цен России в кэше до первого посетителя (09.11.2026).
+
+    Холодная сборка на проде идёт ~5 с (медленный диск, 13 млн точек цен), и первый
+    запрос после выпуска упал по statement timeout 30 с. Ключ версионный: после
+    публикации новых региональных данных он исчезает, и задача планировщика
+    собирает его заново в фоне. `force=False` ничего не делает, если ключ на месте.
+    """
+    from app.database import async_session
+    from app.services.locale import reset_locale, set_locale
+
+    warmed: dict[str, int] = {}
+    for loc in ("ru", "en"):
+        token = set_locale(loc)
+        try:
+            key = await versioned_key("regions", f"russia-prices:v2:{loc}")
+            if not force:
+                cached = await cache_get(key)
+                if isinstance(cached, dict) and cached.get("items"):
+                    continue
+            async with async_session() as db:
+                await set_local_statement_timeout(db, 120_000)
+                payload = await _build_russia_prices_summary(db, key)
+            warmed[loc] = len(payload.get("items") or [])
+        except Exception:
+            logger.warning("russia prices-summary warm-up failed (%s)", loc, exc_info=True)
+        finally:
+            reset_locale(token)
+    return warmed
+
+
+async def russia_prices_warm_job() -> None:
+    """Задача планировщика: пересобрать сводку цен России, если ключа нет в кэше."""
+    warmed = await warm_russia_prices_summary(force=False)
+    if warmed:
+        logger.info("Russia prices-summary warm-up: %s", warmed)
+
+
 async def _russia_price_movers(db: AsyncSession, region_id: int, top: int = 10) -> dict | None:
     """R9-B: топ подорожавших и подешевевших позиций за год среди всех рядов цен России."""
     inds = (await db.execute(
         select(RegionIndicator).where(RegionIndicator.code.like("ceni-%"))
     )).scalars().all()
-    by_id = {i.id: i for i in inds}
+    # Только ряды, которые Росстат ещё публикует (533 из 884): снятые с наблюдения в топ
+    # всё равно не попадают, а чтение их истории удлиняло холодную сборку.
+    by_id = {
+        i.id: i for i in inds
+        if (meta := price_meta(i.code)) and not meta["is_discontinued"]
+    }
     if not by_id:
         return None
     # Через индекс: не больше 13 последних месяцев на ряд (вся история 2000–2026 на проде упирается в диск).

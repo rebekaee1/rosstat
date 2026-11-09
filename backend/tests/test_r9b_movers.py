@@ -37,3 +37,53 @@ def test_movers_split_up_and_down(movers_client):
     assert [m["code"] for m in mv["down"]] == ["ceni-moloko"]
     assert mv["down"][0]["yoy_pct"] == -10.0
     assert mv["period_label"] == "сентябрь 2026"
+
+
+def test_warm_builds_missing_key_and_skips_cached(movers_client, auth_env, monkeypatch):
+    """Прогрев собирает сводку, если ключа нет, и ничего не делает, если ключ на месте."""
+    import app.api.regions as regions
+    import app.database as database
+
+    store: dict = {}
+    calls: list[str] = []
+
+    async def fake_get(key):
+        return store.get(key)
+
+    async def fake_build(db, key):
+        calls.append(key)
+        payload = {"items": [{"code": "ceni-yaytsa"}]}
+        store[key] = payload
+        return payload
+
+    monkeypatch.setattr(database, "async_session", auth_env["session_maker"])
+    monkeypatch.setattr(regions, "cache_get", fake_get)
+    monkeypatch.setattr(regions, "_build_russia_prices_summary", fake_build)
+    assert asyncio.run(regions.warm_russia_prices_summary(force=False)) == {"ru": 1, "en": 1}
+    assert asyncio.run(regions.warm_russia_prices_summary(force=False)) == {}
+    assert len(calls) == 2
+    assert asyncio.run(regions.warm_russia_prices_summary(force=True)) == {"ru": 1, "en": 1}
+    assert len(calls) == 4
+
+
+def test_movers_skip_discontinued(movers_client, monkeypatch):
+    """Ряды, которые Росстат больше не публикует, в расчёт топа не попадают."""
+    import app.api.regions as regions
+
+    real = regions.price_meta
+
+    def fake(code):
+        meta = real(code)
+        if meta and code == "ceni-moloko":
+            return {**meta, "is_discontinued": True}
+        return meta
+
+    monkeypatch.setattr(regions, "price_meta", fake)
+    monkeypatch.setattr(regions, "versioned_key", _fresh_key)
+    data = movers_client.get("/api/v1/regions/russia/prices-summary").json()
+    mv = data.get("movers") or {}
+    assert all(m["code"] != "ceni-moloko" for m in mv.get("down", []) + mv.get("up", []))
+
+
+async def _fresh_key(namespace, key):
+    return f"test-fresh:{namespace}:{key}"
