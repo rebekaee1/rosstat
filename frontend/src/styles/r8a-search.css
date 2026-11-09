@@ -1,0 +1,22 @@
+/* R8-A: пустой запрос с ближайшими рядами. Пояснение одной строкой, ниже настоящие строки с цифрой. Без рамок. */
+.r8a-nearest {
+  margin: 4px auto 0;
+  max-width: 26rem;
+  text-align: left;
+}
+.r8a-nearest__note {
+  margin: 0 0 6px;
+  padding: 0 14px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-secondary);
+}
+.r8a-nearest .w6d-sr-row {
+  border-radius: 16px;
+  background: var(--fe-glass-2-bg, rgba(150, 165, 185, 0.08));
+  margin-top: 8px;
+}
+.r8a-nearest .w6d-sr-row:first-of-type { margin-top: 0; }
+.r8a-nearest + .r6a-labour,
+.r8a-nearest + ul { margin-top: 18px; }

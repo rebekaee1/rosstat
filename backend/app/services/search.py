@@ -58,6 +58,7 @@ _INFLATION_WORD = re.compile(r"инфляц|inflation")
 _ANNUAL_INFLATION_LEAD = 50
 from app.services.search_r6a import REGION_HEADLINES_R6A, arrears_demotion
 from app.services.search_r7a import REGION_HEADLINES_R7A, r7a_demotion
+from app.services.search_r8a import MAX_NEAREST, nearest_plan, nearest_query, r8a_demotion, short_region_name, sort_cheapest_first
 
 _REGION_HEADLINES = {
     "wage": "srednemesyachnaya-nominalnaya-nachislennaya-zarabotnaya-plata-rabotnikov-organizatsiy",
@@ -907,7 +908,7 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
             elif len(intent.terms) == 1 and intent.terms[0][0] == "wage":
                 score -= arrears_demotion(row.name, intent.query)
             if len(intent.terms) == 1:
-                score -= r7a_demotion(row.name, intent.query)
+                score -= r7a_demotion(row.name, intent.query) + r8a_demotion(row.name, intent.query)
             candidates[row.id], copies[row.id] = score, en
     if not candidates:
         return [], False
@@ -923,7 +924,7 @@ async def _regions(db: AsyncSession, intent: SearchIntent, geometry: list[dict],
         geo, en = selected[region.id], copies[row.id]
         base = paths.region_indicator(region.slug, row.code)
         path, navigation = _period_path(base, intent, regional=True)
-        name = en["name"] if locale == "en" else row.name
+        name = short_region_name(row.code, locale, en["name"] if locale == "en" else row.name)
         db.info.setdefault("fe_search_native_units", {})[f"region:{region.slug}:{row.code}"] = (row.unit, en["unit"])
         output.append({"key": f"region:{region.slug}:{row.code}", "kind": "region_indicator", "code": row.code,
             "name": name, "name_ru": row.name, "name_en": en["name"], "country_slug": "russia",
@@ -1161,7 +1162,7 @@ def _result_sort_key(intent: SearchIntent, locale: str, raw: str = ""):
     return key
 
 
-async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> dict:
+async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50, _nearest: bool = True) -> dict:
     """One query contract with bounded SQL and truthful availability states."""
     empty = {"results": [], "total": 0, "has_more": False, "version": SEARCH_VERSION}
     if not phrase(raw):
@@ -1245,6 +1246,7 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
     disambiguate_titles(final[:limit], world_rows, locale)
     await attach_group_values(db, final[:limit])
     await attach_region_row_values(db, final[:limit])
+    sort_cheapest_first(raw, final[:limit])
     response = {"results": final[:limit], "total": min(len(final), limit),
         "has_more": len(final) > limit or world_clipped or regions_clipped or sub_clipped,
         "version": SEARCH_VERSION, "intent": summary}
@@ -1252,4 +1254,18 @@ async def federated_search(db: AsyncSession, raw: str, *, limit: int = 50) -> di
         response["corrected_query"] = intent.corrected
     if not final:
         response["reason"] = "no_coverage"
+        plan = nearest_plan(raw) if _nearest else None
+        if plan:
+            # R8-A: ряда нет (МРОТ региона, стипендия, «где дешевле») — ближайшие настоящие ряды с цифрой, а не пустота.
+            note, concepts = plan
+            near, seen_keys = [], set()
+            for concept in concepts:
+                found = await federated_search(db, nearest_query(concept, summary.get("region_name")), limit=3, _nearest=False)
+                for item in found.get("results", [])[:1]:
+                    if item["key"] not in seen_keys:
+                        seen_keys.add(item["key"])
+                        near.append(item)
+            if near:
+                sort_cheapest_first(raw, near)
+                response["nearest"] = {"note": note, "results": near[:MAX_NEAREST]}
     return response
