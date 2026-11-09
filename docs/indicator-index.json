@@ -16917,6 +16917,16 @@
           "kind": "other"
         },
         {
+          "file": "backend/app/api/regions.py",
+          "line": 1072,
+          "kind": "other"
+        },
+        {
+          "file": "backend/app/api/regions.py",
+          "line": 1075,
+          "kind": "other"
+        },
+        {
           "file": "backend/app/api/seo_pages.py",
           "line": 411,
           "kind": "other"
@@ -21347,6 +21357,21 @@
           "kind": "other"
         },
         {
+          "file": "frontend/src/components/regions/MonthlyPricePartsHistory.jsx",
+          "line": 61,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/regions/MonthlyPricePartsHistory.jsx",
+          "line": 65,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/components/regions/MonthlyPricePartsHistory.jsx",
+          "line": 100,
+          "kind": "other"
+        },
+        {
           "file": "frontend/src/components/searchLabourHints.js",
           "line": 24,
           "kind": "other"
@@ -22727,6 +22752,56 @@
           "kind": "tests"
         },
         {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 21,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 23,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 31,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 33,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 82,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.js",
+          "line": 83,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.test.js",
+          "line": 22,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.test.js",
+          "line": 23,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.test.js",
+          "line": 31,
+          "kind": "tests"
+        },
+        {
+          "file": "frontend/src/lib/z2PriceHistory.test.js",
+          "line": 32,
+          "kind": "tests"
+        },
+        {
           "file": "frontend/src/pages/Account.test.jsx",
           "line": 183,
           "kind": "other"
@@ -22999,6 +23074,11 @@
         {
           "file": "frontend/src/pages/IndicatorDetail.jsx",
           "line": 660,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/RegionIndicatorPage.jsx",
+          "line": 655,
           "kind": "other"
         },
         {
@@ -83354,6 +83434,11 @@
         {
           "file": "frontend/src/lib/viewModelFamilies.generated.json",
           "line": 13696,
+          "kind": "other"
+        },
+        {
+          "file": "frontend/src/pages/RegionIndicatorPage.jsx",
+          "line": 331,
           "kind": "other"
         },
         {

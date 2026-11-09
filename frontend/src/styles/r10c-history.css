@@ -34,6 +34,6 @@
 /* Переключатели над графиком: «Без инфляции» и подпись пунктирной линии */
 .r10c-real-chip { display: inline-flex; align-items: center; gap: 0.35rem; }
 .r10c-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin-top: 0.4rem; padding: 0 0.25rem; font-size: 0.8125rem; color: var(--color-text-secondary, #5d6578); }
-.r10c-legend__dash { display: inline-block; width: 1.1rem; height: 0; margin-right: 0.4rem; border-top: 2px dashed var(--fe-gold, #ad8a48); vertical-align: middle; }
+.r10c-legend__dash { display: inline-block; width: 1.1rem; margin-right: 0.4rem; height: 2px; background: repeating-linear-gradient(90deg, var(--fe-gold, #ad8a48) 0 5px, transparent 5px 9px); vertical-align: middle; }
 
 @media (prefers-reduced-motion: reduce) { .r10c-chev { transition: none; } }
