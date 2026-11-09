@@ -1,0 +1,119 @@
+/* Круг 5, R5-C: инструменты предпринимателя на странице курсов. Без рамок: стекло, тени, золото тонко. */
+
+/* ---------- Скопировать для документа ---------- */
+.r5c-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.18s, transform 0.2s var(--fe-ease-reveal);
+}
+.r5c-copy:active { transform: scale(0.97); }
+.r5c-copy.is-done { color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f)); }
+.r5c-copy:focus-visible, .r5c-doc__dl:focus-visible, .r5c-date__own:focus-within { outline: 2px solid var(--color-focus, #1e3a6e); outline-offset: 2px; }
+@media (pointer: coarse) { .r5c-copy { min-height: 44px; } }
+
+/* ---------- Курс ЦБ на дату ---------- */
+.r5c-date { margin-top: 16px; }
+.r5c-date__title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--z8-muted, var(--color-text-secondary));
+}
+.r5c-date__chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.r5c-date__own { position: relative; display: inline-flex; align-items: center; overflow: hidden; }
+/* Системное поле даты лежит невидимым поверх кнопки: нажатие открывает родной выбор даты телефона. */
+.r5c-date__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px;
+}
+.r5c-date__res {
+  margin-top: 12px;
+  padding: 14px 18px 12px;
+  border-radius: 20px;
+  background: var(--k8-stone-bg, linear-gradient(130deg, rgba(255, 255, 255, 0.68), rgba(246, 249, 255, 0.46)));
+  box-shadow: var(--k8-stone-shadow, var(--fe-shadow-l2), var(--fe-inset-glint));
+}
+.r5c-date__sum {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+.r5c-date__note { margin: 6px 0 0; font-size: 13px; line-height: 1.4; color: var(--color-text-secondary); }
+.r5c-date__res .r5c-copy { margin-top: 10px; }
+
+/* ---------- Курсы ЦБ для документов ---------- */
+.r5c-doc { padding: 18px 18px 14px; margin-top: 16px; }
+.r5c-doc__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 6px; }
+.r5c-doc__title { margin: 0; font-size: 17px; font-weight: 700; color: var(--color-text-primary); }
+.r5c-doc__date { margin: 0; font-size: 13px; color: var(--color-text-secondary); }
+.r5c-doc__list { list-style: none; margin: 0; padding: 0; }
+.r5c-doc__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 0;
+  color: inherit;
+  text-decoration: none;
+}
+.r5c-doc__list li + li { box-shadow: inset 0 1px 0 rgba(30, 38, 56, 0.06); }
+.r5c-doc__coin { width: 32px; height: 32px; font-size: 18px; }
+.r5c-doc__name { font-size: 15px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.r5c-doc__val { display: inline-flex; align-items: baseline; gap: 4px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.r5c-doc__per { font-size: 12px; color: var(--color-text-secondary); margin-right: 2px; }
+.r5c-doc__num { font-size: 18px; font-weight: 700; color: var(--color-text-primary); }
+.r5c-doc__unit { font-size: 13px; color: var(--color-text-secondary); }
+.r5c-doc__dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--fe-glass-l2);
+  box-shadow: var(--fe-l2-shadow);
+  color: var(--z8-gold-ink, var(--color-champagne-ink, #8a6a1f));
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+@media (pointer: coarse) { .r5c-doc__dl { min-height: 44px; } }
+
+/* ---------- Лента валют листается: край мягко гаснет, видно, что справа есть ещё ---------- */
+@media (max-width: 639px) {
+  .z3-pop__row {
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+    padding-right: 28px;
+  }
+}
+
+/* ---------- Итог за период под графиком ---------- */
+.r5c-range { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 4px 0; font-size: 12px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.r5c-range span { display: grid; gap: 2px; white-space: nowrap; }
+.r5c-range b { font-size: 15px; font-weight: 700; color: var(--color-text-primary); }

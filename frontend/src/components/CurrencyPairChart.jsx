@@ -24,6 +24,7 @@ import {
   rateDigits, sliceByPeriod, unitName,
 } from '../lib/currencyChart';
 import { track, events } from '../lib/track';
+import '../styles/r5c-tools.css';
 import { useLocale, useT } from '../i18n';
 import '../styles/z8-tools.css';
 import '../styles/k4-charts.css';
@@ -135,10 +136,9 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
   const secondPair = secondEnabled ? parsePair(secondCode) : null;
   const unitB = secondPair ? unitMeta(secondPair.quote)?.symbol || '' : '';
   const nameB = secondEnabled ? pairTitle(secondCode, locale, secondCode) : '';
-  const titleKey = period === 'year' ? 'z8.cur.chartTitle' : period === 'quarter' ? 'r2z3.chart.title.quarter' : `c11e.cur.title.${period}`;
   const title = compare
     ? t('c11e.cur.titleCompare', { a: nameA, b: nameB })
-    : t(titleKey, { pair: nameA });
+    : nameA;
 
   const toolbar = (
     <div className="fe-c11e-chartbar">
@@ -298,6 +298,20 @@ export default function CurrencyPairChart({ pair, edges = [] }) {
           </ResponsiveContainer>
         </div>
       </div>
+      {!compare && points.length > 2 && (() => {
+        const vals = points.map((p) => p.rawA);
+        const lo = Math.min(...vals);
+        const hi = Math.max(...vals);
+        const avg = vals.reduce((sum, v) => sum + v, 0) / vals.length;
+        const fmt = (v) => `${formatValue(v, rateDigits(v), locale)}${unit ? `\u00A0${unit}` : ''}`;
+        return (
+          <p className="r5c-range" data-testid="chart-range">
+            <span>{t('r5c.range.min')} <b>{fmt(lo)}</b></span>
+            <span>{t('r5c.range.max')} <b>{fmt(hi)}</b></span>
+            <span>{t('r5c.range.avg')} <b>{fmt(avg)}</b></span>
+          </p>
+        );
+      })()}
       {compare && (
         <>
           <ChartLegend

@@ -65,7 +65,7 @@ describe('CurrencyDesk', () => {
     expect(screen.getByLabelText('Сумма').value).toBe('100');
     const out = screen.getByTestId('converter-result');
     expect(out.textContent).toContain('8\u00A0000');
-    expect(out.textContent).toContain('Рубль');
+    expect(out.textContent).toMatch(/рубл/);
     expect(out.textContent).toMatch(/По курсу Банка России на 3 октября 2026/);
   });
 
@@ -291,7 +291,7 @@ describe('CurrencyDesk: новые валюты из ответа API (круг 
     pick('Из', 'Турецкая лира');
     const out = screen.getByTestId('converter-result');
     expect(out.textContent).toContain('219');
-    expect(out.textContent).toContain('Рубль');
+    expect(out.textContent).toMatch(/рубл/);
   });
 
   it('курс старше трёх суток подписан «не обновлялся», без процента изменения', () => {
