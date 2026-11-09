@@ -269,6 +269,8 @@ async def regions_catalog(db: AsyncSession = Depends(get_db)):
     await cache_set(cache_key, result, settings.cache_ttl_data)
     return result
 
+from app.services.regional_monthly_latest import latest_monthly_points  # noqa: E402
+
 
 @router.get("/heatmap/{code}")
 async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
@@ -307,14 +309,16 @@ async def regions_heatmap(code: str, db: AsyncSession = Depends(get_db)):
             raise HTTPException(404, "Нет данных по этому показателю")
         last_year = int(last_month) // 100
         # R9-C: тот же месяц год назад — для «за год» в строках рейтинга цен.
-        prev_rows = (await db.execute(
-            select(Region.slug, RegionMonthlyPoint.value)
-            .join(Region, Region.id == RegionMonthlyPoint.region_id)
-            .where(RegionMonthlyPoint.indicator_id == indicator.id,
-                   RegionMonthlyPoint.month == prev_year_month(int(last_month)),
-                   Region.kind == "region")
-        )).all()
-        prev_by_slug = {s_: float(v_) for s_, v_ in prev_rows if v_ is not None}
+        reg_ids = {rid: slug_ for rid, slug_ in (await db.execute(
+            select(Region.id, Region.slug).where(Region.kind == "region")
+        )).all()}
+        latest13 = await latest_monthly_points(db, [indicator.id], list(reg_ids), n=13)
+        want = prev_year_month(int(last_month))
+        prev_by_slug = {
+            reg_ids[rid]: v_
+            for (_iid, rid), pts in latest13.items()
+            for m_, v_ in pts if m_ == want
+        }
         rows = (await db.execute(
             select(Region.slug, Region.name, RegionMonthlyPoint.value)
             .join(Region, Region.id == RegionMonthlyPoint.region_id)
