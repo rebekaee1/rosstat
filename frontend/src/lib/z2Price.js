@@ -56,7 +56,8 @@ export function signedPct(pct, locale = 'ru', digits = 1) {
   const abs = Math.abs(pct).toFixed(digits).replace('.', dec);
   const tiny = Math.abs(pct) < 0.05;
   const sign = tiny ? '' : pct > 0 ? '+' : '−';
-  return `${sign}${abs}${NBSP}%`;
+  // В английском процент пишется слитно: «+0.5%».
+  return `${sign}${abs}${locale === 'en' ? '' : NBSP}%`;
 }
 
 /** Сравнение региона с Россией и Москвой: [{key, value, month, pct}] (пусто без compare; для Москвы — только Россия). */
@@ -238,7 +239,7 @@ export function roundBig(v) {
 export function bigRub(v, locale = 'ru') {
   const dec = locale === 'en' ? '.' : ',';
   if (v >= 1e6) return `${(v / 1e6).toFixed(2).replace(/\.?0+$/, '').replace('.', dec)}${NBSP}${locale === 'en' ? 'M' : 'млн'}${NBSP}₽`;
-  return `${Math.round(v / 1000)}${NBSP}${locale === 'en' ? 'k' : 'тыс.'}${NBSP}₽`;
+  return locale === 'en' ? `${Math.round(v / 1000)}k${NBSP}₽` : `${Math.round(v / 1000)}${NBSP}тыс.${NBSP}₽`;
 }
 
 /** Цена «за м²» (в месяц): единица содержит «за м²» / «per sq m». */

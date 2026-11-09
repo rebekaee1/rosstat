@@ -219,12 +219,12 @@ export function AreaCalc({ value, unit }) {
   return (
     <div className="r5a-area" data-no-export="true">
       <p className="r5a-area__sum fe-num">
-        {t('r5a.areaSum', { area: `${area}${NBSP}м²`, sum: `${Math.round(value * area).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU').replace(/[\u00a0\u202f]/g, NBSP)}${NBSP}₽` })}
+        {t('r5a.areaSum', { area: `${area}${NBSP}${locale === 'en' ? 'm²' : 'м²'}`, sum: `${Math.round(value * area).toLocaleString(locale === 'en' ? 'en-US' : 'ru-RU').replace(/[\u00a0\u202f]/g, NBSP)}${NBSP}₽` })}
       </p>
       <div className="r5a-range" role="group" aria-label={t('r5a.areaAria')}>
         {AREAS.map((a) => (
           <button key={a} type="button" className={`r5a-range__b fe-tap-inline${area === a ? ' is-on' : ''}`} aria-pressed={area === a} onClick={() => setArea(a)}>
-            {a}{NBSP}м²
+            {a}{NBSP}{locale === 'en' ? 'm²' : 'м²'}
           </button>
         ))}
       </div>
