@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useMemo, useRef, useCallback, useId } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { regionVsPath } from '../lib/sitePaths';
 import {
   BarChart3, Briefcase, Building2, Calculator, Clock, Coins, Fuel, Gem, Globe2, History, Home, Landmark, MapPin, Percent, Search,
   SlidersHorizontal, Tag, TrendingUp, Users, X,
@@ -781,6 +782,9 @@ export default function IndicatorSearch({
                                   </li>
                                 ))}
                               </ul>
+                              <button type="button" data-testid="search-nothing-compare" onClick={() => navigate(regionVsPath('moskva', 'sankt-peterburg'))} className={cn(FOCUS_RING, 'fe-press mt-4 min-h-11 rounded-xl px-4 text-sm font-medium text-champagne-ink')}>
+                                {t('r5d.search.compare')}
+                              </button>
                             </div>
                           )}
                 </div>

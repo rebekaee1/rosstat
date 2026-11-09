@@ -151,6 +151,7 @@ GRAMMAR_WORDS = frozenset("""
 какова каков какой находится находилось входят входит
 показывает покажите данные changing changes changed across
 large big each take programmes programme earn earns getting gets
+регионам регионах областям областях субъектам субъектах регионам
 """.split())
 
 

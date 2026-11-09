@@ -10,3 +10,6 @@
 .z4s-freq__chip { justify-content: center; min-width: 0; padding: 0 4px; white-space: nowrap; }
 /* R2-Z4: разброс «по регионам: от … до …» над списком регионов; тихая подпись без рамок. */
 .z4s-region-range { margin: 0; padding: 0 4px 2px; font-size: 13px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* R5-D: правило w6d для телефона (3 строки) перебивалось базовым ниже по файлу; название показателя не обрезаем на второй строке */
+@media (max-width: 639px) { .w6d-sr-name.w6d-sr-name { -webkit-line-clamp: 3; line-clamp: 3; } }
