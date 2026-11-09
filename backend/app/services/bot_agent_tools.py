@@ -350,7 +350,7 @@ async def _calendar(db, days: int | None = 30, query: str | None = None) -> str:
     q = select(EconomicEvent.scheduled_date, EconomicEvent.title, EconomicEvent.is_estimated).where(
         EconomicEvent.scheduled_date >= today, EconomicEvent.scheduled_date <= today + timedelta(days=days))
     for s in _stems(query or ""):
-        q = q.where(func.lower(EconomicEvent.title).like(f"%{s}%"))
+        q = q.where(or_(*[func.lower(EconomicEvent.title).like(f"%{a}%") for a in _alts(s)]))
     seen: set = set()
     rows = []
     for r in (await db.execute(q.order_by(EconomicEvent.scheduled_date).limit(80))).all():
